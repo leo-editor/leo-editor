@@ -6313,100 +6313,11 @@ these two cases **does not matter**, for three very important reasons:
 
 Understanding these three reasons finally convinced me that @shadow could be
 made to work reliably.
-.. @+node:ekr.20150320233042.17: *3* Options that set command names
-.. Apparently, these options no longer exist.
-.. EKR: This kind of "flexibility" is a really bad idea.
-
-The following options specify the 'spelling' of headline commands. The
-option_prefix and option_prefixes command also define the spelling of
-special doc parts.
-
-You can change these to make them shorter or to avoid conflicts with
-headlines in your Leo files. The list below merely gives the default
-value for each setting.
-
-`code_prefix`: '@rst-code'
-
-`ignore_headline_prefix`: '@rst-no-head'
-
-`ignore_headlines_prefix`: '@rst-no-headlines'
-
-`ignore_prefix_tree`: '@rst-ignore'
-
-`ignore_node_prefix`: '@rst-ignore-node'
-
-`ignore_tree_prefix`: '@rst-ignore-tree'
-
-`option_prefix`: '@rst-option'
-
-`options_prefix`: '@rst-options'
-
-`preformat_prefix`: '@rst-preformat'
-
-`rst_prefix`: '@rst'
-
-`show_headline_prefix`: '@rst-head'
-.. @+node:ekr.20150320233042.1: *3* rst3 options: names of headline commands
-rst3_code_prefix =             @rst-code     # Enter code mode.
-rst3_doc_only_prefix =         @rst-doc-only # Enter doc-only mode.
-rst3_rst_prefix =              @rst          # Enter rst mode.
-rst3_ignore_headline_prefix =  @rst-no-head
-rst3_ignore_headlines_prefix = @rst-no-headlines
-rst3_ignore_node_prefix =      @rst-ignore-node
-rst3_ignore_prefix =           @rst-ignore
-rst3_ignore_tree_prefix =      @rst-ignore-tree
-rst3_option_prefix =           @rst-option
-rst3_options_prefix =          @rst-options
-rst3_preformat_prefix =        @rst-preformat
-rst3_show_headline_prefix =    @rst-head
-.. @+node:ekr.20150320233042.2: *4* @string rst3_code_prefix = @rst-code
-# Enter code mode.
-.. @+node:ekr.20150320233042.3: *4* @string rst3_doc_only_prefix = @rst-doc-only
-# Enter doc-only mode.
-.. @+node:ekr.20150320233042.4: *4* @string rst3_default_encoding_prefix = @rst-default-encoding
-.. @+node:ekr.20150320233042.5: *4* @string rst3_rst_prefix = @rst
-# Enter rst mode.
-.. @+node:ekr.20150320233042.6: *4* @string rst3_ignore_headline_prefix = @rst-no-head
-.. @+node:ekr.20150320233042.16: *4* @string rst3_ignore_headlines_prefix = @rst-no-headlines
-.. @+node:ekr.20150320233042.8: *4* @string rst3_ignore_node_prefix = @rst-ignore-node
-.. @+node:ekr.20150320233042.18: *4* @string rst3_ignore_prefix = @rst-ignore
-.. @+node:ekr.20150320233042.10: *4* @string rst3_ignore_tree_prefix = @rst-ignore-tree
-.. @+node:ekr.20150320233042.11: *4* @string rst3_option_prefix = @rst-option
-.. @+node:ekr.20150320233042.12: *4* @string rst3_options_prefix = @rst-options
-.. @+node:ekr.20150320233042.13: *4* @string rst3_preformat_prefix = @rst-preformat
-.. @+node:ekr.20150320233042.14: *4* @string rst3_show_headline_prefix = @rst-head
-.. @+node:ekr.20150323162241.1: *3* Moving the cursor
-When focus is in any of Leo's text panes (body pane, log pane, headlines):
-
-    +-------------------+-----------------------+
-    | **Key**           | **Move Cursor**       |
-    +-------------------+-----------------------+
-    | Arrow keys        | one character         |
-    +-------------------+-----------------------+
-    | Ctrl-LeftArrow    | back one word         |
-    +-------------------+-----------------------+
-    | Ctrl-RightArrow   | forward one word      |
-    +-------------------+-----------------------+
-    | Home              | beginning of line     |
-    +-------------------+-----------------------+
-    | End               | end of line           |
-    +-------------------+-----------------------+
-    | Ctrl-Home         | beginning of the body |
-    +-------------------+-----------------------+
-    | Ctrl-End          | end of body           |
-    +-------------------+-----------------------+
-    | PageDown          | down one page         |
-    +-------------------+-----------------------+
-    | PageUp            | up one page           |
-    +-------------------+-----------------------+
-    
-Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.
 .. @+node:ekr.20150312225028.4: ** Unused code
 @ignore
 @language python
 @color
-.. @+node:ekr.20150312225028.5: *3* Keep
-.. @+node:ekr.20150312225028.6: *4* class LogManager (not used yet)
+.. @+node:ekr.20150312225028.6: *3* class LogManager (not used yet)
 class LogManager:
 
     '''A class to handle the global log, and especially
@@ -6425,7 +6336,7 @@ class LogManager:
         self.signon_printed = False # True: the global signon has been printed.
 
     @others
-.. @+node:ekr.20150312225028.7: *5* LogM.setLog, lockLog, unlocklog
+.. @+node:ekr.20150312225028.7: *4* LogM.setLog, lockLog, unlocklog
 def setLog (self,log):
 
     """set the frame to which log messages will go"""
@@ -6441,7 +6352,7 @@ def lockLog(self):
 def unlockLog(self):
     """Enable changes to the log"""
     self.logIsLocked = False
-.. @+node:ekr.20150312225028.8: *5* LogM.writeWaitingLog
+.. @+node:ekr.20150312225028.8: *4* LogM.writeWaitingLog
 def writeWaitingLog (self,c):
     '''Write all waiting lines to the log.'''
     trace = True
@@ -6488,8 +6399,8 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
-.. @+node:ekr.20150312225028.9: *4* Existing autocompleter: do not delete
-.. @+node:ekr.20150312225028.10: *5* completeSelf (not used yet)
+.. @+node:ekr.20150312225028.9: *3* Existing autocompleter (keep)
+.. @+node:ekr.20150312225028.10: *4* completeSelf (not used yet)
 def completeSelf (self):
 
     g.trace(g.callers(4))
@@ -6523,20 +6434,20 @@ def completeSelf (self):
         self.theObject = None
         self.clear()
         self.membersList = []
-.. @+node:ekr.20150312225028.11: *5* class ForgivingParserClass (not used)
+.. @+node:ekr.20150312225028.11: *4* class ForgivingParserClass (not used)
 class ForgivingParserClass:
 
     '''A class to create a valid class instances from
     a class definition that may contain syntax errors.'''
 
     @others
-.. @+node:ekr.20150312225028.12: *6* ctor (ForgivingParserClass)
+.. @+node:ekr.20150312225028.12: *5* ctor (ForgivingParserClass)
 def __init__ (self,c):
 
     self.c = c
     self.excludedTnodesList = []
     self.old_putBody = None # Set in parse for communication with newPutBody.
-.. @+node:ekr.20150312225028.13: *6* parse
+.. @+node:ekr.20150312225028.13: *5* parse
 def parse (self,p):
 
     '''The top-level parser method.
@@ -6561,7 +6472,7 @@ def parse (self,p):
     return s # Don't put a return in a finally clause.
 
 
-.. @+node:ekr.20150312225028.14: *6* forgivingParser (leoKeys)
+.. @+node:ekr.20150312225028.14: *5* forgivingParser (leoKeys)
 def forgivingParser (self,p,suppress=False):
 
     c = self.c ; root = p.copy()
@@ -6589,7 +6500,7 @@ def forgivingParser (self,p,suppress=False):
             g.es_exception()
             break
     return s or ''
-.. @+node:ekr.20150312225028.15: *6* computeErrorNode (leoKeys)
+.. @+node:ekr.20150312225028.15: *5* computeErrorNode (leoKeys)
 def computeErrorNode (self,c,root,n,lines):
 
     '''The from c.goToLineNumber that applies to scripts.
@@ -6611,7 +6522,7 @@ def computeErrorNode (self,c,root,n,lines):
                 return p
 
     return None
-.. @+node:ekr.20150312225028.16: *6* newPutBody
+.. @+node:ekr.20150312225028.16: *5* newPutBody
 def newPutBody (self,p,oneNodeOnly=False,fromString=''):
 
     if p.v in self.excludedTnodesList:
@@ -6619,7 +6530,7 @@ def newPutBody (self,p,oneNodeOnly=False,fromString=''):
         # g.trace('ignoring',p.h)
     else:
         self.old_putBody(p,oneNodeOnly,fromString)
-.. @+node:ekr.20150312225028.17: *5* class ClassScannerClass (not used)
+.. @+node:ekr.20150312225028.17: *4* class ClassScannerClass (not used)
 # Called by completeSelf, which is not used.
 
 class ClassScannerClass:
@@ -6627,7 +6538,7 @@ class ClassScannerClass:
     '''A class to find class definitions in a node or its parents.'''
 
     @others
-.. @+node:ekr.20150312225028.18: *6* ctor (classScannerClass)
+.. @+node:ekr.20150312225028.18: *5* ctor (classScannerClass)
 def __init__ (self,c):
 
     self.c = c
@@ -6636,7 +6547,7 @@ def __init__ (self,c):
     # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
 
     self.start_in_doc = False
-.. @+node:ekr.20150312225028.19: *6* scan
+.. @+node:ekr.20150312225028.19: *5* scan
 def scan (self):
 
     c = self.c
@@ -6651,7 +6562,7 @@ def scan (self):
         s = None
 
     return className,obj,p,s
-.. @+node:ekr.20150312225028.20: *6* findParentClass
+.. @+node:ekr.20150312225028.20: *5* findParentClass
 def findParentClass (self,root):
 
     autoCompleter = self.c.k.autoCompleter
@@ -6672,7 +6583,7 @@ def findParentClass (self,root):
             return className,None,p
 
     return None,None,None
-.. @+node:ekr.20150312225028.21: *6* findClass & helpers
+.. @+node:ekr.20150312225028.21: *5* findClass & helpers
 def findClass (self,p):
 
     lines = g.splitLines(p.b)
@@ -6692,11 +6603,11 @@ def findClass (self,p):
                 if className: return className
     else:
         return None
-.. @+node:ekr.20150312225028.22: *7* endsDoc
+.. @+node:ekr.20150312225028.22: *6* endsDoc
 def endsDoc (self,s):
 
     return s.startswith('@c')
-.. @+node:ekr.20150312225028.23: *7* startsClass
+.. @+node:ekr.20150312225028.23: *6* startsClass
 def startsClass (self,s):
 
     if s.startswith('class'):
@@ -6708,7 +6619,7 @@ def startsClass (self,s):
         return word
     else:
         return None
-.. @+node:ekr.20150312225028.24: *7* startsDoc
+.. @+node:ekr.20150312225028.24: *6* startsDoc
 def startsDoc (self,s):
 
     for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
@@ -6716,8 +6627,8 @@ def startsDoc (self,s):
             return True
     else:
         return False
-.. @+node:ekr.20150312225028.25: *5* Proxy classes and objects
-.. @+node:ekr.20150312225028.26: *6* createProxyObjectFromClass
+.. @+node:ekr.20150312225028.25: *4* Proxy classes and objects
+.. @+node:ekr.20150312225028.26: *5* createProxyObjectFromClass
 def createProxyObjectFromClass (self,className,theClass):
 
     '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
@@ -6747,7 +6658,7 @@ def createProxyObjectFromClass (self,className,theClass):
     # Verify that it has all the proper attributes.
     # g.trace(g.listToString(dir(obj)))
     return obj
-.. @+node:ekr.20150312225028.27: *6* createClassObjectFromString
+.. @+node:ekr.20150312225028.27: *5* createClassObjectFromString
 def computeClassObjectFromString (self,className,s):
 
     try:
@@ -6763,7 +6674,7 @@ def computeClassObjectFromString (self,className,s):
             g.es_print('unexpected exception in',computeProxyObject)
             g.es_exception()
         return None
-.. @+node:ekr.20150312225028.28: *5* getExternalCompletions
+.. @+node:ekr.20150312225028.28: *4* getExternalCompletions
 def getExternalCompletions (self,s,p=None,language='python'):
 
     '''Return the completions possible at the end of string 's'.
@@ -6806,20 +6717,9 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-.. @+node:ekr.20150312225028.29: *4* from leoViews.py
-@first # -*- coding: utf-8 -*-
-'''Support for @views trees and related operations.'''
-# Started 2013/12/31.
-@language python
-@tabwidth -4
-from __future__ import print_function
-<< imports >>
-@others
-.. @+node:ekr.20150312225028.30: *5* << imports >> (leoViews.py)
-import leo.core.leoGlobals as g
-import copy
-import time
-.. @+node:ekr.20150312225028.31: *5* class OrganizerData
+.. @+node:ekr.20150312225028.29: *3* leoViews stuff (keep)
+This was a major project, now abandoned.
+.. @+node:ekr.20150312225028.31: *4* class OrganizerData
 class OrganizerData:
     '''A class containing all data for a particular organizer node.'''
     def __init__ (self,h,unl,unls):
@@ -6844,11 +6744,11 @@ class OrganizerData:
     def __repr__(self):
         return 'OrganizerData: %s' % (self.h or '<no headline>')
     __str__ = __repr__
-.. @+node:ekr.20150312225028.32: *5* class ViewController
+.. @+node:ekr.20150312225028.32: *4* class ViewController
 class ViewController:
     << docstring >>
     @others
-.. @+node:ekr.20150312225028.33: *6*  << docstring >> (class ViewController)
+.. @+node:ekr.20150312225028.33: *5*  << docstring >> (class ViewController)
 '''
 A class to handle @views trees and related operations.
 Such trees have the following structure:
@@ -6861,7 +6761,7 @@ Such trees have the following structure:
     
 The body text of @organizer and @clones consists of unl's, one per line.
 '''
-.. @+node:ekr.20150312225028.34: *6*  vc.ctor & vc.init
+.. @+node:ekr.20150312225028.34: *5*  vc.ctor & vc.init
 def __init__ (self,c):
     '''Ctor for ViewController class.'''
     self.c = c
@@ -6914,8 +6814,8 @@ def init(self):
         # This list is the "backbone" of this class:
         # - The front end (demote and its helpers) adds items to this list.
         # - The back end (move_nodes and its helpers) moves nodes using this list.
-.. @+node:ekr.20150312225028.35: *6* vc.Entry points
-.. @+node:ekr.20150312225028.36: *7* vc.convert_at_file_to_at_auto
+.. @+node:ekr.20150312225028.35: *5* vc.Entry points
+.. @+node:ekr.20150312225028.36: *6* vc.convert_at_file_to_at_auto
 def convert_at_file_to_at_auto(self,root):
     # Define class ConvertController.
     @others
@@ -6925,7 +6825,7 @@ def convert_at_file_to_at_auto(self,root):
         ConvertController(c,root).run()
     else:
         g.es_print('not an @file node:',root.h)
-.. @+node:ekr.20150312225028.37: *8* class ConvertController
+.. @+node:ekr.20150312225028.37: *7* class ConvertController
 class ConvertController:
     def __init__ (self,c,p):
         self.c = c
@@ -6933,7 +6833,7 @@ class ConvertController:
         self.vc = c.viewController
         self.root = p.copy()
     @others
-.. @+node:ekr.20150312225028.38: *9* cc.delete_at_auto_view_nodes
+.. @+node:ekr.20150312225028.38: *8* cc.delete_at_auto_view_nodes
 def delete_at_auto_view_nodes(self,root):
     '''Delete all @auto-view nodes pertaining to root.'''
     cc = self
@@ -6942,7 +6842,7 @@ def delete_at_auto_view_nodes(self,root):
         p = vc.has_at_auto_view_node(root)
         if not p: break
         p.doDelete()
-.. @+node:ekr.20150312225028.39: *9* cc.import_from_string
+.. @+node:ekr.20150312225028.39: *8* cc.import_from_string
 def import_from_string(self,s):
     '''Import from s into a temp outline.'''
     cc = self # (ConvertController)
@@ -6957,7 +6857,7 @@ def import_from_string(self,s):
     ok = scanner(atAuto=True,parent=p,s=s)
     p.h = root.h.replace('@file','@auto' if ok else '@@auto')
     return ok,p
-.. @+node:ekr.20150312225028.40: *9* cc.run
+.. @+node:ekr.20150312225028.40: *8* cc.run
 def run(self):
     '''Convert an @file tree to @auto tree.'''
     trace = True and not g.unitTesting
@@ -7024,7 +6924,7 @@ def run(self):
     if p:
         c.selectPosition(p)
     c.redraw()
-.. @+node:ekr.20150312225028.41: *9* cc.set_expected_imported_headlines
+.. @+node:ekr.20150312225028.41: *8* cc.set_expected_imported_headlines
 def set_expected_imported_headlines(self,root):
     '''Set the headline_ivar for all vnodes.'''
     trace = False and not g.unitTesting
@@ -7049,7 +6949,7 @@ def set_expected_imported_headlines(self,root):
                 setattr(p.v,ivar,h)
                 if trace and h != p.h:
                     g.trace('==>',h) # p.h,'==>',h
-.. @+node:ekr.20150312225028.42: *9* cc.strip_sentinels
+.. @+node:ekr.20150312225028.42: *8* cc.strip_sentinels
 def strip_sentinels(self):
     '''Write the file to a string without headlines or sentinels.'''
     trace = False and not g.unitTesting
@@ -7069,7 +6969,7 @@ def strip_sentinels(self):
     s = at.stringOutput
     if trace: g.trace('ok:',ok,'s:...\n'+s)
     return s
-.. @+node:ekr.20150312225028.43: *7* vc.pack & helper
+.. @+node:ekr.20150312225028.43: *6* vc.pack & helper
 def pack(self):
     '''
     Undoably convert c.p to a packed @view node, replacing all cloned
@@ -7128,7 +7028,7 @@ def pack(self):
         u.afterChangeGroup(root,'view-pack')
         c.selectPosition(root)
         c.redraw()
-.. @+node:ekr.20150312225028.44: *8* vc.create_view_node
+.. @+node:ekr.20150312225028.44: *7* vc.create_view_node
 def create_view_node(self,root):
     '''
     Create a clone of root as a child of the @views node.
@@ -7144,7 +7044,7 @@ def create_view_node(self,root):
     p = root.clone()
     p.moveToLastChildOf(views)
     return p
-.. @+node:ekr.20150312225028.45: *7* vc.unpack
+.. @+node:ekr.20150312225028.45: *6* vc.unpack
 def unpack(self):
     '''
     Undoably unpack nodes corresponding to leading unl lines in c.p to child clones.
@@ -7173,7 +7073,7 @@ def unpack(self):
         c.undoer.afterChangeTree(root,'view-unpack',bunch)
         c.redraw()
     return changed
-.. @+node:ekr.20150312225028.46: *7* vc.update_before_write_at_auto_file
+.. @+node:ekr.20150312225028.46: *6* vc.update_before_write_at_auto_file
 def update_before_write_at_auto_file(self,root):
     '''
     Update the @auto-view node for root, an @auto node. Create @organizer,
@@ -7227,7 +7127,7 @@ def update_before_write_at_auto_file(self,root):
     if changed:
         c.redraw()
     return at_auto_view # For at-file-to-at-auto command.
-.. @+node:ekr.20150312225028.47: *8* vc.create_at_headlines
+.. @+node:ekr.20150312225028.47: *7* vc.create_at_headlines
 def create_at_headlines(self,root):
     '''Create the @headlines node for root, an @auto file.'''
     vc = self
@@ -7248,7 +7148,7 @@ def create_at_headlines(self,root):
     if result:
         p = vc.find_at_headlines_node(root)
         p.b = ''.join(result)
-.. @+node:ekr.20150312225028.48: *8* vc.find_special_nodes
+.. @+node:ekr.20150312225028.48: *7* vc.find_special_nodes
 def find_special_nodes(self,root):
     '''
     Scan root's tree, looking for organizer and cloned nodes.
@@ -7278,7 +7178,7 @@ def find_special_nodes(self,root):
             if trace and verbose: g.trace('existing',p.h)
             existing_organizers.append(p.copy())
     return clones,existing_organizers,organizers
-.. @+node:ekr.20150312225028.49: *7* vc.update_after_read_at_auto_file & helpers
+.. @+node:ekr.20150312225028.49: *6* vc.update_after_read_at_auto_file & helpers
 def update_after_read_at_auto_file(self,root):
     '''
     Recreate all organizer nodes and clones for a single @auto node
@@ -7336,7 +7236,7 @@ def update_after_read_at_auto_file(self,root):
     c.selectPosition(root)
     c.redraw()
     return ok
-.. @+node:ekr.20150312225028.50: *8* vc.check
+.. @+node:ekr.20150312225028.50: *7* vc.check
 def check (self,root):
     '''
     Compare a trial write or root with the vc.trail_write_1.
@@ -7355,7 +7255,7 @@ def check (self,root):
             vc.compare_trial_writes(trial1,trial2)
             g.pr('')
     return trial1 == trial2
-.. @+node:ekr.20150312225028.51: *8* vc.create_clone_link
+.. @+node:ekr.20150312225028.51: *7* vc.create_clone_link
 def create_clone_link(self,gnx,root,unl):
     '''
     Replace the node in the @auto tree with the given unl by a
@@ -7376,7 +7276,7 @@ def create_clone_link(self,gnx,root,unl):
     else:
         if trace: g.trace('relink failed',gnx,root.h,unl)
         return False
-.. @+node:ekr.20150312225028.52: *8* vc.create_clone_links
+.. @+node:ekr.20150312225028.52: *7* vc.create_clone_links
 def create_clone_links(self,at_clones,root):
     '''
     Recreate clone links from an @clones node.
@@ -7396,7 +7296,7 @@ def create_clone_links(self,at_clones,root):
     else:
         g.trace('bad @clones contents',gnxs,unls)
         return False
-.. @+node:ekr.20150312225028.53: *8* vc.create_organizer_nodes & helpers
+.. @+node:ekr.20150312225028.53: *7* vc.create_organizer_nodes & helpers
 def create_organizer_nodes(self,at_organizers,root):
     '''
     root is an @auto node. Create an organizer node in root's tree for each
@@ -7427,7 +7327,7 @@ def create_organizer_nodes(self,at_organizers,root):
         '\n  demote:              %4.2f sec' % (t4-t3),
         '\n  move_nodes:          %4.2f sec' % (t5-t4),
         '\n  post_move_comments:  %4.2f sec' % (t6-t5))
-.. @+node:ekr.20150312225028.54: *8* vc.update_headlines_after_read
+.. @+node:ekr.20150312225028.54: *7* vc.update_headlines_after_read
 def update_headlines_after_read(self,root):
     '''Handle custom headlines for all imported nodes.'''
     trace = False and not g.unitTesting
@@ -7456,8 +7356,8 @@ def update_headlines_after_read(self,root):
                 p.h = head
     else:
         g.trace('bad @headlines body',at_headlines.b)
-.. @+node:ekr.20150312225028.55: *6* vc.Main Lines
-.. @+node:ekr.20150312225028.56: *7* vc.precompute_all_data & helpers
+.. @+node:ekr.20150312225028.55: *5* vc.Main Lines
+.. @+node:ekr.20150312225028.56: *6* vc.precompute_all_data & helpers
 def precompute_all_data(self,at_organizers,root):
     '''Precompute all data needed to reorganize nodes.'''
     trace = False and not g.unitTesting
@@ -7490,7 +7390,7 @@ def precompute_all_data(self,at_organizers,root):
         '\n  create_tree_structure:           %4.2f sec' % (t5-t4),
         '\n  compute_all_organized_positions: %4.2f sec' % (t6-t5),
         '\n  create_anchors_d:                %4.2f sec' % (t7-t6))
-.. @+node:ekr.20150312225028.57: *8* 1: vc.find_imported_organizer_nodes
+.. @+node:ekr.20150312225028.57: *7* 1: vc.find_imported_organizer_nodes
 def find_imported_organizer_nodes(self,root):
     '''
     Put the VNode of all imported nodes with children on
@@ -7504,7 +7404,7 @@ def find_imported_organizer_nodes(self,root):
             aList.append(p.v)
     vc.imported_organizers_list = list(set(aList))
     if trace: g.trace([z.h for z in vc.imported_organizers_list])
-.. @+node:ekr.20150312225028.58: *8* 2: vc.create_organizer_data (od.p & od.parent)
+.. @+node:ekr.20150312225028.58: *7* 2: vc.create_organizer_data (od.p & od.parent)
 def create_organizer_data(self,at_organizers,root):
     '''
     Create OrganizerData nodes for all @organizer: and @existing-organizer:
@@ -7516,7 +7416,7 @@ def create_organizer_data(self,at_organizers,root):
     vc.finish_create_existing_organizers(root)
     for od in vc.all_ods:
         assert od.parent,(od.exists,od.h)
-.. @+node:ekr.20150312225028.59: *9* vc.create_ods
+.. @+node:ekr.20150312225028.59: *8* vc.create_ods
 def create_ods(self,at_organizers):
     '''Create all organizer nodes and the associated lists.'''
     # Important: we must completely reinit all data here.
@@ -7542,7 +7442,7 @@ def create_ods(self,at_organizers):
                         # Do *not* append organizer_unl to the unl list.
                 else:
                     g.trace('===== no unls:',at_organizer.h)
-.. @+node:ekr.20150312225028.60: *9* vc.finish_create_organizers
+.. @+node:ekr.20150312225028.60: *8* vc.finish_create_organizers
 def finish_create_organizers(self,root):
     '''Finish creating all organizers.'''
     trace = False # and not g.unitTesting
@@ -7567,7 +7467,7 @@ def finish_create_organizers(self,root):
             vc.all_ods.remove(od)
             assert od not in vc.existing_ods
             assert od not in vc.all_ods
-.. @+node:ekr.20150312225028.61: *9* vc.finish_create_existing_organizers
+.. @+node:ekr.20150312225028.61: *8* vc.finish_create_existing_organizers
 def finish_create_existing_organizers(self,root):
     '''Finish creating existing organizer nodes.'''
     trace = False # and not g.unitTesting
@@ -7597,7 +7497,7 @@ def finish_create_existing_organizers(self,root):
             assert od not in vc.existing_ods
             assert od not in vc.all_ods
 
-.. @+node:ekr.20150312225028.62: *8* 3: vc.create_actual_organizer_nodes
+.. @+node:ekr.20150312225028.62: *7* 3: vc.create_actual_organizer_nodes
 def create_actual_organizer_nodes(self):
     '''
     Create all organizer nodes as children of holding cells. These holding
@@ -7614,7 +7514,7 @@ def create_actual_organizer_nodes(self):
         holding_cell.h = 'holding cell for ' + od.h
         od.p = holding_cell.insertAsLastChild()
         od.p.h = od.h
-.. @+node:ekr.20150312225028.63: *8* 4: vc.create_tree_structure & helper
+.. @+node:ekr.20150312225028.63: *7* 4: vc.create_tree_structure & helper
 def create_tree_structure(self,root):
     '''Set od.parent_od, od.children & od.descendants for all ods.'''
     trace = False and not g.unitTesting
@@ -7648,7 +7548,7 @@ def create_tree_structure(self,root):
                 '\n  parent (pos):', od.parent.h,
                 '\n  children:',[z.h for z in od.children],
                 '\n  descendants:',[str(z.h) for z in od.descendants])
-.. @+node:ekr.20150312225028.64: *9* vc.compute_descendants
+.. @+node:ekr.20150312225028.64: *8* vc.compute_descendants
 def compute_descendants(self,od,level=0,result=None):
     '''Compute the descendant od nodes of od.'''
     trace = False # and not g.unitTesting
@@ -7667,7 +7567,7 @@ def compute_descendants(self,od,level=0,result=None):
     else:
         if trace: g.trace('cached',od.h,[z.h for z in od.descendants])
         return od.descendants
-.. @+node:ekr.20150312225028.65: *8* 5: vc.compute_all_organized_positions
+.. @+node:ekr.20150312225028.65: *7* 5: vc.compute_all_organized_positions
 def compute_all_organized_positions(self,root):
     '''Compute the list of positions organized by every od.'''
     trace = False and not g.unitTesting
@@ -7687,7 +7587,7 @@ def compute_all_organized_positions(self,root):
                         'p:',p and p.h or '===== None')
             else:
                 g.trace('fail',od.unls[0])
-.. @+node:ekr.20150312225028.66: *8* 6: vc.create_anchors_d
+.. @+node:ekr.20150312225028.66: *7* 6: vc.create_anchors_d
 def create_anchors_d (self):
     '''
     Create vc.anchors_d.
@@ -7711,7 +7611,7 @@ def create_anchors_d (self):
         for key in sorted(d.keys()):
             g.trace('od.anchor: %s ods: [%s]' % (key.h,','.join(z.h for z in d.get(key))))
     vc.anchors_d = d
-.. @+node:ekr.20150312225028.67: *7* vc.demote & helpers
+.. @+node:ekr.20150312225028.67: *6* vc.demote & helpers
 def demote(self,root):
     '''
     The main line of the @auto-view algorithm. Traverse root's entire tree,
@@ -7765,7 +7665,7 @@ def demote(self,root):
             vc.enter_organizers(found,p)
             vc.add(active,p,'found!=active')
         else: assert False,'can not happen'
-.. @+node:ekr.20150312225028.68: *8* vc.add
+.. @+node:ekr.20150312225028.68: *7* vc.add
 def add(self,active,p,tag):
     '''
     Add p, an existing (imported) node to the global work list.
@@ -7784,7 +7684,7 @@ def add(self,active,p,tag):
         vc.add_to_work_list(data,tag)
         vc.anchor_decr(anchor=p.parent(),p=p)
         
-.. @+node:ekr.20150312225028.69: *8* vc.add_organizer_node
+.. @+node:ekr.20150312225028.69: *7* vc.add_organizer_node
 def add_organizer_node (self,od,p):
     '''
     Add od to the appropriate move list.
@@ -7827,7 +7727,7 @@ def add_organizer_node (self,od,p):
             n = vc.anchor_incr(anchor,p) + p.childIndex()
             data = anchor,od.p,n
             vc.add_to_bare_list(data,'bare')
-.. @+node:ekr.20150312225028.70: *8* vc.add_to_bare_list
+.. @+node:ekr.20150312225028.70: *7* vc.add_to_bare_list
 def add_to_bare_list(self,data,tag):
     '''Add data to the bare organizer list, with tracing.'''
     trace = False # and not g.unitTesting
@@ -7846,13 +7746,13 @@ def add_to_bare_list(self,data,tag):
         g.trace('=====',tag,'n:',n,anchor.h,'==>',p.h)
             # '\n  anchor:',anchor.h,
             # '\n  p:',p.h)
-.. @+node:ekr.20150312225028.71: *8* vc.add_to_pending
+.. @+node:ekr.20150312225028.71: *7* vc.add_to_pending
 def add_to_pending(self,active,p):
     trace = False # and not g.unitTesting
     vc = self
     if trace: g.trace(active.p.h,'==>',p.h)
     vc.pending.append((active,p.copy()),)
-.. @+node:ekr.20150312225028.72: *8* vc.add_to_work_list
+.. @+node:ekr.20150312225028.72: *7* vc.add_to_work_list
 def add_to_work_list(self,data,tag):
     '''Append the data to the work list, with tracing.'''
     trace = False # and not g.unitTesting
@@ -7861,7 +7761,7 @@ def add_to_work_list(self,data,tag):
     if trace:
         active,p = data
         g.trace('=====',tag,active.h,'==>',p.h)
-.. @+node:ekr.20150312225028.73: *8* vc.anchor_decr
+.. @+node:ekr.20150312225028.73: *7* vc.anchor_decr
 def anchor_decr(self,anchor,p): # p is only for traces.
     '''
     Decrement the anchor dict for the given anchor node.
@@ -7874,7 +7774,7 @@ def anchor_decr(self,anchor,p): # p is only for traces.
     d[anchor] = n - 1
     if trace: g.trace(n-1,anchor.h,'==>',p.h)
     return n
-.. @+node:ekr.20150312225028.74: *8* vc.anchor_incr
+.. @+node:ekr.20150312225028.74: *7* vc.anchor_incr
 def anchor_incr(self,anchor,p): # p is only for traces.
     '''
     Increment the anchor dict for the given anchor node.
@@ -7887,7 +7787,7 @@ def anchor_incr(self,anchor,p): # p is only for traces.
     d[anchor] = n + 1
     if trace: g.trace(n+1,anchor.h,'==>',p.h)
     return n
-.. @+node:ekr.20150312225028.75: *8* vc.clear_pending
+.. @+node:ekr.20150312225028.75: *7* vc.clear_pending
 def clear_pending(self,active,p):
     '''Clear the appropriate entries from the pending list.'''
     trace = False # and not g.unitTesting
@@ -7898,7 +7798,7 @@ def clear_pending(self,active,p):
             data = active.parent_od.p,data[1]
             vc.add_to_work_list(data,'clear-pending-to-active')
     vc.pending = []
-.. @+node:ekr.20150312225028.76: *8* vc.enter_organizers
+.. @+node:ekr.20150312225028.76: *7* vc.enter_organizers
 def enter_organizers(self,od,p):
     '''Enter all organizers whose anchors are p.'''
     vc = self
@@ -7909,7 +7809,7 @@ def enter_organizers(self,od,p):
     if ods:
         for od in reversed(ods):
             vc.add_organizer_node(od,p)
-.. @+node:ekr.20150312225028.77: *8* vc.find_organizer
+.. @+node:ekr.20150312225028.77: *7* vc.find_organizer
 def find_organizer(self,parent,p):
     '''Return the organizer that organizers p, if any.'''
     trace = False # and not g.unitTesting
@@ -7921,7 +7821,7 @@ def find_organizer(self,parent,p):
             if trace: g.trace('found:',od.h,'for',p.h)
             return od
     return None
-.. @+node:ekr.20150312225028.78: *8* vc.terminate_organizers
+.. @+node:ekr.20150312225028.78: *7* vc.terminate_organizers
 def terminate_organizers(self,active,p):
     '''Terminate all organizers whose anchors are not ancestors of p.'''
     trace = False # and not g.unitTesting
@@ -7931,7 +7831,7 @@ def terminate_organizers(self,active,p):
             if trace: g.trace('===== closing',od.h)
             od.closed = True
         od = od.parent_od
-.. @+node:ekr.20150312225028.79: *8* vc.terminate_all_open_organizers
+.. @+node:ekr.20150312225028.79: *7* vc.terminate_all_open_organizers
 def terminate_all_open_organizers(self):
     '''Terminate all open organizers.'''
     trace = True # and not g.unitTesting
@@ -7941,7 +7841,7 @@ def terminate_all_open_organizers(self):
             if od.opened and not od.closed:
                 if trace: g.trace('===== closing',od.h)
                 od.closed = True
-.. @+node:ekr.20150312225028.80: *7* vc.move_nodes & helpers
+.. @+node:ekr.20150312225028.80: *6* vc.move_nodes & helpers
 def move_nodes(self):
     '''Move nodes to their final location and delete the temp node.'''
     trace = False # and not g.unitTesting
@@ -7949,7 +7849,7 @@ def move_nodes(self):
     vc.move_nodes_to_organizers(trace)
     vc.move_bare_organizers(trace)
     vc.temp_node.doDelete()
-.. @+node:ekr.20150312225028.81: *8* vc.move_nodes_to_organizers
+.. @+node:ekr.20150312225028.81: *7* vc.move_nodes_to_organizers
 def move_nodes_to_organizers(self,trace):
     '''Move all nodes in the work_list.'''
     trace = False # and not g.unitTesting
@@ -8034,7 +7934,7 @@ def move_nodes_to_organizers(self,trace):
             if trace and trace_deletes:
                 g.trace('deleting non-organizer:',p.h)
             p.doDelete()
-.. @+node:ekr.20150312225028.82: *8* vc.move_bare_organizers
+.. @+node:ekr.20150312225028.82: *7* vc.move_bare_organizers
 def move_bare_organizers(self,trace):
     '''Move all nodes in global_bare_organizer_node_list.'''
     trace = False # and not g.unitTesting
@@ -8069,7 +7969,7 @@ def move_bare_organizers(self,trace):
                 'of: %-20s' % (parent.h),
                 'with:',n2,'children')
             p.moveToNthChildOf(parent,n)
-.. @+node:ekr.20150312225028.83: *8* vc.copy_tree_to_last_child_of
+.. @+node:ekr.20150312225028.83: *7* vc.copy_tree_to_last_child_of
 def copy_tree_to_last_child_of(self,p,parent):
     '''Copy p's tree to the last child of parent.'''
     vc = self
@@ -8082,8 +7982,8 @@ def copy_tree_to_last_child_of(self,p,parent):
     for child in p.children():
         vc.copy_tree_to_last_child_of(child,root)
     return root
-.. @+node:ekr.20150312225028.84: *6* vc.Helpers
-.. @+node:ekr.20150312225028.85: *7* vc.at_auto_view_body and match_at_auto_body
+.. @+node:ekr.20150312225028.84: *5* vc.Helpers
+.. @+node:ekr.20150312225028.85: *6* vc.at_auto_view_body and match_at_auto_body
 def at_auto_view_body(self,p):
     '''Return the body text for the @auto-view node for p.'''
     # Note: the unl of p relative to p is simply p.h,
@@ -8095,7 +7995,7 @@ def match_at_auto_body(self,p,auto_view):
     if 0: g.trace(p.b == 'gnx: %s\n' % auto_view.v.gnx,
         g.shortFileName(p.h),auto_view.v.gnx,p.b.strip())
     return p.b == 'gnx: %s\n' % auto_view.v.gnx
-.. @+node:ekr.20150312225028.86: *7* vc.clean_nodes (not used)
+.. @+node:ekr.20150312225028.86: *6* vc.clean_nodes (not used)
 def clean_nodes(self):
     '''Delete @auto-view nodes with no corresponding @auto nodes.'''
     vc = self
@@ -8119,8 +8019,8 @@ def clean_nodes(self):
     for p in reversed(delete):
         p.doDelete()
     c.selectPosition(views)
-.. @+node:ekr.20150312225028.87: *7* vc.comments...
-.. @+node:ekr.20150312225028.88: *8* vc.comment_delims
+.. @+node:ekr.20150312225028.87: *6* vc.comments...
+.. @+node:ekr.20150312225028.88: *7* vc.comment_delims
 def comment_delims(self,p):
     '''Return the comment delimiter in effect at p, an @auto node.'''
     vc = self
@@ -8129,7 +8029,7 @@ def comment_delims(self,p):
     s = d.get('language') or c.target_language
     language,single,start,end = g.set_language(s,0)
     return single,start,end
-.. @+node:ekr.20150312225028.89: *8* vc.delete_leading_comments
+.. @+node:ekr.20150312225028.89: *7* vc.delete_leading_comments
 def delete_leading_comments(self,delims,p):
     '''
     Scan for leading comments from p and return them.
@@ -8148,7 +8048,7 @@ def delete_leading_comments(self,delims,p):
             # g.trace('len(result)',len(result),p.h)
             return ''.join(result)
     return None
-.. @+node:ekr.20150312225028.90: *8* vc.is_comment_node
+.. @+node:ekr.20150312225028.90: *7* vc.is_comment_node
 def is_comment_node(self,p,root,delims=None):
     '''Return True if p.b contains nothing but comments or blank lines.'''
     vc = self
@@ -8191,13 +8091,13 @@ def is_comment_node(self,p,root,delims=None):
                 return False
         # All lines pass.
         return True
-.. @+node:ekr.20150312225028.91: *8* vc.is_comment_organizer_node
+.. @+node:ekr.20150312225028.91: *7* vc.is_comment_organizer_node
 # def is_comment_organizer_node(self,p,root):
     # '''
     # Return True if p is an organizer node in the given @auto tree.
     # '''
     # return p.hasChildren() and vc.is_comment_node(p,root)
-.. @+node:ekr.20150312225028.92: *8* vc.post_move_comments
+.. @+node:ekr.20150312225028.92: *7* vc.post_move_comments
 def post_move_comments(self,root):
     '''Move comments from the start of nodes to their parent organizer node.'''
     vc = self
@@ -8209,7 +8109,7 @@ def post_move_comments(self,root):
             if s:
                 p.b = s
                 # g.trace(p.h)
-.. @+node:ekr.20150312225028.93: *8* vc.pre_move_comments
+.. @+node:ekr.20150312225028.93: *7* vc.pre_move_comments
 def pre_move_comments(self,root):
     '''
     Move comments from comment nodes to the next node.
@@ -8227,9 +8127,9 @@ def pre_move_comments(self,root):
     # g.trace([z.h for z in aList])
     c.deletePositionsInList(aList)
         # This sets c.changed.
-.. @+node:ekr.20150312225028.94: *7* vc.find...
+.. @+node:ekr.20150312225028.94: *6* vc.find...
 # The find commands create the node if not found.
-.. @+node:ekr.20150312225028.95: *8* vc.find_absolute_unl_node
+.. @+node:ekr.20150312225028.95: *7* vc.find_absolute_unl_node
 def find_absolute_unl_node(self,unl,priority_header=False):
     '''Return a node matching the given absolute unl.
     If priority_header == True and the node is not found, it will return the longest matching UNL starting from the tail
@@ -8256,7 +8156,7 @@ def find_absolute_unl_node(self,unl,priority_header=False):
                 count = count+1
         #Here we could find and return the nth_sib if an exact header match was not found
     return None
-.. @+node:ekr.20150312225028.96: *8* vc.find_at_auto_view_node & helper
+.. @+node:ekr.20150312225028.96: *7* vc.find_at_auto_view_node & helper
 def find_at_auto_view_node (self,root):
     '''
     Return the @auto-view node for root, an @auto node.
@@ -8270,7 +8170,7 @@ def find_at_auto_view_node (self,root):
         p.h = '@auto-view:' + root.h[len('@auto'):].strip()
         p.b = vc.at_auto_view_body(root)
     return p
-.. @+node:ekr.20150312225028.97: *8* vc.find_clones_node
+.. @+node:ekr.20150312225028.97: *7* vc.find_clones_node
 def find_at_clones_node(self,root):
     '''
     Find the @clones node for root, an @auto node.
@@ -8285,7 +8185,7 @@ def find_at_clones_node(self,root):
         p = auto_view.insertAsLastChild()
         p.h = h
     return p
-.. @+node:ekr.20150312225028.98: *8* vc.find_at_headlines_node
+.. @+node:ekr.20150312225028.98: *7* vc.find_at_headlines_node
 def find_at_headlines_node(self,root):
     '''
     Find the @headlines node for root, an @auto node.
@@ -8300,7 +8200,7 @@ def find_at_headlines_node(self,root):
         p = auto_view.insertAsLastChild()
         p.h = h
     return p
-.. @+node:ekr.20150312225028.99: *8* vc.find_gnx_node
+.. @+node:ekr.20150312225028.99: *7* vc.find_gnx_node
 def find_gnx_node(self,gnx):
     '''Return the first position having the given gnx.'''
     # This is part of the read logic, so newly-imported
@@ -8310,7 +8210,7 @@ def find_gnx_node(self,gnx):
         if p.v.gnx == gnx:
             return p
     return None
-.. @+node:ekr.20150312225028.100: *8* vc.find_organizers_node
+.. @+node:ekr.20150312225028.100: *7* vc.find_organizers_node
 def find_at_organizers_node(self,root):
     '''
     Find the @organizers node for root, and @auto node.
@@ -8325,7 +8225,7 @@ def find_at_organizers_node(self,root):
         p = auto_view.insertAsLastChild()
         p.h = h
     return p
-.. @+node:ekr.20150312225028.101: *8* vc.find_position_for_relative_unl
+.. @+node:ekr.20150312225028.101: *7* vc.find_position_for_relative_unl
 def find_position_for_relative_unl(self,parent,unl,priority_header=False):
     '''
     Return the node in parent's subtree matching the given unl.
@@ -8422,7 +8322,7 @@ def find_position_for_relative_unl(self,parent,unl,priority_header=False):
     else:
         if trace: g.trace('===== unl not found:',unl,'parent:',p.h,'drop',drop)
     return p if found else None
-.. @+node:ekr.20150312225028.102: *8* vc.find_representative_node
+.. @+node:ekr.20150312225028.102: *7* vc.find_representative_node
 def find_representative_node (self,root,target):
     '''
     root is an @auto node. target is a clones node within root's tree.
@@ -8460,7 +8360,7 @@ def find_representative_node (self,root,target):
             p.moveToThreadNext()
     g.trace('no representative node for:',target,'parent:',target.parent())
     return None
-.. @+node:ekr.20150312225028.103: *8* vc.find_views_node
+.. @+node:ekr.20150312225028.103: *7* vc.find_views_node
 def find_at_views_node(self):
     '''
     Find the first @views node in the outline.
@@ -8479,9 +8379,9 @@ def find_at_views_node(self):
         # c.selectPosition(p)
         # c.redraw()
     return p
-.. @+node:ekr.20150312225028.104: *7* vc.has...
+.. @+node:ekr.20150312225028.104: *6* vc.has...
 # The has commands return None if the node does not exist.
-.. @+node:ekr.20150312225028.105: *8* vc.has_at_auto_view_node
+.. @+node:ekr.20150312225028.105: *7* vc.has_at_auto_view_node
 def has_at_auto_view_node(self,root):
     '''
     Return the @auto-view node corresponding to root, an @root node.
@@ -8497,7 +8397,7 @@ def has_at_auto_view_node(self,root):
             if vc.match_at_auto_body(p,root):
                 return p
     return None
-.. @+node:ekr.20150312225028.106: *8* vc.has_clones_node
+.. @+node:ekr.20150312225028.106: *7* vc.has_clones_node
 def has_at_clones_node(self,root):
     '''
     Find the @clones node for an @auto node with the given unl.
@@ -8506,7 +8406,7 @@ def has_at_clones_node(self,root):
     vc = self
     p = vc.has_at_auto_view_node(root)
     return p and g.findNodeInTree(vc.c,p,'@clones')
-.. @+node:ekr.20150312225028.107: *8* vc.has_at_headlines_node
+.. @+node:ekr.20150312225028.107: *7* vc.has_at_headlines_node
 def has_at_headlines_node(self,root):
     '''
     Find the @clones node for an @auto node with the given unl.
@@ -8515,7 +8415,7 @@ def has_at_headlines_node(self,root):
     vc = self
     p = vc.has_at_auto_view_node(root)
     return p and g.findNodeInTree(vc.c,p,'@headlines')
-.. @+node:ekr.20150312225028.108: *8* vc.has_organizers_node
+.. @+node:ekr.20150312225028.108: *7* vc.has_organizers_node
 def has_at_organizers_node(self,root):
     '''
     Find the @organizers node for root, an @auto node.
@@ -8524,13 +8424,13 @@ def has_at_organizers_node(self,root):
     vc = self
     p = vc.has_at_auto_view_node(root)
     return p and g.findNodeInTree(vc.c,p,'@organizers')
-.. @+node:ekr.20150312225028.109: *8* vc.has_views_node
+.. @+node:ekr.20150312225028.109: *7* vc.has_views_node
 def has_at_views_node(self):
     '''Return the @views or None if it does not exist.'''
     vc = self
     return g.findNodeAnywhere(vc.c,'@views')
-.. @+node:ekr.20150312225028.110: *7* vc.is...
-.. @+node:ekr.20150312225028.111: *8* vc.is_at_auto_node
+.. @+node:ekr.20150312225028.110: *6* vc.is...
+.. @+node:ekr.20150312225028.111: *7* vc.is_at_auto_node
 def is_at_auto_node(self,p):
     '''Return True if p is an @auto node.'''
     return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
@@ -8539,11 +8439,11 @@ def is_at_auto_node(self,p):
 def is_at_file_node(self,p):
     '''Return True if p is an @file node.'''
     return g.match_word(p.h,0,'@file')
-.. @+node:ekr.20150312225028.112: *8* vc.is_cloned_outside_parent_tree
+.. @+node:ekr.20150312225028.112: *7* vc.is_cloned_outside_parent_tree
 def is_cloned_outside_parent_tree(self,p):
     '''Return True if a clone of p exists outside the tree of p.parent().'''
     return len(list(set(p.v.parents))) > 1
-.. @+node:ekr.20150312225028.113: *8* vc.is_organizer_node
+.. @+node:ekr.20150312225028.113: *7* vc.is_organizer_node
 def is_organizer_node(self,p,root):
     '''
     Return True if p is an organizer node in the given @auto tree.
@@ -8551,8 +8451,8 @@ def is_organizer_node(self,p,root):
     vc = self
     return p.hasChildren() and vc.is_comment_node(p,root)
 
-.. @+node:ekr.20150312225028.114: *7* vc.testing...
-.. @+node:ekr.20150312225028.115: *8* vc.compare_test_trees
+.. @+node:ekr.20150312225028.114: *6* vc.testing...
+.. @+node:ekr.20150312225028.115: *7* vc.compare_test_trees
 def compare_test_trees(self,root1,root2):
     '''
     Compare the subtrees whose roots are given.
@@ -8572,7 +8472,7 @@ def compare_test_trees(self,root1,root2):
             break
         p2.moveToThreadNext()
     return False
-.. @+node:ekr.20150312225028.116: *8* vc.compare_trial_writes
+.. @+node:ekr.20150312225028.116: *7* vc.compare_trial_writes
 def compare_trial_writes(self,s1,s2):
     '''
     Compare the two strings, the results of trial writes.
@@ -8594,12 +8494,12 @@ def compare_trial_writes(self,s1,s2):
         g.trace('Extra line 1:',lines1[i])
     if i < n2:
         g.trace('Extra line 2:',lines2[i])
-.. @+node:ekr.20150312225028.117: *8* vc.dump_list
+.. @+node:ekr.20150312225028.117: *7* vc.dump_list
 def dump_list(self,aList,indent=4):
     '''Dump a list, one item per line.'''
     lead = '\n' + ' '*indent
     return lead+lead.join(sorted(aList))
-.. @+node:ekr.20150312225028.118: *8* vc.trial_write
+.. @+node:ekr.20150312225028.118: *7* vc.trial_write
 def trial_write(self,root):
     '''
     Return a trial write of outline whose root is given.
@@ -8629,8 +8529,8 @@ def trial_write(self,root):
         # This was handy during early development.
         return '\n'.join([p.h for p in root.self_and_subtree()
             if p.b and not p.h.startswith('#')])
-.. @+node:ekr.20150312225028.119: *7* vc.unls...
-.. @+node:ekr.20150312225028.120: *8* vc.drop_all_organizers_in_unl
+.. @+node:ekr.20150312225028.119: *6* vc.unls...
+.. @+node:ekr.20150312225028.120: *7* vc.drop_all_organizers_in_unl
 def drop_all_organizers_in_unl(self,organizer_unls,unl):
     '''Drop all organizer unl's in unl, recreating the imported unl.'''
     vc = self
@@ -8641,7 +8541,7 @@ def drop_all_organizers_in_unl(self,organizer_unls,unl):
             s2 = vc.drop_unl_tail(s)
             unl = s2 + unl[len(s):]
     return unl[3:] if unl.startswith('-->') else unl
-.. @+node:ekr.20150312225028.121: *8* vc.drop_unl_tail & vc.drop_unl_parent
+.. @+node:ekr.20150312225028.121: *7* vc.drop_unl_tail & vc.drop_unl_parent
 def drop_unl_tail(self,unl):
     '''Drop the last part of the unl.'''
     return '-->'.join(unl.split('-->')[:-1])
@@ -8650,14 +8550,14 @@ def drop_unl_parent(self,unl):
     '''Drop the penultimate part of the unl.'''
     aList = unl.split('-->')
     return '-->'.join(aList[:-2] + aList[-1:])
-.. @+node:ekr.20150312225028.122: *8* vc.get_at_organizer_unls
+.. @+node:ekr.20150312225028.122: *7* vc.get_at_organizer_unls
 def get_at_organizer_unls(self,p):
     '''Return the unl: lines in an @organizer: node.'''
     return [s[len('unl:'):].strip()
         for s in g.splitLines(p.b)
             if s.startswith('unl:')]
 
-.. @+node:ekr.20150312225028.123: *8* vc.relative_unl & unl
+.. @+node:ekr.20150312225028.123: *7* vc.relative_unl & unl
 def relative_unl(self,p,root):
     '''Return the unl of p relative to the root position.'''
     vc = self
@@ -8678,16 +8578,16 @@ def unl(self,p):
         getattr(p.v,vc.headline_ivar,p.h)
             for p in p.self_and_parents()]))
     # return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
-.. @+node:ekr.20150312225028.124: *8* vc.source_unl
+.. @+node:ekr.20150312225028.124: *7* vc.source_unl
 def source_unl(self,organizer_unls,organizer_unl):
     '''Return the unl of the source node for the given organizer_unl.'''
     vc = self
     return vc.drop_all_organizers_in_unl(organizer_unls,organizer_unl)
-.. @+node:ekr.20150312225028.125: *8* vc.unl_tail
+.. @+node:ekr.20150312225028.125: *7* vc.unl_tail
 def unl_tail(self,unl):
     '''Return the last part of a unl.'''
     return unl.split('-->')[:-1][0]
-.. @+node:ekr.20150312225028.126: *5* vc.Commands
+.. @+node:ekr.20150312225028.126: *4* vc.Commands
 @g.command('view-pack')
 def view_pack_command(event):
     c = event.get('c')
@@ -8705,7 +8605,7 @@ def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
-.. @+node:ekr.20150312225028.127: *4* lengthHelper (LeoQTextEditWidget)
+.. @+node:ekr.20150312225028.127: *3* lengthHelper (LeoQTextEditWidget)
 ###
 ### Do not use this code. It is extremely slow for large text.
 ###
@@ -8721,9 +8621,9 @@ def lengthHelper(self):
         delta_t = time.time()-t1
         if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
     return n
-.. @+node:ekr.20150312225028.128: *4* Old stc classes (keep)
-.. @+node:ekr.20150312225028.129: *5*  Deduction stuff
-.. @+node:ekr.20150312225028.130: *6* DeductionTraverser class
+.. @+node:ekr.20150312225028.128: *3* STC stuff (keep)
+.. @+node:ekr.20150312225028.129: *4*  Deduction stuff
+.. @+node:ekr.20150312225028.130: *5* DeductionTraverser class
 class DeductionTraverser (AstTraverser):
 
     '''A class to create all Deduction objects by traversing the AST.
@@ -8733,7 +8633,7 @@ class DeductionTraverser (AstTraverser):
     '''
 
     @others
-.. @+node:ekr.20150312225028.131: *7*  dt.ctor
+.. @+node:ekr.20150312225028.131: *6*  dt.ctor
 def __init__(self,fn):
 
     # Init the base class: calls create_dispatch_table()
@@ -8742,7 +8642,7 @@ def __init__(self,fn):
     self.in_arg_list = False
     self.in_lhs = False
     self.in_rhs = False
-.. @+node:ekr.20150312225028.132: *7*  dt.traverse
+.. @+node:ekr.20150312225028.132: *6*  dt.traverse
 def traverse (self,s):
     
     '''Perform all checks on the source in s.'''
@@ -8758,8 +8658,8 @@ def traverse (self,s):
     
     t3 = time.time()
     self.u.stats.pass1_time += t3-t2
-.. @+node:ekr.20150312225028.133: *7* dt.Contexts
-.. @+node:ekr.20150312225028.134: *8* dt.ClassDef
+.. @+node:ekr.20150312225028.133: *6* dt.Contexts
+.. @+node:ekr.20150312225028.134: *7* dt.ClassDef
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def do_ClassDef (self,tree):
@@ -8768,7 +8668,7 @@ def do_ClassDef (self,tree):
     
     for z in tree.body:
         self.visit(z)
-.. @+node:ekr.20150312225028.135: *8* dt.FunctionDef
+.. @+node:ekr.20150312225028.135: *7* dt.FunctionDef
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,tree):
@@ -8785,13 +8685,13 @@ def do_FunctionDef (self,tree):
     # Visit the body.
     for z in tree.body:
         self.visit(z)
-.. @+node:ekr.20150312225028.136: *8* dt.Module
+.. @+node:ekr.20150312225028.136: *7* dt.Module
 def do_Module (self,tree):
 
     for z in tree.body:
         self.visit(z)
-.. @+node:ekr.20150312225028.137: *7* dt.Operands
-.. @+node:ekr.20150312225028.138: *8* dt.Attribute (rewrite)
+.. @+node:ekr.20150312225028.137: *6* dt.Operands
+.. @+node:ekr.20150312225028.138: *7* dt.Attribute (rewrite)
 def do_Attribute(self,tree):
     
     name = tree.attr
@@ -8810,17 +8710,17 @@ def do_Attribute(self,tree):
     return s
         
     
-.. @+node:ekr.20150312225028.139: *8* dt.bool
+.. @+node:ekr.20150312225028.139: *7* dt.bool
 # Python 2.x only.
 def do_bool(self,tree):
     pass
     
-.. @+node:ekr.20150312225028.140: *8* dt.Bytes
+.. @+node:ekr.20150312225028.140: *7* dt.Bytes
 # Python 3.x only.
 def do_Bytes(self,tree):
     pass
 
-.. @+node:ekr.20150312225028.141: *8* dt.Call
+.. @+node:ekr.20150312225028.141: *7* dt.Call
 def do_Call(self,tree):
 
     self.visit(tree.func)
@@ -8843,7 +8743,7 @@ def do_Call(self,tree):
         else:
             # Bug fix: 2012/10/22: always visit the tree.
             self.visit(tree.kwargs)
-.. @+node:ekr.20150312225028.142: *8* dt.comprehension
+.. @+node:ekr.20150312225028.142: *7* dt.comprehension
 def do_comprehension(self,tree):
 
     self.visit(tree.target)
@@ -8851,7 +8751,7 @@ def do_comprehension(self,tree):
     for z in tree.ifs:
         self.visit(z)
 
-.. @+node:ekr.20150312225028.143: *8* dt.Dict
+.. @+node:ekr.20150312225028.143: *7* dt.Dict
 def do_Dict(self,tree):
 
     for z in tree.keys:
@@ -8859,39 +8759,39 @@ def do_Dict(self,tree):
     for z in tree.values:
         self.visit(z)
 
-.. @+node:ekr.20150312225028.144: *8* dt.Ellipsis
+.. @+node:ekr.20150312225028.144: *7* dt.Ellipsis
 def do_Ellipsis(self,tree):
     pass
 
-.. @+node:ekr.20150312225028.145: *8* dt.ExtSlice
+.. @+node:ekr.20150312225028.145: *7* dt.ExtSlice
 def do_ExtSlice (self,tree):
 
     for z in tree.dims:
         self.visit(z)
 
-.. @+node:ekr.20150312225028.146: *8* dt.Index
+.. @+node:ekr.20150312225028.146: *7* dt.Index
 def do_Index (self,tree):
 
     self.visit(tree.value)
 
-.. @+node:ekr.20150312225028.147: *8* dt.int
+.. @+node:ekr.20150312225028.147: *7* dt.int
 def do_int (self,s):
     pass
 
-.. @+node:ekr.20150312225028.148: *8* dt.Keyword
+.. @+node:ekr.20150312225028.148: *7* dt.Keyword
 def do_Keyword (self,tree):
 
     self.visit(tree.arg)
     self.visit(tree.value)
 
-.. @+node:ekr.20150312225028.149: *8* dt.List
+.. @+node:ekr.20150312225028.149: *7* dt.List
 def do_List(self,tree):
 
     for z in tree.elts:
         self.visit(z)
     self.visit(tree.ctx)
 
-.. @+node:ekr.20150312225028.150: *8* dt.ListComp
+.. @+node:ekr.20150312225028.150: *7* dt.ListComp
 def do_ListComp(self,tree):
 
     self.visit(tree.elt)
@@ -8899,7 +8799,7 @@ def do_ListComp(self,tree):
     for z in tree.generators:
         self.visit(z)
         
-.. @+node:ekr.20150312225028.151: *8* dt.Name
+.. @+node:ekr.20150312225028.151: *7* dt.Name
 def do_Name(self,tree):
 
     name = tree.id # a string.
@@ -8923,11 +8823,11 @@ def do_Name(self,tree):
         assert ctx == 'Del',ctx
         cx.del_names.add(name)
         self.u.stats.n_del_names += 1
-.. @+node:ekr.20150312225028.152: *8* dt.Num
+.. @+node:ekr.20150312225028.152: *7* dt.Num
 def do_Num(self,tree):
     pass
 
-.. @+node:ekr.20150312225028.153: *8* dt.Slice
+.. @+node:ekr.20150312225028.153: *7* dt.Slice
 def do_Slice (self,tree):
 
     if hasattr(tree,'lower') and tree.lower is not None:
@@ -8937,24 +8837,24 @@ def do_Slice (self,tree):
     if hasattr(tree,'step') and tree.step is not None:
         self.visit(tree.step)
 
-.. @+node:ekr.20150312225028.154: *8* dt.Str
+.. @+node:ekr.20150312225028.154: *7* dt.Str
 def do_Str (self,tree):
     '''This represents a string constant.'''
     pass
-.. @+node:ekr.20150312225028.155: *8* dt.Subscript
+.. @+node:ekr.20150312225028.155: *7* dt.Subscript
 def do_Subscript(self,tree):
 
     self.visit(tree.slice)
     self.visit(tree.ctx)
 
-.. @+node:ekr.20150312225028.156: *8* dt.Tuple
+.. @+node:ekr.20150312225028.156: *7* dt.Tuple
 def do_Tuple(self,tree):
 
     for z in tree.elts:
         self.visit(z)
     self.visit(tree.ctx)
-.. @+node:ekr.20150312225028.157: *7* dt.Statements
-.. @+node:ekr.20150312225028.158: *8* dt.Assign
+.. @+node:ekr.20150312225028.157: *6* dt.Statements
+.. @+node:ekr.20150312225028.158: *7* dt.Assign
 def do_Assign(self,tree):
     
     val = self.visit(tree.value)
@@ -8962,7 +8862,7 @@ def do_Assign(self,tree):
     for z in tree.targets:
         target = self.visit(z)
         Deduction(tree,self.assign_deducer,target,val)
-.. @+node:ekr.20150312225028.159: *8* dt.AugAssign
+.. @+node:ekr.20150312225028.159: *7* dt.AugAssign
 def do_AugAssign(self,tree):
 
     Deduction(tree,
@@ -8970,7 +8870,7 @@ def do_AugAssign(self,tree):
         self.visit(tree.target), # lhs
         self.visit(tree.value), # rhs
     )
-.. @+node:ekr.20150312225028.160: *8* dt.Call
+.. @+node:ekr.20150312225028.160: *7* dt.Call
 def do_Call(self,tree):
 
     f        = self.visit(tree.func)
@@ -8980,7 +8880,7 @@ def do_Call(self,tree):
     kwargs   = self.visit(tree.kwargs) if hasattr(tree,'kwargs') and tree.kwargs else []
         
     Deduction(tree,self.call_deducer,f,args,keywords,starags,kwargs)
-.. @+node:ekr.20150312225028.161: *8* dt.For
+.. @+node:ekr.20150312225028.161: *7* dt.For
 def do_For (self,tree):
     
     self.visit(tree.target)
@@ -8992,19 +8892,19 @@ def do_For (self,tree):
 
     for z in tree.orelse:
         self.visit(z)
-.. @+node:ekr.20150312225028.162: *8* dt.Global
+.. @+node:ekr.20150312225028.162: *7* dt.Global
 def do_Global(self,tree):
 
     pass
-.. @+node:ekr.20150312225028.163: *8* dt.Import & helpers
+.. @+node:ekr.20150312225028.163: *7* dt.Import & helpers
 def do_Import(self,tree):
 
     pass
-.. @+node:ekr.20150312225028.164: *8* dt.ImportFrom
+.. @+node:ekr.20150312225028.164: *7* dt.ImportFrom
 def do_ImportFrom(self,tree):
     
     pass
-.. @+node:ekr.20150312225028.165: *8* dt.Lambda & helper
+.. @+node:ekr.20150312225028.165: *7* dt.Lambda & helper
 def do_Lambda (self,tree):
     
     # Lambda args do not create deductions.
@@ -9015,7 +8915,7 @@ def do_Lambda (self,tree):
             # self.visit(z)
             
     self.visit(tree.body)
-.. @+node:ekr.20150312225028.166: *8* dt.Return
+.. @+node:ekr.20150312225028.166: *7* dt.Return
 def do_Return(self,tree):
     
     if tree.value:
@@ -9023,7 +8923,7 @@ def do_Return(self,tree):
         Deduction(tree,self.return_deducer,val)
     else:
         Deduction(tree,self.return_deducerd)
-.. @+node:ekr.20150312225028.167: *8* dt.With
+.. @+node:ekr.20150312225028.167: *7* dt.With
 def do_With (self,tree):
     
     if hasattr(tree,'context_expression'):
@@ -9038,7 +8938,7 @@ def do_With (self,tree):
     
     for z in tree.body:
         self.visit(z)
-.. @+node:ekr.20150312225028.168: *6* old Deduction ctor
+.. @+node:ekr.20150312225028.168: *5* old Deduction ctor
 def __init__ (sd,target,aList):
     
     if trace:
@@ -9062,7 +8962,7 @@ def __init__ (sd,target,aList):
     sd.n_dependencies += 1
     
     self.fold()
-.. @+node:ekr.20150312225028.169: *6* e.become_known (To do)
+.. @+node:ekr.20150312225028.169: *5* e.become_known (To do)
 def remove_symbol (self,e):
     
     '''The type of this SymbolTableEntry has just become known.
@@ -9083,14 +8983,14 @@ def remove_symbol (self,e):
     e.dependencies = []
 
     g.trace(e)
-.. @+node:ekr.20150312225028.170: *6* e.is_known
+.. @+node:ekr.20150312225028.170: *5* e.is_known
 def is_known (self):
     
     '''return True if this is a known symbol.'''
     
     return len(self.vals) == 1
-.. @+node:ekr.20150312225028.171: *5*  Inference-related classes
-.. @+node:ekr.20150312225028.172: *6* class CacheTraverser (AstTraverser)
+.. @+node:ekr.20150312225028.171: *4*  Inference-related classes
+.. @+node:ekr.20150312225028.172: *5* class CacheTraverser (AstTraverser)
 class CacheTraverser(AstTraverser):
     
     '''A class to report the contents of caches.'''
@@ -9101,7 +9001,7 @@ class CacheTraverser(AstTraverser):
         self.level = 0
     
     @others
-.. @+node:ekr.20150312225028.173: *7* ct.show_cache
+.. @+node:ekr.20150312225028.173: *6* ct.show_cache
 def show_cache(self,obj,cache,tag):
     
     d = cache
@@ -9122,15 +9022,15 @@ def show_cache(self,obj,cache,tag):
             print('%s%s: %s' % (pad,tag,s))
             for s in result:
                 print(s)
-.. @+node:ekr.20150312225028.174: *7* ct.run
+.. @+node:ekr.20150312225028.174: *6* ct.run
 def run (self,node):
 
     self.check_visitor_names()
     fn = ' for %s' % (g.shortFileName(self.fn)) if self.fn else ''
     print('\nDump of caches%s...' % fn)
     self.visit(node)
-.. @+node:ekr.20150312225028.175: *7* ct.traversers
-.. @+node:ekr.20150312225028.176: *8* ct.visit
+.. @+node:ekr.20150312225028.175: *6* ct.traversers
+.. @+node:ekr.20150312225028.176: *7* ct.visit
 def visit(self,node):
     
     """Walk a tree of AST nodes."""
@@ -9148,7 +9048,7 @@ def visit(self,node):
         # Traverse subtrees automatically, without calling visit_children.
         for child in self.get_child_nodes(node):
             self.visit(child)
-.. @+node:ekr.20150312225028.177: *8* ct.visit_cache
+.. @+node:ekr.20150312225028.177: *7* ct.visit_cache
 def visit_cache(self,node):
     
     if hasattr(node,'cache'):
@@ -9156,8 +9056,8 @@ def visit_cache(self,node):
         
     if hasattr(node,'e') and hasattr(node.e,'call_cache'):
         self.show_cache(node,node.e.call_cache,'call_cache')
-.. @+node:ekr.20150312225028.178: *7* ct.visitors
-.. @+node:ekr.20150312225028.179: *8* ct.ClassDef
+.. @+node:ekr.20150312225028.178: *6* ct.visitors
+.. @+node:ekr.20150312225028.179: *7* ct.ClassDef
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def do_ClassDef(self,node):
@@ -9171,7 +9071,7 @@ def do_ClassDef(self,node):
         self.visit_children(node)
     finally:
         self.level -= 1
-.. @+node:ekr.20150312225028.180: *8* ct.functionDef
+.. @+node:ekr.20150312225028.180: *7* ct.functionDef
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,node):
@@ -9184,7 +9084,7 @@ def do_FunctionDef (self,node):
         self.visit_children(node)
     finally:
         self.level -= 1
-.. @+node:ekr.20150312225028.181: *6* class ChainPrinter (OpPatternFormatter)
+.. @+node:ekr.20150312225028.181: *5* class ChainPrinter (OpPatternFormatter)
 class ChainPrinter: ### (OpPatternFormatter):
     
     def __init__ (self,fn):
@@ -9196,7 +9096,7 @@ class ChainPrinter: ### (OpPatternFormatter):
             # Init the base class.
 
     @others
-.. @+node:ekr.20150312225028.182: *7* Attribute
+.. @+node:ekr.20150312225028.182: *6* Attribute
 # Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute(self,node):
@@ -9226,7 +9126,7 @@ def do_Attribute(self,node):
                     self.d[name] = aList2
                 
     return s
-.. @+node:ekr.20150312225028.183: *7* showChains
+.. @+node:ekr.20150312225028.183: *6* showChains
 def showChains(self):
     
     verbose = False
@@ -9247,18 +9147,18 @@ def showChains(self):
 
     return n1,n2,'\n'.join(result)
 
-.. @+node:ekr.20150312225028.184: *6* class Context & subclasses
+.. @+node:ekr.20150312225028.184: *5* class Context & subclasses
 << define class Context >>
 
 @others
-.. @+node:ekr.20150312225028.185: *7* << define class Context >>
+.. @+node:ekr.20150312225028.185: *6* << define class Context >>
 class Context:
 
     '''The base class of all Context objects.
     Contexts represent static scopes.'''
 
     @others
-.. @+node:ekr.20150312225028.186: *8*  cx ctor
+.. @+node:ekr.20150312225028.186: *7*  cx ctor
 def __init__(self,parent_context):
 
     self.format = u.format
@@ -9291,7 +9191,7 @@ def __init__(self,parent_context):
         # Names that appear in a global statement in this context.
     self.node = None
         # The AST tree representing this context.
-.. @+node:ekr.20150312225028.187: *8* cx.__getstate__
+.. @+node:ekr.20150312225028.187: *7* cx.__getstate__
 def __getstate__(self):
     
     '''Return the representation of the Context class for use by pickle.'''
@@ -9304,7 +9204,7 @@ def __getstate__(self):
     }
 
     return d
-.. @+node:ekr.20150312225028.188: *8* cx.__hash__
+.. @+node:ekr.20150312225028.188: *7* cx.__hash__
 # Important: Define __hash__ only if __eq__ is also defined.
 
 def __hash__ (self):
@@ -9314,13 +9214,13 @@ def __hash__ (self):
 
 # def __eq__ (self,other):
     # return id(self) == id(other)
-.. @+node:ekr.20150312225028.189: *8* cx.__repr__ & __str__
+.. @+node:ekr.20150312225028.189: *7* cx.__repr__ & __str__
 def __repr__ (self):
 
     return 'Cx:id(%s)' % id(self)
     
 __str__ = __repr__
-.. @+node:ekr.20150312225028.190: *8* cx.__eq__ & __ne__(others return NotImplemented)
+.. @+node:ekr.20150312225028.190: *7* cx.__eq__ & __ne__(others return NotImplemented)
 # Py3k wants __lt__ etc, and Py2k needs all of them defined.
 
 # Use identity only for contexts!
@@ -9346,7 +9246,7 @@ def __ge__(self, other): return NotImplemented
     # def __ne__(self, other): return self.name != other.name
     # def __gt__(self, other): return self.name >  other.name
     # def __ge__(self, other): return self.name >= other.name
-.. @+node:ekr.20150312225028.191: *8* cx.description & short_description
+.. @+node:ekr.20150312225028.191: *7* cx.description & short_description
 def description (self):
     
     '''Return a description of this context and all parent contexts.'''
@@ -9359,14 +9259,14 @@ def description (self):
 
 def short_description(self):
     return repr(self)
-.. @+node:ekr.20150312225028.192: *8* cx.dump_statements
+.. @+node:ekr.20150312225028.192: *7* cx.dump_statements
 def dump_statements(self,var_filter=None):
     
     cx = self
     # aList = [node.dump(0,var_filter=var_filter) for node in cx.local_statements()]
     aList = [self.u.dump_ast(node) for node in cx.local_statements()]
     return '\n'.join([z for z in aList if z.strip()])
-.. @+node:ekr.20150312225028.193: *8* cx.full_name
+.. @+node:ekr.20150312225028.193: *7* cx.full_name
 def full_name (self):
     
     '''Return a context name for compatibility with HTMLReportTraverser.'''
@@ -9374,9 +9274,9 @@ def full_name (self):
     # A hack: must match the name generated in rt.report().
     
     return 'report_writer_test' if self.name == '<string>' else self.name
-.. @+node:ekr.20150312225028.194: *8* cx.generators & getters
+.. @+node:ekr.20150312225028.194: *7* cx.generators & getters
 # Unlike in leoInspect, most of these getters return lists of Statement objects.
-.. @+node:ekr.20150312225028.195: *9* cx.assignments
+.. @+node:ekr.20150312225028.195: *8* cx.assignments
 # This is really a helper for assignments_to/using.
 def assignments(self):
     
@@ -9384,7 +9284,7 @@ def assignments(self):
     for cx in self.contexts():
         result.extend(cx.assignments_list)
     return result
-.. @+node:ekr.20150312225028.196: *9* cx.assignments_to (rewritten)
+.. @+node:ekr.20150312225028.196: *8* cx.assignments_to (rewritten)
 def assignments_to (self,s):
     
     cx = self
@@ -9438,7 +9338,7 @@ def assignments_to (self,s):
         else:
             assert False,kind
     return list(set(result))
-.. @+node:ekr.20150312225028.197: *9* cx.assignments_using
+.. @+node:ekr.20150312225028.197: *8* cx.assignments_using
 def assignments_using (self,s):
     
     result = []
@@ -9455,7 +9355,7 @@ def assignments_using (self,s):
                 i += len(s)
 
     return result
-.. @+node:ekr.20150312225028.198: *9* cx.call_args_of
+.. @+node:ekr.20150312225028.198: *8* cx.call_args_of
 def call_args_of (self,s):
     
     result = []
@@ -9466,7 +9366,7 @@ def call_args_of (self,s):
             result.append(node) ### Should return only args.
 
     return result
-.. @+node:ekr.20150312225028.199: *9* cx.calls
+.. @+node:ekr.20150312225028.199: *8* cx.calls
 # This is really a helper for calls_to/call_args_of.
 def calls(self):
     
@@ -9474,7 +9374,7 @@ def calls(self):
     for cx in self.contexts():
         result.extend(cx.calls_list)
     return result
-.. @+node:ekr.20150312225028.200: *9* cx.calls_to
+.. @+node:ekr.20150312225028.200: *8* cx.calls_to
 def calls_to (self,s):
 
     result = []
@@ -9485,14 +9385,14 @@ def calls_to (self,s):
             result.append(node)
 
     return result
-.. @+node:ekr.20150312225028.201: *9* cx.classes
+.. @+node:ekr.20150312225028.201: *8* cx.classes
 def classes (self):
     
     result = []
     for cx in self.contexts():
         result.extend(cx.classes_list)
     return result
-.. @+node:ekr.20150312225028.202: *9* cx.contexts & getters
+.. @+node:ekr.20150312225028.202: *8* cx.contexts & getters
 def contexts (self,name=None):
         
     '''An iterator returning all contexts.
@@ -9513,7 +9413,7 @@ def contexts (self,name=None):
         for z in cx2.contexts(name=name):
             if z != self:
                 yield z
-.. @+node:ekr.20150312225028.203: *10* get_contexts and get_unique_context
+.. @+node:ekr.20150312225028.203: *9* get_contexts and get_unique_context
 # These getters are designed for unit testing.
 def get_contexts(self,name):
     
@@ -9531,14 +9431,14 @@ def get_unique_context (self,name):
     aList = list(self.contexts(name=name))
     assert aList and len(aList) == 1,aList
     return aList[0]
-.. @+node:ekr.20150312225028.204: *9* cx.defs
+.. @+node:ekr.20150312225028.204: *8* cx.defs
 def defs (self):
     
     result = []
     for cx in self.contexts():
         result.extend(cx.defs_list)
     return result
-.. @+node:ekr.20150312225028.205: *9* cx.parent_contexts
+.. @+node:ekr.20150312225028.205: *8* cx.parent_contexts
 def parent_contexts (self):
     
     cx = self
@@ -9550,7 +9450,7 @@ def parent_contexts (self):
 
     result.reverse()
     return result
-.. @+node:ekr.20150312225028.206: *9* cx.returns (dubious)
+.. @+node:ekr.20150312225028.206: *8* cx.returns (dubious)
 # Using cx.returns_list will almost always be correct.
 
 if 0:
@@ -9563,7 +9463,7 @@ if 0:
         for cx in self.contexts():
             result.extend(cx.returns_list)
         return result
-.. @+node:ekr.20150312225028.207: *9* cx.statements (new)
+.. @+node:ekr.20150312225028.207: *8* cx.statements (new)
 def statements (self):
     
     '''A generator yielding all statements in the receiver context, in the proper order.'''
@@ -9572,7 +9472,7 @@ def statements (self):
     assert cx.kind in ('class','def','lambda','module')
     for node in cx.statements_list:
         yield node
-.. @+node:ekr.20150312225028.208: *9* cx.symbol_tables & getters
+.. @+node:ekr.20150312225028.208: *8* cx.symbol_tables & getters
 def symbol_tables (self,name=None):
     
     '''Return all symbol tables for all contexts.
@@ -9588,7 +9488,7 @@ def symbol_tables (self,name=None):
         for cx2 in self.contexts():
             yield cx2.st
 
-.. @+node:ekr.20150312225028.209: *10* get_symbol_tables and get_unique_symbol_table
+.. @+node:ekr.20150312225028.209: *9* get_symbol_tables and get_unique_symbol_table
 # These getters are designed for unit testing.
 def get_symbol_tables (self,name):
     
@@ -9606,7 +9506,7 @@ def get_unique_symbol_table (self,name):
     aList = list(self.symbol_tables(name=name))
     assert aList and len(aList) == 1,aList
     return aList[0]
-.. @+node:ekr.20150312225028.210: *9* cx.symbol_table_entries
+.. @+node:ekr.20150312225028.210: *8* cx.symbol_table_entries
 def symbol_table_entries (self,name):
     
     '''Return all STE's for the given name.'''
@@ -9618,7 +9518,7 @@ def symbol_table_entries (self,name):
         e = d.get(name)
         if e:
             yield d.get(name)
-.. @+node:ekr.20150312225028.211: *9* cx.local_statements
+.. @+node:ekr.20150312225028.211: *8* cx.local_statements
 def local_statements(self):
     
     '''Return the top-level statements of a context.'''
@@ -9628,11 +9528,11 @@ def local_statements(self):
     assert cx.kind in ('class','def','lambda','module')
 
     return cx.node.body
-.. @+node:ekr.20150312225028.212: *8* cx.line_number (not used)
+.. @+node:ekr.20150312225028.212: *7* cx.line_number (not used)
 # def line_number (self):
     
     # return self.tree_ptr.lineno
-.. @+node:ekr.20150312225028.213: *8* cx.token_range (TO DO) (Uses tree_ptr)
+.. @+node:ekr.20150312225028.213: *7* cx.token_range (TO DO) (Uses tree_ptr)
 # def token_range (self):
     
     # tree = self.tree_ptr
@@ -9646,14 +9546,14 @@ def local_statements(self):
         # return tree.lineno,tree.col_offset,tree.end_lineno,tree.end_col_offset
     # else:
         # return -1,-1
-.. @+node:ekr.20150312225028.214: *7* class ClassContext
+.. @+node:ekr.20150312225028.214: *6* class ClassContext
 class ClassContext (Context):
 
     '''A class to hold semantic data about a class.'''
     
     @others
 
-.. @+node:ekr.20150312225028.215: *8* ClassContext.__init__
+.. @+node:ekr.20150312225028.215: *7* ClassContext.__init__
 def __init__(self,u,parent_context,name,node,bases):
 
     Context.__init__(self,u,parent_context)
@@ -9669,7 +9569,7 @@ def __init__(self,u,parent_context,name,node,bases):
     self.module_context = self.parent_context.module_context
     self.node = node
     u.stats.n_classes += 1
-.. @+node:ekr.20150312225028.216: *8* ClassContext.__repr__& __str__
+.. @+node:ekr.20150312225028.216: *7* ClassContext.__repr__& __str__
 def __repr__ (self):
 
     if self.bases:
@@ -9679,7 +9579,7 @@ def __repr__ (self):
         return 'Cx:class %s' % (self.name)
 
 __str__ = __repr__        
-.. @+node:ekr.20150312225028.217: *8* ClassContext.short_description
+.. @+node:ekr.20150312225028.217: *7* ClassContext.short_description
 def short_description(self):
     
     if self.bases:
@@ -9687,7 +9587,7 @@ def short_description(self):
         return 'class %s(%s):' % (self.name,','.join(bases))
     else:
         return 'class %s:' % (self.name)
-.. @+node:ekr.20150312225028.218: *7* class DefContext
+.. @+node:ekr.20150312225028.218: *6* class DefContext
 class DefContext (Context):
 
     '''A class to hold semantic data about a function/method.'''
@@ -9695,7 +9595,7 @@ class DefContext (Context):
     @others
 
     
-.. @+node:ekr.20150312225028.219: *8* DefContext.__init__
+.. @+node:ekr.20150312225028.219: *7* DefContext.__init__
 def __init__(self,u,parent_context,name):
     
     Context.__init__(self,u,parent_context)
@@ -9707,7 +9607,7 @@ def __init__(self,u,parent_context,name):
     self.module_context = self.parent_context.module_context
     self.node = None
     u.stats.n_defs += 1
-.. @+node:ekr.20150312225028.220: *8* DefContext.__repr__ & __str__
+.. @+node:ekr.20150312225028.220: *7* DefContext.__repr__ & __str__
 def __repr__ (self):
     
     args = self.format(self.args) if self.args else  '<**no args yet**>'
@@ -9715,13 +9615,13 @@ def __repr__ (self):
     return 'Cx:def %s(%s)' % (self.name,args)
 
 __str__ = __repr__        
-.. @+node:ekr.20150312225028.221: *8* DefContext.short_description
+.. @+node:ekr.20150312225028.221: *7* DefContext.short_description
 def short_description (self):
   
     args = self.format(self.args) if self.args else ''
 
     return 'def %s(%s):' % (self.name,args)
-.. @+node:ekr.20150312225028.222: *7* class LambdaContext
+.. @+node:ekr.20150312225028.222: *6* class LambdaContext
 class LambdaContext (Context):
 
     '''A class to represent the range of a 'lambda' statement.'''
@@ -9745,7 +9645,7 @@ class LambdaContext (Context):
         return 'Cx:lambda %s:' % (args)
 
     __str__ = __repr__
-.. @+node:ekr.20150312225028.223: *7* class LIbraryModuleContext
+.. @+node:ekr.20150312225028.223: *6* class LIbraryModuleContext
 class LibraryModuleContext (Context):
 
     '''A class to hold semantic data about a module.'''
@@ -9770,7 +9670,7 @@ class LibraryModuleContext (Context):
         return 'Cx:module(%s)' % self.name
 
     __str__ = __repr__        
-.. @+node:ekr.20150312225028.224: *7* class ModuleContext
+.. @+node:ekr.20150312225028.224: *6* class ModuleContext
 class ModuleContext (Context):
 
     '''A class to hold semantic data about a module.'''
@@ -9795,7 +9695,7 @@ class ModuleContext (Context):
         return 'Cx:module(%s)' % self.name
 
     __str__ = __repr__        
-.. @+node:ekr.20150312225028.225: *6* class ScopeBinder
+.. @+node:ekr.20150312225028.225: *5* class ScopeBinder
 # Running ScopeBinder on all Leo files:
 # 1.25sec when this class is a subclass of AstTraverser
 # 0.75sec when this class is a subclass of AstFullTraverser.
@@ -9814,7 +9714,7 @@ class ScopeBinder(AstFullTraverser):
         self.u = Utils()
 
     @others
-.. @+node:ekr.20150312225028.226: *7* sb.check & helper
+.. @+node:ekr.20150312225028.226: *6* sb.check & helper
 def check(self,fn,root):
     trace = True and not g.app.runningAllUnitTests
     u = self.u
@@ -9830,7 +9730,7 @@ def check(self,fn,root):
                 result.insert(0,fn)
             for s in result:
                 print(s)
-.. @+node:ekr.20150312225028.227: *8* check_context
+.. @+node:ekr.20150312225028.227: *7* check_context
 def check_context(self,cx,result):
     
     trace = False
@@ -9861,7 +9761,7 @@ def check_context(self,cx,result):
                         pad = ' '*u.compute_node_level(statement)
                         result.append(' %s+%s %s: %s' % (
                             pad,u.format(node.ctx),key,u.format(statement)))
-.. @+node:ekr.20150312225028.228: *7* sb.dump_symbol_table
+.. @+node:ekr.20150312225028.228: *6* sb.dump_symbol_table
 def dump_symbol_table(self,node):
     
     if getattr(node,'stc_symbol_table',None):
@@ -9869,7 +9769,7 @@ def dump_symbol_table(self,node):
         for key in sorted(d.keys()):
             name = d.get(key)
             print('%s:%s' % (self.format(name.ctx),name.id))
-.. @+node:ekr.20150312225028.229: *7* sb.init_dicts
+.. @+node:ekr.20150312225028.229: *6* sb.init_dicts
 def init_dicts(self):
     
     self.builtins_d = dict([(z,z) for z in __builtins__])
@@ -9881,7 +9781,7 @@ def init_dicts(self):
         '__repr__',
     )
     self.special_methods_d = dict([(z,z) for z in table])
-.. @+node:ekr.20150312225028.230: *7* sb.lookup
+.. @+node:ekr.20150312225028.230: *6* sb.lookup
 def lookup(self,cx,key):
     
     '''Return the symbol table for key, starting the search at node cx.'''
@@ -9904,7 +9804,7 @@ def lookup(self,cx,key):
             g.trace('** (ScopeBinder) no definition for %20s in %s' % (
                 key,self.u.format(cx)))
         return None
-.. @+node:ekr.20150312225028.231: *7* sb.run
+.. @+node:ekr.20150312225028.231: *6* sb.run
 def run (self,fn,root):
 
     self.fn = g.shortFileName(fn)
@@ -9914,14 +9814,14 @@ def run (self,fn,root):
     if 0:
         self.check(fn,root)
         # g.trace('ScopeBinder visited %s nodes' % self.n_visited)
-.. @+node:ekr.20150312225028.232: *7* sb.visit & visitors
+.. @+node:ekr.20150312225028.232: *6* sb.visit & visitors
 def visit(self,node):
 
     # assert isinstance(node,ast.AST),node.__class__.__name__
     method = getattr(self,'do_' + node.__class__.__name__)
     self.n_visited += 1
     return method(node)
-.. @+node:ekr.20150312225028.233: *8* sb.FunctionDef
+.. @+node:ekr.20150312225028.233: *7* sb.FunctionDef
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,node):
@@ -9932,7 +9832,7 @@ def do_FunctionDef (self,node):
     for z in node.decorator_list:
         self.visit(z)
   
-.. @+node:ekr.20150312225028.234: *8* sb.Name
+.. @+node:ekr.20150312225028.234: *7* sb.Name
 # Name(identifier id, expr_context ctx)
 
 def do_Name(self,node):
@@ -9957,7 +9857,7 @@ def do_Name(self,node):
         if d is None:
             # g.trace('(ScopeBinder) undefined symbol: %s' % node.id)
             if trace: print('%s undefined name: %s' % (self.fn,node.id))
-.. @+node:ekr.20150312225028.235: *6* class Pass1 (AstFullTraverser)
+.. @+node:ekr.20150312225028.235: *5* class Pass1 (AstFullTraverser)
 class Pass1 (AstTraverser):
     
     ''' Pass1 traverses an entire AST tree, creating symbol
@@ -9992,7 +9892,7 @@ class Pass1 (AstTraverser):
     '''
 
     @others
-.. @+node:ekr.20150312225028.236: *7*  p1.ctor
+.. @+node:ekr.20150312225028.236: *6*  p1.ctor
 def __init__(self):
     
     # Init the base class.
@@ -10010,11 +9910,11 @@ def __init__(self):
 
     self.in_attr = False
         # True: traversing inner parts of an AST.Attribute tree.
-.. @+node:ekr.20150312225028.237: *7*  p1.run (entry point)
+.. @+node:ekr.20150312225028.237: *6*  p1.run (entry point)
 def run (self,root):
 
     self.visit(root)
-.. @+node:ekr.20150312225028.238: *7*  p1.visit
+.. @+node:ekr.20150312225028.238: *6*  p1.visit
 def visit(self,node):
     
     """Walk a tree of AST nodes, injecting _parent entries into the tree."""
@@ -10042,8 +9942,8 @@ def visit(self,node):
     self.level -= 1
     self.parents.pop()
     return val
-.. @+node:ekr.20150312225028.239: *7* p1.helpers
-.. @+node:ekr.20150312225028.240: *8* p1.bind_name
+.. @+node:ekr.20150312225028.239: *6* p1.helpers
+.. @+node:ekr.20150312225028.240: *7* p1.bind_name
 def bind_name(self,new_cx,old_cx,old_e,name):
     
     trace = False
@@ -10079,7 +9979,7 @@ def bind_name(self,new_cx,old_cx,old_e,name):
 
     # Relocate the old symbol table entry.
     old_cx.st.d[name] = new_e
-.. @+node:ekr.20150312225028.241: *8* p1.bind_unbound_name
+.. @+node:ekr.20150312225028.241: *7* p1.bind_unbound_name
 def bind_unbound_name(self,name,cx):
     
     '''Name has just been bound in context cx.
@@ -10094,7 +9994,7 @@ def bind_unbound_name(self,name,cx):
             e2 = cx2.st.d.get(name)
             if e2 and not e2.defined:
                 self.bind_name(cx,cx2,e2,name)
-.. @+node:ekr.20150312225028.242: *8* p1.def_args_helper
+.. @+node:ekr.20150312225028.242: *7* p1.def_args_helper
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def def_args_helper (self,cx,def_e,node):
@@ -10107,7 +10007,7 @@ def def_args_helper (self,cx,def_e,node):
         if name:
             e = cx.st.define_name(name)
             self.stats.n_param_names += 1
-.. @+node:ekr.20150312225028.243: *8* p1.get_import_names
+.. @+node:ekr.20150312225028.243: *7* p1.get_import_names
 def get_import_names (self,node):
 
     '''Return a list of the the full file names in the import statement.'''
@@ -10124,7 +10024,7 @@ def get_import_names (self,node):
 
     # g.trace(result)
     return result
-.. @+node:ekr.20150312225028.244: *8* p1.resolve_import_name
+.. @+node:ekr.20150312225028.244: *7* p1.resolve_import_name
 def resolve_import_name (self,spec):
 
     '''Return the full path name corresponding to the import spec.'''
@@ -10164,8 +10064,8 @@ def resolve_import_name (self,spec):
     else:
         if trace: g.trace('path: %s' % path)
         return path
-.. @+node:ekr.20150312225028.245: *7* p1.visitors
-.. @+node:ekr.20150312225028.246: *8* p1.Assign
+.. @+node:ekr.20150312225028.245: *6* p1.visitors
+.. @+node:ekr.20150312225028.246: *7* p1.Assign
 def do_Assign(self,node):
     
     cx = self.get_context()
@@ -10173,7 +10073,7 @@ def do_Assign(self,node):
     self.visit_children(node)
     cx.assignments_list.append(node)
     cx.statements_list.append(node)
-.. @+node:ekr.20150312225028.247: *8* p1.Attribute
+.. @+node:ekr.20150312225028.247: *7* p1.Attribute
 # Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute(self,node):
@@ -10200,7 +10100,7 @@ def do_Attribute(self,node):
             pass
         else:
             assert False,kind
-.. @+node:ekr.20150312225028.248: *8* p1.AugAssign
+.. @+node:ekr.20150312225028.248: *7* p1.AugAssign
 def do_AugAssign(self,node):
     
     self.stats.n_assignments += 1
@@ -10210,7 +10110,7 @@ def do_AugAssign(self,node):
     cx.assignments_list.append(node)
     cx.statements_list.append(node)
         
-.. @+node:ekr.20150312225028.249: *8* p1.Call (Stats only)
+.. @+node:ekr.20150312225028.249: *7* p1.Call (Stats only)
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
 def do_Call(self,node):
@@ -10224,7 +10124,7 @@ def do_Call(self,node):
     d[n] = 1 + d.get(n,0)
 
     self.visit_children(node)
-.. @+node:ekr.20150312225028.250: *8* p1.ClassDef
+.. @+node:ekr.20150312225028.250: *7* p1.ClassDef
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def do_ClassDef (self,node):
@@ -10257,7 +10157,7 @@ def do_ClassDef (self,node):
     # Bind all unbound matching names in inner contexts.
     self.bind_unbound_name(name,new_cx)
 
-.. @+node:ekr.20150312225028.251: *8* p1.Expr
+.. @+node:ekr.20150312225028.251: *7* p1.Expr
 # Expr(expr value)
 
 def do_Expr(self,node):
@@ -10267,7 +10167,7 @@ def do_Expr(self,node):
     self.stats.n_expressions += 1
     cx.expressions_list.append(node)
     cx.statements_list.append(node)
-.. @+node:ekr.20150312225028.252: *8* p1.For
+.. @+node:ekr.20150312225028.252: *7* p1.For
 def do_For(self,node):
     
     cx = self.get_context()
@@ -10275,7 +10175,7 @@ def do_For(self,node):
     self.visit_children(node)
     cx.statements_list.append(node)
     cx.assignments_list.append(node)
-.. @+node:ekr.20150312225028.253: *8* p1.FunctionDef
+.. @+node:ekr.20150312225028.253: *7* p1.FunctionDef
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,node):
@@ -10332,7 +10232,7 @@ def do_FunctionDef (self,node):
     
     # Bind all unbound matching names in inner contexts.
     self.bind_unbound_name(name,new_cx)
-.. @+node:ekr.20150312225028.254: *8* p1.Global
+.. @+node:ekr.20150312225028.254: *7* p1.Global
 def do_Global(self,node):
 
     '''Enter the names in a 'global' statement into the *module* symbol table.'''
@@ -10363,7 +10263,7 @@ def do_Global(self,node):
         # Regardless of error, bind the name in *this* context,
         # using the STE from the module context.
         cx.st.d[name] = module_e
-.. @+node:ekr.20150312225028.255: *8* p1.Import
+.. @+node:ekr.20150312225028.255: *7* p1.Import
 @ From Guido:
 
 import x            -->  x = __import__('x')
@@ -10407,7 +10307,7 @@ def do_Import(self,node):
     for e in e_list:
         e.defs_list.append(node)
         e.refs_list.append(node)
-.. @+node:ekr.20150312225028.256: *8* p1.ImportFrom
+.. @+node:ekr.20150312225028.256: *7* p1.ImportFrom
 @ From Guido:
     
 from p.q import x       -->  x = __import__('p.q', fromlist=['x']).x
@@ -10473,11 +10373,11 @@ def do_ImportFrom(self,node):
     for e in e_list:
         e.defs_list.append(node)
         e.refs_list.append(node)
-.. @+node:ekr.20150312225028.257: *8* p1.Interactive
+.. @+node:ekr.20150312225028.257: *7* p1.Interactive
 def do_Interactive(self,node):
     
     assert False,'Interactive context not supported'
-.. @+node:ekr.20150312225028.258: *8* p1.Lambda
+.. @+node:ekr.20150312225028.258: *7* p1.Lambda
 def do_Lambda (self,node):
     
     old_cx = self.get_context()
@@ -10499,7 +10399,7 @@ def do_Lambda (self,node):
     args = self.def_args_helper(new_cx,def_e,node.args)
     body = self.visit(node.body)
     self.pop_context()
-.. @+node:ekr.20150312225028.259: *8* p1.ListComp
+.. @+node:ekr.20150312225028.259: *7* p1.ListComp
 def do_ListComp(self,node):
     
     self.stats.n_list_comps += 1
@@ -10507,7 +10407,7 @@ def do_ListComp(self,node):
 
     cx = self.get_context()
     cx.assignments_list.append(node)
-.. @+node:ekr.20150312225028.260: *8* p1.Module
+.. @+node:ekr.20150312225028.260: *7* p1.Module
 def do_Module (self,node):
 
     # Get the module context from the global dict if possible.
@@ -10528,7 +10428,7 @@ def do_Module (self,node):
     # Bind all unbound matching names in inner contexts.
     for name in sorted(new_cx.st.d.keys()):
         self.bind_unbound_name(name,new_cx)
-.. @+node:ekr.20150312225028.261: *8* p1.Name
+.. @+node:ekr.20150312225028.261: *7* p1.Name
 def do_Name(self,node):
 
     trace = False
@@ -10571,7 +10471,7 @@ def do_Name(self,node):
     if not self.in_attr:
         if def_flag: e.defs_list.append(node)
         if ref_flag: e.refs_list.append(node)
-.. @+node:ekr.20150312225028.262: *8* p1.Return
+.. @+node:ekr.20150312225028.262: *7* p1.Return
 def do_Return(self,node):
     
     self.stats.n_returns += 1
@@ -10581,7 +10481,7 @@ def do_Return(self,node):
     cx.returns_list.append(node)
     cx.statements_list.append(node)
     # g.trace('%s %s' % (cx.name,self.format(node)))
-.. @+node:ekr.20150312225028.263: *9* p1.Operators...
+.. @+node:ekr.20150312225028.263: *8* p1.Operators...
 # operator = Add | BitAnd | BitOr | BitXor | Div
 # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
 
@@ -10620,20 +10520,20 @@ def do_Invert(self,node):   setattr(node,'op_name','~')
 def do_Not(self,node):      setattr(node,'op_name',' not ')
 def do_UAdd(self,node):     setattr(node,'op_name','+')
 def do_USub(self,node):     setattr(node,'op_name','-')
-.. @+node:ekr.20150312225028.264: *8* p1.With
+.. @+node:ekr.20150312225028.264: *7* p1.With
 def do_With(self,node):
     
     cx = self.get_context()
     self.stats.n_withs += 1
     self.visit_children(node)
     cx.statements_list.append(node)
-.. @+node:ekr.20150312225028.265: *6* class Resolver (keep for now)
+.. @+node:ekr.20150312225028.265: *5* class Resolver (keep for now)
 class Resolver:
     
     '''A class controlling the resolution pattern matchers.'''
 
     @others
-.. @+node:ekr.20150312225028.266: *7*  r.ctor & helper
+.. @+node:ekr.20150312225028.266: *6*  r.ctor & helper
 def __init__(self):
     
     self.app = app
@@ -10680,8 +10580,8 @@ def __init__(self):
         
     # Create the dispatch dict.
     self.dispatch_dict = self.make_dispatch_dict()
-.. @+node:ekr.20150312225028.267: *7*  r.generators
-.. @+node:ekr.20150312225028.268: *8* r.classes
+.. @+node:ekr.20150312225028.267: *6*  r.generators
+.. @+node:ekr.20150312225028.268: *7* r.classes
 def classes (self):
     
     '''A generator yielding all class contexts in all modules.'''
@@ -10690,7 +10590,7 @@ def classes (self):
     for cx in r.contexts():
         if cx.kind == 'class':
             yield cx
-.. @+node:ekr.20150312225028.269: *8* r.contexts
+.. @+node:ekr.20150312225028.269: *7* r.contexts
 def contexts (self):
     
     '''A generator yielding all contexts in all modules.'''
@@ -10699,14 +10599,14 @@ def contexts (self):
     for m in r.modules():
         for cx in m.contexts():
             yield cx
-.. @+node:ekr.20150312225028.270: *8* r.modules
+.. @+node:ekr.20150312225028.270: *7* r.modules
 def modules (self):
     
     d = self.sd.modules_dict
     for fn in sorted(d.keys()):
         m = d.get(fn)
         yield m
-.. @+node:ekr.20150312225028.271: *8* r.statements
+.. @+node:ekr.20150312225028.271: *7* r.statements
 def statements(self):
     
     '''A generator yielding all statements in all modules, in the proper order.'''
@@ -10716,7 +10616,7 @@ def statements(self):
     for cx in r.modules():
         for op in cx.statements():
             yield op
-.. @+node:ekr.20150312225028.272: *8* r.unresolved_names (TEST)
+.. @+node:ekr.20150312225028.272: *7* r.unresolved_names (TEST)
 def unresolved_names(self):
     
     r = self
@@ -10724,7 +10624,7 @@ def unresolved_names(self):
         for e in cx.st.d.values():
             if not e.resolved:
                 yield e
-.. @+node:ekr.20150312225028.273: *7* r.resolve & initers
+.. @+node:ekr.20150312225028.273: *6* r.resolve & initers
 def resolve (self):
     
     trace_time = False
@@ -10785,7 +10685,7 @@ def resolve (self):
     if trace_time:
         t6 = time.time()
         g.trace('main algorithm: %2.2f sec' % (t6-t5))
-.. @+node:ekr.20150312225028.274: *8* r.init_class_names
+.. @+node:ekr.20150312225028.274: *7* r.init_class_names
 def init_class_names(self):
     
     '''Mark all refereces to class names as known.'''
@@ -10842,7 +10742,7 @@ def init_class_names(self):
                         format(op)))
                 else:
                     assert False,'Unexpected Op: %s' % kind
-.. @+node:ekr.20150312225028.275: *8* r.init_module_names
+.. @+node:ekr.20150312225028.275: *7* r.init_module_names
 def init_module_names(self):
     
     trace = False
@@ -10895,7 +10795,7 @@ def init_module_names(self):
                         format(op)))
                 else:
                     assert False,'Unexpected Op: %s' % kind
-.. @+node:ekr.20150312225028.276: *8* r.init_self
+.. @+node:ekr.20150312225028.276: *7* r.init_self
 def init_self (self):
     
     '''Add all instances of "self" to r.self.list.'''
@@ -10909,7 +10809,7 @@ def init_self (self):
                     g.trace('*** redefining self',e.defs_list)
                 else:
                     r.self_list.extend(e.refs_list)
-.. @+node:ekr.20150312225028.277: *8* r.main_algorithm
+.. @+node:ekr.20150312225028.277: *7* r.main_algorithm
 def main_algorithm(self):
     
     r = self
@@ -10919,7 +10819,7 @@ def main_algorithm(self):
     while r.known_symbols_list:
         op = r.known_symbols_list.pop()
         r.make_known(op)
-.. @+node:ekr.20150312225028.278: *8* r.make_global_dicts
+.. @+node:ekr.20150312225028.278: *7* r.make_global_dicts
 def make_global_dicts (self):
     
     contexts = 0
@@ -10943,7 +10843,7 @@ def make_global_dicts (self):
         r.defs_dict[name] = defs
 
     # g.trace('contexts: %s' % (contexts))
-.. @+node:ekr.20150312225028.279: *8* r.make_known & op handlers
+.. @+node:ekr.20150312225028.279: *7* r.make_known & op handlers
 def make_known(self,op):
     
     '''This is called from the main_algorithm.
@@ -10968,54 +10868,54 @@ def make_known(self,op):
             # g.trace('bad op.parent.kind: %s' % op.parent.kind)
             # g.trace(op)
             # assert False
-.. @+node:ekr.20150312225028.280: *9* Do-nothings (not used at present)
+.. @+node:ekr.20150312225028.280: *8* Do-nothings (not used at present)
 if 0:
     @others
-.. @+node:ekr.20150312225028.281: *10* r.Arg
+.. @+node:ekr.20150312225028.281: *9* r.Arg
 def do_Arg (self,op):
     
     # arg = op.arg
     pass
-.. @+node:ekr.20150312225028.282: *10* r.Arguments
+.. @+node:ekr.20150312225028.282: *9* r.Arguments
 def do_Arguments (self,op):
     
     # args     = [self.visit(z) for z in op.args]
     # defaults = [self.visit(z) for z in op.defaults]
     pass
-.. @+node:ekr.20150312225028.283: *10* r.AugAssign
+.. @+node:ekr.20150312225028.283: *9* r.AugAssign
 def do_AugAssign(self,op):
     
     # This does not define any value!
     pass
-.. @+node:ekr.20150312225028.284: *10* r.Keyword
+.. @+node:ekr.20150312225028.284: *9* r.Keyword
 def do_Keyword(self,op):
     
     # arg   = op.arg
     # value = op.value
     pass
-.. @+node:ekr.20150312225028.285: *9* Known types
-.. @+node:ekr.20150312225028.286: *10* r.Bytes
+.. @+node:ekr.20150312225028.285: *8* Known types
+.. @+node:ekr.20150312225028.286: *9* r.Bytes
 def do_Bytes(self,op):
 
     value = op.value
     # g.trace(value)
-.. @+node:ekr.20150312225028.287: *10* r.Dict
+.. @+node:ekr.20150312225028.287: *9* r.Dict
 def do_Dict(self,op):
 
     keys   = op.keys
     values = op.values
     # g.trace(keys,values)
-.. @+node:ekr.20150312225028.288: *10* r.List
+.. @+node:ekr.20150312225028.288: *9* r.List
 def do_List(self,op):
 
     elts = op.elements
     # g.trace(elts)
-.. @+node:ekr.20150312225028.289: *10* r.Num
+.. @+node:ekr.20150312225028.289: *9* r.Num
 def do_Num(self,op):
     
     n = op.n
     # g.trace(n)
-.. @+node:ekr.20150312225028.290: *10* r.Str
+.. @+node:ekr.20150312225028.290: *9* r.Str
 def do_Str(self,op):
     
     '''This represents a string constant.'''
@@ -11023,24 +10923,24 @@ def do_Str(self,op):
     s = op.s
     # g.trace(s)
     
-.. @+node:ekr.20150312225028.291: *10* r.Tuple
+.. @+node:ekr.20150312225028.291: *9* r.Tuple
 def do_Tuple (self,op):
     
     elts = op.elements
     # g.trace(elts)
-.. @+node:ekr.20150312225028.292: *9* Names & Builtins
-.. @+node:ekr.20150312225028.293: *10* r.Builtin
+.. @+node:ekr.20150312225028.292: *8* Names & Builtins
+.. @+node:ekr.20150312225028.293: *9* r.Builtin
 def do_Builtin(self,op):
     
     name = op.name
     # g.trace(name)
-.. @+node:ekr.20150312225028.294: *10* r.Name
+.. @+node:ekr.20150312225028.294: *9* r.Name
 def do_Name(self,op):
     
     name = op.name
     # g.trace(name)
-.. @+node:ekr.20150312225028.295: *9* Not ready yet
-.. @+node:ekr.20150312225028.296: *10* r.Comprehension
+.. @+node:ekr.20150312225028.295: *8* Not ready yet
+.. @+node:ekr.20150312225028.296: *9* r.Comprehension
 def do_Comprehension(self,op):
 
     result = []
@@ -11049,44 +10949,44 @@ def do_Comprehension(self,op):
     iter_ = op.it
     ifs   = op.ifs
     # g.trace(name,iter_,ifs)
-.. @+node:ekr.20150312225028.297: *10* r.GenExp
+.. @+node:ekr.20150312225028.297: *9* r.GenExp
 def do_GenExp (self,op):
     
     elt  = op.elt
     gens = op.generators
     # g.trace(elt,gens)
-.. @+node:ekr.20150312225028.298: *10* r.Index
+.. @+node:ekr.20150312225028.298: *9* r.Index
 def do_Index(self,op):
     
     index = op.index
     # g.trace(index)
-.. @+node:ekr.20150312225028.299: *10* r.ListComp
+.. @+node:ekr.20150312225028.299: *9* r.ListComp
 def do_ListComp(self,op):
 
     elt  = op.elt
     gens = op.generators
     # g.trace(elt,gens)
-.. @+node:ekr.20150312225028.300: *10* r.Slice
+.. @+node:ekr.20150312225028.300: *9* r.Slice
 def do_Slice(self,op):
     
     upper = op.upper
     lower = op.lower
     step  = op.step
     # g.trace(upper,lower,step)
-.. @+node:ekr.20150312225028.301: *10* r.Subscript
+.. @+node:ekr.20150312225028.301: *9* r.Subscript
 def do_Subscript(self,op):
 
     value  = op.value
     slice_ = op.slice_
     # g.trace(value,slice_)
-.. @+node:ekr.20150312225028.302: *9* Operators
-.. @+node:ekr.20150312225028.303: *10* r.Attribute
+.. @+node:ekr.20150312225028.302: *8* Operators
+.. @+node:ekr.20150312225028.303: *9* r.Attribute
 def do_Attribute (self,op):
     
     value = op.value
     attr  = op.attr
     # g.trace(attr,value)
-.. @+node:ekr.20150312225028.304: *10* r.BinOp
+.. @+node:ekr.20150312225028.304: *9* r.BinOp
 def do_BinOp(self,op):
     
     trace = True
@@ -11136,13 +11036,13 @@ def do_BinOp(self,op):
             # g.trace('lt',lt.typ)
             # g.trace('rt',rt.typ)
         r.mushy_ops_list.append(op)
-.. @+node:ekr.20150312225028.305: *10* r.BoolOp
+.. @+node:ekr.20150312225028.305: *9* r.BoolOp
 def do_BoolOp(self,op):
     
     name   = op.op_name
     values = op.values
     # g.trace(name,values)
-.. @+node:ekr.20150312225028.306: *10* r.Call
+.. @+node:ekr.20150312225028.306: *9* r.Call
 def do_Call (self,op):
     
     pass
@@ -11159,27 +11059,27 @@ def do_Call (self,op):
     
     
    
-.. @+node:ekr.20150312225028.307: *10* r.CompareOp
+.. @+node:ekr.20150312225028.307: *9* r.CompareOp
 def do_CompareOp(self,op):
 
     left  = op.left
     ops   = op.ops
     comps = op.comparators
     # g.trace(left,ops,comps)
-.. @+node:ekr.20150312225028.308: *10* r.TernaryOp
+.. @+node:ekr.20150312225028.308: *9* r.TernaryOp
 def do_TernaryOp(self,op):
 
     test   = op.test
     body   = op.body
     orelse = op.orelse
     # g.trace(test,body,orelse)
-.. @+node:ekr.20150312225028.309: *10* r.UnaryOp
+.. @+node:ekr.20150312225028.309: *9* r.UnaryOp
 def do_UnaryOp(self,op):
     
     name    = op.op_name
     operand = op.operand
     # g.trace(name,operand)
-.. @+node:ekr.20150312225028.310: *9* r.Assign
+.. @+node:ekr.20150312225028.310: *8* r.Assign
 def do_Assign(self,op):
     
     trace = False
@@ -11234,13 +11134,13 @@ def do_Assign(self,op):
     else:
         # assert False,'Unexpected target kind: %s' % target.kind
         if trace: g.trace('unexpected target kind: %s %s' % (target.kind,target))
-.. @+node:ekr.20150312225028.311: *9* r.do_nothing
+.. @+node:ekr.20150312225028.311: *8* r.do_nothing
 def do_nothing(self,op):
     pass
     
     # g.trace(op)
-.. @+node:ekr.20150312225028.312: *7* The hard part
-.. @+node:ekr.20150312225028.313: *8* r.analyze_assignments (to do)
+.. @+node:ekr.20150312225028.312: *6* The hard part
+.. @+node:ekr.20150312225028.313: *7* r.analyze_assignments (to do)
 def analyze_assignments (self):
     
     r = self
@@ -11265,11 +11165,11 @@ def analyze_assignments (self):
                             pad2,
                             self.format(z).strip()))
                     result.extend(sorted(list(set(result2))))
-.. @+node:ekr.20150312225028.314: *8* r.analyze_calls (to do)
+.. @+node:ekr.20150312225028.314: *7* r.analyze_calls (to do)
 def analyze_calls (self):
     
     pass
-.. @+node:ekr.20150312225028.315: *8* r.analyze_returns (To do)
+.. @+node:ekr.20150312225028.315: *7* r.analyze_returns (To do)
 def analyze_returns(self):
     
     r = self
@@ -11286,7 +11186,7 @@ def analyze_returns(self):
     
     return '\n'.join(result)
             
-.. @+node:ekr.20150312225028.316: *8* r.resolve_class_relationships
+.. @+node:ekr.20150312225028.316: *7* r.resolve_class_relationships
 def resolve_class_relationships (self):
     
     r = self
@@ -11314,7 +11214,7 @@ def resolve_class_relationships (self):
                     # aSet.add(cx2)
                     # r_d[hash2] = aSet2
                 # r_d[hash1] = aSet
-.. @+node:ekr.20150312225028.317: *8* r.analyze_classes & helpers
+.. @+node:ekr.20150312225028.317: *7* r.analyze_classes & helpers
 def analyze_classes(self,aList=None):
     
     trace = False
@@ -11338,7 +11238,7 @@ def analyze_classes(self,aList=None):
     # g.trace(len(aList))
     
     return aList
-.. @+node:ekr.20150312225028.318: *9* r.analyze_class_pair
+.. @+node:ekr.20150312225028.318: *8* r.analyze_class_pair
 def analyze_class_pair(self,aLisst,cx1,cx2):
     
     r = self
@@ -11348,7 +11248,7 @@ def analyze_class_pair(self,aLisst,cx1,cx2):
     print('  %s: %s' % (cx2.name,cx2.bases))
     # print('    subclass: %s' % (cx2.name in cx1.bases))
     
-.. @+node:ekr.20150312225028.319: *8* r.resolve_ivars
+.. @+node:ekr.20150312225028.319: *7* r.resolve_ivars
 def resolve_ivars (self):
     
     r = self
@@ -11382,11 +11282,11 @@ def resolve_ivars (self):
                             else:
                                 assert kind=='AugAssign',kind
                                 print('%s=%s\n' % (target,val))
-.. @+node:ekr.20150312225028.320: *8* r.resolve_aliases (will be removed)
+.. @+node:ekr.20150312225028.320: *7* r.resolve_aliases (will be removed)
 def resolve_aliases (self):
     
     r = self
-.. @+node:ekr.20150312225028.321: *6* class TypeInferrer (AstFullTraverser)
+.. @+node:ekr.20150312225028.321: *5* class TypeInferrer (AstFullTraverser)
 class TypeInferrer (AstFullTraverser):
     
     '''A class to infer the types of objects.'''
@@ -11398,7 +11298,7 @@ class TypeInferrer (AstFullTraverser):
         return self.run(node)
     
     @others
-.. @+node:ekr.20150312225028.322: *7* ti.clean (*revise*)
+.. @+node:ekr.20150312225028.322: *6* ti.clean (*revise*)
 def clean (self,aList):
     
     '''Return sorted(aList) with all duplicates removed.'''
@@ -11427,20 +11327,20 @@ def clean (self,aList):
         else:
             ti.stats.n_clean_fail += 1
             return sorted(result)
-.. @+node:ekr.20150312225028.323: *7* ti.has_children
+.. @+node:ekr.20150312225028.323: *6* ti.has_children
 def has_children(self,node):
     
     assert isinstance(node,ast.AST),node.__class__.__name__
     
     return any(self.get_child_nodes(node))
-.. @+node:ekr.20150312225028.324: *7* ti.format
+.. @+node:ekr.20150312225028.324: *6* ti.format
 def format(self,node):
     
     u = self.u
     return '%s%s' % (
         ' '*u.compute_node_level(node),
         u.first_line(u.format(node)))
-.. @+node:ekr.20150312225028.325: *7* ti.init
+.. @+node:ekr.20150312225028.325: *6* ti.init
 def init(self):
 
     self.stats = Stats()
@@ -11471,12 +11371,12 @@ def init(self):
         # list,tuple...
         # close,open,sort,sorted,super...
     }
-.. @+node:ekr.20150312225028.326: *7* ti.run (entry point)
+.. @+node:ekr.20150312225028.326: *6* ti.run (entry point)
 def run (self,root):
     
     self.init()
     self.visit(root)
-.. @+node:ekr.20150312225028.327: *7* ti.type helpers
+.. @+node:ekr.20150312225028.327: *6* ti.type helpers
 def has_failed(self,t1,t2=[],t3=[]):
     
     return any([isinstance(z,Inference_Failure) for z in t1+t2+t3])
@@ -11504,7 +11404,7 @@ def merge_failures(self,t1,t2=[],t3=[]):
         # Prefer the most specific reason for failure.
         aList = [z for z in aList if not isinstance(z,Unknown_Type)]
     return aList
-.. @+node:ekr.20150312225028.328: *7* ti.visit
+.. @+node:ekr.20150312225028.328: *6* ti.visit
 def visit(self,node):
 
     '''Visit a single node.  Callers are responsible for visiting children.'''
@@ -11514,9 +11414,9 @@ def visit(self,node):
     method = getattr(self,'do_' + node.__class__.__name__)
     self.n_nodes += 1
     return method(node)
-.. @+node:ekr.20150312225028.329: *7* ti.visitors
-.. @+node:ekr.20150312225028.330: *8* ti.expressions
-.. @+node:ekr.20150312225028.331: *9* ti.Attribute & check_attr (check super classes for attributes)
+.. @+node:ekr.20150312225028.329: *6* ti.visitors
+.. @+node:ekr.20150312225028.330: *7* ti.expressions
+.. @+node:ekr.20150312225028.331: *8* ti.Attribute & check_attr (check super classes for attributes)
 # Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute (self,node):
@@ -11566,7 +11466,7 @@ def do_Attribute (self,node):
         t = [Unknown_Type(node)]
     # ti.check_attr(node) # Does nothing
     return t
-.. @+node:ekr.20150312225028.332: *10* ti.check_attr
+.. @+node:ekr.20150312225028.332: *9* ti.check_attr
 def check_attr(self,node):
     
     ti = self
@@ -11601,7 +11501,7 @@ def check_attr(self,node):
             # if trace:
                 # g.trace('** not checked: %s' % (name))
                 # g.trace(ti.u.dump_ast(value))
-.. @+node:ekr.20150312225028.333: *9* ti.BinOp & helper
+.. @+node:ekr.20150312225028.333: *8* ti.BinOp & helper
 def do_BinOp (self,node):
 
     ti = self
@@ -11644,12 +11544,12 @@ def do_BinOp (self,node):
         t = [Inference_Error(node)] ### Should merge types!
     if trace and trace_infer: g.trace(ti.format(node),'->',t)
     return t
-.. @+node:ekr.20150312225028.334: *9* ti.BoolOp
+.. @+node:ekr.20150312225028.334: *8* ti.BoolOp
 def do_BoolOp(self,node):
 
     ti = self    
     return [ti.bool_type]
-.. @+node:ekr.20150312225028.335: *9* ti.Call & helpers
+.. @+node:ekr.20150312225028.335: *8* ti.Call & helpers
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   Note: node.starargs and node.kwargs are given only if assigned explicitly.
 
@@ -11721,7 +11621,7 @@ def do_Call (self,node):
         s = '3:return %s(%s)' % (func_name,args)
         g.trace('%17s -> %s' % (s,t))
     return t
-.. @+node:ekr.20150312225028.336: *10* ti.class_instance
+.. @+node:ekr.20150312225028.336: *9* ti.class_instance
 def class_instance (self,e):
     
     '''
@@ -11759,7 +11659,7 @@ def class_instance (self,e):
     t = [Class_Type(cx)]
     # ti.set_cache(e,t,tag='class name')
     return args,t
-.. @+node:ekr.20150312225028.337: *10* ti.find_call_e
+.. @+node:ekr.20150312225028.337: *9* ti.find_call_e
 def find_call_e (self,node):
     
     '''Find the symbol table entry for node, an ast.Call node.'''
@@ -11847,7 +11747,7 @@ def find_call_e (self,node):
     # if trace and trace_return: g.trace(
         # kind,'e:',e,ti.format(node))
     # return e
-.. @+node:ekr.20150312225028.338: *10* ti.infer_actual_args
+.. @+node:ekr.20150312225028.338: *9* ti.infer_actual_args
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   keyword = (identifier arg, expr value) # keyword arguments supplied to call
 
@@ -11951,7 +11851,7 @@ def infer_actual_args (self,e,node):
         
     if trace: g.trace('result',args)
     return args
-.. @+node:ekr.20150312225028.339: *10* ti.infer_def & helpers (sets call cache)
+.. @+node:ekr.20150312225028.339: *9* ti.infer_def & helpers (sets call cache)
 def infer_def(self,node,rescan_flag):
     
     '''Infer everything possible from a def D called with specific args:
@@ -11991,7 +11891,7 @@ def infer_def(self,node,rescan_flag):
     # t = ti.clean(t)
     # if trace: g.trace('B',hash_,'->',t)
     # return t
-.. @+node:ekr.20150312225028.340: *11* ti.bind_args (ti.infer_def helper) (To do: handle self)
+.. @+node:ekr.20150312225028.340: *10* ti.bind_args (ti.infer_def helper) (To do: handle self)
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   keyword = (identifier arg, expr value) # keyword arguments supplied to call
 
@@ -12026,7 +11926,7 @@ def bind_args (self,types,cx,e,node):
             # ti.set_cache(e2,[t],tag='bindargs:%s'%(name))
         # else:
             # g.trace('**** oops: no e2',name,d)
-.. @+node:ekr.20150312225028.341: *11* ti.infer_assignments
+.. @+node:ekr.20150312225028.341: *10* ti.infer_assignments
 def infer_assignments(self,cx,e):
     
     '''Infer all the assignments in the function context.'''
@@ -12055,7 +11955,7 @@ def infer_assignments(self,cx,e):
                
                    
     return None # This value is never used.
-.. @+node:ekr.20150312225028.342: *11* ti.infer_outer_expressions
+.. @+node:ekr.20150312225028.342: *10* ti.infer_outer_expressions
 def infer_outer_expressions(self,cx,node):
     
     '''Infer all outer expressions in the function context.'''
@@ -12068,7 +11968,7 @@ def infer_outer_expressions(self,cx,node):
         t = ti.visit(exp)
 
     return None # This value is never used.
-.. @+node:ekr.20150312225028.343: *11* ti.infer_return_statements
+.. @+node:ekr.20150312225028.343: *10* ti.infer_return_statements
 def infer_return_statements(self,cx,e):
     
     '''Infer all return_statements in the function context.'''
@@ -12085,7 +11985,7 @@ def infer_return_statements(self,cx,e):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.344: *9* ti.Compare
+.. @+node:ekr.20150312225028.344: *8* ti.Compare
 # Compare(expr left, cmpop* ops, expr* comparators)
 
 def do_Compare(self,node):
@@ -12095,14 +11995,14 @@ def do_Compare(self,node):
     for z in node.comparators:
         ti.visit(z)
     return [ti.bool_type]
-.. @+node:ekr.20150312225028.345: *9* ti.comprehension
+.. @+node:ekr.20150312225028.345: *8* ti.comprehension
 def do_comprehension(self,node):
 
     ti = self
     ti.visit(node.target) # A name.
     ti.visit(node.iter) # An attribute.
     return [List_Type(node)]
-.. @+node:ekr.20150312225028.346: *9* ti.Expr
+.. @+node:ekr.20150312225028.346: *8* ti.Expr
 # Expr(expr value)
 
 def do_Expr(self,node):
@@ -12110,7 +12010,7 @@ def do_Expr(self,node):
     ti = self
     t = ti.visit(node.value)
     return t
-.. @+node:ekr.20150312225028.347: *9* ti.GeneratorExp
+.. @+node:ekr.20150312225028.347: *8* ti.GeneratorExp
 def do_GeneratorExp (self,node):
 
     ti = self
@@ -12126,7 +12026,7 @@ def do_GeneratorExp (self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.348: *9* ti.IfExp
+.. @+node:ekr.20150312225028.348: *8* ti.IfExp
 # The ternary operator
 # IfExp(expr test, expr body, expr orelse)
 
@@ -12141,17 +12041,17 @@ def do_IfExp(self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.349: *9* ti.Index
+.. @+node:ekr.20150312225028.349: *8* ti.Index
 def do_Index(self,node):
 
     ti = self    
     return ti.visit(node.value)
-.. @+node:ekr.20150312225028.350: *9* ti.Lambda
+.. @+node:ekr.20150312225028.350: *8* ti.Lambda
 def do_Lambda (self,node):
     
     ti = self
     return ti.visit(node.body)
-.. @+node:ekr.20150312225028.351: *9* ti.ListComp
+.. @+node:ekr.20150312225028.351: *8* ti.ListComp
 def do_ListComp(self,node):
     
     ti = self
@@ -12165,7 +12065,7 @@ def do_ListComp(self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.352: *9* ti.Name (**rewrite)
+.. @+node:ekr.20150312225028.352: *8* ti.Name (**rewrite)
 def do_Name(self,node):
     
     ti = self ; u = ti.u
@@ -12218,7 +12118,7 @@ def do_Name(self,node):
         g.trace('fail ',name,ctx_kind,'reach:',
             ['%s:%s' % (id(z),u.format(z)) for z in reach])
     return t
-.. @+node:ekr.20150312225028.353: *9* ti.Slice
+.. @+node:ekr.20150312225028.353: *8* ti.Slice
 def do_Slice(self,node):
     
     ti = self
@@ -12226,7 +12126,7 @@ def do_Slice(self,node):
     if node.lower: junk = ti.visit(node.lower)
     if node.step:  junk = ti.visit(node.step)
     return [ti.int_type] ### ???
-.. @+node:ekr.20150312225028.354: *9* ti.Subscript (to do)
+.. @+node:ekr.20150312225028.354: *8* ti.Subscript (to do)
 def do_Subscript(self,node):
 
     ti = self
@@ -12235,7 +12135,7 @@ def do_Subscript(self,node):
     t2 = ti.visit(node.slice)
     if t1 and trace: g.trace(t1,t2,ti.format(node))
     return t1 ### ?
-.. @+node:ekr.20150312225028.355: *9* ti.UnaryOp
+.. @+node:ekr.20150312225028.355: *8* ti.UnaryOp
 def do_UnaryOp(self,node):
     
     ti = self
@@ -12252,18 +12152,18 @@ def do_UnaryOp(self,node):
         if trace: g.trace(' fail:',op_kind,t,ti.format(node))
         t = [Unknown_Type(node)]
     return t
-.. @+node:ekr.20150312225028.356: *8* ti.primitive Types
-.. @+node:ekr.20150312225028.357: *9* ti.Builtin
+.. @+node:ekr.20150312225028.356: *7* ti.primitive Types
+.. @+node:ekr.20150312225028.357: *8* ti.Builtin
 def do_Builtin(self,node):
 
     ti = self
     return [ti.builtin_type]
-.. @+node:ekr.20150312225028.358: *9* ti.Bytes
+.. @+node:ekr.20150312225028.358: *8* ti.Bytes
 def do_Bytes(self,node):
 
     ti = self
     return [ti.bytes_type]
-.. @+node:ekr.20150312225028.359: *9* ti.Dict
+.. @+node:ekr.20150312225028.359: *8* ti.Dict
 # Dict(expr* keys, expr* values)
 
 def do_Dict(self,node):
@@ -12275,7 +12175,7 @@ def do_Dict(self,node):
         ti.visit(z)
     return [Dict_Type(node)]
         ### More specific type.
-.. @+node:ekr.20150312225028.360: *9* ti.List
+.. @+node:ekr.20150312225028.360: *8* ti.List
 # List(expr* elts, expr_context ctx) 
 
 def do_List(self,node):
@@ -12285,21 +12185,21 @@ def do_List(self,node):
         ti.visit(z)
     # ti.visit(node.ctx)
     return [List_Type(node)]
-.. @+node:ekr.20150312225028.361: *9* ti.Num
+.. @+node:ekr.20150312225028.361: *8* ti.Num
 def do_Num(self,node):
     
     ti = self
     t_num = Num_Type(node.n.__class__)
     # g.trace(ti.format(node),'->',t_num)
     return [t_num]
-.. @+node:ekr.20150312225028.362: *9* ti.Str
+.. @+node:ekr.20150312225028.362: *8* ti.Str
 def do_Str(self,node):
     
     '''This represents a string constant.'''
 
     ti = self
     return [ti.string_type]
-.. @+node:ekr.20150312225028.363: *9* ti.Tuple
+.. @+node:ekr.20150312225028.363: *8* ti.Tuple
 # Tuple(expr* elts, expr_context ctx)
 
 def do_Tuple(self,node):
@@ -12309,8 +12209,8 @@ def do_Tuple(self,node):
         ti.visit(z)
     # ti.visit(node.ctx)
     return [Tuple_Type(node)]
-.. @+node:ekr.20150312225028.364: *8* ti.statements
-.. @+node:ekr.20150312225028.365: *9* ti.arguments
+.. @+node:ekr.20150312225028.364: *7* ti.statements
+.. @+node:ekr.20150312225028.365: *8* ti.arguments
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def do_arguments (self,node):
@@ -12318,7 +12218,7 @@ def do_arguments (self,node):
     '''Bind formal arguments to actual arguments.'''
     
     assert False # All the work is done in ti.Call and its helpers.
-.. @+node:ekr.20150312225028.366: *9* ti.Assign (**rewrite)
+.. @+node:ekr.20150312225028.366: *8* ti.Assign (**rewrite)
 def do_Assign(self,node):
 
     ti = self
@@ -12361,13 +12261,13 @@ def do_Assign(self,node):
     # t = ti.clean(t)
     # ti.set_cache(node,t,tag='ti.Assign')
     # return t
-.. @+node:ekr.20150312225028.367: *9* ti.ClassDef (could be default)
+.. @+node:ekr.20150312225028.367: *8* ti.ClassDef (could be default)
 def do_ClassDef(self,node):
     
     ti = self
     for z in node.body:
         self.visit(z)
-.. @+node:ekr.20150312225028.368: *9* ti.For
+.. @+node:ekr.20150312225028.368: *8* ti.For
 # For(expr target, expr iter, stmt* body, stmt* orelse)
 
 def do_For (self,tree):
@@ -12380,7 +12280,7 @@ def do_For (self,tree):
         ti.visit(z)
     for z in tree.orelse:
         ti.visit(z)
-.. @+node:ekr.20150312225028.369: *9* ti.FunctionDef & helpers (**rewrite)
+.. @+node:ekr.20150312225028.369: *8* ti.FunctionDef & helpers (**rewrite)
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,node):
@@ -12404,7 +12304,7 @@ def do_FunctionDef (self,node):
     # if t is None:
         # t = ti.infer_outer_def(specific_args,hash_,node)
     # return t
-.. @+node:ekr.20150312225028.370: *10* ti.count_full_args
+.. @+node:ekr.20150312225028.370: *9* ti.count_full_args
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 #   arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -12423,7 +12323,7 @@ def count_full_args (self,node):
     if args.vararg: n += 1
     if args.kwarg:  n += 1
     return n
-.. @+node:ekr.20150312225028.371: *10* ti.infer_outer_def & helper
+.. @+node:ekr.20150312225028.371: *9* ti.infer_outer_def & helper
 def infer_outer_def(self,node):
     
     '''Infer everything possible from a def D called with specific args:
@@ -12450,7 +12350,7 @@ def infer_outer_def(self,node):
     # ### ti.set_call_cache(e,hash_,t,tag='infer_def')
     # ### ti.restore_context(data)
     # return t
-.. @+node:ekr.20150312225028.372: *11* ti_bind_outer_args (ti.infer_outer_def helper)
+.. @+node:ekr.20150312225028.372: *10* ti_bind_outer_args (ti.infer_outer_def helper)
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 #   arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 def bind_outer_args (self,node):
@@ -12485,21 +12385,21 @@ def bind_outer_args (self,node):
             # if trace: g.trace(name,t)
         # else:
             # if trace: g.trace('**** oops: no e2',name,d)
-.. @+node:ekr.20150312225028.373: *9* ti.Import (not used)
+.. @+node:ekr.20150312225028.373: *8* ti.Import (not used)
 # def do_Import(self,node):
     
     # pass
-.. @+node:ekr.20150312225028.374: *9* ti.ImportFrom (not used)
+.. @+node:ekr.20150312225028.374: *8* ti.ImportFrom (not used)
 # def do_ImportFrom(self,node):
     
     # pass
-.. @+node:ekr.20150312225028.375: *9* ti.Return & ti.Yield & helper
+.. @+node:ekr.20150312225028.375: *8* ti.Return & ti.Yield & helper
 def do_Return(self,node):
     return self.return_helper(node)
     
 def do_Yield(self,node):
     return self.return_helper(node)
-.. @+node:ekr.20150312225028.376: *10* ti.return_helper
+.. @+node:ekr.20150312225028.376: *9* ti.return_helper
 def return_helper(self,node):
 
     ti = self
@@ -12520,7 +12420,7 @@ def return_helper(self,node):
         t = [ti.none_type]
     if trace: g.trace(t,ti.format(node))
     return t
-.. @+node:ekr.20150312225028.377: *9* ti.With
+.. @+node:ekr.20150312225028.377: *8* ti.With
 def do_With (self,node):
 
     ti = self
@@ -12529,7 +12429,7 @@ def do_With (self,node):
         t.append(ti.visit(z))
     t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.378: *6* class TypeInferer (AstTraverser)
+.. @+node:ekr.20150312225028.378: *5* class TypeInferer (AstTraverser)
 class TypeInferer (AstTraverser):
     
     '''
@@ -12539,7 +12439,7 @@ class TypeInferer (AstTraverser):
     '''
     
     @others
-.. @+node:ekr.20150312225028.379: *7*  ti.ctor
+.. @+node:ekr.20150312225028.379: *6*  ti.ctor
 def __init__ (self,enable_trace=True):
     
     AstTraverser.__init__(self)
@@ -12590,7 +12490,7 @@ def __init__ (self,enable_trace=True):
     self.trace_level = 0 # Trace nesting level.
     self.trace_context = False
     self.trace_context_level = 0
-.. @+node:ekr.20150312225028.380: *7*  ti.run (entry point)
+.. @+node:ekr.20150312225028.380: *6*  ti.run (entry point)
 def run (self,node):
     
     # pylint: disable=W0221
@@ -12603,9 +12503,9 @@ def run (self,node):
     ti.u.stats.n_caches += ti.n_caches
     t2 = time.time()
     return t2-t1
-.. @+node:ekr.20150312225028.381: *7* ti.caches
+.. @+node:ekr.20150312225028.381: *6* ti.caches
 # Note: the hash_ argument to ti.get_call_cache can't easily be removed.
-.. @+node:ekr.20150312225028.382: *8* ti.cache_hash
+.. @+node:ekr.20150312225028.382: *7* ti.cache_hash
 def cache_hash(self,args,e):
     
     ''' Return a hash for a list of type arg. This must be a perfect hash:
@@ -12617,7 +12517,7 @@ def cache_hash(self,args,e):
     return 'hash:%s([%s])' % (
         '%s@%s' % (e.name,id(e)),
         ','.join([repr(arg) for arg in args]))
-.. @+node:ekr.20150312225028.383: *8* ti.get_cache
+.. @+node:ekr.20150312225028.383: *7* ti.get_cache
 def get_cache(self,obj):
     
     '''Return the value of object's cache for the present context, creating
@@ -12629,7 +12529,7 @@ def get_cache(self,obj):
         ti.n_caches += 1
     return obj.cache.get(ti.call_hash,None)
         # None is the signal for a cache miss.
-.. @+node:ekr.20150312225028.384: *8* ti.get_call_cache
+.. @+node:ekr.20150312225028.384: *7* ti.get_call_cache
 def get_call_cache(self,obj,hash_):
     
     '''Return the value of object's cache for the present context, creating
@@ -12641,7 +12541,7 @@ def get_call_cache(self,obj,hash_):
         ti.n_caches += 1
 
     return obj.call_cache.get(hash_)
-.. @+node:ekr.20150312225028.385: *8* ti.method_hash
+.. @+node:ekr.20150312225028.385: *7* ti.method_hash
 def method_hash(self,e,node):
     
     '''If this is a method call, return the hash for the inferred ctor's
@@ -12662,7 +12562,7 @@ def method_hash(self,e,node):
         else:
             if trace: ti.trace(class_name,'no ctor')
     return ''
-.. @+node:ekr.20150312225028.386: *8* ti.set_cache
+.. @+node:ekr.20150312225028.386: *7* ti.set_cache
 def set_cache(self,obj,t,tag=''):
 
     '''Set the object's cache for the present context to the given type
@@ -12688,7 +12588,7 @@ def set_cache(self,obj,t,tag=''):
     # aList.extend(t)
     # aList = ti.clean(aList)
     #obj.cache [hash_] = aList
-.. @+node:ekr.20150312225028.387: *8* ti.set_call_cache
+.. @+node:ekr.20150312225028.387: *7* ti.set_call_cache
 def set_call_cache(self,obj,hash_,t,tag=''):
     
     ti=self
@@ -12708,7 +12608,7 @@ def set_call_cache(self,obj,hash_,t,tag=''):
     # aList.extend(t)
     # aList = ti.clean(aList)
     # obj.call_cache [hash_] = aList
-.. @+node:ekr.20150312225028.388: *8* ti.show_cache
+.. @+node:ekr.20150312225028.388: *7* ti.show_cache
 def show_cache(self,obj,cache,tag):
     
     ti = self
@@ -12724,14 +12624,14 @@ def show_cache(self,obj,cache,tag):
         for item in aList:
             print('   %s => %s' % (key,item))
     print('')
-.. @+node:ekr.20150312225028.389: *7* ti.has_children
+.. @+node:ekr.20150312225028.389: *6* ti.has_children
 def has_children(self,node):
     
     assert isinstance(node,ast.AST),node.__class__.__name__
     
     return any(self.get_child_nodes(node))
-.. @+node:ekr.20150312225028.390: *7* ti.helpers
-.. @+node:ekr.20150312225028.391: *8* ti.clean
+.. @+node:ekr.20150312225028.390: *6* ti.helpers
+.. @+node:ekr.20150312225028.391: *7* ti.clean
 def clean (self,aList):
     
     '''Return sorted(aList) with all duplicates removed.'''
@@ -12757,7 +12657,7 @@ def clean (self,aList):
     else:
         ti.stats.n_clean_fail += 1
         return sorted(result)
-.. @+node:ekr.20150312225028.392: *8* ti.cross_product
+.. @+node:ekr.20150312225028.392: *7* ti.cross_product
 def cross_product(self,aList):
     
     '''Return generator yielding a list of lists representing the
@@ -12790,7 +12690,7 @@ def cross_product(self,aList):
         d[n] = 1 + d.get(n,0)
 
     return result
-.. @+node:ekr.20150312225028.393: *8* ti.switch/restore_context
+.. @+node:ekr.20150312225028.393: *7* ti.switch/restore_context
 # These are called *only* from ti.infer_def.
  
 def switch_context(self,e,hash_,node):
@@ -12811,7 +12711,7 @@ def restore_context(self,data):
     ti.trace_context_level -= 1
     if self.trace_context:
         ti.trace(ti.call_hash,before=' '*2*ti.trace_context_level)
-.. @+node:ekr.20150312225028.394: *8* ti.type helpers
+.. @+node:ekr.20150312225028.394: *7* ti.type helpers
 def has_failed(self,t1,t2=[],t3=[]):
     
     return any([isinstance(z,Inference_Failure) for z in t1+t2+t3])
@@ -12839,7 +12739,7 @@ def merge_failures(self,t1,t2=[],t3=[]):
         # Prefer the most specific reason for failure.
         aList = [z for z in aList if not isinstance(z,Unknown_Type)]
     return aList
-.. @+node:ekr.20150312225028.395: *7* ti.trace
+.. @+node:ekr.20150312225028.395: *6* ti.trace
 def trace(self,*args,**keys):
     
     ti = self
@@ -12864,8 +12764,8 @@ def trace(self,*args,**keys):
     keys['before'] = before
     keys['caller_level'] = 2
     g.trace(*args,**keys)
-.. @+node:ekr.20150312225028.396: *7* ti.traversers
-.. @+node:ekr.20150312225028.397: *8*  ti.visit
+.. @+node:ekr.20150312225028.396: *6* ti.traversers
+.. @+node:ekr.20150312225028.397: *7*  ti.visit
 def visit(self,node):
     
     '''Infer the types of all nodes in a tree of AST nodes.'''
@@ -12892,7 +12792,7 @@ def visit(self,node):
     finally:
         ti.level -= 1
     return val
-.. @+node:ekr.20150312225028.398: *8*  ti.visit_children
+.. @+node:ekr.20150312225028.398: *7*  ti.visit_children
 def visit_children(self,node):
     
     ti = self
@@ -12903,7 +12803,7 @@ def visit_children(self,node):
 
     # Returning None is a good test.
     return None
-.. @+node:ekr.20150312225028.399: *8*  ti.visit_list
+.. @+node:ekr.20150312225028.399: *7*  ti.visit_list
 def visit_list (self,aList):
 
     ti = self
@@ -12914,8 +12814,8 @@ def visit_list (self,aList):
         
     # Returning None is a good test.
     return None
-.. @+node:ekr.20150312225028.400: *7* ti.visitors
-.. @+node:ekr.20150312225028.401: *8* ti.arguments
+.. @+node:ekr.20150312225028.400: *6* ti.visitors
+.. @+node:ekr.20150312225028.401: *7* ti.arguments
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def do_arguments (self,node):
@@ -12923,7 +12823,7 @@ def do_arguments (self,node):
     '''Bind formal arguments to actual arguments.'''
     
     assert False # All the work is done in ti.Call and its helpers.
-.. @+node:ekr.20150312225028.402: *8* ti.Assign (sets cache)
+.. @+node:ekr.20150312225028.402: *7* ti.Assign (sets cache)
 def do_Assign(self,node):
 
     ti = self
@@ -12962,7 +12862,7 @@ def do_Assign(self,node):
     t = ti.clean(t)
     ti.set_cache(node,t,tag='ti.Assign')
     return t
-.. @+node:ekr.20150312225028.403: *8* ti.Attribute & check_attr (check super classes for attributes)
+.. @+node:ekr.20150312225028.403: *7* ti.Attribute & check_attr (check super classes for attributes)
 # Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute (self,node):
@@ -13021,7 +12921,7 @@ def do_Attribute (self,node):
 
     # ti.check_attr(node) # Does nothing
     return t
-.. @+node:ekr.20150312225028.404: *9* ti.check_attr
+.. @+node:ekr.20150312225028.404: *8* ti.check_attr
 def check_attr(self,node):
     
     ti = self
@@ -13056,11 +12956,11 @@ def check_attr(self,node):
             # if trace:
                 # g.trace('** not checked: %s' % (name))
                 # g.trace(ti.dump_ast(value))
-.. @+node:ekr.20150312225028.405: *8* ti.Builtin
+.. @+node:ekr.20150312225028.405: *7* ti.Builtin
 def do_Builtin(self,node):
     
     assert False,node
-.. @+node:ekr.20150312225028.406: *8* ti.Call & helpers
+.. @+node:ekr.20150312225028.406: *7* ti.Call & helpers
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   Note: node.starargs and node.kwargs are given only if assigned explicitly.
 
@@ -13156,7 +13056,7 @@ def do_Call (self,node):
         s = '3:return %s(%s)' % (func_name,args)
         ti.trace('%17s -> %s' % (s,t))
     return t
-.. @+node:ekr.20150312225028.407: *9* ti.class_instance
+.. @+node:ekr.20150312225028.407: *8* ti.class_instance
 def class_instance (self,e):
     
     '''
@@ -13194,7 +13094,7 @@ def class_instance (self,e):
     t = [Class_Type(cx)]
     ti.set_cache(e,t,tag='class name')
     return args,t
-.. @+node:ekr.20150312225028.408: *9* ti.find_call_e
+.. @+node:ekr.20150312225028.408: *8* ti.find_call_e
 def find_call_e (self,node):
     
     '''Find the symbol table entry for node, an ast.Call node.'''
@@ -13282,7 +13182,7 @@ def find_call_e (self,node):
     if trace and trace_return: ti.trace(
         kind,'e:',e,ti.format(node))
     return e
-.. @+node:ekr.20150312225028.409: *9* ti.infer_actual_args
+.. @+node:ekr.20150312225028.409: *8* ti.infer_actual_args
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   keyword = (identifier arg, expr value) # keyword arguments supplied to call
 
@@ -13386,7 +13286,7 @@ def infer_actual_args (self,e,node):
         
     if trace: ti.trace('result',args)
     return args
-.. @+node:ekr.20150312225028.410: *9* ti.infer_def & helpers (sets call cache)
+.. @+node:ekr.20150312225028.410: *8* ti.infer_def & helpers (sets call cache)
 def infer_def(self,specific_args,e,hash_,node,rescan_flag):
     
     '''Infer everything possible from a def D called with specific args:
@@ -13426,7 +13326,7 @@ def infer_def(self,specific_args,e,hash_,node,rescan_flag):
         # Important: does *not* use ti.call_hash.
     if trace: ti.trace('B',hash_,'->',t)
     return t
-.. @+node:ekr.20150312225028.411: *10* ti.bind_args (ti.infer_def helper) (To do: handle self)
+.. @+node:ekr.20150312225028.411: *9* ti.bind_args (ti.infer_def helper) (To do: handle self)
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 #   keyword = (identifier arg, expr value) # keyword arguments supplied to call
 
@@ -13460,7 +13360,7 @@ def bind_args (self,types,cx,e,node):
             ti.set_cache(e2,[t],tag='bindargs:%s'%(name))
         else:
             ti.trace('**** oops: no e2',name,d)
-.. @+node:ekr.20150312225028.412: *10* ti.infer_assignments
+.. @+node:ekr.20150312225028.412: *9* ti.infer_assignments
 def infer_assignments(self,cx,e):
     
     '''Infer all the assignments in the function context.'''
@@ -13487,7 +13387,7 @@ def infer_assignments(self,cx,e):
                
                    
     return None # This value is never used.
-.. @+node:ekr.20150312225028.413: *10* ti.infer_outer_expressions
+.. @+node:ekr.20150312225028.413: *9* ti.infer_outer_expressions
 def infer_outer_expressions(self,cx,node):
     
     '''Infer all outer expressions in the function context.'''
@@ -13511,7 +13411,7 @@ def infer_outer_expressions(self,cx,node):
             if trace: ti.trace('miss',t)
 
     return None # This value is never used.
-.. @+node:ekr.20150312225028.414: *10* ti.infer_return_statements
+.. @+node:ekr.20150312225028.414: *9* ti.infer_return_statements
 def infer_return_statements(self,cx,e):
     
     '''Infer all return_statements in the function context.'''
@@ -13534,7 +13434,7 @@ def infer_return_statements(self,cx,e):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.415: *8* ti.ClassDef
+.. @+node:ekr.20150312225028.415: *7* ti.ClassDef
 def do_ClassDef(self,node):
     
     '''
@@ -13547,7 +13447,7 @@ def do_ClassDef(self,node):
         return ti.visit_children(node)
     else:
         return [] # This value should not be used.
-.. @+node:ekr.20150312225028.416: *8* ti.Expr (new)
+.. @+node:ekr.20150312225028.416: *7* ti.Expr (new)
 # Expr(expr value)
 
 # This isn't really needed: the default visitor would work.
@@ -13557,7 +13457,7 @@ def do_Expr(self,node):
     ti = self
     t = ti.visit(node.value)
     return t
-.. @+node:ekr.20150312225028.417: *8* ti.FunctionDef & helpers
+.. @+node:ekr.20150312225028.417: *7* ti.FunctionDef & helpers
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef (self,node):
@@ -13581,7 +13481,7 @@ def do_FunctionDef (self,node):
         t = ti.infer_outer_def(specific_args,hash_,node)
     return t
 
-.. @+node:ekr.20150312225028.418: *9* ti.count_full_args
+.. @+node:ekr.20150312225028.418: *8* ti.count_full_args
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 #   arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -13600,7 +13500,7 @@ def count_full_args (self,node):
     if args.vararg: n += 1
     if args.kwarg:  n += 1
     return n
-.. @+node:ekr.20150312225028.419: *9* ti.infer_outer_def & helper
+.. @+node:ekr.20150312225028.419: *8* ti.infer_outer_def & helper
 def infer_outer_def(self,specific_args,hash_,node):
     
     '''Infer everything possible from a def D called with specific args:
@@ -13625,7 +13525,7 @@ def infer_outer_def(self,specific_args,hash_,node):
     ti.set_call_cache(e,hash_,t,tag='infer_def')
     ti.restore_context(data)
     return t
-.. @+node:ekr.20150312225028.420: *10* ti_bind_outer_args (ti.infer_outer_def helper)
+.. @+node:ekr.20150312225028.420: *9* ti_bind_outer_args (ti.infer_outer_def helper)
 # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 #   arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 def bind_outer_args (self,hash_,node):
@@ -13660,13 +13560,13 @@ def bind_outer_args (self,hash_,node):
             if trace: ti.trace(name,t)
         else:
             if trace: ti.trace('**** oops: no e2',name,d)
-.. @+node:ekr.20150312225028.421: *8* ti.Lambda
+.. @+node:ekr.20150312225028.421: *7* ti.Lambda
 def do_Lambda (self,node):
     
     ti = self
     return ti.visit(node.body)
-.. @+node:ekr.20150312225028.422: *8* ti.operators
-.. @+node:ekr.20150312225028.423: *9* ti.BinOp & helper
+.. @+node:ekr.20150312225028.422: *7* ti.operators
+.. @+node:ekr.20150312225028.423: *8* ti.BinOp & helper
 def do_BinOp (self,node):
 
     ti = self
@@ -13709,19 +13609,19 @@ def do_BinOp (self,node):
         t = [Inference_Error(ti.call_hash,node)] ### Should merge types!
     if trace and trace_infer: ti.trace(ti.format(node),'->',t)
     return t
-.. @+node:ekr.20150312225028.424: *9* ti.BoolOp
+.. @+node:ekr.20150312225028.424: *8* ti.BoolOp
 def do_BoolOp(self,node):
 
     ti = self    
     junk = ti.visit_children(node)
     return [ti.bool_type]
-.. @+node:ekr.20150312225028.425: *9* ti.Compare
+.. @+node:ekr.20150312225028.425: *8* ti.Compare
 def do_Compare(self,node):
 
     ti = self    
     junk = ti.visit_children(node)
     return [ti.bool_type]
-.. @+node:ekr.20150312225028.426: *9* ti.comprehension
+.. @+node:ekr.20150312225028.426: *8* ti.comprehension
 def do_comprehension(self,node):
 
     ti = self    
@@ -13734,12 +13634,12 @@ def do_comprehension(self,node):
         # ti.visit(node2)
 
     return [List_Type(node)]
-.. @+node:ekr.20150312225028.427: *9* ti.Expr (not used)
+.. @+node:ekr.20150312225028.427: *8* ti.Expr (not used)
 # def do_Expr (self,node):
 
     # ti = self    
     # return ti.visit(node.value)
-.. @+node:ekr.20150312225028.428: *9* ti.GeneratorExp
+.. @+node:ekr.20150312225028.428: *8* ti.GeneratorExp
 def do_GeneratorExp (self,node):
 
     ti = self
@@ -13755,7 +13655,7 @@ def do_GeneratorExp (self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.429: *9* ti.IfExp (Ternary operator)
+.. @+node:ekr.20150312225028.429: *8* ti.IfExp (Ternary operator)
 # IfExp(expr test, expr body, expr orelse)
 
 def do_IfExp(self,node):
@@ -13769,12 +13669,12 @@ def do_IfExp(self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.430: *9* ti.Index (default, at present)
+.. @+node:ekr.20150312225028.430: *8* ti.Index (default, at present)
 def do_Index(self,node):
 
     ti = self    
     return ti.visit(node.value)
-.. @+node:ekr.20150312225028.431: *9* ti.ListComp
+.. @+node:ekr.20150312225028.431: *8* ti.ListComp
 def do_ListComp(self,node):
     
     ti = self
@@ -13788,7 +13688,7 @@ def do_ListComp(self,node):
     else:
         t = ti.clean(t)
     return t
-.. @+node:ekr.20150312225028.432: *9* ti.Slice
+.. @+node:ekr.20150312225028.432: *8* ti.Slice
 def do_Slice(self,node):
     
     ti = self
@@ -13796,7 +13696,7 @@ def do_Slice(self,node):
     if node.lower: junk = ti.visit(node.lower)
     if node.step:  junk = ti.visit(node.step)
     return [ti.int_type] ### ???
-.. @+node:ekr.20150312225028.433: *9* ti.Subscript (*** to do)
+.. @+node:ekr.20150312225028.433: *8* ti.Subscript (*** to do)
 def do_Subscript(self,node):
 
     ti = self
@@ -13805,7 +13705,7 @@ def do_Subscript(self,node):
     t2 = ti.visit(node.slice)
     if t1 and trace: g.trace(t1,t2,ti.format(node))
     return t1 ### ?
-.. @+node:ekr.20150312225028.434: *9* ti.UnaryOp
+.. @+node:ekr.20150312225028.434: *8* ti.UnaryOp
 def do_UnaryOp(self,node):
     
     ti = self
@@ -13822,34 +13722,34 @@ def do_UnaryOp(self,node):
         if trace: g.trace(' fail:',op_kind,t,ti.format(node))
         t = [Unknown_Type(ti.call_hash,node)]
     return t
-.. @+node:ekr.20150312225028.435: *8* ti.primitive Types
-.. @+node:ekr.20150312225028.436: *9* ti.Builtin
+.. @+node:ekr.20150312225028.435: *7* ti.primitive Types
+.. @+node:ekr.20150312225028.436: *8* ti.Builtin
 def do_Builtin(self,node):
 
     ti = self
     assert not ti.has_children(node)
     return [ti.builtin_type]
 
-.. @+node:ekr.20150312225028.437: *9* ti.Bytes
+.. @+node:ekr.20150312225028.437: *8* ti.Bytes
 def do_Bytes(self,node):
 
     ti = self
     assert not ti.has_children(node)    
     return [ti.bytes_type]
-.. @+node:ekr.20150312225028.438: *9* ti.Dict
+.. @+node:ekr.20150312225028.438: *8* ti.Dict
 def do_Dict(self,node):
 
     ti = self
     junk = ti.visit_children(node)
     return [Dict_Type(node)]
         ### More specific type.
-.. @+node:ekr.20150312225028.439: *9* ti.List
+.. @+node:ekr.20150312225028.439: *8* ti.List
 def do_List(self,node): 
             
     ti = self
     junk = ti.visit_children(node)
     return [List_Type(node)]
-.. @+node:ekr.20150312225028.440: *9* ti.Num
+.. @+node:ekr.20150312225028.440: *8* ti.Num
 def do_Num(self,node):
     
     ti = self
@@ -13857,7 +13757,7 @@ def do_Num(self,node):
     t_num = Num_Type(node.n.__class__)
     # ti.trace(ti.format(node),'->',t_num)
     return [t_num]
-.. @+node:ekr.20150312225028.441: *9* ti.Str
+.. @+node:ekr.20150312225028.441: *8* ti.Str
 def do_Str(self,node):
     
     '''This represents a string constant.'''
@@ -13865,14 +13765,14 @@ def do_Str(self,node):
     ti = self
     assert not ti.has_children(node)
     return [ti.string_type]
-.. @+node:ekr.20150312225028.442: *9* ti.Tuple
+.. @+node:ekr.20150312225028.442: *8* ti.Tuple
 def do_Tuple (self,node):
 
     ti = self
     junk = ti.visit_children(node)
     return [Tuple_Type(node)]
-.. @+node:ekr.20150312225028.443: *8* ti.statements
-.. @+node:ekr.20150312225028.444: *9* ti.For
+.. @+node:ekr.20150312225028.443: *7* ti.statements
+.. @+node:ekr.20150312225028.444: *8* ti.For
 def do_For(self,node):
     
     ### what if target conflicts with an assignment??
@@ -13884,15 +13784,15 @@ def do_For(self,node):
         # ti.visit_list(node.orelse)
         
     return ti.visit_children(node)
-.. @+node:ekr.20150312225028.445: *9* ti.Import (not used)
+.. @+node:ekr.20150312225028.445: *8* ti.Import (not used)
 # def do_Import(self,node):
     
     # pass
-.. @+node:ekr.20150312225028.446: *9* ti.ImportFrom (not used)
+.. @+node:ekr.20150312225028.446: *8* ti.ImportFrom (not used)
 # def do_ImportFrom(self,node):
     
     # pass
-.. @+node:ekr.20150312225028.447: *9* ti.Return & ti.Yield & helper
+.. @+node:ekr.20150312225028.447: *8* ti.Return & ti.Yield & helper
 def do_Return(self,node):
     ti = self
     return ti.return_helper(node)
@@ -13901,7 +13801,7 @@ def do_Yield(self,node):
     ti = self
     return ti.return_helper(node)
     
-.. @+node:ekr.20150312225028.448: *10* ti.return_helper (sets cache)
+.. @+node:ekr.20150312225028.448: *9* ti.return_helper (sets cache)
 def return_helper(self,node):
 
     ti = self
@@ -13933,14 +13833,14 @@ def return_helper(self,node):
         if trace_hash: ti.trace(t,hash_,ti.format(node))
         else:          ti.trace(t,ti.format(node))
     return t
-.. @+node:ekr.20150312225028.449: *9* ti.With
+.. @+node:ekr.20150312225028.449: *8* ti.With
 def do_With (self,node):
 
     ti = self
     t = ti.visit_list(node.body)
     # ti.trace(t)
     return t
-.. @+node:ekr.20150312225028.450: *8* ti.Name (***ivars don't work)
+.. @+node:ekr.20150312225028.450: *7* ti.Name (***ivars don't work)
 def do_Name(self,node):
     
     ti = self
@@ -14007,712 +13907,13 @@ def do_Name(self,node):
         ti.trace('fail ',name,ctx_kind,'reach:',
             ['%s:%s' % (id(z),ti.format(z)) for z in reach])
     return t
-.. @+node:ekr.20150312225028.451: *5*  Traverser classes
-.. @+node:ekr.20150312225028.452: *6*   class AstTraverser
-class AstTraverser:
-    
-    '''
-    The base class for all traversers.
-    
-    See the documentation for *important* information about this class.
-    '''
-
-    @others
-.. @+node:ekr.20150312225028.453: *7*  a.Birth
-def __init__(self):
-
-    self.context_stack = []
-    self.level = 0 # The indentation level (not the context level).
-        # The number of parents a node has.
-    self.parents = [None]
-.. @+node:ekr.20150312225028.454: *7* a.traversers
-.. @+node:ekr.20150312225028.455: *8* a.find_function_call
-# Used by leoInspect code.
-
-def find_function_call (self,node):
-
-    '''
-    Return the static name of the function being called.
-    
-    tree is the tree.func part of the Call node.'''
-    
-    trace = True and self.enable_trace
-    kind = self.kind(node)
-    assert kind not in ('str','Builtin')
-    if kind == 'Name':
-        s = node.id
-    elif kind == 'Attribute':
-        s = node.attr # node.attr is always a string.
-    elif kind == 'Call':
-        s = self.find_function_call(node.func)
-    elif kind == 'Subscript':
-        s = None
-    else:
-        s = None
-        if trace:
-            # This is not an error.  Example:  (g())()
-            s = '****unknown kind: %s****: %s' % (kind,Utils().format(node))
-            g.trace(s)
-
-    return s or '<no function name>'
-.. @+node:ekr.20150312225028.456: *8* a.get/push/pop_context
-def get_context (self):
-
-    return self.context_stack[-1]
-
-def push_context (self,context):
-
-    assert context
-    self.context_stack.append(context)
-
-def pop_context (self):
-
-    self.context_stack.pop()
-.. @+node:ekr.20150312225028.457: *8* a.get_child_nodes
-def get_child_nodes(self,node):
-
-    assert isinstance(node,ast.AST),node.__class__.__name__
-
-    if node._fields is not None:
-        for name in node._fields:
-            child = getattr(node, name)
-            if isinstance(child, list):
-                for node2 in child:
-                    if isinstance(node2, ast.AST):
-                        yield node2    
-            elif isinstance(child, ast.AST):
-                yield child
-.. @+node:ekr.20150312225028.458: *8* a.has_children
-def has_children(self,node):
-    
-    assert isinstance(node,ast.AST),node.__class__.__name__
-    
-    return any(self.get_child_nodes(node))
-.. @+node:ekr.20150312225028.459: *8* a.run (default entry)
-def run (self,s):
-
-    t1 = time.time()
-    node = ast.parse(s,filename=self.fn,mode='exec')
-    self.visit(node)
-    t2 = time.time()
-    return t2-t1
-.. @+node:ekr.20150312225028.460: *8* a.visit
-def visit(self,node):
-    
-    """Walk a tree of AST nodes."""
-
-    assert isinstance(node,ast.AST),node.__class__.__name__
-
-    method_name = 'do_' + node.__class__.__name__
-    method = getattr(self,method_name,None)
-    if method:
-        # method is responsible for traversing subtrees.
-        return method(node)
-    else:
-        # Traverse subtrees automatically, without calling visit_children.
-        for child in self.get_child_nodes(node):
-            self.visit(child)
-.. @+node:ekr.20150312225028.461: *8* a.visit_children
-# def visit_children(self,node):
-    
-    # assert isinstance(node,ast.AST),node.__class__.__name__
-
-    # for child in self.get_child_nodes(node):
-        # self.visit(child)
-.. @+node:ekr.20150312225028.462: *8* a.visit_list
-def visit_list (self,aList):
-    
-    assert isinstance(aList,(list,tuple))
-    
-    for z in aList:
-        self.visit(z)
-.. @+node:ekr.20150312225028.463: *7* a.utils
-.. @+node:ekr.20150312225028.464: *8* a.attribute_base
-def attribute_base(self,node):
-    
-    '''Return the node representing the base of the chain.
-    Only 'Name' and 'Builtin' nodes represent names.
-    All other chains have a base that is a constant or nameless dict, list, etc.
-    '''
-
-    trace = False
-    kind = self.kind(node)
-    if kind in ('Name','Builtin','Str'):
-        result = node # We have found the base.
-    elif kind in ('Attribute','Subscript'):
-        if trace: g.trace('value: %s'% node.value)
-        result = self.attribute_base(node.value)
-    elif kind == 'Call':
-        result = self.attribute_base(node.func)
-    else:
-        # The chain is rooted in a constant or nameless dict, list, etc.
-        # This is not an error.
-        # g.trace('*** kind: %s node: %s' % (kind,node))
-        result = node
-        
-    if trace:
-        u = Utils()
-        g.trace(u.format(node),'->',u.format(result))
-    return result
-.. @+node:ekr.20150312225028.465: *8* a.attribute_target (To be deleted)
-def attribute_target(self,node):
-    
-    '''Return the node representing the target of the chain.
-    Only 'Name' and 'Builtin' Ops represent names.'''
-    
-    trace = True
-    kind = self.kind(node)
-    if kind in ('Name','Builtin','Str'):
-        result = node # We have found the target.
-    elif kind == 'Attribute':
-        # result = self.attribute_target(node.attr) ### Always a string.
-        result = node # node.attr is the target.
-    elif kind == 'Call':
-        result = self.attribute_target(node.func)
-    elif kind == 'Subscript':
-        result = self.attribute_target(node.value)
-    else:
-        g.trace('can not happen',node.__class__.__name__,repr(node))
-        # Don't call u.format here.
-        return None
-    
-    if trace:
-        u = Utils()
-        g.trace(u.format(node),'->',u.format(result))
-    return result
-.. @+node:ekr.20150312225028.466: *8* a.check_visitor_names
-def check_visitor_names(self):
-    
-    '''Check that there is an ast.AST node named x
-    for all visitor methods do_x.'''
-    
-    << ast abstract grammar >>
-    << define names >>
-
-    # Inexpensive, because there are few entries in aList.
-    aList = [z for z in dir(self) if z.startswith('do_')]
-    for s in sorted(aList):
-        name = s[3:]
-        if name not in names:
-            g.trace('***** oops',self.__class__.__name__,name)
-            assert False,name
-                # This is useful now that most errors have been caught.
-.. @+node:ekr.20150312225028.467: *9* << ast abstract grammar >>
-@nocolor-node
-@
-Python 3 only:
-    arguments = (arg* args, identifier? vararg, expr? varargannotation,
-                     arg* kwonlyargs, identifier? kwarg,
-                     expr? kwargannotation, expr* defaults,
-                     expr* kw_defaults)
-    arg = (identifier arg, expr? annotation)
-mod:
-    Expression(expr body)
-    Interactive(stmt* body)
-    Module(stmt* body)
-    Suite(stmt* body) #  not an actual node,
-stmt:
-    Assert(expr test, expr? msg)
-    Assign(expr* targets, expr value)
-    AugAssign(expr target, operator op, expr value)
-    Break
-    ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-    Continue
-    Delete(expr* targets)
-    Exec(expr body, expr? globals, expr? locals)
-    Expr(expr value)
-    For(expr target, expr iter, stmt* body, stmt* orelse)
-    FunctionDef(identifier name, arguments args,stmt* body, expr* decorator_list)
-    Global(identifier* names)
-    If(expr test, stmt* body, stmt* orelse)
-    Import(alias* names)
-    ImportFrom(identifier? module, alias* names, int? level)
-    Pass
-    Print(expr? dest, expr* values, bool nl)
-    Raise(expr? type, expr? inst, expr? tback)
-    Return(expr? value)
-    TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
-    TryFinally(stmt* body, stmt* finalbody)
-    While(expr test, stmt* body, stmt* orelse)
-    With(expr context_expr, expr? optional_vars, stmt* body)
-expr:
-    Attribute(expr value, identifier attr, expr_context ctx)
-    BinOp(expr left, operator op, expr right)
-    BoolOp(boolop op, expr* values)
-    Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-    Compare(expr left, cmpop* ops, expr* comparators)
-    Dict(expr* keys, expr* values)
-    DictComp(expr key, expr value, comprehension* generators)
-    GeneratorExp(expr elt, comprehension* generators)
-    IfExp(expr test, expr body, expr orelse)
-    Lambda(arguments args, expr body)
-    List(expr* elts, expr_context ctx) 
-    ListComp(expr elt, comprehension* generators)
-    Name(identifier id, expr_context ctx)
-    Num(object n) -- a number as a PyObject.
-    Repr(expr value)
-    Set(expr* elts)
-    SetComp(expr elt, comprehension* generators)
-    Str(string s) -- need to specify raw, unicode, etc?
-    Subscript(expr value, slice slice, expr_context ctx)
-    Tuple(expr* elts, expr_context ctx)
-    UnaryOp(unaryop op, expr operand)
-    Yield(expr? value)
-expr_context:
-    AugLoad
-    AugStore
-    Del
-    Load
-    Param
-    Store
-slice:
-    Ellipsis
-    Slice(expr? lower, expr? upper, expr? step) 
-    ExtSlice(slice* dims) 
-    Index(expr value) 
-boolop:
-    And | Or 
-operator:
-    Add | Sub | Mult | Div | Mod | Pow | LShift | RShift | BitOr | BitXor | BitAnd | FloorDiv
-unaryop:
-    Invert | Not | UAdd | USub
-cmpop:
-    Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
-excepthandler:
-    ExceptHandler(expr? type, expr? name, stmt* body)
-    
-Lower case node names:
-    alias (identifier name, identifier? asname)
-    arguments (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-    comprehension (expr target, expr iter, expr* ifs)
-    keyword (identifier arg, expr value)
-.. @+node:ekr.20150312225028.468: *9* << define names >>
-names = (
-    'Add','And','Assert','Assign','Attribute','AugAssign','AugLoad','AugStore',
-    'BinOp','BitAnd','BitOr','BitXor','BoolOp','Break',
-    'Builtin', ### Python 3.x only???
-    'Bytes', # Python 3.x only.
-    'Call','ClassDef','Compare','Continue',
-    'Del','Delete','Dict','DictComp','Div',
-    'Ellipsis','Eq','ExceptHandler','Exec','Expr','Expression','ExtSlice',
-    'FloorDiv','For','FunctionDef','GeneratorExp','Global','Gt','GtE',
-    'If','IfExp','Import','ImportFrom','In','Index','Interactive',
-    'Invert','Is','IsNot','LShift','Lambda',
-    'List','ListComp','Load','Lt','LtE',
-    'Mod','Module','Mult','Name','Not','NotEq','NotIn','Num',
-    'Or','Param','Pass','Pow','Print',
-    'RShift','Raise','Repr','Return',
-    'Set','SetComp','Slice','Store','Str','Sub','Subscript','Suite',
-    'TryExcept','TryFinally','Tuple','UAdd','USub','UnaryOp',
-    'While','With','Yield',
-    # Lower case names...
-    'alias',         # A valid ast.AST node.
-    'arguments',     # A valid ast.AST node.
-    'comprehension', # A valid ast.AST node.
-    'keyword',       # A valid ast.AST node(!)
-        # 'keywords', # A valid field, but not a valid ast.AST node!
-        # In ast.Call nodes, node.keywords points to a *list* of ast.keyword objects.
-    # There is never any need to traverse these:
-        # 'id','n','name','s','str'.
-)
-.. @+node:ekr.20150312225028.469: *8* a.info
-def info (self,node):
-    
-    return '%s: %9s' % (node.__class__.__name__,id(node))
-.. @+node:ekr.20150312225028.470: *8* a.kind
-def kind(self,node):
-    
-    return node.__class__.__name__
-.. @+node:ekr.20150312225028.471: *8* a.op_name
-def op_name (self,node):
-    
-    '''Return the print name of an operator node.'''
-    
-    d = {
-    # Binary operators. 
-    'Add':       '+',
-    'BitAnd':    '&',
-    'BitOr':     '|',
-    'BitXor':    '^',
-    'Div':       '/',
-    'FloorDiv':  '//',
-    'LShift':    '<<',
-    'Mod':       '%',
-    'Mult':      '*',
-    'Pow':       '**',
-    'RShift':    '>>',
-    'Sub':       '-',
-    # Boolean operators.
-    'And':   ' and ',
-    'Or':    ' or ',
-    # Comparison operators
-    'Eq':    '==',
-    'Gt':    '>',
-    'GtE':   '>=',
-    'In':    ' in ',
-    'Is':    ' is ',
-    'IsNot': ' is not ',
-    'Lt':    '<',
-    'LtE':   '<=',
-    'NotEq': '!=',
-    'NotIn': ' not in ',
-    # Context operators.
-    'do_AugLoad':  '<AugLoad>',
-    'do_AugStore': '<AugStore>',
-    'do_Del':      '<Del>',
-    'do_Load':     '<Load>',
-    'do_Param':    '<Param>',
-    'do_Store':    '<Store>',
-    # Unary operators.
-    'Invert':   '~',
-    'Not':      ' not ',
-    'UAdd':     '+',
-    'USub':     '-',
-    }
-    name = d.get(self.kind(node),'<%s>' % node.__class__.__name__)
-    assert name,self.kind(node)
-    return name
-.. @+node:ekr.20150312225028.472: *6*   class StatementTraverser
-class StatementTraverser(AstFullTraverser):
-    
-    def __init__ (self):
-
-        AstFullTraverser.__init__(self)
-            # Init the base class.
-        self.root = None
-
-    @others
-.. @+node:ekr.20150312225028.473: *7* stat.run
-def run (self,root):
-
-    self.root = root
-    self.visit(root)
-.. @+node:ekr.20150312225028.474: *7* stat.visit & helpers
-def default_visitor(self,node):
-    pass
-   
-def visit(self,node):
-    
-    '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-    assert isinstance(node,ast.AST),node.__class__.__name__
-    method_name = 'do_' + node.__class__.__name__
-    method = getattr(self,method_name,self.default_visitor)
-    return method(node)
-
-def visit_children(self,node):
-    assert False,'must visit children explicitly'
-.. @+node:ekr.20150312225028.475: *7* stat.Do nothings
-if 0:
-    @others
-.. @+node:ekr.20150312225028.476: *8* stat.Assert
-# Assert(expr test, expr? msg)
-
-def do_Assert(self,node):
-    pass
-.. @+node:ekr.20150312225028.477: *8* stat.Assign
-# Assign(expr* targets, expr value)
-
-def do_Assign(self,node):
-    pass
-.. @+node:ekr.20150312225028.478: *8* stat.AugAssign
-# AugAssign(expr target, operator op, expr value)
-
-def do_AugAssign(self,node):
-    pass
-.. @+node:ekr.20150312225028.479: *8* stat.Break
-def do_Break(self,node):
-    pass
-
-.. @+node:ekr.20150312225028.480: *8* stat.Continue
-def do_Continue(self,node):
-    pass
-.. @+node:ekr.20150312225028.481: *8* stat.Delete
-# Delete(expr* targets)
-
-def do_Delete(self,node):
-    pass
-.. @+node:ekr.20150312225028.482: *8* stat.Exec
-# Python 2.x only
-# Exec(expr body, expr? globals, expr? locals)
-
-def do_Exec(self,node):
-    pass
-.. @+node:ekr.20150312225028.483: *8* stat.Expr
-# Expr(expr value)
-
-def do_Expr(self,node):
-    pass
-.. @+node:ekr.20150312225028.484: *8* stat.Global
-# Global(identifier* names)
-
-def do_Global(self,node):
-    pass
-.. @+node:ekr.20150312225028.485: *8* stat.Import & ImportFrom
-# Import(alias* names)
-
-def do_Import(self,node):
-    pass
-
-# ImportFrom(identifier? module, alias* names, int? level)
-
-def do_ImportFrom(self,node):
-    pass
-.. @+node:ekr.20150312225028.486: *8* stat.Pass
-def do_Pass(self,node):
-    pass
-.. @+node:ekr.20150312225028.487: *8* stat.Print
-# Python 2.x only
-# Print(expr? dest, expr* values, bool nl)
-def do_Print(self,node):
-    pass
-    
-.. @+node:ekr.20150312225028.488: *8* stat.Raise
-# Raise(expr? type, expr? inst, expr? tback)
-
-def do_Raise(self,node):
-    pass
-.. @+node:ekr.20150312225028.489: *8* stat.Return
-# Return(expr? value)
-
-def do_Return(self,node):
-    pass
-.. @+node:ekr.20150312225028.490: *8* stat.Yield
-#  Yield(expr? value)
-
-def do_Yield(self,node):
-    pass
-.. @+node:ekr.20150312225028.491: *6* class IterativeAstTraverser
-class IterativeAstTraverser:
-    
-    # def __init__(self):
-        # pass
-        
-    @others
-.. @+node:ekr.20150312225028.492: *7* iterative.traversers
-.. @+node:ekr.20150312225028.493: *8* private_visit
-def private_visit(self,node):
-    
-    '''Visit a node and all its descendants *without* using recursion.
-    
-    Visitor methods should *not* call visit, visit_children or visit_list:
-    the visit method visits all nodes automatically.
-    '''
-    
-    trace = False
-    nodes=[]
-    
-    for node in self._iterative_postorder_nodes(node):
-        kind = node.__class__.__name__
-        if trace: nodes.append(kind)
-        method = getattr(self,'do_'+kind,None)
-        if method:
-            if trace: g.trace(method,node)
-            method(node)
-
-    if trace: g.trace('\n'+' '.join(reversed(nodes)))
-.. @+node:ekr.20150312225028.494: *8* _iterative_postorder_nodes
-def _iterative_postorder_nodes(self,node):
-
-    '''Iteratively yield a node and its descendants in post order:
-    that is, this yields all descendants of a node before yielding the node.
-    
-    Adapted from the iterativePostorder algorithm at:
-    http://en.wikipedia.org/wiki/Tree_traversal#Postorder
-    '''
-
-    marked_nodes = {} # Do *not* alter the AST nodes!
-    stack = [node]
-    while stack:
-        all_visited = True
-        for child in self._children(stack[-1]):
-            if not marked_nodes.has_key(id(child)):
-                stack.append(child)
-                all_visited = False
-        if all_visited:
-            node2 = stack.pop()
-            marked_nodes[id(node2)]=True
-            yield node2
-.. @+node:ekr.20150312225028.495: *8* _children
-def _children(self,node):
-
-    if isinstance(node, ast.Module):
-        for node2 in node.body:
-            yield node2
-
-    elif isinstance(node,ast.AST) and node._fields is not None:
-        for name in node._fields:
-            child = getattr(node,name)
-            if isinstance(child,list):
-                for node2 in child:
-                    if isinstance(node2, ast.AST):
-                        yield node2
-            elif isinstance(child, ast.AST):
-                yield child
-    else:
-        raise StopIteration
-.. @+node:ekr.20150312225028.496: *6* class HybridAstTraverser
-class HybridAstTraverser(AstTraverser):
-    
-    # def __init__(self):
-        # AstTraverser.__init__(self)
-        
-    @others
-.. @+node:ekr.20150312225028.497: *7* visit
-def visit(self,node,data):
-    
-    '''Visit a tree using a combination of iteration and recursion.'''
-    
-    # pylint: disable=W0221
-        # Arguments number differs from overridden method.
-    
-    assert isinstance(node,ast.AST),node.__class__.__name__
-    method = getattr(self,'do_'+node.__class__.__name__,self.visit_children)
-    return method(node,data)
-.. @+node:ekr.20150312225028.498: *7* visit_children
-def visit_children(self,node,data):
-    
-    # pylint: disable=W0221
-        # Arguments number differs from overridden method.
-    
-    assert isinstance(node,ast.AST),node.__class__.__name__
-
-    stack = list(self.get_child_nodes(node))
-    while stack:
-        node2 = stack.pop()
-        kind = node2.__class__.__name__
-        method = getattr(self,'do_'+kind,None)
-        if method:
-            # The method is responsible for visiting children.
-            data = method(node2,data)
-        else:
-            # Just push the children.
-            stack.extend(list(self.get_child_nodes(node2)))
-    return data
-.. @+node:ekr.20150312225028.499: *6* class StringReportTraverser (AstFormatter)
-class StringReportTraverser (AstFormatter):
-    
-    '''Create string reports from an AST tree.'''
-
-    @others
-.. @+node:ekr.20150312225028.500: *7* srt.__init__
-def __init__(self,fn):
-    
-    AstFormatter.__init__(self)
-        # Init the base class.
-    self.debug = True
-    self.fn = fn
-    self.visitor = self
-.. @+node:ekr.20150312225028.501: *8* define_html_header
-def define_html_header(self):
-    
-    # Use string catenation to avoid using g.adjustTripleString.
-    return (
-        '<?xml version="1.0" encoding="iso-8859-15"?>\n'
-        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n'
-        '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n'
-        '<html xmlns="http://www.w3.org/1999/xhtml">\n'
-        '<head>\n'
-        '  <title>%(title)s</title>\n'
-        '  <link rel="stylesheet" type="text/css" href="%(css-fn)s" />\n'
-        '</head>\n<body>'
-    )
-.. @+node:ekr.20150312225028.502: *7* srt.report(entry_point)
-def report(self,node):
-
-    val = self.visit(node)
-    s = val and val.strip()
-    fn = ' for '+self.fn if self.fn else ''
-    return '\nReport%s...\n\n' % (self.fn) + s
-   
-.. @+node:ekr.20150312225028.503: *7* srt.show_all & helper
-def show_all(self,node,tag):
-    
-    result = []
-    s = self.show(node,tag)
-    if s: result.append(s)
-    for child in self.get_child_nodes(node):
-        s = self.show_all(child,tag)
-        if s: result.append(s)
-    return '\n'.join(result)
-.. @+node:ekr.20150312225028.504: *7* srt.show
-def show(self,node,tag):
-    
-    e = getattr(node,'e',None)
-    table = (
-        (node,'cache',tag),
-        (e,'call_cache','e(%s)' % (e and e.name or '')),
-        (node,'failures',''),
-    )
-    result = []
-    for obj,ivar,tag2 in table:
-        if obj and hasattr(obj,ivar):
-            list_or_dict = getattr(obj,ivar)
-            pad = ' '*2*(self.level+2)
-            if hasattr(list_or_dict,'keys'):
-                result.append('%s%s:%s...' % (pad,tag2,ivar))
-                for key in sorted(list_or_dict.keys()):
-                    aList = list_or_dict.get(key)
-                    result.append('   %s%s => %s' % (pad,key,aList))
-            else:
-                result.append('%sfailures: %s...' % (pad,self.format(obj)))
-                result.append('   %s%s' % (pad,list_or_dict))
-    # Must end with a newline so the source is shown correctly.
-    return '%s\n' % '\n'.join(result) if result else ''
-.. @+node:ekr.20150312225028.505: *7* srt.visit
-def visit(self,node):
-    
-    """Walk a tree of AST nodes."""
-
-    assert isinstance(node,ast.AST),node.__class__.__name__
-    kind = node.__class__.__name__
-    method = getattr(self,'do_' + kind,None)
-    if method:
-        # method is responsible for traversing subtrees.
-        return method(node)
-    else:
-        # Traverse subtrees automatically, without calling visit_children.
-        return self.show_all(node,kind)
-.. @+node:ekr.20150312225028.506: *7* srt.visitors
-# Only these nodes may have caches.
-.. @+node:ekr.20150312225028.507: *8* srt.Assign
-def do_Assign(self,node):
-
-    value = self.visit(node.value)
-    assns = ['%s=%s\n' % (self.visit(z),value) for z in node.targets]
-    s =  ''.join([self.indent(z) for z in assns])
-    return s + self.show_all(node,'Assign')
-.. @+node:ekr.20150312225028.508: *8* srt.Expr
-def do_Expr(self,node):
-    
-    '''An outer expression: must be indented.'''
-    
-    s = self.indent('%s\n' % self.visit(node.value))
-    return s + self.show_all(node,'Expr')
-.. @+node:ekr.20150312225028.509: *8* srt.Return
-def do_Return(self,node):
-     
-    val = ' ' + self.visit(node.value) if node.value else ''
-    s = self.indent('return%s\n' % val)
-    return s + self.show_all(node,'Return')
-.. @+node:ekr.20150312225028.510: *8* str.Str
-def do_Str (self,node):
-    
-    '''This represents a string constant.'''
-    s = repr(node.s)
-    return s if len(s) < 60 else s[:57]+'...%s' % (s[0])
-.. @+node:ekr.20150312225028.511: *5* class GeneralTest (StcTest)
-class GeneralTest: ### (StcTest):
-    
-    '''A general test class.'''
-    
-    @others
-.. @+node:ekr.20150312225028.512: *4* QueryReplaceCommandsClass (limited to single node)
+.. @+node:ekr.20150312225028.512: *3* QueryReplaceCommandsClass (limited to single node)
 class QueryReplaceCommandsClass (baseEditCommandsClass):
 
     '''A class to handle query replace commands.'''
 
     @others
-.. @+node:ekr.20150312225028.513: *5*  ctor & init (QueryReplaceCommandsClass)
+.. @+node:ekr.20150312225028.513: *4*  ctor & init (QueryReplaceCommandsClass)
 def __init__ (self,c):
 
     baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -14723,14 +13924,14 @@ def init (self):
     self.qQ = None
     self.qR = None
     self.replaced = 0 # The number of replacements.
-.. @+node:ekr.20150312225028.514: *5*  getPublicCommands
+.. @+node:ekr.20150312225028.514: *4*  getPublicCommands
 def getPublicCommands (self):
 
     return {
         'query-replace':        self.queryReplace,
         'query-replace-regex':  self.queryReplaceRegex,
     }
-.. @+node:ekr.20150312225028.515: *5* Entry points
+.. @+node:ekr.20150312225028.515: *4* Entry points
 def queryReplace (self,event):
 
     '''Interactively find and replace text.
@@ -14743,8 +13944,8 @@ def queryReplaceRegex (self,event):
     This is not recommended: Leo's other find and change commands are more capable.'''
     self.regexp = True
     self.stateHandler(event)
-.. @+node:ekr.20150312225028.516: *5* Helpers
-.. @+node:ekr.20150312225028.517: *6* doOneReplace
+.. @+node:ekr.20150312225028.516: *4* Helpers
+.. @+node:ekr.20150312225028.517: *5* doOneReplace
 def doOneReplace (self,event):
 
     w = self.editWidget(event)
@@ -14755,7 +13956,7 @@ def doOneReplace (self,event):
     ins = w.getInsertPoint()
     w.insert(ins,self.qR)
     self.replaced += 1
-.. @+node:ekr.20150312225028.518: *6* findNextMatch (query-replace)
+.. @+node:ekr.20150312225028.518: *5* findNextMatch (query-replace)
 def findNextMatch (self,event):
 
     '''Find the next match and select it.
@@ -14774,7 +13975,7 @@ def findNextMatch (self,event):
         << handle regexp >>
     else:
         << handle plain search >>
-.. @+node:ekr.20150312225028.519: *7* << handle regexp >>
+.. @+node:ekr.20150312225028.519: *6* << handle regexp >>
 try:
     regex = re.compile(self.qQ)
 except Exception:
@@ -14799,7 +14000,7 @@ if match:
 else:
     self.quitSearch(event)
     return False
-.. @+node:ekr.20150312225028.520: *7* << handle plain search >> (tag_add & tag_config) LATER
+.. @+node:ekr.20150312225028.520: *6* << handle plain search >> (tag_add & tag_config) LATER
 i = w.search(self.qQ,'insert',stopindex='end')
 
 if i:
@@ -14810,7 +14011,7 @@ if i:
 else:
     self.quitSearch(event)
     return False
-.. @+node:ekr.20150312225028.521: *6* getUserResponse
+.. @+node:ekr.20150312225028.521: *5* getUserResponse
 def getUserResponse (self,event):
 
     w = self.editWidget(event)
@@ -14835,7 +14036,7 @@ def getUserResponse (self,event):
             self.quitSearch(event)
 
     w.seeInsertPoint()
-.. @+node:ekr.20150312225028.522: *6* quitSearch
+.. @+node:ekr.20150312225028.522: *5* quitSearch
 def quitSearch (self,event,message=None):
 
     k = self.k
@@ -14847,7 +14048,7 @@ def quitSearch (self,event,message=None):
     if message is None:
         message = 'Replaced %d occurences' % self.replaced
     k.setLabelGrey(message)
-.. @+node:ekr.20150312225028.523: *6* stateHandler
+.. @+node:ekr.20150312225028.523: *5* stateHandler
 def stateHandler (self,event):
 
     k = self.k ; state = k.getState('query-replace')
@@ -14876,467 +14077,5 @@ def stateHandler (self,event):
         self.findNextMatch(event)
     elif state == 3:
         self.getUserResponse(event)
-.. @+node:ekr.20150312225028.524: *4* Script: isSearchableWidget
-g.cls()
-# Determine whether the focus widget supports the high-level interface.
-import leo.plugins.qtGui as qtGui
-import leo.core.leoFrame as leoFrame
-import PyQt4.QtGui as QtGui
-if 0:
-    c.logWantsFocusNow()
-elif 1: # Edit a headline
-    c.editHeadline(p)
-    # c.redraw()
-body_w = c.frame.body.bodyCtrl.widget
-w = QtGui.QApplication.focusWidget()
-print('Focus','isBodyCtrl',w == body_w,w)
-tree = c.frame.tree
-while w:
-    # isText = g.app.gui.isTextWidget(w)
-    if isinstance(w,QtGui.QLineEdit):
-        wrapper = tree.getWrapper(w,item=None)
-        if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
-            print('QLineEdit has wrapper',w,wrapper)
-        else:
-            print('QLineEdit: NO wrapper',w)
-            # wrapper = tree.headlineWrapper(c,item=None,name='find-head-wrapper',widget=w)
-            # print('QLineEdit NEW wrapper',w,wrapper)
-        break
-    elif isinstance(w,QtGui.QTextEdit):
-        wrapper = getattr(w,'leo_wrapper',None)
-        if wrapper:
-            if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
-                print('QTextEdit has text wrapper',w,wrapper)
-            elif isinstance(wrapper,qtGui.leoQtLog):
-                logCtrl = wrapper.widget # same as wrapper.logCtrl
-                print('QtTextEdit has log wrapper',w,logCtrl)
-            else:
-                print('unknown wrapper',wrapper)
-        else:
-            wrapper = qtGui.leoQTextEditWidget(w,'find-wrapper',c=c)
-            print('QTextEdit NEW wrapper',w,wrapper)
-        break
-    print('Fail',w)
-    wrapper = False
-    if hasattr(w,'parent'):
-        w = w.parent()
-    else:
-        print('no parent',w)
-        break
-if wrapper:
-    print('is searchable (has wrapper)',w,wrapper)
-    # Make sure wrapper supports the high-level interface.
-    print('high level?',isinstance(wrapper,leoFrame.HighLevelInterface))
-    table = (
-        'insert',
-        'getAllText',
-        'setAllText',
-        'setInsertPoint',
-        'setSelectionRange',
-    )
-    for ivar in table:
-        print(bool(getattr(wrapper,ivar,None)),ivar)
-.. @+node:ekr.20150312225028.525: *4* unused from leoPersistence.py
-.. @+node:ekr.20150312225028.526: *5* pd.find_gnx_node
-if 0:
-    ### No longer used
-    # Replaced by pd.gnx_dict.
-    def find_gnx_node(pd,gnx):
-        '''Return the first position having the given gnx.'''
-        # Newly-imported nodes never have the given gnx initially,
-        # but their gnx's may be changed while reading.
-        for p in pd.c.all_unique_positions():
-            if p.v.gnx == gnx:
-                return p
-        return None
-.. @+node:ekr.20150312225028.527: *5* pd.recover_ua_for_gnx
-def recover_ua_for_gnx(pd,gnx,root,unl):
-    '''
-    No gnx was found for unl. If an @ua:<gnx> node exists,
-    copy that node as a child of the @recovery node.
-    '''
-    trace = False and not g.unitTesting
-    at_uas = pd.has_at_uas_node(root)
-    if at_uas:
-        # Find the @ua:<gnx> node in root's @uas node.
-        h = '@ua:'+gnx
-        for at_ua in at_uas.children():
-            if at_ua.h == h:
-                break
-        else:
-            if trace: g.trace('no @ua node for gnx:',gnx)
-            return
-        # Create the @recovery node if necessary.
-        at_recovery = pd.find_at_recovery_node(root)
-        # Create the @ua node if it does not exist as a child of the @recovery node.
-        for child in at_recovery.children():
-            if (child.h,child.b) == (at_ua.h,at_ua.b):
-                if trace: g.trace('found recovered node',child.h)
-                break
-        else:
-            p = at_recovery.insertAsLastChild()
-            p.h = at_ua.h
-            p.b = at_ua.b
-            if not g.unitTesting:
-                g.trace('created recovered node',p.h)
-    elif trace:
-        g.trace('no @uas node for:',root.h)
-.. @+node:ekr.20150312225028.528: *5* from delete_at_data_children
-        # This looks dubious.
-        for child in at_data.children():
-            if g.match_word(child.h,0,'@recovery'):
-                # Move the node to the parent.
-                parent = at_data.parent()
-                child.moveToLastChildOf(parent)
-                # Delete all the children.
-                at_data.deleteAllChildren()
-                # Move the node back.
-                p = parent.firstChild()
-                while p.hasNext():
-                    p.moveToNext()
-                p.moveToLastChildOf(at_data)
-                break
-        else:
-            at_data.deleteAllChildren()
-.. @+node:ekr.20150312225028.529: *5* pd.find_at_recovery_node
-def find_at_recovery_node(pd,root):
-    '''
-    Find the @recovery node for root, a foreign node.
-    Create the @recovery node if it does not exist.
-    '''
-    h = '@recovery'
-    at_data = pd.find_at_data_node(root)
-    p = g.findNodeInTree(pd.c,at_data,h)
-    if not p:
-        p = at_data.insertAsLastChild()
-        p.h = h
-    return p
-.. @+node:ekr.20150312225028.530: *5* pd.has_at_recovery_node
-def has_at_recovery_node(pd,root):
-    '''
-    Find the @recovery node for an @data node with the given unl.
-    Return None if it does not exist.
-    '''
-    p = pd.has_at_data_node(root)
-    return p and g.findNodeInTree(pd.c,p,'@recovery')
-.. @+node:ekr.20100119145629.6109: *3* fc.checkOutline
-def checkOutline (self):
-
-    c = self.c
-
-    g.blue('@bool check_outline_before_save = True')
-
-    errors = c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-    ok = errors == 0
-    if not ok:
-        g.error('outline not written')
-
-    return ok
-.. @+node:ekr.20150320160729.4: *3* from leoRst.py
-.. @+node:ekr.20150319210537.1: *4* rst.setOption
-def setOption (self,name,val,tag=''):
-    '''Put an option into self.optionsDict.'''
-    assert not new_settings,g.callers()
-    c = self.c
-    if self.debug:
-        g.trace('%-10s %40s %r' % (tag,name,val))
-    self.optionsDict [self.munge(name)] = val
-.. @+node:ekr.20090502071837.54: *4* rst.scanAllOptions & helpers
-def scanAllOptions(self,p):
-    '''
-    Scan position p and p's ancestors looking for options,
-    setting corresponding ivars.
-    
-    Once an option is seen, no other related options in ancestor nodes have any effect.
-    '''
-    assert not new_settings,g.callers()
-    c = self.c
-    if self.debug: g.trace('=====',p.h)
-    self.initOptionsFromSettings() # Must be done on every node.
-    self.handleSingleNodeOptions(p)
-    seen = self.singleNodeOptions[:] # Suppress inheritance of single-node options.
-    for p in p.self_and_parents():
-        d = self.dd.get(p.v,{})
-        for key in d.keys():
-            ivar = self.munge(key)
-            if not ivar in seen:
-                seen.append(ivar)
-                val = d.get(key)
-                self.setOption(key,val,p.h)
-    if self.rst3_all:
-        self.setOption("generate_rst", True, "rst3_all")
-        self.setOption("generate_rst_header_comment",True, "rst3_all")
-        self.setOption("http_server_support", True, "rst3_all")
-        self.setOption("write_intermediate_file", True, "rst3_all")
-.. @+node:ekr.20090502071837.55: *5* rst.initOptionsFromSettings
-def initOptionsFromSettings (self):
-    '''Init options from settings.'''
-    c = self.c
-    d = self.d0
-    for key in sorted(d):
-        for getter,kind in (
-            (c.config.getBool,'@bool'),
-            (c.config.getString,'@string'),
-            (d.get,'default'),
-        ):
-            # Major bug fix: prefix 'rst3_' to c.config names!
-            if kind == 'default':
-                val = getter(key)
-            else:
-                val = getter('rst3_'+key)
-            if kind == 'default' or val is not None:
-                self.setOption(key,val,'settings')
-                break
-    # Script settings override everything else.
-    d2 = self.scriptSettingsDict or {}
-    for key in d2.keys():
-        val = d2.get(key)
-        # g.trace(key,val)
-        self.setOption(key,val,'script')
-    # Special case.
-    if not mod_http:
-        if c.config.getBool('http_server_support'):
-            g.error('No http_server_support: can not import mod_http plugin')
-            self.setOption('http_server_support',False)
-.. @+node:ekr.20090502071837.56: *5* rst.handleSingleNodeOptions
-def handleSingleNodeOptions (self,p):
-    '''
-    Init the settings of single-node options from the nodeOptionsDict.
-
-    All such options default to False.
-    '''
-    d = self.dd.get(p.v, {} )
-    for ivar in self.singleNodeOptions:
-        val = d.get(ivar,False)
-        #g.trace('%24s %8s %s' % (ivar,val,p.h))
-        self.setOption(ivar,val,tag=p.h)
-
-.. @+node:ekr.20150327145854.1: *3* new idle-time code
-.. @+node:ekr.20110605121601.18519: *4* LeoQtGui.Idle Time
-.. @+node:ekr.20110605121601.18520: *5* LeoQtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
-timer = None
-timer_last_delay = 0
-
-def setIdleTimeHook(self):
-    '''
-    Define a timer and its callback so that:
-    a) g.app.idleTimeHook() actually gets called at idle-time,
-    b) avoids busy waiting and,
-    c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
-    '''
-
-    def handler(timer):
-        '''Handler for IdleTime class.'''
-        # Disabling idle-time sets g.app.idleTimeHook = None.
-        if g.app.idleTimeHook:
-            g.app.idleTimeHook()
-        
-    self.timer = g.IdleTime(handler,delay=g.app.idleTimeDelay)
-    if self.timer:
-        self.timer.start()
-
-setIdleTimeHookAfterDelay = setIdleTimeHook
-.. @+node:ekr.20140701093157.16738: *4* enable/disable/toggle-idle-time-tracing
-@g.command('disable-idle-time-tracing')
-def disable_idle_time_tracing(event):
-    '''Disable tracing of default idle-time events.'''
-    g.app.trace_idle_time = False
-    
-@g.command('enable-idle-time-tracing')
-def enable_idle_time_tracing(event):
-    '''Enable tracing of default idle-time events.'''
-    g.app.trace_idle_time = True
-    
-@g.command('toggle-idle-time-tracing')
-def toggle_idle_time_tracing(event):
-    '''Toggle tracing of default idle-time events.'''
-    g.app.trace_idle_time = not g.app.trace_idle_time
-.. @+node:ekr.20031218072017.3739: *4* Idle time (LeoGui)
-def setIdleTimeHook (self):
-    pass
-    
-# setIdleTimeHookAfterDelay = setIdleTimeHook
-.. @+node:ekr.20150401210147.1: *3* from mod_scripting.py
-.. @+node:ekr.20150401210156.2: *4* OLD sc.find_gnx & helper
-def find_gnx(self,gnx,findFlag=False,openFlag=False):
-    '''
-    Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
-    If found, open the tab/outline and select the specified node.
-    '''
-    trace = False and not g.unitTesting
-    c = self.c
-    # Look at the open commanders only if we aren't looking in unopened settings files.
-    if not findFlag:
-        # First, look in selected commander.
-        for p in c.all_positions():
-            if p.gnx == gnx:
-                if trace: g.trace('found',p.h,'in',c.shortFileName())
-                return c,p,p.b
-        # Next look in all other open commanders.
-        for c2 in g.app.commanders():
-            if c2 != c:
-                for p in c2.all_positions():
-                    if p.gnx == gnx:
-                        if trace: g.trace('found',p.h,'in',c2.shortFileName())
-                        return c2,p,p.b
-    # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
-    c0 = g.app.log and g.app.log.c if g.app.qt_use_tabs else None
-    c2,p2,script = None,None,None
-    if findFlag or openFlag:
-        for f in (c.openMyLeoSettings,c.openLeoSettings):
-            c2 = f() # Open the settings file.
-            if c2:
-                p2,script = self.find_gnx_helper(c2,gnx,openFlag,trace)
-                if p2 or script:
-                    break
-    # Fix bug 92: restore the previously selected tab.
-    if c0:
-        c0.frame.top.leo_master.select(c0)
-            # c0.frame.top.leo_master is a LeoTabbedTopLevel.
-    if trace: g.trace('gnx',gnx,'findFlag',findFlag,'openFlag',openFlag,
-        'len(script)',script and len(script) or 0,
-        c2 and c2.shortFileName(),p2 and p2.h)
-    return c2,p2,script
-.. @+node:ekr.20150401210156.3: *5* sc.find_gnx_helper
-def find_gnx_helper(self,c,gnx,openFlag,trace):
-    '''
-    c is the commander of a just-opened settings file.
-    Perform the search, and close the file unless openFlag is True.
-    '''
-    for p in c.all_positions():
-        if p.gnx == gnx:
-            if trace: g.trace('found',p.h,'in',c.shortFileName())
-            if openFlag:
-                script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
-                return p,script
-            else:
-                script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
-                c.close()
-                return None,script
-    # Not found: always close the commander.
-    c.close()
-    return None,None
-.. @+node:ekr.20150401210156.4: *4* __call__ (AtButtonCallback)
-def __call__(self, event=None):
-    '''Execute the script associated with this button.'''
-    # g.trace('AtButtonCallback',self.gnx)
-    gnx = self.gnx
-    if self.script:
-        # # We have already failed to find the script in any open commander.
-        # # Use the cached script.
-        p,script = None,self.script
-    else:
-        # First: try to find the script in open commanders:
-        c2,p2,script = self.controller.find_gnx(gnx,findFlag=False)
-        if p2: # 2014/11/04: test p2, not script.
-            # Found: do *not set self.script: this enables dynamically changing scripts.
-            # The script *must* be cleared here.
-            p = p2
-            script = None
-        else:
-            # Set script if it is found in any settings file.
-            junk_c,junk_p,script = self.controller.find_gnx(gnx,findFlag=True)
-            p = None
-            self.script = script
-    if p or script:
-        self.controller.executeScriptFromButton(self.b,self.buttonText,p,script)
-        if self.c.exists:
-            self.c.outerUpdate()
-    else:
-        g.trace('can not find script for gnx:',gnx)
-.. @+node:ekr.20150401210156.5: *4* sc.executeScriptFromSettingButton (deleted)
-def executeScriptFromSettingButton (self,args,b,script,buttonText):
-    '''
-    # Execute the script in node p.
-    
-    **Note**: qt_frame.py calls this method, so it must be a method of this class.
-    '''
-    c = self.c
-    if c.disableCommandsMessage:
-        g.blue(c.disableCommandsMessage)
-    else:
-        g.app.scriptDict = {}
-        c.executeScript(args=args,script=script,silent=True)
-        # Remove the button if the script asks to be removed.
-        if g.app.scriptDict.get('removeMe'):
-            g.es("Removing '%s' button at its request" % buttonText)
-            self.deleteButton(b)
-    if 0: # Do *not* set focus here: the script may have changed the focus.
-        c.bodyWantsFocus()
-.. @+node:ekr.20150405230643.1: *3* from contextmenu.py
-.. @+node:ekr.20150405230635.1: *4* editnode_on_idle
-def editnode_on_idle (tag,keywords):
-    '''
-    The idle-time handler for contextmenu.py.
-    
-    c.openWith creates the dict with the following keys:
-        "body", "c", "encoding", "f", "path", "time" and "p".
-    '''
-    a = g.app
-    if a.killed: return
-    # g.trace('open with plugin')
-    for d in a.openWithFiles:
-        path = d.get("path")
-        c = d.get("c")
-        encoding = d.get("encoding",None)
-        p = d.get("p")
-        old_body = d.get("body")
-        if path and os.path.exists(path):
-            try:
-                time = os.path.getmtime(path)
-                # g.trace(path,time,d.get('time'))
-                if time and time != d.get("time"):
-                    d["time"] = time # inhibit endless dialog loop.
-                    # The file has changed.
-                    << set s to the file text >>
-                    << update p's body text >>
-            except Exception:
-                # g.es_exception()
-                pass
-.. @+node:ekr.20150405230635.2: *5* << set s to the file text >>
-try:
-    # Update v from the changed temp file.
-    f=open(path)
-    s=f.read()
-    f.close()
-except:
-    g.es("can not open " + g.shortFileName(path))
-    break
-.. @+node:ekr.20150405230635.3: *5* << update p's body text >> (contextmenu.py)
-# Convert body and s to whatever encoding is in effect.
-body = p.b
-body = g.toEncodedString(body,encoding,reportErrors=True)
-s = g.toEncodedString(s,encoding,reportErrors=True)
-
-conflict = body != old_body and body != s
-
-# Set update if we should update the outline from the file.
-if conflict:
-    # 2012/02/04: Don't raise dialog for files opened with vim.py, xemacs.py, etc.
-    paths = [z.get('path') for z in g.app.openWithFiles]
-    if path in paths:
-        update = True
-    else:
-        # See how the user wants to resolve the conflict.
-        g.error("conflict in " + g.shortFileName(path))
-        message = "Replace changed outline with external changes?"
-        result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
-        update = result.lower() == "yes"
-else:
-    update = s != body
-
-if update:
-    g.blue("updated from: " + g.shortFileName(path))
-    s = g.toUnicode(s,encoding=encoding)
-    c.setBodyString(p,s)
-    #TL - 7/2/08 Converted to configurable 'goto node...'
-    if c.config.getBool('open_with_goto_node_on_update'):
-        c.selectPosition(p)
-    d["body"] = s
-    # A patch by Terry Brown.
-    if c.config.getBool('open_with_save_on_update'):
-        c.save()
-elif conflict:
-    g.blue("not updated from: " + g.shortFileName(path))
 .. @-all
 .. @-leo

@@ -15639,7 +15639,9 @@ Notes:
 - If no importer exists for a file, Leo reads the entire file into an @edit node.
 </t>
 <t tx="ekr.20150222035621.5"></t>
-<t tx="ekr.20150301140303.15">[Leo](http://leoeditor.com/) 5.1 final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
+<t tx="ekr.20150301140303.15">April 16, 2015
+
+[Leo](http://leoeditor.com/) 5.1 final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
 b2 restores the proper operation of @nosent.  It is recommended for anyone using Leo 5.1 b1.
 

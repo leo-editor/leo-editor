@@ -123,6 +123,7 @@
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
 <v t="ekr.20150415143038.1"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
+<v t="ekr.20150415144952.1"><vh>Script: isSearchableWidget</vh></v>
 <v t="ekr.20150302053516.4"><vh>Clean ekr-spellpyx.txt</vh></v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
 <v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
@@ -2881,6 +2882,66 @@ for h in table:
     else:
         g.es_print('not found',h,color='red')
 print('done: %s nodes, %s clones' % (nodes,clones))
+</t>
+<t tx="ekr.20150415144952.1">'''Determines whether the focus widget supports the high-level interface.'''
+g.cls()
+import leo.plugins.qtGui as qtGui
+import leo.core.leoFrame as leoFrame
+import PyQt4.QtGui as QtGui
+if 0:
+    c.logWantsFocusNow()
+elif 1: # Edit a headline
+    c.editHeadline(p)
+    # c.redraw()
+body_w = c.frame.body.bodyCtrl.widget
+w = QtGui.QApplication.focusWidget()
+print('Focus','isBodyCtrl',w == body_w,w)
+tree = c.frame.tree
+while w:
+    # isText = g.app.gui.isTextWidget(w)
+    if isinstance(w,QtGui.QLineEdit):
+        wrapper = tree.getWrapper(w,item=None)
+        if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
+            print('QLineEdit has wrapper',w,wrapper)
+        else:
+            print('QLineEdit: NO wrapper',w)
+            # wrapper = tree.headlineWrapper(c,item=None,name='find-head-wrapper',widget=w)
+            # print('QLineEdit NEW wrapper',w,wrapper)
+        break
+    elif isinstance(w,QtGui.QTextEdit):
+        wrapper = getattr(w,'leo_wrapper',None)
+        if wrapper:
+            if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
+                print('QTextEdit has text wrapper',w,wrapper)
+            elif isinstance(wrapper,qtGui.leoQtLog):
+                logCtrl = wrapper.widget # same as wrapper.logCtrl
+                print('QtTextEdit has log wrapper',w,logCtrl)
+            else:
+                print('unknown wrapper',wrapper)
+        else:
+            wrapper = qtGui.leoQTextEditWidget(w,'find-wrapper',c=c)
+            print('QTextEdit NEW wrapper',w,wrapper)
+        break
+    print('Fail',w)
+    wrapper = False
+    if hasattr(w,'parent'):
+        w = w.parent()
+    else:
+        print('no parent',w)
+        break
+if wrapper:
+    print('is searchable (has wrapper)',w,wrapper)
+    # Make sure wrapper supports the high-level interface.
+    print('high level?',isinstance(wrapper,leoFrame.HighLevelInterface))
+    table = (
+        'insert',
+        'getAllText',
+        'setAllText',
+        'setInsertPoint',
+        'setSelectionRange',
+    )
+    for ivar in table:
+        print(bool(getattr(wrapper,ivar,None)),ivar)
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 <t tx="tbrown.20141110113251.1">@g.command('x')
