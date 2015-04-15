@@ -1237,7 +1237,6 @@
 <v t="ekr.20150411062608.4"><vh>(maybe) Document Parnas &amp; Myers</vh></v>
 <v t="ekr.20150414152307.1"><vh>(maybe) Leo in a nutshell (statistics)</vh></v>
 </v>
-<v t="ekr.20150415051320.1"><vh>Fix unintended back slashes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12498,7 +12497,7 @@ Abbreviations can span multiple lines. Continued lines start with ``\:``, like t
     \:&lt;p&gt;&lt;input type="submit" value="Continue &amp;rarr;"&gt;&lt;/p&gt;
     \:&lt;/form&gt;\n
 
-Abbreviations can define templates in which ``&lt;\|a-field-name\|&gt;`` denotes a field to be filled in::
+Abbreviations can define templates in which ``&lt;|a-field-name|&gt;`` denotes a field to be filled in::
 
     input;;=&lt;input type="text/submit/hidden/button"
     \:name="&lt;|name|&gt;"
@@ -12506,7 +12505,7 @@ Abbreviations can define templates in which ``&lt;\|a-field-name\|&gt;`` denotes
 
 Typing ``,,`` after inserting a template selects the next field.
 
-Abbreviations can execute **abbreviation scripts**, delimited by ``{\|{ and }\|}``::
+Abbreviations can execute **abbreviation scripts**, delimited by ``{|{`` and ``}|}``::
 
     date;;={|{import time ; x=time.asctime()}|}
     ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
@@ -18357,7 +18356,6 @@ In a Nutshell, The Leo Editor... (as of Aug 12, 2013):
   ending with its most recent commit 2 days ago 
 </t>
 <t tx="ekr.20150414224930.1"></t>
-<t tx="ekr.20150415051320.1">​There are 4 more unintended backslashes in the PIM/Using abbrev... documentation page.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
