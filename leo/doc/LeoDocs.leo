@@ -1229,14 +1229,10 @@
 </v>
 </v>
 <v t="ekr.20150411062751.1"><vh>** To do</vh>
-<v t="ekr.20150413062945.1"><vh>Update installations for MacOS</vh></v>
-<v t="ekr.20150411061719.1"><vh>Add link to leo-reader page on web site</vh></v>
 <v t="ekr.20150411062514.1"><vh>Document all items in "to-be-documented" mailbox </vh></v>
-<v t="ekr.20150411062608.2"><vh>New page: why you should use git to get Leo.</vh></v>
 <v t="ekr.20150411062608.3"><vh>Document all personal @command/@button nodes</vh></v>
-<v t="ekr.20150411062608.4"><vh>(maybe) Document Parnas &amp; Myers</vh></v>
-<v t="ekr.20150414152307.1"><vh>(maybe) Leo in a nutshell (statistics)</vh></v>
 </v>
+<v t="ekr.20150411062608.2"><vh>New page: why you should use git to get Leo.</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -2914,9 +2910,9 @@ new_leo_file_encoding
 
 .. External links
 
-.. _docutils:               http://docutils.sourceforge.net/
+.. _docutils:           http://docutils.sourceforge.net/
 .. _`git repository`:   https://github.com/leo-editor/leo-editor
-.. _unicode:                http://www.unicode.org/
+.. _unicode:            http://www.unicode.org/
 
 .. Glossary
 .. _directive:              glossary.html#directive
@@ -10902,52 +10898,36 @@ To summarize, you may get Leo in three ways:
 </t>
 <t tx="ekr.20120229094652.15098">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
-Many thanks to Ludwig Schwardt for the following installation instructions.
-Using the HomeBrew installation method is *much* easier than before.
+Many thanks to Ludwig Schwardt for the following installation instructions. Using the HomeBrew installation method is *much* easier than before.
 
-I recently received a new MacBook Pro and did a fresh upgrade to Mac OS
-10.7 (Lion). I then used the opportunity to test out installation
-procedures of various software on a clean system. My main finding is that
-the excellent Homebrew (mxcl.github.com/homebrew/) makes things much easier
-these days.
+**Note from EKR**: When upgrading MacOS, it's probably a good idea to uninstall pyqt, sip and qt first::
 
-Why Homebrew? It does not try to replace every single bit of functionality
-on your Mac with their own version, like Macports or fink. It reuses the
-existing libraries as far as possible. No need to reinstall Python, for
-example (one of my pet gripes when people try to install new software on
-their Macs, and the source of much confusion and pain). It installs to
-/usr/local, the standard place to find third-party libraries and headers,
-instead of the obscure /opt or /sw. It's simple to use and to extend.
+    brew remove pyqt sip qt
+    brew install qt sip pyqt
+
+I (Ludwig) recently received a new MacBook Pro and did a fresh upgrade to Mac OS 10.7 (Lion). I then used the opportunity to test out installation procedures of various software on a clean system. My main finding is that the excellent Homebrew (mxcl.github.com/homebrew/) makes things much easier these days.
+
+Why Homebrew? It does not try to replace every single bit of functionality on your Mac with their own version, like Macports or fink. It reuses the existing libraries as far as possible. No need to reinstall Python, for example (one of my pet gripes when people try to install new software on their Macs, and the source of much confusion and pain). It installs to /usr/local, the standard place to find third-party libraries and headers, instead of the obscure /opt or /sw. It's simple to use and to extend.
 
 Here is my installation write-up:
 
 - Read the Homebrew installation instructions at http://brew.sh/
 
-- Make sure you have Xcode installed (test it by confirming that "gcc" runs
-  in the Terminal). Only the smaller command-line tools are required;
-  there is no need to get the full Xcode beast.
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
 
-- In preparation for Homebrew, the best option in my opinion is
-  to delete /usr/local via::
+- In preparation for Homebrew, the best option in my opinion is to delete /usr/local via::
 
     sudo rm -rf /usr/local
 
   and install any software in it via HomeBrew instead.
   
-  Note from EKR: The HomeBrew package manager is so easy to use
-  that you will find replacing deleted packages a snap.
+  The HomeBrew package manager is so easy to use that you will find replacing deleted packages a snap.
   
-  If deleting /usr/local fills you with dread (you do not want to lose your
-  beloved third-party software), the second-best option is to make sure you
-  have write permission for the directory via::
+  If deleting /usr/local fills you with dread (you do not want to lose your beloved third-party software), the second-best option is to make sure you have write permission for the directory via::
 
     sudo chown -R &lt;your user name&gt;:admin /usr/local
 
-  If you don't know your username, run "whoami". :-) This is
-  useful because homebrew actually discourages you from
-  installing third-party software as the superuser (the usual Mac
-  apps in /Applications are also installed as the normal user,
-  for that matter).
+  If you don't know your username, run "whoami". :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).
 
 - Install Homebrew (http://mxcl.github.com/homebrew/) by running the
   following command in the Terminal::
@@ -10956,8 +10936,7 @@ Here is my installation write-up:
 
 - Run "brew doctor" and check any further suggestions to improve your system.
 
-  EKR note: I thought I had installed command-line tools after installing
-  the XCode page. I hadn't, and "brew doctor" told me so.
+  EKR note: I thought I had installed command-line tools after installing the XCode page. I hadn't, and "brew doctor" told me so.
 
 - Run "brew update" to get the latest formulas
 
@@ -10979,13 +10958,9 @@ Here is my installation write-up:
 
     brew install pyqt
  
-- Open a new Terminal tab / window so that the above settings take effect,
-  and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and
-  ran "python launchLeo.py" inside the Leo directory.
+- Open a new Terminal tab / window so that the above settings take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and ran "python launchLeo.py" inside the Leo directory.
 
-It would really be great to get a Leo formula going for Homebrew. As
-mentioned before, the main question is just where to place all the Leo
-files in the /usr/local hierarchy.
+It would really be great to get a Leo formula going for Homebrew. As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
 </t>
 <t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo. This makes the the @command nodes available to all opened .leo files.
 
@@ -12565,7 +12540,10 @@ Programmers have contributed dozens of plugins, including:
 
 - View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
 
-In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo's overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed.
+.. _`David Parnas`:   http://en.wikipedia.org/wiki/David_Parnas
+.. _`Glenford Myers`: http://en.wikipedia.org/wiki/Glenford_Myers
+
+In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo's overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed. Two computer scientists influenced my thinking greatly: `David Parnas`_ and `Glenford Myers`_.
 
 The distinction between gui-dependent and gui-independent is important. Almost all gui-dependent code resides in the plugins folder. Leo's core code is almost completely gui independent.
 
@@ -13908,45 +13886,39 @@ p.b = s</t>
 More Leo Resources
 ##################
 
-.. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
-.. _`bookmarks plugin video`: https://vimeo.com/77720098 
+.. _`blog post`: http://rickardlindberg.me/writing/reflections-on-programming/2013-02-24-related-things-are-not-kept-together/
 .. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
-
-.. _`slashdot article`:     http://leoeditor.com/testimonials.html#speed-ream-s-slashdot-article
-.. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
-.. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
-.. _`literate programming`: http://www.literateprogramming.com/
+.. _`Icons`:                http://leoeditor.com/icons.html
+.. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
+.. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
 .. _`Leo's resource page`:  http://www.jserv.com/jk_orr/xml/leo.htm
 .. _`Mind Mapping`:         http://www.mind-mapping.org/
-.. _`Icons`:                http://leoeditor.com/icons.html
-.. _`blog post`: http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
+.. _`bookmarks plugin video`: https://vimeo.com/77720098 
+.. _`literate programming`: http://www.literateprogramming.com/
+.. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
+.. _`slashdot article`:     http://leoeditor.com/testimonials.html#speed-ream-s-slashdot-article
+.. _`web viewer`:           http://leoeditor.com/load-leo.html
+.. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
 
 Videos:
 
 - Ville Vainio's `Introduction to Leo`_.
-
 - Terry Brown's `bookmarks plugin video`_.
-
 - Tom Fetherston's `2012 PyOhio talk`_
 
 More resources:
 
 - Speed Ream's `slashdot article`_ about Leo.
-
 - Jacob Peck's `scripting tutorial`_.
-
 - Leo's `wikipedia page`_.
-
 - A page about `literate programming`_.
-
 - Joe Orr's `Leo's resource page`_ containing XSLT stylesheets for Leo.
-
 - The `Mind Mapping`_ page.
-
+- A `web viewer`_ page for .leo files.
 - `Icons`_ telling the world that you used Leo.
+- `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
+- Rickard Lindberg's `blog post`_ about how Leo improves computer code.
 
-Rickard Lindberg's `blog post`_ about how Leo can improve the
-organization of code.
 </t>
 <t tx="ekr.20131030184445.17285">Add these files to `/etc/apt/sources.list`::
 
@@ -18306,7 +18278,6 @@ Source 2:
 <t tx="ekr.20150409155930.1"></t>
 <t tx="ekr.20150409155937.1"></t>
 <t tx="ekr.20150409155957.1"></t>
-<t tx="ekr.20150411061719.1">http://leoeditor.com/load-leo.html</t>
 <t tx="ekr.20150411062514.1"></t>
 <t tx="ekr.20150411062608.2">Terry re branching:
 
@@ -18314,46 +18285,11 @@ The difference between the proposed "stable master" above and just pulling "(cur
 </t>
 <t tx="ekr.20150411062608.3">Put them in Leo's core or in scripts.leo.
 </t>
-<t tx="ekr.20150411062608.4">Why Leo works: https://groups.google.com/d/msg/leo-editor/t4PC8ffJr28/GaV2jQ7HL98J
-
-- separation of concerns make Leo work.
-  David Parnas
-  https://www.cs.umd.edu/class/spring2003/cmsc838p/Design/criteria.pdf
-  
-  Glenford Myers
-  http://en.wikipedia.org/wiki/Glenford_Myers
-  Composite/Structured Design. New York: Van Nostrand Reinhold, 1978.
-  http://www.amazon.com/Composite-Structured-Design-Glenford-Myers/dp/0442805845/ref=pd_sim_sbs_b_1?ie=UTF8&amp;refRID=0TZ62C6J9JMXWXA0A61G
-
- David Parnas:
-On the Criteria to be use in Decomposing Systems into Modules
-</t>
 <t tx="ekr.20150411062751.1"></t>
-<t tx="ekr.20150413062945.1">When upgrading MacOS, it's probably a good idea to uninstall pyqt, sip and qt first::
-
-​
-    brew remove pyqt sip qt
-    brew install qt sip pyqt</t>
 <t tx="ekr.20150414152213.2">https://github.com/leo-editor/leo-editor/issues/166
 
 </t>
 <t tx="ekr.20150414152213.3">https://github.com/leo-editor/leo-editor/issues/143
-</t>
-<t tx="ekr.20150414152307.1">https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
-
-Put this on Leo's web page.
-
-In a Nutshell, The Leo Editor... (as of Aug 12, 2013):
-
-- has had 15,508 commits made by 47 contributors
-  representing 1,064,650 lines of code
-- is mostly written in Python
-  with an average number of source code comments
-- has a well established, mature codebase
-  maintained by a large development team with decreasing Y-O-Y commits
-- took an estimated 292 years of effort (COCOMO model)
-  starting with its first commit in February, 2002
-  ending with its most recent commit 2 days ago 
 </t>
 <t tx="ekr.20150414224930.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
