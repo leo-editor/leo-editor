@@ -6615,11 +6615,11 @@ def findTopLevelNode(c,headline):
     return c.nullPosition()
 #@+node:EKR.20040614071102.1: *3* g.getScript
 def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
-
-    '''Return the expansion of the selected text of node p.
+    '''
+    Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
-    p is not the current node or if there is no text selection.'''
-
+    p is not the current node or if there is no text selection.
+    '''
     # New in Leo 4.6 b2: use a pristine AtFile handler
     # so there can be no conflict with c.atFileCommands.
     import leo.core.leoAtFile as leoAtFile
