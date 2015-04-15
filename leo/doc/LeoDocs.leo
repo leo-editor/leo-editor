@@ -1228,11 +1228,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150411062751.1"><vh>** To do</vh>
-<v t="ekr.20150411062514.1"><vh>Document all items in "to-be-documented" mailbox </vh></v>
-<v t="ekr.20150411062608.3"><vh>Document all personal @command/@button nodes</vh></v>
-</v>
-<v t="ekr.20150411062608.2"><vh>New page: why you should use git to get Leo.</vh></v>
+<v t="ekr.20150411062514.1"><vh>** Document all items in "to-be-documented" mailbox </vh></v>
+<v t="ekr.20150411062608.3"><vh>** (maybe) Document personal @command/@button nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -10878,9 +10875,9 @@ Downloading Leo
 .. _`GitHub`: https://github.com/leo-editor
 .. _`git`: http://git-scm.com/
 
-Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading the most recent `nightly snapshot`_ of the development code is going to give you code that is just as stable and much more up-to-date than the most recent `latest stable release`_ which most Leonistas would consider already outdated.
+Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading `Leo's latest sources`_ from `GitHub`_  is going to give you code that is **more stable** than the most recent `latest stable release`_.  *Stable releases become outdated almost immediately*.
 
-If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_.
+If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_, or even better, `Leo's latest sources`_ from `GitHub`_ .
 
 To summarize, you may get Leo in three ways:
 
@@ -18279,13 +18276,8 @@ Source 2:
 <t tx="ekr.20150409155937.1"></t>
 <t tx="ekr.20150409155957.1"></t>
 <t tx="ekr.20150411062514.1"></t>
-<t tx="ekr.20150411062608.2">Terry re branching:
-
-The difference between the proposed "stable master" above and just pulling "(current) master from two weeks ago", is that "two weeks ago" says nothing about issues or their absence, where the consciously synced develop-&gt;master would be a statement "here's a recent point on trunk with no known issues".
-</t>
 <t tx="ekr.20150411062608.3">Put them in Leo's core or in scripts.leo.
 </t>
-<t tx="ekr.20150411062751.1"></t>
 <t tx="ekr.20150414152213.2">https://github.com/leo-editor/leo-editor/issues/166
 
 </t>
