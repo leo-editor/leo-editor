@@ -1193,18 +1193,14 @@
 </v>
 </v>
 <v t="ekr.20150409155957.1"><vh>Code level</vh>
-<v t="ekr.20150311123850.32"><vh>Code level b1</vh>
-<v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
+<v t="ekr.20150415110255.1"><vh>Added c.findNodeOutsideAnyAtFileTree</vh></v>
 <v t="ekr.20150311123850.34"><vh>Added external/rope folder</vh></v>
 <v t="ekr.20150311123850.35"><vh>Added g.app.openingSettingsFile</vh></v>
-<v t="ekr.20150311123850.36"><vh>Removed allow_cloned_sibs switch</vh></v>
-<v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
 <v t="ekr.20150326053547.11"><vh>Added g.getLanguageAtPosition</vh></v>
-</v>
-<v t="ekr.20150409155937.1"><vh>Code level b2</vh>
+<v t="ekr.20150311123850.36"><vh>Removed allow_cloned_sibs switch</vh></v>
+<v t="ekr.20150311123850.33"><vh>Removed unused file arguments in leoAtFile</vh></v>
+<v t="ekr.20150311123850.37"><vh>Removed writeVersion5 switch</vh></v>
 <v t="ekr.20150409155519.2"><vh>simplified LeoQtGui.setIdleTimeHook</vh></v>
-<v t="ekr.20150409155519.3"><vh>created c.createCloneFindAll/FlattenedAtNode</vh></v>
-</v>
 </v>
 <v t="ekr.20150409155930.1"><vh>Features</vh>
 <v t="ekr.20150311123850.41"><vh>Features in b1</vh>
@@ -1212,10 +1208,8 @@
 <v t="ekr.20150311123850.58"><vh>Added --diff command-line option</vh></v>
 <v t="ekr.20150311123850.42"><vh>Improved recursive import command</vh></v>
 <v t="ekr.20150311123850.43"><vh>refresh-from-disk is now undoable</vh></v>
-<v t="ekr.20150311123850.44"><vh>import-file command creates @nosent nodes</vh></v>
-<v t="ekr.20150311123850.45"><vh>Added --old-nosent command-line option</vh></v>
+<v t="ekr.20150311123850.44"><vh>import-file command creates @clean nodes</vh></v>
 <v t="ekr.20150311123850.46"><vh>The presence of @persistence enables @auto persistence</vh></v>
-<v t="ekr.20150311123850.47"><vh>Support @clean as the preferred form of @nosent</vh></v>
 <v t="ekr.20150311123850.48"><vh>Added unformat-paragraph command</vh></v>
 <v t="ekr.20150311123850.50"><vh>Added @bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20150311123850.51"><vh>Added wishlist 148: @auto style parse on first @clean 'Refresh From Disk'</vh></v>
@@ -1224,12 +1218,19 @@
 <v t="ekr.20150409155519.9"><vh>Retired the watchfiles plugin</vh></v>
 </v>
 <v t="ekr.20150409155807.1"><vh>Features in b2</vh>
+<v t="ekr.20150415110518.1"><vh>Improved Alt-G (goto-global-line)</vh></v>
 <v t="ekr.20150409155519.8"><vh>Improved &lt;?xml-stylesheet&gt;</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20150411062514.1"><vh>** Document all items in "to-be-documented" mailbox </vh></v>
-<v t="ekr.20150411062608.3"><vh>** (maybe) Document personal @command/@button nodes</vh></v>
+<v t="ekr.20150411062608.3"><vh>* Create Edward's Tips section</vh>
+<v t="ekr.20150415105310.1"><vh>Tip: @clean reports recovered nodes better than @file</vh></v>
+<v t="ekr.20150415110715.1"><vh>Tip: Eliminating clone wars</vh></v>
+<v t="ekr.20150415110126.1"><vh>Tip: Persistent singleton classes</vh></v>
+<v t="ekr.20150415105956.1"><vh>Tip: Using Alt-N with clone-find-all</vh></v>
+<v t="ekr.20150415111217.1"><vh>Tip: Using clones to reorganize an outline</vh></v>
+<v t="ekr.20150415111549.1"><vh>Tip: Using per-file clone-find-all commands</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15832,7 +15833,6 @@ Outline structure::
 - Revert the change in git.
 - Reload Leo.  Change reappears **regardless** of --no-cache option!
 </t>
-<t tx="ekr.20150311123850.32"></t>
 <t tx="ekr.20150311123850.33">From at.readOpenFile, at.scanHeader and at.scanText4.
 </t>
 <t tx="ekr.20150311123850.34"># import rope ; print(rope)
@@ -15860,7 +15860,6 @@ It's really that simple, but here are some consequences:
 </t>
 <t tx="ekr.20150311123850.43"></t>
 <t tx="ekr.20150311123850.44"></t>
-<t tx="ekr.20150311123850.45"></t>
 <t tx="ekr.20150311123850.46">The @persistence code is now enabled if and only if a .leo file has an
 @persistence node.
 
@@ -15868,7 +15867,6 @@ Removed @bool enable-persistence from leoSettings.leo.
 
 Added @bool create-at-persistence-nodes-automatically = False.
 </t>
-<t tx="ekr.20150311123850.47"></t>
 <t tx="ekr.20150311123850.48">The reformat-paragraph command is surprisingly useful.  It is somewhat like the reverse of the reformat-paragraph command: it removes all extra whitespace from a paragraph.
 
 Extraneous whitespace causes problems with rST text--various kinds of rST markup can't be split between lines. LeoDocs.leo used various workarounds, including preceding @ signs with a backslash.
@@ -18173,7 +18171,6 @@ Traceback (most recent call last):
 AttributeError: 'LeoQTextBrowser' object has no attribute 'ensureWidgetVisible'
 </t>
 <t tx="ekr.20150409155519.2"></t>
-<t tx="ekr.20150409155519.3"></t>
 <t tx="ekr.20150409155519.4">http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates
 
 https://groups.google.com/d/msg/leo-editor/F3dUWxbNkAU/F6hV-n4iGm4J
@@ -18273,17 +18270,172 @@ Source 2:
 <t tx="ekr.20150409155807.1"></t>
 <t tx="ekr.20150409155921.1"></t>
 <t tx="ekr.20150409155930.1"></t>
-<t tx="ekr.20150409155937.1"></t>
 <t tx="ekr.20150409155957.1"></t>
-<t tx="ekr.20150411062514.1"></t>
-<t tx="ekr.20150411062608.3">Put them in Leo's core or in scripts.leo.
-</t>
+<t tx="ekr.20150411062608.3"></t>
 <t tx="ekr.20150414152213.2">https://github.com/leo-editor/leo-editor/issues/166
 
 </t>
 <t tx="ekr.20150414152213.3">https://github.com/leo-editor/leo-editor/issues/143
 </t>
 <t tx="ekr.20150414224930.1"></t>
+<t tx="ekr.20150415105310.1">@clean will do a *much* better job reporting recovered nodes than will @file (or anything else).  This is something that has been hidden in plain sight!</t>
+<t tx="ekr.20150415105956.1">clone-find-all-flattened often includes clones of nodes whose location is unclear.  No problem! Just select the mysterious node and do Alt-N (goto-next-clone). Leo will select the next clone of that node, wrapping the search as necessary.  One or two Alt-N takes me to the "real" node, the node having an ancestor @&lt;file&gt; node.
+
+Ideally, the meaning of all nodes would be clear from their headlines.  I typically use the following conventions. For section definitions, the headline should contain file or class name.  Examples::
+
+    &lt;&lt; imports &gt;&gt; (leoCommands.py)
+    &lt;&lt; docstring &gt;&gt; (LeoApp)
+
+For functions and methods, the headline should start with an id.  Examples:
+
+    c.whatever
+    g.whatever
+    p.whatever
+    v.whatever
+
+The general rule is:
+
+    The more important the class, the shorter its id.
+
+leoPy.leo#Code--&gt; About this file--&gt;Terminology gives the following id's::
+
+    btw:    leoFrame.BaseTextWrapper
+    stw:    leoFrame.StringTextWrapper
+    bqtw:   qt_text.BaseQTextWrapper
+    lqtb:   qt_text.LeoQTextBrowser
+    qhlw:   qt_text.QHeadlineWrapper
+    qmbw:   qt_text.QMinibufferWrapper
+    qlew:   qt_text.QLineEditWrapper
+    qsciw:  qt_text.QScintiallaWrapper
+    qtew:   qt_text.QTextEditWrapper
+
+Not all these classes have id's in their nodes (yet). And no, I don't try to remember these less important (thus *longer) id's. They exist just to disambiguate methods with common names.
+
+I add more id's as I find ambiguous nodes.  It's easy to add an id to all methods of a class.  Just use the following regex search, limited to headlines::
+
+    Replace ^(.) with &lt;the id&gt;.\1
+</t>
+<t tx="ekr.20150415110126.1">Today I "invented" a new encapsulation pattern.  It allows a command to be implemented by a persistent singleton class::
+
+    def checkForChangedFiles(self):
+        '''
+        For each @&lt;file&gt; node that has been changed outside Leo,
+        prompt the user whether to update the file.
+        '''
+
+        class CheckForChangedFiles:
+            '''A class implementing c.checkForChangedFiles.'''
+            @others
+
+        c = self
+        if not hasattr(c,'checkForChangedFilesInstance'):
+            c.checkForChangedFilesInstance = CheckForChangedFiles(c)
+        c.checkForChangedFilesInstance.check()
+
+The last three lines allocate a singleton instance of the CheckForChangedFiles (ccf) class and then call ccf.check().  All invocations of c.checkForChangedFiles use this shared singleton class.
+
+Previously, c.checkForChangedFiles used several commander methods as helpers.  Leo makes it easy to see the relation between a method and it's helpers, but using the ccf class is much better:
+
+- ccf methods do not pollute c's namespace.  As a result, ccf methods can be named freely.
+
+The only effect on the commander's namespace is the injection of the c.checkForChangedFilesInstance ivar into c. At present, this ivar is not defined in c.initCommandIvars.  It would be reasonable to define it there, but the risk of stepping on another ivar with the same name is negligible.
+
+- The ccf ctor defines shared persistent data, again without polluting the namespace of the commander class. Furthermore, the ctor inits the data, not in various init methods of c.  This makes it much easier to add private data. This is reason enough to use a class.
+
+Edward
+
+P.S.  Contrast this with a more typical way of using classes as helpers for a command.
+
+Several commands use the c.GoToLineNumber class. For example:
+
+    def goToScriptLineNumber (self,p,script,n):
+        c = self
+        scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
+        c.GoToLineNumber(c).go(n=n,scriptData=scriptData)
+
+The big difference between this code and the pattern shown above is that each invocation of the command creates a "throwaway" temporary instance of the GoToLineNumber class.  No data is retained between invocation of the command.</t>
+<t tx="ekr.20150415110255.1">c.findNodeOutsideAnyAtFileTree selects the first clone of p whose ancestor is any @&lt;file&gt; node. This is used to make Alt-G (goto-global-line) more convenient.</t>
+<t tx="ekr.20150415110518.1">It uses c.findNodeOutsideAnyAtFileTree to prefer to find a node *outside* any @&lt;file&gt; tree.</t>
+<t tx="ekr.20150415110715.1">@language rest # changed below
+
+Eliminating clone wars: use clones only as temporary scaffolding.
+
+This post describes how to get the benefits of clones without having to worry about clone wars: the dreaded multiple updated problem arising from differing contents of clones contained in multiple external files.
+
+Clone wars can be most annoying, especially when git updates files.  My solution, a fairly recent invention, is simple::
+
+    **Keep clones only in the outline and in one other external file**
+
+In particular, leo/doc/leoProjects.txt or leo/doc/leoToDo.txt should never contain clones.
+
+End of clone wars. Text in external files overrides text in the outline. If a clone exists in at most one external file there can be no doubt about what takes precedence.
+
+**Details**
+
+The strategy above works well.  In practice, I augment it as follows.
+
+- I create an organizer node called Recent Code that **stashes** all recently-created clones. This node must be outside any @file tree!
+
+- For each project, say Fix bug 666, I create an organizer node called re: 666.  This node contains all the clones associated with the project.
+
+- When I'm done with a project (maybe just for the moment) I stash the re: 666 node as a child of the Recent Code node. The Recent Code node is outside any @file tree, so all of its descendant nodes are too.
+
+- When the project is completely finished I write a summary of it in leoProjects.txt and delete the re: 666 node and all its descendants.
+
+an @button script that warns if leoProjects.txt or leoToDo.txt contains clones.
+
+Here it is:
+
+@language python
+
+'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
+
+clones,nodes,seen = 0,0,set()
+table = (
+  '@file ../doc/leoProjects.txt',
+  '@file ../doc/leoToDo.txt',
+)
+
+def check_clone(c,p0,root):
+    '''Warn if p appears in any @&lt;file&gt; node outside of root's tree.'''
+    global nodes,seen
+    v = p0.v
+    for p in c.all_positions():
+        nodes += 1
+        if p.v == v:
+            # Check *all* ancestors, not just the nearest one.
+            for parent in p.self_and_parents():
+                nodes += 1
+                if parent.isAnyAtFileNode() and parent.v != root.v:
+                    if parent.v not in seen:
+                        seen.add(parent.v)
+                        g.es_print('%s and %s contain clone: %s' % (
+                            root.h,parent.h,p0.h))
+
+for h in table:
+    root = g.findNodeAnywhere(c,h)
+    if root:
+        for p in root.self_and_subtree():
+            nodes += 1
+            if p.isCloned():
+                clones += 1
+                check_clone(c,p,root)
+    else:
+        g.es_print('not found',h,color='red')
+print('done: %s nodes, %s clones' % (nodes,clones))
+</t>
+<t tx="ekr.20150415111217.1">While reorganizing Leo's to-do list I realized that clones speed the process significantly.
+
+As I explored the to-do list, I created top-level clones of all the nodes I kept coming back to.  In this way of working, moving a node was a snap: just move it from one clone to another.
+
+Something subtle is going on here.  Yes, bookmarks could emulate this workflow.  However, *the workflow suggested new topics in the to-do list*.  Indeed, the new organization only seems natural in retrospect.  There was a significant process of trial and error involved.
+
+*The result contains no clones*. The clones were only scaffolding. Each to-do item appears exactly once, in its most appropriate place.  I think this discipline is important: it forced me to choose where I actually wanted items.</t>
+<t tx="ekr.20150415111549.1">The c.cloneFindAllAtNode and c.cloneFindAllFlattenedAtNode methods are for customizing the clone-find-all commands for a particular file.
+
+For example, here is the body of ``@button cfa-code @args add`` in leoPy.leo::
+
+    c.cloneFindAllFlattenedAtNode('Code',top_level=True)</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
