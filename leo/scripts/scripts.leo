@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -121,6 +122,7 @@
 <v t="ekr.20141105055521.18"><vh>Tool for diffing Leo files</vh></v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
+<v t="ekr.20150415143038.1"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
 <v t="ekr.20150302053516.4"><vh>Clean ekr-spellpyx.txt</vh></v>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
 <v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
@@ -2839,6 +2841,46 @@ with open(fn) as f:
     s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
 with open(fn,'w') as f:
     f.write(s)
+</t>
+<t tx="ekr.20150415143038.1">@language python
+
+# This script must be run from leoPy.leo.
+
+'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
+
+clones,nodes,seen = 0,0,set()
+table = (
+  '@file ../doc/leoProjects.txt',
+  '@file ../doc/leoToDo.txt',
+)
+
+def check_clone(c,p0,root):
+    '''Warn if p appears in any @&lt;file&gt; node outside of root's tree.'''
+    global nodes,seen
+    v = p0.v
+    for p in c.all_positions():
+        nodes += 1
+        if p.v == v:
+            # Check *all* ancestors, not just the nearest one.
+            for parent in p.self_and_parents():
+                nodes += 1
+                if parent.isAnyAtFileNode() and parent.v != root.v:
+                    if parent.v not in seen:
+                        seen.add(parent.v)
+                        g.es_print('%s and %s contain clone: %s' % (
+                            root.h,parent.h,p0.h))
+
+for h in table:
+    root = g.findNodeAnywhere(c,h)
+    if root:
+        for p in root.self_and_subtree():
+            nodes += 1
+            if p.isCloned():
+                clones += 1
+                check_clone(c,p,root)
+    else:
+        g.es_print('not found',h,color='red')
+print('done: %s nodes, %s clones' % (nodes,clones))
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 <t tx="tbrown.20141110113251.1">@g.command('x')
