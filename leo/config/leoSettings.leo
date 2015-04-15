@@ -109,7 +109,7 @@
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
-<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
+<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
@@ -9832,10 +9832,9 @@ abbreviations-subst-start is not set.</t>
 """
 
 **Important**: scripting abbreviations are in effect only if the following
-settings are in effect::
+setting is in effect::
     
     @bool enable-abbreviations = True
-    @bool abbreviations-subst-start = True
     
 and one (or both) of the following are in effect::
     
