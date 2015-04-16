@@ -3,87 +3,6 @@
 .. @@language rest # override the default .txt coloring.
 .. @@wrap
 .. @+all
-.. @+node:ekr.20130806072439.20650: ** ** Fix bug 106: brew install leo (after 5.1 final)
-@language rest
-
-The homebrew docs say that beta releases are not allowed.
-
-https://github.com/leo-editor/leo-editor/issues/106
-
-https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-
-http://brew.sh/
-
-https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
-
-Do this after creating each official release.
-
-@language ruby
-@tabwidth -2
-.. @+node:ekr.20141210123805.4: *3* brew install (original)
-require 'formula'
-
-class Leo < Formula
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
-  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
-  head 'https://code.launchpad.net/leo-editor', :using => :bzr
-  devel do
-    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
-    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
-  end
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
-.. @+node:ekr.20141210123805.5: *3* brew install (new)
-require 'formula'
-
-class Leo < Formula
-
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
-  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
-  
-  head https://github.com/leo-editor/leo-editor, :using => :git
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 @wrap
@@ -1551,13 +1470,100 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
-.. @+node:ekr.20150302140653.4: ** To do: Leo 5.1
-@language rest
-@wrap
-
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
+.. @+node:ekr.20130806072439.20650: *3* ** Fix bug 106: brew install leo (after 5.1 final)
+@language rest
+
+The homebrew docs say that beta releases are not allowed.
+
+https://github.com/leo-editor/leo-editor/issues/106
+
+https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
+
+http://brew.sh/
+
+https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
+
+Do this after creating each official release.
+
+@language ruby
+@tabwidth -2
+.. @+node:ekr.20141210123805.4: *4* brew install (original)
+require 'formula'
+
+class Leo < Formula
+  homepage 'http://leoeditor.com/'
+  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
+  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
+  head 'https://code.launchpad.net/leo-editor', :using => :bzr
+  devel do
+    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
+    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
+  end
+
+  depends_on 'pyqt'
+  depends_on 'enchant' => :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install 'leo'
+    bin.install ['launchLeo.py', 'profileLeo.py']
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    if system "python -c 'import leo'" then
+      onoe 'Leo FAILED'
+    else
+      ohai 'Leo OK'
+    end
+  end
+end
+.. @+node:ekr.20141210123805.5: *4* brew install (new)
+require 'formula'
+
+class Leo < Formula
+
+  homepage 'http://leoeditor.com/'
+  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
+  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
+  
+  head https://github.com/leo-editor/leo-editor, :using => :git
+
+  depends_on 'pyqt'
+  depends_on 'enchant' => :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install 'leo'
+    bin.install ['launchLeo.py', 'profileLeo.py']
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    if system "python -c 'import leo'" then
+      onoe 'Leo FAILED'
+    else
+      ohai 'Leo OK'
+    end
+  end
+end
+.. @+node:ekr.20150416060501.1: *3* * Big picture
+- Better integration with IPython.
+  Study the sources.
+- Rendering, including showing off what Leo can do.
+- Make clones easier & more powerful to use with find commands.
+.. @+node:ekr.20150416060248.1: *3* Allow Leo directives in @data abbreviations-subst-env
+- Create unattached vnode.
+- Create postion using that vnode.
+- Pass that vnode as the root.
+- Create unit test.
 .. @+node:ekr.20150403035403.1: *3* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
 @wrap

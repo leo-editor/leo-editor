@@ -14002,9 +14002,7 @@ Leo 4.11.1 final was released December 20, 2013.
 After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
 <t tx="ekr.20131108071132.17025"></t>
-<t tx="ekr.20131115075142.16636">@language rest
-
-Use .leo files to test settings rather than to contain data. These files would typically contain just an @settings tree, and one or two nodes illustrating their effect. Opening such files limits the effects of experimental/non-standard/risky settings. This is a great tip to know.
+<t tx="ekr.20131115075142.16636">Use .leo files to test settings rather than to contain data. These files would typically contain just an @settings tree, and one or two nodes illustrating their effect. Opening such files limits the effects of experimental/non-standard/risky settings. This is a great tip to know.
 
 For example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo and leo14pt.leo in the leo/config folder make it easy to compare different font settings.
 
@@ -15643,7 +15641,7 @@ Notes:
 
 [Leo](http://leoeditor.com/) 5.1 final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
-b2 restores the proper operation of @nosent.  It is recommended for anyone using Leo 5.1 b1.
+Leo 5.1-final is recommended for anyone using Leo 5.1 b1 or Leo 5.0-final.
 
 **The highlights of Leo 5.1**
 
