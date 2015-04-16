@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -110,12 +111,12 @@
 <v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
+<v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
-<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
@@ -180,7 +181,13 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
-<v t="ekr.20130927050813.13031"><vh>Obsolete</vh></v>
+<v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
+<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
+<v t="ekr.20050817132814"><vh>rst3</vh>
+<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
+<v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
+</v>
+</v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
 <v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
@@ -213,13 +220,8 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
 <v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
-<v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
-<v t="ekr.20050817132814"><vh>rst3</vh>
-<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
-<v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
-</v>
 </v>
 <v t="ekr.20121126102050.10134"><vh>Threading</vh>
 <v t="ekr.20121126095734.12418"><vh>@file threadutil.py</vh></v>
@@ -439,7 +441,7 @@ what the plugin does and how to use it.
 <t tx="ekr.20050328101812.1"></t>
 <t tx="ekr.20050328101812.2"></t>
 <t tx="ekr.20050328101812.3"></t>
-<t tx="ekr.20050817132814">@nocolor
+<t tx="ekr.20050817132814">@nocolor-node
 
 Important: the rst3 plugin has largely been superceded by similar
 commands built into Leo's core.
@@ -462,8 +464,7 @@ To activate the rst3 plugin, do the following:
 
 3. Start up Leo
 - Check in the menu 'Edit' for item 'Write-Restructured-Text'.
-
-@color</t>
+</t>
 <t tx="ekr.20061023141638"></t>
 <t tx="ekr.20061023142737"></t>
 <t tx="ekr.20061023142737.1"></t>
