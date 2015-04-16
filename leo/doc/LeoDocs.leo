@@ -315,6 +315,7 @@
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
+<v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
@@ -18296,6 +18297,23 @@ In particular, catchall files like leo/doc/leoProjects.txt or leo/doc/leoToDo.tx
     c.cloneFindAllFlattenedAtNode('Code',top_level=True)
     
 The ``@args add`` part of the headline causes Leo to add the ``cfa-code`` command to Leo's history list, so there is no urgent need to use a separate key binding for this command.</t>
+<t tx="ekr.20150416100041.1">When organizing data into nodes, **every item should clearly belong to exactly one top-level category**. In other words, avoid top-level *aggregate* categories.
+
+For example, the following are poor top-level categories. They are poor because any item in them could be placed in a more explicit category:
+
+- Contrib
+- Developing Leo
+- Important
+- Maybe
+- Others
+- Prototype
+- Recent
+- Won't do/Can't do
+
+We all have had bad experiences with the dreaded "Others" category. The Aha! is that all aggregate categories are just as bad as "Others".
+
+**Note**: I have been talking only about top-level categories.  Within a single category aggregate categories may be useful.  However, when possible I prefer to mark items rather than create subcategories. For example, ``*`` now marks all "Important" items in leoToDo.txt and scripts.leo.  This makes it easy to find important items in a particular category.  To find *all* important items one could do a regex search for ``^\*`` in headlines.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
