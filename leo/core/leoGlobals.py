@@ -3180,7 +3180,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     pos_pattern = re.compile(r':(\d+),?(\d+)?$')
     try:
         target = pos_pattern.sub('', unlList[depth])
-        pos = re.findall(pos_pattern, target)
+        pos = re.findall(pos_pattern, unlList[depth])
     except IndexError:
         # Fix bug https://github.com/leo-editor/leo-editor/issues/36
         pos = None
@@ -3196,8 +3196,10 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                 order.append(nth_sib)
         else:
             # First we try the nth node with same header
-            if nth_same < len(heads) and heads[nth_same] == target:
-                order.append(nth_same)
+            if nth_same:
+                nths = [n for n,i in enumerate(heads) if i == target]
+                if nth_same < len(nths) and heads[nths[nth_same]] == target:
+                    order.append(nths[nth_same])
             # Then position based, if requested
             if soft_idx and nth_sib < len(heads):
                 order.append(nth_sib)
