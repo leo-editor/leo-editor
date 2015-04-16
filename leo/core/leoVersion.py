@@ -13,9 +13,9 @@ import json
 # Leo 4.8   final: November 26, 2010.
 # Leo 4.9   final: June 21, 2011.
 # Leo 4.10  final: March 29, 2012.
-# Leo 4.11 final: November 6, 2013
-# Leo 5.0 final: November 24, 2014
-# Leo 5.1 b2: April 10, 2015
+# Leo 4.11 final: November 6, 2013.
+# Leo 5.0 final: November 24, 2014.
+# Leo 5.1 final: April 17, 2015.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
@@ -37,7 +37,7 @@ commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
 
-version = "5.1-b2" # Used if no git version is available.
+version = "5.1-final" # Used if no git version is available.
 
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}

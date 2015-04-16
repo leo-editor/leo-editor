@@ -12455,7 +12455,7 @@ To use abbreviations, you must enable them in myLeoSettings.leo::
 
     @bool enable-abbreviations = True
 
-You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but ``leo/config/examplesSettings.leo`` contains example abbreviations in the node ``@data abbreviations examples``
+You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but ``leo/config/exampleSettings.leo`` contains example abbreviations in the node ``@data abbreviations examples``
 
 Abbreviations can simply be shortcuts::
 
@@ -14680,7 +14680,7 @@ Leo's minimal dependencies are:
 
 The following packages are optional, but recommended:
 
-* `Docutils`_: required for the rs3 command and the viewrendered plugins.
+* `Docutils`_: required for the rst3 command and the viewrendered plugins.
 * `Sphinx`_: required to regenerate Leo's documentation.
 * `PyEnchant`_: required for spell checking.
 
