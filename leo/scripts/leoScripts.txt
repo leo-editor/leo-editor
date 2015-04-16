@@ -624,7 +624,191 @@ try:
     g.es(".leo, .leox file associations removed from registry")
 except WindowsError as e:
     g.es("Removing .leo, leox associations failed: ", e)  
-#@+node:ekr.20150416071458.1: ** Commands
+#@+node:ekr.20150416071458.1: ** Commands acting on nodes
+#@+node:ekr.20060824181946: *3* @@button convert-to-at-shadow
+"""
+Look for @thin files in the current subtree.
+Convert those thin files into a file with a shadow file,
+if this shadow file does not exist already.
+
+FIXME: the line end convention is currently changed:
+      unix lineendings are converted to DOS lineendings,
+      if files are converted on Windows.
+      Not sure if that is a probem or not.
+"""
+
+# This script is deprecated because @shadow is deprecated.
+
+import mod_shadow_core, os, shutil
+
+def marker_from_extension(filename):
+    marker = g.comment_delims_from_extension(filename)[0]
+    return marker and marker + '@'
+
+shadow_subdir = c.config.getString("shadow_subdir").strip()
+if not shadow_subdir: assert False,'No shadow_subdir setting'
+prefix = c.config.getString("shadow_prefix")
+
+for p in p.self_and_subtree():
+   h = p.h.strip()
+   if h.startswith("@thin"):
+       start = h.find("@thin") + len("@thin")
+       leofiledir = os.path.split(c.mFileName)[0]
+       filename = h[start:].strip()
+       fullfilename = os.path.join(leofiledir, filename)
+       theDir = os.path.split(fullfilename)[0]
+       leoFolder = os.path.join(leofiledir, theDir, shadow_subdir)
+       if not os.path.exists(leoFolder):
+           os.mkdir(leoFolder)
+           assert os.path.exists(leoFolder)
+       else:
+           assert os.path.isdir(leoFolder)
+       junk, name = os.path.split(filename)
+       newname = os.path.join(leoFolder, prefix + name)
+       if os.path.exists(newname):
+           continue
+       g.es( "renaming %s to %s" % (filename, newname))
+       shutil.copy2(fullfilename, newname)
+       os.unlink(fullfilename)
+       f = file(fullfilename, "w")
+       f.close()
+       mod_shadow_core.copy_file_removing_sentinels(
+           sourcefilename=newname,
+           targetfilename=fullfilename,
+           marker_from_extension = marker_from_extension)
+       g.es("File %s is now shadowed" % filename)
+#@+node:ville.20090508224531.9799: *3* @@button Dump nodes to ~/.leo/dump 
+""" Dump nodes to ~/.leo/dump git repository.
+
+Before using this, you need to:
+    mkdir ~/.leo/dump; cd ~/.leo/dump; git init
+
+"""
+
+import os, codecs, hashlib
+flatroot = os.path.expanduser('~/.leo/dump')
+assert os.path.isdir(flatroot)
+
+hl = []
+
+def dump_nodes():
+    for p in c.all_unique_positions():
+        name, date, num = p.v.fileIndex
+        gnx = '%s%s%s' % (name, date, num)
+        hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
+        fname = gnx
+        codecs.open(fname,'w', encoding='utf-8').write(p.b)
+        print "wrote", fname
+
+os.chdir(flatroot)
+
+dump_nodes()
+lis = "\n".join(hl)
+
+html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
+
+#titlename = c.frame.getTitle() + '.html'
+pth, bname = os.path.split(c.mFileName)
+
+if pth and bname:
+    dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
+
+titlename = dbdirname + '.html'
+codecs.open(titlename,'w', encoding='utf-8').write(html)
+
+g.es("committing to " + flatroot)
+
+os.system('git add *')
+out = os.popen('git commit -m "Leo autocommit"').read()
+g.es("committed")
+g.es(out)
+g.es('Outline in ' + os.path.abspath(titlename))
+#@+node:ekr.20060531085804: *3* @@button Show other clones
+@
+Ever have a clone that is difficult to understand outside the context of its
+original parent? Here's some code to help. It displays the headline of the
+current node plus the headlines of all the parents of all the clones of the
+current node. Selecting a displayed parent headline moves the current node to
+the corresponding clone in the outline.
+
+The idea is to be able to quickly see the context of all the clones of the
+current node and to be able to easily navigate from one clone instance to the
+next.
+@c
+
+@others
+c.cn = cloneNavigator(c)
+c.cn.displayClones(c)
+#@+node:ekr.20060531085804.1: *4* class cloneNavigator
+class cloneNavigator:
+    '''
+       Displays the headline of the current node plus the headlines of
+       all the parents of all the clones of the current node.  Selecting
+       a displayed parent headline moves the current node to the
+       corresponding clone in the outline.
+
+       The idea is to be able to quickly see the context of all the clones
+       of the current node and to be able to easily navigate from one clone
+       instance to the next.
+    '''
+    @others
+#@+node:ekr.20060531085804.2: *5* init
+def __init__ (self,c):
+    self.c = c
+    import Tkinter as Tk
+    if 0:
+        f = Tk.Toplevel()
+    else:
+        log = c.frame.log
+        log.selectTab('Clones')
+        f = log.tabFrame
+        for w in f.winfo_children():
+            w.destroy()
+
+    # Create and pack empty label and listbox
+    self.title = Tk.Label(f)
+    self.title.pack(anchor="nw")
+    self.lb = Tk.Listbox(f)
+    self.lb.pack(expand=1,fill="both")
+#@+node:ekr.20060531085804.3: *5* getAllClones
+def getAllClones(self,p):
+    c = self.c
+    return [z.copy() for z in c.all_positions() if z.v == p.v]
+#@+node:ekr.20060531085804.4: *5* displayClones
+def displayClones(self,c):
+    '''Displays the parent headline for all the clones of the current position'''
+    cp = c.currentPosition()
+
+    # "Title" is the headline of the current node
+    self.title.configure(text=cp.h)
+
+    # Initialize listbox and clone list
+    clones = self.getAllClones(cp)
+    self.lb.delete(0,self.lb.size()-1)
+
+    <<Fill listbox with clone parent headlines>>    
+    <<Goto selected position when listbox selection changes>>
+#@+node:ekr.20060531085804.5: *6* <<Fill listbox with clone parent headlines>>
+# Add the headlines of all the clone parents to the listbox
+for p in clones:
+    if p.parent():
+        text = p.parent().h
+    else:
+        text = "<root>"
+    self.lb.insert(self.lb.size(),text)
+
+    # Initial listbox selection corresponds to current position
+    if p.v == cp.v:
+        self.lb.selection_set(self.lb.size()-1)
+#@+node:ekr.20060531085804.6: *6* <<Goto selected position when listbox selection changes>>
+# Callback for when a listbox entry is selected            
+def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
+    idx = int(lb.curselection()[0])
+    p = positions[idx]
+    c.frame.tree.expandAllAncestors(p)
+    c.selectPosition(p)
+    return
+self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)
 #@+node:ekr.20130810093044.16935: *3* Add @script node
 '''
 Adds a @script node to your outline which reloads the other outlines
@@ -685,6 +869,282 @@ def add_note(args):
     c.redraw()
     c.bringToFront()
     c.bodyWantsFocusNow()
+#@+node:ekr.20120602062004.12350: *3* Clean imported nodes
+'''A script to clean Python imports.
+'''
+
+h = 'Coverage (live)'
+    # The headline of the tree to be converted.
+
+class CleanPython:
+    def __init__ (self):
+        self.trace = True
+    @others
+
+p = g.findNodeAnywhere(c,h)
+if p:
+    CleanPython().run(c,p)
+else:
+    print('not found: %s' % (h))
+#@+node:ekr.20120602062004.12351: *4* run
+def run(self,c,p):
+
+    if self.trace: g.cls()
+    
+    self.changed = 0
+    p1 = p.copy()
+    
+    # Don't set any nodes dirty here.
+    for p in p1.self_and_subtree():
+        if p.isMarked():
+            p.v.clearMarked()
+            
+    bunch = c.undoer.beforeChangeTree(p1)
+   
+    for p in p1.children():
+        if self.trace: print('\n***** %s' % (p.h))
+        self.clean(c,p)
+        
+    if self.changed:
+        c.undoer.afterChangeTree(p1,'clean-python-code',bunch)
+        c.redraw()
+
+    g.trace('done: %s nodes changed' % (self.changed))
+#@+node:ekr.20120602062004.12352: *4* clean & helpers
+def clean(self,c,p):
+    
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+
+    root = p.copy()
+    assert p.h.startswith('@@file') or p.h.startswith('@file'),p.h
+    
+    self.move_shebang_line(c,root)
+    self.move_doc_string(c,root)
+    self.rename_decls(c,root)
+
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(c,p)
+    for p in root.subtree():
+        self.merge_comment_nodes(c,p)
+    for p in root.subtree():
+        self.merge_extra_nodes(c,p)
+#@+node:ekr.20120602062004.12353: *5* move_shebang_line
+def move_shebang_line (self,c,root):
+    
+    '''Move a shebang line from the first child to the root.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s.startswith('#!'):
+        return
+        
+    lines = g.splitLines(s)
+    nl = '\n\n' if root.b.strip() else ''
+    root.b = lines[0] + nl + root.b
+    p.b = lines[1:]
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12354: *5* move_doc_string
+def move_doc_string(self,c,root):
+
+    '''Move a leading docstring in the first child to the root node.'''
+    
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not (s.startswith('"""') or s.startswith("'''")):
+        return
+        
+    delim = '"""' if s.startswith('"""') else "'''"
+    i = s.find(delim,3)
+    if i == -1:
+        return
+        
+    doc = s[:i+3]
+    p.b = s[i+3:].lstrip()
+    
+    # Move docstring to front of root.b, but after any shebang line.
+    nl = '\n\n' if root.b.strip() else ''
+    if root.b.startswith('#!'):
+        lines = g.splitLines(root.b)
+        root.b = lines[0] + doc + nl + lines[1:]
+    else:
+        root.b = doc + nl + root.b
+        
+    p.setDirty()
+    p.setMarked()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12355: *5* rename_decls (test)
+def rename_decls (self,c,root):
+    
+    '''Use a section reference for declarations.'''
+    
+    p = root.firstChild()
+    h = p and p.h or ''
+    
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+
+    name = h[:-len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.h = '%s (%s)' % (decls,name)
+    
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+        return
+    else:
+        nl = '' if i == 0 else '\n'
+        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
+
+    p.setDirty()
+    root.setDirty()
+    root.setMarked()
+    c.setChanged(True)
+    self.changed += 1
+    g.trace('%s --> %s' % (p.h,root.h))
+#@+node:ekr.20120602062004.12356: *5* clean_blank_lines
+def clean_blank_lines(self,c,p):
+    
+    '''Remove leading and trailing blank lines from all nodes.
+    '''
+    
+    s = p.b
+    if not s.strip():
+        return
+    
+    result = g.splitLines(s)
+    for i in 0,-1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+        
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.b = s
+        p.setDirty()
+        # p.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        # if self.trace: g.trace(p.h)
+        
+#@+node:ekr.20120602062004.12357: *5* merge_comment_nodes
+def merge_comment_nodes(self,c,p):
+    
+    '''Merge a node containing nothing but comments with the next node.'''
+
+    h = p.h
+    
+    if p.hasChildren() or not h.strip().startswith('#'):
+        return
+        
+    p2 = p.next()
+    if p2:
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.b = b + p2.b
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
+#@+node:ekr.20120602062004.12358: *5* merge_extra_nodes
+def merge_extra_nodes(self,c,p):
+    
+    '''Merge a node containing no class or def lines with the previous node'''
+    
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
+        return
+        
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.b = p2.b + nl + s
+        h = p.h
+        p.doDelete(p2)
+        p2.setDirty()
+        # p2.setMarked()
+        c.setChanged(True)
+        self.changed += 1
+        if self.trace: g.trace(h,' --> ',p2.h)
+#@+node:ekr.20071113150213: *3* Clone all nodes to child node
+# Clone all nodes specified in the child node called 'to be cloned'
+root = p.copy()
+child = p.firstChild()
+assert(child.h.lower().strip() == 'to be cloned')
+s = child.b
+lines = g.splitLines(s)
+
+for p in c.all_unique_positions():
+    h = p.h.strip()
+    for line in lines:
+        if h == line.strip():
+            print 'found',h
+            clone = p.clone()
+            clone.moveToLastChildOf(root)
+c.redraw()
+#@+node:ekr.20071113150213.1: *4* To be cloned
+@test getHandlersForTag
+@test unit testing with embedded class
+@test move-lines-up
+@test helpForMinibuffer
+@test g.pdb
+@test g.es_exception
+@test g.es_trace
+@test pasteText
+@test g.getScript strips crlf
+@test forward-end-word (start of word)
+@test moveToHelper
+@test scrollHelper
+@test c.contractAllHeadlines
+@test g.create_temp_file
+@test fc.deleteFileWithMessage
+@test compareHelper
+@test apropos_bindings
+@test apropos_find_commands
+@test atFile_rename
+@test g.removeExtraLws
+@test moveUpOrDownHelper
+@test compareHelper-warning
+@test directiveKind4
+@test isPlainKey
+@test g.convertPythonIndexToRowCol
+@test setMoveCol
+@test leoBody.getSelectionAreas & test
+@test parseLeoSentinel
+@test selfInsertCommand-2 (replacing tabs)
+@test extendHelper
+@test onClick
+@test selfInsertCommand-1
+@test g.convertRowColToPythonIndex
+@test round trip toUnicode toEncodedString
+@test that all @test nodes in derived files start with if g.unitTesting
+@test g.reportBadChars
 #@+node:ekr.20141105055521.13: *3* Dictionary to Leo outline
 '''
 Transform a dictionary into an outline, so you can navigate through it.
@@ -701,6 +1161,81 @@ def dictionary_to_outline(p,dictionary):
             self.dictionary_to_outline(new_node,dictionary[key])
         else:
             new_node.b = str(dictionary[key])
+#@+node:ekr.20071113191025: *3* Remove all @test nodes
+count = 0
+p = c.rootVnode()
+while p:
+    h = p.h
+    if h.startswith('@test '):
+        next = p.nodeAfterTree()
+        print 'deleting',h
+        count += 1
+        p.doDelete()
+        p = next
+    else:
+        if h.startswith('@thin'): print h
+        p.moveToThreadNext()
+c.redraw()
+
+print '%d @test nodes deleted' % count
+#@+node:ekr.20150416064259.1: ** Comparing files & nodes
+#@+node:EKR.20040424065452: *3* Compare files
+p1 = r"c:\prog\leoMenu(1).py"
+p2 = r"c:\prog\leoMenu(2).py"
+
+f1 = open(p1,"rb") ; f2 = open(p2,"rb")
+lines1 = f1.readlines()
+lines2 = f2.readlines()
+f1.close() ; f2.close()
+
+f1 = open(p1,"rb") ; f2 = open(p2,"rb")
+text1 = f1.read()
+text2 = f2.read()
+f1.close() ; f2.close()
+
+cr1 = text1.count('\r')
+cr2 = text2.count('\r')
+
+print '-'*20
+print "lines ",len(lines1),len(lines2)
+print "chars ",len(text1),len(text2)
+print "non-cr",len(text1)-cr1,len(text2)-cr2
+print "cr    ",cr1,cr2
+#@+node:EKR.20040424091411: *3* Compare ignoring newlines
+p1 = r"c:\prog\leoMenu(1).py"
+p2 = r"c:\prog\leoMenu(2).py"
+
+f1 = open(p1,"rb") ; f2 = open(p2,"rb")
+g.es("equal (raw mode)",f1.read()==f2.read())
+f1.close() ; f2.close()
+
+f1 = open(p1) ; f2 = open(p2)
+g.es("equal (text mode)",f1.read()==f2.read())
+f1.close() ; f2.close()
+#@+node:ekr.20111017085134.16202: *3* Compare old and new nodes
+old,new = None,None
+for child in p.children():
+    if child.h.startswith('old'):
+        old = child.copy()
+    if child.h.startswith('new'):
+        new = child.copy()
+if old and new:
+    print(old.b == new.b)
+    if old.b != new.b:
+        print('*' * 20)
+        print(len(old.b),len(new.b))
+        old_lines = g.splitLines(old.b)
+        new_lines = g.splitLines(new.b)
+        for i in range(max(len(old_lines),len(new_lines))):
+            if (i < len(old_lines) and i < len(new_lines) and
+                old_lines[i] == new_lines[i]
+            ):
+                pass
+            else:
+                if i < len(old_lines):
+                    print('old %2d %s' % (i,repr(old_lines[i])))
+                if i < len(new_lines):
+                    print('new %2d %s' % (i,repr(new_lines[i])))
 #@+node:ekr.20141105055521.18: *3* Tool for diffing Leo files
 '''
 From: Terry Brown
@@ -853,64 +1388,6 @@ if v:
 
 c.bringToFront()
 c.redraw()
-#@+node:ekr.20150416064259.1: ** Comparing files & nodes
-#@+node:EKR.20040424065452: *3* Compare files
-p1 = r"c:\prog\leoMenu(1).py"
-p2 = r"c:\prog\leoMenu(2).py"
-
-f1 = open(p1,"rb") ; f2 = open(p2,"rb")
-lines1 = f1.readlines()
-lines2 = f2.readlines()
-f1.close() ; f2.close()
-
-f1 = open(p1,"rb") ; f2 = open(p2,"rb")
-text1 = f1.read()
-text2 = f2.read()
-f1.close() ; f2.close()
-
-cr1 = text1.count('\r')
-cr2 = text2.count('\r')
-
-print '-'*20
-print "lines ",len(lines1),len(lines2)
-print "chars ",len(text1),len(text2)
-print "non-cr",len(text1)-cr1,len(text2)-cr2
-print "cr    ",cr1,cr2
-#@+node:EKR.20040424091411: *3* Compare ignoring newlines
-p1 = r"c:\prog\leoMenu(1).py"
-p2 = r"c:\prog\leoMenu(2).py"
-
-f1 = open(p1,"rb") ; f2 = open(p2,"rb")
-g.es("equal (raw mode)",f1.read()==f2.read())
-f1.close() ; f2.close()
-
-f1 = open(p1) ; f2 = open(p2)
-g.es("equal (text mode)",f1.read()==f2.read())
-f1.close() ; f2.close()
-#@+node:ekr.20111017085134.16202: *3* Compare old and new nodes
-old,new = None,None
-for child in p.children():
-    if child.h.startswith('old'):
-        old = child.copy()
-    if child.h.startswith('new'):
-        new = child.copy()
-if old and new:
-    print(old.b == new.b)
-    if old.b != new.b:
-        print('*' * 20)
-        print(len(old.b),len(new.b))
-        old_lines = g.splitLines(old.b)
-        new_lines = g.splitLines(new.b)
-        for i in range(max(len(old_lines),len(new_lines))):
-            if (i < len(old_lines) and i < len(new_lines) and
-                old_lines[i] == new_lines[i]
-            ):
-                pass
-            else:
-                if i < len(old_lines):
-                    print('old %2d %s' % (i,repr(old_lines[i])))
-                if i < len(new_lines):
-                    print('new %2d %s' % (i,repr(new_lines[i])))
 #@+node:ekr.20150416063838.1: ** Data
 #@+node:ekr.20050310082013: *3* AutoIt script from e
 @ http://sourceforge.net/forum/message.php?msg_id=3039793
@@ -930,7 +1407,7 @@ make another
 @language elisp
 
 ; AutoIt Version: 3.0 a BASIC like language
-; http://www.hiddensoft.com/AutoIt/
+; http://www.hiddensoft.com
 
 ; Opens Leo with no filename, then opens a new, closes it
 ; Preliminary, will eventually programatically create
@@ -1370,7 +1847,8 @@ if zipfile.is_zipfile(path):
         g.es_exception()
         zf = None
 #@+node:ekr.20060928193919: *3* Prototype: zodb get/put scripts
-#@+node:ekr.20060928193919.1: *4* @@button zodb-get-tree
+#@+node:ekr.20150416171257.1: *4* @ignore zodb buttons
+#@+node:ekr.20060928193919.1: *5* @button zodb-get-tree
 name = c.config.getString('zodb_storage_file')
 db = g.init_zodb(name)
 connection = db.open()
@@ -1385,7 +1863,7 @@ try:
 finally:
     get_transaction().commit()
     connection.close()
-#@+node:ekr.20060928193919.2: *4* @@button zodb-get-node
+#@+node:ekr.20060928193919.2: *5* @button zodb-get-node
 name = c.config.getString('zodb_storage_file')
 db = g.init_zodb(name)
 connection = db.open()
@@ -1401,7 +1879,7 @@ try:
 finally:
     get_transaction().commit()
     connection.close()
-#@+node:ekr.20060928193919.3: *4* @@button zodb-put-tree
+#@+node:ekr.20060928193919.3: *5* @button zodb-put-tree
 name = c.config.getString('zodb_storage_file')
 db = g.init_zodb(name)
 connection = db.open()
@@ -1412,7 +1890,7 @@ try:
 finally:
     get_transaction().commit()
     connection.close()
-#@+node:ekr.20060928193919.4: *4* @@button zodb-put-node
+#@+node:ekr.20060928193919.4: *5* @button zodb-put-node
 name = c.config.getString('zodb_storage_file')
 db = g.init_zodb(name)
 connection = db.open()
@@ -2291,40 +2769,7 @@ return [expr $x*10]
 set x 50 +
 return [expr $x*10]
 #@+node:ekr.20150416102234.1: ** Finding & reporting
-#@+node:ekr.20080519162425.1: *3* @@button change leo imports
-change = False # True: actually make the changes.
-trace = True
-
-print '-' * 40
-
-tag = 'import leo' ; n = len('import ')
-
-for p in p.self_and_subtree():
-    result = []
-    for s in g.splitlines(p.b):
-        i = s.find(tag,0)
-        if i > -1:
-            # Do nothing if we have already done the translation.
-            i2 = s.find('<<') ; i3 = s.find('import leo.core')
-            if i2 == -1 and i3 == -1:
-                i += n
-                j = g.skip_c_id(s,i)
-                word = s[i:j]
-                rest = s[j:]
-                if rest.strip().startswith('as'):
-                    s = s[:i] + 'leo.core.' + word + rest
-                else:
-                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
-                if trace:
-                    print p.h
-                    j,k=g.getLine(s,i) ; print s[j:k]
-        result.append(s)
-    result = ''.join(result)
-
-    if change and result != p.b:
-        c.setBodyString(p,result)
-
-#@+node:ekr.20120328102352.6945: *3* @@button fac
+#@+node:ekr.20120328102352.6945: *3* @@button create specialized find buttons
 @language python
 
 << documentation >>
@@ -2417,172 +2862,6 @@ Notes:
    executed by the button
  - replacing selection text makes Leo reposition the insert point at
    the top of the window, this is annoying but unrelated to this code
-#@+node:ville.20090508224531.9799: *3* @@button git-dump
-""" Dump nodes to ~/.leo/dump git repository.
-
-Before using this, you need to:
-    mkdir ~/.leo/dump; cd ~/.leo/dump; git init
-
-"""
-
-import os, codecs, hashlib
-flatroot = os.path.expanduser('~/.leo/dump')
-assert os.path.isdir(flatroot)
-
-hl = []
-
-def dump_nodes():
-    for p in c.all_unique_positions():
-        name, date, num = p.v.fileIndex
-        gnx = '%s%s%s' % (name, date, num)
-        hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
-        fname = gnx
-        codecs.open(fname,'w', encoding='utf-8').write(p.b)
-        print "wrote", fname
-
-os.chdir(flatroot)
-
-dump_nodes()
-lis = "\n".join(hl)
-
-html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
-
-#titlename = c.frame.getTitle() + '.html'
-pth, bname = os.path.split(c.mFileName)
-
-if pth and bname:
-    dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
-
-titlename = dbdirname + '.html'
-codecs.open(titlename,'w', encoding='utf-8').write(html)
-
-g.es("committing to " + flatroot)
-
-os.system('git add *')
-out = os.popen('git commit -m "Leo autocommit"').read()
-g.es("committed")
-g.es(out)
-g.es('Outline in ' + os.path.abspath(titlename))
-#@+node:ekr.20060531085804: *3* @@button Show other clones
-@
-Ever have a clone that is difficult to understand outside the context of its
-original parent? Here's some code to help. It displays the headline of the
-current node plus the headlines of all the parents of all the clones of the
-current node. Selecting a displayed parent headline moves the current node to
-the corresponding clone in the outline.
-
-The idea is to be able to quickly see the context of all the clones of the
-current node and to be able to easily navigate from one clone instance to the
-next.
-@c
-
-@others
-c.cn = cloneNavigator(c)
-c.cn.displayClones(c)
-#@+node:ekr.20060531085804.1: *4* class cloneNavigator
-class cloneNavigator:
-    '''
-       Displays the headline of the current node plus the headlines of
-       all the parents of all the clones of the current node.  Selecting
-       a displayed parent headline moves the current node to the
-       corresponding clone in the outline.
-
-       The idea is to be able to quickly see the context of all the clones
-       of the current node and to be able to easily navigate from one clone
-       instance to the next.
-    '''
-    @others
-#@+node:ekr.20060531085804.2: *5* init
-def __init__ (self,c):
-    self.c = c
-    import Tkinter as Tk
-    if 0:
-        f = Tk.Toplevel()
-    else:
-        log = c.frame.log
-        log.selectTab('Clones')
-        f = log.tabFrame
-        for w in f.winfo_children():
-            w.destroy()
-
-    # Create and pack empty label and listbox
-    self.title = Tk.Label(f)
-    self.title.pack(anchor="nw")
-    self.lb = Tk.Listbox(f)
-    self.lb.pack(expand=1,fill="both")
-#@+node:ekr.20060531085804.3: *5* getAllClones
-def getAllClones(self,p):
-    c = self.c
-    return [z.copy() for z in c.all_positions() if z.v == p.v]
-#@+node:ekr.20060531085804.4: *5* displayClones
-def displayClones(self,c):
-    '''Displays the parent headline for all the clones of the current position'''
-    cp = c.currentPosition()
-
-    # "Title" is the headline of the current node
-    self.title.configure(text=cp.h)
-
-    # Initialize listbox and clone list
-    clones = self.getAllClones(cp)
-    self.lb.delete(0,self.lb.size()-1)
-
-    <<Fill listbox with clone parent headlines>>    
-    <<Goto selected position when listbox selection changes>>
-#@+node:ekr.20060531085804.5: *6* <<Fill listbox with clone parent headlines>>
-# Add the headlines of all the clone parents to the listbox
-for p in clones:
-    if p.parent():
-        text = p.parent().h
-    else:
-        text = "<root>"
-    self.lb.insert(self.lb.size(),text)
-
-    # Initial listbox selection corresponds to current position
-    if p.v == cp.v:
-        self.lb.selection_set(self.lb.size()-1)
-#@+node:ekr.20060531085804.6: *6* <<Goto selected position when listbox selection changes>>
-# Callback for when a listbox entry is selected            
-def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
-    idx = int(lb.curselection()[0])
-    p = positions[idx]
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    return
-self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)
-#@+node:ekr.20130802103517.20482: *3* Call hierarchy tracing (using python 'trace' module)
-@language python
-@tabwidth -4
-
-"""
-Create a Leo suboutline containing summary of a previous trace session.
-
-Run (ctrl+b) this script after::
-
-    cd ~/leo-editor
-    python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
-
-"""
-from __future__ import print_function
-import os
-g.cls()
-f = g.os_path_finalize_join(g.app.loadDir,'..','..','trace.txt')
-tr = open(os.path.expanduser(f))
-top = p.insertAfter()
-top.h = 'trace session'
-cur,no,n = None,None,0
-for l in tr:
-    if l.startswith('***'):
-        cur = top.insertAsLastChild().copy()
-        cur.h = os.path.basename(l.split()[1])
-    elif l.startswith('  -->'):
-        no = cur.insertAsLastChild().copy()
-        no.h = os.path.basename(l.split()[1].strip())
-    elif no:
-        no.b += l.strip() + '\n'
-    n += 1
-    if (n % 100) == 0:
-        print(".",end='')
-c.redraw()
 #@+node:EKR.20040517074600.8: *3* Count pages
 nodes = 0 ; lines = 0
 for p in c.all_unique_positions():
@@ -3260,52 +3539,6 @@ for p in p.self_and_subtree():
 
 c.selectPosition(pmax)
 c.redraw()
-#@+node:ekr.20051110105027.148: *3* Find script to change OnX to x in body (didn't quite work :-)
-# Script to change OnXXX to xxx in all body text.
-if 0:
-
-    v = c.currentVnode()
-    v = v.threadNext()
-    after = v.nodeAfterTree()
-    count = 0
-    while v and v != after:
-        while 1:
-            s = v.b
-            if not s: break
-            i = s.find("c.On")
-            if i == -1: break
-            c = s[i+4].lower()
-            s = s[:i] + 'c.' + c + s[i+5:]
-            c.setBodyString(v,s)
-            count += 1
-        v = v.threadNext()
-    print count
-#@+node:ekr.20051110105027.149: *3* Find scripts to change OnX to x in headline
-if 0: # Script to change OnXxx to xxx in all headlines
-    v = c.currentVnode()
-    after = v.nodeAfterTree()
-    while v and v != after:
-        h = v.h
-        if g.match(h,0,"On") and len(h) > 2:
-            h = h[2].lower() + h[3:]
-            print h
-            v.setHeadString(h)
-        v = v.threadNext()
-
-# Script to change OnXXX to xxx in all body text.
-if 0:
-    v = c.currentVnode()
-    after = v.nodeAfterTree()
-    while v and v != after:
-        s = v.b
-        if s:
-            i = s.find("def ")
-            if i > -1:
-                c = s[i+6].lower()
-                s = s[:i] + "def " + c + s[i+7:]
-                print v.h
-                c.setBodyString(v,s)
-        v = v.threadNext()
 #@+node:ekr.20070213074001.1: *3* Find w.xxx
 import string
 import leoTkinterFrame
@@ -3655,6 +3888,21 @@ for z in sorted(aList):
     print(z)
     
 print('done')
+#@+node:EKR.20040613162717: *3* Print newline stats
+path = g.os_path_join(g.app.loadDir,"leo.py")
+
+try:
+    f = open(path,"rb")
+    s = f.read()
+    f.close()
+    cr = 0 ; nl = 0
+    for ch in s:
+        if ch == '\r': cr += 1
+        if ch == '\n': nl += 1
+    m = "cr %d, nl %d %s" % (cr,nl,path)
+    print m ; g.es(m)
+except IOError:
+    print "can not open",path
 #@+node:ekr.20051110105027.151: *3* Print statistics using dis module
 # routines to gather static statistics about opcodes based on dis module.
 import compiler
@@ -3928,24 +4176,6 @@ print "Loaded plugins..."
 
 for s in g.app.loadedPlugins:
     print s
-#@+node:EKR.20040613162717: *3* Report newlines
-path = g.os_path_join(g.app.loadDir,"leo.py")
-
-try:
-    f = open(path,"rb")
-    s = f.read()
-    f.close()
-
-    cr = 0 ; nl = 0
-    for ch in s:
-        if ch == '\r': cr += 1
-        if ch == '\n': nl += 1
-
-    m = "cr %d, nl %d %s" % (cr,nl,path)
-    print m ; g.es(m)
-
-except IOError:
-    print "can not open",path
 #@+node:ekr.20041013101029: *3* Rexex find in headline
 # Run this script from a scriptButton.
 << about this script >>
@@ -4001,6 +4231,40 @@ changing these lines with "- " (and at first line), I imported flattened outline
 and "there you go" a index-driven Leo version. :)
 
 bill p
+#@+node:ekr.20130802103517.20482: *3* Show Call hierarchy w/ trace module
+@language python
+@tabwidth -4
+
+"""
+Create a Leo suboutline containing summary of a previous trace session.
+
+Run (ctrl+b) this script after::
+
+    cd ~/leo-editor
+    python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+from __future__ import print_function
+import os
+g.cls()
+f = g.os_path_finalize_join(g.app.loadDir,'..','..','trace.txt')
+tr = open(os.path.expanduser(f))
+top = p.insertAfter()
+top.h = 'trace session'
+cur,no,n = None,None,0
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    elif no:
+        no.b += l.strip() + '\n'
+    n += 1
+    if (n % 100) == 0:
+        print(".",end='')
+c.redraw()
 #@+node:EKR.20040517074600.10: *3* Show font
 body = c.frame.body.bodyCtrl
 
@@ -6538,7 +6802,7 @@ http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-
         g.es("Registered!")
     else:
         g.es("LeoDoc.ico not in expected location, can't continue.")
-#@+node:ekr.20150416063804.1: *3* Tk
+#@+node:ekr.20150416063804.1: *3* Tk scripts
 # These are obsolete, unless Tk is run in a separate process.
 #@+node:ekr.20041220080654: *4* Prototype: Setting Tk config values safely
 import Tkinter as Tk
@@ -7024,279 +7288,6 @@ c.recursiveImport(
     safe_at_file = False,
     theTypes = None, # Same as ['.py']
 )
-#@+node:ekr.20060824181946: *3* @@button convert-to-at-shadow
-"""
-Look for @thin files in the current subtree.
-Convert those thin files into a file with a shadow file,
-if this shadow file does not exist already.
-
-FIXME: the line end convention is currently changed:
-      unix lineendings are converted to DOS lineendings,
-      if files are converted on Windows.
-      Not sure if that is a probem or not.
-"""
-
-import mod_shadow_core, os, shutil
-
-def marker_from_extension(filename):
-    marker = g.comment_delims_from_extension(filename)[0]
-    return marker and marker + '@'
-
-shadow_subdir = c.config.getString("shadow_subdir").strip()
-if not shadow_subdir: assert False,'No shadow_subdir setting'
-prefix = c.config.getString("shadow_prefix")
-
-for p in p.self_and_subtree():
-   h = p.h.strip()
-   if h.startswith("@thin"):
-       start = h.find("@thin") + len("@thin")
-       leofiledir = os.path.split(c.mFileName)[0]
-       filename = h[start:].strip()
-       fullfilename = os.path.join(leofiledir, filename)
-       theDir = os.path.split(fullfilename)[0]
-       leoFolder = os.path.join(leofiledir, theDir, shadow_subdir)
-       if not os.path.exists(leoFolder):
-           os.mkdir(leoFolder)
-           assert os.path.exists(leoFolder)
-       else:
-           assert os.path.isdir(leoFolder)
-       junk, name = os.path.split(filename)
-       newname = os.path.join(leoFolder, prefix + name)
-       if os.path.exists(newname):
-           continue
-       g.es( "renaming %s to %s" % (filename, newname))
-       shutil.copy2(fullfilename, newname)
-       os.unlink(fullfilename)
-       f = file(fullfilename, "w")
-       f.close()
-       mod_shadow_core.copy_file_removing_sentinels(
-           sourcefilename=newname,
-           targetfilename=fullfilename,
-           marker_from_extension = marker_from_extension)
-       g.es("File %s is now shadowed" % filename)
-#@+node:ekr.20120602062004.12350: *3* Clean imported nodes
-'''A script to clean Python imports.
-'''
-
-h = 'Coverage (live)'
-    # The headline of the tree to be converted.
-
-class CleanPython:
-    def __init__ (self):
-        self.trace = True
-    @others
-
-p = g.findNodeAnywhere(c,h)
-if p:
-    CleanPython().run(c,p)
-else:
-    print('not found: %s' % (h))
-#@+node:ekr.20120602062004.12351: *4* run
-def run(self,c,p):
-
-    if self.trace: g.cls()
-    
-    self.changed = 0
-    p1 = p.copy()
-    
-    # Don't set any nodes dirty here.
-    for p in p1.self_and_subtree():
-        if p.isMarked():
-            p.v.clearMarked()
-            
-    bunch = c.undoer.beforeChangeTree(p1)
-   
-    for p in p1.children():
-        if self.trace: print('\n***** %s' % (p.h))
-        self.clean(c,p)
-        
-    if self.changed:
-        c.undoer.afterChangeTree(p1,'clean-python-code',bunch)
-        c.redraw()
-
-    g.trace('done: %s nodes changed' % (self.changed))
-#@+node:ekr.20120602062004.12352: *4* clean & helpers
-def clean(self,c,p):
-    
-    '''
-    - Move a shebang line from the first child to the root.
-    - Move a leading docstring in the first child to the root.
-    - Use a section reference for declarations.
-    - Remove leading and trailing blank lines from all nodes.
-    - Merge a node containing nothing but comments with the next node.
-    - Merge a node containing no class or def lines with the previous node.
-    '''
-
-    root = p.copy()
-    assert p.h.startswith('@@file') or p.h.startswith('@file'),p.h
-    
-    self.move_shebang_line(c,root)
-    self.move_doc_string(c,root)
-    self.rename_decls(c,root)
-
-    for p in root.self_and_subtree():
-        self.clean_blank_lines(c,p)
-    for p in root.subtree():
-        self.merge_comment_nodes(c,p)
-    for p in root.subtree():
-        self.merge_extra_nodes(c,p)
-#@+node:ekr.20120602062004.12353: *5* move_shebang_line
-def move_shebang_line (self,c,root):
-    
-    '''Move a shebang line from the first child to the root.'''
-    
-    p = root.firstChild()
-    s = p and p.b or ''
-    if not s.startswith('#!'):
-        return
-        
-    lines = g.splitLines(s)
-    nl = '\n\n' if root.b.strip() else ''
-    root.b = lines[0] + nl + root.b
-    p.b = lines[1:]
-    p.setDirty()
-    p.setMarked()
-    root.setDirty()
-    root.setMarked()
-    c.setChanged(True)
-    self.changed += 1
-    g.trace('%s --> %s' % (p.h,root.h))
-#@+node:ekr.20120602062004.12354: *5* move_doc_string
-def move_doc_string(self,c,root):
-
-    '''Move a leading docstring in the first child to the root node.'''
-    
-    p = root.firstChild()
-    s = p and p.b or ''
-    if not (s.startswith('"""') or s.startswith("'''")):
-        return
-        
-    delim = '"""' if s.startswith('"""') else "'''"
-    i = s.find(delim,3)
-    if i == -1:
-        return
-        
-    doc = s[:i+3]
-    p.b = s[i+3:].lstrip()
-    
-    # Move docstring to front of root.b, but after any shebang line.
-    nl = '\n\n' if root.b.strip() else ''
-    if root.b.startswith('#!'):
-        lines = g.splitLines(root.b)
-        root.b = lines[0] + doc + nl + lines[1:]
-    else:
-        root.b = doc + nl + root.b
-        
-    p.setDirty()
-    p.setMarked()
-    root.setDirty()
-    root.setMarked()
-    c.setChanged(True)
-    self.changed += 1
-    g.trace('%s --> %s' % (p.h,root.h))
-#@+node:ekr.20120602062004.12355: *5* rename_decls (test)
-def rename_decls (self,c,root):
-    
-    '''Use a section reference for declarations.'''
-    
-    p = root.firstChild()
-    h = p and p.h or ''
-    
-    tag = 'declarations'
-    if not h.endswith(tag):
-        return
-
-    name = h[:-len(tag)].strip()
-    decls = g.angleBrackets(tag)
-    p.h = '%s (%s)' % (decls,name)
-    
-    i = root.b.find('@others')
-    if i == -1:
-        g.trace('can not happen')
-        return
-    else:
-        nl = '' if i == 0 else '\n'
-        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
-
-    p.setDirty()
-    root.setDirty()
-    root.setMarked()
-    c.setChanged(True)
-    self.changed += 1
-    g.trace('%s --> %s' % (p.h,root.h))
-#@+node:ekr.20120602062004.12356: *5* clean_blank_lines
-def clean_blank_lines(self,c,p):
-    
-    '''Remove leading and trailing blank lines from all nodes.
-    '''
-    
-    s = p.b
-    if not s.strip():
-        return
-    
-    result = g.splitLines(s)
-    for i in 0,-1:
-        while result:
-            if result[i].strip():
-                break
-            else:
-                del result[i]
-        
-    s = ''.join(result)
-    if not s.endswith('\n'): s = s + '\n'
-    if s != p.b:
-        p.b = s
-        p.setDirty()
-        # p.setMarked()
-        c.setChanged(True)
-        self.changed += 1
-        # if self.trace: g.trace(p.h)
-        
-#@+node:ekr.20120602062004.12357: *5* merge_comment_nodes
-def merge_comment_nodes(self,c,p):
-    
-    '''Merge a node containing nothing but comments with the next node.'''
-
-    h = p.h
-    
-    if p.hasChildren() or not h.strip().startswith('#'):
-        return
-        
-    p2 = p.next()
-    if p2:
-        b = p.b.lstrip()
-        b = b + ('\n' if b.endswith('\n') else '\n\n')
-        p2.b = b + p2.b
-        p.doDelete(p2)
-        p2.setDirty()
-        # p2.setMarked()
-        c.setChanged(True)
-        self.changed += 1
-        if self.trace: g.trace(h,' --> ',p2.h)
-#@+node:ekr.20120602062004.12358: *5* merge_extra_nodes
-def merge_extra_nodes(self,c,p):
-    
-    '''Merge a node containing no class or def lines with the previous node'''
-    
-    s = p.b
-    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
-        return
-        
-    for s2 in g.splitLines(s):
-        if s2.strip().startswith('class') or s2.strip().startswith('def'):
-            return
-
-    p2 = p.back()
-    if p2:
-        nl = '\n' if s.endswith('\n') else '\n\n'
-        p2.b = p2.b + nl + s
-        h = p.h
-        p.doDelete(p2)
-        p2.setDirty()
-        # p2.setMarked()
-        c.setChanged(True)
-        self.changed += 1
-        if self.trace: g.trace(h,' --> ',p2.h)
 #@+node:ekr.20130810093044.16941: *3* Export full contents
 @language python
 
@@ -7396,415 +7387,6 @@ try:
     g.es("Wrote to file " + fileName,color="blue")
 except IOError:
     g.es("Can not open " + fileName,color="blue")
-#@+node:ekr.20050108110751: *3* HTMLize scripts
-#@+node:ekr.20041229163210: *4* dyna htmlize
-'''A script to send the colorized text of a script to the default web browser.
-
-Based on a dynascript by 'e'.'''
-
-@language python
-@tabwidth -4
-
-<< imports >>
-
-hopts = {
-  'stripcomments':  False,
-  'stripsentinals': True,
-  'stripnodesents': False, # False: leave node sentinels.
-  'stripdirectives':False,
-  'noNUMBER':       False,
-  'noOP':           False,
-  'noNAME':         True,  
-  'timestring':     '' # time.strftime('%m/%d/%Y %H:%M.%S'),
-}
-
-<< init globals >>
-
-filename = g.os_path_join(g.app.loadDir,'..','test','leoTemp.html')
-
-@others
-
-htmlize(c,p)
-#@+node:ekr.20041229164609: *5* << imports >>
-import cgi
-import cStringIO
-import keyword
-import os
-import re
-import sys
-import time
-import token
-import tokenize
-import webbrowser
-#@+node:ekr.20041229163210.2: *5* << init globals >>
-_KEYWORD = token.NT_OFFSET + 1
-_TEXT    = token.NT_OFFSET + 2
-
-_colors = {
-    token.NUMBER:     '#483D8B', #black/darkslateblue
-    token.OP:         '#000080', #black/navy
-    token.STRING:     '#00AA00', #green 00cc66
-    tokenize.COMMENT: '#DD0000', #red cc0033
-    token.NAME:       '#4B0082', #black/indigo
-    token.ERRORTOKEN: '#FF8080', #redred bare null does it
-    _KEYWORD:         '#0066ff', #blue
-    _TEXT:            '#000000', #black /is text fg color too
-    '_LeoDir':        '#228B22', #directive, forest comment
-    '_LeoSen':        '#BC8F8F', #sentinal, tan fade comment
-    'bg':             '#FFFAFA', #snow
-}
-
-if hopts['noNUMBER']: del _colors[token.NUMBER]
-if hopts['noOP']:     del _colors[token.OP]
-if hopts['noNAME']:   del _colors[token.NAME]
-#@+node:ekr.20041229170824: *5* stripSentinels
-def stripSentinels(s):
-
-    '''Strip sentinal lines from s.'''
-
-    lines = s.splitlines()
-    result = [] ; verbatim = False
-    tag1 = '#@+node:'
-    tag2 = '#@-node:'
-    n = len(tag1)
-
-    for line in lines:
-        s = line.strip()
-        if verbatim:
-            result.append(line)
-            verbatim = False
-        elif s.startswith('#@verbatim'):
-            verbatim = True
-        elif s.startswith('#@@'):
-            if not hopts['stripdirectives']:
-                result.append(line)
-        elif s.startswith(tag1):
-            if not hopts['stripnodesents']:
-                i = line.find(tag1)
-                result.append(line[:i] + '#@+' + line[i+n:].strip())
-        elif s.startswith(tag2):
-            if not hopts['stripnodesents']:
-                i = line.find(tag2)
-                result.append(line[:i] + '#@-' + line[i+n:].strip())
-        elif not s.startswith('#@'):
-            result.append(line)
-
-    return '\n'.join(result)
-#@+node:ekr.20041229165956: *5* sanitize
-def sanitize(s):
-
-    """Leo's sanitize_filename is too aggressive and too lax."""
-
-    if not s: return
-
-    res = re.compile(
-        r"""[|\\ /!@=\#\$%,\x5E&\x3F:;.\x22\x27<>`~\*\+\t\n\f\r\b\a]""",
-        re.IGNORECASE | re.VERBOSE)
-
-    # should test for unicode before str()
-    return res.sub('_', str(s.strip())).replace('__','_')[:128]
-#@+node:ekr.20041229163210.3: *5* class Parser
-class Parser(object):
-    """ prep the source for any language
-        parse and Send colored python source.
-    """
-    @others
-#@+node:ekr.20041229163210.4: *6* __init__
-def __init__(self,lang,raw,title):
-    """ Store the source text."""
-
-    self.title = title
-    self.raw = raw.strip().expandtabs(4)
-
-    if lang == 'python':
-        cmtdelim = '#'
-    else:
-        d = c.scanAllDirectives(p) 
-        cmtdelim = d.get('delims',['#'])
-        cmtdelim = cmtdelim[0] or cmtdelim[1]
-
-    self.fnd = re.compile(r"%s@\s*@+."%(cmtdelim,) )
-
-    if hopts['stripsentinals']: 
-        # have to add option to strip all comments as well
-        self.raw = stripSentinels(self.raw)
-#@+node:ekr.20041229163210.5: *6* format
-def format(self,formatter,form):
-    """ Parse and send the colored source."""
-
-    # store line offsets in self.lines
-    self.lines = [0,0]
-    pos = 0
-    while 1:
-        pos = self.raw.find('\n',pos) + 1
-        if not pos: break
-        self.lines.append(pos)
-    self.lines.append(len(self.raw))
-    self.pos = 0
-    text = cStringIO.StringIO(self.raw)
-    sys.stdout.write('<html><head><title>')
-    sys.stdout.write('%s </title>\n'%(sanitize(self.title), ))
-
-    #here would be a good spot for @noindent directive but skip a line
-    s = """<STYLE TYPE="text/css"><!--
-pre, H1 {color:%s; FONT-SIZE: 80%%; FONT-WEIGHT: bold; }
-Text {background:%s;}
---></STYLE>
-<SCRIPT LANGUAGE="JavaScript">
-<!-- //
-//-->
-</SCRIPT>""" % (_colors[_TEXT],_colors['bg'])
-
-    sys.stdout.write(s)
-    sys.stdout.write('</head><body text="%s" bgColor="%s">' % (_colors[_TEXT],_colors['bg']))
-    sys.stdout.write('<H3># %s</H3>\n'%self.title)
-    sys.stdout.write('<pre>')  # style
-    sys.stdout.write('<font face="Lucida,Courier New">')
-    # parse the source and write it
-    try:
-        tokenize.tokenize(text.readline,self)
-    except tokenize.TokenError, ex:
-        msg = ex[0]
-        line = ex[1][0]
-        print "<h3>ERROR: %s</h3>%s" % (msg, self.raw[self.lines[line]:])
-    sys.stdout.write('</font></pre>')
-    sys.stdout.write('</body"></html>')
-#@+node:ekr.20041229163210.6: *6* __call__
-def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
-
-    """ Token handler."""
-
-    if 0: print "type", toktype, token.tok_name[toktype], "text",\
-            toktext, "start", srow,scol, "end", erow,ecol, "<br>"
-
-    # calculate new positions
-    oldpos = self.pos
-    newpos = self.lines[srow] + scol
-    self.pos = newpos + len(toktext)
-
-    # handle newlines
-    if toktype in [token.NEWLINE, tokenize.NL]:
-        print
-        return
-
-    style = ''
-    if toktype == tokenize.COMMENT:
-        if toktext.lstrip().startswith('#@'):
-            if self.fnd.findall(toktext):
-                toktype = '_LeoDir'
-            else:
-                toktype = '_LeoSen'
-
-    # Send the original whitespace.
-    if newpos > oldpos:
-        sys.stdout.write(self.raw[oldpos:newpos])
-
-    # Skip indenting tokens.
-    if toktype in [token.INDENT,token.DEDENT]:
-        self.pos = newpos
-        return
-
-    # Map token type to a color group
-    if token.LPAR <= toktype and toktype <= token.OP:
-        toktype = token.OP
-    elif toktype == token.NAME and keyword.iskeyword(toktext):
-        toktype = _KEYWORD
-    if toktype == token.ERRORTOKEN:
-        style = ' style="border: solid 1.5pt #FF0000;"'
-
-    dofont = True
-    try:
-        color = _colors[toktype]
-    except Exception:
-        dofont = False
-
-    if dofont: sys.stdout.write('<font color="%s"%s>' % (color, style))
-    sys.stdout.write(cgi.escape(toktext))
-    if dofont: sys.stdout.write('</font>')
-#@+node:ekr.20041229164609.2: *5* htmlize
-def htmlize(c,p):
-    lang = g.scanForAtLanguage(c,p)
-    lang = str(lang).lower()
-    source = g.getScript(c,p)
-    timestring = hopts['timestring']
-    # title = "%s Leo %s script %s" % (p.h[:75],lang,timestring)
-    title = "%s %s" % (p.h[:75],timestring)
-    try:
-        if not source: raise ValueError
-        g.es('output', lang, p.h)
-        theParser = Parser(lang,source,title)
-        sys.stdout = open(filename,'wb') 
-        if lang == 'python':
-            theParser.format(None,None)
-        else:
-            << colorize with silvercity >>
-        sys.stdout.close()
-        sys.stdout = sys.__stdout__
-        webbrowser.open(filename, new= 1)
-    except ValueError:
-        g.es('no @path set, unsupported lang or empty script',color='tomato')
-        g.es(lang, p.h)
-    except Exception:
-        g.es('htmlize malfunction?', color='tomato')
-        g.es_exception(full= True)
-#@+node:ekr.20041229163210.7: *6* << colorize with silvercity >>
-if lang in [ # Leo may not have all of these yet
-    'csharp', 'c', 'c++', 'cpp', # (C and C++)
-    'css', # (Cascading Style Sheets)
-    'htm', 'html', # HTML/PHP w/ JavaScript, VBScript, Python
-    'plain', #null (No styling)
-    'perlpod', 'perl', # (Perl)
-    #'python', # (Python)
-    'ruby', # (Ruby)
-    'smart_python', # (Python with styled strings)
-    'sql', # (SQL)
-    'xml', # (XML)
-    'xslt', # (XSLT)
-    'yaml', # (YAML)
-    # basic & java? missing. might send java as c?
-    'elisp', 'php', 'java', 'rapidq', 'actionscript', 'css',
-]:
-    if lang in ('htm','html','php','java','rapidq','actionscript', 'css'):
-        lang = 'html'
-    elif lang in ['c','c++','cpp']: lang = 'cpp'
-    elif lang in ['perlpod','perl']: lang = 'perl'
-    elif lang in ['elisp',]: lang = 'perl'
-    if lang in ('plain',None): lang = 'null'
-
-    g.es('writing tmpname', tmpfile )
-    fo = file(tmpfile, 'w')
-    fo.writelines(pars.raw + "\n")
-    fo.close()
-
-    cmd = g.os_path_join(pypath, 'Scripts', 'source2html.py')
-
-    # Send the output to stdout
-    #" --view %N  %N.html"
-    # --css=file copy silver_city.css where the filename will be
-    # source2html.py --list-generators
-    params = ' --generator=%s --title=%s --css=silver_city.css %s'%(
-       lang, sanitize_(title), tmpfile,)  
-
-    if not g.os_path_exists(cmd):
-        g.es('cant find source2html install silvercity')
-        print 'cant find source2html from silvercity'
-    else:
-        g.es('running silvercity \n', py + cmd + params )
-        out, err = runcmd(py + cmd + params )
-        for x in (out + err).splitlines():
-            print x
-else:
-    print '<i>not a known htmlize supported language</i>'
-    #might have to do a sequential dump of nodes, or @rst?
-    #is title and first headline set the same for all options?
-    print '<Pre>'    
-    print pars.raw
-    print '</Pre>'
-#@+node:ekr.20041228135008: *4* HTML to Browser
-@language python
-@tabwidth -4
-
-import webbrowser
-
-if 0:
-    << alternate code doesn't work well for me >>
-
-def showHtml(html):
-    '''Display html in a web browser'''
-    fileName = g.os_path_join(g.app.loadDir,'..','test','leoTemp.html')
-    f = file(fileName,'w')
-    f.write(html)
-    f.close()
-    webbrowser.open(fileName)
-
-# Display the selected node in the browser.
-showHtml('<pre>%s</pre>' % c.currentPosition().b)
-
-# To do: use a stylesheet to colorize the code.
-#@+node:ekr.20041228140714: *5* << alternate code doesn't work well for me >>
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/347810
-import BaseHTTPServer
-
-def showHtml(html):
-    """Display html in the default web browser without creating a temp file.
-
-    Instantiates a trivial http server and calls webbrowser.open with a URL
-    to retrieve html from that server.
-    """
-
-    class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-        def do_GET(self):
-            g.trace(html)
-            bufferSize = 1024*1024
-            for i in xrange(0, len(html), bufferSize):
-                self.wfile.write(html[i:i+bufferSize])
-
-    server = BaseHTTPServer.HTTPServer(('127.0.0.1',0), RequestHandler)
-    webbrowser.open('http://127.0.0.1:%s' % server.server_port)
-    server.handle_request()
-#@+node:ekr.20050108110751.1: *4* Code from Bill P
-@ Here is a function to convert the font tags to equivalent span tags. Note use
-of font-size:x-large to show how styling can be used for emphasis.
-
-Uses a regular expression to insert style CSS classes before </STYLE> closing
-tag ...so <STYLE></STYLE> is expected to exist in input html.
-@c
-
-def font2span(colorizedusingFONT):
-    aa=colorizedusingFONT
-    styleClasses="""    .token_STRING    {color:#00AA00;} 
-    .token_NUMBER    {color:#483D8B;}
-    .token_OP        {color:#000080;} 
-    .tokenize_COMMENT{color:#DD0000;} 
-    .token_NAME      {color:#4B0082;} 
-    .token_ERRORTOKEN{color:#FF8080;} 
-    .KEYWORD        {color:#0066ff;} 
-    .TEXT           {color:#000000;} 
-    .LeoDir       {color:#228B22;} 
-    .LeoSen       {color:#BC8F8F;font-size:x-large;} 
-    .bg            {color:#FFFAFA;} 
-    """
-    myRE=re.compile(r"</STYLE>")              ;aa=myRE.sub(styleClasses+"\n</STYLE>",aa)
-    myRE=re.compile(r'<font color="#00AA00">');aa=myRE.sub('<span class="token_STRING">',aa)
-    myRE=re.compile(r'<font color="#483D8B">');aa=myRE.sub('<span class="token_NUMBER">',aa)
-    myRE=re.compile(r'<font color="#000080">');aa=myRE.sub('<span class="token_OP">',aa)
-    myRE=re.compile(r'<font color="#DD0000">');aa=myRE.sub('<span class="tokenize_COMMENT">',aa)
-    myRE=re.compile(r'<font color="#4B0082">');aa=myRE.sub('<span class="token_NAME">',aa)
-    myRE=re.compile(r'<font color="#FF8080">');aa=myRE.sub('<span class="token_ERRORTOKEN">',aa)
-    myRE=re.compile(r'<font color="#0066ff">');aa=myRE.sub('<span class="KEYWORD">',aa)
-    myRE=re.compile(r'<font color="#000000">');aa=myRE.sub('<span class="TEXT">',aa)
-    myRE=re.compile(r'<font color="#228B22">');aa=myRE.sub('<span class="LeoDir">',aa)
-    myRE=re.compile(r'<font color="#BC8F8F">');aa=myRE.sub('<span class="LeoSen">',aa)
-    myRE=re.compile(r'<font color="#FFFAFA">');aa=myRE.sub('<span class="bg">',aa)
-    myRE=re.compile(r'</font>')               ;aa=myRE.sub('</span>',aa)
-
-    basefontSize="12pt"
-    basefontFamily="Lucida,Courier New"
-    myRE=re.compile(r'<font face="Lucida,Courier New">');
-    aa=myRE.sub('<span style="font:'+basefontSize+' '+basefontFamily+';">',aa)
-
-    return aa
-#@+node:ekr.20050108110751.2: *5* NewHeadline
-@ To adjust this script internally to use span tags and CSS style classes make
-the following changes to  three nodes as follows:
-@c
-
-# I. in "init globals" node change the _colors dictionary to use lists 
-# (with 3 values representing color, CSS class, extra styling) as follows:
-
-_colors = {
-    token.NUMBER:     ['#483D8B','token_NUMBER',' '], #black/darkslateblue
-    token.OP:         ['#000080','token_OP',' '], #black/navy
-    token.STRING:     ['#00AA00','token_STRING',' '], #green 00cc66
-    tokenize.COMMENT: ['#DD0000','tokenize_COMMENT',' '], #red cc0033
-    token.NAME:       ['#4B0082','token_NAME',' '], #black/indigo
-    token.ERRORTOKEN: ['#FF8080','token_ERRORTOKEN',' '], #redred bare null does it
-    _KEYWORD:         ['#0066ff','KEYWORD',' '], #blue
-    _TEXT:            ['#000000','TEXT',' '], #black /is text fg color too
-    '_LeoDir':        ['#228B22','LeoDir',' '], #directive, forest comment
-    '_LeoSen':        ['#BC8F8F','LeoSen','font-size:x-large;'], #sentinal, tan fade comment
-    'bg':             ['#FFFAFA','bg',' '], #snow
-}
 #@+node:ekr.20041126035448: *3* Import a file
 # Note: the source files contain mixed tabs/blanks, and that's very hard for Leo's imports to handle.
 
@@ -8514,7 +8096,139 @@ line 3
 #@+node:ekr.20061029095517.13: *5* after sel=2.0,2.0
 line 1
 line 3
-#@+node:ekr.20121220111212.13257: *3* @@button write-unit-tests
+#@+node:ekr.20150416171508.1: *3* @ignore testing buttons
+#@+node:ekr.20040721113934: *4* @button Run the profiler on script in c.p.b
+import profile
+import pstats
+
+# Note: the profiled code should do all needed imports.
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
+path = str(path)
+
+if p.b.rstrip():
+    s = p.b.rstrip() + '\n'
+    profile.run(s,path)
+    print '-' * 40
+    print "Profiling info sent to %s" % path
+    stats = pstats.Stats(path)
+    stats.strip_dirs()
+    stats.sort_stats('cum','file','name')
+    stats.print_stats()
+#@+node:ekr.20040901065642.2: *4* @button Run timit on script in c.p.b
+@ Improved timeit script after an idea by 'e'.
+
+Comments of the form #@count nnn set the repeat count.
+Comments of the form #@setup comment delimits the end of setup code.
+@c
+
+try:
+    import timeit # Exists only in Python 2.3 and above.
+except ImportError: 
+    timeit = None
+    print "Can not import timeit"
+
+if timeit and p.b.strip():
+    s = p.b.rstrip() + '\n'
+    << scan for #@count >>
+    << put setup code in s1 and everything else in s2 >>
+    t = timeit.Timer(stmt=s2,setup=s1)
+    try:
+        if 1: # faster.
+            result = t.timeit(count)
+        else: # better results.
+            result = min(t.repeat(3, count))  
+        print "count: %d : %f %s" % (
+            count, result, p.h.strip())
+    except:
+        t.print_exc()
+#@+node:ekr.20040901072339: *5* << scan for #@count >>
+lines = s.split('\n')
+
+count = 1000000 # default count
+tag = "#@count"
+
+for line in lines:
+    i = g.skip_ws(line,0)
+    if g.match(line,0,tag):
+        i += len(tag)
+        i = g.skip_ws(line,i)
+        junk,val = g.skip_long(line,i)
+        if val is not None:
+            count = abs(val)
+            # print "Setting count to",count
+            break
+#@+node:ekr.20040901071028: *5* << put setup code in s1 and everything else in s2 >>
+lines = s.split('\n')
+
+for i in xrange(len(lines)):
+    if lines[i].strip() == "#@setup":
+        break
+
+if i < len(lines):
+    # Split at the #@setup line and delete the #@setup line
+    s1 = '\n'.join(lines[:i])
+    s2 = '\n'.join(lines[i:])
+    #print "setup",repr(s1)
+    #print "code",repr(s2)
+else:
+    # There is no setup.
+    s1 = None
+    s2 = s
+
+if not s1: s1 = 'pass'
+if not s2: s2 = 'pass'
+#@+node:ekr.20080329083943.1: *4* @button Write cleaned files to 'clean' directory
+# Writes all derived files in the outline to 'clean' directories.
+# For example, writes test/foo.py to test/clean/foo.py.
+
+@others
+
+for p in c.all_positions():
+    if p.isAnyAtFileNode():
+        clean_file(p)
+#@+node:ekr.20080329083943.2: *5* clean_file
+def clean_file(p):
+
+    at = c.atFileCommands
+
+    if hasattr(p.v,'tnodeList'):
+        has_list = True
+        old_list =  p.v.tnodeList[:]
+    else:
+        has_list = False
+
+    at.write(
+        root=p,nosentinels=True,
+        thinFile=False,
+        scriptWrite=True,
+        toString=True,
+        write_strips_blank_lines=False)
+
+    if has_list:
+        p.v.tnodeList = old_list
+
+    fileName = g.os_path_normpath(g.os_path_join(
+        at.default_directory,
+        'clean',
+        g.os_path_basename(p.anyAtFileNodeName())))
+
+    # g.trace(p.h,len(at.stringOutput),fileName)
+
+    # Adapted from at.openFileForWritingHelper
+    path = g.os_path_dirname(fileName)
+    if not g.os_path_exists(path):
+        g.es('clean directory does not exist',path)
+        return
+
+    try:
+        f = file(fileName,'w')
+        f.write(at.stringOutput)
+        f.close()
+        g.es_print('wrote',fileName)
+    except IOError:
+        g.es_print('can not write',fileName,color='red')
+        g.es_exception()
+#@+node:ekr.20121220111212.13257: *4* @button write-unit-tests
 '''
 << about this script >>
 '''
@@ -8530,7 +8244,7 @@ if 1:
 else:
     # Writes all tests to a single file: test/unit_tests.py
     TestWriter(c,path=test_dir).run(fn='unit_tests.py')
-#@+node:ekr.20121220111212.13258: *4* << about this script >>
+#@+node:ekr.20121220111212.13258: *5* << about this script >>
 @language rest
 
 This script transliterates @test nodes into .py file. The two main ways of
@@ -8549,14 +8263,14 @@ individual needs.
 
 The <\< file_template >> and <\< test_template >> sections in the TestWriter
 class determines exactly what this script writes.
-#@+node:ekr.20121220111212.13259: *4* class TestWriter
+#@+node:ekr.20121220111212.13259: *5* class TestWriter
 class TestWriter:
     
     << define file_template >>
     << define test_template >>
 
     @others
-#@+node:ekr.20121220111212.13260: *5* << define file_template >>
+#@+node:ekr.20121220111212.13260: *6* << define file_template >>
 # Add any other common imports here.
 
 file_template = '''\
@@ -8564,7 +8278,7 @@ import unittest
 '''
 
 file_template = g.adjustTripleString(file_template,c.tab_width)
-#@+node:ekr.20121220111212.13261: *5* << define test_template >>
+#@+node:ekr.20121220111212.13261: *6* << define test_template >>
 test_template = '''
 class %s (unittest.TestCase):
     def runTest(self):
@@ -8572,7 +8286,7 @@ class %s (unittest.TestCase):
 '''
 
 test_template = g.adjustTripleString(test_template,c.tab_width)
-#@+node:ekr.20121220111212.13262: *5*  ctor
+#@+node:ekr.20121220111212.13262: *6*  ctor
 def __init__(self,c,path=''):
     
     self.c = c
@@ -8580,7 +8294,7 @@ def __init__(self,c,path=''):
     self.path = g.os_path_finalize_join(load_dir,path)
     self.nodes = []
     assert g.os_path_exists(self.path),self.path
-#@+node:ekr.20121220111212.13263: *5* clean
+#@+node:ekr.20121220111212.13263: *6* clean
 def clean(self,s):
     
     '''Munge s so that it can be used as a file name.'''
@@ -8597,7 +8311,7 @@ def clean(self,s):
     if s.endswith('.py'):
         s = s[:-3]
     return s.strip()
-#@+node:ekr.20121220111212.13264: *5* get_body
+#@+node:ekr.20121220111212.13264: *6* get_body
 def get_body(self,p):
     
     '''Convert p.b to a valid script.'''
@@ -8608,7 +8322,7 @@ def get_body(self,p):
     s = ''.join([' '*8+z for z in g.splitLines(s) if z.strip()])
     
     return s.rstrip()
-#@+node:ekr.20121220111212.13265: *5* run
+#@+node:ekr.20121220111212.13265: *6* run
 def run(self,fn=None):
     n,p = 1,c.rootPosition()
     while p:
@@ -8630,7 +8344,7 @@ def run(self,fn=None):
         self.test(fn)
     dest = g.os_path_join(self.path,fn) if fn else self.path
     print('wrote %s tests to %s' % (n,dest))
-#@+node:ekr.20121220111212.13266: *5* test
+#@+node:ekr.20121220111212.13266: *6* test
 def test(self,fn):
     
     '''Test the newly created file.'''
@@ -8650,7 +8364,7 @@ def test(self,fn):
     except Exception:
         print('can not import: %s' % (name))
         g.es_print_exception()
-#@+node:ekr.20121220111212.13267: *5* write_file
+#@+node:ekr.20121220111212.13267: *6* write_file
 def write_file(self,fn):
 
     assert g.os_path_exists(self.path),self.path
@@ -8660,7 +8374,7 @@ def write_file(self,fn):
     for p in self.nodes:
         f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
     f.close()
-#@+node:ekr.20060911090501: *3* Check big reorg
+#@+node:ekr.20060911090501: *3* Check the big reorg
 '''
 A script to check to see all changes required by the 'big reorg' got
 done properly.
@@ -8788,144 +8502,123 @@ def findFunctionCalls (names,p,showEmptyArgs=False):
                 result.append((s0,s1,s2),)
         assert(end > start)
         start = end
-#@+node:ekr.20040721145258.1: *3* Run gc
+#@+node:ekr.20040721145258.1: *3* Run leoTest.runGc
 import leoTest
 
 leoTest.runGc(disable=True)
-#@+node:ekr.20040721113934: *3* runProfile
-import profile
-import pstats
-
-# Note: the profiled code should do all needed imports.
-path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
-path = str(path)
-
-if p.b.rstrip():
-    s = p.b.rstrip() + '\n'
-    profile.run(s,path)
-    print '-' * 40
-    print "Profiling info sent to %s" % path
-    stats = pstats.Stats(path)
-    stats.strip_dirs()
-    stats.sort_stats('cum','file','name')
-    stats.print_stats()
-#@+node:ekr.20040901065642.2: *3* runTimeit
-@ Improved timeit script after an idea by 'e'.
-
-Comments of the form #@count nnn set the repeat count.
-Comments of the form #@setup comment delimits the end of setup code.
-@c
-
-try:
-    import timeit # Exists only in Python 2.3 and above.
-except ImportError: 
-    timeit = None
-    print "Can not import timeit"
-
-if timeit and p.b.strip():
-    s = p.b.rstrip() + '\n'
-    << scan for #@count >>
-    << put setup code in s1 and everything else in s2 >>
-    t = timeit.Timer(stmt=s2,setup=s1)
-    try:
-        if 1: # faster.
-            result = t.timeit(count)
-        else: # better results.
-            result = min(t.repeat(3, count))  
-        print "count: %d : %f %s" % (
-            count, result, p.h.strip())
-    except:
-        t.print_exc()
-#@+node:ekr.20040901072339: *4* << scan for #@count >>
-lines = s.split('\n')
-
-count = 1000000 # default count
-tag = "#@count"
-
-for line in lines:
-    i = g.skip_ws(line,0)
-    if g.match(line,0,tag):
-        i += len(tag)
-        i = g.skip_ws(line,i)
-        junk,val = g.skip_long(line,i)
-        if val is not None:
-            count = abs(val)
-            # print "Setting count to",count
-            break
-#@+node:ekr.20040901071028: *4* << put setup code in s1 and everything else in s2 >>
-lines = s.split('\n')
-
-for i in xrange(len(lines)):
-    if lines[i].strip() == "#@setup":
-        break
-
-if i < len(lines):
-    # Split at the #@setup line and delete the #@setup line
-    s1 = '\n'.join(lines[:i])
-    s2 = '\n'.join(lines[i:])
-    #print "setup",repr(s1)
-    #print "code",repr(s2)
-else:
-    # There is no setup.
-    s1 = None
-    s2 = s
-
-if not s1: s1 = 'pass'
-if not s2: s2 = 'pass'
-#@+node:ekr.20080329083943.1: *3* Write cleaned files to 'clean' directory
-# Writes all derived files in the outline to 'clean' directories.
-# For example, writes test/foo.py to test/clean/foo.py.
-
-@others
-
-for p in c.all_positions():
-    if p.isAnyAtFileNode():
-        clean_file(p)
-
-#@+node:ekr.20080329083943.2: *4* clean_file
-def clean_file(p):
-
-    at = c.atFileCommands
-
-    if hasattr(p.v,'tnodeList'):
-        has_list = True
-        old_list =  p.v.tnodeList[:]
-    else:
-        has_list = False
-
-    at.write(
-        root=p,nosentinels=True,
-        thinFile=False,
-        scriptWrite=True,
-        toString=True,
-        write_strips_blank_lines=False)
-
-    if has_list:
-        p.v.tnodeList = old_list
-
-    fileName = g.os_path_normpath(g.os_path_join(
-        at.default_directory,
-        'clean',
-        g.os_path_basename(p.anyAtFileNodeName())))
-
-    # g.trace(p.h,len(at.stringOutput),fileName)
-
-    # Adapted from at.openFileForWritingHelper
-    path = g.os_path_dirname(fileName)
-    if not g.os_path_exists(path):
-        g.es('clean directory does not exist',path)
-        return
-
-    try:
-        f = file(fileName,'w')
-        f.write(at.stringOutput)
-        f.close()
-        g.es_print('wrote',fileName)
-    except IOError:
-        g.es_print('can not write',fileName,color='red')
-        g.es_exception()
 #@+node:ekr.20051204180404: ** Text editing
-#@+node:ekr.20071213062051: *3* @@button Create headlines from body
+#@+node:ekr.20150416171056.1: *3* @ignore text editing buttons
+#@+node:ekr.20051213093427: *4* @button Add tab after each :
+@color
+
+s = p.b
+
+result = []
+lines = g.splitLines(s)
+for line in lines:
+    i = line.find(':')
+    if i > -1:
+        result.append(line[:i+1] + ' '*4 + line[i+1:])
+    else:
+        result.append(line)
+
+s = ''.join(result)
+g.trace(s)
+c.setBodyString(p,s)
+#@+node:ekr.20051213092601: *4* @button Add tab before each =
+@color
+
+s = p.b
+result = []
+lines = g.splitLines(s)
+for line in lines:
+    i = line.find('=')
+    if i > -1:
+        result.append(line[:i] + ' '*4 + line[i:])
+    else:
+        result.append(line)
+s = ''.join(result)
+g.trace(s)
+# c.setBodyString(p,s)
+#@+node:ekr.20040723065021: *4* @button Call g.stripBlankLines on a subtree
+# Tag the start of the command.
+u = c.undoer
+u.beforeChangeGroup(c.p,"Change All")
+n = 0 ; total = 0
+for p in c.p.self_and_subtree():
+    total += 1
+    body = p.bodyString() # Don't use p.b
+    s = g.stripBlankLines(body)
+    if s != body:
+        n += 1
+        c.setBodyString(p,s)
+        u.setUndoTypingParams(p,'Change',
+            oldText=body,newText=s,oldSel=None, newSel=None)
+
+# Tag the end of the command.
+u.afterChangeGroup(c.p,"Change All",reportFlag=False,dirtyVnodeList=[])
+print("%d nodes changed (%d total)" % (n,total))
+#@+node:ekr.20040723065047: *5* Test
+@ignore
+a
+  b
+
+c  
+
+last
+@language python
+#@+node:ekr.20080519162425.1: *4* @button Change leo imports
+change = False # True: actually make the changes.
+trace = True
+
+print '-' * 40
+
+tag = 'import leo' ; n = len('import ')
+
+for p in p.self_and_subtree():
+    result = []
+    for s in g.splitlines(p.b):
+        i = s.find(tag,0)
+        if i > -1:
+            # Do nothing if we have already done the translation.
+            i2 = s.find('<<') ; i3 = s.find('import leo.core')
+            if i2 == -1 and i3 == -1:
+                i += n
+                j = g.skip_c_id(s,i)
+                word = s[i:j]
+                rest = s[j:]
+                if rest.strip().startswith('as'):
+                    s = s[:i] + 'leo.core.' + word + rest
+                else:
+                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
+                if trace:
+                    print p.h
+                    j,k=g.getLine(s,i) ; print s[j:k]
+        result.append(s)
+    result = ''.join(result)
+
+    if change and result != p.b:
+        c.setBodyString(p,result)
+
+#@+node:ekr.20051110105027.149: *4* @button Change OnX to x in headline
+# Change OnXxx to xxx in all headlines & body text.
+for p in p.self_and_subtree():
+    # Headlines.
+    h = p.h
+    if g.match(h,0,"On") and len(h) > 2:
+        h = h[2].lower() + h[3:]
+        print(h)
+        p.h = h
+    # Body text
+    s = p.b
+    if s:
+        i = s.find("def ")
+        if i > -1:
+            c = s[i+6].lower()
+            s = s[:i] + "def " + c + s[i+7:]
+            print(p.h)
+            p.b = s
+#@+node:ekr.20071213062051: *4* @button Create headlines from body
 # Create child nodes whose headline are all lines in the body.
 s = p.b
 lines = g.splitLines(s)
@@ -8943,7 +8636,65 @@ for line in lines:
         p2.initHeadString(line[:i].strip())
         c.setBodyString(p2,line[i:].strip())
 c.redraw()
-#@+node:ekr.20140426052603.18106: *3* @@button replace g.choose
+#@+node:ekr.20051204180404.1: *4* @button Delete from ':' to end (script)
+@color
+
+s = p.b
+result = []
+lines = g.splitLines(s)
+for line in lines:
+    i = line.find(':')
+    if i > -1:
+        result.append(line[:i])
+        if line and line[-1] == '\n':
+            result.append('\n')
+    else:
+        result.append(line)
+
+s = ''.join(result)
+c.setBodyString(p,s)
+#@+node:ekr.20060303080421: *4* @button Delete from first blank
+@color
+
+s = p.b
+result = []
+lines = g.splitLines(s)
+for line in lines:
+    i = line.find(' ')
+    if i > -1:
+        result.append(line[:i])
+        if line and line[-1] == '\n':
+            result.append('\n')
+    else:
+        result.append(line)
+
+s = ''.join(result)
+c.setBodyString(p,s)
+#@+node:ekr.20060813102424: *4* @button Remove blank trailing lines
+for p in p.self_and_subtree():
+    s = p.b
+    target = s.rstrip()
+    if s != target:
+        c.setBodyString(p,target)
+        g.es(p.h)
+#@+node:ekr.20051218212007: *4* @button Replace =.* with = None
+@color
+
+s = p.b
+result = []
+lines = g.splitLines(s)
+for line in lines:
+    i = line.find('=')
+    if i > -1:
+        result.append(line[:i] + '= None')
+        if line and line[-1] == '\n':
+            result.append('\n')
+    else:
+        result.append(line)
+
+s = ''.join(result)
+c.setBodyString(p,s)
+#@+node:ekr.20140426052603.18106: *4* @button Replace g.choose
 '''Replace "g.choose(test,a,b)" by "a if test else b".'''
 
 replace = False # True: make the actual replacements
@@ -8957,7 +8708,7 @@ if 0: # Testing convenience...
     p = g.findNodeAnywhere(c,'Code')
     assert(p)
 Controller().run(c,p,replace)
-#@+node:ekr.20140426052603.18107: *4* run
+#@+node:ekr.20140426052603.18107: *5* run
 def run(self,c,p,replace):
     '''Main line for undoable replace g.choose with ternary operator.'''
     changed,n,found,p1 = 0,0,0,p.copy()
@@ -8982,7 +8733,7 @@ def run(self,c,p,replace):
             c.undoer.afterChangeNodeContents(p,tag,b)
     u.afterChangeGroup(p1,tag,dirtyVnodeList=dirtyVnodeList)
     print('scanned %s nodes found %s changed: %s' % (n,found,changed))
-#@+node:ekr.20140426052603.18108: *4* find
+#@+node:ekr.20140426052603.18108: *5* find
 def find(self,s,i):
     '''
     Return (n1,n2) such that s[n1:n2] is the next choose(cond,a,b) in s[i:].
@@ -9013,7 +8764,7 @@ def find(self,s,i):
         if i == -1: i = progress + 1
         assert progress < i,(i,s,ch)
     return -1,-1
-#@+node:ekr.20140426052603.18109: *4* get_arg
+#@+node:ekr.20140426052603.18109: *5* get_arg
 def get_arg(self,s,i):
     '''return j such that s[i:j] is the argument.'''
     assert s[i] in '(,',repr(s[i:i+10])
@@ -9050,7 +8801,7 @@ def get_arg(self,s,i):
     assert s[i] in ',)'
     s = ''.join(result)
     return s,i
-#@+node:ekr.20140426052603.18110: *4* munge
+#@+node:ekr.20140426052603.18110: *5* munge
 def munge(self,s):
     '''Compute the ternary operator corresponding to s.'''
     g.trace('1:',s)
@@ -9069,7 +8820,7 @@ def munge(self,s):
     result = '%s if %s else %s' % (arg2,arg1,arg3)
     g.trace('2:',result)
     return result
-#@+node:ekr.20140426052603.18111: *4* replace
+#@+node:ekr.20140426052603.18111: *5* replace
 def replace(self,s,i,j):
     '''Replace s[i:j] containing a g.trace, with the corresponding ternaty operator.'''
     s1 = s[i:j]
@@ -9080,198 +8831,87 @@ def replace(self,s,i,j):
         s3 = s[:i] + s2 + s[j:]
         j = i + len(s2)
         return s3,j
-#@+node:ekr.20051213093427: *3* Add tab after each :
-@color
+#@+node:ekr.20060808103945: *4* @button Set trailing ws
+'''
+This script quickly ends all nodes in the selected tree with exactly one
+newline and marks all @thin/@file nodes dirty if any of their descendents have
+been changed.
+'''
+
+@others
+
+p = c.currentPosition()
+pass1(p) # Make the changes and do p.v.setDirty for all changed nodes p.
+pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
+g.es_print('done')
+c.redraw()
+#@+node:ekr.20060808103945.1: *5* pass1
+def pass1(root):
+
+    '''Remove trailing newlines from all nodes.'''
+
+    count = 0 ; seen = {}
+    for p in root.self_and_subtree():
+        if seen.get(p.v): continue
+        s = p.b
+        if s:
+            s2 = s.rstrip() + '\n'
+            if s2 != s:
+                s2 = g.toUnicode(s2,g.app.tkEncoding,reportErrors=True)
+                p.v._bodyString = s2
+                seen [p.v] = True
+                p.v.setDirty() # Just set the bit: do **not** redraw!
+                count += 1
+
+    g.es_print("pass 1: %d nodes converted" % count)
+#@+node:ekr.20060808103945.2: *5* pass2
+def pass2():
+
+    '''Quickly mark all changed @file nodes dirty.'''
+
+    count = 0
+    for p in c.all_unique_positions():
+        if p.isAnyAtFileNode():
+            root = p.copy()
+            for p2 in root.self_and_subtree():
+                if p2.v.isDirty():
+                    root.setDirty()
+                    count += 1
+                    break
+
+    g.es_print("pass 2: %d @file/@thin nodes set dirty" % count)
+#@+node:ekr.20071001114854: *4* @button Split defs in body text to child nodes
+# The parse-body command now does this.
+# script to split node containing multiple def's into child nodes
+
+def createChild (parent,body,line):
+    p = parent.insertAsLastChild()
+    h = line [3:].strip()
+    i = h.find('(')
+    if i > -1:
+        func = h [: i].strip()
+    h2 = g.choose(func,func,h)
+    p.setHeadString(h2)
+    p.setTnodeText(''.join(body))
 
 s = p.b
-
-result = []
-lines = g.splitLines(s)
-for line in lines:
-    i = line.find(':')
-    if i > -1:
-        result.append(line[:i+1] + ' '*4 + line[i+1:])
-    else:
-        result.append(line)
-
-s = ''.join(result)
-g.trace(s)
-c.setBodyString(p,s)
-#@+node:ekr.20051213092601: *3* Add tab before each =
-@color
-
-s = p.b
-
-result = []
-lines = g.splitLines(s)
-for line in lines:
-    i = line.find('=')
-    if i > -1:
-        result.append(line[:i] + ' '*4 + line[i:])
-    else:
-        result.append(line)
-
-s = ''.join(result)
-g.trace(s)
-# c.setBodyString(p,s)
-#@+node:ekr.20040723065021: *3* Call g.stripBlankLines on a subtree
-# Tag the start of the command.
-u = c.undoer
-u.beforeChangeGroup(c.p,"Change All")
-n = 0 ; total = 0
-for p in c.p.self_and_subtree():
-    total += 1
-    body = p.bodyString() # Don't use p.b
-    s = g.stripBlankLines(body)
-    if s != body:
-        n += 1
-        c.setBodyString(p,s)
-        u.setUndoTypingParams(p,'Change',
-            oldText=body,newText=s,oldSel=None, newSel=None)
-
-# Tag the end of the command.
-u.afterChangeGroup(c.p,"Change All",reportFlag=False,dirtyVnodeList=[])
-print("%d nodes changed (%d total)" % (n,total))
-#@+node:ekr.20040723065047: *4* Test
-@ignore
-a
-  b
-
-c  
-
-last
-@language python
-#@+node:ekr.20071113150213: *3* Clone all nodes to child node
-# Clone all nodes specified in the child node called 'to be cloned'
-root = p.copy()
-child = p.firstChild()
-assert(child.h.lower().strip() == 'to be cloned')
-s = child.b
-lines = g.splitLines(s)
-
-for p in c.all_unique_positions():
-    h = p.h.strip()
+if s.strip():
+    b = c.undoer.beforeChangeTree(p)
+    lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
     for line in lines:
-        if h == line.strip():
-            print 'found',h
-            clone = p.clone()
-            clone.moveToLastChildOf(root)
-c.redraw()
-#@+node:ekr.20071113150213.1: *4* To be cloned
-@test getHandlersForTag
-@test unit testing with embedded class
-@test move-lines-up
-@test helpForMinibuffer
-@test g.pdb
-@test g.es_exception
-@test g.es_trace
-@test pasteText
-@test g.getScript strips crlf
-@test forward-end-word (start of word)
-@test moveToHelper
-@test scrollHelper
-@test c.contractAllHeadlines
-@test g.create_temp_file
-@test fc.deleteFileWithMessage
-@test compareHelper
-@test apropos_bindings
-@test apropos_find_commands
-@test atFile_rename
-@test g.removeExtraLws
-@test moveUpOrDownHelper
-@test compareHelper-warning
-@test directiveKind4
-@test isPlainKey
-@test g.convertPythonIndexToRowCol
-@test setMoveCol
-@test leoBody.getSelectionAreas & test
-@test parseLeoSentinel
-@test selfInsertCommand-2 (replacing tabs)
-@test extendHelper
-@test onClick
-@test selfInsertCommand-1
-@test g.convertRowColToPythonIndex
-@test round trip toUnicode toEncodedString
-@test that all @test nodes in derived files start with if g.unitTesting
-@test g.reportBadChars
-#@+node:ekr.20051204180404.1: *3* Delete from ':' to end (script)
-@color
-
-s = p.b
-
-result = []
-lines = g.splitLines(s)
-for line in lines:
-    i = line.find(':')
-    if i > -1:
-        result.append(line[:i])
-        if line and line[-1] == '\n':
-            result.append('\n')
-    else:
-        result.append(line)
-
-s = ''.join(result)
-c.setBodyString(p,s)
-#@+node:ekr.20060303080421: *3* Delete from first blank
-@color
-
-s = p.b
-
-result = []
-lines = g.splitLines(s)
-for line in lines:
-    i = line.find(' ')
-    if i > -1:
-        result.append(line[:i])
-        if line and line[-1] == '\n':
-            result.append('\n')
-    else:
-        result.append(line)
-
-s = ''.join(result)
-c.setBodyString(p,s)
-#@+node:ekr.20071113191025: *3* Remove all @test nodes
-count = 0
-p = c.rootVnode()
-while p:
-    h = p.h
-    if h.startswith('@test '):
-        next = p.nodeAfterTree()
-        print 'deleting',h
-        count += 1
-        p.doDelete()
-        p = next
-    else:
-        if h.startswith('@thin'): print h
-        p.moveToThreadNext()
-c.redraw()
-
-print '%d @test nodes deleted' % count
-#@+node:ekr.20060813102424: *3* Remove blank trailing lines
-for p in p.self_and_subtree():
-    s = p.b
-    target = s.rstrip()
-    if s != target:
-        c.setBodyString(p,target)
-        g.es(p.h)
-#@+node:ekr.20051218212007: *3* Replace =.* with = None
-@color
-
-s = p.b
-
-result = []
-lines = g.splitLines(s)
-for line in lines:
-    i = line.find('=')
-    if i > -1:
-        result.append(line[:i] + '= None')
-        if line and line[-1] == '\n':
-            result.append('\n')
-    else:
-        result.append(line)
-
-s = ''.join(result)
-c.setBodyString(p,s)
+        if g.match_word(line,0,'def'):
+            if body and lastDefLine:
+                createChild(p,body,lastDefLine)
+                body = [] ; changed = True
+            lastDefLine = line
+        body.append(line)
+    if body and lastDefLine:
+        createChild(p,body,lastDefLine)
+        changed = True
+    if changed:
+        c.setChanged(True) ; c.setBodyString(p,'')
+    c.undoer.afterChangeTree(p,'split-defs',b)
+    c.redraw()
 #@+node:ekr.20141105055521.16: *3* Replace body.x with body.wrapper.x
 @language python
 
@@ -9349,89 +8989,51 @@ for root, dirs, files in os.walk(path):
             fn = g.os_path_join(root,fn)
             fix(fn)
 print('done')
-#@+node:ekr.20060808103945: *3* Set trailing ws
-'''
-This script quickly ends all nodes in the selected tree with exactly one
-newline and marks all @thin/@file nodes dirty if any of their descendents have
-been changed.
-'''
-
-@others
-
-p = c.currentPosition()
-pass1(p) # Make the changes and do p.v.setDirty for all changed nodes p.
-pass2() # Quickly set all @thin/@file nodes dirty if any of their descendents are dirty.
-g.es_print('done')
-c.redraw()
-#@+node:ekr.20060808103945.1: *4* pass1
-def pass1(root):
-
-    '''Remove trailing newlines from all nodes.'''
-
-    count = 0 ; seen = {}
-    for p in root.self_and_subtree():
-        if seen.get(p.v): continue
-        s = p.b
-        if s:
-            s2 = s.rstrip() + '\n'
-            if s2 != s:
-                s2 = g.toUnicode(s2,g.app.tkEncoding,reportErrors=True)
-                p.v._bodyString = s2
-                seen [p.v] = True
-                p.v.setDirty() # Just set the bit: do **not** redraw!
-                count += 1
-
-    g.es_print("pass 1: %d nodes converted" % count)
-#@+node:ekr.20060808103945.2: *4* pass2
-def pass2():
-
-    '''Quickly mark all changed @file nodes dirty.'''
-
-    count = 0
-    for p in c.all_unique_positions():
-        if p.isAnyAtFileNode():
-            root = p.copy()
-            for p2 in root.self_and_subtree():
-                if p2.v.isDirty():
-                    root.setDirty()
-                    count += 1
-                    break
-
-    g.es_print("pass 2: %d @file/@thin nodes set dirty" % count)
-#@+node:ekr.20071001114854: *3* Split defs in body text to child nodes
-# The parse-body command now does this.
-# script to split node containing multiple def's into child nodes
-
-def createChild (parent,body,line):
-    p = parent.insertAsLastChild()
-    h = line [3:].strip()
-    i = h.find('(')
-    if i > -1:
-        func = h [: i].strip()
-    h2 = g.choose(func,func,h)
-    p.setHeadString(h2)
-    p.setTnodeText(''.join(body))
-
-s = p.b
-if s.strip():
-    b = c.undoer.beforeChangeTree(p)
-    lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
-    for line in lines:
-        if g.match_word(line,0,'def'):
-            if body and lastDefLine:
-                createChild(p,body,lastDefLine)
-                body = [] ; changed = True
-            lastDefLine = line
-        body.append(line)
-    if body and lastDefLine:
-        createChild(p,body,lastDefLine)
-        changed = True
-    if changed:
-        c.setChanged(True) ; c.setBodyString(p,'')
-    c.undoer.afterChangeTree(p,'split-defs',b)
-    c.redraw()
 #@+node:ekr.20150416061628.1: ** Text processing
-#@+node:ekr.20060821105606: *3* @@button LeoToHtml
+#@+node:ekr.20150416171133.1: *3* @ignore text-processing buttons
+#@+node:ekr.20041228135008: *4* @button display c.p.b in the browser
+@language python
+@tabwidth -4
+
+import webbrowser
+
+if 0:
+    << alternate code doesn't work well for me >>
+
+def showHtml(html):
+    '''Display html in a web browser'''
+    fileName = g.os_path_join(g.app.loadDir,'..','test','leoTemp.html')
+    f = file(fileName,'w')
+    f.write(html)
+    f.close()
+    webbrowser.open(fileName)
+
+# Display the selected node in the browser.
+showHtml('<pre>%s</pre>' % c.p.b)
+
+# To do: use a stylesheet to colorize the code.
+#@+node:ekr.20041228140714: *5* << alternate code doesn't work well for me >>
+# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/347810
+import BaseHTTPServer
+
+def showHtml(html):
+    """Display html in the default web browser without creating a temp file.
+
+    Instantiates a trivial http server and calls webbrowser.open with a URL
+    to retrieve html from that server.
+    """
+
+    class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+        def do_GET(self):
+            g.trace(html)
+            bufferSize = 1024*1024
+            for i in xrange(0, len(html), bufferSize):
+                self.wfile.write(html[i:i+bufferSize])
+
+    server = BaseHTTPServer.HTTPServer(('127.0.0.1',0), RequestHandler)
+    webbrowser.open('http://127.0.0.1:%s' % server.server_port)
+    server.handle_request()
+#@+node:ekr.20060821105606: *4* @button LeoToHtml
 # LeoToHTML by Dan Rahmel
 
 << docstring >>
@@ -9469,7 +9071,7 @@ f.write("</HTML>")
 # Close file
 f.close()
 g.es(" Leo -> HTML completed.",color="turquoise4")
-#@+node:ekr.20060821105606.1: *4* << docstring >>
+#@+node:ekr.20060821105606.1: *5* << docstring >>
 '''
 This script takes an outline stored in LEO and outputs it to HTML code.
 The HTML can be stuck into a web page, loaded into the Microsoft Word
@@ -9483,7 +9085,7 @@ select the Execute Script option under the Edit menu while the node is selected.
 The switches below allow you to customize some of the settings. Set the flag
 properties to True or False.
 '''
-#@+node:ekr.20060822112840: *3* @@button LeoToRtf
+#@+node:ekr.20060822112840: *4* @button LeoToRtf
 # LeoToRTF by Dan Rahmel
 
 << docstring >>
@@ -9527,7 +9129,7 @@ f.write("}")
 # Close file
 f.close()
 g.es(" Leo -> RTF completed.",color="turquoise4")
-#@+node:ekr.20060822112840.1: *4* << docstring >>
+#@+node:ekr.20060822112840.1: *5* << docstring >>
 '''
 This script takes an outline stored in LEO and outputs it to an RTF.
 The tabbed RTF file can be loaded into Microsoft Word and formatted as a
@@ -9539,7 +9141,310 @@ Paste this code into the text body. To generate a .rtf file of the outline,
 select the Execute Script option under the Edit menu while the node is
 selected.
 '''
-#@+node:ekr.20111004090723.15496: *3* Create pdf from LaTeX
+#@+node:ekr.20041229163210: *4* @button Send colorized text to web browser
+'''A script to send the colorized text of a script to the default web browser.
+
+Based on a dynascript by 'e'.'''
+
+@language python
+@tabwidth -4
+
+<< imports >>
+
+hopts = {
+  'stripcomments':  False,
+  'stripsentinals': True,
+  'stripnodesents': False, # False: leave node sentinels.
+  'stripdirectives':False,
+  'noNUMBER':       False,
+  'noOP':           False,
+  'noNAME':         True,  
+  'timestring':     '' # time.strftime('%m/%d/%Y %H:%M.%S'),
+}
+
+<< init globals >>
+
+filename = g.os_path_join(g.app.loadDir,'..','test','leoTemp.html')
+
+@others
+
+htmlize(c,p)
+#@+node:ekr.20041229164609: *5* << imports >>
+import cgi
+import cStringIO
+import keyword
+import os
+import re
+import sys
+import time
+import token
+import tokenize
+import webbrowser
+#@+node:ekr.20041229163210.2: *5* << init globals >>
+_KEYWORD = token.NT_OFFSET + 1
+_TEXT    = token.NT_OFFSET + 2
+
+_colors = {
+    token.NUMBER:     '#483D8B', #black/darkslateblue
+    token.OP:         '#000080', #black/navy
+    token.STRING:     '#00AA00', #green 00cc66
+    tokenize.COMMENT: '#DD0000', #red cc0033
+    token.NAME:       '#4B0082', #black/indigo
+    token.ERRORTOKEN: '#FF8080', #redred bare null does it
+    _KEYWORD:         '#0066ff', #blue
+    _TEXT:            '#000000', #black /is text fg color too
+    '_LeoDir':        '#228B22', #directive, forest comment
+    '_LeoSen':        '#BC8F8F', #sentinal, tan fade comment
+    'bg':             '#FFFAFA', #snow
+}
+
+if hopts['noNUMBER']: del _colors[token.NUMBER]
+if hopts['noOP']:     del _colors[token.OP]
+if hopts['noNAME']:   del _colors[token.NAME]
+#@+node:ekr.20041229170824: *5* stripSentinels
+def stripSentinels(s):
+
+    '''Strip sentinal lines from s.'''
+
+    lines = s.splitlines()
+    result = [] ; verbatim = False
+    tag1 = '#@+node:'
+    tag2 = '#@-node:'
+    n = len(tag1)
+
+    for line in lines:
+        s = line.strip()
+        if verbatim:
+            result.append(line)
+            verbatim = False
+        elif s.startswith('#@verbatim'):
+            verbatim = True
+        elif s.startswith('#@@'):
+            if not hopts['stripdirectives']:
+                result.append(line)
+        elif s.startswith(tag1):
+            if not hopts['stripnodesents']:
+                i = line.find(tag1)
+                result.append(line[:i] + '#@+' + line[i+n:].strip())
+        elif s.startswith(tag2):
+            if not hopts['stripnodesents']:
+                i = line.find(tag2)
+                result.append(line[:i] + '#@-' + line[i+n:].strip())
+        elif not s.startswith('#@'):
+            result.append(line)
+
+    return '\n'.join(result)
+#@+node:ekr.20041229165956: *5* sanitize
+def sanitize(s):
+
+    """Leo's sanitize_filename is too aggressive and too lax."""
+
+    if not s: return
+
+    res = re.compile(
+        r"""[|\\ /!@=\#\$%,\x5E&\x3F:;.\x22\x27<>`~\*\+\t\n\f\r\b\a]""",
+        re.IGNORECASE | re.VERBOSE)
+
+    # should test for unicode before str()
+    return res.sub('_', str(s.strip())).replace('__','_')[:128]
+#@+node:ekr.20041229163210.3: *5* class Parser
+class Parser(object):
+    """ prep the source for any language
+        parse and Send colored python source.
+    """
+    @others
+#@+node:ekr.20041229163210.4: *6* __init__
+def __init__(self,lang,raw,title):
+    """ Store the source text."""
+
+    self.title = title
+    self.raw = raw.strip().expandtabs(4)
+
+    if lang == 'python':
+        cmtdelim = '#'
+    else:
+        d = c.scanAllDirectives(p) 
+        cmtdelim = d.get('delims',['#'])
+        cmtdelim = cmtdelim[0] or cmtdelim[1]
+
+    self.fnd = re.compile(r"%s@\s*@+."%(cmtdelim,) )
+
+    if hopts['stripsentinals']: 
+        # have to add option to strip all comments as well
+        self.raw = stripSentinels(self.raw)
+#@+node:ekr.20041229163210.5: *6* format
+def format(self,formatter,form):
+    """ Parse and send the colored source."""
+
+    # store line offsets in self.lines
+    self.lines = [0,0]
+    pos = 0
+    while 1:
+        pos = self.raw.find('\n',pos) + 1
+        if not pos: break
+        self.lines.append(pos)
+    self.lines.append(len(self.raw))
+    self.pos = 0
+    text = cStringIO.StringIO(self.raw)
+    sys.stdout.write('<html><head><title>')
+    sys.stdout.write('%s </title>\n'%(sanitize(self.title), ))
+
+    #here would be a good spot for @noindent directive but skip a line
+    s = """<STYLE TYPE="text/css"><!--
+pre, H1 {color:%s; FONT-SIZE: 80%%; FONT-WEIGHT: bold; }
+Text {background:%s;}
+--></STYLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!-- //
+//-->
+</SCRIPT>""" % (_colors[_TEXT],_colors['bg'])
+
+    sys.stdout.write(s)
+    sys.stdout.write('</head><body text="%s" bgColor="%s">' % (_colors[_TEXT],_colors['bg']))
+    sys.stdout.write('<H3># %s</H3>\n'%self.title)
+    sys.stdout.write('<pre>')  # style
+    sys.stdout.write('<font face="Lucida,Courier New">')
+    # parse the source and write it
+    try:
+        tokenize.tokenize(text.readline,self)
+    except tokenize.TokenError, ex:
+        msg = ex[0]
+        line = ex[1][0]
+        print "<h3>ERROR: %s</h3>%s" % (msg, self.raw[self.lines[line]:])
+    sys.stdout.write('</font></pre>')
+    sys.stdout.write('</body"></html>')
+#@+node:ekr.20041229163210.6: *6* __call__
+def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
+
+    """ Token handler."""
+
+    if 0: print "type", toktype, token.tok_name[toktype], "text",\
+            toktext, "start", srow,scol, "end", erow,ecol, "<br>"
+
+    # calculate new positions
+    oldpos = self.pos
+    newpos = self.lines[srow] + scol
+    self.pos = newpos + len(toktext)
+
+    # handle newlines
+    if toktype in [token.NEWLINE, tokenize.NL]:
+        print
+        return
+
+    style = ''
+    if toktype == tokenize.COMMENT:
+        if toktext.lstrip().startswith('#@'):
+            if self.fnd.findall(toktext):
+                toktype = '_LeoDir'
+            else:
+                toktype = '_LeoSen'
+
+    # Send the original whitespace.
+    if newpos > oldpos:
+        sys.stdout.write(self.raw[oldpos:newpos])
+
+    # Skip indenting tokens.
+    if toktype in [token.INDENT,token.DEDENT]:
+        self.pos = newpos
+        return
+
+    # Map token type to a color group
+    if token.LPAR <= toktype and toktype <= token.OP:
+        toktype = token.OP
+    elif toktype == token.NAME and keyword.iskeyword(toktext):
+        toktype = _KEYWORD
+    if toktype == token.ERRORTOKEN:
+        style = ' style="border: solid 1.5pt #FF0000;"'
+
+    dofont = True
+    try:
+        color = _colors[toktype]
+    except Exception:
+        dofont = False
+
+    if dofont: sys.stdout.write('<font color="%s"%s>' % (color, style))
+    sys.stdout.write(cgi.escape(toktext))
+    if dofont: sys.stdout.write('</font>')
+#@+node:ekr.20041229164609.2: *5* htmlize
+def htmlize(c,p):
+    lang = g.scanForAtLanguage(c,p)
+    lang = str(lang).lower()
+    source = g.getScript(c,p)
+    timestring = hopts['timestring']
+    # title = "%s Leo %s script %s" % (p.h[:75],lang,timestring)
+    title = "%s %s" % (p.h[:75],timestring)
+    try:
+        if not source: raise ValueError
+        g.es('output', lang, p.h)
+        theParser = Parser(lang,source,title)
+        sys.stdout = open(filename,'wb') 
+        if lang == 'python':
+            theParser.format(None,None)
+        else:
+            << colorize with silvercity >>
+        sys.stdout.close()
+        sys.stdout = sys.__stdout__
+        webbrowser.open(filename, new= 1)
+    except ValueError:
+        g.es('no @path set, unsupported lang or empty script',color='tomato')
+        g.es(lang, p.h)
+    except Exception:
+        g.es('htmlize malfunction?', color='tomato')
+        g.es_exception(full= True)
+#@+node:ekr.20041229163210.7: *6* << colorize with silvercity >>
+if lang in [ # Leo may not have all of these yet
+    'csharp', 'c', 'c++', 'cpp', # (C and C++)
+    'css', # (Cascading Style Sheets)
+    'htm', 'html', # HTML/PHP w/ JavaScript, VBScript, Python
+    'plain', #null (No styling)
+    'perlpod', 'perl', # (Perl)
+    #'python', # (Python)
+    'ruby', # (Ruby)
+    'smart_python', # (Python with styled strings)
+    'sql', # (SQL)
+    'xml', # (XML)
+    'xslt', # (XSLT)
+    'yaml', # (YAML)
+    # basic & java? missing. might send java as c?
+    'elisp', 'php', 'java', 'rapidq', 'actionscript', 'css',
+]:
+    if lang in ('htm','html','php','java','rapidq','actionscript', 'css'):
+        lang = 'html'
+    elif lang in ['c','c++','cpp']: lang = 'cpp'
+    elif lang in ['perlpod','perl']: lang = 'perl'
+    elif lang in ['elisp',]: lang = 'perl'
+    if lang in ('plain',None): lang = 'null'
+
+    g.es('writing tmpname', tmpfile )
+    fo = file(tmpfile, 'w')
+    fo.writelines(pars.raw + "\n")
+    fo.close()
+
+    cmd = g.os_path_join(pypath, 'Scripts', 'source2html.py')
+
+    # Send the output to stdout
+    #" --view %N  %N.html"
+    # --css=file copy silver_city.css where the filename will be
+    # source2html.py --list-generators
+    params = ' --generator=%s --title=%s --css=silver_city.css %s'%(
+       lang, sanitize_(title), tmpfile,)  
+
+    if not g.os_path_exists(cmd):
+        g.es('cant find source2html install silvercity')
+        print 'cant find source2html from silvercity'
+    else:
+        g.es('running silvercity \n', py + cmd + params )
+        out, err = runcmd(py + cmd + params )
+        for x in (out + err).splitlines():
+            print x
+else:
+    print '<i>not a known htmlize supported language</i>'
+    #might have to do a sequential dump of nodes, or @rst?
+    #is title and first headline set the same for all options?
+    print '<Pre>'    
+    print pars.raw
+    print '</Pre>'
+#@+node:ekr.20111004090723.15496: *3* Create pdf file from LaTeX file
 << docstring >>
 
 @language python
@@ -9559,9 +9464,9 @@ d = get_options(exe)
 
 makePDF(d,open_out=True,trace=True)
 #@+node:ekr.20111004185540.15535: *4* << docstring >>
-@nocolor-node
-'''
+@language rest
 
+'''
 A script for creating a pdf from a latex file.
 
 *Important: you must run Leo from a console when using this script, at least
@@ -9757,7 +9662,589 @@ def compute_file_names (d):
         else:
             log('not found: %s' % fn)
             return None,None
+#@+node:ekr.20050108110751.1: *3* Function: convert font tags to span tags
+@ 
+From Bill P.
+Here is a function to convert the font tags to equivalent span tags. Note use
+of font-size:x-large to show how styling can be used for emphasis.
+
+Uses a regular expression to insert style CSS classes before </STYLE> closing
+tag ...so <STYLE></STYLE> is expected to exist in input html.
+@c
+
+def font2span(colorizedusingFONT):
+    aa=colorizedusingFONT
+    styleClasses="""    .token_STRING    {color:#00AA00;} 
+    .token_NUMBER    {color:#483D8B;}
+    .token_OP        {color:#000080;} 
+    .tokenize_COMMENT{color:#DD0000;} 
+    .token_NAME      {color:#4B0082;} 
+    .token_ERRORTOKEN{color:#FF8080;} 
+    .KEYWORD        {color:#0066ff;} 
+    .TEXT           {color:#000000;} 
+    .LeoDir       {color:#228B22;} 
+    .LeoSen       {color:#BC8F8F;font-size:x-large;} 
+    .bg            {color:#FFFAFA;} 
+    """
+    myRE=re.compile(r"</STYLE>")              ;aa=myRE.sub(styleClasses+"\n</STYLE>",aa)
+    myRE=re.compile(r'<font color="#00AA00">');aa=myRE.sub('<span class="token_STRING">',aa)
+    myRE=re.compile(r'<font color="#483D8B">');aa=myRE.sub('<span class="token_NUMBER">',aa)
+    myRE=re.compile(r'<font color="#000080">');aa=myRE.sub('<span class="token_OP">',aa)
+    myRE=re.compile(r'<font color="#DD0000">');aa=myRE.sub('<span class="tokenize_COMMENT">',aa)
+    myRE=re.compile(r'<font color="#4B0082">');aa=myRE.sub('<span class="token_NAME">',aa)
+    myRE=re.compile(r'<font color="#FF8080">');aa=myRE.sub('<span class="token_ERRORTOKEN">',aa)
+    myRE=re.compile(r'<font color="#0066ff">');aa=myRE.sub('<span class="KEYWORD">',aa)
+    myRE=re.compile(r'<font color="#000000">');aa=myRE.sub('<span class="TEXT">',aa)
+    myRE=re.compile(r'<font color="#228B22">');aa=myRE.sub('<span class="LeoDir">',aa)
+    myRE=re.compile(r'<font color="#BC8F8F">');aa=myRE.sub('<span class="LeoSen">',aa)
+    myRE=re.compile(r'<font color="#FFFAFA">');aa=myRE.sub('<span class="bg">',aa)
+    myRE=re.compile(r'</font>')               ;aa=myRE.sub('</span>',aa)
+
+    basefontSize="12pt"
+    basefontFamily="Lucida,Courier New"
+    myRE=re.compile(r'<font face="Lucida,Courier New">');
+    aa=myRE.sub('<span style="font:'+basefontSize+' '+basefontFamily+';">',aa)
+
+    return aa
+#@+node:ekr.20050108110751.2: *4* NewHeadline
+@ To adjust this script internally to use span tags and CSS style classes make
+the following changes to  three nodes as follows:
+@c
+
+# I. in "init globals" node change the _colors dictionary to use lists 
+# (with 3 values representing color, CSS class, extra styling) as follows:
+
+_colors = {
+    token.NUMBER:     ['#483D8B','token_NUMBER',' '], #black/darkslateblue
+    token.OP:         ['#000080','token_OP',' '], #black/navy
+    token.STRING:     ['#00AA00','token_STRING',' '], #green 00cc66
+    tokenize.COMMENT: ['#DD0000','tokenize_COMMENT',' '], #red cc0033
+    token.NAME:       ['#4B0082','token_NAME',' '], #black/indigo
+    token.ERRORTOKEN: ['#FF8080','token_ERRORTOKEN',' '], #redred bare null does it
+    _KEYWORD:         ['#0066ff','KEYWORD',' '], #blue
+    _TEXT:            ['#000000','TEXT',' '], #black /is text fg color too
+    '_LeoDir':        ['#228B22','LeoDir',' '], #directive, forest comment
+    '_LeoSen':        ['#BC8F8F','LeoSen','font-size:x-large;'], #sentinal, tan fade comment
+    'bg':             ['#FFFAFA','bg',' '], #snow
+}
 #@+node:ekr.20150416060855.1: ** Translation
+#@+node:ekr.20071104221525.92: *3* @@button elisp test
+@first # -*- coding: utf-8 -*-
+
+import leoTest
+import leoImport
+
+@others
+
+u = leoTest.testUtils(c) 
+input_node  = u.findNodeAnywhere('new-elisp2py-input-')
+output_node = u.findNodeAnywhere('new-elisp2py-output-')
+assert input_node and output_node
+
+for p in input_node.children():
+
+    if 0: # No need for child node yet.
+        root = output_node.insertAsLastChild()
+        root.initHeadString(p.h)
+
+    s = p.b
+    scanner = elispScanner()
+    aList = scanner.parse(s)
+    if 1:
+        print 'parse tree...'
+        print scanner.dumpList(aList)
+        print 'end parse tree'
+        print
+    result = scanner.gen(aList,indent=0,init=True)
+    print scanner.dumpList(result)
+#@+node:ekr.20071104221525.93: *4* class elispScanner
+class elispScanner:
+
+    @others
+#@+node:ekr.20071104221525.94: *5*  __init__
+def __init__ (self):
+
+    # Debugging.
+    self.debug = True
+    self.trace = False
+
+    # Semantic info.
+    self.def_keywords = ('defun','defvar',)
+    self.indent_keywords = ('if','prog','prog1','progn','set',)
+    self.expr_keywords = ('and','not','or',)
+
+    self.indent = 0 # Indentation of production output.
+
+    # Dispatch dictionary.
+    self.dispatchDict = {}
+
+#@+node:ekr.20071104221525.95: *5* class token
+class token:
+
+    '''Representing one elisp syntactic entity,
+    with a list of preceding comments.'''
+
+    def __init__ (self,comments,kind,val):
+        self.comments = comments[:]
+        self.kind = kind
+        self.val = val
+            # For blocks, a list of tokens.
+            # For all other tokens, the spelling of the token.
+
+    def __repr__ (self):
+        return '<token kind: %s, val: %s>' % (self.kind,self.val)
+
+    def __str__ (self):
+        if self.kind == 'block:':
+            return 'block: [snip]'
+        elif self.kind == 'string:':
+            return '%s%s' % (self.kind,self.val[:20])
+        else:
+            return '%s%s' % (self.kind,self.val)
+#@+node:ekr.20071104221525.96: *5* choose
+def choose(self,cond,a,b): # warning: evaluates all arguments
+
+    if cond: return a
+    else: return b
+#@+node:ekr.20071104221525.97: *5* dumpList
+def dumpList(self,aList):
+
+    if type(aList) == type([]):
+        result = self.dumpListHelper(aList,indent=0)
+        return '\n'.join(result)
+    else:
+        return repr(aList)
+
+def dumpListHelper(self,aList,indent):
+
+    result = []
+    leading = ' ' * (4 * indent)
+
+    for z in aList:
+        if z is None:
+            result.append('%s%s' % (leading,'None'))
+        elif z == []:
+            result.append('%s%s' % (leading,'[]'))
+        elif type(z) == type([]):
+            result.append('%s%s' % (leading,'['))
+            result.extend(self.dumpListHelper(z,indent+1))
+            result.append('%s%s' % (leading,']'))
+        elif isinstance(z,self.token):
+            if z.kind=='block:':
+                result.append('%s%s' % (leading,'block:'))
+                result.extend(self.dumpListHelper(z.val,indent+1))
+                # result.append('%s%s' % (leading,'block:]'))
+            else:
+                result.append('%s%s' % (leading,str(z)))
+        else:
+            result.append('%s%s' % (leading,str(z)))
+
+    return result
+
+listToString = dumpList
+#@+node:ekr.20071104221525.98: *5* Parsing...
+#@+node:ekr.20071104221525.99: *6* parse
+def parse(self,s):
+
+    # Generate the nodes, including directive and section references.
+    return self.scanForest(s)
+#@+node:ekr.20071104221525.100: *6* scan & helpers
+def scan(self,s,i):
+
+    '''Scan an elisp expression.'''
+
+    start = i ; end = len(s) ; result = []
+    comments = [] ; token = self.token
+    # A hack. ignore initial @language lisp
+    tag = '@language lisp'
+    if i == 0 and s[i:i+len(tag)]==tag:
+        i += len(tag)
+    while i < end:
+        progress = i
+        ch = s[i]
+        if ch == ';':
+            j = self.skipComment(s,i)
+            # Comments are not tokens, they are attached to tokens.
+            comments.append(s[i:j]) 
+            start = i = j
+        elif ch == '"':
+            j = self.skipString(s,i)
+            result.append(token(comments,'string:',s[i:j]))
+            comments = []
+            start = i = j
+        elif ch.isalnum() or ch == u'_':
+            j = self.skipId(s,i)
+            result.append(token(comments,'id:',s[i:j]))
+            comments = []
+            start = i = j
+        elif ch =='(':
+            i += 1
+            j,aList = self.scan(s,i)
+            result.append(token(comments,'block:',aList))
+            start = i = j
+        elif ch == ')':
+            i += 1
+            return i,result
+        else:
+            if ch == "'": ch = 'quote'
+            if ch not in (' ','\t','\n','\r'):
+                result.append(token(comments,'op:',ch))
+            i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    if start < end:
+        tail = s[start:end].strip()
+        if tail:
+            result.append(token(comments,'tail:',tail))
+            comment = []
+    if comments:
+        result.append(token(comments,'trailing-comment:',''))
+
+    return i,result
+#@+node:ekr.20071104221525.101: *7* skipComment
+def skipComment (self,s,i):
+
+    '''Skip a comment.'''
+
+    while i < len(s):
+        if s[i] == '\n':
+            break
+        i += 1
+    return i
+#@+node:ekr.20071104221525.102: *7* skipId
+def skipId (self,s,i):
+
+    while i < len(s):
+        ch = s[i]
+        if ch.isalnum() or ch in ('_','-'):
+            i += 1
+        else:
+            break
+    return i
+#@+node:ekr.20071104221525.103: *7* skipString
+def skipString(self,s,i):
+
+    """Skip a string literal."""
+
+    assert(s[i] == '"')
+    i += 1
+    while i < len(s):
+        ch = s[i]
+        if ch == '\\' : i += 2
+        elif ch == '"':
+            i += 1 ; break
+        else: i += 1
+
+    return i
+#@+node:ekr.20071104221525.104: *6* scanForest
+def scanForest (self,s):
+
+    i = 0 ; result = []
+
+    while i < len(s):
+        progress = i
+        i,aList = self.scan(s,i)
+        aList and result.extend(aList)
+        assert i > progress
+
+    return result
+
+
+#@+node:ekr.20071104221525.105: *5* Code generators...
+@ From Richard Deibenkorn:
+
+1. Attempt what is not certain. Certainty may or may not come later. It may then
+be a valuable delusion.
+
+2. The pretty, initial position which falls short of completeness is not to be
+valued--except as stimulus for further moves.
+
+3. Do search.  But in order to find other than what is looked for.
+
+4. Use and respond to the initial fresh qualities but consider them absolutely
+expendable.
+#@+node:ekr.20071104221525.106: *6* gen
+def gen(self,tokens,indent,init=False):
+
+    result = []
+
+    if init: result.append('='*40)
+
+    for token in tokens:
+        aList = self.gen_token(token,indent)
+        result.extend(aList)
+
+    if init: result.append('-'*40)
+
+    return result
+
+#@+node:ekr.20071104221525.107: *6* gen_token
+def gen_token(self,token,indent):
+
+    result = []
+
+    if self.debug:
+        if token.kind == 'block:':
+            aList = self.gen_block(token,indent)
+            result.extend(aList)
+        else:
+            self.put_token(token,indent,result)
+    else:
+        if token.kind == 'block:':
+            self.gen_block(token,indent)
+        else:
+            self.put_code_token(token)
+
+    return result
+#@+node:ekr.20071104221525.108: *6* gen_block & helper
+def gen_block (self,token,indent):
+
+    if not (token and token.val):
+        return []
+
+    blockList = token.val
+    token2 = blockList[0]
+    result = []
+
+    if token2.kind.startswith('id'):
+        aList = self.gen_block_id(token2.val,blockList,indent)
+    else:
+        if self.debug:
+            self.put('block...',[],indent,result)
+        aList = self.gen(token.val,indent+1)
+
+    result.extend(aList)
+    return result
+#@+node:ekr.20071104221525.109: *7* gen_block_id
+def gen_block_id (self,theId,tokens,indent):
+
+    result = []
+
+    # Eventually there will be a lookup of the dispatch dict here.
+    if theId == 'let':
+        aList = self.gen_let(tokens,indent)
+    elif theId == 'if':
+        aList = self.gen_if(tokens,indent)
+    elif theId in self.def_keywords:
+        aList = self.gen_def(theId,tokens,indent)
+    elif theId in self.indent_keywords:
+        self.put('%s...' % (theId),[],indent,result)
+        aList = self.gen(tokens[1:],indent+1)
+    elif theId in self.expr_keywords:
+        aList = self.gen_expr(theId,tokens[1:],indent+1)
+    else:
+        aList = self.gen_call(theId,tokens[1:],indent)
+
+    result.extend(aList)
+    return result
+#@+node:ekr.20071104221525.110: *6* gen_call & helper
+def gen_call (self,funcId,tokens,indent):
+
+    result = []
+
+    if self.debug:
+        self.put('call: %s' % (funcId),[],indent,result)
+        for token in tokens:
+            aList = self.gen_arg(token,indent+1)
+            result.extend(aList)
+    else:
+        self.put_code_line('%s(' % (funcId))
+        for token in tokens:
+            self.gen_arg(token,indent+1)
+        self.put_code(')')
+
+    return result
+
+#@+node:ekr.20071104221525.111: *7* gen_arg
+def gen_arg(self,token,indent):
+
+    result = []
+
+    if self.debug:
+        if token.kind == 'block:':
+            self.put('arg block:...',[],indent,result)
+            aList = self.gen_block(token,indent)
+            result.extend(aList)
+        else:
+            self.put_token(token,indent,result)
+    else:
+        if token.kind == 'block:':
+            aList = self.gen_block(token,indent)
+            self.put_code(''.join(aList))
+        else:
+            self.put_code_token(token)
+
+    return result
+#@+node:ekr.20071104221525.112: *6* gen_def
+def gen_def(self,theId,tokens,indent):
+
+    result = []
+
+    if not tokens or len(tokens) < 3:
+        result.append('*** bad def tokens')
+        return result
+
+    defToken,idToken = tokens[0:2]
+    if idToken.kind != 'id:':
+        result.append('*** bad def id')
+        return result
+
+    if self.debug:
+        self.put(theId,idToken.val,indent,result)
+        aList = self.gen(tokens[2:],indent+1)
+        result.extend(aList)
+    else:
+        self.put_code('def %s (' % idToken.val)
+        self.gen_token(tokens[2],indent)
+        self.put_code('): # end def\n')
+        self.indent += 1
+        self.gen(tokens[3:],indent+1)
+        self.indent -= 1
+
+    return result
+#@+node:ekr.20071104221525.113: *6* gen_if & helpers
+@ if condition then-form else-forms.
+
+If the evaluated condition is non-nil, then-form is evaluated and the result
+returned. Otherwise, the else-forms are evaluated in textual order, and the
+value of the last one is returned. If condition has the value nil, and no
+else-forms are given, if returns nil.
+@c
+
+def gen_if (self,tokens,indent):
+
+    # tokens[0]: id:if
+    # tokens[1] cond
+
+    for i in xrange(len(tokens)):
+        g.trace('tokens[%d]: %s' % (i,self.dumpList(tokens[i])))
+
+    # g.trace(self.dumpList(tokens))
+
+    result = []
+
+    if self.debug:
+        self.put('if...',[],indent,result)
+        aList = self.gen(tokens[1:],indent+1)
+        result.extend(aList)
+    else:
+        self.put_code('if ')
+        self.gen(tokens[1:],indent+1)
+        self.put_code(': # end if\n')
+
+    return result
+#@+node:ekr.20071104221525.114: *7* gen_then
+def gen_then (self,token):
+
+    pass
+#@+node:ekr.20071104221525.115: *6* gen_expr
+def gen_expr (self,theId,aList,indent):
+
+    binops = ('and','or',)
+    result = []
+
+    self.put(theId,[],indent,result)
+    aList = self.gen(aList,indent+1)
+
+    result.extend(aList)
+    return result
+#@+node:ekr.20071104221525.116: *6* gen_let & helper
+@
+(let ((variable value)
+      (variable value)
+      ...)
+  body...)
+@c
+
+def gen_let (self,tokens,indent):
+
+    if not tokens: return []
+    if len(tokens) != 3:
+        g.trace('unusual let')
+        result = self.gen(tokens,indent+1)
+        return result
+
+    if 0:
+        for i in xrange(len(tokens)):
+            g.trace('token',i,tokens[i])
+
+    letToken,bindingToken,bodyToken = tokens
+    result = []
+    self.put('let...',[],indent,result)
+    self.put('let-bindings...',[],indent+1,result)
+    aList = self.gen_let_bindings(bindingToken,indent+2)
+    result.extend(aList)
+    self.put('let-block...',[],indent+1,result)
+    aList = self.gen_block(bodyToken,indent+2)
+    result.extend(aList)
+    return result
+#@+node:ekr.20071104221525.117: *7* gen_let_bindings
+def gen_let_bindings (self,token,indent):
+
+    result = []
+
+    if token.kind != 'block:':
+        g.trace('unexpected let')
+        return result
+
+    for z in token.val:
+        if z.kind == 'block:': # one (id,val) pair
+            if z.val and len(z.val) == 2:
+                token1 = z.val[0]
+                token2 = z.val[1]
+                self.put('let-id',token1,indent,result)
+                self.put('let-val...',[],indent,result)
+                if token2.kind == 'block:':
+                    aList = self.gen_block(token2,indent+1)
+                    result.extend(aList)
+                else:
+                    #g.trace('no let list')
+                    self.put_token(token2,indent+1,result)
+            else:
+                g.trace('unexpected let 2')
+
+    return result
+#@+node:ekr.20071104221525.118: *6* put...
+#@+node:ekr.20071104221525.119: *7* put
+def put (self,kind,val,indent,result):
+
+    '''Append one or more lines of output to result.'''
+
+    leading = '%2d: %s' % (indent,' ' * indent)
+
+    if kind == 'string:':
+        val = self.choose(len(val)>20,val[:20]+'..."',val)
+
+    if val:
+        s = '%s%s %s' % (leading,str(kind),str(val))
+    else:
+        s = '%s%s' % (leading,str(kind))
+
+    result.append(s)
+#@+node:ekr.20071104221525.120: *7* put_token
+def put_token (self,token,indent,result):
+
+    for z in token.comments:
+        self.put('comment:',z,indent,result)
+
+    self.put(token.kind,token.val,indent,result)
+#@+node:ekr.20071104221525.121: *7* put_code & put_code_line
+def put_code_line (self,s):
+
+    s2 = '%s%s' % (' '*self.indent,s)
+    print s2,
+
+def put_code (self,s):
+
+    print s,
+#@+node:ekr.20071104221525.122: *7* put_code_token
+def put_code_token (self,token):
+
+    if token.kind == 'block:':
+        self.put_code('<block>')
+    else:
+        self.put_code(token.val)
+
 #@+node:ekr.20060824111500.108: *3* @button jEdit2Py
 '''Convert jEdit language description file to an equivalent .py file.'''
 
@@ -12614,523 +13101,6 @@ def stripLws(self,s):
 )
 
 #@+node:ekr.20071104221525.91: *5* new-elisp2py-output-
-#@+node:ekr.20071104221525.92: *5* @@button elisp test @key = Alt-3
-@first # -*- coding: utf-8 -*-
-
-import leoTest
-import leoImport
-
-@others
-
-u = leoTest.testUtils(c) 
-input_node  = u.findNodeAnywhere('new-elisp2py-input-')
-output_node = u.findNodeAnywhere('new-elisp2py-output-')
-assert input_node and output_node
-
-for p in input_node.children():
-
-    if 0: # No need for child node yet.
-        root = output_node.insertAsLastChild()
-        root.initHeadString(p.h)
-
-    s = p.b
-    scanner = elispScanner()
-    aList = scanner.parse(s)
-    if 1:
-        print 'parse tree...'
-        print scanner.dumpList(aList)
-        print 'end parse tree'
-        print
-    result = scanner.gen(aList,indent=0,init=True)
-    print scanner.dumpList(result)
-#@+node:ekr.20071104221525.93: *6* class elispScanner
-class elispScanner:
-
-    @others
-#@+node:ekr.20071104221525.94: *7*  __init__
-def __init__ (self):
-
-    # Debugging.
-    self.debug = True
-    self.trace = False
-
-    # Semantic info.
-    self.def_keywords = ('defun','defvar',)
-    self.indent_keywords = ('if','prog','prog1','progn','set',)
-    self.expr_keywords = ('and','not','or',)
-
-    self.indent = 0 # Indentation of production output.
-
-    # Dispatch dictionary.
-    self.dispatchDict = {}
-
-#@+node:ekr.20071104221525.95: *7* class token
-class token:
-
-    '''Representing one elisp syntactic entity,
-    with a list of preceding comments.'''
-
-    def __init__ (self,comments,kind,val):
-        self.comments = comments[:]
-        self.kind = kind
-        self.val = val
-            # For blocks, a list of tokens.
-            # For all other tokens, the spelling of the token.
-
-    def __repr__ (self):
-        return '<token kind: %s, val: %s>' % (self.kind,self.val)
-
-    def __str__ (self):
-        if self.kind == 'block:':
-            return 'block: [snip]'
-        elif self.kind == 'string:':
-            return '%s%s' % (self.kind,self.val[:20])
-        else:
-            return '%s%s' % (self.kind,self.val)
-#@+node:ekr.20071104221525.96: *7* choose
-def choose(self,cond,a,b): # warning: evaluates all arguments
-
-    if cond: return a
-    else: return b
-#@+node:ekr.20071104221525.97: *7* dumpList
-def dumpList(self,aList):
-
-    if type(aList) == type([]):
-        result = self.dumpListHelper(aList,indent=0)
-        return '\n'.join(result)
-    else:
-        return repr(aList)
-
-def dumpListHelper(self,aList,indent):
-
-    result = []
-    leading = ' ' * (4 * indent)
-
-    for z in aList:
-        if z is None:
-            result.append('%s%s' % (leading,'None'))
-        elif z == []:
-            result.append('%s%s' % (leading,'[]'))
-        elif type(z) == type([]):
-            result.append('%s%s' % (leading,'['))
-            result.extend(self.dumpListHelper(z,indent+1))
-            result.append('%s%s' % (leading,']'))
-        elif isinstance(z,self.token):
-            if z.kind=='block:':
-                result.append('%s%s' % (leading,'block:'))
-                result.extend(self.dumpListHelper(z.val,indent+1))
-                # result.append('%s%s' % (leading,'block:]'))
-            else:
-                result.append('%s%s' % (leading,str(z)))
-        else:
-            result.append('%s%s' % (leading,str(z)))
-
-    return result
-
-listToString = dumpList
-#@+node:ekr.20071104221525.98: *7* Parsing...
-#@+node:ekr.20071104221525.99: *8* parse
-def parse(self,s):
-
-    # Generate the nodes, including directive and section references.
-    return self.scanForest(s)
-#@+node:ekr.20071104221525.100: *8* scan & helpers
-def scan(self,s,i):
-
-    '''Scan an elisp expression.'''
-
-    start = i ; end = len(s) ; result = []
-    comments = [] ; token = self.token
-    # A hack. ignore initial @language lisp
-    tag = '@language lisp'
-    if i == 0 and s[i:i+len(tag)]==tag:
-        i += len(tag)
-    while i < end:
-        progress = i
-        ch = s[i]
-        if ch == ';':
-            j = self.skipComment(s,i)
-            # Comments are not tokens, they are attached to tokens.
-            comments.append(s[i:j]) 
-            start = i = j
-        elif ch == '"':
-            j = self.skipString(s,i)
-            result.append(token(comments,'string:',s[i:j]))
-            comments = []
-            start = i = j
-        elif ch.isalnum() or ch == u'_':
-            j = self.skipId(s,i)
-            result.append(token(comments,'id:',s[i:j]))
-            comments = []
-            start = i = j
-        elif ch =='(':
-            i += 1
-            j,aList = self.scan(s,i)
-            result.append(token(comments,'block:',aList))
-            start = i = j
-        elif ch == ')':
-            i += 1
-            return i,result
-        else:
-            if ch == "'": ch = 'quote'
-            if ch not in (' ','\t','\n','\r'):
-                result.append(token(comments,'op:',ch))
-            i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    if start < end:
-        tail = s[start:end].strip()
-        if tail:
-            result.append(token(comments,'tail:',tail))
-            comment = []
-    if comments:
-        result.append(token(comments,'trailing-comment:',''))
-
-    return i,result
-#@+node:ekr.20071104221525.101: *9* skipComment
-def skipComment (self,s,i):
-
-    '''Skip a comment.'''
-
-    while i < len(s):
-        if s[i] == '\n':
-            break
-        i += 1
-    return i
-#@+node:ekr.20071104221525.102: *9* skipId
-def skipId (self,s,i):
-
-    while i < len(s):
-        ch = s[i]
-        if ch.isalnum() or ch in ('_','-'):
-            i += 1
-        else:
-            break
-    return i
-#@+node:ekr.20071104221525.103: *9* skipString
-def skipString(self,s,i):
-
-    """Skip a string literal."""
-
-    assert(s[i] == '"')
-    i += 1
-    while i < len(s):
-        ch = s[i]
-        if ch == '\\' : i += 2
-        elif ch == '"':
-            i += 1 ; break
-        else: i += 1
-
-    return i
-#@+node:ekr.20071104221525.104: *8* scanForest
-def scanForest (self,s):
-
-    i = 0 ; result = []
-
-    while i < len(s):
-        progress = i
-        i,aList = self.scan(s,i)
-        aList and result.extend(aList)
-        assert i > progress
-
-    return result
-
-
-#@+node:ekr.20071104221525.105: *7* Code generators...
-@ From Richard Deibenkorn:
-
-1. Attempt what is not certain. Certainty may or may not come later. It may then
-be a valuable delusion.
-
-2. The pretty, initial position which falls short of completeness is not to be
-valued--except as stimulus for further moves.
-
-3. Do search.  But in order to find other than what is looked for.
-
-4. Use and respond to the initial fresh qualities but consider them absolutely
-expendable.
-#@+node:ekr.20071104221525.106: *8* gen
-def gen(self,tokens,indent,init=False):
-
-    result = []
-
-    if init: result.append('='*40)
-
-    for token in tokens:
-        aList = self.gen_token(token,indent)
-        result.extend(aList)
-
-    if init: result.append('-'*40)
-
-    return result
-
-#@+node:ekr.20071104221525.107: *8* gen_token
-def gen_token(self,token,indent):
-
-    result = []
-
-    if self.debug:
-        if token.kind == 'block:':
-            aList = self.gen_block(token,indent)
-            result.extend(aList)
-        else:
-            self.put_token(token,indent,result)
-    else:
-        if token.kind == 'block:':
-            self.gen_block(token,indent)
-        else:
-            self.put_code_token(token)
-
-    return result
-#@+node:ekr.20071104221525.108: *8* gen_block & helper
-def gen_block (self,token,indent):
-
-    if not (token and token.val):
-        return []
-
-    blockList = token.val
-    token2 = blockList[0]
-    result = []
-
-    if token2.kind.startswith('id'):
-        aList = self.gen_block_id(token2.val,blockList,indent)
-    else:
-        if self.debug:
-            self.put('block...',[],indent,result)
-        aList = self.gen(token.val,indent+1)
-
-    result.extend(aList)
-    return result
-#@+node:ekr.20071104221525.109: *9* gen_block_id
-def gen_block_id (self,theId,tokens,indent):
-
-    result = []
-
-    # Eventually there will be a lookup of the dispatch dict here.
-    if theId == 'let':
-        aList = self.gen_let(tokens,indent)
-    elif theId == 'if':
-        aList = self.gen_if(tokens,indent)
-    elif theId in self.def_keywords:
-        aList = self.gen_def(theId,tokens,indent)
-    elif theId in self.indent_keywords:
-        self.put('%s...' % (theId),[],indent,result)
-        aList = self.gen(tokens[1:],indent+1)
-    elif theId in self.expr_keywords:
-        aList = self.gen_expr(theId,tokens[1:],indent+1)
-    else:
-        aList = self.gen_call(theId,tokens[1:],indent)
-
-    result.extend(aList)
-    return result
-#@+node:ekr.20071104221525.110: *8* gen_call & helper
-def gen_call (self,funcId,tokens,indent):
-
-    result = []
-
-    if self.debug:
-        self.put('call: %s' % (funcId),[],indent,result)
-        for token in tokens:
-            aList = self.gen_arg(token,indent+1)
-            result.extend(aList)
-    else:
-        self.put_code_line('%s(' % (funcId))
-        for token in tokens:
-            self.gen_arg(token,indent+1)
-        self.put_code(')')
-
-    return result
-
-#@+node:ekr.20071104221525.111: *9* gen_arg
-def gen_arg(self,token,indent):
-
-    result = []
-
-    if self.debug:
-        if token.kind == 'block:':
-            self.put('arg block:...',[],indent,result)
-            aList = self.gen_block(token,indent)
-            result.extend(aList)
-        else:
-            self.put_token(token,indent,result)
-    else:
-        if token.kind == 'block:':
-            aList = self.gen_block(token,indent)
-            self.put_code(''.join(aList))
-        else:
-            self.put_code_token(token)
-
-    return result
-#@+node:ekr.20071104221525.112: *8* gen_def
-def gen_def(self,theId,tokens,indent):
-
-    result = []
-
-    if not tokens or len(tokens) < 3:
-        result.append('*** bad def tokens')
-        return result
-
-    defToken,idToken = tokens[0:2]
-    if idToken.kind != 'id:':
-        result.append('*** bad def id')
-        return result
-
-    if self.debug:
-        self.put(theId,idToken.val,indent,result)
-        aList = self.gen(tokens[2:],indent+1)
-        result.extend(aList)
-    else:
-        self.put_code('def %s (' % idToken.val)
-        self.gen_token(tokens[2],indent)
-        self.put_code('): # end def\n')
-        self.indent += 1
-        self.gen(tokens[3:],indent+1)
-        self.indent -= 1
-
-    return result
-#@+node:ekr.20071104221525.113: *8* gen_if & helpers
-@ if condition then-form else-forms.
-
-If the evaluated condition is non-nil, then-form is evaluated and the result
-returned. Otherwise, the else-forms are evaluated in textual order, and the
-value of the last one is returned. If condition has the value nil, and no
-else-forms are given, if returns nil.
-@c
-
-def gen_if (self,tokens,indent):
-
-    # tokens[0]: id:if
-    # tokens[1] cond
-
-    for i in xrange(len(tokens)):
-        g.trace('tokens[%d]: %s' % (i,self.dumpList(tokens[i])))
-
-    # g.trace(self.dumpList(tokens))
-
-    result = []
-
-    if self.debug:
-        self.put('if...',[],indent,result)
-        aList = self.gen(tokens[1:],indent+1)
-        result.extend(aList)
-    else:
-        self.put_code('if ')
-        self.gen(tokens[1:],indent+1)
-        self.put_code(': # end if\n')
-
-    return result
-#@+node:ekr.20071104221525.114: *9* gen_then
-def gen_then (self,token):
-
-    pass
-#@+node:ekr.20071104221525.115: *8* gen_expr
-def gen_expr (self,theId,aList,indent):
-
-    binops = ('and','or',)
-    result = []
-
-    self.put(theId,[],indent,result)
-    aList = self.gen(aList,indent+1)
-
-    result.extend(aList)
-    return result
-#@+node:ekr.20071104221525.116: *8* gen_let & helper
-@
-(let ((variable value)
-      (variable value)
-      ...)
-  body...)
-@c
-
-def gen_let (self,tokens,indent):
-
-    if not tokens: return []
-    if len(tokens) != 3:
-        g.trace('unusual let')
-        result = self.gen(tokens,indent+1)
-        return result
-
-    if 0:
-        for i in xrange(len(tokens)):
-            g.trace('token',i,tokens[i])
-
-    letToken,bindingToken,bodyToken = tokens
-    result = []
-    self.put('let...',[],indent,result)
-    self.put('let-bindings...',[],indent+1,result)
-    aList = self.gen_let_bindings(bindingToken,indent+2)
-    result.extend(aList)
-    self.put('let-block...',[],indent+1,result)
-    aList = self.gen_block(bodyToken,indent+2)
-    result.extend(aList)
-    return result
-#@+node:ekr.20071104221525.117: *9* gen_let_bindings
-def gen_let_bindings (self,token,indent):
-
-    result = []
-
-    if token.kind != 'block:':
-        g.trace('unexpected let')
-        return result
-
-    for z in token.val:
-        if z.kind == 'block:': # one (id,val) pair
-            if z.val and len(z.val) == 2:
-                token1 = z.val[0]
-                token2 = z.val[1]
-                self.put('let-id',token1,indent,result)
-                self.put('let-val...',[],indent,result)
-                if token2.kind == 'block:':
-                    aList = self.gen_block(token2,indent+1)
-                    result.extend(aList)
-                else:
-                    #g.trace('no let list')
-                    self.put_token(token2,indent+1,result)
-            else:
-                g.trace('unexpected let 2')
-
-    return result
-#@+node:ekr.20071104221525.118: *8* put...
-#@+node:ekr.20071104221525.119: *9* put
-def put (self,kind,val,indent,result):
-
-    '''Append one or more lines of output to result.'''
-
-    leading = '%2d: %s' % (indent,' ' * indent)
-
-    if kind == 'string:':
-        val = self.choose(len(val)>20,val[:20]+'..."',val)
-
-    if val:
-        s = '%s%s %s' % (leading,str(kind),str(val))
-    else:
-        s = '%s%s' % (leading,str(kind))
-
-    result.append(s)
-#@+node:ekr.20071104221525.120: *9* put_token
-def put_token (self,token,indent,result):
-
-    for z in token.comments:
-        self.put('comment:',z,indent,result)
-
-    self.put(token.kind,token.val,indent,result)
-#@+node:ekr.20071104221525.121: *9* put_code & put_code_line
-def put_code_line (self,s):
-
-    s2 = '%s%s' % (' '*self.indent,s)
-    print s2,
-
-def put_code (self,s):
-
-    print s,
-#@+node:ekr.20071104221525.122: *9* put_code_token
-def put_code_token (self,token):
-
-    if token.kind == 'block:':
-        self.put_code('<block>')
-    else:
-        self.put_code(token.val)
-
 #@+node:ekr.20060824111500: *3* jEdit2Py stuff
 #@+node:ekr.20060824111500.10: *4* Colorizer tests
 #@+node:ekr.20060824111500.11: *5* C
@@ -16278,8 +16248,8 @@ importDict = {
 	"php_javascript_php": ["javascript_main",],
 }
 
-#@+node:ekr.20060824111500.1: *4* Colorizing test scripts
-#@+node:ekr.20060824111500.2: *5* @@button colorize
+#@+node:ekr.20060824111500.1: *4* @ignore Colorizing test scripts
+#@+node:ekr.20060824111500.2: *5* @button colorize
 w = c.frame.body.bodyCtrl # comment
 c.frame.body.colorizer.colorize(p)
 names = w.tag_names()
@@ -16287,17 +16257,17 @@ for name in names:
     theList = w.tag_ranges(name)
     if theList:
         print 'tag',name,len(theList)
-#@+node:ekr.20060824111500.3: *5* @@button red:f1
+#@+node:ekr.20060824111500.3: *5* @button red:f1
 w = c.frame.body.bodyCtrl
 w.tag_configure('red',background='red')
 w.tag_add('red','insert-1c','insert+1c')
 w.tag_add('f1','insert-1c','insert+1c')
-#@+node:ekr.20060824111500.4: *5* @@button blue:f2
+#@+node:ekr.20060824111500.4: *5* @button blue:f2
 w = c.frame.body.bodyCtrl
 w.tag_configure('blue',background='blue')
 w.tag_add('blue','insert-1c','insert+1c')
 w.tag_add('f2','insert-1c','insert+1c')
-#@+node:ekr.20060824111500.5: *5* @@button print tags
+#@+node:ekr.20060824111500.5: *5* @button print tags
 w = c.frame.body.bodyCtrl
 names = w.tag_names()
 print '-' * 20
@@ -16308,7 +16278,7 @@ for name in names:
         print name,len(theList)/2
         total += len(theList)/2
 print 'total tag ranges',total
-#@+node:ekr.20060824111500.6: *5* @@button remove tags
+#@+node:ekr.20060824111500.6: *5* @button remove tags
 w = c.frame.body.bodyCtrl
 names = w.tag_names()
 for name in names:
@@ -16319,7 +16289,7 @@ for name in names:
             a,b = theList[0],theList[1]
             w.tag_remove(name,theList[0],theList[1])
             theList = theList[2:]
-#@+node:ekr.20060824111500.7: *5* @@button print f1
+#@+node:ekr.20060824111500.7: *5* @button print f1
 w = c.frame.body.bodyCtrl
 
 def f1(a,b):
