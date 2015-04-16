@@ -33,9 +33,7 @@
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
 <v t="ekr.20131105110107.16636"><vh>Leo 4.11 final</vh></v>
 <v t="ekr.20141105082156.2"><vh>Leo 5.0 final</vh></v>
-<v t="ekr.20150324084634.1"><vh>Leo 5.1 b1</vh></v>
-<v t="ekr.20150409190512.1"><vh>Leo 5.1 b2</vh></v>
-<v t="ekr.20150409190528.1"><vh>Leo 5.1 b2 (markdown)</vh></v>
+<v t="ekr.20150415145711.1"><vh>Leo 5.1 final (markdown)</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -49,6 +47,18 @@
 </v>
 </v>
 <v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
+<v t="ekr.20150416081546.1"><vh>Distribution check scripts</vh>
+<v t="ekr.20150416081546.2"><vh>Catch mixed newlines in distribution files</vh>
+<v t="ekr.20150416081546.3"><vh>check</vh></v>
+</v>
+<v t="ekr.20150416081546.4"><vh>Catch mixed tab &amp; space in derived files</vh>
+<v t="ekr.20150416081546.5"><vh>check</vh></v>
+</v>
+<v t="ekr.20150416081546.6"><vh>Check all colorizer files for problem regex's</vh></v>
+<v t="ekr.20150416081546.7"><vh>Clean ekr-spellpyx.txt</vh></v>
+<v t="ekr.20150416081546.8"><vh>Linux install script</vh></v>
+<v t="ekr.20150416081546.9"><vh>Warn if leoProjects.txt or leoToDo.txt contain clones</vh></v>
+</v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@asis ../../.gitattributes</vh></v>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
@@ -137,7 +147,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.1-b2
+Version: 5.1-final
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -159,91 +169,23 @@ Description:
         Quotes:    http://leoeditor.com/testimonials.html
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.1 b2: April 10, 2015
+<t tx="EKR.20040519090846.9">April 16, 2015
 
-Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+[Leo](http://leoeditor.com/) 5.1 final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
-This release features @clean trees, one of the most important developments
-in Leo's history.
+Leo 5.1-final is recommended for anyone using Leo 5.1 b1 or Leo 5.0-final.
 
-Leo is a PIM, an IDE and an outliner.
-Video tutorials: http://leoeditor.com/screencasts.html
-Text tutorials: http://leoeditor.com/tutorial.html
+**The highlights of Leo 5.1**
 
-The highlights of Leo 5.1
---------------------------
+This release features **@clean** trees, one of the most important developments in Leo's history.
 
-@clean nodes create external files without sentinel comments, yet Leo can
-update @clean trees from changes made to the corresponding external files,
-something long thought impossible. @clean trees preserve clone links and
-user attributes (uA's). Reading @clean trees is faster than reading @auto
-or @shadow trees.
-    
-The Mulder/Ream algorithm updates @clean trees from changes made in the
-corresponding external files. This is a completely rewritten and much
-simpler version of Bernhard Mulder's original @shadow update algorithm.
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees. Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
 
-Here is what one of Leo's users has to say about @clean:
-
-I just want to provide my own thoughts about the importance of @clean. I
-look at the posts in this group a fair amount because I find the discussion
-interesting but I had abandoned leo as a day-to-day tool principally
-because of the sentinels in @file nodes. Even for solo projects, I just
-found them visually unappealing and beyond that occasionally confusing when
-I went to edit files with external editors. I would sometimes start a
-project in leo, particularly if it was based on code I developed in the
-past using leo, and then would use the old @nosent to save a version of the
-code without sentinels and then use my external editor of choice and not
-use leo at all. I missed many of the features of leo but just couldn't get
-over the sentinel issue.
-
-@clean really seems to solve all the issues that I had. In particular--and
-somehow this point doesn't seem to me to have been emphasized enough--it
-seems to fully support organizer nodes. They are one of the great things
-about leo--it's happy to guess initially at what the structure of your
-program is but it's completely up to you to determine the structure and the
-ability to do things like break up long methods, group like methods, group
-menu actions in GUI code, etc etc is one of the very cool things about leo.
-My limited but growing experience with @clean's handling of external
-changes has been mainly with incremental (as opposed to more sweeping) code
-changes, and the assignment of new lines is reasonable and you can always
-fix them it quickly if you don't like how external changes have been
-handled.
-
-There have been some posts about the recovered nodes, comparing the old and
-new nodes where there were external changes. I think it's genius. As
-opposed to hoping that leo has correctly incorporated external changes,
-it's all there in case you want to take a closer look. Without this, I
-would just not have the confidence that external changes were being applied
-correctly and while you can always do a git diff, I am not looking to do
-that every time I change a file externally especially if I am not at the
-point where I am about to do a commit.
-
-There has been some discussion of @auto v. @clean. Preference is obviously
-a matter of taste. I will say that for me the fact that node headlines are
-unaffected by external file changes is a feature not a problem since I
-place notes in the headlines that I want preserved when I edit files
-externally. Yes, if the node headlines are the method names then they won't
-be updated if an external edit changes a method name but this was true of
-@file as well.
-
-The ability to work on projects with people who don't have leo is obvious;
-one perhaps slightly less obvious benefit of no sentinels is that I suspect
-that the likelihood that someone will clone a git repository is reduced
-when that repository's code is riddled with leo sentinels (unless the
-potential cloner is a leo loyalist). The one downside to no
-sentinels--there is no evidence that leo is being used but I think that
-raises the broader question of marketing leo, which I certainly believe
-will be aided significantly by being able to take advantage of leo without
-sentinels in external files.--- Steve Zatz
-
-And a few more features:
+**More highlights**
  
-* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
-  in the browser.
+* A new [web page](http://leoeditor.com/load-leo.html) displays .leo files in the browser.
   
-* Added command history to Leo's minibuffer.
+* Added **command history** to Leo's minibuffer.
 
 * A new IdleTime class greatly simplifies idle-time handling.
 
@@ -251,22 +193,22 @@ And a few more features:
 
 * @data nodes can be composed of their descendant nodes.
 
-* @int qt-cursor-width = 5 is great for geriatric eyes.
+* @shadow is now deprecated. @clean is superior to @shadow in all respects. 
 
-* @shadow is now deprecated. @clean is superior to @shadow in all respects.
-Leo will support all flavors of @auto indefinitely.
+**Links**
 
-Links:
-------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
-Viewer:    http://leoeditor.com/load-leo.html
+The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. 
+
+[Leo's home page](http://leoeditor.com)
+[Documentation](http://leoeditor.com/leo_toc.html)
+[Tutorials](http://leoeditor.com/tutorial.html)
+[Video tutorials](http://leoeditor.com/screencasts.html)
+[Forum](http://groups.google.com/group/leo-editor)
+[Download](http://sourceforge.net/projects/leo/files/)
+[Leo on Github](https://github.com/leo-editor/leo-editor)
+[What people are saying about Leo](http://leoeditor.com/testimonials.html)
+[A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+[More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @language rest
@@ -1569,115 +1511,6 @@ than later.
 </t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20141118074110.4"></t>
-<t tx="ekr.20150324084634.1">Leo 5.1 b1: March 27, 2015
-
-Leo 5.1 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
-
-This release features @clean trees, one of the most important developments
-in Leo's history.
-
-Leo is a PIM, an IDE and an outliner.
-Video tutorials: http://leoeditor.com/screencasts.html
-Text tutorials: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 5.1
---------------------------
-
-@clean nodes create external files without sentinel comments, yet Leo can
-update @clean trees from changes made to the corresponding external files,
-something long thought impossible. @clean trees preserve clone links and
-user attributes (uA's). Reading @clean trees is faster than reading @auto
-or @shadow trees.
-    
-The Mulder/Ream algorithm updates @clean trees from changes made in the
-corresponding external files. This is a completely rewritten and much
-simpler version of Bernhard Mulder's original @shadow update algorithm.
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-
-Here is what one of Leo's users has to say about @clean:
-
-I just want to provide my own thoughts about the importance of @clean. I
-look at the posts in this group a fair amount because I find the discussion
-interesting but I had abandoned leo as a day-to-day tool principally
-because of the sentinels in @file nodes. Even for solo projects, I just
-found them visually unappealing and beyond that occasionally confusing when
-I went to edit files with external editors. I would sometimes start a
-project in leo, particularly if it was based on code I developed in the
-past using leo, and then would use the old @nosent to save a version of the
-code without sentinels and then use my external editor of choice and not
-use leo at all. I missed many of the features of leo but just couldn't get
-over the sentinel issue.
-
-@clean really seems to solve all the issues that I had. In particular--and
-somehow this point doesn't seem to me to have been emphasized enough--it
-seems to fully support organizer nodes. They are one of the great things
-about leo--it's happy to guess initially at what the structure of your
-program is but it's completely up to you to determine the structure and the
-ability to do things like break up long methods, group like methods, group
-menu actions in GUI code, etc etc is one of the very cool things about leo.
-My limited but growing experience with @clean's handling of external
-changes has been mainly with incremental (as opposed to more sweeping) code
-changes, and the assignment of new lines is reasonable and you can always
-fix them it quickly if you don't like how external changes have been
-handled.
-
-There have been some posts about the recovered nodes, comparing the old and
-new nodes where there were external changes. I think it's genius. As
-opposed to hoping that leo has correctly incorporated external changes,
-it's all there in case you want to take a closer look. Without this, I
-would just not have the confidence that external changes were being applied
-correctly and while you can always do a git diff, I am not looking to do
-that every time I change a file externally especially if I am not at the
-point where I am about to do a commit.
-
-There has been some discussion of @auto v. @clean. Preference is obviously
-a matter of taste. I will say that for me the fact that node headlines are
-unaffected by external file changes is a feature not a problem since I
-place notes in the headlines that I want preserved when I edit files
-externally. Yes, if the node headlines are the method names then they won't
-be updated if an external edit changes a method name but this was true of
-@file as well.
-
-The ability to work on projects with people who don't have leo is obvious;
-one perhaps slightly less obvious benefit of no sentinels is that I suspect
-that the likelihood that someone will clone a git repository is reduced
-when that repository's code is riddled with leo sentinels (unless the
-potential cloner is a leo loyalist). The one downside to no
-sentinels--there is no evidence that leo is being used but I think that
-raises the broader question of marketing leo, which I certainly believe
-will be aided significantly by being able to take advantage of leo without
-sentinels in external files.--- Steve Zatz
-
-And a few more features:
- 
-* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
-  in the browser.
-  
-* Added command history to Leo's minibuffer.
-
-* A new IdleTime class greatly simplifies idle-time handling.
-
-* Leo now honors @language inside @doc parts
-
-* @data nodes can be composed of their descendant nodes.
-
-* @int qt-cursor-width = 5 is great for geriatric eyes.
-
-* @shadow is now deprecated. @clean is superior to @shadow in all respects.
-Leo will support all flavors of @auto indefinitely.
-
-Links:
-------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
-Viewer:    http://leoeditor.com/load-leo.html
-</t>
 <t tx="ekr.20150326055410.1">@language rest
 
 1. Search for ##version
@@ -1687,77 +1520,17 @@ Viewer:    http://leoeditor.com/load-leo.html
     Latest copyright date: 2015.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
-<t tx="ekr.20150409190512.1">Leo 5.1 b2: April 10, 2015
+<t tx="ekr.20150415145711.1">April 16, 2015
 
-Leo 5.1 b2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+[Leo](http://leoeditor.com/) 5.1 final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
-This release features @clean trees, one of the most important developments
-in Leo's history.
-
-Leo is a PIM, an IDE and an outliner.
-Video tutorials: http://leoeditor.com/screencasts.html
-Text tutorials: http://leoeditor.com/tutorial.html
-
-The highlights of Leo 5.1
---------------------------
-
-@clean nodes create external files without sentinel comments, yet Leo can
-update @clean trees from changes made to the corresponding external files,
-something long thought impossible. @clean trees preserve clone links and
-user attributes (uA's). Reading @clean trees is faster than reading @auto
-or @shadow trees.
-    
-The Mulder/Ream algorithm updates @clean trees from changes made in the
-corresponding external files. This is a completely rewritten and much
-simpler version of Bernhard Mulder's original @shadow update algorithm.
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
-
-Steve Zatz explains why @clean changes everything:
-http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything
-
-Some more highlights:
- 
-* A new web page, http://leoeditor.com/load-leo.html, displays .leo files
-  in the browser.
-  
-* Added command history to Leo's minibuffer.
-
-* A new IdleTime class greatly simplifies idle-time handling.
-
-* Leo now honors @language inside @doc parts
-
-* @data nodes can be composed of their descendant nodes.
-
-* @int qt-cursor-width = 5 is great for geriatric eyes.
-
-* @shadow is now deprecated. @clean is superior to @shadow in all respects.
-Leo will support all flavors of @auto indefinitely.
-
-Links:
-------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Videos:    http://leoeditor.com/screencasts.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Github:    https://github.com/leo-editor/leo-editor
-Quotes:    http://leoeditor.com/testimonials.html
-Viewer:    http://leoeditor.com/load-leo.html
-</t>
-<t tx="ekr.20150409190528.1">[Leo](http://leoeditor.com/) 5.1 b2 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
-
-b2 restores the proper operation of @nosent.  It is recommended for anyone using Leo 5.1 b1.
+Leo 5.1-final is recommended for anyone using Leo 5.1 b1 or Leo 5.0-final.
 
 **The highlights of Leo 5.1**
 
 This release features **@clean** trees, one of the most important developments in Leo's history.
 
-@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible.
-
-@clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees. Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
-    
-The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. This is a completely rewritten and much simpler version of Bernhard Mulder's original @shadow update algorithm.
+@clean nodes create external files without sentinel comments, yet Leo can update @clean trees from changes made to the corresponding external files, something long thought impossible. @clean trees preserve clone links and user attributes (uA's). Reading @clean trees is faster than reading @auto or @shadow trees. Steve Zatz [explains why @clean changes everything.](http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything)
 
 **More highlights**
  
@@ -1775,6 +1548,8 @@ The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream
 
 **Links**
 
+The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm) updates @clean trees from changes made in the corresponding external files. 
+
 [Leo's home page](http://leoeditor.com)
 [Documentation](http://leoeditor.com/leo_toc.html)
 [Tutorials](http://leoeditor.com/tutorial.html)
@@ -1785,6 +1560,207 @@ The [Mulder/Ream algorithm](http://leoeditor.com/appendices.html#the-mulder-ream
 [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20150416081546.1"></t>
+<t tx="ekr.20150416081546.2">import glob
+
+@others
+
+verbose = False
+
+# extraFiles = ('..\\install','..\\uninstall','test\\unittest\\perfectImport\\formatter.py',)
+extraFiles = () # 'test\\test-line-ending.py',)
+
+baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
+n = 0
+dirs = ('','src','scripts','plugins',)
+# dirs = ('src',)
+
+if 1:
+    for dir2 in dirs:
+        theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
+        print theDir
+        files1 = glob.glob('%s\*.py' % theDir)
+        files2 = glob.glob('%s\*.leo' % theDir)
+        files = files1
+        files.extend(files2)
+        for name in files:
+            f = file(name)
+            lines = f.readlines()
+            # print '%5d %s' % (len(lines),name)
+            f.close()
+            check(name,lines)
+            n += 1
+
+for z in extraFiles:
+    name = g.os_path_abspath(g.os_path_join(baseDir,z))
+    f = file(name)
+    lines = f.readlines()
+    # print '%5d %s' % (len(lines),name)
+    f.close()
+    check(name,lines)
+    n += 1
+
+print 'done.  checked %d files' % (n)
+</t>
+<t tx="ekr.20150416081546.3">def check(name,lines):
+
+    cr = 0 ; nl = 0
+
+    for s in lines:
+       for ch in s:
+        if ch == '\r': cr += 1
+        if ch == '\n': nl += 1
+
+    if verbose or cr &gt; 0:
+        print "%55s %s cr's %4s nl's" % (name,cr,nl)
+</t>
+<t tx="ekr.20150416081546.4">import glob
+
+@others
+
+baseDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..'))
+n = 0
+for dir2 in ('','src','scripts','plugins',):
+
+    theDir = g.os_path_abspath(g.os_path_join(baseDir,dir2))
+    print theDir
+    files = glob.glob('%s\*.py' % theDir)
+    for name in files:
+        f = file(name)
+        lines = f.readlines()
+        # print '%5d %s' % (len(lines),name)
+        f.close()
+        check(name,lines)
+        n += 1
+
+print 'done.  checked %d files' % (n)
+</t>
+<t tx="ekr.20150416081546.5">def check(name,lines):
+
+    n = 0
+    for line in lines:
+        n += 1
+        i = g.skip_ws(line,0)
+        lws = line[0:i]
+        if lws:
+            if lws.find(' ') &gt; -1 and lws.find('\t') &gt; -1:
+                print '%20s %5d %s' % (name,n,repr(line))
+</t>
+<t tx="ekr.20150416081546.6">import glob
+pattern = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    f = open(fn)
+    s = f.read()
+    f.close()
+    if s.find(r'regexp="\\') &gt; -1:
+        g.es(sfn)
+
+@ found: Rules indicated are dubious or broken
+
+md.py:
+    [ \t]   leadins: 8,20,24,25(?),50,51
+    space   leadins: 23,46,49
+    [=-]    leadins: 21,47
+    [\\_]   leadins: 54,55
+    #       leadins: 22
+    other   leadins: 7,12,19,53
+
+moin.py:
+    [ \t]           rule 3.
+    single-quote    rule 6.
+
+erlang.py:  no obvious problem.
+lilypond.py:no obvious problem.
+perl.py:    no obvious problem.
+pl1.py:     no obvious problm.
+rest.py:    no obvious problem.
+rtf.py:     no obvious problem.
+scala.py:   no obvious problem.
+yaml.py:    fixed</t>
+<t tx="ekr.20150416081546.7">'''
+Regularize newlines in ekr-spellpyx.txt.
+
+Replaces sorts the file, removes duplicate lines and ensuring a trailing newline.
+'''
+fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-spellpyx.txt')
+with open(fn) as f:
+    s = ''.join(sorted(set(g.splitLines(f.read().strip()+'\n'))))
+with open(fn,'w') as f:
+    f.write(s)
+</t>
+<t tx="ekr.20150416081546.8">@first
+
+"""
+A simple script to install Leo on Linux.
+
+Contributed by David McNab &lt;david@rebirthing.co.nz&gt;
+"""
+
+import commands,os,sys # commands module is for Unix only.
+
+# We must be root to use this script.
+if os.getuid() != 0:
+    print "You need to run this install script as root"
+    sys.exit(1)
+
+# Create /usr/lib/leo and copy all files there.
+print "***** Installing Leo to /usr/lib/leo..."
+commands.getoutput("mkdir -p /usr/lib/leo")
+commands.getoutput("cp -rp * /usr/lib/leo")
+
+# Create user's 'leo' command script into /usr/bin/leo
+print "***** Creating Leo startup script -&gt; /usr/bin/leo"
+fd = open("/usr/bin/leo", "w")
+fd.write("""#!/usr/bin/python
+import commands,sys
+files = " ".join(sys.argv[1:])
+print commands.getoutput("python /usr/lib/leo/leo.py %s" % files)
+""")
+fd.close()
+commands.getoutput("chmod 755 /usr/bin/leo")
+print "***** Leo installed successfully - type 'leo filename.leo' to use it."
+</t>
+<t tx="ekr.20150416081546.9">@language python
+
+# This script must be run from leoPy.leo.
+
+'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
+
+clones,nodes,seen = 0,0,set()
+table = (
+  '@file ../doc/leoProjects.txt',
+  '@file ../doc/leoToDo.txt',
+)
+
+def check_clone(c,p0,root):
+    '''Warn if p appears in any @&lt;file&gt; node outside of root's tree.'''
+    global nodes,seen
+    v = p0.v
+    for p in c.all_positions():
+        nodes += 1
+        if p.v == v:
+            # Check *all* ancestors, not just the nearest one.
+            for parent in p.self_and_parents():
+                nodes += 1
+                if parent.isAnyAtFileNode() and parent.v != root.v:
+                    if parent.v not in seen:
+                        seen.add(parent.v)
+                        g.es_print('%s and %s contain clone: %s' % (
+                            root.h,parent.h,p0.h))
+
+for h in table:
+    root = g.findNodeAnywhere(c,h)
+    if root:
+        for p in root.self_and_subtree():
+            nodes += 1
+            if p.isCloned():
+                clones += 1
+                check_clone(c,p,root)
+    else:
+        g.es_print('not found',h,color='red')
+print('done: %s nodes, %s clones' % (nodes,clones))
 </t>
 </tnodes>
 </leo_file>
