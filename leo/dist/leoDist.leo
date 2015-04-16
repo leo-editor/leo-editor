@@ -464,7 +464,12 @@ Pre-testing:
 - Run all unit tests.
 - Run pylint -a.
 
-Release notes and web documentation:
+LeoDocs.leo:
+- Remove top-level clones.
+- Spell check entire file.
+- Select the readme node.
+
+Update release notes and web documentation:
 - Make sure copyright dates are correct.
 - Update version numbers in html/conf.py
 - Update the release notes.
@@ -478,11 +483,6 @@ Release notes and web documentation:
 
 leoVersion.py
 - Update version constant.
-
-LeoDocs.leo:
-- Remove top-level clones.
-- Spell check entire file.
-- Select the readme node.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
