@@ -66,9 +66,24 @@ class LeoNode:
         return '\n'.join(ans)
 
     #@+node:ekr.20120519121124.9924: *3* UNL
+    def node_pos_count(self, node):
+        """node_pos_count - return the position (index) and count of
+        preceeding siblings with the same name, also return headline
+
+        :param LeoNode node: node to characterize
+        :return: h, pos, count
+        :rtype: (str, int, int)
+        """
+
+        pos = node.parent.children.index(node)
+        count = len([i for i in node.parent.children[:pos]
+                     if i.h == node.h])
+        return node.h, pos, count
+
     def UNL(self):
         """Return the UNL string leading to this node"""
-        return '-->'.join([i.h for i in self.path])
+        return '-->'.join(["%s:%d,%d" % self.node_pos_count(i)
+                           for i in self.path])
 
     #@+node:ekr.20120519121124.9925: *3* flat
     def flat(self):
