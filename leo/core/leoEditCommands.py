@@ -2214,10 +2214,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+others
         #@+node:ekr.20121016093159.10241: *5* ctor (To_Python)
         def __init__ (self,c):
-
+            '''Ctor for the To_Python class.'''
             self.c = c
             self.p = self.c.p.copy()
-
             aList = g.get_directives_dict_list(self.p)
             self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
         #@+node:ekr.20121016093159.10299: *5* go
@@ -4807,8 +4806,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         if wname.startswith('body'):
             self.beginCommand()
             try:
-                d = c.scanAllDirectives(p)
-                tab_width = d.get("tabwidth",c.tab_width)
+                tab_width = c.getTabWidth(c.p)
+                ### d = c.scanAllDirectives(p)
+                ### tab_width = d.get("tabwidth",c.tab_width)
                 changed = True
                 if i != j:
                     w.delete(i,j)
@@ -5099,27 +5099,22 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.endCommand(changed=True,setLabel=False)
     #@+node:ekr.20110528103005.18329: *4* insertSoftTab
     def insertSoftTab (self,event):
-
         '''Insert spaces equivalent to one tab.'''
-
         c = self.c ; p = c.p
         w = self.editWidget(event) 
-        if not w: return
-
+        if not w:
+            return
         assert g.isTextWrapper(w)
         name = c.widget_name(w)
         if name.startswith('head'): return
-
-        d = c.scanAllDirectives(p)
-        n = abs(d.get("tabwidth",c.tab_width))
+        tab_width = abs(c.getTabWidth(c.p))
+        ### d = c.scanAllDirectives(p)
+        ### n = abs(d.get("tabwidth",c.tab_width))
         ins = w.getInsertPoint()
-
         self.beginCommand(undoType='insert-soft-tab')
-
         w.insert(ins,' ' * n)
         ins += n
         w.setSelectionRange(ins,ins,insert=ins)
-
         self.endCommand()
 
     #@+node:ekr.20050920084036.141: *4* removeBlankLines
@@ -5327,11 +5322,12 @@ class EditCommandsClass (BaseEditCommandsClass):
         w.seeInsertPoint()
     #@+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
     def updateAutoIndent (self,p,w):
-
+        '''Handle auto indentation.'''
         trace = False and not g.unitTesting
         c = self.c
-        d = c.scanAllDirectives(p)
-        tab_width = d.get("tabwidth",c.tab_width)
+        tab_width = c.getTabWidth(p)
+        ### d = c.scanAllDirectives(p)
+        ### tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -5400,37 +5396,31 @@ class EditCommandsClass (BaseEditCommandsClass):
                 w.setInsertPoint(i+1)
     #@+node:ekr.20051026092433: *5* updateTab
     def updateTab (self,p,w,smartTab=True):
-
+        '''Add spaces equivalent to a tab.'''
         trace = False and not g.unitTesting
         c = self.c
-
-        # g.trace('tab_width',tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
-
         if i != j:
             # w.delete(i,j)
             c.indentBody()
         else:
-            d = c.scanAllDirectives(p)
-            tab_width = d.get("tabwidth",c.tab_width)
-            if trace: g.trace(tab_width)
-
+            ### d = c.scanAllDirectives(p)
+            ### tab_width = d.get("tabwidth",c.tab_width)
+            tab_width = c.getTabWidth(p)
             # Get the preceeding characters.
             s = w.getAllText()
             start,end = g.getLine(s,i)
             after = s[i:end]
             if after.endswith('\n'): after = after[:-1]
-
             # Only do smart tab at the start of a blank line.
             doSmartTab = (smartTab and c.smart_tab and i == start)
                 # Truly at the start of the line.
                 # and not after # Nothing *at all* after the cursor.
-
             if trace:
-                g.trace('smartTab',doSmartTab,'tab_width',tab_width)
+                g.trace('smartTab: %s,tab_width: %s, c.tab_width: %s' % (
+                    doSmartTab,tab_width,c.tab_width))
                     # 'i %s start %s after %s' % (i,start,repr(after)))
-
             if doSmartTab:
                 self.updateAutoIndent(p,w)
                 # Add a tab if otherwise nothing would happen.

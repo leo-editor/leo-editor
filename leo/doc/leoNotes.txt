@@ -14095,5 +14095,69 @@ def writeError(self,message=None):
 
     at.root.setDirty()
     at.root.setOrphan()
+.. @+node:ekr.20031218072017.3547: *3* massage_block_comment (no longer used)
+@
+This function is called to massage an @doc part in the ust. We call
+this routine only after a mismatch in @doc parts is found between the
+ust and tst. On entry, the parameters point to the inside of a block C
+comment: the opening and closing delimiters are not part of the text
+handled by self routine.
+
+This code removes newlines that may have been inserted by the Tangle
+command in a block comment. Tangle may break lines differently in
+different expansions, but line breaks are ignored by
+forgiving_compare() and doc_compare() within block C comments.
+
+We count the leading whitespace from the first non-blank line and
+remove this much whitespace from all lines. We also remove singleton
+newlines and replace sequences of two or more newlines by a single
+newline.
+@c
+
+def massage_block_comment (self,s):
+
+    c = self.c
+    newlines = 0  # Consecutive newlines seen.
+    i = g.skip_blank_lines(s,0)
+    # Copy the first line and set n
+    i, n = g.skip_leading_ws_with_indent(s,i,c.tab_width)
+    j = i ; i = g.skip_to_end_of_line(s,i)
+    result = s[j:i]
+    while i < len(s):
+        assert(g.is_nl(s,i))
+        newlines += 1
+        # Replace the first newline with a blank.
+        result += ' ' ; i += 1
+        while i < len(s) and g.is_nl(s,i):
+            i += 1 # skip the newline.
+        j = i ; i = g.skip_ws(s,i)
+        if g.is_nl(s,i)and newlines > 1:
+            # Skip blank lines.
+            while g.is_nl(s,i):
+                i += 1
+        else:
+            # Skip the leading whitespace.
+            i = j # back track
+            i = g.skip_leading_ws(s,i,n,c.tab_width)
+            newlines = 0
+            # Copy the rest of the line.
+            j = i ; i = g.skip_to_end_of_line(s,i)
+            result += s[j:i]
+    return result
+.. @+node:ekr.20041126042730: *3* ic.getTabWidth (replace by c.getTabWidth)
+def getTabWidth (self,p=None):
+
+    c = self.c
+    if 1:
+        # Faster, more self-contained.
+        val = g.scanAllAtTabWidthDirectives(c,p)
+        return val
+    else:
+        d = c.scanAllDirectives(p)
+        w = d.get("tabwidth")
+        if w not in (0,None):
+            return w
+        else:
+            return self.c.tab_width
 .. @-all
 .. @-leo

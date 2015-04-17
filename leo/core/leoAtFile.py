@@ -5408,7 +5408,7 @@ class AtFile:
         at = self ; c = self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
-        #@+node:ekr.20080923070954.14: *4* << Set ivars >>
+        #@+node:ekr.20080923070954.14: *4* << Set ivars >> (atScanAllDirectives)
         self.page_width = self.c.page_width
         self.tab_width  = self.c.tab_width
 

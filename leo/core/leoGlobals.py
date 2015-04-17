@@ -2325,9 +2325,7 @@ def scanAtRootOptions (s,i,err_flag=False):
     return i,mode
 #@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
-
     '''Scan aList for @tabwidth directives.'''
-
     for d in aList:
         s = d.get('tabwidth')
         if s is not None:
@@ -2340,9 +2338,7 @@ def scanAtTabwidthDirectives(aList,issue_error_flag=False):
     return None
 
 def scanAllAtTabWidthDirectives(c,p):
-
     '''Scan p and all ancestors looking for @tabwidth directives.'''
-
     if c and p:
         aList = g.get_directives_dict_list(p)
         val = g.scanAtTabwidthDirectives(aList)

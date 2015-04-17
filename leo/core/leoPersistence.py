@@ -394,7 +394,7 @@ class PersistenceDataController:
         '''Make sure root's tree has no hard-to-handle nodes.'''
         c,pd = self.c,self
         ic = c.importCommands
-        ic.tab_width = ic.getTabWidth()
+        ic.tab_width = c.getTabWidth()
         language = g.scanForAtLanguage(c,root)
         ext = g.app.language_extension_dict.get(language)
         if not ext: return

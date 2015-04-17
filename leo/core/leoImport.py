@@ -51,7 +51,7 @@ class LeoImportCommands:
         self.methodName = None # x, as in < < x methods > > =
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
-        self.tab_width = c.tab_width # The tab width in effect in the c.currentPosition.
+        self.tab_width = c.tab_width
         self.trace = c.config.getBool('trace_import')
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
@@ -770,7 +770,7 @@ class LeoImportCommands:
         # command is None when this is called to import a file from the command line.
         c = self.c ; u = c.undoer ; at = c.atFileCommands
         current = c.p or c.rootPosition()
-        self.tab_width = self.getTabWidth()
+        self.tab_width = c.getTabWidth(current)
         if not paths:
             return None
         # Initial open from command line is not undoable.
@@ -810,7 +810,7 @@ class LeoImportCommands:
         c,current = self.c,self.c.p
         if not c or not current or not files:
             return
-        self.tab_width = self.getTabWidth()
+        self.tab_width = c.getTabWidth(current)
         self.treeType = treeType
         if len(files) == 2:
             current = self.createImportParent(current,files)
@@ -1034,7 +1034,7 @@ class LeoImportCommands:
         c = self.c ; current = c.p
         if current == None: return
         if not files: return
-        self.tab_width = self.getTabWidth() # New in 4.3.
+        self.tab_width = c.getTabWidth(current) # New in 4.3.
         self.webType = webType
 
         for fileName in files:
@@ -1532,21 +1532,6 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3307: *4* ic.error
     def error (self,s):
         g.es('',s)
-    #@+node:ekr.20041126042730: *4* ic.getTabWidth
-    def getTabWidth (self,p=None):
-
-        c = self.c
-        if 1:
-            # Faster, more self-contained.
-            val = g.scanAllAtTabWidthDirectives(c,p)
-            return val
-        else:
-            d = c.scanAllDirectives(p)
-            w = d.get("tabwidth")
-            if w not in (0,None):
-                return w
-            else:
-                return self.c.tab_width
     #@+node:ekr.20031218072017.3309: *4* ic.isDocStart & isModuleStart
     # The start of a document part or module in a noweb or cweb file.
     # Exporters may have to test for @doc as well.

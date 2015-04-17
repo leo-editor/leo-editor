@@ -1616,7 +1616,7 @@ class BaseScanner:
         c = self.c
         self.root = root = parent.copy()
         self.file_s = s
-        self.tab_width = self.importCommands.getTabWidth(p=root)
+        self.tab_width = c.getTabWidth(p=root)
         # Create the ws equivalent to one tab.
         self.tab_ws = ' '*abs(self.tab_width) if self.tab_width < 0 else '\t'
         # Init the error/status info.

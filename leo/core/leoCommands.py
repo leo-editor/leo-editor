@@ -2642,30 +2642,26 @@ class Commands (object):
         return p
     #@+node:ekr.20031218072017.1824: *6* dedentBody
     def dedentBody (self,event=None):
-
         '''Remove one tab's worth of indentation from all presently selected lines.'''
-
-        c = self ; current = c.p ; undoType='Unindent'
-
-        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
-        tab_width = d.get("tabwidth",c.tab_width)
+        c,undoType = self,'Unindent'
+        tab_width = c.getTabWidth(c.p)
+        ### d = c.scanAllDirectives(c.p) # Support @tab_width directive properly.
+        ### tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
-
-        result = [] ; changed = False
+        changed,result = False,[]
         for line in lines:
             i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
             s = g.computeLeadingWhitespace(width-abs(tab_width),tab_width) + line[i:]
             if s != line: changed = True
             result.append(s)
-
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
     #@+node:ekr.20110530124245.18238: *6* c.extract...
     #@+node:ekr.20110530124245.18239: *7* extract & helpers
     def extract (self,event=None):
-
-        '''Create child node from the selected body text.
+        '''
+        Create child node from the selected body text.
 
         1. If the selection starts with a section reference, the section name become
            the child's headline. All following lines become the child's body text.
@@ -2678,15 +2674,13 @@ class Commands (object):
         3. Otherwise, the first line becomes the child's headline, and all selected
            lines become the child's body text.
         '''
-
         c,current,u,undoType = self,self.p,self.undoer,'Extract'
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
-        if not lines: return # Nothing selected.
-
+        if not lines:
+            return # Nothing selected.
         # Remove leading whitespace.
         junk, ws = g.skip_leading_ws_with_indent(lines[0],0,c.tab_width)
         lines = [g.removeLeadingWhitespace(s,ws,c.tab_width) for s in lines]
-
         h = lines[0].strip()
         ref_h = c.extractRef(h).strip()
         def_h = c.extractDef(h).strip()
@@ -2698,15 +2692,12 @@ class Commands (object):
             h,b,middle = def_h,lines,''
         else:
             h,b,middle = lines[0].strip(),lines[1:],''
-
         u.beforeChangeGroup(current,undoType)
-
         undoData = u.beforeInsertNode(current)
         p = c.createLastChildNode(current,h,''.join(b))
         u.afterInsertNode(p,undoType,undoData)
         c.updateBodyPane(head,middle,tail,
             undoType=undoType,oldSel=None,oldYview=oldYview)
-
         u.afterChangeGroup(current,undoType=undoType)
         p.parent().expand()
         c.redraw(p.parent()) # A bit more convenient than p.
@@ -2837,24 +2828,23 @@ class Commands (object):
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
     #@+node:ekr.20031218072017.1830: *6* indentBody (indent-region)
     def indentBody (self,event=None):
-
-        '''The indent-region command indents each line of the selected body text,
+        '''
+        The indent-region command indents each line of the selected body text,
         or each line of a node if there is no selected text. The @tabwidth directive
         in effect determines amount of indentation. (not yet) A numeric argument
-        specifies the column to indent to.'''
-
+        specifies the column to indent to.
+        '''
         c = self ; current = c.p ; undoType='Indent Region'
-        d = c.scanAllDirectives(current) # Support @tab_width directive properly.
-        tab_width = d.get("tabwidth",c.tab_width)
+        tab_width = c.getTabWidth(c.p)
+        ### d = c.scanAllDirectives(current) # Support @tab_width directive properly.
+        ### tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
-
-        result = [] ; changed = False
+        changed,result = False,[]
         for line in lines:
             i, width = g.skip_leading_ws_with_indent(line,0,tab_width)
             s = g.computeLeadingWhitespace(width+abs(tab_width),tab_width) + line[i:]
             if s != line: changed = True
             result.append(s)
-
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
@@ -4183,25 +4173,18 @@ class Commands (object):
         #@+others
         #@+node:ekr.20110917174948.6904: *8* __init__ (CPrettyPrinter)
         def __init__ (self,c):
-
+            '''Ctor for CPrettyPrinter class.'''
             self.c = c
-            self.p = None # Set in indent.
-
             self.brackets = 0
                 # The brackets indentation level.
+            self.p = None
+                # Set in indent.
             self.parens = 0
                 # The parenthesis nesting level.
             self.result = []
                 # The list of tokens that form the final result.
             self.tab_width = 4
                 # The number of spaces in each unit of leading indentation.
-
-            # No longer used.
-
-            # self.ignored_brackets = 0
-                # # The number of '}' to ignore before reducing self.brackets.
-            # self.ignore_ws = False
-                # # True: ignore the next whitespace token if any.
         #@+node:ekr.20110917174948.6911: *8* indent & helpers
         def indent (self,p,toList=False,giveWarnings=True):
 
@@ -7603,6 +7586,23 @@ class Commands (object):
             pc.matchiter = t2
             res.append(pc)
         return res
+    #@+node:ekr.20150410095543.1: *3* c.findNodeOutsideAnyAtFileTree
+    def findNodeOutsideAnyAtFileTree(self,target):
+        '''Select the first clone of target that is outside any @file node.'''
+        trace = False and not g.unitTesting
+        c = self
+        if target.isCloned():
+            v = target.v
+            for p in c.all_positions():
+                if p.v == v:
+                    for parent in p.self_and_parents():
+                        if parent.isAnyAtFileNode():
+                            break
+                    else:
+                        if trace: g.trace('found',p.h)
+                        return p
+        if trace: g.trace('not found',target.h)
+        return target
     #@+node:ekr.20141028061518.23: *3* c.Focus
     #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
     def get_focus (self):
@@ -7811,6 +7811,12 @@ class Commands (object):
                 p = back
             else: break
         return p
+    #@+node:ekr.20150417073117.1: *5* c.getTabWidth
+    def getTabWidth (self,p):
+        '''Return the tab width in effect at p.'''
+        c = self
+        val = g.scanAllAtTabWidthDirectives(c,p)
+        return val
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
     def currentPositionIsRootPosition (self):
@@ -7866,7 +7872,7 @@ class Commands (object):
     def isChanged (self):
 
         return self.changed
-    #@+node:ekr.20140106215321.16676: *5* c.lastTopLevel (new)
+    #@+node:ekr.20140106215321.16676: *5* c.lastTopLevel
     def lastTopLevel(self):
         '''Return the last top-level position in the outline.'''
         c = self
@@ -8518,23 +8524,6 @@ class Commands (object):
         """
         c = self
         return c.frame.tree.getSelectedPositions()
-    #@+node:ekr.20150410095543.1: *3* c.findNodeOutsideAnyAtFileTree
-    def findNodeOutsideAnyAtFileTree(self,target):
-        '''Select the first clone of target that is outside any @file node.'''
-        trace = False and not g.unitTesting
-        c = self
-        if target.isCloned():
-            v = target.v
-            for p in c.all_positions():
-                if p.v == v:
-                    for parent in p.self_and_parents():
-                        if parent.isAnyAtFileNode():
-                            break
-                    else:
-                        if trace: g.trace('found',p.h)
-                        return p
-        if trace: g.trace('not found',target.h)
-        return target
     #@+node:ekr.20031218072017.2999: *3* c.Syntax coloring interface
     #@+at These routines provide a convenient interface to the syntax colorer.
     #@+node:ekr.20031218072017.3000: *4* updateSyntaxColorer

@@ -2231,7 +2231,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 row = bl.blockNumber() + 1
                 line = bl.text()
                 if col > 0:
-                    s2 = line[0:col]        
+                    s2 = line[0:col]   
                     col = g.computeWidth (s2,c.tab_width)
                 fcol = col + c.currentPosition().textOffset()
                 # g.trace('fcol',fcol,'te',id(te),g.callers(2))
@@ -2526,8 +2526,8 @@ class LeoQtFrame (leoFrame.LeoFrame):
             g.es_exception()
     #@+node:ekr.20110605121601.18277: *4* reconfigureFromConfig (qtFrame)
     def reconfigureFromConfig (self):
-
-        frame = self ; c = frame.c
+        '''Init the configuration of the Qt frame from settings.'''
+        c,frame = self.c,self
         frame.configureBarsFromConfig()
         frame.setTabWidth(c.tab_width)
         c.redraw()

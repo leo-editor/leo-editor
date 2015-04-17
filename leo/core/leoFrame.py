@@ -798,15 +798,18 @@ class LeoFrame(object):
                 return not ok # New in 4.2: Veto if the save did not succeed.
             else:
                 return True # Veto.
-    #@+node:ekr.20031218072017.1375: *4* frame.scanForTabWidth (must be fast)
+    #@+node:ekr.20031218072017.1375: *4* frame.scanForTabWidth
     def scanForTabWidth (self,p):
-
-        c = self.c ; w = c.tab_width
-        w = g.findTabWidthDirectives(c,p)
-        if w is None: w = c.tab_width
-        c.frame.setTabWidth(w)
-        c.tab_width = w # 2011/10/24
-        # g.trace(w)
+        '''Return the tab width in effect at p.'''
+        c = self.c
+        ### w = g.findTabWidthDirectives(c,p)
+        ### if w is None: w = c.tab_width
+        tab_width = c.getTabWidth(p)
+        c.frame.setTabWidth(tab_width)
+        ### c.tab_width = tab_width
+          # 2011/10/24
+          # 2015/04/17: This is quite wrong.
+        ### g.trace(w,g.callers())
     #@+node:ekr.20061119120006: *4* Icon area convenience methods
     def addIconButton (self,*args,**keys):
         if self.iconBar: return self.iconBar.add(*args,**keys)
@@ -1106,7 +1109,7 @@ class LeoFrame(object):
         pass
     #@+node:ekr.20031218072017.3687: *4* setTabWidth (LeoFrame)
     def setTabWidth (self,w):
-
+        '''Set the tab width in effect for this frame.'''
         # Subclasses may override this to affect drawing.
         self.tab_width = w
     #@-others

@@ -1350,7 +1350,7 @@ class BaseTangleCommands:
                 g.es("can not create temp file")
                 break
             #@+<<Get root specific attributes>>
-            #@+node:ekr.20031218072017.1152: *6* <<Get root specific attributes>>
+            #@+node:ekr.20031218072017.1152: *6* <<Get root specific attributes>> (Tangle)
             # Stephen Schaefer, 9/2/02
             # Retrieve the full complement of state for the root node
             self.language = section.RootAttributes.language
@@ -2105,55 +2105,6 @@ class BaseTangleCommands:
         p1 = g.skip_ws_and_nl(s1,p1)
         p2 = g.skip_ws_and_nl(s2,p2)
         return p1 == len(s1) and p2 == len(s2)
-    #@+node:ekr.20031218072017.3547: *4* massage_block_comment (no longer used)
-    #@+at
-    # This function is called to massage an @doc part in the ust. We call
-    # this routine only after a mismatch in @doc parts is found between the
-    # ust and tst. On entry, the parameters point to the inside of a block C
-    # comment: the opening and closing delimiters are not part of the text
-    # handled by self routine.
-    # 
-    # This code removes newlines that may have been inserted by the Tangle
-    # command in a block comment. Tangle may break lines differently in
-    # different expansions, but line breaks are ignored by
-    # forgiving_compare() and doc_compare() within block C comments.
-    # 
-    # We count the leading whitespace from the first non-blank line and
-    # remove this much whitespace from all lines. We also remove singleton
-    # newlines and replace sequences of two or more newlines by a single
-    # newline.
-    #@@c
-
-    def massage_block_comment (self,s):
-
-        c = self.c
-        newlines = 0  # Consecutive newlines seen.
-        i = g.skip_blank_lines(s,0)
-        # Copy the first line and set n
-        i, n = g.skip_leading_ws_with_indent(s,i,c.tab_width)
-        j = i ; i = g.skip_to_end_of_line(s,i)
-        result = s[j:i]
-        while i < len(s):
-            assert(g.is_nl(s,i))
-            newlines += 1
-            # Replace the first newline with a blank.
-            result += ' ' ; i += 1
-            while i < len(s) and g.is_nl(s,i):
-                i += 1 # skip the newline.
-            j = i ; i = g.skip_ws(s,i)
-            if g.is_nl(s,i)and newlines > 1:
-                # Skip blank lines.
-                while g.is_nl(s,i):
-                    i += 1
-            else:
-                # Skip the leading whitespace.
-                i = j # back track
-                i = g.skip_leading_ws(s,i,n,c.tab_width)
-                newlines = 0
-                # Copy the rest of the line.
-                j = i ; i = g.skip_to_end_of_line(s,i)
-                result += s[j:i]
-        return result
     #@+node:ekr.20031218072017.3548: *4* forgiving_compare
     #@+at
     # This is the "forgiving compare" function. It compares two texts and
@@ -2515,7 +2466,7 @@ class BaseTangleCommands:
                 i += 1 # ignore
             elif ch == '\n':
                 #@+<< handle the start of a new line >>
-                #@+node:ekr.20031218072017.3565: *5* << handle the start of a new line >>
+                #@+node:ekr.20031218072017.3565: *5* << handle the start of a new line >> (Untangle)
                 self.copy(ch) ; i += 1 # This works because we have one-character newlines.
                 # g.trace("handle start of new line: "+g.get_line(s,i))
 

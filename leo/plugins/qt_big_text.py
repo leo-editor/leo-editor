@@ -194,7 +194,8 @@ class BigTextController:
     To disable these buttons set @int max-pre-loaded-body-chars = 0
     '''
         s = s.rstrip() % (len(self.s),c.max_pre_loaded_body_chars)
-        return g.adjustTripleString(s,c.tab_width)
+        tab_width = c.getTabWidth(c.p)
+        return g.adjustTripleString(s,tab_width)
     #@-others
 #@-others
 #@@language python

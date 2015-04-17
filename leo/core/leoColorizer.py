@@ -523,7 +523,7 @@ class JEditColorizer:
 
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  Birth & init
-    #@+node:ekr.20110605121601.18572: *4* __init__ (JeditColorizer)
+    #@+node:ekr.20110605121601.18572: *4* __init__ (JEditColorizer)
     def __init__(self,c,colorizer,highlighter,wrapper):
         '''Ctor for JEditColorizer class.'''
         # Basic data...
@@ -798,28 +798,23 @@ class JEditColorizer:
                 theDict [ch] = theList
 
         # g.trace(g.listToString(theDict.get('@')))
-    #@+node:ekr.20111024091133.16702: *4* configure_hard_tab_width
+    #@+node:ekr.20111024091133.16702: *4* configure_hard_tab_width (JEditColorizer)
     def configure_hard_tab_width (self):
         '''Set the width of a hard tab.
         The stated default is 40, but apparently it must be set explicitly.
         '''
         trace = False and not g.unitTesting
         c,wrapper = self.c,self.wrapper
-        if 0:
-            # No longer used: c.config.getInt('qt-tab-width')
-            hard_tab_width = abs(10*c.tab_width)
-            if trace: g.trace('hard_tab_width',hard_tab_width,self.wrapper)
-        else:
-            # For some reason, the size is not accurate.
-            font = wrapper.widget.currentFont()
-            info = QtGui.QFontInfo(font)
-            size = info.pointSizeF()
-            pixels_per_point = 1.0 # 0.9
-            hard_tab_width = abs(int(pixels_per_point*size*c.tab_width))
-            if trace: g.trace(
-                'family',font.family(),'point size',size,
-                'tab_width',c.tab_width,
-                'hard_tab_width',hard_tab_width)
+        # For some reason, the size is not accurate.
+        font = wrapper.widget.currentFont()
+        info = QtGui.QFontInfo(font)
+        size = info.pointSizeF()
+        pixels_per_point = 1.0 # 0.9
+        hard_tab_width = abs(int(pixels_per_point*size*c.tab_width))
+        if trace: g.trace(
+            'family',font.family(),'point size',size,
+            'tab_width',c.tab_width,
+            'hard_tab_width',hard_tab_width)
         wrapper.widget.setTabStopWidth(hard_tab_width)
     #@+node:ekr.20110605121601.18578: *4* configure_tags
     def configure_tags (self):
@@ -942,9 +937,7 @@ class JEditColorizer:
         trace = False and not g.unitTesting
         if p: self.p = p.copy()
         self.all_s = s or ''
-        if trace: g.trace('='*20,
-            'tabwidth',self.c.tab_width,
-            self.colorizer.language) #,g.callers(4))
+        if trace: g.trace('='*20,self.colorizer.language)
         # State info.
         self.all_s = s
         self.global_i,self.global_j = 0,0
@@ -1185,7 +1178,7 @@ class JEditColorizer:
         valid = string.ascii_letters + string.digits + '_'
 
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20110605121601.18588: *4* setFontFromConfig (jeditColorizer)
+    #@+node:ekr.20110605121601.18588: *4* setFontFromConfig (JEditColorizer)
     def setFontFromConfig (self):
 
         c = self.c
