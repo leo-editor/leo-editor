@@ -1956,7 +1956,7 @@ class VNodeBase (object):
     # unused      0x02
     expandedBit = 0x04 # True: VNode is expanded.
     markedBit   = 0x08 # True: VNode is marked
-    orphanBit   = 0x10 # True: VNode saved in .leo file, not derived file.
+    # unused    = 0x10 # (was orphanBit)
     selectedBit = 0x20 # True: VNode is current VNode.
     topBit      = 0x40 # True: VNode was top VNode when saved.
 
@@ -1965,6 +1965,7 @@ class VNodeBase (object):
     visitedBit  = 0x100
     dirtyBit    = 0x200
     writeBit    = 0x400
+    orphanBit   = 0x800 # True: error in @<file> tree prevented it from being written.
     #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death

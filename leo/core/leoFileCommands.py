@@ -1810,9 +1810,7 @@ class FileCommands:
                 raise BadLeoFile('no VNode for %s' % repr(index))
     #@+node:ekr.20031218072017.1863: *4* fc.putVnode
     def putVnode (self,p,isIgnore=False):
-
         """Write a <v> element corresponding to a VNode."""
-
         fc = self ; c = fc.c ; v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
@@ -1822,8 +1820,8 @@ class FileCommands:
         isShadow = p.isAtShadowFileNode()
         isThin   = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
-        if not isIgnore: isIgnore = p.isAtIgnoreNode()
-
+        if not isIgnore:
+            isIgnore = p.isAtIgnoreNode()
         # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
         if   isIgnore: forceWrite = True      # Always write full @ignore trees.
         elif isAuto:   forceWrite = isOrphan  # Force write of orphan @auto trees.
@@ -1832,15 +1830,9 @@ class FileCommands:
         elif isShadow: forceWrite = isOrphan  # Force write of @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Force write of  orphan @thin trees.
         else:          forceWrite = True      # Write all other @<file> trees.
-
-        # if p.h.startswith('@file'): g.trace('isOrphan',isOrphan,'forceWrite',forceWrite,p.h)
-
-        #@+<< Set gnx = VNode index >>
-        #@+node:ekr.20031218072017.1864: *5* << Set gnx = VNode index >>
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
-        #@-<< Set gnx = VNode index >>
         attrs = []
         #@+<< Append attribute bits to attrs >>
         #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >>
@@ -1896,16 +1888,8 @@ class FileCommands:
         else:
             fc.vnodesDict[gnx]=True
             v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString()or''))
-            # The string catentation is faster than repeated calls to fc.put.
-            if not self.usingClipboard:
-                #@+<< issue informational messages >>
-                #@+node:ekr.20040702085529: *5* << issue informational messages >> (changed)
-                if 0: # It's strange to clear the orphan bit.
-                    if isOrphan and (isFile or isThin):
-                        g.warning("writing erroneous:",p.h)
-                        p.clearOrphan()
-                #@-<< issue informational messages >>
-            # New in 4.2: don't write child nodes of @file-thin trees (except when writing to clipboard)
+            # New in 4.2: don't write child nodes of @file-thin trees
+            # (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
                 fc.put('%s\n' % v_head)
                 # This optimization eliminates all "recursive" copies.
