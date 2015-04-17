@@ -1,19 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:danr7.20060902083957: * @file leo_to_rtf.py
 #@+<< docstring >>
-#@+node:danr7.20060902085340: ** << docstring >>
-r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
-loaded into Microsoft Word and formatted as a proper outline.
+#@+node:danr7.20060902085340: ** << docstring >> (leo_to_rtf.py)
+r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file
+can be loaded into Microsoft Word and formatted as a proper outline.
 
-This plug-in loads installs an "Outline to Microsoft RTF"
-menu item in your File > Export... menu in Leo.
+This plug-in loads installs an "Outline to Microsoft RTF" menu item in your
+File > Export... menu in Leo.
 
-Settings such as outputting just the headlines (vs. headlines & body text) and whether
-to include or ignore the contents of @file nodes are stored in the rtf_export.ini file
-in your Leo\plugins folder.
+Settings such as outputting just the headlines (vs. headlines & body text)
+and whether to include or ignore the contents of @file nodes are stored in
+the rtf_export.ini file in your Leo\plugins folder.
 
-The default export path is also stored in the INI file. By default, it's set to c:\ so
-you may need to modify it depending on your system.
+The default export path is also stored in the INI file. By default, it's
+set to c:\ so you may need to modify it depending on your system.
 
 '''
 #@-<< docstring >>
