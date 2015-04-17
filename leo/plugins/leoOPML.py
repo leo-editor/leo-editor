@@ -2,13 +2,10 @@
 #@+node:ekr.20101110092851.5742: * @file leoOPML.py
 #@+<< docstring >>
 #@+node:ekr.20060904103412.1: ** << docstring >>
-#@@nocolor-node
+#@@language rest
 
 r'''A plugin to read and write Leo outlines in .opml
 (http://en.wikipedia.org/wiki/OPML) format.
-
-**Warning**: the OPML plugin is not fully functional at present. Use with
-caution.
 
 The OPML plugin creates two new commands that read and write Leo outlines in
 OPML format. The read-opml-file command creates a Leo outline from an .opml
@@ -376,7 +373,7 @@ class OpmlController:
 
         c = self.c
 
-        fileName = g.app.gui.runOpenFileDialog(
+        fileName = g.app.gui.runOpenFileDialog(c,
             title = "Read OPML",
             filetypes = [("OPML files","*.opml"), ("All files","*")],
             defaultextension = ".opml")
@@ -411,7 +408,7 @@ class OpmlController:
             c.frame.title = ""
         initialfile = g.ensure_extension(c.mFileName, ".opml")
         # set local fileName, _not_ c.mFileName
-        fileName = g.app.gui.runSaveFileDialog(
+        fileName = g.app.gui.runSaveFileDialog(c,
             initialfile = initialfile,
             title="Write OPML",
             filetypes=[("OPML files", "*.opml")],
