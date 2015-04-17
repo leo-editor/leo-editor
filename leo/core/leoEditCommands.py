@@ -5112,8 +5112,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         ### n = abs(d.get("tabwidth",c.tab_width))
         ins = w.getInsertPoint()
         self.beginCommand(undoType='insert-soft-tab')
-        w.insert(ins,' ' * n)
-        ins += n
+        w.insert(ins,' ' * tab_width)
+        ins += tab_width
         w.setSelectionRange(ins,ins,insert=ins)
         self.endCommand()
 
