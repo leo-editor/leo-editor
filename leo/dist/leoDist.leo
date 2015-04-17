@@ -461,7 +461,7 @@ import time</t>
 Pre-testing:
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
-- Run all unit tests.
+- Run all unit tests with *both* Python 2 and 3.
 - Run pylint -a.
 
 LeoDocs.leo:
