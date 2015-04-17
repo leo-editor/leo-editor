@@ -1473,7 +1473,7 @@ From: <fidelperez@gmail.com>
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
-.. @+node:ekr.20130806072439.20650: *3* ** Fix bug 106: brew install leo (after 5.1 final)
+.. @+node:ekr.20130806072439.20650: *3* Fix bug 106: brew install leo
 @language rest
 
 The homebrew docs say that beta releases are not allowed.
@@ -1554,17 +1554,37 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150416060501.1: *3* * Big picture
-- Better integration with IPython.
-  Study the sources.
-- Rendering, including showing off what Leo can do.
-- Make clones easier & more powerful to use with find commands.
-.. @+node:ekr.20150416060248.1: *3* Allow Leo directives in @data abbreviations-subst-env
+.. @+node:ekr.20150417034957.1: *3* First
+.. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
 - Create unattached vnode.
 - Create postion using that vnode.
 - Pass that vnode as the root.
 - Create unit test.
-.. @+node:ekr.20150403035403.1: *3* Fix bug 156: ILeo errors not piped to Log, etc.
+.. @+node:ekr.20150412032405.1: *4* Support @history-list
+Adds all commands to the history list, in order.
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+- clean up openWith: make it a class.
+- Fold mod_tempfname into code and test.
+
+Later: preserve cursor positions.
+.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/169
+import-file does not preserve gnx of root @file node
+
+Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
+
+No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
+
+My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
+.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
 
@@ -1590,328 +1610,6 @@ TypeError: cannot concatenate 'str' and 'int' objects
 But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
 
 @language python
-.. @+node:ekr.20150408193842.1: *3* Limit searches so clones are found at most once
-@language rest
-
-Must experiment.
-
-Want various flavors of search:
-
-gf: global find
-f: local find.
-gcfa: global clone-find-all
-cfa: local clone-all.
-sc: set-context.
-
-.. @+node:ekr.20150410043718.1: *3* First
-.. @+node:ekr.20150412034943.1: *4* * A gallery showing what rST & css can do in Leo
-.. @+node:ekr.20150412032405.1: *4* Support @history-list
-Adds all commands to the history list, in order.
-.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
-https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
-
-===== EKR
-The find-def command (with ctrl-click support) would do the hyperlinking.
-
-Create an auto-completion-like popup if there are multiple possibilities.
-
-===== Terry:
-
-Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
-
-===== Matt
-
-Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
-
-Consider the following code:
-
-    print "Downloading", ', '.join(packages)
-    for p in packages:
-        do_download(p)
-        ball(p)
-        md5(p)
-
-Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-- clean up openWith: make it a class.
-- Fold mod_tempfname into code and test.
-
-Later: preserve cursor positions.
-.. @+node:ekr.20130806072439.21254: *4* Idea: easy key bindings
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Problem: I find myself repeating a bunch of alt-x commands in the same
-document. There is more than one, so ctrl-p (repeat last command) is not
-useful.
-
-Idea: specify that keys from alt-1 to alt-9 are "easy macro keys". They
-would be easy to bind to various alt-x command without editing preferences.
-
-How they can be bound:
-
-Do e.g. alt-x ipython-exec
-
-BUT instead of pressing ENTER in the end, press alt-1. This would bind the
-command to alt-1.
-
-Store them it c.db, so they will be remembered for every leo document, but
-won't clutter bindings of other people editing the same file.
-
-===== Matt
-
-From: Matt Wilkie <maphew@gmail.com>
-
-I often find myself in the same situation with regards to clipboards. If
-alt-# were macros, ctrl-# could be clipboards perhaps?
-
-It could be even more important then to have some sort UI method for
-inspecting/previewing the contents of them. Maybe thumbnail preview a la
-Sublime's right hand document overview.
-
-===== Fidel
-
-I am still studying (and have much more to study yet) Leo, but I think that 
-two things can be archieved by integrating it with libraries like pywinauto 
-<https://code.google.com/p/pywinauto/> or
-dragonfly<https://code.google.com/p/dragonfly/>
-
-
-- First of all, it could track all the keystrokes of the user, relate it to
-  the window, then offer the user possibility to repeat (even complex
-  sequences)
-
-- Second, It would be great to have a Leo tab with buttons showing the
-  hotkeys related to the current action (IE when the user has the cursor on
-  a node, or the edit pane, etc) (or even the current window in front). So
-  when the user uses those hotkeys, Leo will track them, so the next
-  scenario could happen:
-
-User copyes a link from Leo
-User sets an excel file to front
-User pastes it in an excel cell and hits down.
-
-If both the user did those through hotkeys, and they were tracked, Leo 
-could automatically offer repeat the same action with the next links held 
-in the same category.
-
-This is a pretty raw explanation but I hope it makes the point. 
-Nevertheless, I will continue to study, research and try to help with those 
-features by myself.
-.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/169
-import-file does not preserve gnx of root @file node
-
-Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
-
-No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
-
-My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20130807203905.16679: *4* Document focus handling
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I am having some problems wrapping my head around how focus behaves
-throughout leo.
-
-IMO it would be a good idea to have only one place in Leo where focus is
-explicitly set. E.g. g.setFocus(widget). This implementetation would
-suffice:
-
-def setFocus(widget):
-  widget.setFocus()
-
-Reasoning: it would be handy to add debugging stuff here, to see why my
-focus stuff is failing in alt-x go-anywhere handling.
-
-(My guess is treeFocusHelper only understanding focus being either in tree
-or body, but no time to explore further now)
-
-===== EKR
-
-In fact, there is only one such place: c.outerUpdate.  The various
-xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
-focus when a command completes.
-
-The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
-we don't want to do this, because it could cause screen flash, but
-sometimes the immediate update is essential.
-
-I've marked this thread as a topic for implementers.  Such things will form
-the basis for documentation for my successors.
-.. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
-reload-abbreviations and reload-key-bindings commands.
-
-Use regex replace to replace settings ivars with @property defs.
-
-.. @+node:ekr.20140312052111.16811: *5* Notes
-https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
-
-    I've put adding new reload-abbreviations and reload-key-bindings
-    commands on the list of things to do asap. These are non-trivial
-    commands, but they should have been ​done ​ years ago. I'll see what I
-    can do in the next day or so.
-
-​Updating the configuration tables in leoConfig.py is straightforward, a​s it turns out. Naturally, there are complications, all involved cached settings, in one forma or another.
-
-1. The easy cases: use properties.
-
-There are about 60 or 70 places in the code where config settings are stored in an ivar. Usually for readability, not for speed.
-
-The solution (tested) is simple: rather than do:
-
-    self.setting_ivar = c.config.getX('a-setting-name')
-
-Leo could define a property:
-
-    @property
-    def setting_ivar(self):
-        return c.config.getX('a-setting-name')
-
-No other changes required. The existing code will test self.setting_ivar exactly as before, but now any recent changes to the setting will have effect.
-
-I'll make these changes using a script.
-
-2. The harder cases: use a reload_setting method in the affected classes.
-
-Several subcommanders create tables on startup using config settings. c.abbrevCommands is one such subcommander.
-
-These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
-
-Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
-.. @+node:ekr.20140630071432.16748: *5* Related methods
-lm.doPrePluginsInit
-lm.computeLocalSettings.
-g.GeneralSetting
-LM.Settings suboutline.
-abbrevCommandsClass
-    init_abbrev
-.. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
-# About 65-70 matches.
-.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
-This can be done now that gui's are created on the command line.
-.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
-1. Imo, it is time to consider adding a typical "startup" file to Leo, ~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will make Leo "thicker", that is more professional/standard.
-
-IPython adds lots of bells and whistles to configuration.  Leo emulates most of them, but .leo_config.py would be a good addition. Think of .leo_config.py as a lightweight plugin.
-
-leo_config.py should execute after settings have been parsed, but before plugins have been loaded.  If desired, leo_config.py may register "start2" event handlers, which execute after all plugins have been loaded, just before starting the main Qt event loop.
-
-2. Leo commands form a good framework for other solutions to Qt stylesheet issues.  Consider the following commands::
-
-    qt-stylesheet-set-global-stylesheet
-    qt-stylesheet-append-to-global-stylesheet
-    qt-stylesheet-set-widget-stylesheet
-    qt-stylesheet-append-to-widget-stylesheet
-    
-.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
-# Maybe the directory of c.fileName.
-
-Search for:
-
-LeoQtGui.Dialogs & panels
-LeoQtGui.runSaveFileDialog
-LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20111125072438.10219: *5* Open file dialogs starting with @path directory
-File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
-
-Suppose my focus node is under a @path directive, say @path E:
-\Documents\Some Folder\
-
-Is there a setting that would cause the 'File>Open' or 'File>Import
-File' commands to begin the search dialog in the directory, E:
-\Documents\Some Folder\ instead of the last directory used?
-
-Would others find this a useful feature?
-.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
-.. @+node:ekr.20150325105434.1: *5* Fix problems with yank indentation
-And perhaps other problems with yank.
-
-Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *5* Terry's post
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
-
-I don't think you need to view source or copy text that looks like HTML.
-
-For me, the most effective way to reproduce a web page from a browser
-in a Leo richtext node is to select-all (ctrl-a) copy (ctrl-c) on the
-*rendered* browser content, i.e. the web page as you usually look at it.
-
-That gave better results, fidelity of reproduction wise, than viewing
-the source and copying that.  Partly because the source includes the
-outer elements that the richtext editor probably doesn't want to see,
-remember the richtext editor is itself a complete HTML page with its
-own HTML and HEAD elements.
-
-> There is no way that Leo, or any other program, can magically recover
-> the missing data.
-
-Actually I think modern clipboard operations are based on magic ;-)
-When you copy the rendered HTML in the browser and paste into Leo you
-get WYSIWYG reproduction pasting into a richtext node and just plain
-text posting into a regular node - somewhere in the pipeline the
-content actually delivered is selected based on the capabilities of the
-receiving end of the pipeline - not sure of the details, but remember
-clipboards can paste images and other things that aren't plain text.
-
-Cheers -Terry 
-.. @+node:ekr.20150211104036.479: *5* Matt's links
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
-
-> Is it possible to have Leo analyse what type of text is being pasted and thus
-define automatically the type of node (rich/plain)?
-
-It looks possible, `win32clipboard.EnumClipboardFormat`, "enumerate the
-data formats that are currently available on the clipboard. " --
-http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20150211131925.4: *4* auto-close quotes
-https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20150412135928.1: *3* 5.2 Most important
-@language rest
-@wrap
-.. @+node:ekr.20130806072439.21225: *4* * Miles FidelMan: Distributed collaboration tool
-===== Miles Fidelman <mfidelman@meetinghouse.net>
-
-A big Leo fan pointed me at Leo, and this group - indicated that sharing Leo documents has been talked about over the years, but not really implemented, and suggested that I post some details about a project that I've been working on.  So....
-
-Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel.  Think of a personal Wiki (like TiddlyWiki) - linked to copies of itself, that's the general idea.  Compose a document, email copies to collaborators, everyone saves a local copy - those copies link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
-
-If you're interested, details are at:
-http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
-
-Andy Oram wrote a background piece for O'Reilly Radar:
-http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
-
-.. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors
-===== Steve Litt
-
-I think the first step in getting this kind of review is to get more fans who can write and who are listened to. To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo. I'll give you an idea how to do this later in this email.
-
-But first, I think Leo has an image problem. Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago --- VimOutliner's faster and has the 90% of outlining features that people use 90% of the time. Not only that, face the facts, 95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
-
-My understanding, and please correct me if I'm wrong, is that Leo is a mechanism by which you can specify a computer program as an outline like thing in an outliner like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
-
-So here's what to do. Make a 3 minute video showing how to compose an application outline and turn it into a program. The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
-
-Maybe have a second video showing how to make a GUI app. Maybe a 3rd showing how to write a book in Leo, flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
-
-Publicize these videos, and you're going to get some journalists excited, and those are your reviews.
-
-One more thing: Start publicizing different ways people use Leo. Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20150412050836.1: *4* Rendering (9)
 .. @+node:ekr.20111010122531.15568: *5* @render-rest, @render-html trees
 The free_layout and viewrendered plugins are a huge step forward.  But the lighter/heavier distinction suggests a new way to use them.
@@ -2796,9 +2494,307 @@ have no idea where these things are in the source):
 2. How to get a "full file" without saving it, i.e., fill in the << 
 references >>, @others, and @all directives.
 
+.. @+node:ekr.20150412135928.1: *3* Goals
+@language rest
+@wrap
+.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
+.. @+node:ekr.20150408193842.1: *4* Limit searches so clones are found at most once
+@language rest
+
+Must experiment.
+
+Want various flavors of search:
+
+gf: global find
+f: local find.
+gcfa: global clone-find-all
+cfa: local clone-all.
+sc: set-context.
+
+.. @+node:ekr.20130806072439.21225: *4* Miles FidelMan: Distributed collaboration tool
+===== Miles Fidelman <mfidelman@meetinghouse.net>
+
+A big Leo fan pointed me at Leo, and this group - indicated that sharing Leo documents has been talked about over the years, but not really implemented, and suggested that I post some details about a project that I've been working on.  So....
+
+Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel.  Think of a personal Wiki (like TiddlyWiki) - linked to copies of itself, that's the general idea.  Compose a document, email copies to collaborators, everyone saves a local copy - those copies link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
+
+If you're interested, details are at:
+http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
+
+Andy Oram wrote a background piece for O'Reilly Radar:
+http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
+
+.. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors
+===== Steve Litt
+
+I think the first step in getting this kind of review is to get more fans who can write and who are listened to. To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo. I'll give you an idea how to do this later in this email.
+
+But first, I think Leo has an image problem. Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago --- VimOutliner's faster and has the 90% of outlining features that people use 90% of the time. Not only that, face the facts, 95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
+
+My understanding, and please correct me if I'm wrong, is that Leo is a mechanism by which you can specify a computer program as an outline like thing in an outliner like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
+
+So here's what to do. Make a 3 minute video showing how to compose an application outline and turn it into a program. The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
+
+Maybe have a second video showing how to make a GUI app. Maybe a 3rd showing how to write a book in Leo, flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
+
+Publicize these videos, and you're going to get some journalists excited, and those are your reviews.
+
+One more thing: Start publicizing different ways people use Leo. Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
+.. @+node:ekr.20150410043718.1: *3* Next
+.. @+node:ekr.20150211131925.4: *4* auto-close quotes
+https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
+# Maybe the directory of c.fileName.
+
+Search for:
+
+LeoQtGui.Dialogs & panels
+LeoQtGui.runSaveFileDialog
+LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20111125072438.10219: *5* Open file dialogs starting with @path directory
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
+
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
+
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+Would others find this a useful feature?
+.. @+node:ekr.20130807203905.16679: *4* Document focus handling
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I am having some problems wrapping my head around how focus behaves
+throughout leo.
+
+IMO it would be a good idea to have only one place in Leo where focus is
+explicitly set. E.g. g.setFocus(widget). This implementetation would
+suffice:
+
+def setFocus(widget):
+  widget.setFocus()
+
+Reasoning: it would be handy to add debugging stuff here, to see why my
+focus stuff is failing in alt-x go-anywhere handling.
+
+(My guess is treeFocusHelper only understanding focus being either in tree
+or body, but no time to explore further now)
+
+===== EKR
+
+In fact, there is only one such place: c.outerUpdate.  The various
+xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
+focus when a command completes.
+
+The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
+we don't want to do this, because it could cause screen flash, but
+sometimes the immediate update is essential.
+
+I've marked this thread as a topic for implementers.  Such things will form
+the basis for documentation for my successors.
+.. @+node:ekr.20130806072439.21254: *4* Idea: easy key bindings
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Problem: I find myself repeating a bunch of alt-x commands in the same
+document. There is more than one, so ctrl-p (repeat last command) is not
+useful.
+
+Idea: specify that keys from alt-1 to alt-9 are "easy macro keys". They
+would be easy to bind to various alt-x command without editing preferences.
+
+How they can be bound:
+
+Do e.g. alt-x ipython-exec
+
+BUT instead of pressing ENTER in the end, press alt-1. This would bind the
+command to alt-1.
+
+Store them it c.db, so they will be remembered for every leo document, but
+won't clutter bindings of other people editing the same file.
+
+===== Matt
+
+From: Matt Wilkie <maphew@gmail.com>
+
+I often find myself in the same situation with regards to clipboards. If
+alt-# were macros, ctrl-# could be clipboards perhaps?
+
+It could be even more important then to have some sort UI method for
+inspecting/previewing the contents of them. Maybe thumbnail preview a la
+Sublime's right hand document overview.
+
+===== Fidel
+
+I am still studying (and have much more to study yet) Leo, but I think that 
+two things can be archieved by integrating it with libraries like pywinauto 
+<https://code.google.com/p/pywinauto/> or
+dragonfly<https://code.google.com/p/dragonfly/>
+
+
+- First of all, it could track all the keystrokes of the user, relate it to
+  the window, then offer the user possibility to repeat (even complex
+  sequences)
+
+- Second, It would be great to have a Leo tab with buttons showing the
+  hotkeys related to the current action (IE when the user has the cursor on
+  a node, or the edit pane, etc) (or even the current window in front). So
+  when the user uses those hotkeys, Leo will track them, so the next
+  scenario could happen:
+
+User copyes a link from Leo
+User sets an excel file to front
+User pastes it in an excel cell and hits down.
+
+If both the user did those through hotkeys, and they were tracked, Leo 
+could automatically offer repeat the same action with the next links held 
+in the same category.
+
+This is a pretty raw explanation but I hope it makes the point. 
+Nevertheless, I will continue to study, research and try to help with those 
+features by myself.
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
+https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
+
+===== EKR
+The find-def command (with ctrl-click support) would do the hyperlinking.
+
+Create an auto-completion-like popup if there are multiple possibilities.
+
+===== Terry:
+
+Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+===== Matt
+
+Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
+
+Consider the following code:
+
+    print "Downloading", ', '.join(packages)
+    for p in packages:
+        do_download(p)
+        ball(p)
+        md5(p)
+
+Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
 .. @+node:ekr.20150413163840.1: *4* Migrate wiki to github
 https://github.com/leo-editor/leo-editor/wiki
-.. @+node:ekr.20150410043749.1: *3* Maybe
+.. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
+reload-abbreviations and reload-key-bindings commands.
+
+Use regex replace to replace settings ivars with @property defs.
+
+.. @+node:ekr.20140312052111.16811: *5* Notes
+https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
+
+    I've put adding new reload-abbreviations and reload-key-bindings
+    commands on the list of things to do asap. These are non-trivial
+    commands, but they should have been ​done ​ years ago. I'll see what I
+    can do in the next day or so.
+
+​Updating the configuration tables in leoConfig.py is straightforward, a​s it turns out. Naturally, there are complications, all involved cached settings, in one forma or another.
+
+1. The easy cases: use properties.
+
+There are about 60 or 70 places in the code where config settings are stored in an ivar. Usually for readability, not for speed.
+
+The solution (tested) is simple: rather than do:
+
+    self.setting_ivar = c.config.getX('a-setting-name')
+
+Leo could define a property:
+
+    @property
+    def setting_ivar(self):
+        return c.config.getX('a-setting-name')
+
+No other changes required. The existing code will test self.setting_ivar exactly as before, but now any recent changes to the setting will have effect.
+
+I'll make these changes using a script.
+
+2. The harder cases: use a reload_setting method in the affected classes.
+
+Several subcommanders create tables on startup using config settings. c.abbrevCommands is one such subcommander.
+
+These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
+
+Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
+.. @+node:ekr.20140630071432.16748: *5* Related methods
+lm.doPrePluginsInit
+lm.computeLocalSettings.
+g.GeneralSetting
+LM.Settings suboutline.
+abbrevCommandsClass
+    init_abbrev
+.. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
+# About 65-70 matches.
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
+.. @+node:ekr.20150325105434.1: *5* Fix problems with yank indentation
+And perhaps other problems with yank.
+
+Multipe yanks are not catenated.
+.. @+node:ekr.20150211104036.478: *5* Terry's post
+https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
+
+I don't think you need to view source or copy text that looks like HTML.
+
+For me, the most effective way to reproduce a web page from a browser
+in a Leo richtext node is to select-all (ctrl-a) copy (ctrl-c) on the
+*rendered* browser content, i.e. the web page as you usually look at it.
+
+That gave better results, fidelity of reproduction wise, than viewing
+the source and copying that.  Partly because the source includes the
+outer elements that the richtext editor probably doesn't want to see,
+remember the richtext editor is itself a complete HTML page with its
+own HTML and HEAD elements.
+
+> There is no way that Leo, or any other program, can magically recover
+> the missing data.
+
+Actually I think modern clipboard operations are based on magic ;-)
+When you copy the rendered HTML in the browser and paste into Leo you
+get WYSIWYG reproduction pasting into a richtext node and just plain
+text posting into a regular node - somewhere in the pipeline the
+content actually delivered is selected based on the capabilities of the
+receiving end of the pipeline - not sure of the details, but remember
+clipboards can paste images and other things that aren't plain text.
+
+Cheers -Terry 
+.. @+node:ekr.20150211104036.479: *5* Matt's links
+https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
+
+> Is it possible to have Leo analyse what type of text is being pasted and thus
+define automatically the type of node (rich/plain)?
+
+It looks possible, `win32clipboard.EnumClipboardFormat`, "enumerate the
+data formats that are currently available on the clipboard. " --
+http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
+.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
+This can be done now that gui's are created on the command line.
+.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
+1. Imo, it is time to consider adding a typical "startup" file to Leo, ~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will make Leo "thicker", that is more professional/standard.
+
+IPython adds lots of bells and whistles to configuration.  Leo emulates most of them, but .leo_config.py would be a good addition. Think of .leo_config.py as a lightweight plugin.
+
+leo_config.py should execute after settings have been parsed, but before plugins have been loaded.  If desired, leo_config.py may register "start2" event handlers, which execute after all plugins have been loaded, just before starting the main Qt event loop.
+
+2. Leo commands form a good framework for other solutions to Qt stylesheet issues.  Consider the following commands::
+
+    qt-stylesheet-set-global-stylesheet
+    qt-stylesheet-append-to-global-stylesheet
+    qt-stylesheet-set-widget-stylesheet
+    qt-stylesheet-append-to-widget-stylesheet
+    
+.. @+node:ekr.20150410043749.1: *3* Others
 .. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
 .. @+node:ekr.20150412053053.1: *4* Finish leoOPML plugin
 .. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
@@ -3177,98 +3173,6 @@ def Run(self):
     self.reader.read()
     self.writer.write(self.reader.root)
 
-.. @+node:ekr.20150412052821.1: *3* Study
-.. @+node:ekr.20111017132257.15882: *4* Study xml_edit plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b5c2982778a2df53
-
-Provides commands (Alt-x) for importing and exporting XML from a Leo outline. These commands are to XML what ``@auto-rst`` is to reStructuredText.
-
-``xml2leo``
-    Imports an .xml file into the node following the currently selected node.
-    
-``leo2xml``
-    Exports the current subtree to an .xml file the user selects.
-
-``xml_validate``
-    If executed on the top node in the Leo xml tree, reports any errors in XML generation or DTD validation, based on the DTD referenced from the XML itself.  If there's no DTD it reports that as an error.
-
-``leo2xml2leo``
-    Takes the selected Leo subtree representing an XML file,
-converts it to XML internally, and then creates a new Leo subtree from
-that XML after the original, with 'NEW ' at the start of the top node's
-name.  This updates all the headlines, so that the convenience only
-previews (see below) are updated.  The original can be deleted if the
-new subtree seems correct.
-
-Conventions
-===========
-
-This is a valid XML file::
-
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE dml SYSTEM "dml.dtd">
-    <?xml-stylesheet href="common.css"?>
-    <dml xmlns='http://example.com/' xmlns:other='http://other.com/'/>
-      <block type='example'>Here's <other:b>some</other:b> text</block>
-    </dml>
-    <!-- This is the last line -->
-
-Note the processing instruction (xml-stylesheet), the DTD (DOCTYPE), the trailing comment (after the closing tag), and the pernicious mixed content (three separate pieces of text in the ``<block/>`` element). These commands attempt to deal with all of this.
-
- - A top level Leo node is created to hold these top level parts.  Its
-   headline is the basename of the file.
- - The xml declaration is placed in the body of
-   this top level Leo node
- - Below that, in the same body text, appears a simple namespace map::
-
-     http://example.com/
-     other: http://other.com/
-     ...
-
-   i.e. the default namespace first, and then any prefixed name spaces.
- - Below that, in the same body text, appears the ``DOCTYPE`` declaration
- - Children are added to this top level Leo node to represent the
-   top level elements in the xml file.  Headlines have the following
-   meanings:
-
-       - ``? pi-target some="other" __CHK`` - i.e. questionmark,
-         space, name of processing instruction target, start of processing
-         instruction content.  Only the questionmark, which indicates
-         the processing instruction, and the first word, which indicates
-         the processing instruction target, matter.  The remainder is just
-         a convenience preview of the processing instruction content, which
-         is the Leo node's body text.
-
-       - ``# This is *really* imp`` - i.e. hash,
-         space, start of comment content.  Only the hash, which indicates
-         the comment, matters.  The remainder is just
-         a convenience preview of the comment content, which
-         is the Leo node's body text.
-
-       - ``tagname name_attribute start of element text`` - i.e. the name
-         of an element followed by a convenience preview of the element's
-         text content.  If the element has a ``name`` attribute that's
-         included at the start of the text preview.  Only the first word
-         matters, it's the name of the element.
-
- - Element's text is placed in the Leo node's body.  If the element has
-   tailing text (the ``" text"`` tailing the ``<other:b/>`` element
-   in the above example), that occurs in the Leo node's body separated
-   by the `tailing text sentinel`::
-
-       @________________________________TAIL_TEXT_______________________________
-
- - Element's attributes are stored in a dict ``p.v.u['_XML']['_edit']``
-   on the Leo node. ``'_XML'`` is the uA prefix for these commands, and
-   ``'_edit'`` is used by the ``attrib_edit`` plugin to identify
-   attributes it should present to the user for editing. The
-   ``attrib_edit`` plugin **should be enabled** and its ``v.u mode``
-   activated (through its submenu on the Plugins menu). The attribute
-   edit panel initially appears as a tab in the log pane, although it
-   can be moved around by right clicking on the pane dividers if the
-   ``viewrendered`` and ``free_layout`` plugins are enabled. 
-.. @+node:ekr.20111027143736.16557: *4* Study leo_screen
-Ville mentioned leoremote for driving Leo from the command line. There's also leoscreen, for driving the command line from Leo, providing you use screen, which is probably unix/cygwin only.
 .. @+node:ekr.20150331053736.1: ** Waiting for answers
 - Waiting for answer re: ubuntu splashscreen
     http://qt-project.org/forums/viewthread/30837/
