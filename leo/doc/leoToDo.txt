@@ -1562,8 +1562,8 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20150417042316.1: *3* * autocompleting widgetWantsFocusNow fails
 .. @+node:ekr.20150417034957.1: *3* First
+.. @+node:ekr.20150417042316.1: *4* * autocompleting widgetWantsFocusNow fails
 .. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
 - Create unattached vnode.
 - Create postion using that vnode.
@@ -2698,98 +2698,7 @@ http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 This can be done now that gui's are created on the command line.
 .. @+node:ekr.20150410043749.1: *3* Maybe
-.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
-.. @+node:ekr.20130806072439.21254: *4* Easy key bindings (command-history does this?)
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Problem: I find myself repeating a bunch of alt-x commands in the same
-document. There is more than one, so ctrl-p (repeat last command) is not
-useful.
-
-Idea: specify that keys from alt-1 to alt-9 are "easy macro keys". They
-would be easy to bind to various alt-x command without editing preferences.
-
-How they can be bound:
-
-Do e.g. alt-x ipython-exec
-
-BUT instead of pressing ENTER in the end, press alt-1. This would bind the
-command to alt-1.
-
-Store them it c.db, so they will be remembered for every leo document, but
-won't clutter bindings of other people editing the same file.
-
-===== Matt
-
-From: Matt Wilkie <maphew@gmail.com>
-
-I often find myself in the same situation with regards to clipboards. If
-alt-# were macros, ctrl-# could be clipboards perhaps?
-
-It could be even more important then to have some sort UI method for
-inspecting/previewing the contents of them. Maybe thumbnail preview a la
-Sublime's right hand document overview.
-
-===== Fidel
-
-I am still studying (and have much more to study yet) Leo, but I think that 
-two things can be archieved by integrating it with libraries like pywinauto 
-<https://code.google.com/p/pywinauto/> or
-dragonfly<https://code.google.com/p/dragonfly/>
-
-
-- First of all, it could track all the keystrokes of the user, relate it to
-  the window, then offer the user possibility to repeat (even complex
-  sequences)
-
-- Second, It would be great to have a Leo tab with buttons showing the
-  hotkeys related to the current action (IE when the user has the cursor on
-  a node, or the edit pane, etc) (or even the current window in front). So
-  when the user uses those hotkeys, Leo will track them, so the next
-  scenario could happen:
-
-User copyes a link from Leo
-User sets an excel file to front
-User pastes it in an excel cell and hits down.
-
-If both the user did those through hotkeys, and they were tracked, Leo 
-could automatically offer repeat the same action with the next links held 
-in the same category.
-
-This is a pretty raw explanation but I hope it makes the point. 
-Nevertheless, I will continue to study, research and try to help with those 
-features by myself.
-.. @+node:ekr.20150412053053.1: *4* Finish leoOPML plugin
-.. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
-found 27 broken links.
-
-http://leoeditor.com/images/edit_note.html
-http://leoeditor.com/images/toolbar.html
-http://leoeditor.com/images/delete.html
-http://leoeditor.com/images/editcopy.html
-http://leoeditor.com/images/duedate.html
-http://leoeditor.com/slides/external-files/index.html
-http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html
-http://leoeditor.com/images/newlist.html
-http://leoeditor.com/images/new_item.html
-http://leoeditor.com/images/owners.html
-http://leoeditor.com/images/complete.html
-http://leoeditor.com/images/openlist.html
-http://leoeditor.com/images/editcut.html
-http://leoeditor.com/images/print.html
-http://leoeditor.com/slides/installation/index.html
-http://leoeditor.com/images/refresh.html
-http://leoeditor.com/slides/using-leos-minibuffer/index.html
-http://leoeditor.com/images/editpaste.html
-http://leoeditor.com/slides/installation/_static/underscore.html
-http://leoeditor.com/images/find.html
-http://leoeditor.com/front.html
-http://leoeditor.com/slides/scripting-leo/index.html
-http://leoeditor.com/images/printprev.html
-http://leoeditor.com/slides/leo-basics-step-by-step/index.html
-http://leoeditor.com/slides/clones-and-views/index.html
-http://leoeditor.com/images/mail_item.html
-http://leoeditor.com/images/page_setup.html
+.. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
 @language rest # @language python below
 
@@ -2952,17 +2861,6 @@ all those redundant @g.command code hunks.
 
 Unless there are bugs reported, this ends this project for the foreseeable
 future.
-.. @+node:ekr.20150120155724.4: *4* improve python importer
-- Handle properties.
-- Show base classes in headlines.
-- Put @language and @tabwidth directives at end of body.
-- Translate::
-
-    #-----------------------------------------------------------------------------
-    # Imports
-    #-----------------------------------------------------------------------------
-
-to organizer node whose headline is Imports.
 .. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
@@ -2979,165 +2877,6 @@ https://github.com/leo-editor/leo-editor/wiki
 From: Joon Ro <joonpyro@gmail.com>
 
 I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
-.. @+node:ekr.20111018104244.15933: *4* script to create documentation for commands/plugins
-Leo should have a create-plugins-doc script that creates docs for plugins based on docstrings.
-
-Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
-.. @+node:ekr.20141210123805.9: *4* Support rope
-.. @+node:ekr.20101004092958.5914: *4* Write treepad scanner (contains code!)
-treepad.py is from the treepad website
-.. @+node:ekr.20101004092958.5939: *5* treepad.py
-@first #! /usr/local/bin/python
-
-# treepad.py
-
-@others
-
-if __name__ == '__main__':
-    Main().Run()
-
-@language python
-@tabwidth -4
-
-.. @+node:ekr.20101004092958.5940: *6* treepad declarations
-import sys, os, re, string
-
-# constants
-VERSION = "<Treepad version 2.7>"
-
-# regexes
-END_RE = re.compile(r'^<end node> ([^ ]+)$')
-.. @+node:ekr.20101004092958.5941: *6* class Node
-class Node:
-    @others
-.. @+node:ekr.20101004092958.5942: *7* __init__ (Node/treepad)
-def __init__(self):
-    self.title    = ""
-    self.level    = 0
-    self.article  = []
-    self.children = []
-    self.parent   = None
-    self.end      = ""
-.. @+node:ekr.20101004092958.5943: *7* __str__
-def __str__(self):
-    return "%s/%d" % (self.title, self.level)
-.. @+node:ekr.20101004092958.5944: *7* addchild
-def addchild(self, node):
-    assert self.level == node.level-1 and node.parent is None
-    node.parent = self
-    self.children.append( node )
-.. @+node:ekr.20101004092958.5945: *7* findparent
-def findparent(self, node):
-    if self.level == (node.level-1): return self
-    return self.parent.findparent(node)
-.. @+node:ekr.20101004092958.5946: *7* writenode
-def writenode(self, fp):
-    fp.write("dt=Text\n")
-    fp.write("<node>\n")
-    fp.write("%s\n" % self.title)
-    fp.write("%s\n" % self.level)
-    for line in self.article:
-        fp.write("%s\n" % line)
-    fp.write("<end node> %s\n" % self.end)
-.. @+node:ekr.20101004092958.5947: *7* writetree
-def writetree(self, fp):
-    self.writenode(fp)
-    for node in self.children:
-        node.writetree(fp)
-
-.. @+node:ekr.20101004092958.5948: *6* class NodeReader
-class NodeReader:
-    @others
-.. @+node:ekr.20101004092958.5949: *7* __init__ (NodeReader)
-def __init__(self, fname, fp):
-    self.fname    = fname
-    self.fp       = fp
-.. @+node:ekr.20101004092958.5950: *7* expect
-def expect(self, text, line=None):
-    if line is None:
-        line = self.fp.readline().strip()
-    assert line == text, "expected " + line + " == " + text
-.. @+node:ekr.20101004092958.5951: *7* readstart
-def readstart(self):
-    self.expect(VERSION)
-.. @+node:ekr.20101004092958.5952: *7* readnode
-def readnode(self):
-    line = self.fp.readline()
-    if line is None:
-        return None
-    line = line.strip()
-    if len(line) < 1:
-        return None
-    self.expect("dt=Text", line)
-    self.expect("<node>")
-    node = Node()
-    node.title = self.fp.readline().strip()
-    node.level = int(self.fp.readline().strip())
-    while 1:
-        line = self.fp.readline()
-        m = re.match(END_RE, line)
-        if m:
-            node.end = m.group(1).strip()
-            break
-        node.article.append( line.strip() )
-    return node
-
-.. @+node:ekr.20101004092958.5953: *6* class TreeReader
-class TreeReader:
-    @others
-.. @+node:ekr.20101004092958.5954: *7* __init__(TreeReader)
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'r')
-    self.nodereader = NodeReader(fname, fp)
-    self.root = None
-    self.prev = None
-.. @+node:ekr.20101004092958.5955: *7* add
-def add(self, node):
-    if self.prev is None:
-        assert node.level == 0
-        self.root = node
-    else:
-        assert node.level > 0
-        parent = self.prev.findparent(node)
-        parent.addchild( node )
-    self.prev = node
-.. @+node:ekr.20101004092958.5956: *7* read
-def read(self):
-    self.nodereader.readstart()
-    prev = None
-    while 1:
-        node = self.nodereader.readnode()
-        if node is None: break
-        self.add(node)
-
-.. @+node:ekr.20101004092958.5957: *6* class TreeWriter
-class TreeWriter:
-    @others
-.. @+node:ekr.20101004092958.5958: *7* __init__ (TreeWriter)
-def __init__(self, fname, fp=None):
-    if fp is None: fp = open(fname, 'w')
-    self.fname = fname
-    self.fp    = fp
-.. @+node:ekr.20101004092958.5959: *7* write
-def write(self, root):
-    self.fp.write("%s\n" % VERSION)
-    root.writetree(self.fp)
-
-.. @+node:ekr.20101004092958.5960: *6* class Main
-class Main:
-    @others
-.. @+node:ekr.20101004092958.5961: *7* __init__ (Main)
-def __init__(self):
-    self.infile  = sys.argv[1]
-    self.outfile = sys.argv[2]
-    self.reader  = TreeReader(self.infile)
-    self.writer  = TreeWriter(self.outfile)
-.. @+node:ekr.20101004092958.5962: *7* Run
-
-def Run(self):
-    self.reader.read()
-    self.writer.write(self.reader.root)
-
 .. @+node:ekr.20120516140545.9987: ** Wishlist
 @language rest
 @wrap
@@ -3570,43 +3309,6 @@ The good of this:
 
 It makes using path simpler, you dont have to type out the directory path yourself, just use the tkFileDialog to select it and have Leo insert the string. For long directories this saves a lot of typing.
 
-.. @+node:ekr.20120515193246.10084: *4* Import/export
-.. @+node:ekr.20031218072017.790: *5* Import dialog improvements
-Other options I though would be really handy:
-
-1. Use an existing node as a source also
-
-2. Use an node from another Leo file.. I am not sure what the syntax for that
-would be exactly
-
-3. From a URL.. this would be really cool. People could post outlines not only
-as existing Leo xml files, but as text files or even dynamic scripts. The code
-to handle these would presumably need to deal with http:// intelligently. But
-that's easy in Python. Rebol is great at that too.
-
-4. Other XML file with valid filepaths in them.
-That's probably a much bigger project like Leo 3.10  
-
-Jason
-.. @+node:ekr.20060227124411: *5* Import/export from wiki's
-http://sourceforge.net/forum/message.php?msg_id=3583737
-By: Offray
-
-I was previously thinking in the relation between Leo and Wikis, and I think that may be a thing that would help to make Leo more visible in Wiki space could be if Leo can export/import to/from a Wiki (something limilar to th @file or @url directives). Let me explain a little better the scenary where this idea come.
-
-We have a local wiki for colombian Free Software Community related issues, and I have used Leo for writing the migration scripts from Mediawiki to MoinMoin (wich I think is more flexible and extensible that the popular wiki behind wikipedia). I was probing also the idea of a Wiki like environment for solving colaborative problems, so I was posting the scripts I made on Leo in a Wiki page, and republishing them in the moment they changed. This keeps me pasting all the time the script and in some moments I was thinking what about if someone make a change in the Wiki page. Would be nice then to have the same capability to detect and sincronize that change as Leo make with the hard disk files.
-
-But this doesnt end here. Another Wiki-Leo interaction is to use outlines as a way to organice Wiki content. For example "= Title =" in a Wiki would be a Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all arranged in the proper hierarchy.
-
-Somekind of Wisiwyg display would be nice, but this must be a plugin or something like that, so Leo could become a "Layered" front end to some kind of data.
-
-About and article on Wikipedia. That would be nice, but I'm a little tired of fighting with some wikipedians ignorance on certain matters combined with power (a pretty bad combination). I think that a Wiki page is nice because its live comes from the community knowledge, but I'm not interested in that fighting, so I have made a Leo wiki page in our local Wiki:
-
-http://www.el-directorio.org:8080/Leo
-
-and when I have enough knowledge about Leo (and time) I hope to start making contribs in the spanish documentation (for the moment I'm only workind in the evangelism here).
-.. @+node:ekr.20031218072017.748: *5* Import/Export to yaml
-Need a good yaml parser first: I don't want to write another parser by hand.
 .. @+node:ekr.20131117054619.16683: *4* Improve Find
 New check boxes:
     - Find-All starts at selected node.
@@ -5542,6 +5244,209 @@ The packages includes complete Orange, Python, Windows Extensions for Python
 
 Leo should copy this download philosophy.
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
+.. @+node:ekr.20120515193246.10084: *3* Importers
+.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
+.. @+node:ekr.20101004092958.5914: *4* Add treepad scanner (contains code!)
+treepad.py is from the treepad website
+.. @+node:ekr.20101004092958.5939: *5* treepad.py
+@first #! /usr/local/bin/python
+
+# treepad.py
+
+@others
+
+if __name__ == '__main__':
+    Main().Run()
+
+@language python
+@tabwidth -4
+
+.. @+node:ekr.20101004092958.5940: *6* treepad declarations
+import sys, os, re, string
+
+# constants
+VERSION = "<Treepad version 2.7>"
+
+# regexes
+END_RE = re.compile(r'^<end node> ([^ ]+)$')
+.. @+node:ekr.20101004092958.5941: *6* class Node
+class Node:
+    @others
+.. @+node:ekr.20101004092958.5942: *7* __init__ (Node/treepad)
+def __init__(self):
+    self.title    = ""
+    self.level    = 0
+    self.article  = []
+    self.children = []
+    self.parent   = None
+    self.end      = ""
+.. @+node:ekr.20101004092958.5943: *7* __str__
+def __str__(self):
+    return "%s/%d" % (self.title, self.level)
+.. @+node:ekr.20101004092958.5944: *7* addchild
+def addchild(self, node):
+    assert self.level == node.level-1 and node.parent is None
+    node.parent = self
+    self.children.append( node )
+.. @+node:ekr.20101004092958.5945: *7* findparent
+def findparent(self, node):
+    if self.level == (node.level-1): return self
+    return self.parent.findparent(node)
+.. @+node:ekr.20101004092958.5946: *7* writenode
+def writenode(self, fp):
+    fp.write("dt=Text\n")
+    fp.write("<node>\n")
+    fp.write("%s\n" % self.title)
+    fp.write("%s\n" % self.level)
+    for line in self.article:
+        fp.write("%s\n" % line)
+    fp.write("<end node> %s\n" % self.end)
+.. @+node:ekr.20101004092958.5947: *7* writetree
+def writetree(self, fp):
+    self.writenode(fp)
+    for node in self.children:
+        node.writetree(fp)
+
+.. @+node:ekr.20101004092958.5948: *6* class NodeReader
+class NodeReader:
+    @others
+.. @+node:ekr.20101004092958.5949: *7* __init__ (NodeReader)
+def __init__(self, fname, fp):
+    self.fname    = fname
+    self.fp       = fp
+.. @+node:ekr.20101004092958.5950: *7* expect
+def expect(self, text, line=None):
+    if line is None:
+        line = self.fp.readline().strip()
+    assert line == text, "expected " + line + " == " + text
+.. @+node:ekr.20101004092958.5951: *7* readstart
+def readstart(self):
+    self.expect(VERSION)
+.. @+node:ekr.20101004092958.5952: *7* readnode
+def readnode(self):
+    line = self.fp.readline()
+    if line is None:
+        return None
+    line = line.strip()
+    if len(line) < 1:
+        return None
+    self.expect("dt=Text", line)
+    self.expect("<node>")
+    node = Node()
+    node.title = self.fp.readline().strip()
+    node.level = int(self.fp.readline().strip())
+    while 1:
+        line = self.fp.readline()
+        m = re.match(END_RE, line)
+        if m:
+            node.end = m.group(1).strip()
+            break
+        node.article.append( line.strip() )
+    return node
+
+.. @+node:ekr.20101004092958.5953: *6* class TreeReader
+class TreeReader:
+    @others
+.. @+node:ekr.20101004092958.5954: *7* __init__(TreeReader)
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'r')
+    self.nodereader = NodeReader(fname, fp)
+    self.root = None
+    self.prev = None
+.. @+node:ekr.20101004092958.5955: *7* add
+def add(self, node):
+    if self.prev is None:
+        assert node.level == 0
+        self.root = node
+    else:
+        assert node.level > 0
+        parent = self.prev.findparent(node)
+        parent.addchild( node )
+    self.prev = node
+.. @+node:ekr.20101004092958.5956: *7* read
+def read(self):
+    self.nodereader.readstart()
+    prev = None
+    while 1:
+        node = self.nodereader.readnode()
+        if node is None: break
+        self.add(node)
+
+.. @+node:ekr.20101004092958.5957: *6* class TreeWriter
+class TreeWriter:
+    @others
+.. @+node:ekr.20101004092958.5958: *7* __init__ (TreeWriter)
+def __init__(self, fname, fp=None):
+    if fp is None: fp = open(fname, 'w')
+    self.fname = fname
+    self.fp    = fp
+.. @+node:ekr.20101004092958.5959: *7* write
+def write(self, root):
+    self.fp.write("%s\n" % VERSION)
+    root.writetree(self.fp)
+
+.. @+node:ekr.20101004092958.5960: *6* class Main
+class Main:
+    @others
+.. @+node:ekr.20101004092958.5961: *7* __init__ (Main)
+def __init__(self):
+    self.infile  = sys.argv[1]
+    self.outfile = sys.argv[2]
+    self.reader  = TreeReader(self.infile)
+    self.writer  = TreeWriter(self.outfile)
+.. @+node:ekr.20101004092958.5962: *7* Run
+
+def Run(self):
+    self.reader.read()
+    self.writer.write(self.reader.root)
+
+.. @+node:ekr.20031218072017.790: *4* Import dialog improvements
+Other options I though would be really handy:
+
+1. Use an existing node as a source also
+
+2. Use an node from another Leo file.. I am not sure what the syntax for that
+would be exactly
+
+3. From a URL.. this would be really cool. People could post outlines not only
+as existing Leo xml files, but as text files or even dynamic scripts. The code
+to handle these would presumably need to deal with http:// intelligently. But
+that's easy in Python. Rebol is great at that too.
+
+4. Other XML file with valid filepaths in them.
+That's probably a much bigger project like Leo 3.10  
+
+Jason
+.. @+node:ekr.20060227124411: *4* Import/export from wiki's
+http://sourceforge.net/forum/message.php?msg_id=3583737
+By: Offray
+
+I was previously thinking in the relation between Leo and Wikis, and I think that may be a thing that would help to make Leo more visible in Wiki space could be if Leo can export/import to/from a Wiki (something limilar to th @file or @url directives). Let me explain a little better the scenary where this idea come.
+
+We have a local wiki for colombian Free Software Community related issues, and I have used Leo for writing the migration scripts from Mediawiki to MoinMoin (wich I think is more flexible and extensible that the popular wiki behind wikipedia). I was probing also the idea of a Wiki like environment for solving colaborative problems, so I was posting the scripts I made on Leo in a Wiki page, and republishing them in the moment they changed. This keeps me pasting all the time the script and in some moments I was thinking what about if someone make a change in the Wiki page. Would be nice then to have the same capability to detect and sincronize that change as Leo make with the hard disk files.
+
+But this doesnt end here. Another Wiki-Leo interaction is to use outlines as a way to organice Wiki content. For example "= Title =" in a Wiki would be a Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all arranged in the proper hierarchy.
+
+Somekind of Wisiwyg display would be nice, but this must be a plugin or something like that, so Leo could become a "Layered" front end to some kind of data.
+
+About and article on Wikipedia. That would be nice, but I'm a little tired of fighting with some wikipedians ignorance on certain matters combined with power (a pretty bad combination). I think that a Wiki page is nice because its live comes from the community knowledge, but I'm not interested in that fighting, so I have made a Leo wiki page in our local Wiki:
+
+http://www.el-directorio.org:8080/Leo
+
+and when I have enough knowledge about Leo (and time) I hope to start making contribs in the spanish documentation (for the moment I'm only workind in the evangelism here).
+.. @+node:ekr.20031218072017.748: *4* Import/Export to yaml
+Need a good yaml parser first: I don't want to write another parser by hand.
+.. @+node:ekr.20150120155724.4: *4* Improve python importer
+- Handle properties.
+- Show base classes in headlines.
+- Put @language and @tabwidth directives at end of body.
+- Translate::
+
+    #-----------------------------------------------------------------------------
+    # Imports
+    #-----------------------------------------------------------------------------
+
+to organizer node whose headline is Imports.
 .. @+node:ekr.20140704052551.17950: *3* IPython
 .. @+node:ekr.20121005105428.12866: *4* Ipython notebook stuff
 .. @+node:ekr.20121005105428.10112: *5* ipynb example
