@@ -1496,9 +1496,10 @@ https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cook
 
 Do this after creating each official release.
 
+.. @+node:ekr.20150417053643.1: *4* ruby scripts
 @language ruby
 @tabwidth -2
-.. @+node:ekr.20141210123805.4: *4* brew install (original)
+.. @+node:ekr.20141210123805.4: *5* brew install (original)
 require 'formula'
 
 class Leo < Formula
@@ -1531,7 +1532,7 @@ class Leo < Formula
     end
   end
 end
-.. @+node:ekr.20141210123805.5: *4* brew install (new)
+.. @+node:ekr.20141210123805.5: *5* brew install (new)
 require 'formula'
 
 class Leo < Formula

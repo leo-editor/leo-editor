@@ -23,6 +23,20 @@ w.insert(1,'z')         ; check('xzyac')
     # assert s == 'BCD',repr(s)
 
 w.deleteTextSelection() ; check('xzyac')
+#@+node:ekr.20110615130436.3319: ** @@@test writing a .leo file retains orphan bits
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    
+    # Writing a .leo file must retain orphan bits of erroneous external files.
+    
+    h = '@file nonexistent-directory/orphan-bit-test.txt'
+    p2 = g.findNodeAnywhere(c,h)
+    assert p2,'not found: %s' % (h)
+    assert p2.isOrphan(),'not an orphan originally'
+    
+    # It's dangerous to do the write, but this does test the bug fix.
+    c.atFileCommands.clearAllOrphanBits(p2)
+    assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
 #@+node:ekr.20150214063940.11: ** @ignore @shadow tests
 #@+node:ekr.20111210175541.3957: *3* @@test at.readOneAtShadowNode retains @shadow links clones
 # Important: the child of this node must be a clone of

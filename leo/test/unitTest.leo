@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.57" body_secondary_ratio="0.69">
+<globals body_outline_ratio="0.57" body_secondary_ratio="0.52">
 	<global_window_position top="70" left="568" height="947" width="1195"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -145,9 +145,7 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 <v t="ekr.20130912092638.4150"><vh>@file ../test/utf-16-test.txt</vh></v>
-<v t="ekr.20110615130436.3317" a="O"><vh>@file nonexistent-directory/orphan-bit-test.txt</vh>
-<v t="ekr.20110615130436.3318"><vh>Child goes here.</vh></v>
-</v>
+<v t="ekr.20110615130436.3317"><vh>@@file nonexistent-directory/orphan-bit-test.txt</vh></v>
 <v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
@@ -166,8 +164,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"
-expanded="ekr.20120303054735.3931,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -874,14 +871,8 @@ False:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110615130436.3317">@language rest
-
-This file is part of a unit test that ensures that orphan bits are retained when
-writing .leo files.
-
-The path is **supposed** not to exist.
-</t>
-<t tx="ekr.20110615130436.3318">Child content goes here.</t>
+<t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
+# but this test is moot because Leo no longer writes orphan bits.</t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html

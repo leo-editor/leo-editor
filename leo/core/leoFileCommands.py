@@ -1850,8 +1850,10 @@ class FileCommands:
         if not c.fixed:
             if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
                 attr += "E"
-            if v.isMarked():   attr += "M"
-            if v.isOrphan():   attr += "O"
+            if v.isMarked(): attr += "M"
+            # if v.isOrphan(): attr += "O"
+                # New in Leo 5.2: never write the orphan bit.
+                # It's useless in all cases.
             if attr:
                 attrs.append(' a="%s"' % attr)
 

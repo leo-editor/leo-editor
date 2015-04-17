@@ -567,13 +567,20 @@ class AtFile:
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(g.fullPath(c,root),root)
-        # Bug fix 2011/05/23: Restore orphan trees from the outline.
+        
         if root.isOrphan():
-            g.es("reading:",root.h)
-            # g.warning('The outline contains an orphan node!\nRetaining the outline')
-            g.error('orphan node in',root.h)
-            g.blue('retaining the data from the .leo file')
-            return False
+            if 1:
+                # 2015/04/17: Clear the bit and continue so that the
+                # outline can be updated from the external file.
+                g.warning('orphan bit in',root.h)
+                root.clearOrphan()
+            else:
+                # 2011/05/23: Restore orphan trees from the outline.
+                g.es("reading:",root.h)
+                # g.warning('The outline contains an orphan node!\nRetaining the outline')
+                g.error('orphan node in',root.h)
+                g.blue('retaining the data from the .leo file')
+                return False
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
         at.fromString = fromString
@@ -829,11 +836,7 @@ class AtFile:
                 p.moveToNodeAfterTree()
             elif p.isAtFileNode():
                 nRead += 1
-                wasOrphan = p.isOrphan()
-                ok = at.read(p,force=force)
-                if wasOrphan and not partialFlag and not ok:
-                    # Remind the user to fix the problem.
-                    p.setOrphan() # but the dirty bit gets cleared.
+                at.read(p,force=force)
                 p.moveToNodeAfterTree()
             elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                 at.rememberReadPath(g.fullPath(c,p),p)
@@ -5150,20 +5153,11 @@ class AtFile:
                     p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *4* writeError
     def writeError(self,message=None):
-
+        '''Issue an error while writing an @<file> node.'''
         at = self
-
-        # Don't give errors for this particular file during unit testing.
-        h = 'nonexistent-directory/orphan-bit-test.txt'
-
-        if g.unitTesting and at.targetFileName.replace('\\','/').endswith(h):
-            at.errors += 1
-        else:
-            if at.errors == 0:
-                g.es_error("errors writing: " + at.targetFileName)
-                # g.trace(g.callers(5))
-            at.error(message)
-
+        if at.errors == 0:
+            g.es_error("errors writing: " + at.targetFileName)
+        at.error(message)
         at.root.setDirty()
         at.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException
