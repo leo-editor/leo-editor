@@ -802,14 +802,8 @@ class LeoFrame(object):
     def scanForTabWidth (self,p):
         '''Return the tab width in effect at p.'''
         c = self.c
-        ### w = g.findTabWidthDirectives(c,p)
-        ### if w is None: w = c.tab_width
         tab_width = c.getTabWidth(p)
         c.frame.setTabWidth(tab_width)
-        ### c.tab_width = tab_width
-          # 2011/10/24
-          # 2015/04/17: This is quite wrong.
-        ### g.trace(w,g.callers())
     #@+node:ekr.20061119120006: *4* Icon area convenience methods
     def addIconButton (self,*args,**keys):
         if self.iconBar: return self.iconBar.add(*args,**keys)

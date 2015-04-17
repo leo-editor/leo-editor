@@ -4807,8 +4807,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             self.beginCommand()
             try:
                 tab_width = c.getTabWidth(c.p)
-                ### d = c.scanAllDirectives(p)
-                ### tab_width = d.get("tabwidth",c.tab_width)
                 changed = True
                 if i != j:
                     w.delete(i,j)
@@ -5108,15 +5106,12 @@ class EditCommandsClass (BaseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'): return
         tab_width = abs(c.getTabWidth(c.p))
-        ### d = c.scanAllDirectives(p)
-        ### n = abs(d.get("tabwidth",c.tab_width))
         ins = w.getInsertPoint()
         self.beginCommand(undoType='insert-soft-tab')
         w.insert(ins,' ' * tab_width)
         ins += tab_width
         w.setSelectionRange(ins,ins,insert=ins)
         self.endCommand()
-
     #@+node:ekr.20050920084036.141: *4* removeBlankLines
     def removeBlankLines (self,event):
 
@@ -5326,24 +5321,19 @@ class EditCommandsClass (BaseEditCommandsClass):
         trace = False and not g.unitTesting
         c = self.c
         tab_width = c.getTabWidth(p)
-        ### d = c.scanAllDirectives(p)
-        ### tab_width = d.get("tabwidth",c.tab_width)
         # Get the previous line.
         s = w.getAllText()
         ins = w.getInsertPoint()
         i = g.skip_to_start_of_line(s,ins)
         i,j = g.getLine(s,i-1)
         s = s[i:j-1]
-
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
         # g.trace('width',width,'tab_width',tab_width)
-
         if s and s [-1] == ':':
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c,p) == 'python':
                 width += abs(tab_width)
-
         if self.smartAutoIndent:
             # Determine if prev line has unclosed parens/brackets/braces
             bracketWidths = [width] ; tabex = 0
@@ -5355,7 +5345,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 elif s [i] in '}])' and len(bracketWidths) > 1:
                     bracketWidths.pop()
             width = bracketWidths.pop()
-
         ws = g.computeLeadingWhitespace(width,tab_width)
         if ws:
             if trace: g.trace('width: %s, tab_width: %s, ws: %s' % (
@@ -5405,8 +5394,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             # w.delete(i,j)
             c.indentBody()
         else:
-            ### d = c.scanAllDirectives(p)
-            ### tab_width = d.get("tabwidth",c.tab_width)
             tab_width = c.getTabWidth(p)
             # Get the preceeding characters.
             s = w.getAllText()

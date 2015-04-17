@@ -2645,8 +2645,6 @@ class Commands (object):
         '''Remove one tab's worth of indentation from all presently selected lines.'''
         c,undoType = self,'Unindent'
         tab_width = c.getTabWidth(c.p)
-        ### d = c.scanAllDirectives(c.p) # Support @tab_width directive properly.
-        ### tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         changed,result = False,[]
         for line in lines:
@@ -2836,8 +2834,6 @@ class Commands (object):
         '''
         c = self ; current = c.p ; undoType='Indent Region'
         tab_width = c.getTabWidth(c.p)
-        ### d = c.scanAllDirectives(current) # Support @tab_width directive properly.
-        ### tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         changed,result = False,[]
         for line in lines:
