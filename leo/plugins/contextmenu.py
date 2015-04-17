@@ -278,7 +278,7 @@ def openwith_rclick(c,p,menu):
             ("All files","*"),
             ("Python files","*.py"),
         ]
-        fnames = g.app.gui.runOpenFileDialog(
+        fnames = g.app.gui.runOpenFileDialog(c,
             title = "Import files",filetypes = table, 
             defaultextension = '.notused',
             multiple=True, startpath = path)

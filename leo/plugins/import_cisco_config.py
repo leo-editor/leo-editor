@@ -66,7 +66,7 @@ def importCiscoConfig(c):
         # filetypes=[("All files", "*")]
         # )
 
-    name = g.app.gui.runOpenFileDialog (
+    name = g.app.gui.runOpenFileDialog (c,
         title="Import Cisco Configuration File",
         filetypes=[("All files", "*")],
         defaultextension='ini',

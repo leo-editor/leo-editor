@@ -286,7 +286,7 @@ def disable_body(body):
 # Returns True if the body text changed.
 def insert_read_only_node (c,p,name):
     if name=="":
-        name = g.app.gui.runOpenFileDialog(
+        name = g.app.gui.runOpenFileDialog(c,
             title="Open",
             filetypes=[("All files", "*")],
         )

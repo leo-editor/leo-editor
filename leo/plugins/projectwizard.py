@@ -91,7 +91,7 @@ def project_wizard(event):
     table = [("All files","*"),
         ("Python files","*.py"),]
 
-    fname = g.app.gui.runOpenFileDialog(
+    fname = g.app.gui.runOpenFileDialog(c,
         title = "Open",filetypes = table,defaultextension = ".leo")
 
     pth = os.path.dirname(os.path.abspath(fname))
@@ -116,7 +116,7 @@ def rclick_path_importfile(c,p,menu):
 
         table = [("All files","*"),
             ("Python files","*.py"),]
-        fnames = g.app.gui.runOpenFileDialog(
+        fnames = g.app.gui.runOpenFileDialog(c,
             title = "Import files",filetypes = table, 
             defaultextension = '.notused',
             multiple=True)
