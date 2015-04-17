@@ -907,6 +907,7 @@
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
 <v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
 <v t="ekr.20150311123850.39"><vh>Leo must have sentinels, even without clones</vh></v>
+<v t="ekr.20150417041505.1"><vh>Setting focus</vh></v>
 </v>
 </v>
 <v t="ekr.20140810085801.18216"><vh>Vim Mode Theory of Operation</vh>
@@ -18313,6 +18314,28 @@ For example, the following are poor top-level categories. They are poor because 
 We all have had bad experiences with the dreaded "Others" category. The Aha! is that all aggregate categories are just as bad as "Others".
 
 **Note**: I have been talking only about top-level categories.  Within a single category aggregate categories may be useful.  However, when possible I prefer to mark items rather than create subcategories. For example, ``*`` now marks all "Important" items in leoToDo.txt and scripts.leo.  This makes it easy to find important items in a particular category.  To find *all* important items one could do a regex search for ``^\*`` in headlines.
+</t>
+<t tx="ekr.20150417041505.1">Leo's handling of focus is complicated in order to reduce unwanted screen flash. The following methods queue *requests* for focus::
+
+    c.bodyWantsFocus()
+    c.logWantsFocus()
+    c.minibufferWantsFocus()
+    c.treeWantsFocus()
+    c.widgetWantsFocus(w)
+    
+Similarly, c.redraw and c.recolor queue requests to redraw the outline pane and to recolorize the body pane.
+    
+c.outerUpdate honors all requests after the present command completes, that is, just before idle time.
+
+Sometimes a command requires that an action happen immediately.  The following methods queue a request and then immediately call c.outerUpdate::
+
+    c.bodyWantsFocusNow()
+    c.logWantsFocusNow()
+    c.minibufferWantsFocusNow()
+    c.recolor_now()
+    c.redraw_now()
+    c.treeWantsFocusNow()
+    c.widgetWantsFocusNow(w)
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
