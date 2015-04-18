@@ -531,8 +531,9 @@ Announcements
 - Announce to comp.lang.python:
   https://groups.google.com/forum/#!forum/comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form
-- Twitter
-- My blog</t>
+- My blog
+- Twitter (point to my blog)
+</t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
 <t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
 </t>
