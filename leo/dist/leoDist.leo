@@ -501,7 +501,7 @@ LeoDist.leo:
 - Check 'PKG-INFO.TXT'
 
 Run make-leo.
-***** Commit all files before running make-leo.
+- Commit all files before running make-leo.
 - Run make-leo button in leoDist.leo.
 - Commit any changed files.
 
@@ -517,7 +517,7 @@ Test files in installed folder.
 
 Create a git tag **last**.
 
-===== Scan all folders &amp; files before uploading.
+Scan all folders &amp; files before uploading.
 
 Create Release on SourceForge: http://sourceforge.net/projects/leo/
 
@@ -527,7 +527,7 @@ Announcements
 - Update version number on web site.
 - Announce to leo-editor.
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
-  *** Click News tab.
+  Click News tab.
 - Announce to comp.lang.python:
   https://groups.google.com/forum/#!forum/comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form
