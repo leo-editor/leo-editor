@@ -460,6 +460,7 @@ import time</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 Pre-testing:
+- Make sure no distributed .leo file contains xml-stylesheet elements.
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
@@ -522,14 +523,13 @@ Create Release on SourceForge: http://sourceforge.net/projects/leo/
 
 Announcements
 - Update version number on Leo's wikipedia site:
-    http://en.wikipedia.org/wiki/Leo_(editor)
-    - Edit with the 'Edit this page' *tab* (not a link)
+  http://en.wikipedia.org/wiki/Leo_(editor) Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
 - Announce to leo-editor.
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
   *** Click News tab.
-- Announce to comp.lang.python.announce:
-    https://groups.google.com/forum/#!forum/comp.lang.python.announce
+- Announce to comp.lang.python:
+  https://groups.google.com/forum/#!forum/comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form
 - Twitter
 - My blog</t>
