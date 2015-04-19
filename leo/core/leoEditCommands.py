@@ -527,31 +527,32 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         at = c.atFileCommands
         if c.abbrev_place_start and self.enabled:
             aList = self.subst_env
-            result = []
+            script = []
             for z in aList:
                 # Compatibility with original design.
                 if z.startswith('\\:'):
-                    result.append(z[2:])
+                    script.append(z[2:])
                 else:
-                    result.append(z)
-            result = ''.join(result)
-            # This doesn't work because at.writeFromString requires a real root.
-            # For now, the workaround is to prohibit Leo directives in
-            # @data abbreviations-subst-env trees.
-                # Similar to g.getScript.
-                # result = at.writeFromString(root=root,s=result,
-                    # forcePythonSentinels=True,useSentinels=False)
-                # result = result.replace("\r\n","\n")
+                    script.append(z)
+            script = ''.join(script)
+            # Allow Leo directives in @data abbreviations-subst-env trees.
+            import leo.core.leoNodes as leoNodes
+            v = leoNodes.VNode(context=c)
+            root = leoNodes.Position(v)
+            # Similar to g.getScript.
+            script = at.writeFromString(
+                root=root,
+                s=script,
+                forcePythonSentinels=True,
+                useSentinels=False)
+            script = script.replace("\r\n","\n")
             try:
-                exec(result,c.abbrev_subst_env,c.abbrev_subst_env)
+                exec(script,c.abbrev_subst_env,c.abbrev_subst_env)
             except Exception:
                 g.es('Error exec\'ing @data abbreviations-subst-env')
                 g.es_exception()
         else:
             c.abbrev_subst_start = False
-            # if c.config.getString('abbreviations-subst-start'):
-                # g.es("Note: @abbreviations-subst-start found, but no substitutions "
-                     # "without @scripting-at-script-nodes = True")
     #@+node:ekr.20130924110246.13749: *5* abbrev.init_settings
     def init_settings(self):
         

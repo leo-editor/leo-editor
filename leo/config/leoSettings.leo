@@ -1812,6 +1812,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="tbrown.20120820202856.25330"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9826,7 +9827,8 @@ See also abbreviations-subst-env.
 abbreviations-subst-end, has no effect if
 abbreviations-subst-start is not set.</t>
 <t tx="tbrown.20120820202856.25330"># Modified by EKR 2013/09/25: revised docstring and improved get_user().
-# **Important**: Leo directives are not allowed here!
+
+@language python
 
 """
 

@@ -1602,7 +1602,6 @@ You're going to get some journalists excited, and those are your reviews.
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20150418061738.1: *3* Easy
-.. @+node:ekr.20150417042316.1: *4* * autocompleting widgetWantsFocusNow fails
 .. @+node:ekr.20050127110221: *4* Add print menu: modify printing.py
 https://sourceforge.net/forum/message.php?msg_id=2962825
 By: jasonic
@@ -1675,16 +1674,28 @@ standard print needs and habits.
 Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
 
 Having a little library of export scripts - well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
-- Create unattached vnode.
-- Create postion using that vnode.
-- Pass that vnode as the root.
-- Create unit test.
 .. @+node:ekr.20150418052615.1: *4* url's should include ()
 Leo does not select the trailing ')' in Leo's wikipedia url:
 http://en.wikipedia.org/wiki/Leo_(editor)
 .. @+node:ekr.20150417034957.1: *3* First
-.. @+node:ekr.20150403035403.1: *4* * Fix bug 156: ILeo errors not piped to Log, etc.
+.. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
+OpenGL
+http://doc.qt.io/qt-5/qopenglwidget.html
+
+QWebView
+http://doc.qt.io/qt-5/qwebview.html
+
+http://doc.qt.io/qt-4.8/graphicsview.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+Ville
+
+Create one QWebView window. zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
 
@@ -1710,7 +1721,7 @@ TypeError: cannot concatenate 'str' and 'int' objects
 But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
 
 @language python
-.. @+node:ekr.20150325052301.1: *4* * Fix bug 165: vim-open-file command
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
 @language rest
 @wrap
 
@@ -1720,21 +1731,6 @@ https://github.com/leo-editor/leo-editor/issues/165
 - Fold mod_tempfname into code and test.
 
 Later: preserve cursor positions.
-.. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
-OpenGL
-http://doc.qt.io/qt-5/qopenglwidget.html
-
-QWebView
-http://doc.qt.io/qt-5/qwebview.html
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-Ville
-
-Create one QWebView window. zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
 .. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
 @language rest
 @wrap
