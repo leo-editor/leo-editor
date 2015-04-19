@@ -28,6 +28,7 @@ rc_warning_given = False
 def getCoreList():
     
     pattern = g.os_path_finalize_join('.','leo','core','leo*.py')
+    # pattern = g.os_path_finalize_join('leo','core','leo*.py')
     aList = [
         g.shortFileName(fn)
             for fn in glob.glob(pattern)
@@ -184,10 +185,9 @@ def getTkPass():
    )
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table):
-    
-    if tables_table and sys.platform.startswith('win'):
-        if False and scope != 'file':
-            g.cls()
+    '''Call run on all tables in tables_table.'''
+    if False and tables_table and sys.platform.startswith('win') and scope != 'file':
+        g.cls()
     # Do these imports **after** clearing the screen.
     from pylint import lint
         # in pythonN/Lib/site-packages.
@@ -209,11 +209,13 @@ def report_version():
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
     global rc_warning_given
-    fn = os.path.join('leo',theDir,fn)
+    # A little hack. theDir is empty for the -f option.
+    if theDir:
+        fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
-    # print('run:scope:%s' % scope)
     fn = os.path.abspath(fn)
-    if not fn.endswith('.py'): fn = fn+'.py'
+    if not fn.endswith('.py'):
+        fn = fn+'.py'
     if not os.path.exists(rc_fn):
         if not rc_warning_given:
             rc_warning_given = True

@@ -1601,7 +1601,8 @@ You're going to get some journalists excited, and those are your reviews.
 **Start publicizing different ways people use Leo.**
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20050127110221: *3* Add print menu: modify printing.py
+.. @+node:ekr.20150419062721.1: *3* Easy
+.. @+node:ekr.20050127110221: *4* Add print menu: modify printing.py
 https://sourceforge.net/forum/message.php?msg_id=2962825
 By: jasonic
 
@@ -1673,143 +1674,9 @@ standard print needs and habits.
 Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
 
 Having a little library of export scripts - well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20150417034957.1: *3* First
-.. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
-OpenGL
-http://doc.qt.io/qt-5/qopenglwidget.html
-
-QWebView
-http://doc.qt.io/qt-5/qwebview.html
-
-http://doc.qt.io/qt-4.8/graphicsview.html
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-Ville
-
-Create one QWebView window. zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
-@language rest
-@wrap
-
-See http://ipython.org/ipython-doc/stable/development/execution.html
-
-https://github.com/leo-editor/leo-editor/issues/156
-Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
-
-This one is pretty straight forward. If I run this command via Ctrl + B:
-
-for ind in range(5):
-    print("index:" + ind)
-
-Without ILeo I get:
-
-TypeError: cannot concatenate 'str' and 'int' objects
---------------------
-  line 12: for ind in range(5):
-* line 13:     print("index:" + ind)
-  line 14: #@-leo
-  line 15: 
-
-But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
-
-@language python
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-- clean up openWith: make it a class.
-- Fold mod_tempfname into code and test.
-
-Later: preserve cursor positions.
-.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/169
-import-file does not preserve gnx of root @file node
-
-Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
-
-No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
-
-My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
-.. @+node:ekr.20150418055421.1: *3* Next
-.. @+node:ekr.20150408193842.1: *4* * Limit searches so clones are found at most once
-@language rest
-
-Must experiment.
-
-Want various flavors of search:
-
-gf: global find
-f: local find.
-gcfa: global clone-find-all
-cfa: local clone-all.
-sc: set-context.
-
-.. @+node:ekr.20150412043739.1: *4* * Emulate IPython's display framework
-Render to tex, pdf, rst, etc.
-
-c.display(x) displays object x. Support plotting objects x.
-
-Create IPython-like demo.
-.. @+node:ekr.20150412034943.1: *4* * Show what rST & css can do in Leo
-.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
-.. @+node:ekr.20150311123850.7: *4* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
-https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
-
-===== EKR
-The find-def command (with ctrl-click support) would do the hyperlinking.
-
-Create an auto-completion-like popup if there are multiple possibilities.
-
-===== Terry:
-
-Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
-
-===== Matt
-
-Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
-
-Consider the following code:
-
-    print "Downloading", ', '.join(packages)
-    for p in packages:
-        do_download(p)
-        ball(p)
-        md5(p)
-
-Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
 .. @+node:ekr.20150412032405.1: *4* Support @history-list
 Adds all commands to the history list, in order.
-.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
-1. Imo, it is time to consider adding a typical "startup" file to Leo, ~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will make Leo "thicker", that is more professional/standard.
-
-IPython adds lots of bells and whistles to configuration.  Leo emulates most of them, but .leo_config.py would be a good addition. Think of .leo_config.py as a lightweight plugin.
-
-leo_config.py should execute after settings have been parsed, but before plugins have been loaded.  If desired, leo_config.py may register "start2" event handlers, which execute after all plugins have been loaded, just before starting the main Qt event loop.
-
-2. Leo commands form a good framework for other solutions to Qt stylesheet issues.  Consider the following commands::
-
-    qt-stylesheet-set-global-stylesheet
-    qt-stylesheet-append-to-global-stylesheet
-    qt-stylesheet-set-widget-stylesheet
-    qt-stylesheet-append-to-widget-stylesheet
-    
-.. @+node:ekr.20150410043718.1: *3* Next2
+.. @+node:ekr.20150410043718.1: *3* Easy2
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
 .. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
@@ -1881,6 +1748,12 @@ abbrevCommandsClass
     init_abbrev
 .. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
+.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
+I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
+
+The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
+
+Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
 .. @+node:ekr.20150211104036.477: *4* Smart paste & yank
 .. @+node:ekr.20150325105434.1: *5* Fix problems with yank indentation
 And perhaps other problems with yank.
@@ -1924,6 +1797,140 @@ data formats that are currently available on the clipboard. " --
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 This can be done now that gui's are created on the command line.
+.. @+node:ekr.20150417034957.1: *3* Bugs
+.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
+@language rest
+@wrap
+
+See http://ipython.org/ipython-doc/stable/development/execution.html
+
+https://github.com/leo-editor/leo-editor/issues/156
+Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
+
+This one is pretty straight forward. If I run this command via Ctrl + B:
+
+for ind in range(5):
+    print("index:" + ind)
+
+Without ILeo I get:
+
+TypeError: cannot concatenate 'str' and 'int' objects
+--------------------
+  line 12: for ind in range(5):
+* line 13:     print("index:" + ind)
+  line 14: #@-leo
+  line 15: 
+
+But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
+
+@language python
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+- clean up openWith: make it a class.
+- Fold mod_tempfname into code and test.
+
+Later: preserve cursor positions.
+.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/169
+import-file does not preserve gnx of root @file node
+
+Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
+
+No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
+
+My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
+.. @+node:ekr.20150418055421.1: *3* Harder/more important
+.. @+node:ekr.20150408193842.1: *4* * Limit searches so clones are found at most once
+@language rest
+
+Must experiment.
+
+Want various flavors of search:
+
+gf: global find
+f: local find.
+gcfa: global clone-find-all
+cfa: local clone-all.
+sc: set-context.
+
+.. @+node:ekr.20150412043739.1: *4* * Emulate IPython's display framework
+Render to tex, pdf, rst, etc.
+
+c.display(x) displays object x. Support plotting objects x.
+
+Create IPython-like demo.
+.. @+node:ekr.20150412034943.1: *4* * Show what rST & css can do in Leo
+.. @+node:ekr.20150418061229.1: *4* * Add QQebView & OpenGl support to viewrendered.py
+OpenGL
+http://doc.qt.io/qt-5/qopenglwidget.html
+
+QWebView
+http://doc.qt.io/qt-5/qwebview.html
+
+http://doc.qt.io/qt-4.8/graphicsview.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+Ville
+
+Create one QWebView window. zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
+The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
+https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
+
+===== EKR
+The find-def command (with ctrl-click support) would do the hyperlinking.
+
+Create an auto-completion-like popup if there are multiple possibilities.
+
+===== Terry:
+
+Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+===== Matt
+
+Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
+
+Consider the following code:
+
+    print "Downloading", ', '.join(packages)
+    for p in packages:
+        do_download(p)
+        ball(p)
+        md5(p)
+
+Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
+1. Imo, it is time to consider adding a typical "startup" file to Leo, ~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will make Leo "thicker", that is more professional/standard.
+
+IPython adds lots of bells and whistles to configuration.  Leo emulates most of them, but .leo_config.py would be a good addition. Think of .leo_config.py as a lightweight plugin.
+
+leo_config.py should execute after settings have been parsed, but before plugins have been loaded.  If desired, leo_config.py may register "start2" event handlers, which execute after all plugins have been loaded, just before starting the main Qt event loop.
+
+2. Leo commands form a good framework for other solutions to Qt stylesheet issues.  Consider the following commands::
+
+    qt-stylesheet-set-global-stylesheet
+    qt-stylesheet-append-to-global-stylesheet
+    qt-stylesheet-set-widget-stylesheet
+    qt-stylesheet-append-to-widget-stylesheet
+    
 .. @+node:ekr.20150410043749.1: *3* Maybe
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
