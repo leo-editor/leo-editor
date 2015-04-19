@@ -523,7 +523,8 @@ Create Release on SourceForge: http://sourceforge.net/projects/leo/
 
 Announcements
 - Update version number on Leo's wikipedia site:
-  http://en.wikipedia.org/wiki/Leo_(editor) Edit with the 'Edit this page' *tab* (not a link)
+  http://en.wikipedia.org/wiki/Leo_%28editor%29
+  Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
 - Announce to leo-editor.
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/

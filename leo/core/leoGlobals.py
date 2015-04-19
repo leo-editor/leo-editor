@@ -6841,14 +6841,12 @@ def computeFileUrl(fn,c=None,p=None):
     return url
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p):
-
-    '''Get an url from node p:
-
+    '''
+    Get an url from node p:
     1. Use the headline if it contains a valid url.
     2. Otherwise, look *only* at the first line of the body.
     '''
-
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     if not p: return None
     c = p.v.context
     assert c
@@ -6858,6 +6856,7 @@ def getUrlFromNode(p):
     # First, check for url's with an explicit scheme.
     for s in table:
         if g.isValidUrl(s):
+            if trace: g.trace('in table',s)
             return s
     # Next check for existing file and add a file:// scheme.
     for s in table:
@@ -6870,26 +6869,28 @@ def getUrlFromNode(p):
             if g.os_path_isfile(fn):
                 # Return the *original* url, with a file:// scheme.
                 # g.handleUrl will call computeFileUrl again.
+                if trace: g.trace('file://',s)
                 return 'file://'+s
     # Finally, check for local url's.
     for s in table:
         if s.startswith("#"):
+            if trace: g.trace('in table',s)
             return s
     return None
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl
-#@+at Most browsers should handle the following urls:
-#   ftp://ftp.uu.net/public/whatever.
-#   http://localhost/MySiteUnderDevelopment/index.html
-#   file:///home/me/todolist.html
-#@@c
-
 def handleUrl(url,c=None,p=None):
-    '''Open an url.'''
+    '''
+    Open an url. Most browsers should handle these:
+        ftp://ftp.uu.net/public/whatever.
+        http://localhost/MySiteUnderDevelopment/index.html
+        file:///home/me/todolist.html
+    '''
+    trace = False and not g.unitTesting
+    verbose = True
     # g.trace(url,g.callers())
     if 1:
         # pylint: disable=no-member
         unquote = urllib.parse.unquote if isPython3 else urllib.unquote
-    trace = False and not g.unitTesting ; verbose = False
     if c and not p:
         p = c.p
     if url.startswith('@url'):
