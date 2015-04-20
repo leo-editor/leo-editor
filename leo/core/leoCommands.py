@@ -230,6 +230,7 @@ class Commands (object):
         self.leoCommands = None
         self.macroCommands = None
         self.miniBufferWidget = None
+        self.printingController = None
         self.queryReplaceCommands = None
         self.recTangleCommands = None
         self.registerCommands = None
@@ -274,6 +275,7 @@ class Commands (object):
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
         import leo.core.leoPersistence as leoPersistence
+        import leo.core.leoPrinting as leoPrinting
         import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
@@ -289,6 +291,7 @@ class Commands (object):
         self.atFileCommands     = leoAtFile.AtFile(c)
         self.importCommands     = leoImport.LeoImportCommands(c)
         self.persistenceController = leoPersistence.PersistenceDataController(c)
+        self.printingController = leoPrinting.PrintingController(c)
         self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
@@ -357,9 +360,9 @@ class Commands (object):
         c,k = self,self.k
         c.commandsDict = {}
         # A list of all subcommanders with a getPublicCommands method.
-        # c.editCommandsManager.getPublicCommands handles all
-        # subcommanders in leoEditCommands.py.
-        for o in (c.editCommandsManager,c.rstCommands,c.vimCommands):
+        #   c.editCommandsManager.getPublicCommands handles all
+        #   subcommanders in leoEditCommands.py.
+        for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
             if o: o.getPublicCommands()
         # copy global commands to this controller    
         for name,f in g.app.global_commands_dict.items():

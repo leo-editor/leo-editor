@@ -10247,7 +10247,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
         self.handler = None
 
         # All the work happens when we first open the frame.
-    #@+node:ekr.20051025080420: *4* getPublicCommands (SearchCommandsClass)
+    #@+node:ekr.20051025080420: *4* getPublicCommands (SpellCommandsClass)
     def getPublicCommands (self):
 
         return {

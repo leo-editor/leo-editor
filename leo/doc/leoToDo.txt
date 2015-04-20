@@ -1915,20 +1915,6 @@ http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
-1. Imo, it is time to consider adding a typical "startup" file to Leo, ~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will make Leo "thicker", that is more professional/standard.
-
-IPython adds lots of bells and whistles to configuration.  Leo emulates most of them, but .leo_config.py would be a good addition. Think of .leo_config.py as a lightweight plugin.
-
-leo_config.py should execute after settings have been parsed, but before plugins have been loaded.  If desired, leo_config.py may register "start2" event handlers, which execute after all plugins have been loaded, just before starting the main Qt event loop.
-
-2. Leo commands form a good framework for other solutions to Qt stylesheet issues.  Consider the following commands::
-
-    qt-stylesheet-set-global-stylesheet
-    qt-stylesheet-append-to-global-stylesheet
-    qt-stylesheet-set-widget-stylesheet
-    qt-stylesheet-append-to-widget-stylesheet
-    
 .. @+node:ekr.20150410043749.1: *3* Maybe
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
@@ -2487,6 +2473,11 @@ I think the question may be more complicated than just what to call the key, so 
 Like @color html::tags_markup_color = blue
 .. @+node:ekr.20111019104425.15863: *4* Won't do: use pygments for syntax coloring
 This has essentially no chance of improving Leo
+.. @+node:ekr.20150420100543.1: *3* Configuration/settings
+.. @+node:ekr.20111026075003.16481: *4* Unlikely: Support ~/.leo_config.py
+This would make Leo more professional/standard.
+
+However, I can see no real reason for this.
 .. @+node:ekr.20120229094652.15178: *3* Commands
 .. @+node:ekr.20041130123243: *4* Clear Undo command
 http://sourceforge.net/forum/message.php?msg_id=2859273

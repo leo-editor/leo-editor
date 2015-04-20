@@ -881,6 +881,33 @@
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
+<v t="ekr.20150420115701.1"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.1"><vh>@menu Print Preview</vh>
+<v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
+<v t="ekr.20150420122804.3"><vh>@@item preview-html</vh></v>
+<v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
+<v t="ekr.20150420122804.5"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
+<v t="ekr.20150420122804.7"><vh>@@item preview-marked-html</vh></v>
+<v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
+<v t="ekr.20150420122804.9"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
+<v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
+<v t="ekr.20150420122804.12"><vh>@@item preview-tree-html</vh></v>
+</v>
+<v t="ekr.20150420115709.1"><vh>@menu Print</vh>
+<v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
+<v t="ekr.20150420115928.1"><vh>@@item print-html</vh></v>
+<v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
+<v t="ekr.20150420120016.1"><vh>@item -</vh></v>
+<v t="ekr.20150420120025.1"><vh>@item print-marked-bodies</vh></v>
+<v t="ekr.20150420120034.1"><vh>@@item print-marked-html</vh></v>
+<v t="ekr.20150420120051.1"><vh>@item print-marked-nodes</vh></v>
+<v t="ekr.20150420120105.1"><vh>@item -</vh></v>
+<v t="ekr.20150420120154.1"><vh>@item print-tree-nodes</vh></v>
+<v t="ekr.20150420120114.1"><vh>@item print-tree-bodies</vh></v>
+<v t="ekr.20150420115936.1"><vh>@@item print-tree-html</vh></v>
+</v>
 <v t="ekr.20131213135427.21840"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write</vh>
 <v t="ekr.20131213135427.21842"><vh>@item *check-derived-file</vh></v>
@@ -905,7 +932,7 @@
 <v t="ekr.20131213135427.21861"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20131213135427.21862"><vh>@item import-file</vh></v>
-<v t="ekr.20131213135427.21863"><vh>@menu &amp;Export...</vh>
+<v t="ekr.20131213135427.21863"><vh>@menu &amp;Export</vh>
 <v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
 <v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
 <v t="ekr.20131213135427.21866"><vh>@item outline-to-cweb</vh></v>
@@ -1812,7 +1839,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="tbrown.20120820202856.25330"></v>
+<v t="ekr.20131213135427.21826"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9688,6 +9715,31 @@ Note: check-outline always writes error messages to both log and console.</t>
 <t tx="ekr.20150322061147.1"></t>
 <t tx="ekr.20150327002834.1">True: enable detailed traces inside vim.py.</t>
 <t tx="ekr.20150403055250.1">True: check all @&lt;file&gt; nodes in the outline for changes in corresponding external files.</t>
+<t tx="ekr.20150420115701.1"></t>
+<t tx="ekr.20150420115709.1"></t>
+<t tx="ekr.20150420115903.1"></t>
+<t tx="ekr.20150420115928.1"></t>
+<t tx="ekr.20150420115936.1"></t>
+<t tx="ekr.20150420120009.1"></t>
+<t tx="ekr.20150420120016.1"></t>
+<t tx="ekr.20150420120025.1"></t>
+<t tx="ekr.20150420120034.1"></t>
+<t tx="ekr.20150420120051.1"></t>
+<t tx="ekr.20150420120105.1"></t>
+<t tx="ekr.20150420120114.1"></t>
+<t tx="ekr.20150420120154.1"></t>
+<t tx="ekr.20150420122804.1"></t>
+<t tx="ekr.20150420122804.10"></t>
+<t tx="ekr.20150420122804.11"></t>
+<t tx="ekr.20150420122804.12"></t>
+<t tx="ekr.20150420122804.2"></t>
+<t tx="ekr.20150420122804.3"></t>
+<t tx="ekr.20150420122804.4"></t>
+<t tx="ekr.20150420122804.5"></t>
+<t tx="ekr.20150420122804.6"></t>
+<t tx="ekr.20150420122804.7"></t>
+<t tx="ekr.20150420122804.8"></t>
+<t tx="ekr.20150420122804.9"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

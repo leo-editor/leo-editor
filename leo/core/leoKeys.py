@@ -394,16 +394,15 @@ class AutoCompleterClass:
         return result
     #@+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
     def auto_completer_state_handler (self,event):
-
+        '''Handle all keys while autocompleting.'''
         trace = False and not g.app.unitTesting
-        c = self.c ; k = self.k
-        tag = 'auto-complete' ; state = k.getState(tag)
+        c,k,tag = self.c,self.k,'auto-complete'
+        state = k.getState(tag)
         ch = event and event.char or ''
         stroke = event and event.stroke or None
         is_plain = k.isPlainKey(stroke)
         if trace: g.trace('state: %s, ch: %s, stroke: %s' % (
             state,repr(ch),repr(stroke)))
-
         if state == 0:
             c.frame.log.clearTab(self.tabName)
             common_prefix,prefix,tabList = self.compute_completion_list()
@@ -437,6 +436,7 @@ class AutoCompleterClass:
         # elif ch == 'Up' and hasattr(self,'onUp'):
             # self.onUp()
         elif is_plain and ch and ch in string.printable:
+            if trace: g.trace('plain: %r' % (ch))
             self.insert_general_char(ch)
         else:
             if stroke == k.autoCompleteForceKey:
