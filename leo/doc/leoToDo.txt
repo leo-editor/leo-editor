@@ -1833,6 +1833,7 @@ cfa: local clone-all.
 sc: set-context.
 
 .. @+node:ekr.20150412034943.1: *4* * Show what rST & css can do in Leo
+.. @+node:ekr.20150420071826.1: *4* Auto resize find panel
 .. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
