@@ -3174,6 +3174,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     # work out order in which to try nodes
     order = []
     pos_pattern = re.compile(r':(\d+),?(\d+)?$')
+    target = unlList[depth]
     try:
         target = pos_pattern.sub('', unlList[depth])
         pos = re.findall(pos_pattern, unlList[depth])
