@@ -99,7 +99,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -859,13 +859,13 @@
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
 <v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20131213135427.21826"><vh>@menus</vh>
-<v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
+<v t="ekr.20131213135427.21826" a="E"><vh>@menus</vh>
+<v t="ekr.20131213135427.21827" a="E"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
@@ -887,6 +887,9 @@
 <v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
 <v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
 <v t="ekr.20150420122804.5"><vh>@item -</vh></v>
+<v t="peckj.20150421103556.1"><vh>@item preview-expanded-body</vh></v>
+<v t="peckj.20150421103611.1"><vh>@item preview-expanded-html</vh></v>
+<v t="peckj.20150421103616.1"><vh>@item -</vh></v>
 <v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
 <v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
 <v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
@@ -895,11 +898,14 @@
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
 <v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
-<v t="ekr.20150420115709.1"><vh>@menu Print</vh>
+<v t="ekr.20150420115709.1" a="E"><vh>@menu Print</vh>
 <v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
 <v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
 <v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
 <v t="ekr.20150420120016.1"><vh>@item -</vh></v>
+<v t="peckj.20150421103626.1"><vh>@item print-expanded-body</vh></v>
+<v t="peckj.20150421103633.1"><vh>@item print-expanded-html</vh></v>
+<v t="peckj.20150421103639.1"><vh>@item -</vh></v>
 <v t="ekr.20150420120025.1"><vh>@item print-marked-bodies</vh></v>
 <v t="ekr.20150420120034.1"><vh>@item print-marked-html</vh></v>
 <v t="ekr.20150420120051.1"><vh>@item print-marked-nodes</vh></v>
@@ -9780,6 +9786,12 @@ Default False.</t>
 <t tx="peckj.20140113150237.4604">One of 'compare', 'ndiff', or 'unified_diff'.  See the nodediff.py docstring for more info.</t>
 <t tx="peckj.20140218151502.4819"></t>
 <t tx="peckj.20140218151502.4820">Set to False to make sftp.py prompt you for credentials every time.</t>
+<t tx="peckj.20150421103556.1"></t>
+<t tx="peckj.20150421103611.1"></t>
+<t tx="peckj.20150421103616.1"></t>
+<t tx="peckj.20150421103626.1"></t>
+<t tx="peckj.20150421103633.1"></t>
+<t tx="peckj.20150421103639.1"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
