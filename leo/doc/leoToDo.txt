@@ -1602,79 +1602,6 @@ You're going to get some journalists excited, and those are your reviews.
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20150410043718.1: *3* Easy
-.. @+node:ekr.20150419123604.1: *4* * Add print menu.  Move printing.py into Leo's core
-@language rest
-@wrap
-
-jasonic
-
-Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
-
-print-to-web (htmlize) should definitely be on Leo's missing PRINT MENU.
-
-Having a little library of export scripts--well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20050127110221: *5* jsonic about output
-@language rest
-@wrap
-
-By: jasonic
-
-**pdf**
-PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
-
-As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
-
-Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
-
-**xslt**
-
-Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with. Last time I looked I went from being horrified to very impressed to be being exhausted.
-
-**swf [flash]**
-
-This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
-
-Flash has *limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
-
-FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
-
-Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
-
-To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this
-- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
-
-- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
-http://sweb.cz/oliva.david/swf/
-
-These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
-
-But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
-
-**flashpaper2**
-
-btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in. Flashpaper renders a very litteral snapshot, but as I am discovering that turns out to be extremely useful. For example you visit a page and click on some links. Flashpaper saves teh pages exactly as it looks, viisted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
-
-Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
-
-And of course the flash _players_ is free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper - letting your coleagues pan and zoom to their comfort.
-
-I've not quite figured out the place where  Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing. Leo's does not have aprint menu, so it's off the sytem's print-devices map, which Flash paper appearing just  like any phtycial printer.
-
-I imagine is possible to fix that in Leo, but I do not where to begin and woudl not be surprised to learn its a major heachche to write adn debug for multiple operating systems.
-
-An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
-
-[vnc2swf uses Ming-0.2a]
-http://www.unixuser.org/~euske/vnc2swf/
-
-http://www.multidmedia.com/software/capture/index.php
-
-But much is hidden or lost from view. 
-Still very vauable for creating dynamic narrative tutorials [aka screencasting]
-
-AS you know I am very excited about what flash can do for Leo, and vice versa.
-But I am concerned that there is not yet a 100% Leo means which supports people's
-standard print needs and habits.
 .. @+node:ekr.20150412032405.1: *4* * Support @history-list
 Adds all commands to the history list, in order.
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
@@ -2474,11 +2401,9 @@ I think the question may be more complicated than just what to call the key, so 
 Like @color html::tags_markup_color = blue
 .. @+node:ekr.20111019104425.15863: *4* Won't do: use pygments for syntax coloring
 This has essentially no chance of improving Leo
-.. @+node:ekr.20150420100543.1: *3* Configuration/settings
+.. @+node:ekr.20150420100543.1: *3* Config
 .. @+node:ekr.20111026075003.16481: *4* Unlikely: Support ~/.leo_config.py
-This would make Leo more professional/standard.
-
-However, I can see no real reason for this.
+Supposedly would make Leo more professional/standard. However, Leo has plenty of ways to execute code or set settings at startup. Nobody is asking for it.
 .. @+node:ekr.20120229094652.15178: *3* Commands
 .. @+node:ekr.20041130123243: *4* Clear Undo command
 http://sourceforge.net/forum/message.php?msg_id=2859273
@@ -2666,6 +2591,68 @@ yview: 0
 - Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20150312080344.4: *4* Improve speed of spelling
 Workaround: Spell-check just desired clone (at bottom of file).
+.. @+node:ekr.20050127110221: *4* jsonic about output
+@language rest
+@wrap
+
+By: jasonic
+
+**pdf**
+PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
+
+As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
+
+Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
+
+**xslt**
+
+Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with. Last time I looked I went from being horrified to very impressed to be being exhausted.
+
+**swf [flash]**
+
+This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
+
+Flash has *limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
+
+FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
+
+Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
+
+To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this
+- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
+
+- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
+http://sweb.cz/oliva.david/swf/
+
+These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
+
+But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
+
+**flashpaper2**
+
+btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in. Flashpaper renders a very litteral snapshot, but as I am discovering that turns out to be extremely useful. For example you visit a page and click on some links. Flashpaper saves teh pages exactly as it looks, viisted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
+
+Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
+
+And of course the flash _players_ is free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper - letting your coleagues pan and zoom to their comfort.
+
+I've not quite figured out the place where  Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing. Leo's does not have aprint menu, so it's off the sytem's print-devices map, which Flash paper appearing just  like any phtycial printer.
+
+I imagine is possible to fix that in Leo, but I do not where to begin and woudl not be surprised to learn its a major heachche to write adn debug for multiple operating systems.
+
+An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
+
+[vnc2swf uses Ming-0.2a]
+http://www.unixuser.org/~euske/vnc2swf/
+
+http://www.multidmedia.com/software/capture/index.php
+
+But much is hidden or lost from view. 
+Still very vauable for creating dynamic narrative tutorials [aka screencasting]
+
+AS you know I am very excited about what flash can do for Leo, and vice versa.
+But I am concerned that there is not yet a 100% Leo means which supports people's
+standard print needs and habits.
 .. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney

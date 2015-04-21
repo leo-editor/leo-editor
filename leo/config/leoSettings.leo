@@ -884,29 +884,29 @@
 <v t="ekr.20150420115701.1"><vh>@item -</vh></v>
 <v t="ekr.20150420122804.1"><vh>@menu Print Preview</vh>
 <v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
-<v t="ekr.20150420122804.3"><vh>@@item preview-html</vh></v>
+<v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
 <v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
 <v t="ekr.20150420122804.5"><vh>@item -</vh></v>
 <v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
-<v t="ekr.20150420122804.7"><vh>@@item preview-marked-html</vh></v>
+<v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
 <v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
 <v t="ekr.20150420122804.9"><vh>@item -</vh></v>
 <v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
-<v t="ekr.20150420122804.12"><vh>@@item preview-tree-html</vh></v>
+<v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
 <v t="ekr.20150420115709.1"><vh>@menu Print</vh>
 <v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
-<v t="ekr.20150420115928.1"><vh>@@item print-html</vh></v>
+<v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
 <v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
 <v t="ekr.20150420120016.1"><vh>@item -</vh></v>
 <v t="ekr.20150420120025.1"><vh>@item print-marked-bodies</vh></v>
-<v t="ekr.20150420120034.1"><vh>@@item print-marked-html</vh></v>
+<v t="ekr.20150420120034.1"><vh>@item print-marked-html</vh></v>
 <v t="ekr.20150420120051.1"><vh>@item print-marked-nodes</vh></v>
 <v t="ekr.20150420120105.1"><vh>@item -</vh></v>
 <v t="ekr.20150420120154.1"><vh>@item print-tree-nodes</vh></v>
 <v t="ekr.20150420120114.1"><vh>@item print-tree-bodies</vh></v>
-<v t="ekr.20150420115936.1"><vh>@@item print-tree-html</vh></v>
+<v t="ekr.20150420115936.1"><vh>@item print-tree-html</vh></v>
 </v>
 <v t="ekr.20131213135427.21840"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write</vh>
