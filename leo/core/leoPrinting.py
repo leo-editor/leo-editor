@@ -36,6 +36,8 @@ class PrintingController:
         'preview-body':         self.preview_body,
         'preview-html':         self.preview_html,
         'preview-node':         self.preview_node,
+        'preview-expanded-body': self.preview_expanded_body,
+        'preview-expanded-html': self.preview_expanded_html,
         'preview-tree-bodies':  self.preview_tree_bodies,
         'preview-tree-html':    self.preview_tree_html,
         'preview-tree-nodes':   self.preview_tree_nodes,
@@ -47,6 +49,8 @@ class PrintingController:
         'print-body':           self.print_body,
         'print-html':           self.print_html,
         'print-node':           self.print_node,
+        'print-expanded-body':  self.print_expanded_body,
+        'print-expanded-html':  self.print_expanded_html,
         'print-tree-bodies':    self.print_tree_bodies,
         'print-tree-html':      self.print_tree_html,
         'print-tree-nodes':     self.print_tree_nodes,
@@ -89,15 +93,14 @@ class PrintingController:
         doc.setHtml(text)
         return doc
     #@+node:ekr.20150420073201.1: *3* pr.Helpers
+    #@+node:peckj.20150421084046.1: *4* pr.expand
+    def expand(self,p):
+        '''Return the entire script at node p.'''
+        return p.script
     #@+node:ekr.20150419124739.15: *4* pr.getBodies
     def getBodies(self,p):
-        '''Return the entire script at node p.'''
-        if 1:
-            return '\n'.join([p.b for p in p.self_and_subtree()])
-        else:
-            return g.getScript(self.c,p,
-                useSelectedText=False,
-                useSentinels=False)
+        '''Return a concatenated version of the tree at p'''
+        return '\n'.join([p.b for p in p.self_and_subtree()])
     #@+node:ekr.20150420085602.1: *4* pr.getNodes
     def getNodes(self,p):
         '''Return the entire script at node p.'''
@@ -122,6 +125,16 @@ class PrintingController:
     def preview_html (self,event=None):
         '''Preview the body of the selected text as html (rich text)'''
         doc = self.html_document(self.c.p.b)
+        self.preview_doc(doc)
+    #@+node:peckj.20150421084706.1: *4* pr.preview_expanded_body
+    def preview_expanded_body (self,event=None):
+        '''Preview the selected node's body, expanded'''
+        doc = self.document(self.expand(self.c.p))
+        self.preview_doc(doc)
+    #@+node:peckj.20150421084719.1: *4* pr.preview_expanded_html
+    def preview_expanded_html (self,event=None):
+        '''Preview all the bodies of the selected node as html, in expansion mode (rich text)'''
+        doc = self.html_document(self.expand(self.c.p))
         self.preview_doc(doc)
     #@+node:ekr.20150419124739.31: *4* pr.preview_marked_bodies
     def preview_marked_bodies (self,event=None):
@@ -175,6 +188,16 @@ class PrintingController:
         '''Print the selected node body as html (rich text)'''
         doc = self.html_document(self.c.p.b)
         self.print_doc(doc)
+    #@+node:peckj.20150421084548.1: *4* pr.print_expanded_body
+    def print_expanded_body (self,event=None):
+        '''Print the selected node's body, expanded'''
+        doc = self.document(self.expand(self.c.p))
+        self.print_doc(doc)
+    #@+node:peckj.20150421084636.1: *4* pr.print_expanded_html
+    def print_expanded_html (self,event=None):
+        '''Print all the bodies of the selected node as html, in expansion mode (rich text)'''
+        doc = self.html_document(self.expand(self.c.p))
+        self.print_doc(doc)
     #@+node:ekr.20150419124739.30: *4* pr.print_marked_bodies
     def print_marked_bodies (self,event=None):
         '''Print the body text of marked nodes.'''
@@ -206,10 +229,8 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:ekr.20150420084948.1: *4* pr.print_tree_html
     def print_tree_html (self,event=None):
-        '''Print the bodies of all the marked nodes as html.'''
-        nodes = [p.v for p in self.c.all_positions() if p.isMarked()]
-        s = '\n'.join([z.b for z in nodes])
-        doc = self.html_document(s)
+        '''Print all the bodies of the selected node as html, in concatenation mode (rich text)'''
+        doc = self.html_document(self.getBodies(self.c.p))
         self.print_doc(doc)
     #@+node:ekr.20150419124739.27: *4* pr.print_tree_nodes
     def print_tree_nodes (self,event=None):
