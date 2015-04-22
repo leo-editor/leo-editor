@@ -1602,6 +1602,8 @@ You're going to get some journalists excited, and those are your reviews.
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20150410043718.1: *3* Easy
+@language rest
+@wrap
 .. @+node:ekr.20150412032405.1: *4* * Support @history-list
 Adds all commands to the history list, in order.
 .. @+node:ekr.20081119132758.2: *4* * Support @ifgui in settings trees
@@ -1681,6 +1683,8 @@ It looks possible,
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20150417034957.1: *3* Bugs
+@language rest
+@wrap
 .. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
@@ -1730,6 +1734,8 @@ No real problem: import-file creates the missing @file tree. However, it assigns
 
 My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
 .. @+node:ekr.20150418055421.1: *3* Harder/more important
+@language rest
+@wrap
 .. @+node:ekr.20150418061229.1: *4* * Add QQebView & OpenGl support to viewrendered.py
 OpenGL
 http://doc.qt.io/qt-5/qopenglwidget.html
@@ -1851,6 +1857,8 @@ By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
 .. @+node:ekr.20150410043749.1: *3* Maybe
+@language rest
+@wrap
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
 @language rest # @language python below
