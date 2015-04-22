@@ -1604,6 +1604,15 @@ Encourage them to write in with their unique uses, and publicize them. I bet peo
 .. @+node:ekr.20150410043718.1: *3* Easy
 .. @+node:ekr.20150412032405.1: *4* * Support @history-list
 Adds all commands to the history list, in order.
+.. @+node:ekr.20081119132758.2: *4* * Support @ifgui in settings trees
+@language rest
+
+This can be done now that gui's are created on the command line.
+
+​​Also, @if-os and @if-env aVar == aValue
+
+@language python
+
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
 .. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
@@ -1671,8 +1680,6 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
-This can be done now that gui's are created on the command line.
 .. @+node:ekr.20150417034957.1: *3* Bugs
 .. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
