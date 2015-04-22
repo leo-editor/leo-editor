@@ -4,8 +4,8 @@
 Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 '''
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtWidgets
+import leo.core.leoGlobals
+from leo.core.leoQt import printsupport,QtGui,QtWidgets
 
 #@+others
 #@+node:ekr.20150420120520.1: ** class PrintingController
@@ -31,6 +31,8 @@ class PrintingController:
     #@+node:ekr.20150420073407.1: *4* pr.getPublicCommands
     def getPublicCommands (self):
         '''Add this class's commands to c.commandsDict.'''
+        if not printsupport:
+            return # A null-gui, without print support.
         self.c.commandsDict.update({
         # Preview.
         'preview-body':         self.preview_body,
@@ -63,7 +65,7 @@ class PrintingController:
     #@+node:ekr.20150419124739.11: *4* pr.complex document
     def complex_document(self, nodes, heads=False):
         '''Create a complex document.'''
-        doc = QtWidgets.QTextDocument()
+        doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         contents = ''
         for n in nodes:
@@ -75,7 +77,7 @@ class PrintingController:
     #@+node:ekr.20150419124739.9: *4* pr.document
     def document(self, text, head=None):
         '''Create a Qt document.'''
-        doc = QtWidgets.QTextDocument()
+        doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         text = self.sanitize_html(text)
         if head:
@@ -88,7 +90,7 @@ class PrintingController:
     #@+node:ekr.20150419124739.10: *4* pr.html_document
     def html_document(self, text):
         '''Create an HTML document.'''
-        doc = QtWidgets.QTextDocument()
+        doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
         doc.setHtml(text)
         return doc
@@ -241,13 +243,13 @@ class PrintingController:
     #@+node:ekr.20150419124739.12: *4* pr.print_doc
     def print_doc(self, doc):
         '''Print the document.'''
-        dialog = QtWidgets.QPrintDialog()
-        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+        dialog = printsupport.QPrintDialog()
+        if dialog.exec_() == dialog.Accepted:
             doc.print_(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc):
         '''Preview the document.'''
-        dialog = QtWidgets.QPrintPreviewDialog()
+        dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
         dialog.paintRequested.connect(doc.print_)
         dialog.exec_()

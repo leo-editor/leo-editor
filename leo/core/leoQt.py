@@ -18,10 +18,12 @@ Callers are expected to use the *PyQt5* spellings of modules:
 # Define...
 # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
 # QtDeclarative, Qsci, QtSvg, QtWebKit, QtWebKitWidgets
+# printsupport
 
 import leo.core.leoGlobals as g
 
 strict = False
+trace = True
 
 fail = g.in_bridge
 if fail:
@@ -47,6 +49,7 @@ if fail:
     QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
     phonon = uic = None
     qt_version = '<no version>'
+    printsupport = None
 elif isQt5:
     try:
         from PyQt5 import QtCore
@@ -54,6 +57,7 @@ elif isQt5:
         from PyQt5 import QtWidgets
         from PyQt5.QtCore import QUrl
         QtConst = QtCore.Qt
+        printsupport = Qt
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
 else:
@@ -63,6 +67,7 @@ else:
         from PyQt4.QtCore import QUrl
         QtConst = QtCore.Qt
         QtWidgets = QtGui
+        printsupport = QtWidgets
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
 # Define qt_version
@@ -73,6 +78,9 @@ else:
     if 0:
         import leo.core.leoGlobals as g
         isNewQt = g.CheckVersion(qt_version,'4.5.0')
+        
+if trace:
+    print('leoQt.py: isQt5: %s' % isQt5)
 
 # Define phonon,Qsci,QtSvg,QtWebKit,QtWebKitWidgets,uic.
 # These imports may fail without affecting the isQt5 constant.
