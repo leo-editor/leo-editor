@@ -64,7 +64,6 @@
 <v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="peckj.20130514093558.4062"><vh>@file printing.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
@@ -111,7 +110,6 @@
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
-<v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
@@ -146,6 +144,7 @@
 <v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
 <v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
 <v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
+<v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
 <v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
