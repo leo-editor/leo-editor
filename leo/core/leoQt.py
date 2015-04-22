@@ -23,7 +23,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
 import leo.core.leoGlobals as g
 
 strict = False
-trace = True
+trace = False
 
 fail = g.in_bridge
 if fail:
