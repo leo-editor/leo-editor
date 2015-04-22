@@ -667,6 +667,34 @@ class Commands (object):
         if not g.unitTesting:
             g.es(message)
             g.app.gui.alert(c,message)
+    #@+node:ekr.20150422080541.1: *3* c.backup
+    def backup(self,fileName=None,subFolder=None,useTimeStamp=True):
+        '''
+        Back up the commander's .leo file.
+        The fileName is c.fileName() by default.
+        If subfolder is given, it is joined to the file name.
+        If useTimeStamp is True, append year-month-day-hour-minute to the filename.
+        '''
+        c = self
+        fn = fileName or c.fileName()
+        if not fn:
+            return
+        theDir,base = g.os_path_split(fn)
+        if subFolder:
+            theDir = g.os_path_join(theDir,subFolder)
+        if useTimeStamp:
+            if base.endswith('.leo'):
+                base = base[:-4]
+            stamp = time.strftime("%Y-%m-%d-%H-%M")
+            fn2 = '%s-%s.leo' % (base,stamp)
+        else:
+            fn2 = fn
+        # Save the file.
+        if fn2:
+            path = g.os_path_finalize_join(theDir,fn2)
+            c.saveTo(fileName=path)
+            g.es('in',theDir)
+                # Issues saved message.
     #@+node:ekr.20110605040658.17005: *3* c.check_event
     def check_event (self,event):
 
