@@ -671,7 +671,7 @@ class Commands (object):
     def backup(self,fileName=None,useTimeStamp=True):
         '''
         Back up given fileName or c.fileName().
-        If useTimeStamp is True, append year-month-day-hour-minute to the filename.
+        If useTimeStamp is True, append a timestamp to the filename.
         '''
         c = self
         fn = fileName or c.fileName()
@@ -686,11 +686,11 @@ class Commands (object):
             path = g.os_path_finalize_join(theDir,fn)
         else:
             path = fn
-        # Save the file.
-        if fn:
-            c.saveTo(fileName=fn)
-            g.es('in',theDir)
+        if path:
+            # Save the outline to the .
+            c.saveTo(fileName=path)
                 # Issues saved message.
+            g.es('in',theDir)
     #@+node:ekr.20110605040658.17005: *3* c.check_event
     def check_event (self,event):
 
