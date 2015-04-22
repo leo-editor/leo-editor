@@ -668,24 +668,20 @@ class Commands (object):
             g.es(message)
             g.app.gui.alert(c,message)
     #@+node:ekr.20150422080541.1: *3* c.backup
-    def backup(self,fileName=None,subFolder=None,useTimeStamp=True):
+    def backup(self,fileName=None,useTimeStamp=True):
         '''
-        Back up the commander's .leo file.
-        The fileName is c.fileName() by default.
-        If subfolder is given, it is joined to the file name.
+        Back up given fileName or c.fileName().
         If useTimeStamp is True, append year-month-day-hour-minute to the filename.
         '''
         c = self
         fn = fileName or c.fileName()
         if not fn:
             return
-        theDir,base = g.os_path_split(fn)
-        if subFolder:
-            theDir = g.os_path_join(theDir,subFolder)
         if useTimeStamp:
+            theDir,base = g.os_path_split(fn)
             if base.endswith('.leo'):
                 base = base[:-4]
-            stamp = time.strftime("%Y-%m-%d-%H-%M")
+            stamp = time.strftime("%Y%m%d-%H%M%S")
             fn2 = '%s-%s.leo' % (base,stamp)
         else:
             fn2 = fn
