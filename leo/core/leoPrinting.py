@@ -125,7 +125,10 @@ class PrintingController:
         self.preview_doc(doc)
     #@+node:ekr.20150419124739.19: *4* pr.preview_html
     def preview_html (self,event=None):
-        '''Preview the body of the selected text as html (rich text)'''
+        '''
+        Preview the body of the selected text as html. The body must be valid
+        html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.c.p.b)
         self.preview_doc(doc)
     #@+node:peckj.20150421084706.1: *4* pr.preview_expanded_body
@@ -135,7 +138,10 @@ class PrintingController:
         self.preview_doc(doc)
     #@+node:peckj.20150421084719.1: *4* pr.preview_expanded_html
     def preview_expanded_html (self,event=None):
-        '''Preview all the bodies of the selected node as html, in expansion mode (rich text)'''
+        '''
+        Preview all the expanded bodies of the selected node as html. The
+        expanded text must be valid html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.expand(self.c.p))
         self.preview_doc(doc)
     #@+node:ekr.20150419124739.31: *4* pr.preview_marked_bodies
@@ -146,7 +152,10 @@ class PrintingController:
         self.preview_doc(doc)
     #@+node:ekr.20150420081906.1: *4* pr.preview_marked_html
     def preview_marked_html (self,event=None):
-        '''Preview the html in the bodies of the marked nodes..'''
+        '''
+        Preview the concatenated bodies of the marked nodes. The concatenated
+        bodies must be valid html, including <html> and <body> elements.
+        '''
         nodes = [p.v for p in self.c.all_positions() if p.isMarked()]
         s = '\n'.join([z.b for z in nodes])
         doc = self.html_document(s)
@@ -176,7 +185,10 @@ class PrintingController:
         self.preview_doc(doc)
     #@+node:ekr.20150420081923.1: *4* pr_preview_tree_html
     def preview_tree_html (self,event=None):
-        '''Preview all the bodies of the selected node as html (rich text)'''
+        '''
+        Preview all the bodies of the selected node as html. The concatenated
+        bodies must valid html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.getBodies(self.c.p))
         self.preview_doc(doc)
     #@+node:ekr.20150420073128.1: *3* pr.Print
@@ -187,7 +199,10 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:ekr.20150419124739.18: *4* pr.print_html
     def print_html (self,event=None):
-        '''Print the selected node body as html (rich text)'''
+        '''
+        Print the body of the selected text as html. The body must be valid
+        html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.c.p.b)
         self.print_doc(doc)
     #@+node:peckj.20150421084548.1: *4* pr.print_expanded_body
@@ -197,7 +212,10 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:peckj.20150421084636.1: *4* pr.print_expanded_html
     def print_expanded_html (self,event=None):
-        '''Print all the bodies of the selected node as html, in expansion mode (rich text)'''
+        '''
+        Preview all the expanded bodies of the selected node as html. The
+        expanded text must be valid html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.expand(self.c.p))
         self.print_doc(doc)
     #@+node:ekr.20150419124739.30: *4* pr.print_marked_bodies
@@ -208,7 +226,10 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:ekr.20150420085054.1: *4* pr.print_marked_html
     def print_marked_html (self,event=None):
-        '''Print the bodies of all marked nodes as html.'''
+        '''
+        Print the concatenated bodies of the marked nodes. The concatenated
+        bodies must be valid html, including <html> and <body> elements.
+        '''
         nodes = [p.v for p in self.c.all_positions() if p.isMarked()]
         s = '\n'.join([z.b for z in nodes])
         doc = self.html_document(s)
@@ -231,7 +252,10 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:ekr.20150420084948.1: *4* pr.print_tree_html
     def print_tree_html (self,event=None):
-        '''Print all the bodies of the selected node as html, in concatenation mode (rich text)'''
+        '''
+        Print all the bodies of the selected node as html. The concatenated
+        bodies must valid html, including <html> and <body> elements.
+        '''
         doc = self.html_document(self.getBodies(self.c.p))
         self.print_doc(doc)
     #@+node:ekr.20150419124739.27: *4* pr.print_tree_nodes
