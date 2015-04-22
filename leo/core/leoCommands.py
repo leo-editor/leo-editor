@@ -677,18 +677,18 @@ class Commands (object):
         fn = fileName or c.fileName()
         if not fn:
             return
+        theDir,base = g.os_path_split(fn)
         if useTimeStamp:
-            theDir,base = g.os_path_split(fn)
             if base.endswith('.leo'):
                 base = base[:-4]
             stamp = time.strftime("%Y%m%d-%H%M%S")
-            fn2 = '%s-%s.leo' % (base,stamp)
+            fn = '%s-%s.leo' % (base,stamp)
+            path = g.os_path_finalize_join(theDir,fn)
         else:
-            fn2 = fn
+            path = fn
         # Save the file.
-        if fn2:
-            path = g.os_path_finalize_join(theDir,fn2)
-            c.saveTo(fileName=path)
+        if fn:
+            c.saveTo(fileName=fn)
             g.es('in',theDir)
                 # Issues saved message.
     #@+node:ekr.20110605040658.17005: *3* c.check_event
