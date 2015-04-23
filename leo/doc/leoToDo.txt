@@ -1488,13 +1488,16 @@ The homebrew docs say that beta releases are not allowed.
 
 https://github.com/leo-editor/leo-editor/issues/106
 
+Leo template
 https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
 
 http://brew.sh/
 
+Cookbook
 https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
 
-Do this after creating each official release.
+Cheat sheet
+https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
 
 @language ruby
 @tabwidth -2
