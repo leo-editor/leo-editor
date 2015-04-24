@@ -1496,6 +1496,9 @@ http://brew.sh/
 Homebrew readme (short summary)
 https://github.com/Homebrew/homebrew/tree/master/share/doc/homebrew#readme
 
+Pull request
+https://github.com/Homebrew/homebrew/pull/38980/files#r29035052
+
 Cookbook
 https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
 
@@ -1538,6 +1541,33 @@ class Leo < Formula
   end
 end
 .. @+node:ekr.20141210123805.5: *4* brew install (new)
+class Leo < Formula
+  homepage "http://leoeditor.com/"
+  url "https://downloads.sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip"
+  sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
+
+  depends_on "pyqt"
+  depends_on "enchant" => :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + `%x(python -c "import sys;print(sys.version[:3])")`.chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install "leo"
+    bin.install ["launchLeo.py", "profileLeo.py"]
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    # Create, run in and delete a temporary directory.
+    if system "python" "-c" "import leo"
+      onoe "Leo FAILED"
+    else
+      ohai "Leo OK"
+    end
+  end
+end
+.. @+node:ekr.20150424045720.1: *4* brew install (update) (test)
 require 'formula'
 
 class Leo < Formula
@@ -1550,22 +1580,16 @@ class Leo < Formula
 
   depends_on 'pyqt'
   depends_on 'enchant' => :recommended
+  depends_on :python if MacOS.version <= :snow_leopard
+    # Ensure Python 2.6+.
 
   def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+    (lib+"python2.7/site-packages").install "leo"
+    bin.install "launchLeo.py" => "leo" 
   end
 
   test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
+    system "python -c 'import leo'"
   end
 end
 .. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
