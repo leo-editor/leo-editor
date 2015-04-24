@@ -1493,6 +1493,9 @@ https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
 
 http://brew.sh/
 
+Homebrew readme (short summary)
+https://github.com/Homebrew/homebrew/tree/master/share/doc/homebrew#readme
+
 Cookbook
 https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
 
