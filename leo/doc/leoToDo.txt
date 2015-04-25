@@ -1488,14 +1488,6 @@ The homebrew docs say that beta releases are not allowed.
 
 https://github.com/leo-editor/leo-editor/issues/106
 
-Leo template
-https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb
-
-http://brew.sh/
-
-Homebrew readme (short summary)
-https://github.com/Homebrew/homebrew/tree/master/share/doc/homebrew#readme
-
 Pull request
 https://github.com/Homebrew/homebrew/pull/38980/files#r29035052
 
@@ -1505,83 +1497,23 @@ https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cook
 Cheat sheet
 https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
 
+brew audit --strict Leo
+  # run from homebrew folder
+brew install --verbose --debug Leo
+.. @+node:edward.20150425120605.1: *4* ruby istall script
 @language ruby
 @tabwidth -2
-.. @+node:ekr.20141210123805.4: *4* brew install (original)
-require 'formula'
-
+.. @+node:ekr.20150424045720.1: *5* brew install
 class Leo < Formula
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/4.10%20final/Leo-4.10-final.zip'
-  sha1 '1988c54d34d2233eda7ba2faa02066ff02575fec'
-  head 'https://code.launchpad.net/leo-editor', :using => :bzr
-  devel do
-    url 'http://sourceforge.net/projects/leo/files/Leo/4.11-a2/Leo-4.11-a2.zip'
-    sha1 '435c023df4d7b378ba10594a4b46ca83e82fc6b2'
-  end
 
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + %x(python -c 'import sys;print(sys.version[:3])').chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install 'leo'
-    bin.install ['launchLeo.py', 'profileLeo.py']
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    if system "python -c 'import leo'" then
-      onoe 'Leo FAILED'
-    else
-      ohai 'Leo OK'
-    end
-  end
-end
-.. @+node:ekr.20141210123805.5: *4* brew install (new)
-class Leo < Formula
   homepage "http://leoeditor.com/"
-  url "https://downloads.sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip"
+  url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
+  head "https://github.com/leo-editor/leo-editor", :using => :git
 
   depends_on "pyqt"
   depends_on "enchant" => :recommended
-
-  def install
-    # Obtain information on Python installation
-    python_xy = "python" + `%x(python -c "import sys;print(sys.version[:3])")`.chomp
-    python_site_packages = lib + "#{python_xy}/site-packages"
-    python_site_packages.install "leo"
-    bin.install ["launchLeo.py", "profileLeo.py"]
-    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
-  end
-
-  test do
-    # Create, run in and delete a temporary directory.
-    if system "python" "-c" "import leo"
-      onoe "Leo FAILED"
-    else
-      ohai "Leo OK"
-    end
-  end
-end
-.. @+node:ekr.20150424045720.1: *4* brew install (update) (test)
-require 'formula'
-
-class Leo < Formula
-
-  homepage 'http://leoeditor.com/'
-  url 'http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip'
-  sha1 '9a8ca37688e60851b4faea3adfa30aae2156eb9f'
-  
-  head https://github.com/leo-editor/leo-editor, :using => :git
-
-  depends_on 'pyqt'
-  depends_on 'enchant' => :recommended
   depends_on :python if MacOS.version <= :snow_leopard
-    # Ensure Python 2.6+.
 
   def install
     (lib+"python2.7/site-packages").install "leo"
@@ -1589,9 +1521,17 @@ class Leo < Formula
   end
 
   test do
-    system "python -c 'import leo'"
+    system bin/"python", "-c", "import leo"
   end
 end
+.. @+node:edward.20150425123242.1: *5* sha-256 hash
+hex: 2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826
+
+HEX: 2D742F9825959BA5C7624D1179B9F3065E14E055C90272FBCE199F91770DE826
+
+h:e:x: 2d:74:2f:98:25:95:9b:a5:c7:62:4d:11:79:b9:f3:06:5e:14:e0:55:c9:02:72:fb:ce:19:9f:91:77:0d:e8:26
+
+base64: LXQvmCWVm6XHYk0RebnzBl4U4FXJAnL7zhmfkXcN6CY=
 .. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
 @language rest
 @wrap
