@@ -1539,11 +1539,18 @@ You're going to get some journalists excited, and those are your reviews.
 **Start publicizing different ways people use Leo.**
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150410043718.1: *3* Easy
+.. @+node:ekr.20150425135350.1: *3* First
 @language rest
 @wrap
 .. @+node:ekr.20150412032405.1: *4* * Support @history-list
+@language rest
+@wrap
+
 Adds all commands to the history list, in order.
+
+? Inherit from...?
+
+@language python
 .. @+node:ekr.20081119132758.2: *4* * Support @ifgui in settings trees
 @language rest
 
@@ -1553,6 +1560,57 @@ This can be done now that gui's are created on the command line.
 
 @language python
 
+.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+- clean up openWith: make it a class.
+- Fold mod_tempfname into code and test.
+
+Later: preserve cursor positions.
+.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
+@language rest
+@wrap
+
+See http://ipython.org/ipython-doc/stable/development/execution.html
+
+https://github.com/leo-editor/leo-editor/issues/156
+Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
+
+This one is pretty straight forward. If I run this command via Ctrl + B:
+
+for ind in range(5):
+    print("index:" + ind)
+
+Without ILeo I get:
+
+TypeError: cannot concatenate 'str' and 'int' objects
+--------------------
+  line 12: for ind in range(5):
+* line 13:     print("index:" + ind)
+  line 14: #@-leo
+  line 15: 
+
+But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
+
+@language python
+.. @+node:ekr.20150410043718.1: *3* Next
+@language rest
+@wrap
+.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/169
+import-file does not preserve gnx of root @file node
+
+Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
+
+No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
+
+My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
 .. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
@@ -1620,57 +1678,6 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20150417034957.1: *3* Bugs
-@language rest
-@wrap
-.. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
-@language rest
-@wrap
-
-See http://ipython.org/ipython-doc/stable/development/execution.html
-
-https://github.com/leo-editor/leo-editor/issues/156
-Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
-
-This one is pretty straight forward. If I run this command via Ctrl + B:
-
-for ind in range(5):
-    print("index:" + ind)
-
-Without ILeo I get:
-
-TypeError: cannot concatenate 'str' and 'int' objects
---------------------
-  line 12: for ind in range(5):
-* line 13:     print("index:" + ind)
-  line 14: #@-leo
-  line 15: 
-
-But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
-
-@language python
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-- clean up openWith: make it a class.
-- Fold mod_tempfname into code and test.
-
-Later: preserve cursor positions.
-.. @+node:ekr.20150403035558.1: *4* Fix bug 169: import-file does not preserve gnx of root @file node
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/169
-import-file does not preserve gnx of root @file node
-
-Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
-
-No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
-
-My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
 .. @+node:ekr.20150418055421.1: *3* Harder/more important
 @language rest
 @wrap
