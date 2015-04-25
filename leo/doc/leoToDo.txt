@@ -1500,38 +1500,6 @@ https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-f
 brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
-.. @+node:edward.20150425120605.1: *4* ruby istall script
-@language ruby
-@tabwidth -2
-.. @+node:ekr.20150424045720.1: *5* brew install
-class Leo < Formula
-
-  homepage "http://leoeditor.com/"
-  url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
-  sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
-  head "https://github.com/leo-editor/leo-editor", :using => :git
-
-  depends_on "pyqt"
-  depends_on "enchant" => :recommended
-  depends_on :python if MacOS.version <= :snow_leopard
-
-  def install
-    (lib+"python2.7/site-packages").install "leo"
-    bin.install "launchLeo.py" => "leo" 
-  end
-
-  test do
-    system bin/"python", "-c", "import leo"
-  end
-end
-.. @+node:edward.20150425123242.1: *5* sha-256 hash
-hex: 2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826
-
-HEX: 2D742F9825959BA5C7624D1179B9F3065E14E055C90272FBCE199F91770DE826
-
-h:e:x: 2d:74:2f:98:25:95:9b:a5:c7:62:4d:11:79:b9:f3:06:5e:14:e0:55:c9:02:72:fb:ce:19:9f:91:77:0d:e8:26
-
-base64: LXQvmCWVm6XHYk0RebnzBl4U4FXJAnL7zhmfkXcN6CY=
 .. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
 @language rest
 @wrap

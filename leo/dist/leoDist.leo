@@ -75,6 +75,9 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
+<v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
+<v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
+</v>
 </v>
 <v t="ekr.20141118074110.4"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
@@ -1828,6 +1831,30 @@ Edward K. Ream: &lt;a href="mailto:edreamleo@gmail.com"&gt;email&lt;/a&gt;.
 &lt;p&gt;&lt;a HREF=href="http://leoeditor.com/"&gt;Leo 5.1&lt;/a&gt;
 is a PIM, a Python scripting IDE and outliner. (16-Apr-15)
 &lt;/p&gt;
+</t>
+<t tx="ekr.20150425135153.1">@language ruby
+@tabwidth -2
+</t>
+<t tx="ekr.20150425135153.2">class Leo &lt; Formula
+
+  homepage "http://leoeditor.com/"
+  url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
+  sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
+  head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
+
+  depends_on "pyqt"
+  depends_on "enchant" =&gt; :recommended
+  depends_on :python if MacOS.version &lt;= :snow_leopard
+
+  def install
+    (lib+"python2.7/site-packages").install "leo"
+    bin.install "launchLeo.py" =&gt; "leo" 
+  end
+
+  test do
+    system bin/"python", "-c", "import leo"
+  end
+end
 </t>
 </tnodes>
 </leo_file>
