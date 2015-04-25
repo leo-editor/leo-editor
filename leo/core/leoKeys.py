@@ -2217,6 +2217,7 @@ class KeyHandlerClass:
         k.getArgInstance = GetArg(c)
             # a singleton. Defined here so that c.k will exist.
         k.makeAllBindings()
+        k.initCommandHistory()
         k.inited = True
         k.setDefaultInputState()
         k.resetLabel()
@@ -2606,23 +2607,24 @@ class KeyHandlerClass:
     def addToCommandHistory(self,commandName):
         '''Add a name to the command history.'''
         k = self
-        # g.trace(commandName)
         h,i = k.commandHistory,k.commandIndex
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
         k.commandIndex = len(h)-1
+        # g.trace(commandName,h)
     #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryDown(self):
         '''
         Return the first entry if we are at the bottom
-        Otherwise, deccrement the index and return that element.
+        Otherwise, decrement the index and return that element.
         '''
         k = self
         h,i = k.commandHistory,k.commandIndex
         if h:
             if i > 0:
                 i -= 1
+            # g.trace(i,h)
             k.commandIndex = i
             commandName = h[i]
             k.setLabel(k.mb_prefix + commandName)
@@ -2639,7 +2641,15 @@ class KeyHandlerClass:
                 i += 1
             k.commandIndex = i
             commandName = h[i]
+            # g.trace(i,h)
             k.setLabel(k.mb_prefix + commandName)
+    #@+node:ekr.20150425143043.1: *4* k.initCommandHistory
+    def initCommandHistory(self):
+        '''Init command history from @data command-history nodes.'''
+        k,c = self,self.c
+        aList = c.config.getData('history-list') or []
+        for command in reversed(aList):
+            k.addToCommandHistory(command)
     #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self):
         '''Sort the command history.'''

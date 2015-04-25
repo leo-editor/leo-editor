@@ -462,7 +462,6 @@ class ScriptingController:
                         func(p)
                         break
                 p.moveToThreadNext()
-        c.k.sortCommandHistory()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper (self,p,h,statusLine,kind='at-button',verbose=True):
         '''Create a button for a local @button node.'''
@@ -1028,8 +1027,6 @@ class ScriptingController:
         for tag in ('@button-','@command-','@rclick-'):
             if s.startswith(tag):
                 command = s[len(tag):].strip()
-                if args and 'add' in [z.lower() for z in args]:
-                    k.addToCommandHistory(command)
 
                 # Create a *second* func, to avoid collision in c.commandsDict.
                 def registerAllCommandsCallback(event=None,func=func):
