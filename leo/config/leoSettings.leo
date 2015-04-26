@@ -87,7 +87,8 @@
 <v t="ekr.20080312071248.20"><vh>\@command name [@key=value]</vh></v>
 <v t="ekr.20070224073109"><vh>\@enabled-plugins</vh></v>
 <v t="ekr.20060913144412"><vh>\@keys keyset-name</vh></v>
-<v t="ekr.20041119035931"><vh>\@if expression</vh></v>
+<v t="ekr.20150426033400.1"><vh>\@ifenv name,value</vh></v>
+<v t="ekr.20150426031409.1"><vh>\@ifhostname hostname or !hostname</vh></v>
 <v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
 <v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
@@ -864,8 +865,8 @@
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
 <v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
 </v>
-<v t="ekr.20131213135427.21826" a="E"><vh>@menus</vh>
-<v t="ekr.20131213135427.21827" a="E"><vh>@menu &amp;File</vh>
+<v t="ekr.20131213135427.21826"><vh>@menus</vh>
+<v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
@@ -898,7 +899,7 @@
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
 <v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
-<v t="ekr.20150420115709.1" a="E"><vh>@menu Print</vh>
+<v t="ekr.20150420115709.1"><vh>@menu Print</vh>
 <v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
 <v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
 <v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
@@ -2098,10 +2099,6 @@ Creates a user-defined type. For example:
 
 This is much better than using a base type because the dialog creator can
 present the user with a listbox containing only the valid options.</t>
-<t tx="ekr.20041119035931">Acts like an organizer node if the expression evaluates to True, otherwise acts
-like an @ignore node. If the expression is empty thebody text should contain a
-script that will be evaluated (in an empty context).
-</t>
 <t tx="ekr.20041119041019">False: Print sends its output to stdout (console) when doing Execute Script command.
 True:  Print redirected to Leo's log pane when doing Execute Script command.
 </t>
@@ -2314,13 +2311,21 @@ False: Don't issue such messages.
 
 Creates a permanent value that can be tested later with @if. That is, it alters
 the environment in which @if code is executed.</t>
-<t tx="ekr.20041119110141">Same as:
+<t tx="ekr.20041119110141">Enable descendant settings if sys.platform is the given platform name or names.
 
-@if sys.platform == "platform-name":
+Typical platform names are darwin, linux2, win32.
 
-except that it isn't necessary to import sys.
+Case is ignored in platform names.
 
-This would be the natural way to implement platform-dependent settings.</t>
+Examples:
+
+@ifplatform darwwin, linux2
+    Enables descendant settings for MacOs or Linux
+    
+@ifplatform win32
+    Enables descendant settings for Windows
+    
+</t>
 <t tx="ekr.20041120152657"></t>
 <t tx="ekr.20041120152900.2">When the Script Search radio button is selected Leo treats the contents of the
 Search Text as a script to execute whenever any kind of Find command is
@@ -3885,11 +3890,15 @@ True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 
 2. The @data parser adds a newline to every "fragment" if necessary. This doesn't seem to matter for style sheets, but it could matter for other kinds of @data data.
 
-**Example**
+**@data qt-gui-plugin-style-sheet**
 
 The @data qt-gui-plugin-style-sheet node consists of some general comments, with descendant nodes for the body pane, tree pane, etc. etc. There is no limit of nesting: the Plugins node has a child for each plugin that uses style sheets.
 
 This makes debugging style sheets easier. Typically, an error in any part of the style sheet invalidates the whole style sheet. With the new organization, one can swap nodes into or out of the @data node to find the invalid node or nodes.
+
+**@data history-list**
+
+Contains a list, one per line, of command names to be added to command history.  Order is significant.
 </t>
 <t tx="ekr.20080204124255"># For testing only.
 
@@ -9744,6 +9753,35 @@ Note: check-outline always writes error messages to both log and console.</t>
 <t tx="ekr.20150420122804.7"></t>
 <t tx="ekr.20150420122804.8"></t>
 <t tx="ekr.20150420122804.9"></t>
+<t tx="ekr.20150426031409.1">Enables descendant settings depending on the HOSTNAME environmental variable.
+
+Case is ignored in the value of the environment variable.
+
+For example, let h = os.environ('HOSTNAME').lower()
+        
+@ifhostname bob
+    Enables descendant settings if h == 'bob'
+
+@ifhostname !bob
+    Enables descendant settings if h != 'bob'
+</t>
+<t tx="ekr.20150426033400.1">Enables descendant settings depending on the value of an environment variable.
+
+Valid form is:
+
+    @ifenv name,comma-separated-values
+
+Case is significant in the *name* of the environment variable.
+Case is ignored in the *values*.
+
+Examples:
+
+@ifenv HOSTNAME,bob
+    Enables descendant settings if os.environ('HOSTNAME') is 'Bob' or 'bob'
+    
+@ifenv EDITOR,leo,lion
+    Enables descendant settings if os.environ('Editor') is 'Leo' or 'Lion'.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -6,17 +6,18 @@
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
 from leo.plugins.mod_scripting import build_rclick_tree
+
+import os
 import sys
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:
-
     """The base class for settings parsers."""
-
     #@+<< ParserBaseClass data >>
     #@+node:ekr.20041121130043: *3* << ParserBaseClass data >>
-    # These are the canonicalized names.  Case is ignored, as are '_' and '-' characters.
+    # These are the canonicalized names.
+    # Case is ignored, as are '_' and '-' characters.
 
     basic_types = [
         # Headlines have the form @kind name = var
@@ -24,22 +25,24 @@ class ParserBaseClass:
         'float','path','ratio','shortcut','string','strings']
 
     control_types = [
-        'abbrev','buttons','commands','data','enabledplugins','font',
-        'if','ifgui','ifhostname','ifplatform','ignore','mode',
-        'openwith','page','settings','shortcuts',
-        'buttons','menus', # New in Leo 4.4.4.
-        'menuat', 'popup', # New in Leo 4.4.8.
-        'outlinedata', # New in Leo 4.11.1.
+        'abbrev','buttons',
+        'commands','data',
+        'enabledplugins','font',
+        'ifenv','ifhostname','ifplatform',
+        # 'if','ifgui',
+        'ignore',
+        'menus','mode','menuat', 
+        'openwith','outlinedata','page','popup',
+        'settings','shortcuts',
         ]
 
     # Keys are settings names, values are (type,value) tuples.
     settingsDict = {}
     #@-<< ParserBaseClass data >>
-
     #@+others
     #@+node:ekr.20041119204700: *3*  ctor (ParserBaseClass)
     def __init__ (self,c,localFlag):
-
+        '''Ctor for the ParserBaseClass class.'''
         self.c = c
         self.clipBoard = []
         self.localFlag = localFlag
@@ -64,8 +67,9 @@ class ParserBaseClass:
             'directory':    self.doDirectory,
             'enabledplugins': self.doEnabledPlugins,
             'font':         self.doFont,
-            'if':           self.doIf,
+            # 'if':           self.doIf, # Removed in 5.2 b1.
             # 'ifgui':        self.doIfGui,  # Removed in 4.4 b3.
+            'ifenv':        self.doIfEnv, # New in 5.2 b1.
             'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
             'ignore':       self.doIgnore,
@@ -326,19 +330,39 @@ class ParserBaseClass:
                 setKind = key
                 self.set(p,setKind,name,val)
                 if trace and val not in (None,'none','None'): g.trace(key,val)
-    #@+node:ekr.20041120103933: *4* doIf
-    def doIf(self,p,kind,name,val):
-
-        g.trace("'if' not supported yet")
-        return None
-    #@+node:ekr.20041121125416: *4* doIfGui (can never work)
-    #@+at
-    # Alas, @if-gui can't be made to work. The problem is that plugins can
-    # set g.app.gui, but plugins need settings so the leoSettings.leo files
-    # must be parsed before g.app.gui.guiName() is known.
-    #@@c
-
+    #@+node:ekr.20041120103933: *4* doIf (not supported)
     if 0:
+        
+        # Not supported. Use @ifenv instead.
+        
+        def doIf(self,p,kind,name,val):
+            g.trace("'if' not supported yet")
+            return None
+    #@+node:ekr.20150426034813.1: *4* doIfEnv
+    def doIfEnv (self,p,kind,name,val):
+        '''
+        Support @ifenv in @settings trees.
+        
+        Enable descendant settings if the value of os.getenv is in any of the names.
+        '''
+        trace = False
+        aList = name.split(',')
+        if not aList:
+            if trace: g.trace('empty @ifenv')
+            return 'skip'
+        name = aList[0]
+        env = os.getenv(name)
+        env = env.lower().strip() if env else 'none'
+        for s in aList[1:]:
+            if s.lower().strip() == env:
+                g.trace('enabled',name,env,s)
+                return None
+        if trace: g.trace('disabled',name,env,aList[1:])
+        return 'skip'
+    #@+node:ekr.20041121125416: *4* doIfGui (not supported)
+    if 0:
+        # This might work now that Leo supports the --gui command-line argument.
+        # However, it is not needed.
 
         def doIfGui (self,p,kind,name,val):
 
@@ -352,32 +376,41 @@ class ParserBaseClass:
                 return "skip"
     #@+node:dan.20080410121257.2: *4* doIfHostname
     def doIfHostname (self,p,kind,name,val):
-        """headline: @ifhostname bob,!harry,joe
+        '''
+        Support @ifhostname in @settings trees.
 
-        Logical AND with the comma-separated list of host names, NO SPACES.
+        Examples: Let h = os.environ('HOSTNAME')
 
-        descends this node iff:
-            h = os.environ('HOSTNAME')
-            h == 'bob' and h != 'harry' and h == 'joe'"""
-
+        @ifhostname bob
+            Enable descendant settings if h == 'bob'
+        @ifhostname !harry
+            Enable descendant settings if h != 'harry'
+        '''
+        trace = False
         lm = g.app.loadManager
-        h = lm.computeMachineName()
-        names = name.split(',')
-
-        for n in names:
-            if (n[0] == '!' and h == n[1:]) or (h != n):
-                # g.trace('skipping', name)
+        h = lm.computeMachineName().strip()
+        s = name.strip()
+        if s.startswith('!'):
+            if h == s[1:]:
+                if trace: g.trace('disable',name,val)
                 return 'skip'
-
-        return None
-
+        elif h != s:
+            if trace: g.trace('disable',name,val)
+            return 'skip'
+        else:
+            if trace: g.trace('enable',name,val)
+            return None
     #@+node:ekr.20041120104215: *4* doIfPlatform
     def doIfPlatform (self,p,kind,name,val):
-
-        if sys.platform.lower() == name.lower():
-            return None
-        else:
-            return "skip"
+        '''Support @ifplatform in @settings trees.'''
+        trace = False
+        platform = sys.platform.lower()
+        for s in name.split(','):
+            if platform == s.lower():
+                if trace: g.trace('enable',s)
+                return None
+        if trace: g.trace('disable',name)
+        return "skip"
     #@+node:ekr.20041120104215.1: *4* doIgnore
     def doIgnore(self,p,kind,name,val):
 
