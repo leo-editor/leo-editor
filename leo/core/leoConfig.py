@@ -355,7 +355,7 @@ class ParserBaseClass:
         env = env.lower().strip() if env else 'none'
         for s in aList[1:]:
             if s.lower().strip() == env:
-                g.trace('enabled',name,env,s)
+                if trace: g.trace('enabled',name,env,s)
                 return None
         if trace: g.trace('disabled',name,env,aList[1:])
         return 'skip'
