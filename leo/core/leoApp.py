@@ -108,7 +108,10 @@ class ExternalFilesController:
             import time
             t1 = time.time()
         if g.app and not g.app.killed:
-            efc.check_open_with_files()
+            # First, check the open-with files.
+            for d in efc.open_with_files:
+                efc.check_open_with_file(d)
+            # Next, check, all @<file> nodes in all commanders.
             for c in g.app.commanders():
                 efc.check_commander(c)
         if trace:
@@ -403,7 +406,7 @@ class ExternalFilesController:
         result = g.app.gui.runAskYesNoCancelDialog(c,'Update Outline?',s)
         return result.lower() == 'yes'
     #@+node:ekr.20150427144330.1: *3* efc.check
-    #@+node:ekr.20150404045115.1: *4* efc.check_commander
+    #@+node:ekr.20150404045115.1: *4* efc.check_commander & helper
     def check_commander(efc,c):
         '''Check all external files corresponding to @<file> nodes in c.'''
         if not efc.is_enabled(c) or g.unitTesting:
@@ -420,7 +423,7 @@ class ExternalFilesController:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20150403044823.1: *4* efc.check_node
+    #@+node:ekr.20150403044823.1: *5* efc.check_node
     def check_node(efc,c,p):
         '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c,p)
@@ -432,30 +435,29 @@ class ExternalFilesController:
             # Always update the path & time to prevent future warnings.
             efc.time_d[path] = efc.get_mtime(path)
             efc.checksum_d[path] = efc.checksum(path)
-    #@+node:ekr.20150407124259.1: *4* efc.check_open_with_file & helpers
+    #@+node:ekr.20150407124259.1: *4* efc.check_open_with_file & helper
     def check_open_with_file (efc,d):
         '''Update the open-with node given by d.'''
-        c = d.get("c")
-        p = d.get("p")
         path = d.get("path")
         if path and os.path.exists(path):
             time = efc.get_mtime(path)
             if time and time != d.get("time"):
                 d["time"] = time # inhibit endless dialog loop.
-                s = g.readFileIntoEncodedString(path)
-                efc.update_node(c,d,p,path,s)
-    #@+node:ekr.20150407205631.1: *5* efc.update_node
-    def update_node(efc,c,d,p,path,s):
-        '''Update the body text of p to s.'''
+                efc.update_node(d)
+    #@+node:ekr.20150407205631.1: *5* efc.update_node & helper
+    def update_node(efc,d):
+        '''Update the body text of d['p'] to the contents of d['path'].'''
         trace = False and not g.unitTesting
         if trace: efc.dump_d(d,'update_node')
-        # Convert body and s to whatever encoding is in effect.
-        encoding = d.get("encoding",None)
-        old_body = d.get("body")
+        c = d.get('c')
+        p = d.get('p')
+        path = d.get('path')
+        encoding = d.get('encoding',None)
+        old_body = d.get('body')
         body = p.b
         body = g.toEncodedString(body,encoding,reportErrors=True)
+        s = g.readFileIntoEncodedString(path)
         s = g.toEncodedString(s,encoding,reportErrors=True)
-        # sfn = g.shortFileName(path)
         conflict = body not in (old_body,s)
         update = s != body
         if conflict:
@@ -477,18 +479,13 @@ class ExternalFilesController:
             d['body'] = s
             p.b = g.toUnicode(s,encoding=encoding)
             efc.finish_update_from_file(c,p)
-    #@+node:ekr.20150407211506.1: *5* efc.update_from_file
+    #@+node:ekr.20150407211506.1: *6* efc.finish_update_from_file
     def finish_update_from_file(efc,c,p):
         '''Complete updating p.b from s.'''
         if c.config.getBool('open_with_goto_node_on_update'):
             c.selectPosition(p)
         if c.config.getBool('open_with_save_on_update'):
             c.save()
-    #@+node:ekr.20150405224610.1: *4* efc.check_open_with_files
-    def check_open_with_files(efc):
-        '''Check all open-with files for changes.'''
-        for d in efc.open_with_files:
-            efc.check_open_with_file(d)
     #@+node:ekr.20150427144448.1: *3* efc.path...
     #@+node:ekr.20150407141601.1: *4* efc.forget_path
     def forget_path(efc,path):
