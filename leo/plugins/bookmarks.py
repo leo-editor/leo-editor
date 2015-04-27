@@ -8,6 +8,23 @@ This plugin has two bookmark related functions.  It manages nodes that
 contain bookmarks, and can also display those nodes in a special
 bookmarks pane / panel / subwindow.
 
+Bookmark pane setup
+-------------------
+
+You can't set a bookmark using the bookmark pane view until you have designated
+a node to be a root of a bookmark subtree. This is done by the "show" item in
+the bookmarks menu or by the bookmarks-show command. This creates a pane for
+displaying bookmarks and marks the selected node as the active bookmarks root
+node for the outline. Initially the pane is completely blank. It is a good idea
+to shrink this pane to one or two lines and then to save the current layout.
+If you try to set a bookmark before doing a "bookmarks show," you will see the
+error message "Bookmarks not active for this outline" in the log pane.
+
+You can have several bookmark root nodes in one file. Each with its own bookmark
+pane. Any of the bookmark panes can be used to go to a bookmark. But you can
+only add bookmarks to the most recently designated bookmark root. The intended
+use of the bookmarks plugin is that there is only one bookmarks pane per file.
+
 General bookmark commands
 -------------------------
 
