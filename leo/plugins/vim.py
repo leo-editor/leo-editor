@@ -312,13 +312,14 @@ class VimCommander:
         args = [self.vim_exe,"--servername","LEO",remote_arg,cursor_arg]
         if self.trace: g.trace('c.openWith(%s)' % args)
         d = {'args':args,
-             'kind':'subprocess.Popen',
+             'entire_file': self.entire_file,
              'ext':None,
+             'kind':'subprocess.Popen',
              'p':root.copy(),
              'p.b':body,
         }
         c.openWith(d=d)
-    #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry)
+    #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry: called from ctor)
     def open_in_vim(self):
         '''Open p in vim, or the entire enclosing file if entire_file is True.'''
         p = self.c.p

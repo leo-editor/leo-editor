@@ -4841,9 +4841,8 @@ static exit_values_ty indent_main_loop(void)
 }
 #@+node:ekr.20100209155559.5386: *4* @test efc.create_temp_file
 efc = g.app.externalFilesController
-ext = '.py'
-path = efc.temp_file_path (c,p,ext)
-fn = efc.create_temp_file(p.b,c,p,path,ext)
+d = {'ext':'.py',}
+fn = efc.create_temp_file(c,d,p)
 assert g.os_path_exists(fn),fn
 efc.shut_down()
 assert not g.os_path_exists(fn),fn

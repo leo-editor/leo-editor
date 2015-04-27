@@ -34,8 +34,10 @@ brew install --verbose --debug Leo
 
 https://github.com/leo-editor/leo-editor/issues/165
 
-- clean up openWith: make it a class.
-- Fold mod_tempfname into code and test.
+vim-open-file, if called while in a node associated with an external file, would open the *file* for editing.
+
+- (done) c.openWith now just calls g.app.externalFilesController.open_with.
+- (done) efc.temp_file_path contains code in mod_tempfname plugin.
 
 Later: preserve cursor positions.
 .. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
