@@ -10023,7 +10023,7 @@ def param_doc(k=None):
         indent = '        '
     if k in _values and _values[k]:
         return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
-            ["%s- `%s`: describe %s" % (
+            ["%s- `%s`: &lt;|describe %s|&gt;" % (
                 indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
              ) for i in _values[k].split(',')]))
     return ""
