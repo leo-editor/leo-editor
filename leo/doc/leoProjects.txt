@@ -2,10 +2,9 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20150417044242.1: ** 5.2-b1
-.. @+node:ekr.20150412053053.1: *3* Finished leoOPML plugin
-.. @+node:ekr.20150416060248.1: *3* Allow Leo directives in @data abbreviations-subst-env
-The fix was to create a dummy root position in abbrev.init_env.
-.. @+node:ekr.20150420130845.1: *3* Added File:Print menus
+.. @+node:ekr.20150427042446.1: *3* Features
+.. @+node:ekr.20150412053053.1: *4* Finished leoOPML plugin
+.. @+node:ekr.20150420130845.1: *4* Added File:Print menus
 jasonic
 
 Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
@@ -13,26 +12,13 @@ Leo deserves good friendly printing features which anyone can use. At the moment
 print-to-web (htmlize) should definitely be on Leo's missing PRINT MENU.
 
 Having a little library of export scripts--well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20150422124650.1: *3* Added c.backup
+.. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
+The fix was to create a dummy root position in abbrev.init_env.
+.. @+node:ekr.20150422124650.1: *4* Added c.backup
 Useful for per-file backups.
-.. @+node:ekr.20150417045902.1: *3* Recover from orphan bit in leoPyBad.leo
-Rev dc1bf6f
-
-The orphan bit was set in @file leoGlobals.py.
-This prevented the file from being updated.
-
-Changed:
-- at.read.
-- at.readAll
-- fc.putVnode no longer writes orphan bits.
-. VNode constants section: # unused    = 0x10 # (was orphanBit)
-.. @+node:ekr.20150417053733.1: *3* Fixed @tabwidth bug
-Using c.tab_width is wrong: it is the *default* tab width.
-
-Created c.getTabWidth()
-.. @+node:ekr.20150425135844.1: *3* Added support for @data history-list
+.. @+node:ekr.20150425135844.1: *4* Added support for @data history-list
 Added a call to k.initCommandHistory to k.finishCreate.
-.. @+node:ekr.20150426052139.1: *3* Added @ifenv, improved @ifplatform & @ifhostname
+.. @+node:ekr.20150426052139.1: *4* Added @ifenv, improved @ifplatform & @ifhostname
 @language rest
 @wrap
 
@@ -74,7 +60,23 @@ Includes descendant settings if os.environ('HOSTNAME') == name
 @ifhostname !name
 
 Includes descendant settings if os.environ('HOSTNAME') != name
-.. @+node:ekr.20150403035558.1: *3* Fixed bug 169: import-file does not preserve gnx of root @file node
+.. @+node:ekr.20150427042510.1: *3* Bugs Fixed
+.. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
+Rev dc1bf6f
+
+The orphan bit was set in @file leoGlobals.py.
+This prevented the file from being updated.
+
+Changed:
+- at.read.
+- at.readAll
+- fc.putVnode no longer writes orphan bits.
+. VNode constants section: # unused    = 0x10 # (was orphanBit)
+.. @+node:ekr.20150417053733.1: *4* Fixed @tabwidth bug
+Using c.tab_width is wrong: it is the *default* tab width.
+
+Created c.getTabWidth()
+.. @+node:ekr.20150403035558.1: *4* Fixed bug 169: import-file does not preserve gnx of root @file node
 @language rest
 @wrap
 
