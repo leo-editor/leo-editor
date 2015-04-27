@@ -1235,7 +1235,7 @@ class LeoApp:
             "scheme"        : "scm",
             "sgml"          : "sgml",
             "shell"         : "sh", # DS 4/1/04
-            "shellscript"   : "sh",
+            "shellscript"   : "bash",
             "shtml"         : "ssi", # Only one extension is valid: .shtml
             "smalltalk"     : "sm",
             "splus"         : "splus",
@@ -1293,6 +1293,7 @@ class LeoApp:
             "awk":      "awk",
             "b":        "b",
             "bas":      "rapidq", # fil 2004-march-11
+            "bash":     "shellscript",
             "bat":      "batch",
             "bbj":      "bbj",
             "bcel":     "bcel",
@@ -1389,7 +1390,6 @@ class LeoApp:
             "scpt":     "applescript",
             "sgml":     "sgml",
             "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
-            # "sh":     "shellscript",
             "shtml":    "shtml",
             "sm":       "smalltalk",
             "splus":    "splus",
