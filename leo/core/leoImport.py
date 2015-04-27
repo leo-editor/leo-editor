@@ -766,9 +766,12 @@ class LeoImportCommands:
 
     #@+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None,command='Import'):
-        # Not a command.  It must *not* have an event arg.
-        # command is None when this is called to import a file from the command line.
-        c = self.c ; u = c.undoer ; at = c.atFileCommands
+        '''
+        Import one or more external files.
+        This is not a command.  It must *not* have an event arg.
+        command is None when importing from the command line.
+        '''
+        at,c,u = self.c.atFileCommands,self.c,self.c.undoer
         current = c.p or c.rootPosition()
         self.tab_width = c.getTabWidth(current)
         if not paths:
@@ -778,24 +781,17 @@ class LeoImportCommands:
         for fileName in paths:
             fileName = fileName.replace('\\','/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
-            #@+<< set isThin if fileName is a thin derived file >>
-            #@+node:ekr.20040930135204: *5* << set isThin if fileName is a thin derived file >>
-            # 2011/10/09: g.os.path.normpath converts to *back* slashes!
-
-            # fileName = g.os_path_normpath(fileName)
-
-            # scanHeaderForThin now does all the work.
             isThin = at.scanHeaderForThin(fileName)
-            #@-<< set isThin if fileName is a thin derived file >>
+            # g.trace('isThin',isThin,fileName)
             if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
-                # 2010/10/09: create @file node, not a deprecated @thin node.
+                # Create @file node, not a deprecated @thin node.
                 p.initHeadString("@file " + fileName)
-                at.read(p)
+                at.read(p,force=True)
             else:
                 p.initHeadString("Imported @file " + fileName)
-                at.read(p,importFileName=fileName)
+                at.read(p,importFileName=fileName,force=True)
             p.contract()
             p.setDirty() # 2011/10/09: tell why the file is dirty!
             if command: u.afterInsertNode(p,command,undoData)

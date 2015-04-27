@@ -1539,6 +1539,7 @@ You're going to get some journalists excited, and those are your reviews.
 **Start publicizing different ways people use Leo.**
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
+.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
 .. @+node:ekr.20150325052301.1: *3* Fix bug 165: vim-open-file command
 @language rest
 @wrap
@@ -1575,19 +1576,7 @@ TypeError: cannot concatenate 'str' and 'int' objects
 But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
 
 @language python
-.. @+node:ekr.20150403035558.1: *3* Fix bug 169: import-file does not preserve gnx of root @file node
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/169
-import-file does not preserve gnx of root @file node
-
-Somehow @file leoBridge.py got dropped out of my local copy of LeoPyRef.leo recently, and that means that LeoPyRef.leo also lacks @file leoBridge.py.
-
-No real problem: import-file creates the missing @file tree. However, it assigns a new gnx to the root node. That's not best: when I write the file the external file gets the new gnx, which destroys a little bit of history, the date at which leoBridge.py was created. So it would be better if import-file preserves the gnx.
-
-My workaround was simply to copy the gnx from the external file into the .leo file. Ctrl-Shift-W on leoBridge.py reports no change. As does git. But it would be better if import-file did this copy :-)
-.. @+node:ekr.20150410043718.1: *3* Next
+.. @+node:ekr.20150410043718.1: *3* Next (4)
 @language rest
 @wrap
 .. @+node:ekr.20150211131925.4: *4* auto-close quotes
@@ -1657,10 +1646,10 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20150418055421.1: *3* Harder/more important
+.. @+node:ekr.20150418055421.1: *3* Harder/more important (9)
 @language rest
 @wrap
-.. @+node:ekr.20150418061229.1: *4* * Add QQebView & OpenGl support to viewrendered.py
+.. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
 OpenGL
 http://doc.qt.io/qt-5/qopenglwidget.html
 
@@ -1677,13 +1666,13 @@ Create one QWebView window. zoom it in to have large fonts.
 Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
 
 Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20150412043739.1: *4* * Emulate IPython's display framework
+.. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
 Render to tex, pdf, rst, etc.
 
 c.display(x) displays object x. Support plotting objects x.
 
 Create IPython-like demo.
-.. @+node:ekr.20150408193842.1: *4* * Limit searches so clones are found at most once
+.. @+node:ekr.20150408193842.1: *4* Limit searches so clones are found at most once
 @language rest
 
 Must experiment.
@@ -1696,7 +1685,6 @@ gcfa: global clone-find-all
 cfa: local clone-all.
 sc: set-context.
 
-.. @+node:ekr.20150412034943.1: *4* * Show what rST & css can do in Leo
 .. @+node:ekr.20150420071826.1: *4* Auto resize find panel
 .. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
@@ -1780,7 +1768,7 @@ http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20150410043749.1: *3* Maybe
+.. @+node:ekr.20150410043749.1: *3* Maybe (6)
 @language rest
 @wrap
 .. @+node:ekr.20141210123805.9: *4* Add support for rope

@@ -1110,7 +1110,6 @@ class AtFile:
     def readOpenFile(self,root,fileName,deleteNodes=False):
         '''
         Read an open derived file.
-
         Leo 4.5 and later can only read 4.x derived files.
         '''
         trace = False and not g.unitTesting
@@ -1119,6 +1118,7 @@ class AtFile:
             # Important: this sets at.encoding, used by at.readLine.
         at.thinFile = thinFile
             # 2010/01/22: use *only* the header to set self.thinFile.
+        if trace: g.trace('1',root.gnx,root.h)
         if deleteNodes and at.shouldDeleteChildren(root,thinFile):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName,root)
@@ -1140,7 +1140,9 @@ class AtFile:
         if root:
             root.v.setVisited() # Disable warning about set nodes.
         at.completeRootNode(firstLines,lastLines,root)
-        if trace: g.trace(at.encoding,fileName)
+        if trace:
+            g.trace('2',root.gnx,root.h)
+            # g.trace(at.encoding,fileName)
         return thinFile
     #@+node:ekr.20041005105605.28: *5* at.completeRootNode & helpers
     def completeRootNode(self,firstLines,lastLines,root):
@@ -1470,33 +1472,9 @@ class AtFile:
     def scanText4 (self,fileName,p,verbose=False):
         """Scan a 4.x derived file non-recursively."""
         at = self
-        trace = False and at.readVersion5 and not g.unitTesting
-        verbose = False
-        #@+<< init ivars for scanText4 >>
-        #@+node:ekr.20041005105605.75: *5* << init ivars for scanText4 >>
-        # Unstacked ivars...
-        at.cloneSibCount = 0
-        at.done = False
-        at.inCode = True
-        at.indent = 0 # Changed only for sentinels.
-        at.lastLines = [] # The lines after @-leo
-        at.leadingWs = ""
-        at.lineNumber = 0
-        at.root = p.copy() # Bug fix: 12/10/05
-        at.rootSeen = False
-        at.updateWarningGiven = False
-
-        # Stacked ivars...
-        at.endSentinelNodeStack = [None]
-        at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
-        at.lastThinNode = None
-        at.out = []
-        at.outStack = []
-        at.thinChildIndexStack = []
-        at.thinNodeStack = []
-        at.v = p.v
-        at.vStack = []
-        #@-<< init ivars for scanText4 >>
+        trace = False and not g.unitTesting
+        verbose = True
+        at.initScanText4(p)
         if trace:
             print('')
             g.trace('filename:',fileName)
@@ -1530,15 +1508,37 @@ class AtFile:
             at.error('The input file appears to be corrupted.')
             g.es_exception()
         if at.errors == 0 and not at.done:
-            #@+<< report unexpected end of text >>
-            #@+node:ekr.20041005105605.76: *5* << report unexpected end of text >>
             assert at.endSentinelStack,'empty sentinel stack'
-
             at.readError(
                 "Unexpected end of file. Expecting %s sentinel" %
                 at.sentinelName(at.endSentinelStack[-1]))
-            #@-<< report unexpected end of text >>
         return at.lastLines
+    #@+node:ekr.20041005105605.75: *5* at.initScanText4
+    def initScanText4(self,p):
+        '''Init all ivars for at.scanText4().'''
+        at = self
+        # Unstacked ivars...
+        at.cloneSibCount = 0
+        at.done = False
+        at.inCode = True
+        at.indent = 0 # Changed only for sentinels.
+        at.lastLines = [] # The lines after @-leo
+        at.leadingWs = ""
+        at.lineNumber = 0
+        at.root = p.copy() # Bug fix: 12/10/05
+        at.rootSeen = False
+        at.updateWarningGiven = False
+        # Stacked ivars...
+        at.endSentinelNodeStack = [None]
+        at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
+        at.lastThinNode = None
+        at.out = []
+        at.outStack = []
+        at.thinChildIndexStack = []
+        at.thinNodeStack = []
+        at.v1 = p.v
+        at.v = p.v
+        at.vStack = []
     #@+node:ekr.20041005105605.77: *5* at.readNormalLine & appendToDocPart
     def readNormalLine (self,s,i=0): # i not used.
 
@@ -1623,6 +1623,12 @@ class AtFile:
         """
         at = self
         gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
+        if at.v1:
+            # Fix bug 169: https://github.com/leo-editor/leo-editor/issues/169
+            # import-file does not preserve gnx of root @file node
+            # g.trace(at.v1.fileIndex,'-->',gnx,at.v1.h)
+            at.v1.fileIndex = gnx
+            at.v1 = None
         if not ok: return
         at.root_seen = True
         # Switch context.
@@ -1637,7 +1643,6 @@ class AtFile:
             assert not at.docOut,'not at.docOut' # Cleared by @-node sentinel.
             at.outStack.append(at.out)
             at.out = []
-
         at.inCode = True
         at.raw = False # End raw mode.
         at.vStack.append(at.v)
@@ -2526,6 +2531,7 @@ class AtFile:
         assert at.readVersion5,'at.readVersion5'
         assert at.thinFile,'at.thinFile'
         assert not at.importing,'not at.importing'
+            # We can be importing when using the import-file command.
         if newLevel > oldLevel:
             assert newLevel == oldLevel + 1,'newLevel == oldLevel + 1'
         else:
