@@ -190,6 +190,7 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
 <v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
+<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>

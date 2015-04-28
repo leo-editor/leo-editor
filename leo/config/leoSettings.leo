@@ -3668,6 +3668,7 @@ viewrendered.py
 # pluginsTest.py
 # pretty_print.py
 # projectwizard.py
+# python_terminal.py
 # qt_quicksearch.py
 # qtframecommands.py
 # quickMove.py
