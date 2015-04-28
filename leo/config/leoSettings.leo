@@ -9795,7 +9795,7 @@ Examples:
     Enables descendant settings if os.environ('Editor') is 'Leo' or 'Lion'.
 </t>
 <t tx="ekr.20150428102831.1"># EKR 2013/09/25: revised docstring and improved get_user().
-# EKR 2015/04/28: added insert() and do().
+# EKR 2015/04/28: added insert() and do(). Split this node into pieces.
 
 @language python
 
@@ -9826,8 +9826,6 @@ The environment will contain the following pre-defined values:
 - `c` and `g`, as usual.
 - `values`: a dict. see ask() and get() below.
 - `_abr`, the abbreviation being expanded.
-
-*Important*: abbreviations should always set x.
 
 """
 
