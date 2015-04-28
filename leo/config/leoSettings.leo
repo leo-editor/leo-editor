@@ -105,7 +105,19 @@
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
-<v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
+<v t="ekr.20150428102831.1"><vh>@data abbreviations-subst-env</vh>
+<v t="ekr.20150428102831.4"><vh>ask</vh></v>
+<v t="ekr.20150428102831.12"><vh>close_xml</vh></v>
+<v t="ekr.20150428102831.13"><vh>django_tag</vh></v>
+<v t="ekr.20150428102831.2"><vh>do</vh></v>
+<v t="ekr.20150428102831.8"><vh>file_name</vh></v>
+<v t="ekr.20150428102831.5"><vh>get</vh></v>
+<v t="ekr.20150428102831.9"><vh>in_class</vh></v>
+<v t="ekr.20150428102831.3"><vh>insert</vh></v>
+<v t="ekr.20150428102831.11"><vh>long_word</vh></v>
+<v t="ekr.20150428102831.10"><vh>param_doc</vh></v>
+<v t="ekr.20150428102831.7"><vh>user_name</vh></v>
+</v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
@@ -9782,6 +9794,190 @@ Examples:
 @ifenv EDITOR,leo,lion
     Enables descendant settings if os.environ('Editor') is 'Leo' or 'Lion'.
 </t>
+<t tx="ekr.20150428102831.1"># EKR 2013/09/25: revised docstring and improved get_user().
+# EKR 2015/04/28: added insert() and do().
+
+@language python
+
+"""
+
+**Important**: scripting abbreviations are in effect only if the following
+setting is in effect::
+    
+    @bool enable-abbreviations = True
+    
+and one (or both) of the following are in effect::
+    
+    @bool scripting-at-script-nodes = True
+    @bool scripting-abbreviations = True
+
+This node defines the environment in which substitution scripts are
+evaluated. For example, if this node contains `import time`, then an
+abbreviation like::
+
+    date;;={|{import time;x=time.asctime()}|}
+
+can be written more simply as::
+
+    date;;={|{x=time.asctime()}|}
+
+The environment will contain the following pre-defined values:
+
+- `c` and `g`, as usual.
+- `values`: a dict. see ask() and get() below.
+- `_abr`, the abbreviation being expanded.
+
+*Important*: abbreviations should always set x.
+
+"""
+
+# helpful imports
+import os
+import sys
+import time
+import datetime
+
+# globals
+try:
+    import pwd  # for full name of user in templates
+except:
+    pwd = None
+try:
+    _user_name = os.environ['LOGNAME']
+    if pwd and _user_name:
+        _user_name = pwd.getpwnam(_user_name).pw_gecos.rstrip(',')
+except KeyError:
+    _user_name = None
+</t>
+<t tx="ekr.20150428102831.10">def param_doc(k=None):
+    """make an epydoc / rst style parameter documentation block"""
+    if not k:
+        k = "Params, comma sep."
+        indent = '    '
+    else:  # assume in an __init__ def'n
+        indent = '        '
+    if k in _values and _values[k]:
+        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
+            ["%s- `%s`: &lt;|describe %s|&gt;" % (
+                indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
+             ) for i in _values[k].split(',')]))
+    return ""
+</t>
+<t tx="ekr.20150428102831.11">def long_word():
+    """example of an abbreviation substitution which inspects
+    the current content of the body text, see `;;;` example
+    in @@data abbreviations-examples
+    """
+    words = c.p.b.split()
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    s = []
+    while i and b[i].isalpha():
+        s[0:0] = b[i]
+        i -= 1
+    s = ''.join(s)
+    for i in words:
+        if i.startswith(s) and i != s:
+            return i[len(s):]
+    return ''
+</t>
+<t tx="ekr.20150428102831.12">def close_xml():
+    """simple, but usually right, code to close open XML tags"""
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    skips = 1
+    while i and skips:
+        s = []
+        while i and b[i] != '&gt;':
+            i -= 1
+        i -= 1
+        while i and (b[i] != '&lt;' or (s and b[i] == '&lt;' and s[0] == '/')):
+            s[0:0] = b[i]
+            i -= 1
+            if s and s[0] == '&lt;' and len(s) &gt; 1 and s[1] == '/':
+                skips += 1  # a closed tag indicates search one more tag
+        skips -= 1
+    s = ''.join([i if i.isalpha() else ' ' for i in s])
+    if s.strip():
+        return "&lt;/%s&gt;" % (s.split(None, 1)[0])
+    else:
+        return "&lt;/"
+</t>
+<t tx="ekr.20150428102831.13">def django_tag():
+    """expand {block content} to 
+       {% block content %}\n{% end_block content %} with proper
+       indentation (for Django web templates)"""
+    from PyQt4 import QtCore
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    s = []
+    while i and b[i] != '{':
+        s[0:0] = b[i]
+        i -= 1
+    start = i
+    s = ''.join(s)
+    indent = 0
+    while i and b[i] != '\n':
+        indent += 1
+        i -= 1
+    if indent:
+        indent -= 1
+    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
+        c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
+            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
+        )
+    QtCore.QTimer.singleShot(0, later)
+</t>
+<t tx="ekr.20150428102831.2">def do(commandName):
+    '''Execute a command by name.'''
+    c.k.simulateCommand(commandName,event=None)
+</t>
+<t tx="ekr.20150428102831.3">def insert(s):
+    '''Insert the string s in the current widget.'''
+    try:
+        w = c.abbrevCommands.w
+        if w:
+            i = w.getInsertPoint()
+            w.insert(i,s)
+    except AttributeError:
+        pass
+</t>
+<t tx="ekr.20150428102831.4">def ask(s, default=""):
+    """Ask, always, for a value for template field 's'"""
+    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
+    _values[s] = x
+    return x
+</t>
+<t tx="ekr.20150428102831.5">def get(s, default=""):
+    """Ask for template field 's' only if not already known"""
+    if s in _values:
+        return _values[s]
+    else:
+        return ask(s, default=default)
+</t>
+<t tx="ekr.20150428102831.7">def user_name():
+    """get user's full name if available"""
+    global _user_name
+    if not _user_name:
+        _user_name = ask('LOGNAME','LOGNAME')
+    return _user_name
+</t>
+<t tx="ekr.20150428102831.8">def file_name():
+    """dafault name of this file if implied by headline"""
+    if c.p.h.endswith(".py"):
+        return g.os_path_split(c.p.h)[-1]
+    return ".py"
+</t>
+<t tx="ekr.20150428102831.9">def in_class():  # return "self, " if in a class definition
+    """return "self" if in a class definition (from headline)"""
+    for nd in c.p.self_and_parents_iter():
+        if nd.h.startswith('class'):
+            return "self, "
+    return ""
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -9926,176 +10122,6 @@ See also abbreviations-subst-env.
 <t tx="tbrown.20120820202856.25329">See abbreviations-subst-start.  This setting,
 abbreviations-subst-end, has no effect if
 abbreviations-subst-start is not set.</t>
-<t tx="tbrown.20120820202856.25330"># Modified by EKR 2013/09/25: revised docstring and improved get_user().
-
-@language python
-
-"""
-
-**Important**: scripting abbreviations are in effect only if the following
-setting is in effect::
-    
-    @bool enable-abbreviations = True
-    
-and one (or both) of the following are in effect::
-    
-    @bool scripting-at-script-nodes = True
-    @bool scripting-abbreviations = True
-
-This node defines the environment in which substitution scripts are
-evaluated. For example, if this node contains `import time`, then an
-abbreviation like::
-
-    date;;={|{import time;x=time.asctime()}|}
-
-can be written more simply as::
-
-    date;;={|{x=time.asctime()}|}
-
-The environment will contain the following pre-defined values:
-
-- `c` and `g`, as usual.
-- `values`: a dict. see ask() and get() below.
-- `_abr`, the abbreviation being expanded.
-
-"""
-
-# helpful imports
-import os
-import sys
-import time
-import datetime
-
-# Helpers for the class, def etc. template abbreviations in @data abbreviations-examples.
-
-try:
-    import pwd  # for full name of user in templates
-except:
-    pwd = None
-
-def ask(s, default=""):
-    """Ask, always, for a value for template field 's'"""
-    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
-    _values[s] = x
-    return x
-
-def get(s, default=""):
-    """Ask for template field 's' only if not already known"""
-    if s in _values:
-        return _values[s]
-    else:
-        return ask(s, default=default)
-  
-# EKR: don't crash if os.environ['LOGNAME'] does not exist.
-try:
-    _user_name = os.environ['LOGNAME']
-    if pwd and _user_name:
-        _user_name = pwd.getpwnam(_user_name).pw_gecos.rstrip(',')
-except KeyError:
-    _user_name = None
-
-def user_name():
-    """get user's full name if available"""
-    global _user_name
-    if not _user_name:
-        _user_name = ask('LOGNAME','LOGNAME')
-    return _user_name
-
-def file_name():
-    """dafault name of this file if implied by headline"""
-    if c.p.h.endswith(".py"):
-        return g.os_path_split(c.p.h)[-1]
-    return ".py"
-
-def in_class():  # return "self, " if in a class definition
-    """return "self" if in a class definition (from headline)"""
-    for nd in c.p.self_and_parents_iter():
-        if nd.h.startswith('class'):
-            return "self, "
-    return ""
-
-def param_doc(k=None):
-    """make an epydoc / rst style parameter documentation block"""
-    if not k:
-        k = "Params, comma sep."
-        indent = '    '
-    else:  # assume in an __init__ def'n
-        indent = '        '
-    if k in _values and _values[k]:
-        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
-            ["%s- `%s`: &lt;|describe %s|&gt;" % (
-                indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
-             ) for i in _values[k].split(',')]))
-    return ""
-
-def long_word():
-    """example of an abbreviation substitution which inspects
-    the current content of the body text, see `;;;` example
-    in @@data abbreviations-examples
-    """
-    words = c.p.b.split()
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
-    b = c.p.b
-    s = []
-    while i and b[i].isalpha():
-        s[0:0] = b[i]
-        i -= 1
-    s = ''.join(s)
-    for i in words:
-        if i.startswith(s) and i != s:
-            return i[len(s):]
-    return ''
-
-def close_xml():
-    """simple, but usually right, code to close open XML tags"""
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
-    b = c.p.b
-    skips = 1
-    while i and skips:
-        s = []
-        while i and b[i] != '&gt;':
-            i -= 1
-        i -= 1
-        while i and (b[i] != '&lt;' or (s and b[i] == '&lt;' and s[0] == '/')):
-            s[0:0] = b[i]
-            i -= 1
-            if s and s[0] == '&lt;' and len(s) &gt; 1 and s[1] == '/':
-                skips += 1  # a closed tag indicates search one more tag
-        skips -= 1
-    s = ''.join([i if i.isalpha() else ' ' for i in s])
-    if s.strip():
-        return "&lt;/%s&gt;" % (s.split(None, 1)[0])
-    else:
-        return "&lt;/"
-
-def django_tag():
-    """expand {block content} to 
-       {% block content %}\n{% end_block content %} with proper
-       indentation (for Django web templates)"""
-    from PyQt4 import QtCore
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
-    b = c.p.b
-    s = []
-    while i and b[i] != '{':
-        s[0:0] = b[i]
-        i -= 1
-    start = i
-    s = ''.join(s)
-    indent = 0
-    while i and b[i] != '\n':
-        indent += 1
-        i -= 1
-    if indent:
-        indent -= 1
-    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
-        c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
-            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
-        )
-    QtCore.QTimer.singleShot(0, later)
-</t>
 <t tx="tbrown.20120821183537.18662">The end of a placeholder for template expansions, e.g.
 `|&gt;`. See @string abbreviations-place-start.</t>
 <t tx="tbrown.20120821183537.18663">Start of a placeholder for template expansions.  E.g.

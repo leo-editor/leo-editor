@@ -464,6 +464,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.dynaregex = re.compile( # For dynamic abbreviations
             r'[%s%s\-_]+'%(string.ascii_letters,string.digits))
             # Not a unicode problem.
+        self.expanding = False # True: expanding abbreviations.
         self.event = None
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.last_hit = None # Distinguish between text and tree abbreviations.
@@ -661,9 +662,13 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         verbose = False
         c = self.c
         ch = event and event.char or ''
-        w = self.editWidget(event,forceFocus=False)
-        if not w: return False
-        if w.hasSelection(): return False
+        self.w = w = self.editWidget(event,forceFocus=False)
+        if not w:
+            return False
+        if self.expanding:
+            return False
+        if w.hasSelection():
+            return False
         assert g.isStrokeOrNone(stroke),stroke
         if stroke in ('BackSpace','Delete'):
             if trace and verbose: g.trace(stroke)
@@ -681,15 +686,25 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                     ch = event and event.char or ''
         else:
             ch = event.char
-        if trace and verbose: g.trace('ch',repr(ch),'stroke',repr(stroke))
+        if trace:
+            g.trace('ch',repr(ch),'stroke',repr(stroke))
+        if not ch:
+            return
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
         s = w.getAllText()
         j = w.getInsertPoint()
-        i = j-1
-        while len(s) > i >= 0 and s[i] not in ' \t\n':
-            prefix = s[i:j]
+        i,prefixes = j-1,[]
+        while i >= 0 and s[i] not in ' \t\n':
+            prefixes.append(s[i:j])
+            i -= 1
+        prefixes = list(reversed(prefixes))
+        if '' not in prefixes: prefixes.append('')
+        # if trace: g.trace('prefixes:',[repr(z) for z in prefixes])
+        for prefix in prefixes:
+            i = j - len(prefix)
             word = prefix+ch
+            # if trace and verbose: g.trace('prefix: %r word: %r' % (prefix,word))
             val,tag = self.tree_abbrevs_d.get(word),'tree'
             # if val: g.trace('*****',word,'...\n\n',len(val))
             if not val:
@@ -727,15 +742,12 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             c.frame.body.forceFullRecolor()
             c.bodyWantsFocusNow()
             # Restore the selection range.
-            if self.save_ins:
-                if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
+            if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
+            if self.save_ins is not None:
                 ins = self.save_ins
                 # pylint: disable=unpacking-non-sequence
                 sel1,sel2 = self.save_sel
-                if sel1 != sel2:
-                    # some abbreviations *set* the selection range
-                    # so only restore non-empty ranges
-                    w.setSelectionRange(sel1,sel2,insert=ins)
+                w.setSelectionRange(sel1,sel2,insert=ins)
         return True
     #@+node:ekr.20131113150347.17257: *4* abbrev.expand_text
     def expand_text(self,w,i,j,val,word,expand_search=False):
@@ -828,8 +840,15 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 break
             content,rest = content
             if trace: g.trace('**content',content)
-            exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
-            val = "%s%s%s" % (prefix,c.abbrev_subst_env.get('x'),rest)
+            try:
+                self.expanding = True
+                c.abbrev_subst_env['x']=''
+                exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
+            finally:
+                self.expanding = False
+            x = c.abbrev_subst_env.get('x')
+            if x is None: x = ''
+            val = "%s%s%s" % (prefix,x,rest)
             # Save the selection range.
             w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
@@ -844,6 +863,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             do_placeholder = False
             # Huh?
             oldSel = i,j
+            if trace: g.trace('oldSel',oldSel,'ins',self.save_ins,'sel',self.save_sel)
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
         if trace:
             g.trace(do_placeholder,val)
@@ -892,6 +912,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20131114124839.17398: *4* abbrev.replace_abbrev_name
     def replace_abbrev_name(self,w,i,j,s):
         '''Replace the abbreviation name by s.'''
+        trace = False and not g.unitTesting
         c = self.c
         if i == j:
             abbrev = ''
@@ -908,7 +929,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             i,j = self.save_sel
             ins = self.save_ins
             delta = len(s) - len(abbrev)
-            # g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
+            if trace: g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
             self.save_sel = i+delta,j+delta
             self.save_ins = ins+delta
     #@+node:ekr.20050920084036.58: *3* abbrev.dynamic abbreviation...
