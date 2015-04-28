@@ -10266,6 +10266,8 @@ class SpellCommandsClass (BaseEditCommandsClass):
         BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.handler = None
+        
+        self.page_width = c.config.getInt("page-width")  # for wrapping
 
         # All the work happens when we first open the frame.
     #@+node:ekr.20051025080420: *4* getPublicCommands (SpellCommandsClass)
@@ -10475,9 +10477,22 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 self.suggestions = suggests
                 self.suggestion_idx = 0
                 self.word = word
-        if spell_ok and self.wrap_as_you_type and kwargs['ch'] == '\n':
-            g.es('filling')
-            c.k.simulateCommand('fill-paragraph')
+
+        if spell_ok and self.wrap_as_you_type and kwargs['ch'] == ' ':
+            w = c.frame.body.wrapper
+            txt = w.getAllText()
+            i = w.getInsertPoint()
+            # calculate the current column
+            parts = txt.split('\n')
+            popped = 0  # chars on previous lines
+            while len(parts[0]) + popped < i:
+                popped += len(parts.pop(0)) + 1  # +1 for the \n that's gone
+            col = i - popped
+            if col > self.page_width:
+                txt = txt[:i] + '\n' + txt[i:]  # replace space with \n
+                w.setAllText(txt)
+                c.p.b = txt
+                w.setInsertPoint(i+1)  # must come after c.p.b assignment
     #@+node:tbrown.20140117133522.32004: *5* as_you_type_replace
     def as_you_type_replace(self, word):
         """as_you_type_replace - replace the word behind the cursor
