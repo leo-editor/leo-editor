@@ -747,7 +747,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 ins = self.save_ins
                 # pylint: disable=unpacking-non-sequence
                 sel1,sel2 = self.save_sel
-                w.setSelectionRange(sel1,sel2,insert=ins)
+                if True: # sel1 != sel2:
+                    w.setSelectionRange(sel1,sel2,insert=ins)
         return True
     #@+node:ekr.20131113150347.17257: *4* abbrev.expand_text
     def expand_text(self,w,i,j,val,word,expand_search=False):
@@ -756,15 +757,17 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
         # Search to the end.  We may have been called via a tree abbrev.
-        p = c.p.copy()
-        if expand_search:
-            while p:
-                if self.find_place_holder(p,do_placeholder):
-                    return
-                else:
-                    p.moveToThreadNext()
-        else:
-            self.find_place_holder(p,do_placeholder)
+        # g.trace('expand',expand_search,'do_placeholder',do_placeholder)
+        if do_placeholder:
+            p = c.p.copy()
+            if expand_search:
+                while p:
+                    if self.find_place_holder(p):
+                        return
+                    else:
+                        p.moveToThreadNext()
+            else:
+                self.find_place_holder(p)
     #@+node:ekr.20131113150347.17258: *4* abbrev.expand_tree & helper
     def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
@@ -776,24 +779,26 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.replace_abbrev_name(w,i,j,None)
         self.paste_tree(old_p,tree_s)
         # Make all script substitutions first.
+        do_placeholder = False
         for p in old_p.subtree():
             # Search for the next place-holder.
             val,do_placeholder = self.make_script_substitutions(0,0,p.b)
             if not do_placeholder: p.b = val
         # Now search for all place-holders.
-        for p in old_p.subtree():
-            if self.find_place_holder(p,do_placeholder):
-                break
+        if do_placeholder:
+            for p in old_p.subtree():
+                if self.find_place_holder(p):
+                    break
         u.afterChangeTree(old_p,'tree-abbreviation',bunch)
     #@+node:ekr.20131114051702.22732: *4* abbrev.find_place_holder
-    def find_place_holder(self,p,do_placeholder):
+    def find_place_holder(self,p):
         '''
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
         c = self.c
         s = p.b
-        if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
+        if c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
             if i is None:
                 return False
@@ -829,6 +834,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             return val,False
         # Nothing to undo.
         if c.abbrev_subst_start not in val:
+            if trace: g.trace('no substitution')
             return val,False
         # Perform all scripting substitutions.
         self.save_ins = None 
@@ -865,8 +871,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             oldSel = i,j
             if trace: g.trace('oldSel',oldSel,'ins',self.save_ins,'sel',self.save_sel)
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-        if trace:
-            g.trace(do_placeholder,val)
+        if trace: g.trace(do_placeholder,val)
         return val,do_placeholder
     #@+node:tbrown.20130326094709.25669: *4* abbrev.next_place
     def next_place(self,s,offset=0):
