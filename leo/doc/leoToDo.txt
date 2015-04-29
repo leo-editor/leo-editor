@@ -28,7 +28,7 @@ https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-f
 brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
-.. @+node:ekr.20150325052301.1: *4* Fix bug 165: vim-open-file command
+.. @+node:ekr.20150325052301.1: *4* Fix enhancement 165: vim-open-file command
 @language rest
 @wrap
 
