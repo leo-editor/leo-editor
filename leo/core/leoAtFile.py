@@ -564,23 +564,12 @@ class AtFile:
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
-        # Fix bug 760531: always mark the root as read, even if there was an error.
-        # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(g.fullPath(c,root),root)
-        
-        if root.isOrphan():
-            if 1:
-                # 2015/04/17: Clear the bit and continue so that the
-                # outline can be updated from the external file.
-                g.warning('orphan bit in',root.h)
-                root.clearOrphan()
-            else:
-                # 2011/05/23: Restore orphan trees from the outline.
-                g.es("reading:",root.h)
-                # g.warning('The outline contains an orphan node!\nRetaining the outline')
-                g.error('orphan node in',root.h)
-                g.blue('retaining the data from the .leo file')
-                return False
+            # Fix bug 760531: always mark the root as read, even if there was an error.
+            # Fix bug 889175: Remember the full fileName.
+        root.clearOrphan()
+            # 2015/04/17: Clear the bit and continue so that the
+            # outline can be updated from the external file.
         at.initReadIvars(root,fileName,
             importFileName=importFileName,atShadow=atShadow)
         at.fromString = fromString
@@ -626,8 +615,7 @@ class AtFile:
         at.scanAllDirectives(root,importing=at.importing,reading=True)
             # Sets the following ivars:
                 # at.default_directory
-                # at.encoding: **Important**: changed later
-                #     by readOpenFile/at.scanHeader.
+                # at.encoding: **changed later** by readOpenFile/at.scanHeader.
                 # at.explicitLineEnding
                 # at.language
                 # at.output_newline
