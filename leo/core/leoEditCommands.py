@@ -6327,31 +6327,36 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.moveWordHelper(event,extend=True,forward=True,smart=True)
     #@+node:ekr.20051218121447: *5* moveWordHelper
     def moveWordHelper (self,event,extend,forward,end=False,smart=False):
-
-        '''Move the cursor to the next/previous word.
-        The cursor is placed at the start of the word unless end=True'''
-
+        '''
+        Move the cursor to the next/previous word.
+        The cursor is placed at the start of the word unless end=True
+        '''
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         c.widgetWantsFocusNow(w)
         s = w.getAllText() ; n = len(s)
         i = w.getInsertPoint()
-
         # pylint: disable=anomalous-backslash-in-string
         alphanumeric_re = re.compile("\w")
         whitespace_re = re.compile("\s")
         simple_whitespace_re = re.compile("[ \t]")
-
+        
+        #@+others
+        #@+node:ekr.20150430174225.1: *6* moveWordHelper functions
         def is_alphanumeric(c):
             return alphanumeric_re.match(c) is not None
+
         def is_whitespace(c):
             return whitespace_re.match(c) is not None
+
         def is_simple_whitespace(c):
             return simple_whitespace_re.match(c) is not None
+
         def is_line_break(c):
             return is_whitespace(c) and not is_simple_whitespace(c)
+
         def is_special(c):
             return not is_alphanumeric(c) and not is_whitespace(c)
 
@@ -6360,15 +6365,26 @@ class EditCommandsClass (BaseEditCommandsClass):
                 i += step
             return i
 
-        def seek_word_end(i): return seek_until_changed(i,is_alphanumeric,1)
-        def seek_word_start(i): return seek_until_changed(i,is_alphanumeric,-1)
+        def seek_word_end(i):
+            return seek_until_changed(i,is_alphanumeric,1)
 
-        def seek_simple_whitespace_end(i): return seek_until_changed(i,is_simple_whitespace,1)
-        def seek_simple_whitespace_start(i): return seek_until_changed(i,is_simple_whitespace,-1)
+        def seek_word_start(i):
+            return seek_until_changed(i,is_alphanumeric,-1)
 
-        def seek_special_end(i): return seek_until_changed(i,is_special,1)
-        def seek_special_start(i): return seek_until_changed(i,is_special,-1)
+        def seek_simple_whitespace_end(i):
+            return seek_until_changed(i,is_simple_whitespace,1)
 
+        def seek_simple_whitespace_start(i):
+            return seek_until_changed(i,is_simple_whitespace,-1)
+
+        def seek_special_end(i):
+            return seek_until_changed(i,is_special,1)
+
+        def seek_special_start(i):
+            return seek_until_changed(i,is_special,-1)
+        #@-others
+
+        # g.trace('smart',smart,'forward',forward,'end',end)
         if smart:
             if forward:
                 if 0 <= i < n:
@@ -6415,7 +6431,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                     i -= 1
                 while 0 <= i < n and g.isWordChar(s[i]):
                     i -= 1
-
+                i += 1 # 2015/04/30
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20050920084036.95: *3* paragraph...
 

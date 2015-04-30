@@ -141,6 +141,9 @@ This is an implementation of auto-close-quotes, done entirely with abbreviations
 
 I personally dislike these abbreviations.  I find it harder to skip past the ')' than to type it later.  ymmv.
 .. @+node:ekr.20150428153124.1: *4* Removed warning in at.read about orphan bits
+.. @+node:ekr.20150430175300.1: *4* Improved Ctrl-LtArrow
+Ctrl-LtArrow and Ctrl-RtArrow leave the cursor at the start of a word.
+This is the way most editors work.
 .. @-all
 .. @@language rest
 .. @@wrap
