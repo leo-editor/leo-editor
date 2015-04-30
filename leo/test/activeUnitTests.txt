@@ -10203,6 +10203,29 @@ c.contractAllHeadlines()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 
+#@+node:ekr.20150430053825.1: *4* @test abbrevCommands.next_place
+ac = c.abbrevCommands
+assert ac
+child = g.findNodeInTree(c,p,'child')
+assert child
+old_b = child.b
+try:
+    i,j,val = 0,0,child.b
+    # ac.make_script_substitutions(i,j,val)
+    # ac.find_place_holder(child,True)
+    # print(ac.save_ins,ac.save_sel)
+    new_s,i,j = ac.next_place(child.b,offset=0)
+    assert i == 34 and j == 40,(i,j)
+    new_s2,i,j = ac.next_place(new_s,offset=40)
+    assert i == 54 and j == 58,(i,j)
+finally:
+    child.b = old_b
+#@+node:ekr.20150430061225.1: *5* child
+def spam ():
+    """None - Return <|return|>
+    """
+
+    <|code|>
 #@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
 # A totally wimpy test.
 c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
