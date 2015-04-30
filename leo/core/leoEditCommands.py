@@ -829,8 +829,15 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 break
             content,rest = content
             if trace: g.trace('**content',content)
-            exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
-            val = "%s%s%s" % (prefix,c.abbrev_subst_env.get('x'),rest)
+            try:
+                self.expanding = True
+                c.abbrev_subst_env['x']=''
+                exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
+            finally:
+                self.expanding = False
+            x = c.abbrev_subst_env.get('x')
+            if x is None: x = ''
+            val = "%s%s%s" % (prefix,x,rest)
             # Save the selection range.
             w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
