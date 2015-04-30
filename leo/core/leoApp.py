@@ -257,7 +257,7 @@ class ExternalFilesController:
         Create the temp file used by open-with if necessary.
         Add or update a dict to efc.open_with_files.
         '''
-        body = d.get('body') if d.has_key('body') else c.p.b
+        body = d.get('body') if d and 'body' in d else c.p.b
         ext = d.get('ext')
         path = efc.temp_file_path(c,p,ext)
         exists = g.os_path_exists(path)
