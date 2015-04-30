@@ -771,6 +771,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.replace_abbrev_name(w,i,j,None)
         self.paste_tree(old_p,tree_s)
         # Make all script substitutions first.
+        do_placeholder = False
         for p in old_p.subtree():
             # Search for the next place-holder.
             val,do_placeholder = self.make_script_substitutions(0,0,p.b)
