@@ -145,6 +145,7 @@ Settings
 import leo.core.leoGlobals as g
 
 import os
+import subprocess
 import sys
 #@-<< imports >>
 
@@ -251,7 +252,9 @@ class VimCommander:
         '''Return the nearest ancestor @auto or @clean node.'''
         p0 = p.copy()
         while p:
-            if p.isAtAutoNode() or p.isAtCleanNode():
+            if self.entire_file and p.isAnyAtFileNode():
+                return p
+            elif p.isAtAutoNode() or p.isAtCleanNode():
                 return p
             else:
                 p.moveToParent()
@@ -271,14 +274,14 @@ class VimCommander:
         - Send a command to vim telling it to close the path.
         '''
         assert path
-        ### Don't do this: it prevents efc from reopening paths.
-        ### efc = g.app.externalFilesController
-        ### if efc: efc.forget_path(path)
+        # Don't do this: it prevents efc from reopening paths.
+        # efc = g.app.externalFilesController
+        # if efc: efc.forget_path(path)
         os.remove(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
         if self.trace: g.trace('os.system(%s)' % cmd)
         os.system(cmd)
-    #@+node:ekr.20150326181247.1: *3* vim.get_cursor
+    #@+node:ekr.20150326181247.1: *3* vim.get_cursor_arg
     def get_cursor_arg(self):
         '''Compute the cursor argument for vim.'''
         if self.position_cursor:    
@@ -301,24 +304,37 @@ class VimCommander:
     #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
     def open_file(self,root):
         '''Open the the file in vim using c.openWith.'''
+        trace = False and not g.unitTesting
         c = self.c
-        if self.entire_file:
-            assert root.isAtAutoNode() or root.isAtCleanNode(),root
-        body = self.write_root(root) if self.entire_file else root.v.b
-        root.v._vim_old_body = body
+        # Common arguments.
         cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"
-        args = [self.vim_exe,"--servername","LEO",remote_arg,cursor_arg]
-        if self.trace: g.trace('c.openWith(%s)' % args)
-        d = {'args':args,
-             'entire_file': self.entire_file,
-             'ext':None,
-             'kind':'subprocess.Popen',
-             'p':root.copy(),
-             'p.b':body,
-        }
-        c.openWith(d=d)
+        if self.entire_file:
+            # Open the entire file.
+            assert root.isAnyAtFileNode(),root
+            args = [self.vim_exe,"--servername","LEO",remote_arg] # No cursor arg.
+            dir_ = g.setDefaultDirectory(c,root)
+            fn = c.os_path_finalize_join(dir_,root.anyAtFileNodeName())
+            c_arg = '%s %s' % (' '.join(args),fn)
+            command = 'subprocess.Popen(%s,shell=True)' % c_arg
+            if trace: g.trace(command)
+            try:
+                subprocess.Popen(c_arg,shell=True)
+            except OSError:
+                g.es_print(command)
+                g.es_exception()
+        else:
+            root.v._vim_old_body = body = root.v.b
+            args = [self.vim_exe,"--servername","LEO",remote_arg,cursor_arg]
+            if trace: g.trace('c.openWith(%s)' % args)
+            d = {'args':args,
+                 'ext':None,
+                 'kind':'subprocess.Popen',
+                 'p':root.copy(),
+                 'p.b':body,
+            }
+            c.openWith(d=d)
     #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry: called from ctor)
     def open_in_vim(self):
         '''Open p in vim, or the entire enclosing file if entire_file is True.'''

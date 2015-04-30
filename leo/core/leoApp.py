@@ -160,7 +160,6 @@ class ExternalFilesController:
         'body':        The body text of the file. Defaults to c.p.b
         'c':           The commander.
         'encoding':    The encoding of the file.
-        'entire_file': True: editing the entire file.
         'p':           A position.  defaults to c.p.
         'path':        The full path to the file.
         'time':        The file's modificationtime.
@@ -284,13 +283,11 @@ class ExternalFilesController:
                 g.es_exception()
                 return None
         # Recompute the open-with dict.
-        entire_file = d.get('entire_file')
         efc.forget_path(path)
         d = {
             'body':body,
             'c':c,
             'encoding':encoding, ### To be removed.
-            'entire_file':entire_file,
             'p':p.copy(),
             'path':path,
             'time':efc.get_mtime(path),
