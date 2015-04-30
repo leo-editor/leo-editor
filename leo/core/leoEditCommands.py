@@ -664,6 +664,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         ch = event and event.char or ''
         w = self.editWidget(event,forceFocus=False)
         if not w: return False
+        if self.expanding: return False
         if w.hasSelection(): return False
         assert g.isStrokeOrNone(stroke),stroke
         if stroke in ('BackSpace','Delete'):
@@ -687,9 +688,14 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         # Any whitespace stops the search.
         s = w.getAllText()
         j = w.getInsertPoint()
-        i = j-1
-        while len(s) > i >= 0 and s[i] not in ' \t\n':
-            prefix = s[i:j]
+        i,prefixes = j-1,[]
+        while i >= 0 and s[i] not in ' \t\n':
+            prefixes.append(s[i:j])
+            i -= 1
+        prefixes = list(reversed(prefixes))
+        if '' not in prefixes: prefixes.append('')
+        for prefix in prefixes:
+            i = j - len(prefix)
             word = prefix+ch
             val,tag = self.tree_abbrevs_d.get(word),'tree'
             # if val: g.trace('*****',word,'...\n\n',len(val))
