@@ -650,7 +650,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20140104063158.17234: *4* abbrev.reloadAbbreviations
     def reloadAbbreviations(self):
         '''Reload all abbreviations from all files.'''
-    #@+node:ekr.20050920084036.27: *3* abbrev.expandAbbrev & helpers (entry point)
+    #@+node:ekr.20150430051622.1: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev (self,event,stroke):
         '''
         Not a command.  Called from k.masterCommand to expand
@@ -662,13 +662,9 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         verbose = False
         c = self.c
         ch = event and event.char or ''
-        self.w = w = self.editWidget(event,forceFocus=False)
-        if not w:
-            return False
-        if self.expanding:
-            return False
-        if w.hasSelection():
-            return False
+        w = self.editWidget(event,forceFocus=False)
+        if not w: return False
+        if w.hasSelection(): return False
         assert g.isStrokeOrNone(stroke),stroke
         if stroke in ('BackSpace','Delete'):
             if trace and verbose: g.trace(stroke)
@@ -686,25 +682,15 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                     ch = event and event.char or ''
         else:
             ch = event.char
-        if trace:
-            g.trace('ch',repr(ch),'stroke',repr(stroke))
-        if not ch:
-            return
+        if trace and verbose: g.trace('ch',repr(ch),'stroke',repr(stroke))
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
         s = w.getAllText()
         j = w.getInsertPoint()
-        i,prefixes = j-1,[]
-        while i >= 0 and s[i] not in ' \t\n':
-            prefixes.append(s[i:j])
-            i -= 1
-        prefixes = list(reversed(prefixes))
-        if '' not in prefixes: prefixes.append('')
-        # if trace: g.trace('prefixes:',[repr(z) for z in prefixes])
-        for prefix in prefixes:
-            i = j - len(prefix)
+        i = j-1
+        while len(s) > i >= 0 and s[i] not in ' \t\n':
+            prefix = s[i:j]
             word = prefix+ch
-            # if trace and verbose: g.trace('prefix: %r word: %r' % (prefix,word))
             val,tag = self.tree_abbrevs_d.get(word),'tree'
             # if val: g.trace('*****',word,'...\n\n',len(val))
             if not val:
@@ -742,33 +728,33 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             c.frame.body.forceFullRecolor()
             c.bodyWantsFocusNow()
             # Restore the selection range.
-            if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
-            if self.save_ins is not None:
+            if self.save_ins:
+                if trace: g.trace('sel',self.save_sel,'ins',self.save_ins)
                 ins = self.save_ins
                 # pylint: disable=unpacking-non-sequence
                 sel1,sel2 = self.save_sel
-                if True: # sel1 != sel2:
+                if sel1 != sel2:
+                    # some abbreviations *set* the selection range
+                    # so only restore non-empty ranges
                     w.setSelectionRange(sel1,sel2,insert=ins)
         return True
-    #@+node:ekr.20131113150347.17257: *4* abbrev.expand_text
+    #@+node:ekr.20150430051622.2: *4* abbrev.expand_text
     def expand_text(self,w,i,j,val,word,expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
         c = self.c
         val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
         # Search to the end.  We may have been called via a tree abbrev.
-        # g.trace('expand',expand_search,'do_placeholder',do_placeholder)
-        if do_placeholder:
-            p = c.p.copy()
-            if expand_search:
-                while p:
-                    if self.find_place_holder(p):
-                        return
-                    else:
-                        p.moveToThreadNext()
-            else:
-                self.find_place_holder(p)
-    #@+node:ekr.20131113150347.17258: *4* abbrev.expand_tree & helper
+        p = c.p.copy()
+        if expand_search:
+            while p:
+                if self.find_place_holder(p,do_placeholder):
+                    return
+                else:
+                    p.moveToThreadNext()
+        else:
+            self.find_place_holder(p,do_placeholder)
+    #@+node:ekr.20150430051622.3: *4* abbrev.expand_tree & helper
     def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
         c,u = self.c,self.c.undoer
@@ -779,26 +765,24 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         self.replace_abbrev_name(w,i,j,None)
         self.paste_tree(old_p,tree_s)
         # Make all script substitutions first.
-        do_placeholder = False
         for p in old_p.subtree():
             # Search for the next place-holder.
             val,do_placeholder = self.make_script_substitutions(0,0,p.b)
             if not do_placeholder: p.b = val
         # Now search for all place-holders.
-        if do_placeholder:
-            for p in old_p.subtree():
-                if self.find_place_holder(p):
-                    break
+        for p in old_p.subtree():
+            if self.find_place_holder(p,do_placeholder):
+                break
         u.afterChangeTree(old_p,'tree-abbreviation',bunch)
-    #@+node:ekr.20131114051702.22732: *4* abbrev.find_place_holder
-    def find_place_holder(self,p):
+    #@+node:ekr.20150430051622.4: *4* abbrev.find_place_holder
+    def find_place_holder(self,p,do_placeholder):
         '''
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
         c = self.c
         s = p.b
-        if c.abbrev_place_start and c.abbrev_place_start in s:
+        if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
             if i is None:
                 return False
@@ -824,7 +808,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             return True
         else:
             return False
-    #@+node:ekr.20131114051702.22731: *4* abbrev.make_script_substitutions
+    #@+node:ekr.20150430051622.5: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self,i,j,val):
         '''Make scripting substitutions in node p.'''
         trace = False and not g.unitTesting
@@ -834,7 +818,6 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             return val,False
         # Nothing to undo.
         if c.abbrev_subst_start not in val:
-            if trace: g.trace('no substitution')
             return val,False
         # Perform all scripting substitutions.
         self.save_ins = None 
@@ -846,15 +829,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                 break
             content,rest = content
             if trace: g.trace('**content',content)
-            try:
-                self.expanding = True
-                c.abbrev_subst_env['x']=''
-                exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
-            finally:
-                self.expanding = False
-            x = c.abbrev_subst_env.get('x')
-            if x is None: x = ''
-            val = "%s%s%s" % (prefix,x,rest)
+            exec(content,c.abbrev_subst_env,c.abbrev_subst_env)
+            val = "%s%s%s" % (prefix,c.abbrev_subst_env.get('x'),rest)
             # Save the selection range.
             w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
@@ -869,11 +845,11 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             do_placeholder = False
             # Huh?
             oldSel = i,j
-            if trace: g.trace('oldSel',oldSel,'ins',self.save_ins,'sel',self.save_sel)
             c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
-        if trace: g.trace(do_placeholder,val)
+        if trace:
+            g.trace(do_placeholder,val)
         return val,do_placeholder
-    #@+node:tbrown.20130326094709.25669: *4* abbrev.next_place
+    #@+node:ekr.20150430051622.6: *4* abbrev.next_place
     def next_place(self,s,offset=0):
         """
         Given string s containing a placeholder like <| block |>,
@@ -900,7 +876,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         end = start+len(place_holder)
         if trace: g.trace(start,end,g.callers())
         return s2,start,end
-    #@+node:ekr.20131114124839.16666: *4* abbrev.paste_tree
+    #@+node:ekr.20150430051622.7: *4* abbrev.paste_tree
     def paste_tree(self,old_p,s):
         '''Paste the tree corresponding to s (xml) into the tree.'''
         c = self.c
@@ -914,10 +890,9 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             p.doDelete()
         else:
             g.trace('paste failed')
-    #@+node:ekr.20131114124839.17398: *4* abbrev.replace_abbrev_name
+    #@+node:ekr.20150430051622.8: *4* abbrev.replace_abbrev_name
     def replace_abbrev_name(self,w,i,j,s):
         '''Replace the abbreviation name by s.'''
-        trace = False and not g.unitTesting
         c = self.c
         if i == j:
             abbrev = ''
@@ -934,7 +909,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             i,j = self.save_sel
             ins = self.save_ins
             delta = len(s) - len(abbrev)
-            if trace: g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
+            # g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
             self.save_sel = i+delta,j+delta
             self.save_ins = ins+delta
     #@+node:ekr.20050920084036.58: *3* abbrev.dynamic abbreviation...
