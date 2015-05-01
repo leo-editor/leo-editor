@@ -11,13 +11,14 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140919093158.17876"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
-<v t="ekr.20150407140807.1"><vh>@button cfa-code @args add</vh></v>
+<v t="ekr.20150407140807.1"><vh>@button cfa-code</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
@@ -25,19 +26,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150416182148.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150501165310.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150416182148.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150501165310.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150416182148.3"><vh>@gnxs</vh></v>
+<v t="ekr.20150501165310.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150416182148.4"><vh>@gnxs</vh></v>
+<v t="ekr.20150501165310.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150416182148.5"><vh>@gnxs</vh></v>
+<v t="ekr.20150501165310.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -82,8 +83,7 @@ marks="ekr.20120217070122.10470,"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
-<v t="ekr.20150419124739.1"
-expanded="ekr.20150420120520.1,ekr.20150420072955.1,ekr.20150420081215.1,ekr.20150419124739.7,"><vh>@file leoPrinting.py</vh></v>
+<v t="ekr.20150419124739.1"><vh>@file leoPrinting.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
@@ -291,9 +291,7 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 </t>
 <t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
-<t tx="ekr.20140831085423.18630">@language rest
-
-This outline contains all of Leo's core source code.
+<t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
 
 Leo's code uses the following conventions throughout:
 
@@ -328,7 +326,7 @@ qmbw:   qt_text.QMinibufferWrapper
 qlew:   qt_text.QLineEditWrapper
 qsciw:  qt_text.QScintiallaWrapper
 qtew:   qt_text.QTextEditWrapper</t>
-<t tx="ekr.20140831085423.18631">The following are 'official' ivars that will always exist:
+<t tx="ekr.20140831085423.18631">The following 'official' ivars will always exist:
 
 c.frame                 The frame containing the log,body,tree, etc.
 c.frame.body            The body pane.
@@ -340,7 +338,7 @@ c.frame.log.widget      The gui widget for the log pane.
 c.frame.log.wrapper     The high-level inteface for the log pane.
 c.frame.tree            The tree pane.
 
-The following ivars no longer exist:
+The following were official ivars that no longer exist:
 
 c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
 c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
@@ -1074,10 +1072,16 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150416182148.1">gnx: ekr.20150407124229.1
+<t tx="ekr.20150425145248.1">run-pylint
+cfa-code
+sort-lines
+check-clones
+expand-log-pane
+contract-log-pane</t>
+<t tx="ekr.20150501165310.1">gnx: ekr.20150407124229.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150416182148.2">gnx: ekr.20150407124230.1
+<t tx="ekr.20150501165310.2">gnx: ekr.20150407124230.1
 unl: qt_main declarations
 gnx: ekr.20150407124230.2
 unl: class Ui_MainWindow
@@ -1086,8 +1090,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20150407124230.4
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20150416182148.3"></t>
-<t tx="ekr.20150416182148.4">gnx: ekr.20150407124230.5
+<t tx="ekr.20150501165310.3"></t>
+<t tx="ekr.20150501165310.4">gnx: ekr.20150407124230.5
 unl: qt_quicksearch declarations
 gnx: ekr.20150407124230.6
 unl: class Ui_LeoQuickSearchWidget
@@ -1096,6 +1100,6 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20150407124230.8
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20150416182148.5"></t>
+<t tx="ekr.20150501165310.5"></t>
 </tnodes>
 </leo_file>
