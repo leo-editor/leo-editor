@@ -17,7 +17,15 @@ The fix was to create a dummy root position in abbrev.init_env.
 .. @+node:ekr.20150422124650.1: *4* Added c.backup
 Useful for per-file backups.
 .. @+node:ekr.20150425135844.1: *4* Added support for @data history-list
-Added a call to k.initCommandHistory to k.finishCreate.
+If you aren't using the @data history-list setting chances are that you missing a big chance to simplify your workflow. At one time I thought the history list was a minor feature.  I could not have been more wrong.
+
+The body of the @data history-list node should contain a list of command names, one per line.  This list can include commands created by @command/@button nodes.
+
+You execute items in the history list by doing Alt-X followed by an up arrow to get the first item in the list, or one or more down arrows to get later items in the list.  The last item you execute from this list goes to the head of the list.  Once you have executed an item, Ctrl-P (repeat complex command) will re-execute it.
+
+The history list works well for commands that aren't quite worth a separate key binding, but that nevertheless you find you using quite often.
+
+Even better, the history list is a perfect complement to @button and @command nodes that are tailored for a particular outline. For example, there is a button called cfa-code in leoPy.leo that executes the clone-find-all-flattened command starting at the top-level "Code" node.
 .. @+node:ekr.20150426052139.1: *4* Added @ifenv, improved @ifplatform & @ifhostname
 @language rest
 @wrap
