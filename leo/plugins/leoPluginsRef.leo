@@ -11,6 +11,7 @@
 <vnodes>
 <v t="ekr.20041211035618"><vh>Startup</vh>
 <v t="ekr.20050217093214"><vh>@settings</vh>
+<v t="ekr.20150430152019.1"><vh>@data history-list</vh></v>
 <v t="ekr.20150407140848.1"><vh>@button cfa-plugins @args add</vh></v>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
 <v t="ekr.20050328101812.1"><vh>@bool http_active = False</vh></v>
@@ -190,7 +191,6 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
 <v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
-<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
@@ -237,6 +237,7 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
+<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
@@ -540,6 +541,9 @@ else:
 <t tx="ekr.20150407140848.1">@language python
 
 c.cloneFindAllFlattenedAtNode('Plugins',top_level=True)
+</t>
+<t tx="ekr.20150430152019.1">run-pylint
+sort-lines
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
