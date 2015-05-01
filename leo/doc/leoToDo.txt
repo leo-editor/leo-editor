@@ -20,7 +20,6 @@ Is there a setting that would cause the 'File>Open' or 'File>Import
 File' commands to begin the search dialog in the directory, E:
 \Documents\Some Folder\ instead of the last directory used?
 
-
 open dialogs should probably @path directory or curdir
 save dialog should probably use the directory of the saved file.
 
