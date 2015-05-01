@@ -71,7 +71,7 @@ class MyInterpreter(QtWidgets.QWidget):
         hBox.setSpacing(0)
     #@-others
 
-#@+node:peckj.20150428142729.5: ** class PyInterp
+#@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 class PyInterp(QtWidgets.QTextEdit):
     #@+others
     #@+node:peckj.20150428142729.6: *3* class InteractiveInterpreter
@@ -326,12 +326,14 @@ class PyInterp(QtWidgets.QTextEdit):
     #@+node:peckj.20150428142729.20: *3* focusInEvent
     def focusInEvent(self, event=None):
       # set stdout+stderr properly
+      QtWidgets.QTextEdit.focusInEvent(self,event)
       sys.stdout = self
       sys.stderr = self
       self.ensureCursorVisible()
     #@+node:peckj.20150428142729.21: *3* focusOutEvent
     def focusOutEvent(self, event):
       # set stdout+stderr properly
+      QtWidgets.QTextEdit.focusOutEvent(self,event)
       sys.stdout = g.user_dict['old_stdout']
       sys.stderr = g.user_dict['old_stderr']
     #@-others
