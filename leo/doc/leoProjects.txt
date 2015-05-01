@@ -30,8 +30,6 @@ Even better, the history list is a perfect complement to @button and @command no
 @language rest
 @wrap
 
-I have decided not to add support for either @if or @ifgui.  The former is not needed and is a scripting risk, the latter is pretty much useless.
-
 Here are the details:
 
 @ifenv name, one-or-more-comma-separated values
@@ -77,6 +75,8 @@ https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
 https://github.com/leo-editor/leo-editor/issues/165
 
 Later: preserve cursor positions.
+
+All the changes were to the ExternalFilesController class.
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
@@ -104,6 +104,8 @@ The fix was a special case in at.readStartNode.
 .. @+node:ekr.20150428112500.1: *4* Fixed abbreviation bugs and improved abbreviations
 @language rest
 @wrap
+
+The fixes were in abbrev.expandAbbrev and helpers.
 
 Rev 585d2f4 improves abbreviations as follows:
 
@@ -152,6 +154,8 @@ I personally dislike these abbreviations.  I find it harder to skip past the ')'
 .. @+node:ekr.20150430175300.1: *4* Improved Ctrl-LtArrow
 Ctrl-LtArrow and Ctrl-RtArrow leave the cursor at the start of a word.
 This is the way most editors work.
+
+The fix was in moveWordHelper.
 .. @-all
 .. @@language rest
 .. @@wrap
