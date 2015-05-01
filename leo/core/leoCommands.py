@@ -439,6 +439,7 @@ class Commands (object):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
+        trace = False and not g.unitTesting
         c = self
         table1 = ( # Specific.
             QtWidgets.QTextEdit,
@@ -461,6 +462,8 @@ class Commands (object):
                 c.last_unusual_focus = None
                 if not isinstance(w,table2):
                     g.trace('%s unknown focus: %s' % (count,w_class))
+                elif trace:
+                    g.trace('%s known focus: %s' % (count,w_class))
         elif active:
             g.trace('%s no focus -> body' % (count))
         elif not c.last_no_focus:

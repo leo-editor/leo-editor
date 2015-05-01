@@ -2664,7 +2664,7 @@ class LoadManager:
         g.doHook("start1")
         if g.app.killed: return
         handler = g.app.externalFilesController.on_idle
-        timer = g.IdleTime(handler,delay=2000)
+        timer = g.IdleTime(handler,delay=2000,tag='efc.on_idle')
         g.app.check_files_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.

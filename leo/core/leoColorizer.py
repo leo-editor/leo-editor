@@ -49,7 +49,10 @@ class PythonQSyntaxHighlighter:
         self.r_delay = delay    # The waiting time, in msec. for self.timer.
         self.r_force = False    # True if the next block must be recolored.
         self.r_limit = limit    # The max number of lines to color at one time.
-        self.timer = g.IdleTime(handler=self.idle_handler,delay=self.r_delay)
+        self.timer = g.IdleTime(
+            handler=self.idle_handler,
+            delay=self.r_delay,
+            tag='pqsh.idle_handler')
         # Attach the parent's QTextDocument and set self.d.
         self.setDocument(parent)
     #@+node:ekr.20140825132752.18588: *3* pqsh.Entry points

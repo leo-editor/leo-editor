@@ -3984,7 +3984,10 @@ def enableIdleTimeHook(*args,**keys): # All args ignored.
     if g.app.idle_timer:
         g.app.idle_timer.start()
     else:
-        timer = g.IdleTime(g.idleTimeHookHandler,g.app.idleTimeDelay)
+        timer = g.IdleTime(
+            g.idleTimeHookHandler,
+            g.app.idleTimeDelay,
+            tag='g.enableIdleTimeHook')
         if timer:
             g.app.idle_timer = timer
             timer.start()
