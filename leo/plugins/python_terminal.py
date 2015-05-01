@@ -30,7 +30,7 @@ Features:
 
 Caveats:
     
-    - The console swallows stdout and stderr while focused, but properly resets it to the default values when unfocused
+    - Stdout and stderr are proprely redirected to the interactive console pane while it has focus, but proprely reset to their previous values when focus is lost.  If code executed inside the interactive console pane needs to output to the command-line stdout/stderr, please use sys.__stdout__ and sys.__stderr__.
     - Just as with scripts, if you do something dangerous, you're on your own
 
 This code is largely lifted from http://stackoverflow.com/questions/12431555/enabling-code-completion-in-an-embedded-python-interpreter, with some modifications made for Leo embedding.
