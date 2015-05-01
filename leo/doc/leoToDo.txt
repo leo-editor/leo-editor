@@ -9,25 +9,6 @@
 .. @+node:ekr.20150410043718.1: *3* First
 @language rest
 @wrap
-.. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
-@language rest
-
-The homebrew docs say that beta releases are not allowed.
-
-https://github.com/leo-editor/leo-editor/issues/106
-
-Pull request
-https://github.com/Homebrew/homebrew/pull/38980/files#r29035052
-
-Cookbook
-https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
-
-Cheat sheet
-https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
-
-brew audit --strict Leo
-  # run from homebrew folder
-brew install --verbose --debug Leo
 .. @+node:ekr.20150403035403.1: *4* Fix bug 156: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
@@ -55,15 +36,6 @@ But when run with ILeo via "ipython-exec" I get no notification of any error. Ei
 
 @language python
 .. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
-Maybe the directory of c.fileName.
-Maybe various dialogs should set curdir.
-
-Search for:
-
-LeoQtGui.Dialogs & panels
-LeoQtGui.runSaveFileDialog
-LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20111125072438.10219: *5* Open file dialogs starting with @path directory
 File 'Open' or 'Import File' command to follow @path directive
 http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 
@@ -74,9 +46,19 @@ Is there a setting that would cause the 'File>Open' or 'File>Import
 File' commands to begin the search dialog in the directory, E:
 \Documents\Some Folder\ instead of the last directory used?
 
-Would others find this a useful feature?
+
+open dialogs should probably @path directory or curdir
+save dialog should probably use the directory of the saved file.
+
+Search for:
+
+LeoQtGui.Dialogs & panels
+LeoQtGui.runSaveFileDialog
+LeoQtGui.runOpenFileDialog
 .. @+node:ekr.20150211104036.477: *4* Smart paste & yank
 And perhaps other problems with yank.
+
+How does emacs work.  Settings needed?
 
 Multipe yanks are not catenated.
 .. @+node:ekr.20150211104036.478: *5* Terry's post
@@ -114,55 +96,9 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
-@language rest
-@wrap
-
-Steve Litt
-
-EKR summary: Videos will encourage magazine editors to write about Leo.
-
-**Get more fans who can write and who are listened to**
-
-To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo.
-
-**Leo has an image problem**
-
-Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago. VimOutliner is faster and has the 90% of outlining features that people use 90% of the time.
-
-95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
-
-**Make a 3 minute video**
-
-Leo is a mechanism by which you can specify a computer program as an outline-like thing in an outliner-like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
-
-**Video 1**: will show how to compose an application outline and turn it into a program.
-
-The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
-
-**Video 2**: will show hhow to make a GUI app.
-
-**Video 3**: will show how to write a book in Leo.
-
-Flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
-
-**Publicize these videos**
-
-You're going to get some journalists excited, and those are your reviews.
-
-**Start publicizing different ways people use Leo.**
-
-Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
-.. @+node:ekr.20150418055421.1: *3* Harder/more important (10)
-@language rest
-@wrap
-.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
-I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
-
-The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
-
-Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
+.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
+.. @+node:ekr.20150501041328.1: *3* Projects
+Useful, non-trivial.
 .. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
 OpenGL
 http://doc.qt.io/qt-5/qopenglwidget.html
@@ -186,106 +122,27 @@ Render to tex, pdf, rst, etc.
 c.display(x) displays object x. Support plotting objects x.
 
 Create IPython-like demo.
-.. @+node:ekr.20150408193842.1: *4* Limit searches so clones are found at most once
+.. @+node:ekr.20130806072439.20650: *4* Fix bug 106: brew install leo
 @language rest
 
-Must experiment.
+The homebrew docs say that beta releases are not allowed.
 
-Want various flavors of search:
+https://github.com/leo-editor/leo-editor/issues/106
 
-gf: global find
-f: local find.
-gcfa: global clone-find-all
-cfa: local clone-all.
-sc: set-context.
+Pull request
+https://github.com/Homebrew/homebrew/pull/38980/files#r29035052
 
-.. @+node:ekr.20150420071826.1: *4* Auto resize find panel
-.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
+Cookbook
+https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
+
+Cheat sheet
+https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
+
+brew audit --strict Leo
+  # run from homebrew folder
+brew install --verbose --debug Leo
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
-https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
-
-===== EKR
-The find-def command (with ctrl-click support) would do the hyperlinking.
-
-Create an auto-completion-like popup if there are multiple possibilities.
-
-===== Terry:
-
-Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
-
-===== Matt
-
-Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
-
-Consider the following code:
-
-    print "Downloading", ', '.join(packages)
-    for p in packages:
-        do_download(p)
-        ball(p)
-        md5(p)
-
-Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
-reload-abbreviations and reload-key-bindings commands.
-
-Use regex replace to replace settings ivars with @property defs.
-
-.. @+node:ekr.20140312052111.16811: *5* Notes
-https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
-
-    I've put adding new reload-abbreviations and reload-key-bindings
-    commands on the list of things to do asap. These are non-trivial
-    commands, but they should have been ​done ​ years ago. I'll see what I
-    can do in the next day or so.
-
-​Updating the configuration tables in leoConfig.py is straightforward, a​s it turns out. Naturally, there are complications, all involved cached settings, in one forma or another.
-
-1. The easy cases: use properties.
-
-There are about 60 or 70 places in the code where config settings are stored in an ivar. Usually for readability, not for speed.
-
-The solution (tested) is simple: rather than do:
-
-    self.setting_ivar = c.config.getX('a-setting-name')
-
-Leo could define a property:
-
-    @property
-    def setting_ivar(self):
-        return c.config.getX('a-setting-name')
-
-No other changes required. The existing code will test self.setting_ivar exactly as before, but now any recent changes to the setting will have effect.
-
-I'll make these changes using a script.
-
-2. The harder cases: use a reload_setting method in the affected classes.
-
-Several subcommanders create tables on startup using config settings. c.abbrevCommands is one such subcommander.
-
-These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
-
-Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
-.. @+node:ekr.20140630071432.16748: *5* Related methods
-lm.doPrePluginsInit
-lm.computeLocalSettings.
-g.GeneralSetting
-LM.Settings suboutline.
-abbrevCommandsClass
-    init_abbrev
-.. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
-# About 65-70 matches.
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20150410043749.1: *3* Maybe (6)
-@language rest
-@wrap
-.. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
 @language rest # @language python below
 
@@ -448,6 +305,148 @@ all those redundant @g.command code hunks.
 
 Unless there are bugs reported, this ends this project for the foreseeable
 future.
+.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
+https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
+
+===== EKR
+The find-def command (with ctrl-click support) would do the hyperlinking.
+
+Create an auto-completion-like popup if there are multiple possibilities.
+
+===== Terry:
+
+Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+===== Matt
+
+Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
+
+Consider the following code:
+
+    print "Downloading", ', '.join(packages)
+    for p in packages:
+        do_download(p)
+        ball(p)
+        md5(p)
+
+Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
+.. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors: create videos
+@language rest
+@wrap
+
+Steve Litt
+
+EKR summary: Videos will encourage magazine editors to write about Leo.
+
+**Get more fans who can write and who are listened to**
+
+To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo.
+
+**Leo has an image problem**
+
+Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago. VimOutliner is faster and has the 90% of outlining features that people use 90% of the time.
+
+95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
+
+**Make a 3 minute video**
+
+Leo is a mechanism by which you can specify a computer program as an outline-like thing in an outliner-like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
+
+**Video 1**: will show how to compose an application outline and turn it into a program.
+
+The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
+
+**Video 2**: will show hhow to make a GUI app.
+
+**Video 3**: will show how to write a book in Leo.
+
+Flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
+
+**Publicize these videos**
+
+You're going to get some journalists excited, and those are your reviews.
+
+**Start publicizing different ways people use Leo.**
+
+Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
+.. @+node:ekr.20150412034943.1: *5* Show what rST & css can do in Leo
+.. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
+reload-abbreviations and reload-key-bindings commands.
+
+- Cached settings are not necessary:
+
+1000 calls to getBool would take 0.007 sec.
+.. @+node:ekr.20140312052111.16811: *5* Notes
+https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
+
+    I've put adding new reload-abbreviations and reload-key-bindings
+    commands on the list of things to do asap. These are non-trivial
+    commands, but they should have been ​done ​ years ago. I'll see what I
+    can do in the next day or so.
+
+​Updating the configuration tables in leoConfig.py is straightforward, a​s it turns out. Naturally, there are complications, all involved cached settings, in one forma or another.
+
+1. The easy cases: use properties.
+
+There are about 60 or 70 places in the code where config settings are stored in an ivar. Usually for readability, not for speed.
+
+The solution (tested) is simple: rather than do:
+
+    self.setting_ivar = c.config.getX('a-setting-name')
+
+Leo could define a property:
+
+    @property
+    def setting_ivar(self):
+        return c.config.getX('a-setting-name')
+
+No other changes required. The existing code will test self.setting_ivar exactly as before, but now any recent changes to the setting will have effect.
+
+I'll make these changes using a script.
+
+2. The harder cases: use a reload_setting method in the affected classes.
+
+Several subcommanders create tables on startup using config settings. c.abbrevCommands is one such subcommander.
+
+These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
+
+Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
+.. @+node:ekr.20140630071432.16748: *5* Related methods
+lm.doPrePluginsInit
+lm.computeLocalSettings.
+g.GeneralSetting
+LM.Settings suboutline.
+abbrevCommandsClass
+    init_abbrev
+.. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
+# About 65-70 matches.
+.. @+node:ekr.20150501041440.1: *4* Reorganize Leo's core files
+- Split leoEditCommands.py and leoCommands.py into several files:
+
+leoAbbreviations.py
+leoCursorCommands.py
+leoFindCommands.py
+leoSpellCommands.py
+leoUserFileCommands.py
+leoUserEditCommands.py
+leoWindowCommands.py
+
+
+.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
+I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
+
+The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
+
+Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+.. @+node:ekr.20150410043749.1: *3* Maybe
+@language rest
+@wrap
+.. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
@@ -2767,6 +2766,10 @@ I'd also like::
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
+.. @+node:ekr.20150408193842.1: *4* Unlikely: Limit searches so clones are found at most once
+This doesn't seem very important in practice.
+
+An easy workaround is to start the search from a place where clones are likely to be found just a few times.
 .. @+node:ekr.20041016134312.2: *4* Unlikely: Standard Weave command
 Use noweb and TeX, or maybe Pyx.
 .. @+node:ekr.20131121050226.16327: *4* Won't do: reload command
