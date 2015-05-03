@@ -41,13 +41,13 @@ This code is largely lifted from http://stackoverflow.com/questions/12431555/ena
 #@+node:peckj.20150428142729.2: ** << imports >>
 import leo.core.leoGlobals as g
 
-import os
+# import os
 import re
 import sys
 import code
 from rlcompleter import Completer
 
-from leo.core.leoQt import QtWidgets, QtGui, QtCore
+from leo.core.leoQt import QtWidgets,QtCore
 #@-<< imports >>
 
 #@+others
@@ -56,18 +56,15 @@ class MyInterpreter(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20150428142729.4: *3* __init__
     def __init__(self, parent, c):
-
+        '''Ctor for MyInterpreter class.'''
         super(MyInterpreter, self).__init__(parent)
-        hBox = QtGui.QHBoxLayout()
-
+        hBox = QtWidgets.QHBoxLayout()
         self.setLayout(hBox)
         self.textEdit = PyInterp(self, c)
-
         # this is how you pass in locals to the interpreter
         self.textEdit.initInterpreter(locals()) 
-
         hBox.addWidget(self.textEdit)
-        hBox.setMargin(0)
+        hBox.setContentsMargins(QtCore.QMargins(0,0,0,0))
         hBox.setSpacing(0)
     #@-others
 
@@ -76,21 +73,23 @@ class PyInterp(QtWidgets.QTextEdit):
     #@+others
     #@+node:peckj.20150428142729.6: *3* class InteractiveInterpreter
     class InteractiveInterpreter(code.InteractiveInterpreter):
-      #@+others
-      #@+node:peckj.20150428142729.7: *4* __init__
-      def __init__(self, locals, c):
-          self.c = c
-          # inject g, c, p
-          loc = locals
-          loc['c'] = self.c
-          loc['g'] = g
-          loc['p'] = self.c.p
+        #@+others
+        #@+node:peckj.20150428142729.7: *4* __init__
+        def __init__(self, locals, c):
+            '''Ctor for InteractiveInterpreter class.'''
+            self.c = c
+            # inject g, c, p
+            loc = locals
+            loc['c'] = self.c
+            loc['g'] = g
+            loc['p'] = self.c.p
 
-          code.InteractiveInterpreter.__init__(self, loc)
-      #@+node:peckj.20150428142729.8: *4* runIt
-      def runIt(self, command):
-          code.InteractiveInterpreter.runsource(self, command)
-      #@-others
+            code.InteractiveInterpreter.__init__(self, loc)
+        #@+node:peckj.20150428142729.8: *4* runIt
+        def runIt(self, command):
+
+            code.InteractiveInterpreter.runsource(self, command)
+        #@-others
     #@+node:peckj.20150428142729.9: *3* __init__
     def __init__(self,  parent, c):
         super(PyInterp,  self).__init__(parent)
@@ -128,10 +127,12 @@ class PyInterp(QtWidgets.QTextEdit):
         #self.write(sys.version)
         #self.write(' on ' + sys.platform + '\n')
         #self.write('PyQt4 ' + PYQT_VERSION_STR + '\n')
-        banner = ['Type !hist for a history view and !hist(n) history index recall\n',
-                  'Type !clear to clear this pane\n']
+        banner = [
+            'Type !hist for a history view and !hist(n) history index recall\n',
+            'Type !clear to clear this pane\n'
+        ]
         for msg in banner:
-          self.write(msg)
+            self.write(msg)
     #@+node:peckj.20150428142729.12: *3* marker
     def marker(self):
         if self.multiLine:
@@ -165,18 +166,22 @@ class PyInterp(QtWidgets.QTextEdit):
         if length == 0:
             return None
         else:
-            # should have a better way of doing this but I can't find it
-            [self.textCursor().deletePreviousChar() for x in xrange(length)]
+            # should have a better way of doing this but I can't find it.
+            # [self.textCursor().deletePreviousChar() for x in xrange(length)]
+            for x in range(length):
+                self.textCursor().deletePreviousChar()
         return True
     #@+node:peckj.20150428142729.17: *3* recallHistory
     def recallHistory(self):
         # used when using the arrow keys to scroll through history
         self.clearCurrentBlock()
-        if self.historyIndex <> -1:
+        if self.historyIndex != -1:
             self.insertPlainText(self.history[self.historyIndex])
         return True
     #@+node:peckj.20150428142729.18: *3* customCommands
     def customCommands(self, command):
+        
+        # pylint: disable=anomalous-backslash-in-string
 
         if command == '!hist': # display history
             self.append('') # move down one line
@@ -194,6 +199,7 @@ class PyInterp(QtWidgets.QTextEdit):
             self.marker()
             return True
 
+        
         if re.match('!hist\(\d+\)', command): # recall command from history
             backup = self.interpreterLocals.copy()
             history = self.history[:]
@@ -227,7 +233,7 @@ class PyInterp(QtWidgets.QTextEdit):
             completer = Completer(self.interpreter.locals)
             suggestion = completer.complete(line, 0)
             if suggestion is not None:
-               self.insertPlainText(suggestion[len(line):])
+                self.insertPlainText(suggestion[len(line):])
             return None
 
         if event.key() == qt.Key_Down:
@@ -285,6 +291,7 @@ class PyInterp(QtWidgets.QTextEdit):
                 return None
             else:
                 try:
+                    # pylint: disable=pointless-statement
                     line[-1]
                     self.haveLine = True
                     if line[-1] == ':':
@@ -325,17 +332,17 @@ class PyInterp(QtWidgets.QTextEdit):
         super(PyInterp, self).keyPressEvent(event)
     #@+node:peckj.20150428142729.20: *3* focusInEvent
     def focusInEvent(self, event=None):
-      # set stdout+stderr properly
-      QtWidgets.QTextEdit.focusInEvent(self,event)
-      sys.stdout = self
-      sys.stderr = self
-      self.ensureCursorVisible()
+        # set stdout+stderr properly
+        QtWidgets.QTextEdit.focusInEvent(self,event)
+        sys.stdout = self
+        sys.stderr = self
+        self.ensureCursorVisible()
     #@+node:peckj.20150428142729.21: *3* focusOutEvent
     def focusOutEvent(self, event):
-      # set stdout+stderr properly
-      QtWidgets.QTextEdit.focusOutEvent(self,event)
-      sys.stdout = g.user_dict['old_stdout']
-      sys.stderr = g.user_dict['old_stderr']
+        # set stdout+stderr properly
+        QtWidgets.QTextEdit.focusOutEvent(self,event)
+        sys.stdout = g.user_dict['old_stdout']
+        sys.stderr = g.user_dict['old_stderr']
     #@-others
 
 
