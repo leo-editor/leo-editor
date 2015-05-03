@@ -3516,21 +3516,17 @@ Notes:
 - Use / to as the path delimiter, regardless of platform.
 - The filename should end in .py.
 </t>
-<t tx="ekr.20070224073109">@enabled-plugins nodes contain the list of enabled plugins, one per line.
+<t tx="ekr.20070224073109">The body text of @enabled-plugins nodes contain the list of enabled plugins, one per line.
 
 Comment lines starting with '#' are ignored.
 
 Leo loads plugins in the order they appear.
 
-There has been considerable confusion in the past about just how this works.
-Please read the following carefully.
+There has been considerable confusion in the past about just how this works. Please read the following carefully.
 
-Let us distinguish two different situations.
-First, what Leo does when loading a file, say x.leo initially.
-Second, what Leo does when loading a second file, say y.leo, *from x.leo*.
+Let us distinguish two different situations. First, what Leo does when loading a file, say x.leo initially. Second, what Leo does when loading a second file, say y.leo, *from x.leo*.
 
-In the first case, Leo will use the *last* found @enabled-plugins node from
-the list list of settings files.  As always, the search order for settings is:
+In the first case, Leo will use the *last* found @enabled-plugins node from the list list of settings files.  As always, the search order for settings is:
 
 1. leo/config/leoSettings.leo
 2. ~/.leo/leoSettings.leo
@@ -3538,32 +3534,19 @@ the list list of settings files.  As always, the search order for settings is:
 4. ~/.leo/myLeoSettings.leo
 5.  x.leo
 
-In the first case, it *is* possible to disable any or all plugins.
-For example, you could put an empty @enabled-plugins node in x.leo.
-If x.leo contains no @enabled-plugins node,
-you could put an empty @enabled-plugins node in myLeoSettings.leo.
+In the first case, it *is* possible to disable any or all plugins. For example, you could put an empty @enabled-plugins node in x.leo. If x.leo contains no @enabled-plugins node, you could put an empty @enabled-plugins node in myLeoSettings.leo.
 
-In the second case, plugins have *already* been loaded and enabled.
-In this case, there is *no way* to disable already-loaded-and-enabled plugins.
-All you can do is enable more plugins.
+In the second case, plugins have *already* been loaded and enabled. In this case, there is *no way* to disable already-loaded-and-enabled plugins. All you can do is enable more plugins.
 
-y.leo can enable more plugins if it contains an @enabled-plugins node that mentions more plugins.
-If y.leo contains no @enabled-plugins node,
-loading y.leo might cause myLeoSettings.leo to enable more plugins if
+y.leo can enable more plugins if it contains an @enabled-plugins node that mentions more plugins. If y.leo contains no @enabled-plugins node, loading y.leo might cause myLeoSettings.leo to enable more plugins if
 
 a) x.leo contained an @enabled-plugins node and
 b) myLeoSettings.leo mentions plugins not mentioned x.leo
 
-To summarize, Leo enables plugins in a (relatively) straightforward way when it loads x.leo.
-Leo also enables plugins (in the same way) when loading y.leo.
-But things might get confusing, depending on whether x.leo or y.leo (or both or neither)
-contain @enabled-plugins nodes.
-This simply can't be helped, and it is emphatically *not* a bug in Leo.
+To summarize, Leo enables plugins in a (relatively) straightforward way when it loads x.leo. Leo also enables plugins (in the same way) when loading y.leo. But things might get confusing, depending on whether x.leo or y.leo (or both or neither) contain @enabled-plugins nodes. This simply can't be helped, and it is emphatically *not* a bug in Leo.
 
-Leo acts in a reasonable manner, but it is still possible to get confused even if you know the rules.
-This suggests that you refrain from putting @enabled-plugins nodes in any .leo file except myLeoSettings.leo.
-That way all your .leo files will use the same plugins.
-If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
+Leo acts in a reasonable manner, but it is still possible to get confused even if you know the rules. This suggests that you refrain from putting @enabled-plugins nodes in any .leo file except myLeoSettings.leo. That way all your .leo files will use the same plugins. If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time.
+</t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
 
 # This node *MUST* be a child of the @settings node to take effect.
