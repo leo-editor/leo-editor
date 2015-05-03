@@ -314,7 +314,7 @@ class ExternalFilesController:
         encoding = d.get('encoding')
         old_body = d.get('body')
         old_body = g.toEncodedString(old_body,encoding,reportErrors=True)
-        new_body = d.get('body') if d.has_key('body') else p.b
+        new_body = d.get('body') if 'body' in d else p.b
         old_time = d.get('time')
         try:
             new_time = efc.get_mtime(path)

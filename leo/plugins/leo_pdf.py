@@ -921,20 +921,24 @@ if docutils:
 
             markup = [] ; caller = 'visit_reference'
 
-            if node.has_key('refuri'):
+            # if node.has_key('refuri'):
+            if 'refuri' in node:
                 href = node ['refuri']
                 self.body.append(
                     self.starttag(node,'a',suffix='',href=href,caller=caller))
                 markup.append('</a>')
             else:
-                if node.has_key('id'):
+                # if node.has_key('id'):
+                if 'id' in node:
                     self.body.append(
                         self.starttag({},'setLink','',
                             destination=node['id'],caller=caller))
                     markup.append('</setLink>')
-                if node.has_key('refid'):
+                # if node.has_key('refid'):
+                if 'refid' in node:
                     href = node ['refid']
-                elif node.has_key('refname'):
+                # elif node.has_key('refname'):
+                elif 'refname' in node:
                     href = self.document.nameids [node ['refname']]
                 self.body.append(
                     self.starttag(node,'link','',destination=href,caller=caller))
@@ -952,14 +956,17 @@ if docutils:
         def visit_target (self,node):
 
             if not (
-                node.has_key('refuri') or
-                node.has_key('refid') or
-                node.has_key('refname')
+                # node.has_key('refuri') or
+                # node.has_key('refid') or
+                # node.has_key('refname')
+                'refuri' in node or 'refid' in node or 'refname' in node
             ):
                 href = ''
-                if node.has_key('id'):
+                # if node.has_key('id'):
+                if 'id' in node:
                     href = node ['id']
-                elif node.has_key('name'):
+                # elif node.has_key('name'):
+                elif 'name' in node:
                     href = node ['name']
                 self.body.append("%s%s" % (
                     self.starttag(node,'setLink',suffix='',
@@ -1025,11 +1032,14 @@ if docutils:
             for (name,value) in attributes.items():
                 atts [name.lower()] = value
             for att in ('class',): # append to node attribute
-                if node.has_key(att):
-                    if atts.has_key(att):
+                # if node.has_key(att):
+                if att in node:
+                    # if atts.has_key(att):
+                    if att in atts:
                         atts [att] = node [att] + ' ' + atts [att]
             for att in ('id',): # node attribute overrides
-                if node.has_key(att):
+                # if node.has_key(att):
+                if att in node:
                     atts [att] = node [att]
 
             attlist = atts.items() ; attlist.sort()
@@ -1805,7 +1815,8 @@ if docutils:
         #@+node:ekr.20090704103932.5300: *4* visit_raw
         def visit_raw(self, node):
 
-            if node.has_key('format') and node['format'] == 'html':
+            # if node.has_key('format') and node['format'] == 'html':
+            if 'format' in node and node['format'] == 'html':
                 self.body.append(node.astext())
 
             raise docutils.nodes.SkipNode

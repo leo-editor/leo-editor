@@ -437,7 +437,7 @@ class PickleShareDB:
 
     #@+others
     #@+node:ekr.20100208223942.5968: *3*  Birth & special methods
-    #@+node:ekr.20100208223942.5969: *4*  __init__ (PickleShareDb)
+    #@+node:ekr.20100208223942.5969: *4*  __init__ (PickleShareDB)
     def __init__(self,root):
 
         """
@@ -474,7 +474,7 @@ class PickleShareDB:
 
         self.loader = loadz
         self.dumper = dumpz
-    #@+node:ekr.20100208223942.5970: *4* __contains__
+    #@+node:ekr.20100208223942.5970: *4* __contains__(PickleShareDB)
     def __contains__(self, key):
 
         trace = False and g.unitTesting
@@ -662,7 +662,7 @@ class PickleShareDB:
             return self[key]
         except KeyError:
             return default
-    #@+node:ekr.20100208223942.5980: *3* has_key
+    #@+node:ekr.20100208223942.5980: *3* has_key (PickleShareDB)
     def has_key(self, key):
 
         trace = False and g.unitTesting

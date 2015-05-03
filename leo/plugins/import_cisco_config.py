@@ -106,7 +106,8 @@ def importCiscoConfig(c):
                 linelist[i].startswith('no %s' % customLine)):
                 #@+<< process custom line >>
                 #@+node:edream.110203113231.674: *3* << process custom line >>
-                if not blocks.has_key(customLine):
+                # if not blocks.has_key(customLine):
+                if customLine not in blocks:
                     blocks[customLine] = []
                     out.append(g.angleBrackets(customLine))
                     # create first-level child
@@ -128,7 +129,9 @@ def importCiscoConfig(c):
                 if space == -1:
                     space = len(linelist[i])
                 key = linelist[i][:space]
-                if not blocks.has_key(key):
+
+                # if not blocks.has_key(key):
+                if key in blocks:
                     blocks[key] = []
                     out.append(g.angleBrackets(key))
                     # create first-level child
@@ -174,7 +177,9 @@ def importCiscoConfig(c):
         # extract the key from the headline. Uhm... :)
         key = child.h.split('<<'
             )[1].split('>>')[0].strip()
-        if blocks.has_key(key):
+        
+        # if blocks.has_key(key):
+        if key in blocks:
             if type(blocks[key][0]) == type(''):
                 # it's a string, no sub-children, so just print the text
                 c.setBodyString(child,'\n'.join(blocks[key]))

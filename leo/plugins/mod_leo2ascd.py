@@ -70,7 +70,8 @@ class _ConfigOptions:
                 # Leo uses unicode, convert to plain ascii
                 name = str(containsAscConfigDirective.group(1))
                 value = str(containsAscConfigDirective.group(2))
-                if self.current.has_key(name):
+                # if self.current.has_key(name):
+                if name in self.current:
                     self.current[name] = value
                 else:
                     g.es(vnode.headString())

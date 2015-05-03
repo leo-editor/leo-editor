@@ -260,7 +260,8 @@ def jumpToStyleNode( c ):
 #@+node:mork.20041010125444.1: ** styleNodeSelected
 def styleNodeSelected( c ):
     '''Determines if a XSLT Style node has not been selected'''
-    if not stylenodes.has_key( c ):
+    # if not stylenodes.has_key( c ):
+    if c not in stylenodes:
         g.es( "No Style Node selected" ) 
         return False
     return True
@@ -540,7 +541,8 @@ class CSVVisualizer:
     haveseen = weakref.WeakKeyDictionary()
     def addMenu( tag, keywords ):
         c = keywords.get('c') or keywords.get('new_c')
-        if haveseen.has_key( c ):
+        # if haveseen.has_key( c ):
+        if c in haveseen:
             return
         haveseen[ c ] = None
         men = c.frame.menu

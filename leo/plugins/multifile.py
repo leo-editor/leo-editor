@@ -111,7 +111,8 @@ haveseen = weakref.WeakKeyDictionary()
 def addMenu (tag,keywords):
 
     c = keywords.get('c')
-    if not c or haveseen.has_key(c):
+    # if not c or haveseen.has_key(c):
+    if not c or c in haveseen:
         return
 
     haveseen [c] = None

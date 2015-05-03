@@ -164,7 +164,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31342e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31352e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735805000000302e372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31302e3971157d71165809000000756e69745f746573747117580400000061626364711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150430175126.1"><vh>Recently changed tests</vh>
 <v t="ekr.20061101121602.114"><vh>@test back-word</vh>
@@ -188,6 +188,7 @@
 <v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
 </v>
 </v>
+<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -643,7 +644,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -929,6 +930,34 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100205235740.5392">import glob
+trace = False
+failed,n = [],0
+skip_tuples = (
+    ('extensions','asciidoc.py'),
+)
+if g.isPython3:
+    skip_list = [g.os_path_finalize_join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+else:
+    skip_list = []
+for theDir in ('core','external','extensions','plugins','scripts','test'):
+    if trace: print(theDir)
+    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+    assert g.os_path_exists(path),path
+    aList = glob.glob(g.os_path_join(path,'*.py'))
+    for z in aList:
+        if z in skip_list:
+            pass # print('%s: skipped: %s' % (p.h,z))
+        else:
+            n += 1
+            fn = g.shortFileName(z)
+            # if trace: print('%8s %s' % (theDir,fn))
+            s,e = g.readFileIntoString(z)
+            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+                failed.append(z)
+if trace: print('tested %s files' % n)
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
 <t tx="ekr.20100817131738.5886">c.testManager.runEditCommandTest(p)
 </t>

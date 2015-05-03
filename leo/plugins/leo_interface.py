@@ -222,7 +222,8 @@ class leo_node(LeoNode, node_with_parent):
             # cyclic references.
             # Also number all nodes for easier error hunting.
             vnode_stack.append(self)
-            if allvnodes.has_key(self):
+            # if allvnodes.has_key(self):
+            if self in allvnodes:
                 print("Fix this; This is an endless recursive call in leo_interface.leo_node.gen_vnodes")
                 x = vnode_stack[:]
                 x.reverse()
