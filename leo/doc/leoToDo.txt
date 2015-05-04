@@ -9,12 +9,188 @@
 .. @+node:ekr.20150410043718.1: *3* First
 @language rest
 @wrap
+.. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
+@language rest # @language python below
+
+This post discusses discusses problems with the @g.command decorator. Later sections discuss solutions. These later sections are ENB (Engineering Note Book) discussions, which can safely be ignored by all except the usual suspects...
+
+Promises to do something "today" don't always get kept because a seemingly simple task like adding an insert-file-name command becomes unbearable. Creating a better way to define commands has become urgent.
+
+===== Background
+
+The @g.command decorator has its uses, especially in plugins. It allows any code to define a new Leo command without having any access to Leo's core code. For this reason alone, the @g.command decorator is here to stay.
+
+However, using @g.command to add Leo commands is often *way* too clumsy. There are several problems using @g.command. To see these problems clearly, let's look at a typical example, from leoVim.py::
+
+@language python
+
+    @g.command(':gt')
+    def vim_gt(event):
+        '''cycle-focus'''
+        c = event.get('c')
+        if c and c.vimCommands:
+            c.vimCommands.cycle_focus()
+            
+@language rest
+
+This code sucks, for at least the following reasons:
+
+1. It requires an outer-level function-name (vim_gt) that has no value except to the @g.command decorator itself. This is useless verbiage and just clutters the namespace. Worse, although the decorator doesn't require distinct names, disabling a pylint check for duplicate names would be way too dangerous.
+
+2. It repeats the template code for each different command. This is pure cruft. Worse, the tests for c and c.vimCommands would not be necessary in a subcommander.
+
+3. It is usually bad design to define the command at the top level. Commands should be defined in the classes that contain their code!
+
+For all these reasons, vim-mode commands clearly should *not* be defined using the @g.command decorator. The question is, how to define them cleanly?
+
+Everything from here on is an ENB entry. Feel free to ignore, unless you are Terry ;-)
+
+===== Motivation
+
+It would be possible to define vc commands in vc.finishCreate as is done by sub-commanders in leoEditCommands.py, but as I was thinking about this problem I discovered how to simplify the definition of almost *all* of Leo's commands. This is too good to ignore, for the following reasons:
+
+1. The simplifications to be described reduce order constraints during startup. Any such reduction is, all by itself, extremely valuable, because such order constraints are the main complicating factor in the startup code.
+
+2. As always, simplifications to complex code (and Leo's startup code is complex in hard-to-see ways) promise further simplifications. No further simplifications are apparent *now*, but it would be bad practice not to simplify the code when I can.
+
+===== Details
+
+At present, there are several ways (not sure how to count them ;-) to define large numbers of commands. By defining a command I mean associating a string (the command's name) with a method of some class.
+
+Although details vary, the basic idea in each case is to define a **commands dict**, a Python dict whose keys are command names (Python strings) and whose values are methods.
+
+In particular, each subcommander in leoEditCommands.py defines a getPublicCommands method that returns a commands dict.
+
+ECM.finishCreateEditCommanders then merges all the commands dicts, like this::
+
+@language python
+
+    def finishCreateEditCommanders (self):
+        '''Finish creating edit classes in the commander.
+        Return the commands dictionary for all the classes.'''
+        c,d = self.c,{}
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.finishCreate()
+            theInstance.init()
+            d2 = theInstance.getPublicCommands()
+            if d2:
+                d.update(d2)
+        return d
+        
+@language rest
+
+But none of this should be necessary. Or rather, it should happen in a different place, and at no *particular* time.
+
+===== A much better way to define commands.
+
+The basic problem with the code above is that it must happen at the exact instant that various finishCreate methods get called. Yes, the present code works, but it depends *far* too much on code order during startup.
+
+We can remove *all* these unnecessary ordering constraints as follows:
+
+1.  Define init phase 0: create ivars.
+
+This phase is trivial, for our present purposes. Commands.__init__ will just define c.commandsDict and its inverse, as *empty* Python dictionaries.
+
+At present, the inverse of c.commandsDict is c.k.inverseCommandsDict. How stupid is that? It must be a c (Commands) ivar, not a c.k (KeyHandlerClass) ivar! Doh. Using a c.k ivar means that c.k must be inited *before* c.k.inverseCommandsDict is ever used. This is a completely unnecessary constraint.
+
+In short, the inverseCommandsDict must be a Commands ivar, not a KeyHandlerClass ivar. This will ensure that c.inverseCommandsDict will exist before any subcommander's *ctor* gets called.
+
+2. Define c.registerCommands (plural). This will call a new method, c.registerCommand, for each item in a commands dict.
+
+Important: c.k.registerCommand must remain for compatibility, but it will probably just call c.registerCommand.
+
+With just these simple changes, *any* class can call c.registerCommands at
+*any* time. In particular, any class can call c.registerCommands in its
+ctor, or its ctor's helpers. There is no need to wait until finishCreate
+gets called!
+
+Defining command names in the ctor logic may leave some finishCreate
+methods empty. If so, we can rejoice--another ordering constraint has
+disappeared forever!
+
+===== Testing
+
+I expect the changeover to the new scheme to be straightforward. It may
+happen "today" (TM).
+
+This new scheme should be safe, but just to make sure, I'll probably enable
+the new code with g.NEW_COMMANDS.
+
+It's not clear how well the present unit tests actually tests the
+association between commands and their names. A separate unit test may be
+advisable.
+.. @+node:ekr.20141105050314.24: *5* What I did
+In the end, I have opted for the bare minimum of changes. Given the
+complexity of key handling, I think this is the only sane way. Here is a
+slightly revised checkin log for rev 09ab839...:
+
+QQQ
+
+Cleaned up how command names get put into c.commandsDict and
+c.inverseCommandsDict, but only a little bit ;-)
+
+All tests pass, but use a bit more caution.
+
+- Removed @g.command nodes from leoVim.py.
+  vc.defineCommandNames now creates command names.
+ - Called vc.defineCommandNames from the new c.createCommandNames, called from c.finishCreate.
+- Changed k.inverseCommandsDict to c.inverseCommandsDict.
+- Renamed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
+QQQ
+
+All this adds up to *slightly* better code.
+
+In particular, the various o.defineCommandNames methods can be called any
+time after o has been created. These methods depend on nothing else, so
+they can be called "early" in c.finishCreate, by c.createCommandNames. This
+is a real plus: there are now a few less order dependencies in the startup
+code. Replacing rst.finishCreate with rst.createCommandNames is gratifying.
+
+This is important! The various finishCreate methods must be called in
+*exactly* the right order so that various widgets are created in one
+finishCreate method before they are needed in another finishCreate method.
+So anything that either eliminates finishCreate methods entirely or reduces
+their complexity is a real improvement in Leo's startup code.
+
+Otoh, I left the code that creates c.commandsDict and c.inverseCommandsDict
+*strictly* alone, except that:
+
+1. inverseCommandsDict is now a c ivar instead of a k ivar.
+
+2. The new c.createCommandNames method encapsulates all aspects of the
+   making of the command name dicts. This should make this difficult code
+   slightly easier to understand.
+
+On balance, this was a long day of coding for minor improvements to Leo's
+startup logic. But these are steps in the right direction.
+
+In any case, the VimCommands class now defines command names in
+vc.defineCommandNames. There no need for vc.finishCreate and no need for
+all those redundant @g.command code hunks.
+
+Unless there are bugs reported, this ends this project for the foreseeable
+future.
 .. @+node:ekr.20150502050830.1: *4* Improve limited searches
 Setting limited search "marks" a node.
 Mark with icon
 Show headline in Find panel.
 Searching outside the limit area brings up dialog.
 Ending a limited search brings up a dialog.
+.. @+node:ekr.20150501041440.1: *4* Reorganize Leo's commands files
+Create userCommands directory
+
+import leo.core.userCommands as userCommands
+
+abbreviationCommands.py
+baseCommands.py
+cursorCommands.py
+editCommands
+fileCommands.py
+findCommands.py
+spellCommands.py
+windowCommands.py
+.. @+node:ekr.20150504090043.1: *3* Next
 .. @+node:ekr.20150502050809.1: *4* Fix recent bugs
 Insert time in headline now inserts time in body
 https://github.com/leo-editor/leo-editor/issues/131
@@ -199,168 +375,6 @@ def exec_helper(self,event):
             # Run using IPython.
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
-.. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
-@language rest # @language python below
-
-This post discusses discusses problems with the @g.command decorator. Later sections discuss solutions. These later sections are ENB (Engineering Note Book) discussions, which can safely be ignored by all except the usual suspects...
-
-Promises to do something "today" don't always get kept because a seemingly simple task like adding an insert-file-name command becomes unbearable. Creating a better way to define commands has become urgent.
-
-===== Background
-
-The @g.command decorator has its uses, especially in plugins. It allows any code to define a new Leo command without having any access to Leo's core code. For this reason alone, the @g.command decorator is here to stay.
-
-However, using @g.command to add Leo commands is often *way* too clumsy. There are several problems using @g.command. To see these problems clearly, let's look at a typical example, from leoVim.py::
-
-@language python
-
-    @g.command(':gt')
-    def vim_gt(event):
-        '''cycle-focus'''
-        c = event.get('c')
-        if c and c.vimCommands:
-            c.vimCommands.cycle_focus()
-            
-@language rest
-
-This code sucks, for at least the following reasons:
-
-1. It requires an outer-level function-name (vim_gt) that has no value except to the @g.command decorator itself. This is useless verbiage and just clutters the namespace. Worse, although the decorator doesn't require distinct names, disabling a pylint check for duplicate names would be way too dangerous.
-
-2. It repeats the template code for each different command. This is pure cruft. Worse, the tests for c and c.vimCommands would not be necessary in a subcommander.
-
-3. It is usually bad design to define the command at the top level. Commands should be defined in the classes that contain their code!
-
-For all these reasons, vim-mode commands clearly should *not* be defined using the @g.command decorator. The question is, how to define them cleanly?
-
-Everything from here on is an ENB entry. Feel free to ignore, unless you are Terry ;-)
-
-===== Motivation
-
-It would be possible to define vc commands in vc.finishCreate as is done by sub-commanders in leoEditCommands.py, but as I was thinking about this problem I discovered how to simplify the definition of almost *all* of Leo's commands. This is too good to ignore, for the following reasons:
-
-1. The simplifications to be described reduce order constraints during startup. Any such reduction is, all by itself, extremely valuable, because such order constraints are the main complicating factor in the startup code.
-
-2. As always, simplifications to complex code (and Leo's startup code is complex in hard-to-see ways) promise further simplifications. No further simplifications are apparent *now*, but it would be bad practice not to simplify the code when I can.
-
-===== Details
-
-At present, there are several ways (not sure how to count them ;-) to define large numbers of commands. By defining a command I mean associating a string (the command's name) with a method of some class.
-
-Although details vary, the basic idea in each case is to define a **commands dict**, a Python dict whose keys are command names (Python strings) and whose values are methods.
-
-In particular, each subcommander in leoEditCommands.py defines a getPublicCommands method that returns a commands dict.
-
-ECM.finishCreateEditCommanders then merges all the commands dicts, like this::
-
-@language python
-
-    def finishCreateEditCommanders (self):
-        '''Finish creating edit classes in the commander.
-        Return the commands dictionary for all the classes.'''
-        c,d = self.c,{}
-        for name, theClass in self.classesList:
-            theInstance = getattr(c,name)
-            theInstance.finishCreate()
-            theInstance.init()
-            d2 = theInstance.getPublicCommands()
-            if d2:
-                d.update(d2)
-        return d
-        
-@language rest
-
-But none of this should be necessary. Or rather, it should happen in a different place, and at no *particular* time.
-
-===== A much better way to define commands.
-
-The basic problem with the code above is that it must happen at the exact instant that various finishCreate methods get called. Yes, the present code works, but it depends *far* too much on code order during startup.
-
-We can remove *all* these unnecessary ordering constraints as follows:
-
-1.  Define init phase 0: create ivars.
-
-This phase is trivial, for our present purposes. Commands.__init__ will just define c.commandsDict and its inverse, as *empty* Python dictionaries.
-
-At present, the inverse of c.commandsDict is c.k.inverseCommandsDict. How stupid is that? It must be a c (Commands) ivar, not a c.k (KeyHandlerClass) ivar! Doh. Using a c.k ivar means that c.k must be inited *before* c.k.inverseCommandsDict is ever used. This is a completely unnecessary constraint.
-
-In short, the inverseCommandsDict must be a Commands ivar, not a KeyHandlerClass ivar. This will ensure that c.inverseCommandsDict will exist before any subcommander's *ctor* gets called.
-
-2. Define c.registerCommands (plural). This will call a new method, c.registerCommand, for each item in a commands dict.
-
-Important: c.k.registerCommand must remain for compatibility, but it will probably just call c.registerCommand.
-
-With just these simple changes, *any* class can call c.registerCommands at
-*any* time. In particular, any class can call c.registerCommands in its
-ctor, or its ctor's helpers. There is no need to wait until finishCreate
-gets called!
-
-Defining command names in the ctor logic may leave some finishCreate
-methods empty. If so, we can rejoice--another ordering constraint has
-disappeared forever!
-
-===== Testing
-
-I expect the changeover to the new scheme to be straightforward. It may
-happen "today" (TM).
-
-This new scheme should be safe, but just to make sure, I'll probably enable
-the new code with g.NEW_COMMANDS.
-
-It's not clear how well the present unit tests actually tests the
-association between commands and their names. A separate unit test may be
-advisable.
-.. @+node:ekr.20141105050314.24: *5* What I did
-In the end, I have opted for the bare minimum of changes. Given the
-complexity of key handling, I think this is the only sane way. Here is a
-slightly revised checkin log for rev 09ab839...:
-
-QQQ
-
-Cleaned up how command names get put into c.commandsDict and
-c.inverseCommandsDict, but only a little bit ;-)
-
-All tests pass, but use a bit more caution.
-
-- Removed @g.command nodes from leoVim.py.
-  vc.defineCommandNames now creates command names.
- - Called vc.defineCommandNames from the new c.createCommandNames, called from c.finishCreate.
-- Changed k.inverseCommandsDict to c.inverseCommandsDict.
-- Renamed ecm.finishCreateEditCommanders to ecm.defineCommandNames.
-QQQ
-
-All this adds up to *slightly* better code.
-
-In particular, the various o.defineCommandNames methods can be called any
-time after o has been created. These methods depend on nothing else, so
-they can be called "early" in c.finishCreate, by c.createCommandNames. This
-is a real plus: there are now a few less order dependencies in the startup
-code. Replacing rst.finishCreate with rst.createCommandNames is gratifying.
-
-This is important! The various finishCreate methods must be called in
-*exactly* the right order so that various widgets are created in one
-finishCreate method before they are needed in another finishCreate method.
-So anything that either eliminates finishCreate methods entirely or reduces
-their complexity is a real improvement in Leo's startup code.
-
-Otoh, I left the code that creates c.commandsDict and c.inverseCommandsDict
-*strictly* alone, except that:
-
-1. inverseCommandsDict is now a c ivar instead of a k ivar.
-
-2. The new c.createCommandNames method encapsulates all aspects of the
-   making of the command name dicts. This should make this difficult code
-   slightly easier to understand.
-
-On balance, this was a long day of coding for minor improvements to Leo's
-startup logic. But these are steps in the right direction.
-
-In any case, the VimCommands class now defines command names in
-vc.defineCommandNames. There no need for vc.finishCreate and no need for
-all those redundant @g.command code hunks.
-
-Unless there are bugs reported, this ends this project for the foreseeable
-future.
 .. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
@@ -476,18 +490,6 @@ abbrevCommandsClass
     init_abbrev
 .. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
-.. @+node:ekr.20150501041440.1: *4* Reorganize Leo's core files
-- Split leoEditCommands.py and leoCommands.py into several files:
-
-leoAbbreviations.py
-leoCursorCommands.py
-leoFindCommands.py
-leoSpellCommands.py
-leoUserFileCommands.py
-leoUserEditCommands.py
-leoWindowCommands.py
-
-
 .. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
 I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
 
