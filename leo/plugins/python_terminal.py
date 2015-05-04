@@ -64,7 +64,7 @@ class MyInterpreter(QtWidgets.QWidget):
         # this is how you pass in locals to the interpreter
         self.textEdit.initInterpreter(locals()) 
         hBox.addWidget(self.textEdit)
-        hBox.setContentsMargins(QtCore.QMargins(0,0,0,0))
+        hBox.setContentsMargins(0,0,0,0)
         hBox.setSpacing(0)
     #@-others
 

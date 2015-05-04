@@ -898,7 +898,7 @@ class LineTextWidget(QtWidgets.QFrame):
         self.number_bar.setTextEdit(e)
         hbox = QtWidgets.QHBoxLayout(self)
         hbox.setSpacing(0)
-        hbox.setMargin(0)
+        hbox.setContentsMargins(0,0,0,0)
         hbox.addWidget(self.number_bar)
         hbox.addWidget(e)
         e.installEventFilter(self)
