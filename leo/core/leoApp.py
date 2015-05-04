@@ -160,6 +160,7 @@ class ExternalFilesController:
         'body':        The body text of the file. Defaults to c.p.b
         'c':           The commander.
         'encoding':    The encoding of the file.
+        'ext':         The file extension.
         'p':           A position.  defaults to c.p.
         'path':        The full path to the file.
         'time':        The file's modificationtime.
@@ -262,7 +263,7 @@ class ExternalFilesController:
         exists = g.os_path_exists(path)
         if not g.unitTesting:
             kind = 'recreating:' if exists else 'creating: '
-            g.trace(kind,path)
+            g.trace(kind,path,ext)
         # Compute encoding and s.
         d = c.scanAllDirectives(p)
         encoding = d.get('encoding',None)
@@ -288,6 +289,7 @@ class ExternalFilesController:
             'body':body,
             'c':c,
             'encoding':encoding, ### To be removed.
+            'ext':ext,
             'p':p.copy(),
             'path':path,
             'time':efc.get_mtime(path),
@@ -487,11 +489,12 @@ class ExternalFilesController:
     #@+node:ekr.20150407141601.1: *4* efc.forget_path
     def forget_path(efc,path):
         '''Remove path from the open_with_files list.'''
-        ### g.trace('before',efc.open_with_files)
+        g.trace(g.shortFileName(path))
+        g.trace('before',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
         efc.open_with_files = [
             d for d in efc.open_with_files
                 if d.get('path') != path]
-        ### g.trace('after',efc.open_with_files)
+        g.trace('after',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext (efc,c,p,ext):
         '''Return the file extension to be used in the temp file.'''
@@ -528,29 +531,21 @@ class ExternalFilesController:
         else:
             path = efc.legacy_file_name(c,p,ext)
         return path
-        ###
-        # # # # Previously overridden by mod_tempfname.
-        # # # fn = '%s_LeoTemp_%s%s' % (g.sanitize_filename(p.h),str(id(p.v)),ext)
-        # # # if g.isPython3:
-            # # # fn = g.toUnicode(fn)
-        # # # td = g.os_path_finalize(tempfile.gettempdir())
-        # # # path = g.os_path_join(td,fn)
-        # # # return path
     #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
     def clean_file_name(efc,c,p,ext):
         '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
         ancestors,found = [],False
-        for p in p.self_and_parents():
+        for p2 in p.self_and_parents():
             h = p.anyAtFileNodeName()
             if not h:
-                h = p.h  # Not an @file node: use the entire header
+                h = p2.h  # Not an @file node: use the entire header
             elif use_extentions and not found:
                 # Found the nearest ancestor @<file> node.
                 found = True
                 base,ext2 = g.os_path_splitext(h)
-                if p == c.p: h = base
+                if p2 == p: h = base
                 if ext2: ext = ext2
             ancestors.append(g.sanitize_filename(h))
 
@@ -568,7 +563,7 @@ class ExternalFilesController:
         # Compute the full path.
         name = ancestors.pop() + ext
         path = os.path.join(td,name)
-        if trace: g.trace('returns',path,g.callers())
+        if trace: g.trace(path)
         return path
     #@+node:ekr.20150406055221.3: *5* efc.legacy_file_name
     def legacy_file_name(efc,c,p,ext):
