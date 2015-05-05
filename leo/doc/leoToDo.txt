@@ -12,6 +12,12 @@
 .. @+node:ekr.20141105050314.23: *4* Improve @g.command decorator
 @language rest # @language python below
 
+I would like to improve the g.command decorator so that virtually all commands can be defined as follows:
+
+@g.command(command-name)
+def command_name(self,c,event=None):
+    whatever
+
 This post discusses discusses problems with the @g.command decorator. Later sections discuss solutions. These later sections are ENB (Engineering Note Book) discussions, which can safely be ignored by all except the usual suspects...
 
 Promises to do something "today" don't always get kept because a seemingly simple task like adding an insert-file-name command becomes unbearable. Creating a better way to define commands has become urgent.
@@ -178,18 +184,27 @@ Show headline in Find panel.
 Searching outside the limit area brings up dialog.
 Ending a limited search brings up a dialog.
 .. @+node:ekr.20150501041440.1: *4* Reorganize Leo's commands files
-Create userCommands directory
+leoCommands.py and leoEditCommands.py are too large and contain a mishmash of code.
 
-import leo.core.userCommands as userCommands
+I propose to replace the leo.core.leoEditCommands module with a leo/userCommands directory containing something like the following files:
 
-abbreviationCommands.py
-baseCommands.py
-cursorCommands.py
-editCommands
-fileCommands.py
-findCommands.py
-spellCommands.py
-windowCommands.py
+    abbreviationCommands.py
+    baseCommands.py
+    cursorCommands.py
+    editCommands.py
+    fileCommands.py
+    findCommands.py
+    spellCommands.py
+    windowCommands.py
+
+These files would contain user commands from leoCommands.py and leoEditCommands.py. 
+Code would access these sub-modules as usual. For example:
+
+    import leo.userCommands.findCommands as findCommands
+
+The leo.core.leoCommands module would contain only the Commands class.
+
+There would be some impact on code in Leo's core and Leo's unit tests.  I foresee little or no impact on existing plugins.
 .. @+node:ekr.20150504090043.1: *3* Next
 .. @+node:ekr.20150502050809.1: *4* Fix recent bugs
 Insert time in headline now inserts time in body
@@ -6965,6 +6980,30 @@ g.es(len(list(dir(g))))
 http://sourceforge.net/blog/tutorial-how-to-sync-a-github-or-google-code-repo-to-a-sourceforge-project/
 
 Will not accept leo-editor import.
+.. @+node:ekr.20150505084549.1: *3* Plugins
+.. @+node:ekr.20150503061351.1: *4* Won't do: Enable plugins separately from loading plugins?
+@language rest
+@wrap
+
+https://groups.google.com/forum/#!topic/leo-editor/K4rzqDE8emA
+
+The consensus is that this is a bad idea.
+
+
+Original post:
+
+Leo's plugins manager can and imo should dispatch events registered to a plugin only to commanders for which the plugin is enabled in an @enabled-plugins node.
+
+This would make @enabled-plugins nodes work like all other settings.  Not enabling a plugin in a local (per .leo file) @enabled-plugin node would disable that plugin for that outline even if the plugin is enabled in myLeoSettings.leo or leoSettings.leo.
+
+In practice, the plugins manager would dispatch an event registered by a plugin to a commander only if the plugin is actually enabled in the commander.  Events would be dispatched as always.  For example:
+
+    def onCreate (tag, keys):
+        c = keys.get('c')
+        if c: << do something >>
+
+The only difference is that this event handler would be called only for outlines in which the plugin was enabled.
+
 .. @+node:ekr.20111109083738.9798: *3* Testing
 .. @+node:ekr.20111114151846.9856: *4* Unit test: verifies class relationships
 .. @+node:ekr.20111114151846.9852: *5* mustBeDefined...
