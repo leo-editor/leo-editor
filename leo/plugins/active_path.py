@@ -349,9 +349,6 @@ def createFile(c,parent,d):
 #@+node:tbrown.20080613095157.9: ** openFile
 def openFile(c,parent,d, autoload=False):
     """Open an existing file"""
-    # hdr = os.path.basename(d)
-    # parent.h = '@auto '+hdr
-    # parent.b = file(d).read()
 
     path = getPath(c, parent)
 
@@ -381,10 +378,13 @@ def openFile(c,parent,d, autoload=False):
               c.__active_path['max_size']):
                 return
 
-    c.importCommands.createOutline(d,parent=parent,atAuto=True)
     atType = c.config.getString('active_path_attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
-
+    c.selectPosition(parent)
+    if atType == 'asis':
+        parent.b = open(d).read()
+    else:
+        c.refreshFromDisk()
     c.bodyWantsFocus()
 #@+node:tbrown.20080613095157.10: ** openDir
 def openDir(c,parent,d):
