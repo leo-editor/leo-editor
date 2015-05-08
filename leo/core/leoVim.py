@@ -2062,7 +2062,7 @@ class VimCommands:
                 k.setLabel(k.mb_prefix)
                 k.extendLabel(':%'+tail+'/')
         #@-others
-    #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:tabnew)
+    #@+node:ekr.20140815160132.18829: *4* class vc.Tabnew (:e & :tabnew)
     class Tabnew:
         '''
         A class to handle Vim's :tabnew command.

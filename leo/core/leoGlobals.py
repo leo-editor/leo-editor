@@ -12,6 +12,10 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
+new_dispatch = False
+if new_dispatch:
+    print('\n***** new_dispatch')
+
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
@@ -91,6 +95,7 @@ else:
     import cStringIO
     StringIO = cStringIO.StringIO
 
+# import functools
 import imp
 import inspect
 import operator
@@ -161,13 +166,6 @@ inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
-#@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
-def isTextWidget(w):
-    return g.app.gui.isTextWidget(w)
-    
-def isTextWrapper(w):
-    return g.app.gui.isTextWrapper(w)
-    
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 #@+at From The Python Cookbook: Often we want to just collect a bunch of
 # stuff together, naming each item of the bunch; a dictionary's OK for
@@ -224,6 +222,38 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
+#@+node:ekr.20150505144026.1: *3* g.cmd (decorator)
+def cmd(name):
+    '''
+    A *global* decorator that defines the given name to be a command
+    implemented by the decorated func.
+    
+    The command dispatch logic assumes the signature: def func(c,event=None).
+    '''
+    def _decorator(func):
+        if g.new_dispatch:
+            g.app.global_commands_dict[name]=func
+        return func
+    return _decorator
+
+# Equivalent, but more complex.
+# class cmd:
+    # '''A class implementing the @g_cmd decorator.'''
+    # def __init__(self,name,ivar=None):
+        # self.name,self.ivar = name,ivar
+    # def __call__(self,func):
+        
+        # @functools.wraps(func)
+        # def wrapper(c,event=None):
+            # obj = getattr(c,self.ivar) if self.ivar else c
+            # return func(obj,event)
+
+        # g.app.global_commands_dict[self.name]=wrapper
+        # if 0: # Don't do this, at least not yet.
+            # for c in g.app.commanders():
+                # c.k.registerCommand(self.name,shortcut = None,
+                # func = func, pane='all',verbose=False)        
+        # return wrapper
 #@+node:ville.20090521164644.5924: *3* class g.Command & g.command (decorator)
 class Command:
     """ Decorator to create global commands """
@@ -1347,6 +1377,13 @@ class UiTypeException(Exception):
 def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
+#@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
+def isTextWidget(w):
+    return g.app.gui.isTextWidget(w)
+    
+def isTextWrapper(w):
+    return g.app.gui.isTextWrapper(w)
+    
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert

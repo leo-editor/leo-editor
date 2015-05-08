@@ -139,7 +139,7 @@ class BaseEditCommandsClass:
         if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
         return self.w
-    #@+node:ekr.20050920084036.5: *3* getPublicCommands & getStateCommands
+    #@+node:ekr.20050920084036.5: *3* baseEditCommands.getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
         '''Return a dict describing public commands implemented in the subclass.
@@ -204,7 +204,7 @@ class BaseEditCommandsClass:
 #@-<< define class BaseEditCommandsClass >>
 
 #@+others
-#@+node:ekr.20120315062642.9746: **  Commands defined by @g.command
+#@+node:ekr.20120315062642.9746: **  Commands defined by @g.command (leoEditCommands)
 #@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event):
@@ -254,6 +254,7 @@ def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
 #@+node:ekr.20140718105559.17735: *3* pylint command
+
 @g.command('pylint')
 def pylint_command(event):
     '''
@@ -383,9 +384,8 @@ class EditCommandsManager:
     #@+others
     #@+node:ekr.20120211121736.10830: *3*  ecm.ctor
     def __init__ (self,c):
-
+        '''Ctor for EditCommandsManager.'''
         self.c = c
-
         self.classesList = (
             ('abbrevCommands',      AbbrevCommandsClass),
             ('bufferCommands',      BufferCommandsClass),
@@ -400,13 +400,11 @@ class EditCommandsManager:
             ('leoCommands',         LeoCommandsClass),
             ('macroCommands',       MacroCommandsClass),
             # ('queryReplaceCommands',QueryReplaceCommandsClass),
-            ('recTangleCommands',   RecTangleCommandsClass),
+            ('rectangleCommands',   RectangleCommandsClass),
             ('registerCommands',    RegisterCommandsClass),
             ('searchCommands',      SearchCommandsClass),
             ('spellCommands',       SpellCommandsClass),
         )
-
-
     #@+node:ekr.20120211121736.10827: *3* ecm.createEditCommanders
     def createEditCommanders (self):
 
@@ -1215,7 +1213,8 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
 class BufferCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.32: *3*  ctor (BufferCommandsClass)
+    #@+node:ekr.20150507150751.1: *3* buffer.Birth
+    #@+node:ekr.20050920084036.32: *4* buffer.ctor
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1229,7 +1228,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
             self.w = c.frame.body.wrapper
         except AttributeError:
             self.w = None
-    #@+node:ekr.20050920084036.33: *3*  getPublicCommands
+    #@+node:ekr.20050920084036.33: *4* buffer.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -1239,14 +1238,14 @@ class BufferCommandsClass (BaseEditCommandsClass):
                 # 'insert-to-buffer':   self.insertToBuffer,
 
             'buffer-append-to':             self.appendToBuffer,
-            'buffer-kill' :                 self.killBuffer,
+            'buffer-kill':                  self.killBuffer,
             'buffer-prepend-to':            self.prependToBuffer,
             # 'buffer-rename':              self.renameBuffer,
             'buffer-switch-to':             self.switchToBuffer,
-            'buffers-list' :                self.listBuffers,
+            'buffers-list':                 self.listBuffers,
             'buffers-list-alphabetically':  self.listBuffersAlphabetically,
         }
-    #@+node:ekr.20050920084036.34: *3* Entry points
+    #@+node:ekr.20050920084036.34: *3* buffer.Entry points
     #@+node:ekr.20050920084036.35: *4* appendToBuffer
     def appendToBuffer (self,event):
 
@@ -1426,7 +1425,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
             c.selectPosition(p)
             c.redraw_after_select(p)
 
-    #@+node:ekr.20050927102133.1: *3* Utils
+    #@+node:ekr.20050927102133.1: *3* buffer.Utils
     #@+node:ekr.20051215121416: *4* computeData
     def computeData (self):
 
@@ -1490,7 +1489,7 @@ class ChapterCommandsClass (BaseEditCommandsClass):
         BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         # c.chapterController does not exist yet.
-    #@+node:ekr.20070522085429: *3*  getPublicCommands (ChapterCommandsClass)
+    #@+node:ekr.20070522085429: *3* chapter.getPublicCommands
     def getPublicCommands (self):
 
         c = self.c ; cc = c.chapterController
@@ -1514,13 +1513,14 @@ class ChapterCommandsClass (BaseEditCommandsClass):
 class ControlCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.151: *3*  ctor (ControlCommandsClass)
+    #@+node:ekr.20150507150848.1: *3* control.Birth
+    #@+node:ekr.20050920084036.151: *4* control.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
+        '''Ctor for ControlCommandsClass.'''
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
         self.payload = None
-    #@+node:ekr.20050920084036.152: *3*  getPublicCommands
+    #@+node:ekr.20050920084036.152: *4* control.getPublicCommands
     def getPublicCommands (self):
 
         k = self.c.k
@@ -1668,11 +1668,12 @@ class ControlCommandsClass (BaseEditCommandsClass):
 class DebugCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20060127162921: *3*  ctor (DebugCommandsClass)
+    #@+node:ekr.20150507150504.1: *3* db.Birth
+    #@+node:ekr.20060127162921: *4* db.ctor
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
-    #@+node:ekr.20060127163325: *3*  getPublicCommands
+    #@+node:ekr.20060127163325: *4* db.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -1934,7 +1935,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.closeBracketsList      = cf.getString('close_flash_brackets') or ')]}'
 
         self.initBracketMatcher(c)
-    #@+node:ekr.20050920084036.55: *4*  getPublicCommands (EditCommandsClass)
+    #@+node:ekr.20050920084036.55: *4* ec.getPublicCommands
     def getPublicCommands (self):        
 
         c = self.c
@@ -2080,7 +2081,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             'insert-icon':                          self.insertIcon,
             'insert-file-name':                     self.insertFileName,
             'insert-headline-time':                 self.insertHeadlineTime,
-            'insert-newline':                       self.insertNewline,
+            'insert-newline':                       self.insertNewLine,
             'insert-parentheses':                   self.insertParentheses,
             'insert-soft-tab':                      self.insertSoftTab,
             'keep-lines':                           self.keepLines,
@@ -7130,7 +7131,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20050920084036.124: *4* swapCharacters & transeposeCharacters
-    def swapCharacters (self,event):
+    def transposeCharacters (self,event):
 
         '''Swap the characters at the cursor.'''
 
@@ -7145,7 +7146,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             w.setSelectionRange(i,i,insert=i)
         self.endCommand(changed=True,setLabel=True)
 
-    transposeCharacters = swapCharacters
+    swapCharacters = transposeCharacters
     #@+node:ekr.20050920084036.126: *3* tabify & untabify
     def tabify (self,event):
         '''Convert 4 spaces to tabs in the selected text.'''
@@ -7252,7 +7253,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
-    #@+node:ekr.20050920084036.163: *3*  getPublicCommands (EditFileCommandsClass)
+    #@+node:ekr.20050920084036.163: *3* ef.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -7562,10 +7563,25 @@ class HelpCommandsClass (BaseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
     # pylint: disable=anomalous-backslash-in-string
     #@+others
-    #@+node:ekr.20060205165501: *3* getPublicCommands (helpCommands)
+    #@+node:ekr.20150507070627.1: *3* hc.cmd (decorator)
+    def cmd(name):
+        '''Decorator that creates commands of the helpCommands class.'''
+        def _decorator(func):
+            if g.new_dispatch:
+                # import functools
+                # @functools.wraps(func)
+                def help_commands_wrapper(event):
+                    c = event.get('c')
+                    func(self=c.helpCommands,event=event.get('mb_event'))
+                # Put the *wrapper* into the global dict.
+                g.app.global_commands_dict[name]=help_commands_wrapper
+            # Always return the *bound* method.
+            return func
+        return _decorator
+    #@+node:ekr.20060205165501: *3* help.getPublicCommands
     def getPublicCommands (self):
 
-        return {
+        d = {
         'help':                             self.help,
         'help-for-abbreviations':           self.helpForAbbreviations,
         'help-for-autocompletion':          self.helpForAutocompletion,
@@ -7577,11 +7593,16 @@ class HelpCommandsClass (BaseEditCommandsClass):
         'help-for-dynamic-abbreviations':   self.helpForDynamicAbbreviations,
         'help-for-find-commands':           self.helpForFindCommands,
         'help-for-minibuffer':              self.helpForMinibuffer,
-        'help-for-python':                  self.pythonHelp,
+        # 'help-for-python':                  self.pythonHelp,
         'help-for-regular-expressions':     self.helpForRegularExpressions,
         'help-for-scripting':               self.helpForScripting,
         'print-settings':                   self.printSettings,
         }
+        if g.new_dispatch:
+            pass
+        else:
+            d['help-for-python'] = self.pythonHelp
+        return d
     #@+node:ekr.20130412173637.10333: *3* help
     def help (self,event=None):
 
@@ -8649,9 +8670,12 @@ class HelpCommandsClass (BaseEditCommandsClass):
         '''
         self.c.config.printSettings()
     #@+node:ekr.20060602154458: *3* pythonHelp
+    @cmd('help-for-python')
     def pythonHelp (self,event=None):
         '''Prompt for a arg for Python's help function, and put it to the log pane.'''
-        c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
+        c = self.c
+        k = c.k ; tag = 'python-help'
+        state = k.getState(tag)
         if state == 0:
             c.minibufferWantsFocus()
             k.setLabelBlue('Python help: ')
@@ -8733,8 +8757,8 @@ class KeyHandlerCommandsClass (BaseEditCommandsClass):
             }
         else:
             return {}
-    #@+node:ekr.20131221055224.17570: *3* def menuShortcutPlaceHolder
-    g.command('menu-shortcut')
+    #@+node:ekr.20131221055224.17570: *3* menuShortcutPlaceHolder
+    @g.command('menu-shortcut')
     def menuShortcutPlaceHolder(self,event=None):
         '''This will never be called.
         It serves as a placeholder for the print-bindings command.'''
@@ -8745,7 +8769,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     '''A class to manage the kill buffer.'''
 
     #@+others
-    #@+node:ekr.20050920084036.175: *3*  ctor & finishCreate (KillBufferCommandsClass)
+    #@+node:ekr.20150507150954.1: *3* kill.Birth
+    #@+node:ekr.20050920084036.175: *4* kill.ctor & finishCreate
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8765,7 +8790,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         BaseEditCommandsClass.finishCreate(self)
             # Call the base finishCreate.
             # This sets self.k
-    #@+node:ekr.20050920084036.176: *3*  getPublicCommands
+    #@+node:ekr.20050920084036.176: *4* kill.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -9331,19 +9356,18 @@ class MacroCommandsClass (BaseEditCommandsClass):
     '''
 
     #@+others
-    #@+node:ekr.20050920084036.191: *3*  ctor (MacroCommandsClass)
+    #@+node:ekr.20150507150554.1: *3* macro.Birth
+    #@+node:ekr.20050920084036.191: *4* macro.ctor
     def __init__ (self,c):
-
+        '''ctor for MacroCommandsClass class.'''
         BaseEditCommandsClass.__init__(self,c) # init the base class.
-
         self.lastMacro = None
         self.macros = []
         self.macro = []
         self.namedMacros = {}
-
         # Important: we must not interfere with k.state in startRecordingMacro!
         self.recordingMacro = False
-    #@+node:ekr.20050920084036.192: *3*  getPublicCommands
+    #@+node:ekr.20050920084036.192: *4* macro.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -9605,40 +9629,36 @@ class MacroCommandsClass (BaseEditCommandsClass):
         else:
             g.trace('can not happen: no event')
     #@-others
-#@+node:ekr.20050920084036.221: ** RecTangleCommandsClass
-class RecTangleCommandsClass (BaseEditCommandsClass):
+#@+node:ekr.20050920084036.221: ** RectangleCommandsClass
+class RectangleCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.222: *3*  Birth (RecTangleCommandsClass)
+    #@+node:ekr.20050920084036.222: *3* rectangle.Birth (RectangleCommandsClass)
+    #@+node:ekr.20150507151525.1: *4* rectangle.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
-        self.theKillRectangle = [] # Do not re-init this!
+        '''Ctor for the RectangleCommandsClass.'''
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
+        self.theKillRectangle = []
+            # Do not re-init this!
         self.stringRect = None
 
+    #@+node:ekr.20150507151427.1: *4* rectangle.finishCreate
     def finishCreate(self):
 
         BaseEditCommandsClass.finishCreate(self)
 
         self.commandsDict = {
-            'c': ('clear-rectangle',    self.clearRectangle),
-            'd': ('delete-rectangle',   self.deleteRectangle),
-            'k': ('kill-rectangle',     self.killRectangle),
-            'o': ('open-rectangle',     self.openRectangle),
-            'r': ('copy-rectangle-to-register',
-                self.c.registerCommands.copyRectangleToRegister),
-            't': ('string-rectangle',   self.stringRectangle),
-            'y': ('yank-rectangle',     self.yankRectangle),
+        'c': ('clear-rectangle',    self.clearRectangle),
+        'd': ('delete-rectangle',   self.deleteRectangle),
+        'k': ('kill-rectangle',     self.killRectangle),
+        'o': ('open-rectangle',     self.openRectangle),
+        'r': ('copy-rectangle-to-register',
+            self.c.registerCommands.copyRectangleToRegister),
+        't': ('string-rectangle',   self.stringRectangle),
+        'y': ('yank-rectangle',     self.yankRectangle),
         }
-    #@+node:ekr.20051004112630: *3* check
-    def check (self,event,warning='No rectangle selected'):
-
-        '''Return True if there is a selection.
-        Otherwise, return False and issue a warning.'''
-
-        return self._chckSel(event,warning)
-    #@+node:ekr.20050920084036.223: *3* getPublicCommands
+    #@+node:ekr.20050920084036.223: *4* rectangle.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -9650,6 +9670,13 @@ class RecTangleCommandsClass (BaseEditCommandsClass):
             'rectangle-string': self.stringRectangle,
             'rectangle-yank':   self.yankRectangle,
         }
+    #@+node:ekr.20051004112630: *3* check
+    def check (self,event,warning='No rectangle selected'):
+
+        '''Return True if there is a selection.
+        Otherwise, return False and issue a warning.'''
+
+        return self._chckSel(event,warning)
     #@+node:ekr.20051215103053: *3* beginCommand & beginCommandWithEvent (rectangle)
     def beginCommand (self,undoType='Typing'):
 
@@ -9665,7 +9692,7 @@ class RecTangleCommandsClass (BaseEditCommandsClass):
         w = BaseEditCommandsClass.beginCommandWithEvent(self,event,undoType)
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         return w,r1,r2,r3,r4
-    #@+node:ekr.20050920084036.224: *3* Entries (RecTangleCommandsClass)
+    #@+node:ekr.20050920084036.224: *3* Entries (RectangleCommandsClass)
     #@+node:ekr.20050920084036.225: *4* clearRectangle
     def clearRectangle (self,event):
 
@@ -9848,8 +9875,8 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     '''A class to represent registers a-z and the corresponding Emacs commands.'''
 
     #@+others
-    #@+node:ekr.20051004095209: *3* Birth
-    #@+node:ekr.20050920084036.235: *4*  Birth (RegisterCommandsClass)
+    #@+node:ekr.20051004095209: *3* register.Birth
+    #@+node:ekr.20050920084036.235: *4* register.Birth
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -9870,7 +9897,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         self.registerMode = 0 # Must be an int.
         self.registers = {}
 
-    #@+node:ekr.20050920084036.247: *4*  getPublicCommands
+    #@+node:ekr.20050920084036.247: *4* register.getPublicCommands
     def getPublicCommands (self):
 
         return {
@@ -9885,7 +9912,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             'register-prepend-to':          self.prependToRegister,
             'register-view':                self.viewRegister,
         }
-    #@+node:ekr.20050920084036.252: *4* addRegisterItems
+    #@+node:ekr.20050920084036.252: *4* register.addRegisterItems
     def addRegisterItems( self ):
 
         methodDict = {
@@ -10086,7 +10113,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
                 val = self.registers.get(key)
                 if val:
                     if type(val)==type([]):
-                        c.recTangleCommands.yankRectangle(val)
+                        c.rectangleCommands.yankRectangle(val)
                     else:
                         i = w.getInsertPoint()
                         w.insert(i,val)

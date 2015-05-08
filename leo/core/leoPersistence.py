@@ -9,7 +9,7 @@ import binascii
 import pickle
 import time
 #@+others
-#@+node:ekr.20140711111623.17886: ** Commands
+#@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 @g.command('at-file-to-at-auto')
 def at_file_to_at_auto_command(event):
     c = event.get('c')

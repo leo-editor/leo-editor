@@ -489,12 +489,12 @@ class ExternalFilesController:
     #@+node:ekr.20150407141601.1: *4* efc.forget_path
     def forget_path(efc,path):
         '''Remove path from the open_with_files list.'''
-        g.trace(g.shortFileName(path))
+        # g.trace(g.shortFileName(path))
         g.trace('before',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
         efc.open_with_files = [
             d for d in efc.open_with_files
                 if d.get('path') != path]
-        g.trace('after',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
+        # g.trace('after',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext (efc,c,p,ext):
         '''Return the file extension to be used in the temp file.'''
@@ -930,6 +930,7 @@ class LeoApp:
         self.define_extension_dict()
         self.define_delegate_language_dict()
         self.global_commands_dict = {}
+        self.global_ivars_dict = {}
 
         self.ipk = None
             # python kernel instance

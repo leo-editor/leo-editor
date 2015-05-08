@@ -1587,7 +1587,9 @@ class GetArg:
         if trace: g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         # pylint: disable=not-callable
         ga.reset_tab_cycling()
-        if handler: handler(event)
+        if handler:
+            # g.trace(handler)
+            handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
     def do_state_zero(ga,completion,event,handler,oneCharacter,
         returnKind,returnState,tabList,useMinibuffer
@@ -1937,7 +1939,7 @@ class KeyHandlerClass:
             # QueryReplaceCommandsClass
             'query-replace',
             'query-replace-regex',
-            # RecTangleCommandsClass
+            # RectangleCommandsClass
             'clear-rectangle',
             'close-rectangle',
             'delete-rectangle',
@@ -3222,10 +3224,10 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = False and not g.unitTesting and commandName.startswith(':')
+        trace = False and not g.unitTesting and commandName == 'help-for-python'
         verbose = False
         c,k = self.c,self
-        if trace: g.trace(commandName,shortcut)
+        if trace: g.trace(commandName,g.callers())
         if wrap:
             source_c = source_c or c
             func = c.universalCallback(source_c,func)
@@ -3325,9 +3327,10 @@ class KeyHandlerClass:
         All commands and keystrokes pass through here.
         This returns None, but may set k.funcReturn.
         '''
-        k = self ; c = k.c
+        c,k = self.c,self
         trace = False and not g.unitTesting
         traceGC = False
+        traceStroke = False
         if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()
@@ -3352,7 +3355,7 @@ class KeyHandlerClass:
         #@-<< define specialKeysyms >>
         special = char in specialKeysyms
         inserted = not special
-        if trace: # Useful.
+        if trace and traceStroke: # Useful.
             g.trace('stroke: %s ch: %s func: %s' % (
                 stroke,repr(ch),func and func.__name__))
         if inserted:
@@ -3387,10 +3390,9 @@ class KeyHandlerClass:
                 # k.simulateCommand uses k.funcReturn.
                 k.funcReturn = k.funcReturn or val # For unit tests.
             else:
-                # Call c.doCommand directly
+                # Call c.doCommand directly.
                 if trace:
                     g.trace('calling command directly',commandName)
-                    g.trace(g.callers())
                 c.doCommand(func,commandName,event=event)
             if c.exists:
                 k.endCommand(commandName)

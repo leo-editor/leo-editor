@@ -232,7 +232,7 @@ class Commands (object):
         self.miniBufferWidget = None
         self.printingController = None
         self.queryReplaceCommands = None
-        self.recTangleCommands = None
+        self.rectangleCommands = None
         self.registerCommands = None
         self.searchCommands = None
         self.spellCommands = None
@@ -530,137 +530,6 @@ class Commands (object):
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500,700,50,50 # width,height,left,top.
-    #@+node:ekr.20031218072017.2817: *3*  c.doCommand
-    command_count = 0
-
-    def doCommand (self,command,label,event=None):
-
-        """Execute the given command, invoking hooks and catching exceptions.
-
-        The code assumes that the "command1" hook has completely handled the command if
-        g.doHook("command1") returns False.
-        This provides a simple mechanism for overriding commands."""
-
-        trace = False and not g.unitTesting
-        c = self ; p = c.p
-        commandName = command and command.__name__
-        c.setLog()
-
-        self.command_count += 1
-        if not g.app.unitTesting and c.config.getBool('trace_doCommand'):
-            g.trace(commandName)
-
-        # The presence of this message disables all commands.
-        if c.disableCommandsMessage:
-            g.blue(c.disableCommandsMessage)
-            return # (for Tk) 'break' # Inhibit all other handlers.
-
-        if c.exists and c.inCommand and not g.unitTesting:
-            # g.trace('inCommand',c)
-            g.app.commandInterruptFlag = True
-            g.error('ignoring command: already executing a command.')
-            return # (for Tk) 'break'
-
-        g.app.commandInterruptFlag = False
-
-        if label and event is None: # Do this only for legacy commands.
-            if label == "cantredo": label = "redo"
-            if label == "cantundo": label = "undo"
-            g.app.commandName = label
-
-        if not g.doHook("command1",c=c,p=p,v=p,label=label):
-            try:
-                c.inCommand = True
-                if trace: g.trace('start',command)
-                val = command(event)
-                if trace: g.trace('end',command)
-                if c and c.exists: # Be careful: the command could destroy c.
-                    c.inCommand = False
-                    c.k.funcReturn = val
-                # else: g.pr('c no longer exists',c)
-            except Exception:
-                c.inCommand = False
-                if g.app.unitTesting:
-                    raise
-                else:
-                    g.es_print("exception executing command")
-                    g.es_exception(c=c)
-
-            if c and c.exists:
-                if c.requestCloseWindow:
-                    if trace: g.trace('closing window after command')
-                    c.requestCloseWindow = False
-                    g.app.closeLeoWindow(c.frame)
-                else:
-                    if trace: g.trace('calling outerUpdate')
-                    c.outerUpdate()
-
-        # Be careful: the command could destroy c.
-        if c and c.exists:
-            p = c.p
-            g.doHook("command2",c=c,p=p,v=p,label=label)
-
-        return # (for Tk) "break" # Inhibit all other handlers.
-    #@+node:ekr.20080514131122.20: *4* c.outerUpdate
-    def outerUpdate (self):
-
-        trace = False and not g.unitTesting
-        verbose = False ; traceFocus = True
-        c = self ; aList = []
-        if not c.exists or not c.k:
-            return
-        # Suppress any requested redraw until we have iconified or diconified.
-        redrawFlag = c.requestRedrawFlag
-        c.requestRedrawFlag = False
-        if trace and (verbose or aList):
-            g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
-        if c.requestBringToFront:
-            if hasattr(c.frame,'bringToFront'):
-                c.requestBringToFront.frame.bringToFront()
-                    # c.requestBringToFront is a commander.
-            c.requestBringToFront = None
-        # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify == 'iconify':
-            if verbose: aList.append('iconify')
-            c.frame.iconify()
-        if c.requestedIconify == 'deiconify':
-            if verbose: aList.append('deiconify')
-            c.frame.deiconify()
-        if redrawFlag:
-            if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
-            # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw')
-            c.frame.tree.redraw_now(forceDraw=True)
-        if c.requestRecolorFlag:
-            aList.append('%srecolor' % (
-                '' if c.incrementalRecolorFlag else 'full '))
-            # This should be the only call to c.recolor_now.
-            c.recolor_now(incremental=c.incrementalRecolorFlag)
-        if c.requestedFocusWidget:
-            w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % w)
-            c.set_focus(w)
-        else:
-            # We must not set the focus to the body pane here!
-            # That would make nested calls to c.outerUpdate significant.
-            pass
-        if trace and (verbose or aList):
-            g.trace('** end',aList)
-        c.incrementalRecolorFlag = False
-        c.requestRecolorFlag = None
-        c.requestRedrawFlag = False
-        c.requestedFocusWidget = None
-        c.requestedIconify = ''
-        mods = g.childrenModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("childrenModified",c=c, nodes = mods)
-            mods.clear()
-        mods = g.contentModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("contentModified",c=c, nodes = mods)
-            mods.clear()
     #@+node:ekr.20110510052422.14618: *3* c.alert
     def alert(self,message):
 
@@ -5979,17 +5848,16 @@ class Commands (object):
             c.expandOnlyAncestorsOfNode()
             c.redraw_after_select(p)
             c.treeSelectHelper(p)
-    #@+node:ekr.20031218072017.2916: *6* goToNextClone
+    #@+node:ekr.20031218072017.2916: *6* c.goToNextClone
     def goToNextClone (self,event=None):
-
         '''Select the next node that is a clone of the selected node.'''
-
-        c = self ; cc = c.chapterController ; p = c.p
-        if not p: return
+        c,p = self,self.p
+        cc = c.chapterController ; p = c.p
+        if not p:
+            return
         if not p.isCloned():
             g.warning('not a clone:',p.h)
             return
-
         v = p.v
         p.moveToThreadNext()
         wrapped = False
@@ -6004,7 +5872,6 @@ class Commands (object):
             else:
                 wrapped = True
                 p = c.rootPosition()
-
         if p:
             if cc:
                 cc.selectChapterByName('main')
@@ -6844,6 +6711,125 @@ class Commands (object):
                 ok = False
             if not ok: break
         return ok,d
+    #@+node:ekr.20031218072017.2817: *3* c.doCommand
+    command_count = 0
+
+    def doCommand (self,command,label,event=None):
+        """
+        Execute the given command, invoking hooks and catching exceptions.
+
+        The code assumes that the "command1" hook has completely handled the command if
+        g.doHook("command1") returns False.
+        This provides a simple mechanism for overriding commands.
+        """
+        c,p = self,self.p
+        trace = (False or c.config.getBool('trace_doCommand')) and not g.unitTesting
+        commandName = command and command.__name__
+        c.setLog()
+        self.command_count += 1
+        # The presence of this message disables all commands.
+        if c.disableCommandsMessage:
+            g.blue(c.disableCommandsMessage)
+            return
+        if c.exists and c.inCommand and not g.unitTesting:
+            # g.trace('inCommand',c)
+            g.app.commandInterruptFlag = True
+            g.error('ignoring command: already executing a command.')
+            return
+        g.app.commandInterruptFlag = False
+        if label and event is None: # Do this only for legacy commands.
+            if label == "cantredo": label = "redo"
+            if label == "cantundo": label = "undo"
+            g.app.commandName = label
+        if not g.doHook("command1",c=c,p=p,v=p,label=label):
+            try:
+                c.inCommand = True
+                if trace: g.trace('start',command)
+                val = command(event)
+                if trace: g.trace('end',command)
+                if c and c.exists: # Be careful: the command could destroy c.
+                    c.inCommand = False
+                    c.k.funcReturn = val
+                # else: g.pr('c no longer exists',c)
+            except Exception:
+                c.inCommand = False
+                if g.app.unitTesting:
+                    raise
+                else:
+                    g.es_print("exception executing command")
+                    g.es_exception(c=c)
+            if c and c.exists:
+                if c.requestCloseWindow:
+                    if trace: g.trace('closing window after command')
+                    c.requestCloseWindow = False
+                    g.app.closeLeoWindow(c.frame)
+                else:
+                    if trace: g.trace('calling outerUpdate')
+                    c.outerUpdate()
+        # Be careful: the command could destroy c.
+        if c and c.exists:
+            p = c.p
+            g.doHook("command2",c=c,p=p,v=p,label=label)
+    #@+node:ekr.20080514131122.20: *4* c.outerUpdate
+    def outerUpdate (self):
+
+        trace = False and not g.unitTesting
+        verbose = False ; traceFocus = True
+        c = self ; aList = []
+        if not c.exists or not c.k:
+            return
+        # Suppress any requested redraw until we have iconified or diconified.
+        redrawFlag = c.requestRedrawFlag
+        c.requestRedrawFlag = False
+        if trace and (verbose or aList):
+            g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
+        if c.requestBringToFront:
+            if hasattr(c.frame,'bringToFront'):
+                c.requestBringToFront.frame.bringToFront()
+                    # c.requestBringToFront is a commander.
+            c.requestBringToFront = None
+        # The iconify requests are made only by c.bringToFront.
+        if c.requestedIconify == 'iconify':
+            if verbose: aList.append('iconify')
+            c.frame.iconify()
+        if c.requestedIconify == 'deiconify':
+            if verbose: aList.append('deiconify')
+            c.frame.deiconify()
+        if redrawFlag:
+            if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+            # A hack: force the redraw, even if we are dragging.
+            aList.append('*** redraw')
+            c.frame.tree.redraw_now(forceDraw=True)
+        if c.requestRecolorFlag:
+            aList.append('%srecolor' % (
+                '' if c.incrementalRecolorFlag else 'full '))
+            # This should be the only call to c.recolor_now.
+            c.recolor_now(incremental=c.incrementalRecolorFlag)
+        if c.requestedFocusWidget:
+            w = c.requestedFocusWidget
+            if traceFocus: aList.append('focus: %s' % w)
+            c.set_focus(w)
+        else:
+            # We must not set the focus to the body pane here!
+            # That would make nested calls to c.outerUpdate significant.
+            pass
+        if trace and (verbose or aList):
+            g.trace('** end',aList)
+        c.incrementalRecolorFlag = False
+        c.requestRecolorFlag = None
+        c.requestRedrawFlag = False
+        c.requestedFocusWidget = None
+        c.requestedIconify = ''
+        mods = g.childrenModifiedSet
+        if mods:
+            #print(mods)
+            g.doHook("childrenModified",c=c, nodes = mods)
+            mods.clear()
+        mods = g.contentModifiedSet
+        if mods:
+            #print(mods)
+            g.doHook("contentModified",c=c, nodes = mods)
+            mods.clear()
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self,p,after):
