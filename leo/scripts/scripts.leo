@@ -82,6 +82,46 @@
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005506302e352e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 </v>
+<v t="ekr.20150508132430.1"><vh>Recent</vh>
+<v t="ekr.20150508132423.1"><vh>Found: getPublicCommands</vh>
+<v t="ekr.20150508132423.2"><vh>abbrev.getPublicCommands &amp; getStateCommands</vh></v>
+<v t="ekr.20150508132423.3"><vh>baseEditCommands.getPublicCommands &amp; getStateCommands</vh></v>
+<v t="ekr.20150508132423.4"><vh>buffer.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.5"><vh>c.createCommandNames &amp; helper</vh>
+<v t="ekr.20150508132423.6"><vh>c.createInverseCommandsDict</vh></v>
+</v>
+<v t="ekr.20150508132423.7"><vh>chapter.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.8"><vh>control.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.9"><vh>db.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.10"><vh>ec.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.11"><vh>ecm.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.12"><vh>ef.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.13"><vh>getPublicCommands (KeyHandlerCommandsClass)</vh></v>
+<v t="ekr.20150508132423.14"><vh>getPublicCommands (SearchCommandsClass)</vh></v>
+<v t="ekr.20150508132423.15"><vh>getPublicCommands (SpellCommandsClass)</vh></v>
+<v t="ekr.20150508132423.16"><vh>help.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.17"><vh>kill.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.18"><vh>leoCommands.getPublicCommands</vh>
+<v t="ekr.20150508132423.19"><vh>&lt;&lt; define dictionary d of names and Leo commands &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20150508132423.20"><vh>macro.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.21"><vh>pr.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.22"><vh>rectangle.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.23"><vh>register.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.24"><vh>rst.getPublicCommands</vh></v>
+<v t="ekr.20150508132423.25"><vh>vc.getPublicCommands</vh></v>
+</v>
+<v t="ekr.20150508132450.1"><vh>@button create decorators</vh>
+<v t="ekr.20150508132450.2"><vh>create_d</vh></v>
+<v t="ekr.20150508132450.3"><vh>create_decorator</vh></v>
+<v t="ekr.20150508132450.4"><vh>create_decorators</vh></v>
+<v t="ekr.20150508132450.5"><vh>create_fixups</vh></v>
+<v t="ekr.20150508132450.6"><vh>find_class</vh></v>
+<v t="ekr.20150508132450.7"><vh>find_next_clone</vh></v>
+<v t="ekr.20150508132450.8"><vh>munge_lines</vh></v>
+<v t="ekr.20150508132450.9"><vh>run</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -834,5 +874,1041 @@ w.clipboard_append(result)</t>
 </t>
 <t tx="ekr.20141116105945.4"></t>
 <t tx="ekr.20150302053516.3"></t>
+<t tx="ekr.20150508132423.1"></t>
+<t tx="ekr.20150508132423.10">def getPublicCommands (self):        
+
+    c = self.c
+
+    return {
+        'activate-cmds-menu':                   self.activateCmdsMenu,
+        'activate-edit-menu':                   self.activateEditMenu,
+        'activate-file-menu':                   self.activateFileMenu,
+        'activate-help-menu':                   self.activateHelpMenu,
+        'activate-outline-menu':                self.activateOutlineMenu,
+        'activate-plugins-menu':                self.activatePluginsMenu,
+        'activate-window-menu':                 self.activateWindowMenu,
+        'add-editor':                           c.frame.body and c.frame.body.addEditor,
+        'add-space-to-lines':                   self.addSpaceToLines,
+        'add-tab-to-lines':                     self.addTabToLines, 
+        'back-to-indentation':                  self.backToIndentation,
+        'back-to-home':                         self.backToHome,
+        'back-to-home-extend-selection':        self.backToHomeExtendSelection,
+        'back-char':                            self.backCharacter,
+        'back-char-extend-selection':           self.backCharacterExtendSelection,
+        'back-page':                            self.backPage,
+        'back-page-extend-selection':           self.backPageExtendSelection,
+        'back-paragraph':                       self.backwardParagraph,
+        'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
+        'back-sentence':                        self.backSentence,
+        'back-sentence-extend-selection':       self.backSentenceExtendSelection,
+        'back-word':                            self.backwardWord,
+        'back-word-extend-selection':           self.backwardWordExtendSelection,
+        'back-word-smart':                      self.backwardWordSmart,
+        'back-word-smart-extend-selection':     self.backwardWordSmartExtendSelection,
+        'backward-delete-char':                 self.backwardDeleteCharacter,
+        'backward-delete-word':                 self.backwardDeleteWord,
+        'backward-delete-word-smart':           self.backwardDeleteWordSmart,
+        'backward-kill-paragraph':              self.backwardKillParagraph,
+        'backward-find-character':              self.backwardFindCharacter,
+        'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
+        'beginning-of-buffer':                  self.beginningOfBuffer,
+        'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
+        'beginning-of-line':                    self.beginningOfLine,
+        'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
+        'c-to-python':                          self.cToPy,
+        'capitalize-word':                      self.capitalizeWord,
+        'center-line':                          self.centerLine,
+        'center-region':                        self.centerRegion,
+        'clean-all-lines':                      self.cleanAllLines,
+        'clean-lines':                          self.cleanLines,
+        'clear-all-caches':                     self.clearAllCaches,
+        'clear-all-uas':                        self.clearAllUas,
+        'clear-cache':                          self.clearCache,
+        'clear-extend-mode':                    self.clearExtendMode,
+        'clear-node-uas':                       self.clearNodeUas,
+        'clear-selected-text':                  self.clearSelectedText,
+        'click-click-box':                      self.clickClickBox,
+        'click-headline':                       self.clickHeadline,
+        'click-icon-box':                       self.clickIconBox,
+        'clone-marked-nodes':                   c.cloneMarked,
+        'cls':                                  g.cls,
+        'contract-body-pane':                   c.frame.contractBodyPane,
+        'contract-log-pane':                    c.frame.contractLogPane,
+        'contract-outline-pane':                c.frame.contractOutlinePane,
+        'contract-pane':                        c.frame.contractPane,
+        'count-region':                         self.countRegion,
+        'ctrl-click-icon':                      self.ctrlClickIconBox,
+        'cycle-focus':                          self.cycleFocus,
+        # 'cycle-all-focus':                    self.cycleAllFocus,
+            # Replaced by focus-to-x commands.
+        'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+        'cycle-log-focus':                      c.frame.log.cycleTabFocus,
+        # 'delete-all-icons':                   self.deleteAllIcons,
+        'delete-char':                          self.deleteNextChar,
+        'delete-editor':                        c.frame.body.deleteEditor,
+        'delete-first-icon':                    self.deleteFirstIcon,
+        'delete-indentation':                   self.deleteIndentation,
+        'delete-last-icon':                     self.deleteLastIcon,
+        'delete-marked-nodes':                  c.deleteMarked,
+        'delete-node-icons':                    self.deleteNodeIcons,
+        'delete-spaces':                        self.deleteSpaces,
+        'delete-word':                          self.deleteWord,
+        'delete-word-smart':                    self.deleteWordSmart,
+        'do-nothing':                           self.doNothing,
+        'downcase-region':                      self.downCaseRegion,
+        'downcase-word':                        self.downCaseWord,
+        'double-click-headline':                self.doubleClickHeadline,
+        'double-click-icon-box':                self.doubleClickIconBox,
+        'end-of-buffer':                        self.endOfBuffer,
+        'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
+        'end-of-line':                          self.endOfLine,
+        'end-of-line-extend-selection':         self.endOfLineExtendSelection,
+        'escape':                               self.watchEscape,
+        'eval-expression':                      self.evalExpression,
+        'exchange-point-mark':                  self.exchangePointMark,
+        'expand-body-pane':                     c.frame.expandBodyPane,
+        'expand-log-pane':                      c.frame.expandLogPane,
+        'expand-outline-pane':                  c.frame.expandOutlinePane,
+        'expand-pane':                          c.frame.expandPane,
+        'extend-to-line':                       self.extendToLine,
+        'extend-to-paragraph':                  self.extendToParagraph,
+        'extend-to-sentence':                   self.extendToSentence,
+        'extend-to-word':                       self.extendToWord,
+        'fill-paragraph':                       self.fillParagraph,
+        'fill-region':                          self.fillRegion,
+        'fill-region-as-paragraph':             self.fillRegionAsParagraph,
+        'find-character':                       self.findCharacter,
+        'find-character-extend-selection':      self.findCharacterExtendSelection,
+        'find-word':                            self.findWord,
+        'find-word-in-line':                    self.findWordInLine,
+        'flush-lines':                          self.flushLines,
+        'focus-to-body':                        self.focusToBody,
+        'focus-to-log':                         self.focusToLog,
+        'focus-to-minibuffer':                  self.focusToMinibuffer,
+        'focus-to-tree':                        self.focusToTree,
+        'forward-char':                         self.forwardCharacter,
+        'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+        'forward-page':                         self.forwardPage,
+        'forward-page-extend-selection':        self.forwardPageExtendSelection,
+        'forward-paragraph':                    self.forwardParagraph,
+        'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
+        'forward-sentence':                     self.forwardSentence,
+        'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
+        'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
+        'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
+        'forward-word':                         self.forwardWord,
+        'forward-word-extend-selection':        self.forwardWordExtendSelection,
+        'forward-word-smart':                   self.forwardWordSmart,
+        'forward-word-smart-extend-selection':  self.forwardWordSmartExtendSelection,
+        'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
+        'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
+        'fully-expand-pane':                    c.frame.fullyExpandPane,
+        'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
+        'goto-char':                            self.gotoCharacter,
+        'goto-global-line':                     self.gotoGlobalLine,
+        'goto-line':                            self.gotoLine,
+        'hide-body-pane':                       c.frame.hideBodyPane,
+        'hide-log-pane':                        c.frame.hideLogPane,
+        'hide-pane':                            c.frame.hidePane,
+        'hide-outline-pane':                    c.frame.hideOutlinePane,
+        'how-many':                             self.howMany,
+        # Use indentBody in leoCommands.py
+        'indent-relative':                      self.indentRelative,
+        'indent-rigidly':                       self.tabIndentRegion,
+        'indent-to-comment-column':             self.indentToCommentColumn,
+        'insert-hard-tab':                      self.insertHardTab,
+        'insert-icon':                          self.insertIcon,
+        'insert-file-name':                     self.insertFileName,
+        'insert-headline-time':                 self.insertHeadlineTime,
+        'insert-newline':                       self.insertNewLine,
+        'insert-parentheses':                   self.insertParentheses,
+        'insert-soft-tab':                      self.insertSoftTab,
+        'keep-lines':                           self.keepLines,
+        'kill-paragraph':                       self.killParagraph,
+        'line-number':                          self.lineNumber,
+        'move-lines-down':                      self.moveLinesDown,
+        'move-lines-up':                        self.moveLinesUp,
+        'move-marked-nodes':                    c.moveMarked,
+        'move-past-close':                      self.movePastClose,
+        'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
+        'newline-and-indent':                   self.insertNewLineAndTab,
+        'next-line':                            self.nextLine,
+        'next-line-extend-selection':           self.nextLineExtendSelection,
+        'previous-line':                        self.prevLine,
+        'previous-line-extend-selection':       self.prevLineExtendSelection,
+        'print-all-uas':                        self.printAllUas,
+        'print-node-uas':                       self.printUas,
+        'remove-blank-lines':                   self.removeBlankLines,
+        'remove-space-from-lines':              self.removeSpaceFromLines,
+        'remove-tab-from-lines':                self.removeTabFromLines,
+        'replace-current-character':            self.replaceCurrentCharacter,
+        'reverse-region':                       self.reverseRegion,
+        'reverse-sort-lines':                   self.reverseSortLines,
+        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+        'scroll-down-half-page':                self.scrollDownHalfPage,
+        'right-click-icon':                     self.rightClickIconBox,
+        'right-click-headline':                 self.rightClickHeadline,
+        'scroll-down-line':                     self.scrollDownLine,
+        'scroll-down-page':                     self.scrollDownPage,
+        'scroll-outline-down-line':             self.scrollOutlineDownLine,
+        'scroll-outline-down-page':             self.scrollOutlineDownPage,
+        'scroll-outline-left':                  self.scrollOutlineLeft,
+        'scroll-outline-right':                 self.scrollOutlineRight,
+        'scroll-outline-up-line':               self.scrollOutlineUpLine,
+        'scroll-outline-up-page':               self.scrollOutlineUpPage,
+        'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+        'scroll-up-line':                       self.scrollUpLine,
+        'scroll-up-page':                       self.scrollUpPage,
+        'select-all':                           self.selectAllText,
+        'select-to-matching-bracket':           self.selectToMatchingBracket,
+        # Exists, but can not be executed via the minibuffer.
+        'self-insert-command':                  self.selfInsertCommand,
+        'set-comment-column':                   self.setCommentColumn,
+        'set-extend-mode':                      self.setExtendMode,
+        'set-fill-column':                      self.setFillColumn,
+        'set-fill-prefix':                      self.setFillPrefix,
+        #'set-mark-command':                    self.setRegion,
+        'set-ua':                               self.setUa,
+        'show-colors':                          self.showColors,
+        'show-fonts':                           self.showFonts,
+        'simulate-begin-drag':                  self.simulateBeginDrag,
+        'simulate-end-drag':                    self.simulateEndDrag,
+        'sort-columns':                         self.sortColumns,
+        'sort-fields':                          self.sortFields,
+        'sort-lines':                           self.sortLines,
+        'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
+        'split-line':                           self.splitLine,
+        'tabify':                               self.tabify,
+        'toggle-extend-mode':                   self.toggleExtendMode,
+        'toggle-case-region':                   self.toggleCaseRegion,
+        'transpose-chars':                      self.transposeCharacters,
+        'transpose-lines':                      self.transposeLines,
+        'transpose-words':                      self.transposeWords,
+        'typescript-to-py':                     self.tsToPy,
+        'untabify':                             self.untabify,
+        'upcase-region':                        self.upCaseRegion,
+        'upcase-word':                          self.upCaseWord,
+        'view-lossage':                         self.viewLossage,
+        'what-line':                            self.whatLine,
+    }
+</t>
+<t tx="ekr.20150508132423.11">def getPublicCommands (self):
+    '''Add the names of commands defined in this file to c.commandsDict.'''
+    c,d = self.c,{}
+    for name, theClass in self.classesList:
+        theInstance = getattr(c,name)
+        theInstance.finishCreate()
+        theInstance.init()
+        d2 = theInstance.getPublicCommands()
+        if d2:
+            d.update(d2)
+            if 0:
+                g.pr('----- %s' % name)
+                for key in sorted(d2): g.pr(key)
+    c.commandsDict.update(d)
+</t>
+<t tx="ekr.20150508132423.12">def getPublicCommands (self):
+
+    return {
+        'directory-make':           self.makeDirectory,
+        'directory-remove':         self.removeDirectory,
+        'file-compare-leo-files':   self.compareAnyTwoFiles,
+        'file-delete':              self.deleteFile,
+        'file-diff-files':          self.diff, 
+        'file-insert':              self.insertFile,
+        'file-open-by-name':        self.openOutlineByName,
+        'file-save':                self.saveFile
+    }
+</t>
+<t tx="ekr.20150508132423.13">def getPublicCommands (self):
+
+    k = self.k
+
+    if k:
+        return {
+            'auto-complete':            k.autoCompleter.autoComplete,
+            'auto-complete-force':      k.autoCompleter.autoCompleteForce,
+            'digit-argument':           k.digitArgument,
+            'disable-autocompleter':    k.autoCompleter.disableAutocompleter,
+            'disable-calltips':         k.autoCompleter.disableCalltips,
+            'enable-autocompleter':     k.autoCompleter.enableAutocompleter,
+            'enable-calltips':          k.autoCompleter.enableCalltips,
+            'exit-named-mode':          k.exitNamedMode,
+            'full-command':             k.fullCommand, # For menu.
+            # 'hide-mini-buffer':         k.hideMinibuffer,
+            'menu-shortcut':            self.menuShortcutPlaceHolder,
+            'mode-help':                k.modeHelp,
+            'negative-argument':        k.negativeArgument,
+            'number-command':           k.numberCommand,
+            'number-command-0':         k.numberCommand0,
+            'number-command-1':         k.numberCommand1,
+            'number-command-2':         k.numberCommand2,
+            'number-command-3':         k.numberCommand3,
+            'number-command-4':         k.numberCommand4,
+            'number-command-5':         k.numberCommand5,
+            'number-command-6':         k.numberCommand6,
+            'number-command-7':         k.numberCommand7,
+            'number-command-8':         k.numberCommand8,
+            'number-command-9':         k.numberCommand9,
+            'print-bindings':           k.printBindings,
+            'print-buttons':            k.printButtons,
+            'print-commands':           k.printCommands,
+            'repeat-complex-command':   k.repeatComplexCommand,
+            # 'scan-for-autocompleter':   k.autoCompleter.scan,
+            'set-command-state':        k.setCommandState,
+            'set-insert-state':         k.setInsertState,
+            'set-overwrite-state':      k.setOverwriteState,
+            'show-calltips':            k.autoCompleter.showCalltips,
+            'show-calltips-force':      k.autoCompleter.showCalltipsForce,
+            # 'show-mini-buffer':         k.showMinibuffer,
+            'toggle-autocompleter':     k.autoCompleter.toggleAutocompleter,
+            'toggle-calltips':          k.autoCompleter.toggleCalltips,
+            #'toggle-mini-buffer':       k.toggleMinibuffer,
+            'toggle-input-state':       k.toggleInputState,
+            'universal-argument':       k.universalArgument,
+        }
+    else:
+        return {}
+</t>
+<t tx="ekr.20150508132423.14">def getPublicCommands (self):
+    
+    find = self.c.findCommands
+    return {
+    'clone-find-all':                 find.minibufferCloneFindAll,
+    'clone-find-all-flattened':       find.minibufferCloneFindAllFlattened,
+    'clone-find-parents':             self.c.cloneFindParents,
+    'find-all':                       find.minibufferFindAll,
+    'find-clone-all':                 find.minibufferCloneFindAll,
+    'find-clone-all-flattened':       find.minibufferCloneFindAllFlattened,
+    'find-next':                      find.findNextCommand,
+    'find-prev':                      find.findPrevCommand,
+    'find-tab-hide':                  find.hideFindTab,
+    'find-tab-open':                  find.openFindTab,
+    'focus-to-find':                  find.focusToFind,
+    'isearch-forward':                find.isearchForward,
+    'isearch-backward':               find.isearchBackward,
+    'isearch-forward-regexp':         find.isearchForwardRegexp,
+    'isearch-backward-regexp':        find.isearchBackwardRegexp,
+    'isearch-with-present-options':   find.isearchWithPresentOptions,
+    'replace':                        find.change,
+    'replace-all':                    find.minibufferReplaceAll,
+    # 'replace-string':               find.setReplaceString,
+    'replace-then-find':              find.changeThenFindCommand,
+    're-search-forward':              find.reSearchForward,
+    're-search-backward':             find.reSearchBackward,
+    'search-forward':                 find.searchForward,
+    'search-backward':                find.searchBackward,
+    'search-with-present-options':    find.searchWithPresentOptions,
+    'set-search-string':              find.searchWithPresentOptions,
+    'set-replace-string':             find.setReplaceString,
+    'set-find-everywhere':            find.setFindScopeEveryWhere,
+    'set-find-node-only':             find.setFindScopeNodeOnly,
+    'set-find-suboutline-only':       find.setFindScopeSuboutlineOnly,
+    'show-find-options':              find.showFindOptions,
+    'start-search':                   find.startSearch, # 4.11.1.
+    'toggle-find-collapses-nodes':    find.toggleFindCollapesNodes,
+    'toggle-find-ignore-case-option': find.toggleIgnoreCaseOption,
+    'toggle-find-in-body-option':     find.toggleSearchBodyOption,
+    'toggle-find-in-headline-option': find.toggleSearchHeadlineOption,
+    'toggle-find-mark-changes-option':find.toggleMarkChangesOption,
+    'toggle-find-mark-finds-option':  find.toggleMarkFindsOption,
+    'toggle-find-regex-option':       find.toggleRegexOption,
+    'toggle-find-word-option':        find.toggleWholeWordOption,
+    'toggle-find-wrap-around-option': find.toggleWrapSearchOption,
+    'word-search-forward':            find.wordSearchForward,
+    'word-search-backward':           find.wordSearchBackward,
+    }
+</t>
+<t tx="ekr.20150508132423.15">def getPublicCommands (self):
+
+    return {
+        'focus-to-spell-tab':       self.focusToSpell,
+        'spell-change':             self.change,
+        'spell-change-then-find':   self.changeThenFind,
+        'spell-find':               self.find,
+        'spell-ignore':             self.ignore,
+        'spell-tab-hide':           self.hide,
+        'spell-tab-open':           self.openSpellTab,
+        
+        # these are for spell as you type, not the spell tab
+        'spell-as-you-type-toggle': self.as_you_type_toggle,
+        'spell-as-you-type-wrap':   self.as_you_type_wrap,
+        'spell-as-you-type-next':   self.as_you_type_next,
+        'spell-as-you-type-undo':   self.as_you_type_undo,        
+    }
+</t>
+<t tx="ekr.20150508132423.16">def getPublicCommands (self):
+
+    d = {
+    'help':                             self.help,
+    'help-for-abbreviations':           self.helpForAbbreviations,
+    'help-for-autocompletion':          self.helpForAutocompletion,
+    'help-for-bindings':                self.helpForBindings,
+    'help-for-command':                 self.helpForCommand,
+    'help-for-creating-external-files': self.helpForCreatingExternalFiles,
+    'help-for-debugging-commands':      self.helpForDebuggingCommands,
+    'help-for-drag-and-drop':           self.helpForDragAndDrop,
+    'help-for-dynamic-abbreviations':   self.helpForDynamicAbbreviations,
+    'help-for-find-commands':           self.helpForFindCommands,
+    'help-for-minibuffer':              self.helpForMinibuffer,
+    # 'help-for-python':                  self.pythonHelp,
+    'help-for-regular-expressions':     self.helpForRegularExpressions,
+    'help-for-scripting':               self.helpForScripting,
+    'print-settings':                   self.printSettings,
+    }
+    if g.new_dispatch:
+        pass
+    else:
+        d['help-for-python'] = self.pythonHelp
+    return d
+</t>
+<t tx="ekr.20150508132423.17">def getPublicCommands (self):
+
+    return {
+        'backward-kill-sentence':   self.backwardKillSentence,
+        'backward-kill-word':       self.backwardKillWord,
+        'clear-kill-ring':          self.clearKillRing,
+        'kill-line':                self.killLine,
+        'kill-to-end-of-line':      self.killToEndOfLine,
+        'kill-word':                self.killWord,
+        'kill-sentence':            self.killSentence,
+        'kill-region':              self.killRegion,
+        'kill-region-save':         self.killRegionSave,
+        'kill-ws':                  self.killWs,
+        'yank':                     self.yank,
+        'yank-pop':                 self.yankPop,
+        'zap-to-character':         self.zapToCharacter,
+    }
+</t>
+<t tx="ekr.20150508132423.18">def getPublicCommands (self):
+    '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
+    c,k = self.c,self.k
+    d2 = {}
+    &lt;&lt; define dictionary d of names and Leo commands &gt;&gt;
+    # Create a callback for each item in d.
+    for name in sorted(d):
+        f = d.get(name)
+        d2 [name] = f
+        c.inverseCommandsDict [f.__name__] = name
+        # g.trace('leoCommands %24s = %s' % (f.__name__,name))
+    return d2
+</t>
+<t tx="ekr.20150508132423.19">c = self.c ; f = c.frame
+
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify':                     c.beautifyPythonCode,
+    'beautify-c':                   c.beautifyCCode,
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'cascade-windows':              f.cascade,
+    # 'check-all-python-code':      c.checkAllPythonCode,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'check-outline':                c.fullCheckOutline,
+    # 'check-python-code':          c.checkPythonCode,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'clone-node-to-last-node':      c.cloneToLastNode,
+    'close-window':                 c.close,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-all-other-nodes':     c.contractAllOtherNodes,
+    'contract-node':                c.contractNode,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-all-subheads':          c.expandAllSubheads,
+        # Fixes bug 604037 Status of expandAllSubheads
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    # 'extract-python-method':        c.extractPythonMethod,
+    # 'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'flatten-outline-to-node':      c.flattenOutlineToNode,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-history-node':       c.goToNextHistory,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-history-node':       c.goToPrevHistory,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-file':                  c.importAnyFile,
+    # 'import-at-file':               c.importAtFile,
+    # 'import-at-root':               c.importAtRoot,
+    # 'import-cweb-files':            c.importCWEBFiles,
+    # 'import-derived-file':          c.importDerivedFile,
+    # 'import-flattened-outline':     c.importFlattenedOutline,
+    # 'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-child':                 c.insertChild,
+    'insert-node':                  c.insertHeadline,
+    'insert-node-before':            c.insertHeadlineBefore,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    # 'mark-changed-roots':           c.markChangedRoots,
+    # 'mark-clones':                c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    # 'open-compare-window':        c.openCompareWindow,
+    'open-cheat-sheet-leo':         c.openCheatSheet,
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-local-settings':          c.selectAtSettingsNode,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-online-home':             c.leoHome,
+    'open-online-toc':              c.openLeoTOC,
+    'open-online-tutorials':        c.openLeoTutorials,
+    'open-online-videos':           c.openLeoVideos,
+    # 'open-online-tutorial':       c.leoTutorial,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    'open-quickstart-leo':          c.leoQuickStart,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-users-guide':             c.openLeoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-file-into-node':          c.readFileIntoNode,
+    'read-outline-only':            c.readOutlineOnly,
+    'redo':                         c.undoer.redo,
+    # 'reformat-body':              c.reformatBody, # 2013/10/02.
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'refresh-from-disk':            c.refreshFromDisk,
+    'revert':                       c.revert,
+    'save-all':                     c.saveAll,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'settings':                     c.preferences,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-recent-files':            c.sortRecentFiles,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparse-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unformat-paragraph':           c.unformatParagraph,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-file-from-node':         c.writeFileFromNode,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+}
+</t>
+<t tx="ekr.20150508132423.2">def getPublicCommands (self):
+    '''Return a dict: keys are command names and whose values are methods.'''
+    return {
+        # Reload.
+        # 'reload-abbreviations': self.reloadAbbreviations,
+        # Non-prefixed commands.
+        'toggle-abbrev-mode':   self.toggleAbbrevMode,
+        # Dynamic...
+        'dabbrev-completion':   self.dynamicCompletion,
+        'dabbrev-expands':      self.dynamicExpansion,
+        # Static...
+        'abbrev-add-global':        self.addAbbreviation,
+        # 'abbrev-expand-region':   self.regionalExpandAbbrev,
+        'abbrev-inverse-add-global':self.addInverseAbbreviation,
+        'abbrev-kill-all':          self.killAllAbbrevs,
+        'abbrev-list':              self.listAbbrevs,
+        'abbrev-read':              self.readAbbreviations,
+        'abbrev-write':             self.writeAbbreviations,
+    }
+</t>
+<t tx="ekr.20150508132423.20">def getPublicCommands (self):
+
+    return {
+        'macro-call':           self.callNamedMacro,
+        'macro-call-last':      self.callLastMacro,
+        'macro-end-recording':  self.endMacro,
+        'macro-load-all':       self.loadMacros,
+        'macro-name-last':      self.nameLastMacro,
+        'macro-print-all':      self.printMacros,
+        'macro-print-last':     self.printLastMacro,
+        'macro-save-all':       self.saveMacros,
+        'macro-start-recording':self.startRecordingMacro,
+    }
+</t>
+<t tx="ekr.20150508132423.21">def getPublicCommands (self):
+    '''Add this class's commands to c.commandsDict.'''
+    if not printsupport:
+        return # A null-gui, without print support.
+    self.c.commandsDict.update({
+    # Preview.
+    'preview-body':         self.preview_body,
+    'preview-html':         self.preview_html,
+    'preview-node':         self.preview_node,
+    'preview-expanded-body': self.preview_expanded_body,
+    'preview-expanded-html': self.preview_expanded_html,
+    'preview-tree-bodies':  self.preview_tree_bodies,
+    'preview-tree-html':    self.preview_tree_html,
+    'preview-tree-nodes':   self.preview_tree_nodes,
+    # Preview marked.
+    'preview-marked-bodies':self.preview_marked_bodies,
+    'preview-marked-html':  self.preview_marked_html,
+    'preview-marked-nodes': self.preview_marked_nodes,
+    # Selected node/tree.
+    'print-body':           self.print_body,
+    'print-html':           self.print_html,
+    'print-node':           self.print_node,
+    'print-expanded-body':  self.print_expanded_body,
+    'print-expanded-html':  self.print_expanded_html,
+    'print-tree-bodies':    self.print_tree_bodies,
+    'print-tree-html':      self.print_tree_html,
+    'print-tree-nodes':     self.print_tree_nodes,
+    # Marked nodes.
+    'print-marked-bodies':  self.print_marked_bodies,
+    'print-marked-html':    self.print_marked_html,
+    'print-marked-nodes':   self.print_marked_nodes,
+})
+</t>
+<t tx="ekr.20150508132423.22">def getPublicCommands (self):
+
+    return {
+        'rectangle-clear':  self.clearRectangle,
+        'rectangle-close':  self.closeRectangle,
+        'rectangle-delete': self.deleteRectangle,
+        'rectangle-kill':   self.killRectangle,
+        'rectangle-open':   self.openRectangle,
+        'rectangle-string': self.stringRectangle,
+        'rectangle-yank':   self.yankRectangle,
+    }
+</t>
+<t tx="ekr.20150508132423.23">def getPublicCommands (self):
+
+    return {
+        'register-append-to':           self.appendToRegister,
+        'register-copy-rectangle-to':   self.copyRectangleToRegister,
+        'register-copy-to':             self.copyToRegister,
+        'register-increment':           self.incrementRegister,
+        'register-insert':              self.insertRegister,
+        'register-jump-to':             self.jumpToRegister,
+        # 'register-number-to':         self.numberToRegister,
+        'register-point-to':            self.pointToRegister,
+        'register-prepend-to':          self.prependToRegister,
+        'register-view':                self.viewRegister,
+    }
+</t>
+<t tx="ekr.20150508132423.24">def getPublicCommands(self):
+    '''Add the names of commands defined in this file to c.commandsDict'''
+    self.c.commandsDict.update({
+        'rst3': self.rst3, # Formerly write-restructured-text.
+        'code-to-rst': self.code_to_rst_command,
+    })
+</t>
+<t tx="ekr.20150508132423.25">def getPublicCommands(vc):
+    '''Add the names of commands defined in this file to c.commandsDict'''
+    vc.c.commandsDict.update({
+        ':!':   vc.shell_command,
+        ':%s':  vc.Substitution(vc,all_lines=True),
+        ':e':   vc.Tabnew(vc),
+        ':e!':  vc.revert,
+        ':gT':  vc.cycle_all_focus,
+        ':gt':  vc.cycle_focus,
+        ':q!':  vc.quit_now,
+        ':q':   vc.q_command,
+        ':qa':  vc.qa_command,
+        ':r':   vc.LoadFileAtCursor(vc),
+        ':s':   vc.Substitution(vc,all_lines=False),
+        ':w':   vc.w_command,
+        ':wq':  vc.wq_command,
+        ':xa':  vc.xa_command,
+        # Longer names...
+        ':print-dot':               vc.print_dot,
+        ':tabnew':                  vc.Tabnew(vc),
+        ':toggle-vim-mode':         vc.toggle_vim_mode,
+        ':toggle-vim-trace':        vc.toggle_vim_trace,
+        ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
+    })
+</t>
+<t tx="ekr.20150508132423.3">def getPublicCommands (self):
+
+    '''Return a dict describing public commands implemented in the subclass.
+    Keys are untranslated command names.  Values are methods of the subclass.'''
+
+    return {}
+</t>
+<t tx="ekr.20150508132423.4">def getPublicCommands (self):
+
+    return {
+
+        # These do not seem useful.
+            # 'copy-to-buffer':     self.copyToBuffer,
+            # 'insert-to-buffer':   self.insertToBuffer,
+
+        'buffer-append-to':             self.appendToBuffer,
+        'buffer-kill':                  self.killBuffer,
+        'buffer-prepend-to':            self.prependToBuffer,
+        # 'buffer-rename':              self.renameBuffer,
+        'buffer-switch-to':             self.switchToBuffer,
+        'buffers-list':                 self.listBuffers,
+        'buffers-list-alphabetically':  self.listBuffersAlphabetically,
+    }
+</t>
+<t tx="ekr.20150508132423.5">def createCommandNames(self):
+    '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
+    c,k = self,self.k
+    c.commandsDict = {}
+    # A list of all subcommanders with a getPublicCommands method.
+    #   c.editCommandsManager.getPublicCommands handles all
+    #   subcommanders in leoEditCommands.py.
+    for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
+        if o: o.getPublicCommands()
+    # copy global commands to this controller    
+    for name,f in g.app.global_commands_dict.items():
+        k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
+    # Create the inverse dict last.
+    c.createInverseCommandsDict()
+</t>
+<t tx="ekr.20150508132423.6">def createInverseCommandsDict (self):
+    '''Add entries to k.inverseCommandsDict using c.commandsDict.
+
+    c.commandsDict:        keys are command names, values are funcions f.
+    c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+    '''
+    c = self
+    for name in c.commandsDict:
+        f = c.commandsDict.get(name)
+        try:
+            c.inverseCommandsDict [f.__name__] = name
+            # g.trace('%24s = %s' % (f.__name__,name))
+        except Exception:
+            # g.es_exception()
+            g.trace(repr(name),repr(f))
+</t>
+<t tx="ekr.20150508132423.7">def getPublicCommands (self):
+
+    c = self.c ; cc = c.chapterController
+
+    if cc:
+        return {
+            'chapter-clone-node-to':    cc.cloneNodeToChapter,
+            'chapter-convert-node-to':  cc.convertNodeToChapter,
+            'chapter-copy-node-to':     cc.copyNodeToChapter,
+            'chapter-create':           cc.createChapter,
+            'chapter-create-from-node': cc.createChapterFromNode,
+            'chapter-move-node-to':     cc.moveNodeToChapter,
+            'chapter-remove':           cc.removeChapter,
+            'chapter-rename':           cc.renameChapter,
+            'chapter-select':           cc.selectChapter,
+        }
+    else:
+        return {}
+</t>
+<t tx="ekr.20150508132423.8">def getPublicCommands (self):
+
+    k = self.c.k
+
+    return {
+
+        # Miscellaneous.
+        'advertised-undo':          self.advertizedUndo,
+        'iconify-frame':            self.iconifyFrame, # Same as suspend.
+        'keyboard-quit':            k and k.keyboardQuit,
+        'save-buffers-kill-leo':    self.saveBuffersKillLeo,
+        'set-silent-mode':          self.setSilentMode,
+        'suspend':                  self.suspend,
+        'act-on-node':              self.actOnNode,
+
+        # Plugin info.
+        'print-plugin-handlers':    self.printPluginHandlers,
+        'print-plugins-info':       self.printPluginsInfo,
+
+        # Shell commands.
+        'shell-command':            self.shellCommand,
+        'shell-command-on-region':  self.shellCommandOnRegion,
+    }
+</t>
+<t tx="ekr.20150508132423.9">def getPublicCommands (self):
+
+    return {
+
+        # debugging.
+        'debug':        self.invoke_debugger,
+        'pdb':          self.pdb,
+        'print-focus':  self.printFocus,
+
+        # Tracing of garbase collecor.
+        'gc-collect-garbage':       self.collectGarbage,
+        'gc-dump-all-objects':      self.dumpAllObjects,
+        'gc-dump-new-objects':      self.dumpNewObjects,
+        'gc-dump-objects-verbose':  self.verboseDumpObjects,
+        'gc-print-summary':         self.printGcSummary,
+        'gc-trace-disable':         self.disableGcTrace,
+        'gc-trace-enable':          self.enableGcTrace,
+
+        # Unit tests run externally: deprecated.
+        'run-all-unit-tests-externally':        self.runAllUnitTestsExternally,
+            # was 'run-all-unit-tests.
+        'run-marked-unit-tests-externally':     self.runMarkedUnitTestsExternally,
+            # 2011/10/31: new.
+        'run-selected-unit-tests-externally':   self.runSelectedUnitTestsExternally,
+            # was 'run-unit-tests.
+
+        # Unit tests run locally.
+        'run-all-unit-tests-locally':       self.runAllUnitTestsLocally,
+        'run-marked-unit-tests-locally':    self.runMarkedUnitTestsLocally,
+            # 2011/10/31: new.
+        'run-selected-unit-tests-locally':  self.runSelectedUnitTestsLocally,
+    }
+</t>
+<t tx="ekr.20150508132430.1"></t>
+<t tx="ekr.20150508132450.1">g.cls()
+
+class CreateDecorators:
+    '''
+    A class to create decorators from tables in getPublicCommands.
+    This class uses a node called "Found: getPublicCommands".
+    
+    This @button node must be executed in LeoPy.leo.
+    '''
+    def __init__(self,c):
+        self.c = c
+        self.fixups = self.create_fixups()
+        self.n = 0
+        self.n_fail = 0
+    @others
+
+CreateDecorators(c).run()
+</t>
+<t tx="ekr.20150508132450.2">def create_d(self,lines,publicCommands):
+    '''Create a dict. keys are method names; values are command names.'''
+    trace = False
+    if trace:
+        print('')
+        g.trace(publicCommands.h)
+    d = {}
+    for s in lines:
+        aList = s.split()
+        if len(aList) &gt; 2:
+            aList = [aList[0],' '.join(aList[1:])]
+        c_name,f_name = aList[0].strip(),aList[1].strip()
+        if ' ' not in f_name:
+            f_name = f_name.split('.')[-1]
+        # if '(' in f_name:
+            # f_name = f_name[:f_name.find('(')]
+        if trace: g.trace('%45s %s' % (c_name,f_name))
+        d [f_name] = c_name
+    return d
+</t>
+<t tx="ekr.20150508132450.3">def create_decorator(self,c_name,f_name,root):
+    '''
+    Search root for a definition of f_name.
+    If found, insert @cmd(f_name) before the definition.
+    '''
+    # g.trace('%45s %s' % (c_name,f_name))
+    found = False
+    for p in root.self_and_subtree():
+        result = []
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'def ' + f_name):
+                if found:
+                    g.trace('duplicate def',f_name)
+                else:
+                    found = True
+                    decorator = '@cmd(%s)\n' % (c_name)
+                    result.append(decorator)
+                    # print('%s%s' % (decorator,s))
+            result.append(s)
+    return found
+</t>
+<t tx="ekr.20150508132450.4">def create_decorators(self,d,root):
+    '''Create decorators for all items in d in root's tree.'''
+    print('\n%s\n' % root.h)
+    if root.h in self.fixups:
+        roots = []
+        aList = self.fixups.get(root.h)
+        for root2_h in aList:
+            root2 = g.findNodeAnywhere(self.c,root2_h)
+            if root2:
+                g.trace(root.h,'=====&gt;',root2.h)
+                roots.append(root2)
+            else:
+                g.trace('===== not found',root2_h)
+    else:
+        roots = [root]
+    for f_name in sorted(d.keys()):
+        found = False
+        for root in roots:
+            c_name = d.get(f_name)
+            found = self.create_decorator(c_name,f_name,root)
+            if found: break
+        if not found:
+            g.trace('not found',f_name)
+            self.n_fail += 1
+</t>
+<t tx="ekr.20150508132450.5">def create_fixups(self):
+    '''
+    Return a fixup dict.
+    Keys are headlines for classes.
+    Values are new headlines of nodes containing the actual class.
+    '''
+    return {
+        'ChapterCommandsClass': ['class ChapterController'],
+        'EditCommandsClass': [
+            'EditCommandsClass',
+            'class Commands',
+            'class LeoQtFrame',
+            'class LeoBody',
+        ],
+        'class SearchCommandsClass': ['class LeoFind (LeoFind.py)'],
+        'KeyHandlerCommandsClass (add docstrings)': [
+            'class KeyHandlerClass',
+            'class AutoCompleterClass',
+        ]
+    }
+</t>
+<t tx="ekr.20150508132450.6">def find_class(self,p):
+    '''Return the position of the class enclosing p.'''
+    for p2 in p.parents():
+        if p2.h.lower().find('class') &gt; -1 and p2.b.find('class') &gt; -1:
+            return p2
+    else:
+        g.trace('*** no class for p.h')
+        return None
+</t>
+<t tx="ekr.20150508132450.7">def find_next_clone(self,p):
+    v = p.v
+    p = p.copy()
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        # g.trace(p.v,p.h)
+        if p and p.v == v:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+    return p
+</t>
+<t tx="ekr.20150508132450.8">def munge_lines(self,root,publicCommands):
+    '''Return munged lines of '''
+    # print('')
+    # g.trace(root.h)
+    s = publicCommands.b
+    i,j = s.find('{'),s.find('}')
+    s = s[i+1:j]
+    # print(s)
+    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
+    lines = [z for z in lines if not z.startswith('#')]
+    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
+    lines = [z.rstrip().rstrip(',') for z in lines]
+    lines = [z[1:] for z in lines]
+    lines = [z.replace("':",' ') for z in lines]
+    # print('\n'.join(lines))
+    self.n += len(lines)
+    return lines
+</t>
+<t tx="ekr.20150508132450.9">def run(self):
+    '''Top-level code.'''
+    self.n = 0
+    found = g.findNodeAnywhere(c,'Found: getPublicCommands')
+    assert found
+    for child in found.children():
+        publicCommands = self.find_next_clone(child)
+        root = self.find_class(publicCommands)
+        if root:
+            lines = self.munge_lines(root,publicCommands)
+            d = self.create_d(lines,publicCommands)
+            self.create_decorators(d,root)
+    print('\n%s commands %s failed' % (self.n,self.n_fail))
+</t>
 </tnodes>
 </leo_file>
