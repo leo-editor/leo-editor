@@ -222,38 +222,6 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
-#@+node:ekr.20150505144026.1: *3* g.cmd (decorator)
-def cmd(name):
-    '''
-    A *global* decorator that defines the given name to be a command
-    implemented by the decorated func.
-    
-    The command dispatch logic assumes the signature: def func(c,event=None).
-    '''
-    def _decorator(func):
-        if g.new_dispatch:
-            g.app.global_commands_dict[name]=func
-        return func
-    return _decorator
-
-# Equivalent, but more complex.
-# class cmd:
-    # '''A class implementing the @g_cmd decorator.'''
-    # def __init__(self,name,ivar=None):
-        # self.name,self.ivar = name,ivar
-    # def __call__(self,func):
-        
-        # @functools.wraps(func)
-        # def wrapper(c,event=None):
-            # obj = getattr(c,self.ivar) if self.ivar else c
-            # return func(obj,event)
-
-        # g.app.global_commands_dict[self.name]=wrapper
-        # if 0: # Don't do this, at least not yet.
-            # for c in g.app.commanders():
-                # c.k.registerCommand(self.name,shortcut = None,
-                # func = func, pane='all',verbose=False)        
-        # return wrapper
 #@+node:ville.20090521164644.5924: *3* class g.Command & g.command (decorator)
 class Command:
     """ Decorator to create global commands """
@@ -1384,6 +1352,80 @@ def isTextWidget(w):
 def isTextWrapper(w):
     return g.app.gui.isTextWrapper(w)
     
+#@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ekr.20150505144026.1: *3* g.cmd (decorator)
+def cmd(name):
+    '''
+    A *global* decorator that defines the given name to be a command
+    implemented by the decorated func.
+    
+    The command dispatch logic assumes the signature: def func(c,event=None).
+    '''
+    def _decorator(func):
+        if g.new_dispatch:
+            g.app.global_commands_dict[name]=func
+        return func
+    return _decorator
+
+# Equivalent, but more complex.
+# class cmd:
+    # '''A class implementing the @g_cmd decorator.'''
+    # def __init__(self,name,ivar=None):
+        # self.name,self.ivar = name,ivar
+    # def __call__(self,func):
+        
+        # @functools.wraps(func)
+        # def wrapper(c,event=None):
+            # obj = getattr(c,self.ivar) if self.ivar else c
+            # return func(obj,event)
+
+        # g.app.global_commands_dict[self.name]=wrapper
+        # if 0: # Don't do this, at least not yet.
+            # for c in g.app.commanders():
+                # c.k.registerCommand(self.name,shortcut = None,
+                # func = func, pane='all',verbose=False)        
+        # return wrapper
+#@+node:ekr.20150508134046.1: *3* g.new_decorator
+def new_decorator(name,ivars=None):
+    '''
+    Return a new decorator for a command with the given name.
+    Compute the class instance using the ivar string or list.
+    '''
+    def _decorator(func):
+        if new_dispatch:
+            def wrapper(event):
+                c = event.get('c')
+                self = g.ivars2instance(c,ivars)
+                event = event.get('mb_event')
+                    ### To be removed.
+                # g.trace('self',self,'event',event,'func',func)
+                func(self=self,event=event)
+            wrapper.__name__ = 'wrapper-for-%s' % name
+            wrapper.__doc__ = func.__doc__
+            g.app.global_commands_dict[name]=wrapper
+                # Put the *wrapper* into the global dict.
+        return func
+            # The decorator must return the func itself.
+    return _decorator
+#@+node:ekr.20150508164812.1: *3* g.ivars2instance
+def ivars2instance(c,ivars):
+    '''
+    Return the instance of c given by ivars.
+    ivars may be empty, a string, or a list of strings.
+    A special case: ivars may be 'g', indicating the leoGlboals module.
+    '''
+    if not ivars:
+        return c
+    elif isString(ivars):
+        return g if ivars == 'g' else getattr(c,ivars)
+    else:
+        obj = c
+        for ivar in ivars:
+            obj = getattr(obj,ivar)
+            if not obj:
+                g.trace('can not happen',ivars)
+                return c
+        return obj
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert

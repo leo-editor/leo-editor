@@ -7565,19 +7565,8 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150507070627.1: *3* hc.cmd (decorator)
     def cmd(name):
-        '''Decorator that creates commands of the helpCommands class.'''
-        def _decorator(func):
-            if g.new_dispatch:
-                # import functools
-                # @functools.wraps(func)
-                def help_commands_wrapper(event):
-                    c = event.get('c')
-                    func(self=c.helpCommands,event=event.get('mb_event'))
-                # Put the *wrapper* into the global dict.
-                g.app.global_commands_dict[name]=help_commands_wrapper
-            # Always return the *bound* method.
-            return func
-        return _decorator
+        '''Command decorator for the helpCommands class.'''
+        return g.new_decorator(name,'helpCommands')
     #@+node:ekr.20060205165501: *3* help.getPublicCommands
     def getPublicCommands (self):
 
