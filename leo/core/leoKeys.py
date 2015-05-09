@@ -151,6 +151,11 @@ class AutoCompleterClass:
     '''
 
     #@+others
+    #@+node:ekr.20150509035140.1: *3* ac.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the autoCompleter class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,['k','autoCompleter'])
     #@+node:ekr.20061031131434.5: *3* ac.ctor
     def __init__ (self,k):
         '''Ctor for AutoCompleterClass class.'''
@@ -185,6 +190,7 @@ class AutoCompleterClass:
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
     #@+node:ekr.20061031131434.9: *4* ac.autoComplete
+    @cmd('auto-complete')
     def autoComplete (self,event=None,force=False):
         '''An event handler for autocompletion.'''
         trace = False and not g.unitTesting
@@ -212,42 +218,50 @@ class AutoCompleterClass:
         else:
             if trace: g.trace('autocompletion not enabled')
     #@+node:ekr.20061031131434.10: *4* ac.autoCompleteForce
+    @cmd('auto-complete-force')
     def autoCompleteForce (self,event=None):
 
         '''Show autocompletion, even if autocompletion is not presently enabled.'''
 
         return self.autoComplete(event,force=True)
     #@+node:ekr.20061031131434.12: *4* ac.enable/disable/toggleAutocompleter/Calltips
+    @cmd('disable-autocompleter')
     def disableAutocompleter (self,event=None):
         '''Disable the autocompleter.'''
         self.k.enable_autocompleter = False
         self.showAutocompleterStatus()
 
+    @cmd('disable-calltips')
     def disableCalltips (self,event=None):
         '''Disable calltips.'''
         self.k.enable_calltips = False
         self.showCalltipsStatus()
 
+    @cmd('enable-autocompleter')
     def enableAutocompleter (self,event=None):
         '''Enable the autocompleter.'''
         self.k.enable_autocompleter = True
         self.showAutocompleterStatus()
 
+    @cmd('enable-calltips')
     def enableCalltips (self,event=None):
         '''Enable calltips.'''
         self.k.enable_calltips = True
         self.showCalltipsStatus()
 
+    @cmd('toggle-autocompleter')
     def toggleAutocompleter (self,event=None):
         '''Toggle whether the autocompleter is enabled.'''
         self.k.enable_autocompleter = not self.k.enable_autocompleter
         self.showAutocompleterStatus()
 
+    @cmd('toggle-calltips')
     def toggleCalltips (self,event=None):
         '''Toggle whether calltips are enabled.'''
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
     #@+node:ekr.20061031131434.13: *4* ac.showCalltips
+    @cmd('show-calltips')
     def showCalltips (self,event=None,force=False):
 
         '''Show the calltips at the cursor.'''
@@ -265,6 +279,7 @@ class AutoCompleterClass:
             # Just insert the invocation character as usual.
             k.masterCommand(event=event)
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
+    @cmd('show-calltips-force')
     def showCalltipsForce (self,event=None):
 
         '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
@@ -2203,6 +2218,11 @@ class KeyHandlerClass:
     # KP_F1,KP_F2,KP_F3,KP_F4,
     # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
     # Insert
+    #@+node:ekr.20150509035028.1: *4* k.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the leoKeys class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'k')
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate (self):
         '''
@@ -2660,6 +2680,7 @@ class KeyHandlerClass:
         k.commandIndex = len(k.commandHistory)-1
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
+    @cmd('full-command')
     def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
@@ -2811,12 +2832,14 @@ class KeyHandlerClass:
                 k.newMinibufferWidget = None
     #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
     #@+node:ekr.20061031131434.115: *4* k.digitArgument & universalArgument
+    @cmd('universal-argument')
     def universalArgument (self,event):
         '''Prompt for a universal argument.'''
         k = self
         k.setLabelBlue('Universal Argument: ')
         k.universalDispatcher(event)
 
+    @cmd('digit-argument')
     def digitArgument (self,event):
         '''Prompt for a digit argument.'''
         k = self
@@ -2828,6 +2851,7 @@ class KeyHandlerClass:
         # This method must exist, but it never gets called.
         pass 
     #@+node:ekr.20061031131434.117: *4* k.negativeArgument (redo?)
+    @cmd('negative-argument')
     def negativeArgument (self,event):
 
         '''Prompt for a negative digit argument.'''
@@ -2846,6 +2870,7 @@ class KeyHandlerClass:
             # if func:
                 # func(event)
     #@+node:ekr.20061031131434.118: *4* k.numberCommand
+    @cmd('number-command')
     def numberCommand (self,event,stroke,number):
 
         '''Enter a number prefix for commands.'''
@@ -2857,46 +2882,57 @@ class KeyHandlerClass:
         g.app.gui.event_generate(c,chr(number),chr(number),w)
         return
 
+    @cmd('number-command-0')
     def numberCommand0 (self,event):
         '''Execute command number 0.'''
         return self.numberCommand (event,None,0)
 
+    @cmd('number-command-1')
     def numberCommand1 (self,event):
         '''Execute command number 1.'''
         return self.numberCommand (event,None,1)
 
+    @cmd('number-command-2')
     def numberCommand2 (self,event):
         '''Execute command number 2.'''
         return self.numberCommand (event,None,2)
 
+    @cmd('number-command-3')
     def numberCommand3 (self,event):
         '''Execute command number 3.'''
         return self.numberCommand (event,None,3)
 
+    @cmd('number-command-4')
     def numberCommand4 (self,event):
         '''Execute command number 4.'''
         return self.numberCommand (event,None,4)
 
+    @cmd('number-command-5')
     def numberCommand5 (self,event):
         '''Execute command number 5.'''
         return self.numberCommand (event,None,5)
 
+    @cmd('number-command-6')
     def numberCommand6 (self,event):
         '''Execute command number 6.'''
         return self.numberCommand (event,None,6)
 
+    @cmd('number-command-7')
     def numberCommand7 (self,event):
         '''Execute command number 7.'''
         return self.numberCommand (event,None,7)
 
+    @cmd('number-command-8')
     def numberCommand8 (self,event):
         '''Execute command number 8.'''
         return self.numberCommand (event,None,8)
 
+    @cmd('number-command-9')
     def numberCommand9 (self,event):
         '''Execute command number 9.'''
         return self.numberCommand (event,None,9)
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
+    @cmd('print-bindings')
     def printBindings (self,event=None):
 
         '''Print all the bindings presently in effect.'''
@@ -2980,6 +3016,7 @@ class KeyHandlerClass:
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
+    @cmd('print-buttons')
     def printButtons (self,event=None):
         '''Print all @button and @command commands, their bindings and their source.'''
         k = self ; c = k.c
@@ -3011,6 +3048,7 @@ class KeyHandlerClass:
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
+    @cmd('print-commands')
     def printCommands (self,event=None):
 
         '''Print all the known commands and their bindings, if any.'''
@@ -3036,6 +3074,7 @@ class KeyHandlerClass:
         lines = ['%*s %s\n' % (-n,s1,s2) for s1,s2 in data]
         g.es('',''.join(lines),tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
+    @cmd('repeat-complex-command')
     def repeatComplexCommand (self,event):
 
         '''Repeat the previously executed minibuffer command.'''
@@ -3060,6 +3099,7 @@ class KeyHandlerClass:
             # g.trace('oops')
             return k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
+    @cmd('set-command-state')
     def setCommandState (self,event):
         '''Enter the 'command' editing state.'''
         # g.trace(g.callers())
@@ -3069,6 +3109,7 @@ class KeyHandlerClass:
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
+    @cmd('set-insert-state')
     def setInsertState (self,event):
         '''Enter the 'insert' editing state.'''
         # g.trace(g.callers())
@@ -3078,6 +3119,7 @@ class KeyHandlerClass:
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
+    @cmd('set-overwrite-state')
     def setOverwriteState (self,event):
         '''Enter the 'overwrite' editing state.'''
         # g.trace(g.callers())
@@ -3087,6 +3129,7 @@ class KeyHandlerClass:
         # k.c.bodyWantsFocus()
         k.showStateAndMode()
     #@+node:ekr.20061031131434.124: *4* k.toggle-input-state
+    @cmd('toggle-input-state')
     def toggleInputState (self,event=None):
 
         '''The toggle-input-state command.'''
@@ -4062,6 +4105,7 @@ class KeyHandlerClass:
         c.inCommand = False # Allow inner commands in the mode.
         k.generalModeHandler(event,modeName=modeName)
     #@+node:ekr.20061031131434.161: *4* k.exitNamedMode
+    @cmd('exit-named-mode')
     def exitNamedMode (self,event=None):
 
         '''Exit an input mode.'''
@@ -4073,6 +4117,7 @@ class KeyHandlerClass:
 
         k.showStateAndMode()
     #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper (revise helper)
+    @cmd('mode-help')
     def modeHelp (self,event):
 
         '''The mode-help command.

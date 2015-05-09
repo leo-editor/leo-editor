@@ -119,7 +119,7 @@ class LeoFind:
 
     #@+others
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
-    #@+node:ekr.20031218072017.3053: *4* find.__init__ & helpers
+    #@+node:ekr.20031218072017.3053: *4* LeoFind.__init__ & helpers
     def __init__ (self,c):
         '''Ctor for LeoFind class.'''
         # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
@@ -182,6 +182,11 @@ class LeoFind:
         self.wrapPos = None
             # The starting position of the wrapped search.
             # Persists between calls.
+    #@+node:ekr.20150509032822.1: *4* LeoFind.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the findCommands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'findCommands')
     #@+node:ekr.20131117164142.17022: *4* LeoFind.finishCreate
     def finishCreate(self):
         
@@ -279,6 +284,7 @@ class LeoFind:
         self.setup_command()
         self.change()
     #@+node:ekr.20031218072017.3062: *4* find.changeThenFindCommand
+    @cmd('replace-then-find')
     def changeThenFindCommand(self,event=None):
         '''Handle the replace-then-find command.'''
         self.setup_command()
@@ -299,11 +305,13 @@ class LeoFind:
         self.setup_command()
         self.findAll()
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
+    @cmd('find-next')
     def findNextCommand(self,event=None):
         '''The find-next command.'''
         self.setup_command()
         self.findNext()
     #@+node:ekr.20031218072017.3064: *4* find.findPrevCommand
+    @cmd('find-prev')
     def findPrevCommand(self,event=None):
         '''Handle F2 (find-previous)'''
         self.setup_command()
@@ -313,6 +321,7 @@ class LeoFind:
         finally:
             self.reverse = not self.reverse
     #@+node:ekr.20141113094129.6: *4* find.focusToFind
+    @cmd('focus-to-find')
     def focusToFind(self,event=None):
         self.c.frame.log.selectTab('Find')
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
@@ -320,6 +329,7 @@ class LeoFind:
         '''Called from Find panel.  Redirect.'''
         self.c.helpCommands.helpForFindCommands(event)
     #@+node:ekr.20131117164142.17015: *4* find.hideFindTab
+    @cmd('find-tab-hide')
     def hideFindTab (self,event=None):
         '''Hide the Find tab.'''
         c = self.c
@@ -328,6 +338,7 @@ class LeoFind:
         else:
             self.c.frame.log.selectTab('Log')
     #@+node:ekr.20131117164142.16916: *4* find.openFindTab
+    @cmd('find-tab-open')
     def openFindTab (self,event=None,show=True):
         '''Open the Find tab in the log pane.'''
         self.c.frame.log.selectTab('Find')
@@ -347,6 +358,7 @@ class LeoFind:
         self.buttonFlag = False
         self.update_ivars()
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
+    @cmd('start-search')
     def startSearch(self,event):
         
         if self.minibuffer_mode:
@@ -357,6 +369,7 @@ class LeoFind:
             self.ftm.init_focus()
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
+    @cmd('isearch-forward')
     def isearchForward (self,event):
 
         '''Begin a forward incremental search.
@@ -372,6 +385,7 @@ class LeoFind:
         self.startIncremental(event,'isearch-forward',
             forward=True,ignoreCase=False,regexp=False)
     #@+node:ekr.20131117164142.16942: *4* find.isearchBackward
+    @cmd('isearch-backward')
     def isearchBackward (self,event):
 
         '''Begin a backward incremental search.
@@ -387,6 +401,7 @@ class LeoFind:
         self.startIncremental(event,'isearch-backward',
             forward=False,ignoreCase=False,regexp=False)
     #@+node:ekr.20131117164142.16943: *4* find.isearchForwardRegexp
+    @cmd('isearch-forward-regexp')
     def isearchForwardRegexp (self,event):
 
         '''Begin a forward incremental regexp search.
@@ -402,6 +417,7 @@ class LeoFind:
         self.startIncremental(event,'isearch-forward-regexp',
             forward=True,ignoreCase=False,regexp=True)
     #@+node:ekr.20131117164142.16944: *4* find.isearchBackwardRegexp
+    @cmd('isearch-backward-regexp')
     def isearchBackwardRegexp (self,event):
 
         '''Begin a backward incremental regexp search.
@@ -417,6 +433,7 @@ class LeoFind:
         self.startIncremental(event,'isearch-backward-regexp',
             forward=False,ignoreCase=False,regexp=True)
     #@+node:ekr.20131117164142.16945: *4* find.isearchWithPresentOptions
+    @cmd('isearch-with-present-options')
     def isearchWithPresentOptions (self,event):
 
         '''Begin an incremental search using find panel options.
@@ -633,6 +650,7 @@ class LeoFind:
         c.minibufferWantsFocus()
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
+    @cmd('find-clone-all')
     def minibufferCloneFindAll (self,event=None):
         c = self.c ; k = self.k ; tag = 'clone-find-all'
         state = k.getState(tag)
@@ -649,6 +667,7 @@ class LeoFind:
             self.generalSearchHelper(k.arg,cloneFindAll=True)
             c.treeWantsFocus()
     #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
+    @cmd('find-clone-all-flattened')
     def minibufferCloneFindAllFlattened (self,event=None):
 
         c = self.c ; k = self.k ; tag = 'clone-find-all-flattened'
@@ -667,12 +686,14 @@ class LeoFind:
             self.generalSearchHelper(k.arg,cloneFindAllFlattened=True)
             c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
+    @cmd('find-all')
     def minibufferFindAll (self,event=None):
         '''handle the find-all command.'''
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event,findAllFlag=True)
         
     #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll
+    @cmd('replace-all')
     def minibufferReplaceAll (self,event=None):
         '''Handle the change-all command.'''
         self.ftm.clear_focus()
@@ -762,6 +783,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
     #@+node:ekr.20131117164142.17003: *4* find.reSearchBackward/Forward
+    @cmd('re-search-backward')
     def reSearchBackward (self,event):
 
         k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
@@ -780,6 +802,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
 
+    @cmd('re-search-forward')
     def reSearchForward (self,event):
 
         k = self.k ; tag = 're-search-forward' ; state = k.getState(tag)
@@ -797,6 +820,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.17004: *4* find.seachForward/Backward
+    @cmd('search-backward')
     def searchBackward (self,event):
 
         k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
@@ -814,6 +838,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
 
+    @cmd('search-forward')
     def searchForward (self,event):
         k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
         if state == 0:
@@ -830,6 +855,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.17002: *4* find.setReplaceString
+    @cmd('set-replace-string')
     def setReplaceString (self,event):
         '''A state handler to get the replacement string.'''
         trace = False and not g.unitTesting
@@ -852,6 +878,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=self.changeAllFlag)
     #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions
+    @cmd('set-search-string')
     def searchWithPresentOptions (self,event,findAllFlag=False,changeAllFlag=False):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
@@ -911,6 +938,7 @@ class LeoFind:
         if s not in self.findTextList:
             self.findTextList.append(s)
     #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward
+    @cmd('word-search-backward')
     def wordSearchBackward (self,event):
 
         k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
@@ -922,6 +950,7 @@ class LeoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
 
+    @cmd('word-search-forward')
     def wordSearchForward (self,event):
 
         k = self.k ; tag = 'word-search-forward' ; state = k.getState(tag)
@@ -934,45 +963,57 @@ class LeoFind:
             self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
     #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle checkbox commands
+    @cmd('toggle-find-collapses-nodes')
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         c = self.c
         c.sparse_find = not c.sparse_find
         if not g.unitTesting:
             g.es('sparse_find',c.sparse_find)
+    @cmd('toggle-find-ignore-case-option')
     def toggleIgnoreCaseOption     (self, event):
         '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
         return self.toggleOption('ignore_case')
+    @cmd('toggle-find-mark-changes-option')
     def toggleMarkChangesOption (self, event):
         '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
         return self.toggleOption('mark_changes')
+    @cmd('toggle-find-mark-finds-option')
     def toggleMarkFindsOption (self, event):
         '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
         return self.toggleOption('mark_finds')
+    @cmd('toggle-find-regex-option')
     def toggleRegexOption (self, event):
         '''Toggle the 'Regexp' checkbox in the Find tab.'''
         return self.toggleOption('pattern_match')
+    @cmd('toggle-find-in-body-option')
     def toggleSearchBodyOption (self, event):
         '''Set the 'Search Body' checkbox in the Find tab.'''
         return self.toggleOption('search_body')
+    @cmd('toggle-find-in-headline-option')
     def toggleSearchHeadlineOption (self, event):
         '''Toggle the 'Search Headline' checkbox in the Find tab.'''
         return self.toggleOption('search_headline')
+    @cmd('toggle-find-word-option')
     def toggleWholeWordOption (self, event):
         '''Toggle the 'Whole Word' checkbox in the Find tab.'''
         return self.toggleOption('whole_word')
+    @cmd('toggle-find-wrap-around-option')
     def toggleWrapSearchOption (self, event):
         '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
         self.ftm.toggle_checkbox(checkbox_name)
     #@+node:ekr.20131117164142.17019: *4* LeoFind.setFindScope...
+    @cmd('set-find-everywhere')
     def setFindScopeEveryWhere (self,event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
+    @cmd('set-find-node-only')
     def setFindScopeNodeOnly  (self,event=None):
         '''Set the 'Node Only' radio button in the Find tab.'''
         return self.setFindScope('node-only')
+    @cmd('set-find-suboutline-only')
     def setFindScopeSuboutlineOnly (self,event=None):
         '''Set the 'Suboutline Only' radio button in the Find tab.'''
         return self.setFindScope('suboutline-only')
@@ -980,6 +1021,7 @@ class LeoFind:
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
     #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions
+    @cmd('show-find-options')
     def showFindOptions (self,event=None):
         '''
         Show the present find options in the status line.
@@ -1088,6 +1130,7 @@ class LeoFind:
                 u.afterChangeNodeContents(p,'Change Body',undoData)
             #@-<< change body >>
     #@+node:ekr.20031218072017.3068: *4* find.change
+    @cmd('replace')
     def change(self,event=None):
         if self.checkArgs():
             self.initInHeadline()

@@ -481,6 +481,11 @@ class VimCommands:
             # cleared after doing the j,j abbreviation.
     #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
     # Called from command handlers or the ctor.
+    #@+node:ekr.20150509040011.1: *3*  vc.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the VimCommands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'vimCommands')
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
@@ -2104,16 +2109,19 @@ class VimCommands:
         #@-others
 
     #@+node:ekr.20140815160132.18822: *4* vc.cycle_focus & cycle_all_focus (:gt & :gT)
+    @cmd(':gt')
     def cycle_focus(vc,event=None):
         '''Cycle focus'''
         event = VimEvent(char='',stroke='',w=vc.colon_w)
         vc.do('cycle-focus',event=event)
         
+    @cmd(':gT')
     def cycle_all_focus(vc,event=None):
         '''Cycle all focus'''
         event = VimEvent(char='',stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
+    @cmd(':print-dot')
     def print_dot(vc,event=None):
         '''Print the dot.'''
         aList = [z.stroke if isinstance(z,VimEvent) else z for z in vc.dot_list]
@@ -2126,10 +2134,12 @@ class VimCommands:
             i += 10
             n += 1
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
+    @cmd(':q')
     def q_command(vc,event=None):
         '''Quit the present Leo outline, prompting for saves.'''
         g.app.closeLeoWindow(vc.c.frame,new_c=None)
 
+    @cmd(':qa')
     def qa_command(vc,event=None):
         '''Quit only if there are no unsaved changes.'''
         for c in g.app.commanders():
@@ -2137,6 +2147,7 @@ class VimCommands:
                 return
         g.app.onQuit(event)
 
+    @cmd(':q!')
     def quit_now(vc,event=None):
         '''Quit immediately.'''
         for c in g.app.commanders():
@@ -2144,10 +2155,12 @@ class VimCommands:
         g.app.forceShutdown()
         
     #@+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
+    @cmd(':e!')
     def revert(vc,event=None):
         '''Revert all changes to a .leo file, prompting if there have been changes.'''
         vc.c.revert()
     #@+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
+    @cmd(':!')
     def shell_command(vc,event=None):
         '''Execute a shell command.'''
         c,k = vc.c,vc.c.k
@@ -2158,6 +2171,7 @@ class VimCommands:
             event = VimEvent(char='',stroke='',w=vc.colon_w)
             vc.do('shell-command',event=event)
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
+    @cmd(':toggle-vim-mode')
     def toggle_vim_mode(vc,event=None):
         '''toggle vim-mode.'''
         c = vc.c
@@ -2177,11 +2191,13 @@ class VimCommands:
                 # g.es_exception()
                 pass
     #@+node:ekr.20140909140052.18128: *4* vc.toggle_vim_trace
+    @cmd(':toggle-vim-trace')
     def toggle_vim_trace(vc,event=None):
         '''toggle vim tracing.'''
         vc.trace = not vc.trace
         g.es_print('vim tracing: %s' % ('On' if vc.trace else 'Off'))
     #@+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
+    @cmd(':toggle-vim-trainer-mode')
     def toggle_vim_trainer_mode(vc,event=None):
         '''toggle vim-trainer mode.'''
         vc.trainer = not vc.trainer
@@ -2189,16 +2205,19 @@ class VimCommands:
             'on' if vc.trainer else 'off'),
             color = 'red')
     #@+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
+    @cmd(':w')
     def w_command(vc,event= None):
         '''Save the .leo file.'''
         vc.c.save()
             
+    @cmd(':xa')
     def xa_command(vc,event=None): # same as :xa
         '''Save all open files and keep working.'''
         for c in g.app.commanders():
             if c.isChanged():
                 c.save()
 
+    @cmd(':wq')
     def wq_command(vc,event=None):
         '''Save all open files and exit.'''
         for c in g.app.commanders():

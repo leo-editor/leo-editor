@@ -2055,6 +2055,11 @@ class LeoQtFrame (leoFrame.LeoFrame):
     def __repr__ (self):
 
         return "<LeoQtFrame: %s>" % self.title
+    #@+node:ekr.20150509040227.1: *4* qtFrame.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the LeoQtFrame class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'frame')
     #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate (self):
 
@@ -2703,6 +2708,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18293: *3* Gui-dependent commands
     #@+node:ekr.20110605121601.18294: *4* Minibuffer commands... (qtFrame)
     #@+node:ekr.20110605121601.18295: *5* contractPane
+    @cmd('contract-pane')
     def contractPane (self,event=None):
 
         '''Contract the selected pane.'''
@@ -2728,6 +2734,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     c.treeWantsFocus()
                     break
     #@+node:ekr.20110605121601.18296: *5* expandPane
+    @cmd('expand-pane')
     def expandPane (self,event=None):
 
         '''Expand the selected pane.'''
@@ -2753,6 +2760,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     c.treeWantsFocus()
                     break
     #@+node:ekr.20110605121601.18297: *5* fullyExpandPane
+    @cmd('fully-expand-pane')
     def fullyExpandPane (self,event=None):
 
         '''Fully expand the selected pane.'''
@@ -2778,6 +2786,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     c.bodyWantsFocus()
                     break
     #@+node:ekr.20110605121601.18298: *5* hidePane
+    @cmd('hide-pane')
     def hidePane (self,event=None):
 
         '''Completely contract the selected pane.'''
@@ -2809,59 +2818,71 @@ class LeoQtFrame (leoFrame.LeoFrame):
     # not f.splitVerticalFlag: use the secondary (tree/log) ratio.
     #@@c
 
+    @cmd('contract-body-pane')
     def contractBodyPane (self,event=None):
         '''Contract the body pane.'''
         f = self ; r = min(1.0,f.ratio+0.1)
         f.divideLeoSplitter(f.splitVerticalFlag,r)
 
+    @cmd('contract-log-pane')
     def contractLogPane (self,event=None):
         '''Contract the log pane.'''
         f = self ; r = min(1.0,f.secondary_ratio+0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
+    @cmd('contract-outline-pane')
     def contractOutlinePane (self,event=None):
         '''Contract the outline pane.'''
         f = self ; r = max(0.0,f.ratio-0.1)
         f.divideLeoSplitter(f.splitVerticalFlag,r)
 
+    @cmd('expand-body-pane')
     def expandBodyPane (self,event=None):
         '''Expand the body pane.'''
         self.contractOutlinePane()
 
+    @cmd('expand-log-pane')
     def expandLogPane(self,event=None):
         '''Expand the log pane.'''
         f = self ; r = max(0.0,f.secondary_ratio-0.1) # 2010/02/23: was f.ratio
         f.divideLeoSplitter(not f.splitVerticalFlag,r)
 
+    @cmd('expand-outline-pane')
     def expandOutlinePane (self,event=None):
         '''Expand the outline pane.'''
         self.contractBodyPane()
     #@+node:ekr.20110605121601.18300: *5* fullyExpand/hide...Pane
+    @cmd('fully-expand-body-pane')
     def fullyExpandBodyPane (self,event=None):
         '''Fully expand the body pane.'''
         f = self
         f.divideLeoSplitter(f.splitVerticalFlag,0.0)
 
+    @cmd('fully-expand-log-pane')
     def fullyExpandLogPane (self,event=None):
         '''Fully expand the log pane.'''
         f = self
         f.divideLeoSplitter(not f.splitVerticalFlag,0.0)
 
+    @cmd('fully-expand-outline-pane')
     def fullyExpandOutlinePane (self,event=None):
         '''Fully expand the outline pane.'''
         f = self
         f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
+    @cmd('hide-body-pane')
     def hideBodyPane (self,event=None):
         '''Completely contract the body pane.'''
         f = self
         f.divideLeoSplitter(f.splitVerticalFlag,1.0)
 
+    @cmd('hide-log-pane')
     def hideLogPane (self,event=None):
         '''Completely contract the log pane.'''
         f = self
         f.divideLeoSplitter(not f.splitVerticalFlag,1.0)
 
+    @cmd('hide-outline-pane')
     def hideOutlinePane (self,event=None):
         '''Completely contract the outline pane.'''
         f = self

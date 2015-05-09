@@ -62,8 +62,14 @@ class ChapterController:
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main',collapse=False)
             # 2010/10/09: an important bug fix!
+    #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the ChapterController class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'chapterCommands')
     #@+node:ekr.20070317085437.30: *3* Commands (chapters)
     #@+node:ekr.20070317085437.50: *4* cc.cloneNodeToChapter & helper
+    @cmd('chapter-clone-node-to')
     def cloneNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -119,6 +125,7 @@ class ChapterController:
         toChapter.select()
         fromChapter.p = p.copy()
     #@+node:ekr.20070608072116: *4* cc.convertNodeToChapter
+    @cmd('chapter-convert-node-to')
     def convertNodeToChapter (self,event=None):
 
         '''convert-node-to-chapter command.
@@ -142,6 +149,7 @@ class ChapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=p,undoType='Convert Node To Chapter')
     #@+node:ekr.20070317085437.51: *4* cc.copyNodeToChapter & helper
+    @cmd('chapter-copy-node-to')
     def copyNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -187,6 +195,7 @@ class ChapterController:
         toChapter.select()
         fromChapter.p = p.copy()
     #@+node:ekr.20070317085437.31: *4* cc.createChapter
+    @cmd('chapter-create')
     def createChapter (self,event=None):
         '''
         create-chapter command.
@@ -233,6 +242,7 @@ class ChapterController:
         cc.afterCreateChapter(bunch,c.p)
         return True
     #@+node:ekr.20070607092909: *4* cc.createChapterFromNode
+    @cmd('chapter-create-from-node')
     def createChapterFromNode (self,event=None):
 
         '''create-chapter-from-node command.
@@ -254,6 +264,7 @@ class ChapterController:
             if k.arg:
                 cc.createChapterByName(k.arg,p=p,undoType='Create Chapter From Node')
     #@+node:ekr.20070604155815.3: *4* cc.moveNodeToChapter & helper
+    @cmd('chapter-move-node-to')
     def moveNodeToChapter (self,event=None):
 
         '''Prompt for a chapter name,
@@ -323,6 +334,7 @@ class ChapterController:
         else:
             cc.note('can not move the last remaining node of a chapter.')
     #@+node:ekr.20070317085437.40: *4* cc.removeChapter & helper
+    @cmd('chapter-remove')
     def removeChapter (self,event=None):
 
         '''Prompt for the name of a chapter, then remove it.'''
@@ -355,6 +367,7 @@ class ChapterController:
         cc.note('Removed chapter %s' % name)
         c.redraw()
     #@+node:ekr.20070317085437.41: *4* cc.renameChapter & helper
+    @cmd('chapter-rename')
     def renameChapter (self,event=None,newName=None): # newName is for unitTesting.
 
         '''Use the minibuffer to get a new name for the present chapter.'''
@@ -402,6 +415,7 @@ class ChapterController:
         else:
             cc.note('no @chapter %s' % (oldName))
     #@+node:ekr.20070604165126: *4* cc.selectChapter & helper
+    @cmd('chapter-select')
     def selectChapter (self,event=None):
 
         '''Use the minibuffer to get a chapter name,

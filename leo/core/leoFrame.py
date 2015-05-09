@@ -180,6 +180,11 @@ class LeoBody(object):
         self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
+    #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the c.frame.body class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,['frame','body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -269,6 +274,7 @@ class LeoBody(object):
         self.selectLabel(w)
         # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
     #@+node:ekr.20060528170438: *5* LeoBody.cycleEditorFocus
+    @cmd('cycle-editor-focus')
     def cycleEditorFocus (self,event=None):
 
         '''Cycle keyboard focus between the body text editors.'''
@@ -285,6 +291,7 @@ class LeoBody(object):
             self.selectEditor(w2)
             c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor
+    @cmd('delete-editor')
     def deleteEditor (self,event=None):
 
         '''Delete the presently selected body text editor.'''

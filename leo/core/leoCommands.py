@@ -325,6 +325,11 @@ class Commands (object):
         return "Commander %d: %s" % (id(self),repr(self.mFileName))
 
     __str__ = __repr__
+    #@+node:ekr.20150509031041.1: *4* c.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the Commands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,None)
     #@+node:ekr.20050920093543: *4* c.finishCreate & helpers
     def finishCreate (self):
         '''
@@ -5165,6 +5170,7 @@ class Commands (object):
         c.redraw()
     #@+node:ekr.20031218072017.2922: *5* Mark...
     #@+node:ekr.20090905110447.6098: *6* c.cloneMarked
+    @cmd('clone-marked-nodes')
     def cloneMarked(self,event=None):
 
         """Clone all marked nodes as children of a new node."""
@@ -5202,6 +5208,7 @@ class Commands (object):
             g.blue('cloned %s nodes' % (n))
         c.redraw()    
     #@+node:ekr.20111005081134.15540: *6* c.deleteMarked
+    @cmd('delete-marked-nodes')
     def deleteMarked (self,event=None):
 
         """Delete all marked nodes."""
@@ -5229,6 +5236,7 @@ class Commands (object):
         c.selectPosition(c.rootPosition())
         c.redraw()    
     #@+node:ekr.20111005081134.15539: *6* c.moveMarked & helper
+    @cmd('move-marked-nodes')
     def moveMarked (self,event=None):
 
         '''Move all marked nodes as children of parent position.'''

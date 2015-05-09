@@ -489,8 +489,7 @@ class ExternalFilesController:
     #@+node:ekr.20150407141601.1: *4* efc.forget_path
     def forget_path(efc,path):
         '''Remove path from the open_with_files list.'''
-        # g.trace(g.shortFileName(path))
-        g.trace('before',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
+        # g.trace('before',[g.shortFileName(d.get('path')) for d in efc.open_with_files])
         efc.open_with_files = [
             d for d in efc.open_with_files
                 if d.get('path') != path]

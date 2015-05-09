@@ -202,6 +202,11 @@ class RstCommands:
         self.updateD0FromSettings()
         self.initHeadlineCommands()
 
+    #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the RstCommands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'rstCommands')
     #@+node:ekr.20090502071837.42: *4* rst.createD0
     def createD0(self):
         '''Create the default options dict.'''
@@ -319,6 +324,7 @@ class RstCommands:
             d['http_server_support'] = False
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
+    @cmd('code-to-rst')
     def code_to_rst_command (self,event=None,p=None,scriptSettingsDict=None,toString=False):
         '''
         Format the presently selected node as computer code.
@@ -508,6 +514,7 @@ class RstCommands:
         while p and p != after:
             self.write_code_node(p) # Side effect: advances p.
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
+    @cmd('rst3')
     def rst3 (self,event=None):
         '''Write all @rst nodes.'''
         t1 = time.time()
