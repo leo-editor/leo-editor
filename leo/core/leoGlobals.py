@@ -12,7 +12,7 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_dispatch = True
+new_dispatch = False
 if new_dispatch:
     print('\n***** new_dispatch')
 
@@ -1382,7 +1382,9 @@ def new_cmd_decorator(name,ivars=None):
                 event = event.get('mb_event')
                     ### To be removed.
                 # g.trace('self',self,'event',event,'func',func)
-                func(self=self,event=event)
+                func(self,event=event)
+                    # Don't use a keyword for self.
+                    # This allows the VimCommands class to use vc instead.
             wrapper.__name__ = 'wrapper-for-%s' % name
             wrapper.__doc__ = func.__doc__
             g.global_commands_dict[name]=wrapper

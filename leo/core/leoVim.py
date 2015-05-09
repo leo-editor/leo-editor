@@ -485,23 +485,7 @@ class VimCommands:
     def cmd(name):
         '''Command decorator for the VimCommands class.'''
         # pylint: disable=no-self-argument
-        # return g.new_cmd_decorator(name,'vimCommands',self_spelling='vc')
-        def _decorator(func):
-            if g.new_dispatch:
-                def wrapper(event):
-                    c = event.get('c')
-                    vc = c.vimCommands
-                    event = event.get('mb_event')
-                        ### To be removed.
-                    func(vc=vc,event=event)
-                wrapper.__name__ = 'wrapper-for-%s' % name
-                wrapper.__doc__ = func.__doc__
-                g.global_commands_dict[name]=wrapper
-                    # Put the *wrapper* into the global dict.
-            return func
-                # The decorator must return the func itself.
-        return _decorator
-
+        return g.new_cmd_decorator(name,'vimCommands')
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
