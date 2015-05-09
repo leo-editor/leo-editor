@@ -12,7 +12,7 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_dispatch = False
+new_dispatch = True
 if new_dispatch:
     print('\n***** new_dispatch')
 
@@ -156,6 +156,8 @@ globalDirectiveList = [
     'unit','verbose', 'wrap',
 ]
 #@-<< define g.globalDirectiveList >>
+global_commands_dict = {}
+    # was g.app.global_commands_dict.
 tree_popup_handlers = [] # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -236,7 +238,7 @@ class Command:
     def __call__(self,func):
         '''Register command for all future commanders.'''
         if g and g.app:
-            g.app.global_commands_dict[self.name] = func
+            g.global_commands_dict[self.name] = func
             # ditto for all current commanders
             for c in g.app.commanders():
                 c.k.registerCommand(self.name,shortcut = None,
@@ -1363,28 +1365,9 @@ def cmd(name):
     '''
     def _decorator(func):
         if g.new_dispatch:
-            g.app.global_commands_dict[name]=func
+            g.global_commands_dict[name]=func
         return func
     return _decorator
-
-# Equivalent, but more complex.
-# class cmd:
-    # '''A class implementing the @g_cmd decorator.'''
-    # def __init__(self,name,ivar=None):
-        # self.name,self.ivar = name,ivar
-    # def __call__(self,func):
-        
-        # @functools.wraps(func)
-        # def wrapper(c,event=None):
-            # obj = getattr(c,self.ivar) if self.ivar else c
-            # return func(obj,event)
-
-        # g.app.global_commands_dict[self.name]=wrapper
-        # if 0: # Don't do this, at least not yet.
-            # for c in g.app.commanders():
-                # c.k.registerCommand(self.name,shortcut = None,
-                # func = func, pane='all',verbose=False)        
-        # return wrapper
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
 def new_cmd_decorator(name,ivars=None):
     '''
@@ -1402,7 +1385,7 @@ def new_cmd_decorator(name,ivars=None):
                 func(self=self,event=event)
             wrapper.__name__ = 'wrapper-for-%s' % name
             wrapper.__doc__ = func.__doc__
-            g.app.global_commands_dict[name]=wrapper
+            g.global_commands_dict[name]=wrapper
                 # Put the *wrapper* into the global dict.
         return func
             # The decorator must return the func itself.

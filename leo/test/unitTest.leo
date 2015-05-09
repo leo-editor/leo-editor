@@ -189,6 +189,7 @@
 </v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1346,6 +1347,13 @@ char t
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
+<t tx="ekr.20140822063016.4474"># import sys
+# if not sys.platform.startswith('win'):
+    # print(p.h)
+    # c.k.simulateCommand(':q!')
+    
+c.k.simulateCommand(':q!')
+</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>

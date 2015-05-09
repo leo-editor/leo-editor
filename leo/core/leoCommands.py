@@ -370,7 +370,7 @@ class Commands (object):
         for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
             if o: o.getPublicCommands()
         # copy global commands to this controller    
-        for name,f in g.app.global_commands_dict.items():
+        for name,f in g.global_commands_dict.items():
             k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
         # Create the inverse dict last.
         c.createInverseCommandsDict()

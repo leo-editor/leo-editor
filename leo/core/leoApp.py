@@ -813,6 +813,8 @@ class LeoApp:
         self.db = None
             # The singleton leoCacher instance.
         self.externalFilesController = ExternalFilesController()
+        self.ipk = None
+            # python kernel instance
         self.loadManager = None
             # The singleton LoadManager instance.
         # self.logManager = None
@@ -928,11 +930,6 @@ class LeoApp:
         self.define_language_extension_dict()
         self.define_extension_dict()
         self.define_delegate_language_dict()
-        self.global_commands_dict = {}
-        self.global_ivars_dict = {}
-
-        self.ipk = None
-            # python kernel instance
     #@+node:ekr.20140729162415.18086: *4* app.init_at_auto_names
     def init_at_auto_names(self):
         '''Init the app.atAutoNames set.'''
