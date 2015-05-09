@@ -1385,8 +1385,8 @@ def cmd(name):
                 # c.k.registerCommand(self.name,shortcut = None,
                 # func = func, pane='all',verbose=False)        
         # return wrapper
-#@+node:ekr.20150508134046.1: *3* g.new_decorator
-def new_decorator(name,ivars=None):
+#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
+def new_cmd_decorator(name,ivars=None):
     '''
     Return a new decorator for a command with the given name.
     Compute the class instance using the ivar string or list.
@@ -1395,7 +1395,7 @@ def new_decorator(name,ivars=None):
         if new_dispatch:
             def wrapper(event):
                 c = event.get('c')
-                self = g.ivars2instance(c,ivars)
+                self = g.ivars2instance(c,g,ivars)
                 event = event.get('mb_event')
                     ### To be removed.
                 # g.trace('self',self,'event',event,'func',func)
@@ -1408,11 +1408,11 @@ def new_decorator(name,ivars=None):
             # The decorator must return the func itself.
     return _decorator
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c,ivars):
+def ivars2instance(c,g,ivars):
     '''
     Return the instance of c given by ivars.
     ivars may be empty, a string, or a list of strings.
-    A special case: ivars may be 'g', indicating the leoGlboals module.
+    A special case: ivars may be 'g', indicating the leoGlobals module.
     '''
     if not ivars:
         return c

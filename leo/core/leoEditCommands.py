@@ -7566,7 +7566,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150507070627.1: *3* hc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the helpCommands class.'''
-        return g.new_decorator(name,'helpCommands')
+        return g.new_cmd_decorator(name,'helpCommands')
     #@+node:ekr.20060205165501: *3* help.getPublicCommands
     def getPublicCommands (self):
 
