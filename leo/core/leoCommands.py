@@ -617,6 +617,7 @@ class Commands (object):
                 repr(stroke),repr(expected),repr(got)))
     #@+node:ekr.20150329162703.1: *3* c.cloneFind...
     #@+node:ekr.20140828080010.18532: *4* c.cloneFindParents
+    @cmd('clone-find-parents')
     def cloneFindParents(self,event=None):
         '''Create a "Found: parents of p.h for all parents of p or c.p.'''
         c,u = self,self.undoer
@@ -2390,7 +2391,7 @@ class Commands (object):
     # Test  (
     # ([(x){y}]))
     # Test  ((x)(unmatched
-    #@+node:ekr.20031218072017.1704: *6* convertAllBlanks
+    #@+node:ekr.20031218072017.1704: *6* c.convertAllBlanks
     def convertAllBlanks (self,event=None):
 
         '''Convert all blanks to tabs in the selected outline.'''
@@ -2437,7 +2438,7 @@ class Commands (object):
                 # Must come before c.redraw().
         if count > 0:
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.1705: *6* convertAllTabs
+    #@+node:ekr.20031218072017.1705: *6* c.convertAllTabs
     def convertAllTabs (self,event=None):
 
         '''Convert all tabs to blanks in the selected outline.'''
@@ -2481,7 +2482,7 @@ class Commands (object):
             g.es("tabs converted to blanks in",count,"nodes")
         if count > 0:
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.1821: *6* convertBlanks
+    #@+node:ekr.20031218072017.1821: *6* c.convertBlanks
     def convertBlanks (self,event=None):
 
         '''Convert all blanks to tabs in the selected node.'''
@@ -2505,7 +2506,7 @@ class Commands (object):
                 dirtyVnodeList = c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview) # Handles undo
 
         return changed,dirtyVnodeList
-    #@+node:ekr.20031218072017.1822: *6* convertTabs
+    #@+node:ekr.20031218072017.1822: *6* c.convertTabs
     def convertTabs (self,event=None):
 
         '''Convert all tabs to blanks in the selected node.'''
@@ -2530,7 +2531,7 @@ class Commands (object):
                 dirtyVnodeList = c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview) # Handles undo
 
         return changed,dirtyVnodeList
-    #@+node:ekr.20031218072017.1823: *6* createLastChildNode
+    #@+node:ekr.20031218072017.1823: *6* c.createLastChildNode
     def createLastChildNode (self,parent,headline,body):
 
         '''A helper function for the three extract commands.'''
@@ -2548,7 +2549,7 @@ class Commands (object):
         p.setDirty()
         c.validateOutline()
         return p
-    #@+node:ekr.20031218072017.1824: *6* dedentBody
+    #@+node:ekr.20031218072017.1824: *6* c.dedentBody
     def dedentBody (self,event=None):
         '''Remove one tab's worth of indentation from all presently selected lines.'''
         c,undoType = self,'Unindent'
@@ -2564,7 +2565,7 @@ class Commands (object):
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
     #@+node:ekr.20110530124245.18238: *6* c.extract...
-    #@+node:ekr.20110530124245.18239: *7* extract & helpers
+    #@+node:ekr.20110530124245.18239: *7* c.extract & helpers
     def extract (self,event=None):
         '''
         Create child node from the selected body text.
@@ -2650,7 +2651,7 @@ class Commands (object):
             return s
 
         return ''
-    #@+node:ekr.20031218072017.1710: *7* extractSectionNames
+    #@+node:ekr.20031218072017.1710: *7* c.extractSectionNames
     def extractSectionNames(self,event=None):
 
         '''Create child nodes for every section reference in the selected text.
@@ -2732,7 +2733,7 @@ class Commands (object):
             j = max(i,len(head)+len(s)-1)
             oldSel = i,j
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
-    #@+node:ekr.20031218072017.1830: *6* indentBody (indent-region)
+    #@+node:ekr.20031218072017.1830: *6* c.indentBody (indent-region)
     def indentBody (self,event=None):
         '''
         The indent-region command indents each line of the selected body text,
@@ -2787,7 +2788,7 @@ class Commands (object):
                 n += len(s)
         # g.trace(ins,n,language)
         return language
-    #@+node:ekr.20050312114529.1: *7* addComments
+    #@+node:ekr.20050312114529.1: *7* c.addComments
     def addComments (self,event=None):
         #@+<< addComments docstring >>
         #@+node:ekr.20111115111842.9789: *8* << addComments docstring >>
@@ -2841,7 +2842,7 @@ class Commands (object):
                 result.append(line)
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
-    #@+node:ekr.20050312114529.2: *7* deleteComments
+    #@+node:ekr.20050312114529.2: *7* c.deleteComments
     def deleteComments (self,event=None):
 
         #@+<< deleteComments docstring >>
@@ -2899,7 +2900,7 @@ class Commands (object):
                     result.append(s)
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
-    #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests
+    #@+node:ekr.20031218072017.1831: *6* c.insertBodyTime, helpers and tests
     def insertBodyTime (self,event=None):
         '''Insert a time/date stamp at the cursor.'''
         c = self ; undoType = 'Insert Body Time'
