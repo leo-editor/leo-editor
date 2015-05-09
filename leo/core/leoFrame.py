@@ -221,6 +221,7 @@ class LeoBody(object):
 
     #@+node:ekr.20070424053629: *4* LeoBody.entries
     #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
+    @cmd('add-editor')
     def addEditor (self,event=None):
 
         '''Add another editor to the body pane.'''
@@ -1118,7 +1119,8 @@ class LeoFrame(object):
 class LeoLog(object):
     '''The base class for the log pane in Leo windows.'''
     #@+others
-    #@+node:ekr.20031218072017.3695: *3*  LeoLog.ctor
+    #@+node:ekr.20150509054436.1: *3* LeoLog.Birth
+    #@+node:ekr.20031218072017.3695: *4* LeoLog.ctor
     def __init__ (self,frame,parentFrame):
         '''Ctor for LeoLog class.'''
         self.frame = frame
@@ -1138,6 +1140,11 @@ class LeoLog(object):
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
+    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd
+    def cmd(name):
+        '''Command decorator for the LeoLog class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,['frame','log'])
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab (self,tabName,wrap='none'):
 
@@ -1161,10 +1168,9 @@ class LeoLog(object):
     def createTextWidget(self,parentFrame):
         return None
     #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
+    @cmd('cycle-tab-focus')
     def cycleTabFocus (self,event=None):
-
         '''Cycle keyboard focus between the tabs in the log pane.'''
-
         d = self.frameDict # Keys are page names. Values are Tk.Frames.
         w = d.get(self.tabName)
         values = list(d.values())

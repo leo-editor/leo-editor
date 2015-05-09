@@ -1679,6 +1679,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         '''
         g.act_on_node(self.c,self.c.p,event)
     #@+node:ekr.20050920084036.155: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
+    @cmd('save-buffers-kill-leo')
     def shutdown (self,event):
 
         '''Quit Leo, prompting to save any unsaved files first.'''
@@ -5277,25 +5278,24 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20050920084036.141: *4* removeBlankLines
     @cmd('remove-blank-lines')
     def removeBlankLines (self,event):
-
-        '''The remove-blank-lines command removes lines containing nothing but
-        whitespace. If there is a text selection, only lines within the selected
-        text are affected; otherwise all blank lines in the selected node are
-        affected.'''
-
+        '''
+        Remove lines containing nothing but whitespace.
+        
+        Select all lines if there is no existing selection.
+        '''    
         c = self.c
-        head,lines,tail,oldSel,oldYview = c.getBodyLines()
-
-        changed = False ; result = []
+        w = self.w
+        expandSelection = not w.hasSelection()
+        head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=expandSelection)
+        changed,result = False,[]
         for line in lines:
             if line.strip():
                 result.append(line)
             else:
                 changed = True
         result = ''.join(result)
-
         if changed:
-            oldSel = None ; undoType = 'remove-blank-lines'
+            oldSel,undoType = None,'remove-blank-lines'
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
     #@+node:ekr.20110530082209.18248: *4* replaceCurrentCharacter
     @cmd('replace-current-character')

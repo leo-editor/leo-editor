@@ -66,22 +66,27 @@ class VimCommands:
         '''Add the names of commands defined in this file to c.commandsDict'''
         vc.c.commandsDict.update({
             ':!':   vc.shell_command,
-            ':%s':  vc.Substitution(vc,all_lines=True),
-            ':e':   vc.Tabnew(vc),
+            ':%s':  vc.percent_s_command,
+                # vc.Substitution(vc,all_lines=True),
+            ':e':   vc.e_command,
+                # vc.Tabnew(vc),
             ':e!':  vc.revert,
             ':gT':  vc.cycle_all_focus,
             ':gt':  vc.cycle_focus,
             ':q!':  vc.quit_now,
             ':q':   vc.q_command,
             ':qa':  vc.qa_command,
-            ':r':   vc.LoadFileAtCursor(vc),
-            ':s':   vc.Substitution(vc,all_lines=False),
+            ':r':   vc.r_command,
+                # vc.LoadFileAtCursor(vc),
+            ':s':   vc.s_command,
+                # vc.Substitution(vc,all_lines=False),
             ':w':   vc.w_command,
             ':wq':  vc.wq_command,
             ':xa':  vc.xa_command,
             # Longer names...
-            ':print-dot':               vc.print_dot,
-            ':tabnew':                  vc.Tabnew(vc),
+            ':print-dot':   vc.print_dot,
+            ':tabnew':      vc.tabnew_command,
+                # vc.Tabnew(vc),
             ':toggle-vim-mode':         vc.toggle_vim_mode,
             ':toggle-vim-trace':        vc.toggle_vim_trace,
             ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
@@ -2120,6 +2125,14 @@ class VimCommands:
         '''Cycle all focus'''
         event = VimEvent(char='',stroke='',w=vc.colon_w)
         vc.do('cycle-all-focus',event=event)
+    #@+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
+    @cmd(':e')
+    def e_command(vc,event=None):
+        vc.Tabnew(vc)
+
+    @cmd(':tabnew')
+    def tabnew_command(vc,event=None):
+        vc.Tabnew(vc)
     #@+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     @cmd(':print-dot')
     def print_dot(vc,event=None):
@@ -2154,11 +2167,23 @@ class VimCommands:
             g.app.forgetOpenFile(c.fileName(),force=True)
         g.app.forceShutdown()
         
+    #@+node:ekr.20150509050918.1: *4* vc.r_command
+    @cmd(':r')
+    def r_command(vc,event=None):
+        vc.LoadFileAtCursor(vc)
     #@+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
     @cmd(':e!')
     def revert(vc,event=None):
         '''Revert all changes to a .leo file, prompting if there have been changes.'''
         vc.c.revert()
+    #@+node:ekr.20150509050755.1: *4* vc.s_command & percent_s_command
+    @cmd(':%s')
+    def percent_s_command(vc,event=None):
+        vc.Substitution(vc,all_lines=True)
+
+    @cmd(':s')
+    def s_command(vc,event=None):
+        vc.Substitution(vc,all_lines=False)
     #@+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
     @cmd(':!')
     def shell_command(vc,event=None):

@@ -3173,6 +3173,7 @@ class KeyHandlerClass:
         '''
         return self.getArgInstance.get_minibuffer_command_name()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
+    @cmd('keyboard-quit')
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
         '''
         This method clears the state and the minibuffer label.

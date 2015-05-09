@@ -1363,9 +1363,10 @@ def cmd(name):
     
     The command dispatch logic assumes the signature: def func(c,event=None).
     '''
+    # Don't use g here: it hasn't been defined.
     def _decorator(func):
-        if g.new_dispatch:
-            g.global_commands_dict[name]=func
+        if new_dispatch:
+            global_commands_dict[name]=func
         return func
     return _decorator
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
@@ -6096,13 +6097,11 @@ def choose(cond,a,b): # warning: evaluates all arguments
     if cond: return a
     else: return b
 #@+node:ekr.20111103205308.9657: *3* g.cls
+@cmd('cls')
 def cls(event=None):
-
     '''Clear the screen.'''
-
     import os
     import sys
-
     if sys.platform.lower().startswith('win'):
         os.system('cls')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
