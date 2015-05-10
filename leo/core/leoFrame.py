@@ -184,7 +184,7 @@ class LeoBody(object):
     def cmd(name):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,['frame','body'])
+        return g.new_cmd_decorator(name,['c','frame','body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor (self):
         self.forceFullRecolorFlag = True
@@ -676,7 +676,7 @@ class LeoFrame(object):
     '''The base class for all Leo windows.'''
     instances = 0
     #@+others
-    #@+node:ekr.20031218072017.3679: *3*   LeoFrame.__init__
+    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__
     def __init__ (self,c,gui):
 
         self.c = c
@@ -723,6 +723,11 @@ class LeoFrame(object):
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         # c.setRootPosition() # New in 4.4.2.
+    #@+node:ekr.20150509194519.1: *3* LeoFrame.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the LeoFrame class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'frame')
     #@+node:ekr.20061109125528.1: *3* Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* initialRatios (LeoFrame)
     def initialRatios (self):
@@ -882,6 +887,7 @@ class LeoFrame(object):
         if self.statusLine: self.statusLine.update()
     #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (LeoFrame)
     #@+node:ekr.20070130115927.5: *5* copyText (LeoFrame)
+    @cmd('copy-text')
     def copyText (self,event=None):
         '''Copy the selected text from the widget to the clipboard.'''
         trace = False and not g.unitTesting
@@ -899,6 +905,7 @@ class LeoFrame(object):
 
     OnCopyFromMenu = copyText
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
+    @cmd('cut-text')
     def cutText (self,event=None):
 
         '''Invoked from the mini-buffer and from shortcuts.'''
@@ -931,6 +938,7 @@ class LeoFrame(object):
 
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
+    @cmd('paste-text')
     def pasteText (self,event=None,middleButton=False):
         '''
         Paste the clipboard into a widget.
@@ -994,6 +1002,7 @@ class LeoFrame(object):
         return self.pasteText(event=event,middleButton=True)
     #@+node:ekr.20031218072017.3980: *4* Edit Menu... (LeoFrame)
     #@+node:ekr.20031218072017.3981: *5* abortEditLabelCommand (LeoFrame)
+    @cmd('abort-edit-headline')
     def abortEditLabelCommand (self,event=None):
 
         '''End editing of a headline and revert to its previous value.'''
@@ -1011,6 +1020,7 @@ class LeoFrame(object):
         c.setHeadString(p,tree.revertHeadline)
         c.redraw(p)
     #@+node:ekr.20031218072017.3982: *5* frame.endEditLabelCommand
+    @cmd('end-edit-headline')
     def endEditLabelCommand (self,event=None,p=None):
         '''End editing of a headline and move focus to the body pane.'''
         frame = self ; c = frame.c ; k = c.k
@@ -1144,7 +1154,7 @@ class LeoLog(object):
     def cmd(name):
         '''Command decorator for the LeoLog class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,['frame','log'])
+        return g.new_cmd_decorator(name,['c','frame','log'])
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab (self,tabName,wrap='none'):
 

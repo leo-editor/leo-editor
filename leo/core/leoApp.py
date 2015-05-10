@@ -682,7 +682,8 @@ class LeoApp:
     Ivars of this class are Leo's global variables."""
 
     #@+others
-    #@+node:ekr.20031218072017.1416: *3* app.__init__ (helpers contain langauge dicts)
+    #@+node:ekr.20150509193643.1: *3* app.Birth
+    #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain langauge dicts)
     def __init__(self):
         '''Ctor for LeoApp class.'''
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -930,13 +931,13 @@ class LeoApp:
         self.define_language_extension_dict()
         self.define_extension_dict()
         self.define_delegate_language_dict()
-    #@+node:ekr.20140729162415.18086: *4* app.init_at_auto_names
+    #@+node:ekr.20140729162415.18086: *5* app.init_at_auto_names
     def init_at_auto_names(self):
         '''Init the app.atAutoNames set.'''
         self.atAutoNames = set([
             "@auto-rst","@auto",
         ])
-    #@+node:ekr.20140729162415.18091: *4* app.init_at_file_names
+    #@+node:ekr.20140729162415.18091: *5* app.init_at_file_names
     def init_at_file_names(self):
         '''Init the app.atFileNames set.'''
         self.atFileNames = set([
@@ -947,7 +948,7 @@ class LeoApp:
             "@shadow",
             "@thin", 
         ])
-    #@+node:ekr.20031218072017.1417: *4* app.define_global_constants
+    #@+node:ekr.20031218072017.1417: *5* app.define_global_constants
     def define_global_constants(self):
 
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -956,7 +957,7 @@ class LeoApp:
         self.prolog_postfix_string = "?>"
         self.prolog_namespace_string = \
             'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
-    #@+node:ekr.20141102043816.5: *4* app.define_delegate_language_dict
+    #@+node:ekr.20141102043816.5: *5* app.define_delegate_language_dict
     def define_delegate_language_dict(self):
         
         self.delegate_language_dict = {
@@ -966,7 +967,7 @@ class LeoApp:
             "hbs":         "html",
             "handlebars":  "html",
         }
-    #@+node:ekr.20120522160137.9909: *4* app.define_language_delims_dict
+    #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     def define_language_delims_dict(self):
 
         self.language_delims_dict = {
@@ -1146,7 +1147,7 @@ class LeoApp:
             # "rtf"                : "",
             # "svn_commit"         : "",
         }
-    #@+node:ekr.20120522160137.9910: *4* app.define_language_extension_dict
+    #@+node:ekr.20120522160137.9910: *5* app.define_language_extension_dict
     def define_language_extension_dict (self):
 
         # Used only by g.app.externalFilesController.get_ext.
@@ -1302,7 +1303,7 @@ class LeoApp:
             # assembly_x86:     .asm or .a
             # squidconf:        .conf
             # rpmspec:          .rpm
-    #@+node:ekr.20120522160137.9911: *4* app.define_extension_dict
+    #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
     def define_extension_dict(self):
 
         # Keys are extensions, values are languages
@@ -1470,6 +1471,11 @@ class LeoApp:
             'w'     : 'none', # cweb
         }
 
+    #@+node:ekr.20150509193629.1: *4* app.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the LeoApp class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,['g','app'])
     #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
     def closeLeoWindow (self,frame,new_c=None,finish_quit=True):
         """
@@ -1694,6 +1700,7 @@ class LeoApp:
 
         return leoCommands.Commands(fileName,relativeFileName,gui,previousSettings)
     #@+node:ekr.20031218072017.2617: *3* app.onQuit
+    @cmd('exit-leo')
     def onQuit (self,event=None):
 
         '''Exit Leo, prompting to save unsaved outlines first.'''

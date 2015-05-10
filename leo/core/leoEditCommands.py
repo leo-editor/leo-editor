@@ -419,7 +419,7 @@ class EditCommandsManager:
     #@+node:ekr.20120211121736.10828: *3* ecm.getPublicCommands
     def getPublicCommands (self):
         '''Add the names of commands defined in this file to c.commandsDict.'''
-        if False and g.new_dispatch: ###
+        if g.new_dispatch:
             pass
         else:
             c,d = self.c,{}

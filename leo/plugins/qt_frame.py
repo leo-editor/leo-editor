@@ -2889,6 +2889,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
         f.divideLeoSplitter(f.splitVerticalFlag,0.0)
     #@+node:ekr.20110605121601.18301: *4* Window Menu...
     #@+node:ekr.20110605121601.18302: *5* toggleActivePane (qtFrame)
+    @cmd('toggle-active-pane')
     def toggleActivePane (self,event=None):
 
         '''Toggle the focus between the outline and body panes.'''
@@ -2905,6 +2906,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
         else:
             c.treeWantsFocus()
     #@+node:ekr.20110605121601.18303: *5* cascade
+    @cmd('cascade-windows')
     def cascade (self,event=None):
 
         '''Cascade all Leo windows.'''
@@ -2924,6 +2926,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     x = 10 + delta ; y = 40 + delta
                     delta += 10
     #@+node:ekr.20110605121601.18304: *5* equalSizedPanes
+    @cmd('equal-sized-panes')
     def equalSizedPanes (self,event=None):
 
         '''Make the outline and body panes have the same size.'''
@@ -2937,6 +2940,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
 
         frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
     #@+node:ekr.20110605121601.18306: *5* minimizeAll (qtFrame)
+    @cmd('minimize-all')
     def minimizeAll (self,event=None):
 
         '''Minimize all Leo's windows.'''
@@ -2959,6 +2963,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             else:
                 w.setWindowState(QtCore.Qt.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* toggleSplitDirection (qtFrame)
+    @cmd('toggle-split-direction')
     def toggleSplitDirection (self,event=None):
 
         '''Toggle the split direction in the present Leo window.'''
@@ -2967,6 +2972,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             self.c.free_layout.get_top_splitter().rotate()
         return
     #@+node:ekr.20110605121601.18308: *5* resizeToScreen (qtFrame)
+    @cmd('resize-to-screen')
     def resizeToScreen (self,event=None):
 
         '''Resize the Leo window so it fill the entire screen.'''
@@ -2987,6 +2993,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 w.setWindowState(QtCore.Qt.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* Help Menu...
     #@+node:ekr.20110605121601.18310: *5* leoHelp
+    @cmd('open-offline-tutorial')
     def leoHelp (self,event=None):
 
         '''Open Leo's offline tutorial.'''

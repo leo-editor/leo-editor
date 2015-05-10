@@ -54,7 +54,8 @@ import leo.core.leoGlobals as g
 class Undoer:
     """A class that implements unlimited undo and redo."""
     #@+others
-    #@+node:ekr.20031218072017.3606: *3* undo.__init__
+    #@+node:ekr.20150509193307.1: *3* undo.Birt
+    #@+node:ekr.20031218072017.3606: *4* undo.__init__
     def __init__ (self,c):
 
         self.c = c
@@ -137,6 +138,11 @@ class Undoer:
 
     def undoHelper(self):
         pass
+    #@+node:ekr.20150509193222.1: *4* undo.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the Undoer class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'undoer')
     #@+node:ekr.20050416092908.1: *3* Internal helpers
     #@+node:ekr.20031218072017.3607: *4* clearOptionalIvars
     def clearOptionalIvars (self):
@@ -1406,6 +1412,7 @@ class Undoer:
 
         return bunch # Never used.
     #@+node:ekr.20031218072017.2030: *3* redo
+    @cmd('redo')
     def redo (self,event=None):
         '''Redo the operation undone by the last undo.'''
         trace = False and not g.unitTesting
@@ -1755,6 +1762,7 @@ class Undoer:
             c.bodyWantsFocus()
             w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* undo
+    @cmd('undo')
     def undo (self,event=None):
         """Undo the operation described by the undo parameters."""
         trace = False and not g.unitTesting

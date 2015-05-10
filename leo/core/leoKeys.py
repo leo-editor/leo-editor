@@ -155,7 +155,7 @@ class AutoCompleterClass:
     def cmd(name):
         '''Command decorator for the autoCompleter class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,['k','autoCompleter'])
+        return g.new_cmd_decorator(name,['c','k','autoCompleter'])
     #@+node:ekr.20061031131434.5: *3* ac.ctor
     def __init__ (self,k):
         '''Ctor for AutoCompleterClass class.'''

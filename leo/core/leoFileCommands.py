@@ -531,6 +531,11 @@ class FileCommands:
     """A class creating the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: ** fc.Birth
+    #@+node:ekr.20150509194827.1: *3* fc.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the FileCommands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'fileCommands')
     #@+node:ekr.20031218072017.3019: *3* fc.ctor
     def __init__(self,c):
         '''Ctor for FileCommands class.'''
@@ -588,6 +593,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3020: ** fc.Reading
     #@+node:ekr.20060919104836: *3*  fc.Reading Top-level
     #@+node:ekr.20070919133659.1: *4* fc.checkLeoFile
+    @cmd('check-leo-file')
     def checkLeoFile (self,event=None):
 
         '''The check-leo-file command.'''
@@ -2149,6 +2155,7 @@ class FileCommands:
         theFile.writestr(contentsName,s)
         theFile.close()
     #@+node:ekr.20031218072017.2012: *3* fc.writeAtFileNodes
+    @cmd('write-at-file-nodes')
     def writeAtFileNodes (self,event=None):
         '''Write all @file nodes in the selected outline.'''
         c = self.c
@@ -2166,6 +2173,7 @@ class FileCommands:
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.1666: *3* fc.writeDirtyAtFileNodes
+    @cmd('write-dirty-at-file-nodes')
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
@@ -2183,12 +2191,14 @@ class FileCommands:
         self.c.atFileCommands.writeDirtyAtShadowNodes()
 
     #@+node:ekr.20031218072017.2013: *3* fc.writeMissingAtFileNodes
+    @cmd('write-missing-at-file-nodes')
     def writeMissingAtFileNodes (self,event=None):
         '''Write all @file nodes for which the corresponding external file does not exist.'''
         c = self.c
         if c.p:
             c.atFileCommands.writeMissing(c.p)
     #@+node:ekr.20031218072017.3050: *3* fc.writeOutlineOnly
+    @cmd('write-outline-only')
     def writeOutlineOnly (self,event=None):
 
         '''Write the entire outline without writing any derived files.'''

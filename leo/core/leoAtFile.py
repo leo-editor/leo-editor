@@ -98,7 +98,7 @@ class AtFile:
     #@-<< define sentinelDict >>
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3*  at.ctor & helpers
+    #@+node:ekr.20041005105605.8: *3* at.ctor & helpers
     # Note: g.getScript also call the at.__init__ and at.finishCreate().
 
     def __init__(self,c):
@@ -247,6 +247,11 @@ class AtFile:
             # New 4.8 sentinels
             self.endRef: self.readEndRef,
         }
+    #@+node:ekr.20150509194251.1: *3* at.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the atFileCommands class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,'atFileCommands')
     #@+node:ekr.20041005105605.10: *3* at.initCommonIvars
     def initCommonIvars (self):
         """
@@ -460,6 +465,7 @@ class AtFile:
     #@+at All reading happens in the readOpenFile logic, so plugins
     # should need to override only this method.
     #@+node:ekr.20070919133659: *4* at.checkDerivedFile
+    @cmd('check-derived-file')
     def checkDerivedFile (self, event=None):
 
         '''Make sure an external file written by Leo may be read properly.'''
@@ -3362,6 +3368,7 @@ class AtFile:
             c.setChanged(False)
             c.redraw()
     #@+node:ekr.20070806105859: *4* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
+    @cmd('write-at-auto-nodes')
     def writeAtAutoNodes (self,event=None):
 
         '''Write all @auto nodes in the selected outline.'''
@@ -3371,6 +3378,7 @@ class AtFile:
         at.writeAtAutoNodesHelper(writeDirtyOnly=False)
         c.raise_error_dialogs(kind='write')
 
+    @cmd('write-dirty-at-auto-nodes')
     def writeDirtyAtAutoNodes (self,event=None):
 
         '''Write all dirty @auto nodes in the selected outline.'''
@@ -3503,6 +3511,7 @@ class AtFile:
         else:
             return None
     #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
+    @cmd('write-at-shadow-nodes')
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @shadow nodes in the selected outline.'''
@@ -3513,6 +3522,7 @@ class AtFile:
         c.raise_error_dialogs(kind='write')
         return val
 
+    @cmd('write-dirty-at-shadow-nodes')
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all dirty @shadow nodes in the selected outline.'''

@@ -1405,8 +1405,12 @@ def ivars2instance(c,g,ivars):
     elif isString(ivars):
         return g if ivars == 'g' else getattr(c,ivars)
     else:
-        obj = c
-        for ivar in ivars:
+        ivar = ivars[0]
+        if ivar not in ('c','g'):
+            g.trace('can not happen',ivar)
+            return c
+        obj = c if ivar == 'c' else g
+        for ivar in ivars[1:]:
             obj = getattr(obj,ivar)
             if not obj:
                 g.trace('can not happen',ivars)
