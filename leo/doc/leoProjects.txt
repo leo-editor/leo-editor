@@ -156,6 +156,8 @@ Ctrl-LtArrow and Ctrl-RtArrow leave the cursor at the start of a word.
 This is the way most editors work.
 
 The fix was in moveWordHelper.
+.. @+node:ekr.20150509180744.1: *4* Fixed remove-blank-lines command
+It now works when there is no text selection.
 .. @-all
 .. @@language rest
 .. @@wrap

@@ -419,18 +419,21 @@ class EditCommandsManager:
     #@+node:ekr.20120211121736.10828: *3* ecm.getPublicCommands
     def getPublicCommands (self):
         '''Add the names of commands defined in this file to c.commandsDict.'''
-        c,d = self.c,{}
-        for name, theClass in self.classesList:
-            theInstance = getattr(c,name)
-            theInstance.finishCreate()
-            theInstance.init()
-            d2 = theInstance.getPublicCommands()
-            if d2:
-                d.update(d2)
-                if 0:
-                    g.pr('----- %s' % name)
-                    for key in sorted(d2): g.pr(key)
-        c.commandsDict.update(d)
+        if False and g.new_dispatch: ###
+            pass
+        else:
+            c,d = self.c,{}
+            for name, theClass in self.classesList:
+                theInstance = getattr(c,name)
+                theInstance.finishCreate()
+                theInstance.init()
+                d2 = theInstance.getPublicCommands()
+                if d2:
+                    d.update(d2)
+                    if 0:
+                        g.pr('----- %s' % name)
+                        for key in sorted(d2): g.pr(key)
+            c.commandsDict.update(d)
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
     def initAllEditCommanders (self):
 

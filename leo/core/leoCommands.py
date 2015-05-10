@@ -363,12 +363,18 @@ class Commands (object):
     def createCommandNames(self):
         '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
         c,k = self,self.k
-        c.commandsDict = {}
+        
         # A list of all subcommanders with a getPublicCommands method.
         #   c.editCommandsManager.getPublicCommands handles all
         #   subcommanders in leoEditCommands.py.
-        for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
-            if o: o.getPublicCommands()
+        if False and g.new_dispatch: ###
+            c.commandsDict = g.global_commands_dict
+            g.cls()
+            g.trace('\n'.join([repr(z) for z in sorted(c.commandsDict.items())]))
+        else:
+            c.commandsDict = {}
+            for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
+                if o: o.getPublicCommands()
         # copy global commands to this controller    
         for name,f in g.global_commands_dict.items():
             k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
