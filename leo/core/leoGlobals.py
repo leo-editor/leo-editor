@@ -156,8 +156,58 @@ globalDirectiveList = [
     'unit','verbose', 'wrap',
 ]
 #@-<< define g.globalDirectiveList >>
+#@+<< define global decorator dicts >>
+#@+node:ekr.20150510103918.1: ** << define global decorator dicts >>
 global_commands_dict = {}
     # was g.app.global_commands_dict.
+
+cmd_instance_dict = {
+    # Keys are class names, values are attribute chains.
+    # Created from c.initObjects...
+    'AtFile': ['c','atFileCommands'],
+    'AutoCompleterClass': ['c','k','autoCompleter'],
+    'ChapterController': ['c','chapterController'],
+    'Commands': ['c'],
+    # 'EditCommandsManager': ['c','editCommandsManager'],
+    'FileCommands': ['c','fileCommands'],
+    'KeyHandlerClass': ['c','k'],
+    'LeoApp': ['g','app'],
+    'LeoFind': ['c','findCommands'],
+    'LeoImportCommands': ['c','importCommands'],
+    'PrintingController': ['c','printingController'],
+    'RstCommands': ['c','rstCommands'],
+    'VimCommands': ['c','vimCommands'],
+    'Undoer': ['c','undoer'],
+    # Created from  and EditCommandsManager.__init__...
+    # regex search: \('(.*)',([ ]*)(.*)\),
+    # regex replace: '\3': ['c','\1'],
+    'AbbrevCommandsClass': ['c','abbrevCommands'],
+    'BufferCommandsClass': ['c','bufferCommands'],
+    'EditCommandsClass': ['c','editCommands'],
+    'ChapterCommandsClass': ['c','chapterCommands'],
+    'ControlCommandsClass': ['c','controlCommands'],
+    'DebugCommandsClass': ['c','debugCommands'],
+    'EditFileCommandsClass': ['c','editFileCommands'],
+    'HelpCommandsClass': ['c','helpCommands'],
+    'KeyHandlerCommandsClass': ['c','keyHandlerCommands'],
+    'KillBufferCommandsClass': ['c','killBufferCommands'],
+    'MacroCommandsClass': ['c','macroCommands'],
+    'RectangleCommandsClass': ['c','rectangleCommands'],
+    'RegisterCommandsClass': ['c','registerCommands'],
+    'SearchCommandsClass': ['c','searchCommands'],
+    'SpellCommandsClass': ['c','spellCommands'],
+}
+    # These should never have commands...
+    # self.shadowController   = leoShadow.ShadowController(c)
+    # self.persistenceController = leoPersistence.PersistenceDataController(c)
+    # self.tangleCommands     = leoTangle.TangleCommands(c)
+    # self.testManager        = leoTest.TestManager(c)
+    # self.cacher = leoCache.Cacher(c)
+    # self.free_layout = free_layout.FreeLayoutController(c)
+    # self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+    # self.bigTextController = g.app.gui.bigTextControllerClass(c)
+    # 'LeoCommandsClass': ['c','leoCommands'],
+#@-<< define global decorator dicts >>
 tree_popup_handlers = [] # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -1355,6 +1405,21 @@ def isTextWrapper(w):
     return g.app.gui.isTextWrapper(w)
     
 #@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
+def check_cmd_instance_dict(c,g):
+    '''
+    Check g.check_cmd_instance_dict.
+    This is a permanent unit test, called from c.finishCreate.
+    '''
+    d = cmd_instance_dict
+    for key in d.keys():
+        ivars = d.get(key)
+        obj = ivars2instance(c,g,ivars)
+            # Produces warnings.
+        if obj:
+            name = obj.__class__.__name__
+            if name != key:
+                g.trace('class mismatch',key,name)
 #@+node:ekr.20150505144026.1: *3* g.cmd (decorator)
 def cmd(name):
     '''
@@ -1401,21 +1466,19 @@ def ivars2instance(c,g,ivars):
     A special case: ivars may be 'g', indicating the leoGlobals module.
     '''
     if not ivars:
-        return c
-    elif isString(ivars):
-        return g if ivars == 'g' else getattr(c,ivars)
-    else:
-        ivar = ivars[0]
-        if ivar not in ('c','g'):
-            g.trace('can not happen',ivar)
-            return c
-        obj = c if ivar == 'c' else g
-        for ivar in ivars[1:]:
-            obj = getattr(obj,ivar)
-            if not obj:
-                g.trace('can not happen',ivars)
-                return c
-        return obj
+        g.trace('can not happen: no ivars')
+        return None
+    ivar = ivars[0]
+    if  ivar not in ('c','g'):
+        g.trace('can not happen: unknown base',ivar)
+        return None
+    obj = c if ivar == 'c' else g
+    for ivar in ivars[1:]:
+        obj = getattr(obj,ivar)
+        if not obj:
+            g.trace('can not happen: unknown attribute',ivars)
+            break
+    return obj
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert

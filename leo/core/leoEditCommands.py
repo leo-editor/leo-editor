@@ -1247,7 +1247,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
             self.w = None
     #@+node:ekr.20150509031648.1: *4* buffer.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the bufferCommands class.'''
+        '''Command decorator for the BufferCommands class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name,'bufferCommands')
     #@+node:ekr.20050920084036.33: *4* buffer.getPublicCommands
@@ -1550,7 +1550,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         self.payload = None
     #@+node:ekr.20150509031853.1: *4* control.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the controlCommands class.'''
+        '''Command decorator for the ControlCommands class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name,'controlCommands')
     #@+node:ekr.20050920084036.152: *4* control.getPublicCommands

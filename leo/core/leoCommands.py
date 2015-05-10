@@ -358,6 +358,7 @@ class Commands (object):
             # Menus must exist at this point.
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
+        g.check_cmd_instance_dict(c,g)
         c.bodyWantsFocus()
     #@+node:ekr.20140815160132.18835: *5* c.createCommandNames & helper
     def createCommandNames(self):

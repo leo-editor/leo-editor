@@ -249,7 +249,7 @@ class AtFile:
         }
     #@+node:ekr.20150509194251.1: *3* at.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the atFileCommands class.'''
+        '''Command decorator for the AtFileCommands class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name,'atFileCommands')
     #@+node:ekr.20041005105605.10: *3* at.initCommonIvars

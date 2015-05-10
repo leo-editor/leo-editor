@@ -153,7 +153,7 @@ class AutoCompleterClass:
     #@+others
     #@+node:ekr.20150509035140.1: *3* ac.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the autoCompleter class.'''
+        '''Command decorator for the AutoCompleter class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name,['c','k','autoCompleter'])
     #@+node:ekr.20061031131434.5: *3* ac.ctor
