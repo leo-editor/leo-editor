@@ -186,7 +186,7 @@ class LeoFind:
     def cmd(name):
         '''Command decorator for the findCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'findCommands')
+        return g.new_cmd_decorator(name,['c','findCommands',])
     #@+node:ekr.20131117164142.17022: *4* LeoFind.finishCreate
     def finishCreate(self):
         

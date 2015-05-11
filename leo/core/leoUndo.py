@@ -142,7 +142,7 @@ class Undoer:
     def cmd(name):
         '''Command decorator for the Undoer class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'undoer')
+        return g.new_cmd_decorator(name,['c','undoer',])
     #@+node:ekr.20050416092908.1: *3* Internal helpers
     #@+node:ekr.20031218072017.3607: *4* clearOptionalIvars
     def clearOptionalIvars (self):

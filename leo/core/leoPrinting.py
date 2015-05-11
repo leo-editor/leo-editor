@@ -65,7 +65,7 @@ class PrintingController:
     def cmd(name):
         '''Command decorator for the PrintingController class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'printingController')
+        return g.new_cmd_decorator(name,['c','printingController',])
     #@+node:ekr.20150420072955.1: *3* pr.Doc constructors
     #@+node:ekr.20150419124739.11: *4* pr.complex document
     def complex_document(self, nodes, heads=False):

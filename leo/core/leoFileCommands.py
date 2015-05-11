@@ -535,7 +535,7 @@ class FileCommands:
     def cmd(name):
         '''Command decorator for the FileCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'fileCommands')
+        return g.new_cmd_decorator(name,['c','fileCommands',])
     #@+node:ekr.20031218072017.3019: *3* fc.ctor
     def __init__(self,c):
         '''Ctor for FileCommands class.'''

@@ -727,7 +727,7 @@ class LeoFrame(object):
     def cmd(name):
         '''Command decorator for the LeoFrame class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'frame')
+        return g.new_cmd_decorator(name,['c','frame',])
     #@+node:ekr.20061109125528.1: *3* Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* initialRatios (LeoFrame)
     def initialRatios (self):

@@ -490,7 +490,7 @@ class VimCommands:
     def cmd(name):
         '''Command decorator for the VimCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'vimCommands')
+        return g.new_cmd_decorator(name,['c','vimCommands',])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.

@@ -478,7 +478,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the abbrevCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'abbrevCommands')
+        return g.new_cmd_decorator(name,['c','abbrevCommands',])
     #@+node:ekr.20100901080826.6004: *4* abbrev.finishCreate & helpers
     def finishCreate(self):
         
@@ -1249,7 +1249,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the BufferCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'bufferCommands')
+        return g.new_cmd_decorator(name,['c','bufferCommands',])
     #@+node:ekr.20050920084036.33: *4* buffer.getPublicCommands
     def getPublicCommands (self):
 
@@ -1552,7 +1552,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the ControlCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'controlCommands')
+        return g.new_cmd_decorator(name,['c','controlCommands',])
     #@+node:ekr.20050920084036.152: *4* control.getPublicCommands
     def getPublicCommands (self):
 
@@ -1720,7 +1720,7 @@ class DebugCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the debugCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'debugCommands')
+        return g.new_cmd_decorator(name,['c','debugCommands',])
     #@+node:ekr.20060127163325: *4* db.getPublicCommands
     def getPublicCommands (self):
 
@@ -2003,7 +2003,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the editCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'editCommands')
+        return g.new_cmd_decorator(name,['c','editCommands',])
     #@+node:ekr.20050920084036.55: *4* ec.getPublicCommands
     def getPublicCommands (self):        
 
@@ -7507,7 +7507,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the editFileCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'editFileCommands')
+        return g.new_cmd_decorator(name,['c','editFileCommands',])
     #@+node:ekr.20050920084036.163: *4* ef.getPublicCommands
     def getPublicCommands (self):
 
@@ -7830,7 +7830,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the helpCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'helpCommands')
+        return g.new_cmd_decorator(name,['c','helpCommands',])
     #@+node:ekr.20060205165501: *3* help.getPublicCommands
     def getPublicCommands (self):
 
@@ -7846,15 +7846,15 @@ class HelpCommandsClass (BaseEditCommandsClass):
         'help-for-dynamic-abbreviations':   self.helpForDynamicAbbreviations,
         'help-for-find-commands':           self.helpForFindCommands,
         'help-for-minibuffer':              self.helpForMinibuffer,
-        # 'help-for-python':                  self.pythonHelp,
+        'help-for-python':                  self.pythonHelp,
         'help-for-regular-expressions':     self.helpForRegularExpressions,
         'help-for-scripting':               self.helpForScripting,
         'print-settings':                   self.printSettings,
         }
-        if g.new_dispatch:
-            pass
-        else:
-            d['help-for-python'] = self.pythonHelp
+        # if g.new_dispatch:
+            # pass
+        # else:
+            # d['help-for-python'] = self.pythonHelp
         return d
     #@+node:ekr.20130412173637.10333: *3* help
     @cmd('help')
@@ -9061,7 +9061,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the killBufferCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'killBufferCommands')
+        return g.new_cmd_decorator(name,['c','killBufferCommands',])
     #@+node:ekr.20050920084036.176: *4* kill.getPublicCommands
     def getPublicCommands (self):
 
@@ -9656,7 +9656,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the macroCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'macroCommands')
+        return g.new_cmd_decorator(name,['c','macroCommands',])
     #@+node:ekr.20050920084036.192: *4* macro.getPublicCommands
     def getPublicCommands (self):
 
@@ -9946,7 +9946,7 @@ class RectangleCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the rectangleCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'rectangleCommands')
+        return g.new_cmd_decorator(name,['c','rectangleCommands',])
     #@+node:ekr.20150507151427.1: *4* rectangle.finishCreate
     def finishCreate(self):
 
@@ -10209,7 +10209,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the registerCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'registerCommands')
+        return g.new_cmd_decorator(name,['c','registerCommands',])
     #@+node:ekr.20050920084036.247: *4* register.getPublicCommands
     def getPublicCommands (self):
 
@@ -10633,7 +10633,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     def cmd(name):
         '''Command decorator for the spellCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'spellCommands')
+        return g.new_cmd_decorator(name,['c','spellCommands',])
     #@+node:ekr.20051025080420: *4* getPublicCommands (SpellCommandsClass)
     def getPublicCommands (self):
 

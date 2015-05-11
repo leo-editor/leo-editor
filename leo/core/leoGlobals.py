@@ -157,7 +157,7 @@ globalDirectiveList = [
 ]
 #@-<< define g.globalDirectiveList >>
 #@+<< define global decorator dicts >>
-#@+node:ekr.20150510103918.1: ** << define global decorator dicts >>
+#@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
 global_commands_dict = {}
     # was g.app.global_commands_dict.
 
@@ -274,31 +274,6 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
-#@+node:ville.20090521164644.5924: *3* class g.Command & g.command (decorator)
-class Command:
-    """ Decorator to create global commands """
-    def __init__(self, name, **kwargs):
-        """
-        Registration for command 'name'
-        kwargs reserved for future use (shortcut, button, ...?)
-        """
-        self.name = name
-        self.args = kwargs
-
-    def __call__(self,func):
-        '''Register command for all future commanders.'''
-        if g and g.app:
-            g.global_commands_dict[self.name] = func
-            # ditto for all current commanders
-            for c in g.app.commanders():
-                c.k.registerCommand(self.name,shortcut = None,
-                func = func, pane='all',verbose=False)        
-        else:
-            g.error('@command decorator inside leoGlobals.py')
-        return func
-
-def command(name,**kwargs):
-    return Command(name,**kwargs)
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
@@ -1405,6 +1380,31 @@ def isTextWrapper(w):
     return g.app.gui.isTextWrapper(w)
     
 #@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ville.20090521164644.5924: *3* class g.Command & g.command (decorator)
+class Command:
+    """ Decorator to create global commands """
+    def __init__(self, name, **kwargs):
+        """
+        Registration for command 'name'
+        kwargs reserved for future use (shortcut, button, ...?)
+        """
+        self.name = name
+        self.args = kwargs
+
+    def __call__(self,func):
+        '''Register command for all future commanders.'''
+        if g and g.app:
+            g.global_commands_dict[self.name] = func
+            # ditto for all current commanders
+            for c in g.app.commanders():
+                c.k.registerCommand(self.name,shortcut = None,
+                func = func, pane='all',verbose=False)        
+        else:
+            g.error('@command decorator inside leoGlobals.py')
+        return func
+
+def command(name,**kwargs):
+    return Command(name,**kwargs)
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
 def check_cmd_instance_dict(c,g):
     '''
@@ -1429,11 +1429,60 @@ def cmd(name):
     The command dispatch logic assumes the signature: def func(c,event=None).
     '''
     # Don't use g here: it hasn't been defined.
+    
+    # Works
     def _decorator(func):
         if new_dispatch:
             global_commands_dict[name]=func
         return func
     return _decorator
+    
+    ### Doesn't work
+    
+    # def _decorator(func):
+        # if new_dispatch:
+            # def wrapper(event):
+                # g.trace(func)
+                # ivars = cmd_instance_dict.get(name)
+                # if ivars:
+                    # self = ivars2instance(c,g,ivars)
+                    # c = event.get('c')
+                    # event = event.get('mb_event')
+                        # ### To be removed.
+                    # func(self,event=event)
+                        # # Don't use a keyword for self.
+                        # # This allows the VimCommands class to use vc instead.
+                # else:
+                    # g.trace('unknown class for %s: %s' % (func.__name__,name))
+            # wrapper.__name__ = 'wrapper-for-%s' % name
+            # wrapper.__doc__ = func.__doc__
+            # global_commands_dict[name]=wrapper
+                # # Put the *wrapper* into the global dict.
+        # return func
+            # # The decorator must return the func itself.
+    # return _decorator
+
+#@+node:ekr.20150508164812.1: *3* g.ivars2instance
+def ivars2instance(c,g,ivars):
+    '''
+    Return the instance of c given by ivars.
+    ivars may be empty, a string, or a list of strings.
+    A special case: ivars may be 'g', indicating the leoGlobals module.
+    '''
+    if not ivars:
+        g.trace('can not happen: no ivars')
+        return None
+    ivar = ivars[0]
+    if  ivar not in ('c','g'):
+        g.trace('can not happen: unknown base',ivar)
+        return None
+    obj = c if ivar == 'c' else g
+    for ivar in ivars[1:]:
+        obj = getattr(obj,ivar)
+        if not obj:
+            g.trace('can not happen: unknown attribute',ivars)
+            break
+    return obj
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
 def new_cmd_decorator(name,ivars=None):
     '''
@@ -1458,27 +1507,6 @@ def new_cmd_decorator(name,ivars=None):
         return func
             # The decorator must return the func itself.
     return _decorator
-#@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c,g,ivars):
-    '''
-    Return the instance of c given by ivars.
-    ivars may be empty, a string, or a list of strings.
-    A special case: ivars may be 'g', indicating the leoGlobals module.
-    '''
-    if not ivars:
-        g.trace('can not happen: no ivars')
-        return None
-    ivar = ivars[0]
-    if  ivar not in ('c','g'):
-        g.trace('can not happen: unknown base',ivar)
-        return None
-    obj = c if ivar == 'c' else g
-    for ivar in ivars[1:]:
-        obj = getattr(obj,ivar)
-        if not obj:
-            g.trace('can not happen: unknown attribute',ivars)
-            break
-    return obj
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert

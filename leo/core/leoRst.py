@@ -206,7 +206,7 @@ class RstCommands:
     def cmd(name):
         '''Command decorator for the RstCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'rstCommands')
+        return g.new_cmd_decorator(name,['c','rstCommands',])
     #@+node:ekr.20090502071837.42: *4* rst.createD0
     def createD0(self):
         '''Create the default options dict.'''

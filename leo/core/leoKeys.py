@@ -2222,7 +2222,7 @@ class KeyHandlerClass:
     def cmd(name):
         '''Command decorator for the leoKeys class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'k')
+        return g.new_cmd_decorator(name,['k',])
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate (self):
         '''
