@@ -32,35 +32,38 @@ class PrintingController:
     def getPublicCommands (self):
         '''Add this class's commands to c.commandsDict.'''
         if not printsupport:
-            return # A null-gui, without print support.
-        self.c.commandsDict.update({
-        # Preview.
-        'preview-body':         self.preview_body,
-        'preview-html':         self.preview_html,
-        'preview-node':         self.preview_node,
-        'preview-expanded-body': self.preview_expanded_body,
-        'preview-expanded-html': self.preview_expanded_html,
-        'preview-tree-bodies':  self.preview_tree_bodies,
-        'preview-tree-html':    self.preview_tree_html,
-        'preview-tree-nodes':   self.preview_tree_nodes,
-        # Preview marked.
-        'preview-marked-bodies':self.preview_marked_bodies,
-        'preview-marked-html':  self.preview_marked_html,
-        'preview-marked-nodes': self.preview_marked_nodes,
-        # Selected node/tree.
-        'print-body':           self.print_body,
-        'print-html':           self.print_html,
-        'print-node':           self.print_node,
-        'print-expanded-body':  self.print_expanded_body,
-        'print-expanded-html':  self.print_expanded_html,
-        'print-tree-bodies':    self.print_tree_bodies,
-        'print-tree-html':      self.print_tree_html,
-        'print-tree-nodes':     self.print_tree_nodes,
-        # Marked nodes.
-        'print-marked-bodies':  self.print_marked_bodies,
-        'print-marked-html':    self.print_marked_html,
-        'print-marked-nodes':   self.print_marked_nodes,
-    })
+            pass # A null-gui, without print support.
+        elif g.new_dispatch:
+            pass
+        else:
+            self.c.commandsDict.update({
+            # Preview.
+            'preview-body':         self.preview_body,
+            'preview-html':         self.preview_html,
+            'preview-node':         self.preview_node,
+            'preview-expanded-body': self.preview_expanded_body,
+            'preview-expanded-html': self.preview_expanded_html,
+            'preview-tree-bodies':  self.preview_tree_bodies,
+            'preview-tree-html':    self.preview_tree_html,
+            'preview-tree-nodes':   self.preview_tree_nodes,
+            # Preview marked.
+            'preview-marked-bodies':self.preview_marked_bodies,
+            'preview-marked-html':  self.preview_marked_html,
+            'preview-marked-nodes': self.preview_marked_nodes,
+            # Selected node/tree.
+            'print-body':           self.print_body,
+            'print-html':           self.print_html,
+            'print-node':           self.print_node,
+            'print-expanded-body':  self.print_expanded_body,
+            'print-expanded-html':  self.print_expanded_html,
+            'print-tree-bodies':    self.print_tree_bodies,
+            'print-tree-html':      self.print_tree_html,
+            'print-tree-nodes':     self.print_tree_nodes,
+            # Marked nodes.
+            'print-marked-bodies':  self.print_marked_bodies,
+            'print-marked-html':    self.print_marked_html,
+            'print-marked-nodes':   self.print_marked_nodes,
+        })
     #@+node:ekr.20150509035503.1: *3* pr.cmd (decorator)
     def cmd(name):
         '''Command decorator for the PrintingController class.'''

@@ -101,8 +101,7 @@ class Commands (object):
         '''Init ivars used while executing a command.'''
         self.commandsDict = {}
         self.inverseCommandsDict = {}
-            # Completed in k.createInverseCommandsDict,
-            # but leoCommands.getPublicCommands adds entries first.
+            # Completed in k.createInverseCommandsDict.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None
@@ -383,8 +382,8 @@ class Commands (object):
             # copy global commands to this controller    
             for name,f in g.global_commands_dict.items():
                 k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
-        # Create the inverse dict last.
-        c.createInverseCommandsDict()
+            # Create the inverse dict last.
+            c.createInverseCommandsDict()
     #@+node:ekr.20061031131434.81: *6* c.createInverseCommandsDict
     def createInverseCommandsDict (self):
         '''Add entries to k.inverseCommandsDict using c.commandsDict.
