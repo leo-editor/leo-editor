@@ -370,7 +370,9 @@ class Commands (object):
                 ### editCommandsManager class can be eliminated.
             c.commandsDict = g.global_commands_dict
             for name,func in g.global_commands_dict.items():
-                k.registerDecoratedCommand(name,func)
+                # k.registerDecoratedCommand(name,func)
+                k.registerCommand(commandName=name,shortcut=None,func=func,wrap=False)
+                    # Fails because of nested mb_events unless wrap is False.
             # g.trace('\n'.join([repr(z) for z in sorted(c.commandsDict.items())]))
         else:
             # A list of all subcommanders with a getPublicCommands method.
