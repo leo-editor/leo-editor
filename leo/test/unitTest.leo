@@ -167,6 +167,19 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20150511131407.1"><vh>Recent failures</vh>
+<v t="ekr.20061101121602.334"><vh>@test tabify</vh>
+<v t="ekr.20061101121602.335"><vh>work</vh></v>
+<v t="ekr.20061101121602.336"><vh>before sel=1.0,7.0</vh></v>
+<v t="ekr.20061101121602.337"><vh>after sel=7.0,7.0</vh></v>
+</v>
+<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
+<v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
+<v t="ekr.20150430061225.1"><vh>child</vh></v>
+</v>
+<v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
+<v t="ekr.20100131171342.5485"><vh>@test all commands have an event or kwargs arg</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -432,6 +445,29 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20061101121602.334">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20061101121602.335">first line
+line 1
+	line a
+		line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.336">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.337">first line
+line 1
+	line a
+		line b
+line c
+last line
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -854,6 +890,65 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5485">import inspect
+
+d = c.commandsDict
+keys = sorted(d.keys())
+for key in keys:
+    f = d.get(key)
+    # Test true __call__ methods if they exist.
+    name = f and f.__name__
+    if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
+        f = getattr(f,'__call__')
+    args, varargs, varkw, defaults = data = inspect.getargspec(f)
+    # print('%-28s' % (name),data)
+    arg0 = len(args) &gt; 0 and args[0]
+    arg1 = len(args) &gt; 1 and args[1]
+    # assert arg0 == 'self'
+    assert arg1 in ('event','kwargs') or arg0 in ('event','kwargs'),\
+       'no event arg for %s, args: %s' % (name,data)
+</t>
+<t tx="ekr.20100204165850.5373">k = c.k
+colorizer = c.frame.body.getColorizer()
+ed = c.editCommands
+
+# These don't set ivars
+    # 'toggle-active-pane'),
+    # 'toggle-angle-brackets',
+    # 'toggle-input-state'),
+    # 'toggle-mini-buffer'),
+    # 'toggle-split-direction'),
+
+table = [
+    (k,'abbrevOn','toggle-abbrev-mode'),
+    (ed,'extendMode','toggle-extend-mode'),
+]
+
+# Not valid for external tests.
+table2 = [
+    (k,'enable_autocompleter','toggle-autocompleter'),
+    (k,'enable_calltips','toggle-calltips'),
+    (c,'sparse_find','toggle-find-collapses-nodes'),
+    (colorizer,'showInvisibles','toggle-invisibles'),
+    (c,'sparse_move','toggle-sparse-move'),
+]
+
+if not g.app.isExternalUnitTest:
+    table.extend(table2)
+
+for obj,ivar,command in table:
+    val1 = getattr(obj,ivar)
+    try:
+        k.simulateCommand(command)
+        val2 = getattr(obj,ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        k.simulateCommand(command)
+        val3 = getattr(obj,ivar)
+        assert val3 == val1,'failed 2 %s' % command
+        # print('pass',command)
+    finally:
+        setattr(obj,ivar,val1)
 </t>
 <t tx="ekr.20100205235740.5392">import glob
 trace = False
@@ -1278,5 +1373,47 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150430053825.1">ac = c.abbrevCommands
+assert ac
+child = g.findNodeInTree(c,p,'child')
+assert child
+old_b = child.b
+try:
+    i,j,val = 0,0,child.b
+    # ac.make_script_substitutions(i,j,val)
+    # ac.find_place_holder(child,True)
+    # print(ac.save_ins,ac.save_sel)
+    new_s,i,j = ac.next_place(child.b,offset=0)
+    assert i == 34 and j == 40,(i,j)
+    new_s2,i,j = ac.next_place(new_s,offset=40)
+    assert i == 54 and j == 58,(i,j)
+finally:
+    child.b = old_b
+</t>
+<t tx="ekr.20150430061225.1">def spam ():
+    """None - Return &lt;|return|&gt;
+    """
+
+    &lt;|code|&gt;
+</t>
+<t tx="ekr.20150511131407.1"></t>
+<t tx="ville.20090602190735.4770">_foo = 0
+
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
+    _foo = 1
+
+try:
+    c.k.simulateCommand('my-test-command')
+    assert _foo == 1
+    
+    # bonus test: c.app.commanders()
+    assert c in g.app.commanders()
+
+except AttributeError:
+    # Raised only for unit testing.
+    pass
+</t>
 </tnodes>
 </leo_file>

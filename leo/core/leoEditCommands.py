@@ -72,14 +72,10 @@ class BaseEditCommandsClass:
             ch=event and event.char or '',
             undoType=undoType,w=event.widget)
     #@+node:ekr.20051215102349: *5* beingCommandHelper
-    # New in Leo 4.4b4: calling beginCommand is valid for all widgets,
-    # but does nothing unless we are in the body pane.
-
     def beginCommandHelper (self,ch,undoType,w):
-
-        c = self.c ; p = c.p
+        '''Start a command. Does nothing unless w is the body pane.'''
+        c,p = self.c,self.c.p
         name = c.widget_name(w)
-
         if name.startswith('body'):
             oldSel =  w.getSelectionRange()
             oldText = p.b
@@ -93,7 +89,6 @@ class BaseEditCommandsClass:
             b.undoType=undoType
         else:
             self.undoData = None
-
         return w
     #@+node:ekr.20051214133130.1: *4* endCommand (baseEditCommand)
     # New in Leo 4.4b4: calling endCommand is valid for all widgets,
@@ -254,7 +249,6 @@ def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
 #@+node:ekr.20140718105559.17735: *3* pylint command
-
 @g.command('pylint')
 def pylint_command(event):
     '''
@@ -419,21 +413,21 @@ class EditCommandsManager:
     #@+node:ekr.20120211121736.10828: *3* ecm.getPublicCommands
     def getPublicCommands (self):
         '''Add the names of commands defined in this file to c.commandsDict.'''
-        if g.new_dispatch:
-            pass
-        else:
-            c,d = self.c,{}
-            for name, theClass in self.classesList:
-                theInstance = getattr(c,name)
-                theInstance.finishCreate()
-                theInstance.init()
+        c,d = self.c,{}
+        for name, theClass in self.classesList:
+            theInstance = getattr(c,name)
+            theInstance.finishCreate()
+            theInstance.init()
+            if g.new_dispatch:
+                pass
+            else:
                 d2 = theInstance.getPublicCommands()
                 if d2:
                     d.update(d2)
                     if 0:
                         g.pr('----- %s' % name)
                         for key in sorted(d2): g.pr(key)
-            c.commandsDict.update(d)
+        c.commandsDict.update(d)
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
     def initAllEditCommanders (self):
 
@@ -2001,7 +1995,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.initBracketMatcher(c)
     #@+node:ekr.20150509032047.1: *4* ec.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the editCommands class.'''
+        '''Command decorator for the editCommandsClass class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name,['c','editCommands',])
     #@+node:ekr.20050920084036.55: *4* ec.getPublicCommands
@@ -7389,9 +7383,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.endCommand(changed=True,setLabel=True)
 
     swapCharacters = transposeCharacters
-    #@+node:ekr.20050920084036.126: *3* tabify & untabify
+    #@+node:ekr.20050920084036.126: *3* tabify & untabify (leoEditCommands)
     @cmd('tabify')
-    def tabify (self,event):
+    def tabify (self,event): 
         '''Convert 4 spaces to tabs in the selected text.'''
         self.tabifyHelper (event,which='tabify')
 
@@ -7403,8 +7397,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     def tabifyHelper (self,event,which):
 
         w = self.editWidget(event)
-        if not w or not w.hasSelection(): return
-
+        if not w or not w.hasSelection():
+            return
         self.beginCommand(undoType=which)
         i,end = w.getSelectionRange()
         txt = w.getSelectedText()
@@ -7851,10 +7845,6 @@ class HelpCommandsClass (BaseEditCommandsClass):
         'help-for-scripting':               self.helpForScripting,
         'print-settings':                   self.printSettings,
         }
-        # if g.new_dispatch:
-            # pass
-        # else:
-            # d['help-for-python'] = self.pythonHelp
         return d
     #@+node:ekr.20130412173637.10333: *3* help
     @cmd('help')

@@ -459,7 +459,7 @@ def checkFile(p):
                         print('missing "if g.unitTesting:" %s' % h)
                         ok = False
     return ok
-#@+node:ekr.20100131171342.5485: *3* @test all commands have an event arg
+#@+node:ekr.20100131171342.5485: *3* @test all commands have an event or kwargs arg
 import inspect
 
 d = c.commandsDict
@@ -475,7 +475,7 @@ for key in keys:
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
     # assert arg0 == 'self'
-    assert arg1 == 'event' or arg0 == 'event',\
+    assert arg1 in ('event','kwargs') or arg0 in ('event','kwargs'),\
        'no event arg for %s, args: %s' % (name,data)
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::

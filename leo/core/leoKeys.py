@@ -2222,7 +2222,7 @@ class KeyHandlerClass:
     def cmd(name):
         '''Command decorator for the leoKeys class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,['k',])
+        return g.new_cmd_decorator(name,['c','k',])
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate (self):
         '''
@@ -2396,15 +2396,17 @@ class KeyHandlerClass:
         return result
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
     def bindKeyToDict (self,pane,stroke,si):
-
         '''Update k.masterBindingsDict for the stroke.'''
-
         # New in Leo 4.4.1: Allow redefintions.
+        # Called from makeBindingsFromCommandsDict.
+        trace = False and not g.unitTesting
         k = self
         assert g.isStroke(stroke),stroke
         d = k.masterBindingsDict.get(pane,{})
         d[stroke] = si
         k.masterBindingsDict [pane] = d
+        if trace and si.commandName.startswith('goto-next-visible'):
+            g.trace('%4s %10s' % (pane,stroke.s),si.commandName,si.func.__name__)
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith (self,d):
 
@@ -2555,12 +2557,9 @@ class KeyHandlerClass:
         k.checkBindings()
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict & helper
     def makeBindingsFromCommandsDict (self):
-
         '''Add bindings for all entries in c.commandsDict.'''
-
         trace = False and not g.unitTesting
         k = self ; c = k.c
-
         if trace:
             g.trace('makeBindingsFromCommandsDict entry')
             t1 = time.time()
@@ -3268,10 +3267,10 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = False and not g.unitTesting and commandName == 'help-for-python'
+        trace = True and not g.unitTesting and pane == 'tree'# and commandName.startswith('goto-next-visible')
         verbose = False
         c,k = self.c,self
-        if trace: g.trace(commandName,g.callers())
+        if trace: g.trace(pane,commandName,g.callers())
         if wrap:
             source_c = source_c or c
             func = c.universalCallback(source_c,func)
@@ -3299,6 +3298,7 @@ class KeyHandlerClass:
                 if si.stroke and not si.pane.endswith('-mode'):
                     # if trace: g.trace('*** found',si)
                     stroke = si.stroke
+                    pane = si.pane # 2015/05/11.
                     break
         if stroke:
             if trace: g.trace('stroke',stroke,'pane',pane,commandName)
@@ -3314,6 +3314,43 @@ class KeyHandlerClass:
         elif trace and verbose and not g.app.silentMode:
             g.blue('','@command: %s' % (commandName))
 
+        # Fixup any previous abbreviation to press-x-button commands.
+        if commandName.startswith('press-') and commandName.endswith('-button'):
+            d = c.config.getAbbrevDict()
+                # Keys are full command names, values are abbreviations.
+            if commandName in list(d.values()):
+                for key in d:
+                    if d.get(key) == commandName:
+                        c.commandsDict [key] = c.commandsDict.get(commandName)
+                        break
+    #@+node:ekr.20150511093317.1: *4* k.registerDecoratedCommand
+    def registerDecoratedCommand(self,commandName,func):
+        '''Register a command created by an @cmd decorator.'''
+        trace = False and not g.unitTesting and not g.app.silentMode
+        traceStroke = True
+        c,k = self.c,self
+        f = c.commandsDict.get(commandName)
+        assert f and f == func
+        fname = func.__name__
+        d = c.inverseCommandsDict
+        if trace and fname in d and d.get(fname) != commandName:
+            g.trace('duplicate',commandName,fname)
+        c.inverseCommandsDict [fname] = commandName
+        pane,stroke = 'all',None
+        junk,aList = c.config.getShortcut(commandName)
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            assert g.isStrokeOrNone(si.stroke)
+            if si.stroke and not si.pane.endswith('-mode'):
+                if trace and traceStroke:
+                    g.trace('*** found',si.pane,si.stroke.s,si.commandName)
+                stroke = si.stroke
+                pane = si.pane # 2015/05/11
+                break
+        if stroke:
+            ok = k.bindKey(pane,stroke,func,commandName,tag='register-command')
+                # Must be a stroke.
+            k.makeMasterGuiBinding(stroke) # Must be a stroke.
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()
@@ -3366,8 +3403,8 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
     def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
-
-        '''This is the central dispatching method.
+        '''
+        This is the central dispatching method.
         All commands and keystrokes pass through here.
         This returns None, but may set k.funcReturn.
         '''
@@ -3375,6 +3412,7 @@ class KeyHandlerClass:
         trace = False and not g.unitTesting
         traceGC = False
         traceStroke = False
+        if trace: g.trace(commandName,func)
         if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()
@@ -3502,7 +3540,7 @@ class KeyHandlerClass:
         '''The master key handler for almost all key bindings.'''
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
-        verbose = False
+        verbose = True
         k,c = self,self.c
         c.check_event(event)
         #@+<< define vars >>

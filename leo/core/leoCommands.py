@@ -364,21 +364,25 @@ class Commands (object):
     def createCommandNames(self):
         '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
         c,k = self,self.k
-        
-        # A list of all subcommanders with a getPublicCommands method.
-        #   c.editCommandsManager.getPublicCommands handles all
-        #   subcommanders in leoEditCommands.py.
         if g.new_dispatch:
+            c.commandsDict = {}
+            c.editCommandsManager.getPublicCommands()
+                ### Should be renamed.
+                ### editCommandsManager class can be eliminated.
             c.commandsDict = g.global_commands_dict
-            # g.cls()
+            for name,func in g.global_commands_dict.items():
+                k.registerDecoratedCommand(name,func)
             # g.trace('\n'.join([repr(z) for z in sorted(c.commandsDict.items())]))
         else:
+            # A list of all subcommanders with a getPublicCommands method.
+            #   c.editCommandsManager.getPublicCommands handles all
+            #   subcommanders in leoEditCommands.py.
             c.commandsDict = {}
             for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
                 if o: o.getPublicCommands()
-        # copy global commands to this controller    
-        for name,f in g.global_commands_dict.items():
-            k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
+            # copy global commands to this controller    
+            for name,f in g.global_commands_dict.items():
+                k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
         # Create the inverse dict last.
         c.createInverseCommandsDict()
     #@+node:ekr.20061031131434.81: *6* c.createInverseCommandsDict
@@ -388,6 +392,8 @@ class Commands (object):
         c.commandsDict:        keys are command names, values are funcions f.
         c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
         '''
+        if g.new_dispatch:
+            return
         c = self
         for name in c.commandsDict:
             f = c.commandsDict.get(name)
@@ -593,10 +599,6 @@ class Commands (object):
         if not event:
             return
         isLeoKeyEvent = isinstance(event,leoGui.LeoKeyEvent)
-        if not isLeoKeyEvent:
-            ### 2015/05/11: A temporary hack.
-            g.trace(event)
-            return
         stroke = event.stroke
         got = event.char
         if trace: g.trace('plain: %s, stroke: %s, char: %s' % (
@@ -6148,37 +6150,31 @@ class Commands (object):
 
         c.treeSelectHelper(p)
     #@+node:ekr.20031218072017.2995: *6* selectVisBack
-    # This has an up arrow for a control key.
-
     @cmd('goto-prev-visible')
     def selectVisBack (self,event=None):
-
         '''Select the visible node preceding the presently selected node.'''
-
-        c = self ; p = c.p
-        if not p: return
-        if not c.canSelectVisBack():
-            c.endEditing() # 2011/05/28: A special case.
+        # This has an up arrow for a control key.
+        c,p = self,self.p
+        if not p:
             return
-
-        p.moveToVisBack(c)
-
-        # g.trace(p.h)
-        c.treeSelectHelper(p)
+        if c.canSelectVisBack():
+            p.moveToVisBack(c)
+            c.treeSelectHelper(p)
+        else:
+            c.endEditing() # 2011/05/28: A special case.
     #@+node:ekr.20031218072017.2996: *6* selectVisNext
     @cmd('goto-next-visible')
     def selectVisNext (self,event=None):
-
         '''Select the visible node following the presently selected node.'''
-
-        c = self ; p = c.p
-        if not p: return
-        if not c.canSelectVisNext():
-            c.endEditing() # 2011/05/28: A special case.
+        c,p = self,self.p
+        if not p:
             return
+        if c.canSelectVisNext():
+            p.moveToVisNext(c)
+            c.treeSelectHelper(p)  
+        else:
+            c.endEditing() # 2011/05/28: A special case.
 
-        p.moveToVisNext(c)
-        c.treeSelectHelper(p)
     #@+node:ekr.20070417112650: *6* utils
     #@+node:ekr.20070226121510: *7*  c.xFocusHelper & initialFocusHelper
     def treeFocusHelper (self):
