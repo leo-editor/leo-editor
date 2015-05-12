@@ -360,22 +360,20 @@ def init ():
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
-        #g.registerHandler(('new','open2'),onCreate)
+        # g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame',onCreate)
+            # Fail: g.app.log does not exist.
         g.plugin_signon(__name__)
     else:
         g.es('Plugin %s not loaded.' % __name__, color='red')
     return ok
 #@+node:peckj.20150428142633.5: ** onCreate
 def onCreate (tag, keys):
-    
+    '''python_terminal.py onCreate handler.'''
     c = keys.get('c')
-    if not c: return
-    
-    win = MyInterpreter(None, c)
-    g.app.log.createTab('Python Console',widget=win)
-    
-
+    if c:
+        win = MyInterpreter(None,c)
+        c.frame.log.createTab('Python Console',widget=win)
 #@-others
 
 
