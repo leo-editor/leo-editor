@@ -306,7 +306,7 @@ class PlugIn:
 
                 def plugins_menu_wrapper(kwargs, cmd=cmd):
                     return cmd(kwargs['c'])
-                    
+
                 # g.trace('(Plugin) defining command:',name)
                 self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
         #@-<< Look for additional commands >>

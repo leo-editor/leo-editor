@@ -3262,24 +3262,26 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting and commandName == 'run-pylint'
         traceCommand = False
-        traceRedef = False
+        traceEntry = True
+        traceStroke = False
         c,k = self.c,self
-        if trace: g.trace(pane,commandName)
+        if trace and traceEntry: g.trace(pane,commandName,'source_c:',source_c)
         if wrap:
-            source_c = source_c or c
             if g.new_dispatch:
-                pass
+                source_c = c
             else:
+                source_c = source_c or c
                 func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
-        if trace and traceRedef and f and f.__name__ != 'dummyCallback':
-            g.error('redefining',commandName)
+        if g.new_dispatch:
+            if f and f.__name__ != func.__name__:
+                g.trace('redefining',commandName,f,'->',func)
         assert not g.isStroke(shortcut)
         c.commandsDict [commandName] = func
         if shortcut:
-            if trace: g.trace('shortcut',shortcut)
+            if trace and traceStroke: g.trace('shortcut',shortcut)
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
@@ -3296,7 +3298,7 @@ class KeyHandlerClass:
                     pane = si.pane # 2015/05/11.
                     break
         if stroke:
-            if trace: g.trace('stroke',stroke,'pane',pane,commandName)
+            if trace and traceStroke: g.trace('stroke',stroke,'pane',pane,commandName)
             ok = k.bindKey (pane,stroke,func,commandName,tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.

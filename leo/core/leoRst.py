@@ -269,7 +269,7 @@ class RstCommands:
     def getPublicCommands(self):
         '''Add the names of commands defined in this file to c.commandsDict'''
         if g.new_dispatch:
-           pass
+            pass
         else:
             self.c.commandsDict.update({
                 'rst3': self.rst3, # Formerly write-restructured-text.

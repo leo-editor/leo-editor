@@ -297,6 +297,13 @@ class AtButtonCallback(object):
         c,gnx,script = self.c,self.gnx,self.script or ''
         return 'AtButtonCallback %s gnx: %s len(script) %s' % (
             c.shortFileName(),self.gnx,len(script))
+    #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
+    def __getattr__(self,attr):
+        '''Implement __name__.'''
+        if attr == '__name__':
+            return 'AtButtonCallback: %s' % self.gnx
+        else:
+            return None
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController:
