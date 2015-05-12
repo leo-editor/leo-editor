@@ -465,18 +465,19 @@ import inspect
 d = c.commandsDict
 keys = sorted(d.keys())
 for key in keys:
+    if key.startswith('bookmark'):
+        continue # bookmarks commands are their own signatures.
     f = d.get(key)
     # Test true __call__ methods if they exist.
-    name = f and f.__name__
+    name = getattr(f,'__name__',None) or repr(f)
     if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
         f = getattr(f,'__call__')
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    # print('%-28s' % (name),data)
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
-    # assert arg0 == 'self'
-    assert arg1 in ('event','kwargs') or arg0 in ('event','kwargs'),\
-       'no event arg for %s, args: %s' % (name,data)
+    expected = ('event','kwargs',)
+    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
+    assert arg0 in expected or arg1 in expected,message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
     

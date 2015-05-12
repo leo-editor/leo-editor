@@ -226,7 +226,7 @@ class PlugIn:
     """A class to hold information about one plugin"""
 
     #@+others
-    #@+node:EKR.20040517080555.4: *3* __init__
+    #@+node:EKR.20040517080555.4: *3* __init__ (Plugin)
     def __init__(self, plgMod, c=None):
         """
         @param plgMod: Module object for the plugin represented by this instance.
@@ -303,9 +303,12 @@ class PlugIn:
 
                 # make and create command
                 cmd = self.mod.__dict__[item]
-                def wrapped(kw, cmd=cmd):
-                    return cmd(kw['c'])
-                self.c.keyHandler.registerCommand(name, None, wrapped)
+
+                def plugins_menu_wrapper(kwargs, cmd=cmd):
+                    return cmd(kwargs['c'])
+                    
+                # g.trace('(Plugin) defining command:',name)
+                self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
         #@-<< Look for additional commands >>
         #@+<< Look for toplevel menu item >>
         #@+node:pap.20041009131822: *4* << Look for toplevel menu item >>

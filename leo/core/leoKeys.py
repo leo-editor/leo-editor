@@ -118,7 +118,6 @@ import time
 # ivar                    Keys                Values
 # ----                    ----                ------
 # c.commandsDict          command names (1)   functions
-# c.inverseCommandsDict   func.__name__       command names
 # k.bindingsDict          shortcuts           lists of ShortcutInfo objects
 # k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
@@ -2499,18 +2498,14 @@ class KeyHandlerClass:
 
     #@+node:ekr.20130924035029.12741: *5* k.initOneAbbrev
     def initOneAbbrev (self,commandName,key):
-        
         '''Enter key as an abbreviation for commandName in c.commandsDict.'''
-
         c,k = self.c,self
         if c.commandsDict.get(key):
             g.trace('ignoring duplicate abbrev: %s',key)
         else:
             func = c.commandsDict.get(commandName)
             if func:
-                # g.trace(key,commandName,func.__name__)
                 c.commandsDict [key] = func
-                # k.inverseCommandsDict[func.__name__] = key
             else:
                 g.warning('bad abbrev:',key,'unknown command name:',commandName)
     #@+node:ekr.20061031131434.101: *4* k.initSpecialIvars
@@ -3267,22 +3262,22 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = True and not g.unitTesting and pane == 'tree'# and commandName.startswith('goto-next-visible')
-        verbose = False
+        trace = False and not g.unitTesting
+        traceCommand = False
+        traceRedef = False
         c,k = self.c,self
-        if trace: g.trace(pane,commandName,g.callers())
+        if trace: g.trace(pane,commandName)
         if wrap:
             source_c = source_c or c
-            func = c.universalCallback(source_c,func)
+            if g.new_dispatch:
+                pass
+            else:
+                func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
-        if f and f.__name__ != 'dummyCallback' and trace and verbose:
+        if trace and traceRedef and f and f.__name__ != 'dummyCallback':
             g.error('redefining',commandName)
         assert not g.isStroke(shortcut)
         c.commandsDict [commandName] = func
-        fname = func.__name__
-        c.inverseCommandsDict [fname] = commandName
-        if trace and fname != 'minibufferCallback':
-            g.trace('leoCommands %24s = %s' % (fname,commandName))
         if shortcut:
             if trace: g.trace('shortcut',shortcut)
             stroke = k.strokeFromSetting(shortcut)
@@ -3305,13 +3300,13 @@ class KeyHandlerClass:
             ok = k.bindKey (pane,stroke,func,commandName,tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
-            if trace and verbose and ok and not g.app.silentMode:
+            if trace and traceCommand and ok and not g.app.silentMode:
                 g.blue('','@command: %s = %s' % (
                     commandName,k.prettyPrintKey(stroke)))
                 if 0:
                     d = k.masterBindingsDict.get('button',{})
                     g.print_dict(d)
-        elif trace and verbose and not g.app.silentMode:
+        elif trace and traceCommand and not g.app.silentMode:
             g.blue('','@command: %s' % (commandName))
 
         # Fixup any previous abbreviation to press-x-button commands.
@@ -4012,24 +4007,21 @@ class KeyHandlerClass:
     #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands (self):
-        '''
-        Add commands created by @mode settings to c.commandsDict and
-        k.inverseCommandsDict.
-        '''
+        '''Add commands created by @mode settings to c.commandsDict.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(k)')
         k = self ; c = k.c
         d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
-        # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
+        # Create the callback functions and update c.commandsDict.
         for key in d.keys():
+
             # pylint: disable=cell-var-from-loop
             def enterModeCallback (event=None,name=key):
                 k.enterNamedMode(event,name)
+
             c.commandsDict[key] = f = enterModeCallback
-            c.inverseCommandsDict [f.__name__] = key
             if trace: g.trace(f.__name__,key,
-                'len(c.commandsDict.keys())',
-                len(list(c.commandsDict.keys())))
+                'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
     #@+node:ekr.20061031131434.157: *4* k.badMode
     def badMode(self,modeName):
 
@@ -5045,11 +5037,10 @@ class ModeInfo:
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
                     if trace: g.trace(modeName,d2)
-    #@+node:ekr.20120208064440.10195: *3* createModeCommand (ModeInfo)
+    #@+node:ekr.20120208064440.10195: *3* createModeCommand (ModeInfo) (not used)
     def createModeCommand (self):
 
         g.trace(self)
-
         c,k = self.c,self.k
         key = 'enter-' + self.name.replace(' ','-')
 
@@ -5057,8 +5048,6 @@ class ModeInfo:
             self.enterMode()
 
         c.commandsDict[key] = f = enterModeCallback
-        k.inverseCommandsDict [f.__name__] = key
-
         g.trace('(ModeInfo)',f.__name__,key,
             'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
     #@+node:ekr.20120208064440.10180: *3* enterMode (ModeInfo)

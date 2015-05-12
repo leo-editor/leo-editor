@@ -9633,8 +9633,6 @@ class LeoCommandsClass (BaseEditCommandsClass):
             for name in sorted(d):
                 f = d.get(name)
                 d2 [name] = f
-                c.inverseCommandsDict [f.__name__] = name
-                # g.trace('leoCommands %24s = %s' % (f.__name__,name))
             return d2
     #@-others
 #@+node:ekr.20050920084036.190: ** MacroCommandsClass

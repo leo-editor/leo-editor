@@ -14252,5 +14252,21 @@ def registerDecoratedCommand(self,commandName,func):
                 if d.get(key) == commandName:
                     c.commandsDict [key] = c.commandsDict.get(commandName)
                     break
+.. @+node:ekr.20061031131434.81: *3* c.createInverseCommandsDict
+def createInverseCommandsDict (self):
+    '''Add entries to k.inverseCommandsDict using c.commandsDict.
+
+    c.commandsDict:        keys are command names, values are funcions f.
+    c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
+    '''
+    c = self
+    for name in c.commandsDict:
+        f = c.commandsDict.get(name)
+        try:
+            c.inverseCommandsDict [f.__name__] = name
+            # g.trace('%24s = %s' % (f.__name__,name))
+        except Exception:
+            # g.es_exception()
+            g.trace(repr(name),repr(f))
 .. @-all
 .. @-leo

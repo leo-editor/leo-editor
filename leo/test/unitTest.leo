@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.57" body_secondary_ratio="0.52">
+<globals body_outline_ratio="0.57" body_secondary_ratio="0.63">
 	<global_window_position top="91" left="362" height="947" width="1195"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -178,8 +178,8 @@
 <v t="ekr.20150430061225.1"><vh>child</vh></v>
 </v>
 <v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
-<v t="ekr.20100131171342.5485"><vh>@test all commands have an event or kwargs arg</vh></v>
 </v>
+<v t="ekr.20100131171342.5485"><vh>@test all commands have an event or kwargs arg</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -896,18 +896,19 @@ for tag,aList in table:
 d = c.commandsDict
 keys = sorted(d.keys())
 for key in keys:
+    if key.startswith('bookmark'):
+        continue # bookmarks commands are their own signatures.
     f = d.get(key)
     # Test true __call__ methods if they exist.
-    name = f and f.__name__
+    name = getattr(f,'__name__',None) or repr(f)
     if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
         f = getattr(f,'__call__')
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    # print('%-28s' % (name),data)
     arg0 = len(args) &gt; 0 and args[0]
     arg1 = len(args) &gt; 1 and args[1]
-    # assert arg0 == 'self'
-    assert arg1 in ('event','kwargs') or arg0 in ('event','kwargs'),\
-       'no event arg for %s, args: %s' % (name,data)
+    expected = ('event','kwargs',)
+    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
+    assert arg0 in expected or arg1 in expected,message
 </t>
 <t tx="ekr.20100204165850.5373">k = c.k
 colorizer = c.frame.body.getColorizer()

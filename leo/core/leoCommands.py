@@ -100,8 +100,7 @@ class Commands (object):
     def initCommandIvars(self):
         '''Init ivars used while executing a command.'''
         self.commandsDict = {}
-        self.inverseCommandsDict = {}
-            # Completed in k.createInverseCommandsDict.
+            # Keys are command names, values are functions.
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None
@@ -359,9 +358,9 @@ class Commands (object):
         # It must be called after the first real redraw.
         g.check_cmd_instance_dict(c,g)
         c.bodyWantsFocus()
-    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames & helper
+    #@+node:ekr.20140815160132.18835: *5* c.createCommandNames
     def createCommandNames(self):
-        '''Create all entries in c.commandsDict and c.inverseCommandsDict.'''
+        '''Create all entries in c.commandsDict.'''
         c,k = self,self.k
         if g.new_dispatch:
             c.commandsDict = {}
@@ -384,26 +383,6 @@ class Commands (object):
             # copy global commands to this controller    
             for name,f in g.global_commands_dict.items():
                 k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
-            # Create the inverse dict last.
-            c.createInverseCommandsDict()
-    #@+node:ekr.20061031131434.81: *6* c.createInverseCommandsDict
-    def createInverseCommandsDict (self):
-        '''Add entries to k.inverseCommandsDict using c.commandsDict.
-
-        c.commandsDict:        keys are command names, values are funcions f.
-        c.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
-        '''
-        if g.new_dispatch:
-            return
-        c = self
-        for name in c.commandsDict:
-            f = c.commandsDict.get(name)
-            try:
-                c.inverseCommandsDict [f.__name__] = name
-                # g.trace('%24s = %s' % (f.__name__,name))
-            except Exception:
-                # g.es_exception()
-                g.trace(repr(name),repr(f))
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 
