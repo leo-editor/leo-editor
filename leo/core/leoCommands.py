@@ -363,15 +363,11 @@ class Commands (object):
         '''Create all entries in c.commandsDict.'''
         c,k = self,self.k
         if g.new_dispatch:
-            c.commandsDict = {}
             c.editCommandsManager.getPublicCommands()
-                ### Should be renamed.
-                ### editCommandsManager class can be eliminated.
-            c.commandsDict = g.global_commands_dict
+            # Bug fix: do *not* clear c.commandsDict here.
             for name,func in g.global_commands_dict.items():
-                # k.registerDecoratedCommand(name,func)
-                k.registerCommand(commandName=name,shortcut=None,func=func,wrap=False)
-                    # Fails because of nested mb_events unless wrap is False.
+                k.registerCommand(commandName=name,shortcut=None,func=func)
+                    # "wrap" arg is ignored when g.new_dispatch is True.
             # g.trace('\n'.join([repr(z) for z in sorted(c.commandsDict.items())]))
         else:
             # A list of all subcommanders with a getPublicCommands method.

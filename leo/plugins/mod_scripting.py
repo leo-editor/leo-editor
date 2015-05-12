@@ -276,6 +276,7 @@ class AtButtonCallback(object):
     def __call__(self, event=None):
         '''Execute the script associated with this button.'''
         c,gnx,script = self.c,self.gnx,self.script
+        # g.trace('(AtButtonCallback) %s len(script): %s' % (self.c.shortFileName(),len(self.script or '')))
         if not script:
             # Find the node in c with the given gnx.
             for p in c.all_positions():

@@ -3267,13 +3267,13 @@ class KeyHandlerClass:
         traceEntry = True
         traceStroke = False
         c,k = self.c,self
-        if trace and traceEntry: g.trace(pane,commandName,'source_c:',source_c)
-        if wrap:
-            if g.new_dispatch:
-                source_c = c
-            else:
-                source_c = source_c or c
-                func = c.universalCallback(source_c,func)
+        if trace and traceEntry:
+            g.trace(pane,commandName,'source_c:',source_c)
+        if g.new_dispatch:
+            pass
+        elif wrap:
+            source_c = source_c or c
+            func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
         if g.new_dispatch:
             if f and f.__name__ != func.__name__:
