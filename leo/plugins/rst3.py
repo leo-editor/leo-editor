@@ -596,7 +596,7 @@ class rstClass:
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
         self.addMenu()
-    #@+node:ekr.20050805162550.12: *4* addMenu
+    #@+node:ekr.20050805162550.12: *4* addMenu (rstClass, rst3.py)
     def addMenu (self):
 
         c = self.c ; editMenu = c.frame.menu.getMenu('Edit')

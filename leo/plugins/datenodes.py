@@ -112,7 +112,7 @@ class DateNodes:
     ascii_encoder = codecs.getencoder("ASCII")
 
     #@+others
-    #@+node:gfunch.20041207100416.6: *3* __init__
+    #@+node:gfunch.20041207100416.6: *3* __init__(DateNodes, datenodes.py)
     def __init__(self, c):
         self.c = c
         self._get_settings()

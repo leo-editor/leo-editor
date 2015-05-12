@@ -171,7 +171,7 @@ def onCreate (tag, keys):
 class RSSController:
     
     #@+others
-    #@+node:peckj.20131002201824.5545: *3* __init__
+    #@+node:peckj.20131002201824.5545: *3* __init__ (RSSController, rss.py)
     def __init__ (self,c):
         
         self.c = c

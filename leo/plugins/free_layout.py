@@ -229,7 +229,7 @@ class FreeLayoutController:
             return f.top.findChild(NestedSplitter).top()
         else:
             return None
-    #@+node:ekr.20120419095424.9927: *3* loadLayouts (FreeLayoutController)
+    #@+node:ekr.20120419095424.9927: *3* loadLayouts (FreeLayoutController) (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
         """loadLayouts - Load the outlines layout
 

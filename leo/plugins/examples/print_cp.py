@@ -30,7 +30,7 @@ def onCreate (tag, keys):
 class pluginController:
 
     #@+others
-    #@+node:ekr.20060621123339.7: *3* __init__
+    #@+node:ekr.20060621123339.7: *3* __init__ (pluginController, print_cp.py)
     def __init__ (self,c):
         self.c = c
         c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)

@@ -212,7 +212,7 @@ class quickMove(object):
         
         for child in nd0.children():
             quickMove.copy_recursively(child, nd1.insertAsLastChild())
-    #@+node:ekr.20070117113133: *3* ctor
+    #@+node:ekr.20070117113133: *3* __init__ (quickMove, quickMove.py)
     def __init__(self, c):
 
         self.table = (

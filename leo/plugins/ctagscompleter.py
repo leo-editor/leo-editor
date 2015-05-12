@@ -64,7 +64,7 @@ def init ():
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
     return ok
-#@+node:ville.20090317180704.12: *3* onCreate
+#@+node:ville.20090317180704.12: *3* onCreate (ctagscompleter.py)
 def onCreate (tag, keys):
     
     '''Register the ctags-complete command for the newly-created commander.'''

@@ -38,7 +38,7 @@ def onCreate (tag, keys):
 class pluginController:
 
     #@+others
-    #@+node:ekr.20110110105526.5470: *3* __init__
+    #@+node:ekr.20110110105526.5470: *3* __init__(pluginController, ftp.py)
     def __init__ (self,c):
         self.c = c
     #@+at

@@ -16,7 +16,7 @@ def init():
     g.registerHandler('after-create-leo-frame',onCreate)
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20051016161205.1: ** onCreate
+#@+node:ekr.20051016161205.1: ** onCreate (testRegisterCommand.py)
 def onCreate(tag,keys):
 
     c = keys.get('c')

@@ -78,7 +78,7 @@ class slideshowController:
         self.slideShowRoot = None
         self.slide = None
         self.createCommands()
-    #@+node:ekr.20060831171016: *3* createCommands
+    #@+node:ekr.20060831171016: *3* createCommands (slideshowController)
     def createCommands (self):
 
         c = self.c ; k = c.k

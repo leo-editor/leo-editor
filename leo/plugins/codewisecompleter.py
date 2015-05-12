@@ -130,7 +130,7 @@ def init ():
     # c.k.registerCommand(
             # 'codewise-suggest',None, codewise_suggest)
 
-#@+node:ville.20091204224145.5361: *3* onCreate
+#@+node:ville.20091204224145.5361: *3* onCreate (codewisecompleter.py)
 def onCreate (tag, keys): 
     '''Register the ctags-complete command for the newly-created commander.'''
     c = keys.get('c')

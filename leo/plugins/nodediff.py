@@ -133,7 +133,7 @@ def onCreate (tag, keys):
 class NodeDiffController:
     
     #@+others
-    #@+node:peckj.20140113131037.5798: *3* __init__
+    #@+node:peckj.20140113131037.5798: *3* __init__ (NodeDiffController, nodediff.py)
     def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.

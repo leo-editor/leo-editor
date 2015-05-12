@@ -250,7 +250,7 @@ class pluginController:
     """
 
     #@+others
-    #@+node:bob.20080107154757.1: *3* __init__
+    #@+node:bob.20080107154757.1: *3* __init__(pluginController, leo_to_html.py)
     def __init__ (self,c):
 
         """
