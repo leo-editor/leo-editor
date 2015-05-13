@@ -460,38 +460,27 @@ class FreeLayoutController:
     #@-others
 #@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
-def free_layout_context_menu(kwargs):
+def free_layout_context_menu(event):
     """free_layout_context_menu - open free layout's context menu, using
     the first divider of the top splitter for context, for now.
-
-    :Parameters:
-    - `kwargs`: from command callback
     """
-    c = kwargs['c']
-    
+    c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
     handle.splitter_menu(handle.rect().topLeft())
 #@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
 @g.command('free-layout-restore')
-def free_layout_restore(kwargs):
+def free_layout_restore(event):
     """free_layout_restore - restore layout outline had when it was loaded
-
-    :Parameters:
-    - `kwargs`: from command callback
     """
-
-    c = kwargs['c']
+    c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c':c}, reloading=True)
 #@+node:tbrown.20131111194858.29876: ** @g.command free-layout-load
 @g.command('free-layout-load')
-def free_layout_load(kwargs):
+def free_layout_load(event):
     """free_layout_load - load layout from menu
-
-    :Parameters:
-    - `kwargs`: from command callback
     """
-    c = kwargs['c']
+    c = event.get('c')
     d = g.app.db.get('ns_layouts', {})
     menu = QtWidgets.QMenu(c.frame.top)
     for k in d:
@@ -506,14 +495,10 @@ def free_layout_load(kwargs):
     c.free_layout.get_top_splitter().load_layout(layout)
 #@+node:tbrown.20140522153032.32658: ** @g.command free-layout-zoom
 @g.command('free-layout-zoom')
-def free_layout_zoom(kwargs):
-    """free_layout_zoom - (un)zoom the current pane
-
-    :Parameters:
-    - `kwargs`: from command callback
+def free_layout_zoom(event):
+    """free_layout_zoom - (un)zoom the current pane.
     """
-
-    c = kwargs['c']
+    c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
 #@-others
 #@@language python

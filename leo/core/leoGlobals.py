@@ -1400,6 +1400,8 @@ def command(name):
     '''A global decorator for functions outside of any class.'''
     def _decorator(func):
         global_commands_dict[name]=func
+        func.is_command = True
+        func.command_name = name
         return func
     return _decorator
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance

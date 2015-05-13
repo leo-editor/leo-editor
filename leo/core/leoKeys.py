@@ -3248,7 +3248,7 @@ class KeyHandlerClass:
                 if si.commandName == commandName:
                     si.func=func
                     d2[key2] = si
-    #@+node:ekr.20061031131434.131: *4* k.registerCommand (uses c.universalCallback)
+    #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
         pane='all',source_c=None,verbose=False, wrap=True
     ):

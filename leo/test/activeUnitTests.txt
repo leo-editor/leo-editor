@@ -459,7 +459,7 @@ def checkFile(p):
                         print('missing "if g.unitTesting:" %s' % h)
                         ok = False
     return ok
-#@+node:ekr.20100131171342.5485: *3* @test all commands have an event or kwargs arg
+#@+node:ekr.20100131171342.5485: *3* @test all commands have an event arg
 import inspect
 
 d = c.commandsDict
@@ -475,7 +475,7 @@ for key in keys:
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
     arg0 = len(args) > 0 and args[0]
     arg1 = len(args) > 1 and args[1]
-    expected = ('event','kwargs',)
+    expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected,message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command

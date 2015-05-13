@@ -179,7 +179,7 @@
 </v>
 <v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
 </v>
-<v t="ekr.20100131171342.5485"><vh>@test all commands have an event or kwargs arg</vh></v>
+<v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -906,7 +906,7 @@ for key in keys:
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
     arg0 = len(args) &gt; 0 and args[0]
     arg1 = len(args) &gt; 1 and args[1]
-    expected = ('event','kwargs',)
+    expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected,message
 </t>

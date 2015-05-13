@@ -282,8 +282,12 @@ class LeoKeyEvent:
     def __repr__ (self):
         return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
-    #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get
+    #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
     def get(self,attr):
+        '''Compatibility with g.bunch: return an attr.'''
+        return getattr(self,attr,None)
+
+    def __getitem__(self,attr):
         '''Compatibility with g.bunch: return an attr.'''
         return getattr(self,attr,None)
     #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type

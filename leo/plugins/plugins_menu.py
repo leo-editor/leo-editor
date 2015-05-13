@@ -272,38 +272,16 @@ class PlugIn:
             self.hastoplevel = False
     #@+node:EKR.20040517080555.7: *4* create_menu
     def create_menu(self):
-        '''Add items in the main menu for each cmd_ function.'''
+        '''
+        Add items in the main menu for each decorated command in this plugin.
+        The g.command decorator sets func.is_command & func.command_name.
+        '''
         self.othercmds = {}
         for item in self.mod.__dict__.keys():
-            if item.startswith("cmd_"):
-                self.othercmds[self.niceMenuName(item)] = self.mod.__dict__[item]
-                
-                if 0:
-                    # start of command name from module (plugin) name
-                    base = []
-                    for l in self.mod.__name__:
-                        if base and base[-1] != '-' and l.isupper():
-                            base.append('-')
-                        base.append(l)
-                    base = ''.join(base).lower().replace('.py','').replace('_','-')
-                    base = base.split('.')[-1]  # TNB 20100304 strip module path
-            
-                    # Compute the rest of name from item.
-                    ltrs = []
-                    for l in item[4:]:
-                        if ltrs and ltrs[-1] != '-' and l.isupper():
-                            ltrs.append('-')
-                        ltrs.append(l)
-                    name = base+'-'+''.join(ltrs).lower().replace('_','-')
-            
-                    # make and create command
-                    cmd = self.mod.__dict__[item]
-            
-                    def plugins_menu_wrapper(kwargs, cmd=cmd):
-                        return cmd(kwargs['c'])
-            
-                    # g.trace('(Plugin) defining command:',name)
-                    self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
+            func = self.mod.__dict__[item]
+            if getattr(func,'is_command',None):
+                self.othercmds[func.command_name] = func
+
     #@+node:ekr.20150512151846.1: *4* plugins_menu.py (TEST)
     #@+node:EKR.20040517080555.24: *5* addPluginMenuItem
     def addPluginMenuItem (p,c):
@@ -469,7 +447,7 @@ class PlugIn:
             self.config.write(f)
         except:
             f.close()
-    #@+node:pap.20051011215345: *3* niceMenuName
+    #@+node:pap.20051011215345: *3* niceMenuName (to be removed)
     @staticmethod
     def niceMenuName(name):
         """Return a nice version of the command name for the menu
@@ -482,7 +460,7 @@ class PlugIn:
 
         """
         text = ""
-        for char in name[4:]:
+        for char in name: ### [4:]:
             if char.isupper() and text:
                 text += " "
             text += char
