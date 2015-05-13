@@ -12,10 +12,6 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_dispatch = True
-# if new_dispatch:
-    # print('***** new_dispatch')
-
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
@@ -1432,17 +1428,17 @@ def new_cmd_decorator(name,ivars):
     Compute the class instance using the ivar string or list.
     '''
     def _decorator(func):
-        if new_dispatch:
-            def wrapper(event):
-                c = event.c
-                self = g.ivars2instance(c,g,ivars)
-                func(self,event=event)
-                    # Don't use a keyword for self.
-                    # This allows the VimCommands class to use vc instead.
-            wrapper.__name__ = 'wrapper: %s' % name
-            wrapper.__doc__ = func.__doc__
-            global_commands_dict[name]=wrapper
-                # Put the *wrapper* into the global dict.
+        
+        def wrapper(event):
+            c = event.c
+            self = g.ivars2instance(c,g,ivars)
+            func(self,event=event)
+                # Don't use a keyword for self.
+                # This allows the VimCommands class to use vc instead.
+        wrapper.__name__ = 'wrapper: %s' % name
+        wrapper.__doc__ = func.__doc__
+        global_commands_dict[name]=wrapper
+            # Put the *wrapper* into the global dict.
         return func
             # The decorator must return the func itself.
     return _decorator

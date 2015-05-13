@@ -215,8 +215,7 @@ class BaseLeoPlugin(object):
         self.commandName = commandName
         self.shortcut = shortcut
         self.handler = handler
-        self.c.k.registerCommand (commandName, shortcut, handler, 
-                                pane, verbose)
+        self.c.k.registerCommand(commandName,shortcut,handler,pane,verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
     def setMenuItem(self, menu, commandName = None, handler = None):
 

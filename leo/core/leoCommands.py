@@ -362,24 +362,10 @@ class Commands (object):
     def createCommandNames(self):
         '''Create all entries in c.commandsDict.'''
         c,k = self,self.k
-        if g.new_dispatch:
-            c.editCommandsManager.getPublicCommands()
-                # Should be named initInnerCommands.
-            # Bug fix: do *not* clear c.commandsDict here.
-            for name,func in g.global_commands_dict.items():
-                k.registerCommand(commandName=name,shortcut=None,func=func)
-                    # "wrap" arg is ignored when g.new_dispatch is True.
-            # g.trace('\n'.join([repr(z) for z in sorted(c.commandsDict.items())]))
-        else:
-            # A list of all subcommanders with a getPublicCommands method.
-            #   c.editCommandsManager.getPublicCommands handles all
-            #   subcommanders in leoEditCommands.py.
-            c.commandsDict = {}
-            for o in (c.editCommandsManager,c.rstCommands,c.printingController,c.vimCommands):
-                if o: o.getPublicCommands()
-            # copy global commands to this controller    
-            for name,f in g.global_commands_dict.items():
-                k.registerCommand(name,shortcut=None,func=f,pane='all',verbose=False)
+        c.editCommandsManager.getPublicCommands()
+        # Do *not* clear c.commandsDict here.
+        for name,func in g.global_commands_dict.items():
+            k.registerCommand(commandName=name,shortcut=None,func=func)
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 

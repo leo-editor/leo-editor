@@ -412,16 +412,6 @@ class EditCommandsManager:
             theInstance = getattr(c,name)
             theInstance.finishCreate()
             theInstance.init()
-            ###
-            # if g.new_dispatch:
-                # pass
-            # else:
-                # d2 = theInstance.getPublicCommands()
-                # if d2:
-                    # d.update(d2)
-                    # if 0:
-                        # g.pr('----- %s' % name)
-                        # for key in sorted(d2): g.pr(key)
         c.commandsDict.update(d)
     #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
     def initAllEditCommanders (self):

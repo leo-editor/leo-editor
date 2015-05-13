@@ -3250,7 +3250,7 @@ class KeyHandlerClass:
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand (self,commandName,shortcut,func,
-        pane='all',source_c=None,verbose=False, wrap=True
+        pane='all',source_c=None,verbose=False
     ):
         '''
         Make the function available as a minibuffer command,
@@ -3269,15 +3269,9 @@ class KeyHandlerClass:
         c,k = self.c,self
         if trace and traceEntry:
             g.trace(pane,commandName,'source_c:',source_c)
-        if g.new_dispatch:
-            pass
-        elif wrap:
-            source_c = source_c or c
-            func = c.universalCallback(source_c,func)
         f = c.commandsDict.get(commandName)
-        if g.new_dispatch:
-            if f and f.__name__ != func.__name__:
-                g.trace('redefining',commandName,f,'->',func)
+        if f and f.__name__ != func.__name__:
+            g.trace('redefining',commandName,f,'->',func)
         assert not g.isStroke(shortcut)
         c.commandsDict [commandName] = func
         if shortcut:

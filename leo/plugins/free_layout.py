@@ -277,7 +277,7 @@ class FreeLayoutController:
                     else:
                         g.trace('no layout',name)
                 commandName = 'free-layout-load-%s' % name.strip().lower().replace(' ','-')
-                c.k.registerCommand(commandName,shortcut=None,func=func,wrap=True)
+                c.k.registerCommand(commandName,shortcut=None,func=func)
         # Careful: we could be unit testing or in the Leo bridge.
         if layout:
             splitter = c.free_layout.get_top_splitter()
