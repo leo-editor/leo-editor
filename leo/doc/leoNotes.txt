@@ -14301,5 +14301,24 @@ def create_menu(self):
     
             # g.trace('(Plugin) defining command:',name)
             self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
+.. @+node:ekr.20150513162945.1: *4* niceMenuName
+@staticmethod
+def niceMenuName(name):
+    """Return a nice version of the command name for the menu
+
+    The command will be of the form::
+
+        cmd_ThisIsIt
+
+    We want to convert this to "this-is-it" (was: "This Is It").
+
+    """
+    text = ""
+    for char in name: ### [4:]:
+        if char.isupper() and text:
+            text += " "
+        text += char
+    return text.lower().replace(' ','-').replace('_','-')
+        # EKR: show the form of the command.  YMMV.
 .. @-all
 .. @-leo

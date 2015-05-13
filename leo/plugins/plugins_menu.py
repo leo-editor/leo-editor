@@ -282,64 +282,6 @@ class PlugIn:
             if getattr(func,'is_command',None):
                 self.othercmds[func.command_name] = func
 
-    #@+node:ekr.20150512151846.1: *4* plugins_menu.py (TEST)
-    #@+node:EKR.20040517080555.24: *5* addPluginMenuItem
-    def addPluginMenuItem (p,c):
-        """
-        @param p:  Plugin object for one currently loaded plugin
-        @param c:  Leo-editor "commander" for the current .leo file
-        """
-
-        trace = False
-        plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
-
-        if p.hastoplevel:
-            # Check at runtime to see if the plugin has actually been loaded.
-            # This prevents us from calling hasTopLevel() on unloaded plugins.
-            def callback (event,c=c,p=p):
-                path, name = g.os_path_split(p.filename)
-                name, ext = g.os_path_splitext(name)
-                pc = g.app.pluginsController
-                if pc and pc.isLoaded(name):
-                    p.hastoplevel(c)
-                else:
-                    p.about()
-            table = ((plugin_name,None,callback),)
-            c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
-        elif p.hasconfig or p.othercmds:
-            #@+<< Get menu location >>
-            #@+node:pap.20050305153147: *6* << Get menu location >>
-            if p.group:
-                menu_location = p.group
-            else:
-                menu_location = "&Plugins"
-            #@-<< Get menu location >>
-            m = c.frame.menu.createNewMenu(plugin_name,menu_location)
-            table = [("About...",None,p.about)]
-            if p.hasconfig:
-                table.append(("Properties...",None,p.properties))
-            if p.othercmds:
-                table.append(("-",None,None))
-                items = []
-                d = p.othercmds
-                for cmd in list(d.keys()):
-                    fn = d.get(cmd)
-                    if 1:
-                        items.append((cmd,None,fn),)
-                            # No need for a callback.
-                    else: ### To be deleted.
-                        # New in 4.4: this callback gets called with an event arg.
-                        def cmd_callback (event,c=c,fn=fn):
-                            fn(c)
-                        items.append((cmd,None,cmd_callback),)
-                items.sort()
-                table.extend(items)
-            if trace: g.trace(table)
-            c.frame.menu.createMenuEntries(m,table,dynamicMenu=True)
-        else:
-            table = ((plugin_name,None,p.about),)
-            if trace: g.trace(plugin_name)
-            c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
     #@+node:EKR.20040517080555.8: *3* about
     def about(self,event=None):
 
@@ -447,25 +389,6 @@ class PlugIn:
             self.config.write(f)
         except:
             f.close()
-    #@+node:pap.20051011215345: *3* niceMenuName (to be removed)
-    @staticmethod
-    def niceMenuName(name):
-        """Return a nice version of the command name for the menu
-
-        The command will be of the form::
-
-            cmd_ThisIsIt
-
-        We want to convert this to "this-is-it" (was: "This Is It").
-
-        """
-        text = ""
-        for char in name: ### [4:]:
-            if char.isupper() and text:
-                text += " "
-            text += char
-        return text.lower().replace(' ','-').replace('_','-')
-            # EKR: show the form of the command.  YMMV.
     #@-others
 
 #@-others
