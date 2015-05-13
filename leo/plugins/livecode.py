@@ -27,8 +27,9 @@ def onCreate(tag, keys):
     
     LiveCodeDisplayProvider(c)
 #@+node:tbrown.20140806084727.31749: ** livecode-show
-def cmd_show(c):
-    
+@g.command('livecode-show')
+def cmd_show(event):
+    c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     if splitter:
         w = splitter.get_provided('_leo_livecode_show')

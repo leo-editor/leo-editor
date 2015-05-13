@@ -125,11 +125,11 @@ def writeNodeAndTree (c, word, header_style, level,
         h = g.toEncodedString(h,encoding,reportErrors=True)
         doPara(word,"%s %s" % (thishead,h),"%s %d" % (header_style,min(level,maxlevel)))
         writeNodeAndTree(c,word,header_style,level+1,maxlevel,usesections,thishead,child)
-#@+node:EKR.20040517075715.19: ** cmd_Export
-def cmd_Export(c):
-
-    """Export the current node to Word"""
-
+#@+node:EKR.20040517075715.19: ** word-export-export
+@g.command('word-export-export')
+def cmd_Export(event):
+    '''Export the current node to Word'''
+    c = event.get('c')
     try:
         word = getWordConnection()
         if word:

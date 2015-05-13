@@ -114,10 +114,14 @@ def addPluginMenuItem (p,c):
             d = p.othercmds
             for cmd in list(d.keys()):
                 fn = d.get(cmd)
-                # New in 4.4: this callback gets called with an event arg.
-                def cmd_callback (event,c=c,fn=fn):
-                    fn(c)
-                items.append((cmd,None,cmd_callback),)
+                if 1:
+                    items.append((cmd,None,fn),)
+                        # No need for a callback.
+                else: ### To be deleted.
+                    # New in 4.4: this callback gets called with an event arg.
+                    def cmd_callback (event,c=c,fn=fn):
+                        fn(c)
+                    items.append((cmd,None,cmd_callback),)
             items.sort()
             table.extend(items)
         if trace: g.trace(table)
@@ -226,13 +230,12 @@ class PlugIn:
     """A class to hold information about one plugin"""
 
     #@+others
-    #@+node:EKR.20040517080555.4: *3* __init__ (Plugin)
+    #@+node:EKR.20040517080555.4: *3* __init__ (Plugin) & helper
     def __init__(self, plgMod, c=None):
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
         """
-
         self.c = c
         self.mod = plgMod
         self.name = self.moduleName = None
@@ -241,85 +244,124 @@ class PlugIn:
             self.name = self.mod.__plugin_name__
         except AttributeError:
             self.name = self.getNiceName(self.mod.__name__)
-
         self.moduleName = self.mod.__name__
-
         self.group = getattr(self.mod, "__plugin_group__", None)
         PluginDatabase.addPlugin(self, self.group)
-
         try:
             self.priority = self.mod.__plugin_priority__
         except AttributeError:
             self.priority = 200 - ord(self.name[0])
-        #
-
         self.doc = self.mod.__doc__
-        self.version = self.mod.__dict__.get("__version__","<unknown>") # EKR: 3/17/05
-        # if self.version: g.pr(self.version,g.shortFileName(filename))
-
-        #@+<< Check if this can be configured >>
-        #@+node:EKR.20040517080555.5: *4* << Check if this can be configured >>
-        # Look for a configuration file
+        self.version = self.mod.__dict__.get("__version__","<unknown>")
+        # g.pr(self.version,g.shortFileName(filename))
+        
+        # Configuration...
         self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
         self.hasconfig = os.path.isfile(self.configfilename)
-        #@-<< Check if this can be configured >>
-        #@+<< Check if this has an apply >>
-        #@+node:EKR.20040517080555.6: *4* << Check if this has an apply >>
-        #@+at Look for an apply function ("applyConfiguration") in the module.
-        # 
-        # This is used to apply changes in configuration from the properties window
-        #@@c
-
+            # True if this can be configured.
         self.hasapply = hasattr(plgMod, "applyConfiguration")
-        #@-<< Check if this has an apply >>
-        #@+<< Look for additional commands >>
-        #@+node:EKR.20040517080555.7: *4* << Look for additional commands >>
-        #@+at Additional commands can be added to the plugin menu by having functions in the module called "cmd_whatever". These are added to the main menu and will be called when clicked
-        #@@c
+            # Look for an applyConfiguration function in the module.
+            # This is used to apply changes in configuration from the properties window
+        self.create_menu()
+            # Create menu items from cmd_* functions.
 
-        self.othercmds = {}
-
-        for item in self.mod.__dict__.keys():
-            if item.startswith("cmd_"):
-                self.othercmds[self.niceMenuName(item)] = self.mod.__dict__[item]
-
-                # start of command name from module (plugin) name
-                base = []
-                for l in self.mod.__name__:
-                    if base and base[-1] != '-' and l.isupper():
-                        base.append('-')
-                    base.append(l)
-                base = ''.join(base).lower().replace('.py','').replace('_','-')
-
-                base = base.split('.')[-1]  # TNB 20100304 strip module path
-
-                # rest of name from item
-                ltrs = []
-                for l in item[4:]:
-                    if ltrs and ltrs[-1] != '-' and l.isupper():
-                        ltrs.append('-')
-                    ltrs.append(l)
-                name = base+'-'+''.join(ltrs).lower().replace('_','-')
-
-                # make and create command
-                cmd = self.mod.__dict__[item]
-
-                def plugins_menu_wrapper(kwargs, cmd=cmd):
-                    return cmd(kwargs['c'])
-
-                # g.trace('(Plugin) defining command:',name)
-                self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
-        #@-<< Look for additional commands >>
-        #@+<< Look for toplevel menu item >>
-        #@+node:pap.20041009131822: *4* << Look for toplevel menu item >>
-        #@+at Check to see if there is a toplevel menu item - this will be used instead of the default About
-        #@@c
-
+        # Use a toplevel menu item instead of the default About.
         try:
             self.hastoplevel = self.mod.__dict__["topLevelMenu"]
         except KeyError:
             self.hastoplevel = False
-        #@-<< Look for toplevel menu item >>
+    #@+node:EKR.20040517080555.7: *4* create_menu
+    def create_menu(self):
+        '''Add items in the main menu for each cmd_ function.'''
+        self.othercmds = {}
+        for item in self.mod.__dict__.keys():
+            if item.startswith("cmd_"):
+                self.othercmds[self.niceMenuName(item)] = self.mod.__dict__[item]
+                
+                if 0:
+                    # start of command name from module (plugin) name
+                    base = []
+                    for l in self.mod.__name__:
+                        if base and base[-1] != '-' and l.isupper():
+                            base.append('-')
+                        base.append(l)
+                    base = ''.join(base).lower().replace('.py','').replace('_','-')
+                    base = base.split('.')[-1]  # TNB 20100304 strip module path
+            
+                    # Compute the rest of name from item.
+                    ltrs = []
+                    for l in item[4:]:
+                        if ltrs and ltrs[-1] != '-' and l.isupper():
+                            ltrs.append('-')
+                        ltrs.append(l)
+                    name = base+'-'+''.join(ltrs).lower().replace('_','-')
+            
+                    # make and create command
+                    cmd = self.mod.__dict__[item]
+            
+                    def plugins_menu_wrapper(kwargs, cmd=cmd):
+                        return cmd(kwargs['c'])
+            
+                    # g.trace('(Plugin) defining command:',name)
+                    self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
+    #@+node:ekr.20150512151846.1: *4* plugins_menu.py (TEST)
+    #@+node:EKR.20040517080555.24: *5* addPluginMenuItem
+    def addPluginMenuItem (p,c):
+        """
+        @param p:  Plugin object for one currently loaded plugin
+        @param c:  Leo-editor "commander" for the current .leo file
+        """
+
+        trace = False
+        plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
+
+        if p.hastoplevel:
+            # Check at runtime to see if the plugin has actually been loaded.
+            # This prevents us from calling hasTopLevel() on unloaded plugins.
+            def callback (event,c=c,p=p):
+                path, name = g.os_path_split(p.filename)
+                name, ext = g.os_path_splitext(name)
+                pc = g.app.pluginsController
+                if pc and pc.isLoaded(name):
+                    p.hastoplevel(c)
+                else:
+                    p.about()
+            table = ((plugin_name,None,callback),)
+            c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
+        elif p.hasconfig or p.othercmds:
+            #@+<< Get menu location >>
+            #@+node:pap.20050305153147: *6* << Get menu location >>
+            if p.group:
+                menu_location = p.group
+            else:
+                menu_location = "&Plugins"
+            #@-<< Get menu location >>
+            m = c.frame.menu.createNewMenu(plugin_name,menu_location)
+            table = [("About...",None,p.about)]
+            if p.hasconfig:
+                table.append(("Properties...",None,p.properties))
+            if p.othercmds:
+                table.append(("-",None,None))
+                items = []
+                d = p.othercmds
+                for cmd in list(d.keys()):
+                    fn = d.get(cmd)
+                    if 1:
+                        items.append((cmd,None,fn),)
+                            # No need for a callback.
+                    else: ### To be deleted.
+                        # New in 4.4: this callback gets called with an event arg.
+                        def cmd_callback (event,c=c,fn=fn):
+                            fn(c)
+                        items.append((cmd,None,cmd_callback),)
+                items.sort()
+                table.extend(items)
+            if trace: g.trace(table)
+            c.frame.menu.createMenuEntries(m,table,dynamicMenu=True)
+        else:
+            table = ((plugin_name,None,p.about),)
+            if trace: g.trace(plugin_name)
+            c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
     #@+node:EKR.20040517080555.8: *3* about
     def about(self,event=None):
 
@@ -436,7 +478,7 @@ class PlugIn:
 
             cmd_ThisIsIt
 
-        We want to convert this to "This Is It".
+        We want to convert this to "this-is-it" (was: "This Is It").
 
         """
         text = ""
@@ -444,7 +486,8 @@ class PlugIn:
             if char.isupper() and text:
                 text += " "
             text += char
-        return text
+        return text.lower().replace(' ','-').replace('_','-')
+            # EKR: show the form of the command.  YMMV.
     #@-others
 
 #@-others

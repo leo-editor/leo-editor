@@ -72,17 +72,23 @@ class geotag_Controller:
             c.attribEditor.updateEditorInt()
         c.redraw()
     #@-others
-#@+node:tbrown.20091214233510.5357: ** cmd_open_server_page
-def cmd_OpenServerPage(c):
+#@+node:tbrown.20091214233510.5357: ** cmd_open_server_page (gettag_Controller)
+@g.command('geotag-open-server-page')
+def cmd_OpenServerPage(event):
+    c = event.get('c')
     g.pygeotag.open_server_page()
     # g.pygeotag.callback = c.geotag.callback
 
-#@+node:tbrown.20091214233510.5358: ** cmd_tag_node
-def cmd_TagNode(c):
+#@+node:tbrown.20091214233510.5358: ** cmd_tag_node (gettag_Controller)
+@g.command('geotag-tag-node')
+def cmd_TagNode(event):
+    c = event.get('c')
     data = g.pygeotag.get_position({'description':c.p.h})
     c.geotag.callback(data)
-#@+node:tbrown.20091215204347.11402: ** cmd_show_node
-def cmd_ShowNode(c):
+#@+node:tbrown.20091215204347.11402: ** cmd_show_node (gettag_Controller)
+@g.command('geotag-show-node')
+def cmd_ShowNode(event):
+    c = event.get('c')
     nd = geotag_Controller.getAttr(c.p)
     try:
         txt = nd.h.split(None, 5)

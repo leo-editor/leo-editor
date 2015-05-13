@@ -286,9 +286,10 @@ def at_rich_check(tag, key):
         cmd_OpenEditor(key, at_rich=True)
 #@+node:tbrown.20130813134319.5692: ** @g.command('cke-text-open')
 @g.command('cke-text-open')
-def cmd_OpenEditor(kwargs, at_rich=False):
+def cmd_OpenEditor(event, at_rich=False):
     '''Open the rich text editor, hide the regular editor.'''
-    c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
     if rte:
@@ -302,9 +303,10 @@ def cmd_OpenEditor(kwargs, at_rich=False):
     splitter.replace_widget(body, w)
 #@+node:tbrown.20130813134319.5693: ** @g.command('cke-text-close')
 @g.command('cke-text-close')
-def cmd_CloseEditor(kwargs, at_rich=False):
+def cmd_CloseEditor(event, at_rich=False):
     '''Close the rich text editor, unhide the regular editor.'''
-    c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     if not splitter:
         return
@@ -322,18 +324,19 @@ def cmd_CloseEditor(kwargs, at_rich=False):
     splitter.replace_widget(rte, body)
 #@+node:tbrown.20130813134319.7233: ** @g.command('cke-text-switch')
 @g.command('cke-text-switch')
-def cmd_SwitchEditor(kwargs):
+def cmd_SwitchEditor(event):
     '''Switch between regular and rich text editor.'''
-    c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
     if not rte:
-        cmd_OpenEditor(kwargs)
+        cmd_OpenEditor(event)
     else:
-        cmd_CloseEditor(kwargs)
+        cmd_CloseEditor(event)
 #@+node:tbrown.20130813134319.7231: ** @g.command('cke-text-toggle-autosave')
 @g.command('cke-text-toggle-autosave')
-def cmd_ToggleAutosave(kwargs):
+def cmd_ToggleAutosave(event):
     '''
     Toggle autosaving of changes when you leave a node.
 
@@ -341,7 +344,8 @@ def cmd_ToggleAutosave(kwargs):
     text unintentionally.  As long as you make no edits, the original
     text will not be changed.
     '''
-    c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
+    c = event.get('c')
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " + 
          ("ENABLED" if c._ckeeditor_autosave else "disabled"))

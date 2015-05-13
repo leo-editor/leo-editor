@@ -778,20 +778,28 @@ class attrib_edit_Controller:
 
         self.updateEditorInt()
     #@-others
-#@+node:tbrown.20091029101116.1415: ** cmd_Modes
-def cmd_Modes(c):
+#@+node:tbrown.20091029101116.1415: ** cmd_Modes (attrib_edit_Controller)
+@g.command('attrib-edit-modes')
+def cmd_Modes(event):
+    c = event.get('c')
     c.attribEditor.manageModes()
-#@+node:tbrown.20091103080354.1413: ** cmd_Manage
-def cmd_Manage(c):
+#@+node:tbrown.20091103080354.1413: ** cmd_Manage (attrib_edit_Controller)
+@g.command('attrib-edit-manage')
+def cmd_Manage(event):
+    c = event.get('c')
     c.attribEditor.manageAttrib()
-#@+node:tbrown.20091029101116.1419: ** cmd_Create
-def cmd_Create(c):
+#@+node:tbrown.20091029101116.1419: ** cmd_Create (attrib_edit_Controller)
+@g.command('attrib-edit-create')
+def cmd_Create(event):
+    c = event.get('c')
     c.attribEditor.createAttrib()
-#@+node:tbrown.20091029101116.1421: ** cmd_CreateReadonly
+#@+node:tbrown.20091029101116.1421: ** cmd_CreateReadonly (attrib_edit_Controller)
 def Xcmd_CreateReadonly(c):
     c.attribEditor.createAttrib(readonly=True)
-#@+node:tbrown.20091029101116.1426: ** cmd_Scan
-def cmd_Scan(c):
+#@+node:tbrown.20091029101116.1426: ** cmd_Scan (attrib_edit_Controller)
+@g.command('attrib-edit-scan')
+def cmd_Scan(event):
+    c = event.get('c')
     c.attribEditor.scanAttribs()
 #@-others
 #@@language python

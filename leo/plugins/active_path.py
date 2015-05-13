@@ -507,11 +507,12 @@ def run_recursive(c):
         yield p2
 
     c.redraw(p)
-#@+node:ville.20090223183051.1: ** act on node
-def cmd_ActOnNode(c, p=None, event=None):
+#@+node:ville.20090223183051.1: ** cmd_ActOnNode (active_path.py)
+@g.command('active-path-act-on-node')
+def cmd_ActOnNode(event, p=None):
     """ act_on_node handler for active_path.py
     """
-
+    c = event.get('c')
     # implementation mostly copied from onSelect
     if p is None:
         p = c.currentPosition()
@@ -529,9 +530,10 @@ def cmd_ActOnNode(c, p=None, event=None):
         raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
-#@+node:tbrown.20111207143354.19381: ** cmd_MakeDir
-def cmd_MakeDir(c):
-    
+#@+node:tbrown.20111207143354.19381: ** cmd_MakeDir (active_path.py)
+@g.command('active-path-make-dir')
+def cmd_MakeDir(event):
+    c = event.get('c')
     txt = g.app.gui.runAskOkCancelStringDialog(
         c, 'Directory name' ,'Directory name')
     if txt:
@@ -541,39 +543,44 @@ def cmd_MakeDir(c):
         c.selectPosition(nd)
         c.redraw()
     g.es("Path will be created if a file is saved on it")
-#@+node:tbrown.20080616153649.2: ** cmd_ShowCurrentPath
-def cmd_ShowCurrentPath(c):
+#@+node:tbrown.20080616153649.2: ** cmd_ShowCurrentPath (active_path.py)
+@g.command('active-path-show-current-path')
+def cmd_ShowCurrentPath(event):
     """Just show the path to the current file/directory node in the log pane."""
+    c = event.get('c')
     g.es(getPath(c, c.p))
-#@+node:tbrown.20100401100336.13608: ** cmd_LoadRecursive
-def cmd_LoadRecursive(c):
+#@+node:tbrown.20100401100336.13608: ** cmd_LoadRecursive (active_path.py)
+@g.command('active-path-load-recursive')
+def cmd_LoadRecursive(event):
     """Recursive update, with expansions."""
-
+    c = event.get('c')
     for s in run_recursive(c):
         path = getPath(c, s)
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True,recurse=True)
-#@+node:tbrown.20080619080950.16: ** cmd_UpdateRecursive
-def cmd_UpdateRecursive(c):
+#@+node:tbrown.20080619080950.16: ** cmd_UpdateRecursive (active_path.py)
+@g.command('active-path-update-recursive')
+def cmd_UpdateRecursive(event):
     """Recursive update, no new expansions."""
-
+    c = event.get('c')
     for s in run_recursive(c):
         path = getPath(c, s)
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True)
-#@+node:tbrown.20091214212801.13475: ** cmd_SetNodeToAbsolutePathRecursive
-def cmd_SetNodeToAbsolutePathRecursive(c):
+#@+node:tbrown.20091214212801.13475: ** cmd_SetNodeToAbsolutePathRecursive (active_path.py)
+@g.command('active-path-set-node-to-absolute-path-recursive')
+def cmd_SetNodeToAbsolutePathRecursive(event):
     """Change "/dirname/" to "@path /absolute/path/to/dirname", recursively"""
-
+    c = event.get('c')
     for s in run_recursive(c):
         cmd_SetNodeToAbsolutePath(c, p=s)
-#@+node:tbrown.20080616153649.5: ** cmd_SetNodeToAbsolutePath
-def cmd_SetNodeToAbsolutePath(c, p=None):
+#@+node:tbrown.20080616153649.5: ** cmd_SetNodeToAbsolutePath (active_path.py)
+@g.command('active-path-set-node-to-absolute-path')
+def cmd_SetNodeToAbsolutePath(event,p=None):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
-
+    c = event.get('c')
     if not p:
         p = c.p
-
     path = getPath(c, p)
     d = p.h.split(None, 1)
     if len(d) > 1 and d[0].startswith('@'):
@@ -584,7 +591,7 @@ def cmd_SetNodeToAbsolutePath(c, p=None):
     else:
         type_ = "@auto "
     p.h = type_+path
-#@+node:tbrown.20080618141617.879: ** cmd_PurgeVanishedFiles
+#@+node:tbrown.20080618141617.879: ** cmd_PurgeVanishedFiles (active_path.py)
 def cond(p):
     return p.h.startswith('*') and p.h.endswith('*')
 
@@ -597,29 +604,37 @@ def dtor(p):
     # g.es(p.h)
     p.doDelete()
 
-def cmd_PurgeVanishedFilesHere(c):
+@g.command('active-path-purge-vanished-files-here')
+def cmd_PurgeVanishedFilesHere(event):
     """Remove files no longer present, i.e. "*filename*" entries."""
+    c = event.get('c')
     p = c.p.getParent()
     n = deleteChildren(p, cond, dtor=dtor)
     g.es('Deleted %d nodes' % n)
     c.redraw(p)
 
-def cmd_PurgeVanishedFilesRecursive(c):
+@g.command('active-path-purge-vanished-files-recursive')
+def cmd_PurgeVanishedFilesRecursive(event):
     """Remove files no longer present, i.e. "*filename*" entries."""
+    c = event.get('c')
     p = c.p
     n = deleteDescendents(p, cond, dtor=dtor)
     g.es('Deleted at least %d nodes' % n)
     c.redraw(p)
 
-def cmd_PurgeUnloadedFilesHere(c):
+@g.command('active-path-purge-unloaded-files-here')
+def cmd_PurgeUnloadedFilesHere(event):
     """Remove files never loaded, i.e. no kind of @file node."""
+    c = event.get('c')
     p = c.p.getParent()
     n = deleteChildren(p, condunl, dtor=dtor)
     g.es('Deleted %d nodes' % n)
     c.redraw(p)
 
-def cmd_PurgeUnloadedFilesRecursive(c):
+@g.command('active-path-purge-unloaded-files-recursive')
+def cmd_PurgeUnloadedFilesRecursive(event):
     """Remove files never loaded, i.e. no kind of @file node."""
+    c = event.get('c')
     p = c.p
     n = deleteDescendents(p, condunl, dtor=dtor)
     g.es('Deleted at least %d nodes' % n)
@@ -628,7 +643,6 @@ def cmd_PurgeUnloadedFilesRecursive(c):
 def deleteChildren(p, cond, dtor=None):
 
     cull = [child.copy() for child in p.children() if cond(child)]
-
     if cull:
         cull.reverse()
         for child in cull:
@@ -637,7 +651,6 @@ def deleteChildren(p, cond, dtor=None):
             else:
                 child.doDelete()
         return len(cull)
-
     return 0
 
 def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
@@ -656,15 +669,12 @@ def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
                 child.doDelete()
     return _culls
 
-#@+node:tbrown.20140308075026.27803: ** cmd_PickDir
-def cmd_PickDir(c):
+#@+node:tbrown.20140308075026.27803: ** cmd_PickDir (active_path.py)
+@g.command('active-path-pick-dir')
+def cmd_PickDir(event):
     """cmd_PickDir - Show user a folder picker to create
-    a new top level @path node
-
-    :Parameters:
-    - `c`: outline
     """
-
+    c = event.get('c')
     p = c.p
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
@@ -675,7 +685,6 @@ def cmd_PickDir(c):
             nodepath = g.os_path_dirname(nodepath)
         if g.os_path_isdir(nodepath):  # append if it's a directory
             path = nodepath
-
     ocwd = os.getcwd()
     try:
         os.chdir(path)
@@ -683,11 +692,9 @@ def cmd_PickDir(c):
         g.es("Couldn't find path %s"%path)
     dir_ = g.app.gui.runOpenDirectoryDialog("Pick a folder", "Pick a folder")
     os.chdir(ocwd)
-    
     if not dir_:
         g.es("No folder selected")
         return
-    
     nd = c.p.insertAfter()
     nd.h = "@path %s" % dir_
     c.redraw()

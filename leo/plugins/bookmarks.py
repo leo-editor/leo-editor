@@ -213,8 +213,9 @@ def onCreate(tag, keys):
     
     BookMarkDisplayProvider(c)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
-def cmd_open_bookmark(c):
-
+@g.command('bookmarks-open_bookmark')
+def cmd_open_bookmark(event):
+    c = event.get('c')
     if not c: return
     p = c.p
     bookmark = False
@@ -227,8 +228,9 @@ def cmd_open_bookmark(c):
             c._bookmarks.current = p.v
         cmd_open_node(c)
            
-def cmd_open_node(c):
-    
+@g.command('bookmarks-open_node')
+def cmd_open_node(event):
+    c = event.get('c')
     if not c: return
     p = c.p
     url = g.getUrlFromNode(p)
@@ -236,16 +238,19 @@ def cmd_open_node(c):
         # No need to handle url hooks here.
         g.handleUrl(url,c=c,p=p)
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
-def cmd_show(c):
-    
+@g.command('bookmarks-show')
+def cmd_show(event):
+    c = event.get('c')
     bmd = BookMarkDisplay(c)
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20131226095537.26309: ** bookmarks-switch
-def cmd_switch(c):
+@g.command('bookmarks-switch')
+def cmd_switch(event):
     """switch between bookmarks and previous position in outline"""
+    c = event.get('c')
     if not hasattr(c, '_bookmarks'):
         g.es("Bookmarks not active for this outline")
         return
@@ -276,8 +281,10 @@ def cmd_switch(c):
     oc.redraw()
     oc.bringToFront()
 #@+node:tbrown.20140101093550.25175: ** bookmarks-bookmark-*
-def cmd_bookmark(c, child=False):
+@g.command('bookmarks-bookmark')
+def cmd_bookmark(event,child=False):
     """bookmark current node"""
+    c = event.get('c')
     if not hasattr(c, '_bookmarks'):
         g.es("Bookmarks not active for this outline")
         return
@@ -301,16 +308,18 @@ def cmd_bookmark(c, child=False):
         bm.fix_text(c.p.h)
     )
     nd.b = bm.get_unl()
-    
     bm.current = nd.v
     bm.show_list(bm.get_list())
 
-def cmd_bookmark_child(c):
+@g.command('bookmarks-bookmark-child')
+def cmd_bookmark_child(event):
     """bookmark current node as child of current bookmark"""
-    cmd_bookmark(c, child=True)
+    cmd_bookmark(event,child=True)
 #@+node:tbrown.20140101093550.25176: ** bookmarks-level-*
-def cmd_level_increase(c, delta=1):
+@g.command('bookmarks-level-increase')
+def cmd_level_increase(event, delta=1):
     """increase levels, number of rows shown, for bookmarks"""
+    c = event.get('c')
     if not hasattr(c, '_bookmarks'):
         g.es("Bookmarks not active for this outline")
         return
@@ -320,23 +329,28 @@ def cmd_level_increase(c, delta=1):
     g.es("Showing %d levels" % bm.levels)
     bm.show_list(bm.get_list())
     
-def cmd_level_decrease(c):
+@g.command('bookmarks-level_decrease')
+def cmd_level_decrease(event):
     """decrease levels, number of rows shown, for bookmarks"""
-    cmd_level_increase(c, delta=-1)
+    cmd_level_increase(event, delta=-1)
 #@+node:tbrown.20131214112218.36871: ** bookmarks-mark
-def cmd_mark_as_target(c):
+@g.command('bookmarks-mark_as_target')
+def cmd_mark_as_target(event):
     """Mark current node as Bookmarks list for use by another file,
     bookmarks-use-other-outline should be used after this command
     """
+    c = event.get('c')
     g._bookmarks_target = c.p.get_UNL()
     g._bookmarks_target_v = c.p.v
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
-def cmd_use_other_outline(c):
+@g.command('bookmarks-use_other_outline')
+def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
     a different outline
     """
+    c = event.get('c')
     if not hasattr(g, '_bookmarks_target') or not g._bookmarks_target:
         g.es("Use bookmarks-mark-as-target first")
         return

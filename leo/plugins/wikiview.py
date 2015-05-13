@@ -76,13 +76,11 @@ def onCreate(tag, keys):
     c = keys.get('c')
     
     WikiView(c)
-#@+node:tbrown.20141101114322.6: ** cmd_toggle
-def cmd_toggle(c):
-    """cmd_toggle - toggle active flag
-
-    :param outline c: outline
-    """
-
+#@+node:tbrown.20141101114322.6: ** wikiview-toggle
+@g.command('wikiview-toggle')
+def cmd_toggle(event):
+    '''wikiview: toggle active flag'''
+    c = event.get('c')
     c._wikiview.active = not c._wikiview.active
     if  c._wikiview.active:
         g.es("WikiView active")
@@ -90,20 +88,17 @@ def cmd_toggle(c):
     else:
         g.es("WikiView inactive")
         cmd_show_all(c)
-#@+node:tbrown.20141101114322.7: ** cmd_hide_all
-def cmd_hide_all(c):
-    """cmd_hide_all - re-apply hiding
-
-    :param outline c: outline
-    """
-
+#@+node:tbrown.20141101114322.7: ** wikiview-hide-all
+@g.command('wikiview-hide-all')
+def cmd_hide_all(event):
+    '''wikiview: re-apply hiding.'''
+    c = event.get('c')
     c._wikiview.hide(c._wikiview.select, {'c': c}, force=True)
-#@+node:tbrown.20141101114322.8: ** cmd_show_all
-def cmd_show_all(c):
-    """cmd_show_all - undo hiding
-
-    :param outline c: outline
-    """
+#@+node:tbrown.20141101114322.8: ** wikiview-show-all
+@g.command('wikiview-show-all')
+def cmd_show_all(event):
+    '''wikiview: undo hiding'''
+    c = event.get('c')
     c._wikiview.unhide(all=True)
 #@+node:tbrown.20141101114322.9: ** class WikiView
 class WikiView:
