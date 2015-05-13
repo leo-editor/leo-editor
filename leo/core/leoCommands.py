@@ -364,6 +364,7 @@ class Commands (object):
         c,k = self,self.k
         if g.new_dispatch:
             c.editCommandsManager.getPublicCommands()
+                # Should be named initInnerCommands.
             # Bug fix: do *not* clear c.commandsDict here.
             for name,func in g.global_commands_dict.items():
                 k.registerCommand(commandName=name,shortcut=None,func=func)

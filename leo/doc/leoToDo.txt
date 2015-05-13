@@ -2013,29 +2013,6 @@ The problem is that bname is only the base name of the cached file, not a name (
 It should be possible to avoid duplicate reads.
 .. @+node:ekr.20080628095358.1: *4* Make each Leo command a class
 http://groups.google.com/group/leo-editor/browse_thread/thread/5688ed9aaa39be2e#
-
-The main difficulty I see in the migration is creating the tables in the getPublicCommands methods in the various classes in leoEditCommands.py.  At present, these tables associate command names (strings) with corresponding methods.  The form of getPublicCommands is always::
-
-    def getPublicCommands (self):
-      return {
-        'command-name1': self.methodName1,
-        'command-name2': self.methodName2,
-        ...
-      }
-
-Thinking out loud, let's see whether the migration can be done easily.  We would change the entry:
-
-    'command-name1': self.methodNameN,
-
-to:
-
-    'command-name1': self.classNameN(self),
-
-That is, the table creates an instance of the class by calling the class's ctor, with self (the container object) as the ctor's only argument.  To make this work, all we need to do is give the class a __call__ method whose signature matches the signature of methodNameN, that is, the signature used to call methods previously.
-
-Well, isn't this nice.  We can transition gradually, as needed.  No need *ever* to do a mass migration.  It should be easy to verify this scheme with one or two examples.  Please report your experiences if you decide to play around with this.
-
-EKR
 .. @+node:ekr.20111101050427.16716: *4* Make g.openWithFileName "reentrant"
 That is, make sure it works when called from within itself.
 .. @+node:ekr.20111021035504.9467: *4* Play with PyQt Qtest framework

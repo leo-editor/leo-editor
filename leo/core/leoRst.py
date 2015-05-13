@@ -265,16 +265,6 @@ class RstCommands:
         for key in sorted(d.keys()):
             assert key == self.munge(key),key
         return d
-    #@+node:ekr.20090511055302.5792: *4* rst.getPublicCommands
-    def getPublicCommands(self):
-        '''Add the names of commands defined in this file to c.commandsDict'''
-        if g.new_dispatch:
-            pass
-        else:
-            self.c.commandsDict.update({
-                'rst3': self.rst3, # Formerly write-restructured-text.
-                'code-to-rst': self.code_to_rst_command,
-            })
     #@+node:ekr.20090502071837.38: *4* rst.initHeadlineCommands
     def initHeadlineCommands (self):
         '''Init the list of headline commands used by writeHeadline.'''

@@ -1434,12 +1434,6 @@ def new_cmd_decorator(name,ivars):
     def _decorator(func):
         if new_dispatch:
             def wrapper(event):
-                ### Needed when using c.universalCallback
-                # try:
-                    # c = event.c
-                # except AttributeError:
-                    # g.trace('*********** unexpected event',event)
-                    # c = event.get('c')
                 c = event.c
                 self = g.ivars2instance(c,g,ivars)
                 func(self,event=event)

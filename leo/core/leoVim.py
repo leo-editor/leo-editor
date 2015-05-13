@@ -61,39 +61,6 @@ class VimCommands:
         vc.init_persistent_ivars()
         vc.init_state_ivars()
         vc.create_dispatch_dicts()
-    #@+node:ekr.20140815160132.18834: *4* vc.getPublicCommands
-    def getPublicCommands(vc):
-        '''Add the names of commands defined in this file to c.commandsDict'''
-        if g.new_dispatch:
-            pass
-        else:
-            vc.c.commandsDict.update({
-                ':!':   vc.shell_command,
-                ':%s':  vc.percent_s_command,
-                    # vc.Substitution(vc,all_lines=True),
-                ':e':   vc.e_command,
-                    # vc.Tabnew(vc),
-                ':e!':  vc.revert,
-                ':gT':  vc.cycle_all_focus,
-                ':gt':  vc.cycle_focus,
-                ':q!':  vc.quit_now,
-                ':q':   vc.q_command,
-                ':qa':  vc.qa_command,
-                ':r':   vc.r_command,
-                    # vc.LoadFileAtCursor(vc),
-                ':s':   vc.s_command,
-                    # vc.Substitution(vc,all_lines=False),
-                ':w':   vc.w_command,
-                ':wq':  vc.wq_command,
-                ':xa':  vc.xa_command,
-                # Longer names...
-                ':print-dot':   vc.print_dot,
-                ':tabnew':      vc.tabnew_command,
-                    # vc.Tabnew(vc),
-                ':toggle-vim-mode':         vc.toggle_vim_mode,
-                ':toggle-vim-trace':        vc.toggle_vim_trace,
-                ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
-            })
     #@+node:ekr.20140805130800.18157: *4* dispatch dicts...
     #@+node:ekr.20140805130800.18162: *5* vc.create_dispatch_dicts
     def create_dispatch_dicts(vc):
