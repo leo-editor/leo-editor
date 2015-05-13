@@ -13,8 +13,8 @@ isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
 new_dispatch = True
-if new_dispatch:
-    print('***** new_dispatch')
+# if new_dispatch:
+    # print('***** new_dispatch')
 
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
