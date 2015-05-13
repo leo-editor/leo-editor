@@ -12,7 +12,7 @@ import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_dispatch = False
+new_dispatch = True
 if new_dispatch:
     print('***** new_dispatch')
 

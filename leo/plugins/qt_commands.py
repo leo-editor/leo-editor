@@ -97,29 +97,29 @@ for vis in 'hide', 'show', 'toggle':
 #@+node:tbrown.20140814090009.55874: ** style_sheet commands (qt_commands.py)
 #@+node:ekr.20140918124632.17893: *3* print-style-sheet
 @g.command('print-style-sheet')
-def print_style_sheet(kwargs):
+def print_style_sheet(event):
     '''print-style-sheet command.'''
-    c = kwargs['c']
+    c = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20140918124632.17891: *3* style-reload
 @g.command('style-reload')
-def style_reload(kwargs):
+def style_reload(event):
     """reload-styles command.
     
     Find the appropriate style sheet and re-apply it.
 
     This replaces execution of the `stylesheet & source` node in settings files.
     """
-    c = kwargs['c']
+    c = event.get('c')
     if c:
         c.styleSheetManager.reload_style_sheets()
         
 #@+node:ekr.20140918124632.17892: *3* style-set-selected
 @g.command('style-set-selected')
-def style_set_selected(kwargs):
+def style_set_selected(event):
     '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
-    c = kwargs['c']
+    c = event.get('c')
     if c:
         c.styleSheetManager.set_selected_style_sheet()
 #@-others
