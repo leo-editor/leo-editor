@@ -17,11 +17,11 @@ def cmd(name):
 class KillBufferCommandsClass (BaseEditCommandsClass):
     '''A class to manage the kill buffer.'''
     #@+others
-    #@+node:ekr.20150514063305.409: ** kill.ctor & finishCreate
+    #@+node:ekr.20150514063305.409: ** kill.ctor
     def __init__ (self,c):
 
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.k = None
         self.kbiterator = self.iterateKillBuffer()
@@ -31,12 +31,6 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         self.reset = None
             # The index of the next item to be returned in
             # g.app.globalKillBuffer by iterateKillBuffer.
-
-    def finishCreate (self):
-
-        BaseEditCommandsClass.finishCreate(self)
-            # Call the base finishCreate.
-            # This sets self.k
     #@+node:ekr.20150514063305.411: ** addToKillBuffer
     def addToKillBuffer (self,text):
 

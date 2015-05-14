@@ -13,10 +13,6 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 class KeyHandlerCommandsClass (BaseEditCommandsClass):
     '''User commands to access the keyHandler class.'''
     #@+others
-    #@+node:ekr.20150514063305.405: ** ctor (KeyHandlerCommandsClass)
-    # def __init__ (self,c):
-
-        # BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20150514063305.406: ** menuShortcutPlaceHolder
     @g.command('menu-shortcut')
     def menuShortcutPlaceHolder(self,event=None):

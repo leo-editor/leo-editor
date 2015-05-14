@@ -17,7 +17,7 @@ def cmd(name):
 class RegisterCommandsClass (BaseEditCommandsClass):
     '''Create registers a-z and the corresponding Emacs commands.'''
     #@+others
-    #@+node:ekr.20150514063305.463: ** register.Birth
+    #@+node:ekr.20150514063305.463: ** register.ctor
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c)
@@ -28,18 +28,6 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         self.method = None 
         self.registerMode = 0 # Must be an int.
         self.registers = g.app.globalRegisters
-
-    ### Use BaseEditCommands.finishCreate()
-    # def finishCreate (self):
-        # BaseEditCommandsClass.finishCreate(self)
-            # finish the base class.
-            # This sets selfr.k
-
-    ### It's not clear why this is needed.
-    # def init (self):
-        # self.method = None 
-        # self.registerMode = 0 # Must be an int.
-        # self.registers = {}
     #@+node:ekr.20150514063305.465: ** register.addRegisterItems
     def addRegisterItems( self ):
 

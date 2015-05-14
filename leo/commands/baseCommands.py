@@ -12,25 +12,20 @@ class BaseEditCommandsClass:
     #@+others
     #@+node:ekr.20150514043714.2: ** BaseEdit.Birth
     def __init__ (self,c):
-
+        '''BaseEditCommandsClass ctor.'''
         self.c = c
         self.k = None
-        ### self.registers = {} # To keep pychecker happy.
         self.undoData = None
         self.w = None
 
     def finishCreate(self):
-
+        '''BaseEditCommandsClass.finishCreate.'''
         self.k = self.c.k
         try:
             self.w = self.c.frame.body.wrapper # New in 4.4a4.
         except AttributeError:
             self.w = None
-
-    # def init (self):
-        # '''Called from k.keyboardQuit to init all classes.'''
-        # pass
-    #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand
+    #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand  & beginCommandWithEvent
     def beginCommand (self,undoType='Typing'):
         '''Do the common processing at the start of each command.'''
@@ -94,13 +89,12 @@ class BaseEditCommandsClass:
         c = self.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        isTextWrapper = g.isTextWrapper(w)
-        # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
-        if w and isTextWrapper:
+        # Single-line editing commands apply to minibuffer widget.
+        if w and g.isTextWrapper(w):
             self.w = w
         else:
-            self.w = self.c.frame.body and self.c.frame.body.wrapper
-        if trace: g.trace(isTextWrapper,wname,w)
+            self.w = c.frame.body and c.frame.body.wrapper
+        if trace: g.trace(g.isTextWrapper(w),wname,w)
         if self.w and forceFocus:
             c.widgetWantsFocusNow(self.w)
         return self.w
