@@ -377,7 +377,7 @@ class EditCommandsManager:
             ('abbrevCommands',      AbbrevCommandsClass),
             ('bufferCommands',      BufferCommandsClass),
             ('editCommands',        EditCommandsClass),
-            ('chapterCommands',     ChapterCommandsClass),
+            # ('chapterCommands',     ChapterCommandsClass),
             ('controlCommands',     ControlCommandsClass),
             ('debugCommands',       DebugCommandsClass),
             ('editFileCommands',    EditFileCommandsClass),

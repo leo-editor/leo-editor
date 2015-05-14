@@ -66,7 +66,7 @@ class ChapterController:
     def cmd(name):
         '''Command decorator for the ChapterController class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,'chapterCommands')
+        return g.new_cmd_decorator(name,['c','chapterController',])
     #@+node:ekr.20070317085437.30: *3* Commands (chapters)
     #@+node:ekr.20070317085437.50: *4* cc.cloneNodeToChapter & helper
     @cmd('chapter-clone-node-to')

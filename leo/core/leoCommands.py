@@ -8747,7 +8747,7 @@ class NodeHistory:
     '''A class encapsulating knowledge of visited nodes.'''
 
     #@+others
-    #@+node:ekr.20070615131604.1: *3*  ctor (NodeHistory)
+    #@+node:ekr.20070615131604.1: *3* NodeHistory.ctor
     def __init__ (self,c):
 
         self.c = c
@@ -8755,7 +8755,7 @@ class NodeHistory:
             # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
-    #@+node:ekr.20070615134813: *3* goNext (NodeHistory)
+    #@+node:ekr.20070615134813: *3* NodeHistory.goNext
     def goNext (self):
         '''Select the next node, if possible.'''
         if self.beadPointer + 1 < len(self.beadList):
@@ -8763,7 +8763,7 @@ class NodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11288: *3* goPrev (NodeHistory)
+    #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
     def goPrev (self):
         '''Select the previously visited node, if possible.'''
         if self.beadPointer > 0:
@@ -8771,7 +8771,7 @@ class NodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11294: *3* select (NodeHistory)
+    #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select (self,p,chapter):
         '''
         if p.v exists anywhere, select p in chapter p if possible.
@@ -8792,7 +8792,7 @@ class NodeHistory:
         else:
             self.beadList = [data for data in self.beadList if data[0].v != p.v]
             self.beadPointer = len(self.beadList)-1
-    #@+node:ville.20090724234020.14676: *3* update (NodeHistory)
+    #@+node:ville.20090724234020.14676: *3* NodeHistory.update
     def update (self,p):
         '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
         trace = False and not g.unitTesting

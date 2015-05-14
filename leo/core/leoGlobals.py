@@ -180,7 +180,7 @@ cmd_instance_dict = {
     'AbbrevCommandsClass': ['c','abbrevCommands'],
     'BufferCommandsClass': ['c','bufferCommands'],
     'EditCommandsClass': ['c','editCommands'],
-    'ChapterCommandsClass': ['c','chapterCommands'],
+     # 'ChapterCommandsClass': ['c','chapterCommands'],
     'ControlCommandsClass': ['c','controlCommands'],
     'DebugCommandsClass': ['c','debugCommands'],
     'EditFileCommandsClass': ['c','editFileCommands'],
@@ -1416,9 +1416,9 @@ def ivars2instance(c,g,ivars):
         return None
     obj = c if ivar == 'c' else g
     for ivar in ivars[1:]:
-        obj = getattr(obj,ivar)
+        obj = getattr(obj,ivar,None)
         if not obj:
-            g.trace('can not happen: unknown attribute',ivars)
+            g.trace('can not happen: unknown attribute',obj,ivar,ivars)
             break
     return obj
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
