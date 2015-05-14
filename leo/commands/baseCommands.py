@@ -15,7 +15,7 @@ class BaseEditCommandsClass:
 
         self.c = c
         self.k = None
-        self.registers = {} # To keep pychecker happy.
+        ### self.registers = {} # To keep pychecker happy.
         self.undoData = None
         self.w = None
 
@@ -27,9 +27,9 @@ class BaseEditCommandsClass:
         except AttributeError:
             self.w = None
 
-    def init (self):
-        '''Called from k.keyboardQuit to init all classes.'''
-        pass
+    # def init (self):
+        # '''Called from k.keyboardQuit to init all classes.'''
+        # pass
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand  & beginCommandWithEvent
     def beginCommand (self,undoType='Typing'):

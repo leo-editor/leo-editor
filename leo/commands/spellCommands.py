@@ -136,19 +136,14 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.482: *3* ctor (SpellCommandsClass)
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
+        '''Ctor for SpellCommandsClass class.'''
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
         self.handler = None
-        
-        self.page_width = c.config.getInt("page-width")  # for wrapping
+        self.page_width = c.config.getInt("page-width")
+            # for wrapping
 
         # All the work happens when we first open the frame.
-    #@+node:ekr.20150514063305.483: *3* spell.cmd (decorator)
-    def cmd(name):
-        '''Command decorator for the spellCommands class.'''
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name,['c','spellCommands',])
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
     def openSpellTab (self,event=None):

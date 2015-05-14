@@ -21,7 +21,6 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
     '''
     #@+others
-    #@+node:ekr.20150514045829.2: ** buffer.Birth
     #@+node:ekr.20150514045829.3: ** buffer.ctor
     def __init__ (self,c):
 

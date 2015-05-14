@@ -390,13 +390,14 @@ class Commands (object):
             for obj in table:
                 if hasattr(obj,'finishCreate'):
                     obj.finishCreate()
-                if hasattr(obj,'init'):
-                    obj.init()
+                ### No longer needed.
+                # if hasattr(obj,'init'):
+                    # obj.init()
         else:
             c.editCommandsManager.init()
         c.createCommandNames()   
         k.finishCreate()
-        c.findCommands.finishCreate() # 2013/11/17
+        c.findCommands.finishCreate()
         if not c.gui.isNullGui:
             g.registerHandler('idle',c.idle_focus_helper)
         c.frame.menu.finishCreate()

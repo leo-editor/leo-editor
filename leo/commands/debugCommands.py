@@ -21,9 +21,9 @@ def cmd(name):
 class DebugCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.101: ** db.ctor
-    def __init__ (self,c):
+    # def __init__ (self,c):
 
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
+        # BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20150514063305.103: ** collectGarbage
     @cmd('gc-collect-garbage')
     def collectGarbage (self,event=None):

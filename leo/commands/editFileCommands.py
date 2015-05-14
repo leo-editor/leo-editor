@@ -21,9 +21,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
     #@+others
     #@+node:ekr.20150514063305.354: ** ef.ctor
-    def __init__ (self,c):
+    # def __init__ (self,c):
 
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
+        # BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20150514063305.356: ** compareAnyTwoFiles & helpers
     @cmd('file-compare-leo-files')
     def compareAnyTwoFiles (self,event):

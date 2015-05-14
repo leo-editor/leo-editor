@@ -17,10 +17,11 @@ def cmd(name):
 class RegisterCommandsClass (BaseEditCommandsClass):
     '''Create registers a-z and the corresponding Emacs commands.'''
     #@+others
-    #@+node:ekr.20150514063305.463: ** register.ctor, init & finishCreate
+    #@+node:ekr.20150514063305.463: ** register.Birth
     def __init__ (self,c):
 
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
         self.methodDict, self.helpDict = self.addRegisterItems()
 
         # Init these here to keep pylint happy.
@@ -28,16 +29,17 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         self.registerMode = 0 # Must be an int.
         self.registers = g.app.globalRegisters
 
-    def finishCreate (self):
-
-        BaseEditCommandsClass.finishCreate(self)
+    ### Use BaseEditCommands.finishCreate()
+    # def finishCreate (self):
+        # BaseEditCommandsClass.finishCreate(self)
             # finish the base class.
+            # This sets selfr.k
 
-    def init (self):
-        self.method = None 
-        self.registerMode = 0 # Must be an int.
-        self.registers = {}
-
+    ### It's not clear why this is needed.
+    # def init (self):
+        # self.method = None 
+        # self.registerMode = 0 # Must be an int.
+        # self.registers = {}
     #@+node:ekr.20150514063305.465: ** register.addRegisterItems
     def addRegisterItems( self ):
 
