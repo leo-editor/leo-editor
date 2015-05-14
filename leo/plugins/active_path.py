@@ -85,10 +85,10 @@ import re
 import ast # for docstring loading
 import time # for recursion bailout
 
-from leo.plugins.plugins_menu import PlugIn
+# from leo.plugins.plugins_menu import PlugIn
 
-if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import isQt5,QtCore
+# if g.app.gui.guiName() == "qt":
+#    from leo.core.leoQt import isQt5,QtCore
 #@-<< imports >>
 testing = False
 #@+others
@@ -136,24 +136,36 @@ def attachToCommander(t,k):
         c.__active_path['max_size'] = 1000000
 
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
-#@+node:tbrown.20091128094521.15042: ** popup_entry
-def mkCmd(cmd, c):
-
-    def f():
-        return cmd(c)
-    return f
+#@+node:tbrown.20091128094521.15042: ** popup_entry (active_path)
+### Old code.
+# def mkCmd(cmd, c):
+    # def f():
+        # return cmd(c)
+    # return f
 
 def popup_entry(c,p,menu):
-
+    '''Populate the Path submenu of the popup.'''
     pathmenu = menu.addMenu("Path")
-    for i in globals():
-        if i.startswith('cmd_'):
-            a = pathmenu.addAction(PlugIn.niceMenuName(i))
-            CMD = globals()[i]
-            if isQt5:
-                a.triggered.connect(mkCmd(CMD,c))
-            else:
-                a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
+    d = g.global_commands_dict
+    for key in d:
+        if key.startswith('active-path'):
+            a = pathmenu.addAction(key)
+            command = d.get(key)
+            
+            def active_path_wrapper(aBool,command=command,c=c):
+                event = {'c':c}
+                command(event)
+
+            a.triggered.connect(active_path_wrapper)
+    ### Old code
+    # for i in globals():
+        # if i.startswith('cmd_'):
+            # a = pathmenu.addAction(PlugIn.niceMenuName(i))
+            # CMD = globals()[i]
+            # if isQt5:
+                # a.triggered.connect(mkCmd(CMD,c))
+            # else:
+                # a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
 #@+node:tbrown.20091128094521.15037: ** isDirNode
 def isDirNode(p):
 
@@ -553,6 +565,7 @@ def cmd_ShowCurrentPath(event):
 @g.command('active-path-load-recursive')
 def cmd_LoadRecursive(event):
     """Recursive update, with expansions."""
+    g.trace(event,g.callers())
     c = event.get('c')
     for s in run_recursive(c):
         path = getPath(c, s)

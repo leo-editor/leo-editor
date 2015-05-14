@@ -270,7 +270,7 @@ class PlugIn:
             self.hastoplevel = self.mod.__dict__["topLevelMenu"]
         except KeyError:
             self.hastoplevel = False
-    #@+node:EKR.20040517080555.7: *4* create_menu
+    #@+node:EKR.20040517080555.7: *4* create_menu (Plugin)
     def create_menu(self):
         '''
         Add items in the main menu for each decorated command in this plugin.
