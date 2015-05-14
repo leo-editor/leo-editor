@@ -389,41 +389,41 @@ class leoscreen_Controller:
             self.get_line_prefix = x
     #@-others
 #@+node:tbrown.20100226095909.12789: ** cmd_get_line (leoscreen_Controller)
-@g.command('leoscreen-get_line')
+@g.command('leoscreen-get-line')
 def cmd_get_line(event):
     """get next line of results"""
     c = event.get('c')
     line = c.leo_screen.get_line(c)
     c.leo_screen.insert_line(line)
 #@+node:tbrown.20100423084809.19285: ** cmd_get_all (leoscreen_Controller)
-@g.command('leoscreen-get_all')
+@g.command('leoscreen-get-all')
 def cmd_get_all(event):
     """get all of results"""
     c = event.get('c')
     line = c.leo_screen.get_all(c)
     c.leo_screen.insert_line(line)
 #@+node:tbrown.20100502155649.5597: ** cmd_get_note (leoscreen_Controller)
-@g.command('leoscreen-get_note')
+@g.command('leoscreen-get-note')
 def cmd_get_note(event):
     """get all of results"""
     c = event.get('c')
     c.leo_screen.get_note()
 #@+node:tbrown.20100502155649.5603: ** cmd_show_note (leoscreen_Controller)
-@g.command('leoscreen-show_note')
+@g.command('leoscreen-show-note')
 def cmd_show_note(event):
     """get all of results"""
     c = event.get('c')
     c.leo_screen.get_note()
     c.leo_screen.show_note()
 #@+node:tbrown.20100502155649.5595: ** cmd_show_all (leoscreen_Controller)
-@g.command('leoscreen-show_all')
+@g.command('leoscreen-show-all')
 def cmd_show_all(event):
     """get all of results"""
     c = event.get('c')
     line = c.leo_screen.get_all(c)
     c.leo_screen.show(line)
 #@+node:tbrown.20100226095909.12790: ** cmd_run_text (leoscreen_Controller)
-@g.command('leoscreen-run_text')
+@g.command('leoscreen-run-text')
 def cmd_run_text(event):
     """pass selected text to shell app. via screen"""
     c = event.get('c')
@@ -439,7 +439,7 @@ def cmd_run_text(event):
         w.setSelectionRange(i,i)
     c.leo_screen.run_text(txt,c)
 #@+node:tbrown.20120905091352.20333: ** cmd_run_all_text (leoscreen_Controller)
-@g.command('leoscreen-run_all_text')
+@g.command('leoscreen-run-all-text')
 def cmd_run_all_text(event, move=True):
     """pass whole body text to shell app. via screen and move to next body"""
     c = event.get('c')
@@ -451,7 +451,7 @@ def cmd_run_all_text(event, move=True):
         c.selectThreadNext()
     c.redraw()
 #@+node:tbrown.20121108162853.20118: ** cmd_run_all_here (leoscreen_Controller)
-@g.command('leoscreen-run_all_here')
+@g.command('leoscreen-run-all-here')
 def cmd_run_all_here(event):
     """non-advancing variant of cmd_run_all_text()"""
     c = event.get('c')
@@ -475,31 +475,31 @@ def cmd_other(event):
     c = event.get('c')
     c.leo_screen.screen_cmd(['other'])
 #@+node:tbrown.20100421115534.14948: ** cmd_get_prefix (leoscreen_Controller)
-@g.command('leoscreen-get_prefix')
+@g.command('leoscreen-get-prefix')
 def cmd_get_prefix(event):
     """call get_prefix"""
     c = event.get('c')
     c.leo_screen.get_prefix()
 #@+node:tbrown.20100424115939.5581: ** cmd_more/less prompt (leoscreen_Controller)
-@g.command('leoscreen-more_prompt')
+@g.command('leoscreen-more-prompt')
 def cmd_more_prompt(event):
     """call get_prefix"""
     c = event.get('c')
     c.leo_screen.first_line += 1
 
-@g.command('leoscreen-less_prompt')
+@g.command('leoscreen-less-prompt')
 def cmd_less_prompt(event):
     """call get_prefix"""
     c = event.get('c')
     c.leo_screen.first_line -= 1
 #@+node:tbrown.20120516075804.26095: ** cmd_jump_to_error (leoscreen_Controller)
-@g.command('leoscreen-jump_to_error')
+@g.command('leoscreen-jump-to-error')
 def cmd_jump_to_error(event):
     c = event.get('c')
     c.leo_screen.stack_frame = 0
     jump_to_error_internal(c)
 
-@g.command('leoscreen-jump_to_error_up')
+@g.command('leoscreen-jump-to-error-up')
 def cmd_jump_to_error_up(event):
     c = event.get('c')
     c.leo_screen.stack_frame += 1

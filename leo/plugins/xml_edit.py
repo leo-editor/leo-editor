@@ -377,7 +377,7 @@ def xml_for_subtree(nd):
         
     return '\n'.join(ans)
 #@+node:tbrown.20110429140247.20760: ** xml_validate
-@g.command('xml_validate')
+@g.command('xml-validate')
 def xml_validate(event):
     """Perform DTD validation on the xml and return error output
     or an empty string if there is none"""

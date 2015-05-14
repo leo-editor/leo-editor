@@ -213,7 +213,7 @@ def onCreate(tag, keys):
     
     BookMarkDisplayProvider(c)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
-@g.command('bookmarks-open_bookmark')
+@g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
     c = event.get('c')
     if not c: return
@@ -228,7 +228,7 @@ def cmd_open_bookmark(event):
             c._bookmarks.current = p.v
         cmd_open_node(c)
            
-@g.command('bookmarks-open_node')
+@g.command('bookmarks-open-node')
 def cmd_open_node(event):
     c = event.get('c')
     if not c: return
@@ -329,12 +329,12 @@ def cmd_level_increase(event, delta=1):
     g.es("Showing %d levels" % bm.levels)
     bm.show_list(bm.get_list())
     
-@g.command('bookmarks-level_decrease')
+@g.command('bookmarks-level-decrease')
 def cmd_level_decrease(event):
     """decrease levels, number of rows shown, for bookmarks"""
     cmd_level_increase(event, delta=-1)
 #@+node:tbrown.20131214112218.36871: ** bookmarks-mark
-@g.command('bookmarks-mark_as_target')
+@g.command('bookmarks-mark-as-target')
 def cmd_mark_as_target(event):
     """Mark current node as Bookmarks list for use by another file,
     bookmarks-use-other-outline should be used after this command
@@ -345,7 +345,7 @@ def cmd_mark_as_target(event):
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
-@g.command('bookmarks-use_other_outline')
+@g.command('bookmarks-use-other-outline')
 def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
     a different outline
