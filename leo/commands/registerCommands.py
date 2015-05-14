@@ -210,7 +210,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             k.setState('increment-reg',1,self.incrementRegister)
         else:
             k.clearState()
-            if self._checkIfRectangle(event):
+            if self.checkIfRectangle(event):
                 pass # Error message is in the label.
             elif char.isalpha():
                 key = char.lower()
@@ -273,7 +273,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         else:
             k.clearState()
             if char.isalpha():
-                if self._checkIfRectangle(event): return
+                if self.checkIfRectangle(event): return
                 key = char.lower()
                 val = self.registers.get(key)
                 w = c.frame.body.wrapper
@@ -364,5 +364,17 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
+    #@+node:ekr.20150514043714.12: ** register.checkIfRectangle
+    def checkIfRectangle (self,event):
+
+        c,k = self.c,self.k
+        key = event and event.char.lower() or ''
+        val = self.registers.get(key)
+        if val and type(val) == type([]):
+            k.clearState()
+            k.setLabelGrey("Register contains Rectangle, not text")
+            return True
+        else:
+            return False
     #@-others
 #@-leo

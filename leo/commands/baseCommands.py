@@ -125,21 +125,6 @@ class BaseEditCommandsClass:
             # k.setLabelGrey(warning)
             g.es(warning,color='red')
         return val
-    #@+node:ekr.20150514043714.12: *3* BaseEdit._checkIfRectangle
-    def _checkIfRectangle (self,event):
-
-        c,k = self.c,self.k
-
-        key = event and event.char.lower() or ''
-
-        val = self.registers.get(key)
-
-        if val and type(val) == type([]):
-            k.clearState()
-            k.setLabelGrey("Register contains Rectangle, not text")
-            return True
-
-        return False
     #@+node:ekr.20150514043714.13: *3* BaseEdit.getRectanglePoints
     def getRectanglePoints (self,w):
 
