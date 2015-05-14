@@ -24,6 +24,15 @@ import time
 rc_warning_given = False
 
 #@+others
+#@+node:ekr.20150514101801.1: ** getCommandList
+def getCommandList():
+    '''Return list of all command modules in leo/commands.'''
+    pattern = g.os_path_finalize_join('.','leo','commands','*.py')
+    return sorted([
+        g.shortFileName(fn)
+            for fn in glob.glob(pattern)
+                if g.shortFileName(fn) != '__init__.py'])
+
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
     
@@ -131,9 +140,13 @@ def getTable(scope):
     d = {
         'all': (
             (coreList,'core'),
+            (commandList,'commands'),
             (guiPluginsList,'plugins'),
             (pluginsList,'plugins'),
             (externalList,'external'),
+        ),
+        'commands': (
+            (commandList,'commands'),
         ),
         'core': (
             (coreList,'core'),
@@ -163,26 +176,6 @@ def getTable(scope):
         print('bad scope',scope)
         tables_table = ()
     return tables_table
-#@+node:ekr.20100221142603.5643: ** getTkPass
-def getTkPass():
-
-    return (
-        # 'EditAttributes','Library',
-        # 'URLloader','UniversalScrolling','UASearch',
-        # 'autotrees','chapter_hoist','cleo','dump_globals',
-        # 'expfolder','geotag','graphed','groupOperations',
-        # 'hoist','import_cisco_config',
-        # 'keybindings','leoupdate',
-        # 'maximizeNewWindows', 'mnplugins','mod_labels',
-        # 'mod_read_dir_outline','mod_tempfname','multifile',
-        # 'newButtons','nodeActions','nodenavigator',
-        # 'open_with','pie_menus','pluginsTest',
-        # 'read_only_nodes','rClick',
-        # 'scheduler','searchbar','searchbox','shortcut_button',
-        # 'script_io_to_body',
-        # 'templates','textnode','tkGui','toolbar',
-        # 'xcc_nodes',
-   )
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table):
     '''Call run on all tables in tables_table.'''
@@ -417,7 +410,8 @@ def scanOptions():
     # add('-s', action='store_true', help = 'suppressions')
     # add('-t', action='store_true', help = 'stc')
     # add('--tt',action='store_true', help = 'stc test')
-    add('-v',action='store_true',  help = 'report pylint version')
+    add('-u', action='store_true', help = 'user commands') 
+    add('-v', action='store_true', help = 'report pylint version')
 
     # Parse the options.
     options,args = parser.parse_args()
@@ -436,6 +430,7 @@ def scanOptions():
     # elif options.s: return 'suppressions'
     # elif options.t: return 'stc'
     # elif options.tt:return 'stc-test'
+    elif options.u: return 'commands'
     elif options.v: return 'version'
     else:           return 'all'
 #@-others
@@ -445,13 +440,13 @@ def scanOptions():
 
 g_option_fn = None
 scope = scanOptions()
-coreList            = getCoreList()
-externalList        = getExternalList()
-guiPluginsList      = getGuiPluginsList()
-modesList           = getModesList()
-passList            = getPassList()
-pluginsList         = getPluginsList()
-tkPass              = getTkPass()
+commandList     = getCommandList()      
+coreList        = getCoreList()
+externalList    = getExternalList()
+guiPluginsList  = getGuiPluginsList()
+modesList       = getModesList()
+passList        = getPassList()
+pluginsList     = getPluginsList()
 if scope == 'version':
     report_version()
 else:
