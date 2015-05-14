@@ -27,6 +27,172 @@ else:
 #@-<< imports >>
 
 #@+others
+#@+node:ekr.20150514125218.1: ** Top-level-commands
+#@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
+@g.command('ctrl-click-at-cursor')
+def ctrlClickAtCursor(event):
+    '''Simulate a control-click at the cursor.'''
+    c = event.get('c')
+    if c:
+        g.openUrlOnClick(event)
+#@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
+@g.command('disable-idle-time-events')
+def disable_idle_time_events(event):
+    '''Disable default idle-time event handling.'''
+    g.disableIdleTimeHook()
+    
+@g.command('enable-idle-time-events')
+def enable_idle_time_events(event):
+    '''Enable default idle-time event handling.'''
+    g.enableIdleTimeHook()
+    
+@g.command('toggle-idle-time-events')
+def toggle_idle_time_events(event):
+    '''Toggle default idle-time event handling.'''
+    if g.app.idle_timer_enabled:
+        g.disableIdleTimeHook()
+    else:
+        g.enableIdleTimeHook()
+#@+node:ekr.20150514125218.4: *3* join-leo-irc
+@g.command('join-leo-irc')
+def join_leo_irc(event=None):
+    '''Open the web page to Leo's irc channel on freenode.net.'''
+    import webbrowser
+    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+#@+node:ekr.20150514125218.5: *3* open-url
+@g.command('open-url')
+def openUrl(event=None):
+    '''
+    Open the url in the headline or body text of the selected node.
+    
+    Use the headline if it contains a valid url.
+    Otherwise, look *only* at the first line of the body.
+    '''
+    c = event.get('c')
+    if c:
+        g.openUrl(c.p)
+#@+node:ekr.20150514125218.6: *3* open-url-under-cursor
+@g.command('open-url-under-cursor')
+def openUrlUnderCursor(event=None):
+    '''Open the url under the cursor.'''
+    return g.openUrlOnClick(event)
+#@+node:ekr.20150514125218.7: *3* pylint command
+@g.command('pylint')
+def pylint_command(event):
+    '''
+    Run pylint on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    #@+others
+    #@+node:ekr.20150514125218.8: *4* class PylintCommand
+    class PylintCommand:
+        '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
+        def __init__(self,c):
+            '''ctor for PylintCommand class.'''
+            self.c = c
+            self.seen = [] # List of checked vnodes.
+            self.wait = True
+                # The no-wait code doesn't seem to work.
+        #@+others
+        #@+node:ekr.20150514125218.9: *5* check
+        def check(self,p,rc_fn):
+            '''Check a single node.  Return True if it is a Python @<file> node.'''
+            found = False
+            if p.isAnyAtFileNode():
+                # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+                aList = g.get_directives_dict_list(p)
+                path = c.scanAtPathDirectives(aList)
+                fn = p.anyAtFileNodeName()
+                if fn.endswith('.py'):
+                    fn = g.os_path_finalize_join(path,fn)
+                    if p.v not in self.seen:
+                        self.seen.append(p.v)
+                        self.run_pylint(fn,rc_fn)
+                        found = True
+            return found
+        #@+node:ekr.20150514125218.10: *5* get_rc_file
+        def get_rc_file(self):
+            '''Return the path to the pylint configuration file.'''
+            trace = False and not g.unitTesting
+            base = 'pylint-leo-rc.txt'
+            table = (
+                g.os_path_finalize_join(g.app.homeDir,'.leo',base),
+                    # In ~/.leo
+                g.os_path_finalize_join(g.app.loadDir,'..','..','leo','test',base),
+                    # In leo/test
+            )
+            for fn in table:
+                fn = g.os_path_abspath(fn)
+                if g.os_path_exists(fn):
+                    if trace: g.trace('found:',fn)
+                    return fn
+            g.es_print('no pylint configuration file found in\n%s' % (
+                '\n'.join(table)))
+            return None
+        #@+node:ekr.20150514125218.11: *5* run
+        def run(self):
+            '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
+            c,root = self.c,self.c.p
+            try:
+                import time
+                from pylint import lint
+                # in pythonN/Lib/site-packages.
+            except ImportError:
+                g.warning('can not import pylint')
+                return
+            rc_fn = self.get_rc_file()
+            if not rc_fn:
+                return
+            # Run lint on all Python @<file> nodes in root's tree.
+            t1 = time.clock()
+            found = False
+            for p in root.self_and_subtree():
+                found |= self.check(p,rc_fn)
+            # Look up the tree if no @<file> nodes were found.
+            if not found:
+                for p in root.parents():
+                    if self.check(p,rc_fn):
+                        found = True
+                        break
+            # If still not found, expand the search if root is a clone.
+            if not found:
+                isCloned = any([p.isCloned() for p in root.self_and_parents()])
+                # g.trace(isCloned,root.h)
+                if isCloned:
+                    for p in c.all_positions():
+                        if p.isAnyAtFileNode():
+                            isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                            # g.trace(isAncestor,p.h)
+                            if isAncestor and self.check(p,rc_fn):
+                                break
+            if self.wait:
+                g.es_print('pylint: done %s' % g.timeSince(t1))
+        #@+node:ekr.20150514125218.12: *5* run_pylint
+        def run_pylint(self,fn,rc_fn):
+            '''Run pylint on fn with the given pylint configuration file.'''
+            if not os.path.exists(fn):
+                print('file not found:',fn)
+                return
+            # Report the file name.
+            if self.wait:
+                print('pylint: %s' % (g.shortFileName(fn)))
+            # Create the required args.
+            args = ','.join([
+                "fn=r'%s'" % (fn),
+                "rc=r'%s'" % (rc_fn),
+            ])
+            # Execute the command in a separate process.
+            command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+                sys.executable,args)
+            if not self.wait:
+                command = '&' + command
+            g.execute_shell_commands(command)   
+        #@-others
+    #@-others
+        # define class PylintCommand.
+    c = event.get('c')
+    if c:
+        PylintCommand(c).run()
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController:
     '''
