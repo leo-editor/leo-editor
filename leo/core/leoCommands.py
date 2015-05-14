@@ -267,8 +267,7 @@ class Commands (object):
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
-        if 0:
-            # import leo.commands.baseCommands as baseCommands
+        if g.new_files:
             import leo.commands.abbrevCommands as abbrevCommands
             import leo.commands.bufferCommands as bufferCommands
             import leo.commands.controlCommands as controlCommands
@@ -276,14 +275,12 @@ class Commands (object):
             import leo.commands.editCommands as editCommands
             import leo.commands.editFileCommands as editFileCommands
             import leo.commands.helpCommands as helpCommands
-            import leo.commands.keyHandlerCommands as keyHandlerCommands
+            import leo.commands.keyCommands as keyCommands
             import leo.commands.killBufferCommands as killBufferCommands
             import leo.commands.macroCommands as macroCommands
             import leo.commands.rectangleCommands as rectangleCommands
             import leo.commands.registerCommands as registerCommands
             import leo.commands.spellCommands as spellCommands
-            # ('searchCommands',      SearchCommandsClass),
-            # ('leoCommands',         LeoCommandsClass),
         else:
             import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFind as leoFind # Leo 4.11.1
@@ -297,7 +294,6 @@ class Commands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
-        # import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
         self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
@@ -311,10 +307,24 @@ class Commands (object):
         self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
-        # self.viewController     = leoViews.ViewController(c)
         self.vimCommands        = leoVim.VimCommands(c)
-        self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
-        self.editCommandsManager.createEditCommanders()
+        if g.new_files:
+            self.abbrevCommands      = abbrevCommands.AbbrevCommandsClass(c)
+            self.bufferCommands      = bufferCommands.BufferCommandsClass(c)
+            self.controlCommands     = controlCommands.ControlCommandsClass(c)
+            self.debugCommands       = debugCommands.DebugCommandsClass(c)
+            self.editCommands        = editCommands.EditCommandsClass(c)
+            self.editFileCommands    = editFileCommands.EditFileCommandsClass(c)
+            self.helpCommands        = helpCommands.HelpCommandsClass(c)
+            self.keyHandlerCommands  = keyCommands.KeyHandlerCommandsClass(c)
+            self.killBufferCommands  = killBufferCommands.KillBufferCommandsClass(c)
+            self.macroCommands       = macroCommands.MacroCommandsClass(c)
+            self.rectangleCommands   = rectangleCommands.RectangleCommandsClass(c)
+            self.registerCommands    = registerCommands.RegisterCommandsClass(c)
+            self.spellCommands       = spellCommands.SpellCommandsClass(c)
+        else:
+            self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
+            self.editCommandsManager.createEditCommanders()
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
         self.undoer = leoUndo.Undoer(self)
@@ -361,7 +371,29 @@ class Commands (object):
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
         # This costs little.
-        c.editCommandsManager.init()
+        if g.new_files:
+            table = (
+                c.abbrevCommands,
+                c.bufferCommands,
+                c.controlCommands,
+                c.debugCommands,
+                c.editCommands,
+                c.editFileCommands,
+                c.helpCommands,
+                c.keyHandlerCommands,
+                c.killBufferCommands,
+                c.macroCommands,
+                c.rectangleCommands,
+                c.registerCommands,
+                c.spellCommands,
+            )
+            for obj in table:
+                if hasattr(obj,'finishCreate'):
+                    obj.finishCreate()
+                if hasattr(obj,'init'):
+                    obj.init()
+        else:
+            c.editCommandsManager.init()
         c.createCommandNames()   
         k.finishCreate()
         c.findCommands.finishCreate() # 2013/11/17
