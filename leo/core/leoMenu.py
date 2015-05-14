@@ -78,8 +78,8 @@ class LeoMenu:
             'demote':               lambda: c.canDemote(),
 
             # Outline:Go To menu...
-            'goto-prev-history-node':   lambda: c.NodeHistory.canGoToPrevVisited(),
-            'goto-next-history-node':   lambda: c.NodeHistory.canGoToNextVisited(),
+            'goto-prev-history-node':   lambda: c.nodeHistory.canGoToPrevVisited(),
+            'goto-next-history-node':   lambda: c.nodeHistory.canGoToNextVisited(),
             'goto-prev-visible':        lambda: c.canSelectVisBack(),
             'goto-next-visible':        lambda: c.canSelectVisNext(),
             # These are too slow...

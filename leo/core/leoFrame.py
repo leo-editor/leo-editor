@@ -1651,7 +1651,7 @@ class LeoTree(object):
                 elif btc.should_go_away(p):
                     btc.go_away()
             self.set_body_text_after_select(p,old_p,traceTime)
-            c.NodeHistory.update(p) # Remember this position.
+            c.nodeHistory.update(p) # Remember this position.
         if traceTime:
             delta_t = time.time()-t1
             if False or delta_t > 0.1:

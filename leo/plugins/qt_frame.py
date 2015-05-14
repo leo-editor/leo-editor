@@ -1826,7 +1826,7 @@ class LeoQtBody (leoFrame.LeoBody):
         trace = False and not g.unitTesting
         if trace: g.trace(str(obj.objectName()))
         # Update history only in leoframe.tree.select.
-        # c.NodeHistory.update(c.p)
+        # c.nodeHistory.update(c.p)
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
             if wrapper and wrapper != self.wrapper:
