@@ -17,28 +17,47 @@
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
+<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
 <v t="ekr.20150407140807.1"><vh>@button cfa-code</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
+<v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
+<v t="ekr.20150508063538.1"><vh>create_d</vh></v>
+<v t="ekr.20150508071622.1"><vh>create_decorator</vh></v>
+<v t="ekr.20150508063412.1"><vh>create_decorators</vh></v>
+<v t="ekr.20150508074623.1"><vh>create_fixups</vh></v>
+<v t="ekr.20150508063926.1"><vh>find_class</vh></v>
+<v t="ekr.20150507174711.1"><vh>find_next_clone</vh></v>
+<v t="ekr.20150507175246.1"><vh>munge_lines</vh></v>
+<v t="ekr.20150508062944.1"><vh>run</vh></v>
+</v>
+<v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
+<v t="ekr.20150509183433.2"><vh>create_d</vh></v>
+<v t="ekr.20150509183433.3"><vh>create_decorator</vh></v>
+<v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
+<v t="ekr.20150509183832.1"><vh>define_s</vh></v>
+<v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
+<v t="ekr.20150509183433.9"><vh>run V2</vh></v>
+</v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150501165310.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150514123457.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150501165310.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150514123457.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150501165310.3"><vh>@gnxs</vh></v>
+<v t="ekr.20150514123457.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150501165310.4"><vh>@gnxs</vh></v>
+<v t="ekr.20150514123457.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150501165310.5"><vh>@gnxs</vh></v>
+<v t="ekr.20150514123457.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -63,6 +82,22 @@
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
+<v t="ekr.20150514035207.1"><vh>Command classes</vh>
+<v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
+<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
+<v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
+<v t="ekr.20150514040100.1"><vh>@file ../commands/controlCommands.py</vh></v>
+<v t="ekr.20150514040118.1"><vh>@file ../commands/debugCommands.py</vh></v>
+<v t="ekr.20150514035813.1"><vh>@file ../commands/editCommands.py</vh></v>
+<v t="ekr.20150514041209.1"><vh>@file ../commands/editFileCommands.py</vh></v>
+<v t="ekr.20150514040138.1"><vh>@file ../commands/helpCommands.py</vh></v>
+<v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
+<v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
+<v t="ekr.20150514040144.1"><vh>@file ../commands/macroCommands.py</vh></v>
+<v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
+<v t="ekr.20150514040234.1"><vh>@file ../commands/registerCommands.py</vh></v>
+<v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
+</v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
@@ -72,12 +107,10 @@
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
-<v t="ekr.20031218072017.2810"
-marks="ekr.20120217070122.10470,"><vh>@file leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
-<v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
@@ -1078,10 +1111,505 @@ sort-lines
 check-clones
 expand-log-pane
 contract-log-pane</t>
-<t tx="ekr.20150501165310.1">gnx: ekr.20150407124229.1
+<t tx="ekr.20150502050609.1">@language python
+'''Save a copy of this file to the Backup directory.'''
+theDir,base = g.os_path_split(c.fileName())
+path = g.os_path_join('~/Dropbox/','backups','leoPy',base)
+c.backup(path)
+</t>
+<t tx="ekr.20150507170849.1">g.cls()
+
+print('===== Start =====')
+
+class CreateDecorators:
+    '''
+    A class to create decorators from tables in getPublicCommands.
+    
+    Note: the node "Found: getPublicCommands" must exist.
+    '''
+    def __init__(self,c,make_changes):
+        self.c = c
+        self.fixups = self.create_fixups()
+        self.n = 0
+        self.n_fail = 0
+        self.make_changes=make_changes
+        self.suppress = [
+            'c.frame.body and c.frame.body.addEditor',
+            'cls','cloneFindParents','cycleTabFocus',
+            'k and k.keyboardQuit',
+            'menuShortcutPlaceHolder','removeBlankLines',
+            'saveBuffersKillLeo',
+        ]
+    @others
+
+CreateDecorators(c,make_changes=False).run()
+</t>
+<t tx="ekr.20150507174711.1">def find_next_clone(self,p):
+    v = p.v
+    p = p.copy()
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        # g.trace(p.v,p.h)
+        if p and p.v == v:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+    return p
+</t>
+<t tx="ekr.20150507175246.1">def munge_lines(self,root,publicCommands):
+    '''Return munged lines of '''
+    # print('')
+    # g.trace(root.h)
+    s = publicCommands.b
+    i,j = s.find('{'),s.find('}')
+    s = s[i+1:j]
+    # print(s)
+    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
+    lines = [z for z in lines if not z.startswith('#')]
+    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
+    lines = [z.rstrip().rstrip(',') for z in lines]
+    lines = [z[1:] for z in lines]
+    lines = [z.replace("':",' ') for z in lines]
+    # print('\n'.join(lines))
+    self.n += len(lines)
+    return lines
+</t>
+<t tx="ekr.20150508062944.1">def run(self):
+    '''Top-level code.'''
+    self.n = 0
+    found = g.findNodeAnywhere(c,'Found: getPublicCommands')
+    assert found
+    for child in found.children():
+        publicCommands = self.find_next_clone(child)
+        root = self.find_class(publicCommands)
+        if root:
+            lines = self.munge_lines(root,publicCommands)
+            d = self.create_d(lines,publicCommands)
+            self.create_decorators(d,root)
+    print('\n%s commands %s failed' % (self.n,self.n_fail))
+</t>
+<t tx="ekr.20150508063412.1">def create_decorators(self,d,root):
+    '''Create decorators for all items in d in root's tree.'''
+    # print('***** %s' % root.h)
+    if root.h in self.fixups:
+        roots = []
+        aList = self.fixups.get(root.h)
+        for root2_h in aList:
+            root2 = g.findNodeAnywhere(self.c,root2_h)
+            if root2:
+                # g.trace(root.h,'=====&gt;',root2.h)
+                roots.append(root2)
+            else:
+                g.trace('===== not found',root2_h)
+    else:
+        roots = [root]
+    for f_name in sorted(d.keys()):
+        found = False
+        for root in roots:
+            c_name = d.get(f_name)
+            found = self.create_decorator(c_name,f_name,root)
+            if found: break
+        if not found and f_name not in self.suppress:
+            print('===== not found: %30s %s' % (root.h,f_name))
+            self.n_fail += 1
+</t>
+<t tx="ekr.20150508063538.1">def create_d(self,lines,publicCommands):
+    '''Create a dict. keys are method names; values are command names.'''
+    trace = False
+    if trace:
+        print('')
+        g.trace(publicCommands.h)
+    d = {}
+    for s in lines:
+        aList = s.split()
+        if len(aList) &gt; 2:
+            aList = [aList[0],' '.join(aList[1:])]
+        c_name,f_name = aList[0].strip(),aList[1].strip()
+        if ' ' not in f_name:
+            f_name = f_name.split('.')[-1]
+        # if '(' in f_name:
+            # f_name = f_name[:f_name.find('(')]
+        if trace: g.trace('%45s %s' % (c_name,f_name))
+        d [f_name] = c_name
+    return d
+</t>
+<t tx="ekr.20150508063926.1">def find_class(self,p):
+    '''Return the position of the class enclosing p.'''
+    for p2 in p.parents():
+        if p2.h.lower().find('class') &gt; -1 and p2.b.find('class') &gt; -1:
+            return p2
+    else:
+        g.trace('*** no class for p.h')
+        return None
+</t>
+<t tx="ekr.20150508071622.1">def create_decorator(self,c_name,f_name,root):
+    '''
+    Search root for a definition of f_name.
+    If found, insert @cmd(f_name) before the definition.
+    '''
+    # g.trace('%45s %s' % (c_name,f_name))
+    trace = False
+    found = False
+    decorator = "@cmd('%s')\n" % (c_name)
+    for p in root.self_and_subtree():
+        changed,result = False,[]
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'def ' + f_name):
+                if found:
+                    if f_name not in self.suppress:
+                        g.trace('duplicate def',f_name)
+                else:
+                    changed,found = True,True
+                    result.append(decorator)
+                    # print('%s%s' % (decorator,s))
+            result.append(s)
+        # if changed and self.make_changes:
+            # new_body = ''.join(result)
+            # # use git as our undo :-)
+            # p.b = new_body
+    return found
+</t>
+<t tx="ekr.20150508074623.1">def create_fixups(self):
+    '''
+    Return a fixup dict.
+    Keys are headlines for classes.
+    Values are new headlines of nodes containing the actual class.
+    '''
+    return {
+        'ChapterCommandsClass': ['class ChapterController'],
+        'EditCommandsClass': [
+            'EditCommandsClass',
+            'class Commands',
+            'class LeoQtFrame',
+            'class LeoBody',
+        ],
+        'class SearchCommandsClass': ['class LeoFind (LeoFind.py)'],
+        'KeyHandlerCommandsClass (add docstrings)': [
+            'class KeyHandlerClass',
+            'class AutoCompleterClass',
+        ]
+    }
+</t>
+<t tx="ekr.20150509183433.1">g.cls()
+
+# Changed files:
+# leoApp.py
+# leoAtFile.py
+# leoCommands.py
+# leoFileCommands.py
+# leoFrame.py
+# leoUndo.py
+# qt_frame.py
+
+make_changes = True
+    # True, actually make the change
+
+class CreateDecorators:
+    '''
+    A class to create decorators from tables in getPublicCommands.
+    
+    Note: the node "Found: getPublicCommands" must exist.
+    '''
+    def __init__(self):
+        self.n = 0
+        self.n_fail = 0
+        self.s = self.define_s()
+    @others
+
+CreateDecorators().run()
+</t>
+<t tx="ekr.20150509183433.2">def create_d(self,lines):
+    '''Create a dict. keys are method names; values are command names.'''
+    trace = False
+    d = {}
+    for s in lines:
+        aList = s.split()
+        if len(aList) &gt; 2:
+            aList = [aList[0],' '.join(aList[1:])]
+        c_name,f_name = aList[0].strip(),aList[1].strip()
+        if ' ' not in f_name:
+            f_name = f_name.split('.')[-1]
+        # if '(' in f_name:
+            # f_name = f_name[:f_name.find('(')]
+        if trace: g.trace('%45s %s' % (c_name,f_name))
+        d [f_name] = c_name
+    return d
+</t>
+<t tx="ekr.20150509183433.3">def create_decorator(self,c_name,f_name,root):
+    '''
+    Search root for a definition of f_name.
+    If found, insert @cmd(f_name) before the definition.
+    '''
+    trace = True
+    found = False
+    decorator = "@cmd('%s')\n" % (c_name)
+    for p in root.self_and_subtree():
+        changed,result = False,[]
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'def ' + f_name):
+                if found:
+                    if f_name not in self.suppress:
+                        g.trace('duplicate def',f_name)
+                else:
+                    changed,found = True,True
+                    result.append(decorator)
+                    # print('%s%s' % (decorator,s))
+            result.append(s)
+        if changed and make_changes:
+            new_body = ''.join(result)
+            print('%40s %s' % (p.h[:40],decorator.rstrip()))
+            # use git as our undo :-)
+            # p.b = new_body
+    return found
+</t>
+<t tx="ekr.20150509183433.4">def create_decorators(self,d): ### ,root):
+    '''Create decorators for all items in d in root's tree.'''
+    table = (
+        'class Commands', # c.
+        'class LeoQtFrame', # f.
+        'class LeoFrame', # f.
+        'class LeoApp', # g.app.
+        '@file leoAtFile.py', # c.atFileCommands
+        '@file leoFileCommands.py', # c.fileCommands
+        'class Undoer', # c.undoer
+    )
+    roots = []
+    for h in table:
+        root = g.findNodeAnywhere(c,h)
+        assert root,h
+        roots.append(root)
+    for f_name in sorted(d.keys()):
+        found = False
+        for root in roots:
+            c_name = d.get(f_name)
+            found = self.create_decorator(c_name,f_name,root)
+            if found: break
+        if not found and f_name not in self.suppress:
+            print('===== not found: %s' % (f_name))
+            self.n_fail += 1
+</t>
+<t tx="ekr.20150509183433.8">def munge_lines(self,s):
+    '''Return munged lines of s. '''
+    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
+    lines = [z for z in lines if not z.startswith('#')]
+    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
+    lines = [z.rstrip().rstrip(',') for z in lines]
+    lines = [z[1:] for z in lines]
+    lines = [z.replace("':",' ') for z in lines]
+    self.n += len(lines)
+    return lines
+</t>
+<t tx="ekr.20150509183433.9">def run(self):
+    '''Top-level code.'''
+    lines = self.munge_lines(self.s)
+    d = self.create_d(lines)
+    self.create_decorators(d)
+    print('%s commands %s failed' % (self.n,self.n_fail))
+</t>
+<t tx="ekr.20150509183832.1"># 'check-all-python-code':      c.checkAllPythonCode,
+# 'check-python-code':          c.checkPythonCode,
+# 'extract-python-method':        c.extractPythonMethod,
+# 'extract-section':              c.extractSection,
+# 'import-at-file':               c.importAtFile,
+# 'import-at-root':               c.importAtRoot,
+# 'import-cweb-files':            c.importCWEBFiles,
+# 'import-derived-file':          c.importDerivedFile,
+# 'import-flattened-outline':     c.importFlattenedOutline,
+# 'import-noweb-files':           c.importNowebFiles,
+# 'mark-changed-roots':           c.markChangedRoots,
+# 'mark-clones':                c.markClones,
+# 'open-compare-window':        c.openCompareWindow,
+# 'open-online-tutorial':       c.leoTutorial,
+# 'reformat-body':              c.reformatBody, # 2013/10/02.
+def define_s(self):
+    return '''
+'abort-edit-headline':          f.abortEditLabelCommand,
+'about-leo':                    c.about,
+'add-comments':                 c.addComments,     
+'beautify':                     c.beautifyPythonCode,
+'beautify-all':                 c.beautifyAllPythonCode,
+'beautify-c':                   c.beautifyCCode,
+'beautify-tree':                c.beautifyPythonTree,
+'cascade-windows':              f.cascade,
+'check-derived-file':           c.atFileCommands.checkDerivedFile,
+'check-leo-file':               c.fileCommands.checkLeoFile,
+'check-outline':                c.fullCheckOutline,
+'clean-recent-files':           c.cleanRecentFiles,
+'clear-recent-files':           c.clearRecentFiles,
+'clone-node':                   c.clone,
+'clone-node-to-last-node':      c.cloneToLastNode,
+'close-window':                 c.close,
+'contract-all':                 c.contractAllHeadlines,
+'contract-all-other-nodes':     c.contractAllOtherNodes,
+'contract-node':                c.contractNode,
+'contract-or-go-left':          c.contractNodeOrGoToParent,
+'contract-parent':              c.contractParent,
+'convert-all-blanks':           c.convertAllBlanks,
+'convert-all-tabs':             c.convertAllTabs,
+'convert-blanks':               c.convertBlanks,
+'convert-tabs':                 c.convertTabs,
+'copy-node':                    c.copyOutline,
+'copy-text':                    f.copyText,
+'cut-node':                     c.cutOutline,
+'cut-text':                     f.cutText,
+'de-hoist':                     c.dehoist,
+'delete-comments':              c.deleteComments,
+'delete-node':                  c.deleteOutline,
+'demote':                       c.demote,
+'dump-outline':                 c.dumpOutline,
+'edit-headline':                c.editHeadline,
+'end-edit-headline':            f.endEditLabelCommand,
+'equal-sized-panes':            f.equalSizedPanes,
+'execute-script':               c.executeScript,
+'exit-leo':                     g.app.onQuit,
+'expand-all':                   c.expandAllHeadlines,
+'expand-all-subheads':          c.expandAllSubheads,
+'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+'expand-next-level':            c.expandNextLevel,
+'expand-node':                  c.expandNode,
+'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+'expand-prev-level':            c.expandPrevLevel,
+'expand-to-level-1':            c.expandLevel1,
+'expand-to-level-2':            c.expandLevel2,
+'expand-to-level-3':            c.expandLevel3,
+'expand-to-level-4':            c.expandLevel4,
+'expand-to-level-5':            c.expandLevel5,
+'expand-to-level-6':            c.expandLevel6,
+'expand-to-level-7':            c.expandLevel7,
+'expand-to-level-8':            c.expandLevel8,
+'expand-to-level-9':            c.expandLevel9,
+'export-headlines':             c.exportHeadlines,
+'extract':                      c.extract,
+'extract-names':                c.extractSectionNames,
+'find-next-clone':              c.findNextClone,
+'flatten-outline':              c.flattenOutline,
+'flatten-outline-to-node':      c.flattenOutlineToNode,
+'go-back':                      c.goPrevVisitedNode,
+'go-forward':                   c.goNextVisitedNode,
+'goto-first-node':              c.goToFirstNode,
+'goto-first-sibling':           c.goToFirstSibling,
+'goto-first-visible-node':      c.goToFirstVisibleNode,
+'goto-last-node':               c.goToLastNode,
+'goto-last-sibling':            c.goToLastSibling,
+'goto-last-visible-node':       c.goToLastVisibleNode,
+'goto-next-changed':            c.goToNextDirtyHeadline,
+'goto-next-clone':              c.goToNextClone,
+'goto-next-history-node':       c.goToNextHistory,
+'goto-next-marked':             c.goToNextMarkedHeadline,
+'goto-next-node':               c.selectThreadNext,
+'goto-next-sibling':            c.goToNextSibling,
+'goto-next-visible':            c.selectVisNext,
+'goto-parent':                  c.goToParent,
+'goto-prev-history-node':       c.goToPrevHistory,
+'goto-prev-node':               c.selectThreadBack,
+'goto-prev-sibling':            c.goToPrevSibling,
+'goto-prev-visible':            c.selectVisBack,
+'hide-invisibles':              c.hideInvisibles,
+'hoist':                        c.hoist,
+'import-file':                  c.importAnyFile,
+'indent-region':                c.indentBody,
+'insert-body-time':             c.insertBodyTime,
+'insert-child':                 c.insertChild,
+'insert-node':                  c.insertHeadline,
+'insert-node-before':           c.insertHeadlineBefore,
+'mark':                         c.markHeadline,
+'mark-changed-items':           c.markChangedHeadlines,
+'mark-subheads':                c.markSubheads,
+'match-brackets':               c.findMatchingBracket,
+'minimize-all':                 f.minimizeAll,
+'move-outline-down':            c.moveOutlineDown,
+'move-outline-left':            c.moveOutlineLeft,
+'move-outline-right':           c.moveOutlineRight,
+'move-outline-up':              c.moveOutlineUp,
+'new':                          c.new,
+'open-cheat-sheet-leo':         c.openCheatSheet,
+'open-leoDocs-leo':             c.leoDocumentation,
+'open-leoPlugins-leo':          c.openLeoPlugins,
+'open-leoSettings-leo':         c.openLeoSettings,
+'open-local-settings':          c.selectAtSettingsNode,
+'open-myLeoSettings-leo':       c.openMyLeoSettings,
+'open-offline-tutorial':        f.leoHelp,
+'open-online-home':             c.leoHome,
+'open-online-toc':              c.openLeoTOC,
+'open-online-tutorials':        c.openLeoTutorials,
+'open-online-videos':           c.openLeoVideos,
+'open-outline':                 c.open,
+'open-python-window':           c.openPythonWindow,
+'open-quickstart-leo':          c.leoQuickStart,
+'open-scripts-leo':             c.openLeoScripts,
+'open-users-guide':             c.openLeoUsersGuide,
+'open-with':                    c.openWith,
+'outline-to-cweb':              c.outlineToCWEB,
+'outline-to-noweb':             c.outlineToNoweb,
+'paste-node':                   c.pasteOutline,
+'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+'paste-text':                   f.pasteText,
+'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+'pretty-print-python-code':     c.prettyPrintPythonCode,
+'promote':                      c.promote,
+'read-at-auto-nodes':           c.readAtAutoNodes,
+'read-at-file-nodes':           c.readAtFileNodes,
+'read-at-shadow-nodes':         c.readAtShadowNodes,
+'read-file-into-node':          c.readFileIntoNode,
+'read-outline-only':            c.readOutlineOnly,
+'redo':                         c.undoer.redo,
+'reformat-paragraph':           c.reformatParagraph,
+'refresh-from-disk':            c.refreshFromDisk,
+'remove-sentinels':             c.removeSentinels,
+'resize-to-screen':             f.resizeToScreen,
+'revert':                       c.revert,
+'save-all':                     c.saveAll,
+'save-file':                    c.save,
+'save-file-as':                 c.saveAs,
+'save-file-as-unzipped':        c.saveAsUnzipped,
+'save-file-as-zipped':          c.saveAsZipped,
+'save-file-to':                 c.saveTo,
+'set-colors':                   c.colorPanel,
+'set-font':                     c.fontPanel,
+'settings':                     c.preferences,
+'show-invisibles':              c.showInvisibles,
+'sort-children':                c.sortChildren,
+'sort-recent-files':            c.sortRecentFiles,
+'sort-siblings':                c.sortSiblings,
+'tangle':                       c.tangle,
+'tangle-all':                   c.tangleAll,
+'tangle-marked':                c.tangleMarked,
+'toggle-active-pane':           f.toggleActivePane,
+'toggle-angle-brackets':        c.toggleAngleBrackets,
+'toggle-invisibles':            c.toggleShowInvisibles,
+'toggle-sparse-move':           c.toggleSparseMove,
+'toggle-split-direction':       f.toggleSplitDirection,
+'undo':                         c.undoer.undo,
+'unformat-paragraph':           c.unformatParagraph,
+'unindent-region':              c.dedentBody,
+'unmark-all':                   c.unmarkAll,
+'untangle':                     c.untangle,
+'untangle-all':                 c.untangleAll,
+'untangle-marked':              c.untangleMarked,
+'weave':                        c.weave,
+'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+'write-file-from-node':         c.writeFileFromNode,
+'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+'write-outline-only':           c.fileCommands.writeOutlineOnly,
+'''
+</t>
+<t tx="ekr.20150514035207.1"></t>
+<t tx="ekr.20150514123457.1">gnx: ekr.20150407124229.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150501165310.2">gnx: ekr.20150407124230.1
+<t tx="ekr.20150514123457.2">gnx: ekr.20150407124230.1
 unl: qt_main declarations
 gnx: ekr.20150407124230.2
 unl: class Ui_MainWindow
@@ -1090,8 +1618,8 @@ unl: class Ui_MainWindow--&gt;setupUi
 gnx: ekr.20150407124230.4
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20150501165310.3"></t>
-<t tx="ekr.20150501165310.4">gnx: ekr.20150407124230.5
+<t tx="ekr.20150514123457.3"></t>
+<t tx="ekr.20150514123457.4">gnx: ekr.20150407124230.5
 unl: qt_quicksearch declarations
 gnx: ekr.20150407124230.6
 unl: class Ui_LeoQuickSearchWidget
@@ -1100,6 +1628,6 @@ unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
 gnx: ekr.20150407124230.8
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20150501165310.5"></t>
+<t tx="ekr.20150514123457.5"></t>
 </tnodes>
 </leo_file>
