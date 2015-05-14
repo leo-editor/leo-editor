@@ -159,51 +159,35 @@ global_commands_dict = {}
 
 cmd_instance_dict = {
     # Keys are class names, values are attribute chains.
-    # Created from c.initObjects...
+    'AbbrevCommandsClass': ['c','abbrevCommands'],
     'AtFile': ['c','atFileCommands'],
     'AutoCompleterClass': ['c','k','autoCompleter'],
+    'BufferCommandsClass': ['c','bufferCommands'],
     'ChapterController': ['c','chapterController'],
     'Commands': ['c'],
-    ### 'EditCommandsManager': ['c','editCommandsManager'],
+    'ControlCommandsClass': ['c','controlCommands'],
+    'DebugCommandsClass': ['c','debugCommands'],
+    'EditCommandsClass': ['c','editCommands'],
+    'EditFileCommandsClass': ['c','editFileCommands'],
     'FileCommands': ['c','fileCommands'],
+    'HelpCommandsClass': ['c','helpCommands'],
     'KeyHandlerClass': ['c','k'],
+    'KeyHandlerCommandsClass': ['c','keyHandlerCommands'],
+    'KillBufferCommandsClass': ['c','killBufferCommands'],
     'LeoApp': ['g','app'],
     'LeoFind': ['c','findCommands'],
     'LeoImportCommands': ['c','importCommands'],
-    'PrintingController': ['c','printingController'],
-    'RstCommands': ['c','rstCommands'],
-    'VimCommands': ['c','vimCommands'],
-    'Undoer': ['c','undoer'],
-    # Created from  and EditCommandsManager.__init__...
-    # regex search: \('(.*)',([ ]*)(.*)\),
-    # regex replace: '\3': ['c','\1'],
-    'AbbrevCommandsClass': ['c','abbrevCommands'],
-    'BufferCommandsClass': ['c','bufferCommands'],
-    'EditCommandsClass': ['c','editCommands'],
-     ### 'ChapterCommandsClass': ['c','chapterCommands'],
-    'ControlCommandsClass': ['c','controlCommands'],
-    'DebugCommandsClass': ['c','debugCommands'],
-    'EditFileCommandsClass': ['c','editFileCommands'],
-    'HelpCommandsClass': ['c','helpCommands'],
-    'KeyHandlerCommandsClass': ['c','keyHandlerCommands'],
-    'KillBufferCommandsClass': ['c','killBufferCommands'],
     'MacroCommandsClass': ['c','macroCommands'],
+    'PrintingController': ['c','printingController'],
     'RectangleCommandsClass': ['c','rectangleCommands'],
     'RegisterCommandsClass': ['c','registerCommands'],
-    ### 'SearchCommandsClass': ['c','searchCommands'],
+    'RstCommands': ['c','rstCommands'],
     'SpellCommandsClass': ['c','spellCommands'],
+    # 'TangleCommands': ['c','tangleCommands'],
+        # The Commands class defines all tangle/untangle commands.
+    'Undoer': ['c','undoer'],
+    'VimCommands': ['c','vimCommands'],
 }
-    # These should never have commands...
-    # self.shadowController   = leoShadow.ShadowController(c)
-    # self.persistenceController = leoPersistence.PersistenceDataController(c)
-    # self.tangleCommands     = leoTangle.TangleCommands(c)
-        # Because all the commands are Commander commands.
-    # self.testManager        = leoTest.TestManager(c)
-    # self.cacher = leoCache.Cacher(c)
-    # self.free_layout = free_layout.FreeLayoutController(c)
-    # self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
-    # self.bigTextController = g.app.gui.bigTextControllerClass(c)
-    # 'LeoCommandsClass': ['c','leoCommands'],
 #@-<< define global decorator dicts >>
 tree_popup_handlers = [] # Set later.
 user_dict = {}
