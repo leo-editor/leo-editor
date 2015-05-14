@@ -1,0 +1,233 @@
+# -*- coding: utf-8 -*-
+#@+leo-ver=5-thin
+#@+node:ekr.20150514040118.1: * @file ../commands/debugCommands.py
+#@@first
+'''Leo's debug commands.'''
+#@+<< imports >>
+#@+node:ekr.20150514050138.1: ** << imports >> (debugCommands.py)
+import leo.core.leoGlobals as g
+
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+
+import os
+import subprocess
+import sys
+#@-<< imports >>
+
+def cmd(name):
+    '''Command decorator for the DebugCommandsClass class.'''
+    return g.new_cmd_decorator(name,['c','debugCommands',])
+
+class DebugCommandsClass (BaseEditCommandsClass):
+    #@+others
+    #@+node:ekr.20150514063305.101: ** db.ctor
+    def __init__ (self,c):
+
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
+    #@+node:ekr.20150514063305.103: ** collectGarbage
+    @cmd('gc-collect-garbage')
+    def collectGarbage (self,event=None):
+
+        """Run Python's Gargabe Collector."""
+
+        g.collectGarbage()
+    #@+node:ekr.20150514063305.104: ** invoke_debugger & helper
+    @cmd('debug')
+    def invoke_debugger (self,event=None):
+
+        '''Start an external debugger in another process to debug a script.
+        The script is the presently selected text or then entire tree's script.'''
+
+        c = self.c ; p = c.p
+        python = sys.executable
+        script = g.getScript(c,p)
+        winpdb = self.findDebugger()
+        if not winpdb: return
+
+        #check for doctest examples
+        try:
+            import doctest
+            parser = doctest.DocTestParser()
+            examples = parser.get_examples(script)
+
+            # if this is doctest, extract the examples as a script
+            if len(examples) > 0:
+                script = doctest.script_from_examples(script)
+        except ImportError:
+            pass
+
+        # special case; debug code may include g.es("info string").
+        # insert code fragment to make this expression legal outside Leo.
+        hide_ges = "class G:\n def es(s,c=None):\n  pass\ng = G()\n"
+        script = hide_ges + script
+
+        # Create a temp file from the presently selected node.
+        filename = c.writeScriptFile(script)
+        if not filename: return
+
+        # Invoke the debugger, retaining the present environment.
+        os.chdir(g.app.loadDir)
+        if False and subprocess:
+            cmdline = '%s %s -t %s' % (python,winpdb,filename)
+            subprocess.Popen(cmdline)
+        else:
+            args = [sys.executable, winpdb, '-t', filename]
+            os.spawnv(os.P_NOWAIT, python, args)
+    #@+node:ekr.20150514063305.105: *3* findDebugger
+    def findDebugger (self):
+
+        '''Find the debugger using settings.'''
+
+        c = self.c
+        pythonDir = g.os_path_dirname(sys.executable)
+
+        debuggers = (
+            c.config.getString('debugger_path'),
+            g.os_path_join(pythonDir,'Lib','site-packages','winpdb.py'), # winpdb 1.1.2 or newer
+            g.os_path_join(pythonDir,'scripts','_winpdb.py'), # oder version.
+        )
+
+        for debugger in debuggers:
+            if debugger:
+                debugger = c.os_path_finalize(debugger)
+                if g.os_path_exists(debugger):
+                    return debugger
+                else:
+                    g.warning('debugger does not exist:',debugger)
+        g.es('no debugger found.')
+        return None
+    #@+node:ekr.20150514063305.106: ** dumpAll/New/VerboseObjects
+    @cmd('gc-dump-all-objects')
+    def dumpAllObjects (self,event=None):
+
+        '''Print a summary of all existing Python objects.'''
+
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcAll()
+        g.trace_gc = old
+
+    @cmd('gc-dump-new-objects')
+    def dumpNewObjects (self,event=None):
+
+        '''Print a summary of all Python objects created
+        since the last time Python's Garbage collector was run.'''
+
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcObjects()
+        g.trace_gc = old
+
+    @cmd('gc-dump-objects-verbose')
+    def verboseDumpObjects (self,event=None):
+
+        '''Print a more verbose listing of all existing Python objects.'''
+
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcVerbose()
+        g.trace_gc = old
+    #@+node:ekr.20150514063305.107: ** enable/disableGcTrace
+    @cmd('gc-trace-disable')
+    def disableGcTrace (self,event=None):
+
+        '''Enable tracing of Python's Garbage Collector.'''
+
+        g.trace_gc = False
+
+
+    @cmd('gc-trace-enable')
+    def enableGcTrace (self,event=None):
+
+        '''Disable tracing of Python's Garbage Collector.'''
+
+        g.trace_gc = True
+        g.enable_gc_debug()
+
+        if g.trace_gc_verbose:
+            g.blue('enabled verbose gc stats')
+        else:
+            g.blue('enabled brief gc stats')
+    #@+node:ekr.20150514063305.108: ** freeTreeWidgets
+    def freeTreeWidgets (self,event=None):
+
+        '''Free all widgets used in Leo's outline pane.'''
+
+        c = self.c
+
+        c.frame.tree.destroyWidgets()
+        c.redraw()
+    #@+node:ekr.20150514063305.109: ** pdb
+    @cmd('pdb')
+    def pdb (self,event=None):
+
+        '''Fall into pdb.'''
+
+        g.pdb()
+    #@+node:ekr.20150514063305.110: ** printFocus
+    @cmd('print-focus')
+    def printFocus (self,event=None):
+        '''
+        Print information about the requested focus.
+
+        Doesn't work if the focus isn't in a pane with bindings!
+        '''
+        c = self.c
+        w = g.app.gui.get_focus()
+        g.es_print('c.requestedFocusWidget:',c.widget_name(c.requestedFocusWidget))
+        g.es_print('           c.get_focus:',c.widget_name(c.get_focus()))
+    #@+node:ekr.20150514063305.111: ** printGcSummary
+    @cmd('gc-print-summary')
+    def printGcSummary (self,event=None):
+
+        '''Print a brief summary of all Python objects.'''
+
+        g.printGcSummary()
+    #@+node:ekr.20150514063305.112: ** printStats
+    def printStats (self,event=None):
+
+        '''Print statistics about the objects that Leo is using.'''
+
+        c = self.c
+        c.frame.tree.showStats()
+        self.dumpAllObjects()
+    #@+node:ekr.20150514063305.113: ** runUnitTest commands
+    @cmd('run-all-unit-tests-locally')
+    def runAllUnitTestsLocally (self,event=None):
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
+        self.c.testManager.doTests(all=True)
+
+    @cmd('run-marked-unit-tests-locally')
+    def runMarkedUnitTestsLocally (self,event=None):
+        '''Run marked unit tests in the outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
+        self.c.testManager.doTests(all=True,marked=True)
+
+    @cmd('run-selected-unit-tests-locally')
+    def runSelectedUnitTestsLocally (self,event=None):
+        '''Run all unit tests contained in the presently selected outline.
+        Tests are run in the outline's process, so tests *can* change the outline.'''
+        self.c.testManager.doTests(all=False,marked=False)
+
+    # Externally run tests...
+
+    @cmd('run-all-unit-tests-externally')
+    def runAllUnitTestsExternally (self,event=None):
+        '''Run all unit tests contained in the entire outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
+        self.c.testManager.runTestsExternally(all=True,marked=False)
+
+    @cmd('run-marked-unit-tests-externally')
+    def runMarkedUnitTestsExternally(self,event=None):
+        '''Run all marked unit tests in the outline.
+        Tests are run in an external process, so tests *cannot* change the outline.'''
+        self.c.testManager.runTestsExternally(all=True,marked=True)
+
+    @cmd('run-selected-unit-tests-externally')
+    def runSelectedUnitTestsExternally(self,event=None):
+        '''Run all unit tests contained in the presently selected outline
+        Tests are run in an external process, so tests *cannot* change the outline.'''
+        self.c.testManager.runTestsExternally(all=False,marked=False)
+    #@-others
+#@-leo
