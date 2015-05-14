@@ -343,6 +343,7 @@ class Commands (object):
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
         # This costs little.
+        c.editCommandsManager.init()
         c.createCommandNames()   
         k.finishCreate()
         c.findCommands.finishCreate() # 2013/11/17
@@ -360,12 +361,12 @@ class Commands (object):
         c.bodyWantsFocus()
     #@+node:ekr.20140815160132.18835: *5* c.createCommandNames
     def createCommandNames(self):
-        '''Create all entries in c.commandsDict.'''
-        c,k = self,self.k
-        c.editCommandsManager.getPublicCommands()
-        # Do *not* clear c.commandsDict here.
+        '''
+        Create all entries in c.commandsDict.
+        Do *not* clear c.commandsDict here.
+        '''
         for name,func in g.global_commands_dict.items():
-            k.registerCommand(commandName=name,shortcut=None,func=func)
+            self.k.registerCommand(commandName=name,shortcut=None,func=func)
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict (self):
 

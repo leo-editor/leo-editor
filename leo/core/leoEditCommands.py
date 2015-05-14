@@ -394,32 +394,27 @@ class EditCommandsManager:
         )
     #@+node:ekr.20120211121736.10827: *3* ecm.createEditCommanders
     def createEditCommanders (self):
-
         '''Create edit classes in the commander.'''
-
         c = self.c
-
         for name, theClass in self.classesList:
             theInstance = theClass(c)# Create the class.
             setattr(c,name,theInstance)
             # g.trace(name,theInstance)
-    #@+node:ekr.20120211121736.10828: *3* ecm.getPublicCommands
-    def getPublicCommands (self):
-        '''Add the names of commands defined in this file to c.commandsDict.'''
-        # Called from c.finishCreate.
-        c,d = self.c,{}
+    #@+node:ekr.20120211121736.10828: *3* ecm.init
+    def init (self):
+        '''
+        Init all edit commands subcommanders.
+        Called from c.finishCreate.
+        '''
+        c = self.c
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
             theInstance.finishCreate()
             theInstance.init()
-        c.commandsDict.update(d)
-    #@+node:ekr.20120211121736.10829: *3* ecm.initAllEditCommanders
-    def initAllEditCommanders (self):
-
+    #@+node:ekr.20120211121736.10829: *3* ecm.reinit
+    def reinit (self):
         '''Re-init classes in the commander.'''
-
         c = self.c
-
         for name, theClass in self.classesList:
             theInstance = getattr(c,name)
             theInstance.init()

@@ -2817,7 +2817,7 @@ class KeyHandlerClass:
         if commandName:
             if not k.inState():
                 k.commandName = None
-                c.editCommandsManager.initAllEditCommanders()
+                c.editCommandsManager.reinit()
             if 0: # Do *not* call this by default.  It interferes with undo.
                 c.frame.body.onBodyChanged(undoType='Typing')
             if k.newMinibufferWidget:
