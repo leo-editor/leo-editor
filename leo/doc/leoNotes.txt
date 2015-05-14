@@ -14174,22 +14174,8 @@ def check_open_with_files(efc):
     '''Check all open-with files for changes.'''
     for d in efc.open_with_files:
         efc.check_open_with_file(d)
-.. @+node:ekr.20150505144026.1: *3* g.cmd (decorator)
-def cmd(name):
-    '''
-    A *global* decorator that defines the given name to be a command
-    implemented by the decorated func.
-    
-    The command dispatch logic assumes the signature: def func(c,event=None).
-    '''
-    # Don't use g here: it hasn't been defined.
-    def _decorator(func):
-        if new_dispatch:
-            global_commands_dict[name]=func
-        return func
-    return _decorator
-    
-.. @+node:ekr.20150511153047.1: *3* class Command (old @command decorator)
+.. @+node:ekr.20150514084639.1: *3* Decorators & reorganized files
+.. @+node:ekr.20150511153047.1: *4* class Command (old @command decorator)
 class Command:
     """ Decorator to create global commands """
     def __init__(self, name, **kwargs):
@@ -14215,44 +14201,7 @@ class Command:
 
 def command(name,**kwargs):
     return Command(name,**kwargs)
-.. @+node:ekr.20150511093317.1: *3* k.registerDecoratedCommand
-def registerDecoratedCommand(self,commandName,func):
-    '''Register a command created by an @cmd decorator.'''
-    trace = False and not g.unitTesting and not g.app.silentMode
-    traceStroke = True
-    c,k = self.c,self
-    f = c.commandsDict.get(commandName)
-    assert f and f == func
-    fname = func.__name__
-    d = c.inverseCommandsDict
-    if trace and fname in d and d.get(fname) != commandName:
-        g.trace('duplicate',commandName,fname)
-    c.inverseCommandsDict [fname] = commandName
-    pane,stroke = 'all',None
-    junk,aList = c.config.getShortcut(commandName)
-    for si in aList:
-        assert g.isShortcutInfo(si),si
-        assert g.isStrokeOrNone(si.stroke)
-        if si.stroke and not si.pane.endswith('-mode'):
-            if trace and traceStroke:
-                g.trace('*** found',si.pane,si.stroke.s,si.commandName)
-            stroke = si.stroke
-            pane = si.pane # 2015/05/11
-            break
-    if stroke:
-        ok = k.bindKey(pane,stroke,func,commandName,tag='register-command')
-            # Must be a stroke.
-        k.makeMasterGuiBinding(stroke) # Must be a stroke.
-    # Fixup any previous abbreviation to press-x-button commands.
-    if commandName.startswith('press-') and commandName.endswith('-button'):
-        d = c.config.getAbbrevDict()
-            # Keys are full command names, values are abbreviations.
-        if commandName in list(d.values()):
-            for key in d:
-                if d.get(key) == commandName:
-                    c.commandsDict [key] = c.commandsDict.get(commandName)
-                    break
-.. @+node:ekr.20061031131434.81: *3* c.createInverseCommandsDict
+.. @+node:ekr.20061031131434.81: *4* c.createInverseCommandsDict
 def createInverseCommandsDict (self):
     '''Add entries to k.inverseCommandsDict using c.commandsDict.
 
@@ -14268,8 +14217,8 @@ def createInverseCommandsDict (self):
         except Exception:
             # g.es_exception()
             g.trace(repr(name),repr(f))
-.. @+node:ekr.20150513103821.1: *3* From plugins_menu.py
-.. @+node:ekr.20150513103831.1: *4* OLD create_menu
+.. @+node:ekr.20150513103821.1: *4* From plugins_menu.py
+.. @+node:ekr.20150513103831.1: *5* OLD create_menu
 def create_menu(self):
     '''Add items in the main menu for each cmd_ function.'''
     self.othercmds = {}
@@ -14301,7 +14250,7 @@ def create_menu(self):
     
             # g.trace('(Plugin) defining command:',name)
             self.c.keyHandler.registerCommand(name, None, plugins_menu_wrapper)
-.. @+node:ekr.20150513162945.1: *4* niceMenuName
+.. @+node:ekr.20150513162945.1: *5* niceMenuName
 @staticmethod
 def niceMenuName(name):
     """Return a nice version of the command name for the menu
@@ -14320,9 +14269,9 @@ def niceMenuName(name):
         text += char
     return text.lower().replace(' ','-').replace('_','-')
         # EKR: show the form of the command.  YMMV.
-.. @+node:ekr.20150513164527.1: *3* getPublicCommands...
+.. @+node:ekr.20150513164527.1: *4* getPublicCommands...
 # All except ecm.getPublicCommands.
-.. @+node:ekr.20050920084036.15: *4* abbrev.getPublicCommands & getStateCommands
+.. @+node:ekr.20050920084036.15: *5* abbrev.getPublicCommands & getStateCommands
 def getPublicCommands (self):
     '''Return a dict: keys are command names and whose values are methods.'''
     if g.new_dispatch:
@@ -14345,14 +14294,14 @@ def getPublicCommands (self):
             'abbrev-read':              self.readAbbreviations,
             'abbrev-write':             self.writeAbbreviations,
         }
-.. @+node:ekr.20050920084036.5: *4* baseEditCommands.getPublicCommands & getStateCommands
+.. @+node:ekr.20050920084036.5: *5* baseEditCommands.getPublicCommands & getStateCommands
 def getPublicCommands (self):
 
     '''Return a dict describing public commands implemented in the subclass.
     Keys are untranslated command names.  Values are methods of the subclass.'''
 
     return {}
-.. @+node:ekr.20050920084036.33: *4* buffer.getPublicCommands
+.. @+node:ekr.20050920084036.33: *5* buffer.getPublicCommands
 def getPublicCommands (self):
     if g.new_dispatch:
         return {}
@@ -14369,7 +14318,7 @@ def getPublicCommands (self):
             'buffers-list':                 self.listBuffers,
             'buffers-list-alphabetically':  self.listBuffersAlphabetically,
         }
-.. @+node:ekr.20070522085429: *4* chapter.getPublicCommands
+.. @+node:ekr.20070522085429: *5* chapter.getPublicCommands
 def getPublicCommands (self):
 
     c = self.c
@@ -14390,7 +14339,7 @@ def getPublicCommands (self):
         }
     else:
         return {}
-.. @+node:ekr.20050920084036.152: *4* control.getPublicCommands
+.. @+node:ekr.20050920084036.152: *5* control.getPublicCommands
 def getPublicCommands (self):
 
     k = self.c.k
@@ -14413,7 +14362,7 @@ def getPublicCommands (self):
             'shell-command':            self.shellCommand,
             'shell-command-on-region':  self.shellCommandOnRegion,
         }
-.. @+node:ekr.20060127163325: *4* db.getPublicCommands
+.. @+node:ekr.20060127163325: *5* db.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -14441,7 +14390,7 @@ def getPublicCommands (self):
             'run-marked-unit-tests-locally':    self.runMarkedUnitTestsLocally,
             'run-selected-unit-tests-locally':  self.runSelectedUnitTestsLocally,
         }
-.. @+node:ekr.20050920084036.55: *4* ec.getPublicCommands
+.. @+node:ekr.20050920084036.55: *5* ec.getPublicCommands
 def getPublicCommands (self):        
 
     c = self.c
@@ -14660,7 +14609,7 @@ def getPublicCommands (self):
             'view-lossage':                         self.viewLossage,
             'what-line':                            self.whatLine,
         }
-.. @+node:ekr.20050920084036.163: *4* ef.getPublicCommands
+.. @+node:ekr.20050920084036.163: *5* ef.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -14676,7 +14625,7 @@ def getPublicCommands (self):
             'file-open-by-name':        self.openOutlineByName,
             'file-save':                self.saveFile
         }
-.. @+node:ekr.20050920084036.173: *4* getPublicCommands (KeyHandlerCommandsClass)
+.. @+node:ekr.20050920084036.173: *5* getPublicCommands (KeyHandlerCommandsClass)
 def getPublicCommands (self):
 
     k = self.k
@@ -14727,7 +14676,7 @@ def getPublicCommands (self):
         }
     else:
         return {}
-.. @+node:ekr.20050920084036.259: *4* getPublicCommands (SearchCommandsClass)
+.. @+node:ekr.20050920084036.259: *5* getPublicCommands (SearchCommandsClass)
 def getPublicCommands (self):
     
     if g.new_dispatch:
@@ -14779,7 +14728,7 @@ def getPublicCommands (self):
         'word-search-forward':            find.wordSearchForward,
         'word-search-backward':           find.wordSearchBackward,
         }
-.. @+node:ekr.20051025080420: *4* getPublicCommands (SpellCommandsClass)
+.. @+node:ekr.20051025080420: *5* getPublicCommands (SpellCommandsClass)
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -14800,7 +14749,7 @@ def getPublicCommands (self):
             'spell-as-you-type-next':   self.as_you_type_next,
             'spell-as-you-type-undo':   self.as_you_type_undo,        
         }
-.. @+node:ekr.20060205165501: *4* help.getPublicCommands
+.. @+node:ekr.20060205165501: *5* help.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -14823,7 +14772,7 @@ def getPublicCommands (self):
             'help-for-scripting':               self.helpForScripting,
             'print-settings':                   self.printSettings,
         }
-.. @+node:ekr.20050920084036.176: *4* kill.getPublicCommands
+.. @+node:ekr.20050920084036.176: *5* kill.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -14844,7 +14793,7 @@ def getPublicCommands (self):
             'yank-pop':                 self.yankPop,
             'zap-to-character':         self.zapToCharacter,
         }
-.. @+node:ekr.20050920084036.188: *4* leoCommands.getPublicCommands
+.. @+node:ekr.20050920084036.188: *5* leoCommands.getPublicCommands
 def getPublicCommands (self):
     '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
     if g.new_dispatch:
@@ -14858,7 +14807,7 @@ def getPublicCommands (self):
             f = d.get(name)
             d2 [name] = f
         return d2
-.. @+node:ekr.20050920084036.189: *5* << define dictionary d of names and Leo commands >>
+.. @+node:ekr.20050920084036.189: *6* << define dictionary d of names and Leo commands >>
 c = self.c ; f = c.frame
 
 d = {
@@ -15053,7 +15002,7 @@ d = {
     'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
     'write-outline-only':           c.fileCommands.writeOutlineOnly,
 }
-.. @+node:ekr.20050920084036.192: *4* macro.getPublicCommands
+.. @+node:ekr.20050920084036.192: *5* macro.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -15070,7 +15019,7 @@ def getPublicCommands (self):
             'macro-save-all':       self.saveMacros,
             'macro-start-recording':self.startRecordingMacro,
         }
-.. @+node:ekr.20150420073407.1: *4* pr.getPublicCommands
+.. @+node:ekr.20150420073407.1: *5* pr.getPublicCommands
 def getPublicCommands (self):
     '''Add this class's commands to c.commandsDict.'''
     if not printsupport:
@@ -15106,7 +15055,7 @@ def getPublicCommands (self):
         'print-marked-html':    self.print_marked_html,
         'print-marked-nodes':   self.print_marked_nodes,
     })
-.. @+node:ekr.20050920084036.223: *4* rectangle.getPublicCommands
+.. @+node:ekr.20050920084036.223: *5* rectangle.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -15121,7 +15070,7 @@ def getPublicCommands (self):
             'rectangle-string': self.stringRectangle,
             'rectangle-yank':   self.yankRectangle,
         }
-.. @+node:ekr.20050920084036.247: *4* register.getPublicCommands
+.. @+node:ekr.20050920084036.247: *5* register.getPublicCommands
 def getPublicCommands (self):
 
     if g.new_dispatch:
@@ -15139,7 +15088,7 @@ def getPublicCommands (self):
             'register-prepend-to':          self.prependToRegister,
             'register-view':                self.viewRegister,
         }
-.. @+node:ekr.20090511055302.5792: *4* rst.getPublicCommands
+.. @+node:ekr.20090511055302.5792: *5* rst.getPublicCommands
 def getPublicCommands(self):
     '''Add the names of commands defined in this file to c.commandsDict'''
     if g.new_dispatch:
@@ -15149,7 +15098,7 @@ def getPublicCommands(self):
             'rst3': self.rst3, # Formerly write-restructured-text.
             'code-to-rst': self.code_to_rst_command,
         })
-.. @+node:ekr.20140815160132.18834: *4* vc.getPublicCommands
+.. @+node:ekr.20140815160132.18834: *5* vc.getPublicCommands
 def getPublicCommands(vc):
     '''Add the names of commands defined in this file to c.commandsDict'''
     if g.new_dispatch:
@@ -15182,5 +15131,34 @@ def getPublicCommands(vc):
             ':toggle-vim-trace':        vc.toggle_vim_trace,
             ':toggle-vim-trainer-mode': vc.toggle_vim_trainer_mode,
         })
+.. @+node:ekr.20051023094009: *4* Search classes (leoEditCommands)
+.. @+node:ekr.20050920084036.257: *5* class SearchCommandsClass
+class SearchCommandsClass (BaseEditCommandsClass):
+
+    '''Delegates all searches to LeoFind.py.'''
+    
+    if 0: # Not needed.
+        def __init__ (self,c):
+            BaseEditCommandsClass.__init__(self,c)
+
+    @others
+.. @+node:ekr.20050920084036.186: *4* LeoCommandsClass
+class LeoCommandsClass (BaseEditCommandsClass):
+
+    @others
+.. @+node:ekr.20050920084036.187: *5*  ctor (LeoCommandsClass)
+def __init__ (self,c):
+
+    BaseEditCommandsClass.__init__(self,c) # init the base class.
+.. @+node:ekr.20070522085324: *4* ChapterCommandsClass
+class ChapterCommandsClass (BaseEditCommandsClass):
+
+    @others
+.. @+node:ekr.20070522085340: *5*  ctor (ChapterCommandsClass)
+def __init__ (self,c):
+
+    BaseEditCommandsClass.__init__(self,c) # init the base class.
+
+    # c.chapterController does not exist yet.
 .. @-all
 .. @-leo

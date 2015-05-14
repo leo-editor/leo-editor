@@ -164,7 +164,7 @@ cmd_instance_dict = {
     'AutoCompleterClass': ['c','k','autoCompleter'],
     'ChapterController': ['c','chapterController'],
     'Commands': ['c'],
-    # 'EditCommandsManager': ['c','editCommandsManager'],
+    ### 'EditCommandsManager': ['c','editCommandsManager'],
     'FileCommands': ['c','fileCommands'],
     'KeyHandlerClass': ['c','k'],
     'LeoApp': ['g','app'],
@@ -180,7 +180,7 @@ cmd_instance_dict = {
     'AbbrevCommandsClass': ['c','abbrevCommands'],
     'BufferCommandsClass': ['c','bufferCommands'],
     'EditCommandsClass': ['c','editCommands'],
-     # 'ChapterCommandsClass': ['c','chapterCommands'],
+     ### 'ChapterCommandsClass': ['c','chapterCommands'],
     'ControlCommandsClass': ['c','controlCommands'],
     'DebugCommandsClass': ['c','debugCommands'],
     'EditFileCommandsClass': ['c','editFileCommands'],
@@ -190,13 +190,14 @@ cmd_instance_dict = {
     'MacroCommandsClass': ['c','macroCommands'],
     'RectangleCommandsClass': ['c','rectangleCommands'],
     'RegisterCommandsClass': ['c','registerCommands'],
-    'SearchCommandsClass': ['c','searchCommands'],
+    ### 'SearchCommandsClass': ['c','searchCommands'],
     'SpellCommandsClass': ['c','spellCommands'],
 }
     # These should never have commands...
     # self.shadowController   = leoShadow.ShadowController(c)
     # self.persistenceController = leoPersistence.PersistenceDataController(c)
     # self.tangleCommands     = leoTangle.TangleCommands(c)
+        # Because all the commands are Commander commands.
     # self.testManager        = leoTest.TestManager(c)
     # self.cacher = leoCache.Cacher(c)
     # self.free_layout = free_layout.FreeLayoutController(c)

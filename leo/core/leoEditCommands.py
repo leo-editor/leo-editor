@@ -377,19 +377,19 @@ class EditCommandsManager:
             ('abbrevCommands',      AbbrevCommandsClass),
             ('bufferCommands',      BufferCommandsClass),
             ('editCommands',        EditCommandsClass),
-            # ('chapterCommands',     ChapterCommandsClass),
+            ### ('chapterCommands', ChapterCommandsClass),
             ('controlCommands',     ControlCommandsClass),
             ('debugCommands',       DebugCommandsClass),
             ('editFileCommands',    EditFileCommandsClass),
             ('helpCommands',        HelpCommandsClass),
             ('keyHandlerCommands',  KeyHandlerCommandsClass),
             ('killBufferCommands',  KillBufferCommandsClass),
-            ('leoCommands',         LeoCommandsClass),
+            ### ('leoCommands',     LeoCommandsClass),
             ('macroCommands',       MacroCommandsClass),
             # ('queryReplaceCommands',QueryReplaceCommandsClass),
             ('rectangleCommands',   RectangleCommandsClass),
             ('registerCommands',    RegisterCommandsClass),
-            ('searchCommands',      SearchCommandsClass),
+            ### ('searchCommands',  SearchCommandsClass),
             ('spellCommands',       SpellCommandsClass),
         )
     #@+node:ekr.20120211121736.10827: *3* ecm.createEditCommanders
@@ -1443,17 +1443,6 @@ class BufferCommandsClass (BaseEditCommandsClass):
             finisher = self.getBufferNameFinisher
             self.getBufferNameFinisher = None
             finisher(k.arg)
-    #@-others
-#@+node:ekr.20070522085324: ** ChapterCommandsClass
-class ChapterCommandsClass (BaseEditCommandsClass):
-
-    #@+others
-    #@+node:ekr.20070522085340: *3*  ctor (ChapterCommandsClass)
-    def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
-        # c.chapterController does not exist yet.
     #@-others
 #@+node:ekr.20050920084036.150: ** ControlCommandsClass
 class ControlCommandsClass (BaseEditCommandsClass):
@@ -8954,15 +8943,6 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
             w.setInsertPoint(ins)
             self.endCommand(changed=True,setLabel=True)
     #@-others
-#@+node:ekr.20050920084036.186: ** LeoCommandsClass (add docstrings)
-class LeoCommandsClass (BaseEditCommandsClass):
-
-    #@+others
-    #@+node:ekr.20050920084036.187: *3*  ctor (LeoCommandsClass)
-    def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-others
 #@+node:ekr.20050920084036.190: ** MacroCommandsClass
 class MacroCommandsClass (BaseEditCommandsClass):
 
@@ -9837,18 +9817,6 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-others
-#@+node:ekr.20051023094009: ** Search classes (leoEditCommands)
-#@+node:ekr.20050920084036.257: *3* class SearchCommandsClass
-class SearchCommandsClass (BaseEditCommandsClass):
-
-    '''Delegates all searches to LeoFind.py.'''
-    
-    if 0: # Not needed.
-        def __init__ (self,c):
-            BaseEditCommandsClass.__init__(self,c)
-
-    #@+others
     #@-others
 #@+node:ekr.20051025071455: ** Spell classes (leoEditCommands)
 

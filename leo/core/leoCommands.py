@@ -267,7 +267,25 @@ class Commands (object):
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
-        import leo.core.leoEditCommands as leoEditCommands
+        if 0:
+            # import leo.commands.baseCommands as baseCommands
+            import leo.commands.abbrevCommands as abbrevCommands
+            import leo.commands.bufferCommands as bufferCommands
+            import leo.commands.controlCommands as controlCommands
+            import leo.commands.debugCommands as debugCommands
+            import leo.commands.editCommands as editCommands
+            import leo.commands.editFileCommands as editFileCommands
+            import leo.commands.helpCommands as helpCommands
+            import leo.commands.keyHandlerCommands as keyHandlerCommands
+            import leo.commands.killBufferCommands as killBufferCommands
+            import leo.commands.macroCommands as macroCommands
+            import leo.commands.rectangleCommands as rectangleCommands
+            import leo.commands.registerCommands as registerCommands
+            import leo.commands.spellCommands as spellCommands
+            # ('searchCommands',      SearchCommandsClass),
+            # ('leoCommands',         LeoCommandsClass),
+        else:
+            import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFind as leoFind # Leo 4.11.1
         import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
