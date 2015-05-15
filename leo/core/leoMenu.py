@@ -1152,6 +1152,9 @@ class LeoMenu:
                 wname = c.widget_name(w) or ''
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
+            # 2015/05/14: return a wrapper if possible.
+            if not g.isTextWrapper(w):
+                w = getattr(w,'wrapper',w)
             return w
 
         if dynamicMenu:

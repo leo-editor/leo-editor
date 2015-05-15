@@ -907,23 +907,21 @@ class LeoFrame(object):
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @cmd('cut-text')
     def cutText (self,event=None):
-
         '''Invoked from the mini-buffer and from shortcuts.'''
-
+        trace = False and not g.unitTesting
         f = self ; c = f.c ; w = event and event.widget
-        if not w or not g.isTextWrapper(w): return
-
+        if not w or not g.isTextWrapper(w):
+            if trace: g.trace('not wrapper',w,g.callers())
+            return
         name = c.widget_name(w)
         oldSel = w.getSelectionRange()
         oldText = w.getAllText()
         i,j = w.getSelectionRange()
-
         # Update the widget and set the clipboard text.
         s = w.get(i,j)
         if i != j:
             w.delete(i,j)
             g.app.gui.replaceClipboardWith(s)
-
         if name.startswith('body'):
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Cut',oldSel=oldSel,oldText=oldText)
