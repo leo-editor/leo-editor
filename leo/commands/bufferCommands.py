@@ -31,6 +31,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         self.names = {}
         self.tnodes = {} # Keys are n: <headline>, values are tnodes.
 
+        ###
         try:
             self.w = c.frame.body.wrapper
         except AttributeError:
@@ -39,11 +40,9 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.6: *3* appendToBuffer
     @cmd('buffer-append-to')
     def appendToBuffer (self,event):
-
         '''Add the selected body text to the end of the body text of a named buffer (node).'''
-
-        w = self.editWidget(event) # Sets self.w
-        if w:
+        self.w = self.editWidget(event)
+        if self.w:
             self.c.k.setLabelBlue('Append to buffer: ')
             self.getBufferName(event,self.appendToBufferFinisher)
 
@@ -55,7 +54,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         if s and p:
             w = self.w
             c.selectPosition(p)
-            self.beginCommand('append-to-buffer: %s' % p.h)
+            self.beginCommand(w,'append-to-buffer: %s' % p.h)
             w.insert('end',s)
             w.setInsertPoint('end')
             w.seeInsertPoint()
@@ -64,11 +63,9 @@ class BufferCommandsClass (BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514045829.7: *3* copyToBuffer
     def copyToBuffer (self,event):
-
         '''Add the selected body text to the end of the body text of a named buffer (node).'''
-
-        w = self.editWidget(event) # Sets self.w
-        if w:
+        self.w = self.editWidget(event)
+        if self.w:
             self.c.k.setLabelBlue('Copy to buffer: ')
             self.getBufferName(event,self.copyToBufferFinisher)
 
@@ -79,7 +76,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('copy-to-buffer: %s' % p.h)
+            self.beginCommand(w,'copy-to-buffer: %s' % p.h)
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
@@ -87,11 +84,9 @@ class BufferCommandsClass (BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514045829.8: *3* insertToBuffer
     def insertToBuffer (self,event):
-
         '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
-
-        w = self.editWidget(event) # Sets self.w
-        if w:
+        self.w = self.editWidget(event)
+        if self.w:
             self.c.k.setLabelBlue('Insert to buffer: ')
             self.getBufferName(event,self.insertToBufferFinisher)
 
@@ -102,7 +97,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('insert-to-buffer: %s' % p.h)
+            self.beginCommand(w,undoType=('insert-to-buffer: %s' % p.h))
             i = w.getInsertPoint()
             w.insert(i,s)
             w.seeInsertPoint()
@@ -111,14 +106,11 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.9: *3* killBuffer
     @cmd('buffer-kill')
     def killBuffer (self,event):
-
         '''Delete a buffer (node) and all its descendants.'''
-
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-
-        self.c.k.setLabelBlue('Kill buffer: ')
-        self.getBufferName(event,self.killBufferFinisher)
+        self.w = self.editWidget(event)
+        if self.w:
+            self.c.k.setLabelBlue('Kill buffer: ')
+            self.getBufferName(event,self.killBufferFinisher)
 
     def killBufferFinisher (self,name):
 
@@ -159,11 +151,9 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.11: *3* prependToBuffer
     @cmd('buffer-prepend-to')
     def prependToBuffer (self,event):
-
         '''Add the selected body text to the start of the body text of a named buffer (node).'''
-
-        w = self.editWidget(event) # Sets self.w
-        if w:
+        self.w = self.editWidget(event)
+        if self.w:
             self.c.k.setLabelBlue('Prepend to buffer: ')
             self.getBufferName(event,self.prependToBufferFinisher)
 
@@ -174,7 +164,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('prepend-to-buffer: %s' % p.h)
+            self.beginCommand(w,'prepend-to-buffer: %s' % p.h)
             w.insert(0,s)
             w.setInsertPoint(0)
             w.seeInsertPoint()

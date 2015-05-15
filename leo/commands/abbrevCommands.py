@@ -628,19 +628,18 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.26: *3* abbrev.addAbbreviation
     @cmd('abbrev-add-global')
     def addAbbreviation (self,event):
-
-        '''Add an abbreviation:
+        '''
+        Add an abbreviation:
         The selected text is the abbreviation;
         the minibuffer prompts you for the name of the abbreviation.
-        Also sets abbreviations on.'''
-
+        Also sets abbreviations on.
+        '''
         k = self.c.k ; state = k.getState('add-abbr')
-
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Add Abbreviation: ')
-            k.getArg(event,'add-abbr',1,self.addAbbreviation)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.setLabelBlue('Add Abbreviation: ')
+                k.getArg(event,'add-abbr',1,self.addAbbreviation)
         else:
             w = self.w
             k.clearState()
@@ -655,18 +654,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.27: *3* abbrev.addInverseAbbreviation
     @cmd('abbrev-inverse-add-global')
     def addInverseAbbreviation (self,event):
-
-        '''Add an inverse abbreviation:
+        '''
+        Add an inverse abbreviation:
         The selected text is the abbreviation name;
-        the minibuffer prompts you for the value of the abbreviation.'''
-
+        the minibuffer prompts you for the value of the abbreviation.
+        '''
         k = self.c.k ; state = k.getState('add-inverse-abbr')
-
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Add Inverse Abbreviation: ')
-            k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.setLabelBlue('Add Inverse Abbreviation: ')
+                k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
         else:
             w = self.w
             k.clearState()

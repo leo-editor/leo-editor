@@ -230,7 +230,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
         s,e = g.readFileIntoString(fn)
         if s is None: return
 
-        self.beginCommand(undoType='insert-file')
+        self.beginCommand(w,undoType='insert-file')
         i = w.getInsertPoint()
         w.insert(i,s)
         w.seeInsertPoint()

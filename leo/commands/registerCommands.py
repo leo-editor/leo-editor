@@ -133,11 +133,11 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         char = event and event.char or ''
 
         if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w: return
-            k.commandName = 'copy-rectangle-to-register'
-            k.setLabelBlue('Copy Rectangle To Register: ')
-            k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.commandName = 'copy-rectangle-to-register'
+                k.setLabelBlue('Copy Rectangle To Register: ')
+                k.setState('copy-rect-to-reg',1,self.copyRectangleToRegister)
         elif self.checkBodySelection('No rectangle selected'):
             k.clearState()
             if char.isalpha():

@@ -1690,7 +1690,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         # if not w: return
 
         # i = w.getInsertPoint()
-        # self.beginCommand(undoType='change-previous-word')
+        # self.beginCommand(w,undoType='change-previous-word')
         # self.moveWordHelper(event,extend=False,forward=False)
 
         # if stroke == '<Alt-c>':
@@ -1716,7 +1716,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         # g.trace('word',repr(word))
         if not word.strip(): return
 
-        self.beginCommand(undoType=undoType)
+        self.beginCommand(w,undoType=undoType)
 
         if   which == 'cap':  word2 = word.capitalize()
         elif which == 'low':  word2 = word.lower()
@@ -1995,7 +1995,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return
-        self.beginCommand(undoType='indent-to-comment-column')
+        self.beginCommand(w,undoType='indent-to-comment-column')
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
@@ -2121,7 +2121,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         line = s [i:j].strip()
         if not line or len(line) >= fillColumn:
             return
-        self.beginCommand(undoType='center-line')
+        self.beginCommand(w,undoType='center-line')
         n = (fillColumn-len(line)) / 2
         ws = ' ' * n
         k = g.skip_ws(s,i)
@@ -2165,7 +2165,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             d = c.scanAllDirectives()
             fillColumn = d.get("pagewidth")
 
-        self.beginCommand(undoType='center-region')
+        self.beginCommand(w,undoType='center-region')
 
         inserted = 0
         while ind < end:
@@ -2232,12 +2232,13 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Put the cursor at the next occurance of a character on a line.'''
         c = self.c ; k = c.k ; tag = 'find-char' ; state = k.getState(tag)
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
+            self.w = self.editWidget(event)
+            if not self.w:
+                return
             self.event = event
             self.backward = backward
             self.extend = extend or self.extendMode # Bug fix: 2010/01/19
-            self.insert = w.getInsertPoint()
+            self.insert = self.w.getInsertPoint()
             s = '%s character%s: ' % (
                 'Backward find' if backward else 'Find',
                 ' & extend' if extend else '')
@@ -2245,7 +2246,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             # Get the arg without touching the focus.
             k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
         else:
-            event = self.event ; w = self.w
+            event,w = self.event,self.w
             backward = self.backward
             extend = self.extend or self.extendMode
             ch = k.arg ; s = w.getAllText()
@@ -2279,11 +2280,12 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.224: *4* findWordHelper
     def findWordHelper (self,event,oneLine):
 
-        k = self.c.k ; tag = 'find-word' ; state = k.getState(tag)
-
+        k = self.c.k ; tag = 'find-word'
+        state = k.getState(tag)
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
+            self.w = self.editWidget(event)
+            if not self.w:
+                return
             self.oneLineFlag = oneLine
             k.setLabelBlue('Find word %sstarting with: ' % (
                 'in line ' if oneLine else ''))
@@ -2317,10 +2319,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.c.k ; state = k.getState('goto-char')
 
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue("Goto n'th character: ")
-            k.getArg(event,'goto-char',1,self.gotoCharacter)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.setLabelBlue("Goto n'th character: ")
+                k.getArg(event,'goto-char',1,self.gotoCharacter)
         else:
             n = k.arg ; w = self.w ; ok = False
             if n.isdigit():
@@ -2344,10 +2346,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         tag = 'goto-global-line' ; state = k.getState(tag)
 
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Goto global line: ')
-            k.getArg(event,tag,1,self.gotoGlobalLine)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.setLabelBlue('Goto global line: ')
+                k.getArg(event,tag,1,self.gotoGlobalLine)
         else:
             n = k.arg
             k.resetLabel()
@@ -2363,10 +2365,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.c.k ; state = k.getState('goto-line')
 
         if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Goto line: ')
-            k.getArg(event,'goto-line',1,self.gotoLine)
+            self.w = self.editWidget(event)
+            if self.w:
+                k.setLabelBlue('Goto line: ')
+                k.getArg(event,'goto-line',1,self.gotoLine)
         else:
             n = k.arg ;  w = self.w
             if n.isdigit():
@@ -2601,7 +2603,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         line2 = s[i:j].lstrip()
         delta = len(line) - len(line2)
         if delta:
-            self.beginCommand(undoType='delete-indentation')
+            self.beginCommand(w,undoType='delete-indentation')
             w.delete(i,j)
             w.insert(i,line2)
             ins -= delta
@@ -2635,7 +2637,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             i,j = g.getLine(s,i-1)
             line = s[i:j]
             if line.strip(): break
-        self.beginCommand(undoType=undoType)
+        self.beginCommand(w,undoType=undoType)
         try:
             k = g.skip_ws(s,i)
             ws = s[i:k]
@@ -2749,7 +2751,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         d = c.scanAllDirectives() ; width = d.get('tabwidth')
         if ch == '\t' and width < 0: ch = ' ' * abs(width)
 
-        self.beginCommand(undoType=undoType)
+        self.beginCommand(w,undoType=undoType)
         lines = g.splitLines(s)
         if add:
             result = [ch + line for line in lines]
@@ -2782,7 +2784,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         # g.trace(wname,i,j,ins)
 
         if wname.startswith('body'):
-            self.beginCommand()
+            self.beginCommand(w)
             try:
                 tab_width = c.getTabWidth(c.p)
                 changed = True
@@ -2885,7 +2887,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                 lines.append('\n')
         result = ''.join(lines)
         if s != result:
-            self.beginCommand(undoType='clean-lines')
+            self.beginCommand(w,undoType='clean-lines')
             if w.hasSelection():
                 i,j = w.getSelectionRange()
                 w.delete(i,j)
@@ -2907,7 +2909,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if not w: return
         i,j = w.getSelectionRange()
         if i == j: return
-        self.beginCommand(undoType='clear-selected-text')
+        self.beginCommand(w,undoType='clear-selected-text')
         w.delete(i,j)
         w.setInsertPoint(i)
         self.endCommand(changed=True,setLabel=True)
@@ -2936,10 +2938,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.deleteWordHelper(event,forward=False,smart=True)
 
     def deleteWordHelper(self,event,forward,smart=False):
-        c = self.c ; w = self.editWidget(event)
+        c,w = self.c,self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType="delete-word")
+        self.beginCommand(w,undoType="delete-word")
         if w.hasSelection():
             from_pos,to_pos = w.getSelectionRange()
         else:
@@ -2964,7 +2966,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if not w: return
         s = w.getAllText()
         i,j = w.getSelectionRange()
-        self.beginCommand(undoType='delete-char')
+        self.beginCommand(w,undoType='delete-char')
         changed = True
         if i != j:
             w.delete(i,j)
@@ -2996,7 +2998,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             w2 += 1
         spaces = s[w1:w2]
         if spaces:
-            self.beginCommand(undoType=undoType)
+            self.beginCommand(w,undoType=undoType)
             if insertspace: s = s[:w1] + ' ' + s[w2:]
             else:           s = s[:w1] + s[w2:]
             w.setAllText(s)
@@ -3015,7 +3017,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'): return
         ins = w.getInsertPoint()
-        self.beginCommand(undoType='insert-hard-tab')
+        self.beginCommand(w,undoType='insert-hard-tab')
         w.insert(ins,'\t')
         ins += 1
         w.setSelectionRange(ins,ins,insert=ins)
@@ -3036,7 +3038,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         oldSel = w.getSelectionRange()
         # g.trace('oldSel',oldSel)
 
-        self.beginCommand(undoType='newline')
+        self.beginCommand(w,undoType='newline')
 
         # New in Leo 4.5: use the same logic as in selfInsertCommand.
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
@@ -3060,7 +3062,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'): return
 
-        self.beginCommand(undoType='insert-newline-and-indent')
+        self.beginCommand(w,undoType='insert-newline-and-indent')
 
         # New in Leo 4.5: use the same logic as in selfInsertCommand.
         oldSel = w.getSelectionRange()
@@ -3079,7 +3081,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType='insert-parenthesis')
+        self.beginCommand(w,undoType='insert-parenthesis')
 
         i = w.getInsertPoint()
         w.insert(i,'()')
@@ -3099,7 +3101,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         if name.startswith('head'): return
         tab_width = abs(c.getTabWidth(c.p))
         ins = w.getInsertPoint()
-        self.beginCommand(undoType='insert-soft-tab')
+        self.beginCommand(w,undoType='insert-soft-tab')
         w.insert(ins,' ' * tab_width)
         ins += tab_width
         w.setSelectionRange(ins,ins,insert=ins)
@@ -3113,7 +3115,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         Select all lines if there is no existing selection.
         '''    
         c = self.c
-        w = self.w
+        ### w = self.w
+        w = self.editWidget(event)
         expandSelection = not w.hasSelection()
         head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=expandSelection)
         changed,result = False,[]
@@ -3136,8 +3139,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         state = k.getState(tag)
 
         if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if w:
+            self.w = self.editWidget(event)
+            if self.w:
                 k.setLabelBlue('Replace Character: ')
                 k.getArg(event,tag,1,self.replaceCurrentCharacter)
         else:
@@ -3494,7 +3497,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType=which+'-lines')
+        self.beginCommand(w,undoType=which+'-lines')
         if w.hasSelection():
             i,end = w.getSelectionRange()
         else:
@@ -3530,7 +3533,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType='split-line')
+        self.beginCommand(w,undoType='split-line')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -3668,24 +3671,16 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.291: *3* backToIndentation
     @cmd('back-to-indentation')
     def backToIndentation (self,event):
-
         '''Position the point at the first non-blank character on the line.'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        # None of the other cursor move commands are undoable.
-        # self.beginCommand(undoType='back-to-indentation')
-
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
         while i < j and s[i] in (' \t'):
             i += 1
-
         self.moveToHelper(event,i,extend=False)
-
-        # self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.292: *3* between lines & helper
     @cmd('next-line')
     def nextLine (self,event):
@@ -4476,9 +4471,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Kill the previous paragraph.'''
 
         c,k = self.c,self.c.k; w = self.editWidget(event)
-        if not w: return
-
-        self.beginCommand(undoType='backward-kill-paragraph')
+        if not w:
+            return
+        self.beginCommand(w,undoType='backward-kill-paragraph')
         try:
             self.backwardParagraphHelper(event,extend=True)
             i,j = w.getSelectionRange()
@@ -4513,7 +4508,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
-        self.beginCommand(undoType='fill-region-as-paragraph')
+        self.beginCommand(w,undoType='fill-region-as-paragraph')
 
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.323: *3* fillParagraph
@@ -4539,7 +4534,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         k = self.c.k ; c = k.c ; w = self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType='kill-paragraph')
+        self.beginCommand(w,undoType='kill-paragraph')
         try:
             self.extendToParagraph(event)
             i,j = w.getSelectionRange()
@@ -4601,7 +4596,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
-        self.beginCommand(undoType='indent-rigidly')
+        self.beginCommand(w,undoType='indent-rigidly')
 
         s = w.getAllText()
         i1,j1 = w.getSelectionRange()
@@ -4658,7 +4653,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         # n = i2-i
         # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
         #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
-        self.beginCommand(undoType='move-lines-down')
+        self.beginCommand(w,undoType='move-lines-down')
         changed = False
         try:
             if j < len(s):
@@ -4699,7 +4694,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         lines  = s[i:j]
         # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
         #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
-        self.beginCommand(undoType='move-lines-up')
+        self.beginCommand(w,undoType='move-lines-up')
         changed = False
         try:
             if i>0:
@@ -4730,7 +4725,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
-        self.beginCommand(undoType='reverse-region')
+        self.beginCommand(w,undoType='reverse-region')
 
         s = w.getAllText()
         i1,j1 = w.getSelectionRange()
@@ -4768,7 +4763,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not w.hasSelection():
             return
-        self.beginCommand(undoType=undoType)
+        self.beginCommand(w,undoType=undoType)
         s = w.getAllText()
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
@@ -5014,7 +5009,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             if trace: g.trace('early return')
             return
         undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
-        self.beginCommand(undoType=undoType)
+        self.beginCommand(w,undoType=undoType)
         try:
             s = w.getAllText()
             sel1,sel2 = w.getSelectionRange()
@@ -5045,7 +5040,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event)
         if not self._chckSel(event): return
-        self.beginCommand(undoType='sort-columns')
+        self.beginCommand(w,undoType='sort-columns')
         try:
             s = w.getAllText()
             sel_1,sel_2 = w.getSelectionRange()
@@ -5082,7 +5077,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self._chckSel(event): return
 
-        self.beginCommand(undoType='sort-fields')
+        self.beginCommand(w,undoType='sort-fields')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -5130,7 +5125,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         i,j = g.getLine(s,ins)
         line1 = s[i:j]
 
-        self.beginCommand(undoType='transpose-lines')
+        self.beginCommand(w,undoType='transpose-lines')
 
         if i == 0: # Transpose the next line.
             i2,j2 = g.getLine(s,j+1)
@@ -5155,7 +5150,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w: return
-        self.beginCommand(undoType='transpose-words')
+        self.beginCommand(w,undoType='transpose-words')
         s = w.getAllText()
         i1,j1 = self.extendToWord(event,direction='back',select=False)
         s1 = s[i1:j1]
@@ -5206,7 +5201,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        self.beginCommand(undoType='swap-characters')
+        self.beginCommand(w,undoType='swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
@@ -5231,7 +5226,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not w.hasSelection():
             return
-        self.beginCommand(undoType=which)
+        self.beginCommand(w,undoType=which)
         i,end = w.getSelectionRange()
         txt = w.getSelectedText()
         if which == 'tabify':
@@ -5299,8 +5294,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         c,k = self.c,self.c.k
         tag = 'set-ua' ; state = k.getState(tag)
         if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if w:
+            self.w = self.editWidget(event)
+            if self.w:
                 k.setLabelBlue('Set uA: ')
                 k.getArg(event,tag,1,self.setUa)
         elif state == 1:

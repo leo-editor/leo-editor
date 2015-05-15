@@ -40,38 +40,30 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         Otherwise, return False and issue a warning.'''
 
         return self._chckSel(event,warning)
-    #@+node:ekr.20150514063305.452: ** rectangle.beginCommand & beginCommandWithEvent
-    def beginCommand (self,undoType='Typing'):
-        '''Handle start-of-command processing.'''
-        w = BaseEditCommandsClass.beginCommand(self,undoType)
-        r1,r2,r3,r4 = self.getRectanglePoints(w)
-        return w,r1,r2,r3,r4
-
-    def beginCommandWithEvent (self,event,undoType='Typing'):
-        '''Do the common processing at the start of each command.'''
-        w = BaseEditCommandsClass.beginCommandWithEvent(self,event,undoType)
-        r1,r2,r3,r4 = self.getRectanglePoints(w)
-        return w,r1,r2,r3,r4
+    #@+node:ekr.20150514063305.452: ** rectangle.beginCommand
+    ###
+    # def beginCommand (self,w,undoType='Typing'):
+        # '''Handle start-of-command processing.'''
+        # BaseEditCommandsClass.beginCommand(self,w,undoType)
+        # r1,r2,r3,r4 = self.getRectanglePoints(w)
+        # return w,r1,r2,r3,r4
     #@+node:ekr.20150514063305.453: ** rectangle.Entries
     #@+node:ekr.20150514063305.454: *3* clearRectangle
     @cmd('rectangle-clear')
     def clearRectangle (self,event):
-
         '''Clear the rectangle defined by the start and end of selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self.check(event): return
-
-        w,r1,r2,r3,r4 = self.beginCommand('clear-rectangle')
+        if not w or not self.check(event):
+            return
+        self.beginCommand(w,'clear-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
 
         # Change the text.
         fill = ' ' *(r4-r2)
         for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2),fill)
-
         w.setSelectionRange('%s.%s'%(r1,r2),'%s.%s'%(r3,r2+len(fill)))
-
         self.endCommand()
     #@+node:ekr.20150514063305.455: *3* closeRectangle
     @cmd('rectangle-close')
@@ -82,7 +74,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event): return
 
-        w,r1,r2,r3,r4 = self.beginCommand('close-rectangle')
+        self.beginCommand(w,'close-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
 
         # Return if any part of the selection contains something other than whitespace.
         for r in range(r1,r3+1):
@@ -113,7 +106,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event): return
 
-        w,r1,r2,r3,r4 = self.beginCommand('delete-rectangle')
+        self.beginCommand(w,'delete-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
 
         for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
@@ -132,8 +126,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event): return
 
-        w,r1,r2,r3,r4 = self.beginCommand('kill-rectangle')
-
+        self.beginCommand(w,'kill-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
         self.theKillRectangle = []
 
         for r in range(r1,r3+1):
@@ -158,7 +152,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event): return
 
-        w,r1,r2,r3,r4 = self.beginCommand('open-rectangle')
+        self.beginCommand(w,'open-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
 
         fill = ' ' * (r4-r2)
         for r in range(r1,r3+1):
@@ -182,17 +177,17 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             w = self.editWidget(event)
             self.stringRect = self.getRectanglePoints(w)
         if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w or not self.check(event): return
-            self.stringRect = self.getRectanglePoints(w)
-            k.setLabelBlue('String rectangle: ')
-            k.getArg(event,'string-rect',1,self.stringRectangle)
+            self.w = self.editWidget(event)
+            if self.w and self.check(event):
+                self.stringRect = self.getRectanglePoints(w)
+                k.setLabelBlue('String rectangle: ')
+                k.getArg(event,'string-rect',1,self.stringRectangle)
         else:
             k.clearState()
             k.resetLabel()
             c.bodyWantsFocus()
             w = self.w
-            self.beginCommand('string-rectangle')
+            self.beginCommand(w,'string-rectangle')
             # pylint: disable=unpacking-non-sequence
             r1,r2,r3,r4 = self.stringRect
             s = w.getAllText()
@@ -227,7 +222,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         elif not killRect:
             k.setLabelGrey('No kill rect') ; return
 
-        w,r1,r2,r3,r4 = self.beginCommand('yank-rectangle')
+        self.beginCommand(w,'yank-rectangle')
+        r1,r2,r3,r4 = self.getRectanglePoints(w)
 
         n = 0
         for r in range(r1,r3+1):

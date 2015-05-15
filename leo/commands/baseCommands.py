@@ -14,31 +14,20 @@ class BaseEditCommandsClass:
     def __init__ (self,c):
         '''BaseEditCommandsClass ctor.'''
         self.c = c
-        ### self.k = None
         self.undoData = None
         self.w = None
 
     # def finishCreate(self):
         # '''BaseEditCommandsClass.finishCreate.'''
-        # self.k = self.c.k
         # try:
             # self.w = self.c.frame.body.wrapper # New in 4.4a4.
         # except AttributeError:
             # self.w = None
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
-    #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand  & beginCommandWithEvent
-    def beginCommand (self,undoType='Typing'):
+    #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
+    def beginCommand (self,w,undoType='Typing'):
         '''Do the common processing at the start of each command.'''
-        return self.beginCommandHelper(ch='',undoType=undoType,w=self.w)
-
-    def beginCommandWithEvent (self,event,undoType='Typing'):
-        '''Do the common processing at the start of each command.'''
-        return self.beginCommandHelper(
-            ch=event and event.char or '',
-            undoType=undoType,w=event.widget)
-    #@+node:ekr.20150514043714.5: *4* BaseEdit.beginCommandHelper
-    def beginCommandHelper (self,ch,undoType,w):
-        '''Start a command. Does nothing unless w is the body pane.'''
+        ### return self.beginCommandHelper(ch='',undoType=undoType,w=w)
         c,p = self.c,self.c.p
         name = c.widget_name(w)
         if name.startswith('body'):
@@ -46,7 +35,7 @@ class BaseEditCommandsClass:
             oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
-            b.ch=ch
+            b.ch='' ###
             b.name=name
             b.oldSel=oldSel
             b.oldText=oldText
@@ -78,20 +67,20 @@ class BaseEditCommandsClass:
                 k.resetLabel()
     #@+node:ekr.20150514043714.7: ** BaseEdit.editWidget
     def editWidget (self,event,forceFocus=True):
-        '''Return the edit widget for the event.'''
+        '''Return the edit widget for the event. Also sets self.w'''
         trace = False and not g.unitTesting
         c = self.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        # Single-line editing commands apply to minibuffer widget.
         if w and g.isTextWrapper(w):
-            self.w = w
+            pass
         else:
-            self.w = c.frame.body and c.frame.body.wrapper
+            w = c.frame.body and c.frame.body.wrapper
         if trace: g.trace(g.isTextWrapper(w),wname,w)
-        if self.w and forceFocus:
-            c.widgetWantsFocusNow(self.w)
-        return self.w
+        if w and forceFocus:
+            c.widgetWantsFocusNow(w)
+        self.w = w
+        return w
     #@+node:ekr.20150514043714.8: ** BaseEdit.getWSString
     def getWSString (self,s):
 
