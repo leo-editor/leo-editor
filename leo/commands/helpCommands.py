@@ -338,8 +338,9 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.382: *3* getBindingsForCommand
     def getBindingsForCommand(self,commandName):
 
-        c = self.c ; k = c.k
-        data = [] ; n1 = 4 ; n2 = 20
+        c,k = self.c,self.c.k
+        data = []
+        n1,n2 = 4,20
         d = k.bindingsDict
         for stroke in sorted(d):
             assert g.isStroke(stroke),repr(stroke)
@@ -354,7 +355,6 @@ class HelpCommandsClass (BaseEditCommandsClass):
                     n1 = max(n1,len(s1))
                     n2 = max(n2,len(s2))
                     data.append((s1,s2,s3),)
-
         data.sort(key=lambda x: x[1])
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
     #@+node:ekr.20150514063305.383: *3* helpForCommandFinisher
@@ -1105,8 +1105,8 @@ class HelpCommandsClass (BaseEditCommandsClass):
     @cmd('help-for-python')
     def pythonHelp (self,event=None):
         '''Prompt for a arg for Python's help function, and put it to the log pane.'''
-        c = self.c
-        k = c.k ; tag = 'python-help'
+        c,k = self.c,self.c.k
+        tag = 'python-help'
         state = k.getState(tag)
         if state == 0:
             c.minibufferWantsFocus()

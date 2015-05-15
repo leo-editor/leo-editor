@@ -42,13 +42,11 @@ class MacroCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.435: ** callNamedMacro
     @cmd('macro-call')
     def callNamedMacro (self,event):
-
         '''Prompts for a macro name, then executes it.'''
-
-        k = self.c.k ; tag = 'macro-name'
+        k = self.c.k
+        tag = 'macro-name'
         state = k.getState(tag)
         prompt = 'Call macro named: '
-
         if state == 0:
             k.setLabelBlue(prompt)
             k.getArg(event,tag,1,self.callNamedMacro)
@@ -63,17 +61,14 @@ class MacroCommandsClass (BaseEditCommandsClass):
             k.resetLabel()
 
     #@+node:ekr.20150514063305.436: ** completeMacroDef
-    # Called from loadFile and nameLastMacro.
-
     def completeMacroDef (self,name,macro):
-
-        '''Add the macro to the list of macros,
-        and add the macro's name to c.commandsDict.
         '''
-
+        Add the macro to the list of macros, and add the macro's name to
+        c.commandsDict.
+        '''
+        # Called from loadFile and nameLastMacro.
         trace = False and not g.unitTesting
-        k= self ; c = k.c
-
+        c,k = self.c,self.c.k
         if trace:
             g.trace('macro::%s' % (name))
             for event in macro:
@@ -86,7 +81,6 @@ class MacroCommandsClass (BaseEditCommandsClass):
             g.es_print('over-riding command: %s' % (name))
         else:
             g.es_print('loaded: %s' % (name))
-
         c.commandsDict [name] = func
         self.namedMacros [name] = macro
     #@+node:ekr.20150514063305.437: ** endMacro
@@ -110,10 +104,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
     def executeMacro (self,macro):
 
         trace = False and not g.unitTesting
-        c = self.c ; k = self.c.k
-
+        c,k = self.c,self.c.k
         c.bodyWantsFocus()
-
         for event in macro:
             if trace: g.trace(repr(event))
             k.masterKeyHandler(event)

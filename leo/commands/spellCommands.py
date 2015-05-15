@@ -486,10 +486,10 @@ class SpellTabHandler:
     def findNextMisspelledWord(self):
         """Find the next unknown word."""
         trace = False and not g.unitTesting
-        c = self.c ; p = c.p
+        c,p = self.c,self.c.p
         w = c.frame.body.wrapper
         sc = self.spellController
-        alts = None ; word = None
+        alts,word = None,None
         try:
             while 1:
                 i,j,p,word = self.findNextWord(p)

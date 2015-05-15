@@ -66,14 +66,11 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.468: *3* appendToRegister
     @cmd('register-append-to')
     def appendToRegister (self,event):
-
         '''Prompt for a register name and append the selected text to the register's contents.'''
-
-        c = self.c ; k = self.c.k
-        tag = 'append-to-register' ; state = k.getState(tag)
-
+        c,k = self.c,self.c.k
+        tag = 'append-to-register'
+        state = k.getState(tag)
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Append to Register: ')
@@ -95,14 +92,11 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.469: *3* prependToRegister
     @cmd('register-prepend-to')
     def prependToRegister (self,event):
-
         '''Prompt for a register name and prepend the selected text to the register's contents.'''
-
-        c = self.c ; k = self.c.k
-        tag = 'prepend-to-register' ; state = k.getState(tag)
-
+        c,k = self.c,self.c.k
+        tag = 'prepend-to-register'
+        state = k.getState(tag)
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Prepend to Register: ')
@@ -124,14 +118,13 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.470: *3* copyRectangleToRegister
     @cmd('register-copy-rectangle-to')
     def copyRectangleToRegister (self,event):
-
-        '''Prompt for a register name and append the rectangle defined by selected
-        text to the register's contents.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('copy-rect-to-reg')
-
+        '''
+        Prompt for a register name and append the rectangle defined by selected
+        text to the register's contents.
+        '''
+        c,k = self.c,self.c.k
+        state = k.getState('copy-rect-to-reg')
         char = event and event.char or ''
-
         if state == 0:
             self.w = self.editWidget(event)
             if self.w:
@@ -158,14 +151,11 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.471: *3* copyToRegister
     @cmd('register-copy-to')
     def copyToRegister (self,event):
-
         '''Prompt for a register name and append the selected text to the register's contents.'''
-
-        c = self.c ; k = self.c.k
-        tag = 'copy-to-register' ; state = k.getState(tag)
-
+        c,k = self.c,self.c.k
+        tag = 'copy-to-register'
+        state = k.getState(tag)
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = tag
             k.setLabelBlue('Copy to Register: ')
@@ -186,13 +176,10 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.472: *3* incrementRegister
     @cmd('register-increment')
     def incrementRegister (self,event):
-
         '''Prompt for a register name and increment its value if it has a numeric value.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('increment-reg')
-
+        c,k = self.c,self.c.k
+        state = k.getState('increment-reg')
         char = event and event.char or ''
-
         if state == 0:
             k.setLabelBlue('Increment register: ')
             k.setState('increment-reg',1,self.incrementRegister)
@@ -215,13 +202,10 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.473: *3* insertRegister
     @cmd('register-insert')
     def insertRegister (self,event):
-
         '''Prompt for a register name and and insert the value of another register into its contents.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('insert-reg')
-
+        c,k = self.c,self.c.k
+        state = k.getState('insert-reg')
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = 'insert-register'
             k.setLabelBlue('Insert register: ')
@@ -248,13 +232,10 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.474: *3* jumpToRegister
     @cmd('register-jump-to')
     def jumpToRegister (self,event):
-
         '''Prompt for a register name and set the insert point to the value in its register.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('jump-to-reg')
-
+        c,k = self.c,self.c.k
+        state = k.getState('jump-to-reg')
         char = event and event.char or ''
-
         if state == 0:
             k.setLabelBlue('Jump to register: ')
             k.setState('jump-to-reg',1,self.jumpToRegister)
@@ -306,13 +287,10 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.476: *3* pointToRegister
     @cmd('register-point-to')
     def pointToRegister (self,event):
-
         '''Prompt for a register name and put a value indicating the insert point in the register.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('point-to-reg')
-
+        c,k = self.c,self.c.k
+        state = k.getState('point-to-reg')
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = 'point-to-register'
             k.setLabelBlue('Point to register: ')
@@ -332,13 +310,10 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.477: *3* viewRegister
     @cmd('register-view')
     def viewRegister (self,event):
-
         '''Prompt for a register name and print its contents.'''
-
-        c = self.c ; k = self.c.k ; state = k.getState('view-reg')
-
+        c,k = self.c,self.c.k
+        state = k.getState('view-reg')
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = 'view-register'
             k.setLabelBlue('View register: ')

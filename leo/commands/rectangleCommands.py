@@ -149,9 +149,11 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
         '''
-        c = self.c ; k = self.c.k ; state = k.getState('string-rect')
+        c,k = self.c,self.c.k
+        state = k.getState('string-rect')
         if g.app.unitTesting:
-            state = 1 ; k.arg = 's...s' # This string is known to the unit test.
+            state = 1
+            k.arg = 's...s' # This string is known to the unit test.
             w = self.editWidget(event)
             self.stringRect = self.getRectanglePoints(w)
         if state == 0:
@@ -195,7 +197,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             # This value is used by the unit test.
             killRect = ['Y1Y','Y2Y','Y3Y','Y4Y']
         elif not killRect:
-            k.setLabelGrey('No kill rect') ; return
+            k.setLabelGrey('No kill rect')
+            return
         self.beginCommand(w,'yank-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         n = 0

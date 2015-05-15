@@ -111,7 +111,8 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
     def killBufferFinisher (self,name):
 
-        c = self.c ; p = self.findBuffer(name)
+        c = self.c
+        p = self.findBuffer(name)
         if p:
             h = p.h
             current = c.p
@@ -123,11 +124,10 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.10: *3* listBuffers & listBuffersAlphabetically
     @cmd('buffers-list')
     def listBuffers (self,event):
-
-        '''List all buffers (node headlines), in outline order.
-        Nodes with the same headline are disambiguated by giving their parent or child index.
         '''
-
+        List all buffers (node headlines), in outline order. Nodes with the
+        same headline are disambiguated by giving their parent or child index.
+        '''
         self.computeData()
         g.es('buffers...')
         for name in self.nameList:
@@ -135,13 +135,13 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
     @cmd('buffers-list-alphabetically')
     def listBuffersAlphabetically (self,event):
-
-        '''List all buffers (node headlines), in alphabetical order.
-        Nodes with the same headline are disambiguated by giving their parent or child index.'''
-
+        '''
+        List all buffers (node headlines), in alphabetical order. Nodes with
+        the same headline are disambiguated by giving their parent or child
+        index.
+        '''
         self.computeData()
-        names = self.nameList[:] ; names.sort()
-
+        names = sorted(self.nameList)
         g.es('buffers...')
         for name in names:
             g.es('',name)
@@ -187,7 +187,8 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
     def renameBufferFinisher2 (self,name):
 
-        c = self.c ; p = self.findBuffer(self.fromName)
+        c = self.c
+        p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
             c.setHeadString(p,name)
@@ -195,26 +196,24 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.13: *3* switchToBuffer
     @cmd('buffer-switch-to')
     def switchToBuffer (self,event):
-
         '''Select a buffer (node) by its name (headline).'''
-
         self.c.k.setLabelBlue('Switch to buffer: ')
         self.getBufferName(event,self.switchToBufferFinisher)
 
     def switchToBufferFinisher (self,name):
 
-        c = self.c ; p = self.findBuffer(name)
+        c = self.c
+        p = self.findBuffer(name)
         if p:
             c.selectPosition(p)
             c.redraw_after_select(p)
-
     #@+node:ekr.20150514045829.14: ** buffer.Utils
     #@+node:ekr.20150514045829.15: *3* computeData
     def computeData (self):
 
         self.nameList = []
-        self.names = {} ; self.tnodes = {}
-
+        self.names = {}
+        self.tnodes = {}
         for p in self.c.all_unique_positions():
             h = p.h.strip()
             v = p.v

@@ -30,37 +30,35 @@ class DebugCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.104: ** invoke_debugger & helper
     @cmd('debug')
     def invoke_debugger (self,event=None):
-
-        '''Start an external debugger in another process to debug a script.
-        The script is the presently selected text or then entire tree's script.'''
-
-        c = self.c ; p = c.p
+        '''
+        Start an external debugger in another process to debug a script. The
+        script is the presently selected text or then entire tree's script.
+        '''
+        c,p = self.c,self.c.p
         python = sys.executable
         script = g.getScript(c,p)
         winpdb = self.findDebugger()
         if not winpdb: return
-
         #check for doctest examples
         try:
             import doctest
             parser = doctest.DocTestParser()
             examples = parser.get_examples(script)
-
             # if this is doctest, extract the examples as a script
             if len(examples) > 0:
                 script = doctest.script_from_examples(script)
         except ImportError:
             pass
 
-        # special case; debug code may include g.es("info string").
+        # Special case: debug code may include g.es("info string").
         # insert code fragment to make this expression legal outside Leo.
         hide_ges = "class G:\n def es(s,c=None):\n  pass\ng = G()\n"
         script = hide_ges + script
 
         # Create a temp file from the presently selected node.
         filename = c.writeScriptFile(script)
-        if not filename: return
-
+        if not filename:
+            return
         # Invoke the debugger, retaining the present environment.
         os.chdir(g.app.loadDir)
         if False and subprocess:

@@ -165,11 +165,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.363: ** deleteFile
     @cmd('file-delete')
     def deleteFile (self,event):
-
         '''Prompt for the name of a file and delete it.'''
-
-        k = self.c.k ; state = k.getState('delete_file')
-
+        k = self.c.k
+        state = k.getState('delete_file')
         if state == 0:
             k.setLabelBlue('Delete File: ')
             k.extendLabel(os.getcwd() + os.sep)
@@ -276,11 +274,9 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.369: ** removeDirectory
     @cmd('directory-remove')
     def removeDirectory (self,event):
-
         '''Prompt for the name of a directory and delete it.'''
-
-        k = self.c.k ; state = k.getState('remove_directory')
-
+        k = self.c.k
+        state = k.getState('remove_directory')
         if state == 0:
             k.setLabelBlue('Remove Directory: ')
             k.extendLabel(os.getcwd() + os.sep)

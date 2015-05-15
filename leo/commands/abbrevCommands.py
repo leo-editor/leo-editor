@@ -148,10 +148,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.9: *4* abbrev.init_tree_abbrev
     def init_tree_abbrev (self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
-        trace = False ; verbose = True
+        trace = False
+        verbose = True
         c = self.c
         fn = c.shortFileName()
-        d = {} # Keys are abbreviation names; Values are (xml) strings.
+        d = {} # Keys are abbreviation names. Values are (xml) strings.
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
@@ -548,7 +549,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper (self,event,prefix=None,aList=None,w=None):
         '''State handler for dabbrev-expands command.'''
         trace = False and not g.unitTesting
-        c = self.c ; k = c.k ; p = c.p
+        c,k = self.c,self.c.k
+        p = c.p
         tag = 'dabbrev-expand'
         state = k.getState(tag)
         if state == 0:
@@ -629,11 +631,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def addAbbreviation (self,event):
         '''
         Add an abbreviation:
-        The selected text is the abbreviation;
-        the minibuffer prompts you for the name of the abbreviation.
+        The selected text is the abbreviation.
+        The minibuffer prompts you for the name of the abbreviation.
         Also sets abbreviations on.
         '''
-        k = self.c.k ; state = k.getState('add-abbr')
+        k = self.c.k
+        state = k.getState('add-abbr')
         if state == 0:
             self.w = self.editWidget(event)
             if self.w:
@@ -655,10 +658,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def addInverseAbbreviation (self,event):
         '''
         Add an inverse abbreviation:
-        The selected text is the abbreviation name;
-        the minibuffer prompts you for the value of the abbreviation.
+        The selected text is the abbreviation name.
+        The minibuffer prompts you for the value of the abbreviation.
         '''
-        k = self.c.k ; state = k.getState('add-inverse-abbr')
+        k = self.c.k
+        state = k.getState('add-inverse-abbr')
         if state == 0:
             self.w = self.editWidget(event)
             if self.w:

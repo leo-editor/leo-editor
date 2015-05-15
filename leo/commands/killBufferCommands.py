@@ -63,11 +63,11 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     @cmd('backward-kill-word')
     def backwardKillWord (self,event):
         '''Kill the previous word.'''
-        c = self.c ; e = c.editCommands
+        c = self.c
         w = self.editWidget(event)
         if w:
             self.beginCommand(w,undoType='backward-kill-word')
-            e.backwardWord(event)
+            c.editCommands.backwardWord(event)
             self.killWordHelper(event,'back')
 
     @cmd('kill-word')
@@ -79,7 +79,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
             self.killWordHelper(event,'forward')
 
     def killWordHelper(self,event,direction):
-        c = self.c ; e = c.editCommands
+        c = self.c
+        e = c.editCommands
         w = e.editWidget(event)
         if w:
             # self.killWs(event)
@@ -288,7 +289,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         yank: insert the first entry of the kill ring.
         yank-pop: insert the next entry of the kill ring.
         '''
-        c = self.c ; w = self.editWidget(event)
+        c = self.c
+        w = self.editWidget(event)
         if not w:
             return
         current = c.p
@@ -334,7 +336,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     @cmd('zap-to-character')
     def zapToCharacter (self,event):
         '''Kill characters from the insertion point to a given character.'''
-        k = self.c.k ; w = self.editWidget(event)
+        k = self.c.k
+        w = self.editWidget(event)
         if not w:
             return
         state = k.getState('zap-to-char')
