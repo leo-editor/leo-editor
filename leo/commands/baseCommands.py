@@ -16,18 +16,10 @@ class BaseEditCommandsClass:
         self.c = c
         self.undoData = None
         self.w = None
-
-    # def finishCreate(self):
-        # '''BaseEditCommandsClass.finishCreate.'''
-        # try:
-            # self.w = self.c.frame.body.wrapper # New in 4.4a4.
-        # except AttributeError:
-            # self.w = None
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand (self,w,undoType='Typing'):
         '''Do the common processing at the start of each command.'''
-        ### return self.beginCommandHelper(ch='',undoType=undoType,w=w)
         c,p = self.c,self.c.p
         name = c.widget_name(w)
         if name.startswith('body'):
@@ -35,7 +27,7 @@ class BaseEditCommandsClass:
             oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
-            b.ch='' ###
+            b.ch=''
             b.name=name
             b.oldSel=oldSel
             b.oldText=oldText

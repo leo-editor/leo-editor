@@ -23,19 +23,16 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514045829.3: ** buffer.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
-        self.fromName = '' # Saved name from getBufferName.
-        self.nameList = [] # [n: <headline>]
+        '''Ctor for the BufferCommandsClass class.'''
+        BaseEditCommandsClass.__init__(self,c)
+            # init the base class.
+        self.fromName = ''
+            # Saved name from getBufferName.
+        self.nameList = []
+            # [n: <headline>]
         self.names = {}
-        self.tnodes = {} # Keys are n: <headline>, values are tnodes.
-
-        ###
-        try:
-            self.w = c.frame.body.wrapper
-        except AttributeError:
-            self.w = None
+        self.tnodes = {}
+            # Keys are n: <headline>, values are tnodes.
     #@+node:ekr.20150514045829.5: ** buffer.Entry points
     #@+node:ekr.20150514045829.6: *3* appendToBuffer
     @cmd('buffer-append-to')

@@ -50,7 +50,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def finishCreate(self):
         
         c,k = self.c,self.c.k
-        ### BaseEditCommandsClass.finishCreate(self)
         self.init_settings()
         self.init_abbrev()
         self.init_tree_abbrev()
