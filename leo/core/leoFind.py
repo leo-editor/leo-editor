@@ -650,7 +650,7 @@ class LeoFind:
         c.minibufferWantsFocus()
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
-    @cmd('find-clone-all')
+    @cmd('clone-find-all')
     def minibufferCloneFindAll (self,event=None):
         c = self.c ; k = self.k ; tag = 'clone-find-all'
         state = k.getState(tag)
@@ -667,7 +667,7 @@ class LeoFind:
             self.generalSearchHelper(k.arg,cloneFindAll=True)
             c.treeWantsFocus()
     #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
-    @cmd('find-clone-all-flattened')
+    @cmd('clone-find-all-flattened')
     def minibufferCloneFindAllFlattened (self,event=None):
 
         c = self.c ; k = self.k ; tag = 'clone-find-all-flattened'
