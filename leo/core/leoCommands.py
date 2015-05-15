@@ -297,6 +297,7 @@ class Commands (object):
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
         import leo.core.leoVim as leoVim
+        # Define the subcommanders.
         self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
         self.shadowController   = leoShadow.ShadowController(c)

@@ -15160,5 +15160,104 @@ def __init__ (self,c):
     BaseEditCommandsClass.__init__(self,c) # init the base class.
 
     # c.chapterController does not exist yet.
+.. @+node:ekr.20120211121736.10817: *4* class EditCommandsManager
+class EditCommandsManager:
+
+    '''A class to init all edit commands properly.
+
+    This class eliminates the circular dependencies that otherwise
+    would arise from the module-level classesList.
+    '''
+
+
+    @others
+.. @+node:ekr.20120211121736.10830: *5*  ecm.ctor (defines classesList)
+def __init__ (self,c):
+    '''Ctor for EditCommandsManager.'''
+    self.c = c
+    self.classesList = (
+        ('abbrevCommands',      AbbrevCommandsClass),
+        ('bufferCommands',      BufferCommandsClass),
+        ('editCommands',        EditCommandsClass),
+        ### ('chapterCommands', ChapterCommandsClass),
+        ('controlCommands',     ControlCommandsClass),
+        ('debugCommands',       DebugCommandsClass),
+        ('editFileCommands',    EditFileCommandsClass),
+        ('helpCommands',        HelpCommandsClass),
+        ('keyHandlerCommands',  KeyHandlerCommandsClass),
+        ('killBufferCommands',  KillBufferCommandsClass),
+        ### ('leoCommands',     LeoCommandsClass),
+        ('macroCommands',       MacroCommandsClass),
+        # ('queryReplaceCommands',QueryReplaceCommandsClass),
+        ('rectangleCommands',   RectangleCommandsClass),
+        ('registerCommands',    RegisterCommandsClass),
+        ### ('searchCommands',  SearchCommandsClass),
+        ('spellCommands',       SpellCommandsClass),
+    )
+.. @+node:ekr.20120211121736.10827: *5* ecm.createEditCommanders
+def createEditCommanders (self):
+    '''Create edit classes in the commander.'''
+    c = self.c
+    for name, theClass in self.classesList:
+        theInstance = theClass(c)# Create the class.
+        setattr(c,name,theInstance)
+        # g.trace(name,theInstance)
+.. @+node:ekr.20120211121736.10828: *5* ecm.init
+def init (self):
+    '''
+    Init all edit commands subcommanders.
+    Called from c.finishCreate.
+    '''
+    c = self.c
+    for name, theClass in self.classesList:
+        theInstance = getattr(c,name)
+        theInstance.finishCreate()
+        theInstance.init()
+.. @+node:ekr.20120211121736.10829: *5* ecm.reinit
+def reinit (self):
+    '''Re-init classes in the commander.'''
+    c = self.c
+    for name, theClass in self.classesList:
+        theInstance = getattr(c,name)
+        theInstance.init()
+.. @+node:ekr.20150514190007.1: *3* Unused from c.init_objects
+d = self.subcommandersDict
+for ivar in sorted(d.keys()):
+    module_name,class_name = d.get(ivar)
+    module = locals().get(module_name)
+    the_class = getattr(module,class_name)
+    setattr(self,ivar,the_class(c))
+    # g.trace(ivar,module.__name__,class_name)
+self.k = self.keyHandler
+.. @+node:ekr.20150514190044.1: *3* << define subcommandersDict >>
+# Keys are commander ivars.  Values are [module_name,class_name]
+subcommandersDict = {
+    'abbrevCommands':       ['abbrevCommands','AbbrevCommandsClass'],
+    'atFileCommands':       ['leoAtFile','AtFile'],
+    'bufferCommands':       ['bufferCommands','BufferCommandsClass'],
+    'chapterController':    ['leoChapters','ChapterController'],
+    'controlCommands':      ['controlCommands','ControlCommandsClass'],
+    'debugCommands':        ['debugCommands','DebugCommandsClass'],
+    'editCommands':         ['editCommands','EditCommandsClass'],
+    'editFileCommands':     ['editFileCommands','EditFileCommandsClass'],
+    'fileCommands':         ['leoFileCommands','FileCommands'],
+    'findCommands':         ['leoFind','LeoFind'],
+    'helpCommands':         ['helpCommands','HelpCommandsClass'],
+    'importCommands':       ['leoImport','LeoImportCommands'],
+    'keyHandler':           ['leoKeys','KeyHandlerClass'],
+    'keyHandlerCommands':   ['keyCommands','KeyHandlerCommandsClass'],
+    'killBufferCommands':   ['killBufferCommands','KillBufferCommandsClass'],
+    'macroCommands':        ['macroCommands','MacroCommandsClass'],
+    'persistenceController':['leoPersistence','PersistenceDataController'],
+    'printingController':   ['leoPrinting','PrintingController'],
+    'rectangleCommands':    ['rectangleCommands','RectangleCommandsClass'],
+    'registerCommands':     ['registerCommands','RegisterCommandsClass'],
+    'rstCommands':          ['leoRst','RstCommands'],
+    'shadowController':     ['leoShadow','ShadowController'],
+    'spellCommands':        ['spellCommands','SpellCommandsClass'],
+    'tangleCommands':       ['leoTangle','TangleCommands'],
+    'testManager':          ['leoTest','TestManager'],
+    'vimCommands':          ['leoVim','VimCommands'],
+}
 .. @-all
 .. @-leo
