@@ -23,7 +23,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         BaseEditCommandsClass.__init__(self,c)
             # init the base class.
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
-        self.k = None
+        ### self.k = None
         self.kbiterator = self.iterateKillBuffer()
         self.last_clipboard = None  # For interacting with system clipboard.
         self.lastYankP = None
@@ -345,7 +345,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
 
         '''Kill characters from the insertion point to a given character.'''
 
-        k = self.k ; w = self.editWidget(event)
+        k = self.c.k ; w = self.editWidget(event)
         if not w: return
 
         state = k.getState('zap-to-char')

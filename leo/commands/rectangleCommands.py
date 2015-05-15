@@ -24,19 +24,12 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         self.theKillRectangle = []
             # Do not re-init this!
         self.stringRect = None
-
-    #@+node:ekr.20150514063305.450: ** rectangle.finishCreate
-    def finishCreate(self):
-
-        BaseEditCommandsClass.finishCreate(self)
-
         self.commandsDict = {
         'c': ('clear-rectangle',    self.clearRectangle),
         'd': ('delete-rectangle',   self.deleteRectangle),
         'k': ('kill-rectangle',     self.killRectangle),
         'o': ('open-rectangle',     self.openRectangle),
-        'r': ('copy-rectangle-to-register',
-            self.c.registerCommands.copyRectangleToRegister),
+        'r': ('copy-rectangle-to-register', self.copyRectangleToRegister),
         't': ('string-rectangle',   self.stringRectangle),
         'y': ('yank-rectangle',     self.yankRectangle),
         }
@@ -105,6 +98,12 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w.setSelectionRange(i,j,insert=j)
 
         self.endCommand()
+    #@+node:ekr.20150515060613.1: *3* copyRectangleToRegister
+    @cmd('rectangle-copy-to-register')
+    def copyRectangleToRegister(self,event):
+        
+        self.c.registerCommands.copyRectangleToRegister(event)
+        
     #@+node:ekr.20150514063305.456: *3* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle (self,event):
@@ -177,7 +176,7 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         '''Prompt for a string, then replace the contents of a rectangle
         with a string on each line.'''
 
-        c = self.c ; k = self.k ; state = k.getState('string-rect')
+        c = self.c ; k = self.c.k ; state = k.getState('string-rect')
         if g.app.unitTesting:
             state = 1 ; k.arg = 's...s' # This string is known to the unit test.
             w = self.editWidget(event)
@@ -217,7 +216,7 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         '''Yank into the rectangle defined by the start and end of selected text.'''
 
         # c = self.c
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w: return
 

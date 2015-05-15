@@ -44,7 +44,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event) # Sets self.w
         if w:
-            self.k.setLabelBlue('Append to buffer: ')
+            self.c.k.setLabelBlue('Append to buffer: ')
             self.getBufferName(event,self.appendToBufferFinisher)
 
     def appendToBufferFinisher (self,name):
@@ -69,7 +69,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event) # Sets self.w
         if w:
-            self.k.setLabelBlue('Copy to buffer: ')
+            self.c.k.setLabelBlue('Copy to buffer: ')
             self.getBufferName(event,self.copyToBufferFinisher)
 
     def copyToBufferFinisher (self,name):
@@ -92,7 +92,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event) # Sets self.w
         if w:
-            self.k.setLabelBlue('Insert to buffer: ')
+            self.c.k.setLabelBlue('Insert to buffer: ')
             self.getBufferName(event,self.insertToBufferFinisher)
 
     def insertToBufferFinisher (self,name):
@@ -117,7 +117,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
         w = self.editWidget(event) # Sets self.w
         if not w: return
 
-        self.k.setLabelBlue('Kill buffer: ')
+        self.c.k.setLabelBlue('Kill buffer: ')
         self.getBufferName(event,self.killBufferFinisher)
 
     def killBufferFinisher (self,name):
@@ -129,7 +129,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
             c.selectPosition(p)
             c.deleteOutline (op_name='kill-buffer: %s' % h)
             c.selectPosition(current)
-            self.k.setLabelBlue('Killed buffer: %s' % h)
+            self.c.k.setLabelBlue('Killed buffer: %s' % h)
             c.redraw(current)
     #@+node:ekr.20150514045829.10: *3* listBuffers & listBuffersAlphabetically
     @cmd('buffers-list')
@@ -164,7 +164,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         w = self.editWidget(event) # Sets self.w
         if w:
-            self.k.setLabelBlue('Prepend to buffer: ')
+            self.c.k.setLabelBlue('Prepend to buffer: ')
             self.getBufferName(event,self.prependToBufferFinisher)
 
     def prependToBufferFinisher (self,name):
@@ -188,13 +188,13 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         g.es('rename-buffer not ready yet')
         if 0:
-            self.k.setLabelBlue('Rename buffer from: ')
+            self.c.k.setLabelBlue('Rename buffer from: ')
             self.getBufferName(event,self.renameBufferFinisher1)
 
     def renameBufferFinisher1 (self,name):
 
         self.fromName = name
-        self.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
+        self.c.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
         event = None
         self.getBufferName(event,self.renameBufferFinisher2)
 
@@ -211,7 +211,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         '''Select a buffer (node) by its name (headline).'''
 
-        self.k.setLabelBlue('Switch to buffer: ')
+        self.c.k.setLabelBlue('Switch to buffer: ')
         self.getBufferName(event,self.switchToBufferFinisher)
 
     def switchToBufferFinisher (self,name):
@@ -259,7 +259,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
 
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         state = k.getState('getBufferName')
 
         if state == 0:

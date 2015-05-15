@@ -50,7 +50,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def finishCreate(self):
         
         c,k = self.c,self.c.k
-        BaseEditCommandsClass.finishCreate(self)
+        ### BaseEditCommandsClass.finishCreate(self)
         self.init_settings()
         self.init_abbrev()
         self.init_tree_abbrev()
@@ -634,7 +634,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         the minibuffer prompts you for the name of the abbreviation.
         Also sets abbreviations on.'''
 
-        k = self.k ; state = k.getState('add-abbr')
+        k = self.c.k ; state = k.getState('add-abbr')
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -660,7 +660,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         The selected text is the abbreviation name;
         the minibuffer prompts you for the value of the abbreviation.'''
 
-        k = self.k ; state = k.getState('add-inverse-abbr')
+        k = self.c.k ; state = k.getState('add-inverse-abbr')
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -735,7 +735,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         '''Toggle abbreviation mode.'''
 
-        k = self.k
+        k = self.c.k
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit()
         if not g.unitTesting and not g.app.batchMode:

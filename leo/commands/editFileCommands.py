@@ -168,7 +168,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for the name of a file and delete it.'''
 
-        k = self.k ; state = k.getState('delete_file')
+        k = self.c.k ; state = k.getState('delete_file')
 
         if state == 0:
             k.setLabelBlue('Delete File: ')
@@ -239,7 +239,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     @cmd('directory-make')
     def makeDirectory (self,event):
         '''Prompt for the name of a directory and create it.'''
-        k = self.k
+        k = self.c.k
         state = k.getState('make_directory')
         if state == 0:
             k.setLabelBlue('Make Directory: ')
@@ -257,7 +257,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     @cmd('file-open-by-name')
     def openOutlineByName (self,event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         fileName = ''.join(k.givenArgs)
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if fileName and g.os_path_exists(fileName):
@@ -282,7 +282,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for the name of a directory and delete it.'''
 
-        k = self.k ; state = k.getState('remove_directory')
+        k = self.c.k ; state = k.getState('remove_directory')
 
         if state == 0:
             k.setLabelBlue('Remove Directory: ')

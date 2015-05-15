@@ -45,7 +45,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
 
         '''Prompts for a macro name, then executes it.'''
 
-        k = self.k ; tag = 'macro-name'
+        k = self.c.k ; tag = 'macro-name'
         state = k.getState(tag)
         prompt = 'Call macro named: '
 
@@ -93,7 +93,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
     @cmd('macro-end-recording')
     def endMacro (self,event=None):
         '''Stops recording a macro.'''
-        k = self.k
+        k = self.c.k
         self.recordingMacro = False
             # Tell k.masterKeyHandler and k.masterCommandHandler we are done.
         if self.macro:
@@ -110,7 +110,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
     def executeMacro (self,macro):
 
         trace = False and not g.unitTesting
-        c = self.c ; k = self.k
+        c = self.c ; k = self.c.k
 
         c.bodyWantsFocus()
 
@@ -210,7 +210,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
 
         '''Prompts for the name to be given to the last recorded macro.'''
 
-        k = self.k ; state = k.getState('name-macro')
+        k = self.c.k ; state = k.getState('name-macro')
 
         if state == 0:
             k.setLabelBlue('Name of macro: ')
@@ -271,7 +271,7 @@ class MacroCommandsClass (BaseEditCommandsClass):
         '''Start recording or continue to record a macro.'''
 
         trace = False and not g.unitTesting
-        k = self.k
+        k = self.c.k
 
         if event:
             if self.recordingMacro:

@@ -35,7 +35,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.91: ** executeSubprocess
     def executeSubprocess (self,event,command):
         '''Execute a command in a separate process.'''
-        k = self.k
+        k = self.c.k
         try:
             args = shlex.split(g.toEncodedString(command))
             subprocess.Popen(args).wait()
@@ -84,7 +84,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
     @cmd('shell-command')
     def shellCommand (self,event):
         '''Execute a shell command.'''
-        k = self.k
+        k = self.c.k
         state = k.getState('shell-command')
         if state == 0:
             k.setLabelBlue('shell-command: ')
@@ -98,7 +98,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
     @cmd('shell-command-on-region')
     def shellCommandOnRegion (self,event):
         '''Execute a command taken from the selected text in a separate process.'''
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         if w:
             if w.hasSelection():

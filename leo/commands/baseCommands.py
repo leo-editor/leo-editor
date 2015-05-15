@@ -14,17 +14,17 @@ class BaseEditCommandsClass:
     def __init__ (self,c):
         '''BaseEditCommandsClass ctor.'''
         self.c = c
-        self.k = None
+        ### self.k = None
         self.undoData = None
         self.w = None
 
-    def finishCreate(self):
-        '''BaseEditCommandsClass.finishCreate.'''
-        self.k = self.c.k
-        try:
-            self.w = self.c.frame.body.wrapper # New in 4.4a4.
-        except AttributeError:
-            self.w = None
+    # def finishCreate(self):
+        # '''BaseEditCommandsClass.finishCreate.'''
+        # self.k = self.c.k
+        # try:
+            # self.w = self.c.frame.body.wrapper # New in 4.4a4.
+        # except AttributeError:
+            # self.w = None
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand  & beginCommandWithEvent
     def beginCommand (self,undoType='Typing'):
@@ -56,26 +56,20 @@ class BaseEditCommandsClass:
             self.undoData = None
         return w
     #@+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
-    # New in Leo 4.4b4: calling endCommand is valid for all widgets,
-    # but handles undo only if we are in body pane.
-
     def endCommand(self,label=None,changed=True,setLabel=True):
-
-        '''Do the common processing at the end of each command.'''
-
+        '''
+        Do the common processing at the end of each command.
+        Handles undo only if we are in the body pane.
+        '''
         trace =  False and not g.unitTesting
-        c = self.c ; b = self.undoData ; k = self.k
-
+        c,k = self.c,self.c.k
+        b = self.undoData 
         if trace: g.trace('changed',changed)
-
         if b and b.name.startswith('body') and changed:
             c.frame.body.onBodyChanged(undoType=b.undoType,
                 oldSel=b.oldSel,oldText=b.oldText,oldYview=None)
-
-        self.undoData = None # Bug fix: 1/6/06 (after a5 released).
-
+        self.undoData = None
         k.clearState()
-
         # Warning: basic editing commands **must not** set the label.
         if setLabel:
             if label:
@@ -112,7 +106,7 @@ class BaseEditCommandsClass:
     #@+node:ekr.20150514043714.11: *3* BaseEdit._chckSel
     def _chckSel (self,event,warning='no selection'):
         '''Return True if there is a selection in the edit widget.'''
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         val = w and w.hasSelection()
         if warning and not val:
@@ -136,6 +130,6 @@ class BaseEditCommandsClass:
 
         '''Clear the state and the minibuffer label.'''
 
-        return self.k.keyboardQuit()
+        return self.c.k.keyboardQuit()
     #@-others
 #@-leo

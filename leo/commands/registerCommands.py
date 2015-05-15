@@ -69,7 +69,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and append the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k
+        c = self.c ; k = self.c.k
         tag = 'append-to-register' ; state = k.getState(tag)
 
         char = event and event.char or ''
@@ -98,7 +98,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and prepend the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k
+        c = self.c ; k = self.c.k
         tag = 'prepend-to-register' ; state = k.getState(tag)
 
         char = event and event.char or ''
@@ -128,7 +128,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
         '''Prompt for a register name and append the rectangle defined by selected
         text to the register's contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('copy-rect-to-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('copy-rect-to-reg')
 
         char = event and event.char or ''
 
@@ -161,7 +161,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and append the selected text to the register's contents.'''
 
-        c = self.c ; k = self.k
+        c = self.c ; k = self.c.k
         tag = 'copy-to-register' ; state = k.getState(tag)
 
         char = event and event.char or ''
@@ -189,7 +189,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and increment its value if it has a numeric value.'''
 
-        c = self.c ; k = self.k ; state = k.getState('increment-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('increment-reg')
 
         char = event and event.char or ''
 
@@ -218,7 +218,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and and insert the value of another register into its contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('insert-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('insert-reg')
 
         char = event and event.char or ''
 
@@ -251,7 +251,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and set the insert point to the value in its register.'''
 
-        c = self.c ; k = self.k ; state = k.getState('jump-to-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('jump-to-reg')
 
         char = event and event.char or ''
 
@@ -287,7 +287,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
     def numberToRegister (self,event):
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         state = k.getState('number-to-reg')
 
         char = event and event.char or ''
@@ -309,7 +309,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and put a value indicating the insert point in the register.'''
 
-        c = self.c ; k = self.k ; state = k.getState('point-to-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('point-to-reg')
 
         char = event and event.char or ''
 
@@ -335,7 +335,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for a register name and print its contents.'''
 
-        c = self.c ; k = self.k ; state = k.getState('view-reg')
+        c = self.c ; k = self.c.k ; state = k.getState('view-reg')
 
         char = event and event.char or ''
 
@@ -355,7 +355,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514043714.12: ** register.checkIfRectangle
     def checkIfRectangle (self,event):
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         key = event and event.char.lower() or ''
         val = self.registers.get(key)
         if val and type(val) == type([]):

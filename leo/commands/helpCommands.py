@@ -326,7 +326,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
     @cmd('help-for-command')
     def helpForCommand (self,event):
         '''Prompts for a command name and prints the help message for that command.'''
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         s = '''\
     Alt-0 (vr-toggle) hides this help message.
 

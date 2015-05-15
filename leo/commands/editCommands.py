@@ -1685,7 +1685,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.193: *3* changePreviousWord (not used)
     # def changePreviousWord (self,event):
 
-        # k = self.k ; stroke = k.stroke
+        # k = self.c.k ; stroke = k.stroke
         # w = self.editWidget(event)
         # if not w: return
 
@@ -2014,7 +2014,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Enter watch escape mode.'''
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
 
         char = event and event.char or ''
 
@@ -2043,7 +2043,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.212: *3* escEvaluate (Revise)
     def escEvaluate (self,event):
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
 
         w = self.editWidget(event)
         if not w: return
@@ -2072,7 +2072,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     @cmd('eval-expression')
     def evalExpression (self,event):
         '''Evaluate a Python Expression entered in the minibuffer.'''
-        k = self.k ; state = k.getState('eval-expression')
+        k = self.c.k ; state = k.getState('eval-expression')
         if state == 0:
             k.setLabelBlue('Eval: ')
             k.getArg(event,'eval-expression',1,self.evalExpression)
@@ -2086,10 +2086,9 @@ class EditCommandsClass (BaseEditCommandsClass):
                 k.setLabelGrey('Invalid Expression: %s' % e)
     #@+node:ekr.20150514063305.214: ** fill column and centering
     #@+at
-    #@@language rest
     # 
-    # These methods are currently just used in tandem to center the line or region within the fill column.
-    # for example, dependent upon the fill column, this text:
+    # These methods are currently just used in tandem to center the line or
+    # region within the fill column. for example, dependent upon the fill column, this text:
     # 
     # cats
     # raaaaaaaaaaaats
@@ -2104,26 +2103,24 @@ class EditCommandsClass (BaseEditCommandsClass):
     #                              zaaaaaaaaap
     # 
     # after an center-region command via Alt-x.
+    # 
     #@+node:ekr.20150514063305.215: *3* centerLine
     @cmd('center-line')
     def centerLine (self,event):
-
         '''Centers line within current fill column'''
-
-        c,k,w = self.c,self.k,self.editWidget(event)
-        if not w: return
-
+        c,k,w = self.c,self.c.k,self.editWidget(event)
+        if not w:
+            return
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
             d = c.scanAllDirectives()
             fillColumn = d.get("pagewidth")
-
         s = w.getAllText()
         i,j = g.getLine(s,w.getInsertPoint())
         line = s [i:j].strip()
-        if not line or len(line) >= fillColumn: return
-
+        if not line or len(line) >= fillColumn:
+            return
         self.beginCommand(undoType='center-line')
         n = (fillColumn-len(line)) / 2
         ws = ' ' * n
@@ -2134,11 +2131,9 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.216: *3* setFillColumn
     @cmd('set-fill-column')
     def setFillColumn (self,event):
-
         '''Set the fill column used by the center-line and center-region commands.'''
-
-        k = self.k ; state = k.getState('set-fill-column')
-
+        k = self.c.k
+        state = k.getState('set-fill-column')
         if state == 0:
             k.setLabelBlue('Set Fill Column: ')
             k.getArg(event,'set-fill-column',1,self.setFillColumn)
@@ -2154,11 +2149,10 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.217: *3* centerRegion
     @cmd('center-region')
     def centerRegion (self,event):
-
         '''Centers the selected text within the fill column'''
-
-        c,k,w = self.c,self.k,self.editWidget(event)
-        if not w: return
+        c,k,w = self.c,self.c.k,self.editWidget(event)
+        if not w:
+            return
 
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
@@ -2285,7 +2279,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.224: *4* findWordHelper
     def findWordHelper (self,event,oneLine):
 
-        k = self.k ; tag = 'find-word' ; state = k.getState(tag)
+        k = self.c.k ; tag = 'find-word' ; state = k.getState(tag)
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -2320,7 +2314,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Put the cursor at the n'th character of the buffer.'''
 
-        k = self.k ; state = k.getState('goto-char')
+        k = self.c.k ; state = k.getState('goto-char')
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -2346,8 +2340,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Put the cursor at the n'th line of a file or script.
         This is a minibuffer interface to Leo's legacy Go To Line number command.'''
 
-        c = self.c
-        k = self.k ; tag = 'goto-global-line' ; state = k.getState(tag)
+        c,k = self.c,self.c.k
+        tag = 'goto-global-line' ; state = k.getState(tag)
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -2366,7 +2360,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Put the cursor at the n'th line of the buffer.'''
 
-        k = self.k ; state = k.getState('goto-line')
+        k = self.c.k ; state = k.getState('goto-line')
 
         if state == 0:
             w = self.editWidget(event) # Sets self.w
@@ -2662,7 +2656,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         '''Print how many occurances of a regular expression are found
         in the body text of the presently selected node.'''
 
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w: return
 
@@ -2682,7 +2676,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Print the line and column number and percentage of insert point.'''
 
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w: return
 
@@ -2700,7 +2694,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Put the Emacs-lossage in the minibuffer label.'''
 
-        k = self.k
+        k = self.c.k
 
         g.es('lossage...')
         aList = g.app.lossage
@@ -2712,7 +2706,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     @cmd('what-line')
     def whatLine (self,event):
         '''Print the line number of the line containing the cursor.'''
-        k = self.k ; w = self.editWidget(event)
+        k = self.c.k ; w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
         i = w.getInsertPoint()
@@ -3138,7 +3132,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Replace the current character with the next character typed.'''
 
-        k = self.k ; tag = 'replace-current-character'
+        k = self.c.k ; tag = 'replace-current-character'
         state = k.getState(tag)
 
         if state == 0:
@@ -3173,7 +3167,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         '''
         trace = False and not g.unitTesting
-        c,k,p = self.c,self.k,self.c.p
+        c,k,p = self.c,self.c.k,self.c.p
         verbose = True
         w = self.editWidget(event)
         if not w:
@@ -3466,7 +3460,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         In Transient Mark mode, if the region is active, the command operates on the region instead.'''
 
-        k = self.k ; state = k.getState('flush-lines')
+        k = self.c.k ; state = k.getState('flush-lines')
 
         if state == 0:
             k.setLabelBlue('Flush lines regexp: ')
@@ -3484,7 +3478,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         In Transient Mark mode, if the region is active, the command operates on the region instead.'''
 
-        k = self.k ; state = k.getState('keep-lines')
+        k = self.c.k ; state = k.getState('keep-lines')
 
         if state == 0:
             k.setLabelBlue('Keep lines regexp: ')
@@ -4481,7 +4475,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Kill the previous paragraph.'''
 
-        k = self.k ; c = k.c ; w = self.editWidget(event)
+        c,k = self.c,self.c.k; w = self.editWidget(event)
         if not w: return
 
         self.beginCommand(undoType='backward-kill-paragraph')
@@ -4542,7 +4536,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Kill the present paragraph.'''
 
-        k = self.k ; c = k.c ; w = self.editWidget(event)
+        k = self.c.k ; c = k.c ; w = self.editWidget(event)
         if not w: return
 
         self.beginCommand(undoType='kill-paragraph')
@@ -4630,7 +4624,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Print the number of lines and characters in the selected text.'''
 
-        k = self.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w: return
 
@@ -5302,7 +5296,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         '''Prompt for the name and value of a uA, then set the uA in the present node.'''
 
-        c,k = self.c,self.k
+        c,k = self.c,self.c.k
         tag = 'set-ua' ; state = k.getState(tag)
         if state == 0:
             w = self.editWidget(event) # sets self.w
