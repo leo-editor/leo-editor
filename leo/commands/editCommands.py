@@ -1707,30 +1707,24 @@ class EditCommandsClass (BaseEditCommandsClass):
     def capitalizeHelper (self,event,which,undoType):
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getWord(s,ins)
         word = s[i:j]
-        # g.trace('word',repr(word))
-        if not word.strip(): return
-
+        if not word.strip():
+            return
         self.beginCommand(w,undoType=undoType)
-
         if   which == 'cap':  word2 = word.capitalize()
         elif which == 'low':  word2 = word.lower()
         elif which == 'up':   word2 = word.upper()
         else: g.trace('can not happen: which = %s' %s (which))
-
         changed = word != word2
-        # g.trace('changed',changed,'word2',repr(word2))
-
         if changed:
             w.delete(i,j)
             w.insert(i,word2)
             w.setSelectionRange(ins,ins,insert=ins)
-
         self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20150514063305.195: ** clicks and focus (EditCommandsClass)
     #@+node:ekr.20150514063305.196: *3* activate-x-menu & activateMenu (EditCommandsClass)
@@ -1990,11 +1984,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.209: *3* indentToCommentColumn
     @cmd('indent-to-comment-column')
     def indentToCommentColumn (self,event):
-
-        '''Insert whitespace to indent the line containing the insert point to the comment column.'''
-
+        '''
+        Insert whitespace to indent the line containing the insert point to the
+        comment column.
+        '''
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         self.beginCommand(w,undoType='indent-to-comment-column')
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -2153,20 +2149,16 @@ class EditCommandsClass (BaseEditCommandsClass):
         c,k,w = self.c,self.c.k,self.editWidget(event)
         if not w:
             return
-
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         ind, junk = g.getLine(s,sel_1)
         junk, end = g.getLine(s,sel_2)
-
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
             d = c.scanAllDirectives()
             fillColumn = d.get("pagewidth")
-
         self.beginCommand(w,undoType='center-region')
-
         inserted = 0
         while ind < end:
             s = w.getAllText()
@@ -2182,9 +2174,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                 if k > i: w.delete(i,k-i)
                 w.insert(i,' '*n)
                 ind = j + n-(k-i)
-
         w.setSelectionRange(sel_1,sel_2+inserted)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.218: *3* setFillPrefix
     @cmd('set-fill-prefix')
@@ -2591,11 +2581,10 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.243: *3* deleteIndentation
     @cmd('delete-indentation')
     def deleteIndentation (self,event):
-
         '''Delete indentation in the presently line.'''
-
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
@@ -2612,8 +2601,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.244: *3* indentRelative
     @cmd('indent-relative')
     def indentRelative (self,event):
-
-        '''The indent-relative command indents at the point based on the previous
+        '''
+        The indent-relative command indents at the point based on the previous
         line (actually, the last non-empty line.) It inserts whitespace at the
         point, moving point, until it is underneath an indentation point in the
         previous line.
@@ -2622,8 +2611,8 @@ class EditCommandsClass (BaseEditCommandsClass):
         the line. If the point is farther right than any indentation point in the
         previous line, the whitespace before point is deleted and the first
         indentation point then applicable is used. If no indentation point is
-        applicable even then whitespace equivalent to a single tab is inserted.'''
-
+        applicable even then whitespace equivalent to a single tab is inserted.
+        '''
         c = self.c ; undoType = 'indent-relative' ; w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
@@ -2738,19 +2727,17 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.addRemoveHelper(event,ch='\t',add=False,undoType='remove-tab-from-lines')
     #@+node:ekr.20150514063305.252: *4* addRemoveHelper
     def addRemoveHelper(self,event,ch,add,undoType):
-
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         if w.hasSelection():s = w.getSelectedText()
         else:               s = w.getAllText()
-        if not s: return
-
+        if not s:
+            return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
         d = c.scanAllDirectives() ; width = d.get('tabwidth')
         if ch == '\t' and width < 0: ch = ' ' * abs(width)
-
         self.beginCommand(w,undoType=undoType)
         lines = g.splitLines(s)
         if add:
@@ -2771,18 +2758,14 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.253: *3* backwardDeleteCharacter
     @cmd('backward-delete-char')
     def backwardDeleteCharacter (self,event=None):
-
         '''Delete the character to the left of the cursor.'''
-
         c = self.c ; p = c.p
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
-        # g.trace(wname,i,j,ins)
-
         if wname.startswith('body'):
             self.beginCommand(w)
             try:
@@ -2869,12 +2852,11 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.256: *3* cleanLines
     @cmd('clean-lines')
     def cleanLines (self,event):
-
         '''Removes trailing whitespace from all lines, preserving newlines.
         '''
-
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         if w.hasSelection():
             s = w.getSelectedText()
         else:
@@ -2902,9 +2884,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.257: *3* clearSelectedText
     @cmd('clear-selected-text')
     def clearSelectedText (self,event):
-
         '''Delete the selected text.'''
-
         w = self.editWidget(event)
         if not w: return
         i,j = w.getSelectionRange()
@@ -2939,8 +2919,8 @@ class EditCommandsClass (BaseEditCommandsClass):
 
     def deleteWordHelper(self,event,forward,smart=False):
         c,w = self.c,self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         self.beginCommand(w,undoType="delete-word")
         if w.hasSelection():
             from_pos,to_pos = w.getSelectionRange()
@@ -2948,20 +2928,16 @@ class EditCommandsClass (BaseEditCommandsClass):
             from_pos = w.getInsertPoint()
             self.moveWordHelper(event,extend=False,forward=forward,smart=smart)
             to_pos = w.getInsertPoint()
-
         # For Tk GUI, make sure to_pos > from_pos
         if from_pos > to_pos:
             from_pos,to_pos = to_pos,from_pos
-
         w.delete(from_pos,to_pos)
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.259: *3* deleteNextChar
     @cmd('delete-char')
     def deleteNextChar (self,event):
-
         '''Delete the character to the right of the cursor.'''
-
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
@@ -2980,11 +2956,10 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.260: *3* deleteSpaces
     @cmd('delete-spaces')
     def deleteSpaces (self,event,insertspace=False):
-
         '''Delete all whitespace surrounding the cursor.'''
-
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         undoType = 'insert-space' if insertspace else 'delete-spaces'
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -3007,15 +2982,15 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.261: *3* insertHardTab
     @cmd('insert-hard-tab')
     def insertHardTab(self,event):
-
         '''Insert one hard tab.'''
-
         c = self.c
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         assert g.isTextWrapper(w)
         name = c.widget_name(w)
-        if name.startswith('head'): return
+        if name.startswith('head'):
+            return
         ins = w.getInsertPoint()
         self.beginCommand(w,undoType='insert-hard-tab')
         w.insert(ins,'\t')
@@ -3025,69 +3000,52 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.262: *3* insertNewLine
     @cmd('insert-newline')
     def insertNewLine (self,event):
-
         '''Insert a newline at the cursor.'''
-
         c = self.c ; k = c.k ; w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         assert g.isTextWrapper(w)
         name = c.widget_name(w)
-        if name.startswith('head'): return
-
+        if name.startswith('head'):
+            return
         oldSel = w.getSelectionRange()
-        # g.trace('oldSel',oldSel)
-
         self.beginCommand(w,undoType='newline')
-
-        # New in Leo 4.5: use the same logic as in selfInsertCommand.
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
         k.setInputState('insert')
         k.showStateAndMode()
-
         self.endCommand()
 
     insertNewline = insertNewLine
     #@+node:ekr.20150514063305.263: *3* insertNewLineAndTab
     @cmd('newline-and-indent')
     def insertNewLineAndTab (self,event):
-
         '''Insert a newline and tab at the cursor.'''
-
         c = self.c ; k = c.k
         w = self.editWidget(event) ; p = c.p
-        if not w: return
-
+        if not w:
+            return
         assert g.isTextWrapper(w),w
         name = c.widget_name(w)
-        if name.startswith('head'): return
-
+        if name.startswith('head'):
+            return
         self.beginCommand(w,undoType='insert-newline-and-indent')
-
-        # New in Leo 4.5: use the same logic as in selfInsertCommand.
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
         self.updateTab(p,w,smartTab=False)
         k.setInputState('insert')
         k.showStateAndMode()
-
         self.endCommand(changed=True,setLabel=False)
     #@+node:ekr.20150514063305.264: *3* insertParentheses
     @cmd('insert-parentheses')
     def insertParentheses (self,event):
-
         '''Insert () at the cursor.'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        self.beginCommand(w,undoType='insert-parenthesis')
-
-        i = w.getInsertPoint()
-        w.insert(i,'()')
-        w.setInsertPoint(i+1)
-
-        self.endCommand(changed=True,setLabel=False)
+        if w:
+            self.beginCommand(w,undoType='insert-parenthesis')
+            i = w.getInsertPoint()
+            w.insert(i,'()')
+            w.setInsertPoint(i+1)
+            self.endCommand(changed=True,setLabel=False)
     #@+node:ekr.20150514063305.265: *3* insertSoftTab
     @cmd('insert-soft-tab')
     def insertSoftTab (self,event):
@@ -3495,8 +3453,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     def linesHelper (self,event,pattern,which):
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         self.beginCommand(w,undoType=which+'-lines')
         if w.hasSelection():
             i,end = w.getSelectionRange()
@@ -3505,9 +3463,12 @@ class EditCommandsClass (BaseEditCommandsClass):
             end = 'end'
         txt = w.get(i,end)
         tlines = txt.splitlines(True)
-        if which == 'flush':    keeplines = list(tlines)
-        else:                   keeplines = []
-
+        ###
+        # if which == 'flush':
+            # keeplines = list(tlines)
+        # else:
+            # keeplines = []
+        keeplines = list(tlines) if which == 'flush' else []
         try:
             regex = re.compile(pattern)
             for n, z in enumerate(tlines):
@@ -3527,20 +3488,15 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.284: *3* splitLine
     @cmd('split-line')
     def splitLine (self,event):
-
         '''Split a line at the cursor position.'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        self.beginCommand(w,undoType='split-line')
-
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        w.setAllText(s[:ins] + '\n' + s[ins:])
-        w.setInsertPoint(ins+1)
-
-        self.endCommand(changed=True,setLabel=True)
+        if w:
+            self.beginCommand(w,undoType='split-line')
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            w.setAllText(s[:ins] + '\n' + s[ins:])
+            w.setInsertPoint(ins+1)
+            self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.285: ** move cursor... (leoEditCommands)
     #@+node:ekr.20150514063305.286: *3*  general helpers
     #@+node:ekr.20150514063305.287: *4* extendHelper
@@ -4467,9 +4423,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.320: *3* backwardKillParagraph
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph (self,event):
-
         '''Kill the previous paragraph.'''
-
         c,k = self.c,self.c.k; w = self.editWidget(event)
         if not w:
             return
@@ -4502,14 +4456,11 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.322: *3* fillRegionAsParagraph
     @cmd('fill-region-as-paragraph')
     def fillRegionAsParagraph (self,event):
-
         '''Fill the selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self._chckSel(event): return
-
+        if not w or not self._chckSel(event):
+            return
         self.beginCommand(w,undoType='fill-region-as-paragraph')
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.323: *3* fillParagraph
     @cmd('fill-paragraph')
@@ -4528,12 +4479,10 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.324: *3* killParagraph
     @cmd('kill-paragraph')
     def killParagraph (self,event):
-
         '''Kill the present paragraph.'''
-
         k = self.c.k ; c = k.c ; w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         self.beginCommand(w,undoType='kill-paragraph')
         try:
             self.extendToParagraph(event)
@@ -4590,28 +4539,22 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.328: *3* tabIndentRegion (indent-rigidly)
     @cmd('indent-rigidly')
     def tabIndentRegion (self,event):
-
         '''Insert a hard tab at the start of each line of the selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self._chckSel(event): return
-
+        if not w or not self._chckSel(event):
+            return
         self.beginCommand(w,undoType='indent-rigidly')
-
         s = w.getAllText()
         i1,j1 = w.getSelectionRange()
         i,junk = g.getLine(s,i1)
         junk,j = g.getLine(s,j1)
-
         lines = g.splitlines(s[i:j])
         n = len(lines)
         lines = g.joinLines(['\t' + line for line in lines])
         s = s[:i] + lines + s[j:]
         w.setAllText(s)
-
         # Retain original row/col selection.
         w.setSelectionRange(i1,j1+n,insert=j1+n)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.329: *3* countRegion
     @cmd('count-region')
@@ -4634,20 +4577,19 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.330: *3* moveLinesDown
     @cmd('move-lines-down')
     def moveLinesDown (self,event):
-
-        '''Move all lines containing any selected text down one line,
-        moving to the next node if the lines are the last lines of the body.'''
-
+        '''
+        Move all lines containing any selected text down one line,
+        moving to the next node if the lines are the last lines of the body.
+        '''
         c = self.c ; w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         s = w.getAllText()
         sel_1,sel_2 = w.getSelectionRange()
         insert_pt = w.getInsertPoint() # 2011/04/01
         i,junk = g.getLine(s,sel_1)
         i2,j   = g.getLine(s,sel_2)
         lines  = s[i:j]
-
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
         # n = i2-i
@@ -4679,13 +4621,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.331: *3* moveLinesUp
     @cmd('move-lines-up')
     def moveLinesUp (self,event):
-
-        '''Move all lines containing any selected text up one line,
-        moving to the previous node as needed.'''
-
+        '''
+        Move all lines containing any selected text up one line,
+        moving to the previous node as needed.
+        '''
         c = self.c ; w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         s = w.getAllText()
         sel_1,sel_2 = w.getSelectionRange()
         insert_pt = w.getInsertPoint() # 2011/04/01     
@@ -4719,28 +4661,22 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.332: *3* reverseRegion
     @cmd('reverse-region')
     def reverseRegion (self,event):
-
         '''Reverse the order of lines in the selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self._chckSel(event): return
-
+        if not w or not self._chckSel(event):
+            return
         self.beginCommand(w,undoType='reverse-region')
-
         s = w.getAllText()
         i1,j1 = w.getSelectionRange()
         i,junk = g.getLine(s,i1)
         junk,j = g.getLine(s,j1)
-
         txt = s[i:j]
         aList = txt.split('\n')
         aList.reverse()
         txt = '\n'.join(aList) + '\n'
-
         w.setAllText(s[:i1] + txt + s[j1:])
         ins = i1 + len(txt) - 1
         w.setSelectionRange(ins,ins,insert=ins)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.333: *3* up/downCaseRegion & helper
     @cmd('downcase-region')
@@ -5035,11 +4971,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.341: *3* sortColumns
     @cmd('sort-columns')
     def sortColumns (self,event):
-
-        '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
-
+        '''
+        Sort lines of selected text using only lines in the given columns to do
+        the comparison.
+        '''
         w = self.editWidget(event)
-        if not self._chckSel(event): return
+        if not self._chckSel(event):
+            return
         self.beginCommand(w,undoType='sort-columns')
         try:
             s = w.getAllText()
@@ -5064,21 +5002,21 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.342: *3* sortFields
     @cmd('sort-fields')
     def sortFields (self,event,which=None):
+        '''
+        Divide the selected text into lines and sort by comparing the contents
+        of one field in each line. Fields are defined as separated by
+        whitespace, so the first run of consecutive non-whitespace characters
+        in a line constitutes field 1, the second such run constitutes field 2,
+        etc.
 
-        '''Divide the selected text into lines and sort by comparing the contents of
-         one field in each line. Fields are defined as separated by whitespace, so
-         the first run of consecutive non-whitespace characters in a line
-         constitutes field 1, the second such run constitutes field 2, etc.
-
-         You specify which field to sort by with a numeric argument: 1 to sort by
-         field 1, etc. A negative argument means sort in descending order. Thus,
-         minus 2 means sort by field 2 in reverse-alphabetical order.'''
-
+        You specify which field to sort by with a numeric argument: 1 to sort
+        by field 1, etc. A negative argument means sort in descending order.
+        Thus, minus 2 means sort by field 2 in reverse-alphabetical order.
+         '''
         w = self.editWidget(event)
-        if not w or not self._chckSel(event): return
-
+        if not w or not self._chckSel(event):
+            return
         self.beginCommand(w,undoType='sort-fields')
-
         s = w.getAllText()
         ins = w.getInsertPoint()
         r1,r2,r3,r4 = self.getRectanglePoints(w)
@@ -5106,27 +5044,22 @@ class EditCommandsClass (BaseEditCommandsClass):
             w.insert('%s.0' % int1,'%s\n' % z[1])
             int1 = int1 + 1
         w.setInsertPoint(ins)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.343: ** swap/transpose...
     #@+node:ekr.20150514063305.344: *3* transposeLines
     @cmd('transpose-lines')
     def transposeLines (self,event):
-
         '''Transpose the line containing the cursor with the preceding line.'''
-
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         ins = w.getInsertPoint()
         s = w.getAllText()
-        if not s.strip(): return
-
+        if not s.strip():
+            return
         i,j = g.getLine(s,ins)
         line1 = s[i:j]
-
         self.beginCommand(w,undoType='transpose-lines')
-
         if i == 0: # Transpose the next line.
             i2,j2 = g.getLine(s,j+1)
             line2 = s[i2:j2]
@@ -5139,24 +5072,21 @@ class EditCommandsClass (BaseEditCommandsClass):
             w.delete(i2,j)
             w.insert(i2,line1+line2)
             w.setInsertPoint(j-1)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.345: *3* transposeWords
     @cmd('transpose-words')
     def transposeWords (self,event):
-
         '''Transpose the word at the cursor with the preceding or following word.'''
-
         trace = False and not g.unitTesting
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         self.beginCommand(w,undoType='transpose-words')
         s = w.getAllText()
         i1,j1 = self.extendToWord(event,direction='back',select=False)
         s1 = s[i1:j1]
         if trace: g.trace(i1,j1,s1)
         if i1 > j1: i1,j1 = j1,i1
-
         # First, search backward.
         k = i1-1
         while k >= 0 and s[k].isspace():
@@ -5190,17 +5120,14 @@ class EditCommandsClass (BaseEditCommandsClass):
                 w.setAllText(s3)
                 if trace: g.trace(s3)
                 w.setSelectionRange(j1,j1,insert=j1)
-
         self.endCommand(changed=changed,setLabel=True)
     #@+node:ekr.20150514063305.346: *3* swapCharacters & transeposeCharacters
     @cmd('transpose-chars')
     def transposeCharacters (self,event):
-
         '''Swap the characters at the cursor.'''
-
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         self.beginCommand(w,undoType='swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()

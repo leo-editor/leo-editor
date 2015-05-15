@@ -218,23 +218,20 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.366: ** insertFile
     @cmd('file-insert')
     def insertFile (self,event):
-
         '''Prompt for the name of a file and put the selected text into it.'''
-
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         fn = self.getReadableTextFile()
-        if not fn: return
-
+        if not fn:
+            return
         s,e = g.readFileIntoString(fn)
-        if s is None: return
-
-        self.beginCommand(w,undoType='insert-file')
-        i = w.getInsertPoint()
-        w.insert(i,s)
-        w.seeInsertPoint()
-        self.endCommand(changed=True,setLabel=True)
+        if s:
+            self.beginCommand(w,undoType='insert-file')
+            i = w.getInsertPoint()
+            w.insert(i,s)
+            w.seeInsertPoint()
+            self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.367: ** makeDirectory
     @cmd('directory-make')
     def makeDirectory (self,event):

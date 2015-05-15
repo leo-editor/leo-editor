@@ -57,7 +57,6 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             return
         self.beginCommand(w,'clear-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
-
         # Change the text.
         fill = ' ' *(r4-r2)
         for r in range(r1,r3+1):
@@ -68,28 +67,22 @@ class RectangleCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.455: *3* closeRectangle
     @cmd('rectangle-close')
     def closeRectangle (self,event):
-
         '''Delete the rectangle if it contains nothing but whitespace..'''
-
         w = self.editWidget(event)
-        if not w or not self.check(event): return
-
+        if not w or not self.check(event):
+            return
         self.beginCommand(w,'close-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
-
         # Return if any part of the selection contains something other than whitespace.
         for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             if s.strip(): return
-
         # Change the text.
         for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
-
         i = '%s.%s' % (r1,r2)
         j = '%s.%s' % (r3,r2)
         w.setSelectionRange(i,j,insert=j)
-
         self.endCommand()
     #@+node:ekr.20150515060613.1: *3* copyRectangleToRegister
     @cmd('rectangle-copy-to-register')
@@ -100,77 +93,62 @@ class RectangleCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.456: *3* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle (self,event):
-
         '''Delete the rectangle defined by the start and end of selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self.check(event): return
-
+        if not w or not self.check(event):
+            return
         self.beginCommand(w,'delete-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
-
         for r in range(r1,r3+1):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
-
         i = '%s.%s' % (r1,r2)
         j = '%s.%s' % (r3,r2)
         w.setSelectionRange(i,j,insert=j)
-
         self.endCommand()
     #@+node:ekr.20150514063305.457: *3* killRectangle
     @cmd('rectangle-kill')
     def killRectangle (self,event):
-
         '''Kill the rectangle defined by the start and end of selected text.'''
-
         w = self.editWidget(event)
-        if not w or not self.check(event): return
-
+        if not w or not self.check(event):
+            return
         self.beginCommand(w,'kill-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         self.theKillRectangle = []
-
         for r in range(r1,r3+1):
             s = w.get('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             self.theKillRectangle.append(s)
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
-
-        # g.trace('killRect',repr(self.theKillRectangle))
-
         if self.theKillRectangle:
             ins = '%s.%s' % (r,r2)
             w.setSelectionRange(ins,ins,insert=ins)
-
         self.endCommand()
     #@+node:ekr.20150514063305.458: *3* openRectangle
     @cmd('rectangle-open')
     def openRectangle (self,event):
-
-        '''Insert blanks in the rectangle defined by the start and end of selected text.
-        This pushes the previous contents of the rectangle rightward.'''
-
+        '''
+        Insert blanks in the rectangle defined by the start and end of selected
+        text. This pushes the previous contents of the rectangle rightward.
+        '''
         w = self.editWidget(event)
-        if not w or not self.check(event): return
-
+        if not w or not self.check(event):
+            return
         self.beginCommand(w,'open-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
-
         fill = ' ' * (r4-r2)
         for r in range(r1,r3+1):
             w.insert('%s.%s' % (r,r2),fill)
-
         i = '%s.%s' % (r1,r2)
         j = '%s.%s' % (r3,r2+len(fill))
         w.setSelectionRange(i,j,insert=j)
-
         self.endCommand()
     #@+node:ekr.20150514063305.459: *3* stringRectangle
     @cmd('rectangle-string')
     def stringRectangle (self,event):
-
-        '''Prompt for a string, then replace the contents of a rectangle
-        with a string on each line.'''
-
+        '''
+        Prompt for a string, then replace the contents of a rectangle
+        with a string on each line.
+        '''
         c = self.c ; k = self.c.k ; state = k.getState('string-rect')
         if g.app.unitTesting:
             state = 1 ; k.arg = 's...s' # This string is known to the unit test.
@@ -203,13 +181,10 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             # 2010/1/1: Fix bug 480422:
             # string-rectangle kills syntax highlighting.
             c.frame.body.recolor(c.p,incremental=False)
-
     #@+node:ekr.20150514063305.460: *3* yankRectangle
     @cmd('rectangle-yank')
     def yankRectangle (self,event,killRect=None):
-
         '''Yank into the rectangle defined by the start and end of selected text.'''
-
         # c = self.c
         k = self.c.k
         w = self.editWidget(event)
@@ -221,10 +196,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             killRect = ['Y1Y','Y2Y','Y3Y','Y4Y']
         elif not killRect:
             k.setLabelGrey('No kill rect') ; return
-
         self.beginCommand(w,'yank-rectangle')
         r1,r2,r3,r4 = self.getRectanglePoints(w)
-
         n = 0
         for r in range(r1,r3+1):
             # g.trace(n,r,killRect[n])
@@ -232,7 +205,6 @@ class RectangleCommandsClass (BaseEditCommandsClass):
             w.delete('%s.%s' % (r,r2), '%s.%s' % (r,r4))
             w.insert('%s.%s' % (r,r2), killRect[n])
             n += 1
-
         i = '%s.%s' % (r1,r2)
         j = '%s.%s' % (r3,r2+len(killRect[n-1]))
         w.setSelectionRange(i,j,insert=j)

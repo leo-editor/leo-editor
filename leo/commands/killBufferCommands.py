@@ -43,26 +43,21 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.412: ** backwardKillSentence
     @cmd('backward-kill-sentence')
     def backwardKillSentence (self,event):
-
         '''Kill the previous sentence.'''
-
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i = s.rfind('.',ins)
-        if i == -1: return
-
+        if i == -1:
+            return
         undoType='backward-kill-sentence'
-
         self.beginCommand(w,undoType=undoType)
-
         i2 = s.rfind('.',0,i) + 1
         self.kill(event,i2,i+1,undoType=undoType)
         self.c.frame.body.forceFullRecolor()
         w.setInsertPoint(i2)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.413: ** backwardKillWord & killWord
     @cmd('backward-kill-word')
@@ -163,14 +158,12 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: ** kill
     def kill (self,event,frm,to,undoType=None):
-
         '''A helper method for all kill commands.'''
-
         w = self.editWidget(event)
         if not w: return
         s = w.get(frm,to)
-        # g.trace(repr(s))
-        if undoType: self.beginCommand(w,undoType=undoType)
+        if undoType:
+            self.beginCommand(w,undoType=undoType)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         w.delete(frm,to)
@@ -249,70 +242,63 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.423: ** killSentence
     @cmd('kill-sentence')
     def killSentence (self,event):
-
         '''Kill the sentence containing the cursor.'''
-
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i = s.find('.',ins)
-        if i == -1: return
-
+        if i == -1:
+            return
         undoType='kill-sentence'
-
         self.beginCommand(w,undoType=undoType)
-
         i2 = s.rfind('.',0,ins) + 1
         self.kill(event,i2,i+1,undoType=undoType)
         self.c.frame.body.forceFullRecolor()
         w.setInsertPoint(i2)
-
         self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.424: ** killWs
     @cmd('kill-ws')
     def killWs (self,event,undoType='kill-ws'):
-
         '''Kill whitespace.'''
-
         ws = ''
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
         i = j = ins = w.getInsertPoint()
-
         while i >= 0 and s[i] in (' ','\t'):
             i-= 1
         if i < ins: i += 1
-
         while j < len(s) and s[j] in (' ','\t'):
             j += 1
-
         if j > i:
             ws = s[i:j]
-            # g.trace(i,j,repr(ws))
             w.delete(i,j)
-            if undoType: self.beginCommand(w,undoType=undoType)
+            if undoType:
+                self.beginCommand(w,undoType=undoType)
             if self.addWsToKillRing:
                 self.addToKillBuffer(ws)
-            if undoType: self.endCommand(changed=True,setLabel=True)
+            if undoType:
+                self.endCommand(changed=True,setLabel=True)
     #@+node:ekr.20150514063305.425: ** yank
     @cmd('yank')
     def yank (self,event,pop=False):
-
-        '''yank: insert the first entry of the kill ring.
+        '''
+        yank: insert the first entry of the kill ring.
         yank-pop: insert the next entry of the kill ring.
         '''
-
         c = self.c ; w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         current = c.p
-        if not current: return
+        if not current:
+            return
         text = w.getAllText()
         i, j = w.getSelectionRange()
         clip_text = self.getClipboard()
-        if not g.app.globalKillBuffer and not clip_text: return
-
+        if not g.app.globalKillBuffer and not clip_text:
+            return
         undoType = 'yank-pop' if pop else 'yank'
         self.beginCommand(w,undoType=undoType)
         try:
@@ -347,12 +333,10 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.427: ** zapToCharacter
     @cmd('zap-to-character')
     def zapToCharacter (self,event):
-
         '''Kill characters from the insertion point to a given character.'''
-
         k = self.c.k ; w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         state = k.getState('zap-to-char')
         if state == 0:
             k.setLabelBlue('Zap To Character: ')
