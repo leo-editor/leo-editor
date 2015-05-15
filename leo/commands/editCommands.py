@@ -1409,7 +1409,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+node:ekr.20150514063305.185: *6* handlePossibleFunctionHeader
         # converts function header lines from typescript format to python format.
         # That is, converts
-        ### x1..nn w::y ( t1 z1,..tn zn) { C++
+        # x1..nn w::y ( t1 z1,..tn zn) { C++
         # (public|private|export) name (t1: z1, ... tn: zn {
         # to
         # def y (z1,..zn): { # (public|private|export)
@@ -3035,7 +3035,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         Select all lines if there is no existing selection.
         '''    
         c = self.c
-        ### w = self.w
         w = self.editWidget(event)
         expandSelection = not w.hasSelection()
         head,lines,tail,oldSel,oldYview = c.getBodyLines(expandSelection=expandSelection)
@@ -3429,11 +3428,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             end = 'end'
         txt = w.get(i,end)
         tlines = txt.splitlines(True)
-        ###
-        # if which == 'flush':
-            # keeplines = list(tlines)
-        # else:
-            # keeplines = []
         keeplines = list(tlines) if which == 'flush' else []
         try:
             regex = re.compile(pattern)

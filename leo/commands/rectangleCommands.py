@@ -40,13 +40,6 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         Otherwise, return False and issue a warning.'''
 
         return self._chckSel(event,warning)
-    #@+node:ekr.20150514063305.452: ** rectangle.beginCommand
-    ###
-    # def beginCommand (self,w,undoType='Typing'):
-        # '''Handle start-of-command processing.'''
-        # BaseEditCommandsClass.beginCommand(self,w,undoType)
-        # r1,r2,r3,r4 = self.getRectanglePoints(w)
-        # return w,r1,r2,r3,r4
     #@+node:ekr.20150514063305.453: ** rectangle.Entries
     #@+node:ekr.20150514063305.454: *3* clearRectangle
     @cmd('rectangle-clear')

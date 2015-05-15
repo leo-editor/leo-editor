@@ -48,7 +48,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.w = None
     #@+node:ekr.20150514043850.5: *3* abbrev.finishCreate & helpers
     def finishCreate(self):
-        
+        '''AbbrevCommandsClass.finishCreate.'''
         c,k = self.c,self.c.k
         self.init_settings()
         self.init_abbrev()

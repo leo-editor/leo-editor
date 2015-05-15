@@ -364,25 +364,8 @@ class Commands (object):
         c.frame.finishCreate()
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
-        # Finish all user commands.
-        table = (
-            c.abbrevCommands,
-            c.bufferCommands,
-            c.controlCommands,
-            c.debugCommands,
-            c.editCommands,
-            c.editFileCommands,
-            c.helpCommands,
-            c.keyHandlerCommands,
-            c.killBufferCommands,
-            c.macroCommands,
-            c.rectangleCommands,
-            c.registerCommands,
-            c.spellCommands,
-        )
-        for obj in table:
-            if hasattr(obj,'finishCreate'):
-                obj.finishCreate()
+        # Only c.abbrevCommands needs a finishCreate method.
+        c.abbrevCommands.finishCreate()
         # Finish other objects...
         c.createCommandNames()   
         k.finishCreate()
