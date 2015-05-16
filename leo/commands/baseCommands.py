@@ -12,9 +12,12 @@ class BaseEditCommandsClass:
     #@+others
     #@+node:ekr.20150516040334.1: ** BaseEdit.ctor
     def __init__ (self,c):
-        '''Ctor for the BaseEditCommandsClass class.'''
-        # To keep pylint happy.
-        # Subclasses just set self.c rather than calling this ctor.
+        '''
+        Ctor for the BaseEditCommandsClass class.
+
+        Subclasses with ctors set self.c instead of calling this ctor.
+        Subclasses without ctors call this ctor implicitly.
+        '''
         self.c = c
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
