@@ -19,9 +19,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.409: ** kill.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        '''Ctor for KillBufferCommandsClass class.'''
+        self.c = c
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.kbiterator = self.iterateKillBuffer()
         self.last_clipboard = None  # For interacting with system clipboard.
@@ -119,7 +118,7 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
         #@+others
         #@+node:ekr.20150514063305.417: *3* __init__ & __iter__ (iterateKillBuffer)
         def __init__(self,c):
-
+            '''Ctor for KillBufferIterClass class.'''
             # g.trace('iterateKillBuffer.__init')
             self.c = c
             self.index = 0 # The index of the next item to be returned.

@@ -10,12 +10,12 @@ import leo.core.leoGlobals as g
 class BaseEditCommandsClass:
     '''The base class for all edit command classes'''
     #@+others
-    #@+node:ekr.20150514043714.2: ** BaseEdit.Birth
+    #@+node:ekr.20150516040334.1: ** BaseEdit.ctor
     def __init__ (self,c):
-        '''BaseEditCommandsClass ctor.'''
+        '''Ctor for the BaseEditCommandsClass class.'''
+        # To keep pylint happy.
+        # Subclasses just set self.c rather than calling this ctor.
         self.c = c
-        self.undoData = None
-        self.w = None
     #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand (self,w,undoType='Typing'):

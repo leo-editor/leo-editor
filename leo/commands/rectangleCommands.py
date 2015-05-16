@@ -18,9 +18,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.448: ** rectangle.ctor
     def __init__ (self,c):
-        '''Ctor for the RectangleCommandsClass.'''
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        '''Ctor for RectangleCommandsClass.'''
+        self.c = c
         self.theKillRectangle = []
             # Do not re-init this!
         self.stringRect = None

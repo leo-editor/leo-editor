@@ -28,7 +28,7 @@ class EnchantClass:
     #@+others
     #@+node:ekr.20150514063305.511: *3*  __init__ (EnchantClass)
     def __init__ (self,c):
-        """Ctor for the EnchantClass class."""
+        """Ctor for EnchantClass class."""
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
         # Set the base language
@@ -136,14 +136,15 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.482: *3* ctor (SpellCommandsClass)
     def __init__ (self,c):
-        '''Ctor for SpellCommandsClass class.'''
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        '''
+        Ctor for SpellCommandsClass class.
+        Inits happen when the first frame opens.
+        '''
+        self.c = c
         self.handler = None
         self.page_width = c.config.getInt("page-width")
             # for wrapping
 
-        # All the work happens when we first open the frame.
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
     def openSpellTab (self,event=None):
@@ -389,14 +390,12 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@-others
 #@+node:ekr.20150514063305.499: ** class SpellTabHandler
 class SpellTabHandler:
-
     """A class to create and manage Leo's Spell Check dialog."""
-
     #@+others
     #@+node:ekr.20150514063305.500: *3* Birth & death
     #@+node:ekr.20150514063305.501: *4* SpellTabHandler.__init__
     def __init__(self,c,tabName):
-        """Ctor for the Leo Spelling dialog."""
+        """Ctor for SpellTabHandler class."""
         self.c = c
         self.body = c.frame.body
         self.currentWord = None

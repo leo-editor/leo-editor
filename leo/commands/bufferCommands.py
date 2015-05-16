@@ -24,8 +24,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514045829.3: ** buffer.ctor
     def __init__ (self,c):
         '''Ctor for the BufferCommandsClass class.'''
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        self.c = c
         self.fromName = ''
             # Saved name from getBufferName.
         self.nameList = []

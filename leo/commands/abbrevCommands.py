@@ -28,9 +28,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.2: ** abbrev.Birth
     #@+node:ekr.20150514043850.3: *3* abbrev.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        '''Ctor for AbbrevCommandsClass class.'''
+        self.c = c
         # Set local ivars.
         self.abbrevs = {} # Keys are names, values are (abbrev,tag).
         self.daRanges = []

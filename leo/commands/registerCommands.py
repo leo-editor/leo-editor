@@ -19,11 +19,9 @@ class RegisterCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.463: ** register.ctor
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c)
-            # init the base class.
+        '''Ctor for RegisterCommandsClass class.'''
+        self.c = c
         self.methodDict, self.helpDict = self.addRegisterItems()
-
         # Init these here to keep pylint happy.
         self.method = None 
         self.registerMode = 0 # Must be an int.

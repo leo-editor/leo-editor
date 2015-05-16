@@ -23,9 +23,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.116: ** ctor (EditCommandsClass)
     def __init__ (self,c):
-
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
-
+        '''Ctor for EditCommandsClass class.'''
+        self.c = c
         self.ccolumn = '0'   # For comment column functions.
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
@@ -136,7 +135,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+node:ekr.20150514063305.124: *4* top.cmd (decorator
         #@+node:ekr.20150514063305.125: *4* ctor (To_Python)
         def __init__ (self,c):
-            '''Ctor for the To_Python class.'''
+            '''Ctor for To_Python class.'''
             self.c = c
             self.p = self.c.p.copy()
             aList = g.get_directives_dict_list(self.p)
@@ -621,18 +620,14 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+others
         #@+node:ekr.20150514063305.161: *4* ctor & helpers (C_to_Python)
         def __init__ (self,c):
-
+            '''Ctor for C_To_Python class.'''
             c.editCommands.To_Python.__init__(self,c)
                 # init the base class
-
             # Internal state...
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
-
             self.ivars = []
                 # List of ivars to be converted to self.ivar
-
-
             self.get_user_types()
         #@+node:ekr.20150514063305.162: *5* get_user_types
         #@@nocolor
@@ -1153,10 +1148,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+others
         #@+node:ekr.20150514063305.177: *4* ctor (TS_To_Python)
         def __init__ (self,c):
-
+            '''Ctor for TS_To_Python class.'''
             c.editCommands.To_Python.__init__(self,c)
                 # init the base class
-
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
         #@+node:ekr.20150514063305.178: *4* convertCodeList (TS_To_Python) & helpers

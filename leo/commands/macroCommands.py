@@ -19,8 +19,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.432: ** macro.ctor
     def __init__ (self,c):
-        '''ctor for MacroCommandsClass class.'''
-        BaseEditCommandsClass.__init__(self,c) # init the base class.
+        '''Ctor for MacroCommandsClass class.'''
+        self.c = c
         self.lastMacro = None
         self.macros = []
         self.macro = []
