@@ -24,9 +24,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.373: ** help
     @cmd('help')
     def help (self,event=None):
-
         '''Prints and introduction to Leo's help system.'''
-
         #@+<< define rst_s >>
         #@+node:ekr.20150514063305.374: *3* << define rst_s >> (F1)
         #@@language rest
@@ -38,20 +36,20 @@ class HelpCommandsClass (BaseEditCommandsClass):
         Alt-0 (vr-toggle) hides this help message.
 
         To learn about ``<Alt-X>`` commands, type::
-            
+
             <Alt-X>help-for-minibuffer<Enter>
-            
+
         To get a list of help topics, type::
-            
+
             <Alt-X>help-<tab>
-            
+
         For Leo commands (tab completion allowed), type::
-            
+
             <Alt-X>help-for-command<Enter>
             <a Leo command name><Enter>
-            
+
         To use Python's help system, type::
-            
+
             <Alt-X>help-for-python<Enter>
             <a python symbol><Enter>
 
@@ -87,7 +85,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         Abbreviations can simply be shortcuts::
 
             ncn;;=@nocolor
-            
+
         Abbreviations can span multiple lines. Continued lines start with \\:, like
         this::
 
@@ -109,11 +107,11 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
             date;;={|{import time ; x=time.asctime()}|}
             ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
-            
+
         For example, typing ts;; gives::
 
             20131009171117
-            
+
         It's even possible to define a context in which abbreviation scripts execute.
 
         See leoSettings.leo for full details.
@@ -476,7 +474,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
             @file spam.py
             @file ../foo.c
             @file ~/bar.py
-            
+
         A single Leo outline may contain many @file nodes. As a result, Leo
         outlines function much like project files in other IDE's (Integrated
         development environments).
@@ -486,7 +484,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         Markup
         ======
-           
+
         Section references and the \\@all and \\@others directives tell
         Leo how to create external files.
 
@@ -509,7 +507,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
         - Leo replaces section references by the *expansion* of the body text of
           the corresponding section definition node.
-           
+
         Whitespace is significant before \\@others and section references. Leo adds
         the leading whitespace appearing before each \\@others directive or section
         reference to every line of their expansion. As a result, Leo can generate
@@ -536,13 +534,13 @@ class HelpCommandsClass (BaseEditCommandsClass):
             \@others
             if __name__ == '__main__':
                 main()
-                
+
         **Example 2**:  Here is a typical Python class definition in Leo::
 
             class MyClass:
                 '\\''A docstring.'\\''
                 \@others
-                
+
         \@first and @last
         =================
 
@@ -687,11 +685,11 @@ class HelpCommandsClass (BaseEditCommandsClass):
 
             aVeryLongIvarName
             aVeryLongMethodName
-            
+
         Typing::
 
             aVery<Alt-Ctrl-/>
-            
+
         will immediately extend the typing to::
 
             aVeryLong
@@ -907,14 +905,14 @@ class HelpCommandsClass (BaseEditCommandsClass):
             c: The commander of the present outline.
             g: The leo.core.leoGlobals module.
             p: The presently selected position, c.p.
-            
+
         @test scripts predefine all the above, plus::
 
             self: The instance of unittest.TestCase
-            
+
         Commands class
         ==============
-            
+
         A commander is an instance of the Commands class in leo.core.leoCommands.
         A commander represents all outline data and most of Leo's source code.
         Here are the most important ivars of the Commands class::
@@ -935,7 +933,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
             c.frame.log.widget      The gui widget for the log pane.
             c.frame.log.wrapper     The high-level inteface for the log pane.
             c.frame.tree            The tree pane.
-            
+
         VNode class
         ===========
 
@@ -946,7 +944,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
             v.b: v's body text.
             v.h: v's headline text.
             v.u: v.unknownAttributes, a persistent Python dictionary.
-            
+
         v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
         to associate persistent data with vnodes. For details see the section about
         userAttributes in the Customizing Leo chapter.
@@ -995,7 +993,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
             p.threadNext()
             p.visBack()
             p.visNext()
-            
+
         Setter methods of the position class::
 
             p.setDirty()
@@ -1048,7 +1046,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
             p.following_siblings()
             p.subtree()
             p.self_and_subtree()
-            
+
         The leo.core.leoGlobals module
         ==============================
 
@@ -1059,13 +1057,13 @@ class HelpCommandsClass (BaseEditCommandsClass):
             g.app.windowlist
             g.unitTesting
             g.user_dict  # a temporary dict for use of scripts and plugins.
-            
+
         **g decorator**::
 
             @g.command(command-name)
-            
+
         **g functions** (the most interesting: there are many more in leoGlobals.py)::
-            
+
             g.angleBrackets()
             g.app.commanders()
             g.app.gui.guiName()

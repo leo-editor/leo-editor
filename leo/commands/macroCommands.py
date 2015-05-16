@@ -32,11 +32,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
 
     @cmd('macro-call-last')
     def callLastMacro (self,event=None):
-
         '''Call the last recorded keyboard macro.'''
-
         # g.trace(self.lastMacro)
-
         if self.lastMacro:
             self.executeMacro(self.lastMacro)
     #@+node:ekr.20150514063305.435: ** callNamedMacro
@@ -59,7 +56,6 @@ class MacroCommandsClass (BaseEditCommandsClass):
             else:
                 g.es('no macro named %s' % k.arg)
             k.resetLabel()
-
     #@+node:ekr.20150514063305.436: ** completeMacroDef
     def completeMacroDef (self,name,macro):
         '''
@@ -111,15 +107,11 @@ class MacroCommandsClass (BaseEditCommandsClass):
             k.masterKeyHandler(event)
     #@+node:ekr.20150514063305.439: ** getMacrosNode
     def getMacrosNode (self):
-
         '''Return the position of the @macros node.'''
-
         c = self.c
-
         for p in c.all_unique_positions():
             if p.h == '@macros':
                 return p
-
         # Not found.
         for p in c.all_unique_positions():
             if p.h == '@settings':
@@ -131,7 +123,6 @@ class MacroCommandsClass (BaseEditCommandsClass):
             oldRoot = c.rootPosition()
             p2 = oldRoot.insertAfter()
             p2.moveToRoot(oldRoot)
-
         c.setHeadString(p2,'@macros')
         g.es_print('Created: %s' % p2.h)
         c.redraw()
@@ -199,11 +190,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.442: ** nameLastMacro
     @cmd('macro-name-last')
     def nameLastMacro (self,event):
-
         '''Prompts for the name to be given to the last recorded macro.'''
-
         k = self.c.k ; state = k.getState('name-macro')
-
         if state == 0:
             k.setLabelBlue('Name of macro: ')
             k.getArg(event,'name-macro',1,self.nameLastMacro)
@@ -215,11 +203,8 @@ class MacroCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.443: ** printMacros & printLastMacro
     @cmd('macro-print-all')
     def printMacros (self,event=None):
-
         '''Prints the name and definition of all named macros.'''
-
         names = list(self.namedMacros.keys())
-
         if names:
             names.sort()
             print('macros',names)
@@ -229,18 +214,14 @@ class MacroCommandsClass (BaseEditCommandsClass):
 
     @cmd('macro-print-last')
     def printLastMacro (self,event=None):
-
         '''Print the last (unnamed) macro.'''
-
         if self.lastMacro:
             for event in self.lastMacro:
                 g.es(repr(event.stroke))
     #@+node:ekr.20150514063305.444: ** saveMacros
     @cmd('macro-save-all')
     def saveMacros (self,event=None):
-
         '''Store macros in the @macros node..'''
-
         p = self.getMacrosNode()
         result = []
         # g.trace(list(self.namedMacros.keys()))
@@ -253,18 +234,13 @@ class MacroCommandsClass (BaseEditCommandsClass):
                     result.append('%s::%s::%s' % (repr(event.char),event.stroke,w_name))
                 result.append(event.stroke)
             result.append('') # Blank line terminates
-
         p.b = '\n'.join(result)
-
     #@+node:ekr.20150514063305.445: ** startRecordingMacro
     @cmd('macro-start-recording')
     def startRecordingMacro (self,event):
-
         '''Start recording or continue to record a macro.'''
-
         trace = False and not g.unitTesting
         k = self.c.k
-
         if event:
             if self.recordingMacro:
                 if trace: g.trace('stroke',event.stroke)

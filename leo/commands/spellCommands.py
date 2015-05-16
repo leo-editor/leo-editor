@@ -22,9 +22,7 @@ def cmd(name):
 #@+others
 #@+node:ekr.20150514063305.510: ** class EnchantClass
 class EnchantClass:
-
     """A wrapper class for PyEnchant spell checker"""
-
     #@+others
     #@+node:ekr.20150514063305.511: *3*  __init__ (EnchantClass)
     def __init__ (self,c):
@@ -46,13 +44,11 @@ class EnchantClass:
         self.open_dict(fn,language)
     #@+node:ekr.20150514063305.512: *3* add
     def add (self,word):
-
         '''Add a word to the user dictionary.'''
-
         self.d.add(word)
     #@+node:ekr.20150514063305.513: *3* clean_dict
     def clean_dict (self,fn):
-        
+
         if g.os_path_exists(fn):
             f = open(fn,mode='rb')
             s = f.read()
@@ -115,12 +111,11 @@ class EnchantClass:
         g.app.spellDict = self.d
     #@+node:ekr.20150514063305.517: *3* processWord
     def processWord(self, word):
-
-        """Check the word. Return None if the word is properly spelled.
-        Otherwise, return a list of alternatives."""
-
+        """
+        Check the word. Return None if the word is properly spelled.
+        Otherwise, return a list of alternatives.
+        """
         d = self.d 
-
         if not d:
             return None
         elif d.check(word):
@@ -130,9 +125,7 @@ class EnchantClass:
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
 class SpellCommandsClass (BaseEditCommandsClass):
-
     '''Commands to support the Spell Tab.'''
-
     #@+others
     #@+node:ekr.20150514063305.482: *3* ctor (SpellCommandsClass)
     def __init__ (self,c):
@@ -144,25 +137,21 @@ class SpellCommandsClass (BaseEditCommandsClass):
         self.handler = None
         self.page_width = c.config.getInt("page-width")
             # for wrapping
-
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
     def openSpellTab (self,event=None):
-
         '''Open the Spell Checker tab in the log pane.'''
-
-        c = self.c ; log = c.frame.log ; tabName = 'Spell'
-
+        c = self.c
+        log = c.frame.log
+        tabName = 'Spell'
         if log.frameDict.get(tabName):
             log.selectTab(tabName)
         else:
             log.selectTab(tabName)
             self.handler = SpellTabHandler(c,tabName)
-
         # Bug fix: 2013/05/22.
         if not self.handler.loaded:
             log.deleteTab(tabName,force=True)
-
         # spell as you type stuff
         self.suggestions = []
         self.suggestions_idx = None
@@ -175,7 +164,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     def find (self,event=None):
         '''
         Simulate pressing the 'Find' button in the Spell tab.
-        
+
         Just open the Spell tab if it has never been opened.
         For minibuffer commands, we must also force the Spell tab to be visible.
         '''
@@ -185,7 +174,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.handler.find()
         else:
             self.openSpellTab()
-
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
     def change(self,event=None):
@@ -195,7 +183,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.handler.change()
         else:
             self.openSpellTab()
-
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
     def changeThenFind (self,event=None):
@@ -208,7 +195,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
             f()
         else:
             self.openSpellTab()
-
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
     def hide (self,event=None):
@@ -216,7 +202,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
-
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
     def ignore (self,event=None):
@@ -232,7 +217,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
         '''Put focus in the spell tab.'''
         self.openSpellTab()
             # Makes Spell tab visible.
-            
+
         # This is not a great idea. There is no indication of focus.
             # if self.handler and self.handler.tab:
                 # self.handler.tab.setFocus()
@@ -240,12 +225,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.493: *4* as_you_type_toggle
     @cmd('spell-as-you-type-toggle')
     def as_you_type_toggle(self, event):
-        """as_you_type_toggle - toggle spell as you type
-
-        :Parameters:
-        - `event`: event triggering toggle, not useful
-        """
-
+        """as_you_type_toggle - toggle spell as you type."""
         c = self.c
         if self.spell_as_you_type:
             self.spell_as_you_type = False
@@ -253,7 +233,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 g.unregisterHandler('bodykey2', self.as_you_type_onkey)
             g.es("Spell as you type disabled")
             return
-        
         self.spell_as_you_type = True
         if not self.wrap_as_you_type:
             g.registerHandler('bodykey2', self.as_you_type_onkey)
@@ -261,12 +240,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.494: *4* as_you_type_wrap
     @cmd('spell-as-you-type-wrap')
     def as_you_type_wrap(self, event):
-        """as_you_type_wrap - toggle wrap as you type
-
-        :Parameters:
-        - `event`: event triggering toggle, not useful
-        """
-
+        """as_you_type_wrap - toggle wrap as you type."""
         c = self.c
         if self.wrap_as_you_type:
             self.wrap_as_you_type = False
@@ -274,7 +248,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 g.unregisterHandler('bodykey2', self.as_you_type_onkey)
             g.es("Wrap as you type disabled")
             return
-        
         self.wrap_as_you_type = True
         if not self.spell_as_you_type:
             g.registerHandler('bodykey2', self.as_you_type_onkey)
@@ -282,29 +255,19 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.495: *4* as_you_type_next
     @cmd('spell-as-you-type-next')
     def as_you_type_next(self, event):
-        """as_you_type_next - cycle word behind cursor to next suggestion
-
-        :Parameters:
-        - `event`: triggering key event
-        """
-
+        """as_you_type_next - cycle word behind cursor to next suggestion."""
         if not self.suggestions:
             g.es('[no suggestions]')
             return
         word = self.suggestions[self.suggestion_idx]
         self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)
         self.as_you_type_replace(word)
-        
     #@+node:ekr.20150514063305.496: *4* as_you_type_undo
     @cmd('spell-as-you-type-undo')
     def as_you_type_undo(self, event):
         """as_you_type_undo - replace word behind cursor with word
-        user typed before it started cycling suggestions
-
-        :Parameters:
-        - `event`: triggering event
+        user typed before it started cycling suggestions.
         """
-
         if not self.word:
             g.es('[no previous word]')
             return
@@ -345,7 +308,6 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 self.suggestions = suggests
                 self.suggestion_idx = 0
                 self.word = word
-
         if spell_ok and self.wrap_as_you_type and kwargs['ch'] == ' ':
             w = c.frame.body.wrapper
             txt = w.getAllText()

@@ -55,9 +55,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.118: ** doNothing
     @cmd('do-nothing')
     def doNothing (self,event):
-
         '''A placeholder command, useful for testing bindings.'''
-
         pass
     #@+node:ekr.20150514063305.119: ** brackets (leoEditCommands)
     #@+node:ekr.20150514063305.120: *3* selectToMatchingBracket (leoEditCommands)
@@ -78,7 +76,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         else:
             g.es('no bracket selected')
             return
-
         d = {}
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
@@ -89,7 +86,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 d [self.closeBracketsList[z]] = self.openBracketsList[z]
             reverse = True # Search backward
         delim2 = d.get(ch)
-
         # This should be generalized...
         language = g.findLanguageDirectives(c,c.p)
         if language in ('c','cpp','csharp'):
@@ -123,14 +119,11 @@ class EditCommandsClass (BaseEditCommandsClass):
     #             elif < found what we are looking for >:
     #                 <convert what we are looking for, setting i>
     #             else: i += 1
-    # 
     #@-<< theory of operation >>
     #@+<< class To_Python >>
     #@+node:ekr.20150514063305.123: *3* << class To_Python >>
     class To_Python:
-
         '''The base class for x-to-python commands.'''
-
         #@+others
         #@+node:ekr.20150514063305.124: *4* top.cmd (decorator
         #@+node:ekr.20150514063305.125: *4* ctor (To_Python)
@@ -179,22 +172,18 @@ class EditCommandsClass (BaseEditCommandsClass):
             g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files,n_nodes,t2-t1))
         #@+node:ekr.20150514063305.127: *4* convertCodeList (must be defined in subclasses)
         def convertCodeList(self,aList):
-
             '''The main search/replace method.'''
-
             g.trace('must be defined in subclasses.')
         #@+node:ekr.20150514063305.128: *4* Utils
         #@+node:ekr.20150514063305.129: *5* match...
         #@+node:ekr.20150514063305.130: *6* match
         def match (self,s,i,pat):
-
-            '''Return True if s[i:] matches the pat string.
+            '''
+            Return True if s[i:] matches the pat string.
 
             We can't use g.match because s is usually a list.
             '''
-
             assert pat
-
             j = 0
             while i+j < len(s) and j < len(pat):
                 if s[i+j] == pat[j]:
@@ -203,7 +192,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                         return True
                 else:
                     return False
-
             return False
         #@+node:ekr.20150514063305.131: *6* match_word
         def match_word (self,s,i,pat):
@@ -226,12 +214,8 @@ class EditCommandsClass (BaseEditCommandsClass):
             else:
                 return False
         #@+node:ekr.20150514063305.132: *5* insert_not
-        # This may be defined in subclasses, but is not at present.
-
         def insert_not (self,aList):
-
             '''Change "!" to "not" except before "="'''
-
             i = 0
             while i < len(aList):
                 if self.is_string_or_comment(aList,i):
@@ -372,13 +356,12 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+node:ekr.20150514063305.145: *5* replace... & safe_replace
         #@+node:ekr.20150514063305.146: *6* replace
         def replace (self,aList,findString,changeString):
-
-            '''# Replaces all occurances of findString by changeString.
+            '''
+            Replaces all occurances of findString by changeString.
             changeString may be the empty string, but not None.
             '''
-
-            if not findString: return
-
+            if not findString:
+                return
             changeList = list(changeString)
             i = 0
             while i < len(aList):
@@ -416,7 +399,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                     j = self.skip_string(aList,i)
                 else:
                     j = i+1
-
                 # Defensive programming.
                 if j == progress:
                     j += 1
@@ -428,13 +410,10 @@ class EditCommandsClass (BaseEditCommandsClass):
             trace = False
             n = len(comment_lines)
             assert n > 0
-
             s = comment_lines[0]
             junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
-
             if n == 1:
                 return ['%s# %s' % ((' ' * (w-1)),s.strip())]
-
             junk,w = g.skip_leading_ws_with_indent(s,0,tab_width=4)
             i,result = 0,[]
             for i in range(len(comment_lines)):
@@ -445,18 +424,15 @@ class EditCommandsClass (BaseEditCommandsClass):
                     pass # Omit the line entirely.
                 else:
                     result.append('') # Add a blank line
-
             if trace:
                 g.trace()
                 for z in result: print(repr(z))
-
             return result
         #@+node:ekr.20150514063305.149: *6* replaceSectionDefs
         def replaceSectionDefs (self,aList):
-
             '''Replaces < < x > > = by @c (at the start of lines).'''
-
-            if not aList: return
+            if not aList:
+                return
             i = 0
             j = self.is_section_def(aList[i])
             if j > 0: aList[i:j] = list("@c ")
@@ -471,14 +447,13 @@ class EditCommandsClass (BaseEditCommandsClass):
                 else: i += 1
         #@+node:ekr.20150514063305.150: *6* safe_replace
         def safe_replace (self,aList,findString,changeString):
-
-            '''Replaces occurances of findString by changeString,
+            '''
+            Replaces occurances of findString by changeString,
             but only outside of C comments and strings.
             changeString may be the empty string, but not None.
             '''
-
-            if not findString: return
-
+            if not findString:
+                return
             changeList = list(changeString)
             i = 0
             if findString[0].isalpha(): # use self.match_word
@@ -501,18 +476,13 @@ class EditCommandsClass (BaseEditCommandsClass):
         #@+node:ekr.20150514063305.152: *6* skip_c_block_comment
         def skip_c_block_comment (self,s,i):
 
-            # if 'replaceComments' in g.callers():
-                # g.trace(repr(''.join(s[i:i+20])))
-
             assert(self.match(s,i,"/*"))
             i += 2
-
             while i < len(s):
                 if self.match(s,i,"*/"):
                     return i + 2
                 else:
                     i += 1
-
             return i
         #@+node:ekr.20150514063305.153: *6* skip_line
         def skip_line (self,s,i):
@@ -532,11 +502,9 @@ class EditCommandsClass (BaseEditCommandsClass):
         def skip_past_word (self,s,i):
 
             assert(s[i].isalpha() or s[i]=='~')
-
             # Kludge: this helps recognize dtors.
             if s[i]=='~':
                 i += 1
-
             while i < len(s):
                 ch = s[i]
                 if ch.isalnum() or ch =='_':
@@ -550,7 +518,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             delim = s[i] # handle either single or double-quoted strings
             assert(delim == '"' or delim == "'")
             i += 1
-
             while i < len(s):
                 if s[i] == delim:
                     return i + 1
@@ -568,9 +535,8 @@ class EditCommandsClass (BaseEditCommandsClass):
                 j = self.skip_past_line(s,i)
             elif self.match(s,i,"/*"):
                 j = self.skip_c_block_comment(s,i)
-            else: assert(0)
-
-            # g.trace(repr(''.join(s[i:j])))
+            else:
+                assert(0)
             return j
         #@+node:ekr.20150514063305.158: *6* skip_to_matching_bracket
         def skip_to_matching_bracket (self,s,i):
@@ -580,7 +546,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             elif ch == '{': delim = '}'
             elif ch == '[': delim = ']'
             else: assert(0)
-
             i += 1
             while i < len(s):
                 ch = s[i]
@@ -630,31 +595,10 @@ class EditCommandsClass (BaseEditCommandsClass):
                 # List of ivars to be converted to self.ivar
             self.get_user_types()
         #@+node:ekr.20150514063305.162: *5* get_user_types
-        #@@nocolor
-        #@+at
-        # 
-        # Change the following lists so they contain the types and classes used by your
-        # program. c-to-python converts::
-        # 
-        #     new aType(...)
-        # 
-        # to::
-        # 
-        #     aType(...)
-        # 
-        # Change ivarsDict so it represents the instance variables (ivars) used by your
-        # program's classes. ivarsDict is a dictionary used to translate ivar i of class c
-        # to self.i. It also translates this->i to self.i.
-        # 
-        #@@c
-        #@@color
-
         def get_user_types (self):
-
+            
             c = self.c
-
             self.class_list = c.config.getData('c-to-python-class-list') or []
-
             self.type_list  = (
                 c.config.getData('c-to-python-type-list') or
                 ["char", "void", "short", "long", "int", "double", "float"]
@@ -664,7 +608,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
-
             if 0:
                 #g.trace('class_list',self.class_list)
                 #g.trace('type_list',self.type_list)
@@ -675,7 +618,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                     print('%s:' % (key))
                     for val in d.get(key):
                         print('  %s' % (val))
-
         #@+node:ekr.20150514063305.163: *5* parse_ivars_data
         def parse_ivars_data (self,aList):
 
@@ -692,19 +634,16 @@ class EditCommandsClass (BaseEditCommandsClass):
                 else:
                     g.error('invalid @data c-to-python-ivars-dict',repr(s))
                     return {}
-
             return d
         #@+node:ekr.20150514063305.164: *4* convertCodeList (C_To_Python) & helpers
         def convertCodeList(self,aList):
 
             r,sr = self.replace,self.safe_replace
-
             # First...
             r(aList, "\r", '')
             # self.convertLeadingBlanks(aList) # Now done by indent.
             # if leoFlag: replaceSectionDefs(aList)
             self.mungeAllFunctions(aList)
-
             # Next...
             if 1:
                 # CC2 stuff:
@@ -716,7 +655,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 sr(aList, "TICKX",     "if trace: g.trace")
                 sr(aList, "g.trace(ftag,", "g.trace(")
                 sr(aList, "ASSERT_TRACE", "assert")
-
             sr(aList, "ASSERT","assert")
             sr(aList, " -> ", '.')
             sr(aList, "->", '.')
@@ -763,12 +701,10 @@ class EditCommandsClass (BaseEditCommandsClass):
             r(aList, "\t ", "\t") # happens when deleting declarations.
         #@+node:ekr.20150514063305.165: *5* handle_all_keywords
         def handle_all_keywords (self,aList):
-
             '''
             converts if ( x ) to if x:
             converts while ( x ) to while x:
             '''
-
             i = 0
             while i < len(aList):
                 if self.is_string_or_comment(aList,i):
@@ -855,43 +791,35 @@ class EditCommandsClass (BaseEditCommandsClass):
                 if j <= progress:
                     j = progress + 1
                 assert j > progress
-
                 i = j
         #@+node:ekr.20150514063305.168: *6* handlePossibleFunctionHeader
-        # converts function header lines from c++ format to python format.
-        # That is, converts
-        # x1..nn w::y ( t1 z1,..tn zn) {
-        # to
-        # def y (z1,..zn): {
-
         def handlePossibleFunctionHeader (self,aList,i,prevSemi,firstOpen):
-
+            '''
+            Converts function header lines from c++ format to python format.
+            That is, converts
+                x1..nn w::y ( t1 z1,..tn zn) {
+            to
+                def y (z1,..zn): {
+            '''
             trace = False
             assert(self.match(aList,i,"{"))
-
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList,i)
-
             if close < 0 or aList[close] != ')':
                 # Should not increase *Python* indent.
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             if not firstOpen:
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             close2 = self.skip_to_matching_bracket(aList, firstOpen)
             if close2 != close:
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             open_paren = firstOpen
             assert(aList[open_paren]=='(')
             head = aList[prevSemi:open_paren]
-
             # do nothing if the head starts with "if", "for" or "while"
             k = self.skip_ws(head,0)
             if k >= len(head) or not head[k].isalpha():
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             kk = self.skip_past_word(head,k)
             if kk > k:
                 headString = ''.join(head[k:kk])
@@ -899,28 +827,22 @@ class EditCommandsClass (BaseEditCommandsClass):
                 # print "headString:", headString
                 if headString in [ "class", "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(aList, i)
-
             args = aList[open_paren:close+1]
             k = 1 + self.skip_to_matching_bracket(aList,i)
             body = aList[close+1:k]
-
             if True and trace:
                 g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
-
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
-
             if False and trace:
                 g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
-
             result = []
             if head: result.extend(head)
             if args: result.extend(args)
             if body: result.extend(body)
-
             aList[prevSemi:k] = result
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.169: *6* massageFunctionArgs
@@ -989,7 +911,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                     else:
                         result.extend(prevWord)
                 else: i += 1
-
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
@@ -1003,7 +924,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             return body
         #@+node:ekr.20150514063305.172: *7* dedentBlocks
         def dedentBlocks (self,body):
-
             '''Look for '{' preceded by '{' or '}' or ';'
             (with intervening whitespace and comments).
             '''
@@ -1053,13 +973,11 @@ class EditCommandsClass (BaseEditCommandsClass):
                         j += len(m)
                 else:
                     j = i + 1
-
                 # Defensive programming.
                 if i == j:
                     j += 1
                 assert i < j
                 i = j
-
             return body
         #@+node:ekr.20150514063305.173: *7* massageIvars
         def massageIvars (self,body):
@@ -1111,10 +1029,8 @@ class EditCommandsClass (BaseEditCommandsClass):
                 else: i += 1
             return body
         #@+node:ekr.20150514063305.175: *7* removeTypeNames
-        # Do _not_ remove type names when preceeded by new.
-
         def removeTypeNames (self,body):
-
+            '''Do _not_ remove type names when preceeded by new.'''
             i = 0
             while i < len(body):
                 if self.is_string_or_comment(body,i):
@@ -1225,9 +1141,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             r(aList, '\t ', '\t') # happens when deleting declarations.
         #@+node:ekr.20150514063305.179: *5* comment_scope_ids
         def comment_scope_ids (self,aList):
-
             '''convert (public|private|export) aLine to aLine # (public|private|export)'''
-
             scope_ids = ('public','private','export',)
             i = 0
             if any([self.match_word(aList,i,z) for z in scope_ids]):
@@ -1255,16 +1169,12 @@ class EditCommandsClass (BaseEditCommandsClass):
                     break
             else:
                 assert False,'not a scope id: %s' % word
-
             # Skip any following spaces.
             i2 = self.skip_ws(aList,i)
-
             # Scan to the next newline:
             i3 = self.skip_line(aList,i)
-
             # Optional: move the word to a trailing comment.
             comment = list(' # %s' % word) if False else []
-
             # Change the list in place.
             aList[i1:i3] = aList[i2:i3] + comment
             i = i1 + (i3-i2) + len(comment)
@@ -1272,12 +1182,10 @@ class EditCommandsClass (BaseEditCommandsClass):
             return i
         #@+node:ekr.20150514063305.181: *5* handle_all_keywords
         def handle_all_keywords (self,aList):
-
             '''
             converts if ( x ) to if x:
             converts while ( x ) to while x:
             '''
-
             statements = ('elif','for','if','while',)
             i = 0
             while i < len(aList):
@@ -1335,9 +1243,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             return i
         #@+node:ekr.20150514063305.183: *5* mungeAllClasses
         def mungeAllClasses(self,aList):
-
             '''Scan for a '{' at the top level that is preceeded by ')' '''
-
             i = 0
             while i < len(aList):
                 progress = i
@@ -1357,7 +1263,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                             k2 = g.skip_id(s,k)
                             word = s[k:k2]
                             aList[i1:i] = list('%s (%s)' % (s[:k1],word))
-
                 elif self.match_word(aList,i,'interface'):
                     aList[i:i+len('interface')] = list('class')
                     i = self.skip_line(aList,i)
@@ -1368,9 +1273,7 @@ class EditCommandsClass (BaseEditCommandsClass):
                 assert i > progress
         #@+node:ekr.20150514063305.184: *5* mungeAllFunctions & helpers
         def mungeAllFunctions(self,aList):
-
             '''Scan for a '{' at the top level that is preceeded by ')' '''
-
             prevSemi = 0 # Previous semicolon: header contains all previous text
             i = 0
             firstOpen = None
@@ -1393,49 +1296,40 @@ class EditCommandsClass (BaseEditCommandsClass):
                     # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                 else:
                     j = i + 1
-
                 # Handle unusual cases.
                 if j <= progress:
                     j = progress + 1
                 assert j > progress
-
                 i = j
         #@+node:ekr.20150514063305.185: *6* handlePossibleFunctionHeader
-        # converts function header lines from typescript format to python format.
-        # That is, converts
-        # x1..nn w::y ( t1 z1,..tn zn) { C++
-        # (public|private|export) name (t1: z1, ... tn: zn {
-        # to
-        # def y (z1,..zn): { # (public|private|export)
-
         def handlePossibleFunctionHeader (self,aList,i,prevSemi,firstOpen):
-
+            '''
+            converts function header lines from typescript format to python format.
+            That is, converts
+                x1..nn w::y ( t1 z1,..tn zn) { C++
+                (public|private|export) name (t1: z1, ... tn: zn {
+            to
+                def y (z1,..zn): { # (public|private|export)
+            '''
             trace = False
             assert(self.match(aList,i,"{"))
-
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList,i)
-
             if close < 0 or aList[close] != ')':
                 # Should not increase *Python* indent.
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             if not firstOpen:
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             close2 = self.skip_to_matching_bracket(aList, firstOpen)
             if close2 != close:
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             open_paren = firstOpen
             assert(aList[open_paren]=='(')
             head = aList[prevSemi:open_paren]
-
             # do nothing if the head starts with "if", "for" or "while"
             k = self.skip_ws(head,0)
             if k >= len(head) or not head[k].isalpha():
                 return 1 + self.skip_to_matching_bracket(aList,i)
-
             kk = self.skip_past_word(head,k)
             if kk > k:
                 headString = ''.join(head[k:kk])
@@ -1443,28 +1337,22 @@ class EditCommandsClass (BaseEditCommandsClass):
                 # print "headString:", headString
                 if headString in [ "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(aList, i)
-
             args = aList[open_paren:close+1]
             k = 1 + self.skip_to_matching_bracket(aList,i)
             body = aList[close+1:k]
-
             if trace:
                 g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
-
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
-
             if False and trace:
                 g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
                     ''.join(head),''.join(args),''.join(body)))
-
             result = []
             if head: result.extend(head)
             if args: result.extend(args)
             if body: result.extend(body)
-
             aList[prevSemi:k] = result
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.186: *6* massageFunctionArgs
@@ -1532,7 +1420,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                     else:
                         result.extend(prevWord)
                 else: i += 1
-
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
@@ -1596,56 +1483,46 @@ class EditCommandsClass (BaseEditCommandsClass):
                         j += len(m)
                 else:
                     j = i + 1
-
                 # Defensive programming.
                 if i == j:
                     j += 1
                 assert i < j
                 i = j
-
             return body
         #@-others
     #@-<< class TS_To_Python (To_Python) >>
 
     @cmd('c-to-python')
     def cToPy (self,event):
-
         '''
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.
         '''
-
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
 
     @cmd('typescript-to-py')
     def tsToPy (self,event):
-
         '''
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.
         '''
-
         # Compiler stats: 35 files, 1489 nodes, 100 to 120 sec.
         self.TS_To_Python(self.c).go()
         self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.190: ** cache (leoEditCommands)
     @cmd('clear-all-caches')
     def clearAllCaches (self,event=None):
-
         '''Clear all of Leo's file caches.'''
-
         c = self.c
         if c.cacher:
             c.cacher.clearAllCaches()
 
     @cmd('clear-cache')
     def clearCache (self,event=None):
-
         '''Clear the outline's file cache.'''
-
         c = self.c
         if c.cacher:
             c.cacher.clearCache()
@@ -1758,10 +1635,10 @@ class EditCommandsClass (BaseEditCommandsClass):
     editWidgetCount = 0
 
     def cycleAllFocus (self,event):
-
-        '''Cycle the keyboard focus between Leo's outline,
-        all body editors and all tabs in the log pane.'''
-
+        '''
+        Cycle the keyboard focus between Leo's outline,
+        all body editors and all tabs in the log pane.
+        '''
         trace = False and not g.unitTesting
         c,k = self.c,self.c.k
         w = event and event.widget # Does **not** require a text widget.
@@ -1880,7 +1757,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     def clickClickBox (self,event=None):
         '''
         Simulate a click in the click box (+- box) of the presently selected node.
-        
+
         Call the actual event handlers so as to trigger hooks.
         '''
         c = self.c
@@ -1929,16 +1806,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.208: *3* setCommentColumn
     @cmd('set-comment-column')
     def setCommentColumn (self,event):
-
         '''Set the comment column for the indent-to-comment-column command.'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        row,col = g.convertPythonIndexToRowCol(s,ins)
-        self.ccolumn = col
+        if w:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            row,col = g.convertPythonIndexToRowCol(s,ins)
+            self.ccolumn = col
     #@+node:ekr.20150514063305.209: *3* indentToCommentColumn
     @cmd('indent-to-comment-column')
     def indentToCommentColumn (self,event):
@@ -1965,13 +1839,9 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.211: *3* watchEscape
     @cmd('escape')
     def watchEscape (self,event):
-
         '''Enter watch escape mode.'''
-
         c,k = self.c,self.c.k
-
         char = event and event.char or ''
-
         if not k.inState():
             k.setState('escape','start',handler=self.watchEscape)
             k.setLabelBlue('Esc ')
@@ -1983,7 +1853,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             data2 = g.app.lossage[1]
             ch1, stroke1 = data1
             ch2, stroke2 = data2
-
             if state == 'esc esc' and char == ':':
                 self.evalExpression(event)
             elif state == 'evaluate':
@@ -1998,15 +1867,12 @@ class EditCommandsClass (BaseEditCommandsClass):
     def escEvaluate (self,event):
 
         c,k = self.c,self.c.k
-
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         char = event and event.char or ''
-
         if k.getLabel() == 'Eval:':
             k.setLabel('')
-
         if char in ('\n','Return'):
             expression = k.getLabel()
             try:
@@ -2058,7 +1924,6 @@ class EditCommandsClass (BaseEditCommandsClass):
     #                              zaaaaaaaaap
     # 
     # after an center-region command via Alt-x.
-    # 
     #@+node:ekr.20150514063305.215: *3* centerLine
     @cmd('center-line')
     def centerLine (self,event):
@@ -2138,15 +2003,12 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.218: *3* setFillPrefix
     @cmd('set-fill-prefix')
     def setFillPrefix( self, event ):
-
         '''Make the selected text the fill prefix.'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        s = w.getAllText()
-        i,j = w.getSelectionRange()
-        self.fillPrefix = s[i:j]
+        if w:
+            s = w.getAllText()
+            i,j = w.getSelectionRange()
+            self.fillPrefix = s[i:j]
     #@+node:ekr.20150514063305.219: *3* _addPrefix
     def _addPrefix (self,ntxt):
 
@@ -2217,18 +2079,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.223: *3* findWord and FindWordOnLine & helper
     @cmd('find-word')
     def findWord(self,event):
-
         '''Put the cursor at the next word that starts with a character.'''
-
         return self.findWordHelper(event,oneLine=False)
 
     @cmd('find-word-in-line')
     def findWordInLine(self,event):
-
         '''Put the cursor at the next word (on a line) that starts with a character.'''
-
         return self.findWordHelper(event,oneLine=True)
-
     #@+node:ekr.20150514063305.224: *4* findWordHelper
     def findWordHelper (self,event,oneLine):
 
@@ -2372,20 +2229,16 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.233: *4* getIconList
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
-
         trace = False and not g.unitTesting
         if trace:
             if p == self.c.rootPosition(): g.trace('='*40)
             g.trace(p.h)
-
         fromVnode = []
         if hasattr(p.v,'unknownAttributes'):
             if trace: g.trace(p.v.u)
             fromVnode = [dict(i) for i in p.v.u.get('icons',[])]
             for i in fromVnode: i['on'] = 'VNode'
-
         if trace and fromVnode: g.trace('fromVnode',fromVnode,p.h)
-
         return fromVnode
     #@+node:ekr.20150514063305.234: *4* setIconList & helpers
     def setIconList(self,p,l,setDirty=True):
@@ -2402,7 +2255,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             return
         if trace: g.trace(l,g.callers(6))
         self._setIconListHelper(p,l,p.v,setDirty)
-
     #@+node:ekr.20150514063305.235: *5* _setIconListHelper
     def _setIconListHelper(self,p,subl,uaLoc,setDirty):
         """icon setting code common between v and t nodes
@@ -2595,14 +2447,14 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.246: *3* howMany
     @cmd('how-many')
     def howMany (self,event):
-
-        '''Print how many occurances of a regular expression are found
-        in the body text of the presently selected node.'''
-
+        '''
+        Print how many occurances of a regular expression are found
+        in the body text of the presently selected node.
+        '''
         k = self.c.k
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         state = k.getState('how-many')
         if state == 0:
             k.setLabelBlue('How many: ')
@@ -2616,29 +2468,23 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.247: *3* lineNumber
     @cmd('line-number')
     def lineNumber (self,event):
-
         '''Print the line and column number and percentage of insert point.'''
-
         k = self.c.k
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         s = w.getAllText()
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         percent = int((i*100)/len(s))
-
         k.setLabelGrey(
             'char: %s row: %d col: %d pos: %d (%d%% of %d)' % (
                 repr(s[i]),row,col,i,percent,len(s)))
     #@+node:ekr.20150514063305.248: *3* k.viewLossage
     @cmd('view-lossage')
     def viewLossage (self,event):
-
         '''Put the Emacs-lossage in the minibuffer label.'''
-
         k = self.c.k
-
         g.es('lossage...')
         aList = g.app.lossage
         aList.reverse()
@@ -3025,7 +2871,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     def removeBlankLines (self,event):
         '''
         Remove lines containing nothing but whitespace.
-        
+
         Select all lines if there is no existing selection.
         '''    
         c = self.c
@@ -3145,13 +2991,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
     #@+node:ekr.20150514063305.270: *4* doPlainTab
     def doPlainTab(self,s,i,tab_width,w):
-
         '''Insert spaces equivalent to one tab.'''
-
         start,end = g.getLine(s,i)
         s2 = s[start:i]
         width = g.computeWidth(s2,tab_width)
-
         if tab_width > 0:
             w.insert(i,'\t')
             ins = i+1
@@ -3159,7 +3002,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             n = abs(tab_width) - (width % abs(tab_width))
             w.insert(i,' ' * n)
             ins = i+n
-
         w.setSelectionRange(ins,ins,insert=ins)
     #@+node:ekr.20150514063305.271: *4* flashCharacter (leoEditCommands)
     def flashCharacter(self,w,i):
@@ -3365,7 +3207,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 p.h = ' '.join([s, time])
             else:
                 p.h = time
-            
             c.redrawAndEdit(p,selectAll=True)
     #@+node:ekr.20150514063305.280: ** line...
     #@+node:ekr.20150514063305.281: *3* flushLines
@@ -3507,7 +3348,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             else:  # Plain move forward or back.
                 # g.trace('plain forward/back move')
                 self.setMoveCol(w,spot) # sets self.moveSpot.
-
         if extend:
             if trace: g.trace('range',spot,self.moveSpot)
             if spot < self.moveSpot:
@@ -3517,7 +3357,6 @@ class EditCommandsClass (BaseEditCommandsClass):
         else:
             if trace: g.trace('insert point',spot)
             w.setSelectionRange(spot,spot,insert=spot)
-
         w.seeInsertPoint()
         c.frame.updateStatusLine()
     #@+node:ekr.20150514063305.288: *4* moveToHelper (leoEditCommands)
@@ -3564,7 +3403,7 @@ class EditCommandsClass (BaseEditCommandsClass):
             if i == ins:
                 i = i1
             self.moveToHelper(event,i,extend=extend)
-            
+
     @cmd('back-to-home-extend-selection')
     def backToHomeExtendSelection (self,event):
         self.backToHome(event,extend=True)
@@ -3606,12 +3445,11 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         trace = False and not g.unitTesting
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         ins = w.getInsertPoint()
         s = w.getAllText()
         w.seeInsertPoint()
-
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=direction,extend=extend)
@@ -3634,13 +3472,11 @@ class EditCommandsClass (BaseEditCommandsClass):
                 i2,j2 = g.getLine(s,j)
             else:
                 i2,j2 = g.getLine(s,i-1)
-
             # The spot is the start of the line plus the column index.
             n = max(0,j2-i2-1) # The length of the new line.
             col2 = min(col,n)
             spot = i2 + col2
             if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
-
             self.extendHelper(w,extend,spot,upOrDown=True)
     #@+node:ekr.20150514063305.294: *3* buffers & helper
     @cmd('beginning-of-buffer')
@@ -3666,8 +3502,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     def moveToBufferHelper (self,event,spot,extend):
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
@@ -3703,8 +3539,8 @@ class EditCommandsClass (BaseEditCommandsClass):
     def moveToCharacterHelper (self,event,spot,extend):
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot,extend=extend)
@@ -3738,23 +3574,20 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
-        self.extendMode = val
-        if not g.unitTesting:
-            # g.red('extend mode','on' if val else 'off'))
-            c.k.showStateAndMode()
-        c.widgetWantsFocusNow(w)
+        if w:
+            self.extendMode = val
+            if not g.unitTesting:
+                # g.red('extend mode','on' if val else 'off'))
+                c.k.showStateAndMode()
+            c.widgetWantsFocusNow(w)
     #@+node:ekr.20150514063305.299: *3* exchangePointMark
     @cmd('exchange-point-mark')
     def exchangePointMark (self,event):
-
         '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
-
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         if hasattr(w,'leoMoveCursorHelper'):
             w.leoMoveCursorHelper(kind='exchange',extend=False)
         else:
@@ -3864,14 +3697,13 @@ class EditCommandsClass (BaseEditCommandsClass):
             if s[j2] == ')': break
             j2 += 1
         if i2 > j2: return
-
         self.moveToHelper(event,i2+1,extend)
     #@+node:ekr.20150514063305.305: *3* moveWithinLineHelper
     def moveWithinLineHelper (self,event,spot,extend):
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         # Bug fix: 2012/02/28: don't use the Qt end-line logic:
         # it apparently does not work for wrapped lines.
         if hasattr(w,'leoMoveCursorHelper') and spot != 'end-line':
@@ -3913,13 +3745,11 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.movePageHelper(event,kind='forward',extend=True)
     #@+node:ekr.20150514063305.307: *4* movePageHelper
     def movePageHelper(self,event,kind,extend): # kind in back/forward.
-
         '''Move the cursor up/down one page, possibly extending the selection.'''
-
         trace = False and not g.unitTesting
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         linesPerPage = 15 # To do.
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
@@ -3995,27 +3825,22 @@ class EditCommandsClass (BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
         line = s[i:j]
-
         if line.strip(): # Skip past the present paragraph.
             self.selectParagraphHelper(w,i)
             i,j = w.getSelectionRange()
             j += 1
-
         # Skip to the next non-blank line.
         i = j
         while j < len(s):
             i,j = g.getLine(s,j)
             line = s[i:j]
             if line.strip(): break
-
         w.setInsertPoint(ins) # Restore the original insert point.
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20150514063305.311: *3* selectAllText (leoEditCommands)
     @cmd('select-all')
     def selectAllText (self,event):
-
         '''Select all text.'''
-
         c,k = self.c,self.c.k
         w = self.editWidget(event)
         if not w: return
@@ -4051,12 +3876,11 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
         ins = w.getInsertPoint()
-
         # Find the starting point of the scan.
         i = ins
         i -= 1 # Ensure some progress.
@@ -4118,14 +3942,13 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         c = self.c
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         c.widgetWantsFocusNow(w)
-
         s = w.getAllText()
         ins = w.getInsertPoint()
-        if ins >= len(s): return
-
+        if ins >= len(s):
+            return
         # Find the starting point of the scan.
         i = ins
         if i+1 < len(s) and s[i+1] == '.':
@@ -4140,7 +3963,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             i += 1
         if i >= len(s):
             return
-
         # Scan forward to the end of the paragraph.
         # Stop at empty lines.
         # Skip periods within words.
@@ -4173,7 +3995,6 @@ class EditCommandsClass (BaseEditCommandsClass):
             else:
                 i += 1
             assert end or progress < i
-
         i = min(i,len(s))
         if i > ins:
             self.moveToHelper(event,i,extend)
@@ -4267,7 +4088,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         alphanumeric_re = re.compile("\w")
         whitespace_re = re.compile("\s")
         simple_whitespace_re = re.compile("[ \t]")
-        
+
         #@+others
         #@+node:ekr.20150514063305.318: *5* moveWordHelper functions
         def is_alphanumeric(c):
@@ -4359,7 +4180,6 @@ class EditCommandsClass (BaseEditCommandsClass):
                 i += 1 # 2015/04/30
         self.moveToHelper(event,i,extend)
     #@+node:ekr.20150514063305.319: ** paragraph...
-
     #@+node:ekr.20150514063305.320: *3* backwardKillParagraph
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph (self,event):
@@ -4407,17 +4227,13 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.323: *3* fillParagraph
     @cmd('fill-paragraph')
     def fillParagraph( self, event ):
-
         '''Fill the selected paragraph'''
-
         w = self.editWidget(event)
-        if not w: return
-
-        # Clear the selection range.
-        i,j = w.getSelectionRange()
-        w.setSelectionRange(i,i,insert=i)
-
-        self.c.reformatParagraph(event)
+        if w:
+            # Clear the selection range.
+            i,j = w.getSelectionRange()
+            w.setSelectionRange(i,i,insert=i)
+            self.c.reformatParagraph(event)
     #@+node:ekr.20150514063305.324: *3* killParagraph
     @cmd('kill-paragraph')
     def killParagraph (self,event):
@@ -4461,9 +4277,7 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.selectParagraphHelper(w,i)
     #@+node:ekr.20150514063305.326: *4* selectParagraphHelper
     def selectParagraphHelper (self,w,start):
-
         '''Select from start to the end of the paragraph.'''
-
         s = w.getAllText()
         i1,j = g.getLine(s,start)
         while j < len(s):
@@ -4471,11 +4285,9 @@ class EditCommandsClass (BaseEditCommandsClass):
             line = s[i:j2]
             if line.strip(): j = j2
             else: break
-
         j = max(start,j-1)
         w.setSelectionRange(i1,j,insert=j)
     #@+node:ekr.20150514063305.327: ** region...
-
     #@+node:ekr.20150514063305.328: *3* tabIndentRegion (indent-rigidly)
     @cmd('indent-rigidly')
     def tabIndentRegion (self,event):
@@ -4691,10 +4503,10 @@ class EditCommandsClass (BaseEditCommandsClass):
         self.scrollHelper(event,'up','page')
     #@+node:ekr.20150514063305.336: *4* scrollHelper (leoEditCommands)
     def scrollHelper (self,event,direction,distance):
-
-        '''Scroll the present pane up or down one page
-        kind is in ('up/down-half-page/line/page)'''
-
+        '''
+        Scroll the present pane up or down one page
+        kind is in ('up/down-half-page/line/page)
+        '''
         w = event and event.w
         if w and hasattr(w,'scrollDelegate'):
             kind = direction + '-' + distance
@@ -5112,25 +4924,19 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.349: *3* clearNodeUas & clearAllUas
     @cmd('clear-node-uas')
     def clearNodeUas (self,event=None):
-
         '''Clear the uA's in the selected VNode.'''
-
         if self.c.p:
             self.c.p.v.u = {}
 
     @cmd('clear-all-uas')
     def clearAllUas (self,event=None):
-
         '''Clear all uAs in the entire outline.'''
-
         for v in self.c.all_unique_nodes():
             v.u = {}
     #@+node:ekr.20150514063305.350: *3* printUas & printAllUas
     @cmd('print-all-uas')
     def printAllUas (self,event=None):
-
         '''Print all uA's in the outline.'''
-
         g.es_print('Dump of uAs...')
         for v in self.c.all_unique_nodes():
             if v.u:
@@ -5138,9 +4944,7 @@ class EditCommandsClass (BaseEditCommandsClass):
 
     @cmd('print-node-uas')
     def printUas (self,event=None,v=None):
-
         '''Print the uA's in the selected node.'''
-
         c = self.c
         if v: d,h = v.u,v.h
         else: d,h = c.p.v.u,c.p.h
@@ -5156,9 +4960,7 @@ class EditCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.351: *3* setUa
     @cmd('set-ua')
     def setUa (self,event):
-
         '''Prompt for the name and value of a uA, then set the uA in the present node.'''
-
         c,k = self.c,self.c.k
         tag = 'set-ua'
         state = k.getState(tag)

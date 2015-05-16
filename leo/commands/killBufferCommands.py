@@ -31,10 +31,10 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
             # g.app.globalKillBuffer by iterateKillBuffer.
     #@+node:ekr.20150514063305.411: ** addToKillBuffer
     def addToKillBuffer (self,text):
-
-        '''Insert the text into the kill buffer if force is True or
-        the text contains something other than whitespace.'''
-
+        '''
+        Insert the text into the kill buffer if force is True or
+        the text contains something other than whitespace.
+        '''
         if self.addWsToKillRing or text.strip():
             g.app.globalKillBuffer = [
                 z for z in g.app.globalKillBuffer if z != text]
@@ -91,15 +91,11 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.414: ** clearKillRing
     @cmd('clear-kill-ring')
     def clearKillRing (self,event=None):
-
         '''Clear the kill ring.'''
-
         g.app.globalKillbuffer = []
     #@+node:ekr.20150514063305.415: ** getClipboard
     def getClipboard (self):
-
         '''Return the contents of the clipboard.'''
-
         try:
             ctxt = g.app.gui.getTextFromClipboard()
             if not g.app.globalKillBuffer or ctxt != self.last_clipboard:
@@ -108,13 +104,10 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
                     return ctxt
         except Exception:
             g.es_exception()
-
         return None
     #@+node:ekr.20150514063305.416: ** iterateKillBuffer
     class KillBufferIterClass:
-
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
-
         #@+others
         #@+node:ekr.20150514063305.417: *3* __init__ & __iter__ (iterateKillBuffer)
         def __init__(self,c):
@@ -131,19 +124,15 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
 
             commands = self.c.killBufferCommands
             aList = g.app.globalKillBuffer # commands.killBuffer
-
             # g.trace(g.listToString([repr(z) for z in aList]))
-
             if not aList:
                 self.index = 0
                 return None
-
             if commands.reset is None:
                 i = self.index
             else:
                 i = commands.reset
                 commands.reset = None
-
             if i < 0 or i >= len(aList): i = 0
             # g.trace(i)
             val = aList[i]
@@ -326,11 +315,8 @@ class KillBufferCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.426: ** yankPop
     @cmd('yank-pop')
     def yankPop (self,event):
-
         '''Insert the next entry of the kill ring.'''
-
         self.yank(event,pop=True)
-
     #@+node:ekr.20150514063305.427: ** zapToCharacter
     @cmd('zap-to-character')
     def zapToCharacter (self,event):

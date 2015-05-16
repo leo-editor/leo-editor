@@ -169,9 +169,7 @@ class BufferCommandsClass (BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514045829.12: *3* renameBuffer
     def renameBuffer (self,event):
-
         '''Rename a buffer, i.e., change a node's headline.'''
-
         g.es('rename-buffer not ready yet')
         if 0:
             self.c.k.setLabelBlue('Rename buffer from: ')
@@ -232,21 +230,16 @@ class BufferCommandsClass (BaseEditCommandsClass):
     def findBuffer (self,name):
 
         v = self.tnodes.get(name)
-
         for p in self.c.all_unique_positions():
             if p.v == v:
                 return p
-
         g.trace("Can't happen",name)
         return None
     #@+node:ekr.20150514045829.17: *3* getBufferName
     def getBufferName (self,event,finisher):
-
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
-
         c,k = self.c,self.c.k
         state = k.getState('getBufferName')
-
         if state == 0:
             self.computeData()
             self.getBufferNameFinisher = finisher

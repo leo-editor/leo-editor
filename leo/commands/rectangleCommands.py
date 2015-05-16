@@ -34,10 +34,10 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         }
     #@+node:ekr.20150514063305.451: ** check
     def check (self,event,warning='No rectangle selected'):
-
-        '''Return True if there is a selection.
-        Otherwise, return False and issue a warning.'''
-
+        '''
+        Return True if there is a selection.
+        Otherwise, return False and issue a warning.
+        '''
         return self._chckSel(event,warning)
     #@+node:ekr.20150514063305.453: ** rectangle.Entries
     #@+node:ekr.20150514063305.454: *3* clearRectangle
@@ -79,9 +79,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150515060613.1: *3* copyRectangleToRegister
     @cmd('rectangle-copy-to-register')
     def copyRectangleToRegister(self,event):
-        
+
         self.c.registerCommands.copyRectangleToRegister(event)
-        
     #@+node:ekr.20150514063305.456: *3* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle (self,event):
@@ -182,8 +181,8 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         # c = self.c
         k = self.c.k
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return
         killRect = killRect or self.theKillRectangle
         if g.app.unitTesting:
             # This value is used by the unit test.
@@ -205,5 +204,4 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w.setSelectionRange(i,j,insert=j)
         self.endCommand()
     #@-others
-
 #@-leo

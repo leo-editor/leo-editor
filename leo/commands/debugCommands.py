@@ -23,9 +23,7 @@ class DebugCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.103: ** collectGarbage
     @cmd('gc-collect-garbage')
     def collectGarbage (self,event=None):
-
         """Run Python's Gargabe Collector."""
-
         g.collectGarbage()
     #@+node:ekr.20150514063305.104: ** invoke_debugger & helper
     @cmd('debug')
@@ -49,12 +47,10 @@ class DebugCommandsClass (BaseEditCommandsClass):
                 script = doctest.script_from_examples(script)
         except ImportError:
             pass
-
         # Special case: debug code may include g.es("info string").
         # insert code fragment to make this expression legal outside Leo.
         hide_ges = "class G:\n def es(s,c=None):\n  pass\ng = G()\n"
         script = hide_ges + script
-
         # Create a temp file from the presently selected node.
         filename = c.writeScriptFile(script)
         if not filename:
@@ -69,18 +65,14 @@ class DebugCommandsClass (BaseEditCommandsClass):
             os.spawnv(os.P_NOWAIT, python, args)
     #@+node:ekr.20150514063305.105: *3* findDebugger
     def findDebugger (self):
-
         '''Find the debugger using settings.'''
-
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
-
         debuggers = (
             c.config.getString('debugger_path'),
             g.os_path_join(pythonDir,'Lib','site-packages','winpdb.py'), # winpdb 1.1.2 or newer
             g.os_path_join(pythonDir,'scripts','_winpdb.py'), # oder version.
         )
-
         for debugger in debuggers:
             if debugger:
                 debugger = c.os_path_finalize(debugger)
@@ -93,9 +85,7 @@ class DebugCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.106: ** dumpAll/New/VerboseObjects
     @cmd('gc-dump-all-objects')
     def dumpAllObjects (self,event=None):
-
         '''Print a summary of all existing Python objects.'''
-
         old = g.trace_gc
         g.trace_gc = True
         g.printGcAll()
@@ -103,10 +93,10 @@ class DebugCommandsClass (BaseEditCommandsClass):
 
     @cmd('gc-dump-new-objects')
     def dumpNewObjects (self,event=None):
-
-        '''Print a summary of all Python objects created
-        since the last time Python's Garbage collector was run.'''
-
+        '''
+        Print a summary of all Python objects created
+        since the last time Python's Garbage collector was run.
+        '''
         old = g.trace_gc
         g.trace_gc = True
         g.printGcObjects()
@@ -114,9 +104,7 @@ class DebugCommandsClass (BaseEditCommandsClass):
 
     @cmd('gc-dump-objects-verbose')
     def verboseDumpObjects (self,event=None):
-
         '''Print a more verbose listing of all existing Python objects.'''
-
         old = g.trace_gc
         g.trace_gc = True
         g.printGcVerbose()
@@ -124,39 +112,28 @@ class DebugCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.107: ** enable/disableGcTrace
     @cmd('gc-trace-disable')
     def disableGcTrace (self,event=None):
-
         '''Enable tracing of Python's Garbage Collector.'''
-
         g.trace_gc = False
-
 
     @cmd('gc-trace-enable')
     def enableGcTrace (self,event=None):
-
         '''Disable tracing of Python's Garbage Collector.'''
-
         g.trace_gc = True
         g.enable_gc_debug()
-
         if g.trace_gc_verbose:
             g.blue('enabled verbose gc stats')
         else:
             g.blue('enabled brief gc stats')
     #@+node:ekr.20150514063305.108: ** freeTreeWidgets
     def freeTreeWidgets (self,event=None):
-
         '''Free all widgets used in Leo's outline pane.'''
-
         c = self.c
-
         c.frame.tree.destroyWidgets()
         c.redraw()
     #@+node:ekr.20150514063305.109: ** pdb
     @cmd('pdb')
     def pdb (self,event=None):
-
         '''Fall into pdb.'''
-
         g.pdb()
     #@+node:ekr.20150514063305.110: ** printFocus
     @cmd('print-focus')
@@ -173,15 +150,11 @@ class DebugCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.111: ** printGcSummary
     @cmd('gc-print-summary')
     def printGcSummary (self,event=None):
-
         '''Print a brief summary of all Python objects.'''
-
         g.printGcSummary()
     #@+node:ekr.20150514063305.112: ** printStats
     def printStats (self,event=None):
-
         '''Print statistics about the objects that Leo is using.'''
-
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()

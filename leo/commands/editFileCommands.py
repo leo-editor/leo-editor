@@ -62,11 +62,11 @@ class EditFileCommandsClass (BaseEditCommandsClass):
             g.app.gui.set_focus(c,w)
     #@+node:ekr.20150514063305.357: *3* computeChangeDicts
     def computeChangeDicts (self,d1,d2):
+        '''
+        Compute inserted, deleted, changed dictionaries.
 
-        '''Compute inserted, deleted, changed dictionaries.
-        
-        New in Leo 4.11: show the nodes in the *invisible* file, d2, if possible.'''
-
+        New in Leo 4.11: show the nodes in the *invisible* file, d2, if possible.
+        '''
         inserted = {}
         for key in d2:
             if not d1.get(key):
@@ -183,9 +183,7 @@ class EditFileCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.364: ** diff
     @cmd('file-diff-files')
     def diff (self,event):
-
         '''Creates a node and puts the diff between 2 files into it.'''
-
         w = self.editWidget(event)
         if not w: return
         fn = self.getReadableTextFile()

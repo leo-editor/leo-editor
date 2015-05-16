@@ -127,7 +127,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.abbrev_subst_start = False
     #@+node:ekr.20150514043850.8: *4* abbrev.init_settings
     def init_settings(self):
-        
+
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
         # Init these here for k.masterCommand.
@@ -143,7 +143,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.subst_env = c.config.getData('abbreviations-subst-env',strip_data=False)
-        
     #@+node:ekr.20150514043850.9: *4* abbrev.init_tree_abbrev
     def init_tree_abbrev (self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
@@ -603,11 +602,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.24: ** abbrev.static abbrevs
     #@+node:ekr.20150514043850.25: *3* abbrev.addAbbrevHelper
     def addAbbrevHelper (self,s,tag=''):
-
         '''Enter the abbreviation 's' into the self.abbrevs dict.'''
-
-        if not s.strip(): return
-
+        if not s.strip():
+            return
         try:
             d = self.abbrevs
             data = s.split('=')
@@ -622,7 +619,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.es_print('redefining abbreviation',name,
                     '\nfrom',repr(old),'to',repr(val))
             d [name] = val,tag
-
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
     #@+node:ekr.20150514043850.26: *3* abbrev.addAbbreviation
@@ -680,16 +676,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.28: *3* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
     def killAllAbbrevs (self,event):
-
         '''Delete all abbreviations.'''
-
         self.abbrevs = {}
     #@+node:ekr.20150514043850.29: *3* abbrev.listAbbrevs
     @cmd('abbrev-list')
     def listAbbrevs (self,event=None):
-
         '''List all abbreviations.'''
-
         d = self.abbrevs
         if d:
             g.es('Abbreviations...')
@@ -718,7 +710,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def readAbbreviationsFromFile(self,fileName):
 
         k = self.c.k
-
         try:
             f = open(fileName)
             for s in f:
@@ -732,9 +723,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.32: *3* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
     def toggleAbbrevMode (self,event=None):
-
         '''Toggle abbreviation mode.'''
-
         k = self.c.k
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit()

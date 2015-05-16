@@ -41,7 +41,6 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             's':        self.copyToRegister,
             'v' :       self.viewRegister,
         }    
-
         helpDict = {
             's':    'copy to register',
             'i':    'insert from register',
@@ -54,7 +53,6 @@ class RegisterCommandsClass (BaseEditCommandsClass):
             'r':    'rectangle to register',
             'v':    'view register',
         }
-
         return methodDict, helpDict
     #@+node:ekr.20150514063305.466: ** register.checkBodySelection
     def checkBodySelection (self,warning='No text selected'):
@@ -268,9 +266,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
 
         c,k = self.c,self.c.k
         state = k.getState('number-to-reg')
-
         char = event and event.char or ''
-
         if state == 0:
             k.commandName = 'number-to-register'
             k.setLabelBlue('Number to register: ')

@@ -102,18 +102,14 @@ class BaseEditCommandsClass:
 
         c = self.c
         c.widgetWantsFocusNow(w)
-
         s = w.getAllText()
         i,j = w.getSelectionRange()
         r1,r2 = g.convertPythonIndexToRowCol(s,i)
         r3,r4 = g.convertPythonIndexToRowCol(s,j)
-
         return r1+1,r2,r3+1,r4
     #@+node:ekr.20150514043714.14: *3* BaseEdit.keyboardQuit
     def keyboardQuit (self,event=None):
-
         '''Clear the state and the minibuffer label.'''
-
         return self.c.k.keyboardQuit()
     #@-others
 #@-leo
