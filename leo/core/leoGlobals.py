@@ -1389,7 +1389,7 @@ def command(name):
 def ivars2instance(c,g,ivars):
     '''
     Return the instance of c given by ivars.
-    ivars may be empty, a string, or a list of strings.
+    ivars is a list of strings.
     A special case: ivars may be 'g', indicating the leoGlobals module.
     '''
     if not ivars:
