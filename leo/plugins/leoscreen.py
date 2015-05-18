@@ -454,8 +454,7 @@ def cmd_run_all_text(event, move=True):
 @g.command('leoscreen-run-all-here')
 def cmd_run_all_here(event):
     """non-advancing variant of cmd_run_all_text()"""
-    c = event.get('c')
-    cmd_run_all_text(c, move=False)
+    cmd_run_all_text(event, move=False)
 #@+node:tbrown.20100226095909.12791: ** cmd_next,prev,other (leoscreen_Controller)
 @g.command('leoscreen-next')
 def cmd_next(event):
