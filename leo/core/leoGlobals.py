@@ -1377,14 +1377,26 @@ def check_cmd_instance_dict(c,g):
             if name != key:
                 g.trace('class mismatch',key,name)
 #@+node:ville.20090521164644.5924: *3* g.command (decorator)
-def command(name):
-    '''A global decorator for functions outside of any class.'''
-    def _decorator(func):
-        global_commands_dict[name]=func
+class command:
+    '''
+    A global decorator for functions outside of any class.
+    
+    g can *not* be used anywhere in this class!
+    '''
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self,func):
+        '''Register command for all future commanders.'''
+        global_commands_dict[self.name] = func
+        if app:
+            for c in app.commanders():
+                c.k.registerCommand(self.name,shortcut=None,func=func)
+        # Inject ivars for plugins_menu.py.
         func.is_command = True
-        func.command_name = name
+        func.command_name = self.name
         return func
-    return _decorator
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
 def ivars2instance(c,g,ivars):
     '''
