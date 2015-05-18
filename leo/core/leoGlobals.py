@@ -1377,7 +1377,7 @@ def check_cmd_instance_dict(c,g):
             if name != key:
                 g.trace('class mismatch',key,name)
 #@+node:ville.20090521164644.5924: *3* g.command (decorator)
-class command:
+class Command:
     '''
     A global decorator for functions outside of any class.
     
@@ -1397,6 +1397,8 @@ class command:
         func.is_command = True
         func.command_name = self.name
         return func
+        
+command = Command
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
 def ivars2instance(c,g,ivars):
     '''
