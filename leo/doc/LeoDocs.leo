@@ -10219,7 +10219,7 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     Write a 4.x derived file.
     root is the position of an @&lt;file&gt; node
 </t>
-<t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt`_ packages. The `PyEnchant`_ package is optional. 
+<t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt`_ packages. The `PyEnchant`_ package is optional. Leo uses a customized version of `PythonTidy`_, there is no need to install PythonTidy.
 
 **Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
@@ -14669,6 +14669,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
 .. _`PyEnchant`:  http://pythonhosted.org/pyenchant/download.html
+.. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
 .. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
@@ -16607,7 +16608,7 @@ These commands work with either headline or body text.</t>
 ``beautify-c``
     Reformats all C code in the selected tree.
 
-**PythonTidy**: By default, Leo's beautify commands use PythonTidy. See ``Beautify command settings`` in leoSettings.leo for settings that apply.
+**PythonTidy**: By default, Leo's beautify commands use a version of PythonTidy customized for Leo. See ``Beautify command settings`` in leoSettings.leo for settings that apply.
 
 ``clean-lines``
     Removes trailing whitespace from all lines, preserving newlines.
