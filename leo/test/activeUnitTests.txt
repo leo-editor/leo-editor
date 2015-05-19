@@ -5016,7 +5016,7 @@ finally:
 test1 = p.firstChild()
 test2 = p.firstChild().next()
 
-c.prettyPrintPythonCode(p=test2,dump=False)
+c.prettyPrintPythonCode(p=test1,dump=False)
 
 assert test2.b==test1.b,'\n%r\n%r' % (test1.b,test2.b)
 #@+node:ekr.20041019124050.1: *5* Original
@@ -5025,7 +5025,6 @@ line 1
 line 2
 line 3
 """
-
 a = 2
 #@+node:ekr.20041019124050.2: *5* Test
 """
@@ -5033,7 +5032,6 @@ line 1
 line 2
 line 3
 """
-
 a = 2
 #@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.

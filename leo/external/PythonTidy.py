@@ -632,6 +632,10 @@ KEEP_UNASSIGNED_CONSTANTS = False
 PARENTHESIZE_TUPLE_DISPLAY = True
 JAVA_STYLE_LIST_DEDENT = False
 
+# New in Leo 5.2
+SPACES_AFTER_DOCSTRING = True
+LEO_CALL_CONTINUATION = False
+
 # Author's preferences:
 
 if PERSONAL:
@@ -871,7 +875,6 @@ class InputUnit(object):
     """
     #@+others
     #@+node:ekr.20141010141310.18649: *4* __init__
-
     def __init__(self, file_in):
         object.__init__(self)
         self.is_file_like = hasattr(file_in, 'read')
@@ -999,7 +1002,7 @@ class OutputUnit(object):
         self.line_more(margin)
         return self
 
-    #@+node:ekr.20141010141310.18661: *4* line_more
+    #@+node:ekr.20141010141310.18661: *4* line_more (OutputUnit)
     def line_more(
         self,
         chunk='',
@@ -1017,10 +1020,11 @@ class OutputUnit(object):
             can_split_after, 
             can_break_after,
             ])
+        # g.trace(can_break_after,self.col,repr(chunk))
         self.col += len(chunk)
         return self
 
-    #@+node:ekr.20141010141310.18662: *4* line_term
+    #@+node:ekr.20141010141310.18662: *4* line_term (OutputUnit)
     def line_term(self, pause=False):
 
         def is_split_needed(cumulative_width):
@@ -1109,13 +1113,13 @@ class OutputUnit(object):
             self.put(self.newline)
         return self
 
-    #@+node:ekr.20141010141310.18663: *4* line_split
+    #@+node:ekr.20141010141310.18663: *4* line_split (OutputUnit)
     def line_split(self):
         self.put(self.newline)
         self.pos = self.tab_forward()
         return self
 
-    #@+node:ekr.20141010141310.18664: *4* line_break
+    #@+node:ekr.20141010141310.18664: *4* line_break (OutputUnit)
     def line_break(self):
         self.put('\\%s' % self.newline)
         self.pos = self.tab_forward()
@@ -1123,13 +1127,16 @@ class OutputUnit(object):
 
     #@+node:ekr.20141010141310.18665: *4* tab_forward
     def tab_forward(self):
-        if len(self.tab_stack) > 1:
+        
+        if LEO_CALL_CONTINUATION:
+            col = (self.tab_stack)[0]
+        elif len(self.tab_stack) > 1:
             col = (self.tab_stack)[1]
         else:
             col = (self.tab_stack)[0]
         self.put(' ' * col)
+        # g.trace(col,self.tab_stack,g.callers(3))
         return col
-
     #@+node:ekr.20141010141310.18666: *4* put
     def put(self, text):
         self.lineno += text.count(self.newline)
@@ -1160,6 +1167,7 @@ class OutputUnit(object):
             else:
                 col = 4
         self.tab_stack.append(col)
+        # g.trace(col,g.callers(2))
         return self
 
     #@+node:ekr.20141010141310.18669: *4* tab_clear
@@ -1310,6 +1318,7 @@ class Comments(dict):
                         self[self.max_lineno] = [scol, original]
             elif token_type in [tokenize.NUMBER, tokenize.STRING]:
                 try:
+                    # pylint: disable=eval-used
                     original = token_string.strip().decode(INPUT.coding, 'backslashreplace')
                     decoded = eval(original)
                     encoded = repr(decoded)
@@ -1656,7 +1665,7 @@ class Node(object):
         OUTPUT.line_init(self.indent, self.get_lineno())
         return self
 
-    #@+node:ekr.20141010141310.18700: *5* line_more
+    #@+node:ekr.20141010141310.18700: *5* line_more (Node)
     def line_more(
         self,
         chunk='',
@@ -1876,7 +1885,7 @@ class NodeStr(Node):
                 result = force_quote(result, double=False)
         return result
 
-    #@+node:ekr.20141010141310.18725: *5* put_doc
+    #@+node:ekr.20141010141310.18725: *5* put_doc (NodeStr)
     def put_doc(self, need_blank_line=0):
 
         def fix_newlines(text):
@@ -1902,7 +1911,7 @@ class NodeStr(Node):
         doc = fix_newlines(doc)
         self.put_multi_line(doc)
         self.line_term()
-        OUTPUT.put_blank_line(5)
+        ### OUTPUT.put_blank_line(5)
         return self
 
     #@+node:ekr.20141010141310.18726: *5* put_lit
@@ -2554,7 +2563,7 @@ class NodeCallFunc(Node):
                 arg.need_parens = False
         return 
 
-    #@+node:ekr.20141010141310.18794: *5* put
+    #@+node:ekr.20141010141310.18794: *5* put (NodeCallFunc)
     def put(self, can_split=False):
 
         def count_seps():
@@ -2577,6 +2586,7 @@ class NodeCallFunc(Node):
             self.node.put(can_split=can_split)
         self.line_more('(', tab_set=True)
         if count_seps() > MAX_SEPS_FUNC_REF:
+            # g.trace('(NodeCallFunc 1)',MAX_SEPS_FUNC_REF)
             self.line_term()
             self.inc_margin()
             arg_list = [('', arg) for arg in self.args]
@@ -2613,6 +2623,7 @@ class NodeCallFunc(Node):
                 self.line_init()
                 self.dec_margin()
         else:
+            # g.trace('(NodeCallFunc2)',self.args)
             for arg in (self.args)[:-1]:
                 arg.put(can_split=True)
                 self.line_more(FUNCTION_PARAM_SEP, can_split_after=True)
@@ -3302,7 +3313,7 @@ class NodeFunction(Node):
         result.reverse()
         return result
 
-    #@+node:ekr.20141010141310.18861: *5* put_parm
+    #@+node:ekr.20141010141310.18861: *5* put_parm (NodeFunction)
     def put_parm(self, arg, default, stars, can_split=True):
         if stars is None:
             pass
@@ -3319,7 +3330,7 @@ class NodeFunction(Node):
             default.put(can_split=can_split)
         return
 
-    #@+node:ekr.20141010141310.18862: *5* put
+    #@+node:ekr.20141010141310.18862: *5* put (NodeFunction)
     def put(self, can_split=False):
         if is_leo:
             spacing = 1
@@ -3341,6 +3352,7 @@ class NodeFunction(Node):
             self.walk(arg, NAME_SPACE.make_formal_param_name)
         self.code.marshal_names()
         self.line_more('(', tab_set=True)
+        # g.trace(len(parms),MAX_SEPS_FUNC_DEF)
         if len(parms) > MAX_SEPS_FUNC_DEF:
             self.line_term()
             self.inc_margin()
@@ -5239,35 +5251,45 @@ def set_prefs(c):
     '''Set preferences from Leo configuration, if possible.'''
     trace = False and not g.unitTesting
     global ADD_BLANK_LINES_AROUND_COMMENTS
+    global COL_LIMIT
     global DOUBLE_QUOTED_STRINGS
     global KEEP_BLANK_LINES
+    global LEO_CALL_CONTINUATION
     global LEFTJUST_DOC_STRINGS
     global MAX_LINES_BEFORE_SPLIT_LIT
-    
+    global MAX_SEPS_FUNC_DEF
     global JAVA_STYLE_LIST_DEDENT
     global KEEP_UNASSIGNED_CONSTANTS
     global OVERRIDE_NEWLINE
     global PARENTHESIZE_TUPLE_DISPLAY
-
     if not c:
         return
-    ADD_BLANK_LINES_AROUND_COMMENTS = c.config.getBool(
+    getBool,getInt = c.config.getBool,c.config.getInt
+    ADD_BLANK_LINES_AROUND_COMMENTS = getBool(
         'tidy_add_blank_lines_around_comments',default=True)
-    DOUBLE_QUOTED_STRINGS = c.config.getBool(
+    DOUBLE_QUOTED_STRINGS = getBool(
         'tidy_double_quoted_strings',default=False)
-    KEEP_BLANK_LINES = c.config.getBool(
+    KEEP_BLANK_LINES = getBool(
         'tidy_keep_blank_lines',default=True)
-    LEFTJUST_DOC_STRINGS = c.config.getBool(
+    LEFTJUST_DOC_STRINGS = getBool(
         'tidy_left_adjust_docstrings',default=False)
-    MAX_LINES_BEFORE_SPLIT_LIT = c.config.getInt(
+    MAX_LINES_BEFORE_SPLIT_LIT = getInt(
         'tidy_lines_before_split_lit') or 2
     # 1.23 settings.
-    JAVA_STYLE_LIST_DEDENT = c.config.getBool(
+    JAVA_STYLE_LIST_DEDENT = getBool(
         'tidy_java_style_list_dedent',default=True)
-    KEEP_UNASSIGNED_CONSTANTS = c.config.getBool(
+    KEEP_UNASSIGNED_CONSTANTS = getBool(
         'tidy_keep_unassigned_constants',default=False)
-    PARENTHESIZE_TUPLE_DISPLAY = c.config.getBool(
-        'tidy_parenthesized_tuple_display',default= True)
+    PARENTHESIZE_TUPLE_DISPLAY = getBool(
+        'tidy_parenthesized_tuple_display',default=True)
+    # New in Leo 5.2:
+    LEO_CALL_CONTINUATION = getBool(
+        'tidy_leo_call_continuation',default=False)
+    MAX_SEPS_FUNC_DEF = getInt(
+        'tidy_max_seps_func_def') or 20
+    SPACES_AFTER_DOCSTRING = getBool(
+        'tidy_spaces_after_docstring',default=False)
+    COL_LIMIT = getInt('tidy_col_limit') or 75
     if trace:
         g.trace('tidy_add_blank_lines_around_comments',ADD_BLANK_LINES_AROUND_COMMENTS)
         g.trace('tidy_keep_blank_lines',KEEP_BLANK_LINES)

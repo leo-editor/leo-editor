@@ -22,6 +22,7 @@ import leo.core.leoNodes as leoNodes
     # import leo.core.leoTest as leoTest
     # import leo.core.leoUndo as leoUndo
 
+import ast
 import imp
 import itertools
 # import keyword # was used by pretty printer.
@@ -29,13 +30,14 @@ import os
 import re
 import sys
 import time
-import token    # for Check Python command
-import tokenize # for Check Python command
+# import token    # for token-based Check Python command
+import tokenize # for PythonTidy-based Check Python command
 try:
     import tabnanny # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
     
+import leo.external.PythonTidy as tidy
 #@-<< imports >>
 
 def cmd(name):
@@ -4140,6 +4142,81 @@ class Commands (object):
                 seen[p.v] = True
                 p.v.dump()
     #@+node:ekr.20040711135959.1: *5* Pretty Print commands
+    #@+node:ekr.20040712053025.1: *6* beautify & pretty-print-python-code
+    @cmd('beautify')
+    @cmd('pretty-print-python-code')
+    def prettyPrintPythonCode (self,event=None,p=None,dump=False):
+        '''Reformat all Python code in the selected tree.'''
+
+        c = self
+        root = p.copy() if p else c.p
+        pp = c.PythonPrettyPrinter(c)
+        for p in root.self_and_subtree():
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
+            if g.scanForAtLanguage(c,p) == "python":
+
+                pp.prettyPrintNode(p,dump=dump)
+
+        pp.endUndo()
+    #@+node:ekr.20040712053025: *6* beautify-all & pretty-print-all-python-code
+    @cmd('beautify-all')
+    @cmd('pretty-print-all-python-code')
+    def prettyPrintAllPythonCode (self,event=None,dump=False):
+
+        '''Reformat all Python code in the outline to make it look more beautiful.'''
+
+        c = self ; pp = c.PythonPrettyPrinter(c)
+
+        for p in c.all_unique_positions():
+
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
+            if g.scanForAtLanguage(c,p) == "python":
+                pp.prettyPrintNode(p,dump=dump)
+
+        pp.endUndo()
+    #@+node:ekr.20110917174948.6877: *6* beautify-c
+    @cmd('beautify-c')
+    def beautifyCCode (self,event=None):
+
+        '''Reformat all C code in the selected tree.'''
+
+        c = self
+        pp = c.CPrettyPrinter(c)
+        u = c.undoer ; undoType = 'beautify-c'
+
+        u.beforeChangeGroup(c.p,undoType)
+        dirtyVnodeList = []
+        changed = False
+
+        for p in c.p.self_and_subtree():
+            if g.scanForAtLanguage(c,p) == "c":
+                bunch = u.beforeChangeNodeContents(p)
+                s = pp.indent(p)
+                if p.b != s:
+                    # g.es('changed: %s' % (p.h))
+                    p.b = s
+                    p.v.setDirty()
+                    dirtyVnodeList.append(p.v)
+                    u.afterChangeNodeContents(p,undoType,bunch)
+                    changed = True
+
+        if changed:
+            u.afterChangeGroup(c.p,undoType,
+                reportFlag=False,dirtyVnodeList=dirtyVnodeList)
+
+        c.bodyWantsFocus()
+    #@+node:ekr.20071001075704: *6* beautify-tree
+    @cmd('beautify-tree')
+    def beautifyPythonTree (self,event=None,dump=False):
+        '''Beautify all Python code in the selected outline.'''
+        c = self
+        pp = c.PythonPrettyPrinter(c)
+        for p in c.p.self_and_subtree():
+            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
+            if g.scanForAtLanguage(c,p) == "python":
+                pp.prettyPrintNode(p,dump=dump)
+        pp.endUndo()
+        g.es('%s nodes changed' % pp.n)
     #@+node:ekr.20110917174948.6903: *6* class CPrettyPrinter
     class CPrettyPrinter:
 
@@ -4449,75 +4526,15 @@ class Commands (object):
     class PythonPrettyPrinter:
         '''A class that implements *limited* pep-8 cleaning.'''
         #@+others
-        #@+node:ekr.20040711135244.6: *7* __init__ (PythonPrettyPrinter)
+        #@+node:ekr.20040711135244.6: *7* ppp.__init
         def __init__ (self,c):
             '''Ctor for PythonPrettyPrinter class.'''
-            self.array = []
-                # List of strings comprising the line being accumulated.
-                # Important: this list never crosses a line.
-            self.bracketLevel = 0
             self.c = c
             self.changed = False
-            self.continuation = False # True: line ends with backslash-newline.
-            self.dumping = False
-            self.erow = self.ecol = 0 # The ending row/col of the token.
-            self.lastName = None # The name of the previous token type.
-            self.line_number = 0 # Same as self.srow
-            self.lines = [] # List of lines.
-            self.name = None
-            self.p = c.p
-            self.parenLevel = 0
-            self.s = None # The string containing the line.
-            self.squareBracketLevel = 0
-            self.srow = self.scol = 0 # The starting row/col of the token.
-            self.startline = True # True: the token starts a line.
-            self.trailing_ws = '' # The whitespace following *this* token.
-            self.dispatchDict = {
-                "comment":    self.doMultiLine,
-                "dedent":     self.doDedent,
-                "endmarker":  self.doEndMarker,
-                "errortoken": self.doErrorToken,
-                "indent":     self.doIndent,
-                "name":       self.doName,
-                "newline":    self.doNewline,
-                "nl":         self.doNewline, # Must be doNewline, not doNl.
-                "number":     self.doNumber,
-                "op":         self.doOp,
-                "string":     self.doMultiLine,
-            }
-        #@+node:ekr.20040713093048: *7* clear
-        def clear (self):
-            self.lines = []
-        #@+node:ekr.20040713064323: *7* dumpLines
-        def dumpLines (self,p,lines):
+            self.n = 0
+                # The number of nodes actually change.
 
-            g.pr('\n','-'*10,p.cleanHeadString())
-
-            if 0:
-                for line in lines:
-                    line2 = g.toEncodedString(line,reportErrors=True)
-                    g.pr(line2,newline=False) # Don't add a trailing newline!)
-            else:
-                for i in range(len(lines)):
-                    line = lines[i]
-                    line = g.toEncodedString(line,reportErrors=True)
-                    g.pr("%3d" % i, repr(lines[i]))
-        #@+node:ekr.20040711135244.7: *7* dumpToken
-        def dumpToken (self,token5tuple):
-            '''Dump the given token.'''
-            t1,t2,t3,t4,t5 = token5tuple
-            name = token.tok_name[t1].lower()
-            val = str(t2) # can fail
-            srow,scol = t3
-            erow,ecol = t4
-            line = str(t5) # can fail
-            startLine = self.line_number != srow
-            if startLine:
-                g.pr("----- line",srow,repr(line))
-            self.line_number = srow
-            g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
-                # line[scol:ecol]
-        #@+node:ekr.20040713091855: *7* endUndo
+        #@+node:ekr.20040713091855: *7* ppp.endUndo
         def endUndo (self):
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
@@ -4526,303 +4543,52 @@ class Commands (object):
             if self.changed:
                 # Tag the end of the command.
                 u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-        #@+node:ekr.20040711135244.8: *7* get
-        def get (self):
-            '''Return the result of the beautify command.'''
-            return self.lines
-        #@+node:ekr.20040711135244.4: *7* prettyPrintNode & helpers
+        #@+node:ekr.20040711135244.4: *7* ppp.prettyPrintNode
         def prettyPrintNode(self,p,dump=False):
             '''Pretty print a single node.'''
-            c = self.c
             if p.b:
-                if c.config.getBool('use_python_tidy',default=True):
-                    self.python_tidy(p)
-                else:
-                    self.token_tidy(p,dump)
-        #@+node:ekr.20141010071140.18268: *8* python_tidy (PythonPrettyPrinter)
+                self.python_tidy(p)
+                ### 
+                # c = self.c
+                # if c.config.getBool('use_python_tidy',default=True):
+                    # self.python_tidy(p)
+                # else:
+                    # self.token_tidy(p,dump)
+        #@+node:ekr.20141010071140.18268: *7* ppp.python_tidy
         def python_tidy(self,p):
             '''Use PythonTidy to do the formatting.'''
-            import leo.external.PythonTidy as tidy
             c = self.c
-            # import imp
-            # imp.reload(tidy)
+            try:
+                t1 = ast.parse(p.b,filename='s1',mode='exec')
+                d1 = ast.dump(t1,annotate_fields=False)
+            except SyntaxError:
+                d1 = None
             file_in = g.fileLikeObject(fromString=p.b)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
-            tidy.tidy_up(file_in=file_in,file_out=file_out,is_module=is_module,leo_c=c)
-            s = file_out.get()
-            # End the body properly
-            s = s.rstrip()+'\n' if s.strip() else ''
-            self.replaceBody(p,lines=None,s=s)
-        #@+node:ekr.20141010071140.18267: *8* token_tidy
-        def token_tidy(self,p,dump):
-            
-            readlines = g.ReadLinesClass(p.b).next
             try:
-                self.clear()
-                for token5tuple in tokenize.generate_tokens(readlines):
-                    self.putToken(token5tuple)
-                lines = self.get()
-            except tokenize.TokenError:
-                g.warning("error pretty-printing",p.h,"not changed.")
-                return
-            except AssertionError:
-                g.warning("internal error pretty-printing",p.h,"not changed.")
-                g.es_exception()
-                return
-            if dump:
-                self.dumpLines(p,lines)
-            else:
-                self.replaceBody(p,lines)
-        #@+node:ekr.20040711135244.9: *7* put & can_strip
-        def put (self,s,strip=True):
-            '''Put s to self.array. Strip previous whitespace if strip is True.'''
-            # g.trace('%s %r %r' % (int(strip),str(self.array and self.array[-1]),str(s)))
-            if strip and self.can_strip():
-                self.array[-1] = self.array[-1].rstrip()
-            self.array.append(s)
-            
-        def can_strip(self):
-            '''
-            Return True if the previous token contains safely-strippable trailing
-            whitespace.
-
-            Do not change this method without *careful* thought.
-            '''
-            # This code must *never* changes leading whitespace on the line.
-            # The following is save because it returns True only if rstrip() is True.
-            prev = self.array and self.array[-1]
-            return prev and prev.rstrip() and prev.rstrip() != prev
-        #@+node:ekr.20041021104237: *7* putArray
-        def putArray (self):
-            '''Add the next text by joining all the strings is self.array'''
-            s = ''.join(self.array)
-            if s:
-                # Check that leading whitespace has been preserved.
-                # Leading whitespace doesn't match for blank lines.
-                # Alas, this assert fails with continued lies.
-                    # ws = self.leading_ws
-                    # if ws and s.strip():
-                        # i = g.skip_ws(s,0)
-                        # ws2 = s[:i]
-                        # assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
-                self.lines.append(s)
-            self.array = []
-        #@+node:ekr.20040711135244.10: *7* putNormalToken & allies
-        def putNormalToken (self,token5tuple):
-            '''Put the next token.'''
-            trace = False and not g.unitTesting
-            t1,t2,t3,t4,t5 = token5tuple
-            self.name = token.tok_name[t1].lower() # The token type
-            self.val = t2  # the token string
-            self.srow,self.scol = t3 # row & col where the token begins in the source.
-            self.erow,self.ecol = t4 # row & col where the token ends in the source.
-            self.s = t5 # The line containing the token.
-            self.startLine = self.line_number != self.srow
-            self.line_number = self.srow
-            # Set self.tailing_ws for all tokens.
-            i = g.skip_ws(self.s,self.ecol)
-            self.trailing_ws = ' ' if self.s[self.ecol:i] else ''
-            if self.startLine:
-                if trace:
-                    tag = '**' if self.continuation else '=='
-                    g.trace("%s line %2s: %r" % (
-                        tag,self.srow,g.toEncodedString(self.s)))
-                if self.continuation:
-                    self.doNewline()
-                self.continuation = self.s.endswith('\\\n')
-                self.doStartLine()
-            f = self.dispatchDict.get(self.name,self.oops)
-            if trace: g.trace("%10r: trail_ws: %3r %r" % (
-                self.name,self.trailing_ws,g.toEncodedString(self.val)[:60]))
-            f()
-            self.lastName = self.name
-            
-        #@+node:ekr.20041021102938: *8* doEndMarker
-        def doEndMarker (self):
-
-            self.putArray()
-        #@+node:ekr.20041021102340.1: *8* doErrorToken
-        def doErrorToken (self):
-
-            self.array.append(self.val)
-
-            # This code is executed for versions of Python earlier than 2.4
-            if self.val == '@':
-                # Preserve whitespace after @.
-                i = g.skip_ws(self.s,self.scol+1)
-                ws = self.s[self.scol+1:i]
-                if ws:
-                    self.array.append(ws)
-        #@+node:ekr.20041021102340.2: *8* doIndent & doDedent
-        def doDedent (self):
-
-            pass
-
-        def doIndent (self):
-
-            self.array.append(self.val)
-        #@+node:ekr.20041021102340: *8* doMultiLine (strings, etc).
-        def doMultiLine (self):
-
-            # Ensure a blank before comments not preceded entirely by whitespace.
-            if self.val.startswith('#') and self.array:
-                prev = self.array[-1]
-                if prev and prev[-1] != ' ':
-                    self.put(' ') 
-            # These may span lines, so duplicate the end-of-line logic.
-            lines = g.splitLines(self.val)
-            for line in lines:
-                self.array.append(line)
-                if line and line[-1] == '\n':
-                    self.putArray()
-            # Add a blank after the string if there is something in the last line.
-            # if self.array:
-                # line = self.array[-1]
-                # if line.strip():
-                    # self.put(' ')
-            # Suppress start-of-line logic.
-            self.line_number = self.erow
-        #@+node:ekr.20041021101911.5: *8* doName
-        def doName(self):
-            '''Handle a name, including keywords and operators.'''
-            # Ensure whitespace or start-of-line precedes the name.
-            val = self.val
-            if val in ('if','else','and','or','not'):
-                # Make *sure* we never add an extra space.
-                if self.array and self.array[-1].endswith(' '):
-                    self.array.append('%s ' % val)
-                elif self.array:
-                    self.array.append(' %s ' % val)
+                tidy.tidy_up(
+                    file_in=file_in,
+                    file_out=file_out,
+                    is_module=is_module,
+                    leo_c=c)
+                s = file_out.get()
+                # End the body properly
+                s = s.rstrip()+'\n' if s.strip() else ''
+                try:
+                    t2 = ast.parse(p.b,filename='s2',mode='exec')
+                    d2 = ast.dump(t1,annotate_fields=False)
+                except SyntaxError:
+                    d2 = None
+                if d1 == d2:
+                    self.replaceBody(p,lines=None,s=s)
                 else:
-                    self.array.append('%s ' % val)
-            else:
-                s = '%s%s' % (val,self.trailing_ws)
-                if s == 'lambda': g.trace(repr(str(s)),repr(str(self.trailing_ws)))
-                self.array.append(s)
-        #@+node:ekr.20041021101911.3: *8* doNewline
-        def doNewline (self):
-            '''Handle a regular newline.'''
-            if self.continuation:
-                self.array.append('\\')
-                self.continuation = False
-            elif self.array:
-                # Remove trailing whitespace.
-                # This never removes trailing whitespace from multi-line tokens.
-                self.array[-1] = self.array[-1].rstrip()
-            self.array.append('\n')
-            self.putArray()
-        #@+node:ekr.20141009151322.17828: *8* doNl
-        def doNl(self):
-            '''Handle a continuation line.'''
-            pass
-        #@+node:ekr.20041021101911.6: *8* doNumber
-        def doNumber (self):
-
-            self.array.append(self.val)
-        #@+node:ekr.20040711135244.11: *8* doOp
-        def doOp (self):
-            '''Put an operator.'''
-            val = self.val
-            outer = self.parenLevel == 0 and self.squareBracketLevel == 0
-            ws = self.trailing_ws
-            if val in '([{':
-                # From pep 8: Avoid extraneous whitespace immediately inside
-                # parentheses, brackets or braces.
-                prev = self.array and self.array[-1]
-                # strip = self.parenLevel > 0 and prev.strip() not in (',','lambda','else')
-                # g.trace('====',repr(prev))
-                strip = self.parenLevel > 0
-                self.put(val,strip=strip)
-                if   val == '(': self.parenLevel += 1
-                elif val == '[': self.squareBracketLevel += 1
-            elif val in '}])':
-                # From pep 8: Avoid extraneous whitespace immediately inside
-                # parentheses, brackets or braces.
-                self.put(val+ws,strip=True)
-                if   val == ')': self.parenLevel -= 1
-                elif val == ']': self.squareBracketLevel -= 1
-            elif val == '=':
-                # From pep 8: Don't use spaces around the = sign when used to indicate
-                # a keyword argument or a default parameter value.
-                if self.parenLevel == 0:
-                    # This is only an approximation.
-                    self.put(' %s ' % val)
-                else:
-                    self.put(val)
-            elif val in ('==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>','<>'):
-                # From pep 8: always surround these binary operators with a single space on either side.
-                self.put(' %s ' % val)
-            elif val in '+-':
-                # Special case for possible unary operator.
-                if self.parenLevel == 0:
-                    if ws:
-                        self.put(' %s ' % val,strip=True)
-                    else:
-                        self.put(val,strip=False)
-                else:
-                    self.put(val,strip=True)
-            elif val in ('^','~','*','**','&','|','/','//'):
-                # From pep 8: If operators with different priorities are used,
-                # consider adding whitespace around the operators with the lowest priority(ies).
-                # g.trace(repr(str(val)),repr(str(ws)))
-                if val in ('*','**'):
-                    # Highest priority.
-                    self.put(val,strip=True)
-                else:
-                    # Lower priority:
-                    if 1:
-                        self.put(' %s ' % val,strip=True)
-                    elif 1:
-                        # Treat all operators the same.  Boo hoo.
-                        self.put(val,strip=True)
-                    else:
-                        # Alas, this does not play well with names.
-                        self.put(val+ws,strip=False)
-            elif val in ',;':
-                # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
-                self.put(val+ws,strip=True)
-            elif val == ':':
-                # A very hard case.
-                prev = self.array and self.array[-1]
-                # g.trace(repr(str(prev)),repr(str(ws)))
-                if prev in ('else ',':',': '):
-                    self.put(val+ws,strip=True)
-                else:
-                    # We can leave the leading whitespace.
-                    self.put(val+ws,strip=False)
-            elif val in ('%'):
-                # Add leading and trailing blank.
-                self.put(' %s ' % val)
-            elif val == '>>':
-                # Special Leo case: add leading blank.
-                self.put(' %s' % val)
-            elif val == '<<':
-                # Special Leo case: add trailing blank.
-                self.put('%s ' % val)
-            else:
-                self.put(val)
-        #@+node:ekr.20041021112219: *8* doStartLine
-        def doStartLine (self):
-            '''Put the leading whitespace at the start of a line.'''
-            before = self.s[0:self.scol]
-            i = g.skip_ws(before,0)
-            self.leading_ws = self.s[0:i] or ''
-            if self.leading_ws:
-                self.array.append(self.leading_ws)
-            # g.trace(repr(str(self.leading_ws)))
-        #@+node:ekr.20041021101911.1: *8* oops
-        def oops(self):
-
-            g.pr("unknown PrettyPrinting code: %s" % (self.name))
-        #@+node:ekr.20040711135244.12: *7* putToken
-        def putToken (self,token5tuple):
-
-            if self.dumping:
-                self.dumpToken(token5tuple)
-            else:
-                self.putNormalToken(token5tuple)
-        #@+node:ekr.20040713070356: *7* replaceBody
+                    g.warning('PythonTydy error in',p.h)
+                    g.trace(d1,'\n\n',d2)
+            except Exception:
+                g.warning("skipped",p.h)
+                # g.es_exception()
+        #@+node:ekr.20040713070356: *7* ppp.replaceBody
         def replaceBody (self,p,lines,s=None):
             '''Replace the body with the pretty version.'''
             c,u = self.c,self.c.undoer
@@ -4830,6 +4596,7 @@ class Commands (object):
             oldBody = p.b
             body = s if s else ''.join(lines)
             if oldBody != body:
+                self.n += 1
                 if not self.changed:
                     # Start the group.
                     u.beforeChangeGroup(p,undoType)
@@ -4841,127 +4608,15 @@ class Commands (object):
                 self.dirtyVnodeList.extend(dirtyVnodeList2)
                 u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
         #@-others
-    #@+node:ekr.20040712053025: *6* prettyPrintAllPythonCode
-    @cmd('pretty-print-all-python-code')
-    def prettyPrintAllPythonCode (self,event=None,dump=False):
-
-        '''Reformat all Python code in the outline to make it look more beautiful.'''
-
-        c = self ; pp = c.PythonPrettyPrinter(c)
-
-        for p in c.all_unique_positions():
-
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-                pp.prettyPrintNode(p,dump=dump)
-
-        pp.endUndo()
-
-    # For unit test of inverse commands dict.
-    @cmd('beautify-all')
-    def beautifyAllPythonCode (self,event=None,dump=False):
-
-        '''Reformat all Python code in the outline.'''
-
-        return self.prettyPrintAllPythonCode (event,dump)
-    #@+node:ekr.20110917174948.6877: *6* beautifyCCode
-    @cmd('beautify-c')
-    def beautifyCCode (self,event=None):
-
-        '''Reformat all C code in the selected tree.'''
-
-        c = self
-        pp = c.CPrettyPrinter(c)
-        u = c.undoer ; undoType = 'beautify-c'
-
-        u.beforeChangeGroup(c.p,undoType)
-        dirtyVnodeList = []
-        changed = False
-
-        for p in c.p.self_and_subtree():
-            if g.scanForAtLanguage(c,p) == "c":
-                bunch = u.beforeChangeNodeContents(p)
-                s = pp.indent(p)
-                if p.b != s:
-                    # g.es('changed: %s' % (p.h))
-                    p.b = s
-                    p.v.setDirty()
-                    dirtyVnodeList.append(p.v)
-                    u.afterChangeNodeContents(p,undoType,bunch)
-                    changed = True
-
-        if changed:
-            u.afterChangeGroup(c.p,undoType,
-                reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-
-        c.bodyWantsFocus()
-    #@+node:ekr.20040712053025.1: *6* prettyPrintPythonCode
-    @cmd('pretty-print-python-code')
-    def prettyPrintPythonCode (self,event=None,p=None,dump=False):
-
-        '''Reformat all Python code in the selected tree.'''
-
-        c = self
-
-        if p: root = p.copy()
-        else: root = c.p
-
-        pp = c.PythonPrettyPrinter(c)
-
-        for p in root.self_and_subtree():
-
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-
-                pp.prettyPrintNode(p,dump=dump)
-
-        pp.endUndo()
-
-    # For unit test of inverse commands dict.
-    @cmd('beautify')
-    def beautifyPythonCode (self,event=None,dump=False):
-
-        '''Beautify all Python code in the selected tree.'''
-        return self.prettyPrintPythonCode (event,dump)
-
     #@+node:ekr.20050729211526: *6* prettyPrintPythonNode
     def prettyPrintPythonNode (self,p=None,dump=False):
-
-        c = self
-
-        if not p:
-            p = c.p
-
+        '''Pretty print a single python node.'''
+        c,p = self,p or self.p
         pp = c.PythonPrettyPrinter(c)
-
         # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
         if g.scanForAtLanguage(c,p) == "python":
             pp.prettyPrintNode(p,dump=dump)
-
         pp.endUndo()
-    #@+node:ekr.20071001075704: *6* prettyPrintPythonTree
-    def prettyPrintPythonTree (self,event=None,dump=False):
-
-        '''Beautify all Python code in the selected outline.'''
-
-        c = self ; p = c.p ; pp = c.PythonPrettyPrinter(c)
-
-        for p in p.self_and_subtree():
-
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-
-                pp.prettyPrintNode(p,dump=dump)
-
-        pp.endUndo()
-
-    # For unit test of inverse commands dict.
-    @cmd('beautify-tree')
-    def beautifyPythonTree (self,event=None,dump=False):
-
-        '''Beautify all Python code in the selected outline.'''
-
-        return self.prettyPrintPythonTree (event,dump)
     #@+node:ekr.20031218072017.2898: *4* Expand & Contract...
     #@+node:ekr.20031218072017.2899: *5* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *6* contractAllHeadlines
