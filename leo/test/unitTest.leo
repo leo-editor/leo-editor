@@ -164,9 +164,13 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e372e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31342e3371097d710a5808000000616e6e6f74617465710b7d710c735508302e362e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073550a302e362e31352e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31352e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735805000000302e372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31342e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20041019124050"><vh>@test c.prettyPrintPythonCode</vh>
+<v t="ekr.20041019124050.1"><vh>Original</vh></v>
+<v t="ekr.20041019124050.2"><vh>Test</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -189,6 +193,19 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
+</t>
+<t tx="ekr.20041019124050">test1 = p.firstChild()
+test2 = p.firstChild().next()
+
+c.prettyPrintPythonCode(p=test1,dump=False)
+
+assert test2.b==test1.b,'\n%r\n%r' % (test1.b,test2.b)
+</t>
+<t tx="ekr.20041019124050.1">def spam(a=2):
+    pass
+</t>
+<t tx="ekr.20041019124050.2">def spam(a=2):
+    pass
 </t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
@@ -582,7 +599,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>

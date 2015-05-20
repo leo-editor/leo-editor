@@ -4608,7 +4608,9 @@ class Commands (object):
                     g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
             except Exception:
                 g.warning("skipped",p.h)
-                if trace:
+                if g.unitTesting:
+                    raise
+                elif trace:
                     g.es_exception()
                     # g.trace(s1)
         #@+node:ekr.20040713070356: *7* ppp.replaceBody
