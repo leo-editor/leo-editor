@@ -1824,7 +1824,7 @@ class NodeStr(Node):
         Node.__init__(self, indent, lineno)
         self.set_as_str(str)
         return
-    #@+node:ekr.20141010141310.18721: *5* put
+    #@+node:ekr.20141010141310.18721: *5* put (NodeStr)
     def put(self, can_split=False):
 
         self.line_more(self.get_as_str())
@@ -1952,7 +1952,7 @@ class NodeInt(Node):
         Node.__init__(self, indent, lineno)
         self.int = int
         return
-    #@+node:ekr.20141010141310.18730: *5* put
+    #@+node:ekr.20141010141310.18730: *5* put (NodeInt)
     def put(self, can_split=False):
 
         self.line_more(self.get_as_repr())
@@ -1977,7 +1977,7 @@ class NodeAdd(NodeOprAssoc):
     tag = 'Add'
 
     #@+others
-    #@+node:ekr.20141010141310.18733: *5* __init__
+    #@+node:ekr.20141010141310.18733: *5* __init_ (NodeAdd)
     def __init__(
         self,
         indent,
@@ -1990,7 +1990,7 @@ class NodeAdd(NodeOprAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18734: *5* put
+    #@+node:ekr.20141010141310.18734: *5* put (NodeAdd)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split)
@@ -2013,7 +2013,7 @@ class NodeAnd(NodeOprAssoc):
     tag = 'And'
 
     #@+others
-    #@+node:ekr.20141010141310.18737: *5* __init__
+    #@+node:ekr.20141010141310.18737: *5* __init__ (NodeAnd)
     def __init__(
         self,
         indent,
@@ -2024,7 +2024,7 @@ class NodeAnd(NodeOprAssoc):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18738: *5* put
+    #@+node:ekr.20141010141310.18738: *5* put (NodeAnd)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -2050,7 +2050,7 @@ class NodeAsgAttr(NodeOpr):
     tag = 'AsgAttr'
 
     #@+others
-    #@+node:ekr.20141010141310.18741: *5* __init__
+    #@+node:ekr.20141010141310.18741: *5* __init__ (NodeAsgAttr)
     def __init__(
         self,
         indent,
@@ -2105,7 +2105,7 @@ class NodeAsgList(Node):
     tag = 'AsgList'
 
     #@+others
-    #@+node:ekr.20141010141310.18745: *5* __init__
+    #@+node:ekr.20141010141310.18745: *5* __init__ (NodeAsgList)
     def __init__(
         self,
         indent,
@@ -2116,7 +2116,7 @@ class NodeAsgList(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18746: *5* put
+    #@+node:ekr.20141010141310.18746: *5* put (NodeAsgList)
     def put(self, can_split=False):
 
         self.line_more('[', tab_set=True)
@@ -2166,7 +2166,7 @@ class NodeAsgName(Node):
     tag = 'AsgName'
 
     #@+others
-    #@+node:ekr.20141010141310.18750: *5* __init__
+    #@+node:ekr.20141010141310.18750: *5* __init__ (NodeAsgName)
     def __init__(
         self,
         indent,
@@ -2217,7 +2217,7 @@ class NodeAsgTuple(Node):
     tag = 'AsgTuple'
 
     #@+others
-    #@+node:ekr.20141010141310.18755: *5* __init__
+    #@+node:ekr.20141010141310.18755: *5* __init__ (NodeAsgTuple)
     def __init__(
         self,
         indent,
@@ -2228,7 +2228,7 @@ class NodeAsgTuple(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18756: *5* put
+    #@+node:ekr.20141010141310.18756: *5* put (NodeAsgTuple)
     def put(self, can_split=False, is_paren_required=True):
 
         # pylint: disable=arguments-differ
@@ -2290,7 +2290,7 @@ class NodeAssert(Node):
     tag = 'Assert'
 
     #@+others
-    #@+node:ekr.20141010141310.18760: *5* __init__
+    #@+node:ekr.20141010141310.18760: *5* __init__ (NodeAssert)
     def __init__(
         self,
         indent,
@@ -2303,7 +2303,7 @@ class NodeAssert(Node):
         self.test = transform(indent, lineno, test)
         self.fail = transform(indent, lineno, fail)
         return
-    #@+node:ekr.20141010141310.18761: *5* put
+    #@+node:ekr.20141010141310.18761: *5* put (NodeAssert)
     def put(self, can_split=False):
 
         self.line_init()
@@ -2336,7 +2336,7 @@ class NodeAssign(Node):
     tag = 'Assign'
 
     #@+others
-    #@+node:ekr.20141010141310.18764: *5* __init__
+    #@+node:ekr.20141010141310.18764: *5* __init__ (NodeAssign)
     def __init__(
         self,
         indent,
@@ -2349,7 +2349,7 @@ class NodeAssign(Node):
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18765: *5* put
+    #@+node:ekr.20141010141310.18765: *5* put (NodeAssign)
     def put(self, can_split=False):
 
         self.line_init()
@@ -2390,7 +2390,7 @@ class NodeAugAssign(Node):
     tag = 'AugAssign'
 
     #@+others
-    #@+node:ekr.20141010141310.18769: *5* __init__
+    #@+node:ekr.20141010141310.18769: *5* __init__ (NodeAugAssign)
     def __init__(
         self,
         indent,
@@ -2405,7 +2405,7 @@ class NodeAugAssign(Node):
         self.op = transform(indent, lineno, op)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18770: *5* put
+    #@+node:ekr.20141010141310.18770: *5* put (NodeAugAssign)
     def put(self, can_split=False):
 
         self.line_init()
@@ -2435,7 +2435,7 @@ class NodeBackquote(Node):
     tag = 'Backquote'
 
     #@+others
-    #@+node:ekr.20141010141310.18774: *5* __init__
+    #@+node:ekr.20141010141310.18774: *5* __init__ (NodeBackquote)
     def __init__(
         self,
         indent,
@@ -2446,7 +2446,7 @@ class NodeBackquote(Node):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18775: *5* put
+    #@+node:ekr.20141010141310.18775: *5* put (NodeBackquote)
     def put(self, can_split=False):
 
         self.line_more('`')
@@ -2468,7 +2468,7 @@ class NodeBitAnd(NodeOprAssoc):
     tag = 'BitAnd'
 
     #@+others
-    #@+node:ekr.20141010141310.18778: *5* __init__
+    #@+node:ekr.20141010141310.18778: *5* __init__ (NodeBitAnd)
     def __init__(
         self,
         indent,
@@ -2479,7 +2479,7 @@ class NodeBitAnd(NodeOprAssoc):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18779: *5* put
+    #@+node:ekr.20141010141310.18779: *5* put (NodeBitAnd)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -2505,7 +2505,7 @@ class NodeBitOr(NodeOprAssoc):
     tag = 'BitOr'
 
     #@+others
-    #@+node:ekr.20141010141310.18782: *5* __init__
+    #@+node:ekr.20141010141310.18782: *5* __init__ (NodeBitOr)
     def __init__(
         self,
         indent,
@@ -2516,7 +2516,7 @@ class NodeBitOr(NodeOprAssoc):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18783: *5* put
+    #@+node:ekr.20141010141310.18783: *5* put (NodeBitOr)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -2542,7 +2542,7 @@ class NodeBitXor(NodeOprAssoc):
     tag = 'BitXor'
 
     #@+others
-    #@+node:ekr.20141010141310.18786: *5* __init__
+    #@+node:ekr.20141010141310.18786: *5* __init__ (NodeBitXor)
     def __init__(
         self,
         indent,
@@ -2553,7 +2553,7 @@ class NodeBitXor(NodeOprAssoc):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18787: *5* put
+    #@+node:ekr.20141010141310.18787: *5* put (NodeBitXor)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -2584,7 +2584,7 @@ class NodeBreak(Node):
 
         Node.__init__(self, indent, lineno)
         return
-    #@+node:ekr.20141010141310.18791: *5* put
+    #@+node:ekr.20141010141310.18791: *5* put (NodeBreak)
     def put(self, can_split=False):
 
         self.line_init()
@@ -2602,7 +2602,7 @@ class NodeCallFunc(Node):
     tag = 'CallFunc'
 
     #@+others
-    #@+node:ekr.20141010141310.18793: *5* __init__
+    #@+node:ekr.20141010141310.18793: *5* __init__ (NodeCallFunc)
     def __init__(
         self,
         indent,
@@ -2740,7 +2740,7 @@ class NodeClass(Node):
     tag = 'Class'
 
     #@+others
-    #@+node:ekr.20141010141310.18798: *5* __init__
+    #@+node:ekr.20141010141310.18798: *5* __init__ (NodeClass)
     def __init__(
         self,
         indent,
@@ -2757,7 +2757,7 @@ class NodeClass(Node):
         self.doc = transform(indent + 1, lineno, doc)
         self.code = transform(indent + 1, lineno, code)
         return
-    #@+node:ekr.20141010141310.18799: *5* put
+    #@+node:ekr.20141010141310.18799: *5* put (NodeClass)
     def put(self, can_split=False):
 
         if is_leo:
@@ -2823,7 +2823,7 @@ class NodeCompare(NodeOprNotAssoc):
     tag = 'Compare'
 
     #@+others
-    #@+node:ekr.20141010141310.18805: *5* __init__
+    #@+node:ekr.20141010141310.18805: *5* __init__ (NodeCompare)
     def __init__(
         self,
         indent,
@@ -2836,7 +2836,7 @@ class NodeCompare(NodeOprNotAssoc):
         self.expr = transform(indent, lineno, expr)
         self.ops = [(op, transform(indent, lineno, ex)) for (op, ex) in ops]
         return
-    #@+node:ekr.20141010141310.18806: *5* put
+    #@+node:ekr.20141010141310.18806: *5* put (NodeCompare)
     def put(self, can_split=False):
 
         self.put_expr(self.expr, can_split=can_split)
@@ -2862,7 +2862,7 @@ class NodeConst(Node):
     tag = 'Const'
 
     #@+others
-    #@+node:ekr.20141010141310.18809: *5* __init__
+    #@+node:ekr.20141010141310.18809: *5* __init__ (NodeConst)
     def __init__(
         self,
         indent,
@@ -2873,7 +2873,7 @@ class NodeConst(Node):
         Node.__init__(self, indent, lineno)
         self.value = transform(indent, lineno, value)
         return
-    #@+node:ekr.20141010141310.18810: *5* put
+    #@+node:ekr.20141010141310.18810: *5* put (NodeConst)
     def put(self, can_split=False):
 
         if self.is_str():
@@ -2916,7 +2916,7 @@ class NodeContinue(Node):
 
         Node.__init__(self, indent, lineno)
         return
-    #@+node:ekr.20141010141310.18816: *5* put
+    #@+node:ekr.20141010141310.18816: *5* put (NodeContinue)
     def put(self, can_split=False):
 
         # pylint: disable=arguments-differ
@@ -2934,7 +2934,7 @@ class NodeDecorators(Node):
     """
 
     #@+others
-    #@+node:ekr.20141010141310.18818: *5* __init__
+    #@+node:ekr.20141010141310.18818: *5* __init__ (NodeDecorators)
     def __init__(
         self,
         indent,
@@ -2945,7 +2945,7 @@ class NodeDecorators(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18819: *5* put
+    #@+node:ekr.20141010141310.18819: *5* put (NodeDecorators)
     def put(self, spacing=0, can_split=False):
 
         # pylint: disable=arguments-differ
@@ -2971,7 +2971,7 @@ class NodeDict(Node):
     tag = 'Dict'
 
     #@+others
-    #@+node:ekr.20141010141310.18822: *5* __init__
+    #@+node:ekr.20141010141310.18822: *5* __init__ (NodeDict)
     def __init__(
         self,
         indent,
@@ -2983,7 +2983,7 @@ class NodeDict(Node):
         self.items = [(transform(indent, lineno, key), transform(indent,
                       lineno, value)) for (key, value) in items]
         return
-    #@+node:ekr.20141010141310.18823: *5* put
+    #@+node:ekr.20141010141310.18823: *5* put (NodeDict)
     def put(self, can_split=False):
 
         def put_item():
@@ -3035,7 +3035,7 @@ class NodeDiscard(Node):
     tag = 'Discard'
 
     #@+others
-    #@+node:ekr.20141010141310.18826: *5* __init__
+    #@+node:ekr.20141010141310.18826: *5* __init__ (NodeDiscard)
     def __init__(
         self,
         indent,
@@ -3046,7 +3046,7 @@ class NodeDiscard(Node):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18827: *5* put
+    #@+node:ekr.20141010141310.18827: *5* put (NodeDiscard)
     def put(self, can_split=False):
 
         if isinstance(self.expr, NodeConst) and not KEEP_UNASSIGNED_CONSTANTS:
@@ -3080,7 +3080,7 @@ class NodeDiv(NodeOprLeftAssoc):
     tag = 'Div'
 
     #@+others
-    #@+node:ekr.20141010141310.18832: *5* __init__
+    #@+node:ekr.20141010141310.18832: *5* __init__ (NodeDiv)
     def __init__(
         self,
         indent,
@@ -3093,7 +3093,7 @@ class NodeDiv(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18833: *5* put
+    #@+node:ekr.20141010141310.18833: *5* put (NodeDiv)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -3117,7 +3117,7 @@ class NodeEllipsis(Node):
 
         Node.__init__(self, indent, lineno)
         return
-    #@+node:ekr.20141010141310.18837: *5* put
+    #@+node:ekr.20141010141310.18837: *5* put (NodeEllipsis)
     def put(self, can_split=False):
 
         self.line_more('...')
@@ -3133,7 +3133,7 @@ class NodeExec(Node):
     tag = 'Exec'
 
     #@+others
-    #@+node:ekr.20141010141310.18839: *5* __init__
+    #@+node:ekr.20141010141310.18839: *5* __init__ (NodeExec)
     def __init__(
         self,
         indent,
@@ -3148,7 +3148,7 @@ class NodeExec(Node):
         self.locals = transform(indent, lineno, locals)
         self.globals = transform(indent, lineno, globals)
         return
-    #@+node:ekr.20141010141310.18840: *5* put
+    #@+node:ekr.20141010141310.18840: *5* put (NodeExec)
     def put(self, can_split=False):
 
         self.line_init()
@@ -3190,7 +3190,7 @@ class NodeFor(Node):
     tag = 'For'
 
     #@+others
-    #@+node:ekr.20141010141310.18843: *5* __init__
+    #@+node:ekr.20141010141310.18843: *5* __init__ (NodeFor)
     def __init__(
         self,
         indent,
@@ -3207,7 +3207,7 @@ class NodeFor(Node):
         self.body = transform(indent + 1, lineno, body)
         self.else_ = transform(indent + 1, lineno, else_)
         return
-    #@+node:ekr.20141010141310.18844: *5* put
+    #@+node:ekr.20141010141310.18844: *5* put (NodeFor)
     def put(self, can_split=False):
 
         self.line_init()
@@ -3257,7 +3257,7 @@ class NodeFloorDiv(NodeOprLeftAssoc):
     tag = 'FloorDiv'
 
     #@+others
-    #@+node:ekr.20141010141310.18848: *5* __init__
+    #@+node:ekr.20141010141310.18848: *5* __init__ (NodeFloorDiv)
     def __init__(
         self,
         indent,
@@ -3270,7 +3270,7 @@ class NodeFloorDiv(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18849: *5* put
+    #@+node:ekr.20141010141310.18849: *5* put (NodeFloorDiv)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -3293,7 +3293,7 @@ class NodeFrom(Node):
     tag = 'From'
 
     #@+others
-    #@+node:ekr.20141010141310.18852: *5* __init__
+    #@+node:ekr.20141010141310.18852: *5* __init__ (NodeFrom)
     def __init__(
         self,
         indent,
@@ -3308,7 +3308,7 @@ class NodeFrom(Node):
                       transform(indent, lineno, name)) for (identifier,
                       name) in names]
         return
-    #@+node:ekr.20141010141310.18853: *5* put
+    #@+node:ekr.20141010141310.18853: *5* put (NodeFrom)
     def put(self, can_split=False):
 
         def put_name():
@@ -3362,7 +3362,7 @@ class NodeFunction(Node):
     tag = 'Function'
 
     #@+others
-    #@+node:ekr.20141010141310.18857: *5* __init__
+    #@+node:ekr.20141010141310.18857: *5* __init__ (NodeFunction)
     def __init__(
         self,
         indent,
@@ -3401,7 +3401,7 @@ class NodeFunction(Node):
         else:
             result = func(tuple_)
         return result
-    #@+node:ekr.20141010141310.18859: *5* xform
+    #@+node:ekr.20141010141310.18859: *5* xform (NodeFunction)
     def xform(self, node):
 
         result = transform(self.indent, self.lineno, node)
@@ -3606,7 +3606,7 @@ class NodeGenExpr(Node):
     tag = 'GenExpr'
 
     #@+others
-    #@+node:ekr.20141010141310.18872: *5* __init__
+    #@+node:ekr.20141010141310.18872: *5* __init__ (NodeGenExpr)
     def __init__(
         self,
         indent,
@@ -3618,7 +3618,7 @@ class NodeGenExpr(Node):
         self.code = transform(indent, lineno, code)
         self.need_parens = True
         return
-    #@+node:ekr.20141010141310.18873: *5* put
+    #@+node:ekr.20141010141310.18873: *5* put (NodeGenExpr)
     def put(self, can_split=False):
 
         if self.need_parens:
@@ -3642,7 +3642,7 @@ class NodeGenExprInner(Node):
     tag = 'GenExprInner'
 
     #@+others
-    #@+node:ekr.20141010141310.18876: *5* __init__
+    #@+node:ekr.20141010141310.18876: *5* __init__ (NodeGenexprInner)
     def __init__(
         self,
         indent,
@@ -3655,7 +3655,7 @@ class NodeGenExprInner(Node):
         self.expr = transform(indent, lineno, expr)
         self.quals = [transform(indent, lineno, qual) for qual in quals]
         return
-    #@+node:ekr.20141010141310.18877: *5* put
+    #@+node:ekr.20141010141310.18877: *5* put (NodeGenExprInner)
     def put(self, can_split=False):
 
         self.push_scope()
@@ -3697,7 +3697,7 @@ class NodeGenExprFor(Node):
     tag = 'GenExprFor'
 
     #@+others
-    #@+node:ekr.20141010141310.18883: *5* __init__
+    #@+node:ekr.20141010141310.18883: *5* __init__ (NodeGenExprFor)
     def __init__(
         self,
         indent,
@@ -3712,7 +3712,7 @@ class NodeGenExprFor(Node):
         self.list = transform(indent, lineno, list)
         self.ifs = [transform(indent, lineno, if_) for if_ in ifs]
         return
-    #@+node:ekr.20141010141310.18884: *5* put
+    #@+node:ekr.20141010141310.18884: *5* put (NodeGenExprFor)
     def put(self, can_split=False):
 
         self.line_more(' ', can_split_after=True)
@@ -3746,7 +3746,7 @@ class NodeGenExprIf(Node):
     tag = 'GenExprIf'
 
     #@+others
-    #@+node:ekr.20141010141310.18888: *5* __init__
+    #@+node:ekr.20141010141310.18888: *5* __init__ (NodeGenExprIf)
     def __init__(
         self,
         indent,
@@ -3757,7 +3757,7 @@ class NodeGenExprIf(Node):
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
         return
-    #@+node:ekr.20141010141310.18889: *5* put
+    #@+node:ekr.20141010141310.18889: *5* put (NodeGenExprIf)
     def put(self, can_split=False):
 
         self.line_more(' ', can_split_after=True)
@@ -3779,7 +3779,7 @@ class NodeGetAttr(NodeOpr):
     tag = 'GetAttr'
 
     #@+others
-    #@+node:ekr.20141010141310.18892: *5* __init__
+    #@+node:ekr.20141010141310.18892: *5* __init__ (NodeGenAttr)
     def __init__(
         self,
         indent,
@@ -3792,7 +3792,7 @@ class NodeGetAttr(NodeOpr):
         self.expr = transform(indent, lineno, expr)
         self.attrname = transform(indent, lineno, attrname)
         return
-    #@+node:ekr.20141010141310.18893: *5* put
+    #@+node:ekr.20141010141310.18893: *5* put (NodeGenAttr)
     def put(self, can_split=False):
 
         if isinstance(self.expr, NodeConst):
@@ -3818,7 +3818,7 @@ class NodeGlobal(Node):
     tag = 'Global'
 
     #@+others
-    #@+node:ekr.20141010141310.18896: *5* __init__
+    #@+node:ekr.20141010141310.18896: *5* __init__ (NodeGlobal)
     def __init__(
         self,
         indent,
@@ -3829,7 +3829,7 @@ class NodeGlobal(Node):
         Node.__init__(self, indent, lineno)
         self.names = [transform(indent, lineno, name) for name in names]
         return
-    #@+node:ekr.20141010141310.18897: *5* put
+    #@+node:ekr.20141010141310.18897: *5* put (NodeGlobal)
     def put(self, can_split=False):
 
         self.line_init()
@@ -3862,7 +3862,7 @@ class NodeIf(Node):
     tag = 'If'
 
     #@+others
-    #@+node:ekr.20141010141310.18901: *5* __init__
+    #@+node:ekr.20141010141310.18901: *5* __init__ (NodeIf)
     def __init__(
         self,
         indent,
@@ -3876,7 +3876,7 @@ class NodeIf(Node):
                       lineno, stmt)) for (expr, stmt) in tests]
         self.else_ = transform(indent + 1, lineno, else_)
         return
-    #@+node:ekr.20141010141310.18902: *5* put
+    #@+node:ekr.20141010141310.18902: *5* put (NodeIf)
     def put(self, can_split=False):
 
         for expr, stmt in self.tests[:1]:
@@ -3927,7 +3927,7 @@ class NodeIfExp(Node):
     tag = 'IfExp'
 
     #@+others
-    #@+node:ekr.20141010141310.18906: *5* __init__
+    #@+node:ekr.20141010141310.18906: *5* __init__ (NodeIfExpr)
     def __init__(
         self,
         indent,
@@ -3942,7 +3942,7 @@ class NodeIfExp(Node):
         self.then = transform(indent, lineno, then)
         self.else_ = transform(indent, lineno, else_)
         return
-    #@+node:ekr.20141010141310.18907: *5* put
+    #@+node:ekr.20141010141310.18907: *5* put (NodeIfExpr)
     def put(self, can_split=False):
 
         self.line_more('(', tab_set=True)
@@ -3964,7 +3964,7 @@ class NodeImport(Node):
     tag = 'Import'
 
     #@+others
-    #@+node:ekr.20141010141310.18910: *5* __init__
+    #@+node:ekr.20141010141310.18910: *5* __init__ (NodeImport)
     def __init__(
         self,
         indent,
@@ -3977,7 +3977,7 @@ class NodeImport(Node):
                       transform(indent, lineno, name)) for (identifier,
                       name) in names]
         return
-    #@+node:ekr.20141010141310.18911: *5* put
+    #@+node:ekr.20141010141310.18911: *5* put (NodeImport)
     def put(self, can_split=False):
 
         def put_name():
@@ -4026,7 +4026,7 @@ class NodeInvert(NodeOpr):
     tag = 'Invert'
 
     #@+others
-    #@+node:ekr.20141010141310.18915: *5* __init__
+    #@+node:ekr.20141010141310.18915: *5* __init__ (NodeInvert)
     def __init__(
         self,
         indent,
@@ -4037,7 +4037,7 @@ class NodeInvert(NodeOpr):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18916: *5* put
+    #@+node:ekr.20141010141310.18916: *5* put (NodeInvert)
     def put(self, can_split=False):
 
         self.line_more('~')
@@ -4058,7 +4058,7 @@ class NodeKeyword(Node):
     tag = 'Keyword'
 
     #@+others
-    #@+node:ekr.20141010141310.18919: *5* __init__
+    #@+node:ekr.20141010141310.18919: *5* __init__ (NodeKeyword)
     def __init__(
         self,
         indent,
@@ -4071,7 +4071,7 @@ class NodeKeyword(Node):
         self.name = transform(indent, lineno, name)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18920: *5* put
+    #@+node:ekr.20141010141310.18920: *5* put (NodeKeyword)
     def put(self, can_split=False):
 
         self.line_more(NAME_SPACE.make_keyword_name(self.name))
@@ -4093,7 +4093,7 @@ class NodeLeftShift(NodeOprLeftAssoc):
     tag = 'LeftShift'
 
     #@+others
-    #@+node:ekr.20141010141310.18923: *5* __init__
+    #@+node:ekr.20141010141310.18923: *5* __init__ (NodeLeftShift)
     def __init__(
         self,
         indent,
@@ -4106,7 +4106,7 @@ class NodeLeftShift(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18924: *5* put
+    #@+node:ekr.20141010141310.18924: *5* put (NodeLeftShift)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -4129,7 +4129,7 @@ class NodeList(Node):
     tag = 'List'
 
     #@+others
-    #@+node:ekr.20141010141310.18927: *5* __init__
+    #@+node:ekr.20141010141310.18927: *5* __init__ (NodeList)
     def __init__(
         self,
         indent,
@@ -4140,7 +4140,7 @@ class NodeList(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18928: *5* put
+    #@+node:ekr.20141010141310.18928: *5* put (NodeList)
     def put(self, can_split=False):
 
         self.line_more('[', tab_set=True)
@@ -4184,7 +4184,7 @@ class NodeListComp(Node):
     tag = 'ListComp'
 
     #@+others
-    #@+node:ekr.20141010141310.18931: *5* __init__
+    #@+node:ekr.20141010141310.18931: *5* __init__ (NodeListComp)
     def __init__(
         self,
         indent,
@@ -4197,7 +4197,7 @@ class NodeListComp(Node):
         self.expr = transform(indent, lineno, expr)
         self.quals = [transform(indent, lineno, qual) for qual in quals]
         return
-    #@+node:ekr.20141010141310.18932: *5* put
+    #@+node:ekr.20141010141310.18932: *5* put (NodeListComp)
     def put(self, can_split=False):
 
         self.push_scope()
@@ -4241,7 +4241,7 @@ class NodeListCompFor(Node):
     tag = 'ListCompFor'
 
     #@+others
-    #@+node:ekr.20141010141310.18938: *5* __init__
+    #@+node:ekr.20141010141310.18938: *5* __init__ (NodeListCompFor)
     def __init__(
         self,
         indent,
@@ -4256,7 +4256,7 @@ class NodeListCompFor(Node):
         self.list = transform(indent, lineno, list)
         self.ifs = [transform(indent, lineno, if_) for if_ in ifs]
         return
-    #@+node:ekr.20141010141310.18939: *5* put
+    #@+node:ekr.20141010141310.18939: *5* put (NodeListCompFor)
     def put(self, can_split=False):
 
         self.line_more(' ', can_split_after=True)
@@ -4290,7 +4290,7 @@ class NodeListCompIf(Node):
     tag = 'ListCompIf'
 
     #@+others
-    #@+node:ekr.20141010141310.18943: *5* __init__
+    #@+node:ekr.20141010141310.18943: *5* __init__ (NodeListCompIf)
     def __init__(
         self,
         indent,
@@ -4301,7 +4301,7 @@ class NodeListCompIf(Node):
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
         return
-    #@+node:ekr.20141010141310.18944: *5* put
+    #@+node:ekr.20141010141310.18944: *5* put (NodeListCompIf)
     def put(self, can_split=False):
 
         self.line_more(' ', can_split_after=True)
@@ -4323,7 +4323,7 @@ class NodeMod(NodeOprLeftAssoc):
     tag = 'Mod'
 
     #@+others
-    #@+node:ekr.20141010141310.18947: *5* __init__
+    #@+node:ekr.20141010141310.18947: *5* __init__ (NodeMod)
     def __init__(
         self,
         indent,
@@ -4336,7 +4336,7 @@ class NodeMod(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18948: *5* put
+    #@+node:ekr.20141010141310.18948: *5* put (NodeMod)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -4361,7 +4361,7 @@ class NodeModule(Node):
     tag = 'Module'
 
     #@+others
-    #@+node:ekr.20141010141310.18951: *5* __init__
+    #@+node:ekr.20141010141310.18951: *5* __init__ (NodeModule)
     def __init__(
         self,
         indent,
@@ -4374,7 +4374,7 @@ class NodeModule(Node):
         self.doc = transform(indent, lineno, doc)
         self.node = transform(indent, lineno, node)
         return
-    #@+node:ekr.20141010141310.18952: *5* put
+    #@+node:ekr.20141010141310.18952: *5* put (NodeModule)
     def put(self, can_split=False):
 
         if self.doc is None:
@@ -4420,7 +4420,7 @@ class NodeMul(NodeOprLeftAssoc):
     tag = 'Mul'
 
     #@+others
-    #@+node:ekr.20141010141310.18958: *5* __init__
+    #@+node:ekr.20141010141310.18958: *5* __init__ (NodeMul)
     def __init__(
         self,
         indent,
@@ -4433,7 +4433,7 @@ class NodeMul(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18959: *5* put
+    #@+node:ekr.20141010141310.18959: *5* put (NodeMul)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -4456,7 +4456,7 @@ class NodeName(Node):
     tag = 'Name'
 
     #@+others
-    #@+node:ekr.20141010141310.18962: *5* __init__
+    #@+node:ekr.20141010141310.18962: *5* __init__ (NodeName)
     def __init__(
         self,
         indent,
@@ -4467,7 +4467,7 @@ class NodeName(Node):
         Node.__init__(self, indent, lineno)
         self.name = transform(indent, lineno, name)
         return
-    #@+node:ekr.20141010141310.18963: *5* put
+    #@+node:ekr.20141010141310.18963: *5* put (NodeName)
     def put(self, can_split=False):
 
         self.line_more(NAME_SPACE.get_name(self.name))
@@ -4495,7 +4495,7 @@ class NodeNot(NodeOpr):
     tag = 'Not'
 
     #@+others
-    #@+node:ekr.20141010141310.18967: *5* __init__
+    #@+node:ekr.20141010141310.18967: *5* __init__ (NodeNot)
     def __init__(
         self,
         indent,
@@ -4506,7 +4506,7 @@ class NodeNot(NodeOpr):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.18968: *5* put
+    #@+node:ekr.20141010141310.18968: *5* put (NodeNot)
     def put(self, can_split=False):
 
         self.line_more('not ')
@@ -4527,7 +4527,7 @@ class NodeOr(NodeOprAssoc):
     tag = 'Or'
 
     #@+others
-    #@+node:ekr.20141010141310.18971: *5* __init__
+    #@+node:ekr.20141010141310.18971: *5* __init__ (NodeOr)
     def __init__(
         self,
         indent,
@@ -4538,7 +4538,7 @@ class NodeOr(NodeOprAssoc):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.18972: *5* put
+    #@+node:ekr.20141010141310.18972: *5* put (NodeOr)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -4569,7 +4569,7 @@ class NodePass(Node):
 
         Node.__init__(self, indent, lineno)
         return
-    #@+node:ekr.20141010141310.18976: *5* put
+    #@+node:ekr.20141010141310.18976: *5* put (NodePass)
     def put(self, can_split=False):
 
         self.line_init()
@@ -4587,7 +4587,7 @@ class NodePower(NodeOprRightAssoc):
     tag = 'Power'
 
     #@+others
-    #@+node:ekr.20141010141310.18978: *5* __init__
+    #@+node:ekr.20141010141310.18978: *5* __init__ (NodePower)
     def __init__(
         self,
         indent,
@@ -4600,7 +4600,7 @@ class NodePower(NodeOprRightAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.18979: *5* put
+    #@+node:ekr.20141010141310.18979: *5* put (NodePower)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -4623,7 +4623,7 @@ class NodePrint(Node):
     tag = 'Print'
 
     #@+others
-    #@+node:ekr.20141010141310.18982: *5* __init__
+    #@+node:ekr.20141010141310.18982: *5* __init__ (NodePrint)
     def __init__(
         self,
         indent,
@@ -4636,7 +4636,7 @@ class NodePrint(Node):
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.dest = transform(indent, lineno, dest)
         return
-    #@+node:ekr.20141010141310.18983: *5* put
+    #@+node:ekr.20141010141310.18983: *5* put (NodePrint)
     def put(self, can_split=False):
 
         self.line_init()
@@ -4675,7 +4675,7 @@ class NodePrintnl(Node):
     tag = 'Printnl'
 
     #@+others
-    #@+node:ekr.20141010141310.18986: *5* __init__
+    #@+node:ekr.20141010141310.18986: *5* __init__ (NodePrintnl)
     def __init__(
         self,
         indent,
@@ -4688,7 +4688,7 @@ class NodePrintnl(Node):
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.dest = transform(indent, lineno, dest)
         return
-    #@+node:ekr.20141010141310.18987: *5* put
+    #@+node:ekr.20141010141310.18987: *5* put (NodePrintnl)
     def put(self, can_split=False):
 
         self.line_init()
@@ -4729,7 +4729,7 @@ class NodeRaise(Node):
     tag = 'Raise'
 
     #@+others
-    #@+node:ekr.20141010141310.18990: *5* __init__
+    #@+node:ekr.20141010141310.18990: *5* __init__ (NodeRaise)
     def __init__(
         self,
         indent,
@@ -4744,7 +4744,7 @@ class NodeRaise(Node):
         self.expr2 = transform(indent, lineno, expr2)
         self.expr3 = transform(indent, lineno, expr3)
         return
-    #@+node:ekr.20141010141310.18991: *5* put
+    #@+node:ekr.20141010141310.18991: *5* put (NodeRaise)
     def put(self, can_split=False):
 
         self.line_init()
@@ -4793,7 +4793,7 @@ class NodeReturn(Node):
     tag = 'Return'
 
     #@+others
-    #@+node:ekr.20141010141310.18994: *5* __init__
+    #@+node:ekr.20141010141310.18994: *5* __init__ (NodeReturn)
     def __init__(
         self,
         indent,
@@ -4808,7 +4808,7 @@ class NodeReturn(Node):
     def has_value(self):
 
         return not (isinstance(self.value, NodeConst) and self.value.is_none())
-    #@+node:ekr.20141010141310.18996: *5* put
+    #@+node:ekr.20141010141310.18996: *5* put (NodeReturn)
     def put(self, can_split=False):
 
         self.line_init()
@@ -4838,7 +4838,7 @@ class NodeRightShift(NodeOprLeftAssoc):
     tag = 'RightShift'
 
     #@+others
-    #@+node:ekr.20141010141310.18999: *5* __init__
+    #@+node:ekr.20141010141310.18999: *5* __init__ (NodeRightShift)
     def __init__(
         self,
         indent,
@@ -4851,7 +4851,7 @@ class NodeRightShift(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.19000: *5* put
+    #@+node:ekr.20141010141310.19000: *5* put (NodeRightShift)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -4874,7 +4874,7 @@ class NodeSlice(NodeOpr):
     tag = 'Slice'
 
     #@+others
-    #@+node:ekr.20141010141310.19003: *5* __init__
+    #@+node:ekr.20141010141310.19003: *5* __init__ (NodeSlice)
     def __init__(
         self,
         indent,
@@ -4949,7 +4949,7 @@ class NodeSliceobj(Node):
     tag = 'Sliceobj'
 
     #@+others
-    #@+node:ekr.20141010141310.19009: *5* __init__
+    #@+node:ekr.20141010141310.19009: *5* __init__ (NodeSliceobj)
     def __init__(
         self,
         indent,
@@ -4965,7 +4965,7 @@ class NodeSliceobj(Node):
 
         return not (node is None or isinstance(node, NodeConst)
                     and node.is_none())
-    #@+node:ekr.20141010141310.19011: *5* put
+    #@+node:ekr.20141010141310.19011: *5* put (NodeSliceObj)
     def put(self, can_split=False):
 
         for node in self.nodes[:1]:
@@ -4995,7 +4995,7 @@ class NodeStmt(Node):
     tag = 'Stmt'
 
     #@+others
-    #@+node:ekr.20141010141310.19014: *5* __init__
+    #@+node:ekr.20141010141310.19014: *5* __init__ (NodeStmt)
     def __init__(
         self,
         indent,
@@ -5006,7 +5006,7 @@ class NodeStmt(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.19015: *5* put
+    #@+node:ekr.20141010141310.19015: *5* put (NodeStmt)
     def put(self, can_split=False):
 
         for node in self.nodes:
@@ -5039,7 +5039,7 @@ class NodeSub(NodeOprLeftAssoc):
     tag = 'Sub'
 
     #@+others
-    #@+node:ekr.20141010141310.19019: *5* __init__
+    #@+node:ekr.20141010141310.19019: *5* __init__ (NodeSub)
     def __init__(
         self,
         indent,
@@ -5052,7 +5052,7 @@ class NodeSub(NodeOprLeftAssoc):
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
         return
-    #@+node:ekr.20141010141310.19020: *5* put
+    #@+node:ekr.20141010141310.19020: *5* put (NodeSub)
     def put(self, can_split=False):
 
         self.put_expr(self.left, can_split=can_split, pos='left')
@@ -5075,7 +5075,7 @@ class NodeSubscript(NodeOpr):
     tag = 'Subscript'
 
     #@+others
-    #@+node:ekr.20141010141310.19023: *5* __init__
+    #@+node:ekr.20141010141310.19023: *5* __init__ (NodeSubscript)
     def __init__(
         self,
         indent,
@@ -5139,7 +5139,7 @@ class NodeTryExcept(Node):
     tag = 'TryExcept'
 
     #@+others
-    #@+node:ekr.20141010141310.19028: *5* __init__
+    #@+node:ekr.20141010141310.19028: *5* __init__ (NodeTryExcept)
     def __init__(
         self,
         indent,
@@ -5157,7 +5157,7 @@ class NodeTryExcept(Node):
         self.else_ = transform(indent + 1, lineno, else_)
         self.has_finally = False
         return
-    #@+node:ekr.20141010141310.19029: *5* put
+    #@+node:ekr.20141010141310.19029: *5* put (NodeTryExcept)
     def put(self, can_split=False):
 
         if self.has_finally:
@@ -5214,7 +5214,7 @@ class NodeTryFinally(Node):
     tag = 'TryFinally'
 
     #@+others
-    #@+node:ekr.20141010141310.19032: *5* __init__
+    #@+node:ekr.20141010141310.19032: *5* __init__ (NodeTryFinally)
     def __init__(
         self,
         indent,
@@ -5231,7 +5231,7 @@ class NodeTryFinally(Node):
             self.body = transform(indent + 1, lineno, body)
         self.final = transform(indent + 1, lineno, final)
         return
-    #@+node:ekr.20141010141310.19033: *5* put
+    #@+node:ekr.20141010141310.19033: *5* put (NodeTryFinally)
     def put(self, can_split=False):
 
         self.line_init()
@@ -5260,7 +5260,7 @@ class NodeTuple(Node):
     tag = 'Tuple'
 
     #@+others
-    #@+node:ekr.20141010141310.19036: *5* __init__
+    #@+node:ekr.20141010141310.19036: *5* __init__ (NodeTuple)
     def __init__(
         self,
         indent,
@@ -5271,7 +5271,7 @@ class NodeTuple(Node):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-    #@+node:ekr.20141010141310.19037: *5* put
+    #@+node:ekr.20141010141310.19037: *5* put (NodeTuple)
     def put(self, can_split=False, is_paren_required=True):
 
         # pylint: disable=arguments-differ
@@ -5331,7 +5331,7 @@ class NodeUnaryAdd(NodeOpr):
     tag = 'UnaryAdd'
 
     #@+others
-    #@+node:ekr.20141010141310.19040: *5* __init__
+    #@+node:ekr.20141010141310.19040: *5* __init__ (NodeUnaryAdd)
     def __init__(
         self,
         indent,
@@ -5342,7 +5342,7 @@ class NodeUnaryAdd(NodeOpr):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.19041: *5* put
+    #@+node:ekr.20141010141310.19041: *5* put (NodeUnaryAdd)
     def put(self, can_split=False):
 
         self.line_more('+')
@@ -5363,7 +5363,7 @@ class NodeUnarySub(NodeOpr):
     tag = 'UnarySub'
 
     #@+others
-    #@+node:ekr.20141010141310.19044: *5* __init__
+    #@+node:ekr.20141010141310.19044: *5* __init__ (NodeUnarySub)
     def __init__(
         self,
         indent,
@@ -5374,7 +5374,7 @@ class NodeUnarySub(NodeOpr):
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-    #@+node:ekr.20141010141310.19045: *5* put
+    #@+node:ekr.20141010141310.19045: *5* put (NodeUnarySub)
     def put(self, can_split=False):
 
         self.line_more('-')
@@ -5395,7 +5395,7 @@ class NodeWhile(Node):
     tag = 'While'
 
     #@+others
-    #@+node:ekr.20141010141310.19048: *5* __init__
+    #@+node:ekr.20141010141310.19048: *5* __init__ (NodeWhile)
     def __init__(
         self,
         indent,
@@ -5410,7 +5410,7 @@ class NodeWhile(Node):
         self.body = transform(indent + 1, lineno, body)
         self.else_ = transform(indent + 1, lineno, else_)
         return
-    #@+node:ekr.20141010141310.19049: *5* put
+    #@+node:ekr.20141010141310.19049: *5* put (NodeWhile)
     def put(self, can_split=False):
 
         self.line_init()
@@ -5451,7 +5451,7 @@ class NodeWith(Node):
     tag = 'With'
 
     #@+others
-    #@+node:ekr.20141010141310.19053: *5* __init__
+    #@+node:ekr.20141010141310.19053: *5* __init__ (NodeWith)
     def __init__(
         self,
         indent,
@@ -5466,7 +5466,7 @@ class NodeWith(Node):
         self.vars = transform(indent, lineno, vars)
         self.body = transform(indent + 1, lineno, body)
         return
-    #@+node:ekr.20141010141310.19054: *5* put
+    #@+node:ekr.20141010141310.19054: *5* put (NodeWith)
     def put(self, can_split=False):
 
         self.line_init()
@@ -5510,7 +5510,7 @@ class NodeYield(Node):
     tag = 'Yield'
 
     #@+others
-    #@+node:ekr.20141010141310.19058: *5* __init__
+    #@+node:ekr.20141010141310.19058: *5* __init__ (NodeYield)
     def __init__(
         self,
         indent,
@@ -5521,7 +5521,7 @@ class NodeYield(Node):
         Node.__init__(self, indent, lineno)
         self.value = transform(indent, lineno, value)
         return
-    #@+node:ekr.20141010141310.19059: *5* put
+    #@+node:ekr.20141010141310.19059: *5* put (NodeYield)
     def put(self, can_split=False):
 
         self.line_more('yield ')
@@ -5866,6 +5866,7 @@ def transform(indent, lineno, node):
         result = NodeInt(indent, lineno, node)
     else:
         result = node
+    # g.trace(node,result)
     return result
 #@-others
 #@@language python
