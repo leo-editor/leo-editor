@@ -11,6 +11,7 @@ import leo.core.leoGlobals as g
 
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 
+import functools
 import re
 import string
 #@-<< imports >>
@@ -499,7 +500,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # Bug fix: remove s itself, otherwise we can not extend beyond it.
         if word in aList and len(aList) > 1:
             aList.remove(word)
-        prefix = reduce(g.longestCommonPrefix,aList)
+        prefix = functools.reduce(g.longestCommonPrefix,aList)
         if prefix.strip():
             ypos = w.getYScrollPosition()
             b = c.undoer.beforeChangeNodeContents(p,oldYScroll=ypos)
@@ -539,7 +540,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
         if word in aList and len(aList) > 1:
             aList.remove(word)
-        prefix = reduce(g.longestCommonPrefix,aList)
+        prefix = functools.reduce(g.longestCommonPrefix,aList)
         prefix = prefix.strip()
         if trace: g.trace(word,prefix,aList)
         self.dynamicExpandHelper(event,prefix,aList,w)
