@@ -4573,22 +4573,12 @@ class Commands (object):
                 return
             tag1,tag2 = '@others','# (TIDY) @others'
             s1 = p.b.replace(tag1,tag2)
-            # refs = []
-            # for line in g.splitLines(s1):
-                # i = line.find('<<')
-                # j = line.find('>>')
-                # if -1 < i < j:
-                    # ref = line[i:j]
-                    # refs.append(ref)
-                    # ref2 = ref.replace('<<','# < <')
-                    # s1 = s1.replace(ref,ref2)
             try:
-                # s1e = g.toEncodedString(s1)
                 t1 = ast.parse(s1,filename='s1',mode='exec')
                 d1 = ast.dump(t1,annotate_fields=False)
             except SyntaxError:
                 d1 = None
-            file_in = g.fileLikeObject(fromString=s1) ### s1e)
+            file_in = g.fileLikeObject(fromString=s1)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
             try:
