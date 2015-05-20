@@ -119,7 +119,7 @@ Collaborative International Dictionary of English v.0.48.
 
 '''
 #@-<< docstring >>
-from __future__ import division
+
 VERSION = '1.23.1'
     # EKR: based on version 1.23, 2012 May 23
     # http://lacusveris.com/PythonTidy/PythonTidy-1.23.python
@@ -141,7 +141,9 @@ if 1:  # DEBUG can be set later.
     import doctest
 import tokenize
 if g.isPython3:
-    pass # Use the compile builtin.
+    # This module does not work with Python 3.x.
+    pass
+    # import ast
 else:
     import compiler
 #@-<< imports >>
@@ -840,7 +842,7 @@ class InputUnit(object):
     """
 
     #@+others
-    #@+node:ekr.20141010141310.18649: *4* __init__
+    #@+node:ekr.20141010141310.18649: *4* iu.__init__
     def __init__(self, file_in):
 
         object.__init__(self)
@@ -868,28 +870,40 @@ class InputUnit(object):
             self.coding = match.group(1)
         self.rewind()
         return
-    #@+node:ekr.20141010141310.18650: *4* rewind
+    #@+node:ekr.20141010141310.18650: *4* iu.rewind
     def rewind(self):
 
         self.ndx = 0
         self.end = len(self.lines) - 1
         return self
-    #@+node:ekr.20141010141310.18651: *4* next
-    def next(self):
-
-        if self.ndx > self.end:
-            raise StopIteration
-        elif self.ndx == self.end:
-            result = self.lines[self.ndx]
-        else:
-            result = self.lines[self.ndx] + '\n'
-        self.ndx += 2
-        return result
-    #@+node:ekr.20141010141310.18652: *4* __iter__
+    #@+node:ekr.20141010141310.18651: *4* iu.next (should be __next__ for Python3)
+    if g.isPython3:
+        def __next__(self):
+        
+            if self.ndx > self.end:
+                raise StopIteration
+            elif self.ndx == self.end:
+                result = self.lines[self.ndx]
+            else:
+                result = self.lines[self.ndx] + '\n'
+            self.ndx += 2
+            return result
+    else:
+        def next(self):
+        
+            if self.ndx > self.end:
+                raise StopIteration
+            elif self.ndx == self.end:
+                result = self.lines[self.ndx]
+            else:
+                result = self.lines[self.ndx] + '\n'
+            self.ndx += 2
+            return result
+    #@+node:ekr.20141010141310.18652: *4* iu.__iter__
     def __iter__(self):
 
         return self
-    #@+node:ekr.20141010141310.18653: *4* readline
+    #@+node:ekr.20141010141310.18653: *4* iu.readline
     def readline(self):
 
         try:
@@ -897,12 +911,12 @@ class InputUnit(object):
         except StopIteration:
             result = ''
         return result
-    #@+node:ekr.20141010141310.18654: *4* readlines
+    #@+node:ekr.20141010141310.18654: *4* iu.readlines
     def readlines(self):
 
         self.rewind()
         return [line for line in self]
-    #@+node:ekr.20141010141310.18655: *4* __str__
+    #@+node:ekr.20141010141310.18655: *4* iu.__str__
     def __str__(self):
 
         result = self.readlines()
@@ -915,7 +929,7 @@ class InputUnit(object):
             last_line += '\n'
             result[-1] = last_line
         return ''.join(result)
-    #@+node:ekr.20141010141310.18656: *4* decode
+    #@+node:ekr.20141010141310.18656: *4* iu.decode
     def decode(self, str):
 
         return str  # It will not do to feed Unicode to *compiler.parse*.
@@ -1254,13 +1268,13 @@ class Comments(dict):
         lines = merge_concatenated_strings(lines)
         for token_type, token_string, start, end, line in lines:
             if False and DEBUG:
-                print (token.tok_name[token_type], token_string, start, end,
-                       line)
+                print((token.tok_name[token_type], token_string, start, end,
+                       line))
             self.max_lineno, scol = start
             erow, ecol = end
             if token_type in [tokenize.COMMENT, tokenize.NL]:
                 original = token_string
-                original = original.decode(INPUT.coding)
+                ### original = original.decode(INPUT.coding)
                 original = original.replace('\t', DOC_TAB_REPLACEMENT)
                 original = original.strip()
                 if SHEBANG_PATTERN.match(original) is not None:
@@ -1826,7 +1840,7 @@ class NodeStr(Node):
             self.str = g.toEncodedString(str_)
         else:
             self.str = str_
-            if isinstance(self.str, unicode):
+            if isinstance(self.str, str):
                 pass
             elif not RECODE_STRINGS:
                 pass
@@ -5560,13 +5574,16 @@ def tidy_up(
     OUTPUT = OutputUnit(file_out)
     COMMENTS = Comments(is_module)
     NAME_SPACE = NameSpace()
-    if g.isPython3:
-        module = parse(INPUT)
-    else:
-        module = compiler.parse(str(INPUT))
+    ###
+    # if g.isPython3:
+        # module = ast.parse(str(INPUT))
+    # else:
+        # module = compiler.parse(str(INPUT))
+    module = compiler.parse(str(INPUT))
     module = transform(indent=0, lineno=0, node=module)
     INPUT_CODING = INPUT.coding
     del INPUT
+    # g.trace('push_scope',getattr(module,'push_scope',None))
     module.push_scope().marshal_names().put().pop_scope()
     COMMENTS.merge(fin=True)
     OUTPUT.close()
@@ -5634,10 +5651,7 @@ def transform(indent, lineno, node):
         Python version.
 
         """
-        if g.isPython3:
-            class_ = None ###
-        else:
-            class_ = getattr(compiler.ast, class_name, None)
+        class_ = getattr(compiler.ast, class_name, None)
         
         if class_ is None:
             result = False
@@ -5846,7 +5860,7 @@ def transform(indent, lineno, node):
         result = NodeWith(indent, lineno, node.expr, node.vars, node.body)
     elif isinstance_(node, 'Yield'):
         result = NodeYield(indent, lineno, node.value)
-    elif isinstance(node, basestring):
+    elif isinstance(node, str):
         result = NodeStr(indent, lineno, node)
     elif isinstance(node, int):
         result = NodeInt(indent, lineno, node)

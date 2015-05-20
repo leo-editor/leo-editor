@@ -4162,17 +4162,16 @@ class Commands (object):
     @cmd('beautify-all')
     @cmd('pretty-print-all-python-code')
     def prettyPrintAllPythonCode (self,event=None,dump=False):
-
         '''Reformat all Python code in the outline to make it look more beautiful.'''
-
-        c = self ; pp = c.PythonPrettyPrinter(c)
-
+        c = self
+        if g.isPython3:
+            g.warning('PythonTidy does not work with Python 3.x')
+            return
+        pp = c.PythonPrettyPrinter(c)
         for p in c.all_unique_positions():
-
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
                 pp.prettyPrintNode(p,dump=dump)
-
         pp.endUndo()
     #@+node:ekr.20110917174948.6877: *6* beautify-c
     @cmd('beautify-c')
@@ -4210,6 +4209,9 @@ class Commands (object):
     def beautifyPythonTree (self,event=None,dump=False):
         '''Beautify all Python code in the selected outline.'''
         c = self
+        if g.isPython3:
+            g.warning('PythonTidy does not work with Python 3.x')
+            return
         pp = c.PythonPrettyPrinter(c)
         for p in c.p.self_and_subtree():
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
@@ -4554,6 +4556,9 @@ class Commands (object):
             '''Use PythonTidy to do the formatting.'''
             c = self.c
             trace = False and not g.unitTesting
+            if g.isPython3:
+                g.warning('PythonTidy does not work with Python 3.x')
+                return
             if p.b and not p.b.strip():
                 self.replaceBody(p,lines=None,s='')
                 return
@@ -4578,12 +4583,12 @@ class Commands (object):
                     # ref2 = ref.replace('<<','# < <')
                     # s1 = s1.replace(ref,ref2)
             try:
-                s1e = g.toEncodedString(s1)
+                # s1e = g.toEncodedString(s1)
                 t1 = ast.parse(s1,filename='s1',mode='exec')
                 d1 = ast.dump(t1,annotate_fields=False)
             except SyntaxError:
                 d1 = None
-            file_in = g.fileLikeObject(fromString=s1e)
+            file_in = g.fileLikeObject(fromString=s1) ### s1e)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
             try:
