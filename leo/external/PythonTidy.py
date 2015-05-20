@@ -137,7 +137,7 @@ import codecs
 # import StringIO
 import re
 import textwrap
-if DEBUG:
+if 1: # DEBUG can be set later.
     import token
     import doctest
 import tokenize
@@ -612,42 +612,42 @@ SUBSTITUTE_FOR = {
 #@-<< data >>
 #@+<< preferences >>
 #@+node:ekr.20141010141310.19073: ** << preferences >>
-KEEP_BLANK_LINES = True
 ADD_BLANK_LINES_AROUND_COMMENTS = True
+BLANK_LINE_AFTER_DOCSTRING = False
+BLANK_LINE_AFTER_FUNCTION_DEF = True
+CAN_SPLIT_STRINGS = False
+DOC_TAB_REPLACEMENT = '....'
+DOUBLE_QUOTED_STRINGS = False
+JAVA_STYLE_LIST_DEDENT = False
+KEEP_BLANK_LINES = True
+KEEP_UNASSIGNED_CONSTANTS = False
+LEFTJUST_DOC_STRINGS = False
+LEFT_MARGIN = ''
+LEO_CALL_CONTINUATION = False # Leo 5.2
+MAX_LINES_BEFORE_SPLIT_LIT = 2
+MAX_SEPS_DICT = 3
 MAX_SEPS_FUNC_DEF = 3
 MAX_SEPS_FUNC_REF = 5
 MAX_SEPS_SERIES = 5
-MAX_SEPS_DICT = 3
-MAX_LINES_BEFORE_SPLIT_LIT = 2
-LEFT_MARGIN = ''
-LEFTJUST_DOC_STRINGS = False
-WRAP_DOC_STRINGS = False
-DOUBLE_QUOTED_STRINGS = False
-SINGLE_QUOTED_STRINGS = False
-RECODE_STRINGS = False
 OVERRIDE_NEWLINE = None
-CAN_SPLIT_STRINGS = False
-DOC_TAB_REPLACEMENT = '....'
-KEEP_UNASSIGNED_CONSTANTS = False
 PARENTHESIZE_TUPLE_DISPLAY = True
-JAVA_STYLE_LIST_DEDENT = False
-
-# New in Leo 5.2
-SPACES_AFTER_DOCSTRING = True
-LEO_CALL_CONTINUATION = False
+RECODE_STRINGS = False
+SINGLE_QUOTED_STRINGS = False
+SPACES_AFTER_DOCSTRING = True # Leo 5.2
+WRAP_DOC_STRINGS = False
 
 # Author's preferences:
 
-if PERSONAL:
-    LEFTJUST_DOC_STRINGS = True
-    LOCAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore])
-    GLOBAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore, 
-                              all_upper_case])
-    CLASS_NAME_SCRIPT.extend([elide_c, underscore_to_camel_case])
-    FUNCTION_NAME_SCRIPT.extend([camel_case_to_underscore])
-    FORMAL_PARAM_NAME_SCRIPT.extend([elide_a, camel_case_to_underscore])
-    ATTR_NAME_SCRIPT.extend([elide_f, camel_case_to_underscore, 
-                            substitutions])
+# if PERSONAL:
+    # LEFTJUST_DOC_STRINGS = True
+    # LOCAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore])
+    # GLOBAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore, 
+                              # all_upper_case])
+    # CLASS_NAME_SCRIPT.extend([elide_c, underscore_to_camel_case])
+    # FUNCTION_NAME_SCRIPT.extend([camel_case_to_underscore])
+    # FORMAL_PARAM_NAME_SCRIPT.extend([elide_a, camel_case_to_underscore])
+    # ATTR_NAME_SCRIPT.extend([elide_f, camel_case_to_underscore, 
+                            # substitutions])
 #@-<< preferences >>
 #@+others
 #@+node:ekr.20141010141310.18629: ** Name-transformation functions:
@@ -866,7 +866,7 @@ def leftjust_lines(lines):
 
     result = [line.strip() for line in lines]
     return result
-#@+node:ekr.20141010141310.19063: ** classes
+#@+node:ekr.20141010141310.19063: ** classes (PythonTidy)
 #@+node:ekr.20141010141310.18648: *3* class InputUnit
 class InputUnit(object):
 
@@ -962,7 +962,7 @@ class OutputUnit(object):
 
     """
     #@+others
-    #@+node:ekr.20141010141310.18658: *4* __init__
+    #@+node:ekr.20141010141310.18658: *4* ou.__init__
 
     def __init__(self, file_out):
         object.__init__(self)
@@ -979,7 +979,7 @@ class OutputUnit(object):
         self.chunks = None
         return
 
-    #@+node:ekr.20141010141310.18659: *4* close
+    #@+node:ekr.20141010141310.18659: *4* ou.close
     def close(self):
         self.unit.write(self.buffer)
         if self.is_file_like:
@@ -988,11 +988,11 @@ class OutputUnit(object):
             self.unit.close()
         return self
 
-    #@+node:ekr.20141010141310.18660: *4* line_init
+    #@+node:ekr.20141010141310.18660: *4* ou.line_init
     def line_init(self, indent=0, lineno=0):
         self.blank_line_count = 0
         self.col = 0
-        if DEBUG:
+        if False and DEBUG:
             margin = '%5i %s' % (lineno, INDENTATION * indent)
         else:
             margin = self.margin + INDENTATION * indent
@@ -1001,8 +1001,7 @@ class OutputUnit(object):
         self.chunks = []
         self.line_more(margin)
         return self
-
-    #@+node:ekr.20141010141310.18661: *4* line_more (OutputUnit)
+    #@+node:ekr.20141010141310.18661: *4* ou.line_more
     def line_more(
         self,
         chunk='',
@@ -1024,7 +1023,7 @@ class OutputUnit(object):
         self.col += len(chunk)
         return self
 
-    #@+node:ekr.20141010141310.18662: *4* line_term (OutputUnit)
+    #@+node:ekr.20141010141310.18662: *4* ou.line_term
     def line_term(self, pause=False):
 
         def is_split_needed(cumulative_width):
@@ -1113,19 +1112,19 @@ class OutputUnit(object):
             self.put(self.newline)
         return self
 
-    #@+node:ekr.20141010141310.18663: *4* line_split (OutputUnit)
+    #@+node:ekr.20141010141310.18663: *4* ou.line_split
     def line_split(self):
         self.put(self.newline)
         self.pos = self.tab_forward()
         return self
 
-    #@+node:ekr.20141010141310.18664: *4* line_break (OutputUnit)
+    #@+node:ekr.20141010141310.18664: *4* ou.line_break
     def line_break(self):
         self.put('\\%s' % self.newline)
         self.pos = self.tab_forward()
         return self
 
-    #@+node:ekr.20141010141310.18665: *4* tab_forward
+    #@+node:ekr.20141010141310.18665: *4* ou.tab_forward
     def tab_forward(self):
         
         if LEO_CALL_CONTINUATION:
@@ -1137,29 +1136,30 @@ class OutputUnit(object):
         self.put(' ' * col)
         # g.trace(col,self.tab_stack,g.callers(3))
         return col
-    #@+node:ekr.20141010141310.18666: *4* put
+    #@+node:ekr.20141010141310.18666: *4* ou.put
     def put(self, text):
+        # g.trace('(OutputUnit)',repr(text),g.callers())
         self.lineno += text.count(self.newline)
         self.buffer += text
+        if DEBUG:
+            g.trace('(OU) %25s %s' % (
+                g.callers(2),repr(g.toUnicode(self.buffer))))
         if self.buffer.endswith('\n') or self.buffer.endswith('\r'):
             self.unit.write(self.buffer.rstrip())
             self.unit.write(self.newline)
             self.buffer = ''
         return self
-
-    #@+node:ekr.20141010141310.18667: *4* put_blank_line
+    #@+node:ekr.20141010141310.18667: *4* ou.put_blank_line
     def put_blank_line(self, trace, count=1):
         count -= self.blank_line_count
         while count > 0:
             self.put(BLANK_LINE)
             self.put(self.newline)
-            if DEBUG:
-                self.put('blank(%s)' % str(trace))
+            # g.trace(trace,g.callers())
             self.blank_line_count += 1
             count -= 1
         return self
-
-    #@+node:ekr.20141010141310.18668: *4* tab_set
+    #@+node:ekr.20141010141310.18668: *4* ou.tab_set
     def tab_set(self, col):
         if col > COL_LIMIT / 2:
             if self.tab_stack:
@@ -1170,7 +1170,7 @@ class OutputUnit(object):
         # g.trace(col,g.callers(2))
         return self
 
-    #@+node:ekr.20141010141310.18669: *4* tab_clear
+    #@+node:ekr.20141010141310.18669: *4* ou.tab_clear
     def tab_clear(self):
         if len(self.tab_stack) > 1:
             result = self.tab_stack.pop()
@@ -1178,12 +1178,12 @@ class OutputUnit(object):
             result = None
         return result
 
-    #@+node:ekr.20141010141310.18670: *4* inc_margin
+    #@+node:ekr.20141010141310.18670: *4* ou.inc_margin
     def inc_margin(self):
         self.margin += INDENTATION
         return self
 
-    #@+node:ekr.20141010141310.18671: *4* dec_margin
+    #@+node:ekr.20141010141310.18671: *4* ou.dec_margin
     def dec_margin(self):
         self.margin = (self.margin)[:-len(INDENTATION)]
         return self
@@ -1198,7 +1198,7 @@ class Comments(dict):
 
     """
     #@+others
-    #@+node:ekr.20141010141310.18673: *4* __init__
+    #@+node:ekr.20141010141310.18673: *4* comments.__init__
     def __init__(self,is_module):
 
         def quote_original(token_type, original):
@@ -1293,7 +1293,7 @@ class Comments(dict):
         lines = tokenize.generate_tokens(INPUT.readline)
         lines = merge_concatenated_strings(lines)
         for (token_type, token_string, start, end, line) in lines:
-            if DEBUG:
+            if False and DEBUG:
                 print (token.tok_name[token_type], token_string, start, end, line)
             (self.max_lineno, scol) = start
             (erow, ecol) = end
@@ -1339,7 +1339,7 @@ class Comments(dict):
         if is_module:
             self[self.prev_lineno] = (-1, SHEBANG)
             self[-1] = (-1, CODING_SPEC)
-    #@+node:ekr.20141010141310.18674: *4* merge
+    #@+node:ekr.20141010141310.18674: *4* comments.merge
     def merge(self, lineno=None, fin=False):
 
         def is_blank():
@@ -1374,6 +1374,7 @@ class Comments(dict):
 
         if fin:
             lineno = self.max_lineno + 1
+        # g.trace('(Comments)','fin',fin,lineno,g.callers())
         on1 = True
         text = []
         while self.prev_lineno < lineno:
@@ -1434,7 +1435,7 @@ class Comments(dict):
             OUTPUT.put_blank_line(3)
         return self
 
-    #@+node:ekr.20141010141310.18675: *4* put_inline
+    #@+node:ekr.20141010141310.18675: *4* comments.put_inline
     def put_inline(self, lineno):
 
         def margin(scol):
@@ -1444,7 +1445,8 @@ class Comments(dict):
         def new_line():
             OUTPUT.put(OUTPUT.newline)
             return
-
+            
+        # g.trace('(Comments)',lineno,g.callers())
         text = []
         while self.prev_lineno <= lineno:
             if self.prev_lineno in self:
@@ -1646,16 +1648,17 @@ class Node(object):
     tag = 'Generic node'
 
     #@+others
-    #@+node:ekr.20141010141310.18698: *5* __init__
+    #@+node:ekr.20141010141310.18698: *5* node.__init__
     def __init__(self, indent, lineno):
+        '''Ctor for the Node class.'''
         object.__init__(self)
         self.indent = indent
         self.lineno = lineno
-        if DEBUG:
+        if False and DEBUG:
             sys.stderr.write('%5i %s\n' % (self.lineno, self.tag))
         return 
 
-    #@+node:ekr.20141010141310.18699: *5* line_init
+    #@+node:ekr.20141010141310.18699: *5* node.line_init
     def line_init(self, need_blank_line=0):
         if COMMENTS.prev_lineno > 0:
             OUTPUT.put_blank_line(41, count=need_blank_line)
@@ -1665,7 +1668,7 @@ class Node(object):
         OUTPUT.line_init(self.indent, self.get_lineno())
         return self
 
-    #@+node:ekr.20141010141310.18700: *5* line_more (Node)
+    #@+node:ekr.20141010141310.18700: *5* node.line_more
     def line_more(
         self,
         chunk='',
@@ -1685,13 +1688,13 @@ class Node(object):
             )
         return self
 
-    #@+node:ekr.20141010141310.18701: *5* line_term
+    #@+node:ekr.20141010141310.18701: *5* node.line_term
     def line_term(self, lineno=0):
         lineno = max(self.get_hi_lineno(), self.get_lineno())  # , lineno)
         COMMENTS.put_inline(lineno)
         return self
 
-    #@+node:ekr.20141010141310.18702: *5* put
+    #@+node:ekr.20141010141310.18702: *5* node.put
     def put(self, can_split=False):
         '''Place self on output.
 
@@ -1706,29 +1709,29 @@ class Node(object):
         self.line_more(' /* %s at line %i */ ' % (self.tag, self.get_lineno()))
         return self
 
-    #@+node:ekr.20141010141310.18703: *5* get_lineno
+    #@+node:ekr.20141010141310.18703: *5* node.get_lineno
     def get_lineno(self):
         return self.lineno
 
-    #@+node:ekr.20141010141310.18704: *5* get_hi_lineno
+    #@+node:ekr.20141010141310.18704: *5* node.get_hi_lineno
     def get_hi_lineno(self):
         return self.get_lineno()
 
-    #@+node:ekr.20141010141310.18705: *5* inc_margin
+    #@+node:ekr.20141010141310.18705: *5* node.inc_margin
     def inc_margin(self):
         OUTPUT.inc_margin()
         return self
 
-    #@+node:ekr.20141010141310.18706: *5* dec_margin
+    #@+node:ekr.20141010141310.18706: *5* node.dec_margin
     def dec_margin(self):
         OUTPUT.dec_margin()
         return self
 
-    #@+node:ekr.20141010141310.18707: *5* marshal_names
+    #@+node:ekr.20141010141310.18707: *5* node.marshal_names
     def marshal_names(self):
         return self
 
-    #@+node:ekr.20141010141310.18708: *5* make_local_name
+    #@+node:ekr.20141010141310.18708: *5* node.make_local_name
     def make_local_name(self):
         return self
 
@@ -1911,7 +1914,8 @@ class NodeStr(Node):
         doc = fix_newlines(doc)
         self.put_multi_line(doc)
         self.line_term()
-        ### OUTPUT.put_blank_line(5)
+        if BLANK_LINE_AFTER_DOCSTRING:
+            OUTPUT.put_blank_line(5)
         return self
 
     #@+node:ekr.20141010141310.18726: *5* put_lit
@@ -2059,7 +2063,7 @@ class NodeAsgAttr(NodeOpr):
         self.flags = transform(indent, lineno, flags)
         return 
 
-    #@+node:ekr.20141010141310.18742: *5* put
+    #@+node:ekr.20141010141310.18742: *5* put (NodeAsgAttr)
     def put(self, can_split=False):
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
@@ -2076,7 +2080,7 @@ class NodeAsgAttr(NodeOpr):
             self.put_expr(self.expr, can_split=can_split)
         self.line_more('.')
         self.line_more(NAME_SPACE.make_attr_name(self.expr, self.attrname))
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* AsgAttr flags:  ')
             self.flags.put()
             self.line_more(' */ ')
@@ -2164,14 +2168,14 @@ class NodeAsgName(Node):
         self.flags = transform(indent, lineno, flags)
         return 
 
-    #@+node:ekr.20141010141310.18751: *5* put
+    #@+node:ekr.20141010141310.18751: *5* put (NodeAsgName)
     def put(self, can_split=False):
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
             self.line_init()
             self.line_more('del ')
         self.line_more(NAME_SPACE.get_name(self.name))
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* AsgName flags:  ')
             self.flags.put()
             self.line_more(' */ ')
@@ -3366,7 +3370,7 @@ class NodeFunction(Node):
                 self.put_parm(arg, default, stars)
                 if stars is None:
                     self.line_more(FUNCTION_PARAM_SEP)
-                self.line_term()
+                self.line_term() # EKR
             if JAVA_STYLE_LIST_DEDENT:
                 self.dec_margin()
                 self.line_init()
@@ -3380,18 +3384,22 @@ class NodeFunction(Node):
                 self.line_more(FUNCTION_PARAM_SEP, can_split_after=True)
                 self.put_parm(arg, default, stars)
         self.line_more('):', tab_clear=True)
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* Function flags:  ')
             self.flags.put()
             self.line_more(' */ ')
         self.line_term(self.code.get_lineno() - 1)
         if self.doc is None:
-            pass
+            if BLANK_LINE_AFTER_FUNCTION_DEF:
+                OUTPUT.put_blank_line(8)
         else:
             self.doc.put_doc()
         self.code.put()
         self.pop_scope()
-        OUTPUT.put_blank_line(8, count=spacing)
+        # g.trace('(NodeFunction) 1')
+        COMMENTS.merge(fin=True) # EKR.  Better for Leo.
+        OUTPUT.put_blank_line(9, count=spacing)
+        # g.trace('(NodeFunction) 2')
         return self
 
     #@+node:ekr.20141010141310.18863: *5* push_scope
@@ -3433,7 +3441,7 @@ class NodeLambda(NodeFunction):
             )
         return
 
-    #@+node:ekr.20141010141310.18868: *5* put
+    #@+node:ekr.20141010141310.18868: *5* put (NodeLambda)
     def put(self, can_split=False):
         self.line_more('lambda ')
         self.push_scope()
@@ -3446,7 +3454,7 @@ class NodeLambda(NodeFunction):
             self.line_more(FUNCTION_PARAM_SEP, can_break_after=True)
             self.put_parm(arg, default, stars, can_split=False)
         self.line_more(': ', can_break_after=True)
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* Function flags:  ')
             self.flags.put()
             self.line_more(' */ ')
@@ -4622,7 +4630,7 @@ class NodeSlice(NodeOpr):
     def has_value(self, node):
         return not (node is None or isinstance(node, NodeConst) and node.is_none())
 
-    #@+node:ekr.20141010141310.19005: *5* put
+    #@+node:ekr.20141010141310.19005: *5* put (NodeSlice)
     def put(self, can_split=False):
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
@@ -4640,7 +4648,7 @@ class NodeSlice(NodeOpr):
         if self.has_value(self.upper):
             self.upper.put(can_split=True)
         self.line_more(']')
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* Subscript flags:  ')
             self.flags.put()
             self.line_more(' */ ')
@@ -4796,7 +4804,7 @@ class NodeSubscript(NodeOpr):
         self.subs = [transform(indent, lineno, sub) for sub in subs]
         return 
 
-    #@+node:ekr.20141010141310.19024: *5* put
+    #@+node:ekr.20141010141310.19024: *5* put (NodeSubscript)
     def put(self, can_split=False):
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
@@ -4807,7 +4815,7 @@ class NodeSubscript(NodeOpr):
             self.expr.put(can_split=can_split)
         else:
             self.put_expr(self.expr, can_split=can_split)
-        if DEBUG:
+        if False and DEBUG:
             self.line_more(' /* Subscript flags:  ')
             self.flags.put()
             self.line_more(' */ ')
@@ -5251,10 +5259,13 @@ def set_prefs(c):
     '''Set preferences from Leo configuration, if possible.'''
     trace = False and not g.unitTesting
     global ADD_BLANK_LINES_AROUND_COMMENTS
-    global COL_LIMIT
+    global BLANK_LINE_AFTER_DOCSTRING # New
+    global BLANK_LINE_AFTER_FUNCTION_DEF # New
+    global COL_LIMIT # Existing, but now can be over-ridden.
+    global DEBUG
     global DOUBLE_QUOTED_STRINGS
     global KEEP_BLANK_LINES
-    global LEO_CALL_CONTINUATION
+    global LEO_CALL_CONTINUATION # New
     global LEFTJUST_DOC_STRINGS
     global MAX_LINES_BEFORE_SPLIT_LIT
     global MAX_SEPS_FUNC_DEF
@@ -5282,17 +5293,21 @@ def set_prefs(c):
         'tidy_keep_unassigned_constants',default=False)
     PARENTHESIZE_TUPLE_DISPLAY = getBool(
         'tidy_parenthesized_tuple_display',default=True)
-    # New in Leo 5.2:
+    # EKR: New in Leo 5.2:
     LEO_CALL_CONTINUATION = getBool(
         'tidy_leo_call_continuation',default=False)
+    DEBUG = getBool(
+        'tidy_debug',default=False)
     MAX_SEPS_FUNC_DEF = getInt(
         'tidy_max_seps_func_def') or 20
     SPACES_AFTER_DOCSTRING = getBool(
         'tidy_spaces_after_docstring',default=False)
-    COL_LIMIT = getInt('tidy_col_limit') or 75
-    if trace:
-        g.trace('tidy_add_blank_lines_around_comments',ADD_BLANK_LINES_AROUND_COMMENTS)
-        g.trace('tidy_keep_blank_lines',KEEP_BLANK_LINES)
+    COL_LIMIT = getInt(
+        'tidy_col_limit') or 75
+    BLANK_LINE_AFTER_DOCSTRING = getBool(
+        'tidy_blank_line_after_docstring',default=False)
+    BLANK_LINE_AFTER_FUNCTION_DEF = getBool(
+        'tidy_blank_line_after_func_def',default=True)
 #@+node:ekr.20141010141310.18696: *3* transform
 def transform(indent, lineno, node):
     """Convert the nodes in the abstract syntax tree returned by the

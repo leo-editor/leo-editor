@@ -4531,6 +4531,8 @@ class Commands (object):
             '''Ctor for PythonPrettyPrinter class.'''
             self.c = c
             self.changed = False
+            self.debug = c.config.getBool('tidy_debug',default=False)
+            if self.debug: print('tidy DEBUG')
             self.n = 0
                 # The number of nodes actually change.
 
@@ -4548,12 +4550,6 @@ class Commands (object):
             '''Pretty print a single node.'''
             if p.b:
                 self.python_tidy(p)
-                ### 
-                # c = self.c
-                # if c.config.getBool('use_python_tidy',default=True):
-                    # self.python_tidy(p)
-                # else:
-                    # self.token_tidy(p,dump)
         #@+node:ekr.20141010071140.18268: *7* ppp.python_tidy
         def python_tidy(self,p):
             '''Use PythonTidy to do the formatting.'''
@@ -4580,7 +4576,7 @@ class Commands (object):
                     d2 = ast.dump(t1,annotate_fields=False)
                 except SyntaxError:
                     d2 = None
-                if d1 == d2:
+                if d1 == d2 or self.debug:
                     self.replaceBody(p,lines=None,s=s)
                 else:
                     g.warning('PythonTydy error in',p.h)
