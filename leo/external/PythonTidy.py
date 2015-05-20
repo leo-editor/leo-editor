@@ -140,7 +140,10 @@ if 1:  # DEBUG can be set later.
     import token
     import doctest
 import tokenize
-import compiler
+if g.isPython3:
+    pass # Use the compile builtin.
+else:
+    import compiler
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20141010141310.19072: ** << version history >>
@@ -5519,9 +5522,9 @@ class NodeYield(Node):
 def main():
 
     if DEBUG:
-        print 'Begin doctests.'
+        print('Begin doctests.')
         doctest.testmod()
-        print '  End doctests.'
+        print('  End doctests.')
     if len(sys.argv) > 1:
         file_in = sys.argv[1]
     else:
@@ -5557,7 +5560,10 @@ def tidy_up(
     OUTPUT = OutputUnit(file_out)
     COMMENTS = Comments(is_module)
     NAME_SPACE = NameSpace()
-    module = compiler.parse(str(INPUT))
+    if g.isPython3:
+        module = parse(INPUT)
+    else:
+        module = compiler.parse(str(INPUT))
     module = transform(indent=0, lineno=0, node=module)
     INPUT_CODING = INPUT.coding
     del INPUT
@@ -5628,7 +5634,11 @@ def transform(indent, lineno, node):
         Python version.
 
         """
-        class_ = getattr(compiler.ast, class_name, None)
+        if g.isPython3:
+            class_ = None ###
+        else:
+            class_ = getattr(compiler.ast, class_name, None)
+        
         if class_ is None:
             result = False
         else:
