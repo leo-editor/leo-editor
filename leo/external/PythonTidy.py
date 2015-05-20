@@ -130,14 +130,13 @@ is_leo = True # Switch to suppress features not appropriate for Leo.
 #@+<< imports >>
 #@+node:ekr.20141010141310.19071: ** << imports >>
 import leo.core.leoGlobals as g
-
 import sys
 import os
 import codecs
 # import StringIO
 import re
 import textwrap
-if 1: # DEBUG can be set later.
+if 1:  # DEBUG can be set later.
     import token
     import doctest
 import tokenize
@@ -342,17 +341,14 @@ INPUT = None
 INPUT_CODING = None
 NAME_SPACE = None
 OUTPUT = None
-
 # Unpythonic...
 # ZERO = 0
 # SPACE = ' '
 # NULL = ''
 # NA = -1
 # APOST = "'"
-
 # Old code is parsed.  New code is generated from the parsed version,
 # using these literals:
-
 COL_LIMIT = 72
 INDENTATION = '    '
 ASSIGNMENT = ' = '
@@ -368,37 +364,28 @@ CODING = 'utf-8'
 CODING_SPEC = '# -*- coding: %s -*-' % CODING
 BOILERPLATE = ''
 BLANK_LINE = ''
-
 LOCAL_NAME_SCRIPT = []
 GLOBAL_NAME_SCRIPT = []
 CLASS_NAME_SCRIPT = []
 FUNCTION_NAME_SCRIPT = []
-
     # It is not wise to monkey with the
     # spelling of function names (methods)
     # where they are defined unless you are
     # willing to change their spelling where
     # they are referred to as class
     # attributes, too.
-
 FORMAL_PARAM_NAME_SCRIPT = []
-
     # It is not wise to monkey with the
     # spelling of formal parameters for fear
     # of changing those of functions
     # (methods) defined in other modules.
-
 ATTR_NAME_SCRIPT = []
-
     # It is not wise to monkey with the
     # spelling of attributes (methods) for
     # fear of changing those of classes
     # defined in other modules.
-
 # Other global constants:
-    
 # pylint: disable=anomalous-backslash-in-string
-
 UNDERSCORE_PATTERN = re.compile('(?<=[a-z])([A-Z])')
 COMMENT_PATTERN = re.compile('([^#]*?)#\s?')
 SHEBANG_PATTERN = re.compile('#!')
@@ -410,35 +397,34 @@ QUOTE_PATTERN = re.compile('([rRuU]{,2})((?:"{3})|(?:\'{3})|(?:")|(?:\'))')
 ELIDE_C_PATTERN = re.compile('^c([A-Z])')
 ELIDE_A_PATTERN = re.compile('^a([A-Z])')
 ELIDE_F_PATTERN = re.compile('^f([A-Z])')
-DOC_WRAPPER = textwrap.TextWrapper(
-#    width=COL_LIMIT,  #  2012 May 23
+DOC_WRAPPER = textwrap.TextWrapper(  #    width=COL_LIMIT,  #  2012 May 23
     expand_tabs=True,
     replace_whitespace=True,
     initial_indent='',
     subsequent_indent='',
     fix_sentence_endings=False,
     break_long_words=True,
-    )
+)
 SUBSTITUTE_FOR = {
-    'abday_1':'ABDAY_1',
-    'abday_2':'ABDAY_2',
-    'abday_3':'ABDAY_3',
-    'abday_4':'ABDAY_4',
-    'abday_5':'ABDAY_5',
-    'abday_6':'ABDAY_6',
-    'abday_7':'ABDAY_7',
-    'abmon_1':'ABMON_1',
-    'abmon_10':'ABMON_10',
-    'abmon_11':'ABMON_11',
-    'abmon_12':'ABMON_12',
-    'abmon_2':'ABMON_2',
-    'abmon_3':'ABMON_3',
-    'abmon_4':'ABMON_4',
-    'abmon_5':'ABMON_5',
-    'abmon_6':'ABMON_6',
-    'abmon_7':'ABMON_7',
-    'abmon_8':'ABMON_8',
-    'abmon_9':'ABMON_9',
+    'abday_1': 'ABDAY_1',
+    'abday_2': 'ABDAY_2',
+    'abday_3': 'ABDAY_3',
+    'abday_4': 'ABDAY_4',
+    'abday_5': 'ABDAY_5',
+    'abday_6': 'ABDAY_6',
+    'abday_7': 'ABDAY_7',
+    'abmon_1': 'ABMON_1',
+    'abmon_10': 'ABMON_10',
+    'abmon_11': 'ABMON_11',
+    'abmon_12': 'ABMON_12',
+    'abmon_2': 'ABMON_2',
+    'abmon_3': 'ABMON_3',
+    'abmon_4': 'ABMON_4',
+    'abmon_5': 'ABMON_5',
+    'abmon_6': 'ABMON_6',
+    'abmon_7': 'ABMON_7',
+    'abmon_8': 'ABMON_8',
+    'abmon_9': 'ABMON_9',
     'accel_group': 'AccelGroup',
     'action_default': 'ACTION_DEFAULT',
     'action_copy': 'ACTION_COPY',
@@ -448,7 +434,7 @@ SUBSTITUTE_FOR = {
     'alignment': 'Alignment',
     'button_press': 'BUTTON_PRESS',
     'button_press_mask': 'BUTTON_PRESS_MASK',
-    'buttons_cancel': 'BUTTONS_CANCEL', 
+    'buttons_cancel': 'BUTTONS_CANCEL',
     'can_default': 'CAN_DEFAULT',
     'can_focus': 'CAN_FOCUS',
     'cell_renderer_pixbuf': 'CellRendererPixbuf',
@@ -458,22 +444,22 @@ SUBSTITUTE_FOR = {
     'color': 'Color',
     'config_parser': 'ConfigParser',
     'cursor': 'Cursor',
-    'day_1':'DAY_1',
-    'day_2':'DAY_2',
-    'day_3':'DAY_3',
-    'day_4':'DAY_4',
-    'day_5':'DAY_5',
-    'day_6':'DAY_6',
-    'day_7':'DAY_7',
+    'day_1': 'DAY_1',
+    'day_2': 'DAY_2',
+    'day_3': 'DAY_3',
+    'day_4': 'DAY_4',
+    'day_5': 'DAY_5',
+    'day_6': 'DAY_6',
+    'day_7': 'DAY_7',
     'dest_default_all': 'DEST_DEFAULT_ALL',
-    'dialog_modal': 'DIALOG_MODAL', 
-    'dict_reader': 'DictReader', 
-    'dict_writer': 'DictWriter', 
+    'dialog_modal': 'DIALOG_MODAL',
+    'dict_reader': 'DictReader',
+    'dict_writer': 'DictWriter',
     'dir_tab_forward': 'DIR_TAB_FORWARD',
     'dotall': 'DOTALL',
     'enter_notify_mask': 'ENTER_NOTIFY_MASK',
     'error': 'Error',
-    'event_box': 'EventBox', 
+    'event_box': 'EventBox',
     'expand': 'EXPAND',
     'exposure_mask': 'EXPOSURE_MASK',
     'file_selection': 'FileSelection',
@@ -493,8 +479,8 @@ SUBSTITUTE_FOR = {
     'gtk.vbox': 'VBox',
     'gtk.window': 'Window',
     'hand2': 'HAND2',
-    'hbox': 'HBox', 
-    'icon_size_button': 'ICON_SIZE_BUTTON', 
+    'hbox': 'HBox',
+    'icon_size_button': 'ICON_SIZE_BUTTON',
     'icon_size_dialog': 'ICON_SIZE_DIALOG',
     'icon_size_dnd': 'ICON_SIZE_DND',
     'icon_size_large_toolbar': 'ICON_SIZE_LARGE_TOOLBAR',
@@ -509,28 +495,28 @@ SUBSTITUTE_FOR = {
     'list_item': 'ListItem',
     'list_store': 'ListStore',
     'menu_bar': 'MenuBar',
-    'message_dialog': 'MessageDialog', 
-    'message_info': 'MESSAGE_INFO', 
-    'mon_1':'MON_1',
-    'mon_10':'MON_10',
-    'mon_11':'MON_11',
-    'mon_12':'MON_12',
-    'mon_2':'MON_2',
-    'mon_3':'MON_3',
-    'mon_4':'MON_4',
-    'mon_5':'MON_5',
-    'mon_6':'MON_6',
-    'mon_7':'MON_7',
-    'mon_8':'MON_8',
-    'mon_9':'MON_9',
+    'message_dialog': 'MessageDialog',
+    'message_info': 'MESSAGE_INFO',
+    'mon_1': 'MON_1',
+    'mon_10': 'MON_10',
+    'mon_11': 'MON_11',
+    'mon_12': 'MON_12',
+    'mon_2': 'MON_2',
+    'mon_3': 'MON_3',
+    'mon_4': 'MON_4',
+    'mon_5': 'MON_5',
+    'mon_6': 'MON_6',
+    'mon_7': 'MON_7',
+    'mon_8': 'MON_8',
+    'mon_9': 'MON_9',
     'multiline': 'MULTILINE',
     'node_type': 'nodeType',
     'notebook': 'Notebook',
-    'o_creat': 'O_CREAT', 
+    'o_creat': 'O_CREAT',
     'o_excl': 'O_EXCL',
     'o_ndelay': 'O_NDELAY',
-    'o_rdwr': 'O_RDWR', 
-    'p_nowait':'P_NOWAIT',
+    'o_rdwr': 'O_RDWR',
+    'p_nowait': 'P_NOWAIT',
     'parsing_error': 'ParsingError',
     'pointer_motion_mask': 'POINTER_MOTION_MASK',
     'pointer_motion_hint_mask': 'POINTER_MOTION_HINT_MASK',
@@ -539,21 +525,21 @@ SUBSTITUTE_FOR = {
     'radio_button': 'RadioButton',
     'realized': 'REALIZED',
     'relief_none': 'RELIEF_NONE',
-    'request':'Request',
-    'response_cancel': 'RESPONSE_CANCEL', 
+    'request': 'Request',
+    'response_cancel': 'RESPONSE_CANCEL',
     'response_delete_event': 'RESPONSE_DELETE_EVENT',
     'response_no': 'RESPONSE_NO',
     'response_none': 'RESPONSE_NONE',
-    'response_ok': 'RESPONSE_OK', 
+    'response_ok': 'RESPONSE_OK',
     'response_yes': 'RESPONSE_YES',
     'scrolled_window': 'ScrolledWindow',
     'shadow_in': 'SHADOW_IN',
-    'sniffer': 'Sniffer', 
+    'sniffer': 'Sniffer',
     'sort_ascending': 'SORT_ASCENDING',
     'sort_descending': 'SORT_DESCENDING',
     'state_normal': 'STATE_NORMAL',
     'stock_add': 'STOCK_ADD',
-    'stock_apply': 'STOCK_APPLY', 
+    'stock_apply': 'STOCK_APPLY',
     'stock_bold': 'STOCK_BOLD',
     'stock_cancel': 'STOCK_CANCEL',
     'stock_close': 'STOCK_CLOSE',
@@ -562,7 +548,7 @@ SUBSTITUTE_FOR = {
     'stock_cut': 'STOCK_CUT',
     'stock_dialog_info': 'STOCK_DIALOG_INFO',
     'stock_dialog_question': 'STOCK_DIALOG_QUESTION',
-    'stock_execute': 'STOCK_EXECUTE', 
+    'stock_execute': 'STOCK_EXECUTE',
     'stock_find': 'STOCK_FIND',
     'stock_find_and_replace': 'STOCK_FIND_AND_REPLACE',
     'stock_go_back': 'STOCK_GO_BACK',
@@ -598,17 +584,17 @@ SUBSTITUTE_FOR = {
     'text_view': 'TextView',
     'text_window_text': 'TEXT_WINDOW_TEXT',
     'text_window_widget': 'TEXT_WINDOW_WIDGET',
-    'text_wrapper':'TextWrapper',
-    'tooltips': 'Tooltips', 
+    'text_wrapper': 'TextWrapper',
+    'tooltips': 'Tooltips',
     'tree_view': 'TreeView',
     'tree_view_column': 'TreeViewColumn',
     'type_string': 'TYPE_STRING',
     'underline_single': 'UNDERLINE_SINGLE',
     'weight_bold': 'WEIGHT_BOLD',
-    'window_toplevel': 'WINDOW_TOPLEVEL', 
+    'window_toplevel': 'WINDOW_TOPLEVEL',
     'wrap_none': 'WRAP_NONE',
     'wrap_word': 'WRAP_WORD',
-    }
+}
 #@-<< data >>
 #@+<< preferences >>
 #@+node:ekr.20141010141310.19073: ** << preferences >>
@@ -623,7 +609,7 @@ KEEP_BLANK_LINES = True
 KEEP_UNASSIGNED_CONSTANTS = False
 LEFTJUST_DOC_STRINGS = False
 LEFT_MARGIN = ''
-LEO_CALL_CONTINUATION = False # Leo 5.2
+LEO_CALL_CONTINUATION = False  # Leo 5.2
 MAX_LINES_BEFORE_SPLIT_LIT = 2
 MAX_SEPS_DICT = 3
 MAX_SEPS_FUNC_DEF = 3
@@ -633,84 +619,71 @@ OVERRIDE_NEWLINE = None
 PARENTHESIZE_TUPLE_DISPLAY = True
 RECODE_STRINGS = False
 SINGLE_QUOTED_STRINGS = False
-SPACES_AFTER_DOCSTRING = True # Leo 5.2
+SPACES_AFTER_DOCSTRING = True  # Leo 5.2
 WRAP_DOC_STRINGS = False
-
 # Author's preferences:
-
 # if PERSONAL:
     # LEFTJUST_DOC_STRINGS = True
     # LOCAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore])
-    # GLOBAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore, 
+    # GLOBAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore,
                               # all_upper_case])
     # CLASS_NAME_SCRIPT.extend([elide_c, underscore_to_camel_case])
     # FUNCTION_NAME_SCRIPT.extend([camel_case_to_underscore])
     # FORMAL_PARAM_NAME_SCRIPT.extend([elide_a, camel_case_to_underscore])
-    # ATTR_NAME_SCRIPT.extend([elide_f, camel_case_to_underscore, 
+    # ATTR_NAME_SCRIPT.extend([elide_f, camel_case_to_underscore,
                             # substitutions])
 #@-<< preferences >>
 #@+others
 #@+node:ekr.20141010141310.18629: ** Name-transformation functions:
-
 #@+node:ekr.20141010141310.18630: *3* all_lower_case
 def all_lower_case(str, **attribs):
+
     return str.lower()
-
-
 #@+node:ekr.20141010141310.18631: *3* all_upper_case
 def all_upper_case(str, **attribs):
+
     return str.upper()
-
-
 #@+node:ekr.20141010141310.18637: *3* camel_case_to_underscore
 def camel_case_to_underscore(str, **attribs):
+
     if is_magic(str):
         return str
     else:
         return all_lower_case(insert_underscores(str))
-
-
 #@+node:ekr.20141010141310.18642: *3* elide_a
 def elide_a(str, **attribs):
+
     return ELIDE_A_PATTERN.sub('\\1', str)
-
-
 #@+node:ekr.20141010141310.18641: *3* elide_c
 def elide_c(str, **attribs):
+
     return ELIDE_C_PATTERN.sub('\\1', str)
-
-
 #@+node:ekr.20141010141310.18643: *3* elide_f
 def elide_f(str, **attribs):
+
     return ELIDE_F_PATTERN.sub('\\1', str)
-
-
 #@+node:ekr.20141010141310.18634: *3* insert_underscores
 def insert_underscores(str, **attribs):
+
     return UNDERSCORE_PATTERN.sub('_\\1', str)
-
-
 #@+node:ekr.20141010141310.18635: *3* is_magic
 def is_magic(str):
-    return str in ['self', 'cls'] or str.startswith('__') and str.endswith('__')
 
-
+    return str in ['self', 'cls'] or str.startswith('__') \
+        and str.endswith('__')
 #@+node:ekr.20141010141310.18639: *3* munge
 def munge(str, **attribs):
     """Create an unparsable name.
 
     """
-
     return '<*%s*>' % str
-
-
 #@+node:ekr.20141010141310.18633: *3* strip_underscores
 def strip_underscores(str, **attribs):
+
     return str.replace('_', '')
-
-
 #@+node:ekr.20141010141310.18640: *3* substitutions
 def substitutions(str, **attribs):
+
     result = SUBSTITUTE_FOR.get(str, str)
     module = attribs.get('module')
     if module is None:
@@ -718,32 +691,26 @@ def substitutions(str, **attribs):
     else:
         result = SUBSTITUTE_FOR.get('%s.%s' % (module, str), result)
     return result
-
-
 #@+node:ekr.20141010141310.18632: *3* title_case
 def title_case(str, **attribs):
+
     return str.title()
-
-
 #@+node:ekr.20141010141310.18636: *3* underscore_to_camel_case
 def underscore_to_camel_case(str, **attribs):
+
     if is_magic(str):
         return str
     else:
         return strip_underscores(title_case(camel_case_to_underscore(str)))
-
-
 #@+node:ekr.20141010141310.18638: *3* unmangle
 def unmangle(str, **attribs):
+
     if str.startswith('__'):
         str = str[2:]
     return str
-
-
 #@+node:ekr.20141010141310.18644: ** Name-transformation scripts:
 #@+node:ekr.20141010141310.18645: *3* force_quote
 def force_quote(encoded, double=True, quoted=True):
-
     r"""Change the type of quotation marks (or not) on an already quoted string.
 
     >>> force_quote("See the cat.", quoted=False)
@@ -774,14 +741,13 @@ def force_quote(encoded, double=True, quoted=True):
     "'''ick'''"
 
     """
-
     if quoted:
         match = QUOTE_PATTERN.match(encoded)
         if match is None:
             prefix = ''
             size = 1
         else:
-            (prefix, quote_old) = match.group(1, 2)
+            prefix, quote_old = match.group(1, 2)
             encoded = QUOTE_PATTERN.sub('', encoded, 1)
             size = len(quote_old)
             assert encoded[-size:] == quote_old
@@ -790,7 +756,7 @@ def force_quote(encoded, double=True, quoted=True):
         prefix = ''
         size = 1
     double_backslash_delimited_substrings = encoded.split(r'\\')
-    for (ndx, substring) in enumerate(double_backslash_delimited_substrings):
+    for ndx, substring in enumerate(double_backslash_delimited_substrings):
         substring = substring.replace(r'\"', '"').replace(r"\'", "'")
         if double:
             substring = substring.replace('"', r'\"')
@@ -810,8 +776,7 @@ def wrap_lines(
     width,
     initial_indent='',
     subsequent_indent='',
-): 
-
+):
     """Wrap lines of text, preserving blank lines.
 
     Lines is a Python list of strings *without* new-line terminators.
@@ -839,7 +804,6 @@ def wrap_lines(
     to the party of your choice.
 
     """
-
     DOC_WRAPPER.width = width
     DOC_WRAPPER.initial_indent = initial_indent
     DOC_WRAPPER.subsequent_indent = subsequent_indent
@@ -855,7 +819,6 @@ def wrap_lines(
     return result
 #@+node:ekr.20141010141310.18647: *3* leftjust_lines
 def leftjust_lines(lines):
-
     """Left justify lines of text.
 
     Lines is a Python list of strings *without* new-line terminators.
@@ -863,7 +826,6 @@ def leftjust_lines(lines):
     The result is a Python list of strings *without* new-Line terminators.
 
     """
-
     result = [line.strip() for line in lines]
     return result
 #@+node:ekr.20141010141310.19063: ** classes (PythonTidy)
@@ -873,9 +835,11 @@ class InputUnit(object):
     """File-buffered wrapper for sys.stdin.
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18649: *4* __init__
     def __init__(self, file_in):
+
         object.__init__(self)
         self.is_file_like = hasattr(file_in, 'read')
         if self.is_file_like:
@@ -901,15 +865,15 @@ class InputUnit(object):
             self.coding = match.group(1)
         self.rewind()
         return
-
     #@+node:ekr.20141010141310.18650: *4* rewind
     def rewind(self):
+
         self.ndx = 0
         self.end = len(self.lines) - 1
         return self
-
     #@+node:ekr.20141010141310.18651: *4* next
     def next(self):
+
         if self.ndx > self.end:
             raise StopIteration
         elif self.ndx == self.end:
@@ -918,26 +882,26 @@ class InputUnit(object):
             result = self.lines[self.ndx] + '\n'
         self.ndx += 2
         return result
-
     #@+node:ekr.20141010141310.18652: *4* __iter__
     def __iter__(self):
-        return self
 
+        return self
     #@+node:ekr.20141010141310.18653: *4* readline
     def readline(self):
+
         try:
             result = self.next()
         except StopIteration:
             result = ''
         return result
-
     #@+node:ekr.20141010141310.18654: *4* readlines
     def readlines(self):
+
         self.rewind()
         return [line for line in self]
-
     #@+node:ekr.20141010141310.18655: *4* __str__
     def __str__(self):
+
         result = self.readlines()
         while result[:-1] == '':
             result.pop(-1)
@@ -948,12 +912,10 @@ class InputUnit(object):
             last_line += '\n'
             result[-1] = last_line
         return ''.join(result)
-
     #@+node:ekr.20141010141310.18656: *4* decode
     def decode(self, str):
+
         return str  # It will not do to feed Unicode to *compiler.parse*.
-
-
     #@-others
 #@+node:ekr.20141010141310.18657: *3* class OutputUnit
 class OutputUnit(object):
@@ -961,10 +923,11 @@ class OutputUnit(object):
     """Line-buffered wrapper for sys.stdout.
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18658: *4* ou.__init__
-
     def __init__(self, file_out):
+
         object.__init__(self)
         self.is_file_like = hasattr(file_out, 'write')
         if self.is_file_like:
@@ -978,18 +941,18 @@ class OutputUnit(object):
         self.buffer = ''
         self.chunks = None
         return
-
     #@+node:ekr.20141010141310.18659: *4* ou.close
     def close(self):
+
         self.unit.write(self.buffer)
         if self.is_file_like:
             pass
         else:
             self.unit.close()
         return self
-
     #@+node:ekr.20141010141310.18660: *4* ou.line_init
     def line_init(self, indent=0, lineno=0):
+
         self.blank_line_count = 0
         self.col = 0
         if False and DEBUG:
@@ -1006,38 +969,40 @@ class OutputUnit(object):
         self,
         chunk='',
         tab_set=False,
-        tab_clear=False, 
+        tab_clear=False,
         can_split_str=False,
         can_split_after=False,
         can_break_after=False,
-        ):
+    ):
+
         self.chunks.append([
             chunk,
             tab_set,
             tab_clear,
             can_split_str,
-            can_split_after, 
+            can_split_after,
             can_break_after,
-            ])
+        ])
         # g.trace(can_break_after,self.col,repr(chunk))
         self.col += len(chunk)
         return self
-
     #@+node:ekr.20141010141310.18662: *4* ou.line_term
     def line_term(self, pause=False):
 
         def is_split_needed(cumulative_width):
+
             pos = self.pos
-            return ((pos + cumulative_width) > COL_LIMIT) and (pos > 0)
+            return pos + cumulative_width > COL_LIMIT and pos > 0
 
         def drop_word(chunk, can_split_after):
+
             result = COL_LIMIT - self.pos
             if can_split_after:
                 result -= 1
             else:
                 result -= 2
             ndx = result - 1
-            while (ndx >= 20) and ((result - ndx) <= 20):
+            while ndx >= 20 and result - ndx <= 20:
                 if chunk[ndx] in [' ']:
                     result = ndx + 1
                     break
@@ -1057,7 +1022,7 @@ class OutputUnit(object):
             can_split_str,
             can_split_after,
             can_break_after,
-            ) in self.chunks:
+        ) in self.chunks:
             if can_split_after or can_break_after:
                 cumulative_width = 0
             cumulative_width += len(chunk)
@@ -1069,7 +1034,7 @@ class OutputUnit(object):
                 can_split_str,
                 can_split_after,
                 can_break_after,
-                ])
+            ])
         for (
             chunk,
             cumulative_width,
@@ -1078,7 +1043,7 @@ class OutputUnit(object):
             can_split_str,
             can_split_after,
             can_break_after,
-            ) in chunk_lengths:
+        ) in chunk_lengths:
             if is_split_needed(cumulative_width):
                 if can_split_before:
                     self.line_split()
@@ -1111,39 +1076,39 @@ class OutputUnit(object):
         else:
             self.put(self.newline)
         return self
-
     #@+node:ekr.20141010141310.18663: *4* ou.line_split
     def line_split(self):
+
         self.put(self.newline)
         self.pos = self.tab_forward()
         return self
-
     #@+node:ekr.20141010141310.18664: *4* ou.line_break
     def line_break(self):
+
         self.put('\\%s' % self.newline)
         self.pos = self.tab_forward()
         return self
-
     #@+node:ekr.20141010141310.18665: *4* ou.tab_forward
     def tab_forward(self):
-        
+
         if LEO_CALL_CONTINUATION:
-            col = (self.tab_stack)[0]
+            col = self.tab_stack[0]
         elif len(self.tab_stack) > 1:
-            col = (self.tab_stack)[1]
+            col = self.tab_stack[1]
         else:
-            col = (self.tab_stack)[0]
+            col = self.tab_stack[0]
         self.put(' ' * col)
         # g.trace(col,self.tab_stack,g.callers(3))
         return col
     #@+node:ekr.20141010141310.18666: *4* ou.put
     def put(self, text):
+
         # g.trace('(OutputUnit)',repr(text),g.callers())
         self.lineno += text.count(self.newline)
         self.buffer += text
         if DEBUG:
-            g.trace('(OU) %25s %s' % (
-                g.callers(2),repr(g.toUnicode(self.buffer))))
+            g.trace('(OU) %25s %s' % (g.callers(2),
+                    repr(g.toUnicode(self.buffer))))
         if self.buffer.endswith('\n') or self.buffer.endswith('\r'):
             self.unit.write(self.buffer.rstrip())
             self.unit.write(self.newline)
@@ -1151,6 +1116,7 @@ class OutputUnit(object):
         return self
     #@+node:ekr.20141010141310.18667: *4* ou.put_blank_line
     def put_blank_line(self, trace, count=1):
+
         count -= self.blank_line_count
         while count > 0:
             self.put(BLANK_LINE)
@@ -1161,34 +1127,33 @@ class OutputUnit(object):
         return self
     #@+node:ekr.20141010141310.18668: *4* ou.tab_set
     def tab_set(self, col):
+
         if col > COL_LIMIT / 2:
             if self.tab_stack:
-                col = (self.tab_stack)[-1] + 4
+                col = self.tab_stack[-1] + 4
             else:
                 col = 4
         self.tab_stack.append(col)
         # g.trace(col,g.callers(2))
         return self
-
     #@+node:ekr.20141010141310.18669: *4* ou.tab_clear
     def tab_clear(self):
+
         if len(self.tab_stack) > 1:
             result = self.tab_stack.pop()
         else:
             result = None
         return result
-
     #@+node:ekr.20141010141310.18670: *4* ou.inc_margin
     def inc_margin(self):
+
         self.margin += INDENTATION
         return self
-
     #@+node:ekr.20141010141310.18671: *4* ou.dec_margin
     def dec_margin(self):
-        self.margin = (self.margin)[:-len(INDENTATION)]
+
+        self.margin = self.margin[:-len(INDENTATION)]
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18672: *3* class Comments
 class Comments(dict):
@@ -1197,11 +1162,13 @@ class Comments(dict):
     input Python code and indexed by line number.
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18673: *4* comments.__init__
-    def __init__(self,is_module):
+    def __init__(self, is_module):
 
         def quote_original(token_type, original):
+
             if token_type in [tokenize.STRING]:
                 if DOUBLE_QUOTED_STRINGS:
                     result = force_quote(original, double=True)
@@ -1212,8 +1179,10 @@ class Comments(dict):
             else:
                 result = original
             return result
+                    # pylint: disable=eval-used
 
         def compensate_for_tabs(line, scol):
+
             match = COMMENT_PATTERN.match(line)
             if match is None:
                 pass
@@ -1224,7 +1193,6 @@ class Comments(dict):
             return scol
 
         def merge_concatenated_strings(lines):
-
             """Save whole string in literal pool.
 
             Python (and the *compiler* module) treat adjacent strings
@@ -1250,39 +1218,28 @@ class Comments(dict):
                 while True:
                     prev_item = lines.next()
                     yield prev_item
-                    (   prev_token_type,
-                        prev_token_string,
-                        prev_start,
-                        prev_end,
-                        prev_line,
-                        ) = prev_item
+                    prev_token_type, prev_token_string, prev_start, prev_end, \
+                        prev_line = prev_item
                     if prev_token_type in [tokenize.STRING]:
                         on1 = True
                         while True:
-                            next_item  = lines.next()
+                            next_item = lines.next()
                             yield next_item
-                            (   next_token_type,
-                                next_token_string,
-                                next_start,
-                                next_end,
-                                next_line,
-                            ) = next_item
+                            next_token_type, next_token_string, next_start, \
+                                next_end, next_line = next_item
                             if next_token_type in [tokenize.STRING]:
-                                if prev_token_string[-1] == next_token_string[0]:
-                                    prev_token_string = prev_token_string[:-1] + \
-                                                        next_token_string[1:]
+                                if prev_token_string[-1] \
+                                    == next_token_string[0]:
+                                    prev_token_string = prev_token_string[:-1] \
+                                        + next_token_string[1:]
                                     on1 = False
                             else:
                                 if on1:
                                     pass
                                 else:
-                                    prev_item = (
-                                        prev_token_type,
-                                        prev_token_string,
-                                        prev_start,
-                                        prev_end,
-                                        prev_line,
-                                        )
+                                    prev_item = prev_token_type, \
+                                        prev_token_string, prev_start, \
+                                        prev_end, prev_line
                                     yield prev_item
                                     break
             except NotImplementedError:
@@ -1292,11 +1249,12 @@ class Comments(dict):
         self.literal_pool = {}
         lines = tokenize.generate_tokens(INPUT.readline)
         lines = merge_concatenated_strings(lines)
-        for (token_type, token_string, start, end, line) in lines:
+        for token_type, token_string, start, end, line in lines:
             if False and DEBUG:
-                print (token.tok_name[token_type], token_string, start, end, line)
-            (self.max_lineno, scol) = start
-            (erow, ecol) = end
+                print (token.tok_name[token_type], token_string, start, end,
+                       line)
+            self.max_lineno, scol = start
+            erow, ecol = end
             if token_type in [tokenize.COMMENT, tokenize.NL]:
                 original = token_string
                 original = original.decode(INPUT.coding)
@@ -1304,13 +1262,13 @@ class Comments(dict):
                 original = original.strip()
                 if SHEBANG_PATTERN.match(original) is not None:
                     pass
-                elif CODING_PATTERN.search(original) is not None and \
-                    self.max_lineno <= 2:
+                elif CODING_PATTERN.search(original) is not None \
+                    and self.max_lineno <= 2:
                     pass
                 else:
                     scol = compensate_for_tabs(line, scol)
                     original = COMMENT_PATTERN.sub('', original, 1)
-                    if (token_type in [tokenize.COMMENT]) and (original in ['']):
+                    if token_type in [tokenize.COMMENT] and original in ['']:
                         original = ' '
                     if self.max_lineno in self:
                         pass
@@ -1318,17 +1276,18 @@ class Comments(dict):
                         self[self.max_lineno] = [scol, original]
             elif token_type in [tokenize.NUMBER, tokenize.STRING]:
                 try:
-                    # pylint: disable=eval-used
-                    original = token_string.strip().decode(INPUT.coding, 'backslashreplace')
+                    original = token_string.strip().decode(INPUT.coding,
+                            'backslashreplace')
                     decoded = eval(original)
                     encoded = repr(decoded)
-                    if (encoded == original) or (encoded == force_quote(original, double=False)):
+                    if encoded == original or encoded == force_quote(original,
+                            double=False):
                         pass
                     else:
                         original = quote_original(token_type, original)
                         original_values = \
                             self.literal_pool.setdefault(encoded, [])
-                        for (tok, lineno) in original_values:
+                        for tok, lineno in original_values:
                             if tok == original:
                                 break
                         else:
@@ -1337,68 +1296,71 @@ class Comments(dict):
                     pass
         self.prev_lineno = -2
         if is_module:
-            self[self.prev_lineno] = (-1, SHEBANG)
-            self[-1] = (-1, CODING_SPEC)
+            self[self.prev_lineno] = -1, SHEBANG
+            self[-1] = -1, CODING_SPEC
     #@+node:ekr.20141010141310.18674: *4* comments.merge
     def merge(self, lineno=None, fin=False):
 
         def is_blank():
+
             return token_string in ['', BLANK_LINE]
+        # g.trace('(Comments)','fin',fin,lineno,g.callers())
+                        # OUTPUT.put_blank_line(2)
+                        # Output the Shebang and Coding-Spec.
 
         def is_blank_line_needed():
-            return ADD_BLANK_LINES_AROUND_COMMENTS and not (is_blank() and
-                    KEEP_BLANK_LINES)
+
+            return ADD_BLANK_LINES_AROUND_COMMENTS and not (is_blank()
+                    and KEEP_BLANK_LINES)
 
         def margin(scol):
-            (quotient, remainder) = divmod(scol, len(INDENTATION))
+
+            quotient, remainder = divmod(scol, len(INDENTATION))
             result = INDENTATION * quotient + ' ' * remainder + COMMENT_PREFIX
             return result
 
         def strip_blank_lines(text_lines):
+
             first = -1
             last = -1
             is_first_blank = False
             is_last_blank = False
             if text_lines:
                 first = 0
-                (scol, line) = text_lines[first]
-                is_first_blank = (scol == -1)
+                scol, line = text_lines[first]
+                is_first_blank = scol == -1
                 if is_first_blank:
                     first += 1
                 last = len(text_lines)
-                (scol, line) = text_lines[last - 1]
-                is_last_blank = (scol == -1)
+                scol, line = text_lines[last - 1]
+                is_last_blank = scol == -1
                 if is_last_blank:
                     last -= 1
-            return (first, last, is_first_blank, is_last_blank)
+            return first, last, is_first_blank, is_last_blank
 
         if fin:
             lineno = self.max_lineno + 1
-        # g.trace('(Comments)','fin',fin,lineno,g.callers())
         on1 = True
         text = []
         while self.prev_lineno < lineno:
             if self.prev_lineno in self:
-                (scol, token_string) = self[self.prev_lineno]
+                scol, token_string = self[self.prev_lineno]
                 if on1 and is_blank_line_needed():
                     OUTPUT.put_blank_line(1)
                 if is_blank():
                     if KEEP_BLANK_LINES:
-                        # OUTPUT.put_blank_line(2)
                         text.append([-1, ''])
                 else:
                     if scol == -1:
-
-                        # Output the Shebang and Coding-Spec.
-
                         OUTPUT.line_init().line_more(token_string).line_term()
                     else:
                         text.append([scol, token_string])
                 on1 = False
             self.prev_lineno += 1
         if text and LEFTJUST_DOC_STRINGS:
-            (first, last, is_first_blank, is_last_blank) = strip_blank_lines(text)
-            lines = [line for (scol, line) in text[first: last]]
+            first, last, is_first_blank, is_last_blank = \
+                strip_blank_lines(text)
+            lines = [line for (scol, line) in text[first:last]]
             lines = leftjust_lines(lines)
             text = [(0, line) for line in lines]
             if is_first_blank:
@@ -1406,10 +1368,11 @@ class Comments(dict):
             if is_last_blank:
                 text.append([-1, ''])
         if text and WRAP_DOC_STRINGS:
-            (first, last, is_first_blank, is_last_blank) = strip_blank_lines(text)
-            text = text[first: last]
+            first, last, is_first_blank, is_last_blank = \
+                strip_blank_lines(text)
+            text = text[first:last]
             if text:
-                (save_col, line) = text[0]
+                save_col, line = text[0]
                 lines = [line for (scol, line) in text]
                 line_length = COL_LIMIT - (save_col + len(COMMENT_PREFIX))
                 line_length = max(line_length, 20)
@@ -1419,13 +1382,13 @@ class Comments(dict):
                     text.insert(0, [-1, ''])
                 if is_last_blank:
                     text.append([-1, ''])
-        for (scol, line) in text:
+        for scol, line in text:
             if scol == -1:
                 OUTPUT.put_blank_line(2)
             else:
                 OUTPUT.line_init()
                 margin_string = margin(scol)
-                if (margin_string == '# ') and (line.startswith('#')):
+                if margin_string == '# ' and line.startswith('#'):
                     OUTPUT.line_more('#')
                 else:
                     OUTPUT.line_more(margin(scol))
@@ -1434,23 +1397,24 @@ class Comments(dict):
         if text and is_blank_line_needed() and not fin:
             OUTPUT.put_blank_line(3)
         return self
-
     #@+node:ekr.20141010141310.18675: *4* comments.put_inline
     def put_inline(self, lineno):
 
         def margin(scol):
+
             result = ' ' * scol + COMMENT_PREFIX
             return result
+        # g.trace('(Comments)',lineno,g.callers())
 
         def new_line():
+
             OUTPUT.put(OUTPUT.newline)
             return
-            
-        # g.trace('(Comments)',lineno,g.callers())
+
         text = []
         while self.prev_lineno <= lineno:
             if self.prev_lineno in self:
-                (scol, token_string) = self[self.prev_lineno]
+                scol, token_string = self[self.prev_lineno]
                 if token_string in ['']:
                     pass
                 else:
@@ -1477,8 +1441,6 @@ class Comments(dict):
         else:
             new_line()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.19065: *3* Node classes
 #@+node:ekr.20141010141310.18676: *4* class Name
@@ -1487,51 +1449,50 @@ class Name(list):
     """Maps new name to old names.
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18677: *5* __init__
-
     def __init__(self, new):
+
         self.new = new
         self.is_reported = False
         return
-
     #@+node:ekr.20141010141310.18678: *5* append
     def append(self, item):
+
         if item in self:
             pass
         else:
             list.append(self, item)
         return
-
     #@+node:ekr.20141010141310.18679: *5* rept_collision
     def rept_collision(self, key):
+
         self.append(key)
         if len(self) == 1:
             pass
         elif self.is_reported:
             pass
         else:
-            sys.stderr.write("Error:  %s ambiguously replaced by '%s' at line %i.\n" % \
-                             (str(self), self.new, OUTPUT.lineno + 1))
+            sys.stderr.write("Error:  %s ambiguously replaced by '%s' at line %i.\n"
+                              % (str(self), self.new, OUTPUT.lineno + 1))
             self.is_reported = True
         return self
-
     #@+node:ekr.20141010141310.18680: *5* rept_external
     def rept_external(self, expr):
+
         if isinstance(expr, NodeName):
             expr = expr.name.str
         else:
             expr = str(expr)
-        if expr in ['self','cls']:
+        if expr in ['self', 'cls']:
             pass
         elif self.new == self[0]:
             pass
         else:
-            sys.stderr.write("Warning:  '%s.%s,' defined elsewhere, replaced by '.%s' at line %i.\n" % \
-                             (expr, self[0], self.new, OUTPUT.lineno + 1))
+            sys.stderr.write("Warning:  '%s.%s,' defined elsewhere, replaced by '.%s' at line %i.\n"
+                              % (expr, self[0], self.new, OUTPUT.lineno + 1))
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18681: *4* class NameSpace
 class NameSpace(list):
@@ -1542,18 +1503,20 @@ class NameSpace(list):
     (ZEROth member).
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18682: *5* push_scope
     def push_scope(self):
+
         self.insert(0, {})
         return self
-
     #@+node:ekr.20141010141310.18683: *5* pop_scope
     def pop_scope(self):
-        return self.pop(0)
 
+        return self.pop(0)
     #@+node:ekr.20141010141310.18684: *5* make_name
     def make_name(self, name, rules):
+
         name = name.get_as_str()
         key = name
         for rule in rules:
@@ -1562,37 +1525,37 @@ class NameSpace(list):
         self[0].setdefault(key, name)
         name.append(key)
         return name
-
     #@+node:ekr.20141010141310.18685: *5* make_local_name
     def make_local_name(self, name):
+
         if self.is_global():
             result = self.make_global_name(name)
         else:
             result = self.make_name(name, LOCAL_NAME_SCRIPT)
         return result
-
     #@+node:ekr.20141010141310.18686: *5* make_global_name
     def make_global_name(self, name):
-        return self.make_name(name, GLOBAL_NAME_SCRIPT)
 
+        return self.make_name(name, GLOBAL_NAME_SCRIPT)
     #@+node:ekr.20141010141310.18687: *5* make_class_name
     def make_class_name(self, name):
-        return self.make_name(name, CLASS_NAME_SCRIPT)
 
+        return self.make_name(name, CLASS_NAME_SCRIPT)
     #@+node:ekr.20141010141310.18688: *5* make_function_name
     def make_function_name(self, name):
-        return self.make_name(name, FUNCTION_NAME_SCRIPT)
 
+        return self.make_name(name, FUNCTION_NAME_SCRIPT)
     #@+node:ekr.20141010141310.18689: *5* make_formal_param_name
     def make_formal_param_name(self, name):
-        return self.make_name(name, FORMAL_PARAM_NAME_SCRIPT)
 
+        return self.make_name(name, FORMAL_PARAM_NAME_SCRIPT)
     #@+node:ekr.20141010141310.18690: *5* make_imported_name
     def make_imported_name(self, name):
-        return self.make_name(name, [])
 
+        return self.make_name(name, [])
     #@+node:ekr.20141010141310.18691: *5* make_attr_name
     def make_attr_name(self, expr, name):
+
         if isinstance(expr, NodeName):
             module = expr.name.str
         else:
@@ -1605,9 +1568,9 @@ class NameSpace(list):
         name.append(key)
         name.rept_external(expr)
         return name.new
-
     #@+node:ekr.20141010141310.18692: *5* make_keyword_name
     def make_keyword_name(self, name):
+
         name = name.get_as_str()
         key = name
         for rule in FORMAL_PARAM_NAME_SCRIPT:
@@ -1615,9 +1578,9 @@ class NameSpace(list):
         name = Name(name)
         name.append(key)
         return name.new
-
     #@+node:ekr.20141010141310.18693: *5* get_name
     def get_name(self, node):
+
         name = key = node.get_as_str()
         for scope in self:
             if key in scope:
@@ -1626,17 +1589,15 @@ class NameSpace(list):
                 name = name.new
                 break
         return name
-
     #@+node:ekr.20141010141310.18694: *5* has_name
     def has_name(self, node):
+
         name = node.get_as_str()
         return name in self[0]
-
     #@+node:ekr.20141010141310.18695: *5* is_global
     def is_global(self):
+
         return len(self) == 1
-
-
     #@-others
 #@+node:ekr.20141010141310.18697: *4* class Node
 class Node(object):
@@ -1656,10 +1617,10 @@ class Node(object):
         self.lineno = lineno
         if False and DEBUG:
             sys.stderr.write('%5i %s\n' % (self.lineno, self.tag))
-        return 
-
+        return
     #@+node:ekr.20141010141310.18699: *5* node.line_init
     def line_init(self, need_blank_line=0):
+
         if COMMENTS.prev_lineno > 0:
             OUTPUT.put_blank_line(41, count=need_blank_line)
             need_blank_line -= 1
@@ -1667,7 +1628,6 @@ class Node(object):
         OUTPUT.put_blank_line(4, count=need_blank_line)
         OUTPUT.line_init(self.indent, self.get_lineno())
         return self
-
     #@+node:ekr.20141010141310.18700: *5* node.line_more
     def line_more(
         self,
@@ -1677,23 +1637,23 @@ class Node(object):
         can_split_str=False,
         can_split_after=False,
         can_break_after=False,
-        ):
+    ):
+
         OUTPUT.line_more(
             chunk,
             tab_set,
             tab_clear,
             can_split_str,
-            can_split_after, 
+            can_split_after,
             can_break_after,
-            )
+        )
         return self
-
     #@+node:ekr.20141010141310.18701: *5* node.line_term
     def line_term(self, lineno=0):
+
         lineno = max(self.get_hi_lineno(), self.get_lineno())  # , lineno)
         COMMENTS.put_inline(lineno)
         return self
-
     #@+node:ekr.20141010141310.18702: *5* node.put
     def put(self, can_split=False):
         '''Place self on output.
@@ -1705,37 +1665,34 @@ class Node(object):
         the result.
 
         '''
-
         self.line_more(' /* %s at line %i */ ' % (self.tag, self.get_lineno()))
         return self
-
     #@+node:ekr.20141010141310.18703: *5* node.get_lineno
     def get_lineno(self):
-        return self.lineno
 
+        return self.lineno
     #@+node:ekr.20141010141310.18704: *5* node.get_hi_lineno
     def get_hi_lineno(self):
-        return self.get_lineno()
 
+        return self.get_lineno()
     #@+node:ekr.20141010141310.18705: *5* node.inc_margin
     def inc_margin(self):
+
         OUTPUT.inc_margin()
         return self
-
     #@+node:ekr.20141010141310.18706: *5* node.dec_margin
     def dec_margin(self):
+
         OUTPUT.dec_margin()
         return self
-
     #@+node:ekr.20141010141310.18707: *5* node.marshal_names
     def marshal_names(self):
-        return self
 
+        return self
     #@+node:ekr.20141010141310.18708: *5* node.make_local_name
     def make_local_name(self):
+
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18709: *4* class NodeOpr
 class NodeOpr(Node):
@@ -1744,7 +1701,13 @@ class NodeOpr(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18710: *5* put_expr
-    def put_expr(self, node, can_split=False, pos=None):
+    def put_expr(
+        self,
+        node,
+        can_split=False,
+        pos=None,
+    ):
+
         if self.is_paren_needed(node, pos):
             self.line_more('(', tab_set=True)
             node.put(can_split=True)
@@ -1752,19 +1715,15 @@ class NodeOpr(Node):
         else:
             node.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18711: *5* is_paren_needed
     def is_paren_needed(self, node, pos):
+
         return type(node) in OPERATOR_TRUMPS[type(self)]
-
-
     #@-others
 #@+node:ekr.20141010141310.18712: *4* class NodeOprAssoc
 class NodeOprAssoc(NodeOpr):
 
     tag = 'A_Opr'
-
-
 #@+node:ekr.20141010141310.18713: *4* class NodeOprNotAssoc
 class NodeOprNotAssoc(NodeOpr):
 
@@ -1773,6 +1732,7 @@ class NodeOprNotAssoc(NodeOpr):
     #@+others
     #@+node:ekr.20141010141310.18714: *5* is_paren_needed
     def is_paren_needed(self, node, pos):
+
         if NodeOpr.is_paren_needed(self, node, pos):
             result = True
         elif type(node) in OPERATOR_LEVEL[type(self)]:
@@ -1780,8 +1740,6 @@ class NodeOprNotAssoc(NodeOpr):
         else:
             result = False
         return result
-
-
     #@-others
 #@+node:ekr.20141010141310.18715: *4* class NodeOprLeftAssoc
 class NodeOprLeftAssoc(NodeOpr):
@@ -1795,15 +1753,14 @@ class NodeOprLeftAssoc(NodeOpr):
     #@+others
     #@+node:ekr.20141010141310.18716: *5* is_paren_needed
     def is_paren_needed(self, node, pos):
+
         if NodeOpr.is_paren_needed(self, node, pos):
             result = True
         elif type(node) in OPERATOR_LEVEL[type(self)]:
-            result = not (pos == 'left')
+            result = not pos == 'left'
         else:
             result = False
         return result
-
-
     #@-others
 #@+node:ekr.20141010141310.18717: *4* class NodeOprRightAssoc
 class NodeOprRightAssoc(NodeOpr):
@@ -1817,18 +1774,17 @@ class NodeOprRightAssoc(NodeOpr):
     #@+others
     #@+node:ekr.20141010141310.18718: *5* is_paren_needed
     def is_paren_needed(self, node, pos):
+
         if NodeOpr.is_paren_needed(self, node, pos):
             if type(node) in [NodeUnaryAdd, NodeUnarySub]:
-                result = not (pos == 'right')
+                result = not pos == 'right'
             else:
                 result = True
         elif type(node) in OPERATOR_LEVEL[type(self)]:
-            result = not (pos == 'right')
+            result = not pos == 'right'
         else:
             result = False
         return result
-
-
     #@-others
 #@+node:ekr.20141010141310.18719: *4* class NodeStr
 class NodeStr(Node):
@@ -1841,22 +1797,28 @@ class NodeStr(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18720: *5* __init__
-    def __init__(self, indent, lineno, str):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        str,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.set_as_str(str)
         return
-
     #@+node:ekr.20141010141310.18721: *5* put
     def put(self, can_split=False):
+
         self.line_more(self.get_as_str())
         return self
-
     #@+node:ekr.20141010141310.18722: *5* get_as_str
     def get_as_str(self):
-        return self.str
 
+        return self.str
     #@+node:ekr.20141010141310.18723: *5* set_as_str
     def set_as_str(self, str_):
+
         if is_leo:
             self.str = g.toEncodedString(str_)
         else:
@@ -1877,9 +1839,11 @@ class NodeStr(Node):
         return self
     #@+node:ekr.20141010141310.18724: *5* get_as_repr
     def get_as_repr(self):
-        original_values = COMMENTS.literal_pool.get(repr(self.get_as_str()), [])
+
+        original_values = COMMENTS.literal_pool.get(repr(self.get_as_str()),
+                [])
         if len(original_values) == 1:
-            (result, lineno) = original_values[0]
+            result, lineno = original_values[0]
         else:
             result = repr(self.get_as_str())
             if DOUBLE_QUOTED_STRINGS:
@@ -1887,11 +1851,11 @@ class NodeStr(Node):
             elif SINGLE_QUOTED_STRINGS:
                 result = force_quote(result, double=False)
         return result
-
     #@+node:ekr.20141010141310.18725: *5* put_doc (NodeStr)
     def put_doc(self, need_blank_line=0):
 
         def fix_newlines(text):
+
             lines = text.splitlines()
             result = OUTPUT.newline.join(lines)
             return result
@@ -1905,7 +1869,7 @@ class NodeStr(Node):
             doc = margin.join(lines)
         if WRAP_DOC_STRINGS:
             margin = '%s%s' % (OUTPUT.newline, INDENTATION * self.indent)
-            line_length = COL_LIMIT - (len(INDENTATION) * self.indent)
+            line_length = COL_LIMIT - len(INDENTATION) * self.indent
             line_length = max(line_length, 20)
             lines = wrap_lines(doc.strip().splitlines(), width=line_length)
             lines.extend(['', ''])
@@ -1917,27 +1881,29 @@ class NodeStr(Node):
         if BLANK_LINE_AFTER_DOCSTRING:
             OUTPUT.put_blank_line(5)
         return self
-
     #@+node:ekr.20141010141310.18726: *5* put_lit
     def put_lit(self, can_split=False):
+
         lit = self.get_as_repr()
         match = QUOTE_PATTERN.match(lit)
-        (prefix, quote) = match.group(1, 2)
-        if ('r' in prefix.lower()):
-            self.line_more(lit, can_split_str=CAN_SPLIT_STRINGS, can_split_after=can_split)
+        prefix, quote = match.group(1, 2)
+        if 'r' in prefix.lower():
+            self.line_more(lit, can_split_str=CAN_SPLIT_STRINGS,
+                           can_split_after=can_split)
         else:
             lines = NEW_LINE_PATTERN.split(lit)
             if len(lines) > MAX_LINES_BEFORE_SPLIT_LIT:
                 lit = OUTPUT.newline.join(lines)
                 self.put_multi_line(lit)
             else:
-                self.line_more(lit, can_split_str=CAN_SPLIT_STRINGS, can_split_after=can_split)
+                self.line_more(lit, can_split_str=CAN_SPLIT_STRINGS,
+                               can_split_after=can_split)
         return self
-
     #@+node:ekr.20141010141310.18727: *5* put_multi_line
     def put_multi_line(self, lit):
+
         match = QUOTE_PATTERN.match(lit)
-        (prefix, quote) = match.group(1, 2)
+        prefix, quote = match.group(1, 2)
         if len(quote) == 3:
             head = prefix + quote
             tail = ''
@@ -1947,8 +1913,6 @@ class NodeStr(Node):
         lit = QUOTE_PATTERN.sub(head, lit, 1) + tail
         self.line_more(lit, can_split_str=False)
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18728: *4* class NodeInt
 class NodeInt(Node):
@@ -1961,26 +1925,30 @@ class NodeInt(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18729: *5* __init__
-    def __init__(self, indent, lineno, int):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        int,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.int = int
-        return 
-
+        return
     #@+node:ekr.20141010141310.18730: *5* put
     def put(self, can_split=False):
+
         self.line_more(self.get_as_repr())
         return self
-
     #@+node:ekr.20141010141310.18731: *5* get_as_repr
     def get_as_repr(self):
+
         original_values = COMMENTS.literal_pool.get(repr(self.int), [])
         if len(original_values) == 1:
-            (result, lineno) = original_values[0]
+            result, lineno = original_values[0]
         else:
             result = repr(self.int)
         return result
-
-
     #@-others
 #@+node:ekr.20141010141310.18732: *4* class NodeAdd
 class NodeAdd(NodeOprAssoc):
@@ -1993,25 +1961,30 @@ class NodeAdd(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18733: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18734: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split)
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('+ ')
         self.put_expr(self.right, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18735: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18736: *4* class NodeAnd
 class NodeAnd(NodeOprAssoc):
@@ -2024,26 +1997,31 @@ class NodeAnd(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18737: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18738: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             self.put_expr(node, can_split=can_split)
-        for node in (self.nodes)[1:]:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for node in self.nodes[1:]:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('and ')
             self.put_expr(node, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18739: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18740: *4* class NodeAsgAttr
 class NodeAsgAttr(NodeOpr):
@@ -2056,15 +2034,23 @@ class NodeAsgAttr(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.18741: *5* __init__
-    def __init__(self, indent, lineno, expr, attrname, flags):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        attrname,
+        flags,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.attrname = transform(indent, lineno, attrname)
         self.flags = transform(indent, lineno, flags)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18742: *5* put (NodeAsgAttr)
     def put(self, can_split=False):
+
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
             self.line_init()
@@ -2087,12 +2073,10 @@ class NodeAsgAttr(NodeOpr):
         if is_del:
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18743: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18744: *4* class NodeAsgList
 class NodeAsgList(Node):
@@ -2105,13 +2089,19 @@ class NodeAsgList(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18745: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-
     #@+node:ekr.20141010141310.18746: *5* put
     def put(self, can_split=False):
+
         self.line_more('[', tab_set=True)
         if len(self.nodes) > MAX_SEPS_SERIES:
             self.line_term()
@@ -2128,28 +2118,26 @@ class NodeAsgList(Node):
                 self.line_init()
                 self.dec_margin()
         else:
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put(can_split=True)
             self.line_more(LIST_SEP, can_split_after=True)
-            for node in (self.nodes)[1:2]:
+            for node in self.nodes[1:2]:
                 node.put(can_split=True)
-            for node in (self.nodes)[2:]:
+            for node in self.nodes[2:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 node.put(can_split=True)
         self.line_more(']', tab_clear=True)
         return self
-
     #@+node:ekr.20141010141310.18747: *5* make_local_name
     def make_local_name(self):
+
         for node in self.nodes:
             node.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18748: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.nodes[-1].get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18749: *4* class NodeAsgName
 class NodeAsgName(Node):
@@ -2162,14 +2150,21 @@ class NodeAsgName(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18750: *5* __init__
-    def __init__(self, indent, lineno, name, flags):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        name,
+        flags,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.name = transform(indent, lineno, name)
         self.flags = transform(indent, lineno, flags)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18751: *5* put (NodeAsgName)
     def put(self, can_split=False):
+
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
             self.line_init()
@@ -2182,20 +2177,18 @@ class NodeAsgName(Node):
         if is_del:
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18752: *5* make_local_name
     def make_local_name(self):
+
         if NAME_SPACE.has_name(self.name):
             pass
         else:
             NAME_SPACE.make_local_name(self.name)
         return self
-
     #@+node:ekr.20141010141310.18753: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.name.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18754: *4* class NodeAsgTuple
 class NodeAsgTuple(Node):
@@ -2208,13 +2201,19 @@ class NodeAsgTuple(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18755: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18756: *5* put
     def put(self, can_split=False, is_paren_required=True):
+
         # pylint: disable=arguments-differ
         if len(self.nodes) > MAX_SEPS_SERIES:
             self.line_more('(', tab_set=True)
@@ -2234,37 +2233,35 @@ class NodeAsgTuple(Node):
             self.line_more(')', tab_clear=True)
         elif is_paren_required or PARENTHESIZE_TUPLE_DISPLAY:
             self.line_more('(', tab_set=True)
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put(can_split=True)
                 self.line_more(LIST_SEP, can_split_after=True)
-            for node in (self.nodes)[1:2]:
+            for node in self.nodes[1:2]:
                 node.put(can_split=True)
-            for node in (self.nodes)[2:]:
+            for node in self.nodes[2:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 node.put(can_split=True)
             self.line_more(')', tab_clear=True)
         else:
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put()
                 self.line_more(LIST_SEP, can_break_after=True)
-            for node in (self.nodes)[1:2]:
+            for node in self.nodes[1:2]:
                 node.put()
-            for node in (self.nodes)[2:]:
+            for node in self.nodes[2:]:
                 self.line_more(LIST_SEP, can_break_after=True)
                 node.put()
         return self
-
     #@+node:ekr.20141010141310.18757: *5* make_local_name
     def make_local_name(self):
+
         for node in self.nodes:
             node.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18758: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18759: *4* class NodeAssert
 class NodeAssert(Node):
@@ -2277,14 +2274,21 @@ class NodeAssert(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18760: *5* __init__
-    def __init__(self, indent, lineno, test, fail):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        test,
+        fail,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
         self.fail = transform(indent, lineno, fail)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18761: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('assert ')
         self.test.put(can_split=can_split)
@@ -2295,17 +2299,15 @@ class NodeAssert(Node):
             self.fail.put()
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18762: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.test.get_hi_lineno()
         if self.fail is None:
             pass
         else:
             lineno = self.fail.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18763: *4* class NodeAssign
 class NodeAssign(Node):
@@ -2318,14 +2320,21 @@ class NodeAssign(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18764: *5* __init__
-    def __init__(self, indent, lineno, nodes, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18765: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         for node in self.nodes:
             if isinstance(node, NodeAsgTuple):
@@ -2343,18 +2352,16 @@ class NodeAssign(Node):
             self.expr.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18766: *5* marshal_names
     def marshal_names(self):
+
         for node in self.nodes:
             node.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18767: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18768: *4* class NodeAugAssign
 class NodeAugAssign(Node):
@@ -2367,15 +2374,23 @@ class NodeAugAssign(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18769: *5* __init__
-    def __init__(self, indent, lineno, node, op, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        node,
+        op,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.node = transform(indent, lineno, node)
         self.op = transform(indent, lineno, op)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18770: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.node.put(can_split=can_split)
         op = ASSIGNMENT.replace('=', self.op.get_as_str())
@@ -2383,17 +2398,15 @@ class NodeAugAssign(Node):
         self.expr.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18771: *5* marshal_names
     def marshal_names(self):
+
         self.node.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18772: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18773: *4* class NodeBackquote
 class NodeBackquote(Node):
@@ -2406,23 +2419,27 @@ class NodeBackquote(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18774: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         return
-
     #@+node:ekr.20141010141310.18775: *5* put
     def put(self, can_split=False):
+
         self.line_more('`')
         self.expr.put(can_split=can_split)
         self.line_more('`')
         return self
-
     #@+node:ekr.20141010141310.18776: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18777: *4* class NodeBitAnd
 class NodeBitAnd(NodeOprAssoc):
@@ -2435,26 +2452,31 @@ class NodeBitAnd(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18778: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         return
-
     #@+node:ekr.20141010141310.18779: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             self.put_expr(node, can_split=can_split)
-        for node in (self.nodes)[1:]:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for node in self.nodes[1:]:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('& ')
             self.put_expr(node, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18780: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18781: *4* class NodeBitOr
 class NodeBitOr(NodeOprAssoc):
@@ -2467,26 +2489,31 @@ class NodeBitOr(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18782: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18783: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             self.put_expr(node, can_split=can_split)
-        for node in (self.nodes)[1:]:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for node in self.nodes[1:]:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('| ')
             self.put_expr(node, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18784: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18785: *4* class NodeBitXor
 class NodeBitXor(NodeOprAssoc):
@@ -2499,26 +2526,31 @@ class NodeBitXor(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18786: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18787: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             self.put_expr(node, can_split=can_split)
-        for node in (self.nodes)[1:]:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for node in self.nodes[1:]:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('^ ')
             self.put_expr(node, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18788: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18789: *4* class NodeBreak
 class NodeBreak(Node):
@@ -2532,17 +2564,16 @@ class NodeBreak(Node):
     #@+others
     #@+node:ekr.20141010141310.18790: *5* __init__
     def __init__(self, indent, lineno):
-        Node.__init__(self, indent, lineno)
-        return 
 
+        Node.__init__(self, indent, lineno)
+        return
     #@+node:ekr.20141010141310.18791: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('break')
         self.line_term()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18792: *4* class NodeCallFunc
 class NodeCallFunc(Node):
@@ -2555,22 +2586,31 @@ class NodeCallFunc(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18793: *5* __init__
-    def __init__(self, indent, lineno, node, args, star_args, dstar_args):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        node,
+        args,
+        star_args,
+        dstar_args,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.node = transform(indent, lineno, node)
         self.args = [transform(indent, lineno, arg) for arg in args]
         self.star_args = transform(indent, lineno, star_args)
         self.dstar_args = transform(indent, lineno, dstar_args)
         if len(self.args) == 1:
-            arg = (self.args)[0]
+            arg = self.args[0]
             if isinstance(arg, NodeGenExpr):
                 arg.need_parens = False
-        return 
-
+        return
     #@+node:ekr.20141010141310.18794: *5* put (NodeCallFunc)
     def put(self, can_split=False):
 
         def count_seps():
+
             result = len(self.args)
             if self.star_args is None:
                 pass
@@ -2581,6 +2621,8 @@ class NodeCallFunc(Node):
             else:
                 result += 1
             return result
+            # g.trace('(NodeCallFunc 1)',MAX_SEPS_FUNC_REF)
+            # g.trace('(NodeCallFunc2)',self.args)
 
         if isinstance(self.node, NodeLambda):
             self.line_more('(')
@@ -2590,7 +2632,6 @@ class NodeCallFunc(Node):
             self.node.put(can_split=can_split)
         self.line_more('(', tab_set=True)
         if count_seps() > MAX_SEPS_FUNC_REF:
-            # g.trace('(NodeCallFunc 1)',MAX_SEPS_FUNC_REF)
             self.line_term()
             self.inc_margin()
             arg_list = [('', arg) for arg in self.args]
@@ -2605,13 +2646,13 @@ class NodeCallFunc(Node):
             else:
                 arg_list.append(('**', self.dstar_args))
                 has_stars = True
-            for (sentinel, arg) in arg_list[:-1]:
+            for sentinel, arg in arg_list[:-1]:
                 self.line_init()
                 self.line_more(sentinel)
                 arg.put(can_split=True)
                 self.line_more(LIST_SEP)
                 self.line_term()
-            for (sentinel, arg) in arg_list[-1:]:
+            for sentinel, arg in arg_list[-1:]:
                 self.line_init()
                 self.line_more(sentinel)
                 arg.put(can_split=True)
@@ -2627,11 +2668,10 @@ class NodeCallFunc(Node):
                 self.line_init()
                 self.dec_margin()
         else:
-            # g.trace('(NodeCallFunc2)',self.args)
-            for arg in (self.args)[:-1]:
+            for arg in self.args[:-1]:
                 arg.put(can_split=True)
                 self.line_more(FUNCTION_PARAM_SEP, can_split_after=True)
-            for arg in (self.args)[-1:]:
+            for arg in self.args[-1:]:
                 arg.put(can_split=True)
                 if self.star_args is None and self.dstar_args is None:
                     pass
@@ -2653,16 +2693,16 @@ class NodeCallFunc(Node):
                 self.dstar_args.put(can_split=True)
         self.line_more(')', tab_clear=True)
         return self
-
     #@+node:ekr.20141010141310.18795: *5* get_lineno
     def get_lineno(self):
-        return self.node.get_lineno()
 
+        return self.node.get_lineno()
     #@+node:ekr.20141010141310.18796: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.args:
-            lineno = (self.args)[-1].get_hi_lineno()
+            lineno = self.args[-1].get_hi_lineno()
         if self.star_args is None:
             pass
         else:
@@ -2672,8 +2712,6 @@ class NodeCallFunc(Node):
         else:
             lineno = self.dstar_args.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18797: *4* class NodeClass
 class NodeClass(Node):
@@ -2686,16 +2724,25 @@ class NodeClass(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18798: *5* __init__
-    def __init__(self, indent, lineno, name, bases, doc, code):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        name,
+        bases,
+        doc,
+        code,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.name = transform(indent, lineno, name)
         self.bases = [transform(indent, lineno, base) for base in bases]
         self.doc = transform(indent + 1, lineno, doc)
         self.code = transform(indent + 1, lineno, code)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18799: *5* put
     def put(self, can_split=False):
+
         if is_leo:
             spacing = 1
         elif NAME_SPACE.is_global():
@@ -2707,9 +2754,9 @@ class NodeClass(Node):
         self.line_more(NAME_SPACE.get_name(self.name))
         if self.bases:
             self.line_more('(')
-            for base in (self.bases)[:1]:
+            for base in self.bases[:1]:
                 base.put(can_split=True)
-            for base in (self.bases)[1:]:
+            for base in self.bases[1:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 base.put(can_split=True)
             self.line_more(')')
@@ -2726,30 +2773,28 @@ class NodeClass(Node):
         self.pop_scope()
         OUTPUT.put_blank_line(7, count=spacing)
         return self
-
     #@+node:ekr.20141010141310.18800: *5* push_scope
     def push_scope(self):
+
         NAME_SPACE.push_scope()
         return self
-
     #@+node:ekr.20141010141310.18801: *5* pop_scope
     def pop_scope(self):
+
         NAME_SPACE.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18802: *5* marshal_names
     def marshal_names(self):
+
         NAME_SPACE.make_class_name(self.name)
         return self
-
     #@+node:ekr.20141010141310.18803: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.name.get_hi_lineno()
         if self.bases:
-            lineno = (self.bases)[-1].get_hi_lineno()
+            lineno = self.bases[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18804: *4* class NodeCompare
 class NodeCompare(NodeOprNotAssoc):
@@ -2762,28 +2807,33 @@ class NodeCompare(NodeOprNotAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18805: *5* __init__
-    def __init__(self, indent, lineno, expr, ops):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        ops,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        self.ops = [(op, transform(indent, lineno, ex)) for (op, ex) in 
-                    ops]
-        return 
-
+        self.ops = [(op, transform(indent, lineno, ex)) for (op, ex) in ops]
+        return
     #@+node:ekr.20141010141310.18806: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.expr, can_split=can_split)
-        for (op, ex) in self.ops:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for op, ex in self.ops:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('%s ' % op)
             self.put_expr(ex, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18807: *5* get_hi_lineno
     def get_hi_lineno(self):
-        (op, ex) = (self.ops)[-1]
+
+        op, ex = self.ops[-1]
         return ex.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18808: *4* class NodeConst
 class NodeConst(Node):
@@ -2796,13 +2846,19 @@ class NodeConst(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18809: *5* __init__
-    def __init__(self, indent, lineno, value):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        value,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.value = transform(indent, lineno, value)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18810: *5* put
     def put(self, can_split=False):
+
         if self.is_str():
             self.value.put_lit(can_split=can_split)
         elif isinstance(self.value, Node):
@@ -2810,25 +2866,23 @@ class NodeConst(Node):
         else:
             self.line_more(self.get_as_repr())
         return self
-
     #@+node:ekr.20141010141310.18811: *5* is_none
     def is_none(self):
-        return self.value is None
 
+        return self.value is None
     #@+node:ekr.20141010141310.18812: *5* is_str
     def is_str(self):
-        return isinstance(self.value, NodeStr)
 
+        return isinstance(self.value, NodeStr)
     #@+node:ekr.20141010141310.18813: *5* get_as_repr
     def get_as_repr(self):
+
         original_values = COMMENTS.literal_pool.get(repr(self.value), [])
         if len(original_values) == 1:
-            (result, lineno) = original_values[0]
+            result, lineno = original_values[0]
         else:
             result = repr(self.value)
         return result
-
-
     #@-others
 #@+node:ekr.20141010141310.18814: *4* class NodeContinue
 class NodeContinue(Node):
@@ -2842,18 +2896,17 @@ class NodeContinue(Node):
     #@+others
     #@+node:ekr.20141010141310.18815: *5* __init__
     def __init__(self, indent, lineno):
-        Node.__init__(self, indent, lineno)
-        return 
 
+        Node.__init__(self, indent, lineno)
+        return
     #@+node:ekr.20141010141310.18816: *5* put
     def put(self, can_split=False):
+
         # pylint: disable=arguments-differ
         self.line_init()
         self.line_more('continue')
         self.line_term()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18817: *4* class NodeDecorators
 class NodeDecorators(Node):
@@ -2862,16 +2915,22 @@ class NodeDecorators(Node):
     callable object, e.g., *classmethod*.
 
     """
+
     #@+others
     #@+node:ekr.20141010141310.18818: *5* __init__
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
 
-    def __init__(self, indent, lineno, nodes):
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18819: *5* put
     def put(self, spacing=0, can_split=False):
+
         # pylint: disable=arguments-differ
         for node in self.nodes:
             self.line_init(need_blank_line=spacing)
@@ -2880,12 +2939,10 @@ class NodeDecorators(Node):
             self.line_term()
             spacing = 0
         return self
-
     #@+node:ekr.20141010141310.18820: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18821: *4* class NodeDict
 class NodeDict(Node):
@@ -2898,26 +2955,32 @@ class NodeDict(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18822: *5* __init__
-    def __init__(self, indent, lineno, items):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        items,
+    ):
+
         Node.__init__(self, indent, lineno)
-        self.items = [(transform(indent, lineno, key), transform(indent, 
+        self.items = [(transform(indent, lineno, key), transform(indent,
                       lineno, value)) for (key, value) in items]
         return
-
     #@+node:ekr.20141010141310.18823: *5* put
     def put(self, can_split=False):
 
         def put_item():
+
             key.put(can_split=False)
             self.line_more(DICT_COLON)
             value.put(can_split=can_split)
-            return 
+            return
 
         self.line_more('{', tab_set=True)
         if len(self.items) > MAX_SEPS_DICT:
             self.line_term()
             self.inc_margin()
-            for (key, value) in self.items:
+            for key, value in self.items:
                 self.line_init()
                 put_item()
                 self.line_more(LIST_SEP)
@@ -2929,23 +2992,21 @@ class NodeDict(Node):
                 self.line_init()
                 self.dec_margin()
         else:
-            for (key, value) in (self.items)[:1]:
+            for key, value in self.items[:1]:
                 put_item()
-            for (key, value) in (self.items)[1:]:
+            for key, value in self.items[1:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 put_item()
         self.line_more('}', tab_clear=True)
         return self
-
     #@+node:ekr.20141010141310.18824: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.items:
-            (key, value) = (self.items)[-1]
+            key, value = self.items[-1]
             lineno = value.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18825: *4* class NodeDiscard
 class NodeDiscard(Node):
@@ -2958,35 +3019,39 @@ class NodeDiscard(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18826: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18827: *5* put
     def put(self, can_split=False):
-        if isinstance(self.expr, NodeConst) and (not KEEP_UNASSIGNED_CONSTANTS):
+
+        if isinstance(self.expr, NodeConst) and not KEEP_UNASSIGNED_CONSTANTS:
             pass
         else:
             self.line_init()
             self.expr.put(can_split=can_split)
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18828: *5* marshal_names
     def marshal_names(self):
+
         self.expr.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18829: *5* get_lineno
     def get_lineno(self):
-        return self.expr.get_lineno()
 
+        return self.expr.get_lineno()
     #@+node:ekr.20141010141310.18830: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18831: *4* class NodeDiv
 class NodeDiv(NodeOprLeftAssoc):
@@ -2999,25 +3064,30 @@ class NodeDiv(NodeOprLeftAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18832: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18833: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('/ ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18834: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18835: *4* class NodeEllipsis
 class NodeEllipsis(Node):
@@ -3027,15 +3097,14 @@ class NodeEllipsis(Node):
     #@+others
     #@+node:ekr.20141010141310.18836: *5* __init__
     def __init__(self, indent, lineno):
+
         Node.__init__(self, indent, lineno)
         return
-
     #@+node:ekr.20141010141310.18837: *5* put
     def put(self, can_split=False):
+
         self.line_more('...')
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18838: *4* class NodeExec
 class NodeExec(Node):
@@ -3048,15 +3117,23 @@ class NodeExec(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18839: *5* __init__
-    def __init__(self, indent, lineno, expr, locals, globals):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        locals,
+        globals,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.locals = transform(indent, lineno, locals)
         self.globals = transform(indent, lineno, globals)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18840: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('exec ')
         self.expr.put(can_split=can_split)
@@ -3072,9 +3149,9 @@ class NodeExec(Node):
                 self.globals.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18841: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.expr.get_hi_lineno()
         if self.locals is None:
             pass
@@ -3085,8 +3162,6 @@ class NodeExec(Node):
             else:
                 lineno = self.globals.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18842: *4* class NodeFor
 class NodeFor(Node):
@@ -3099,16 +3174,25 @@ class NodeFor(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18843: *5* __init__
-    def __init__(self, indent, lineno, assign, list, body, else_):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        assign,
+        list,
+        body,
+        else_,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.assign = transform(indent, lineno, assign)
         self.list = transform(indent, lineno, list)
         self.body = transform(indent + 1, lineno, body)
         self.else_ = transform(indent + 1, lineno, else_)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18844: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('for ')
         if isinstance(self.assign, NodeAsgTuple):
@@ -3131,9 +3215,9 @@ class NodeFor(Node):
             self.line_term(self.else_.get_lineno() - 1)
             self.else_.put()
         return self
-
     #@+node:ekr.20141010141310.18845: *5* marshal_names
     def marshal_names(self):
+
         self.assign.make_local_name()
         self.body.marshal_names()
         if self.else_ is None:
@@ -3141,12 +3225,10 @@ class NodeFor(Node):
         else:
             self.else_.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18846: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.list.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18847: *4* class NodeFloorDiv
 class NodeFloorDiv(NodeOprLeftAssoc):
@@ -3157,28 +3239,32 @@ class NodeFloorDiv(NodeOprLeftAssoc):
 
     tag = 'FloorDiv'
 
-
     #@+others
     #@+node:ekr.20141010141310.18848: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18849: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('// ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18850: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18851: *4* class NodeFrom
 class NodeFrom(Node):
@@ -3191,57 +3277,63 @@ class NodeFrom(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18852: *5* __init__
-    def __init__(self, indent, lineno, modname, names):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        modname,
+        names,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.modname = transform(indent, lineno, modname)
-        self.names = [(transform(indent, lineno, identifier), transform(indent, 
-                      lineno, name)) for (identifier, name) in names]
-        return 
-
+        self.names = [(transform(indent, lineno, identifier),
+                      transform(indent, lineno, name)) for (identifier,
+                      name) in names]
+        return
     #@+node:ekr.20141010141310.18853: *5* put
     def put(self, can_split=False):
 
         def put_name():
+
             identifier.put(can_split=can_split)
             if name is None:
                 pass
             else:
                 self.line_more(' as ')
                 name.put(can_split=can_split)
-            return 
+            return
 
         self.line_init()
         self.line_more('from ')
         self.modname.put(can_split=can_split)
         self.line_more(' import ')
-        for (identifier, name) in (self.names)[:-1]:
+        for identifier, name in self.names[:-1]:
             put_name()
             self.line_more(LIST_SEP, can_break_after=True)
-        for (identifier, name) in (self.names)[-1:]:
+        for identifier, name in self.names[-1:]:
             put_name()
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18854: *5* marshal_names
     def marshal_names(self):
-        for (identifier, name) in self.names:
+
+        for identifier, name in self.names:
             if name is None:
                 NAME_SPACE.make_imported_name(identifier)
             else:
                 NAME_SPACE.make_local_name(name)
         return self
-
     #@+node:ekr.20141010141310.18855: *5* get_hi_lineno
     def get_hi_lineno(self):
-        (identifier, name) = (self.names)[-1]
+
+        identifier, name = self.names[-1]
         lineno = identifier.get_hi_lineno()
         if name is None:
             pass
         else:
             lineno = name.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18856: *4* class NodeFunction
 class NodeFunction(Node):
@@ -3265,7 +3357,7 @@ class NodeFunction(Node):
         flags,
         doc,
         code,
-        ):
+    ):
 
         Node.__init__(self, indent, lineno)
         self.decorators = transform(indent, lineno, decorators)
@@ -3277,26 +3369,30 @@ class NodeFunction(Node):
         self.doc = transform(indent + 1, lineno, doc)
         self.code = transform(indent + 1, lineno, code)
         return
-
     #@+node:ekr.20141010141310.18858: *5* walk
-    def walk(self, tuple_, func, need_tuple=False):
+    def walk(
+        self,
+        tuple_,
+        func,
+        need_tuple=False,
+    ):
+
         if isinstance(tuple_, tuple) or isinstance(tuple_, list):
-            result = [self.walk(item, func, need_tuple) for item in
-                      tuple_]
+            result = [self.walk(item, func, need_tuple) for item in tuple_]
             if need_tuple:
                 result = tuple(result)
         else:
             result = func(tuple_)
         return result
-
     #@+node:ekr.20141010141310.18859: *5* xform
     def xform(self, node):
+
         result = transform(self.indent, self.lineno, node)
         return result
-
     #@+node:ekr.20141010141310.18860: *5* pair_up
     def pair_up(self, args, defaults):
-        args = args[:]          # This function manipulates its arguments
+
+        args = args[:]  # This function manipulates its arguments
         defaults = defaults[:]  # destructively, so make copies first.
         stars = []
         args.reverse()
@@ -3316,9 +3412,15 @@ class NodeFunction(Node):
         result = map(None, args, defaults, stars)
         result.reverse()
         return result
-
     #@+node:ekr.20141010141310.18861: *5* put_parm (NodeFunction)
-    def put_parm(self, arg, default, stars, can_split=True):
+    def put_parm(
+        self,
+        arg,
+        default,
+        stars,
+        can_split=True,
+    ):
+
         if stars is None:
             pass
         else:
@@ -3333,9 +3435,9 @@ class NodeFunction(Node):
             self.line_more(FUNCTION_PARAM_ASSIGNMENT)
             default.put(can_split=can_split)
         return
-
     #@+node:ekr.20141010141310.18862: *5* put (NodeFunction)
     def put(self, can_split=False):
+
         if is_leo:
             spacing = 1
         elif NAME_SPACE.is_global():
@@ -3352,7 +3454,7 @@ class NodeFunction(Node):
         self.line_more(NAME_SPACE.get_name(self.name))
         self.push_scope()
         parms = self.pair_up(self.argnames, self.defaults)
-        for (arg, default, stars) in parms:
+        for arg, default, stars in parms:
             self.walk(arg, NAME_SPACE.make_formal_param_name)
         self.code.marshal_names()
         self.line_more('(', tab_set=True)
@@ -3360,17 +3462,17 @@ class NodeFunction(Node):
         if len(parms) > MAX_SEPS_FUNC_DEF:
             self.line_term()
             self.inc_margin()
-            for (arg, default, stars) in parms[:-1]:
+            for arg, default, stars in parms[:-1]:
                 self.line_init()
                 self.put_parm(arg, default, stars)
                 self.line_more(FUNCTION_PARAM_SEP)
                 self.line_term()
-            for (arg, default, stars) in parms[-1:]:
+            for arg, default, stars in parms[-1:]:
                 self.line_init()
                 self.put_parm(arg, default, stars)
                 if stars is None:
                     self.line_more(FUNCTION_PARAM_SEP)
-                self.line_term() # EKR
+                self.line_term()  # EKR
             if JAVA_STYLE_LIST_DEDENT:
                 self.dec_margin()
                 self.line_init()
@@ -3378,9 +3480,9 @@ class NodeFunction(Node):
                 self.line_init()
                 self.dec_margin()
         else:
-            for (arg, default, stars) in parms[:1]:
+            for arg, default, stars in parms[:1]:
                 self.put_parm(arg, default, stars)
-            for (arg, default, stars) in parms[1:]:
+            for arg, default, stars in parms[1:]:
                 self.line_more(FUNCTION_PARAM_SEP, can_split_after=True)
                 self.put_parm(arg, default, stars)
         self.line_more('):', tab_clear=True)
@@ -3397,27 +3499,25 @@ class NodeFunction(Node):
         self.code.put()
         self.pop_scope()
         # g.trace('(NodeFunction) 1')
-        COMMENTS.merge(fin=True) # EKR.  Better for Leo.
+        COMMENTS.merge(fin=True)  # EKR.  Better for Leo.
         OUTPUT.put_blank_line(9, count=spacing)
         # g.trace('(NodeFunction) 2')
         return self
-
     #@+node:ekr.20141010141310.18863: *5* push_scope
     def push_scope(self):
+
         NAME_SPACE.push_scope()
         return self
-
     #@+node:ekr.20141010141310.18864: *5* pop_scope
     def pop_scope(self):
+
         NAME_SPACE.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18865: *5* marshal_names
     def marshal_names(self):
+
         NAME_SPACE.make_function_name(self.name)
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18866: *4* class NodeLambda
 class NodeLambda(NodeFunction):
@@ -3426,7 +3526,16 @@ class NodeLambda(NodeFunction):
 
     #@+others
     #@+node:ekr.20141010141310.18867: *5* __init__
-    def __init__(self, indent, lineno, argnames, defaults, flags, code):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        argnames,
+        defaults,
+        flags,
+        code,
+    ):
+
         NodeFunction.__init__(
             self,
             indent,
@@ -3438,19 +3547,19 @@ class NodeLambda(NodeFunction):
             flags,
             None,
             code,
-            )
+        )
         return
-
     #@+node:ekr.20141010141310.18868: *5* put (NodeLambda)
     def put(self, can_split=False):
+
         self.line_more('lambda ')
         self.push_scope()
         parms = self.pair_up(self.argnames, self.defaults)
-        for (arg, default, stars) in parms:
+        for arg, default, stars in parms:
             self.walk(arg, NAME_SPACE.make_formal_param_name)
-        for (arg, default, stars) in parms[:1]:
+        for arg, default, stars in parms[:1]:
             self.put_parm(arg, default, stars, can_split=False)
-        for (arg, default, stars) in parms[1:]:
+        for arg, default, stars in parms[1:]:
             self.line_more(FUNCTION_PARAM_SEP, can_break_after=True)
             self.put_parm(arg, default, stars, can_split=False)
         self.line_more(': ', can_break_after=True)
@@ -3461,16 +3570,14 @@ class NodeLambda(NodeFunction):
         self.code.put()
         self.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18869: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return self.code.get_hi_lineno()
 
+        return self.code.get_hi_lineno()
     #@+node:ekr.20141010141310.18870: *5* marshal_names
     def marshal_names(self):
+
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18871: *4* class NodeGenExpr
 class NodeGenExpr(Node):
@@ -3483,26 +3590,30 @@ class NodeGenExpr(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18872: *5* __init__
-    def __init__(self, indent, lineno, code):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        code,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.code = transform(indent, lineno, code)
         self.need_parens = True
-        return 
-
+        return
     #@+node:ekr.20141010141310.18873: *5* put
     def put(self, can_split=False):
+
         if self.need_parens:
             self.line_more('(')
         self.code.put(can_split=True)
         if self.need_parens:
             self.line_more(')')
         return self
-
     #@+node:ekr.20141010141310.18874: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.code.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18875: *4* class NodeGenExprInner
 class NodeGenExprInner(Node):
@@ -3515,14 +3626,21 @@ class NodeGenExprInner(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18876: *5* __init__
-    def __init__(self, indent, lineno, expr, quals):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        quals,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.quals = [transform(indent, lineno, qual) for qual in quals]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18877: *5* put
     def put(self, can_split=False):
+
         self.push_scope()
         self.marshal_names()
         self.expr.put(can_split=can_split)
@@ -3530,29 +3648,27 @@ class NodeGenExprInner(Node):
             qual.put(can_split=can_split)
         self.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18878: *5* push_scope
     def push_scope(self):
+
         NAME_SPACE.push_scope()
         return self
-
     #@+node:ekr.20141010141310.18879: *5* pop_scope
     def pop_scope(self):
+
         NAME_SPACE.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18880: *5* marshal_names
     def marshal_names(self):
+
         for qual in self.quals:
             qual.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18881: *5* get_hi_lineno
     def get_hi_lineno(self):
-        lineno = (self.quals)[-1].get_hi_lineno()
+
+        lineno = self.quals[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18882: *4* class NodeGenExprFor
 class NodeGenExprFor(Node):
@@ -3565,15 +3681,23 @@ class NodeGenExprFor(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18883: *5* __init__
-    def __init__(self, indent, lineno, assign, list, ifs):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        assign,
+        list,
+        ifs,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.assign = transform(indent, lineno, assign)
         self.list = transform(indent, lineno, list)
         self.ifs = [transform(indent, lineno, if_) for if_ in ifs]
         return
-
     #@+node:ekr.20141010141310.18884: *5* put
     def put(self, can_split=False):
+
         self.line_more(' ', can_split_after=True)
         self.line_more('for ')
         self.assign.put(can_split=can_split)
@@ -3582,20 +3706,18 @@ class NodeGenExprFor(Node):
         for if_ in self.ifs:
             if_.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18885: *5* marshal_names
     def marshal_names(self):
+
         self.assign.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18886: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.list.get_hi_lineno()
         if self.ifs:
-            lineno = (self.ifs)[-1].get_hi_lineno()
+            lineno = self.ifs[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18887: *4* class NodeGenExprIf
 class NodeGenExprIf(Node):
@@ -3608,23 +3730,27 @@ class NodeGenExprIf(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18888: *5* __init__
-    def __init__(self, indent, lineno, test):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        test,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18889: *5* put
     def put(self, can_split=False):
+
         self.line_more(' ', can_split_after=True)
         self.line_more('if ')
         self.test.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18890: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.test.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18891: *4* class NodeGetAttr
 class NodeGetAttr(NodeOpr):
@@ -3637,14 +3763,21 @@ class NodeGetAttr(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.18892: *5* __init__
-    def __init__(self, indent, lineno, expr, attrname):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        attrname,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.attrname = transform(indent, lineno, attrname)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18893: *5* put
     def put(self, can_split=False):
+
         if isinstance(self.expr, NodeConst):
             if self.expr.is_str():
                 self.expr.put()
@@ -3657,12 +3790,10 @@ class NodeGetAttr(NodeOpr):
         self.line_more('.')
         self.line_more(NAME_SPACE.make_attr_name(self.expr, self.attrname))
         return self
-
     #@+node:ekr.20141010141310.18894: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.attrname.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18895: *4* class NodeGlobal
 class NodeGlobal(Node):
@@ -3671,34 +3802,38 @@ class NodeGlobal(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18896: *5* __init__
-    def __init__(self, indent, lineno, names):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        names,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.names = [transform(indent, lineno, name) for name in names]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18897: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('global ')
-        for name in (self.names)[:1]:
+        for name in self.names[:1]:
             self.line_more(NAME_SPACE.get_name(name))
-        for name in (self.names)[1:]:
+        for name in self.names[1:]:
             self.line_more(LIST_SEP, can_break_after=True)
             self.line_more(NAME_SPACE.get_name(name))
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18898: *5* marshal_names
     def marshal_names(self):
+
         for name in self.names:
             NAME_SPACE.make_global_name(name)
         return self
-
     #@+node:ekr.20141010141310.18899: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.names)[-1].get_hi_lineno()
 
-
+        return self.names[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18900: *4* class NodeIf
 class NodeIf(Node):
@@ -3711,23 +3846,30 @@ class NodeIf(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18901: *5* __init__
-    def __init__(self, indent, lineno, tests, else_):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        tests,
+        else_,
+    ):
+
         Node.__init__(self, indent, lineno)
-        self.tests = [(transform(indent, lineno, expr), transform(indent +
-                      1, lineno, stmt)) for (expr, stmt) in tests]
+        self.tests = [(transform(indent, lineno, expr), transform(indent + 1,
+                      lineno, stmt)) for (expr, stmt) in tests]
         self.else_ = transform(indent + 1, lineno, else_)
         return
-
     #@+node:ekr.20141010141310.18902: *5* put
     def put(self, can_split=False):
-        for (expr, stmt) in (self.tests)[:1]:
+
+        for expr, stmt in self.tests[:1]:
             self.line_init()
             self.line_more('if ')
             expr.put(can_split=can_split)
             self.line_more(':')
             self.line_term(stmt.get_lineno() - 1)
             stmt.put()
-        for (expr, stmt) in (self.tests)[1:]:
+        for expr, stmt in self.tests[1:]:
             self.line_init()
             self.line_more('elif ')
             expr.put(can_split=can_split)
@@ -3742,23 +3884,21 @@ class NodeIf(Node):
             self.line_term(self.else_.get_lineno() - 1)
             self.else_.put()
         return self
-
     #@+node:ekr.20141010141310.18903: *5* marshal_names
     def marshal_names(self):
-        for (expr, stmt) in self.tests:
+
+        for expr, stmt in self.tests:
             stmt.marshal_names()
         if self.else_ is None:
             pass
         else:
             self.else_.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18904: *5* get_hi_lineno
     def get_hi_lineno(self):
-        (expr, stmt) = (self.tests)[0]
+
+        expr, stmt = self.tests[0]
         return expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18905: *4* class NodeIfExp
 class NodeIfExp(Node):
@@ -3771,15 +3911,23 @@ class NodeIfExp(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18906: *5* __init__
-    def __init__(self, indent, lineno, test, then, else_):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        test,
+        then,
+        else_,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
         self.then = transform(indent, lineno, then)
         self.else_ = transform(indent, lineno, else_)
         return
-
     #@+node:ekr.20141010141310.18907: *5* put
     def put(self, can_split=False):
+
         self.line_more('(', tab_set=True)
         self.then.put(can_split=True)
         self.line_more(' if ')
@@ -3788,12 +3936,10 @@ class NodeIfExp(Node):
         self.else_.put(can_split=True)
         self.line_more(')', tab_clear=True)
         return self
-
     #@+node:ekr.20141010141310.18908: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.else_.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18909: *4* class NodeImport
 class NodeImport(Node):
@@ -3802,16 +3948,23 @@ class NodeImport(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18910: *5* __init__
-    def __init__(self, indent, lineno, names):
-        Node.__init__(self, indent, lineno)
-        self.names = [(transform(indent, lineno, identifier), transform(indent,
-                      lineno, name)) for (identifier, name) in names]
-        return
+    def __init__(
+        self,
+        indent,
+        lineno,
+        names,
+    ):
 
+        Node.__init__(self, indent, lineno)
+        self.names = [(transform(indent, lineno, identifier),
+                      transform(indent, lineno, name)) for (identifier,
+                      name) in names]
+        return
     #@+node:ekr.20141010141310.18911: *5* put
     def put(self, can_split=False):
 
         def put_name():
+
             identifier.put(can_split=can_split)
             if name is None:
                 pass
@@ -3820,33 +3973,31 @@ class NodeImport(Node):
                 name.put(can_split=can_split)
             return
 
-        for (identifier, name) in self.names:
+        for identifier, name in self.names:
             self.line_init()
             self.line_more('import ')
             put_name()
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18912: *5* marshal_names
     def marshal_names(self):
-        for (identifier, name) in self.names:
+
+        for identifier, name in self.names:
             if name is None:
                 pass
             else:
                 NAME_SPACE.make_local_name(name)
         return self
-
     #@+node:ekr.20141010141310.18913: *5* get_hi_lineno
     def get_hi_lineno(self):
-        (identifier, name) = (self.names)[-1]
+
+        identifier, name = self.names[-1]
         lineno = identifier.get_hi_lineno()
         if name is None:
             pass
         else:
             lineno = name.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18914: *4* class NodeInvert
 class NodeInvert(NodeOpr):
@@ -3859,22 +4010,26 @@ class NodeInvert(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.18915: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18916: *5* put
     def put(self, can_split=False):
+
         self.line_more('~')
         self.put_expr(self.expr, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18917: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18918: *4* class NodeKeyword
 class NodeKeyword(Node):
@@ -3887,24 +4042,29 @@ class NodeKeyword(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18919: *5* __init__
-    def __init__(self, indent, lineno, name, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        name,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.name = transform(indent, lineno, name)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18920: *5* put
     def put(self, can_split=False):
+
         self.line_more(NAME_SPACE.make_keyword_name(self.name))
         self.line_more(FUNCTION_PARAM_ASSIGNMENT)
         self.expr.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18921: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18922: *4* class NodeLeftShift
 class NodeLeftShift(NodeOprLeftAssoc):
@@ -3915,28 +4075,32 @@ class NodeLeftShift(NodeOprLeftAssoc):
 
     tag = 'LeftShift'
 
-
     #@+others
     #@+node:ekr.20141010141310.18923: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18924: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('<< ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18925: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18926: *4* class NodeList
 class NodeList(Node):
@@ -3949,13 +4113,19 @@ class NodeList(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18927: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18928: *5* put
     def put(self, can_split=False):
+
         self.line_more('[', tab_set=True)
         if len(self.nodes) > MAX_SEPS_SERIES:
             self.line_term()
@@ -3972,22 +4142,20 @@ class NodeList(Node):
                 self.line_init()
                 self.dec_margin()
         else:
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put(can_split=True)
-            for node in (self.nodes)[1:]:
+            for node in self.nodes[1:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 node.put(can_split=True)
         self.line_more(']', tab_clear=True)
         return self
-
     #@+node:ekr.20141010141310.18929: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.nodes:
-            lineno = (self.nodes)[-1].get_hi_lineno()
+            lineno = self.nodes[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18930: *4* class NodeListComp
 class NodeListComp(Node):
@@ -4000,14 +4168,21 @@ class NodeListComp(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18931: *5* __init__
-    def __init__(self, indent, lineno, expr, quals):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        quals,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.quals = [transform(indent, lineno, qual) for qual in quals]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18932: *5* put
     def put(self, can_split=False):
+
         self.push_scope()
         self.marshal_names()
         self.line_more('[', tab_set=True)
@@ -4017,29 +4192,27 @@ class NodeListComp(Node):
         self.line_more(']', tab_clear=True)
         self.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18933: *5* push_scope
     def push_scope(self):
+
         NAME_SPACE.push_scope()
         return self
-
     #@+node:ekr.20141010141310.18934: *5* pop_scope
     def pop_scope(self):
+
         NAME_SPACE.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18935: *5* marshal_names
     def marshal_names(self):
+
         for qual in self.quals:
             qual.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18936: *5* get_hi_lineno
     def get_hi_lineno(self):
-        lineno = (self.quals)[-1].get_hi_lineno()
+
+        lineno = self.quals[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18937: *4* class NodeListCompFor
 class NodeListCompFor(Node):
@@ -4052,15 +4225,23 @@ class NodeListCompFor(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18938: *5* __init__
-    def __init__(self, indent, lineno, assign, list, ifs):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        assign,
+        list,
+        ifs,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.assign = transform(indent, lineno, assign)
         self.list = transform(indent, lineno, list)
         self.ifs = [transform(indent, lineno, if_) for if_ in ifs]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18939: *5* put
     def put(self, can_split=False):
+
         self.line_more(' ', can_split_after=True)
         self.line_more('for ')
         self.assign.put(can_split=can_split)
@@ -4069,20 +4250,18 @@ class NodeListCompFor(Node):
         for if_ in self.ifs:
             if_.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18940: *5* marshal_names
     def marshal_names(self):
+
         self.assign.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.18941: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.list.get_hi_lineno()
         if self.ifs:
-            lineno = (self.ifs)[-1].get_hi_lineno()
+            lineno = self.ifs[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18942: *4* class NodeListCompIf
 class NodeListCompIf(Node):
@@ -4095,23 +4274,27 @@ class NodeListCompIf(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18943: *5* __init__
-    def __init__(self, indent, lineno, test):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        test,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18944: *5* put
     def put(self, can_split=False):
+
         self.line_more(' ', can_split_after=True)
         self.line_more('if ')
         self.test.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18945: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.test.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18946: *4* class NodeMod
 class NodeMod(NodeOprLeftAssoc):
@@ -4124,25 +4307,30 @@ class NodeMod(NodeOprLeftAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18947: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18948: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('% ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18949: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18950: *4* class NodeModule
 class NodeModule(Node):
@@ -4157,14 +4345,21 @@ class NodeModule(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18951: *5* __init__
-    def __init__(self, indent, lineno, doc, node):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        doc,
+        node,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.doc = transform(indent, lineno, doc)
         self.node = transform(indent, lineno, node)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18952: *5* put
     def put(self, can_split=False):
+
         if self.doc is None:
             pass
         else:
@@ -4178,27 +4373,25 @@ class NodeModule(Node):
             self.line_term()
         self.node.put()
         return self
-
     #@+node:ekr.20141010141310.18953: *5* push_scope
     def push_scope(self):
+
         NAME_SPACE.push_scope()
         return self
-
     #@+node:ekr.20141010141310.18954: *5* pop_scope
     def pop_scope(self):
+
         NAME_SPACE.pop_scope()
         return self
-
     #@+node:ekr.20141010141310.18955: *5* marshal_names
     def marshal_names(self):
+
         self.node.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.18956: *5* get_lineno
     def get_lineno(self):
+
         return self.node.get_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18957: *4* class NodeMul
 class NodeMul(NodeOprLeftAssoc):
@@ -4211,25 +4404,30 @@ class NodeMul(NodeOprLeftAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18958: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18959: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('* ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18960: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18961: *4* class NodeName
 class NodeName(Node):
@@ -4242,29 +4440,33 @@ class NodeName(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18962: *5* __init__
-    def __init__(self, indent, lineno, name):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        name,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.name = transform(indent, lineno, name)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18963: *5* put
     def put(self, can_split=False):
+
         self.line_more(NAME_SPACE.get_name(self.name))
         return self
-
     #@+node:ekr.20141010141310.18964: *5* make_local_name
     def make_local_name(self):
+
         if NAME_SPACE.has_name(self.name):
             pass
         else:
             NAME_SPACE.make_local_name(self.name)
         return self
-
     #@+node:ekr.20141010141310.18965: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.name.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18966: *4* class NodeNot
 class NodeNot(NodeOpr):
@@ -4277,22 +4479,26 @@ class NodeNot(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.18967: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18968: *5* put
     def put(self, can_split=False):
+
         self.line_more('not ')
         self.put_expr(self.expr, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18969: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18970: *4* class NodeOr
 class NodeOr(NodeOprAssoc):
@@ -4305,26 +4511,31 @@ class NodeOr(NodeOprAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18971: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.18972: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             self.put_expr(node, can_split=can_split)
-        for node in (self.nodes)[1:]:
-            self.line_more(' ', can_split_after=can_split, can_break_after=True)
+        for node in self.nodes[1:]:
+            self.line_more(' ', can_split_after=can_split,
+                           can_break_after=True)
             self.line_more('or ')
             self.put_expr(node, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.18973: *5* get_hi_lineno
     def get_hi_lineno(self):
-        return (self.nodes)[-1].get_hi_lineno()
 
-
+        return self.nodes[-1].get_hi_lineno()
     #@-others
 #@+node:ekr.20141010141310.18974: *4* class NodePass
 class NodePass(Node):
@@ -4338,17 +4549,16 @@ class NodePass(Node):
     #@+others
     #@+node:ekr.20141010141310.18975: *5* __init__
     def __init__(self, indent, lineno):
-        Node.__init__(self, indent, lineno)
-        return 
 
+        Node.__init__(self, indent, lineno)
+        return
     #@+node:ekr.20141010141310.18976: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('pass')
         self.line_term()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.18977: *4* class NodePower
 class NodePower(NodeOprRightAssoc):
@@ -4361,25 +4571,30 @@ class NodePower(NodeOprRightAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18978: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18979: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('** ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.18980: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.18981: *4* class NodePrint
 class NodePrint(Node):
@@ -4392,14 +4607,21 @@ class NodePrint(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18982: *5* __init__
-    def __init__(self, indent, lineno, nodes, dest):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+        dest,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.dest = transform(indent, lineno, dest)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18983: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('print ')
         if self.dest is None:
@@ -4414,19 +4636,17 @@ class NodePrint(Node):
             self.line_more(LIST_SEP, can_break_after=True)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18984: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.dest is None:
             pass
         else:
             lineno = self.dest.get_hi_lineno()
         if self.nodes:
-            lineno = (self.nodes)[-1].get_hi_lineno()
+            lineno = self.nodes[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18985: *4* class NodePrintnl
 class NodePrintnl(Node):
@@ -4439,14 +4659,21 @@ class NodePrintnl(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18986: *5* __init__
-    def __init__(self, indent, lineno, nodes, dest):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+        dest,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
         self.dest = transform(indent, lineno, dest)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18987: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('print ')
         if self.dest is None:
@@ -4456,26 +4683,24 @@ class NodePrintnl(Node):
             self.dest.put(can_split=can_split)
             if self.nodes:
                 self.line_more(LIST_SEP, can_break_after=True)
-        for node in (self.nodes)[:-1]:
+        for node in self.nodes[:-1]:
             node.put(can_split=can_split)
             self.line_more(LIST_SEP, can_break_after=True)
-        for node in (self.nodes)[-1:]:
+        for node in self.nodes[-1:]:
             node.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18988: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.dest is None:
             pass
         else:
             lineno = self.dest.get_hi_lineno()
         if self.nodes:
-            lineno = (self.nodes)[-1].get_hi_lineno()
+            lineno = self.nodes[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18989: *4* class NodeRaise
 class NodeRaise(Node):
@@ -4488,15 +4713,23 @@ class NodeRaise(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18990: *5* __init__
-    def __init__(self, indent, lineno, expr1, expr2, expr3):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr1,
+        expr2,
+        expr3,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr1 = transform(indent, lineno, expr1)
         self.expr2 = transform(indent, lineno, expr2)
         self.expr3 = transform(indent, lineno, expr3)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18991: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('raise ')
         if self.expr1 is None:
@@ -4515,9 +4748,9 @@ class NodeRaise(Node):
                     self.expr3.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18992: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.expr1 is None:
             pass
@@ -4532,8 +4765,6 @@ class NodeRaise(Node):
                 else:
                     lineno = self.expr3.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18993: *4* class NodeReturn
 class NodeReturn(Node):
@@ -4546,17 +4777,23 @@ class NodeReturn(Node):
 
     #@+others
     #@+node:ekr.20141010141310.18994: *5* __init__
-    def __init__(self, indent, lineno, value):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        value,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.value = transform(indent, lineno, value)
-        return 
-
+        return
     #@+node:ekr.20141010141310.18995: *5* has_value
     def has_value(self):
-        return not (isinstance(self.value, NodeConst) and self.value.is_none())
 
+        return not (isinstance(self.value, NodeConst) and self.value.is_none())
     #@+node:ekr.20141010141310.18996: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('return ')
         if self.has_value():
@@ -4566,15 +4803,13 @@ class NodeReturn(Node):
                 self.value.put(can_split=can_split)
         self.line_term()
         return self
-
     #@+node:ekr.20141010141310.18997: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.has_value:
             lineno = self.value.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.18998: *4* class NodeRightShift
 class NodeRightShift(NodeOprLeftAssoc):
@@ -4587,25 +4822,30 @@ class NodeRightShift(NodeOprLeftAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.18999: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19000: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('>> ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.19001: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19002: *4* class NodeSlice
 class NodeSlice(NodeOpr):
@@ -4618,26 +4858,36 @@ class NodeSlice(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.19003: *5* __init__
-    def __init__(self, indent, lineno, expr, flags, lower, upper):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        flags,
+        lower,
+        upper,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.flags = transform(indent, lineno, flags)
         self.lower = transform(indent, lineno, lower)
         self.upper = transform(indent, lineno, upper)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19004: *5* has_value
     def has_value(self, node):
-        return not (node is None or isinstance(node, NodeConst) and node.is_none())
 
+        return not (node is None or isinstance(node, NodeConst)
+                    and node.is_none())
     #@+node:ekr.20141010141310.19005: *5* put (NodeSlice)
     def put(self, can_split=False):
+
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
             self.line_init()
             self.line_more('del ')
-        if (isinstance(self.expr, NodeGetAttr)
-            or isinstance(self.expr, NodeAsgAttr)):
+        if isinstance(self.expr, NodeGetAttr) or isinstance(self.expr,
+                NodeAsgAttr):
             self.expr.put(can_split=can_split)
         else:
             self.put_expr(self.expr, can_split=can_split)
@@ -4655,22 +4905,20 @@ class NodeSlice(NodeOpr):
         if is_del:
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.19006: *5* make_local_name
     def make_local_name(self):
+
         self.expr.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.19007: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.has_value(self.lower):
             lineno = self.lower.get_hi_lineno()
         if self.has_value(self.upper):
             lineno = self.upper.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.19008: *4* class NodeSliceobj
 class NodeSliceobj(Node):
@@ -4685,35 +4933,40 @@ class NodeSliceobj(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19009: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.19010: *5* has_value
     def has_value(self, node):
-        return not (node is None or isinstance(node, NodeConst) and node.is_none())
 
+        return not (node is None or isinstance(node, NodeConst)
+                    and node.is_none())
     #@+node:ekr.20141010141310.19011: *5* put
     def put(self, can_split=False):
-        for node in (self.nodes)[:1]:
+
+        for node in self.nodes[:1]:
             if self.has_value(node):
                 node.put(can_split=can_split)
-        for node in (self.nodes)[1:]:
+        for node in self.nodes[1:]:
             self.line_more(SLICE_COLON, can_split_after=True)
             if self.has_value(node):
                 node.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.19012: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         for node in self.nodes:
             if self.has_value(node):
                 lineno = node.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.19013: *4* class NodeStmt
 class NodeStmt(Node):
@@ -4726,19 +4979,25 @@ class NodeStmt(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19014: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.19015: *5* put
     def put(self, can_split=False):
+
         for node in self.nodes:
             node.put()
         return self
-
     #@+node:ekr.20141010141310.19016: *5* get_lineno
     def get_lineno(self):
+
         for node in self.nodes:
             result = node.get_lineno()
             if result == 0:
@@ -4746,14 +5005,12 @@ class NodeStmt(Node):
             else:
                 return result
         return 0
-
     #@+node:ekr.20141010141310.19017: *5* marshal_names
     def marshal_names(self):
+
         for node in self.nodes:
             node.marshal_names()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.19018: *4* class NodeSub
 class NodeSub(NodeOprLeftAssoc):
@@ -4766,25 +5023,30 @@ class NodeSub(NodeOprLeftAssoc):
 
     #@+others
     #@+node:ekr.20141010141310.19019: *5* __init__
-    def __init__(self, indent, lineno, left, right):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        left,
+        right,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.left = transform(indent, lineno, left)
         self.right = transform(indent, lineno, right)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19020: *5* put
     def put(self, can_split=False):
+
         self.put_expr(self.left, can_split=can_split, pos='left')
         self.line_more(' ', can_split_after=can_split, can_break_after=True)
         self.line_more('- ')
         self.put_expr(self.right, can_split=can_split, pos='right')
         return self
-
     #@+node:ekr.20141010141310.19021: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.right.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19022: *4* class NodeSubscript
 class NodeSubscript(NodeOpr):
@@ -4797,21 +5059,29 @@ class NodeSubscript(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.19023: *5* __init__
-    def __init__(self, indent, lineno, expr, flags, subs):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        flags,
+        subs,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.flags = transform(indent, lineno, flags)
         self.subs = [transform(indent, lineno, sub) for sub in subs]
-        return 
-
+        return
     #@+node:ekr.20141010141310.19024: *5* put (NodeSubscript)
     def put(self, can_split=False):
+
         is_del = self.flags.get_as_str() in ['OP_DELETE']
         if is_del:
             self.line_init()
             self.line_more('del ')
-        if (isinstance(self.expr, NodeGetAttr)
-            or isinstance(self.expr, NodeAsgAttr)):
+        if isinstance(self.expr, NodeGetAttr) or isinstance(self.expr,
+                NodeAsgAttr):
             self.expr.put(can_split=can_split)
         else:
             self.put_expr(self.expr, can_split=can_split)
@@ -4820,29 +5090,27 @@ class NodeSubscript(NodeOpr):
             self.flags.put()
             self.line_more(' */ ')
         self.line_more('[', tab_set=True)
-        for sub in (self.subs)[:1]:
+        for sub in self.subs[:1]:
             sub.put(can_split=True)
-        for sub in (self.subs)[1:]:
+        for sub in self.subs[1:]:
             self.line_more(SUBSCRIPT_SEP, can_split_after=True)
             sub.put(can_split=True)
         self.line_more(']', tab_clear=True)
         if is_del:
             self.line_term()
         return self
-
     #@+node:ekr.20141010141310.19025: *5* make_local_name
     def make_local_name(self):
+
         self.expr.make_local_name()
         return self
-
     #@+node:ekr.20141010141310.19026: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.expr.get_hi_lineno()
         if self.subs:
-            lineno = (self.subs)[-1].get_hi_lineno()
+            lineno = self.subs[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.19027: *4* class NodeTryExcept
 class NodeTryExcept(Node):
@@ -4855,7 +5123,15 @@ class NodeTryExcept(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19028: *5* __init__
-    def __init__(self, indent, lineno, body, handlers, else_):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        body,
+        handlers,
+        else_,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.body = transform(indent + 1, lineno, body)
         self.handlers = [(transform(indent, lineno, expr), transform(indent,
@@ -4863,10 +5139,10 @@ class NodeTryExcept(Node):
                          suite)) for (expr, target, suite) in handlers]
         self.else_ = transform(indent + 1, lineno, else_)
         self.has_finally = False
-        return 
-
+        return
     #@+node:ekr.20141010141310.19029: *5* put
     def put(self, can_split=False):
+
         if self.has_finally:
             pass
         else:
@@ -4874,7 +5150,7 @@ class NodeTryExcept(Node):
             self.line_more('try:')
             self.line_term(self.body.get_lineno() - 1)
         self.body.put()
-        for (expr, target, suite) in self.handlers:
+        for expr, target, suite in self.handlers:
             self.line_init()
             self.line_more('except')
             if expr is None:
@@ -4898,19 +5174,17 @@ class NodeTryExcept(Node):
             self.line_term(self.else_.get_lineno() - 1)
             self.else_.put()
         return self
-
     #@+node:ekr.20141010141310.19030: *5* marshal_names
     def marshal_names(self):
+
         self.body.marshal_names()
-        for (expr, target, suite) in self.handlers:
+        for expr, target, suite in self.handlers:
             suite.marshal_names()
         if self.else_ is None:
             pass
         else:
             self.else_.marshal_names()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.19031: *4* class NodeTryFinally
 class NodeTryFinally(Node):
@@ -4924,7 +5198,14 @@ class NodeTryFinally(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19032: *5* __init__
-    def __init__(self, indent, lineno, body, final):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        body,
+        final,
+    ):
+
         Node.__init__(self, indent, lineno)
         if isinstance(body, compiler.ast.TryExcept):
             self.body = transform(indent, lineno, body)
@@ -4932,10 +5213,10 @@ class NodeTryFinally(Node):
         else:
             self.body = transform(indent + 1, lineno, body)
         self.final = transform(indent + 1, lineno, final)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19033: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('try:')
         self.line_term(self.body.get_lineno() - 1)
@@ -4945,14 +5226,12 @@ class NodeTryFinally(Node):
         self.line_term(self.final.get_lineno() - 1)
         self.final.put()
         return self
-
     #@+node:ekr.20141010141310.19034: *5* marshal_names
     def marshal_names(self):
+
         self.body.marshal_names()
         self.final.marshal_names()
         return self
-
-
     #@-others
 #@+node:ekr.20141010141310.19035: *4* class NodeTuple
 class NodeTuple(Node):
@@ -4965,13 +5244,19 @@ class NodeTuple(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19036: *5* __init__
-    def __init__(self, indent, lineno, nodes):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        nodes,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.nodes = [transform(indent, lineno, node) for node in nodes]
-        return 
-
+        return
     #@+node:ekr.20141010141310.19037: *5* put
     def put(self, can_split=False, is_paren_required=True):
+
         # pylint: disable=arguments-differ
         if len(self.nodes) > MAX_SEPS_SERIES:
             self.line_more('(', tab_set=True)
@@ -4989,38 +5274,35 @@ class NodeTuple(Node):
                 self.line_init()
                 self.dec_margin()
             self.line_more(')', tab_clear=True)
-        elif ((len(self.nodes) == 0) or
-              is_paren_required or
-              PARENTHESIZE_TUPLE_DISPLAY):
+        elif len(self.nodes) == 0 or is_paren_required \
+            or PARENTHESIZE_TUPLE_DISPLAY:
             self.line_more('(', tab_set=True)
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put(can_split=True)
                 self.line_more(LIST_SEP, can_split_after=True)
-            for node in (self.nodes)[1:2]:
+            for node in self.nodes[1:2]:
                 node.put(can_split=True)
-            for node in (self.nodes)[2:]:
+            for node in self.nodes[2:]:
                 self.line_more(LIST_SEP, can_split_after=True)
                 node.put(can_split=True)
             self.line_more(')', tab_clear=True)
         else:
-            for node in (self.nodes)[:1]:
+            for node in self.nodes[:1]:
                 node.put()
                 self.line_more(LIST_SEP, can_break_after=True)
-            for node in (self.nodes)[1:2]:
+            for node in self.nodes[1:2]:
                 node.put()
-            for node in (self.nodes)[2:]:
+            for node in self.nodes[2:]:
                 self.line_more(LIST_SEP, can_break_after=True)
                 node.put()
         return self
-
     #@+node:ekr.20141010141310.19038: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = Node.get_hi_lineno(self)
         if self.nodes:
-            lineno = (self.nodes)[-1].get_hi_lineno()
+            lineno = self.nodes[-1].get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.19039: *4* class NodeUnaryAdd
 class NodeUnaryAdd(NodeOpr):
@@ -5033,22 +5315,26 @@ class NodeUnaryAdd(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.19040: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19041: *5* put
     def put(self, can_split=False):
+
         self.line_more('+')
         self.put_expr(self.expr, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.19042: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19043: *4* class NodeUnarySub
 class NodeUnarySub(NodeOpr):
@@ -5061,22 +5347,26 @@ class NodeUnarySub(NodeOpr):
 
     #@+others
     #@+node:ekr.20141010141310.19044: *5* __init__
-    def __init__(self, indent, lineno, expr):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19045: *5* put
     def put(self, can_split=False):
+
         self.line_more('-')
         self.put_expr(self.expr, can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.19046: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.expr.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19047: *4* class NodeWhile
 class NodeWhile(Node):
@@ -5089,15 +5379,23 @@ class NodeWhile(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19048: *5* __init__
-    def __init__(self, indent, lineno, test, body, else_):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        test,
+        body,
+        else_,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.test = transform(indent, lineno, test)
         self.body = transform(indent + 1, lineno, body)
         self.else_ = transform(indent + 1, lineno, else_)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19049: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('while ')
         self.test.put(can_split=can_split)
@@ -5112,21 +5410,19 @@ class NodeWhile(Node):
             self.line_term(self.else_.get_lineno() - 1)
             self.else_.put()
         return self
-
     #@+node:ekr.20141010141310.19050: *5* marshal_names
     def marshal_names(self):
+
         self.body.marshal_names()
         if self.else_ is None:
             pass
         else:
             self.else_.marshal_names()
-        return 
-
+        return
     #@+node:ekr.20141010141310.19051: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.test.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19052: *4* class NodeWith
 class NodeWith(Node):
@@ -5139,15 +5435,23 @@ class NodeWith(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19053: *5* __init__
-    def __init__(self, indent, lineno, expr, vars, body):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        expr,
+        vars,
+        body,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.expr = transform(indent, lineno, expr)
         self.vars = transform(indent, lineno, vars)
         self.body = transform(indent + 1, lineno, body)
-        return 
-
+        return
     #@+node:ekr.20141010141310.19054: *5* put
     def put(self, can_split=False):
+
         self.line_init()
         self.line_more('with ')
         self.expr.put(can_split=can_split)
@@ -5160,26 +5464,24 @@ class NodeWith(Node):
         self.line_term(self.body.get_lineno() - 1)
         self.body.put()
         return self
-
     #@+node:ekr.20141010141310.19055: *5* marshal_names
     def marshal_names(self):
+
         if self.vars is None:
             pass
         else:
             self.vars.make_local_name()
         self.body.marshal_names()
         return self
-
     #@+node:ekr.20141010141310.19056: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         lineno = self.expr.get_hi_lineno()
         if self.vars is None:
             pass
         else:
             lineno = self.vars.get_hi_lineno()
         return lineno
-
-
     #@-others
 #@+node:ekr.20141010141310.19057: *4* class NodeYield
 class NodeYield(Node):
@@ -5192,29 +5494,34 @@ class NodeYield(Node):
 
     #@+others
     #@+node:ekr.20141010141310.19058: *5* __init__
-    def __init__(self, indent, lineno, value):
+    def __init__(
+        self,
+        indent,
+        lineno,
+        value,
+    ):
+
         Node.__init__(self, indent, lineno)
         self.value = transform(indent, lineno, value)
         return
-
     #@+node:ekr.20141010141310.19059: *5* put
     def put(self, can_split=False):
+
         self.line_more('yield ')
         self.value.put(can_split=can_split)
         return self
-
     #@+node:ekr.20141010141310.19060: *5* get_hi_lineno
     def get_hi_lineno(self):
+
         return self.value.get_hi_lineno()
-
-
     #@-others
 #@+node:ekr.20141010141310.19067: ** main
 def main():
+
     if DEBUG:
-        print('Begin doctests.')
+        print 'Begin doctests.'
         doctest.testmod()
-        print('  End doctests.')
+        print '  End doctests.'
     if len(sys.argv) > 1:
         file_in = sys.argv[1]
     else:
@@ -5229,8 +5536,12 @@ def main():
         file_out = sys.stdout
     tidy_up(file_in, file_out)
 #@+node:ekr.20141010141310.19062: ** tidy_up & helpers
-def tidy_up(file_in=sys.stdin, file_out=sys.stdout, is_module=True, leo_c=None):
-
+def tidy_up(
+    file_in=sys.stdin,
+    file_out=sys.stdout,
+    is_module=True,
+    leo_c=None,
+):
     """Clean up, regularize, and reformat the text of a Python script.
 
     File_in is a file name or a file-like object with a *read* method,
@@ -5240,7 +5551,6 @@ def tidy_up(file_in=sys.stdin, file_out=sys.stdout, is_module=True, leo_c=None):
     method to contain the output script.
 
     """
-
     global INPUT, OUTPUT, COMMENTS, NAME_SPACE, INPUT_CODING
     set_prefs(leo_c)
     INPUT = InputUnit(file_in)
@@ -5259,13 +5569,13 @@ def set_prefs(c):
     '''Set preferences from Leo configuration, if possible.'''
     trace = False and not g.unitTesting
     global ADD_BLANK_LINES_AROUND_COMMENTS
-    global BLANK_LINE_AFTER_DOCSTRING # New
-    global BLANK_LINE_AFTER_FUNCTION_DEF # New
-    global COL_LIMIT # Existing, but now can be over-ridden.
+    global BLANK_LINE_AFTER_DOCSTRING  # New
+    global BLANK_LINE_AFTER_FUNCTION_DEF  # New
+    global COL_LIMIT  # Existing, but now can be over-ridden.
     global DEBUG
     global DOUBLE_QUOTED_STRINGS
     global KEEP_BLANK_LINES
-    global LEO_CALL_CONTINUATION # New
+    global LEO_CALL_CONTINUATION  # New
     global LEFTJUST_DOC_STRINGS
     global MAX_LINES_BEFORE_SPLIT_LIT
     global MAX_SEPS_FUNC_DEF
@@ -5275,39 +5585,34 @@ def set_prefs(c):
     global PARENTHESIZE_TUPLE_DISPLAY
     if not c:
         return
-    getBool,getInt = c.config.getBool,c.config.getInt
-    ADD_BLANK_LINES_AROUND_COMMENTS = getBool(
-        'tidy_add_blank_lines_around_comments',default=True)
-    DOUBLE_QUOTED_STRINGS = getBool(
-        'tidy_double_quoted_strings',default=False)
-    KEEP_BLANK_LINES = getBool(
-        'tidy_keep_blank_lines',default=True)
-    LEFTJUST_DOC_STRINGS = getBool(
-        'tidy_left_adjust_docstrings',default=False)
-    MAX_LINES_BEFORE_SPLIT_LIT = getInt(
-        'tidy_lines_before_split_lit') or 2
+    getBool, getInt = c.config.getBool, c.config.getInt
+    ADD_BLANK_LINES_AROUND_COMMENTS = \
+        getBool('tidy_add_blank_lines_around_comments', default=True)
+    DOUBLE_QUOTED_STRINGS = getBool('tidy_double_quoted_strings',
+                                    default=False)
+    KEEP_BLANK_LINES = getBool('tidy_keep_blank_lines', default=True)
+    LEFTJUST_DOC_STRINGS = getBool('tidy_left_adjust_docstrings',
+                                   default=False)
+    MAX_LINES_BEFORE_SPLIT_LIT = getInt('tidy_lines_before_split_lit') or 2
     # 1.23 settings.
-    JAVA_STYLE_LIST_DEDENT = getBool(
-        'tidy_java_style_list_dedent',default=True)
-    KEEP_UNASSIGNED_CONSTANTS = getBool(
-        'tidy_keep_unassigned_constants',default=False)
-    PARENTHESIZE_TUPLE_DISPLAY = getBool(
-        'tidy_parenthesized_tuple_display',default=True)
+    JAVA_STYLE_LIST_DEDENT = getBool('tidy_java_style_list_dedent',
+                                     default=True)
+    KEEP_UNASSIGNED_CONSTANTS = getBool('tidy_keep_unassigned_constants',
+            default=False)
+    PARENTHESIZE_TUPLE_DISPLAY = getBool('tidy_parenthesized_tuple_display'
+            , default=True)
     # EKR: New in Leo 5.2:
-    LEO_CALL_CONTINUATION = getBool(
-        'tidy_leo_call_continuation',default=False)
-    DEBUG = getBool(
-        'tidy_debug',default=False)
-    MAX_SEPS_FUNC_DEF = getInt(
-        'tidy_max_seps_func_def') or 20
-    SPACES_AFTER_DOCSTRING = getBool(
-        'tidy_spaces_after_docstring',default=False)
-    COL_LIMIT = getInt(
-        'tidy_col_limit') or 75
-    BLANK_LINE_AFTER_DOCSTRING = getBool(
-        'tidy_blank_line_after_docstring',default=False)
-    BLANK_LINE_AFTER_FUNCTION_DEF = getBool(
-        'tidy_blank_line_after_func_def',default=True)
+    LEO_CALL_CONTINUATION = getBool('tidy_leo_call_continuation',
+                                    default=False)
+    DEBUG = getBool('tidy_debug', default=False)
+    MAX_SEPS_FUNC_DEF = getInt('tidy_max_seps_func_def') or 20
+    SPACES_AFTER_DOCSTRING = getBool('tidy_spaces_after_docstring',
+                                     default=False)
+    COL_LIMIT = getInt('tidy_col_limit') or 75
+    BLANK_LINE_AFTER_DOCSTRING = getBool('tidy_blank_line_after_docstring'
+            , default=False)
+    BLANK_LINE_AFTER_FUNCTION_DEF = \
+        getBool('tidy_blank_line_after_func_def', default=True)
 #@+node:ekr.20141010141310.18696: *3* transform
 def transform(indent, lineno, node):
     """Convert the nodes in the abstract syntax tree returned by the
@@ -5323,7 +5628,6 @@ def transform(indent, lineno, node):
         Python version.
 
         """
-
         class_ = getattr(compiler.ast, class_name, None)
         if class_ is None:
             result = False
@@ -5338,7 +5642,7 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'And'):
         result = NodeAnd(indent, lineno, node.nodes)
     elif isinstance_(node, 'AssAttr'):
-        result = NodeAsgAttr(indent, lineno, node.expr, node.attrname, 
+        result = NodeAsgAttr(indent, lineno, node.expr, node.attrname,
                              node.flags)
     elif isinstance_(node, 'AssList'):
         result = NodeAsgList(indent, lineno, node.nodes)
@@ -5351,7 +5655,8 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'Assign'):
         result = NodeAssign(indent, lineno, node.nodes, node.expr)
     elif isinstance_(node, 'AugAssign'):
-        result = NodeAugAssign(indent, lineno, node.node, node.op, node.expr)
+        result = NodeAugAssign(indent, lineno, node.node, node.op,
+                               node.expr)
     elif isinstance_(node, 'Backquote'):
         result = NodeBackquote(indent, lineno, node.expr)
     elif isinstance_(node, 'Bitand'):
@@ -5363,11 +5668,23 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'Break'):
         result = NodeBreak(indent, lineno)
     elif isinstance_(node, 'CallFunc'):
-        result = NodeCallFunc(indent, lineno, node.node, node.args, node.star_args, 
-                              node.dstar_args)
+        result = NodeCallFunc(
+            indent,
+            lineno,
+            node.node,
+            node.args,
+            node.star_args,
+            node.dstar_args,
+        )
     elif isinstance_(node, 'Class'):
-        result = NodeClass(indent, lineno, node.name, node.bases, node.doc, 
-                           node.code)
+        result = NodeClass(
+            indent,
+            lineno,
+            node.name,
+            node.bases,
+            node.doc,
+            node.code,
+        )
     elif isinstance_(node, 'Compare'):
         result = NodeCompare(indent, lineno, node.expr, node.ops)
     elif isinstance_(node, 'Const'):
@@ -5385,12 +5702,19 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'Ellipsis'):
         result = NodeEllipsis(indent, lineno)
     elif isinstance_(node, 'Exec'):
-        result = NodeExec(indent, lineno, node.expr, node.locals, node.globals)
+        result = NodeExec(indent, lineno, node.expr, node.locals,
+                          node.globals)
     elif isinstance_(node, 'FloorDiv'):
         result = NodeFloorDiv(indent, lineno, node.left, node.right)
     elif isinstance_(node, 'For'):
-        result = NodeFor(indent, lineno, node.assign, node.list, node.body,
-                         node.else_)
+        result = NodeFor(
+            indent,
+            lineno,
+            node.assign,
+            node.list,
+            node.body,
+            node.else_,
+        )
     elif isinstance_(node, 'From'):
         result = NodeFrom(indent, lineno, node.modname, node.names)
     elif isinstance_(node, 'Function'):
@@ -5404,7 +5728,7 @@ def transform(indent, lineno, node):
             node.flags,
             node.doc,
             node.code,
-            )
+        )
     elif isinstance_(node, 'GenExpr'):
         result = NodeGenExpr(indent, lineno, node.code)
     elif isinstance_(node, 'GenExprFor'):
@@ -5421,7 +5745,8 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'If'):
         result = NodeIf(indent, lineno, node.tests, node.else_)
     elif isinstance_(node, 'IfExp'):
-        result = NodeIfExp(indent, lineno, node.test, node.then, node.else_)
+        result = NodeIfExp(indent, lineno, node.test, node.then,
+                           node.else_)
     elif isinstance_(node, 'Import'):
         result = NodeImport(indent, lineno, node.names)
     elif isinstance_(node, 'Invert'):
@@ -5429,8 +5754,14 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'Keyword'):
         result = NodeKeyword(indent, lineno, node.name, node.expr)
     elif isinstance_(node, 'Lambda'):
-        result = NodeLambda(indent, lineno, node.argnames, node.defaults,
-                            node.flags, node.code)
+        result = NodeLambda(
+            indent,
+            lineno,
+            node.argnames,
+            node.defaults,
+            node.flags,
+            node.code,
+        )
     elif isinstance_(node, 'LeftShift'):
         result = NodeLeftShift(indent, lineno, node.left, node.right)
     elif isinstance_(node, 'List'):
@@ -5463,14 +5794,21 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'Printnl'):
         result = NodePrintnl(indent, lineno, node.nodes, node.dest)
     elif isinstance_(node, 'Raise'):
-        result = NodeRaise(indent, lineno, node.expr1, node.expr2, node.expr3)
+        result = NodeRaise(indent, lineno, node.expr1, node.expr2,
+                           node.expr3)
     elif isinstance_(node, 'Return'):
         result = NodeReturn(indent, lineno, node.value)
     elif isinstance_(node, 'RightShift'):
         result = NodeRightShift(indent, lineno, node.left, node.right)
     elif isinstance_(node, 'Slice'):
-        result = NodeSlice(indent, lineno, node.expr, node.flags, node.lower,
-                           node.upper)
+        result = NodeSlice(
+            indent,
+            lineno,
+            node.expr,
+            node.flags,
+            node.lower,
+            node.upper,
+        )
     elif isinstance_(node, 'Sliceobj'):
         result = NodeSliceobj(indent, lineno, node.nodes)
     elif isinstance_(node, 'Stmt'):
@@ -5492,7 +5830,8 @@ def transform(indent, lineno, node):
     elif isinstance_(node, 'UnarySub'):
         result = NodeUnarySub(indent, lineno, node.expr)
     elif isinstance_(node, 'While'):
-        result = NodeWhile(indent, lineno, node.test, node.body, node.else_)
+        result = NodeWhile(indent, lineno, node.test, node.body,
+                           node.else_)
     elif isinstance_(node, 'With'):
         result = NodeWith(indent, lineno, node.expr, node.vars, node.body)
     elif isinstance_(node, 'Yield'):
@@ -5504,8 +5843,6 @@ def transform(indent, lineno, node):
     else:
         result = node
     return result
-
-
 #@-others
 #@@language python
 #@@tabwidth -4
@@ -5516,9 +5853,7 @@ def transform(indent, lineno, node):
 # expressions in the correct order for evaluation, but, to reconstruct
 # the specifying code in general and to output it correctly, we need
 # to insert parentheses to enforce the correct order.
-
 # This is a Python Version Dependency.
-
 OPERATOR_PRECEDENCE = [
     (NodeIfExp, ),
     (NodeLambda, ),
@@ -5532,7 +5867,7 @@ OPERATOR_PRECEDENCE = [
     (NodeLeftShift, NodeRightShift),
     (NodeAdd, NodeSub),
     (NodeMul, NodeDiv, NodeFloorDiv, NodeMod),
-    (NodeUnaryAdd, NodeUnarySub, NodeInvert, ),
+    (NodeUnaryAdd, NodeUnarySub, NodeInvert),
     (NodePower, ),
     (NodeAsgAttr, NodeGetAttr),
     (NodeSubscript, ),
@@ -5542,7 +5877,7 @@ OPERATOR_PRECEDENCE = [
     (NodeList, ),
     (NodeDict, ),
     (NodeBackquote, ),
-    ]
+]
 OPERATORS = []
 OPERATOR_TRUMPS = {}
 OPERATOR_LEVEL = {}
@@ -5551,8 +5886,6 @@ for LEVEL in OPERATOR_PRECEDENCE:
         OPERATOR_LEVEL[OPERATOR] = LEVEL
         OPERATOR_TRUMPS[OPERATOR] = OPERATORS[:]  # a static copy.
     OPERATORS.extend(LEVEL)
-
-
 #@-<< operator precedence >>
 if __name__ == "__main__":
     main()
