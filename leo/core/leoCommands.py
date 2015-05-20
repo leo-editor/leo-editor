@@ -4557,14 +4557,33 @@ class Commands (object):
             if p.b and not p.b.strip():
                 self.replaceBody(p,lines=None,s='')
                 return
+            ls = p.b.lstrip()
+            if ls.startswith('@\n') or ls.startswith('@ '):
+                # Don't format nodes starting with a docpart.
+                g.warning("skipped doc part",p.h)
+                return
+            if ls.startswith('"""') or ls.startswith("'''"):
+                # Don't format a node starting with docstring.
+                g.warning("skipped docstring",p.h)
+                return
             tag1,tag2 = '@others','# (TIDY) @others'
             s1 = p.b.replace(tag1,tag2)
+            # refs = []
+            # for line in g.splitLines(s1):
+                # i = line.find('<<')
+                # j = line.find('>>')
+                # if -1 < i < j:
+                    # ref = line[i:j]
+                    # refs.append(ref)
+                    # ref2 = ref.replace('<<','# < <')
+                    # s1 = s1.replace(ref,ref2)
             try:
+                s1e = g.toEncodedString(s1)
                 t1 = ast.parse(s1,filename='s1',mode='exec')
                 d1 = ast.dump(t1,annotate_fields=False)
             except SyntaxError:
                 d1 = None
-            file_in = g.fileLikeObject(fromString=s1)
+            file_in = g.fileLikeObject(fromString=s1e)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
             try:
@@ -4586,11 +4605,12 @@ class Commands (object):
                     self.replaceBody(p,lines=None,s=s)
                 else:
                     g.warning('PythonTydy error in',p.h)
-                    # g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
+                    g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
             except Exception:
                 g.warning("skipped",p.h)
-                # g.es_exception()
-                # g.trace(s1)
+                if trace:
+                    g.es_exception()
+                    # g.trace(s1)
         #@+node:ekr.20040713070356: *7* ppp.replaceBody
         def replaceBody (self,p,lines,s=None):
             '''Replace the body with the pretty version.'''
