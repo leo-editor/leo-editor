@@ -4548,18 +4548,23 @@ class Commands (object):
         #@+node:ekr.20040711135244.4: *7* ppp.prettyPrintNode
         def prettyPrintNode(self,p,dump=False):
             '''Pretty print a single node.'''
-            if p.b:
-                self.python_tidy(p)
+            self.python_tidy(p)
         #@+node:ekr.20141010071140.18268: *7* ppp.python_tidy
         def python_tidy(self,p):
             '''Use PythonTidy to do the formatting.'''
             c = self.c
+            trace = False and not g.unitTesting
+            if p.b and not p.b.strip():
+                self.replaceBody(p,lines=None,s='')
+                return
+            tag1,tag2 = '@others','# (TIDY) @others'
+            s1 = p.b.replace(tag1,tag2)
             try:
-                t1 = ast.parse(p.b,filename='s1',mode='exec')
+                t1 = ast.parse(s1,filename='s1',mode='exec')
                 d1 = ast.dump(t1,annotate_fields=False)
             except SyntaxError:
                 d1 = None
-            file_in = g.fileLikeObject(fromString=p.b)
+            file_in = g.fileLikeObject(fromString=s1)
             file_out = g.fileLikeObject()
             is_module = p.isAnyAtFileNode()
             try:
@@ -4572,25 +4577,27 @@ class Commands (object):
                 # End the body properly
                 s = s.rstrip()+'\n' if s.strip() else ''
                 try:
-                    t2 = ast.parse(p.b,filename='s2',mode='exec')
+                    t2 = ast.parse(s,filename='s2',mode='exec')
                     d2 = ast.dump(t1,annotate_fields=False)
                 except SyntaxError:
                     d2 = None
                 if d1 == d2 or self.debug:
+                    s = s.replace(tag2,tag1)
                     self.replaceBody(p,lines=None,s=s)
                 else:
                     g.warning('PythonTydy error in',p.h)
-                    g.trace(d1,'\n\n',d2)
+                    # g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
             except Exception:
                 g.warning("skipped",p.h)
                 # g.es_exception()
+                # g.trace(s1)
         #@+node:ekr.20040713070356: *7* ppp.replaceBody
         def replaceBody (self,p,lines,s=None):
             '''Replace the body with the pretty version.'''
             c,u = self.c,self.c.undoer
             undoType = 'Pretty Print'
             oldBody = p.b
-            body = s if s else ''.join(lines)
+            body = s if s is not None else ''.join(lines)
             if oldBody != body:
                 self.n += 1
                 if not self.changed:
