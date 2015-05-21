@@ -7,37 +7,20 @@
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
-# The leoCommands ctor now does these imports.
+# The leoCommands ctor now does most leo.core.leo* imports.
 # This breaks circular dependencies.
-    # import leo.core.leoAtFile as leoAtFile
-    # import leo.core.leoCache as leoCache
-    # import leo.core.leoChapters as leoChapters
-    # import leo.core.leoEditCommands as leoEditCommands
-    # import leo.core.leoKeys as leoKeys
-    # import leo.core.leoFileCommands as leoFileCommands
-    # import leo.core.leoImport as leoImport
-    # import leo.core.leoRst as leoRst
-    # import leo.core.leoShadow as leoShadow
-    # import leo.core.leoTangle as leoTangle
-    # import leo.core.leoTest as leoTest
-    # import leo.core.leoUndo as leoUndo
-
-import ast
 import imp
 import itertools
-# import keyword # was used by pretty printer.
 import os
 import re
 import sys
 import time
-# import token    # for token-based Check Python command
-import tokenize # for PythonTidy-based Check Python command
+import tokenize # for c.checkAllPythonCode
 try:
     import tabnanny # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
-    
-import leo.external.PythonTidy as tidy
+
 #@-<< imports >>
 
 def cmd(name):
@@ -4141,52 +4124,36 @@ class Commands (object):
             if p.v not in seen:
                 seen[p.v] = True
                 p.v.dump()
-    #@+node:ekr.20040711135959.1: *5* Pretty Print commands
-    #@+node:ekr.20040712053025.1: *6* beautify & pretty-print-python-code
-    @cmd('beautify')
-    @cmd('pretty-print-python-code')
-    def prettyPrintPythonCode (self,event=None,p=None,dump=False):
-        '''Reformat all Python code in the selected tree.'''
-
-        c = self
-        root = p.copy() if p else c.p
-        pp = c.PythonPrettyPrinter(c)
-        for p in root.self_and_subtree():
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-
-                pp.prettyPrintNode(p,dump=dump)
-
-        pp.endUndo()
-    #@+node:ekr.20040712053025: *6* beautify-all & pretty-print-all-python-code
-    @cmd('beautify-all')
-    @cmd('pretty-print-all-python-code')
+    #@+node:ekr.20040711135959.1: *5* Beautify (aka pretty-print) commands
+    #@+node:ekr.20040712053025: *6* c.beautify-all-python
+    @cmd('beautify-all-python')
+    @cmd('pretty-print-all-python')
     def prettyPrintAllPythonCode (self,event=None,dump=False):
-        '''Reformat all Python code in the outline to make it look more beautiful.'''
+        '''Beautify all Python code in the entire outline.'''
         c = self
-        if g.isPython3:
+        if False and g.isPython3:
             g.warning('PythonTidy does not work with Python 3.x')
             return
-        pp = c.PythonPrettyPrinter(c)
+        import leo.core.leoBeautify as leoBeautify
+        pp = leoBeautify.PythonPrettyPrinter(c)
         for p in c.all_unique_positions():
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
                 pp.prettyPrintNode(p,dump=dump)
         pp.endUndo()
-    #@+node:ekr.20110917174948.6877: *6* beautify-c
+        g.es('%s nodes changed' % pp.n)
+    #@+node:ekr.20110917174948.6877: *6* c.beautify-c
     @cmd('beautify-c')
+    @cmd('pretty-print-c')
     def beautifyCCode (self,event=None):
-
-        '''Reformat all C code in the selected tree.'''
-
+        '''Beautify all C code in the selected tree.'''
         c = self
-        pp = c.CPrettyPrinter(c)
+        import leo.core.leoBeautify as leoBeautify
+        pp = leoBeautify.CPrettyPrinter(c)
         u = c.undoer ; undoType = 'beautify-c'
-
         u.beforeChangeGroup(c.p,undoType)
         dirtyVnodeList = []
         changed = False
-
         for p in c.p.self_and_subtree():
             if g.scanForAtLanguage(c,p) == "c":
                 bunch = u.beforeChangeNodeContents(p)
@@ -4198,445 +4165,39 @@ class Commands (object):
                     dirtyVnodeList.append(p.v)
                     u.afterChangeNodeContents(p,undoType,bunch)
                     changed = True
-
         if changed:
             u.afterChangeGroup(c.p,undoType,
                 reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-
         c.bodyWantsFocus()
-    #@+node:ekr.20071001075704: *6* beautify-tree
+    #@+node:ekr.20050729211526: *6* c.beautify-node
+    @cmd('beautify-node')
+    @cmd('pretty-print-node')
+    def prettyPrintPythonNode (self,p=None,dump=False):
+        '''Beautify a single Python node.'''
+        c,p = self,p or self.p
+        import leo.core.leoBeautify as leoBeautify
+        pp = leoBeautify.PythonPrettyPrinter(c)
+        # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
+        if g.scanForAtLanguage(c,p) == "python":
+            pp.prettyPrintNode(p,dump=dump)
+        pp.endUndo()
+    #@+node:ekr.20071001075704: *6* c.beautify-tree
     @cmd('beautify-tree')
+    @cmd('pretty-print-tree')
     def beautifyPythonTree (self,event=None,dump=False):
-        '''Beautify all Python code in the selected outline.'''
+        '''Beautify the Python code in the selected outline.'''
         c = self
-        if g.isPython3:
+        if False and g.isPython3:
             g.warning('PythonTidy does not work with Python 3.x')
             return
-        pp = c.PythonPrettyPrinter(c)
+        import leo.core.leoBeautify as leoBeautify
+        pp = leoBeautify.PythonPrettyPrinter(c)
         for p in c.p.self_and_subtree():
             # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
             if g.scanForAtLanguage(c,p) == "python":
                 pp.prettyPrintNode(p,dump=dump)
         pp.endUndo()
         g.es('%s nodes changed' % pp.n)
-    #@+node:ekr.20110917174948.6903: *6* class CPrettyPrinter
-    class CPrettyPrinter:
-
-        #@+others
-        #@+node:ekr.20110917174948.6904: *7* __init__ (CPrettyPrinter)
-        def __init__ (self,c):
-            '''Ctor for CPrettyPrinter class.'''
-            self.c = c
-            self.brackets = 0
-                # The brackets indentation level.
-            self.p = None
-                # Set in indent.
-            self.parens = 0
-                # The parenthesis nesting level.
-            self.result = []
-                # The list of tokens that form the final result.
-            self.tab_width = 4
-                # The number of spaces in each unit of leading indentation.
-        #@+node:ekr.20110917174948.6911: *7* indent & helpers
-        def indent (self,p,toList=False,giveWarnings=True):
-
-            # c = self.c
-            if not p.b: return
-            self.p = p.copy()
-
-            aList = self.tokenize(p.b)
-            assert ''.join(aList) == p.b
-
-            aList = self.add_statement_braces(aList,giveWarnings=giveWarnings)
-
-            self.bracketLevel = 0
-            self.parens = 0
-            self.result = []
-            for s in aList:
-                # g.trace(repr(s))
-                self.put_token(s)
-
-            if 0:
-                for z in self.result:
-                    print(repr(z))
-
-            if toList:
-                return self.result
-            else:
-                return ''.join(self.result)
-        #@+node:ekr.20110918225821.6815: *8* add_statement_braces
-        def add_statement_braces (self,s,giveWarnings=False):
-
-            p = self.p
-            trace = False
-
-            def oops(message,i,j):
-                # This can be called from c-to-python, in which case warnings should be suppressed.
-                if giveWarnings:
-                    g.error('** changed ',p.h)
-                    g.es_print('%s after\n%s' % (
-                        message,repr(''.join(s[i:j]))))
-
-            i,n,result = 0,len(s),[]
-            while i < n:
-                token_ = s[i] # token is a module.
-                progress = i
-                if token_ in ('if','for','while',):
-                    j = self.skip_ws_and_comments(s,i+1)
-                    if self.match(s,j,'('):
-                        j = self.skip_parens(s,j)
-                        if self.match(s,j,')'):
-                            old_j = j+1
-                            j = self.skip_ws_and_comments(s,j+1)
-                            if self.match(s,j,';'):
-                                # Example: while (*++prefix);
-                                result.extend(s[i:j])
-                            elif self.match(s,j,'{'):
-                                result.extend(s[i:j])
-                            else:
-                                oops("insert '{'",i,j)
-                                # Back up, and don't go past a newline or comment.
-                                j = self.skip_ws(s,old_j)
-                                result.extend(s[i:j])
-                                result.append(' ')
-                                result.append('{')
-                                result.append('\n')
-                                i = j
-                                j = self.skip_statement(s,i)
-                                result.extend(s[i:j])
-                                result.append('\n')
-                                result.append('}')
-                                oops("insert '}'",i,j)
-                        else:
-                            oops("missing ')'",i,j)
-                            result.extend(s[i:j])
-                    else:
-                        oops("missing '('",i,j)
-                        result.extend(s[i:j])
-                    i = j
-                else:
-                    result.append(token_)
-                    i += 1
-                assert progress < i
-
-            if trace: g.trace(''.join(result))
-            return result
-
-        #@+node:ekr.20110919184022.6903: *9* skip_ws
-        def skip_ws (self,s,i):
-
-            while i < len(s):
-                token_ = s[i] # token is a module.
-                if token_.startswith(' ') or token_.startswith('\t'):
-                    i += 1
-                else:
-                    break
-
-            return i
-        #@+node:ekr.20110918225821.6820: *9* skip_ws_and_comments
-        def skip_ws_and_comments (self,s,i):
-
-            while i < len(s):
-                token_ = s[i] # token is a module.
-                if token_.isspace():
-                    i += 1
-                elif token_.startswith('//') or token_.startswith('/*'):
-                    i += 1
-                else:
-                    break
-
-            return i
-        #@+node:ekr.20110918225821.6817: *9* skip_parens
-        def skip_parens(self,s,i):
-
-            '''Skips from the opening ( to the matching ).
-
-            If no matching is found i is set to len(s)'''
-
-            assert(self.match(s,i,'('))
-
-            level = 0
-            while i < len(s):
-                ch = s[i]
-                if ch == '(':
-                    level += 1 ; i += 1
-                elif ch == ')':
-                    level -= 1
-                    if level <= 0:  return i
-                    i += 1
-                else: i += 1
-            return i
-        #@+node:ekr.20110918225821.6818: *9* skip_statement
-        def skip_statement (self,s,i):
-
-            '''Skip to the next ';' or '}' token.'''
-
-            while i < len(s):
-                if s[i] in ';}':
-                    i += 1
-                    break
-                else:
-                    i += 1
-            return i
-        #@+node:ekr.20110917204542.6967: *8* put_token & helpers
-        def put_token (self,s):
-
-            '''Append token s to self.result as is,
-            *except* for adjusting leading whitespace and comments.
-
-            '{' tokens bump self.brackets or self.ignored_brackets.
-            self.brackets determines leading whitespace.
-            '''
-
-            if s == '{':
-                self.brackets += 1
-            elif s == '}':
-                self.brackets -= 1
-                self.remove_indent()
-            elif s == '(':
-                self.parens += 1
-            elif s == ')':
-                self.parens -= 1
-            elif s.startswith('\n'):
-                if self.parens <= 0:
-                    s = '\n%s' % (' ' * self.brackets * self.tab_width)
-                else: pass # Use the existing indentation.
-            elif s.isspace():
-                if self.parens <= 0 and self.result and self.result[-1].startswith('\n'):
-                    # Kill the whitespace.
-                    s = ''
-                else: pass # Keep the whitespace.
-            elif s.startswith('/*'):
-                s = self.reformat_block_comment(s)
-            else:
-                pass # put s as it is.
-
-            if s:
-                self.result.append(s)
-
-        #@+at
-        #     # It doesn't hurt to increase indentation after *all* '{'.
-        #     if s == '{':
-        #         # Increase brackets unless '=' precedes it.
-        #         if self.prev_token('='):
-        #             self.ignored_brackets += 1
-        #         else:
-        #             self.brackets += 1
-        #     elif s == '}':
-        #         if self.ignored_brackets:
-        #             self.ignored_brackets -= 1
-        #         else:
-        #             self.brackets -= 1
-        #             self.remove_indent()
-        #@+node:ekr.20110917204542.6968: *9* prev_token
-        def prev_token (self,s):
-
-            '''Return the previous token, ignoring whitespace and comments.'''
-
-            i = len(self.result)-1
-            while i >= 0:
-                s2 = self.result[i]
-                if s == s2:
-                    return True
-                elif s.isspace() or s.startswith('//') or s.startswith ('/*'):
-                    i -= 1
-                else:
-                    return False
-        #@+node:ekr.20110918184425.6916: *9* reformat_block_comment
-        def reformat_block_comment (self,s):
-
-            return s
-        #@+node:ekr.20110917204542.6969: *9* remove_indent
-        def remove_indent (self):
-
-            '''Remove one tab-width of blanks from the previous token.'''
-
-            w = abs(self.tab_width)
-
-            if self.result:
-                s = self.result[-1]
-                if s.isspace():
-                    self.result.pop()
-                    s = s.replace('\t',' ' * w)
-                    if s.startswith('\n'):
-                        s2 = s[1:]
-                        self.result.append('\n'+s2[:-w])
-                    else:
-                        self.result.append(s[:-w])
-        #@+node:ekr.20110918225821.6819: *7* match
-        def match(self,s,i,pat):
-
-            return i < len(s) and s[i] == pat
-        #@+node:ekr.20110917174948.6930: *7* tokenize & helper
-        def tokenize (self,s):
-
-            '''Tokenize comments, strings, identifiers, whitespace and operators.'''
-
-            i,result = 0,[]
-            while i < len(s):
-                # Loop invariant: at end: j > i and s[i:j] is the new token.
-                j = i
-                ch = s[i]
-                if ch in '@\n': # Make *sure* these are separate tokens.
-                    j += 1
-                elif ch == '#': # Preprocessor directive.
-                    j = g.skip_to_end_of_line(s,i)
-                elif ch in ' \t':
-                    j = g.skip_ws(s,i)
-                elif ch.isalpha() or ch == '_':
-                    j = g.skip_c_id(s,i)
-                elif g.match(s,i,'//'):
-                    j = g.skip_line(s,i)
-                elif g.match(s,i,'/*'):
-                    j = self.skip_block_comment(s,i)
-                elif ch in "'\"":
-                    j = g.skip_string(s,i)
-                else:
-                    j += 1
-
-                assert j > i
-                result.append(''.join(s[i:j]))
-                i = j # Advance.
-
-            return result
-
-        #@+at The following could be added to the 'else' clause::
-        #     # Accumulate everything else.
-        #     while (
-        #         j < n and
-        #         not s[j].isspace() and
-        #         not s[j].isalpha() and
-        #         not s[j] in '"\'_@' and
-        #             # start of strings, identifiers, and single-character tokens.
-        #         not g.match(s,j,'//') and
-        #         not g.match(s,j,'/*') and
-        #         not g.match(s,j,'-->')
-        #     ):
-        #         j += 1
-        #@+node:ekr.20110917193725.6974: *8* skip_block_comment
-        def skip_block_comment (self,s,i):
-
-            assert(g.match(s,i,"/*"))
-
-            j = s.find("*/",i)
-            if j == -1:
-                return len(s)
-            else:
-                return j + 2
-        #@-others
-    #@+node:ekr.20040711135244.5: *6* class PythonPrettyPrinter
-    class PythonPrettyPrinter:
-        '''A class that implements *limited* pep-8 cleaning.'''
-        #@+others
-        #@+node:ekr.20040711135244.6: *7* ppp.__init
-        def __init__ (self,c):
-            '''Ctor for PythonPrettyPrinter class.'''
-            self.c = c
-            self.changed = False
-            self.debug = c.config.getBool('tidy_debug',default=False)
-            if self.debug: print('tidy DEBUG')
-            self.n = 0
-                # The number of nodes actually change.
-
-        #@+node:ekr.20040713091855: *7* ppp.endUndo
-        def endUndo (self):
-
-            c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            current = c.p
-
-            if self.changed:
-                # Tag the end of the command.
-                u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-        #@+node:ekr.20040711135244.4: *7* ppp.prettyPrintNode
-        def prettyPrintNode(self,p,dump=False):
-            '''Pretty print a single node.'''
-            self.python_tidy(p)
-        #@+node:ekr.20141010071140.18268: *7* ppp.python_tidy
-        def python_tidy(self,p):
-            '''Use PythonTidy to do the formatting.'''
-            c = self.c
-            trace = False and not g.unitTesting
-            if g.isPython3:
-                g.warning('PythonTidy does not work with Python 3.x')
-                return
-            if p.b and not p.b.strip():
-                self.replaceBody(p,lines=None,s='')
-                return
-            ls = p.b.lstrip()
-            if ls.startswith('@\n') or ls.startswith('@ '):
-                # Don't format nodes starting with a docpart.
-                g.warning("skipped doc part",p.h)
-                return
-            if ls.startswith('"""') or ls.startswith("'''"):
-                # Don't format a node starting with docstring.
-                g.warning("skipped docstring",p.h)
-                return
-            tag1,tag2 = '@others','# (TIDY) @others'
-            s1 = p.b.replace(tag1,tag2)
-            try:
-                t1 = ast.parse(s1,filename='s1',mode='exec')
-                d1 = ast.dump(t1,annotate_fields=False)
-            except SyntaxError:
-                d1 = None
-            file_in = g.fileLikeObject(fromString=s1)
-            file_out = g.fileLikeObject()
-            is_module = p.isAnyAtFileNode()
-            try:
-                tidy.tidy_up(
-                    file_in=file_in,
-                    file_out=file_out,
-                    is_module=is_module,
-                    leo_c=c)
-                s = file_out.get()
-                # End the body properly
-                s = s.rstrip()+'\n' if s.strip() else ''
-                try:
-                    t2 = ast.parse(s,filename='s2',mode='exec')
-                    d2 = ast.dump(t1,annotate_fields=False)
-                except SyntaxError:
-                    d2 = None
-                if d1 == d2 or self.debug:
-                    s = s.replace(tag2,tag1)
-                    self.replaceBody(p,lines=None,s=s)
-                else:
-                    g.warning('PythonTydy error in',p.h)
-                    g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
-            except Exception:
-                g.warning("skipped",p.h)
-                if g.unitTesting:
-                    raise
-                elif trace:
-                    g.es_exception()
-                    # g.trace(s1)
-        #@+node:ekr.20040713070356: *7* ppp.replaceBody
-        def replaceBody (self,p,lines,s=None):
-            '''Replace the body with the pretty version.'''
-            c,u = self.c,self.c.undoer
-            undoType = 'Pretty Print'
-            oldBody = p.b
-            body = s if s is not None else ''.join(lines)
-            if oldBody != body:
-                self.n += 1
-                if not self.changed:
-                    # Start the group.
-                    u.beforeChangeGroup(p,undoType)
-                    self.changed = True
-                    self.dirtyVnodeList = []
-                undoData = u.beforeChangeNodeContents(p)
-                c.setBodyString(p,body)
-                dirtyVnodeList2 = p.setDirty()
-                self.dirtyVnodeList.extend(dirtyVnodeList2)
-                u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
-        #@-others
-    #@+node:ekr.20050729211526: *6* prettyPrintPythonNode
-    def prettyPrintPythonNode (self,p=None,dump=False):
-        '''Pretty print a single python node.'''
-        c,p = self,p or self.p
-        pp = c.PythonPrettyPrinter(c)
-        # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-        if g.scanForAtLanguage(c,p) == "python":
-            pp.prettyPrintNode(p,dump=dump)
-        pp.endUndo()
     #@+node:ekr.20031218072017.2898: *4* Expand & Contract...
     #@+node:ekr.20031218072017.2899: *5* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *6* contractAllHeadlines
