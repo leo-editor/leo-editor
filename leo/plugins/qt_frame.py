@@ -1297,6 +1297,11 @@ class LeoQtBody (leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
     # pylint: disable=interface-not-implemented
     #@+others
+    #@+node:ekr.20150521061618.1: *3* LeoQtBody.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the c.frame.body class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name,['c','frame','body'])
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
     def __init__ (self,frame,parentFrame):
@@ -1378,6 +1383,8 @@ class LeoQtBody (leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.addEditor & helper
     # An override of leoFrame.addEditor.
+    @cmd('editor-add')
+    @cmd('add-editor')
     def addEditor (self,event=None):
         '''Add another editor to the body pane.'''
         trace = False and not g.unitTesting
@@ -1448,23 +1455,9 @@ class LeoQtBody (leoFrame.LeoBody):
                 # g.trace('===',id(w),w.leo_chapter,w.leo_p.h)
     #@+node:ekr.20110605121601.18198: *5* LeoQtBody.cycleEditorFocus
     # Use the base class method.
-
-    # def cycleEditorFocus (self,event=None):
-
-        # '''Cycle keyboard focus between the body text editors.'''
-
-        # c = self.c ; d = self.editorWidgets
-        # w = c.frame.body.bodyCtrl
-        # values = list(d.values())
-        # if len(values) > 1:
-            # i = values.index(w) + 1
-            # if i == len(values): i = 0
-            # w2 = list(d.values())[i]
-            # assert(w!=w2)
-            # self.selectEditor(w2)
-            # c.frame.body.bodyCtrl = w2
-
     #@+node:ekr.20110605121601.18199: *5* LeoQtBody.deleteEditor
+    @cmd('delete-editor')
+    @cmd('editor-delete')
     def deleteEditor (self,event=None):
         '''Delete the presently selected body text editor.'''
         trace = False and not g.unitTesting

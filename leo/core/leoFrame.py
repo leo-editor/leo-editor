@@ -220,17 +220,12 @@ class LeoBody(object):
 
 
     #@+node:ekr.20070424053629: *4* LeoBody.entries
-    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
-    @cmd('add-editor')
+    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor (overridden)
     def addEditor (self,event=None):
-
         '''Add another editor to the body pane.'''
-
-        c = self.c ; p = c.p
-
+        c,p = self.c,self.c.p
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
-
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
@@ -242,7 +237,6 @@ class LeoBody(object):
                 self.selectLabel(w_old) # Immediately create the label in the old editor.
             else:
                 g.trace('can not happen: unexpected editorWidgets',d)
-
         name = '%d' % self.totalNumberOfEditors
         pane = self.pb.add(name)
         panes = self.pb.panes()
@@ -275,11 +269,10 @@ class LeoBody(object):
         self.selectLabel(w)
         # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
     #@+node:ekr.20060528170438: *5* LeoBody.cycleEditorFocus
-    @cmd('cycle-editor-focus')
+    @cmd('editor-cycle-focus')
+    @cmd('cycle-editor-focus') # There is no LeoQtBody method
     def cycleEditorFocus (self,event=None):
-
         '''Cycle keyboard focus between the body text editors.'''
-
         c = self.c
         d = self.editorWidgets
         w = c.frame.body.wrapper
@@ -291,12 +284,9 @@ class LeoBody(object):
             assert(w!=w2)
             self.selectEditor(w2)
             c.frame.body.wrapper = w2
-    #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor
-    @cmd('delete-editor')
+    #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
     def deleteEditor (self,event=None):
-
         '''Delete the presently selected body text editor.'''
-
         c = self.c
         w = c.frame.body.wapper
         d = self.editorWidgets
