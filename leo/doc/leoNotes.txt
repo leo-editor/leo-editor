@@ -15273,5 +15273,64 @@ def prettyPrintPythonCode (self,event=None,p=None,dump=False):
         if g.scanForAtLanguage(c,p) == "python":
             pp.prettyPrintNode(p,dump=dump)
     pp.endUndo()
+.. @+node:ekr.20150522075451.1: ** add.statement (not used)
+# def statement(self,node):
+    
+    # if self.kind(node) == 'FunctionDef':
+        # g.trace('%4s %s' % (node.lineno,self.kind(node)))
+    # self.set_tokens(node)
+    # leoAst.AstFullTraverser.visit(self,node) ###
+
+# # statement must be called for all statement, including outer expressions.
+# do_Assert = statement
+# do_Assign = statement
+# do_AugAssign = statement
+# do_Break = statement
+# do_ClassDef = statement
+# do_Continue = statement
+# do_Delete = statement
+# do_ExceptHandler = statement
+# do_Exec = statement
+# do_Expr = statement
+# do_For = statement
+# do_FunctionDef = statement
+# do_Global = statement
+# do_If = statement
+# do_Import = statement
+# do_ImportFrom = statement
+# do_Lambda = statement
+# # do_Module = statement
+# do_Pass = statement
+# do_Print = statement
+# do_Raise = statement
+# do_Return = statement
+# do_Str = statement
+# do_Try = statement
+# do_TryExcept = statement
+# do_TryFinally = statement
+# do_While = statement
+# do_With = statement
+# do_Yield = statement
+.. @+node:ekr.20150521163811.1: ** class DumpTreeTokens (AstFullTraverser) (To be deleted)
+# From TokenizeTree.run:
+if 0:
+    n2 = DumpTreeTokens().run(node)
+    assert n1==n2,'token counts do not match: %s %s' % (n1,n2)
+
+class DumpTreeTokens(leoAst.AstFullTraverser):
+    
+    def __init__(self):
+        leoAst.AstFullTraverser.__init__(self)
+        self.formatter = leoAst.AstFormatter()
+        
+    def run(self,node):
+        self.n = 0
+        self.visit(node)
+        return self.n
+    
+    def visit(self,node):
+        # g.trace('(DumpTreeTokens)',self.formatter.format(node))
+        self.n += 1
+        return leoAst.AstFullTraverser.visit(self,node)
 .. @-all
 .. @-leo

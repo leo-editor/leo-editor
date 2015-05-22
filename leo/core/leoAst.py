@@ -856,6 +856,7 @@ class AstFullTraverser:
         '''Ctor for AstFullTraverser class.'''
         self.context = None
         self.parent = None
+        self.trace = False
 
     #@+others
     #@+node:ekr.20141012064706.18472: *3* ft.contexts
@@ -928,19 +929,10 @@ class AstFullTraverser:
     def kind(self,node):
         
         return node.__class__.__name__
-    #@+node:ekr.20141012064706.18480: *3* ft.operators
-    #@+node:ekr.20141012064706.18481: *4* ft do-nothings
+    #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
+    #@+node:ekr.20141012064706.18481: *4* ft.Bytes
     def do_Bytes(self,node): 
         pass # Python 3.x only.
-        
-    def do_Ellipsis(self,node):
-        pass
-        
-    def do_Num(self,node):
-        pass # Num(object n) # a number as a PyObject.
-        
-    def do_Str (self,node):
-        pass # represents a string constant.
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -1019,6 +1011,9 @@ class AstFullTraverser:
             self.visit(z)
         for z in node.values:
             self.visit(z)
+    #@+node:ekr.20150522081707.1: *4* ft.Ellipsis
+    def do_Ellipsis(self,node):
+        pass
     #@+node:ekr.20141012064706.18490: *4* ft.Expr
     # Expr(expr value)
 
@@ -1086,6 +1081,9 @@ class AstFullTraverser:
 
         # self.visit(node.ctx)
         pass
+    #@+node:ekr.20150522081736.1: *4* ft.Num
+    def do_Num(self,node):
+        pass # Num(object n) # a number as a PyObject.
     #@+node:ekr.20141012064706.18499: *4* ft.Repr
     # Python 2.x only
     # Repr(expr value)
@@ -1102,6 +1100,9 @@ class AstFullTraverser:
             self.visit(node.upper)
         if getattr(node,'step',None):
             self.visit(node.step)
+    #@+node:ekr.20150522081748.1: *4* ft.Str
+    def do_Str (self,node):
+        pass # represents a string constant.
     #@+node:ekr.20141012064706.18501: *4* ft.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -1334,11 +1335,13 @@ class AstFullTraverser:
     def visit(self,node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
         assert isinstance(node,ast.AST),node.__class__.__name__
+        trace = False
         # Visit the children with the new parent.
         old_parent = self.parent
         parent = node
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self,method_name)
+        if trace: g.trace(method_name)
         val = method(node)
         self.parent = old_parent
         return val
