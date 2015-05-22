@@ -12114,14 +12114,13 @@ headlines in that file::
     for p in newFrame.c.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
-<t tx="ekr.20131008041326.16154">Leo sends more detailed error messages to stderr,
+<t tx="ekr.20131008041326.16154">.. _`associating .leo files with python.exe`: http://leoeditor.com/installing.html#creating-windows-file-associations
+
+Leo sends more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
-On Windows, can run Leo with the console window visible by associating .leo
-files with python.exe *not* pythonw.exe. 
 
-.. For full instructions about how
-.. to do this, see `Associating Leo with .leo Files`_.
+On Windows, you can run Leo with the console window visible by `associating .leo files with python.exe`_ *not* pythonw.exe.
 </t>
 <t tx="ekr.20131008041326.16155">Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
 
