@@ -3291,12 +3291,12 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                 nths = [n for n,i in enumerate(heads) if i == target]
                 if nth_same < len(nths) and heads[nths[nth_same]] == target:
                     order.append(nths[nth_same])
-            # Then position based, if requested
-            if soft_idx and nth_sib < len(heads):
-                order.append(nth_sib)
             # Then we try *all* other nodes with same header
             order += [n for n,s in enumerate(heads)
                       if n not in order and s == target]        
+            # Then position based, if requested
+            if soft_idx and nth_sib < len(heads):
+                order.append(nth_sib)
     elif hard_idx:
         pass  # hard_idx mode with no idx in unl, go with empty order list
     else:
@@ -7042,7 +7042,7 @@ def handleUrl(url,c=None,p=None):
                     c2 = g.openWithFileName(leo_path,old_c=c)
                     # with UNL after path
                     if c2 and fragment:
-                        g.recursiveUNLSearch(fragment.split("-->"),c2)
+                        g.recursiveUNLSearch(fragment.split("-->"),c2,soft_idx=True)
                     if c2:
                         c2.bringToFront()
                         return
