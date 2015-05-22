@@ -150,7 +150,7 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         if state == 0:
             self.w = self.editWidget(event)
             if self.w and self.check(event):
-                self.stringRect = self.getRectanglePoints(w)
+                self.stringRect = self.getRectanglePoints(self.w)
                 k.setLabelBlue('String rectangle: ')
                 k.getArg(event,'string-rect',1,self.stringRectangle)
         else:
