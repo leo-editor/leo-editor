@@ -37,12 +37,16 @@ def test(c,h,p):
     t3 = time.time()
     n1 = AddTokensToTree().run(node,tokens)
     t4 = time.time()
+    s2 = LeoTidy(c).format(node)
+    t5 = time.time()
     g.trace('nodes:    %s' % n1)
     g.trace('tokens:   %s' % len(tokens))
-    g.trace('total:    %4.2f sec.' % (t4-t1))
+    g.trace('len(s2):  %s' % len(s2))
     g.trace('parse:    %4.2f sec.' % (t2-t1))
     g.trace('tokenize: %4.2f sec.' % (t3-t2))
     g.trace('add toks: %4.2f sec.' % (t4-t3))
+    g.trace('format:   %4.2f sec.' % (t5-t4))
+    g.trace('total:    %4.2f sec.' % (t5-t1))
     if 0:
         tb = PythonTokenBeautifier(c)
         for token5tuple in tokens[:50]:
@@ -527,14 +531,15 @@ class LeoTidy:
         self.code_list = []
         self.level = 0
         ### self.options_d = options_d or {}
-        self.new = False
+        self.new = True
     
     #@+others
     #@+node:ekr.20150523083023.1: *3* pt.Code Generators
     #@+node:ekr.20150523131619.1: *4* pt.add_token
     def add_token(self,kind,**keys):
         '''Add a token to the code list.'''
-        self.code_list.append(OutputToken(kind,keys))
+        tok = OutputToken(kind,**keys)
+        self.code_list.append(tok)
     #@+node:ekr.20150523083639.1: *4* pt.blank
     def blank(self):
         '''Add a blank request on the code list.'''
@@ -550,7 +555,7 @@ class LeoTidy:
         '''Add a conditional line start to the code list.'''
         prev = self.code_list[-1]
         if prev.kind not in ('start-line','end-line'):
-            self.add_token('start-line')
+            self.add_token('start-line',level=self.level)
     #@+node:ekr.20150523131526.1: *4* pt.file_start & file_end
     def file_end(self):
         '''Add a file-end token to the code list.'''
@@ -567,10 +572,18 @@ class LeoTidy:
     def line_start(self):
         '''Add a line-start request to the code list.'''
         self.add_token('line-start',level=self.level)
-    #@+node:ekr.20150523083627.1: *4* pt.lit
+    #@+node:ekr.20150523083627.1: *4* pt.lit & lit_blank
     def lit(self,s):
         '''Add a literal request to the code list.'''
+        if s and g.isString(s):
+            self.add_token('lit',s=s)
+        else:
+            g.trace('=====',g.callers())
+        
+    def lit_blank(self,s):
+        '''Add a literal request followed by a blank to the code list.'''
         self.add_token('lit',s=s)
+        self.add_token('blank')
     #@+node:ekr.20150523083651.1: *4* pt.lt & rt
     def lt(self,s):
         '''Add a left paren request to the code list.'''
@@ -600,7 +613,8 @@ class LeoTidy:
         self.level = 0
         self.file_start()
         val = self.visit(node)
-        self.file_start()
+        self.file_end()
+        g.trace('(LeoTidy) ===== self.new: %s' % self.new)
         if self.new:
             self.peep_hole()
             return self.to_string()
@@ -628,7 +642,7 @@ class LeoTidy:
             if trace: g.trace(method_name)
             s = method(node)
             if self.new:
-                assert s is None,s
+                assert s is None,(s,g.callers())
             else:
                 assert type(s)==type('abc'),type(s)
             return s
@@ -643,15 +657,17 @@ class LeoTidy:
     #@+node:ekr.20150523083015.1: *4* pt.peep_hole
     def peep_hole(self):
         '''Satisfy all requests on the code list.'''
+        pass ### For now, leave things as the are.
     #@+node:ekr.20150523083446.1: *4* pt.to_string
     def to_string(self):
         '''Convert the code list to a single string.'''
+        return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150520173107.69: *3* pt.Utils
     #@+node:ekr.20150520173107.71: *4* pt.indent
     def indent(self,s):
         
         if self.new:
-            return '    '*self.level
+            assert False,g.callers()
         else:
             return '%s%s' % (' '*4*self.level,s)
             
@@ -715,24 +731,27 @@ class LeoTidy:
 
         if self.new:
             self.blank_lines(2)
-            args = node.expr or []
-            for i,z in enumerate(args):
+            decorators = node.decorator_list or []
+            for i,z in enumerate(decorators):
                 self.visit(z)
                 if i < len(args):
-                    self.lit(', ')
+                    self.lit_blank(',')
             self.line_start()
             self.word('class')
             self.word(node.name)
             if node.bases:
                 self.lt('(')
                 for i,z in enumerate(node.bases):
-                    self.visit(node.bases)
-                    if i + 1 < len(node.base):
-                        self.lit(',')
-                        self.blank()
+                    self.visit(z)
+                    if i + 1 < len(node.bases):
+                        self.lit_blank(',')
                 self.rt(')')
             self.lit(':')
             self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
             self.blank_lines(2)
         else:
             result = []
@@ -747,7 +766,6 @@ class LeoTidy:
                 result.append(self.visit(z))
                 self.level -= 1
             return ''.join(result)
-        
     #@+node:ekr.20150520173107.8: *5* pt.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
@@ -755,22 +773,18 @@ class LeoTidy:
         '''Format a FunctionDef node.'''
         if self.new:
             self.blank_lines(1)
-            for z in node.expr or []:
+            for z in node.decorator_list or []:
                 self.line_start()
                 self.op('@')
                 self.visit(z)
                 self.line_end()
             self.line_start()
             self.word('def')
-            self.blank()
             self.word(node.name)
             self.lt('(')
             if node.args:
-                for i,z in enumerate(node.args):
-                    self.visit(z)
-                    if i < len(node.args):
-                        self.lit(',')
-                        self.blank()
+                ### for i,z in enumerate(node.args):
+                self.visit(node.args)
             self.rt(')')
             self.lit(':')
             self.line_end()
@@ -814,9 +828,8 @@ class LeoTidy:
     def do_Lambda (self,node):
         
         if self.new:
-            self.conditional_line_start() ###
+            self.conditional_line_start()
             self.word('lambda')
-            self.blank()
             if node.args:
                 self.visit(node.args)
             self.lit(':')
@@ -850,16 +863,11 @@ class LeoTidy:
         
         if self.new:
             self.visit(node.elt)
-            self.blank()
             gens = node.generators or []
             for i,z in enumerate(gens):
                 self.visit(z)
                 if i < len(gens):
-                    self.lit(',')
-                    self.blank()
-            
-            
-            
+                    self.lit_blank(',')
         else:
             elt  = self.visit(node.elt)
             if node.generators:
@@ -886,18 +894,16 @@ class LeoTidy:
                     self.op('=')
                     self.visit(node.defaults[i-n_plain])
                 if i < n_args:
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
             if hasattr(node,'vararg'):
                 if node.args:
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
                 self.lit('*')
                 name = getattr(node,'vararg')
                 self.word(name.arg if g.isPython3 else name)
             if hasattr(node,'kwarg'):
                 if node.args or hasattr(node,'vararg'):
-                    self.lit(', ')
+                    self.lit_blank(',')
                 self.lit('**')
                 name = getattr(node,'kwarg')
                 self.word(name.arg if g.isPython3 else name)
@@ -925,7 +931,6 @@ class LeoTidy:
 
     def do_arg(self,node):
         '''Return the name of the argument.'''
-        
         if self.new:
             self.word(node.arg)
         else:
@@ -946,7 +951,11 @@ class LeoTidy:
     #@+node:ekr.20150520173107.21: *5* pt.Bytes
     def do_Bytes(self,node): # Python 3.x only.
         assert g.isPython3
-        return str(node.s)
+        if g.new:
+            g.trace('=====',g.callers())
+            self.lit(node.s)
+        else:
+            return str(node.s)
         
     #@+node:ekr.20150520173107.22: *5* pt.Call & pt.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -955,20 +964,17 @@ class LeoTidy:
 
         if self.new:
             self.visit(node.func)
-            self.blank()
             self.lt('(')
             if node.args:
                 for i,z in enumerate(node.args):
                     self.visit(z)
                     if i + 1 < len(node.args):
-                        self.lit(',')
-                        self.blank()
+                        self.lit_blank(',')
             if node.keywords:
                 for i,z in enumerate(node.keywords):
                     self.visit(z) # Calls f.do_keyword.
                     if i + 1 < len(node.keywords):
-                        self.lit(',')
-                        self.blank()
+                        self.lit_blank(',')
             if getattr(node,'starargs',None):
                 self.lit('*')
                 self.visit(node.starargs)
@@ -991,12 +997,16 @@ class LeoTidy:
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self,node):
-
-        # node.arg is a string.
-        value = self.visit(node.value)
-
-        # This is a keyword *arg*, not a Python keyword!
-        return '%s=%s' % (node.arg,value)
+        
+        if self.new:
+            self.lit(node.arg)
+            self.lit('=')
+            self.visit(node.value)
+        else:
+            # node.arg is a string.
+            value = self.visit(node.value)
+            # This is a keyword *arg*, not a Python keyword!
+            return '%s=%s' % (node.arg,value)
     #@+node:ekr.20150520173107.24: *5* pt.comprehension
     # comprehension (expr target, expr iter, expr* ifs)
 
@@ -1004,13 +1014,11 @@ class LeoTidy:
         
         if self.new:
             self.visit(node.target)
-            self.blank()
+            self.op('in')
             self.visit(node.iter)
             if node.ifs:
                 for i,z in enumerate(node.ifs):
-                    self.blank()
                     self.word('if')
-                    self.blank()
                     self.visit(z)
         else:
             result = []
@@ -1029,13 +1037,12 @@ class LeoTidy:
             if node.keys:
                 if len(node.keys) == len(node.values):
                     self.level += 1
-                    for i in range(node.keys):
-                        self.blank()
+                    for i in range(len(node.keys)):
                         self.visit(node.keys[i])
                         self.lit(':')
                         self.blank()
                         self.visit(node.values[i])
-                        self.lit(',')
+                        self.lit_blank(',')
                         if i + 1 < len(node.keys):
                             self.line_start()
                     self.level -= 1
@@ -1060,8 +1067,11 @@ class LeoTidy:
             return ''.join(result)
     #@+node:ekr.20150520173107.26: *5* pt.Ellipsis
     def do_Ellipsis(self,node):
-        return '...'
-
+        
+        if self.new:
+            self.lit('...')
+        else:
+            return '...'
     #@+node:ekr.20150520173107.27: *5* pt.ExtSlice
     def do_ExtSlice (self,node):
         
@@ -1075,7 +1085,10 @@ class LeoTidy:
     #@+node:ekr.20150520173107.28: *5* pt.Index
     def do_Index (self,node):
         
-        return self.visit(node.value)
+        if self.new:
+            self.visit(node.value)
+        else:
+            return self.visit(node.value)
     #@+node:ekr.20150520173107.29: *5* pt.List
     def do_List(self,node):
 
@@ -1088,8 +1101,7 @@ class LeoTidy:
                 for i,z in enumerate(node.elts):
                     self.visit(z)
                     if i + 1 < len(node.elts):
-                        self.lit(',')
-                        self.blank()
+                        self.lit_blank(',')
             self.rt(']')
         else:
             elts = [self.visit(z) for z in node.elts]
@@ -1101,9 +1113,7 @@ class LeoTidy:
         if self.new:
             self.lt('[')
             self.visit(node.elt)
-            self.blank()
             self.word('for')
-            self.blank()
             for i,z in enumerate(node.generators):
                 self.visit(z)
                 ### ?
@@ -1116,7 +1126,10 @@ class LeoTidy:
     #@+node:ekr.20150520173107.31: *5* pt.Name
     def do_Name(self,node):
 
-        return node.id
+        if self.new:
+            self.word(node.id)
+        else:
+            return node.id
     #@+node:ekr.20150520182346.1: *5* pt.NameConstant
     # Python 3 only.
 
@@ -1124,10 +1137,17 @@ class LeoTidy:
         
         # g.trace(g.callers())
         # g.trace(dir(node))
-        return str(node.value)
+        if self.new:
+            self.lit(str(node.value))
+        else:
+            return str(node.value)
     #@+node:ekr.20150520173107.32: *5* pt.Num
     def do_Num(self,node):
-        return repr(node.n)
+        
+        if self.new:
+            self.lit(repr(node.n))
+        else:
+            return repr(node.n)
     #@+node:ekr.20150520173107.33: *5* pt.Repr
     # Python 2.x only
     def do_Repr(self,node):
@@ -1165,9 +1185,11 @@ class LeoTidy:
                 return '%s:%s' % (lower,upper)
     #@+node:ekr.20150520173107.35: *5* pt.Str
     def do_Str (self,node):
-        
         '''This represents a string constant.'''
-        return repr(node.s)
+        if self.new:
+            self.lit(repr(node.s))
+        else:
+            return repr(node.s)
     #@+node:ekr.20150520173107.36: *5* pt.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -1190,8 +1212,7 @@ class LeoTidy:
             for i,z in enumerate(node.elts):
                 self.visit(z)
                 if i + 1 < len(node.elts):
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
             self.rt(')')
         else:
             elts = [self.visit(z) for z in node.elts]
@@ -1232,9 +1253,7 @@ class LeoTidy:
             ops = [self.op_name(z) for z in node.ops]
             if len(ops) == len(node.comparators):
                 for i in range(len(ops)):
-                    self.blank()
                     self.word(ops[i])
-                    self.blank()
                     self.visit(node.comparators[i])
             else:
                 g.trace('ops: %r, comparators: %r' % (ops,node.comparators))
@@ -1265,9 +1284,7 @@ class LeoTidy:
         
         if self.new:
             self.visit(node.body)
-            self.blank()
             self.word('if')
-            self.blank()
             self.visit(node.test)
             self.blank()
             self.visit(node.orelse)
@@ -1284,11 +1301,9 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('assert')
-            self.blank()
             self.visit(node.test)
             if hasattr(node,'msg'):
-                self.lit(',')
-                self.blank()
+                self.lit_blank(',')
                 self.visit(node.msg)
             self.line_end()
         else:
@@ -1303,7 +1318,7 @@ class LeoTidy:
         
         if self.new:
             self.line_start()
-            for z in node.argets:
+            for z in node.targets:
                 self.visit(z)
                 self.op('=')
             self.visit(node.value)
@@ -1318,10 +1333,7 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.visit(node.target)
-            self.blank()
-            self.lit(self.op_name(node.op))
-            self.lit('=')
-            self.blank()
+            self.op(self.op_name(node.op)+'=')
             self.visit(node.value)
             self.line_end()
         else:
@@ -1351,9 +1363,17 @@ class LeoTidy:
     #@+node:ekr.20150520173107.50: *5* pt.Delete
     def do_Delete(self,node):
         
-        targets = [self.visit(z) for z in node.targets]
-
-        return self.indent('del %s\n' % ','.join(targets))
+        if self.new:
+            self.line_start()
+            self.word('del')
+            for i, z in enumerate(node.targets):
+                self.visit(z)
+                if i + 1 < len(node.targets):
+                    self.tok_blank(',')
+            self.line_end()
+        else:
+            targets = [self.visit(z) for z in node.targets]
+            return self.indent('del %s\n' % ','.join(targets))
     #@+node:ekr.20150520173107.51: *5* pt.ExceptHandler
     def do_ExceptHandler(self,node):
         
@@ -1363,7 +1383,6 @@ class LeoTidy:
                 self.blank()
                 self.visit(node.type)
             if getattr(node,'name',None):
-                self.blank()
                 self.word('as')
                 if isinstance(node.name,ast.AST):
                     self.visit(node.name)
@@ -1400,16 +1419,13 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('exec')
-            self.blank()
             if globals_ or locals_:
                 self.word('in')
-                self.blank()
             if globals_:
                 self.visit(node.globals)
             if locals_:
                 if globals_:
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
                 self.visit(node.locals)
             self.line_end()
         else:
@@ -1430,7 +1446,6 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('for')
-            self.blank()
             self.visit(node.target)
             self.op('in')
             self.visit(node.iter)
@@ -1470,12 +1485,10 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('global')
-            self.blank()
             for i,z in enumerate(node.names):
                 self.visit(z)
                 if i + 1 < len(node.names):
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
             self.line_end()
         else:
             return self.indent('global %s\n' % (
@@ -1486,7 +1499,6 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('if')
-            self.blank()
             self.visit(node.test)
             self.lit(':')
             self.line_end()
@@ -1524,7 +1536,6 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('import')
-            self.blank()
             aList = self.get_import_names(node)
             for i,data in enumerate(aList):
                 fn,asname = data
@@ -1533,8 +1544,7 @@ class LeoTidy:
                     self.op('as')
                     self.word(asname)
                 if i + 1 < len(aList):
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
             self.line_end()
         else:
             names = []
@@ -1547,18 +1557,14 @@ class LeoTidy:
                 ','.join(names)))
     #@+node:ekr.20150520173107.57: *6* pt.get_import_names
     def get_import_names (self,node):
-
         '''Return a list of the the full file names in the import statement.'''
-
         result = []
         for ast2 in node.names:
-
             if self.kind(ast2) == 'alias':
                 data = ast2.name,ast2.asname
                 result.append(data)
             else:
                 g.trace('unsupported kind in Import.names list',self.kind(ast2))
-
         return result
     #@+node:ekr.20150520173107.58: *5* pt.ImportFrom
     def do_ImportFrom(self,node):
@@ -1566,17 +1572,13 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('from')
-            self.blank()
             self.word(node.module)
-            self.blank()
             aList = self.get_import_names(node)
             for i, data in enumerate(aList):
                 fn, asname = data
                 self.word(fn)
                 if asname:
-                    self.blank()
                     self.word('as')
-                    self.blank()
                     self.word(asname)
             self.line_end()
         else:
@@ -1612,8 +1614,7 @@ class LeoTidy:
                 else:
                     self.visit(z)
                 if i + 1 < len(node.values):
-                    self.lit(',')
-                    self.blank()
+                    self.lit_blank(',')
             self.line_end()
             # if False and getattr(node,'dest',None):
                 # vals.append('dest=%s' % self.visit(node.dest))
@@ -1641,8 +1642,7 @@ class LeoTidy:
             for attr in ('type','inst','tback'):
                 if getattr(node,attr,None) is not None:
                     if has_arg:
-                        self.lit(',')
-                        self.blank()
+                        self.lit_blank(',')
                     self.visit(getattr(node,attr))
                     has_arg = True
             self.line_end()
@@ -1807,7 +1807,6 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('while')
-            self.blank()
             self.visit(node.test)
             self.lit(':')
             self.line_end()
@@ -1846,7 +1845,6 @@ class LeoTidy:
         if self.new:
             self.line_start()
             self.word('with')
-            self.blank()
             if hasattr(node,'context_expression'):
                 self.visit(node.context_expresssion)
             vars_list = []
@@ -1855,8 +1853,7 @@ class LeoTidy:
                     for i,z in enumerate(node.optional_vars):
                         self.visit(z)
                         if i + 1 < len(node.optional_vars):
-                            self.lit(',')
-                            self.blank()
+                            self.lit_blank(',')
                 except TypeError: # Not iterable.
                     self.visit(node.optional_vars) 
             self.lit(':')
@@ -1911,35 +1908,46 @@ class OutputToken:
     def __init__(self,kind,level=None,n=None,s=None):
         self.kind = kind
         self.level = level
+        # if level is not None: g.trace(kind,repr(level),g.callers())
         self.n = n
         self.s = s
         
     def __repr__(self):
-        result = ['OutputToken %s' % (self.kind)]
-        for ivar in ('indent','n','s'):
+        result = ['OutputToken %10s ' % (self.kind)]
+        for ivar in ('level','n','s'):
             if getattr(self,ivar) is not None:
-                result.append(' %s: %s' % (ivar,getattr(self,ivar)))
+                result.append(repr(getattr(self,ivar)))
+        return ''.join(result)
                 
     __str__ = __repr__
-                
-#@+node:ekr.20150523133212.1: *3* ot.to_string
-def to_string(self):
-    '''Convert an output token to a string.'''
-    # This dict takes the place of feeble subclasses.
-    d = {
-        'blank':        ' ',
-        'blank-lines':  'blank-lines(%s)' % (self.n),
-            # The peephole will remove blank-lines tokens.
-        'file-end':     '',
-        'file-start':   '',
-        'line-end':     '\n',
-        'line-start':   '    '*self.level,
-        'lit':          self.s,
-        'tok':          self.s,
-        'word':         self.s,
-    }
-    return d.get(self.kind,'unknown output token: %s' % self.kind)
     
+    #@+others
+    #@+node:ekr.20150523133212.1: *3* ot.to_string
+    def to_string(self):
+        '''Convert an output token to a string.'''
+        # This dict takes the place of feeble subclasses.
+        try:
+            d = {
+                'blank':        ' ',
+                # 'blank-lines':  'blank-lines(%s)' % (self.n),
+                    # The peephole will remove blank-lines tokens.
+                'file-end':     '',
+                'file-start':   '',
+                'line-end':     '\n',
+                'line-start':   '    '*self.level,
+                'lit':          self.s,
+                'tok':          self.s,
+                'word':         self.s,
+            }
+            s = d.get(self.kind,'unknown output token: %s' % self.kind)
+            # g.trace(self.kind,repr(s))
+            return s
+        except TypeError:
+            #### g.trace('=====',self.kind)
+            return ''
+        
+    #@-others
+                
 #@+node:ekr.20040711135244.5: ** class PythonPrettyPrinter
 class PythonPrettyPrinter:
     '''A class that implements *limited* pep-8 cleaning.'''
@@ -1966,20 +1974,20 @@ class PythonPrettyPrinter:
     #@+node:ekr.20040711135244.4: *3* ppp.prettyPrintNode
     def prettyPrintNode(self,p,dump=False,leo_tidy=False):
         '''Pretty print a single node.'''
-        if leo_tidy: # Not ready yet.
+        if leo_tidy:
             self.python_format(p)
         else:
             self.python_tidy(p)
     #@+node:ekr.20150520170138.1: *3* ppp.python_format (Uses LeoTidy)
     def python_format(self,p):
         '''Use subclasses of leoAst.py to pretty-print Python code.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         traceResult = True
         c = self.c
         if not p.b:
             return
         if not p.b.strip():
-            self.replaceBody(p,lines=None,s='')
+            ### self.replaceBody(p,lines=None,s='')
             return
         ls = p.b.lstrip()
         if ls.startswith('@\n') or ls.startswith('@ '):
@@ -2015,16 +2023,17 @@ class PythonPrettyPrinter:
         except SyntaxError:
             d2 = None
         if s2 and s2 != s1 and d1 == d2:
-            self.replaceBody(p,lines=None,s=s2)
+            # g.trace('replacing: len(s2)=%4s %s' % (len(s2),p.h))
+            self.n += 1
+            ### self.replaceBody(p,lines=None,s=s2)
         if d1 != d2:
-            g.warning('Python Format error in',p.h)
             if trace:
-                if 0:
-                    g.trace(len(d1),d2 and len(d2) or 0)
-                else:
-                    g.trace('===== d1 %s\n\n%s' % (d1 and len(d1) or 0, d1))
-                    g.trace('===== d2 %s\n\n%s' % (d2 and len(d2) or 0, d2))
-                
+                g.warning('Python Format error %4s %4s %s' % (
+                    len(d1),d2 and len(d2) or 0,p.h))
+            if trace:
+                g.trace(len(d1),d2 and len(d2) or 0)
+                # g.trace('===== d1 %s\n\n%s' % (d1 and len(d1) or 0, d1))
+                # g.trace('===== d2 %s\n\n%s' % (d2 and len(d2) or 0, d2))
     #@+node:ekr.20141010071140.18268: *3* ppp.python_tidy (Uses PythonTidy)
     def python_tidy(self,p):
         '''Use PythonTidy to do the formatting.'''
