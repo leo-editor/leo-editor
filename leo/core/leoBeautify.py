@@ -517,7 +517,7 @@ class CPrettyPrinter:
         else:
             return j + 2
     #@-others
-#@+node:ekr.20150520173107.1: ** class LeoTidy (NEW)
+#@+node:ekr.20150520173107.1: ** class LeoTidy
 class LeoTidy:
     '''A class to beautify source code from an AST'''
     
@@ -531,44 +531,76 @@ class LeoTidy:
     
     #@+others
     #@+node:ekr.20150523083023.1: *3* pt.Code Generators
+    #@+node:ekr.20150523131619.1: *4* pt.add_token
+    def add_token(self,kind,**keys):
+        '''Add a token to the code list.'''
+        self.code_list.append(OutputToken(kind,keys))
     #@+node:ekr.20150523083639.1: *4* pt.blank
     def blank(self):
         '''Add a blank request on the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind not in ('blank','start-line','end-line'):
+            self.add_token('blank')
     #@+node:ekr.20150523084306.1: *4* pt.blank_lines
     def blank_lines(self,n):
         '''Add a request for n blank lines to the code list.'''
+        self.add_token('blank-lines',n=n)
     #@+node:ekr.20150523085208.1: *4* pt.conditional_line_start
     def conditional_line_start(self):
         '''Add a conditional line start to the code list.'''
-    #@+node:ekr.20150523084222.1: *4* pt.line_end
+        prev = self.code_list[-1]
+        if prev.kind not in ('start-line','end-line'):
+            self.add_token('start-line')
+    #@+node:ekr.20150523131526.1: *4* pt.file_start & file_end
+    def file_end(self):
+        '''Add a file-end token to the code list.'''
+        self.add_token('file-end')
+
+    def file_start(self):
+        '''Add a file-start token to the code list.'''
+        self.add_token('file-start')
+    #@+node:ekr.20150523084222.1: *4* pt.line_start & line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
-    #@+node:ekr.20150523084250.1: *4* pt.line_start
+        self.add_token('line-end')
+
     def line_start(self):
         '''Add a line-start request to the code list.'''
+        self.add_token('line-start',level=self.level)
     #@+node:ekr.20150523083627.1: *4* pt.lit
     def lit(self,s):
         '''Add a literal request to the code list.'''
-    #@+node:ekr.20150523083651.1: *4* pt.lt
+        self.add_token('lit',s=s)
+    #@+node:ekr.20150523083651.1: *4* pt.lt & rt
     def lt(self,s):
         '''Add a left paren request to the code list.'''
         assert s in '([{',repr(s)
-    #@+node:ekr.20150522212520.1: *4* pt.op
-    def op(self,s):
-        '''Add an operator request to the code list.'''
-    #@+node:ekr.20150523083646.1: *4* pt.rt
+        self.add_token('lit',s=s)
+        
     def rt(self,s):
         '''Add a right paren request to the code list.'''
         assert s in ')]}',repr(s)
+        self.add_token('lit',s=s)
+    #@+node:ekr.20150522212520.1: *4* pt.op
+    def op(self,s):
+        '''Add an operator request to the code list.'''
+        self.blank()
+        self.lit(s)
+        self.blank()
     #@+node:ekr.20150523083952.1: *4* pt.word
     def word(self,s):
         '''Add a word request to the code list.'''
+        self.blank()
+        self.add_token('word',s=s)
+        self.blank()
     #@+node:ekr.20150520173107.2: *3* pt.Entries
     #@+node:ekr.20150520173107.4: *4* pt.format
     def format (self,node):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
+        self.file_start()
         val = self.visit(node)
+        self.file_start()
         if self.new:
             self.peep_hole()
             return self.to_string()
@@ -1872,6 +1904,42 @@ class LeoTidy:
             else:
                 return 'yield\n'
     #@-others
+#@+node:ekr.20150523132558.1: ** class OutputToken
+class OutputToken:
+    '''A class representing items on the LeoTidy code list.'''
+    
+    def __init__(self,kind,level=None,n=None,s=None):
+        self.kind = kind
+        self.level = level
+        self.n = n
+        self.s = s
+        
+    def __repr__(self):
+        result = ['OutputToken %s' % (self.kind)]
+        for ivar in ('indent','n','s'):
+            if getattr(self,ivar) is not None:
+                result.append(' %s: %s' % (ivar,getattr(self,ivar)))
+                
+    __str__ = __repr__
+                
+#@+node:ekr.20150523133212.1: *3* ot.to_string
+def to_string(self):
+    '''Convert an output token to a string.'''
+    # This dict takes the place of feeble subclasses.
+    d = {
+        'blank':        ' ',
+        'blank-lines':  'blank-lines(%s)' % (self.n),
+            # The peephole will remove blank-lines tokens.
+        'file-end':     '',
+        'file-start':   '',
+        'line-end':     '\n',
+        'line-start':   '    '*self.level,
+        'lit':          self.s,
+        'tok':          self.s,
+        'word':         self.s,
+    }
+    return d.get(self.kind,'unknown output token: %s' % self.kind)
+    
 #@+node:ekr.20040711135244.5: ** class PythonPrettyPrinter
 class PythonPrettyPrinter:
     '''A class that implements *limited* pep-8 cleaning.'''
