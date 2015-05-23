@@ -13,10 +13,10 @@ import tokenize
 
 #@+others
 #@+node:ekr.20150521114057.1: ** test (leoBeautify.py)
-def test(c,p):
+def test(c,h,p):
     '''Use subclasses of leoAst.py to pretty-print Python code.'''
     if not p:
-        g.trace('not found: %s' % p.h)
+        g.trace('not found: %s' % h)
         return
     s = g.getScript(c, p,
                     useSelectedText=False,
@@ -25,7 +25,6 @@ def test(c,p):
     g.trace(p.h)
     if 0:
         for i,s2 in enumerate(g.splitlines(s)[:200]):
-            # if s2.lstrip().startswith('#'):
             if s2.find('#') > -1:
                 g.pr('%2s %s' % (i+1,s2.rstrip()))
     t1 = time.time()
@@ -518,724 +517,117 @@ class CPrettyPrinter:
         else:
             return j + 2
     #@-others
-#@+node:ekr.20150520173107.1: ** class LeoTidy
+#@+node:ekr.20150520173107.1: ** class LeoTidy (NEW)
 class LeoTidy:
     '''A class to beautify source code from an AST'''
     
     def __init__(self,c,options_d=None):
         '''Ctor for the LeoTidy class.'''
         self.c = c
+        self.code_list = []
         self.level = 0
-        self.options_d = options_d or {}
+        ### self.options_d = options_d or {}
+        self.new = False
     
     #@+others
-    #@+node:ekr.20150520173107.2: *3*  f.Entries
-    #@+node:ekr.20150520173107.3: *4* f.__call__ (not used)
-    # def __call__(self,node):
-        # '''__call__ method for AstFormatter class.'''
-        # return self.format(node)
-    #@+node:ekr.20150520173107.4: *4* f.format
+    #@+node:ekr.20150523083023.1: *3* pt.Code Generators
+    #@+node:ekr.20150523083639.1: *4* pt.blank
+    def blank(self):
+        '''Add a blank request on the code list.'''
+    #@+node:ekr.20150523084306.1: *4* pt.blank_lines
+    def blank_lines(self,n):
+        '''Add a request for n blank lines to the code list.'''
+    #@+node:ekr.20150523085208.1: *4* pt.conditional_line_start
+    def conditional_line_start(self):
+        '''Add a conditional line start to the code list.'''
+    #@+node:ekr.20150523084222.1: *4* pt.line_end
+    def line_end(self):
+        '''Add a line-end request to the code list.'''
+    #@+node:ekr.20150523084250.1: *4* pt.line_start
+    def line_start(self):
+        '''Add a line-start request to the code list.'''
+    #@+node:ekr.20150523083627.1: *4* pt.lit
+    def lit(self,s):
+        '''Add a literal request to the code list.'''
+    #@+node:ekr.20150523083651.1: *4* pt.lt
+    def lt(self,s):
+        '''Add a left paren request to the code list.'''
+        assert s in '([{',repr(s)
+    #@+node:ekr.20150522212520.1: *4* pt.op
+    def op(self,s):
+        '''Add an operator request to the code list.'''
+    #@+node:ekr.20150523083646.1: *4* pt.rt
+    def rt(self,s):
+        '''Add a right paren request to the code list.'''
+        assert s in ')]}',repr(s)
+    #@+node:ekr.20150523083952.1: *4* pt.word
+    def word(self,s):
+        '''Add a word request to the code list.'''
+    #@+node:ekr.20150520173107.2: *3* pt.Entries
+    #@+node:ekr.20150520173107.4: *4* pt.format
     def format (self,node):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
         val = self.visit(node)
-        return val and val.strip() or ''
-    #@+node:ekr.20150520173107.5: *4* f.visit
+        if self.new:
+            self.peep_hole()
+            return self.to_string()
+        else:
+            return val and val.strip() or ''
+            
+    #@+node:ekr.20150520173107.5: *4* pt.visit
     def visit(self,node):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
         trace = False and not g.unitTesting
         if isinstance(node,(list,tuple)):
-            return ','.join([self.visit(z) for z in node])
+            if self.new:
+                assert False # The caller should do this explicitly
+            else:
+                return ','.join([self.visit(z) for z in node])
         elif node is None:
-            return 'None'
+            if self.new:
+                g.trace(node) # The caller should check
+            else:
+                return 'None'
         else:
             assert isinstance(node,ast.AST),node.__class__.__name__
             method_name = 'do_' + node.__class__.__name__
             method = getattr(self,method_name)
             if trace: g.trace(method_name)
             s = method(node)
-            assert type(s)==type('abc'),type(s)
+            if self.new:
+                assert s is None,s
+            else:
+                assert type(s)==type('abc'),type(s)
             return s
-    #@+node:ekr.20150520173107.6: *3* f.Contexts
-    #@+node:ekr.20150520173107.7: *4* f.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-
-    def do_ClassDef (self,node):
+    #@+node:ekr.20150523084704.1: *4* pt.visit_list
+    def visit_list(self,node):
         
-        result = []
-        name = node.name # Only a plain string is valid.
-        bases = [self.visit(z) for z in node.bases] if node.bases else []
-                
-        if bases:
-            result.append(self.indent('class %s(%s):\n' % (name,','.join(bases))))
+        if self.new:
+            assert False,node
         else:
-            result.append(self.indent('class %s:\n' % name))
-
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-            
-        return ''.join(result)
-    #@+node:ekr.20150520173107.8: *4* f.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-
-    def do_FunctionDef (self,node):
-        '''Format a FunctionDef node.'''
-        result = []
-        if node.decorator_list:
-            for z in node.decorator_list:
-                result.append('@%s\n' % self.visit(z))
-        name = node.name # Only a plain string is valid.
-        args = self.visit(node.args) if node.args else ''
-        result.append(self.indent('def %s(%s):\n' % (name,args)))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        return ''.join(result)
-    #@+node:ekr.20150520173107.9: *4* f.Interactive
-    def do_Interactive(self,node):
+            return ','.join([self.visit(z) for z in node])
+    #@+node:ekr.20150523085823.1: *3* pt.Output
+    #@+node:ekr.20150523083015.1: *4* pt.peep_hole
+    def peep_hole(self):
+        '''Satisfy all requests on the code list.'''
+    #@+node:ekr.20150523083446.1: *4* pt.to_string
+    def to_string(self):
+        '''Convert the code list to a single string.'''
+    #@+node:ekr.20150520173107.69: *3* pt.Utils
+    #@+node:ekr.20150520173107.71: *4* pt.indent
+    def indent(self,s):
         
-        assert False,'Interactive not supported'
-        # for z in node.body:
-            # self.visit(z)
-
-    #@+node:ekr.20150520173107.10: *4* f.Module
-    def do_Module (self,node):
-        
-        # assert 'body' in node._fields
-        result = ''.join([self.visit(z) for z in node.body])
-        return result
-    #@+node:ekr.20150520173107.11: *4* f.Lambda
-    def do_Lambda (self,node):
-            
-        return self.indent('lambda %s: %s\n' % (
-            self.visit(node.args),
-            self.visit(node.body)))
-    #@+node:ekr.20150520173107.12: *3* f.Expressions
-    #@+node:ekr.20150520173107.13: *4* f.Expr
-    def do_Expr(self,node):
-        
-        '''An outer expression: must be indented.'''
-        
-        return self.indent('%s\n' % self.visit(node.value))
-
-    #@+node:ekr.20150520173107.14: *4* f.Expression
-    def do_Expression(self,node):
-        
-        '''An inner expression: do not indent.'''
-
-        return '%s\n' % self.visit(node.body)
-    #@+node:ekr.20150520173107.15: *4* f.GeneratorExp
-    def do_GeneratorExp(self,node):
-       
-        elt  = self.visit(node.elt) or ''
-
-        gens = [self.visit(z) for z in node.generators]
-        gens = [z if z else '<**None**>' for z in gens] ### Kludge: probable bug.
-        
-        return '<gen %s for %s>' % (elt,','.join(gens))
-    #@+node:ekr.20150520173107.16: *4* f.ctx nodes
-    def do_AugLoad(self,node):
-        return 'AugLoad'
-    def do_Del(self,node):
-        return 'Del'
-    def do_Load(self,node):
-        return 'Load'
-    def do_Param(self,node):
-        return 'Param'
-    def do_Store(self,node):
-        return 'Store'
-    #@+node:ekr.20150520173107.17: *3* f.Operands
-    #@+node:ekr.20150520173107.18: *4* f.arguments
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-
-    def do_arguments(self,node):
-        '''Format the arguments node.'''
-        kind = self.kind(node)
-        assert kind == 'arguments',kind
-        args     = [self.visit(z) for z in node.args]
-        defaults = [self.visit(z) for z in node.defaults]
-        # Assign default values to the last args.
-        args2 = []
-        n_plain = len(args) - len(defaults)
-        for i in range(len(args)):
-            if i < n_plain:
-                args2.append(args[i])
-            else:
-                args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
-        # Add the vararg and kwarg args.
-        for prefix,ivar in (('*','vararg'),('**','kwarg')):
-            name = getattr(node,ivar,None)
-            if name:
-                name2 = name.arg if g.isPython3 else name
-                args2.append(prefix+name2)
-        return ','.join(args2)
-    #@+node:ekr.20150520173107.19: *4* f.arg (Python3 only)
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
-
-    def do_arg(self,node):
-        '''Return the name of the argument.'''
-        return node.arg
-    #@+node:ekr.20150520173107.20: *4* f.Attribute
-    # Attribute(expr value, identifier attr, expr_context ctx)
-
-    def do_Attribute(self,node):
-
-        return '%s.%s' % (
-            self.visit(node.value),
-            node.attr) # Don't visit node.attr: it is always a string.
-    #@+node:ekr.20150520173107.21: *4* f.Bytes
-    def do_Bytes(self,node): # Python 3.x only.
-        assert g.isPython3
-        return str(node.s)
-        
-    #@+node:ekr.20150520173107.22: *4* f.Call & f.keyword
-    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-
-    def do_Call(self,node):
-        
-        # g.trace(node,Utils().dump_ast(node))
-
-        func = self.visit(node.func)
-        args = [self.visit(z) for z in node.args]
-
-        for z in node.keywords:
-            # Calls f.do_keyword.
-            args.append(self.visit(z))
-
-        if getattr(node,'starargs',None):
-            args.append('*%s' % (self.visit(node.starargs)))
-
-        if getattr(node,'kwargs',None):
-            args.append('**%s' % (self.visit(node.kwargs)))
-            
-        args = [z for z in args if z] # Kludge: Defensive coding.
-        return '%s(%s)' % (func,','.join(args))
-    #@+node:ekr.20150520173107.23: *5* f.keyword
-    # keyword = (identifier arg, expr value)
-
-    def do_keyword(self,node):
-
-        # node.arg is a string.
-        value = self.visit(node.value)
-
-        # This is a keyword *arg*, not a Python keyword!
-        return '%s=%s' % (node.arg,value)
-    #@+node:ekr.20150520173107.24: *4* f.comprehension
-    def do_comprehension(self,node):
-
-        result = []
-        name = self.visit(node.target) # A name.
-        it   = self.visit(node.iter) # An attribute.
-
-        result.append('%s in %s' % (name,it))
-
-        ifs = [self.visit(z) for z in node.ifs]
-        if ifs:
-            result.append(' if %s' % (''.join(ifs)))
-            
-        return ''.join(result)
-    #@+node:ekr.20150520173107.25: *4* f.Dict
-    def do_Dict(self,node):
-        
-        result = []
-        keys   = [self.visit(z) for z in node.keys]
-        values = [self.visit(z) for z in node.values]
-            
-        if len(keys) == len(values):
-            result.append('{\n' if keys else '{')
-            items = []
-            for i in range(len(keys)):
-                items.append('  %s:%s' % (keys[i],values[i]))
-            result.append(',\n'.join(items))
-            result.append('\n}' if keys else '}')
+        if self.new:
+            return '    '*self.level
         else:
-            print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
-                repr(keys),repr(values)))
-                
-        return ''.join(result)
-    #@+node:ekr.20150520173107.26: *4* f.Ellipsis
-    def do_Ellipsis(self,node):
-        return '...'
-
-    #@+node:ekr.20150520173107.27: *4* f.ExtSlice
-    def do_ExtSlice (self,node):
-
-        return ':'.join([self.visit(z) for z in node.dims])
-    #@+node:ekr.20150520173107.28: *4* f.Index
-    def do_Index (self,node):
-        
-        return self.visit(node.value)
-    #@+node:ekr.20150520173107.29: *4* f.List
-    def do_List(self,node):
-
-        # Not used: list context.
-        # self.visit(node.ctx)
-        
-        elts = [self.visit(z) for z in node.elts]
-        elst = [z for z in elts if z] # Defensive.
-        return '[%s]' % ','.join(elts)
-    #@+node:ekr.20150520173107.30: *4* f.ListComp
-    def do_ListComp(self,node):
-
-        elt = self.visit(node.elt)
-        gens = [self.visit(z) for z in node.generators]
-        ### gens = [z if z else '<**None**>' for z in gens] ### Kludge: probable bug.
-        return '[%s for %s]' % (elt,''.join(gens))
-    #@+node:ekr.20150520173107.31: *4* f.Name
-    def do_Name(self,node):
-
-        return node.id
-    #@+node:ekr.20150520182346.1: *4* f.NameConstant
-    # Python 3 only.
-
-    def do_NameConstant(self,node):
-        
-        # g.trace(g.callers())
-        # g.trace(dir(node))
-        return str(node.value)
-    #@+node:ekr.20150520173107.32: *4* f.Num
-    def do_Num(self,node):
-        return repr(node.n)
-    #@+node:ekr.20150520173107.33: *4* f.Repr
-    # Python 2.x only
-    def do_Repr(self,node):
-
-        return 'repr(%s)' % self.visit(node.value)
-    #@+node:ekr.20150520173107.34: *4* f.Slice
-    def do_Slice (self,node):
-        
-        lower,upper,step = '','',''
-        
-        if getattr(node,'lower',None) is not None:
-            lower = self.visit(node.lower)
+            return '%s%s' % (' '*4*self.level,s)
             
-        if getattr(node,'upper',None) is not None:
-            upper = self.visit(node.upper)
-            
-        if getattr(node,'step',None) is not None:
-            step = self.visit(node.step)
-            
-        if step:
-            return '%s:%s:%s' % (lower,upper,step)
-        else:
-            return '%s:%s' % (lower,upper)
-    #@+node:ekr.20150520173107.35: *4* f.Str
-    def do_Str (self,node):
-        
-        '''This represents a string constant.'''
-        return repr(node.s)
-    #@+node:ekr.20150520173107.36: *4* f.Subscript
-    # Subscript(expr value, slice slice, expr_context ctx)
-
-    def do_Subscript(self,node):
-        
-        value = self.visit(node.value)
-
-        the_slice = self.visit(node.slice)
-        
-        return '%s[%s]' % (value,the_slice)
-    #@+node:ekr.20150520173107.37: *4* f.Tuple
-    def do_Tuple(self,node):
-            
-        elts = [self.visit(z) for z in node.elts]
-
-        return '(%s)' % ','.join(elts)
-    #@+node:ekr.20150520173107.38: *3* f.Operators
-    #@+node:ekr.20150520173107.39: *4* f.BinOp
-    def do_BinOp (self,node):
-
-        return '%s %s %s' % (
-            self.visit(node.left),
-            self.op_name(node.op),
-            self.visit(node.right))
-            
-    #@+node:ekr.20150520173107.40: *4* f.BoolOp
-    def do_BoolOp (self,node):
-        
-        op_name = self.op_name(node.op)
-        values = [self.visit(z) for z in node.values]
-        return op_name.join(values)
-    #@+node:ekr.20150520173107.41: *4* f.Compare
-    def do_Compare(self,node):
-        
-        result = []
-        lt    = self.visit(node.left)
-        # ops   = [self.visit(z) for z in node.ops]
-        ops = [self.op_name(z) for z in node.ops]
-        comps = [self.visit(z) for z in node.comparators]
-        result.append(lt)
-        if len(ops) == len(comps):
-            for i in range(len(ops)):
-                result.append(' %s %s' % (ops[i],comps[i]))
-        else:
-            g.trace('ops',repr(ops),'comparators',repr(comps))
-            
-        return ''.join(result)
-    #@+node:ekr.20150520173107.42: *4* f.UnaryOp
-    def do_UnaryOp (self,node):
-        
-        return '%s%s' % (
-            self.op_name(node.op),
-            self.visit(node.operand))
-    #@+node:ekr.20150520173107.43: *4* f.ifExp (ternary operator)
-    def do_IfExp (self,node):
-
-        return '%s if %s else %s ' % (
-            self.visit(node.body),
-            self.visit(node.test),
-            self.visit(node.orelse))
-    #@+node:ekr.20150520173107.44: *3* f.Statements
-    #@+node:ekr.20150520173107.45: *4* f.Assert
-    def do_Assert(self,node):
-        
-        test = self.visit(node.test)
-
-        if getattr(node,'msg',None):
-            message = self.visit(node.msg)
-            return self.indent('assert %s, %s\n' % (test,message))
-        else:
-            return self.indent('assert %s\n' % test)
-    #@+node:ekr.20150520173107.46: *4* f.Assign
-    def do_Assign(self,node):
-
-        return self.indent('%s = %s\n' % (
-            '='.join([self.visit(z) for z in node.targets]),
-            self.visit(node.value)))
-    #@+node:ekr.20150520173107.47: *4* f.AugAssign
-    def do_AugAssign(self,node):
-
-        return self.indent('%s%s=%s\n' % (
-            self.visit(node.target),
-            self.op_name(node.op), # Bug fix: 2013/03/08.
-            self.visit(node.value)))
-    #@+node:ekr.20150520173107.48: *4* f.Break
-    def do_Break(self,node):
-
-        return self.indent('break\n')
-
-    #@+node:ekr.20150520173107.49: *4* f.Continue
-    def do_Continue(self,node):
-
-        return self.indent('continue\n')
-    #@+node:ekr.20150520173107.50: *4* f.Delete
-    def do_Delete(self,node):
-        
-        targets = [self.visit(z) for z in node.targets]
-
-        return self.indent('del %s\n' % ','.join(targets))
-    #@+node:ekr.20150520173107.51: *4* f.ExceptHandler
-    def do_ExceptHandler(self,node):
-        
-        result = []
-        result.append(self.indent('except'))
-        if getattr(node,'type',None):
-            result.append(' %s' % self.visit(node.type))
-        if getattr(node,'name',None):
-            if isinstance(node.name,ast.AST):
-                result.append(' as %s' % self.visit(node.name))
-            else:
-                result.append(' as %s' % node.name) # Python 3.x.
-        result.append(':\n')
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        return ''.join(result)
-    #@+node:ekr.20150520173107.52: *4* f.Exec
-    # Python 2.x only
-    def do_Exec(self,node):
-        
-        body = self.visit(node.body)
-        args = [] # Globals before locals.
-
-        if getattr(node,'globals',None):
-            args.append(self.visit(node.globals))
-        
-        if getattr(node,'locals',None):
-            args.append(self.visit(node.locals))
-            
-        if args:
-            return self.indent('exec %s in %s\n' % (
-                body,','.join(args)))
-        else:
-            return self.indent('exec %s\n' % (body))
-    #@+node:ekr.20150520173107.53: *4* f.For
-    def do_For (self,node):
-        
-        result = []
-
-        result.append(self.indent('for %s in %s:\n' % (
-            self.visit(node.target),
-            self.visit(node.iter))))
-        
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-
-        if node.orelse:
-            result.append(self.indent('else:\n'))
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-
-        return ''.join(result)
-    #@+node:ekr.20150520173107.54: *4* f.Global
-    def do_Global(self,node):
-
-        return self.indent('global %s\n' % (
-            ','.join(node.names)))
-    #@+node:ekr.20150520173107.55: *4* f.If
-    def do_If (self,node):
-        
-        result = []
-        
-        result.append(self.indent('if %s:\n' % (
-            self.visit(node.test))))
-        
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-            
-        if node.orelse:
-            result.append(self.indent('else:\n'))
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-            
-        return ''.join(result)
-    #@+node:ekr.20150520173107.56: *4* f.Import & helper
-    def do_Import(self,node):
-        
-        names = []
-
-        for fn,asname in self.get_import_names(node):
-            if asname:
-                names.append('%s as %s' % (fn,asname))
-            else:
-                names.append(fn)
-        
-        return self.indent('import %s\n' % (
-            ','.join(names)))
-    #@+node:ekr.20150520173107.57: *5* f.get_import_names
-    def get_import_names (self,node):
-
-        '''Return a list of the the full file names in the import statement.'''
-
-        result = []
-        for ast2 in node.names:
-
-            if self.kind(ast2) == 'alias':
-                data = ast2.name,ast2.asname
-                result.append(data)
-            else:
-                g.trace('unsupported kind in Import.names list',self.kind(ast2))
-
-        return result
-    #@+node:ekr.20150520173107.58: *4* f.ImportFrom
-    def do_ImportFrom(self,node):
-        
-        names = []
-
-        for fn,asname in self.get_import_names(node):
-            if asname:
-                names.append('%s as %s' % (fn,asname))
-            else:
-                names.append(fn)
-        
-        return self.indent('from %s import %s\n' % (
-            node.module,
-            ','.join(names)))
-    #@+node:ekr.20150520173107.59: *4* f.Pass
-    def do_Pass(self,node):
-
-        return self.indent('pass\n')
-    #@+node:ekr.20150520173107.60: *4* f.Print (Still a problem)
-    # Python 2.x only
-    # Print(expr? dest, expr* values, bool nl)
-    def do_Print(self,node):
-        
-        vals = []
-        for z in node.values:
-            if isinstance(z,ast.Tuple):
-                for z2 in z.elts:
-                    vals.append(self.visit(z2))
-            else:
-                vals.append(self.visit(z))
-        if False and getattr(node,'dest',None):
-            vals.append('dest=%s' % self.visit(node.dest))
-        if False and getattr(node,'nl',None):
-            vals.append('nl=%s' % node.nl)
-        return self.indent('print(%s)\n' % (','.join(vals)))
-    #@+node:ekr.20150520173107.61: *4* f.Raise
-    def do_Raise(self,node):
-        
-        args = []
-        for attr in ('type','inst','tback'):
-            if getattr(node,attr,None) is not None:
-                args.append(self.visit(getattr(node,attr)))
-            
-        if args:
-            return self.indent('raise %s\n' % (
-                ','.join(args)))
-        else:
-            return self.indent('raise\n')
-    #@+node:ekr.20150520173107.62: *4* f.Return
-    def do_Return(self,node):
-
-        if node.value:
-            return self.indent('return %s\n' % (
-                self.visit(node.value)))
-        else:
-            return self.indent('return\n')
-    #@+node:ekr.20150520173107.63: *4* f.Suite (not used)
-    # def do_Suite(self,node):
-
-        # for z in node.body:
-            # s = self.visit(z)
-
-    #@+node:ekr.20150520202136.1: *4* f.Try
-    # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
-
-    def do_Try(self,node):
-        
-        result = []
-        result.append(self.indent('try:\n'))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.handlers:
-            for z in node.handlers:
-                result.append(self.visit(z))
-        if node.orelse:
-            result.append('else:\n')
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1 
-        if node.finalbody:
-            result.append(self.indent('finally:\n'))
-            for z in node.finalbody:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
-    #@+node:ekr.20150520173107.64: *4* f.TryExcept
-    def do_TryExcept(self,node):
-        
-        result = []
-        result.append(self.indent('try:\n'))
-
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-            
-        if node.handlers:
-            for z in node.handlers:
-                result.append(self.visit(z))
-
-        if node.orelse:
-            result.append('else:\n')
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-                
-        return ''.join(result)
-    #@+node:ekr.20150520173107.65: *4* f.TryFinally
-    def do_TryFinally(self,node):
-        
-        result = []
-        result.append(self.indent('try:\n'))
-       
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-
-        result.append(self.indent('finally:\n'))
-        for z in node.finalbody:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-
-        return ''.join(result)
-    #@+node:ekr.20150520173107.66: *4* f.While
-    def do_While (self,node):
-        
-        result = []
-
-        result.append(self.indent('while %s:\n' % (
-            self.visit(node.test))))
-        
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-
-        if node.orelse:
-            result.append('else:\n')
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        
-        return ''.join(result)
-    #@+node:ekr.20150520173107.67: *4* f.With
-    def do_With (self,node):
-        
-        result = []
-        result.append(self.indent('with '))
-        
-        if hasattr(node,'context_expression'):
-            result.append(self.visit(node.context_expresssion))
-
-        vars_list = []
-        if hasattr(node,'optional_vars'):
-            try:
-                for z in node.optional_vars:
-                    vars_list.append(self.visit(z))
-            except TypeError: # Not iterable.
-                vars_list.append(self.visit(node.optional_vars))
-                
-        result.append(','.join(vars_list))
-        result.append(':\n')
-        
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-            
-        result.append('\n')
-        return ''.join(result)
-    #@+node:ekr.20150520173107.68: *4* f.Yield
-    # Yield(expr? value)
-
-    def do_Yield(self,node):
-
-        if hasattr(node,'value'):
-            return 'yield %s\n' % self.visit(node.value)
-        else:
-            return 'yield\n'
-    #@+node:ekr.20150520173107.69: *3* f.Utils
-    #@+node:ekr.20150520173107.70: *4* f.kind
+    #@+node:ekr.20150520173107.70: *4* pt.kind
     def kind(self,node):
         '''Return the name of node's class.'''
         return node.__class__.__name__
-    #@+node:ekr.20150520173107.71: *4* f.indent
-    def indent(self,s):
-
-        return '%s%s' % (' '*4*self.level,s)
-    #@+node:ekr.20150520173107.72: *4* f.op_name
+    #@+node:ekr.20150520173107.72: *4* pt.op_name
     def op_name (self,node,strict=True):
         '''Return the print name of an operator node.'''
         d = {
@@ -1282,6 +674,1203 @@ class LeoTidy:
         name = d.get(self.kind(node),'<%s>' % node.__class__.__name__)
         if strict: assert name,self.kind(node)
         return name
+    #@+node:ekr.20150523083043.1: *3* pt.Visitors
+    #@+node:ekr.20150520173107.6: *4* pt.Contexts
+    #@+node:ekr.20150520173107.7: *5* pt.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef (self,node):
+
+        if self.new:
+            self.blank_lines(2)
+            args = node.expr or []
+            for i,z in enumerate(args):
+                self.visit(z)
+                if i < len(args):
+                    self.lit(', ')
+            self.line_start()
+            self.word('class')
+            self.word(node.name)
+            if node.bases:
+                self.lt('(')
+                for i,z in enumerate(node.bases):
+                    self.visit(node.bases)
+                    if i + 1 < len(node.base):
+                        self.lit(',')
+                        self.blank()
+                self.rt(')')
+            self.lit(':')
+            self.line_end()
+            self.blank_lines(2)
+        else:
+            result = []
+            name = node.name # Only a plain string is valid.
+            bases = [self.visit(z) for z in node.bases] if node.bases else []
+            if bases:
+                result.append(self.indent('class %s(%s):\n' % (name,','.join(bases))))
+            else:
+                result.append(self.indent('class %s:\n' % name))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            return ''.join(result)
+        
+    #@+node:ekr.20150520173107.8: *5* pt.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef (self,node):
+        '''Format a FunctionDef node.'''
+        if self.new:
+            self.blank_lines(1)
+            for z in node.expr or []:
+                self.line_start()
+                self.op('@')
+                self.visit(z)
+                self.line_end()
+            self.line_start()
+            self.word('def')
+            self.blank()
+            self.word(node.name)
+            self.lt('(')
+            if node.args:
+                for i,z in enumerate(node.args):
+                    self.visit(z)
+                    if i < len(node.args):
+                        self.lit(',')
+                        self.blank()
+            self.rt(')')
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.line_start()
+                self.visit(z)
+                self.line_end()
+                self.level -= 1
+            self.blank_lines(1)
+        else:
+            result = []
+            if node.decorator_list:
+                for z in node.decorator_list:
+                    result.append('@%s\n' % self.visit(z))
+            name = node.name # Only a plain string is valid.
+            args = self.visit(node.args) if node.args else ''
+            result.append(self.indent('def %s(%s):\n' % (name,args)))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.9: *5* pt.Interactive
+    def do_Interactive(self,node):
+        
+        assert False,'Interactive not supported'
+        # for z in node.body:
+            # self.visit(z)
+
+    #@+node:ekr.20150520173107.10: *5* pt.Module
+    def do_Module (self,node):
+        
+        # assert 'body' in node._fields
+        if self.new:
+            for z in node.body:
+                self.visit(z)
+        else:
+            return ''.join([self.visit(z) for z in node.body])
+    #@+node:ekr.20150520173107.11: *5* pt.Lambda
+    def do_Lambda (self,node):
+        
+        if self.new:
+            self.conditional_line_start() ###
+            self.word('lambda')
+            self.blank()
+            if node.args:
+                self.visit(node.args)
+            self.lit(':')
+            self.visit(node.body)
+            self.line_end()
+        else:
+            return self.indent('lambda %s: %s\n' % (
+                self.visit(node.args),
+                self.visit(node.body)))
+    #@+node:ekr.20150520173107.12: *4* pt.Expressions
+    #@+node:ekr.20150520173107.13: *5* pt.Expr
+    def do_Expr(self,node):
+        '''An outer expression: must be indented.'''
+        if self.new:
+            self.visit(node.value)
+            self.line_end()
+        else:
+            return self.indent('%s\n' % self.visit(node.value))
+    #@+node:ekr.20150520173107.14: *5* pt.Expression
+    def do_Expression(self,node):
+        '''An inner expression: do not indent.'''
+        if self.new:
+            self.visit(node.body)
+            self.line_end()
+        else:
+            return '%s\n' % self.visit(node.body)
+    #@+node:ekr.20150520173107.15: *5* pt.GeneratorExp
+    # GeneratorExp(expr elt, comprehension* generators)
+
+    def do_GeneratorExp(self,node):
+        
+        if self.new:
+            self.visit(node.elt)
+            self.blank()
+            gens = node.generators or []
+            for i,z in enumerate(gens):
+                self.visit(z)
+                if i < len(gens):
+                    self.lit(',')
+                    self.blank()
+            
+            
+            
+        else:
+            elt  = self.visit(node.elt)
+            if node.generators:
+                gens = [self.visit(z) for z in node.generators]
+            else:
+                gens = []
+            ### gens = [z if z else '<**None**>' for z in gens] ### Kludge: probable bug.
+            return '%s for %s' % (elt,','.join(gens))
+    #@+node:ekr.20150520173107.17: *4* pt.Operands
+    #@+node:ekr.20150520173107.18: *5* pt.arguments
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def do_arguments(self,node):
+        '''Format the arguments node.'''
+        assert self.kind(node) == 'arguments',node
+        if self.new:
+            n_plain = len(node.args) - len(node.defaults)
+            n_args = len(node.args)
+            for i in range(n_args):
+                if i < n_plain:
+                    self.visit(node.args[i])
+                else:
+                    self.visit(node.args[i])
+                    self.op('=')
+                    self.visit(node.defaults[i-n_plain])
+                if i < n_args:
+                    self.lit(',')
+                    self.blank()
+            if hasattr(node,'vararg'):
+                if node.args:
+                    self.lit(',')
+                    self.blank()
+                self.lit('*')
+                name = getattr(node,'vararg')
+                self.word(name.arg if g.isPython3 else name)
+            if hasattr(node,'kwarg'):
+                if node.args or hasattr(node,'vararg'):
+                    self.lit(', ')
+                self.lit('**')
+                name = getattr(node,'kwarg')
+                self.word(name.arg if g.isPython3 else name)
+        else:
+            args     = [self.visit(z) for z in node.args]
+            defaults = [self.visit(z) for z in node.defaults]
+            # Assign default values to the last args.
+            args2 = []
+            n_plain = len(args) - len(defaults)
+            for i in range(len(args)):
+                if i < n_plain:
+                    args2.append(args[i])
+                else:
+                    args2.append('%s=%s' % (args[i],defaults[i-n_plain]))
+            # Add the vararg and kwarg args.
+            for prefix,ivar in (('*','vararg'),('**','kwarg')):
+                name = getattr(node,ivar,None)
+                if name:
+                    name2 = name.arg if g.isPython3 else name
+                    args2.append(prefix+name2)
+            return ','.join(args2)
+    #@+node:ekr.20150520173107.19: *5* pt.arg (Python3 only)
+    # Python 3:
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(self,node):
+        '''Return the name of the argument.'''
+        
+        if self.new:
+            self.word(node.arg)
+        else:
+            return node.arg
+    #@+node:ekr.20150520173107.20: *5* pt.Attribute
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self,node):
+        
+        if self.new:
+            self.visit(node.value)
+            self.lit('.')
+            self.word(node.attr)
+        else:
+            return '%s.%s' % (
+                self.visit(node.value),
+                node.attr) # Don't visit node.attr: it is always a string.
+    #@+node:ekr.20150520173107.21: *5* pt.Bytes
+    def do_Bytes(self,node): # Python 3.x only.
+        assert g.isPython3
+        return str(node.s)
+        
+    #@+node:ekr.20150520173107.22: *5* pt.Call & pt.keyword
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+    def do_Call(self,node):
+
+        if self.new:
+            self.visit(node.func)
+            self.blank()
+            self.lt('(')
+            if node.args:
+                for i,z in enumerate(node.args):
+                    self.visit(z)
+                    if i + 1 < len(node.args):
+                        self.lit(',')
+                        self.blank()
+            if node.keywords:
+                for i,z in enumerate(node.keywords):
+                    self.visit(z) # Calls f.do_keyword.
+                    if i + 1 < len(node.keywords):
+                        self.lit(',')
+                        self.blank()
+            if getattr(node,'starargs',None):
+                self.lit('*')
+                self.visit(node.starargs)
+            if getattr(node,'kwargs',None):
+                self.lit('**')
+                self.visit(node.kwargs)
+        else:
+            func = self.visit(node.func)
+            args = [self.visit(z) for z in node.args]
+            for z in node.keywords:
+                # Calls f.do_keyword.
+                args.append(self.visit(z))
+            if getattr(node,'starargs',None):
+                args.append('*%s' % (self.visit(node.starargs)))
+            if getattr(node,'kwargs',None):
+                args.append('**%s' % (self.visit(node.kwargs)))
+            args = [z for z in args if z] # Kludge: Defensive coding.
+            return '%s(%s)' % (func,','.join(args))
+    #@+node:ekr.20150520173107.23: *6* pt.keyword
+    # keyword = (identifier arg, expr value)
+
+    def do_keyword(self,node):
+
+        # node.arg is a string.
+        value = self.visit(node.value)
+
+        # This is a keyword *arg*, not a Python keyword!
+        return '%s=%s' % (node.arg,value)
+    #@+node:ekr.20150520173107.24: *5* pt.comprehension
+    # comprehension (expr target, expr iter, expr* ifs)
+
+    def do_comprehension(self,node):
+        
+        if self.new:
+            self.visit(node.target)
+            self.blank()
+            self.visit(node.iter)
+            if node.ifs:
+                for i,z in enumerate(node.ifs):
+                    self.blank()
+                    self.word('if')
+                    self.blank()
+                    self.visit(z)
+        else:
+            result = []
+            name = self.visit(node.target) # A name.
+            it   = self.visit(node.iter) # An attribute.
+            result.append('%s in %s' % (name,it))
+            ifs = [self.visit(z) for z in node.ifs]
+            if ifs:
+                result.append(' if %s' % (''.join(ifs)))
+            return ''.join(result)
+    #@+node:ekr.20150520173107.25: *5* pt.Dict
+    def do_Dict(self,node):
+        
+        if self.new:
+            self.lt('{')
+            if node.keys:
+                if len(node.keys) == len(node.values):
+                    self.level += 1
+                    for i in range(node.keys):
+                        self.blank()
+                        self.visit(node.keys[i])
+                        self.lit(':')
+                        self.blank()
+                        self.visit(node.values[i])
+                        self.lit(',')
+                        if i + 1 < len(node.keys):
+                            self.line_start()
+                    self.level -= 1
+                else:
+                    print('Error: f.Dict: len(keys) != len(values)\nkeys: %r\nvals: %r' % (
+                        node.keys,node.values))
+            self.rt('}')
+        else:
+            result = []
+            keys   = [self.visit(z) for z in node.keys]
+            values = [self.visit(z) for z in node.values]
+            if len(keys) == len(values):
+                result.append('{\n' if keys else '{')
+                items = []
+                for i in range(len(keys)):
+                    items.append('  %s:%s' % (keys[i],values[i]))
+                result.append(',\n'.join(items))
+                result.append('\n}' if keys else '}')
+            else:
+                print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
+                    repr(keys),repr(values))) 
+            return ''.join(result)
+    #@+node:ekr.20150520173107.26: *5* pt.Ellipsis
+    def do_Ellipsis(self,node):
+        return '...'
+
+    #@+node:ekr.20150520173107.27: *5* pt.ExtSlice
+    def do_ExtSlice (self,node):
+        
+        if self.new:
+            for i,z in enumerate(node.dims):
+                self.visit(z)
+                if i + 1 < len(node.dims):
+                    self.op(':')
+        else:
+            return ':'.join([self.visit(z) for z in node.dims])
+    #@+node:ekr.20150520173107.28: *5* pt.Index
+    def do_Index (self,node):
+        
+        return self.visit(node.value)
+    #@+node:ekr.20150520173107.29: *5* pt.List
+    def do_List(self,node):
+
+        # Not used: list context.
+        # self.visit(node.ctx)
+        
+        if self.new:
+            self.lt('[')
+            if node.elts:
+                for i,z in enumerate(node.elts):
+                    self.visit(z)
+                    if i + 1 < len(node.elts):
+                        self.lit(',')
+                        self.blank()
+            self.rt(']')
+        else:
+            elts = [self.visit(z) for z in node.elts]
+            elst = [z for z in elts if z] # Defensive.
+            return '[%s]' % ','.join(elts)
+    #@+node:ekr.20150520173107.30: *5* pt.ListComp
+    def do_ListComp(self,node):
+        
+        if self.new:
+            self.lt('[')
+            self.visit(node.elt)
+            self.blank()
+            self.word('for')
+            self.blank()
+            for i,z in enumerate(node.generators):
+                self.visit(z)
+                ### ?
+            self.rt(']')
+        else:
+            elt = self.visit(node.elt)
+            gens = [self.visit(z) for z in node.generators]
+            ### gens = [z if z else '<**None**>' for z in gens] ### Kludge: probable bug.
+            return '[%s for %s]' % (elt,''.join(gens))
+    #@+node:ekr.20150520173107.31: *5* pt.Name
+    def do_Name(self,node):
+
+        return node.id
+    #@+node:ekr.20150520182346.1: *5* pt.NameConstant
+    # Python 3 only.
+
+    def do_NameConstant(self,node):
+        
+        # g.trace(g.callers())
+        # g.trace(dir(node))
+        return str(node.value)
+    #@+node:ekr.20150520173107.32: *5* pt.Num
+    def do_Num(self,node):
+        return repr(node.n)
+    #@+node:ekr.20150520173107.33: *5* pt.Repr
+    # Python 2.x only
+    def do_Repr(self,node):
+        
+        if self.new:
+            self.word('repr')
+            self.lt('(')
+            self.visit(node.value)
+            self.rt(')')
+        else:
+            return 'repr(%s)' % self.visit(node.value)
+    #@+node:ekr.20150520173107.34: *5* pt.Slice
+    def do_Slice (self,node):
+        
+        if self.new:
+            if getattr(node,'lower',None) is not None:
+                self.visit(node.lower)
+            self.op(':')
+            if getattr(node,'upper',None) is not None:
+                self.visit(node.upper)
+            if getattr(node,'step',None) is not None:
+                self.op(':')
+                self.visit(node.step) 
+        else:
+            lower,upper,step = '','',''
+            if getattr(node,'lower',None) is not None:
+                lower = self.visit(node.lower)
+            if getattr(node,'upper',None) is not None:
+                upper = self.visit(node.upper)
+            if getattr(node,'step',None) is not None:
+                step = self.visit(node.step)
+            if step:
+                return '%s:%s:%s' % (lower,upper,step)
+            else:
+                return '%s:%s' % (lower,upper)
+    #@+node:ekr.20150520173107.35: *5* pt.Str
+    def do_Str (self,node):
+        
+        '''This represents a string constant.'''
+        return repr(node.s)
+    #@+node:ekr.20150520173107.36: *5* pt.Subscript
+    # Subscript(expr value, slice slice, expr_context ctx)
+
+    def do_Subscript(self,node):
+        
+        if self.new:
+            self.visit(node.value)
+            self.lt('[')
+            self.visit(node.slice)
+            self.rt(']')
+        else:
+            value = self.visit(node.value)
+            the_slice = self.visit(node.slice)
+            return '%s[%s]' % (value,the_slice)
+    #@+node:ekr.20150520173107.37: *5* pt.Tuple
+    def do_Tuple(self,node):
+        
+        if self.new:
+            self.lt('(')
+            for i,z in enumerate(node.elts):
+                self.visit(z)
+                if i + 1 < len(node.elts):
+                    self.lit(',')
+                    self.blank()
+            self.rt(')')
+        else:
+            elts = [self.visit(z) for z in node.elts]
+            return '(%s)' % ','.join(elts)
+    #@+node:ekr.20150520173107.38: *4* pt.Operators
+    #@+node:ekr.20150520173107.39: *5* pt.BinOp
+    def do_BinOp (self,node):
+        
+        if self.new:
+            self.visit(node.left)
+            self.op(self.op_name(node.op))
+            self.visit(node.right)
+        else:
+            return '%s %s %s' % (
+                self.visit(node.left),
+                self.op_name(node.op),
+                self.visit(node.right))
+    #@+node:ekr.20150520173107.40: *5* pt.BoolOp
+    def do_BoolOp (self,node):
+        
+        op_name = self.op_name(node.op)
+        if self.new:
+            vals = node.values or []
+            for i,z in enumerate(vals):
+                self.visit(z)
+                if i + 1 < len(vals):
+                    self.op(op_name)
+        else:
+            values = [self.visit(z) for z in node.values]
+            return op_name.join(values)
+    #@+node:ekr.20150520173107.41: *5* pt.Compare
+    # Compare(expr left, cmpop* ops, expr* comparators)
+
+    def do_Compare(self,node):
+        
+        if self.new:
+            self.visit(node.left)
+            ops = [self.op_name(z) for z in node.ops]
+            if len(ops) == len(node.comparators):
+                for i in range(len(ops)):
+                    self.blank()
+                    self.word(ops[i])
+                    self.blank()
+                    self.visit(node.comparators[i])
+            else:
+                g.trace('ops: %r, comparators: %r' % (ops,node.comparators))
+        else:
+            result = []
+            lt    = self.visit(node.left)
+            ops = [self.op_name(z) for z in node.ops]
+            comps = [self.visit(z) for z in node.comparators]
+            result.append(lt)
+            if len(ops) == len(comps):
+                for i in range(len(ops)):
+                    result.append(' %s %s' % (ops[i],comps[i]))
+            else:
+                g.trace('ops',repr(ops),'comparators',repr(comps))
+            return ''.join(result)
+    #@+node:ekr.20150520173107.42: *5* pt.UnaryOp
+    def do_UnaryOp (self,node):
+        
+        if self.new:
+            self.op_name(node.op)
+            self.visit(node.operand)
+        else:
+            return '%s%s' % (
+                self.op_name(node.op),
+                self.visit(node.operand))
+    #@+node:ekr.20150520173107.43: *5* pt.ifExp (ternary operator)
+    def do_IfExp (self,node):
+        
+        if self.new:
+            self.visit(node.body)
+            self.blank()
+            self.word('if')
+            self.blank()
+            self.visit(node.test)
+            self.blank()
+            self.visit(node.orelse)
+            self.blank()
+        else:
+            return '%s if %s else %s ' % (
+                self.visit(node.body),
+                self.visit(node.test),
+                self.visit(node.orelse))
+    #@+node:ekr.20150520173107.44: *4* pt.Statements (to do)
+    #@+node:ekr.20150520173107.45: *5* pt.Assert
+    def do_Assert(self,node):
+
+        if self.new:
+            self.line_start()
+            self.word('assert')
+            self.blank()
+            self.visit(node.test)
+            if hasattr(node,'msg'):
+                self.lit(',')
+                self.blank()
+                self.visit(node.msg)
+            self.line_end()
+        else:
+            test = self.visit(node.test)
+            if hasattr(node,'msg'):
+                msg = self.visit(node.msg)
+                return self.indent('assert %s, %s\n' % (test,msg))
+            else:
+                return self.indent('assert %s\n' % test)
+    #@+node:ekr.20150520173107.46: *5* pt.Assign
+    def do_Assign(self,node):
+        
+        if self.new:
+            self.line_start()
+            for z in node.argets:
+                self.visit(z)
+                self.op('=')
+            self.visit(node.value)
+            self.line_end()
+        else:
+            return self.indent('%s = %s\n' % (
+                '='.join([self.visit(z) for z in node.targets]),
+                self.visit(node.value)))
+    #@+node:ekr.20150520173107.47: *5* pt.AugAssign
+    def do_AugAssign(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.visit(node.target)
+            self.blank()
+            self.lit(self.op_name(node.op))
+            self.lit('=')
+            self.blank()
+            self.visit(node.value)
+            self.line_end()
+        else:
+            return self.indent('%s%s=%s\n' % (
+                self.visit(node.target),
+                self.op_name(node.op),
+                self.visit(node.value)))
+    #@+node:ekr.20150520173107.48: *5* pt.Break
+    def do_Break(self,node):
+
+        if self.new:
+            self.line_start()
+            self.word('break')
+            self.line_end()
+        else:
+            return self.indent('break\n')
+
+    #@+node:ekr.20150520173107.49: *5* pt.Continue
+    def do_Continue(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('continue')
+            self.line_end()
+        else:
+            return self.indent('continue\n')
+    #@+node:ekr.20150520173107.50: *5* pt.Delete
+    def do_Delete(self,node):
+        
+        targets = [self.visit(z) for z in node.targets]
+
+        return self.indent('del %s\n' % ','.join(targets))
+    #@+node:ekr.20150520173107.51: *5* pt.ExceptHandler
+    def do_ExceptHandler(self,node):
+        
+        if self.new:
+            self.word('except')
+            if getattr(node,'type',None):
+                self.blank()
+                self.visit(node.type)
+            if getattr(node,'name',None):
+                self.blank()
+                self.word('as')
+                if isinstance(node.name,ast.AST):
+                    self.visit(node.name)
+                else:
+                    self.word(node.name) # Python 3.x.
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('except'))
+            if getattr(node,'type',None):
+                result.append(' %s' % self.visit(node.type))
+            if getattr(node,'name',None):
+                if isinstance(node.name,ast.AST):
+                    result.append(' as %s' % self.visit(node.name))
+                else:
+                    result.append(' as %s' % node.name) # Python 3.x.
+            result.append(':\n')
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.52: *5* pt.Exec
+    # Python 2.x only
+    def do_Exec(self,node):
+        
+        globals_ = getattr(node,'globals',None)
+        locals_ = getattr(node,'locals',None)
+        if self.new:
+            self.line_start()
+            self.word('exec')
+            self.blank()
+            if globals_ or locals_:
+                self.word('in')
+                self.blank()
+            if globals_:
+                self.visit(node.globals)
+            if locals_:
+                if globals_:
+                    self.lit(',')
+                    self.blank()
+                self.visit(node.locals)
+            self.line_end()
+        else:
+            body = self.visit(node.body)
+            args = [] # Globals before locals.
+            if globals_:
+                args.append(self.visit(node.globals))
+            if locals_:
+                args.append(self.visit(node.locals))
+            if args:
+                return self.indent('exec %s in %s\n' % (
+                    body,','.join(args)))
+            else:
+                return self.indent('exec %s\n' % (body))
+    #@+node:ekr.20150520173107.53: *5* pt.For
+    def do_For (self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('for')
+            self.blank()
+            self.visit(node.target)
+            self.op('in')
+            self.visit(node.iter)
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            if node.orelse:
+                self.word('else')
+                self.lit(':')
+                self.line_end()
+                for z in node.orelse:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('for %s in %s:\n' % (
+                self.visit(node.target),
+                self.visit(node.iter))))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            if node.orelse:
+                result.append(self.indent('else:\n'))
+                for z in node.orelse:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.54: *5* pt.Global
+    def do_Global(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('global')
+            self.blank()
+            for i,z in enumerate(node.names):
+                self.visit(z)
+                if i + 1 < len(node.names):
+                    self.lit(',')
+                    self.blank()
+            self.line_end()
+        else:
+            return self.indent('global %s\n' % (
+                ','.join(node.names)))
+    #@+node:ekr.20150520173107.55: *5* pt.If
+    def do_If (self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('if')
+            self.blank()
+            self.visit(node.test)
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            if node.orelse:
+                self.line_start()
+                self.word('else')
+                self.lit(':')
+                self.line_end()
+                for z in node.orelse:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('if %s:\n' % (
+                self.visit(node.test))))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            if node.orelse:
+                result.append(self.indent('else:\n'))
+                for z in node.orelse:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.56: *5* pt.Import & helper
+    def do_Import(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('import')
+            self.blank()
+            aList = self.get_import_names(node)
+            for i,data in enumerate(aList):
+                fn,asname = data
+                self.word(fn)
+                if asname:
+                    self.op('as')
+                    self.word(asname)
+                if i + 1 < len(aList):
+                    self.lit(',')
+                    self.blank()
+            self.line_end()
+        else:
+            names = []
+            for fn,asname in self.get_import_names(node):
+                if asname:
+                    names.append('%s as %s' % (fn,asname))
+                else:
+                    names.append(fn)
+            return self.indent('import %s\n' % (
+                ','.join(names)))
+    #@+node:ekr.20150520173107.57: *6* pt.get_import_names
+    def get_import_names (self,node):
+
+        '''Return a list of the the full file names in the import statement.'''
+
+        result = []
+        for ast2 in node.names:
+
+            if self.kind(ast2) == 'alias':
+                data = ast2.name,ast2.asname
+                result.append(data)
+            else:
+                g.trace('unsupported kind in Import.names list',self.kind(ast2))
+
+        return result
+    #@+node:ekr.20150520173107.58: *5* pt.ImportFrom
+    def do_ImportFrom(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('from')
+            self.blank()
+            self.word(node.module)
+            self.blank()
+            aList = self.get_import_names(node)
+            for i, data in enumerate(aList):
+                fn, asname = data
+                self.word(fn)
+                if asname:
+                    self.blank()
+                    self.word('as')
+                    self.blank()
+                    self.word(asname)
+            self.line_end()
+        else:
+            names = []
+            for fn,asname in self.get_import_names(node):
+                if asname:
+                    names.append('%s as %s' % (fn,asname))
+                else:
+                    names.append(fn)
+            return self.indent('from %s import %s\n' % (
+                node.module,
+                ','.join(names)))
+    #@+node:ekr.20150520173107.59: *5* pt.Pass
+    def do_Pass(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('pass')
+            self.line_end()
+        else:
+            return self.indent('pass\n')
+    #@+node:ekr.20150520173107.60: *5* pt.Print (Still a problem)
+    # Python 2.x only
+    # Print(expr? dest, expr* values, bool nl)
+    def do_Print(self,node):
+        
+        if self.new:
+            self.line_start()
+            for i,z in enumerate(node.values):
+                if isinstance(z,ast.Tuple):
+                    for z2 in z.elts:
+                        self.visit(z2)
+                else:
+                    self.visit(z)
+                if i + 1 < len(node.values):
+                    self.lit(',')
+                    self.blank()
+            self.line_end()
+            # if False and getattr(node,'dest',None):
+                # vals.append('dest=%s' % self.visit(node.dest))
+            # if False and getattr(node,'nl',None):
+                # vals.append('nl=%s' % node.nl)
+        else:
+            vals = []
+            for z in node.values:
+                if isinstance(z,ast.Tuple):
+                    for z2 in z.elts:
+                        vals.append(self.visit(z2))
+                else:
+                    vals.append(self.visit(z))
+            if False and getattr(node,'dest',None):
+                vals.append('dest=%s' % self.visit(node.dest))
+            if False and getattr(node,'nl',None):
+                vals.append('nl=%s' % node.nl)
+            return self.indent('print(%s)\n' % (','.join(vals)))
+    #@+node:ekr.20150520173107.61: *5* pt.Raise
+    def do_Raise(self,node):
+        
+        if self.new:
+            self.line_start()
+            has_arg = False
+            for attr in ('type','inst','tback'):
+                if getattr(node,attr,None) is not None:
+                    if has_arg:
+                        self.lit(',')
+                        self.blank()
+                    self.visit(getattr(node,attr))
+                    has_arg = True
+            self.line_end()
+        else:
+            args = []
+            for attr in ('type','inst','tback'):
+                if getattr(node,attr,None) is not None:
+                    args.append(self.visit(getattr(node,attr)))
+            if args:
+                return self.indent('raise %s\n' % (
+                    ','.join(args)))
+            else:
+                return self.indent('raise\n')
+    #@+node:ekr.20150520173107.62: *5* pt.Return
+    def do_Return(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('return')
+            if node.value:
+                self.blank()
+                self.visit(node.value)
+            self.line_end()
+        else:
+            if node.value:
+                return self.indent('return %s\n' % (
+                    self.visit(node.value)))
+            else:
+                return self.indent('return\n')
+    #@+node:ekr.20150520202136.1: *5* pt.Try
+    # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+    def do_Try(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('try')
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            if node.handlers:
+                for z in node.handlers:
+                    self.visit(z)
+            if node.orelse:
+                self.line_start()
+                self.word('else')
+                self.lit(':')
+                self.line_end()
+                for z in node.orelse:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1 
+            if node.finalbody:
+                self.line_start()
+                self.word('finally')
+                self.lit(':')
+                self.line_end()
+                for z in node.finalbody:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('try:\n'))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            if node.handlers:
+                for z in node.handlers:
+                    result.append(self.visit(z))
+            if node.orelse:
+                result.append('else:\n')
+                for z in node.orelse:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1 
+            if node.finalbody:
+                result.append(self.indent('finally:\n'))
+                for z in node.finalbody:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.64: *5* pt.TryExcept
+    def do_TryExcept(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('try:')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            if node.handlers:
+                for z in node.handlers:
+                    self.visit(z)
+            if node.orelse:
+                self.line_start()
+                self.word('else:')
+                self.line_end()
+                for z in node.orelse:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1
+            self.line_end()
+        else:
+            result = []
+            result.append(self.indent('try:\n'))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            if node.handlers:
+                for z in node.handlers:
+                    result.append(self.visit(z))
+            if node.orelse:
+                result.append('else:\n')
+                for z in node.orelse:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.65: *5* pt.TryFinally
+    def do_TryFinally(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('try:')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            self.line_start()
+            self.word('finally:')
+            self.line_end()
+            for z in node.finalbody:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('try:\n'))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            result.append(self.indent('finally:\n'))
+            for z in node.finalbody:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.66: *5* pt.While
+    def do_While (self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('while')
+            self.blank()
+            self.visit(node.test)
+            self.lit(':')
+            self.line_end()
+            for z in node.body:
+                self.level += 1
+                self.visit(z)
+                self.level -= 1
+            if node.orelse:
+                self.word('else')
+                self.lit(':')
+                self.line_end()
+                for z in node.orelse:
+                    self.level += 1
+                    self.visit(z)
+                    self.level -= 1
+        else:
+            result = []
+            result.append(self.indent('while %s:\n' % (
+                self.visit(node.test))))
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            if node.orelse:
+                result.append('else:\n')
+                for z in node.orelse:
+                    self.level += 1
+                    result.append(self.visit(z))
+                    self.level -= 1
+            return ''.join(result)
+    #@+node:ekr.20150520173107.67: *5* pt.With
+    # With(expr context_expr, expr? optional_vars, stmt* body)
+
+    def do_With (self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('with')
+            self.blank()
+            if hasattr(node,'context_expression'):
+                self.visit(node.context_expresssion)
+            vars_list = []
+            if hasattr(node,'optional_vars'):
+                try:
+                    for i,z in enumerate(node.optional_vars):
+                        self.visit(z)
+                        if i + 1 < len(node.optional_vars):
+                            self.lit(',')
+                            self.blank()
+                except TypeError: # Not iterable.
+                    self.visit(node.optional_vars) 
+            self.lit(':')
+            self.line_end()
+            self.level += 1
+            for z in node.body:
+                self.visit(z)
+            self.level -= 1
+            self.line_end()
+        else:
+            result = []
+            result.append(self.indent('with '))
+            if hasattr(node,'context_expression'):
+                result.append(self.visit(node.context_expresssion))
+            vars_list = []
+            if hasattr(node,'optional_vars'):
+                try:
+                    for z in node.optional_vars:
+                        vars_list.append(self.visit(z))
+                except TypeError: # Not iterable.
+                    vars_list.append(self.visit(node.optional_vars))   
+            result.append(','.join(vars_list))
+            result.append(':\n')
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+            result.append('\n')
+            return ''.join(result)
+    #@+node:ekr.20150520173107.68: *5* pt.Yield
+    # Yield(expr? value)
+
+    def do_Yield(self,node):
+        
+        if self.new:
+            self.line_start()
+            self.word('yield')
+            if hasattr(node.value):
+                self.blank()
+                self.visit(node.value)
+            self.line_end()
+        else:
+            if hasattr(node,'value'):
+                return 'yield %s\n' % self.visit(node.value)
+            else:
+                return 'yield\n'
     #@-others
 #@+node:ekr.20040711135244.5: ** class PythonPrettyPrinter
 class PythonPrettyPrinter:
@@ -1307,13 +1896,13 @@ class PythonPrettyPrinter:
             # Tag the end of the command.
             u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20040711135244.4: *3* ppp.prettyPrintNode
-    def prettyPrintNode(self,p,dump=False):
+    def prettyPrintNode(self,p,dump=False,leo_tidy=False):
         '''Pretty print a single node.'''
-        if not g.unitTesting:
+        if leo_tidy: # Not ready yet.
             self.python_format(p)
         else:
             self.python_tidy(p)
-    #@+node:ekr.20150520170138.1: *3* ppp.python_format & helper
+    #@+node:ekr.20150520170138.1: *3* ppp.python_format (Uses LeoTidy)
     def python_format(self,p):
         '''Use subclasses of leoAst.py to pretty-print Python code.'''
         trace = True and not g.unitTesting
@@ -1345,20 +1934,20 @@ class PythonPrettyPrinter:
         try:
             f = LeoTidy(c)
             node = ast.parse(s1,filename=p.h,mode='exec')
-            s = f.format(node)
+            s2 = f.format(node)
             # End the body properly
-            s = s.rstrip()+'\n' if s.strip() else ''
+            s2 = s2.replace(tag2,tag1)
+            s2 = s2.rstrip()+'\n' if s2.strip() else ''
         except Exception:
             g.es_exception()
             return
         try:
-            t2 = ast.parse(s,filename='after',mode='exec')
+            t2 = ast.parse(s2,filename='after',mode='exec')
             d2 = ast.dump(t2,annotate_fields=False)
         except SyntaxError:
             d2 = None
-        if s and (trace and traceResult or d1 == d2): ### dangerous
-            s = s.replace(tag2,tag1)
-            self.replaceBody(p,lines=None,s=s)
+        if s2 and s2 != s1 and d1 == d2:
+            self.replaceBody(p,lines=None,s=s2)
         if d1 != d2:
             g.warning('Python Format error in',p.h)
             if trace:
@@ -1368,7 +1957,7 @@ class PythonPrettyPrinter:
                     g.trace('===== d1 %s\n\n%s' % (d1 and len(d1) or 0, d1))
                     g.trace('===== d2 %s\n\n%s' % (d2 and len(d2) or 0, d2))
                 
-    #@+node:ekr.20141010071140.18268: *3* ppp.python_tidy
+    #@+node:ekr.20141010071140.18268: *3* ppp.python_tidy (Uses PythonTidy)
     def python_tidy(self,p):
         '''Use PythonTidy to do the formatting.'''
         c = self.c
@@ -1416,7 +2005,7 @@ class PythonPrettyPrinter:
                 s = s.replace(tag2,tag1)
                 self.replaceBody(p,lines=None,s=s)
             else:
-                g.warning('PythonTydy error in',p.h)
+                g.warning('PythonTidy error in',p.h)
                 g.trace('===== d1\n\n',d1,'\n=====d2\n\n',d2)
         except Exception:
             g.warning("skipped",p.h)
@@ -1433,6 +2022,7 @@ class PythonPrettyPrinter:
         oldBody = p.b
         body = s if s is not None else ''.join(lines)
         if oldBody != body:
+            g.trace('changed',p.h)
             self.n += 1
             if not self.changed:
                 # Start the group.

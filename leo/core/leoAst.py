@@ -1388,7 +1388,7 @@ class AstPatternFormatter (AstFormatter):
 #@+node:ekr.20150521052257.1: ** class AstFormatterTest
 class Test:
     '''A class containing test cases for AstFormatter, etc.'''
-    # Disable these tests: we are only interested in formatting.
+    # Disable these warnings: we are only interested in formatting.
     # pylint: disable=no-member
     # pylint: disable=no-self-argument
     # pylint: disable=no-method-argument
