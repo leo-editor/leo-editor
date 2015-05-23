@@ -632,7 +632,7 @@ class LeoTidy:
                 return ','.join([self.visit(z) for z in node])
         elif node is None:
             if self.new:
-                g.trace(node) # The caller should check
+                g.trace('(LeoTidy): unexpected None',g.callers()) # The caller should check
             else:
                 return 'None'
         else:
@@ -734,7 +734,7 @@ class LeoTidy:
             decorators = node.decorator_list or []
             for i,z in enumerate(decorators):
                 self.visit(z)
-                if i < len(args):
+                if i < len(decorators):
                     self.lit_blank(',')
             self.line_start()
             self.word('class')
@@ -951,7 +951,7 @@ class LeoTidy:
     #@+node:ekr.20150520173107.21: *5* pt.Bytes
     def do_Bytes(self,node): # Python 3.x only.
         assert g.isPython3
-        if g.new:
+        if self.new:
             g.trace('=====',g.callers())
             self.lit(node.s)
         else:
@@ -1302,7 +1302,7 @@ class LeoTidy:
             self.line_start()
             self.word('assert')
             self.visit(node.test)
-            if hasattr(node,'msg'):
+            if getattr(node,'msg',None):
                 self.lit_blank(',')
                 self.visit(node.msg)
             self.line_end()
@@ -1369,7 +1369,7 @@ class LeoTidy:
             for i, z in enumerate(node.targets):
                 self.visit(z)
                 if i + 1 < len(node.targets):
-                    self.tok_blank(',')
+                    self.lit_blank(',')
             self.line_end()
         else:
             targets = [self.visit(z) for z in node.targets]
