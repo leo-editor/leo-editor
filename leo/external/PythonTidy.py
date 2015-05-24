@@ -1903,7 +1903,10 @@ class NodeStr(Node):
 
         lit = self.get_as_repr()
         match = QUOTE_PATTERN.match(lit)
-        prefix, quote = match.group(1, 2)
+        try:
+            prefix, quote = match.group(1, 2)
+        except Exception: # AttributeError:
+            return self
         if 'r' in prefix.lower():
             self.line_more(lit, can_split_str=CAN_SPLIT_STRINGS,
                            can_split_after=can_split)
