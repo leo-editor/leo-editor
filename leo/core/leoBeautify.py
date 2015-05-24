@@ -50,14 +50,14 @@ def test(c,h,p):
     g.trace('format:   %4.2f sec.' % (t5-t4))
     g.trace('total:    %4.2f sec.' % (t5-t1))
     if 1:
-        print('')
-        # print(s)
-        # print('==================== \n')
-        for z in leoTidy.code_list:
-            print(z)
-        # print('==================== \n')
-        # print(repr(s2))
-        print('==================== \n')
+        print('====================')
+        for i,z in enumerate(leoTidy.code_list):
+            print('%3s %s' % (i,z))
+    if 0:
+        print('====================')
+        print(repr(s2))
+    if 1:
+        print('====================')
         print(s2)
     if 0:
         tb = PythonTokenBeautifier(c)
@@ -543,6 +543,7 @@ class LeoTidy:
         self.code_list = []
         self.level = 0
         self.new = True
+        self.tab_width = 4
     
     #@+others
     #@+node:ekr.20150523083023.1: *3* pt.Code Generators
@@ -563,23 +564,28 @@ class LeoTidy:
             self.add_token('blank',' ')
     #@+node:ekr.20150523084306.1: *4* pt.blank_lines
     def blank_lines(self,n):
-        '''Add a request for n blank lines to the code list.'''
-        prev = self.code_list[-1]
-        if prev.kind not in ('blank-lines','file-start'):
-            assert n > 0
-            inserted_lines = 0
-            for i in range(n):
-                prev = self.code_list[-2-i]
-                if prev.kind == 'line-end':
-                    break
-                else:
-                    inserted_lines += 1
-                    g.trace('insert blank line',i)
-            # Insert the desired lines.
-            for i in range(inserted_lines):
-                self.line_end()
-            # Retain the intention for debugging.
-            self.add_token('blank-lines',n)
+        '''
+        Add a request for n blank lines to the code list.
+        Multiple blank-lines request yield at least the maximum of all requests.
+        '''
+        # Count the number of 'consecutive' end-line tokens, ignoring blank-lines tokens.
+        prev_lines = 0
+        i = len(self.code_list)-1 # start-file token guarantees i >= 0
+        while True:
+            kind = self.code_list[i].kind
+            if kind == 'file-start':
+                prev_lines = n ; break
+            elif kind == 'blank-lines':
+                i -= 1
+            elif kind == 'line-end':
+                i -= 1 ; prev_lines += 1
+            else: break
+        # g.trace('i: %3s n: %s prev: %s' % (len(self.code_list),n,prev_lines))
+        while prev_lines <= n:
+            self.line_end()
+            prev_lines += 1
+        # Retain the intention for debugging.
+        self.add_token('blank-lines',n)
     #@+node:ekr.20150524075023.1: *4* clean
     def clean(self,kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -590,7 +596,7 @@ class LeoTidy:
     def conditional_line_start(self):
         '''Add a conditional line start to the code list.'''
         prev = self.code_list[-1]
-        if prev.kind not in ('start-line',):
+        if prev.kind != 'start-line':
             self.add_token('start-line')
     #@+node:ekr.20150523131526.1: *4* pt.file_start & file_end
     def file_end(self):
@@ -614,19 +620,20 @@ class LeoTidy:
     def line_end(self):
         '''Add a line-end request to the code list.'''
         prev = self.code_list[-1]
-        # if prev.kind != 'line-start':
-            # self.add_token('line-end','\n')
-        self.add_token('line-end','\n')
+        g.trace(g.callers())
+        if prev.kind != 'file-start':
+            self.add_token('line-end','\n')
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
         prev = self.code_list[-1]
-        if prev.kind not in ('line-start'): # 'blank-lines','file-start',
-            self.add_token('line-start','    '*self.level)
+        if prev.kind != 'line-start':
+            self.add_token('line-start',' '*self.tab_width*self.level)
     #@+node:ekr.20150523083627.1: *4* pt.lit*
     def lit(self,s):
         '''Add a request for a literal to the code list.'''
         assert s and g.isString(s),repr(s)
+        # g.trace(repr(s),g.callers())
         self.add_token('lit',s)
         
     def lit_blank(self,s):
@@ -653,6 +660,7 @@ class LeoTidy:
     #@+node:ekr.20150522212520.1: *4* pt.op
     def op(self,s):
         '''Add an operator request to the code list.'''
+        assert s and g.isString(s),repr(s)
         self.blank()
         self.lit(s)
         self.blank()
@@ -673,11 +681,9 @@ class LeoTidy:
         self.file_end()
         g.trace('(LeoTidy) ===== self.new: %s' % self.new)
         if self.new:
-            self.peep_hole()
-            return self.to_string()
+            return ''.join([z.to_string() for z in self.code_list])
         else:
             return val and val.strip() or ''
-            
     #@+node:ekr.20150520173107.5: *4* pt.visit
     def visit(self,node):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
@@ -710,15 +716,6 @@ class LeoTidy:
             assert False,node
         else:
             return ','.join([self.visit(z) for z in node])
-    #@+node:ekr.20150523085823.1: *3* pt.Output
-    #@+node:ekr.20150523083015.1: *4* pt.peep_hole
-    def peep_hole(self):
-        '''Satisfy all requests on the code list.'''
-        pass ### For now, leave things as the are.
-    #@+node:ekr.20150523083446.1: *4* pt.to_string
-    def to_string(self):
-        '''Convert the code list to a single string.'''
-        return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150520173107.69: *3* pt.Utils
     #@+node:ekr.20150520173107.71: *4* pt.indent
     def indent(self,s):
@@ -785,6 +782,7 @@ class LeoTidy:
     def do_Expr(self,node):
         '''An outer expression: must be indented.'''
         if self.new:
+            self.line_start()
             self.visit(node.value)
             self.line_end()
         else:
@@ -903,6 +901,7 @@ class LeoTidy:
 
     def do_Call(self,node):
 
+        g.trace(node)
         if self.new:
             self.visit(node.func)
             self.lt('(')
@@ -1485,9 +1484,7 @@ class LeoTidy:
             self.line_end()
             for z in node.body:
                 self.level += 1
-                self.line_start()
                 self.visit(z)
-                self.line_end()
                 self.level -= 1
             self.blank_lines(1)
         else:
@@ -1527,6 +1524,7 @@ class LeoTidy:
             self.lit(':')
             self.line_end()
             for z in node.body:
+                g.trace(z)
                 self.level += 1
                 self.visit(z)
                 self.level -= 1
@@ -1662,6 +1660,8 @@ class LeoTidy:
         
         if self.new:
             self.line_start()
+            self.word('print')
+            self.lt('(')
             for i,z in enumerate(node.values):
                 if isinstance(z,ast.Tuple):
                     for z2 in z.elts:
@@ -1670,6 +1670,7 @@ class LeoTidy:
                     self.visit(z)
                 if i + 1 < len(node.values):
                     self.lit_blank(',')
+            self.rt(')')
             self.line_end()
             # if False and getattr(node,'dest',None):
                 # vals.append('dest=%s' % self.visit(node.dest))
