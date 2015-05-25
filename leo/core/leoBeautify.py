@@ -53,6 +53,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         self.trailing_tokens_list_offset = 0
             # The number of trailing tokens already seen.
         # Compute data.
+        self.make_statements_d()
         self.make_tokens_data(tokens)
             # Make strings_list, trailing_tokens_list.
             # Also makes tokens_d, used only for debugging.
@@ -84,6 +85,25 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         for data in self.trailing_tokens_list:
             n,kind,aList = data
             print('%4s: %8s %r' % (n,kind,aList))
+    #@+node:ekr.20150522110017.1: *3* add.make_statements_d
+    def make_statements_d(self):
+        '''
+        Return a dictionary of statements that set_tokens handle.
+        This is used only for consistency checking.
+        '''
+        aList = [
+            'Assert','Assign','AugAssign',
+            'Break','Call','ClassDef','Continue','Delete',
+            'ExceptHandler','Exec','Expr',
+            'For','FunctionDef','Global',
+            'If','Import','ImportFrom','Lambda', # Module
+            'Pass','Print','Raise','Return',
+            'Try','TryExcept','TryFinally',
+            'While','With','Yield',
+        ]
+        self.statements_d = {}
+        for z in aList:
+            self.statements_d[z] = 0
     #@+node:ekr.20150525083523.1: *3* add.make_tokens_data
     def make_tokens_data(self,tokens):
         '''Make tokens_d, strings_list and trailing_tokens_list.'''
@@ -161,7 +181,10 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     def visit(self,node):
         '''AddTokentsToTree.visit.'''
         self.n_visits += 1
-        method = getattr(self,'do_' + node.__class__.__name__)
+        name = node.__class__.__name__
+        if name in self.statements_d:
+            self.set_tokens(node)
+        method = getattr(self,'do_' + name)
         method(node)
     #@+node:ekr.20150525171444.1: *3* add.Str
     def do_Str (self,node):
@@ -170,159 +193,6 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         n,s = data
         node.str_spelling = s
         # g.trace(n,node.s,s)
-    #@+node:ekr.20150525171552.1: *3* add.Statement Visitors
-    #@@nocolor-node
-    #@+at
-    # All statements should have a visitor as follows:
-    # 
-    #     def do_xxx(self.node)
-    #         self.set_tokens(node)
-    #         leoAst.AstFullTraverser.do_xxx(self,node)
-    # 
-    # Statements without children:
-    # 
-    #     def do_xxx(self.node)
-    #         self.set_tokens(node)
-    #@+node:ekr.20150525171643.3: *4* add.Assert
-    def do_Assert(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Assert(self,node)
-    #@+node:ekr.20150525171643.4: *4* add.Assign
-    def do_Assign(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Assign(self,node)
-    #@+node:ekr.20150525171643.5: *4* add.AugAssign
-    def do_AugAssign(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_AugAssign(self,node)
-    #@+node:ekr.20150525171643.6: *4* add.Break
-    def do_Break(self,node):
-
-        self.set_tokens(node)
-    #@+node:ekr.20150525172811.1: *4* add.Call
-    def do_Call(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Call(self,node)
-        
-    #@+node:ekr.20150525171656.2: *4* add.ClassDef
-    def do_ClassDef (self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_ClassDef(self,node)
-    #@+node:ekr.20150525171643.7: *4* add.Continue
-    def do_Continue(self,node):
-        
-        self.set_tokens(node)
-    #@+node:ekr.20150525171643.8: *4* add.Delete
-    def do_Delete(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Delete(self,node)
-    #@+node:ekr.20150525171643.9: *4* add.ExceptHandler
-    def do_ExceptHandler(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_ExceptHandler(self,node)
-    #@+node:ekr.20150525171643.10: *4* add.Exec
-    def do_Exec(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Exec(self,node)
-    #@+node:ekr.20150525172901.1: *4* add.Expr
-    def do_Expr(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Expr(self,node)
-    #@+node:ekr.20150525171643.11: *4* add.For
-    def do_For (self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_For(self,node)
-    #@+node:ekr.20150525171656.3: *4* add.FunctionDef
-    def do_FunctionDef (self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_FunctionDef(self,node)
-    #@+node:ekr.20150525171643.12: *4* add.Global
-    def do_Global(self,node):
-
-        self.set_tokens(node)
-    #@+node:ekr.20150525171643.13: *4* add.If
-    def do_If(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_If(self,node)
-    #@+node:ekr.20150525171643.14: *4* add.Import*
-    def do_Import(self,node):
-        
-        self.set_tokens(node)
-
-    def do_ImportFrom(self,node):
-        
-        self.set_tokens(node)
-    #@+node:ekr.20150525171656.5: *4* add.Lambda
-    def do_Lambda(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Lambda(self,node)
-    #@+node:ekr.20150525171656.6: *4* add.Module
-    # def do_Module (self,node):
-
-        # self.set_tokens(node)
-        # leoAst.AstFullTraverser.do_XXX(self,node)
-    #@+node:ekr.20150525171643.15: *4* add.Pass
-    def do_Pass(self,node):
-
-        self.set_tokens(node)
-    #@+node:ekr.20150525171643.16: *4* add.Print
-    def do_Print(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Print(self,node)
-    #@+node:ekr.20150525171643.17: *4* add.Raise
-    def do_Raise(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Raise(self,node)
-    #@+node:ekr.20150525171643.18: *4* add.Return
-    def do_Return(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Return(self,node)
-    #@+node:ekr.20150525171643.19: *4* add.Try*
-    def do_Try(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Try(self,node)
-
-    def do_TryExcept(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_TryExcept(self,node)
-
-    def do_TryFinally(self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_TryFinally(self,node)
-    #@+node:ekr.20150525171643.22: *4* add.While
-    def do_While (self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_While(self,node)
-    #@+node:ekr.20150525171643.23: *4* add.With
-    def do_With (self,node):
-        
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_With(self,node)
-    #@+node:ekr.20150525171643.24: *4* add.Yield
-    def do_Yield(self,node):
-
-        self.set_tokens(node)
-        leoAst.AstFullTraverser.do_Yield(self,node)
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
