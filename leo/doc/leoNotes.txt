@@ -15332,7 +15332,7 @@ class DumpTreeTokens(leoAst.AstFullTraverser):
         # g.trace('(DumpTreeTokens)',self.formatter.format(node))
         self.n += 1
         return leoAst.AstFullTraverser.visit(self,node)
-.. @+node:ekr.20150522195924.1: ** class HTMLReportTraverser (AstFullTraverser)
+.. @+node:ekr.20150522195924.1: *3* class HTMLReportTraverser (AstFullTraverser)
 class HTMLReportTraverser (AstFullTraverser):
     
     '''
@@ -15345,7 +15345,7 @@ class HTMLReportTraverser (AstFullTraverser):
     # To do: revise report-traverser-debug.css.
 
     @others
-.. @+node:ekr.20150522195924.2: *3* rt.__init__
+.. @+node:ekr.20150522195924.2: *4* rt.__init__
 def __init__(self):
     
     self.visitor = self
@@ -15358,7 +15358,7 @@ def __init__(self):
     self.css_fn = 'report-traverser-debug.css' if self.debug else 'report-traverser.css'
     self.html_footer = '\n</body>\n</html>\n'
     self.html_header = self.define_html_header()
-.. @+node:ekr.20150522195924.3: *4* define_html_header
+.. @+node:ekr.20150522195924.3: *5* define_html_header
 def define_html_header(self):
     
     # Use string catenation to avoid using g.adjustTripleString.
@@ -15372,13 +15372,13 @@ def define_html_header(self):
         '  <link rel="stylesheet" type="text/css" href="%(css-fn)s" />\n'
         '</head>\n<body>'
     )
-.. @+node:ekr.20150522195924.4: *3* rt.css links & popup
-.. @+node:ekr.20150522195924.5: *4* rt.link
+.. @+node:ekr.20150522195924.4: *4* rt.css links & popup
+.. @+node:ekr.20150522195924.5: *5* rt.link
 def link (self,class_name,href,a_text):
 
     # g.trace(class_name,a_text)
     return "<a class='%s' href='%s'>%s</a>" % (class_name,href,a_text)
-.. @+node:ekr.20150522195924.6: *4* rt.module_link
+.. @+node:ekr.20150522195924.6: *5* rt.module_link
 def module_link(self,module_name,classes=None):
     
     r = self
@@ -15386,7 +15386,7 @@ def module_link(self,module_name,classes=None):
         class_name = classes or 'name',
         href = '%s.xhtml' % module_name,
         a_text = r.text(module_name))
-.. @+node:ekr.20150522195924.7: *4* rt.name_link
+.. @+node:ekr.20150522195924.7: *5* rt.name_link
 def name_link(self,module_name,full_name,name,classes=None):
     
     r = self
@@ -15395,7 +15395,7 @@ def name_link(self,module_name,full_name,name,classes=None):
         class_name = classes or "specific-ref",
         href = '%s.xhtml#%s' % (module_name,r.attr(full_name)),
         a_text = r.text(name))
-.. @+node:ekr.20150522195924.8: *4* rt.object_name_ref
+.. @+node:ekr.20150522195924.8: *5* rt.object_name_ref
 def object_name_ref(self,module,obj,name=None,classes=None):
 
     """
@@ -15406,16 +15406,16 @@ def object_name_ref(self,module,obj,name=None,classes=None):
 
     r = self
     return r.name_link(module.full_name(),obj.full_name(),name or obj.name,classes)
-.. @+node:ekr.20150522195924.9: *4* rt.popup
+.. @+node:ekr.20150522195924.9: *5* rt.popup
 def popup(self,classes,aList):
     r = self
     return r.span(classes or 'popup',aList)
-.. @+node:ekr.20150522195924.10: *4* rt.summary_link
+.. @+node:ekr.20150522195924.10: *5* rt.summary_link
 def summary_link(self,module_name,full_name,name,classes=None):
     
     r = self
     return r.name_link("%s-summary" % module_name,full_name,name,classes)
-.. @+node:ekr.20150522195924.11: *3* rt.html attribute helpers
+.. @+node:ekr.20150522195924.11: *4* rt.html attribute helpers
 @nocolor-node
 @
 
@@ -15441,7 +15441,7 @@ Other ivars of e may be useful::
     e.node          For defs, the ast.FunctionDef node for this def.
     e.st            The symbol table containing this name.
     e.self_context  For defs and classes, the context that they define.
-.. @+node:ekr.20150522195924.12: *4* rt.get_stc_attrs & AttributeTraverser
+.. @+node:ekr.20150522195924.12: *5* rt.get_stc_attrs & AttributeTraverser
 def get_stc_attrs (self,node,all):
     
     r = self
@@ -15459,7 +15459,7 @@ def get_stc_attrs (self,node,all):
                 aList.append(r.text('reach: %s' % r.u.format(item)))
         result.append(join_list(aList,sep=', '))
     return join_list(result,sep='; ')
-.. @+node:ekr.20150522195924.13: *5* NameTraverser(AstFullTraverser)
+.. @+node:ekr.20150522195924.13: *6* NameTraverser(AstFullTraverser)
 class NameTraverser(AstFullTraverser):
     
     def __init__(self):
@@ -15472,7 +15472,7 @@ class NameTraverser(AstFullTraverser):
     def run(self,root):
         self.visit(root)
         return [self.d.get(key) for key in sorted(self.d.keys())]
-.. @+node:ekr.20150522195924.14: *4* rt.stc_attrs
+.. @+node:ekr.20150522195924.14: *5* rt.stc_attrs
 def stc_attrs (self,node,all=False):
     
     r = self
@@ -15483,7 +15483,7 @@ def stc_attrs (self,node,all=False):
         ]),
         r.br(),
     ]
-.. @+node:ekr.20150522195924.15: *4* rt.stc_popup_attrs
+.. @+node:ekr.20150522195924.15: *5* rt.stc_popup_attrs
 def stc_popup_attrs(self,node,all=False):
 
     r = self
@@ -15493,8 +15493,8 @@ def stc_popup_attrs(self,node,all=False):
             attrs,
         ]),
     ]
-.. @+node:ekr.20150522195924.16: *3* rt.html helpers
-.. @+node:ekr.20150522195924.17: *4* rt.attr & text
+.. @+node:ekr.20150522195924.16: *4* rt.html helpers
+.. @+node:ekr.20150522195924.17: *5* rt.attr & text
 def attr(self,s):
     
     r = self
@@ -15503,17 +15503,17 @@ def attr(self,s):
 def text(self,s):
 
     return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-.. @+node:ekr.20150522195924.18: *4* rt.br
+.. @+node:ekr.20150522195924.18: *5* rt.br
 def br(self):
     
     r = self
     return '\n<br />'
-.. @+node:ekr.20150522195924.19: *4* rt.comment
+.. @+node:ekr.20150522195924.19: *5* rt.comment
 def comment(self,comment):
     
     r = self
     return '%s\n' % r.span("# %s" % (comment),"comment")
-.. @+node:ekr.20150522195924.20: *4* rt.div
+.. @+node:ekr.20150522195924.20: *5* rt.div
 def div(self,class_name,aList,extra=None):
     
     r = self
@@ -15530,7 +15530,7 @@ def div(self,class_name,aList,extra=None):
         join_list(aList,indent='  '),
         '\n</div>'
     ]
-.. @+node:ekr.20150522195924.21: *4* rt.doc & helper (to do)
+.. @+node:ekr.20150522195924.21: *5* rt.doc & helper (to do)
 # Called by ClassDef & FunctionDef visitors.
 
 def doc(self,node,classes=None):
@@ -15539,7 +15539,7 @@ def doc(self,node,classes=None):
         # r.docstring(node.doc,classes)
         
     return ''
-.. @+node:ekr.20150522195924.22: *5* rt.docstring
+.. @+node:ekr.20150522195924.22: *6* rt.docstring
 def docstring(self,s,classes=None):
     
     r = self
@@ -15551,7 +15551,7 @@ def docstring(self,s,classes=None):
         '"""',
         "</pre>\n",
     ]
-.. @+node:ekr.20150522195924.23: *4* rt.keyword (a helper, not a visitor!)
+.. @+node:ekr.20150522195924.23: *5* rt.keyword (a helper, not a visitor!)
 def keyword(self,keyword_name,leading=False,trailing=True):
 
     r = self
@@ -15562,11 +15562,11 @@ def keyword(self,keyword_name,leading=False,trailing=True):
         ]),
         trailing and ' ',
     ]
-.. @+node:ekr.20150522195924.24: *4* rt.name
+.. @+node:ekr.20150522195924.24: *5* rt.name
 def name(self,name):
     return self.span('name',[name])
 
-.. @+node:ekr.20150522195924.25: *4* rt.object_name_def (rewrite)
+.. @+node:ekr.20150522195924.25: *5* rt.object_name_def (rewrite)
 def object_name_def(self,module,obj,classes=None):
 
     """
@@ -15584,7 +15584,7 @@ def object_name_def(self,module,obj,classes=None):
         # if obj.name == '<string>':
             # obj.name = 'ModuleName'
         # r.span(obj.name,classes)
-.. @+node:ekr.20150522195924.26: *4* rt.op
+.. @+node:ekr.20150522195924.26: *5* rt.op
 def op(self,op_name,leading=False,trailing=True):
     
     # g.trace(repr(op_name))
@@ -15603,7 +15603,7 @@ def op(self,op_name,leading=False,trailing=True):
         ]),
         trailing and ' ',
     ]
-.. @+node:ekr.20150522195924.27: *4* rt.simple_statement
+.. @+node:ekr.20150522195924.27: *5* rt.simple_statement
 def simple_statement(self,name):
     
     r = self
@@ -15612,7 +15612,7 @@ def simple_statement(self,name):
             r.keyword(name),
         ]),
     ]
-.. @+node:ekr.20150522195924.28: *4* rt.span & span_start/end
+.. @+node:ekr.20150522195924.28: *5* rt.span & span_start/end
 def span(self,class_name,aList):
     
     r = self
@@ -15627,13 +15627,13 @@ def span(self,class_name,aList):
         # '\n</span>',
         '</span>', # More compact
     ]
-.. @+node:ekr.20150522195924.29: *4* rt.url (not used)
+.. @+node:ekr.20150522195924.29: *5* rt.url (not used)
 def url(self,url):
 
     r = self
     return r.attr(url).replace("#", "%23").replace("-", "%2d")
-.. @+node:ekr.20150522195924.30: *3* rt.reporters
-.. @+node:ekr.20150522195924.31: *4* rt.annotate
+.. @+node:ekr.20150522195924.30: *4* rt.reporters
+.. @+node:ekr.20150522195924.31: *5* rt.annotate
 def annotate(self,fn,m):
 
     r = self
@@ -15643,7 +15643,7 @@ def annotate(self,fn,m):
             f.write(s)
     finally:
         f.close()
-.. @+node:ekr.20150522195924.32: *4* rt.base_fn
+.. @+node:ekr.20150522195924.32: *5* rt.base_fn
 def base_fn(self,directory,m):
     
     '''Return the basic html file name used by reporters.'''
@@ -15654,7 +15654,7 @@ def base_fn(self,directory,m):
         return 'report_writer_string_test'
     else:
         return g.shortFileName(m.fn)
-.. @+node:ekr.20150522195924.33: *4* rt.interfaces & helpers
+.. @+node:ekr.20150522195924.33: *5* rt.interfaces & helpers
 def interfaces(self,directory,m,open_file=False):
 
     r = self
@@ -15668,7 +15668,7 @@ def interfaces(self,directory,m,open_file=False):
         f.close()
     if open_file:
         os.startfile(fn)
-.. @+node:ekr.20150522195924.34: *5* write_interfaces
+.. @+node:ekr.20150522195924.34: *6* write_interfaces
 def write_interfaces(self,m):
     
     r = self
@@ -15691,7 +15691,7 @@ def write_interfaces(self,m):
         "</table>",
         r.html_footer,
     ],trailing='\n')
-.. @+node:ekr.20150522195924.35: *5* write_interface_type
+.. @+node:ekr.20150522195924.35: *6* write_interface_type
 def write_interface_type(self,classes,interfaces):
 
     r = self
@@ -15709,7 +15709,7 @@ def write_interface_type(self,classes,interfaces):
         aList,
         '</tbody>',
     ],trailing='\n')
-.. @+node:ekr.20150522195924.36: *4* rt.report(entry_point)
+.. @+node:ekr.20150522195924.36: *5* rt.report(entry_point)
 def report(self,directory,m,open_file=False):
 
     trace = False
@@ -15729,7 +15729,7 @@ def report(self,directory,m,open_file=False):
         r.summarize(summary_fn,m)
         if open_file:
             os.startfile(summary_fn)
-.. @+node:ekr.20150522195924.37: *4* rt.report_all_modules(needed to write interfaces)
+.. @+node:ekr.20150522195924.37: *5* rt.report_all_modules(needed to write interfaces)
 def report_all_modules(self,directory):
 
     trace = True
@@ -15764,7 +15764,7 @@ def report_all_modules(self,directory):
             fn2 = join(directory,fn+'.xhtml')
             assert g.os_path_exists(fn2),fn2
             os.startfile(fn2)
-.. @+node:ekr.20150522195924.38: *4* rt.report_file
+.. @+node:ekr.20150522195924.38: *5* rt.report_file
 def report_file(self):
     
     r = self
@@ -15775,7 +15775,7 @@ def report_file(self):
         r.visit(r.module.node),
         r.html_footer,
     ]
-.. @+node:ekr.20150522195924.39: *4* rt.summarize & helpers
+.. @+node:ekr.20150522195924.39: *5* rt.summarize & helpers
 def summarize(self,directory,m,open_file=False):
 
     r = self
@@ -15789,7 +15789,7 @@ def summarize(self,directory,m,open_file=False):
         f.close()
     if open_file:
         os.startfile(fn)
-.. @+node:ekr.20150522195924.40: *5* summary & helpers
+.. @+node:ekr.20150522195924.40: *6* summary & helpers
 def summary(self,m):
 
     r = self
@@ -15800,7 +15800,7 @@ def summary(self,m):
         r.write_classes(m),
         r.html_footer,
     ],sep='\n')
-.. @+node:ekr.20150522195924.41: *6* write_classes
+.. @+node:ekr.20150522195924.41: *7* write_classes
 def write_classes(self,m):
 
     r = self
@@ -15814,7 +15814,7 @@ def write_classes(self,m):
         [r.write_class(z) for z in m.classes()],
         "</table>",
     ],sep='\n')
-.. @+node:ekr.20150522195924.42: *6* write_class
+.. @+node:ekr.20150522195924.42: *7* write_class
 def write_class(self,obj):
 
     r = self
@@ -15865,8 +15865,8 @@ def write_class(self,obj):
             # "</tr>",
         "</tbody>",
     ],trailing='\n')
-.. @+node:ekr.20150522195924.43: *3* rt.traversers
-.. @+node:ekr.20150522195924.44: *4* rt.visit
+.. @+node:ekr.20150522195924.43: *4* rt.traversers
+.. @+node:ekr.20150522195924.44: *5* rt.visit
 def visit(self,node):
     
     """Walk a tree of AST nodes."""
@@ -15882,7 +15882,7 @@ def visit(self,node):
         # return method(node)
     # else:
         # return self.visit_list(self.get_child_nodes(node))
-.. @+node:ekr.20150522195924.45: *4* rt.visit_list
+.. @+node:ekr.20150522195924.45: *5* rt.visit_list
 def visit_list(self,aList,sep=''):
     
     # pylint: disable=W0221
@@ -15893,8 +15893,8 @@ def visit_list(self,aList,sep=''):
         return join_list([r.visit(z) for z in aList],sep=sep)
     else:
         return [r.visit(z) for z in aList]
-.. @+node:ekr.20150522195924.46: *3* rt.visitors
-.. @+node:ekr.20150522195924.47: *4* rt.arguments & helper
+.. @+node:ekr.20150522195924.46: *4* rt.visitors
+.. @+node:ekr.20150522195924.47: *5* rt.arguments & helper
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def do_arguments(self,node):
@@ -15926,7 +15926,7 @@ def do_arguments(self,node):
         result.append(r.name(node.kwarg))
         
     return result
-.. @+node:ekr.20150522195924.48: *5* rt.tuple_parameter
+.. @+node:ekr.20150522195924.48: *6* rt.tuple_parameter
 def tuple_parameter(self,parameters,node):
     
     r = self
@@ -15942,7 +15942,7 @@ def tuple_parameter(self,parameters,node):
         first = False
     result.append(")")
     return join_list(result)
-.. @+node:ekr.20150522195924.49: *4* rt.Assert
+.. @+node:ekr.20150522195924.49: *5* rt.Assert
 # Assert(expr test, expr? msg)
 
 def do_Assert(self,node):
@@ -15955,7 +15955,7 @@ def do_Assert(self,node):
             [',',r.visit(node.msg)] if node.msg else None,
         ]),
     ]
-.. @+node:ekr.20150522195924.50: *4* rt.Assign
+.. @+node:ekr.20150522195924.50: *5* rt.Assign
 def do_Assign(self,node):
     
     r = self
@@ -15970,7 +15970,7 @@ def do_Assign(self,node):
             r.stc_attrs(node.value,all=True),
         ],
     ]
-.. @+node:ekr.20150522195924.51: *4* rt.Attribute
+.. @+node:ekr.20150522195924.51: *5* rt.Attribute
 # Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute(self,node):
@@ -15981,7 +15981,7 @@ def do_Attribute(self,node):
         '.',
         node.attr,
     ]
-.. @+node:ekr.20150522195924.52: *4* rt.AugAssign
+.. @+node:ekr.20150522195924.52: *5* rt.AugAssign
 #  AugAssign(expr target, operator op, expr value)
 
 def do_AugAssign(self,node):
@@ -15995,7 +15995,7 @@ def do_AugAssign(self,node):
             r.visit(node.value),
         ]),
     ]
-.. @+node:ekr.20150522195924.53: *4* rt.BinOp
+.. @+node:ekr.20150522195924.53: *5* rt.BinOp
 def do_BinOp(self,node):
 
     r = self
@@ -16007,7 +16007,7 @@ def do_BinOp(self,node):
             r.visit(node.right),
         ]),
     ]
-.. @+node:ekr.20150522195924.54: *4* rt.BoolOp
+.. @+node:ekr.20150522195924.54: *5* rt.BoolOp
 def do_BoolOp(self,node):
 
     r = self
@@ -16022,12 +16022,12 @@ def do_BoolOp(self,node):
             ops,
         ]),
     ]
-.. @+node:ekr.20150522195924.55: *4* rt.Break
+.. @+node:ekr.20150522195924.55: *5* rt.Break
 def do_Break(self,node):
     
     r = self
     return r.simple_statement('break')
-.. @+node:ekr.20150522195924.56: *4* rt.Call & rt.keyword
+.. @+node:ekr.20150522195924.56: *5* rt.Call & rt.keyword
 # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
 def do_Call(self,node):
@@ -16048,7 +16048,7 @@ def do_Call(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.57: *5* rt.keyword
+.. @+node:ekr.20150522195924.57: *6* rt.keyword
 # keyword = (identifier arg, expr value)
 # keyword arguments supplied to call
 
@@ -16062,7 +16062,7 @@ def do_keyword(self,node):
             r.visit(node.value),
         ]),
     ]
-.. @+node:ekr.20150522195924.58: *4* rt.ClassDef
+.. @+node:ekr.20150522195924.58: *5* rt.ClassDef
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def do_ClassDef(self,node):
@@ -16087,7 +16087,7 @@ def do_ClassDef(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.59: *4* rt.Compare
+.. @+node:ekr.20150522195924.59: *5* rt.Compare
 def do_Compare(self,node):
     
     r = self
@@ -16104,7 +16104,7 @@ def do_Compare(self,node):
             ops,
         ]),
     ]
-.. @+node:ekr.20150522195924.60: *4* rt.comprehension
+.. @+node:ekr.20150522195924.60: *5* rt.comprehension
 def do_comprehension(self,node):
     
     r = self
@@ -16121,12 +16121,12 @@ def do_comprehension(self,node):
             ifs,
         ]),
     ]
-.. @+node:ekr.20150522195924.61: *4* rt.Continue
+.. @+node:ekr.20150522195924.61: *5* rt.Continue
 def do_Continue(self,node):
     
     r = self
     return r.simple_statement('break')
-.. @+node:ekr.20150522195924.62: *4* rt.Delete
+.. @+node:ekr.20150522195924.62: *5* rt.Delete
 def do_Delete(self,node):
     
     r = self
@@ -16136,7 +16136,7 @@ def do_Delete(self,node):
             r.visit_list(node.targets,sep=','),
         ]),
     ]
-.. @+node:ekr.20150522195924.63: *4* rt.Dict
+.. @+node:ekr.20150522195924.63: *5* rt.Dict
 def do_Dict(self,node):
     
     r = self
@@ -16153,11 +16153,11 @@ def do_Dict(self,node):
             '{',items,'}',
         ]),
     ]
-.. @+node:ekr.20150522195924.64: *4* rt.Ellipsis
+.. @+node:ekr.20150522195924.64: *5* rt.Ellipsis
 def do_Ellipsis(self,node):
     
     return '...'
-.. @+node:ekr.20150522195924.65: *4* rt.ExceptHandler
+.. @+node:ekr.20150522195924.65: *5* rt.ExceptHandler
 def do_ExceptHandler(self,node):
     
     r = self
@@ -16177,7 +16177,7 @@ def do_ExceptHandler(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.66: *4* rt.Exec
+.. @+node:ekr.20150522195924.66: *5* rt.Exec
 # Python 2.x only.
 
 def do_Exec(self,node):
@@ -16191,7 +16191,7 @@ def do_Exec(self,node):
             node.locals and [',',r.visit(node.locals)],
         ]),
     ]
-.. @+node:ekr.20150522195924.67: *4* rt.Expr (New)
+.. @+node:ekr.20150522195924.67: *5* rt.Expr (New)
 def do_Expr(self,node):
     
     r = self
@@ -16200,7 +16200,7 @@ def do_Expr(self,node):
             r.visit(node.value),
         ])
     ]
-.. @+node:ekr.20150522195924.68: *4* rt.For
+.. @+node:ekr.20150522195924.68: *5* rt.For
 # For(expr target, expr iter, stmt* body, stmt* orelse)
 
 def do_For(self,node):
@@ -16230,7 +16230,7 @@ def do_For(self,node):
             orelse,
         ]),
     ]
-.. @+node:ekr.20150522195924.69: *4* rt.FunctionDef (uses extra arg)
+.. @+node:ekr.20150522195924.69: *5* rt.FunctionDef (uses extra arg)
 def do_FunctionDef(self,node):
     
     r = self
@@ -16252,7 +16252,7 @@ def do_FunctionDef(self,node):
             ]),
         ],extra='id="%s"' % (node.name)),
     ]
-.. @+node:ekr.20150522195924.70: *4* rt.GeneratorExp
+.. @+node:ekr.20150522195924.70: *5* rt.GeneratorExp
 def do_GeneratorExp(self,node):
 
     r = self
@@ -16270,7 +16270,7 @@ def do_GeneratorExp(self,node):
             ")",
         ]),
     ]
-.. @+node:ekr.20150522195924.71: *4* rt.get_import_names
+.. @+node:ekr.20150522195924.71: *5* rt.get_import_names
 def get_import_names (self,node):
 
     '''Return a list of the the full file names in the import statement.'''
@@ -16286,7 +16286,7 @@ def get_import_names (self,node):
 
     # g.trace(result)
     return result
-.. @+node:ekr.20150522195924.72: *4* rt.Global
+.. @+node:ekr.20150522195924.72: *5* rt.Global
 def do_Global(self,node):
     
     r = self
@@ -16296,7 +16296,7 @@ def do_Global(self,node):
             join_list(node.names,sep=','),
         ]),
     ]
-.. @+node:ekr.20150522195924.73: *4* rt.If
+.. @+node:ekr.20150522195924.73: *5* rt.If
 def do_If(self,node):
     
     r = self
@@ -16330,7 +16330,7 @@ def do_If(self,node):
             orelse,
         ]),
     ]
-.. @+node:ekr.20150522195924.74: *4* rt.IfExp (TernaryOp)
+.. @+node:ekr.20150522195924.74: *5* rt.IfExp (TernaryOp)
 # IfExp(expr test, expr body, expr orelse)
 
 def do_IfExp(self,node):
@@ -16345,7 +16345,7 @@ def do_IfExp(self,node):
             r.visit(node.orelse),
         ]),
     ]
-.. @+node:ekr.20150522195924.75: *4* rt.Import
+.. @+node:ekr.20150522195924.75: *5* rt.Import
 def do_Import(self,node):
     
     r = self
@@ -16364,7 +16364,7 @@ def do_Import(self,node):
             aList,
         ]),
     ]
-.. @+node:ekr.20150522195924.76: *4* rt.ImportFrom
+.. @+node:ekr.20150522195924.76: *5* rt.ImportFrom
 def do_ImportFrom(self,node):
     
     r = self
@@ -16385,7 +16385,7 @@ def do_ImportFrom(self,node):
             aList,
         ]),
     ]
-.. @+node:ekr.20150522195924.77: *4* rt.Lambda
+.. @+node:ekr.20150522195924.77: *5* rt.Lambda
 def do_Lambda(self,node):
     
     r = self
@@ -16399,7 +16399,7 @@ def do_Lambda(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.78: *4* rt.List
+.. @+node:ekr.20150522195924.78: *5* rt.List
 # List(expr* elts, expr_context ctx) 
 
 def do_List(self,node):
@@ -16412,7 +16412,7 @@ def do_List(self,node):
             ']',
         ]),
     ]
-.. @+node:ekr.20150522195924.79: *4* rt.ListComp
+.. @+node:ekr.20150522195924.79: *5* rt.ListComp
 def do_ListComp(self,node):
     
     r = self
@@ -16430,7 +16430,7 @@ def do_ListComp(self,node):
             "]",
         ]),
     ]
-.. @+node:ekr.20150522195924.80: *4* rt.Module
+.. @+node:ekr.20150522195924.80: *5* rt.Module
 def do_Module(self,node):
     
     r = self
@@ -16438,7 +16438,7 @@ def do_Module(self,node):
         r.doc(node,"module"),
         r.visit_list(node.body),
     ]
-.. @+node:ekr.20150522195924.81: *4* rt.Name
+.. @+node:ekr.20150522195924.81: *5* rt.Name
 def do_Name(self,node):
     
     r = self
@@ -16448,18 +16448,18 @@ def do_Name(self,node):
             r.stc_popup_attrs(node),
         ]),
     ]
-.. @+node:ekr.20150522195924.82: *4* rt.Num
+.. @+node:ekr.20150522195924.82: *5* rt.Num
 def do_Num(self,node):
     
     r = self
     return r.text(repr(node.n))
     
-.. @+node:ekr.20150522195924.83: *4* rt.Pass
+.. @+node:ekr.20150522195924.83: *5* rt.Pass
 def do_Pass(self,node):
     
     r = self
     return r.simple_statement('pass')
-.. @+node:ekr.20150522195924.84: *4* rt.Print
+.. @+node:ekr.20150522195924.84: *5* rt.Print
 # Print(expr? dest, expr* values, bool nl)
 
 def do_Print(self,node):
@@ -16475,7 +16475,7 @@ def do_Print(self,node):
             ")",
         ]),
     ]
-.. @+node:ekr.20150522195924.85: *4* rt.Raise
+.. @+node:ekr.20150522195924.85: *5* rt.Raise
 def do_Raise(self,node):
     
     r = self
@@ -16490,7 +16490,7 @@ def do_Raise(self,node):
             aList,
         ]),
     ]
-.. @+node:ekr.20150522195924.86: *4* rt.Return
+.. @+node:ekr.20150522195924.86: *5* rt.Return
 def do_Return(self,node):
     
     r = self
@@ -16500,7 +16500,7 @@ def do_Return(self,node):
             node.value and r.visit(node.value),
         ]),
     ]
-.. @+node:ekr.20150522195924.87: *4* rt.Slice
+.. @+node:ekr.20150522195924.87: *5* rt.Slice
 def do_Slice(self,node):
     
     r = self
@@ -16512,7 +16512,7 @@ def do_Slice(self,node):
             [':',r.visit(node.step)] if node.step else None,
         ]),
     ]
-.. @+node:ekr.20150522195924.88: *4* rt.Str
+.. @+node:ekr.20150522195924.88: *5* rt.Str
 def do_Str(self,node):
 
     '''This represents a string constant.'''
@@ -16524,7 +16524,7 @@ def do_Str(self,node):
             r.text(repr(node.s)), ### repr??
         ]),
     ]
-.. @+node:ekr.20150522195924.89: *4* rt.Subscript
+.. @+node:ekr.20150522195924.89: *5* rt.Subscript
 def do_Subscript(self,node):
     
     r = self
@@ -16536,7 +16536,7 @@ def do_Subscript(self,node):
             ']',
         ]),
     ]
-.. @+node:ekr.20150522195924.90: *4* rt.TryExcept
+.. @+node:ekr.20150522195924.90: *5* rt.TryExcept
 def do_TryExcept(self,node):
     
     r = self
@@ -16564,7 +16564,7 @@ def do_TryExcept(self,node):
             node.handlers and r.visit_list(node.handlers),
         ]),
     ]
-.. @+node:ekr.20150522195924.91: *4* rt.TryFinally
+.. @+node:ekr.20150522195924.91: *5* rt.TryFinally
 def do_TryFinally(self,node):
     
     r = self
@@ -16586,7 +16586,7 @@ def do_TryFinally(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.92: *4* rt.Tuple
+.. @+node:ekr.20150522195924.92: *5* rt.Tuple
 # Tuple(expr* elts, expr_context ctx)
 
 def do_Tuple(self,node):
@@ -16599,7 +16599,7 @@ def do_Tuple(self,node):
             ')',
         ]),
     ]
-.. @+node:ekr.20150522195924.93: *4* rt.UnaryOp
+.. @+node:ekr.20150522195924.93: *5* rt.UnaryOp
 def do_UnaryOp(self,node):
     
     r = self
@@ -16610,7 +16610,7 @@ def do_UnaryOp(self,node):
             r.visit(node.operand),
         ]),
     ]
-.. @+node:ekr.20150522195924.94: *4* rt.While
+.. @+node:ekr.20150522195924.94: *5* rt.While
 def do_While(self,node):
     
     r = self
@@ -16636,7 +16636,7 @@ def do_While(self,node):
             orelse,
         ]),
     ]
-.. @+node:ekr.20150522195924.95: *4* rt.With
+.. @+node:ekr.20150522195924.95: *5* rt.With
 # With(expr context_expr, expr? optional_vars, stmt* body)
 
 def do_With(self,node):
@@ -16661,7 +16661,7 @@ def do_With(self,node):
             ]),
         ]),
     ]
-.. @+node:ekr.20150522195924.96: *4* rt.Yield
+.. @+node:ekr.20150522195924.96: *5* rt.Yield
 def do_Yield(self,node):
     
     r = self
@@ -16671,5 +16671,64 @@ def do_Yield(self,node):
             r.visit(node.value),
         ]),
     ]
+.. @+node:ekr.20150521174734.1: *3* add.make_tokens_d (no longer used)
+def make_tokens_d(self,tokens):
+    '''
+    Return a tokens dict.
+    Keys are starting line numbers. Values are 5-tuples (tokens) for that line.
+    '''
+    d = {}
+    aList,n = [],1 # The list of tokens with line number n (one-based)
+    for t1,t2,t3,t4,t5 in tokens:
+        name = token.tok_name[t1].lower()
+        val = g.toUnicode(t2)
+        srow,scol = t3
+        # erow,ecol = t4
+        # line = g.toUnicode(t5)
+        if n != srow:
+            # if n < 20: g.pr("----- line",srow,erow,repr(line))
+            d[n] = aList
+            aList,n = [],srow
+        if name in ('comment','string'):
+            aList.append((t1,t2,t3,t4,t5),)
+    # Finish the last line.
+    d[n] = aList
+    if self.settings.get('ast_tokens_d'):
+        print('ast: tokens_d...')
+        for n in sorted(d.keys()):
+            aList = d.get(n)
+            if aList:
+                pad = 6 * ' '
+                pad2 = '\n' + 7 * ' '
+                nl = '' if len(aList) == 1 else '\n'+pad
+                result = []
+                for t1,t2,t3,t4,t5 in aList:
+                    name = token.tok_name[t1].lower()
+                    result.append('%10s %s' % (name,t2))
+                print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+    return d
+.. @+node:ekr.20150522085222.1: *3* add.make_comments_list (no longer used)
+def make_comments_list(self):
+    '''
+    Create an ordered list of tuples (n,comment)
+    n is the line number of the comment token.
+    comment is the comment itself.
+    '''
+    d = self.tokens_d
+    result = []
+    for n in sorted(d.keys()):
+        aList = d.get(n)
+        if aList:
+            for t1,t2,t3,t4,t5 in aList:
+                name = token.tok_name[t1].lower()
+                if name == 'comment':
+                    val = g.toUnicode(t2)
+                    result.append((n,val),)
+    if self.settings.get('ast_comments_d'):
+        print('ast: comments_d...')
+        for data in result:
+            n,val = data
+            print('%4s: %s' % (n,val))
+    return result
 .. @-all
 .. @-leo

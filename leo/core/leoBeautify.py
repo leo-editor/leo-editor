@@ -12,7 +12,8 @@ import token
 import tokenize
 
 #@+others
-#@+node:ekr.20150524215322.1: ** dumpTokens
+#@+node:ekr.20150525080236.1: ** top-level functions
+#@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
 def dumpTokens(tokens,verbose=True):
     last_line_number = 0
     for token5tuple in tokens:
@@ -36,8 +37,8 @@ def dumpToken (last_line_number,token5tuple,verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
-#@+node:ekr.20150521114057.1: ** test_LeoTidy (prints stats)
-def test(c,h,p):
+#@+node:ekr.20150521114057.1: *3* test_LeoTidy (prints stats)
+def test_LeoTidy(c,h,p,settings):
     '''Use subclasses of leoAst.py to pretty-print Python code.'''
     if not p:
         g.trace('not found: %s' % h)
@@ -47,10 +48,6 @@ def test(c,h,p):
                     forcePythonSentinels=True,
                     useSentinels=False)
     g.trace(p.h)
-    if 0:
-        for i,s2 in enumerate(g.splitlines(s)[:200]):
-            if s2.find('#') > -1:
-                g.pr('%2s %s' % (i+1,s2.rstrip()))
     t1 = time.clock()
     node = ast.parse(s,filename='before',mode='exec')
     # g.trace(ast.dump(node,annotate_fields=False))
@@ -59,41 +56,40 @@ def test(c,h,p):
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
     t3 = time.clock()
-    n1 = AddTokensToTree().run(node,tokens)
+    n1 = AddTokensToTree(c,settings,tokens).run(node)
     t4 = time.clock()
     leoTidy = LeoTidy(c)
     s2 = leoTidy.format(node)
     t5 = time.clock()
-    # g.trace('using LeoTidy')
-    g.trace('nodes:    %s' % n1)
-    g.trace('tokens:   %s' % len(tokens))
-    g.trace('code_list %s' % len(leoTidy.code_list))
-    g.trace('len(s2):  %s' % len(s2))
-    if 0:
+    if settings.get('nodes_stats'):
+        g.trace('nodes:    %s' % n1)
+        g.trace('tokens:   %s' % len(tokens))
+        g.trace('code_list %s' % len(leoTidy.code_list))
+        g.trace('len(s2):  %s' % len(s2))
+    if settings.get('times'):
         g.trace('parse:    %4.2f sec.' % (t2-t1))
         g.trace('tokenize: %4.2f sec.' % (t3-t2))
         g.trace('add toks: %4.2f sec.' % (t4-t3))
         g.trace('format:   %4.2f sec.' % (t5-t4))
         g.trace('total:    %4.2f sec.' % (t5-t1))
-    if 1:
-        print('==================== input string')
+    if settings.get('input_string'):
+        print('==================== input_string')
         for i,z in enumerate(g.splitLines(s)):
             print('%3s %s' % (i+1,z.rstrip()))
-    if 1:
-        print('==================== input lines')
+    if settings.get('input_tokens'):
+        print('==================== input_lines')
         dumpTokens(tokens,verbose=False)
-    if 0:
-        print('==================== input tokens')
+    if settings.get('input_tokens'):
+        print('==================== input_tokens')
         dumpTokens(tokens,verbose=True)
-    if 0:
-        print('==================== code list')
+    if settings.get('code_list'):
+        print('==================== code_list')
         for i,z in enumerate(leoTidy.code_list):
             print('%3s %s' % (i,z))
-    if 0:
-        print('==================== output string')
+    if settings.get('output_string'):
+        print('==================== output_string')
         print(s2)
-    
-#@+node:ekr.20150525072128.1: ** test_PythonTidy
+#@+node:ekr.20150525072128.1: *3* test_PythonTidy
 def test_PythonTidy(c,h,p):
     '''Test PythonTidy on the script in p's tree.'''
     if not p:
@@ -107,7 +103,7 @@ def test_PythonTidy(c,h,p):
     if 0:
         for i,s2 in enumerate(g.splitlines(s)[:200]):
             if s2.find('#') > -1:
-                g.pr('%2s %s' % (i+1,s2.rstrip()))
+                print('%2s %s' % (i+1,s2.rstrip()))
     # Use PythonTidy
     t1 = time.clock()
     file_in = g.fileLikeObject(fromString=s)
@@ -124,39 +120,83 @@ def test_PythonTidy(c,h,p):
     g.trace('total:    %4.2f sec.' % (t2-t1))
 #@+node:ekr.20150521132404.1: ** class AddTokensToTree (AstFullTraverser)
 class AddTokensToTree(leoAst.AstFullTraverser):
-
-    # def __init__(self):
-        # leoAst.AstFullTraverser.__init__(self)
-        # self.formatter = leoAst.AstFormatter()
         
     #@+others
-    #@+node:ekr.20150522085222.1: *3* add.make_comments_list
-    def make_comments_list(self):
-        '''
-        Create an ordered list of tuples (n,comment)
-        n is the line number of the comment token.
-        comment is the comment itself.
-        '''
-        trace = True
-        d = self.tokens_d
-        result = []
-        for n in sorted(d.keys()):
-            aList = d.get(n)
-            if aList:
-                for t1,t2,t3,t4,t5 in aList:
-                    name = token.tok_name[t1].lower()
-                    if name == 'comment':
-                        val = g.toUnicode(t2)
-                        result.append((n,val),)
-        if trace:
-            g.trace('comments_d...')
-            for data in result:
-                n,val = data
-                g.pr('%4s %s' % (n,val))
-        return result
-    #@+node:ekr.20150522104124.1: *3* add.make_skip_d
+    #@+node:ekr.20150525074945.1: *3* add.ctor & helpers
+    def __init__(self,c,settings,tokens):
+        
+        leoAst.AstFullTraverser.__init__(self)
+            # Init the base class.
+        self.c = c
+        self.settings = settings
+        self.n = 0
+            # Number of nodes
+        self.n_set_tokens = 0
+            # Number of calls to set_tokens
+        self.prev_statement = None
+            # Set in Run.
+        self.tokens = tokens
+        # Compute data.
+        self.string_offset_d = {}
+            # Keys are line numbers. Values are number of strings seen on that line.
+        self.skip_d = self.make_skip_d()
+        self.statements_d = self.make_statements_d()
+        self.make_tokens_data(tokens)
+            # Make all dicts and lists at the same time.
+    #@+node:ekr.20150525083523.1: *4* add.make_tokens_data
+    def make_tokens_data(self,tokens):
+        '''Make tokens_d, blank_lines_list, comments_list, strings_d'''
+        self.blank_lines_list = []
+        self.comments_list = []
+        self.strings_d = {}
+        self.tokens_d = {}
+        aList,n = [],1 # The list of tokens with line number n (one-based)
+        for t1,t2,t3,t4,t5 in tokens:
+            name = token.tok_name[t1].lower()
+            val = g.toUnicode(t2)
+            srow,scol = t3
+            # erow,ecol = t4
+            # line = g.toUnicode(t5)
+            if n != srow:
+                # if n < 20: g.pr("----- line",srow,erow,repr(line))
+                self.tokens_d[n] = aList
+                aList,n = [],srow
+            data = t1,t2,t3,t4,t5
+            if name in ('comment','string','nl'):
+                aList.append(data)
+            if name == 'nl':
+                self.blank_lines_list.append(n)
+            elif name == 'comment':
+                self.comments_list.append((n,g.toUnicode(t2)),)
+            elif name == 'string':
+                aList2 = self.strings_d.get(n,[])
+                aList2.append(g.toUnicode(t2))
+                self.strings_d[n] = aList2
+        # Finish the last line.
+        self.tokens_d[n] = aList
+        if self.settings.get('ast_tokens_d'):
+            print('ast: tokens_d...')
+            for n in sorted(self.tokens_d.keys()):
+                aList = self.tokens_d.get(n)
+                if aList:
+                    pad = 6 * ' '
+                    pad2 = '\n' + 7 * ' '
+                    nl = '' if len(aList) == 1 else '\n'+pad
+                    result = []
+                    for t1,t2,t3,t4,t5 in aList:
+                        name = token.tok_name[t1].lower()
+                        result.append('%10s %s' % (name,t2.rstrip()))
+                    print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+            print('ast: blank_lines_list: %s' % self.blank_lines_list)
+            print('ast: comments_list...')
+            for data in self.comments_list:
+                n, val = data
+                print('%4s: %s' % (n,val))
+    #@+node:ekr.20150522104124.1: *4* add.make_skip_d
     def make_skip_d(self):
-        '''Return a dictionary of nodes non-statements that set_tokens will skip.'''
+        '''
+        Return a dictionary of nodes non-statements that set_tokens will skip.
+        '''
         aList = [
             # Operators...
             'BinOp','BoolOp','UnaryOp',
@@ -169,7 +209,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         for z in aList:
             d[z] = 0
         return d
-    #@+node:ekr.20150522110017.1: *3* add.make_statements_d
+    #@+node:ekr.20150522110017.1: *4* add.make_statements_d
     def make_statements_d(self):
         '''
         Return a dictionary of statements that set_tokens handle.
@@ -189,56 +229,24 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         for z in aList:
             d[z] = 0
         return d
-    #@+node:ekr.20150521174734.1: *3* add.make_tokens_d
-    def make_tokens_d(self,tokens):
-        '''
-        Return a tokens dict.
-        Keys are starting line numbers. Values are 5-tuples (tokens) for that line.
-        '''
-        trace = True
-        d = {}
-        aList,n = [],1 # The list of tokens with line number n (one-based)
-        for t1,t2,t3,t4,t5 in tokens:
-            name = token.tok_name[t1].lower()
-            val = g.toUnicode(t2)
-            srow,scol = t3
-            # erow,ecol = t4
-            # line = g.toUnicode(t5)
-            if n != srow:
-                # if n < 20: g.pr("----- line",srow,erow,repr(line))
-                d[n] = aList
-                aList,n = [],srow
-            if name in ('comment','string'):
-                aList.append((t1,t2,t3,t4,t5),)
-            # g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
-        # Finish the last line.
-        d[n] = aList
-        if trace:
-            g.trace('tokens_d...')
-            for n in sorted(d.keys()): # [:200]:
-                aList = d.get(n)
-                if aList:
-                    for t1,t2,t3,t4,t5 in aList:
-                        name = token.tok_name[t1].lower()
-                        if n < 100 or name == 'comment':
-                            g.pr('%4s %10s %s' % (n,name,t2))
-        return d
     #@+node:ekr.20150521174358.1: *3* add.run
-    def run(self,node,tokens):
+    def run(self,node):
         '''The main line for the AddTokensToTree class.'''
-        self.n = 0 # Number of nodes
-        self.n2 = 0 # Number of calls to set_tokens
-        self.prev_statement = node
-        self.tokens = tokens
-        # Compute data.
-        self.tokens_d = self.make_tokens_d(tokens)
-        self.comments_list = self.make_comments_list()
-        self.skip_d = self.make_skip_d()
-        self.statements_d = self.make_statements_d()
         # Traverse the entire tree.
+        self.prev_statement = node
         self.visit(node)
-        g.trace('AddTokensToTree: n2',self.n2)
+        g.trace('AddTokensToTree: n_set_tokens',self.n_set_tokens)
         return self.n
+    #@+node:ekr.20150525081156.1: *3* add.set_str_tokens
+    def set_str_token (self,node):
+        '''Associate a token with a ast.Str node.'''
+        n = node.lineno
+        d = self.string_offset_d
+        offset = d.get(n,0)
+        d[n] = 1 + offset
+        
+        g.trace(n,repr(node.s))
+        
     #@+node:ekr.20150521174136.1: *3* add.set_tokens
     def set_tokens(self,node):
         '''
@@ -247,13 +255,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         node.col_offset: the UTF-8 byte offset of the first token that generated the node.
         '''
         kind = self.kind(node)
-        if not hasattr(node,'lineno'):
-            g.trace('***** no lineno',node)
-            return
-        if kind in self.skip_d:
-            return
-        if kind not in self.statements_d:
-            g.trace('===== unknown op',kind)
+        assert kind in self.statements_d,(kind)
         n = node.lineno
         col = node.col_offset
         if 0:
@@ -277,15 +279,20 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             # Inject the comment_tokens into the previous statement.
             self.prev_statement.comment_tokens = self.comments_list[:del_n]
             self.comments_list = self.comments_list[del_n:]
-        self.n2 += 1
+        self.n_set_tokens += 1
         self.prev_statement = node
     #@+node:ekr.20150521174401.1: *3* add.visit
     def visit(self,node):
 
         self.n += 1
         if hasattr(node,'lineno'):
+            # g.trace(self.kind(node))
             # ast.expr and ast.stmt nodes have lineno and col_offset attributes.
-            self.set_tokens(node)
+            name = node.__class__.__name__
+            if name == 'Str':
+                self.set_str_token(node)
+            elif name not in self.skip_d:
+                self.set_tokens(node)
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self,method_name)
         leoAst.AstFullTraverser.visit(self,node)
@@ -1747,7 +1754,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20040713064323: *3* ptb.dumpLines
     def dumpLines (self,p,lines):
 
-        g.pr('\n','-'*10,p.cleanHeadString())
+        print('\n%s %s' % ('-'*10,p.cleanHeadString()))
 
         if 0:
             for line in lines:
@@ -1757,7 +1764,7 @@ class PythonTokenBeautifier:
             for i in range(len(lines)):
                 line = lines[i]
                 line = g.toEncodedString(line,reportErrors=True)
-                g.pr("%3d" % i, repr(lines[i]))
+                print('%3d %r' % (i, lines[i]))
     #@+node:ekr.20040711135244.7: *3* ptb.dumpToken
     def dumpToken (self,token5tuple):
         '''Dump the given token.'''
@@ -1771,7 +1778,7 @@ class PythonTokenBeautifier:
         if startLine:
             g.pr("----- line",srow,erow,repr(line))
         self.line_number = srow
-        g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
+        print("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
             # line[scol:ecol]
     #@+node:ekr.20150519112500.1: *3* ptb.endUndo
     def endUndo (self):
@@ -2045,7 +2052,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20041021101911.1: *4* ptb.oops
     def oops(self):
 
-        g.pr("unknown PrettyPrinting code: %s" % (self.name))
+        print("unknown PrettyPrinting code: %s" % (self.name))
     #@+node:ekr.20040711135244.12: *3* ptb.putToken
     def putToken (self,token5tuple):
 
