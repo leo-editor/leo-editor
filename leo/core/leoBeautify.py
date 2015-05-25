@@ -34,8 +34,8 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         self.settings = settings
         self.tokens = tokens
         # Other ivars...
-        self.trailing_tokens_list_offset = 0
-            # The number of trailing tokens already seen.
+        self.debug = False
+            # True: create self.tokens_d.
         self.n_visits = 0
             # Number of calls to visit.
         self.n_set_tokens = 0
@@ -50,6 +50,8 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             # (Debugging only) Keys are line numbers. Values are token5tuples.
         self.trailing_tokens_list = []
             # A list of tuples (n,kind,list_of_tokens)
+        self.trailing_tokens_list_offset = 0
+            # The number of trailing tokens already seen.
         # Compute data.
         self.make_statements_d()
         self.make_tokens_data(tokens)
@@ -58,22 +60,27 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     #@+node:ekr.20150525105228.1: *3* add.dump_tokens_data
     def dump_tokens_data(self):
         '''Print tokens_d and trailing_tokens_d.'''
-        print('ast: tokens_d...')
-        for n in sorted(self.tokens_d.keys()):
-            aList = self.tokens_d.get(n)
-            if aList:
-                pad = 6 * ' '
-                pad2 = '\n' + 7 * ' '
-                nl = '' if len(aList) == 1 else '\n'+pad
-                result = []
-                for t1,t2,t3,t4,t5 in aList:
-                    name = token.tok_name[t1].lower()
-                    result.append('%10s %s' % (name,t2.rstrip()))
-                print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+        banner = '-' * 20
+        if self.debug:
+            print(banner)
+            print('ast: tokens_d...')
+            for n in sorted(self.tokens_d.keys()):
+                aList = self.tokens_d.get(n)
+                if aList:
+                    pad = 6 * ' '
+                    pad2 = '\n' + 7 * ' '
+                    nl = '' if len(aList) == 1 else '\n'+pad
+                    result = []
+                    for t1,t2,t3,t4,t5 in aList:
+                        name = token.tok_name[t1].lower()
+                        result.append('%10s %s' % (name,t2.rstrip()))
+                    print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+        print(banner)
         print('ast: strings_list...')
         for data in self.strings_list:
             n,s = data
             print('%3s %s' % (n,s))
+        print(banner)
         print('ast: trailing_tokens_list...')
         for data in self.trailing_tokens_list:
             n,kind,aList = data
@@ -114,7 +121,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                 # g.pr("----- line",srow,erow,repr(line))
                 self.tokens_d[n] = aList
                 aList,n = [],srow
-            if name in ('comment','string','nl'):
+            if self.debug and name in ('comment','string','nl'):
                 data = t1,t2,t3,t4,t5
                 aList.append(data)
             if name == 'nl':
@@ -126,8 +133,9 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             elif name == 'string':
                 self.strings_list.append((n,s),)
         # Finish the last line.
-        self.tokens_d[n] = aList
-        if self.settings.get('ast_tokens_d'):
+        if self.debug:
+            self.tokens_d[n] = aList
+        if self.settings.get('ast_tokens'):
             self.dump_tokens_data()
     #@+node:ekr.20150521174358.1: *3* add.run
     def run(self,node):
@@ -918,7 +926,7 @@ class LeoTidy:
     #@+node:ekr.20150520173107.35: *5* lt.Str
     def do_Str (self,node):
         '''This represents a string constant.'''
-        self.lit(repr(node.s))
+        self.lit(node.str_spelling)
     #@+node:ekr.20150520173107.36: *5* lt.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
