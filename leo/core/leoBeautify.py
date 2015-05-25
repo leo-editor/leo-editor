@@ -48,6 +48,11 @@ def test_LeoTidy(c,h,p,settings):
                     forcePythonSentinels=True,
                     useSentinels=False)
     g.trace(p.h)
+    if settings.get('input_string'):
+        print('==================== input_string')
+        for i,z in enumerate(g.splitLines(s)):
+            print('%3s %s' % (i+1,z.rstrip()))
+        print('====================')
     t1 = time.clock()
     node = ast.parse(s,filename='before',mode='exec')
     # g.trace(ast.dump(node,annotate_fields=False))
@@ -62,20 +67,16 @@ def test_LeoTidy(c,h,p,settings):
     s2 = leoTidy.format(node)
     t5 = time.clock()
     if settings.get('nodes_stats'):
+        print('==================== stats')
         g.trace('nodes:    %s' % n1)
         g.trace('tokens:   %s' % len(tokens))
         g.trace('code_list %s' % len(leoTidy.code_list))
         g.trace('len(s2):  %s' % len(s2))
-    if settings.get('times'):
         g.trace('parse:    %4.2f sec.' % (t2-t1))
         g.trace('tokenize: %4.2f sec.' % (t3-t2))
         g.trace('add toks: %4.2f sec.' % (t4-t3))
         g.trace('format:   %4.2f sec.' % (t5-t4))
         g.trace('total:    %4.2f sec.' % (t5-t1))
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i,z in enumerate(g.splitLines(s)):
-            print('%3s %s' % (i+1,z.rstrip()))
     if settings.get('input_tokens'):
         print('==================== input_lines')
         dumpTokens(tokens,verbose=False)
@@ -127,29 +128,58 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         
         leoAst.AstFullTraverser.__init__(self)
             # Init the base class.
+        # Copy args...
         self.c = c
         self.settings = settings
+        self.tokens = tokens
+        # Other ivars...
+        self.trailing_tokens_list_offset = 0
+            # The number of trailing tokens already seen.
         self.n = 0
             # Number of nodes
         self.n_set_tokens = 0
             # Number of calls to set_tokens
         self.prev_statement = None
             # Set in Run.
-        self.tokens = tokens
+        self.statements_d = {}
+            # Set below.  Keys are statement kinds, values ignored.
+        self.string_count = 0
+            # The number of strings seen on this line.
+        self.strings_d = {}
+            # Set below: keys are line numbers. Values are lists of strings.
+        self.tokens_d = {}
+            # Set below: keys are line numbers. Values are token5tuples.
+        self.trailing_tokens_list = []
+            # Set below. A list of tuples (n,kind,list_of_tokens)
         # Compute data.
-        self.string_offset_d = {}
-            # Keys are line numbers. Values are number of strings seen on that line.
-        self.skip_d = self.make_skip_d()
-        self.statements_d = self.make_statements_d()
+        self.make_statements_d()
         self.make_tokens_data(tokens)
-            # Make all dicts and lists at the same time.
+            # Make tokens_d, trailing_tokens_list and strings_d.
+    #@+node:ekr.20150525105228.1: *4* add.dump_tokens_data
+    def dump_tokens_data(self):
+        '''Print tokens_d and trailing_tokens_d.'''
+        print('ast: tokens_d...')
+        for n in sorted(self.tokens_d.keys()):
+            aList = self.tokens_d.get(n)
+            if aList:
+                pad = 6 * ' '
+                pad2 = '\n' + 7 * ' '
+                nl = '' if len(aList) == 1 else '\n'+pad
+                result = []
+                for t1,t2,t3,t4,t5 in aList:
+                    name = token.tok_name[t1].lower()
+                    result.append('%10s %s' % (name,t2.rstrip()))
+                print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+        print('ast: trailing_tokens_list...')
+        for data in self.trailing_tokens_list:
+            n,kind,aList = data
+            print('%4s: %8s %r' % (n,kind,aList))
     #@+node:ekr.20150525083523.1: *4* add.make_tokens_data
     def make_tokens_data(self,tokens):
-        '''Make tokens_d, blank_lines_list, comments_list, strings_d'''
-        self.blank_lines_list = []
-        self.comments_list = []
+        '''Make tokens_d, trailing_tokens_list and strings_d'''
         self.strings_d = {}
         self.tokens_d = {}
+        self.trailing_tokens_list = []
         aList,n = [],1 # The list of tokens with line number n (one-based)
         for t1,t2,t3,t4,t5 in tokens:
             name = token.tok_name[t1].lower()
@@ -161,54 +191,23 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                 # if n < 20: g.pr("----- line",srow,erow,repr(line))
                 self.tokens_d[n] = aList
                 aList,n = [],srow
-            data = t1,t2,t3,t4,t5
             if name in ('comment','string','nl'):
+                data = t1,t2,t3,t4,t5
                 aList.append(data)
             if name == 'nl':
-                self.blank_lines_list.append(n)
+                data = n,'nl',None
+                self.trailing_tokens_list.append(data)
             elif name == 'comment':
-                self.comments_list.append((n,g.toUnicode(t2)),)
+                data = n,'comment',g.toUnicode(t2)
+                self.trailing_tokens_list.append(data)
             elif name == 'string':
                 aList2 = self.strings_d.get(n,[])
                 aList2.append(g.toUnicode(t2))
                 self.strings_d[n] = aList2
-        # Finish the last line.
+        ### Finish the last line.
         self.tokens_d[n] = aList
         if self.settings.get('ast_tokens_d'):
-            print('ast: tokens_d...')
-            for n in sorted(self.tokens_d.keys()):
-                aList = self.tokens_d.get(n)
-                if aList:
-                    pad = 6 * ' '
-                    pad2 = '\n' + 7 * ' '
-                    nl = '' if len(aList) == 1 else '\n'+pad
-                    result = []
-                    for t1,t2,t3,t4,t5 in aList:
-                        name = token.tok_name[t1].lower()
-                        result.append('%10s %s' % (name,t2.rstrip()))
-                    print('%4s: [%s%s]' % (n,pad2.join(result),nl))
-            print('ast: blank_lines_list: %s' % self.blank_lines_list)
-            print('ast: comments_list...')
-            for data in self.comments_list:
-                n, val = data
-                print('%4s: %s' % (n,val))
-    #@+node:ekr.20150522104124.1: *4* add.make_skip_d
-    def make_skip_d(self):
-        '''
-        Return a dictionary of nodes non-statements that set_tokens will skip.
-        '''
-        aList = [
-            # Operators...
-            'BinOp','BoolOp','UnaryOp',
-            # Operands...
-            'Bytes','Dict','List','Name','Num','Str','Tuple',
-            # Everything else...
-            'Attribute','Compare','IfExp','ListComp','Subscript','Slice',
-        ]
-        d = {}
-        for z in aList:
-            d[z] = 0
-        return d
+            self.dump_tokens_data()
     #@+node:ekr.20150522110017.1: *4* add.make_statements_d
     def make_statements_d(self):
         '''
@@ -225,10 +224,9 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             'Try','TryExcept','TryFinally',
             'While','With','Yield',
         ]
-        d = {}
+        self.statements_d = {}
         for z in aList:
-            d[z] = 0
-        return d
+            self.statements_d[z] = 0
     #@+node:ekr.20150521174358.1: *3* add.run
     def run(self,node):
         '''The main line for the AddTokensToTree class.'''
@@ -241,61 +239,60 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     def set_str_token (self,node):
         '''Associate a token with a ast.Str node.'''
         n = node.lineno
-        d = self.string_offset_d
-        offset = d.get(n,0)
-        d[n] = 1 + offset
-        
-        g.trace(n,repr(node.s))
-        
-    #@+node:ekr.20150521174136.1: *3* add.set_tokens
+        string_list = self.strings_d.get(n,[])
+        offset = self.string_count
+        node.str_spelling = string_list[offset]
+        g.trace('line %3s, offset: %s, node.s: %r, spelling: %s' % (
+            n,offset,node.s,node.str_spelling))
+        self.string_count += 1
+    #@+node:ekr.20150521174136.1: *3* add.set_tokens & helper
     def set_tokens(self,node):
         '''
         Compute the set of tokens associated with this node.
         node.lineno: the line number of source text: the first line is line 1.
         node.col_offset: the UTF-8 byte offset of the first token that generated the node.
         '''
-        kind = self.kind(node)
-        assert kind in self.statements_d,(kind)
-        n = node.lineno
-        col = node.col_offset
-        if 0:
-            aList = self.tokens_d.get(n)
-            if aList:
-                for t1,t2,t3,t4,t5 in aList:
-                    tok_name = token.tok_name[t1].lower()
-                    g.trace('%4s %10s %s' % (n,tok_name,t2))
-        # Associate all previous comments with the previous statement.
-        prev = self.prev_statement
-        prev_n = prev.lineno if hasattr(prev,'lineno') else 1
-        del_n = 0
-        for data in self.comments_list:
-            n2,comment = data
-            if n2 < n:
-                # g.trace('%4s %4s %s' % (prev_n,n2,comment))
-                del_n += 1
-            else:
-                break
-        if del_n > 0:
-            # Inject the comment_tokens into the previous statement.
-            self.prev_statement.comment_tokens = self.comments_list[:del_n]
-            self.comments_list = self.comments_list[del_n:]
+        # n = node.lineno
+        # col = node.col_offset
+        self.inject_trailing_tokens()
         self.n_set_tokens += 1
         self.prev_statement = node
+    #@+node:ekr.20150525101059.1: *4* add.inject_trailing_tokens
+    def inject_trailing_tokens(self):
+        '''Inject all previous comment tokens into self.prev_statement.'''
+        prev = self.prev_statement
+        prev_n = prev.lineno if hasattr(prev,'lineno') else 1
+        n = 0
+        offset = self.trailing_tokens_list_offset
+        for data in self.trailing_tokens_list[offset:]:
+            n2,kind,token = data
+            if n2 < prev_n:
+                n += 1
+            else:
+                break
+        if n > 0:
+            # Inject the comment_tokens into the previous statement.
+            tokens = self.trailing_tokens_list[offset : offset+n]
+            prev.trailing_tokens = tokens
+            self.trailing_tokens_list_offset += n
+            print('inject trailing tokens %3s %12s %s' % (
+                n,self.kind(prev),tokens))
     #@+node:ekr.20150521174401.1: *3* add.visit
     def visit(self,node):
-
+        '''AddTokentsToTree.visit.'''
         self.n += 1
+        name = node.__class__.__name__
         if hasattr(node,'lineno'):
-            # g.trace(self.kind(node))
             # ast.expr and ast.stmt nodes have lineno and col_offset attributes.
-            name = node.__class__.__name__
             if name == 'Str':
                 self.set_str_token(node)
-            elif name not in self.skip_d:
+            elif name in self.statements_d:
+                self.string_count = 0
                 self.set_tokens(node)
-        method_name = 'do_' + node.__class__.__name__
-        method = getattr(self,method_name)
-        leoAst.AstFullTraverser.visit(self,node)
+        method = getattr(self,'do_' + name)
+        method(node)
+        # The full traverser does some unnecessary stuff.
+        # leoAst.AstFullTraverser.visit(self,node)
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
