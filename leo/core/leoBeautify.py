@@ -12,7 +12,31 @@ import token
 import tokenize
 
 #@+others
-#@+node:ekr.20150521114057.1: ** test (leoBeautify.py)
+#@+node:ekr.20150524215322.1: ** dumpTokens
+def dumpTokens(tokens,verbose=True):
+    last_line_number = 0
+    for token5tuple in tokens:
+        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
+
+def dumpToken (last_line_number,token5tuple,verbose):
+    '''Dump the given token.'''
+    t1,t2,t3,t4,t5 = token5tuple
+    name = token.tok_name[t1].lower()
+    val = str(t2) # can fail
+    srow,scol = t3
+    erow,ecol = t4
+    line = str(t5) # can fail
+    if last_line_number != srow:
+        if verbose:
+            print("\n---- line: %3s %3s %r" % (srow,erow,line))
+        else:
+            print('%3s %7s %r' % (srow,name,line))
+    if verbose:
+        print("%10s %3d %3d %-8s" % (name,scol,ecol,repr(val)))
+            # line[scol:ecol]
+    last_line_number = srow
+    return last_line_number
+#@+node:ekr.20150521114057.1: ** test_LeoTidy (prints stats)
 def test(c,h,p):
     '''Use subclasses of leoAst.py to pretty-print Python code.'''
     if not p:
@@ -27,59 +51,77 @@ def test(c,h,p):
         for i,s2 in enumerate(g.splitlines(s)[:200]):
             if s2.find('#') > -1:
                 g.pr('%2s %s' % (i+1,s2.rstrip()))
+    t1 = time.clock()
+    node = ast.parse(s,filename='before',mode='exec')
+    # g.trace(ast.dump(node,annotate_fields=False))
+    # g.trace(leoAst.AstFormatter().format(node))
+    t2 = time.clock()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    t3 = time.clock()
+    n1 = AddTokensToTree().run(node,tokens)
+    t4 = time.clock()
+    leoTidy = LeoTidy(c)
+    s2 = leoTidy.format(node)
+    t5 = time.clock()
+    # g.trace('using LeoTidy')
+    g.trace('nodes:    %s' % n1)
+    g.trace('tokens:   %s' % len(tokens))
+    g.trace('code_list %s' % len(leoTidy.code_list))
+    g.trace('len(s2):  %s' % len(s2))
     if 0:
-        # Use PythonTidy
-        t1 = time.clock()
-        file_in = g.fileLikeObject(fromString=s)
-        file_out = g.fileLikeObject()
-        is_module = p.isAnyAtFileNode()
-        tidy.tidy_up(
-            file_in=file_in,
-            file_out=file_out,
-            is_module=is_module,
-            leo_c=c)
-        s2 = file_out.get()
-        t2 = time.clock()
-        g.trace('Using PythonTidy')
-        g.trace('total:    %4.2f sec.' % (t2-t1))
-    else:
-        t1 = time.clock()
-        node = ast.parse(s,filename='before',mode='exec')
-        # g.trace(ast.dump(node,annotate_fields=False))
-        # g.trace(leoAst.AstFormatter().format(node))
-        t2 = time.clock()
-        readlines = g.ReadLinesClass(s).next
-        tokens = list(tokenize.generate_tokens(readlines))
-        t3 = time.clock()
-        n1 = AddTokensToTree().run(node,tokens)
-        t4 = time.clock()
-        leoTidy = LeoTidy(c)
-        s2 = leoTidy.format(node)
-        t5 = time.clock()
-        # g.trace('using LeoTidy')
-        g.trace('nodes:    %s' % n1)
-        g.trace('tokens:   %s' % len(tokens))
-        g.trace('code_list %s' % len(leoTidy.code_list))
-        g.trace('len(s2):  %s' % len(s2))
         g.trace('parse:    %4.2f sec.' % (t2-t1))
         g.trace('tokenize: %4.2f sec.' % (t3-t2))
         g.trace('add toks: %4.2f sec.' % (t4-t3))
         g.trace('format:   %4.2f sec.' % (t5-t4))
         g.trace('total:    %4.2f sec.' % (t5-t1))
+    if 1:
+        print('==================== input string')
+        for i,z in enumerate(g.splitLines(s)):
+            print('%3s %s' % (i+1,z.rstrip()))
+    if 1:
+        print('==================== input lines')
+        dumpTokens(tokens,verbose=False)
     if 0:
-        print('====================')
+        print('==================== input tokens')
+        dumpTokens(tokens,verbose=True)
+    if 0:
+        print('==================== code list')
         for i,z in enumerate(leoTidy.code_list):
             print('%3s %s' % (i,z))
     if 0:
-        print('====================')
-        print(repr(s2))
-    if 0:
-        print('====================')
+        print('==================== output string')
         print(s2)
+    
+#@+node:ekr.20150525072128.1: ** test_PythonTidy
+def test_PythonTidy(c,h,p):
+    '''Test PythonTidy on the script in p's tree.'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return
+    s = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=False)
+    g.trace(p.h)
     if 0:
-        tb = PythonTokenBeautifier(c)
-        for token5tuple in tokens[:50]:
-            tb.dumpToken(token5tuple)
+        for i,s2 in enumerate(g.splitlines(s)[:200]):
+            if s2.find('#') > -1:
+                g.pr('%2s %s' % (i+1,s2.rstrip()))
+    # Use PythonTidy
+    t1 = time.clock()
+    file_in = g.fileLikeObject(fromString=s)
+    file_out = g.fileLikeObject()
+    is_module = p.isAnyAtFileNode()
+    tidy.tidy_up(
+        file_in=file_in,
+        file_out=file_out,
+        is_module=is_module,
+        leo_c=c)
+    s2 = file_out.get()
+    t2 = time.clock()
+    g.trace('Using PythonTidy')
+    g.trace('total:    %4.2f sec.' % (t2-t1))
 #@+node:ekr.20150521132404.1: ** class AddTokensToTree (AstFullTraverser)
 class AddTokensToTree(leoAst.AstFullTraverser):
 
@@ -88,30 +130,14 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         # self.formatter = leoAst.AstFormatter()
         
     #@+others
-    #@+node:ekr.20150521174358.1: *3* add.run & init methods
-    def run(self,node,tokens):
-        '''The main line for the AddTokensToTree class.'''
-        self.n = 0 # Number of nodes
-        self.n2 = 0 # Number of calls to set_tokens
-        self.prev_statement = node
-        self.tokens = tokens
-        # Compute data.
-        self.tokens_d = self.make_tokens_d(tokens)
-        self.comments_list = self.make_comments_list()
-        self.skip_d = self.make_skip_d()
-        self.statements_d = self.make_statements_d()
-        # Traverse the entire tree.
-        self.visit(node)
-        g.trace('AddTokensToTree: n2',self.n2)
-        return self.n
-    #@+node:ekr.20150522085222.1: *4* add.make_comments_list
+    #@+node:ekr.20150522085222.1: *3* add.make_comments_list
     def make_comments_list(self):
         '''
         Create an ordered list of tuples (n,comment)
         n is the line number of the comment token.
         comment is the comment itself.
         '''
-        trace = False
+        trace = True
         d = self.tokens_d
         result = []
         for n in sorted(d.keys()):
@@ -123,12 +149,12 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                         val = g.toUnicode(t2)
                         result.append((n,val),)
         if trace:
-            g.trace()
+            g.trace('comments_d...')
             for data in result:
                 n,val = data
                 g.pr('%4s %s' % (n,val))
         return result
-    #@+node:ekr.20150522104124.1: *4* add.make_skip_d
+    #@+node:ekr.20150522104124.1: *3* add.make_skip_d
     def make_skip_d(self):
         '''Return a dictionary of nodes non-statements that set_tokens will skip.'''
         aList = [
@@ -143,9 +169,12 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         for z in aList:
             d[z] = 0
         return d
-    #@+node:ekr.20150522110017.1: *4* add.make_statemets_d
+    #@+node:ekr.20150522110017.1: *3* add.make_statements_d
     def make_statements_d(self):
-        '''Return a dictionary of statements that set_tokens handle.'''
+        '''
+        Return a dictionary of statements that set_tokens handle.
+        This is used only for consistency checking.
+        '''
         aList = [
             'Assert','Assign','AugAssign',
             'Break','Call','ClassDef','Continue','Delete',
@@ -160,12 +189,13 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         for z in aList:
             d[z] = 0
         return d
-    #@+node:ekr.20150521174734.1: *4* add.make_tokens_d
+    #@+node:ekr.20150521174734.1: *3* add.make_tokens_d
     def make_tokens_d(self,tokens):
         '''
         Return a tokens dict.
         Keys are starting line numbers. Values are 5-tuples (tokens) for that line.
         '''
+        trace = True
         d = {}
         aList,n = [],1 # The list of tokens with line number n (one-based)
         for t1,t2,t3,t4,t5 in tokens:
@@ -183,9 +213,9 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             # g.pr("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
         # Finish the last line.
         d[n] = aList
-        if 0:
-            g.trace('Dump of tokens...')
-            for n in sorted(d.keys())[:200]:
+        if trace:
+            g.trace('tokens_d...')
+            for n in sorted(d.keys()): # [:200]:
                 aList = d.get(n)
                 if aList:
                     for t1,t2,t3,t4,t5 in aList:
@@ -193,11 +223,29 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                         if n < 100 or name == 'comment':
                             g.pr('%4s %10s %s' % (n,name,t2))
         return d
+    #@+node:ekr.20150521174358.1: *3* add.run
+    def run(self,node,tokens):
+        '''The main line for the AddTokensToTree class.'''
+        self.n = 0 # Number of nodes
+        self.n2 = 0 # Number of calls to set_tokens
+        self.prev_statement = node
+        self.tokens = tokens
+        # Compute data.
+        self.tokens_d = self.make_tokens_d(tokens)
+        self.comments_list = self.make_comments_list()
+        self.skip_d = self.make_skip_d()
+        self.statements_d = self.make_statements_d()
+        # Traverse the entire tree.
+        self.visit(node)
+        g.trace('AddTokensToTree: n2',self.n2)
+        return self.n
     #@+node:ekr.20150521174136.1: *3* add.set_tokens
     def set_tokens(self,node):
-        '''Compute the set of tokens associated with this node.'''
-        # lineno: the line number of source text: the first line is line 1.
-        # col_offset: the UTF-8 byte offset of the first token that generated the node.
+        '''
+        Compute the set of tokens associated with this node.
+        node.lineno: the line number of source text: the first line is line 1.
+        node.col_offset: the UTF-8 byte offset of the first token that generated the node.
+        '''
         kind = self.kind(node)
         if not hasattr(node,'lineno'):
             g.trace('***** no lineno',node)
@@ -233,13 +281,10 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         self.prev_statement = node
     #@+node:ekr.20150521174401.1: *3* add.visit
     def visit(self,node):
-        '''
-        ast.expr and ast.stmt nodes have lineno and col_offset attributes.
-        lineno: the line number of source text: the first line is line 1.
-        col_offset: the UTF-8 byte offset of the first token that generated the node.
-        '''
+
         self.n += 1
         if hasattr(node,'lineno'):
+            # ast.expr and ast.stmt nodes have lineno and col_offset attributes.
             self.set_tokens(node)
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self,method_name)
@@ -1096,7 +1141,7 @@ class LeoTidy:
                 if i + 1 < len(node.bases):
                     self.lit_blank(',')
             self.rt(')')
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1134,7 +1179,7 @@ class LeoTidy:
                 self.visit(node.name)
             else:
                 self.word(node.name) # Python 3.x.
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1165,7 +1210,7 @@ class LeoTidy:
         self.visit(node.target)
         self.op('in')
         self.visit(node.iter)
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1173,7 +1218,7 @@ class LeoTidy:
             self.level -= 1
         if node.orelse:
             self.word('else')
-            self.lit(':')
+            self.lit_no_blanks(':')
             self.line_end()
             for z in node.orelse:
                 self.level += 1
@@ -1198,7 +1243,7 @@ class LeoTidy:
         if node.args:
             self.visit(node.args)
         self.rt(')')
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1221,7 +1266,7 @@ class LeoTidy:
         self.line_start()
         self.word('if')
         self.visit(node.test)
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1230,7 +1275,7 @@ class LeoTidy:
         if node.orelse:
             self.line_start()
             self.word('else')
-            self.lit(':')
+            self.lit_no_blanks(':')
             self.line_end()
             for z in node.orelse:
                 self.level += 1
@@ -1283,7 +1328,7 @@ class LeoTidy:
         self.word('lambda')
         if node.args:
             self.visit(node.args)
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.visit(node.body)
         self.line_end()
     #@+node:ekr.20150520173107.10: *5* lt.Module
@@ -1347,7 +1392,7 @@ class LeoTidy:
 
         self.line_start()
         self.word('try')
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1359,7 +1404,7 @@ class LeoTidy:
         if node.orelse:
             self.line_start()
             self.word('else')
-            self.lit(':')
+            self.lit_no_blanks(':')
             self.line_end()
             for z in node.orelse:
                 self.level += 1
@@ -1368,7 +1413,7 @@ class LeoTidy:
         if node.finalbody:
             self.line_start()
             self.word('finally')
-            self.lit(':')
+            self.lit_no_blanks(':')
             self.line_end()
             for z in node.finalbody:
                 self.level += 1
@@ -1420,7 +1465,7 @@ class LeoTidy:
         self.line_start()
         self.word('while')
         self.visit(node.test)
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         for z in node.body:
             self.level += 1
@@ -1428,7 +1473,7 @@ class LeoTidy:
             self.level -= 1
         if node.orelse:
             self.word('else')
-            self.lit(':')
+            self.lit_no_blanks(':')
             self.line_end()
             for z in node.orelse:
                 self.level += 1
@@ -1452,7 +1497,7 @@ class LeoTidy:
                         self.lit_blank(',')
             except TypeError: # Not iterable.
                 self.visit(node.optional_vars) 
-        self.lit(':')
+        self.lit_no_blanks(':')
         self.line_end()
         self.level += 1
         for z in node.body:
@@ -1481,7 +1526,7 @@ class OutputToken:
         self.value = value
         
     def __repr__(self):
-        return 'OutputToken %10s %s' % (self.kind,repr(self.value))
+        return '%10s %s' % (self.kind,repr(self.value))
    
     __str__ = __repr__
 
