@@ -16747,5 +16747,24 @@ def make_skip_d(self):
     for z in aList:
         d[z] = 0
     return d
+.. @+node:ekr.20150522110017.1: *3* add.make_statements_d
+def make_statements_d(self):
+    '''
+    Return a dictionary of statements that set_tokens handle.
+    This is used only for consistency checking.
+    '''
+    aList = [
+        'Assert','Assign','AugAssign',
+        'Break','Call','ClassDef','Continue','Delete',
+        'ExceptHandler','Exec','Expr',
+        'For','FunctionDef','Global',
+        'If','Import','ImportFrom','Lambda', # Module
+        'Pass','Print','Raise','Return',
+        'Try','TryExcept','TryFinally',
+        'While','With','Yield',
+    ]
+    self.statements_d = {}
+    for z in aList:
+        self.statements_d[z] = 0
 .. @-all
 .. @-leo
