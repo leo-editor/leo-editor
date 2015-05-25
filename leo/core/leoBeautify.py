@@ -121,6 +121,12 @@ def test_PythonTidy(c,h,p):
     g.trace('total:    %4.2f sec.' % (t2-t1))
 #@+node:ekr.20150521132404.1: ** class AddTokensToTree (AstFullTraverser)
 class AddTokensToTree(leoAst.AstFullTraverser):
+    '''
+    A class that injects token-based data into Ast trees.
+    
+    This class could be folded into the LeoTidy class, but doing so would
+    save negligible time.
+    '''
         
     #@+others
     #@+node:ekr.20150525074945.1: *3* add.ctor & helpers
