@@ -2174,15 +2174,15 @@ def test_LeoTidy(c,h,p,settings):
             print('%3s %s' % (i+1,z.rstrip()))
     if settings.get('stats'):
         print('==================== stats')
-        g.trace('nodes:    %s' % n1)
-        g.trace('tokens:   %s' % len(tokens))
-        g.trace('code_list %s' % len(leoTidy.code_list))
-        g.trace('len(s2):  %s' % len(s2))
-        g.trace('parse:    %4.2f sec.' % (t2-t1))
-        g.trace('tokenize: %4.2f sec.' % (t3-t2))
-        g.trace('add toks: %4.2f sec.' % (t4-t3))
-        g.trace('format:   %4.2f sec.' % (t5-t4))
-        g.trace('total:    %4.2f sec.' % (t5-t1))
+        print('nodes:    %s' % n1)
+        print('tokens:   %s' % len(tokens))
+        print('code_list %s' % len(leoTidy.code_list))
+        print('len(s2):  %s' % len(s2))
+        print('parse:    %4.2f sec.' % (t2-t1))
+        print('tokenize: %4.2f sec.' % (t3-t2))
+        print('add toks: %4.2f sec.' % (t4-t3))
+        print('format:   %4.2f sec.' % (t5-t4))
+        print('total:    %4.2f sec.' % (t5-t1))
 #@+node:ekr.20150525072128.1: *3* test_PythonTidy
 def test_PythonTidy(c,h,p):
     '''Test PythonTidy on the script in p's tree.'''
