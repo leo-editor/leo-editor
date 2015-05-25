@@ -3,7 +3,7 @@
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
     # Needed because of unicode characters in tests.
-"""Classes to read and write @file nodes."""\
+"""Classes to read and write @file nodes."""
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g

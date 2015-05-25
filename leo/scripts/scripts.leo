@@ -111,7 +111,7 @@
 <v t="ekr.20150508132423.24"><vh>rst.getPublicCommands</vh></v>
 <v t="ekr.20150508132423.25"><vh>vc.getPublicCommands</vh></v>
 </v>
-<v t="ekr.20150508132450.1"><vh>@button create decorators</vh>
+<v t="ekr.20150508132450.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508132450.2"><vh>create_d</vh></v>
 <v t="ekr.20150508132450.3"><vh>create_decorator</vh></v>
 <v t="ekr.20150508132450.4"><vh>create_decorators</vh></v>
@@ -120,6 +120,9 @@
 <v t="ekr.20150508132450.7"><vh>find_next_clone</vh></v>
 <v t="ekr.20150508132450.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150508132450.9"><vh>run</vh></v>
+</v>
+<v t="ekr.20150525161132.1"><vh>@@button tokens2tree</vh>
+<v t="ekr.20150525161132.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1910,5 +1913,52 @@ CreateDecorators(c).run()
             self.create_decorators(d,root)
     print('\n%s commands %s failed' % (self.n,self.n_fail))
 </t>
+<t tx="ekr.20150525161132.1">r'''The script to test AddTokensToTree class.'''
+g.cls()
+if c.isChanged():
+    c.save()
+&lt;&lt; imports &gt;&gt;
+project = False
+if project:
+    aList = leoBeautify.ProjectUtils().project_files('leo')
+    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
+    aList = aList
+    settings_d = {}
+else:
+    aList = [
+        'unit test: leoBeautify.py',
+        # '@file leoFileCommands.py',
+        # '@file leoBeautify.py',
+    ]
+    settings_d = {
+        'ast_tokens_d': False,
+        'stats': True,
+        'input_string': True,
+        'input_lines': False,
+        'input_tokens': False,
+        'token_list': False,
+        'code_list': False,
+        'output_string': True,
+    }
+assert aList,'no input in %s' % (p.h)
+t1 = time.clock()
+for h in aList:
+    p2 = g.findNodeAnywhere(c,h)
+    if p2:
+        try:
+            leoBeautify.test_LeoTidy(c,h,p2,settings_d)
+        except Exception:
+            g.es_exception()
+if project:
+    print('done: %4.2f sec.' % (time.clock()-t1))
+</t>
+<t tx="ekr.20150525161132.2"># import leo.external.PythonTidy as PythonTidy
+import leo.core.leoAst as leoAst
+import leo.core.leoBeautify as leoBeautify
+import imp
+import time
+imp.reload(leoAst)
+imp.reload(leoBeautify)
+# imp.reload(PythonTidy)</t>
 </tnodes>
 </leo_file>

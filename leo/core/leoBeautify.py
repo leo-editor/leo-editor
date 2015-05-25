@@ -7,118 +7,13 @@ import leo.core.leoAst as leoAst
 import leo.external.PythonTidy as tidy
 
 import ast
+import glob
+import os
 import time
 import token
 import tokenize
 
 #@+others
-#@+node:ekr.20150525080236.1: ** top-level functions
-#@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
-def dumpTokens(tokens,verbose=True):
-    last_line_number = 0
-    for token5tuple in tokens:
-        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
-
-def dumpToken (last_line_number,token5tuple,verbose):
-    '''Dump the given token.'''
-    t1,t2,t3,t4,t5 = token5tuple
-    name = token.tok_name[t1].lower()
-    val = str(t2) # can fail
-    srow,scol = t3
-    erow,ecol = t4
-    line = str(t5) # can fail
-    if last_line_number != srow:
-        if verbose:
-            print("\n---- line: %3s %3s %r" % (srow,erow,line))
-        else:
-            print('%3s %7s %r' % (srow,name,line))
-    if verbose:
-        print("%10s %3d %3d %-8s" % (name,scol,ecol,repr(val)))
-            # line[scol:ecol]
-    last_line_number = srow
-    return last_line_number
-#@+node:ekr.20150521114057.1: *3* test_LeoTidy (prints stats)
-def test_LeoTidy(c,h,p,settings):
-    '''Use subclasses of leoAst.py to pretty-print Python code.'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return
-    s = g.getScript(c, p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=False)
-    g.trace(p.h)
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i,z in enumerate(g.splitLines(s)):
-            print('%3s %s' % (i+1,z.rstrip()))
-        print('====================')
-    t1 = time.clock()
-    node = ast.parse(s,filename='before',mode='exec')
-    # g.trace(ast.dump(node,annotate_fields=False))
-    # g.trace(leoAst.AstFormatter().format(node))
-    t2 = time.clock()
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.clock()
-    n1 = AddTokensToTree(c,settings,tokens).run(node)
-    t4 = time.clock()
-    leoTidy = LeoTidy(c)
-    s2 = leoTidy.format(node)
-    t5 = time.clock()
-    if settings.get('nodes_stats'):
-        print('==================== stats')
-        g.trace('nodes:    %s' % n1)
-        g.trace('tokens:   %s' % len(tokens))
-        g.trace('code_list %s' % len(leoTidy.code_list))
-        g.trace('len(s2):  %s' % len(s2))
-        g.trace('parse:    %4.2f sec.' % (t2-t1))
-        g.trace('tokenize: %4.2f sec.' % (t3-t2))
-        g.trace('add toks: %4.2f sec.' % (t4-t3))
-        g.trace('format:   %4.2f sec.' % (t5-t4))
-        g.trace('total:    %4.2f sec.' % (t5-t1))
-    if settings.get('input_tokens'):
-        print('==================== input_lines')
-        dumpTokens(tokens,verbose=False)
-    if settings.get('input_tokens'):
-        print('==================== input_tokens')
-        dumpTokens(tokens,verbose=True)
-    if settings.get('code_list'):
-        print('==================== code_list')
-        for i,z in enumerate(leoTidy.code_list):
-            print('%3s %s' % (i,z))
-    if settings.get('output_string'):
-        print('==================== output_string')
-        print(s2)
-#@+node:ekr.20150525072128.1: *3* test_PythonTidy
-def test_PythonTidy(c,h,p):
-    '''Test PythonTidy on the script in p's tree.'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return
-    s = g.getScript(c, p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=False)
-    g.trace(p.h)
-    if 0:
-        for i,s2 in enumerate(g.splitlines(s)[:200]):
-            if s2.find('#') > -1:
-                print('%2s %s' % (i+1,s2.rstrip()))
-    # Use PythonTidy
-    t1 = time.clock()
-    file_in = g.fileLikeObject(fromString=s)
-    file_out = g.fileLikeObject()
-    is_module = p.isAnyAtFileNode()
-    tidy.tidy_up(
-        file_in=file_in,
-        file_out=file_out,
-        is_module=is_module,
-        leo_c=c)
-    s2 = file_out.get()
-    t2 = time.clock()
-    g.trace('Using PythonTidy')
-    g.trace('total:    %4.2f sec.' % (t2-t1))
 #@+node:ekr.20150521132404.1: ** class AddTokensToTree (AstFullTraverser)
 class AddTokensToTree(leoAst.AstFullTraverser):
     '''
@@ -129,7 +24,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     '''
         
     #@+others
-    #@+node:ekr.20150525074945.1: *3* add.ctor & helpers
+    #@+node:ekr.20150525074945.1: *3* add.ctor
     def __init__(self,c,settings,tokens):
         
         leoAst.AstFullTraverser.__init__(self)
@@ -141,27 +36,26 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         # Other ivars...
         self.trailing_tokens_list_offset = 0
             # The number of trailing tokens already seen.
-        self.n = 0
-            # Number of nodes
+        self.n_visits = 0
+            # Number of calls to visit.
         self.n_set_tokens = 0
             # Number of calls to set_tokens
         self.prev_statement = None
-            # Set in Run.
+            # The previous statement node.
         self.statements_d = {}
             # Set below.  Keys are statement kinds, values ignored.
-        self.string_count = 0
-            # The number of strings seen on this line.
-        self.strings_d = {}
-            # Set below: keys are line numbers. Values are lists of strings.
+        self.strings_list = []
+            # A global list of tuples (n,s), for all string tokens.
         self.tokens_d = {}
-            # Set below: keys are line numbers. Values are token5tuples.
+            # (Debugging only) Keys are line numbers. Values are token5tuples.
         self.trailing_tokens_list = []
-            # Set below. A list of tuples (n,kind,list_of_tokens)
+            # A list of tuples (n,kind,list_of_tokens)
         # Compute data.
         self.make_statements_d()
         self.make_tokens_data(tokens)
-            # Make tokens_d, trailing_tokens_list and strings_d.
-    #@+node:ekr.20150525105228.1: *4* add.dump_tokens_data
+            # Make strings_list, trailing_tokens_list.
+            # Also makes tokens_d, used only for debugging.
+    #@+node:ekr.20150525105228.1: *3* add.dump_tokens_data
     def dump_tokens_data(self):
         '''Print tokens_d and trailing_tokens_d.'''
         print('ast: tokens_d...')
@@ -176,45 +70,15 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                     name = token.tok_name[t1].lower()
                     result.append('%10s %s' % (name,t2.rstrip()))
                 print('%4s: [%s%s]' % (n,pad2.join(result),nl))
+        print('ast: strings_list...')
+        for data in self.strings_list:
+            n,s = data
+            print('%3s %s' % (n,s))
         print('ast: trailing_tokens_list...')
         for data in self.trailing_tokens_list:
             n,kind,aList = data
             print('%4s: %8s %r' % (n,kind,aList))
-    #@+node:ekr.20150525083523.1: *4* add.make_tokens_data
-    def make_tokens_data(self,tokens):
-        '''Make tokens_d, trailing_tokens_list and strings_d'''
-        self.strings_d = {}
-        self.tokens_d = {}
-        self.trailing_tokens_list = []
-        aList,n = [],1 # The list of tokens with line number n (one-based)
-        for t1,t2,t3,t4,t5 in tokens:
-            name = token.tok_name[t1].lower()
-            val = g.toUnicode(t2)
-            srow,scol = t3
-            # erow,ecol = t4
-            # line = g.toUnicode(t5)
-            if n != srow:
-                # if n < 20: g.pr("----- line",srow,erow,repr(line))
-                self.tokens_d[n] = aList
-                aList,n = [],srow
-            if name in ('comment','string','nl'):
-                data = t1,t2,t3,t4,t5
-                aList.append(data)
-            if name == 'nl':
-                data = n,'nl',None
-                self.trailing_tokens_list.append(data)
-            elif name == 'comment':
-                data = n,'comment',g.toUnicode(t2)
-                self.trailing_tokens_list.append(data)
-            elif name == 'string':
-                aList2 = self.strings_d.get(n,[])
-                aList2.append(g.toUnicode(t2))
-                self.strings_d[n] = aList2
-        ### Finish the last line.
-        self.tokens_d[n] = aList
-        if self.settings.get('ast_tokens_d'):
-            self.dump_tokens_data()
-    #@+node:ekr.20150522110017.1: *4* add.make_statements_d
+    #@+node:ekr.20150522110017.1: *3* add.make_statements_d
     def make_statements_d(self):
         '''
         Return a dictionary of statements that set_tokens handle.
@@ -233,24 +97,52 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         self.statements_d = {}
         for z in aList:
             self.statements_d[z] = 0
+    #@+node:ekr.20150525083523.1: *3* add.make_tokens_data
+    def make_tokens_data(self,tokens):
+        '''Make tokens_d, strings_list and trailing_tokens_list.'''
+        self.strings_list = []
+        self.tokens_d = {}
+        self.trailing_tokens_list = []
+        aList,n = [],1 # The list of tokens with line number n (one-based)
+        for t1,t2,t3,t4,t5 in tokens:
+            name = token.tok_name[t1].lower()
+            s = g.toUnicode(t2)
+            srow,scol = t3
+            erow,ecol = t4
+            line = g.toUnicode(t5) # For traces.
+            if n != srow:
+                # g.pr("----- line",srow,erow,repr(line))
+                self.tokens_d[n] = aList
+                aList,n = [],srow
+            if name in ('comment','string','nl'):
+                data = t1,t2,t3,t4,t5
+                aList.append(data)
+            if name == 'nl':
+                data = n,'nl',None
+                self.trailing_tokens_list.append(data)
+            elif name == 'comment':
+                data = n,'comment',s
+                self.trailing_tokens_list.append(data)
+            elif name == 'string':
+                self.strings_list.append((n,s),)
+        # Finish the last line.
+        self.tokens_d[n] = aList
+        if self.settings.get('ast_tokens_d'):
+            self.dump_tokens_data()
     #@+node:ekr.20150521174358.1: *3* add.run
     def run(self,node):
         '''The main line for the AddTokensToTree class.'''
         # Traverse the entire tree.
         self.prev_statement = node
         self.visit(node)
-        g.trace('AddTokensToTree: n_set_tokens',self.n_set_tokens)
-        return self.n
+        return self.n_visits
     #@+node:ekr.20150525081156.1: *3* add.set_str_tokens
     def set_str_token (self,node):
         '''Associate a token with a ast.Str node.'''
-        n = node.lineno
-        string_list = self.strings_d.get(n,[])
-        offset = self.string_count
-        node.str_spelling = string_list[offset]
-        g.trace('line %3s, offset: %s, node.s: %r, spelling: %s' % (
-            n,offset,node.s,node.str_spelling))
-        self.string_count += 1
+        data = self.strings_list.pop(0)
+        n,s = data
+        node.str_spelling = s
+        # g.trace(n,node.s,s)
     #@+node:ekr.20150521174136.1: *3* add.set_tokens & helper
     def set_tokens(self,node):
         '''
@@ -266,6 +158,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     #@+node:ekr.20150525101059.1: *4* add.inject_trailing_tokens
     def inject_trailing_tokens(self):
         '''Inject all previous comment tokens into self.prev_statement.'''
+        trace = False
         prev = self.prev_statement
         prev_n = prev.lineno if hasattr(prev,'lineno') else 1
         n = 0
@@ -281,19 +174,19 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             tokens = self.trailing_tokens_list[offset : offset+n]
             prev.trailing_tokens = tokens
             self.trailing_tokens_list_offset += n
-            print('inject trailing tokens %3s %12s %s' % (
-                n,self.kind(prev),tokens))
+            if trace:
+                print('inject trailing tokens %3s %12s %s' % (
+                    n,self.kind(prev),tokens))
     #@+node:ekr.20150521174401.1: *3* add.visit
     def visit(self,node):
         '''AddTokentsToTree.visit.'''
-        self.n += 1
+        self.n_visits += 1
         name = node.__class__.__name__
         if hasattr(node,'lineno'):
-            # ast.expr and ast.stmt nodes have lineno and col_offset attributes.
+            # ast.expr and ast.stmt nodes have lineno attributes.
             if name == 'Str':
                 self.set_str_token(node)
             elif name in self.statements_d:
-                self.string_count = 0
                 self.set_tokens(node)
         method = getattr(self,'do_' + name)
         method(node)
@@ -750,15 +643,11 @@ class LeoTidy:
         self.file_start()
         val = self.visit(node)
         self.file_end()
-        g.trace('(LeoTidy)')
         return ''.join([z.to_string() for z in self.code_list])
     #@+node:ekr.20150520173107.5: *4* lt.visit
     def visit(self,node):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
         trace = False and not g.unitTesting
-        ### assert not isinstance(node,(list,tuple,None)):
-        # elif node is None:
-            # g.trace('(LeoTidy): unexpected None',g.callers()) # The caller should check
         assert isinstance(node,ast.AST),node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self,method_name)
@@ -1266,7 +1155,7 @@ class LeoTidy:
         self.line_start()
         self.word('global')
         for i,z in enumerate(node.names):
-            self.visit(z)
+            self.word(z)
             if i + 1 < len(node.names):
                 self.lit_blank(',')
         self.line_end()
@@ -1521,7 +1410,7 @@ class LeoTidy:
         
         self.line_start()
         self.word('yield')
-        if hasattr(node.value):
+        if hasattr(node,'value'):
             self.blank()
             self.visit(node.value)
         self.line_end()
@@ -1545,6 +1434,110 @@ class OutputToken:
         return self.value if g.isString(self.value) else ''
         
    
+#@+node:ekr.20150525123715.1: ** class ProjectUtils
+class ProjectUtils:
+    '''A class to compute the files in a project.'''
+    # To do: get project info from @data nodes.
+
+    #@+others
+    #@+node:ekr.20150525123715.2: *3* pu.files_in_dir
+    def files_in_dir (self,theDir,recursive=True,extList=None,excludeDirs=None):
+        '''
+        Return a list of all Python files in the directory.
+        Include all descendants if recursiveFlag is True.
+        Include all file types if extList is None.
+        '''
+        # if extList is None: extList = ['.py']
+        if excludeDirs is None: excludeDirs = []
+        result = []
+        if recursive:
+            for root, dirs, files in os.walk(theDir):
+                for z in files:
+                    fn = g.os_path_finalize_join(root,z)
+                    junk,ext = g.os_path_splitext(fn)
+                    if not extList or ext in extList:
+                        result.append(fn)
+                if excludeDirs and dirs:
+                    for z in dirs:
+                        if z in excludeDirs:
+                            dirs.remove(z)
+        else:
+            for ext in extList:
+                result.extend(glob.glob('%s.*%s' % (theDir,ext)))
+        return sorted(list(set(result)))
+    #@+node:ekr.20150525123715.3: *3* pu.get_project_directory
+    def get_project_directory(self,name):
+        
+        # Ignore everything after the first space.
+        i = name.find(' ')
+        if i > -1:
+            name = name[:i].strip()
+        leo_path,junk = g.os_path_split(__file__)
+        d = { # Change these paths as required for your system.
+            'coverage': r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+            'leo':      r'C:\leo.repo\leo-editor\leo\core',
+            'lib2to3':  r'C:\Python26\Lib\lib2to3',
+            'pylint':   r'C:\Python26\Lib\site-packages\pylint',
+            'rope':     r'C:\Python26\Lib\site-packages\rope-0.9.4-py2.6.egg\rope\base',
+            'test':     g.os_path_finalize_join(g.app.loadDir,'..','test-proj'),
+        }
+        dir_ = d.get(name.lower())
+        # g.trace(name,dir_)
+        if not dir_:
+            g.trace('bad project name: %s' % (name))
+        if not g.os_path_exists(dir_):
+            g.trace('directory not found:' % (dir_))
+        return dir_ or ''
+    #@+node:ekr.20150525123715.4: *3* pu.project_files
+    def project_files(self,name,force_all=False):
+        '''Return a list of all files in the named project.'''
+        # Ignore everything after the first space.
+        i = name.find(' ')
+        if i > -1:
+            name = name[:i].strip()
+        leo_path,junk = g.os_path_split(__file__)
+        d = { # Change these paths as required for your system.
+            'coverage': (
+                r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+                ['.py'],['.bzr','htmlfiles']),
+            'leo':(
+                r'C:\leo.repo\leo-editor\leo\core',
+                # leo_path,
+                ['.py'],['.bzr']),
+            'lib2to3': (
+                r'C:\Python26\Lib\lib2to3',
+                ['.py'],['tests']),
+            'pylint': (
+                r'C:\Python26\Lib\site-packages\pylint',
+                ['.py'],['.bzr','test']),
+            'rope': (
+                r'C:\Python26\Lib\site-packages\rope-0.9.4-py2.6.egg\rope\base',['.py'],['.bzr']),
+            # 'test': (
+                # g.os_path_finalize_join(leo_path,'test-proj'),
+                # ['.py'],['.bzr']),
+        }
+        data = d.get(name.lower())
+        if not data:
+            g.trace('bad project name: %s' % (name))
+            return []
+        theDir,extList,excludeDirs=data
+        files = self.files_in_dir(theDir,recursive=True,extList=extList,excludeDirs=excludeDirs)
+        if files:
+            if name.lower() == 'leo':
+                for exclude in ['__init__.py','format-code.py']:
+                    files = [z for z in files if not z.endswith(exclude)]
+                fn = g.os_path_finalize_join(theDir,'..','plugins','qtGui.py')
+                if fn and g.os_path_exists(fn):
+                    files.append(fn)
+            if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
+                return [files[0]]
+        if not files:
+            g.trace(theDir)
+        if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
+            return [files[0]]
+        else:
+            return files
+    #@-others
 #@+node:ekr.20040711135244.5: ** class PythonPrettyPrinter
 class PythonPrettyPrinter:
     '''A class that implements *limited* pep-8 cleaning.'''
@@ -2103,6 +2096,114 @@ class PythonTokenBeautifier:
         else:
             self.replaceBody(p,lines)
     #@-others
+#@+node:ekr.20150525080236.1: ** top-level functions
+#@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
+def dumpTokens(tokens,verbose=True):
+    last_line_number = 0
+    for token5tuple in tokens:
+        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
+
+def dumpToken (last_line_number,token5tuple,verbose):
+    '''Dump the given token.'''
+    t1,t2,t3,t4,t5 = token5tuple
+    name = token.tok_name[t1].lower()
+    val = str(t2) # can fail
+    srow,scol = t3
+    erow,ecol = t4
+    line = str(t5) # can fail
+    if last_line_number != srow:
+        if verbose:
+            print("\n---- line: %3s %3s %r" % (srow,erow,line))
+        else:
+            print('%3s %7s %r' % (srow,name,line))
+    if verbose:
+        print("%10s %3d %3d %-8s" % (name,scol,ecol,repr(val)))
+            # line[scol:ecol]
+    last_line_number = srow
+    return last_line_number
+#@+node:ekr.20150521114057.1: *3* test_LeoTidy (prints stats)
+def test_LeoTidy(c,h,p,settings):
+    '''Use subclasses of leoAst.py to pretty-print Python code.'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return
+    s = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=False)
+    g.trace(h.strip())
+    t1 = time.clock()
+    s1 = g.toEncodedString(s)
+    node = ast.parse(s1,filename='before',mode='exec')
+    # g.trace(ast.dump(node,annotate_fields=False))
+    # g.trace(leoAst.AstFormatter().format(node))
+    t2 = time.clock()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    t3 = time.clock()
+    n1 = AddTokensToTree(c,settings,tokens).run(node)
+    t4 = time.clock()
+    leoTidy = LeoTidy(c)
+    s2 = leoTidy.format(node)
+    t5 = time.clock()
+    if settings.get('input_string'):
+        print('==================== input_string')
+        for i,z in enumerate(g.splitLines(s)):
+            print('%3s %s' % (i+1,z.rstrip()))
+    if settings.get('input_lines'):
+        print('==================== input_lines')
+        dumpTokens(tokens,verbose=False)
+    if settings.get('input_tokens'):
+        print('==================== input_tokens')
+        dumpTokens(tokens,verbose=True)
+    if settings.get('code_list'):
+        print('==================== code_list')
+        for i,z in enumerate(leoTidy.code_list):
+            print('%3s %s' % (i,z))
+    if settings.get('output_string'):
+        print('==================== output_string')
+        for i,z in enumerate(g.splitLines(s2)):
+            print('%3s %s' % (i+1,z.rstrip()))
+    if settings.get('stats'):
+        print('==================== stats')
+        g.trace('nodes:    %s' % n1)
+        g.trace('tokens:   %s' % len(tokens))
+        g.trace('code_list %s' % len(leoTidy.code_list))
+        g.trace('len(s2):  %s' % len(s2))
+        g.trace('parse:    %4.2f sec.' % (t2-t1))
+        g.trace('tokenize: %4.2f sec.' % (t3-t2))
+        g.trace('add toks: %4.2f sec.' % (t4-t3))
+        g.trace('format:   %4.2f sec.' % (t5-t4))
+        g.trace('total:    %4.2f sec.' % (t5-t1))
+#@+node:ekr.20150525072128.1: *3* test_PythonTidy
+def test_PythonTidy(c,h,p):
+    '''Test PythonTidy on the script in p's tree.'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return
+    s = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=False)
+    g.trace(p.h)
+    if 0:
+        for i,s2 in enumerate(g.splitlines(s)[:200]):
+            if s2.find('#') > -1:
+                print('%2s %s' % (i+1,s2.rstrip()))
+    # Use PythonTidy
+    t1 = time.clock()
+    file_in = g.fileLikeObject(fromString=s)
+    file_out = g.fileLikeObject()
+    is_module = p.isAnyAtFileNode()
+    tidy.tidy_up(
+        file_in=file_in,
+        file_out=file_out,
+        is_module=is_module,
+        leo_c=c)
+    s2 = file_out.get()
+    t2 = time.clock()
+    g.trace('Using PythonTidy')
+    g.trace('total:    %4.2f sec.' % (t2-t1))
 #@-others
 #@@language python
 #@@tabwidth -4
