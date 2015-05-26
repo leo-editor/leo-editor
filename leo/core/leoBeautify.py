@@ -932,12 +932,12 @@ class LeoTidy:
     #@+node:ekr.20150520173107.37: *5* lt.Tuple
     def do_Tuple(self,node):
         
-        self.lt('(')
+        ### self.lt('(')
         for i,z in enumerate(node.elts):
             self.visit(z)
             if i + 1 < len(node.elts):
                 self.lit_blank(',')
-        self.rt(')')
+        ### self.rt(')')
     #@+node:ekr.20150520173107.38: *4* lt.Operators
     #@+node:ekr.20150520173107.39: *5* lt.BinOp
     def do_BinOp (self,node):
@@ -2150,7 +2150,7 @@ def test_LeoTidy(c,h,p,settings):
     if settings.get('input_string'):
         print('==================== input_string')
         for i,z in enumerate(g.splitLines(s)):
-            print('%3s %s' % (i+1,z.rstrip()))
+            print('%4s %s' % (i+1,z.rstrip()))
     if settings.get('input_lines'):
         print('==================== input_lines')
         dumpTokens(tokens,verbose=False)
@@ -2160,11 +2160,11 @@ def test_LeoTidy(c,h,p,settings):
     if settings.get('code_list'):
         print('==================== code_list')
         for i,z in enumerate(leoTidy.code_list):
-            print('%3s %s' % (i,z))
+            print('%4s %s' % (i,z))
     if settings.get('output_string'):
         print('==================== output_string')
         for i,z in enumerate(g.splitLines(s2)):
-            print('%3s %s' % (i+1,z.rstrip()))
+            print('%4s %s' % (i+1,z.rstrip()))
     if settings.get('stats'):
         print('==================== stats')
         print('nodes:    %s' % n1)
