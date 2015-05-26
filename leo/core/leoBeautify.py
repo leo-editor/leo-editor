@@ -775,11 +775,9 @@ class LeoTidy:
         self.lt('(')
         self.visit(node.elt)
         self.word('for')
-        gens = node.generators or []
-        for i,z in enumerate(gens):
-            self.visit(z)
-            # if i < len(gens):
-                # self.lit_blank(',')
+        if node.generators:
+            for z in node.generators:
+                self.visit(z)
         self.rt(')')
     #@+node:ekr.20150520173107.17: *4* lt.Operands
     #@+node:ekr.20150520173107.18: *5* lt.arguments
