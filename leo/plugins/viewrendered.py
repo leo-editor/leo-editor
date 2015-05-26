@@ -757,9 +757,9 @@ if QtWidgets:
             w = pc.ensure_text_widget()
             ok,path = pc.get_fn(fn,'@image')
             if not ok:
-                w.setPlainText('@image: file not found: %s' % (fn))
+                w.setPlainText('@image: file not found: %s' % (path))
                 return
-            path = fn.replace('\\','/')
+            path = path.replace('\\','/')
             template = '''\
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
