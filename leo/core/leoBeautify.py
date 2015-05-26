@@ -72,7 +72,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                     lws = self.show_lws(lws)
                     if name in ('newline','nl'):
                         s = repr(str(s))
-                    result.append('%10s lws: %-6s %s' % (name,lws,s))
+                    result.append('%10s lws: %-2s %s' % (name,lws,s))
                 print('%4s: [%s%s]' % (n,pad2.join(result),nl))
     #@+node:ekr.20150526094135.1: *3* add.dump_strings_list
     def dump_strings_list(self):
@@ -83,7 +83,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             n,name,lws,s = data
             lws = self.show_lws(lws)
             assert name == 'string',name
-            print('%3s lws: %-6s %s' % (n,lws,s))
+            print('%3s lws: %-2s %s' % (n,lws,s))
     #@+node:ekr.20150526094136.1: *3* add.dump_trailing_list
     def dump_trailing_list(self):
         '''Dump the trailing tokens list.'''
@@ -94,7 +94,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             lws = self.show_lws(lws)
             if name in ('newline','nl'):
                 s = repr(str(s))
-            print('%4s: %8s lws: %-6s %s' % (n,name,lws,s))
+            print('%4s: %8s lws: %-2s %s' % (n,name,lws,s))
     #@+node:ekr.20150522110017.1: *3* add.make_statements_d
     def make_statements_d(self):
         '''
@@ -139,7 +139,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
                         lws = raw_s[:i]
                         break
                 else:
-                    lws = ''     
+                    lws = ''
             data = n,name,lws,s  
             if name == 'nl' and not aList:
                 self.trailing_tokens_list.append(data)
@@ -204,7 +204,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
     #@+node:ekr.20150526093911.1: *3* add.show_lws
     def show_lws(self,s):
         '''Show leading whitespace in a convenient format.'''
-        return repr(s) if s.strip(' ') else "' '*%s" % len(s)
+        return repr(s) if s.strip(' ') else len(s)
     #@+node:ekr.20150521174401.1: *3* add.visit
     def visit(self,node):
         '''AddTokentsToTree.visit.'''
