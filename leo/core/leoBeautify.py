@@ -725,19 +725,19 @@ class LeoTidy:
         'RShift':    '>>',
         'Sub':       '-',
         # Boolean operators.
-        'And':   ' and ',
-        'Or':    ' or ',
+        'And':   'and',
+        'Or':    'or',
         # Comparison operators
         'Eq':    '==',
         'Gt':    '>',
         'GtE':   '>=',
-        'In':    ' in ',
-        'Is':    ' is ',
-        'IsNot': ' is not ',
+        'In':    'in',
+        'Is':    'is',
+        'IsNot': 'is not',
         'Lt':    '<',
         'LtE':   '<=',
         'NotEq': '!=',
-        'NotIn': ' not in ',
+        'NotIn': 'not in',
         # Context operators.
         'AugLoad':  '<AugLoad>',
         'AugStore': '<AugStore>',
@@ -747,7 +747,7 @@ class LeoTidy:
         'Store':    '<Store>',
         # Unary operators.
         'Invert':   '~',
-        'Not':      ' not ',
+        'Not':      'not',
         'UAdd':     '+',
         'USub':     '-',
         }
@@ -772,12 +772,15 @@ class LeoTidy:
 
     def do_GeneratorExp(self,node):
         
+        self.lt('(')
         self.visit(node.elt)
+        self.word('for')
         gens = node.generators or []
         for i,z in enumerate(gens):
             self.visit(z)
-            if i < len(gens):
-                self.lit_blank(',')
+            # if i < len(gens):
+                # self.lit_blank(',')
+        self.rt(')')
     #@+node:ekr.20150520173107.17: *4* lt.Operands
     #@+node:ekr.20150520173107.18: *5* lt.arguments
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
@@ -805,7 +808,7 @@ class LeoTidy:
             name = getattr(node,'vararg')
             self.word(name.arg if g.isPython3 else name)
         if getattr(node,'kwarg',None):
-            if node.args or hasattr(node,'vararg'):
+            if node.args or getattr(node,'vararg',None):
                 self.lit_blank(',')
             self.lit('**')
             name = getattr(node,'kwarg')
@@ -837,21 +840,27 @@ class LeoTidy:
     def do_Call(self,node):
 
         self.visit(node.func)
-        self.lt('(')
+        self.lit_no_blanks('(')
         if node.args:
             for i,z in enumerate(node.args):
                 self.visit(z)
                 if i + 1 < len(node.args):
                     self.lit_blank(',')
         if node.keywords:
+            if node.args:
+                self.lit_blank(',')
             for i,z in enumerate(node.keywords):
                 self.visit(z) # Calls f.do_keyword.
                 if i + 1 < len(node.keywords):
                     self.lit_blank(',')
         if getattr(node,'starargs',None):
+            if node.args or node.keywords:
+                self.lit_blank(',')
             self.lit('*')
             self.visit(node.starargs)
         if getattr(node,'kwargs',None):
+            if node.args or node.keywords or getattr(node,'starargs',None):
+                self.lit_blank(',')
             self.lit('**')
             self.visit(node.kwargs)
         self.rt(')')
@@ -984,13 +993,13 @@ class LeoTidy:
     #@+node:ekr.20150520173107.37: *5* lt.Tuple
     def do_Tuple(self,node):
         
-        if self.in_arg_list:
+        if True: ### self.in_arg_list:
             self.lt('(')
         for i,z in enumerate(node.elts):
             self.visit(z)
             if i + 1 < len(node.elts):
                 self.lit_blank(',')
-        if self.in_arg_list:
+        if True: ### self.in_arg_list:
             self.rt(')')
     #@+node:ekr.20150520173107.38: *4* lt.Operators
     #@+node:ekr.20150520173107.39: *5* lt.BinOp
@@ -1036,6 +1045,7 @@ class LeoTidy:
         self.word('if')
         self.visit(node.test)
         self.blank()
+        self.word('else')
         self.visit(node.orelse)
         self.blank()
     #@+node:ekr.20150520173107.44: *4* lt.Statements
@@ -1082,9 +1092,9 @@ class LeoTidy:
         decorators = node.decorator_list
         if decorators:
             for i,z in enumerate(decorators):
+                self.line_start()
                 self.visit(z)
-                if i < len(decorators):
-                    self.lit_blank(',')
+                self.line_end()
         self.line_start()
         self.word('class')
         self.word(node.name)
@@ -1123,6 +1133,8 @@ class LeoTidy:
     #@+node:ekr.20150520173107.51: *5* lt.ExceptHandler
     def do_ExceptHandler(self,node):
         
+        # g.trace(node)
+        self.line_start()
         self.word('except')
         if getattr(node,'type',None):
             self.blank()
@@ -1140,6 +1152,8 @@ class LeoTidy:
             self.visit(z)
             self.level -= 1
     #@+node:ekr.20150520173107.52: *5* lt.Exec
+    # Exec(expr body, expr? globals, expr? locals)
+
     # Python 2.x only
     def do_Exec(self,node):
         
@@ -1147,6 +1161,7 @@ class LeoTidy:
         locals_ = getattr(node,'locals',None)
         self.line_start()
         self.word('exec')
+        self.visit(node.body)
         if globals_ or locals_:
             self.word('in')
         if globals_:
@@ -1171,6 +1186,7 @@ class LeoTidy:
             self.visit(z)
             self.level -= 1
         if node.orelse:
+            self.line_start()
             self.word('else')
             self.lit_no_blanks(':')
             self.line_end()
@@ -1267,6 +1283,7 @@ class LeoTidy:
         self.line_start()
         self.word('from')
         self.word(node.module)
+        self.word('import')
         aList = self.get_import_names(node)
         for i, data in enumerate(aList):
             fn, asname = data
@@ -1274,6 +1291,8 @@ class LeoTidy:
             if asname:
                 self.word('as')
                 self.word(asname)
+            if i + 1 < len(aList):
+                self.lit_blank(',')
         self.line_end()
     #@+node:ekr.20150520173107.11: *5* lt.Lambda
     def do_Lambda (self,node):
@@ -1308,6 +1327,8 @@ class LeoTidy:
             if isinstance(z,ast.Tuple):
                 for z2 in z.elts:
                     self.visit(z2)
+                    if i + 1 < len(z.elts):
+                        self.lit_blank(',')
             else:
                 self.visit(z)
             if i + 1 < len(node.values):
@@ -1321,8 +1342,9 @@ class LeoTidy:
     #@+node:ekr.20150520173107.61: *5* lt.Raise
     def do_Raise(self,node):
         
-        self.line_start()
         has_arg = False
+        self.line_start()
+        self.word('raise')
         for attr in ('type','inst','tback'):
             if getattr(node,attr,None) is not None:
                 if has_arg:
@@ -1373,9 +1395,13 @@ class LeoTidy:
                 self.level += 1
                 self.visit(z)
                 self.level -= 1
-    #@+node:ekr.20150520173107.64: *5* lt.TryExcept
+    #@+node:ekr.20150520173107.64: *5* lt.TryExcept (Python 2)
+    # TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
+    # TryFinally(stmt* body, stmt* finalbody)
+
     def do_TryExcept(self,node):
-        
+
+        # g.trace(node)
         self.line_start()
         self.word('try:')
         self.line_end()
@@ -1395,9 +1421,13 @@ class LeoTidy:
                 self.visit(z)
                 self.level -= 1
         self.line_end()
-    #@+node:ekr.20150520173107.65: *5* lt.TryFinally
+    #@+node:ekr.20150520173107.65: *5* lt.TryFinally (Python 2)
+    # TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
+    # TryFinally(stmt* body, stmt* finalbody)
+
     def do_TryFinally(self,node):
         
+        # g.trace(node)
         self.line_start()
         self.word('try:')
         self.line_end()
@@ -1426,6 +1456,7 @@ class LeoTidy:
             self.visit(z)
             self.level -= 1
         if node.orelse:
+            self.line_start()
             self.word('else')
             self.lit_no_blanks(':')
             self.line_end()
@@ -2190,17 +2221,17 @@ def test_LeoTidy(c,h,p,settings):
     g.trace(h.strip())
     t1 = time.clock()
     s1 = g.toEncodedString(s)
-    node = ast.parse(s1,filename='before',mode='exec')
+    node1 = ast.parse(s1,filename='before',mode='exec')
     # g.trace(ast.dump(node,annotate_fields=False))
     # g.trace(leoAst.AstFormatter().format(node))
     t2 = time.clock()
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
     t3 = time.clock()
-    n1 = AddTokensToTree(c,settings,tokens).run(node)
+    n1 = AddTokensToTree(c,settings,tokens).run(node1)
     t4 = time.clock()
     leoTidy = LeoTidy(c)
-    s2 = leoTidy.format(node)
+    s2 = leoTidy.format(node1)
     t5 = time.clock()
     if settings.get('input_string'):
         print('==================== input_string')
@@ -2231,6 +2262,15 @@ def test_LeoTidy(c,h,p,settings):
         print('add toks: %4.2f sec.' % (t4-t3))
         print('format:   %4.2f sec.' % (t5-t4))
         print('total:    %4.2f sec.' % (t5-t1))
+    if settings.get('ast-compare'):
+        s2 = g.toEncodedString(s2)
+        node2 = ast.parse(s2,filename='before',mode='exec')
+        f1 = leoAst.AstFormatter().format(node1)
+        f2 = leoAst.AstFormatter().format(node2)
+        if f1 == f2:
+            pass # print('==== ast-compare passed: %s' % h)
+        else:
+            print('==== ast-compare failed: %s' % h)
 #@+node:ekr.20150525072128.1: *3* test_PythonTidy
 def test_PythonTidy(c,h,p):
     '''Test PythonTidy on the script in p's tree.'''
