@@ -507,6 +507,7 @@ class LeoTidy:
         '''Ctor for the LeoTidy class.'''
         self.c = c
         self.code_list = []
+        self.in_arg_list = False
         self.indent = ' ' * 4
         self.level = 0
         self.tab_width = 4
@@ -518,14 +519,25 @@ class LeoTidy:
         '''Add a token to the code list.'''
         tok = OutputToken(kind,self.level,value)
         self.code_list.append(tok)
+    #@+node:ekr.20150526052853.1: *4* lt.arg_start & arg_end
+    def arg_end(self):
+        '''Add a token indicating the end of an argument list.'''
+        self.add_token('arg-end','')
+        
+    def arg_start(self):
+        '''Add a token indicating the start of an argument list.'''
+        self.add_token('arg-start','')
     #@+node:ekr.20150523083639.1: *4* lt.blank
     def blank(self):
         '''Add a blank request on the code list.'''
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank','blank-lines',
+                # Suppress duplicates.
             'file-start','line-start','line-end',
-            'lit-no-blanks','lt',
+                # These tokens implicitly suppress blanks.
+            'arg-start','lit-no-blanks','lt',
+                # These tokens explicity suppress blanks.
         ):
             self.add_token('blank',' ')
     #@+node:ekr.20150523084306.1: *4* lt.blank_lines
@@ -620,7 +632,14 @@ class LeoTidy:
     def rt(self,s):
         '''Add a right paren request to the code list.'''
         assert s in ')]}',repr(s)
-        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind == 'arg-end':
+            # Remove a blank token preceding the arg-end token.
+            prev = self.code_list.pop()
+            self.clean('blank')
+            self.code_list.append(prev)   
+        else:
+            self.clean('blank')
         self.add_token('rt',s)
     #@+node:ekr.20150522212520.1: *4* lt.op
     def op(self,s):
@@ -737,8 +756,10 @@ class LeoTidy:
     def do_arguments(self,node):
         '''Format the arguments node.'''
         assert self.kind(node) == 'arguments',node
+        self.in_arg_list = True
         n_plain = len(node.args) - len(node.defaults)
         n_args = len(node.args)
+        self.arg_start()
         for i in range(n_args):
             if i < n_plain:
                 self.visit(node.args[i])
@@ -760,6 +781,8 @@ class LeoTidy:
             self.lit('**')
             name = getattr(node,'kwarg')
             self.word(name.arg if g.isPython3 else name)
+        self.arg_end()
+        self.in_arg_list = False
     #@+node:ekr.20150520173107.19: *5* lt.arg (Python3 only)
     # Python 3:
     # arg = (identifier arg, expr? annotation)
@@ -932,12 +955,14 @@ class LeoTidy:
     #@+node:ekr.20150520173107.37: *5* lt.Tuple
     def do_Tuple(self,node):
         
-        ### self.lt('(')
+        if self.in_arg_list:
+            self.lt('(')
         for i,z in enumerate(node.elts):
             self.visit(z)
             if i + 1 < len(node.elts):
                 self.lit_blank(',')
-        ### self.rt(')')
+        if self.in_arg_list:
+            self.rt(')')
     #@+node:ekr.20150520173107.38: *4* lt.Operators
     #@+node:ekr.20150520173107.39: *5* lt.BinOp
     def do_BinOp (self,node):
