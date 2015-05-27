@@ -97,7 +97,7 @@ def test_beautifier(c,h,p,settings):
         except SyntaxError:
             g.es_exception()
             ok = False
-        print('==== %s: %s' % ('pass' if ok else 'fail',h))
+        print('\n==== %s: %s' % ('pass' if ok else 'fail',h))
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
 
@@ -658,7 +658,8 @@ class PythonTokenBeautifier:
     def lt(self,s):
         '''Add a left paren request to the code list.'''
         assert s in '([{',repr(s)
-        self.add_token('lt',s)
+        self.lit_no_blanks(s)
+        # self.add_token('lt',s)
         
     def rt(self,s):
         '''Add a right paren request to the code list.'''
@@ -719,34 +720,7 @@ class PythonTokenBeautifier:
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         '''Handle a name token.'''
-        # Ensure whitespace or start-of-line precedes the name.
-        val = self.val
-        self.word(val) ###
-        if val in ('if','else','and','or','not'):
-            # Make *sure* we never add an extra space.
-            pass
-            ###
-            # if self.array and self.array[-1].endswith(' '):
-                # self.array.append('%s ' % val)
-            # elif self.array:
-                # self.array.append(' %s ' % val)
-            # else:
-                # self.array.append('%s ' % val)
-        elif val == 'def':
-            pass
-            ###
-            # if True and self.lines:
-                # g.trace('DEF',repr(self.leading_ws))
-                # self.array.append('\n')
-                # self.array.append(self.leading_ws)
-            # s = '%s%s' % (val,self.trailing_ws)
-            # self.array.append(s)
-        else:
-            pass
-            ###
-            # s = '%s%s' % (val,self.trailing_ws)
-            # if s == 'lambda': g.trace(repr(str(s)),repr(str(self.trailing_ws)))
-            # self.array.append(s)
+        self.word(self.val)
     #@+node:ekr.20041021101911.3: *4* ptb.do_newline
     def do_newline (self):
         '''Handle a regular newline.'''
@@ -763,101 +737,38 @@ class PythonTokenBeautifier:
     def do_op (self):
         '''Put an operator.'''
         val = self.val
-        if val == '.':
+        if val in '.':
             self.lit_no_blanks(val)
-        else:
+        elif val in ',;:':
+            # Pep 8: Avoid extraneous whitespace immediately before
+            # comma, semicolon, or colon.
+            self.lit_blank(val)
+        elif val in '([{':
+            # Pep 8: Avoid extraneous whitespace immediately inside
+            # parentheses, brackets or braces.
+            self.lt(val)
+        elif val in ')]}':
+            # Ditto.
+            self.rt(val)
+        elif val == '=':
+            # Pep 8: Don't use spaces around the = sign when used to indicate
+            # a keyword argument or a default parameter value.
             self.op(val)
-
-        # outer = self.paren_level == 0 and self.square_bracket_level == 0
-        # ws = self.trailing_ws
-        # if val in '([{':
-            # # From pep 8: Avoid extraneous whitespace immediately inside
-            # # parentheses, brackets or braces.
-            # pass
-            # ###
-            # # prev = self.array and self.array[-1]
-            # # # strip = self.paren_level > 0 and prev.strip() not in (',','lambda','else')
-            # # # g.trace('====',repr(prev))
-            # # strip = self.paren_level > 0
-            # # self.put(val,strip=strip)
-            # # if   val == '(': self.paren_level += 1
-            # # elif val == '[': self.square_bracket_level += 1
-        # elif val in '}])':
-            # # From pep 8: Avoid extraneous whitespace immediately inside
-            # # parentheses, brackets or braces.
-            # pass
-            # ### 
-            # # self.put(val+ws,strip=True)
-            # # if   val == ')': self.paren_level -= 1
-            # # elif val == ']': self.square_bracket_level -= 1
-        # elif val == '=':
-            # # From pep 8: Don't use spaces around the = sign when used to indicate
-            # # a keyword argument or a default parameter value.
-            # pass
-            # ###
-            # # if self.paren_level == 0:
-                # # # This is only an approximation.
-                # # self.put(' %s ' % val)
-            # # else:
-                # # self.put(val)
-        # elif val in ('==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>','<>'):
-            # # From pep 8: always surround these binary operators with a single space on either side.
-            # self.lit(val)
-            # ### self.put(' %s ' % val)
-        # elif val in '+-':
-            # # Special case for possible unary operator.
-            # pass
-            # ###
-            # # if self.paren_level == 0:
-                # # if ws:
-                    # # self.put(' %s ' % val,strip=True)
-                # # else:
-                    # # self.put(val,strip=False)
-            # # else:
-                # # self.put(val,strip=True)
-        # elif val in ('^','~','*','**','&','|','/','//'):
-            # # From pep 8: If operators with different priorities are used,
-            # # consider adding whitespace around the operators with the lowest priority(ies).
-            # # g.trace(repr(str(val)),repr(str(ws)))
-            # pass
-            # ###
-            # # if val in ('*','**'):
-                # # # Highest priority.
-                # # self.put(val,strip=True)
-            # # else:
-                # # # Lower priority:
-                # # if 1:
-                    # # self.put(' %s ' % val,strip=True)
-                # # elif 1:
-                    # # # Treat all operators the same.  Boo hoo.
-                    # # self.put(val,strip=True)
-                # # else:
-                    # # # Alas, this does not play well with names.
-                    # # self.put(val+ws,strip=False)
-        # elif val in ',;':
-            # # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
-            # self.lit_blank(val)
-        # elif val == ':':
-            # # A very hard case.
-            # prev = self.code_list[-1]
-            # ###
-            # # if prev in ('else ',':',': '):
-                # # self.put(val+ws,strip=True)
-            # # else:
-                # # # We can leave the leading whitespace.
-                # # self.put(val+ws,strip=False)
-        # elif val in ('%',
-                     # '<<',
-                     # '>>'
-                    # ):
-            # # Add leading and trailing blank.
-            # self.op(val)
-        # else:
-            # self.lit(val)
+                # To do: test whether in def/call argument.
+        else:
+            # Pep 8: always surround binary operators with a single space.
+            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
+            
+            # '^','~','*','**','&','|','/','//',
+            # Possible unary operators '+' '-'
+            # Pep 8: If operators with different priorities are used,
+            # consider adding whitespace around the operators with the lowest priority(ies).
+            self.op(val)
     #@+node:ekr.20150526204248.1: *4* ptb.do_string
     def do_string(self):
         
         self.add_token('string',self.val)
+            # This does retain the string's spelling.
     #@+node:ekr.20150526194715.1: *3* ptb.run
     def run(self,p,tokens):
         '''The main line of PythonTokenBeautifier class.'''
@@ -893,7 +804,7 @@ class PythonTokenBeautifier:
             u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150523132558.1: *3* class OutputToken
     class OutputToken:
-        '''A class representing items on the LeoTidy code list.'''
+        '''A class representing items on the code list.'''
         
         def __init__(self,kind,level,value):
             self.kind = kind
@@ -901,7 +812,7 @@ class PythonTokenBeautifier:
             self.value = value
             
         def __repr__(self):
-            return '%10s %s' % (self.kind,repr(self.value))
+            return 'Token: %10s %s' % (self.kind,repr(self.value))
        
         __str__ = __repr__
 
@@ -910,6 +821,19 @@ class PythonTokenBeautifier:
             return self.value if g.isString(self.value) else ''
             
        
+    #@+node:ekr.20150527113020.1: *3* class ParseState
+    class ParseState:
+        '''A class representing items parse state stack.'''
+        
+        def __init__(self,kind,level,value):
+            self.kind = kind
+            self.level = level
+            self.value = value
+            
+        def __repr__(self):
+            return 'State: %10s %s' % (self.kind,repr(self.value))
+
+        __str__ = __repr__
     #@-others
 #@-others
 #@@language python
