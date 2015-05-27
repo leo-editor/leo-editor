@@ -1651,23 +1651,15 @@ class PythonTokenBeautifier:
         self.c = c
         self.code_list = []
             # The list of output tokens.
-        self.bracketLevel = 0
         self.changed = False
-        self.continuation = False # True: line ends with backslash-newline.
         self.dirtyVnodeList = []
-        ### self.erow = self.ecol = 0 # The ending row/col of the token.
-        self.last_name = None # The name of the previous token type.
         self.level = 0 # indentation level, an int.
-        self.line_number = 0 # Same as self.srow
         self.lws = '' # Leading whitespace.  ' '*4*self.level
-        self.paren_level = 0
         self.s = None # The string containing the line.
-        self.square_bracket_level = 0
-        ### self.srow = self.scol = 0 # The starting row/col of the token.
-        self.starts_line = True # True: the token starts a line.
-        self.trailing_ws = '' # The whitespace following *this* token.
         self.val = None
-        
+        # Settings...
+        self.delete_blank_lines = not c.config.getBool(
+            'tidy-keep-blank-lines',default=True)
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
@@ -1786,22 +1778,12 @@ class PythonTokenBeautifier:
         Add a request for n blank lines to the code list.
         Multiple blank-lines request yield at least the maximum of all requests.
         '''
-        # Count the number of 'consecutive' end-line tokens, ignoring blank-lines tokens.
-        prev_lines = 0
-        i = len(self.code_list)-1 # start-file token guarantees i >= 0
-        while True:
-            kind = self.code_list[i].kind
-            if kind == 'file-start':
-                prev_lines = n ; break
-            elif kind in ('blank-lines','line-indent'):
-                i -= 1
-            elif kind == 'line-end':
-                i -= 1 ; prev_lines += 1
-            else: break
-        # g.trace('i: %3s n: %s prev: %s' % (len(self.code_list),n,prev_lines))
-        while prev_lines <= n:
-            self.line_end()
-            prev_lines += 1
+        self.clean_blank_lines()
+        kind = self.code_list[-1].kind
+        if kind != 'file-start':
+            for i in range(0,n+1):
+                self.add_token('line-end','\n')
+            self.add_token('line-indent',self.lws)
         # Retain the intention for debugging.
         self.add_token('blank-lines',n)
     #@+node:ekr.20150526201701.6: *4* ptb.clean
@@ -1810,6 +1792,23 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
+            return True
+        else:
+            return False
+
+    #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
+    def clean_blank_lines(self):
+        '''Remove all vestiges of previous lines.'''
+        table = ('line-end','blank-lines','line-indent')
+        ### cleaned = True
+        while True:
+            ### cleaned = False
+            for kind in table:
+                if self.clean(kind):
+                    ###cleaned = True
+                    break
+            else:
+                break
     #@+node:ekr.20150526201701.7: *4* ptb.conditional_line_start (not used)
     def conditional_line_start(self):
         '''Add a conditional line start to the code list.'''
@@ -1822,13 +1821,9 @@ class PythonTokenBeautifier:
         Add a file-end token to the code list.
         Retain exactly one line-end token.
         '''
-        while True:
-            prev = self.code_list[-1]
-            if prev.kind in ('blank-lines','line-end'):
-                self.code_list.pop()
-            else:
-                break
-        self.add_token('line-end')
+        self.clean_blank_lines()
+        self.add_token('line-end','\n')
+        self.add_token('line-end','\n')
         self.add_token('file-end')
 
     def file_start(self):
@@ -1838,12 +1833,15 @@ class PythonTokenBeautifier:
     def line_end(self):
         '''Add a line-end request to the code list.'''
         prev = self.code_list[-1]
-        if prev.kind != 'file-start':
-            self.clean('line-indent')
-            self.add_token('line-end','\n')
-            self.add_token('line-indent',self.lws)
-                # Add then indentation for all lines
-                # until the next indent or unindent token.
+        if prev.kind == 'file-start':
+            return
+        if self.delete_blank_lines:
+            self.clean_blank_lines()
+        self.clean('line-indent')
+        self.add_token('line-end','\n')
+        self.add_token('line-indent',self.lws)
+            # Add then indentation for all lines
+            # until the next indent or unindent token.
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
