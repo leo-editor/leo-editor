@@ -1751,6 +1751,7 @@ class PythonTokenBeautifier:
     def do_string(self):
         '''Handle a 'string' token.'''
         self.add_token('string',self.val)
+        self.blank()
             # This does retain the string's spelling.
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
@@ -1929,7 +1930,7 @@ class PythonTokenBeautifier:
 
         self.file_start()
         for token5tuple in tokens:
-            t1,t2,t3,t4,t5 = self.token5tuple = token5tuple
+            t1,t2,t3,t4,t5 = token5tuple
             self.kind = token.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
             self.raw_val = g.toUnicode(t5)
