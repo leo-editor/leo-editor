@@ -72,7 +72,7 @@ def test_beautifier(c,h,p,settings):
     if settings.get('input_tokens'):
         print('==================== input_tokens')
         dumpTokens(tokens,verbose=True)
-    if settings.get('code_list'):
+    if settings.get('output_tokens'):
         print('==================== code_list')
         for i,z in enumerate(beautifier.code_list):
             print('%4s %s' % (i,z))
@@ -91,11 +91,13 @@ def test_beautifier(c,h,p,settings):
         print('total:    %4.2f sec.' % (t4-t1))
     if settings.get('ast-compare'):
         s2 = g.toEncodedString(s2)
-        node2 = ast.parse(s2,filename='before',mode='exec')
-        if leoAst.compare_ast(node1, node2):
-            print('==== passed: %s' % h)
-        else:
-            print('==== failed: %s' % h)
+        try:
+            node2 = ast.parse(s2,filename='before',mode='exec')
+            ok = leoAst.compare_ast(node1, node2)
+        except SyntaxError:
+            g.es_exception()
+            ok = False
+        print('==== %s: %s' % ('pass' if ok else 'fail',h))
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
 
@@ -518,7 +520,9 @@ class PythonTokenBeautifier:
         self.bracketLevel = 0
         self.changed = False
         self.continuation = False # True: line ends with backslash-newline.
-        self.indent = ' ' * 4
+        self.indent = ''
+            # The current leading whitespace in each line.
+            # Set by indent and dedent tokens.
         self.dirtyVnodeList = []
         ### self.dumping = False
         ### self.erow = self.ecol = 0 # The ending row/col of the token.
@@ -628,8 +632,10 @@ class PythonTokenBeautifier:
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
+        ### Make sure we use the current indent.
         prev = self.code_list[-1]
         if prev.kind != 'line-start':
+            # g.trace(repr(self.indent))
             self.add_token('line-start',self.indent)
     #@+node:ekr.20150526201701.10: *4* ptb.lit*
     def lit(self,s):
@@ -703,12 +709,13 @@ class PythonTokenBeautifier:
         '''Handle dedent token.'''
         # g.trace(repr(self.val))
         self.indent = self.val
-        # g.trace('****',repr(self.leading_ws))
+        self.line_start()
        
     def do_indent (self):
         '''Handle indent token.'''
         self.indent = self.val
         # g.trace(repr(self.val))
+        self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         '''Handle a name token.'''
@@ -744,22 +751,10 @@ class PythonTokenBeautifier:
     def do_newline (self):
         '''Handle a regular newline.'''
         self.line_end()
-        self.line_start()
-        # if self.continuation:
-            # self.array.append('\\')
-            # self.continuation = False
-        # elif self.array:
-            # # Remove trailing whitespace.
-            # # This never removes trailing whitespace from multi-line tokens.
-            # self.array[-1] = self.array[-1].rstrip()
-        # self.array.append('\n')
-        # self.putArray()
     #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
     def do_nl(self):
         '''Handle a continuation line.'''
         self.line_end()
-        self.line_start()
-
     #@+node:ekr.20041021101911.6: *4* ptb.do_number
     def do_number (self):
 
@@ -768,8 +763,11 @@ class PythonTokenBeautifier:
     def do_op (self):
         '''Put an operator.'''
         val = self.val
-        self.op(val)
-        return ###
+        if val == '.':
+            self.lit_no_blanks(val)
+        else:
+            self.op(val)
+
         # outer = self.paren_level == 0 and self.square_bracket_level == 0
         # ws = self.trailing_ws
         # if val in '([{':
