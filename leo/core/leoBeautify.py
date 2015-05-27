@@ -1655,6 +1655,7 @@ class PythonTokenBeautifier:
         self.dirtyVnodeList = []
         self.level = 0 # indentation level, an int.
         self.lws = '' # Leading whitespace.  ' '*4*self.level
+        self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
         self.val = None
         # Settings...
@@ -1664,6 +1665,13 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
         '''Handle a comment token.'''
+        s = self.raw_val.rstrip()
+        n1 = len(self.lws)
+        n2 = g.computeLeadingWhitespaceWidth (s,4)
+        if n2 > n1:
+            self.lit_no_blanks(' '*(n2-n1))
+        else:
+            self.blank()
         self.add_token('comment',self.val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
@@ -1924,6 +1932,7 @@ class PythonTokenBeautifier:
             t1,t2,t3,t4,t5 = self.token5tuple = token5tuple
             self.kind = token.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
+            self.raw_val = g.toUnicode(t5)
             # g.trace('%10s %r'% (self.kind,self.val))
             func = getattr(self,'do_' + self.kind,oops)
             func()
