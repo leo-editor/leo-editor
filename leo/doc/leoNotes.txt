@@ -16901,5 +16901,192 @@ def do_Yield(self,node):
 
     self.set_tokens(node)
     leoAst.AstFullTraverser.do_Yield(self,node)
+.. @+node:ekr.20150526193408.1: *3* ptb.No longer used
+if 0:
+    @others
+    
+    self.dispatchDict = {
+        "comment":    self.do_comment,
+        "dedent":     self.do_dedent,
+        "endmarker":  self.end_marker,
+        "errortoken": self.error_token,
+        "indent":     self.indent,
+        "name":       self.naame,
+        "newline":    self.newline,
+        "nl":         self.nl, # Must be doNewline, not doNl.
+        "number":     self.number,
+        "op":         self.op,
+        "string":     self.string,
+    }
+.. @+node:ekr.20040713093048: *4* ptb.clear
+def clear (self):
+    self.lines = []
+.. @+node:ekr.20041021102340: *4* ptb.doMultiLine (strings, etc).
+def doMultiLine (self):
+
+    # Ensure a blank before comments not preceded entirely by whitespace.
+    if self.val.startswith('#') and self.array:
+        prev = self.array[-1]
+        if prev and prev[-1] != ' ':
+            self.put(' ') 
+    # These may span lines, so duplicate the end-of-line logic.
+    lines = g.splitLines(self.val)
+    for line in lines:
+        self.array.append(line)
+        if line and line[-1] == '\n':
+            self.putArray()
+    # Add a blank after the string if there is something in the last line.
+    # if self.array:
+        # line = self.array[-1]
+        # if line.strip():
+            # self.put(' ')
+    # Suppress start-of-line logic.
+    self.line_number = self.erow
+.. @+node:ekr.20041021112219: *4* ptb.doStartLine
+def doStartLine (self):
+    '''Put the leading whitespace at the start of a line.'''
+    before = self.s[0:self.scol]
+    i = g.skip_ws(before,0)
+    self.leading_ws = self.s[0:i] or ''
+    g.trace(repr(self.s),repr(self.leading_ws))
+    if self.leading_ws:
+        self.array.append(self.leading_ws)
+    # g.trace(repr(str(self.leading_ws)))
+.. @+node:ekr.20040713064323: *4* ptb.dumpLines
+def dumpLines (self,p,lines):
+
+    print('\n%s %s' % ('-'*10,p.cleanHeadString()))
+
+    if 0:
+        for line in lines:
+            line2 = g.toEncodedString(line,reportErrors=True)
+            g.pr(line2,newline=False) # Don't add a trailing newline!)
+    else:
+        for i in range(len(lines)):
+            line = lines[i]
+            line = g.toEncodedString(line,reportErrors=True)
+            print('%3d %r' % (i, lines[i]))
+.. @+node:ekr.20040711135244.7: *4* ptb.dumpToken
+def dumpToken (self,token5tuple):
+    '''Dump the given token.'''
+    t1,t2,t3,t4,t5 = token5tuple
+    name = token.tok_name[t1].lower()
+    val = str(t2) # can fail
+    srow,scol = t3
+    erow,ecol = t4
+    line = str(t5) # can fail
+    startLine = self.line_number != srow
+    if startLine:
+        g.pr("----- line",srow,erow,repr(line))
+    self.line_number = srow
+    print("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
+        # line[scol:ecol]
+.. @+node:ekr.20150519112500.1: *4* ptb.endUndo
+def endUndo (self):
+
+    c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
+    current = c.p
+
+    if self.changed:
+        # Tag the end of the command.
+        u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
+.. @+node:ekr.20040711135244.8: *4* ptb.get
+def get (self):
+    '''Return the result of the beautify command.'''
+    return self.lines
+.. @+node:ekr.20041021101911.1: *4* ptb.oops
+def oops(self):
+
+    print("unknown PrettyPrinting code: %s" % (self.name))
+.. @+node:ekr.20040711135244.9: *4* ptb.put & can_strip
+def put (self,s,strip=True):
+    '''Put s to self.array. Strip previous whitespace if strip is True.'''
+    # g.trace('%s %r %r' % (int(strip),str(self.array and self.array[-1]),str(s)))
+    if strip and self.can_strip():
+        self.array[-1] = self.array[-1].rstrip()
+    self.array.append(s)
+    
+def can_strip(self):
+    '''
+    Return True if the previous token contains safely-strippable trailing
+    whitespace.
+
+    Do not change this method without *careful* thought.
+    '''
+    # This code must *never* changes leading whitespace on the line.
+    # The following is save because it returns True only if rstrip() is True.
+    prev = self.array and self.array[-1]
+    return prev and prev.rstrip() and prev.rstrip() != prev
+.. @+node:ekr.20041021104237: *4* ptb.putArray (To be deleted)
+def putArray (self):
+    '''Add the next text by joining all the strings is self.array'''
+    # g.trace(repr(self.array))
+    if self.array == ['\n']:
+        self.array = []
+    s = ''.join(self.array)
+    if s:
+        # Check that leading whitespace has been preserved.
+        # Leading whitespace doesn't match for blank lines.
+        # Alas, this assert fails with continued lines.
+            # ws = self.leading_ws
+            # if ws and s.strip():
+                # i = g.skip_ws(s,0)
+                # ws2 = s[:i]
+                # assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
+        self.lines.append(s)
+    self.array = []
+.. @+node:ekr.20040711135244.10: *4* ptb.putNormalToken & allies
+def putNormalToken (self,token5tuple):
+    '''Put the next token.'''
+    trace = False and not g.unitTesting
+    t1,t2,t3,t4,t5 = token5tuple
+    self.name = token.tok_name[t1].lower() # The token type
+    self.val = t2  # the token string
+    self.srow,self.scol = t3 # row & col where the token begins in the source.
+    self.erow,self.ecol = t4 # row & col where the token ends in the source.
+    self.s = t5 # The line containing the token.
+    self.startLine = self.line_number != self.srow
+    self.line_number = self.srow
+    # Set self.tailing_ws for all tokens.
+    i = g.skip_ws(self.s,self.ecol)
+    self.trailing_ws = ' ' if self.s[self.ecol:i] else ''
+    if self.startLine:
+        if trace:
+            tag = '**' if self.continuation else '=='
+            g.trace("%s line %2s: %r" % (
+                tag,self.srow,g.toEncodedString(self.s)))
+        if self.continuation:
+            self.doNewline()
+        self.continuation = self.s.endswith('\\\n')
+        self.doStartLine()
+    f = self.dispatchDict.get(self.name,self.oops)
+    if trace: g.trace("%10r: trail_ws: %3r %r" % (
+        self.name,self.trailing_ws,g.toEncodedString(self.val)[:60]))
+    f()
+    self.lastName = self.name
+    
+.. @+node:ekr.20040711135244.12: *4* ptb.putToken
+def putToken (self,token5tuple):
+
+    if self.dumping:
+        self.dumpToken(token5tuple)
+    else:
+        self.putNormalToken(token5tuple)
+.. @+node:ekr.20141010071140.18267: *4* ptb.token_tidy
+def token_tidy(self,p,tokens):
+    
+    readlines = g.ReadLinesClass(p.b).next
+    try:
+        for token5tuple in tokenize.generate_tokens(readlines):
+            self.putToken(token5tuple)
+        s = ''.join([z.to_string() for z in self.code_list])
+        ### self.replaceBody(p,s)
+    except tokenize.TokenError:
+        g.warning("error pretty-printing",p.h,"not changed.")
+        return
+    except AssertionError:
+        g.warning("internal error pretty-printing",p.h,"not changed.")
+        g.es_exception()
+        return
 .. @-all
 .. @-leo

@@ -146,6 +146,7 @@ class AddTokensToTree(leoAst.AstFullTraverser):
             elif name == 'comment':
                 self.trailing_tokens_list.append(data)
             elif name == 'string':
+                g.trace(n,'raw_s',raw_s.rstrip())
                 self.strings_list.append(data)
             else:
                 pass
@@ -221,7 +222,8 @@ class AddTokensToTree(leoAst.AstFullTraverser):
         n,name,lws,s = data
         assert name == 'string'
         node.str_spelling = s
-        # g.trace(n,node.s,s)
+        # if not s.strip('"').strip("'").endswith(node.s):
+            # g.trace('=======================',repr(node.s),repr(s))
     #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
@@ -839,18 +841,16 @@ class LeoTidy:
 
         self.visit(node.func)
         self.lit_no_blanks('(')
-        if node.args:
-            for i,z in enumerate(node.args):
-                self.visit(z)
-                if i + 1 < len(node.args):
-                    self.lit_blank(',')
-        if node.keywords:
-            if node.args:
+        for i,z in enumerate(node.args):
+            self.visit(z)
+            if i + 1 < len(node.args):
                 self.lit_blank(',')
-            for i,z in enumerate(node.keywords):
-                self.visit(z) # Calls f.do_keyword.
-                if i + 1 < len(node.keywords):
-                    self.lit_blank(',')
+        if node.args and node.keywords:
+            self.lit_blank(',')
+        for i,z in enumerate(node.keywords):
+            self.visit(z) # Calls f.do_keyword.
+            if i + 1 < len(node.keywords):
+                self.lit_blank(',')
         if getattr(node,'starargs',None):
             if node.args or node.keywords:
                 self.lit_blank(',')
@@ -890,6 +890,8 @@ class LeoTidy:
         self.lt('{')
         if node.keys:
             if len(node.keys) == len(node.values):
+                # g.trace([(z.s,z.str_spelling) for z in node.keys])
+                # g.trace([(z.s,z.str_spelling) for z in node.values])
                 self.level += 1
                 for i in range(len(node.keys)):
                     self.visit(node.keys[i])
@@ -967,14 +969,30 @@ class LeoTidy:
     #@+node:ekr.20150520173107.34: *5* lt.Slice
     def do_Slice (self,node):
         
-        if getattr(node,'lower',None) is not None:
+        # g.trace(repr(node.lower),repr(node.upper),repr(node.step))
+        if node.lower:
             self.visit(node.lower)
         self.op(':')
-        if getattr(node,'upper',None) is not None:
+        if node.upper:
             self.visit(node.upper)
-        if getattr(node,'step',None) is not None:
+        if node.step:
             self.op(':')
-            self.visit(node.step) 
+            if hasattr(node.step,'id') and node.step.id == 'None':
+                pass
+            else:
+                self.visit(node.step) 
+
+        # if getattr(node,'lower',None) is not None:
+            # self.visit(node.lower)
+        # self.op(':')
+        # if getattr(node,'upper',None) is not None:
+            # self.visit(node.upper)
+        # if getattr(node,'step',None) is not None:
+            # if hasattr(node.step,'id'):
+                # g.trace(node.step.id)
+            # self.op(':')
+            # g.trace(node.step)
+            # self.visit(node.step) 
     #@+node:ekr.20150520173107.35: *5* lt.Str
     def do_Str (self,node):
         '''This represents a string constant.'''
@@ -991,50 +1009,72 @@ class LeoTidy:
     #@+node:ekr.20150520173107.37: *5* lt.Tuple
     def do_Tuple(self,node):
         
-        if True: ### self.in_arg_list:
-            self.lt('(')
+        self.lt('(')
         for i,z in enumerate(node.elts):
             self.visit(z)
             if i + 1 < len(node.elts):
                 self.lit_blank(',')
-        if True: ### self.in_arg_list:
-            self.rt(')')
+        self.rt(')')
     #@+node:ekr.20150520173107.38: *4* lt.Operators
     #@+node:ekr.20150520173107.39: *5* lt.BinOp
     def do_BinOp (self,node):
 
+        self.lt('(')
         self.visit(node.left)
         self.op(self.op_name(node.op))
         self.visit(node.right)
+        self.rt(')')
         
+    #@+node:ekr.20150526141653.1: *5* lt.Compare ops
+    # Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
+     
+    def do_Eq   (self,node): self.op('==')
+    def do_Gt   (self,node): self.op('>')
+    def do_GtE  (self,node): self.op('>=')
+    def do_In   (self,node): self.word('in')
+    def do_Is   (self,node): self.word('is')
+    def do_IsNot(self,node): self.word('is not')
+    def do_Lt   (self,node): self.op('<')
+    def do_LtE  (self,node): self.op('<=')
+    def do_NotEq(self,node): self.op('!=')
+    def do_NotIn(self,node): self.word('not in')
     #@+node:ekr.20150520173107.40: *5* lt.BoolOp
+    # BoolOp(boolop op, expr* values)
+
     def do_BoolOp (self,node):
         
         op_name = self.op_name(node.op)
-        vals = node.values
-        if vals:
-            for i,z in enumerate(vals):
-                self.visit(z)
-                if i + 1 < len(vals):
-                    self.op(op_name)
+        self.lt('(')
+        for i,z in enumerate(node.values):
+            self.visit(z)
+            if i + 1 < len(node.values):
+                self.op(op_name)
+        self.rt(')')
     #@+node:ekr.20150520173107.41: *5* lt.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
 
     def do_Compare(self,node):
         
+        self.lt('(')
         self.visit(node.left)
-        ops = [self.op_name(z) for z in node.ops]
-        if len(ops) == len(node.comparators):
-            for i in range(len(ops)):
-                self.word(ops[i])
-                self.visit(node.comparators[i])
-        else:
-            g.trace('ops: %r, comparators: %r' % (ops,node.comparators))
+        assert len(node.ops) == len(node.comparators)
+        for i in range(len(node.ops)):
+            self.visit(node.ops[i])
+            self.visit(node.comparators[i])
+        self.rt(')')
     #@+node:ekr.20150520173107.42: *5* lt.UnaryOp
+    # UnaryOp(unaryop op, expr operand)
+
     def do_UnaryOp (self,node):
         
-        self.op_name(node.op)
+        name = self.op_name(node.op)
+        self.lt('(')
+        if name.isalpha():
+            self.word(name)
+        else:
+            self.lit(name)
         self.visit(node.operand)
+        self.rt(')')
         
     #@+node:ekr.20150520173107.43: *5* lt.ifExp (ternary operator)
     def do_IfExp (self,node):
@@ -1793,392 +1833,387 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150519111713.1: *3*  ptb.ctor
     def __init__ (self,c):
         '''Ctor for PythonPrettyPrinter class.'''
-        self.array = []
-            # List of strings comprising the line being accumulated.
-            # Important: this list never crosses a line.
-        self.bracketLevel = 0
         self.c = c
+        self.code_list = []
+            # The list of output tokens.
+        self.bracketLevel = 0
         self.changed = False
         self.continuation = False # True: line ends with backslash-newline.
+        self.indent = ' ' * 4
         self.dirtyVnodeList = []
-        self.dumping = False
-        self.erow = self.ecol = 0 # The ending row/col of the token.
-        self.lastName = None # The name of the previous token type.
+        ### self.dumping = False
+        ### self.erow = self.ecol = 0 # The ending row/col of the token.
+        self.last_name = None # The name of the previous token type.
+        self.level = 0
         self.line_number = 0 # Same as self.srow
-        self.lines = [] # List of lines.
-        self.n = 0 # Number of nodes processed.
-        self.name = None
-        self.p = c.p
-        self.parenLevel = 0
+        ### self.lines = [] # List of lines.
+        ### self.n_tokens = 0 # Number of tokens processed.
+        ### self.name = None
+        ### self.p = c.p
+        self.paren_level = 0
         self.s = None # The string containing the line.
-        self.squareBracketLevel = 0
-        self.srow = self.scol = 0 # The starting row/col of the token.
-        self.startline = True # True: the token starts a line.
+        self.square_bracket_level = 0
+        ### self.srow = self.scol = 0 # The starting row/col of the token.
+        self.starts_line = True # True: the token starts a line.
         self.trailing_ws = '' # The whitespace following *this* token.
-        self.dispatchDict = {
-            "comment":    self.doMultiLine,
-            "dedent":     self.doDedent,
-            "endmarker":  self.doEndMarker,
-            "errortoken": self.doErrorToken,
-            "indent":     self.doIndent,
-            "name":       self.doName,
-            "newline":    self.doNewline,
-            "nl":         self.doNewline, # Must be doNewline, not doNl.
-            "number":     self.doNumber,
-            "op":         self.doOp,
-            "string":     self.doMultiLine,
-        }
-    #@+node:ekr.20040713093048: *3* ptb.clear
-    def clear (self):
-        self.lines = []
-    #@+node:ekr.20040713064323: *3* ptb.dumpLines
-    def dumpLines (self,p,lines):
+        self.val = None
+        
+    #@+node:ekr.20150526201902.1: *3* ptb.Code generators
+    #@+node:ekr.20150526195542.1: *4* ptb.add_token
+    def add_token(self,kind,value=''):
+        '''Add a token to the code list.'''
+        # g.trace(kind,repr(value))
+        tok = OutputToken(kind,self.level,value)
+        self.code_list.append(tok)
+    #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end
+    def arg_end(self):
+        '''Add a token indicating the end of an argument list.'''
+        self.add_token('arg-end')
+        
+    def arg_start(self):
+        '''Add a token indicating the start of an argument list.'''
+        self.add_token('arg-start')
+    #@+node:ekr.20150526201701.4: *4* ptb.blank
+    def blank(self):
+        '''Add a blank request on the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank','blank-lines',
+                # Suppress duplicates.
+            'file-start','line-start','line-end',
+                # These tokens implicitly suppress blanks.
+            'arg-start','lit-no-blanks','lt',
+                # These tokens explicity suppress blanks.
+        ):
+            self.add_token('blank',' ')
+    #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
+    def blank_lines(self,n):
+        '''
+        Add a request for n blank lines to the code list.
+        Multiple blank-lines request yield at least the maximum of all requests.
+        '''
+        # Count the number of 'consecutive' end-line tokens, ignoring blank-lines tokens.
+        prev_lines = 0
+        i = len(self.code_list)-1 # start-file token guarantees i >= 0
+        while True:
+            kind = self.code_list[i].kind
+            if kind == 'file-start':
+                prev_lines = n ; break
+            elif kind == 'blank-lines':
+                i -= 1
+            elif kind == 'line-end':
+                i -= 1 ; prev_lines += 1
+            else: break
+        # g.trace('i: %3s n: %s prev: %s' % (len(self.code_list),n,prev_lines))
+        while prev_lines <= n:
+            self.line_end()
+            prev_lines += 1
+        # Retain the intention for debugging.
+        self.add_token('blank-lines',n)
+    #@+node:ekr.20150526201701.6: *4* ptb.clean
+    def clean(self,kind):
+        '''Remove the last item of token list if it has the given kind.'''
+        prev = self.code_list[-1]
+        if prev.kind == kind:
+            self.code_list.pop()
+    #@+node:ekr.20150526201701.7: *4* ptb.conditional_line_start
+    def conditional_line_start(self):
+        '''Add a conditional line start to the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind != 'start-line':
+            self.add_token('start-line')
+    #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
+    def file_end(self):
+        '''
+        Add a file-end token to the code list.
+        Retain exactly one line-end token.
+        '''
+        while True:
+            prev = self.code_list[-1]
+            if prev.kind in ('blank-lines','line-end'):
+                self.code_list.pop()
+            else:
+                break
+        self.add_token('line-end')
+        self.add_token('file-end')
 
-        print('\n%s %s' % ('-'*10,p.cleanHeadString()))
+    def file_start(self):
+        '''Add a file-start token to the code list.'''
+        self.add_token('file-start')
+    #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
+    def line_end(self):
+        '''Add a line-end request to the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind != 'file-start':
+            self.add_token('line-end','\n')
 
-        if 0:
-            for line in lines:
-                line2 = g.toEncodedString(line,reportErrors=True)
-                g.pr(line2,newline=False) # Don't add a trailing newline!)
+    def line_start(self):
+        '''Add a line-start request to the code list.'''
+        prev = self.code_list[-1]
+        if prev.kind != 'line-start':
+            self.add_token('line-start',self.indent)
+    #@+node:ekr.20150526201701.10: *4* ptb.lit*
+    def lit(self,s):
+        '''Add a request for a literal to the code list.'''
+        assert s and g.isString(s),repr(s)
+        # g.trace(repr(s),g.callers())
+        self.add_token('lit',s)
+        
+    def lit_blank(self,s):
+        '''Add request for a liter (no previous blank) followed by a blank.'''
+        self.clean('blank')
+        self.lit(s)
+        self.blank()
+
+    def lit_no_blanks(self,s):
+        '''Add a request for a literal *not* surrounded by blanks.'''
+        self.clean('blank')
+        self.add_token('lit-no-blanks',s)
+    #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
+    def lt(self,s):
+        '''Add a left paren request to the code list.'''
+        assert s in '([{',repr(s)
+        self.add_token('lt',s)
+        
+    def rt(self,s):
+        '''Add a right paren request to the code list.'''
+        assert s in ')]}',repr(s)
+        prev = self.code_list[-1]
+        if prev.kind == 'arg-end':
+            # Remove a blank token preceding the arg-end token.
+            prev = self.code_list.pop()
+            self.clean('blank')
+            self.code_list.append(prev)   
         else:
-            for i in range(len(lines)):
-                line = lines[i]
-                line = g.toEncodedString(line,reportErrors=True)
-                print('%3d %r' % (i, lines[i]))
-    #@+node:ekr.20040711135244.7: *3* ptb.dumpToken
-    def dumpToken (self,token5tuple):
-        '''Dump the given token.'''
-        t1,t2,t3,t4,t5 = token5tuple
-        name = token.tok_name[t1].lower()
-        val = str(t2) # can fail
-        srow,scol = t3
-        erow,ecol = t4
-        line = str(t5) # can fail
-        startLine = self.line_number != srow
-        if startLine:
-            g.pr("----- line",srow,erow,repr(line))
-        self.line_number = srow
-        print("%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val)))
-            # line[scol:ecol]
-    #@+node:ekr.20150519112500.1: *3* ptb.endUndo
-    def endUndo (self):
-
-        c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-        current = c.p
-
-        if self.changed:
-            # Tag the end of the command.
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20040711135244.8: *3* ptb.get
-    def get (self):
-        '''Return the result of the beautify command.'''
-        return self.lines
-    #@+node:ekr.20040711135244.9: *3* ptb.put & can_strip
-    def put (self,s,strip=True):
-        '''Put s to self.array. Strip previous whitespace if strip is True.'''
-        # g.trace('%s %r %r' % (int(strip),str(self.array and self.array[-1]),str(s)))
-        if strip and self.can_strip():
-            self.array[-1] = self.array[-1].rstrip()
-        self.array.append(s)
-        
-    def can_strip(self):
-        '''
-        Return True if the previous token contains safely-strippable trailing
-        whitespace.
-
-        Do not change this method without *careful* thought.
-        '''
-        # This code must *never* changes leading whitespace on the line.
-        # The following is save because it returns True only if rstrip() is True.
-        prev = self.array and self.array[-1]
-        return prev and prev.rstrip() and prev.rstrip() != prev
-    #@+node:ekr.20041021104237: *3* ptb.putArray
-    def putArray (self):
-        '''Add the next text by joining all the strings is self.array'''
-        # g.trace(repr(self.array))
-        if self.array == ['\n']:
-            self.array = []
-        s = ''.join(self.array)
-        if s:
-            # Check that leading whitespace has been preserved.
-            # Leading whitespace doesn't match for blank lines.
-            # Alas, this assert fails with continued lines.
-                # ws = self.leading_ws
-                # if ws and s.strip():
-                    # i = g.skip_ws(s,0)
-                    # ws2 = s[:i]
-                    # assert ws == ws2,'\n%r\n%r\n%r' % (str(ws),str(ws2),str(s))
-            self.lines.append(s)
-        self.array = []
-    #@+node:ekr.20040711135244.10: *3* ptb.putNormalToken & allies
-    def putNormalToken (self,token5tuple):
-        '''Put the next token.'''
-        trace = False and not g.unitTesting
-        t1,t2,t3,t4,t5 = token5tuple
-        self.name = token.tok_name[t1].lower() # The token type
-        self.val = t2  # the token string
-        self.srow,self.scol = t3 # row & col where the token begins in the source.
-        self.erow,self.ecol = t4 # row & col where the token ends in the source.
-        self.s = t5 # The line containing the token.
-        self.startLine = self.line_number != self.srow
-        self.line_number = self.srow
-        # Set self.tailing_ws for all tokens.
-        i = g.skip_ws(self.s,self.ecol)
-        self.trailing_ws = ' ' if self.s[self.ecol:i] else ''
-        if self.startLine:
-            if trace:
-                tag = '**' if self.continuation else '=='
-                g.trace("%s line %2s: %r" % (
-                    tag,self.srow,g.toEncodedString(self.s)))
-            if self.continuation:
-                self.doNewline()
-            self.continuation = self.s.endswith('\\\n')
-            self.doStartLine()
-        f = self.dispatchDict.get(self.name,self.oops)
-        if trace: g.trace("%10r: trail_ws: %3r %r" % (
-            self.name,self.trailing_ws,g.toEncodedString(self.val)[:60]))
-        f()
-        self.lastName = self.name
-        
-    #@+node:ekr.20041021102938: *4* ptb.doEndMarker
-    def doEndMarker (self):
-
-        self.putArray()
-    #@+node:ekr.20041021102340.1: *4* ptb.doErrorToken
-    def doErrorToken (self):
-
-        self.array.append(self.val)
+            self.clean('blank')
+        self.add_token('rt',s)
+    #@+node:ekr.20150526201701.12: *4* ptb.op
+    def op(self,s):
+        '''Add an operator request to the code list.'''
+        assert s and g.isString(s),repr(s)
+        self.blank()
+        self.lit(s)
+        self.blank()
+    #@+node:ekr.20150526201701.13: *4* ptb.word
+    def word(self,s):
+        '''Add a word request to the code list.'''
+        assert s and g.isString(s),repr(s)
+        self.blank()
+        self.add_token('word',s)
+        self.blank()
+    #@+node:ekr.20150526194736.1: *3* ptb.Token Handlers
+    #@+node:ekr.20150526203605.1: *4* ptb.do_comment
+    def do_comment(self):
+        '''Handle a comment token.'''
+    #@+node:ekr.20041021102938: *4* ptb.do_endmarker
+    def do_endmarker (self):
+        '''Handle an endmarker token.'''
+    #@+node:ekr.20041021102340.1: *4* ptb.do_errortoken
+    def do_errortoken (self):
+        '''Handle an errortoken token.'''
 
         # This code is executed for versions of Python earlier than 2.4
-        if self.val == '@':
-            # Preserve whitespace after @.
-            i = g.skip_ws(self.s,self.scol+1)
-            ws = self.s[self.scol+1:i]
-            if ws:
-                self.array.append(ws)
-    #@+node:ekr.20041021102340.2: *4* ptb.doIndent & doDedent
-    def doDedent (self):
-        '''Handle a change of indentation.'''
+        # if self.val == '@':
+            # # Preserve whitespace after @.
+            # i = g.skip_ws(self.s,self.scol+1)
+            # ws = self.s[self.scol+1:i]
+            # if ws:
+                # self.array.append(ws)
+    #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
+    def do_dedent (self):
+        '''Handle dedent token.'''
+        # g.trace(repr(self.val))
+        self.indent = self.val
         # g.trace('****',repr(self.leading_ws))
-        # self.array.append('\n')
-        # self.array.append(self.leading_ws)
-
-    def doIndent (self):
-
-        g.trace(repr(self.val))
-        self.leading_ws = self.leading_ws + self.val
-        self.array.append(self.val)
-    #@+node:ekr.20041021102340: *4* ptb.doMultiLine (strings, etc).
-    def doMultiLine (self):
-
-        # Ensure a blank before comments not preceded entirely by whitespace.
-        if self.val.startswith('#') and self.array:
-            prev = self.array[-1]
-            if prev and prev[-1] != ' ':
-                self.put(' ') 
-        # These may span lines, so duplicate the end-of-line logic.
-        lines = g.splitLines(self.val)
-        for line in lines:
-            self.array.append(line)
-            if line and line[-1] == '\n':
-                self.putArray()
-        # Add a blank after the string if there is something in the last line.
-        # if self.array:
-            # line = self.array[-1]
-            # if line.strip():
-                # self.put(' ')
-        # Suppress start-of-line logic.
-        self.line_number = self.erow
-    #@+node:ekr.20041021101911.5: *4* ptb.doName
-    def doName(self):
-        '''Handle a name, including keywords and operators.'''
+       
+    def do_indent (self):
+        '''Handle indent token.'''
+        self.indent = self.val
+        # g.trace(repr(self.val))
+    #@+node:ekr.20041021101911.5: *4* ptb.do_name
+    def do_name(self):
+        '''Handle a name token.'''
         # Ensure whitespace or start-of-line precedes the name.
         val = self.val
+        self.word(val) ###
         if val in ('if','else','and','or','not'):
             # Make *sure* we never add an extra space.
-            if self.array and self.array[-1].endswith(' '):
-                self.array.append('%s ' % val)
-            elif self.array:
-                self.array.append(' %s ' % val)
-            else:
-                self.array.append('%s ' % val)
+            pass
+            ###
+            # if self.array and self.array[-1].endswith(' '):
+                # self.array.append('%s ' % val)
+            # elif self.array:
+                # self.array.append(' %s ' % val)
+            # else:
+                # self.array.append('%s ' % val)
         elif val == 'def':
-            if True and self.lines:
-                g.trace('DEF',repr(self.leading_ws))
-                self.array.append('\n')
-                self.array.append(self.leading_ws)
-            s = '%s%s' % (val,self.trailing_ws)
-            self.array.append(s)
+            pass
+            ###
+            # if True and self.lines:
+                # g.trace('DEF',repr(self.leading_ws))
+                # self.array.append('\n')
+                # self.array.append(self.leading_ws)
+            # s = '%s%s' % (val,self.trailing_ws)
+            # self.array.append(s)
         else:
-            s = '%s%s' % (val,self.trailing_ws)
-            if s == 'lambda': g.trace(repr(str(s)),repr(str(self.trailing_ws)))
-            self.array.append(s)
-    #@+node:ekr.20041021101911.3: *4* ptb.doNewline
-    def doNewline (self):
+            pass
+            ###
+            # s = '%s%s' % (val,self.trailing_ws)
+            # if s == 'lambda': g.trace(repr(str(s)),repr(str(self.trailing_ws)))
+            # self.array.append(s)
+    #@+node:ekr.20041021101911.3: *4* ptb.do_newline
+    def do_newline (self):
         '''Handle a regular newline.'''
-        if self.continuation:
-            self.array.append('\\')
-            self.continuation = False
-        elif self.array:
-            # Remove trailing whitespace.
-            # This never removes trailing whitespace from multi-line tokens.
-            self.array[-1] = self.array[-1].rstrip()
-        self.array.append('\n')
-        self.putArray()
-    #@+node:ekr.20141009151322.17828: *4* ptb.doNl
-    def doNl(self):
+        self.line_end()
+        self.line_start()
+        # if self.continuation:
+            # self.array.append('\\')
+            # self.continuation = False
+        # elif self.array:
+            # # Remove trailing whitespace.
+            # # This never removes trailing whitespace from multi-line tokens.
+            # self.array[-1] = self.array[-1].rstrip()
+        # self.array.append('\n')
+        # self.putArray()
+    #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
+    def do_nl(self):
         '''Handle a continuation line.'''
-        pass
-    #@+node:ekr.20041021101911.6: *4* ptb.doNumber
-    def doNumber (self):
+        self.line_end()
+        self.line_start()
 
-        self.array.append(self.val)
-    #@+node:ekr.20040711135244.11: *4* ptb.doOp
-    def doOp (self):
+    #@+node:ekr.20041021101911.6: *4* ptb.do_number
+    def do_number (self):
+
+        self.add_token('number',self.val)
+    #@+node:ekr.20040711135244.11: *4* ptb.do_op
+    def do_op (self):
         '''Put an operator.'''
         val = self.val
-        outer = self.parenLevel == 0 and self.squareBracketLevel == 0
-        ws = self.trailing_ws
-        if val in '([{':
-            # From pep 8: Avoid extraneous whitespace immediately inside
-            # parentheses, brackets or braces.
-            prev = self.array and self.array[-1]
-            # strip = self.parenLevel > 0 and prev.strip() not in (',','lambda','else')
-            # g.trace('====',repr(prev))
-            strip = self.parenLevel > 0
-            self.put(val,strip=strip)
-            if   val == '(': self.parenLevel += 1
-            elif val == '[': self.squareBracketLevel += 1
-        elif val in '}])':
-            # From pep 8: Avoid extraneous whitespace immediately inside
-            # parentheses, brackets or braces.
-            self.put(val+ws,strip=True)
-            if   val == ')': self.parenLevel -= 1
-            elif val == ']': self.squareBracketLevel -= 1
-        elif val == '=':
-            # From pep 8: Don't use spaces around the = sign when used to indicate
-            # a keyword argument or a default parameter value.
-            if self.parenLevel == 0:
-                # This is only an approximation.
-                self.put(' %s ' % val)
-            else:
-                self.put(val)
-        elif val in ('==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>','<>'):
-            # From pep 8: always surround these binary operators with a single space on either side.
-            self.put(' %s ' % val)
-        elif val in '+-':
-            # Special case for possible unary operator.
-            if self.parenLevel == 0:
-                if ws:
-                    self.put(' %s ' % val,strip=True)
-                else:
-                    self.put(val,strip=False)
-            else:
-                self.put(val,strip=True)
-        elif val in ('^','~','*','**','&','|','/','//'):
-            # From pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priority(ies).
-            # g.trace(repr(str(val)),repr(str(ws)))
-            if val in ('*','**'):
-                # Highest priority.
-                self.put(val,strip=True)
-            else:
-                # Lower priority:
-                if 1:
-                    self.put(' %s ' % val,strip=True)
-                elif 1:
-                    # Treat all operators the same.  Boo hoo.
-                    self.put(val,strip=True)
-                else:
-                    # Alas, this does not play well with names.
-                    self.put(val+ws,strip=False)
-        elif val in ',;':
-            # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
-            ### self.put(val+ws,strip=True)
-            self.put(val+' ',strip=False)
-        elif val == ';':
-            # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
-            self.put(val+ws,strip=True)
-        elif val == ':':
-            # A very hard case.
-            prev = self.array and self.array[-1]
-            # g.trace(repr(str(prev)),repr(str(ws)))
-            if prev in ('else ',':',': '):
-                self.put(val+ws,strip=True)
-            else:
-                # We can leave the leading whitespace.
-                self.put(val+ws,strip=False)
-        elif val in ('%'):
-            # Add leading and trailing blank.
-            self.put(' %s ' % val)
-        elif val == '>>':
-            # Special Leo case: add leading blank.
-            self.put(' %s' % val)
-        elif val == '<<':
-            # Special Leo case: add trailing blank.
-            self.put('%s ' % val)
-        else:
-            self.put(val)
-    #@+node:ekr.20041021112219: *4* ptb.doStartLine
-    def doStartLine (self):
-        '''Put the leading whitespace at the start of a line.'''
-        before = self.s[0:self.scol]
-        i = g.skip_ws(before,0)
-        self.leading_ws = self.s[0:i] or ''
-        g.trace(repr(self.s),repr(self.leading_ws))
-        if self.leading_ws:
-            self.array.append(self.leading_ws)
-        # g.trace(repr(str(self.leading_ws)))
-    #@+node:ekr.20041021101911.1: *4* ptb.oops
-    def oops(self):
+        self.op(val)
+        return ###
+        # outer = self.paren_level == 0 and self.square_bracket_level == 0
+        # ws = self.trailing_ws
+        # if val in '([{':
+            # # From pep 8: Avoid extraneous whitespace immediately inside
+            # # parentheses, brackets or braces.
+            # pass
+            # ###
+            # # prev = self.array and self.array[-1]
+            # # # strip = self.paren_level > 0 and prev.strip() not in (',','lambda','else')
+            # # # g.trace('====',repr(prev))
+            # # strip = self.paren_level > 0
+            # # self.put(val,strip=strip)
+            # # if   val == '(': self.paren_level += 1
+            # # elif val == '[': self.square_bracket_level += 1
+        # elif val in '}])':
+            # # From pep 8: Avoid extraneous whitespace immediately inside
+            # # parentheses, brackets or braces.
+            # pass
+            # ### 
+            # # self.put(val+ws,strip=True)
+            # # if   val == ')': self.paren_level -= 1
+            # # elif val == ']': self.square_bracket_level -= 1
+        # elif val == '=':
+            # # From pep 8: Don't use spaces around the = sign when used to indicate
+            # # a keyword argument or a default parameter value.
+            # pass
+            # ###
+            # # if self.paren_level == 0:
+                # # # This is only an approximation.
+                # # self.put(' %s ' % val)
+            # # else:
+                # # self.put(val)
+        # elif val in ('==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>','<>'):
+            # # From pep 8: always surround these binary operators with a single space on either side.
+            # self.lit(val)
+            # ### self.put(' %s ' % val)
+        # elif val in '+-':
+            # # Special case for possible unary operator.
+            # pass
+            # ###
+            # # if self.paren_level == 0:
+                # # if ws:
+                    # # self.put(' %s ' % val,strip=True)
+                # # else:
+                    # # self.put(val,strip=False)
+            # # else:
+                # # self.put(val,strip=True)
+        # elif val in ('^','~','*','**','&','|','/','//'):
+            # # From pep 8: If operators with different priorities are used,
+            # # consider adding whitespace around the operators with the lowest priority(ies).
+            # # g.trace(repr(str(val)),repr(str(ws)))
+            # pass
+            # ###
+            # # if val in ('*','**'):
+                # # # Highest priority.
+                # # self.put(val,strip=True)
+            # # else:
+                # # # Lower priority:
+                # # if 1:
+                    # # self.put(' %s ' % val,strip=True)
+                # # elif 1:
+                    # # # Treat all operators the same.  Boo hoo.
+                    # # self.put(val,strip=True)
+                # # else:
+                    # # # Alas, this does not play well with names.
+                    # # self.put(val+ws,strip=False)
+        # elif val in ',;':
+            # # From pep 8: Avoid extraneous whitespace immediately before comma, semicolon, or colon.
+            # self.lit_blank(val)
+        # elif val == ':':
+            # # A very hard case.
+            # prev = self.code_list[-1]
+            # ###
+            # # if prev in ('else ',':',': '):
+                # # self.put(val+ws,strip=True)
+            # # else:
+                # # # We can leave the leading whitespace.
+                # # self.put(val+ws,strip=False)
+        # elif val in ('%',
+                     # '<<',
+                     # '>>'
+                    # ):
+            # # Add leading and trailing blank.
+            # self.op(val)
+        # else:
+            # self.lit(val)
+    #@+node:ekr.20150526204248.1: *4* ptb.do_string
+    def do_string(self):
+        
+        self.add_token('string',self.val)
+    #@+node:ekr.20150526194715.1: *3* ptb.run
+    def run(self,p,tokens):
+        '''The main line of PythonTokenBeautifier class.'''
 
-        print("unknown PrettyPrinting code: %s" % (self.name))
-    #@+node:ekr.20040711135244.12: *3* ptb.putToken
-    def putToken (self,token5tuple):
+        def oops():
+            g.trace('unknown kind',self.kind)
 
-        if self.dumping:
-            self.dumpToken(token5tuple)
-        else:
-            self.putNormalToken(token5tuple)
-    #@+node:ekr.20150521122451.1: *3* ptb.replaceBody
-    def replaceBody (self,p,lines,s=None):
-        '''Replace the body with the pretty version.'''
-        c,u = self.c,self.c.undoer
-        undoType = 'Pretty Print'
-        oldBody = p.b
-        body = s if s is not None else ''.join(lines)
-        if oldBody != body:
-            self.n += 1
+        self.file_start()
+        for token5tuple in tokens:
+            t1,t2,t3,t4,t5 = self.token5tuple = token5tuple
+            self.kind = token.tok_name[t1].lower()
+            self.val = g.toUnicode(t2)
+            # g.trace('%10s %r'% (self.kind,self.val))
+            func = getattr(self,'do_' + self.kind,oops)
+            func()
+        self.file_end()
+        return ''.join([z.to_string() for z in self.code_list])
+        
+    #@+node:ekr.20150521122451.1: *3* ptb.replace_body (not used yet)
+    def replace_body (self,p,s):
+        '''Replace p.b with s.'''
+        c,u,undoType = self.c,self.c.undoer,'Pretty Print'
+        if p.b != s:
             if not self.changed:
                 # Start the group.
                 u.beforeChangeGroup(p,undoType)
                 self.changed = True
                 self.dirtyVnodeList = []
             undoData = u.beforeChangeNodeContents(p)
-            c.setBodyString(p,body)
+            c.setBodyString(p,s)
             dirtyVnodeList2 = p.setDirty()
             self.dirtyVnodeList.extend(dirtyVnodeList2)
             u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20141010071140.18267: *3* ptb.token_tidy
-    def token_tidy(self,p,dump):
-        
-        readlines = g.ReadLinesClass(p.b).next
-        try:
-            self.clear()
-            for token5tuple in tokenize.generate_tokens(readlines):
-                self.putToken(token5tuple)
-            lines = self.get()
-        except tokenize.TokenError:
-            g.warning("error pretty-printing",p.h,"not changed.")
-            return
-        except AssertionError:
-            g.warning("internal error pretty-printing",p.h,"not changed.")
-            g.es_exception()
-            return
-        if dump:
-            self.dumpLines(p,lines)
-        else:
-            self.replaceBody(p,lines)
     #@-others
 #@+node:ekr.20150525080236.1: ** top-level functions
 #@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
@@ -2201,14 +2236,18 @@ def dumpToken (last_line_number,token5tuple,verbose):
         else:
             print('%3s %7s %r' % (srow,name,line))
     if verbose:
-        val = repr(val) if name in ('dedent','indent','newline','nl') else val
-        print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
+        if name in ('dedent','indent','newline','nl'):
+            val = repr(val)
+        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
+        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
+        print('%10s %s' % (name,val))
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
 #@+node:ekr.20150521114057.1: *3* test_LeoTidy (prints stats)
 def test_LeoTidy(c,h,p,settings):
     '''Use subclasses of leoAst.py to pretty-print Python code.'''
+    use_tokens = True
     if not p:
         g.trace('not found: %s' % h)
         return
@@ -2226,11 +2265,17 @@ def test_LeoTidy(c,h,p,settings):
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
     t3 = time.clock()
-    n1 = AddTokensToTree(c,settings,tokens).run(node1)
-    t4 = time.clock()
-    leoTidy = LeoTidy(c)
-    s2 = leoTidy.format(node1)
-    t5 = time.clock()
+    if use_tokens:
+        t4 = t3
+        beautifier = PythonTokenBeautifier(c)
+        s2 = beautifier.run(p,tokens)
+        t5 = time.clock()
+    else:
+        n1 = AddTokensToTree(c,settings,tokens).run(node1)
+        t4 = time.clock()
+        beautifier = LeoTidy(c)
+        s2 = beautifier.format(node1)
+        t5 = time.clock()
     if settings.get('input_string'):
         print('==================== input_string')
         for i,z in enumerate(g.splitLines(s)):
@@ -2243,7 +2288,7 @@ def test_LeoTidy(c,h,p,settings):
         dumpTokens(tokens,verbose=True)
     if settings.get('code_list'):
         print('==================== code_list')
-        for i,z in enumerate(leoTidy.code_list):
+        for i,z in enumerate(beautifier.code_list):
             print('%4s %s' % (i,z))
     if settings.get('output_string'):
         print('==================== output_string')
@@ -2253,22 +2298,25 @@ def test_LeoTidy(c,h,p,settings):
         print('==================== stats')
         print('nodes:    %s' % n1)
         print('tokens:   %s' % len(tokens))
-        print('code_list %s' % len(leoTidy.code_list))
+        print('code_list %s' % len(beautifier.code_list))
         print('len(s2):  %s' % len(s2))
         print('parse:    %4.2f sec.' % (t2-t1))
         print('tokenize: %4.2f sec.' % (t3-t2))
-        print('add toks: %4.2f sec.' % (t4-t3))
+        if not use_tokens:
+            print('add toks: %4.2f sec.' % (t4-t3))
         print('format:   %4.2f sec.' % (t5-t4))
         print('total:    %4.2f sec.' % (t5-t1))
     if settings.get('ast-compare'):
         s2 = g.toEncodedString(s2)
         node2 = ast.parse(s2,filename='before',mode='exec')
-        f1 = leoAst.AstFormatter().format(node1)
-        f2 = leoAst.AstFormatter().format(node2)
-        if f1 == f2:
-            pass # print('==== ast-compare passed: %s' % h)
+        ### f1 = leoAst.AstFormatter().format(node1)
+        ### f2 = leoAst.AstFormatter().format(node2)
+        ### f1 = ast.dump(node1)
+        ### f2 = ast.dump(node2)
+        if leoAst.compare_ast(node1, node2):
+            print('==== passed: %s' % h)
         else:
-            print('==== ast-compare failed: %s' % h)
+            print('==== failed: %s' % h)
 #@+node:ekr.20150525072128.1: *3* test_PythonTidy
 def test_PythonTidy(c,h,p):
     '''Test PythonTidy on the script in p's tree.'''
