@@ -694,17 +694,14 @@ class PythonTokenBeautifier:
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
+        pass
+
     #@+node:ekr.20041021102340.1: *4* ptb.do_errortoken
     def do_errortoken (self):
         '''Handle an errortoken token.'''
-
         # This code is executed for versions of Python earlier than 2.4
-        # if self.val == '@':
-            # # Preserve whitespace after @.
-            # i = g.skip_ws(self.s,self.scol+1)
-            # ws = self.s[self.scol+1:i]
-            # if ws:
-                # self.array.append(ws)
+        if self.val == '@':
+            self.lit(self.val)
     #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
     def do_dedent (self):
         '''Handle dedent token.'''
@@ -731,7 +728,7 @@ class PythonTokenBeautifier:
         self.line_end()
     #@+node:ekr.20041021101911.6: *4* ptb.do_number
     def do_number (self):
-
+        '''Handle a number token.'''
         self.add_token('number',self.val)
     #@+node:ekr.20040711135244.11: *4* ptb.do_op
     def do_op (self):
