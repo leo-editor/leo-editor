@@ -4,8 +4,44 @@
 
 import leo.core.leoGlobals as g
 import ast
+import itertools
 
 #@+others
+#@+node:ekr.20150526115312.1: ** compare_ast
+# http://stackoverflow.com/questions/3312989/
+# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
+
+def compare_ast(node1, node2):
+    if type(node1) is not type(node2):
+        return False
+    if isinstance(node1, ast.AST):
+        for k, v in vars(node1).iteritems():
+            if k in (
+                'lineno', 'col_offset', 'ctx',
+                    # standard fields
+                'trailing_tokens', 'str_spelling',
+                    # fields injected by LeoTidy.
+            ):
+                continue
+            v2 = getattr(node2, k)
+            if not compare_ast(v, v2):
+                name1,name2 = v.__class__.__name__,v2.__class__.__name__
+                if name1 == 'str':
+                    g.trace('str',repr(v),repr(v2))
+                elif name1 == 'Str':
+                    g.trace('Str',repr(v.s),repr(v2.s))
+                else:
+                    n1 = getattr(v,'lineno','???')
+                    n2 = getattr(v2,'lineno','???')
+                    g.trace(n1,n2,name1,name2)
+                    # g.trace(v)
+                    # g.trace(v2)
+                return False
+        return True
+    elif isinstance(node1, list):
+        return all(itertools.starmap(compare_ast, itertools.izip(node1, node2)))
+    else:
+        return node1 == node2
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     '''
@@ -881,10 +917,12 @@ class AstFullTraverser:
         
         old_context = self.context
         self.context = node
+        # Visit the tree in token order.
+        for z in node.decorator_list:
+            self.visit(z)
+        assert g.isString(node.name)
         self.visit(node.args)
         for z in node.body:
-            self.visit(z)
-        for z in node.decorator_list:
             self.visit(z)
         self.context = old_context
     #@+node:ekr.20141012064706.18475: *4* ft.Interactive
@@ -930,9 +968,6 @@ class AstFullTraverser:
         
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
-    #@+node:ekr.20141012064706.18481: *4* ft.Bytes
-    def do_Bytes(self,node): 
-        pass # Python 3.x only.
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -971,11 +1006,16 @@ class AstFullTraverser:
         
         for z in node.values:
             self.visit(z)
+        
+    #@+node:ekr.20141012064706.18481: *4* ft.Bytes
+    def do_Bytes(self,node): 
+        pass # Python 3.x only.
     #@+node:ekr.20141012064706.18486: *4* ft.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self,node):
         
+        # Call the nodes in token order.
         self.visit(node.func)
         for z in node.args:
             self.visit(z)
@@ -990,9 +1030,29 @@ class AstFullTraverser:
 
     def do_Compare(self,node):
         
+        # Visit all nodes in token order.
         self.visit(node.left)
-        for z in node.comparators:
-            self.visit(z)
+        assert len(node.ops) == len(node.comparators)
+        for i in range(len(node.ops)):
+            self.visit(node.ops[i])
+            self.visit(node.comparators[i])
+
+        # self.visit(node.left)
+        # for z in node.comparators:
+            # self.visit(z)
+    #@+node:ekr.20150526140323.1: *4* ft.Compare ops
+    # Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
+     
+    def do_Eq   (self,node): pass
+    def do_Gt   (self,node): pass
+    def do_GtE  (self,node): pass
+    def do_In   (self,node): pass
+    def do_Is   (self,node): pass
+    def do_IsNot(self,node): pass
+    def do_Lt   (self,node): pass
+    def do_LtE  (self,node): pass
+    def do_NotEq(self,node): pass
+    def do_NotIn(self,node): pass
     #@+node:ekr.20141012064706.18488: *4* ft.comprehension
     # comprehension (expr target, expr iter, expr* ifs)
 
@@ -1007,10 +1067,11 @@ class AstFullTraverser:
 
     def do_Dict(self,node):
         
-        for z in node.keys:
-            self.visit(z)
-        for z in node.values:
-            self.visit(z)
+        # Visit all nodes in token order.
+        assert len(node.keys) == len(node.values)
+        for i in range(len(node.keys)):
+            self.visit(node.keys[i])
+            self.visit(node.values[i])
     #@+node:ekr.20150522081707.1: *4* ft.Ellipsis
     def do_Ellipsis(self,node):
         pass
