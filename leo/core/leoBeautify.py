@@ -599,7 +599,12 @@ class PythonTokenBeautifier:
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
     def do_name(self):
         '''Handle a name token.'''
-        self.word(self.val)
+        name = self.val
+        if name == 'class':
+            self.blank_lines(2)
+        elif name == 'def':
+            self.blank_lines(1)
+        self.word(name)
     #@+node:ekr.20041021101911.3: *4* ptb.do_newline
     def do_newline (self):
         '''Handle a regular newline.'''
@@ -683,14 +688,13 @@ class PythonTokenBeautifier:
         Multiple blank-lines request yield at least the maximum of all requests.
         '''
         # Count the number of 'consecutive' end-line tokens, ignoring blank-lines tokens.
-        g.trace(n)
         prev_lines = 0
         i = len(self.code_list)-1 # start-file token guarantees i >= 0
         while True:
             kind = self.code_list[i].kind
             if kind == 'file-start':
                 prev_lines = n ; break
-            elif kind == 'blank-lines':
+            elif kind in ('blank-lines','line-indent'):
                 i -= 1
             elif kind == 'line-end':
                 i -= 1 ; prev_lines += 1
@@ -707,7 +711,7 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
-    #@+node:ekr.20150526201701.7: *4* ptb.conditional_line_start
+    #@+node:ekr.20150526201701.7: *4* ptb.conditional_line_start (not used)
     def conditional_line_start(self):
         '''Add a conditional line start to the code list.'''
         prev = self.code_list[-1]
