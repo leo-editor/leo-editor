@@ -41,6 +41,10 @@ def dumpToken (last_line_number,token5tuple,verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
+#@+node:ekr.20150527143619.1: ** show_lws
+def show_lws(s):
+    '''Show leading whitespace in a convenient format.'''
+    return repr(s) if s.strip(' ') else len(s)
 #@+node:ekr.20150521114057.1: ** test_beautifier (prints stats)
 def test_beautifier(c,h,p,settings):
     '''Test Leo's beautifier code'''
@@ -54,7 +58,8 @@ def test_beautifier(c,h,p,settings):
     g.trace(h.strip())
     t1 = time.clock()
     s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1,filename='before',mode='exec')
+    if settings.get('ast-compare'):
+        node1 = ast.parse(s1,filename='before',mode='exec')
     t2 = time.clock()
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
@@ -97,7 +102,8 @@ def test_beautifier(c,h,p,settings):
         except SyntaxError:
             g.es_exception()
             ok = False
-        print('\n==== %s: %s' % ('pass' if ok else 'fail',h))
+        if not ok:
+            print('==== fail: %s' % (h))
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
 
@@ -511,7 +517,36 @@ class ProjectUtils:
 class PythonTokenBeautifier:
     '''A token-based Python beautifier.'''
     #@+others
-    #@+node:ekr.20150519111713.1: *3*  ptb.ctor
+    #@+node:ekr.20150523132558.1: *3* class OutputToken
+    class OutputToken:
+        '''A class representing items on the code list.'''
+        
+        def __init__(self,kind,lws,value):
+            self.kind = kind
+            self.lws = lws
+            self.value = value
+            
+        def __repr__(self):
+            return '%15s %-2s %s' % (self.kind,show_lws(self.lws),repr(self.value))
+       
+        __str__ = __repr__
+
+        def to_string(self):
+            '''Convert an output token to a string.'''
+            return self.value if g.isString(self.value) else ''
+    #@+node:ekr.20150527113020.1: *3* class ParseState
+    class ParseState:
+        '''A class representing items parse state stack.'''
+        
+        def __init__(self,kind,value):
+            self.kind = kind
+            self.value = value
+            
+        def __repr__(self):
+            return 'State: %10s %s' % (self.kind,repr(self.value))
+
+        __str__ = __repr__
+    #@+node:ekr.20150519111713.1: *3* ptb.ctor
     def __init__ (self,c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
@@ -520,19 +555,12 @@ class PythonTokenBeautifier:
         self.bracketLevel = 0
         self.changed = False
         self.continuation = False # True: line ends with backslash-newline.
-        self.indent = ''
-            # The current leading whitespace in each line.
-            # Set by indent and dedent tokens.
         self.dirtyVnodeList = []
-        ### self.dumping = False
         ### self.erow = self.ecol = 0 # The ending row/col of the token.
         self.last_name = None # The name of the previous token type.
-        self.level = 0
+        self.level = 0 # indentation level, an int.
         self.line_number = 0 # Same as self.srow
-        ### self.lines = [] # List of lines.
-        ### self.n_tokens = 0 # Number of tokens processed.
-        ### self.name = None
-        ### self.p = c.p
+        self.lws = '' # Leading whitespace.  ' '*4*self.level
         self.paren_level = 0
         self.s = None # The string containing the line.
         self.square_bracket_level = 0
@@ -541,12 +569,91 @@ class PythonTokenBeautifier:
         self.trailing_ws = '' # The whitespace following *this* token.
         self.val = None
         
-    #@+node:ekr.20150526201902.1: *3* ptb.Code generators
+    #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
+    #@+node:ekr.20150526203605.1: *4* ptb.do_comment
+    def do_comment(self):
+        '''Handle a comment token.'''
+        self.add_token('comment',self.val)
+    #@+node:ekr.20041021102938: *4* ptb.do_endmarker
+    def do_endmarker (self):
+        '''Handle an endmarker token.'''
+        pass
+    #@+node:ekr.20041021102340.1: *4* ptb.do_errortoken
+    def do_errortoken (self):
+        '''Handle an errortoken token.'''
+        # This code is executed for versions of Python earlier than 2.4
+        if self.val == '@':
+            self.lit(self.val)
+    #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
+    def do_dedent (self):
+        '''Handle dedent token.'''
+        self.level -= 1
+        self.lws = self.level*4*' '
+        self.line_start()
+       
+    def do_indent (self):
+        '''Handle indent token.'''
+        self.level += 1
+        self.lws = self.val
+        self.line_start()
+    #@+node:ekr.20041021101911.5: *4* ptb.do_name
+    def do_name(self):
+        '''Handle a name token.'''
+        self.word(self.val)
+    #@+node:ekr.20041021101911.3: *4* ptb.do_newline
+    def do_newline (self):
+        '''Handle a regular newline.'''
+        self.line_end()
+    #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
+    def do_nl(self):
+        '''Handle a continuation line.'''
+        self.line_end()
+    #@+node:ekr.20041021101911.6: *4* ptb.do_number
+    def do_number (self):
+        '''Handle a number token.'''
+        self.add_token('number',self.val)
+    #@+node:ekr.20040711135244.11: *4* ptb.do_op
+    def do_op (self):
+        '''Handle an op token.'''
+        val = self.val
+        if val in '.':
+            self.lit_no_blanks(val)
+        elif val in ',;:':
+            # Pep 8: Avoid extraneous whitespace immediately before
+            # comma, semicolon, or colon.
+            self.lit_blank(val)
+        elif val in '([{':
+            # Pep 8: Avoid extraneous whitespace immediately inside
+            # parentheses, brackets or braces.
+            self.lt(val)
+        elif val in ')]}':
+            # Ditto.
+            self.rt(val)
+        elif val == '=':
+            # Pep 8: Don't use spaces around the = sign when used to indicate
+            # a keyword argument or a default parameter value.
+            self.op(val)
+                # To do: test whether in def/call argument.
+        else:
+            # Pep 8: always surround binary operators with a single space.
+            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
+            
+            # '^','~','*','**','&','|','/','//',
+            # Possible unary operators '+' '-'
+            # Pep 8: If operators with different priorities are used,
+            # consider adding whitespace around the operators with the lowest priority(ies).
+            self.op(val)
+    #@+node:ekr.20150526204248.1: *4* ptb.do_string
+    def do_string(self):
+        '''Handle a 'string' token.'''
+        self.add_token('string',self.val)
+            # This does retain the string's spelling.
+    #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self,kind,value=''):
         '''Add a token to the code list.'''
         # g.trace(kind,repr(value))
-        tok = self.OutputToken(kind,self.level,value)
+        tok = self.OutputToken(kind,self.lws,value)
         self.code_list.append(tok)
     #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end
     def arg_end(self):
@@ -563,7 +670,7 @@ class PythonTokenBeautifier:
         if prev.kind not in (
             'blank','blank-lines',
                 # Suppress duplicates.
-            'file-start','line-start','line-end',
+            'file-start','line-start','line-end','line-indent',
                 # These tokens implicitly suppress blanks.
             'arg-start','lit-no-blanks','lt',
                 # These tokens explicity suppress blanks.
@@ -576,6 +683,7 @@ class PythonTokenBeautifier:
         Multiple blank-lines request yield at least the maximum of all requests.
         '''
         # Count the number of 'consecutive' end-line tokens, ignoring blank-lines tokens.
+        g.trace(n)
         prev_lines = 0
         i = len(self.code_list)-1 # start-file token guarantees i >= 0
         while True:
@@ -628,15 +736,16 @@ class PythonTokenBeautifier:
         '''Add a line-end request to the code list.'''
         prev = self.code_list[-1]
         if prev.kind != 'file-start':
+            self.clean('line-indent')
             self.add_token('line-end','\n')
+            self.add_token('line-indent',self.lws)
+                # Add then indentation for all lines
+                # until the next indent or unindent token.
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
-        ### Make sure we use the current indent.
-        prev = self.code_list[-1]
-        if prev.kind != 'line-start':
-            # g.trace(repr(self.indent))
-            self.add_token('line-start',self.indent)
+        self.clean('line-indent')
+        self.add_token('line-indent',self.lws)
     #@+node:ekr.20150526201701.10: *4* ptb.lit*
     def lit(self,s):
         '''Add a request for a literal to the code list.'''
@@ -687,85 +796,21 @@ class PythonTokenBeautifier:
         self.blank()
         self.add_token('word',s)
         self.blank()
-    #@+node:ekr.20150526194736.1: *3* ptb.Token Handlers
-    #@+node:ekr.20150526203605.1: *4* ptb.do_comment
-    def do_comment(self):
-        '''Handle a comment token.'''
-    #@+node:ekr.20041021102938: *4* ptb.do_endmarker
-    def do_endmarker (self):
-        '''Handle an endmarker token.'''
-        pass
-
-    #@+node:ekr.20041021102340.1: *4* ptb.do_errortoken
-    def do_errortoken (self):
-        '''Handle an errortoken token.'''
-        # This code is executed for versions of Python earlier than 2.4
-        if self.val == '@':
-            self.lit(self.val)
-    #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
-    def do_dedent (self):
-        '''Handle dedent token.'''
-        # g.trace(repr(self.val))
-        self.indent = self.val
-        self.line_start()
-       
-    def do_indent (self):
-        '''Handle indent token.'''
-        self.indent = self.val
-        # g.trace(repr(self.val))
-        self.line_start()
-    #@+node:ekr.20041021101911.5: *4* ptb.do_name
-    def do_name(self):
-        '''Handle a name token.'''
-        self.word(self.val)
-    #@+node:ekr.20041021101911.3: *4* ptb.do_newline
-    def do_newline (self):
-        '''Handle a regular newline.'''
-        self.line_end()
-    #@+node:ekr.20141009151322.17828: *4* ptb.do_nl
-    def do_nl(self):
-        '''Handle a continuation line.'''
-        self.line_end()
-    #@+node:ekr.20041021101911.6: *4* ptb.do_number
-    def do_number (self):
-        '''Handle a number token.'''
-        self.add_token('number',self.val)
-    #@+node:ekr.20040711135244.11: *4* ptb.do_op
-    def do_op (self):
-        '''Put an operator.'''
-        val = self.val
-        if val in '.':
-            self.lit_no_blanks(val)
-        elif val in ',;:':
-            # Pep 8: Avoid extraneous whitespace immediately before
-            # comma, semicolon, or colon.
-            self.lit_blank(val)
-        elif val in '([{':
-            # Pep 8: Avoid extraneous whitespace immediately inside
-            # parentheses, brackets or braces.
-            self.lt(val)
-        elif val in ')]}':
-            # Ditto.
-            self.rt(val)
-        elif val == '=':
-            # Pep 8: Don't use spaces around the = sign when used to indicate
-            # a keyword argument or a default parameter value.
-            self.op(val)
-                # To do: test whether in def/call argument.
-        else:
-            # Pep 8: always surround binary operators with a single space.
-            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
-            
-            # '^','~','*','**','&','|','/','//',
-            # Possible unary operators '+' '-'
-            # Pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priority(ies).
-            self.op(val)
-    #@+node:ekr.20150526204248.1: *4* ptb.do_string
-    def do_string(self):
-        
-        self.add_token('string',self.val)
-            # This does retain the string's spelling.
+    #@+node:ekr.20150521122451.1: *3* ptb.replace_body (not used yet)
+    def replace_body (self,p,s):
+        '''Replace p.b with s.'''
+        c,u,undoType = self.c,self.c.undoer,'Pretty Print'
+        if p.b != s:
+            if not self.changed:
+                # Start the group.
+                u.beforeChangeGroup(p,undoType)
+                self.changed = True
+                self.dirtyVnodeList = []
+            undoData = u.beforeChangeNodeContents(p)
+            c.setBodyString(p,s)
+            dirtyVnodeList2 = p.setDirty()
+            self.dirtyVnodeList.extend(dirtyVnodeList2)
+            u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150526194715.1: *3* ptb.run
     def run(self,p,tokens):
         '''The main line of PythonTokenBeautifier class.'''
@@ -784,53 +829,6 @@ class PythonTokenBeautifier:
         self.file_end()
         return ''.join([z.to_string() for z in self.code_list])
         
-    #@+node:ekr.20150521122451.1: *3* ptb.replace_body (not used yet)
-    def replace_body (self,p,s):
-        '''Replace p.b with s.'''
-        c,u,undoType = self.c,self.c.undoer,'Pretty Print'
-        if p.b != s:
-            if not self.changed:
-                # Start the group.
-                u.beforeChangeGroup(p,undoType)
-                self.changed = True
-                self.dirtyVnodeList = []
-            undoData = u.beforeChangeNodeContents(p)
-            c.setBodyString(p,s)
-            dirtyVnodeList2 = p.setDirty()
-            self.dirtyVnodeList.extend(dirtyVnodeList2)
-            u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20150523132558.1: *3* class OutputToken
-    class OutputToken:
-        '''A class representing items on the code list.'''
-        
-        def __init__(self,kind,level,value):
-            self.kind = kind
-            self.level = level
-            self.value = value
-            
-        def __repr__(self):
-            return 'Token: %10s %s' % (self.kind,repr(self.value))
-       
-        __str__ = __repr__
-
-        def to_string(self):
-            '''Convert an output token to a string.'''
-            return self.value if g.isString(self.value) else ''
-            
-       
-    #@+node:ekr.20150527113020.1: *3* class ParseState
-    class ParseState:
-        '''A class representing items parse state stack.'''
-        
-        def __init__(self,kind,level,value):
-            self.kind = kind
-            self.level = level
-            self.value = value
-            
-        def __repr__(self):
-            return 'State: %10s %s' % (self.kind,repr(self.value))
-
-        __str__ = __repr__
     #@-others
 #@-others
 #@@language python
