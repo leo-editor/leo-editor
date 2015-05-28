@@ -1793,16 +1793,11 @@ class PythonTokenBeautifier:
             self.state_stack.pop()
             state = self.state_stack[-1]
             if state.kind in ('class','def'):
-                # g.trace(state.kind,self.level)
-                ### self.lws = (self.level-1)*4*' '
-                ### self.blank_lines(2 if state.kind == 'class' else 1)
-                ### self.lws = self.level*4*' '
                 self.state_stack.pop()
+                self.blank_lines(2 if self.level == 0 else 1)
 
     def do_indent (self):
         '''Handle indent token.'''
-        if self.state_stack[-1].kind in ('class','def'):
-            self.push_state('indent',self.level)
         self.level += 1
         self.lws = self.val
         self.line_start()
@@ -1817,8 +1812,10 @@ class PythonTokenBeautifier:
                 self.line_end()
                 self.state_stack.pop()
             else:
-                self.blank_lines(2 if name == 'class' else 1)
+                self.blank_lines(2 if self.level == 0 else 1)
             self.push_state(name)
+            self.push_state('indent',self.level)
+                # For trailing lines after inner classes/defs.
             self.word(name)
         elif name in ('and','in','not','not in','or'):
             self.word_op(name)
@@ -1918,12 +1915,14 @@ class PythonTokenBeautifier:
         '''
         self.clean_blank_lines()
         kind = self.code_list[-1].kind
-        if kind != 'file-start':
+        if kind == 'file-start':
+            self.add_token('blank-lines',n)
+        else:
             for i in range(0,n+1):
                 self.add_token('line-end','\n')
+            # Retain the intention for debugging.
+            self.add_token('blank-lines',n)
             self.add_token('line-indent',self.lws)
-        # Retain the intention for debugging.
-        self.add_token('blank-lines',n)
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self,kind):
         '''Remove the last item of token list if it has the given kind.'''
