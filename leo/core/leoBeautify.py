@@ -1655,6 +1655,7 @@ class PythonTokenBeautifier:
         self.dirtyVnodeList = []
         self.level = 0 # indentation level, an int.
         self.lws = '' # Leading whitespace.  ' '*4*self.level
+        self.paren_level = 0 # Number of unmatched left parens.
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
         self.val = None
@@ -1670,10 +1671,11 @@ class PythonTokenBeautifier:
         n1 = len(self.lws)
         n2 = g.computeLeadingWhitespaceWidth (s,4)
         if n2 > n1:
-            self.lit_no_blanks(' '*(n2-n1))
+            self.add_token('indent-comment',' '*(n2-n1))
+            self.add_token('comment',self.val)
         else:
             self.blank()
-        self.add_token('comment',self.val)
+            self.add_token('comment',self.val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
@@ -1683,7 +1685,7 @@ class PythonTokenBeautifier:
         '''Handle an errortoken token.'''
         # This code is executed for versions of Python earlier than 2.4
         if self.val == '@':
-            self.lit(self.val)
+            self.op(self.val)
     #@+node:ekr.20041021102340.2: *4* ptb.do_indent & do_dedent
     def do_dedent (self):
         '''Handle dedent token.'''
@@ -1740,8 +1742,10 @@ class PythonTokenBeautifier:
         elif val == '=':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             # a keyword argument or a default parameter value.
-            self.op(val)
-                # To do: test whether in def/call argument.
+            if self.paren_level:
+                self.op_no_blanks(val)
+            else:
+                self.op(val)
         elif val in '+-':
             self.possible_unary_op(val)
         else:
@@ -1784,7 +1788,7 @@ class PythonTokenBeautifier:
             'line-start','line-end','line-indent',
             'unary-op',
                 # These tokens implicitly suppress blanks.
-            'arg-start','lit-no-blanks','lt','op-no-blanks',
+            'arg-start','lt','op-no-blanks',
                 # These tokens explicity suppress blanks.
         ):
             self.add_token('blank',' ')
@@ -1863,27 +1867,11 @@ class PythonTokenBeautifier:
         '''Add a line-start request to the code list.'''
         self.clean('line-indent')
         self.add_token('line-indent',self.lws)
-    #@+node:ekr.20150526201701.10: *4* ptb.lit*
-    def lit(self,s):
-        '''Add a request for a literal to the code list.'''
-        assert s and g.isString(s),repr(s)
-        # g.trace(repr(s),g.callers())
-        self.add_token('lit',s)
-        
-    def lit_blank(self,s):
-        '''Add request for a liter (no previous blank) followed by a blank.'''
-        self.clean('blank')
-        self.lit(s)
-        self.blank()
-
-    def lit_no_blanks(self,s):
-        '''Add a request for a literal *not* surrounded by blanks.'''
-        self.clean('blank')
-        self.add_token('lit-no-blanks',s)
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     def lt(self,s):
         '''Add a left paren request to the code list.'''
         assert s in '([{',repr(s)
+        self.paren_level += 1
         self.clean('blank')
         prev = self.code_list[-1]
         # g.trace(prev.kind,prev.value)
@@ -1895,11 +1883,12 @@ class PythonTokenBeautifier:
         elif prev.kind == 'op':
             self.op(s)
         else:
-            self.lit_no_blanks(s)
+            self.op_no_blanks(s)
         
     def rt(self,s):
         '''Add a right paren request to the code list.'''
         assert s in ')]}',repr(s)
+        self.paren_level -= 1
         prev = self.code_list[-1]
         if prev.kind == 'arg-end':
             # Remove a blank token preceding the arg-end token.
@@ -1911,21 +1900,21 @@ class PythonTokenBeautifier:
         self.add_token('rt',s)
     #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self,s):
-        '''Add an operator request to the code list.'''
+        '''Add op token to code list.'''
         assert s and g.isString(s),repr(s)
         self.blank()
         self.add_token('op',s)
         self.blank()
         
     def op_blank(self,s):
-        '''Add an op token to the code list.'''
+        '''Remove a preceding blank token, then add op and blank tokens.'''
         assert s and g.isString(s),repr(s)
         self.clean('blank')
         self.add_token('op',s)
         self.blank()
         
     def op_no_blanks(self,s):
-        '''Add a request for a literal *not* surrounded by blanks.'''
+        '''Add an operator *not* surrounded by blanks.'''
         self.clean('blank')
         self.add_token('op-no-blanks',s)
     #@+node:ekr.20150527213419.1: *4* ptb.possible_unary_op & unary_op
@@ -1933,7 +1922,7 @@ class PythonTokenBeautifier:
         '''Add a unary or binary op to the token list.'''
         self.clean('blank')
         prev = self.code_list[-1]
-        if prev.kind in ('lit-no-blanks','lt','op','op-no-blanks'):
+        if prev.kind in ('lt','op','op-no-blanks'):
             self.unary_op(s)
         else:
             self.op(s)

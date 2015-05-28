@@ -17039,5 +17039,22 @@ def make_op_dispatch_d(self):
         '+': self.possible_unary,
         '-': self.possible_unary,
     }
+.. @+node:ekr.20150526201701.10: ** ptb.lit*
+# def lit(self,s):
+    # '''Add a request for a literal to the code list.'''
+    # assert s and g.isString(s),repr(s)
+    # # g.trace(repr(s),g.callers())
+    # self.add_token('lit',s)
+    
+# def lit_blank(self,s):
+    # '''Add request for a liter (no previous blank) followed by a blank.'''
+    # self.clean('blank')
+    # self.lit(s)
+    # self.blank()
+
+# def lit_no_blanks(self,s):
+    # '''Add a request for a literal *not* surrounded by blanks.'''
+    # self.clean('blank')
+    # self.add_token('lit-no-blanks',s)
 .. @-all
 .. @-leo
