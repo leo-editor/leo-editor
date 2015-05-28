@@ -1867,7 +1867,6 @@ class PythonTokenBeautifier:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
             # '^','~','*','**','&','|','/','//',
-            # Possible unary operators '+' '-'
             # Pep 8: If operators with different priorities are used,
             # consider adding whitespace around the operators with the lowest priority(ies).
             self.op(val)
@@ -1940,7 +1939,6 @@ class PythonTokenBeautifier:
         while True:
             for kind in table:
                 if self.clean(kind):
-                    # g.trace(kind)
                     break
             else:
                 break
