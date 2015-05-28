@@ -13,6 +13,101 @@ import token
 import tokenize
 
 #@+others
+#@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
+#@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
+def dumpTokens(tokens,verbose=True):
+    last_line_number = 0
+    for token5tuple in tokens:
+        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
+
+def dumpToken (last_line_number,token5tuple,verbose):
+    '''Dump the given token.'''
+    t1,t2,t3,t4,t5 = token5tuple
+    name = token.tok_name[t1].lower()
+    val = str(t2) # can fail
+    srow,scol = t3
+    erow,ecol = t4
+    line = str(t5) # can fail
+    if last_line_number != srow:
+        if verbose:
+            print("\n---- line: %3s %3s %r" % (srow,erow,line))
+        else:
+            print('%3s %7s %r' % (srow,name,line))
+    if verbose:
+        if name in ('dedent','indent','newline','nl'):
+            val = repr(val)
+        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
+        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
+        print('%10s %s' % (name,val))
+            # line[scol:ecol]
+    last_line_number = srow
+    return last_line_number
+#@+node:ekr.20150527143619.1: *3* show_lws
+def show_lws(s):
+    '''Show leading whitespace in a convenient format.'''
+    return repr(s) if s.strip(' ') else len(s)
+#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
+def test_beautifier(c,h,p,settings):
+    '''Test Leo's beautifier code'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return
+    s = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=False)
+    g.trace(h.strip())
+    t1 = time.clock()
+    s1 = g.toEncodedString(s)
+    if settings.get('ast-compare'):
+        node1 = ast.parse(s1,filename='before',mode='exec')
+    t2 = time.clock()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    t3 = time.clock()
+    beautifier = PythonTokenBeautifier(c)
+    s2 = beautifier.run(p,tokens)
+    t4 = time.clock()
+    ok = True
+    if settings.get('ast-compare'):
+        s2 = g.toEncodedString(s2)
+        try:
+            node2 = ast.parse(s2,filename='before',mode='exec')
+            ok = leoAst.compare_ast(node1, node2)
+        except SyntaxError:
+            g.es_exception()
+            ok = False
+    t5 = time.clock()
+    if settings.get('input_string'):
+        print('==================== input_string')
+        for i,z in enumerate(g.splitLines(s)):
+            print('%4s %s' % (i+1,z.rstrip()))
+    if settings.get('input_lines'):
+        print('==================== input_lines')
+        dumpTokens(tokens,verbose=False)
+    if settings.get('input_tokens'):
+        print('==================== input_tokens')
+        dumpTokens(tokens,verbose=True)
+    if settings.get('output_tokens'):
+        print('==================== code_list')
+        for i,z in enumerate(beautifier.code_list):
+            print('%4s %s' % (i,z))
+    if settings.get('output_string'):
+        print('==================== output_string')
+        for i,z in enumerate(g.splitLines(s2)):
+            print('%4s %s' % (i+1,z.rstrip()))
+    if settings.get('stats'):
+        print('==================== stats')
+        print('tokens:   %s' % len(tokens))
+        print('code_list %s' % len(beautifier.code_list))
+        print('len(s2):  %s' % len(s2))
+        print('parse:    %4.2f sec.' % (t2-t1))
+        print('tokenize: %4.2f sec.' % (t3-t2))
+        print('format:   %4.2f sec.' % (t4-t3))
+        print('check:    %4.2f sec.' % (t5-t4))
+        print('total:    %4.2f sec.' % (t5-t1))
+    if not ok:
+        print('*************** fail: %s ***************' % (h))
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
 
@@ -1658,6 +1753,7 @@ class PythonTokenBeautifier:
         self.paren_level = 0 # Number of unmatched left parens.
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
+        self.state_stack = [] # Stack of ParseState objects.
         self.val = None
         # Settings...
         self.delete_blank_lines = not c.config.getBool(
@@ -1692,9 +1788,21 @@ class PythonTokenBeautifier:
         self.level -= 1
         self.lws = self.level*4*' '
         self.line_start()
-       
+        state = self.state_stack[-1]
+        if state.kind == 'indent' and state.value == self.level:
+            self.state_stack.pop()
+            state = self.state_stack[-1]
+            if state.kind in ('class','def'):
+                # g.trace(state.kind,self.level)
+                ### self.lws = (self.level-1)*4*' '
+                ### self.blank_lines(2 if state.kind == 'class' else 1)
+                ### self.lws = self.level*4*' '
+                self.state_stack.pop()
+
     def do_indent (self):
         '''Handle indent token.'''
+        if self.state_stack[-1].kind in ('class','def'):
+            self.push_state('indent',self.level)
         self.level += 1
         self.lws = self.val
         self.line_start()
@@ -1702,11 +1810,17 @@ class PythonTokenBeautifier:
     def do_name(self):
         '''Handle a name token.'''
         name = self.val
-        if name == 'class':
-            self.blank_lines(2)
-        elif name == 'def':
-            self.blank_lines(1)
-        if name in ('and','in','not','not in','or'):
+        if name in ('class','def'):
+            state = self.state_stack[-1]
+            if state.kind == 'decorator':
+                self.clean_blank_lines()
+                self.line_end()
+                self.state_stack.pop()
+            else:
+                self.blank_lines(2 if name == 'class' else 1)
+            self.push_state(name)
+            self.word(name)
+        elif name in ('and','in','not','not in','or'):
             self.word_op(name)
         else:
             self.word(name)
@@ -1726,8 +1840,12 @@ class PythonTokenBeautifier:
     def do_op (self):
         '''Handle an op token.'''
         val = self.val
-        if val in '.':
+        if val == '.':
             self.op_no_blanks(val)
+        elif val == '@':
+            self.blank_lines(1)
+            self.op_no_blanks(val)
+            self.push_state('decorator')
         elif val in ',;:':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
@@ -1819,13 +1937,11 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
     def clean_blank_lines(self):
         '''Remove all vestiges of previous lines.'''
-        table = ('line-end','blank-lines','line-indent')
-        ### cleaned = True
+        table = ('blank-lines','line-end','line-indent')
         while True:
-            ### cleaned = False
             for kind in table:
                 if self.clean(kind):
-                    ###cleaned = True
+                    # g.trace(kind)
                     break
             else:
                 break
@@ -1843,12 +1959,13 @@ class PythonTokenBeautifier:
         '''
         self.clean_blank_lines()
         self.add_token('line-end','\n')
-        self.add_token('line-end','\n')
+        # self.add_token('line-end','\n')
         self.add_token('file-end')
 
     def file_start(self):
-        '''Add a file-start token to the code list.'''
+        '''Add a file-start token to the code list and the state stack.'''
         self.add_token('file-start')
+        self.push_state('file-start')
     #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
@@ -1980,101 +2097,12 @@ class PythonTokenBeautifier:
         self.file_end()
         return ''.join([z.to_string() for z in self.code_list])
         
+    #@+node:ekr.20150528084644.1: *3* ptb.push_state
+    def push_state(self,kind,value=None):
+        '''Append a state to the state stack.'''
+        state = self.ParseState(kind,value)
+        self.state_stack.append(state)
     #@-others
-#@+node:ekr.20150524215322.1: ** dumpTokens & dumpToken
-def dumpTokens(tokens,verbose=True):
-    last_line_number = 0
-    for token5tuple in tokens:
-        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
-
-def dumpToken (last_line_number,token5tuple,verbose):
-    '''Dump the given token.'''
-    t1,t2,t3,t4,t5 = token5tuple
-    name = token.tok_name[t1].lower()
-    val = str(t2) # can fail
-    srow,scol = t3
-    erow,ecol = t4
-    line = str(t5) # can fail
-    if last_line_number != srow:
-        if verbose:
-            print("\n---- line: %3s %3s %r" % (srow,erow,line))
-        else:
-            print('%3s %7s %r' % (srow,name,line))
-    if verbose:
-        if name in ('dedent','indent','newline','nl'):
-            val = repr(val)
-        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
-        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
-        print('%10s %s' % (name,val))
-            # line[scol:ecol]
-    last_line_number = srow
-    return last_line_number
-#@+node:ekr.20150527143619.1: ** show_lws
-def show_lws(s):
-    '''Show leading whitespace in a convenient format.'''
-    return repr(s) if s.strip(' ') else len(s)
-#@+node:ekr.20150521114057.1: ** test_beautifier (prints stats)
-def test_beautifier(c,h,p,settings):
-    '''Test Leo's beautifier code'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return
-    s = g.getScript(c, p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=False)
-    g.trace(h.strip())
-    t1 = time.clock()
-    s1 = g.toEncodedString(s)
-    if settings.get('ast-compare'):
-        node1 = ast.parse(s1,filename='before',mode='exec')
-    t2 = time.clock()
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.clock()
-    beautifier = PythonTokenBeautifier(c)
-    s2 = beautifier.run(p,tokens)
-    t4 = time.clock()
-    ok = True
-    if settings.get('ast-compare'):
-        s2 = g.toEncodedString(s2)
-        try:
-            node2 = ast.parse(s2,filename='before',mode='exec')
-            ok = leoAst.compare_ast(node1, node2)
-        except SyntaxError:
-            g.es_exception()
-            ok = False
-    t5 = time.clock()
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i,z in enumerate(g.splitLines(s)):
-            print('%4s %s' % (i+1,z.rstrip()))
-    if settings.get('input_lines'):
-        print('==================== input_lines')
-        dumpTokens(tokens,verbose=False)
-    if settings.get('input_tokens'):
-        print('==================== input_tokens')
-        dumpTokens(tokens,verbose=True)
-    if settings.get('output_tokens'):
-        print('==================== code_list')
-        for i,z in enumerate(beautifier.code_list):
-            print('%4s %s' % (i,z))
-    if settings.get('output_string'):
-        print('==================== output_string')
-        for i,z in enumerate(g.splitLines(s2)):
-            print('%4s %s' % (i+1,z.rstrip()))
-    if settings.get('stats'):
-        print('==================== stats')
-        print('tokens:   %s' % len(tokens))
-        print('code_list %s' % len(beautifier.code_list))
-        print('len(s2):  %s' % len(s2))
-        print('parse:    %4.2f sec.' % (t2-t1))
-        print('tokenize: %4.2f sec.' % (t3-t2))
-        print('format:   %4.2f sec.' % (t4-t3))
-        print('check:    %4.2f sec.' % (t5-t4))
-        print('total:    %4.2f sec.' % (t5-t1))
-    if not ok:
-        print('==== fail: %s' % (h))
 #@-others
 #@@language python
 #@@tabwidth -4
