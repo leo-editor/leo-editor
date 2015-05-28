@@ -1743,7 +1743,7 @@ class PythonTokenBeautifier:
             self.op(val)
                 # To do: test whether in def/call argument.
         elif val in '+-':
-            self.possible_unary(val)
+            self.possible_unary_op(val)
         else:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
@@ -1928,23 +1928,21 @@ class PythonTokenBeautifier:
         '''Add a request for a literal *not* surrounded by blanks.'''
         self.clean('blank')
         self.add_token('op-no-blanks',s)
-
+    #@+node:ekr.20150527213419.1: *4* ptb.possible_unary_op & unary_op
+    def possible_unary_op(self,s):
+        '''Add a unary or binary op to the token list.'''
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind in ('lit-no-blanks','lt','op','op-no-blanks'):
+            self.unary_op(s)
+        else:
+            self.op(s)
 
     def unary_op(self,s):
         '''Add an operator request to the code list.'''
         assert s and g.isString(s),repr(s)
         self.blank()
         self.add_token('unary-op',s)
-    #@+node:ekr.20150527213419.1: *4* ptb.possible_unary
-    def possible_unary(self,s):
-        '''Add a unary or binary op to the token list.'''
-        self.clean('blank')
-        prev = self.code_list[-1]
-        g.trace(prev)
-        if prev.kind in ('lit-no-blanks','lt','op','op-no-blanks'):
-            self.unary_op(s)
-        else:
-            self.op(s)
     #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
     def word(self,s):
         '''Add a word request to the code list.'''
