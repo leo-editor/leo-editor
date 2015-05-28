@@ -17008,5 +17008,36 @@ def token_tidy(self,p,tokens):
         g.warning("internal error pretty-printing",p.h,"not changed.")
         g.es_exception()
         return
+.. @+node:ekr.20150527213909.1: ** ptb.make_op_dispatch_d
+@language python
+
+# Using a dispatch dict does not speed up the code.
+    # func = self.op_dispatch_d.get(self.val,self.op)
+    # func(self.val)
+
+def make_op_dispatch_d(self):
+    
+    self.op_dispatch_d = {
+        '.': self.op_no_blanks,
+        # Pep 8: Avoid extraneous whitespace immediately before
+        # comma, semicolon, or colon.
+        ',': self.op_blank,
+        ';': self.op_blank,
+        ':': self.op_blank,
+        # Pep 8: Avoid extraneous whitespace immediately inside
+        # parentheses, brackets or braces.
+        '(': self.lt,
+        ')': self.rt,
+        '[': self.lt,
+        ']': self.rt,
+        '{': self.lt,
+        '}': self.rt,
+        # Pep 8: Don't use spaces around the = sign when used to indicate
+        # a keyword argument or a default parameter value.
+        '=': self.op,
+            # To do: test whether in def/call argument.
+        '+': self.possible_unary,
+        '-': self.possible_unary,
+    }
 .. @-all
 .. @-leo

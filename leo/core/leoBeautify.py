@@ -1645,7 +1645,7 @@ class PythonTokenBeautifier:
             return 'State: %10s %s' % (self.kind,repr(self.value))
 
         __str__ = __repr__
-    #@+node:ekr.20150519111713.1: *3* ptb.ctor
+    #@+node:ekr.20150519111713.1: *3* ptb.ctor & helper
     def __init__ (self,c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
@@ -1661,6 +1661,7 @@ class PythonTokenBeautifier:
         # Settings...
         self.delete_blank_lines = not c.config.getBool(
             'tidy-keep-blank-lines',default=True)
+
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
@@ -1703,7 +1704,10 @@ class PythonTokenBeautifier:
             self.blank_lines(2)
         elif name == 'def':
             self.blank_lines(1)
-        self.word(name)
+        if name in ('and','in','not','not in','or'):
+            self.word_op(name)
+        else:
+            self.word(name)
     #@+node:ekr.20041021101911.3: *4* ptb.do_newline
     def do_newline (self):
         '''Handle a regular newline.'''
@@ -1721,11 +1725,11 @@ class PythonTokenBeautifier:
         '''Handle an op token.'''
         val = self.val
         if val in '.':
-            self.lit_no_blanks(val)
+            self.op_no_blanks(val)
         elif val in ',;:':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
-            self.lit_blank(val)
+            self.op_blank(val)
         elif val in '([{':
             # Pep 8: Avoid extraneous whitespace immediately inside
             # parentheses, brackets or braces.
@@ -1738,10 +1742,11 @@ class PythonTokenBeautifier:
             # a keyword argument or a default parameter value.
             self.op(val)
                 # To do: test whether in def/call argument.
+        elif val in '+-':
+            self.possible_unary(val)
         else:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
-            
             # '^','~','*','**','&','|','/','//',
             # Possible unary operators '+' '-'
             # Pep 8: If operators with different priorities are used,
@@ -1775,9 +1780,11 @@ class PythonTokenBeautifier:
         if prev.kind not in (
             'blank','blank-lines',
                 # Suppress duplicates.
-            'file-start','line-start','line-end','line-indent',
+            'file-start',
+            'line-start','line-end','line-indent',
+            'unary-op',
                 # These tokens implicitly suppress blanks.
-            'arg-start','lit-no-blanks','lt',
+            'arg-start','lit-no-blanks','lt','op-no-blanks',
                 # These tokens explicity suppress blanks.
         ):
             self.add_token('blank',' ')
@@ -1877,8 +1884,18 @@ class PythonTokenBeautifier:
     def lt(self,s):
         '''Add a left paren request to the code list.'''
         assert s in '([{',repr(s)
-        self.lit_no_blanks(s)
-        # self.add_token('lt',s)
+        self.clean('blank')
+        prev = self.code_list[-1]
+        # g.trace(prev.kind,prev.value)
+        if prev.kind in ('op','word-op'):
+            self.blank()
+            self.add_token('op-no-blanks',s)
+        elif prev.kind == 'word':
+            self.add_token('op-no-blanks',s)
+        elif prev.kind == 'op':
+            self.op(s)
+        else:
+            self.lit_no_blanks(s)
         
     def rt(self,s):
         '''Add a right paren request to the code list.'''
@@ -1892,19 +1909,55 @@ class PythonTokenBeautifier:
         else:
             self.clean('blank')
         self.add_token('rt',s)
-    #@+node:ekr.20150526201701.12: *4* ptb.op
+    #@+node:ekr.20150526201701.12: *4* ptb.op*
     def op(self,s):
         '''Add an operator request to the code list.'''
         assert s and g.isString(s),repr(s)
         self.blank()
-        self.lit(s)
+        self.add_token('op',s)
         self.blank()
-    #@+node:ekr.20150526201701.13: *4* ptb.word
-    def word(self,s):
-        '''Add a word request to the code list.'''
+        
+    def op_blank(self,s):
+        '''Add an op token to the code list.'''
+        assert s and g.isString(s),repr(s)
+        self.clean('blank')
+        self.add_token('op',s)
+        self.blank()
+        
+    def op_no_blanks(self,s):
+        '''Add a request for a literal *not* surrounded by blanks.'''
+        self.clean('blank')
+        self.add_token('op-no-blanks',s)
+
+
+    def unary_op(self,s):
+        '''Add an operator request to the code list.'''
         assert s and g.isString(s),repr(s)
         self.blank()
+        self.add_token('unary-op',s)
+    #@+node:ekr.20150527213419.1: *4* ptb.possible_unary
+    def possible_unary(self,s):
+        '''Add a unary or binary op to the token list.'''
+        self.clean('blank')
+        prev = self.code_list[-1]
+        g.trace(prev)
+        if prev.kind in ('lit-no-blanks','lt','op','op-no-blanks'):
+            self.unary_op(s)
+        else:
+            self.op(s)
+    #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
+    def word(self,s):
+        '''Add a word request to the code list.'''
+        # assert s and g.isString(s),repr(s)
+        self.blank()
         self.add_token('word',s)
+        self.blank()
+
+    def word_op(self,s):
+        '''Add a word request to the code list.'''
+        # assert s and g.isString(s),repr(s)
+        self.blank()
+        self.add_token('word-op',s)
         self.blank()
     #@+node:ekr.20150521122451.1: *3* ptb.replace_body (not used yet)
     def replace_body (self,p,s):
