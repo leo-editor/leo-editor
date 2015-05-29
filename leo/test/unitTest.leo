@@ -164,9 +164,13 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31362e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31352e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31312e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735805000000302e372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31372e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31362e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31312e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735805000000302e372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31352e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31372e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20150529183247.1"><vh>@test ptb.comment_leo_lines &amp; ptb.uncomment_leo_lines</vh>
+<v t="ekr.20150529183259.1"><vh>indented docstring</vh></v>
+<v t="ekr.20150529184545.1"><vh>indented docstring2</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -582,7 +586,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1278,5 +1282,22 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
+for p in p.children():
+    b = leoBeautify.PythonTokenBeautifier(c)
+    s1 = p.b
+    comment,s = b.comment_leo_lines(p)
+    s2 = b.uncomment_leo_lines(comment,p,s)
+    assert s1 == s2,('\ns...\n%s\ns2...\n%s' % (s,s2))</t>
+<t tx="ekr.20150529183259.1">def f ():
+    pass
+@ Line 1
+    Line 2
+</t>
+<t tx="ekr.20150529184545.1">def f(): 
+    pass
+@ The following could be added to the 'else' clause::
+    # Accumulate everything else.
+</t>
 </tnodes>
 </leo_file>

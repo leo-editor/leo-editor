@@ -671,7 +671,7 @@ class PythonTokenBeautifier:
         if self.changed:
             # Tag the end of the command.
             u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (command entry) & helper
+    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (command entry) & helpers
     def prettyPrintNode(self,p):
         '''The driver for beautification: beautify a single node.'''
         c = self.c
@@ -814,7 +814,7 @@ class PythonTokenBeautifier:
             ):
                 result.append(s)
                 while i < len(lines):
-                    s = lines[i].lstrip(comment)
+                    s = lines[i].lstrip().lstrip(comment)
                     result.append(s)
                     i += 1
                     if (
