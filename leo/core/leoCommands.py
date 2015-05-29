@@ -253,6 +253,7 @@ class Commands (object):
         # Break circular import dependencies by importing here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
+        import leo.core.leoBeautify as leoBeautify # So decorators are executed.
         import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         # User commands...
@@ -4124,80 +4125,6 @@ class Commands (object):
             if p.v not in seen:
                 seen[p.v] = True
                 p.v.dump()
-    #@+node:ekr.20040711135959.1: *5* Beautify (aka pretty-print) commands
-    #@+node:ekr.20040712053025: *6* c.beautify-all-python
-    @cmd('beautify-all-python')
-    @cmd('pretty-print-all-python')
-    def prettyPrintAllPythonCode (self,event=None,dump=False):
-        '''Beautify all Python code in the entire outline.'''
-        c = self
-        if False and g.isPython3:
-            g.warning('PythonTidy does not work with Python 3.x')
-            return
-        import leo.core.leoBeautify as leoBeautify
-        pp = leoBeautify.PythonPrettyPrinter(c)
-        for p in c.all_unique_positions():
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-                pp.prettyPrintNode(p,dump=dump)
-        pp.endUndo()
-        g.es('%s nodes changed' % pp.n)
-    #@+node:ekr.20110917174948.6877: *6* c.beautify-c
-    @cmd('beautify-c')
-    @cmd('pretty-print-c')
-    def beautifyCCode (self,event=None):
-        '''Beautify all C code in the selected tree.'''
-        c = self
-        import leo.core.leoBeautify as leoBeautify
-        pp = leoBeautify.CPrettyPrinter(c)
-        u = c.undoer ; undoType = 'beautify-c'
-        u.beforeChangeGroup(c.p,undoType)
-        dirtyVnodeList = []
-        changed = False
-        for p in c.p.self_and_subtree():
-            if g.scanForAtLanguage(c,p) == "c":
-                bunch = u.beforeChangeNodeContents(p)
-                s = pp.indent(p)
-                if p.b != s:
-                    # g.es('changed: %s' % (p.h))
-                    p.b = s
-                    p.v.setDirty()
-                    dirtyVnodeList.append(p.v)
-                    u.afterChangeNodeContents(p,undoType,bunch)
-                    changed = True
-        if changed:
-            u.afterChangeGroup(c.p,undoType,
-                reportFlag=False,dirtyVnodeList=dirtyVnodeList)
-        c.bodyWantsFocus()
-    #@+node:ekr.20050729211526: *6* c.beautify-node
-    @cmd('beautify-node')
-    @cmd('pretty-print-node')
-    def prettyPrintPythonNode (self,p=None,dump=False):
-        '''Beautify a single Python node.'''
-        c,p = self,p or self.p
-        import leo.core.leoBeautify as leoBeautify
-        pp = leoBeautify.PythonPrettyPrinter(c)
-        # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-        if g.scanForAtLanguage(c,p) == "python":
-            pp.prettyPrintNode(p,dump=dump)
-        pp.endUndo()
-    #@+node:ekr.20071001075704: *6* c.beautify-tree
-    @cmd('beautify-tree')
-    @cmd('pretty-print-tree')
-    def beautifyPythonTree (self,event=None,dump=False):
-        '''Beautify the Python code in the selected outline.'''
-        c = self
-        if False and g.isPython3:
-            g.warning('PythonTidy does not work with Python 3.x')
-            return
-        import leo.core.leoBeautify as leoBeautify
-        pp = leoBeautify.PythonPrettyPrinter(c)
-        for p in c.p.self_and_subtree():
-            # Unlike c.scanAllDirectives, scanForAtLanguage ignores @comment.
-            if g.scanForAtLanguage(c,p) == "python":
-                pp.prettyPrintNode(p,dump=dump)
-        pp.endUndo()
-        g.es('%s nodes changed' % pp.n)
     #@+node:ekr.20031218072017.2898: *4* Expand & Contract...
     #@+node:ekr.20031218072017.2899: *5* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *6* contractAllHeadlines

@@ -4985,22 +4985,6 @@ finally:
     c.redraw(p)
 #@+node:ekr.20111212142649.3972: *5* child
 # child text.
-#@+node:ekr.20041019124050: *4* @test c.prettyPrintPythonNode
-if g.isPython3:
-    pass # The PythonTidy module does not work with Python 3.
-else:
-    test1 = p.firstChild()
-    test2 = p.firstChild().next()
-    c.prettyPrintPythonNode(p=test1,dump=False)
-    assert test2.b==test1.b,'\n%r\n%r' % (test1.b,test2.b)
-#@+node:ekr.20041019124050.1: *5* Original
-def spam(a=2):
-
-    pass
-#@+node:ekr.20041019124050.2: *5* Test
-def spam(a=2):
-
-    pass
 #@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.h
