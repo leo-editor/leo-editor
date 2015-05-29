@@ -595,13 +595,14 @@ class PythonTokenBeautifier:
     class OutputToken:
         '''A class representing items on the code list.'''
         
-        def __init__(self,kind,lws,value):
+        def __init__(self,kind,value):
             self.kind = kind
-            self.lws = lws
+            ### self.lws = lws
             self.value = value
             
         def __repr__(self):
-            return '%15s %-2s %s' % (self.kind,show_lws(self.lws),repr(self.value))
+            ### return '%15s %-2s %s' % (self.kind,show_lws(self.lws),repr(self.value))
+            return '%15s %s' % (self.kind,repr(self.value))
        
         __str__ = __repr__
 
@@ -624,21 +625,25 @@ class PythonTokenBeautifier:
     def __init__ (self,c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
+        # The list of output tokens.
         self.code_list = []
-            # The list of output tokens.
-        self.changed = False
-        self.decorator_seen = False
-        self.dirtyVnodeList = []
-        self.level = 0 # indentation level, an int.
-        self.lws = '' # Leading whitespace.  ' '*4*self.level
-        self.paren_level = 0 # Number of unmatched left parens.
+        # The present token...
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
-        self.state_stack = [] # Stack of ParseState objects.
         self.val = None
+        # State vars...
+        self.decorator_seen = False
+        self.level = 0 # indentation level, an int.
+        self.lws = '' # Leading whitespace.
+            # Typically ' '*4*self.level, but may be changed for continued lines.
+        self.paren_level = 0 # Number of unmatched left parens.
+        self.state_stack = [] # Stack of ParseState objects.
         # Settings...
         self.delete_blank_lines = not c.config.getBool(
             'tidy-keep-blank-lines',default=True)
+        self.args_style = c.config.getString('tidy-args-style')
+        if self.args_style not in ('align','asis','indent'):
+            self.args_style = 'align'
         # Statistics
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -649,6 +654,9 @@ class PythonTokenBeautifier:
         self.beautify_time = 0.0
         self.check_time = 0.0
         self.total_time = 0.0
+         # Undo vars
+        self.changed = False
+        self.dirtyVnodeList = []
     #@+node:ekr.20150528171324.1: *3* ptb.Entry & helpers
     #@+node:ekr.20150528192109.1: *4* ptb.skip_message
     def skip_message(self,s,p):
@@ -922,6 +930,7 @@ class PythonTokenBeautifier:
     def do_indent (self):
         '''Handle indent token.'''
         self.level += 1
+        # assert self.val == ' '*4*self.level,(repr(self.val),self.level,g.callers())
         self.lws = self.val
         self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
@@ -1008,7 +1017,7 @@ class PythonTokenBeautifier:
     def add_token(self,kind,value=''):
         '''Add a token to the code list.'''
         # g.trace(kind,repr(value))
-        tok = self.OutputToken(kind,self.lws,value)
+        tok = self.OutputToken(kind,value)
         self.code_list.append(tok)
     #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end
     def arg_end(self):
