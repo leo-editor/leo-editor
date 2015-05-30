@@ -932,9 +932,10 @@ class PythonTokenBeautifier:
         else:
             s = self.raw_val.rstrip()
             n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
-            self.extra_ws = ' '*(max(0,n-1))
+            self.extra_ws = ' '*n
             self.clean('line-indent')
             self.add_token('hard-line-indent',self.extra_ws)
+            self.add_token('comment',self.val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
