@@ -1,13 +1,23 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 '''Leo's beautification classes.'''
-import leo.core.leoGlobals as g
+#@+<< imports >>
+#@+node:ekr.20150530081336.1: ** << imports >>
+try:
+    import leo.core.leoGlobals as g
+except ImportError:
+    import leoGlobals as g
+    # Create a dummy decorator.
+    def command(func):
+        return func
+    g.command = command
 import ast
 import re
 import sys
 import time
 import token
 import tokenize
+#@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
 #@+node:ekr.20150528131012.2: *3* beautify-all-python
@@ -25,7 +35,7 @@ def prettyPrintAllPythonCode (event):
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
-    g.es('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
+    g.es_print('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
 #@+node:ekr.20150528131012.3: *3* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
@@ -80,7 +90,7 @@ def beautifyPythonTree (event):
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
-    g.es('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
+    g.es_print('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150529084212.1: *3* comment_leo_lines
 def comment_leo_lines(p):
@@ -819,6 +829,15 @@ class PythonTokenBeautifier:
         if not p.b.strip():
             self.replace_body(p,'')
             return
+        # Handle @beautify and @nobeautify.
+        for p2 in p.self_and_parents():
+            d = g.get_directives_dict(p2)
+            if 'beautify' in d:
+                break
+            elif 'nobeautify' in d:
+                # This message would quickly become annoying.
+                # self.skip_message('@nobeautify',p)
+                return ''
         t1 = time.clock()
         # Replace Leonine syntax with special comments.
         comment_string,s0 = comment_leo_lines(p)

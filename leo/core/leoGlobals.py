@@ -139,12 +139,14 @@ globalDirectiveList = [
 
     # *** Longer prefixes must appear before shorter.
     'all',
+    'beautify',
     'colorcache','code','color', 'comment','c',
     'delims','doc',
     'encoding','end_raw',
     'first','header','ignore','killcolor',
     'language','last','lineending',
     'markup',
+    'nobeautify',
     'nocolor-node','nocolor','noheader','nowrap',
     'others','pagewidth','path','quiet',
     'raw','root-code','root-doc','root','silent',
