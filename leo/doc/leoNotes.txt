@@ -6451,61 +6451,93 @@ made to work reliably.
 .. @+node:ekr.20150527092711.1: ** Unused code: backups
 @language python
 @ignore
-.. @+node:ekr.20150527092124.1: *3* @@button tokens2tree (backup)
+.. @+node:ekr.20150530075611.1: *3* @@button TEST PTB (backup)
 r'''The script to test AddTokensToTree class.'''
 g.cls()
 if c.isChanged():
     c.save()
+project = 'leo'
 << imports >>
-project = None # 'leo'
 if project:
+    # 17.1 sec.
+    # The format time is about twice the tokenize time.
     aList = leoBeautify.ProjectUtils().project_files(project)
     aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
-    aList = aList[:1]
     settings_d = {
-        'ast-compare': True,
-        'output_string': True,
+        # 'output_string': True,
+        # 'stats': True,
     }
 else:
     aList = [
-        # '@file leoKeys.py',
-        'unit test: leoBeautify.py',
+        # 'unit test: leoBeautify.py',
+        '@file leoColorizer.py',
+        '@file leoBeautify.py',
         # '@file leoCommands.py',
-        # '@file leoBeautify.py',
     ]
+    small = aList[0].startswith('unit test:')
     settings_d = {
-        'ast_tokens_d': False,
-        'ast_strings_list': False,
-        'ast_trailing_list': False,
-        'ast-compare': True,
-        'stats': False,
-        'input_string': True,
-        'input_lines': False,
-        'input_tokens': False,
-        'token_list': False,
-        'code_list': True,
-        'output_string': True,
+        'input_string': small,
+        # 'input_lines':  True,
+        'input_tokens': small,
+        'output_tokens': small,
+        'output_string': small,
+        'stats': not small and len(aList) == 1,
     }
 assert aList,'no input in %s' % (p.h)
+<< init total stats >>
 t1 = time.clock()
 for h in aList:
     p2 = g.findNodeAnywhere(c,h)
     if p2:
         try:
-            leoBeautify.test_beautifier(c,h,p2,settings_d)
+            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
+            << update total stats >>
         except Exception:
             g.es_exception()
+if len(aList) > 1:
+    << print total stats >>
 if project:
-    print('done: %4.2f sec.' % (time.clock()-t1))
-.. @+node:ekr.20150527092124.2: *4* << imports >>
-# import leo.external.PythonTidy as PythonTidy
-import leo.core.leoAst as leoAst
+    tot_time = time.clock()-t1
+    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
+.. @+node:ekr.20150530075611.2: *4* << imports >>
 import leo.core.leoBeautify as leoBeautify
 import imp
 import time
-imp.reload(leoAst)
 imp.reload(leoBeautify)
-# imp.reload(PythonTidy)
+.. @+node:ekr.20150530075611.3: *4* << init total stats >>
+tot_beautify_time = 0.0
+tot_changed_nodes = 0
+tot_check_time = 0.0
+tot_files = 0
+tot_input_tokens = 0
+tot_output_tokens = 0
+tot_parse_time = 0.0
+tot_strings = 0
+tot_tokenize_time = 0.0
+tot_total_time = 0.0
+.. @+node:ekr.20150530075611.4: *4* << update total stats >>
+tot_beautify_time += b.beautify_time
+tot_changed_nodes += b.n_changed_nodes
+tot_check_time += b.check_time
+tot_files += 1
+tot_input_tokens += b.n_input_tokens
+tot_output_tokens += b.n_output_tokens
+tot_parse_time += b.parse_time
+tot_strings += b.n_strings
+tot_tokenize_time += b.tokenize_time
+tot_total_time += b.total_time
+.. @+node:ekr.20150530075611.5: *4* << print total stats >>
+print('===== totals =====')
+print('files          %s' % tot_files)
+print('changed nodes  %s' % tot_changed_nodes)
+print('tokens         %s' % tot_input_tokens)
+print('len(code_list) %s' % tot_output_tokens)
+print('len(s)         %s' % tot_strings)
+print('parse          %4.2f sec.' % tot_parse_time)
+print('tokenize       %4.2f sec.' % tot_tokenize_time)
+print('format         %4.2f sec.' % tot_beautify_time)
+print('check          %4.2f sec.' % tot_check_time)
+print('total          %4.2f sec.' % tot_total_time)
 .. @+node:ekr.20150527092615.1: ** Unused code: do not delete
 @language python
 @ignore

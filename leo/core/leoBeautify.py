@@ -279,6 +279,7 @@ def test_beautifier(c,h,p,settings):
         beautifier.print_stats()
     if not ok:
         print('*************** fail: %s ***************' % (h))
+    return beautifier
 #@+node:ekr.20150529095117.1: *3* uncomment_leo_lines
 def uncomment_leo_lines(comment,p,s0):
     '''Reverse the effect of comment_leo_lines.'''
