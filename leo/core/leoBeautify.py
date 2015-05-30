@@ -924,6 +924,7 @@ class PythonTokenBeautifier:
         '''Handle a comment token.'''
         if self.paren_level > 0:
             # run() handles indentation.
+            self.blank()
             self.add_token('comment',self.val)
         else:
             s = self.raw_val.rstrip()
