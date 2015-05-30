@@ -4,44 +4,8 @@
 
 import leo.core.leoGlobals as g
 import ast
-import itertools
 
 #@+others
-#@+node:ekr.20150526115312.1: ** compare_ast
-# http://stackoverflow.com/questions/3312989/
-# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
-
-def compare_ast(node1, node2):
-    if type(node1) is not type(node2):
-        return False
-    if isinstance(node1, ast.AST):
-        for k, v in vars(node1).iteritems():
-            if k in (
-                'lineno', 'col_offset', 'ctx',
-                    # standard fields
-                'trailing_tokens', 'str_spelling',
-                    # fields injected by LeoTidy.
-            ):
-                continue
-            v2 = getattr(node2, k)
-            if not compare_ast(v, v2):
-                name1,name2 = v.__class__.__name__,v2.__class__.__name__
-                if name1 == 'str':
-                    g.trace('str',repr(v),repr(v2))
-                elif name1 == 'Str':
-                    g.trace('Str',repr(v.s),repr(v2.s))
-                else:
-                    n1 = getattr(v,'lineno','???')
-                    n2 = getattr(v2,'lineno','???')
-                    g.trace(n1,n2,name1,name2)
-                    # g.trace(v)
-                    # g.trace(v2)
-                return False
-        return True
-    elif isinstance(node1, list):
-        return all(itertools.starmap(compare_ast, itertools.izip(node1, node2)))
-    else:
-        return node1 == node2
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
     '''

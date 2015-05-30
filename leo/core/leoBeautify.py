@@ -1,17 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 '''Leo's beautification classes.'''
-
 import leo.core.leoGlobals as g
-import leo.core.leoAst as leoAst
-# import leo.external.PythonTidy as tidy
 import ast
-import glob
-import os
+import re
+import sys
 import time
 import token
 import tokenize
-
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
 #@+node:ekr.20150528131012.2: *3* beautify-all-python
@@ -86,6 +82,42 @@ def beautifyPythonTree (event):
     # pp.print_stats()
     g.es('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
+#@+node:ekr.20150526115312.1: *3* compare_ast
+# http://stackoverflow.com/questions/3312989/
+# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
+
+def compare_ast(node1, node2):
+    import itertools
+    if type(node1) is not type(node2):
+        return False
+    if isinstance(node1, ast.AST):
+        for k, v in vars(node1).iteritems():
+            if k in (
+                'lineno', 'col_offset', 'ctx',
+                    # standard fields
+                # 'trailing_tokens', 'str_spelling',
+                    # fields injected by LeoTidy.
+            ):
+                continue
+            v2 = getattr(node2, k)
+            if not compare_ast(v, v2):
+                name1,name2 = v.__class__.__name__,v2.__class__.__name__
+                if name1 == 'str':
+                    g.trace('str',repr(v),repr(v2))
+                elif name1 == 'Str':
+                    g.trace('Str',repr(v.s),repr(v2.s))
+                else:
+                    n1 = getattr(v,'lineno','???')
+                    n2 = getattr(v2,'lineno','???')
+                    g.trace(n1,n2,name1,name2)
+                    # g.trace(v)
+                    # g.trace(v2)
+                return False
+        return True
+    elif isinstance(node1, list):
+        return all(itertools.starmap(compare_ast, itertools.izip(node1, node2)))
+    else:
+        return node1 == node2
 #@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
 def dumpTokens(tokens,verbose=True):
     last_line_number = 0
@@ -114,6 +146,10 @@ def dumpToken (last_line_number,token5tuple,verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
+#@+node:ekr.20150530061745.1: *3* main (external entry)
+def main():
+    '''External entry point for Leo's beautifier.'''
+    g.trace(sys.argv)
 #@+node:ekr.20150527143619.1: *3* show_lws
 def show_lws(s):
     '''Show leading whitespace in a convenient format.'''
@@ -142,7 +178,7 @@ def test_beautifier(c,h,p,settings):
     try:
         s2_e = g.toEncodedString(s2)
         node2 = ast.parse(s2_e,filename='before',mode='exec')
-        ok = leoAst.compare_ast(node1, node2)
+        ok = compare_ast(node1, node2)
     except Exception:
         g.es_exception()
         ok = False
@@ -496,6 +532,8 @@ class ProjectUtils:
         Include all descendants if recursiveFlag is True.
         Include all file types if extList is None.
         '''
+        import glob
+        import os
         # if extList is None: extList = ['.py']
         if excludeDirs is None: excludeDirs = []
         result = []
@@ -593,17 +631,15 @@ class PythonTokenBeautifier:
     #@+others
     #@+node:ekr.20150523132558.1: *3* class OutputToken
     class OutputToken:
-        '''A class representing items on the code list.'''
-        
+        '''A class representing Output Tokens'''
+
         def __init__(self,kind,value):
             self.kind = kind
-            ### self.lws = lws
             self.value = value
-            
+
         def __repr__(self):
-            ### return '%15s %-2s %s' % (self.kind,show_lws(self.lws),repr(self.value))
             return '%15s %s' % (self.kind,repr(self.value))
-       
+
         __str__ = __repr__
 
         def to_string(self):
@@ -625,17 +661,21 @@ class PythonTokenBeautifier:
     def __init__ (self,c):
         '''Ctor for PythonPrettyPrinter class.'''
         self.c = c
-        # The list of output tokens.
-        self.code_list = []
-        # The present token...
+        # Globals...
+        self.code_list = [] # The list of output tokens.
+        self.regex_lws = re.compile(r'([ \t]*)')
+        # The present line and token...
+        self.line_lws = ''
+        self.extra_ws = ''
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
         self.val = None
         # State vars...
         self.decorator_seen = False
-        self.level = 0 # indentation level, an int.
+        self.level = 0 # indentation level.
         self.lws = '' # Leading whitespace.
-            # Typically ' '*4*self.level, but may be changed for continued lines.
+            # Typically ' '*self.tab_width*self.level,
+            # but may be changed for continued lines.
         self.paren_level = 0 # Number of unmatched left parens.
         self.state_stack = [] # Stack of ParseState objects.
         # Settings...
@@ -644,6 +684,7 @@ class PythonTokenBeautifier:
         self.args_style = c.config.getString('tidy-args-style')
         if self.args_style not in ('align','asis','indent'):
             self.args_style = 'align'
+        self.tab_width = abs(c.tab_width) if c else 4
         # Statistics
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -657,244 +698,13 @@ class PythonTokenBeautifier:
          # Undo vars
         self.changed = False
         self.dirtyVnodeList = []
-    #@+node:ekr.20150528171324.1: *3* ptb.Entry & helpers
-    #@+node:ekr.20150528192109.1: *4* ptb.skip_message
-    def skip_message(self,s,p):
-        '''Print a standard message about skipping a node.'''
-        message = '%s. skipped:' % s
-        g.warning('%22s %s' % (message,p.h))
-    #@+node:ekr.20150528180738.1: *4* ptb.end_undo
-    def end_undo (self):
-        '''Complete undo processing.'''
-        c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-        current = c.p
-        if self.changed:
-            # Tag the end of the command.
-            u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-    #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode (command entry) & helpers
-    def prettyPrintNode(self,p):
-        '''The driver for beautification: beautify a single node.'''
-        c = self.c
-        trace = False and not g.unitTesting
-        if not p.b:
-            # Pretty printing might add text!
-            return
-        if not p.b.strip():
-            self.replace_body(p,'')
-            return
-        t1 = time.clock()
-        # Replace Leonine syntax with special comments.
-        comment_string,s0 = self.comment_leo_lines(p)
-        try:
-            s1 = g.toEncodedString(s0)
-            node1 = ast.parse(s1,filename='before',mode='exec')
-        except IndentationError:
-            self.skip_message('IndentationError',p)
-            return
-        except SyntaxError:
-            self.skip_message('SyntaxError',p)
-            return
-        except Exception:
-            g.es_exception()
-            self.skip_message('Exception',p)
-            return
-        t2 = time.clock()
-        readlines = g.ReadLinesClass(s0).next
-        tokens = list(tokenize.generate_tokens(readlines))
-        t3 = time.clock()
-        s2 = self.run(p,tokens)
-        t4 = time.clock()
-        try:
-            s2_e = g.toEncodedString(s2)
-            node2 = ast.parse(s2_e,filename='before',mode='exec')
-            ok = leoAst.compare_ast(node1, node2)
-        except Exception:
-            g.es_exception()
-            self.skip_message('BeautifierError',p)
-            return
-        if not ok:
-            self.skip_message('BeautifierError',p)
-            return
-        t5 = time.clock()
-        # Restore the tags after the compare
-        s3 = self.uncomment_leo_lines(comment_string,p,s2)
-        self.replace_body(p,s3)
-        # Update the stats
-        self.n_input_tokens += len(tokens)
-        self.n_output_tokens += len(self.code_list)
-        self.n_strings += len(s3)
-        self.parse_time += (t2-t1)
-        self.tokenize_time += (t3-t2)
-        self.beautify_time += (t4-t3)
-        self.check_time += (t5-t4)
-        self.total_time += (t5-t1)
-    #@+node:ekr.20150529084212.1: *5* ptb.comment_leo_lines
-    def comment_leo_lines(self,p):
-        '''Replace lines with Leonine syntax with special comments.'''
-        # Choose the comment string so it appears nowhere in s.
-        s0 = p.b
-        n = 5
-        while s0.find('#' + ('!' * n)) > -1:
-            n += 1
-        comment = '#' + ('!' * n)
-        # Create a dict of directives.
-        d = {}
-        for z in g.globalDirectiveList:
-            d[z] = True
-        # Convert all Leonine lines to special comments.
-        i, lines, result = 0, g.splitLines(s0), []
-        while i < len(lines):
-            progress = i
-            s = lines[i]
-            # Comment out any containing a section reference.
-            j = s.find('<<')
-            k = j > -1 and s.find('>>') or -1
-            if -1 < j < k:
-                result.append(comment+s)
-            elif s.lstrip().startswith('@'):
-                # Comment out all other Leonine constructs.
-                if (
-                    s.startswith('@\n') or s.startswith('@doc\n') or
-                    s.startswith('@ ') or s.startswith('@doc ')
-                ):
-                    # Comment the entire doc part, until @c or @code.
-                    result.append(comment+s)
-                    i += 1
-                    while i < len(lines):
-                        s = lines[i]
-                        result.append(comment+s)
-                        i += 1
-                        if (
-                            s.startswith('@c\n') or s.startswith('@code\n') or
-                            s.startswith('@c ') or s.startswith('@code ')
-                        ):
-                            break
-                else:
-                    j = g.skip_ws(s, 0)
-                    assert s[j] == '@'
-                    j += 1
-                    k = g.skip_id(s, j, chars='-')
-                    if k > j:
-                        word = s[j:k]
-                        if word == 'others':
-                            # Remember the original @others line.
-                            result.append(comment+s)
-                            # Generate a properly-indented pass line.
-                            result.append('%spass\n' % (' ' * (j-1)))
-                        else:
-                            # Comment only Leo directives, not decorators.
-                            result.append(comment+s if word in d else s)
-                    else:
-                        result.append(s)
-            else:
-                # A plain line.
-                result.append(s)
-            if i == progress:
-                i += 1
-        # g.trace(''.join(result))
-        return comment,''.join(result)
-    #@+node:ekr.20150529095117.1: *5* ptb.uncomment_leo_lines
-    def uncomment_leo_lines(self,comment,p,s0):
-        '''Reverse the effect of comment_leo_lines.'''
-        i, lines, result = 0, g.splitLines(s0), []
-        # g.trace(s0)
-        while i < len(lines):
-            s = lines[i]
-            i += 1
-            j = s.find(comment)
-            if j == -1:
-                # A regular line.
-                result.append(s)
-                continue
-            # A special line. i now points at the *next* line.
-            s = s.lstrip().lstrip(comment)
-            if (
-                s.startswith('@\n') or s.startswith('@doc\n') or
-                s.startswith('@ ') or s.startswith('@doc ')
-            ):
-                result.append(s)
-                while i < len(lines):
-                    s = lines[i].lstrip().lstrip(comment)
-                    result.append(s)
-                    i += 1
-                    if (
-                        s.startswith('@c\n') or s.startswith('@code\n') or
-                        s.startswith('@c ') or s.startswith('@code ')
-                    ):
-                        break
-            elif s.find('@others') > -1:
-                # Restore the @others line, including leading whitespace.
-                result.append(s)
-                # The beautifier may insert blank lines after @others.
-                while i < len(lines) and not lines[i].strip():
-                    i += 1
-                # Skip the pass line.
-                if i < len(lines) and lines[i].lstrip().startswith('pass'):
-                    i += 1
-                else:
-                    g.trace('*** no pass after @others',p.h)
-            else:
-                result.append(s)
-        return ''.join(result)
-    #@+node:ekr.20150528172940.1: *4* ptb.print_stats
-    def print_stats(self):
-
-        print('==================== stats')
-        print('changed nodes  %s' % self.n_changed_nodes)
-        print('tokens         %s' % self.n_input_tokens)
-        print('len(code_list) %s' % self.n_output_tokens)
-        print('len(s)         %s' % self.n_strings)
-        print('parse          %4.2f sec.' % self.parse_time)
-        print('tokenize       %4.2f sec.' % self.tokenize_time)
-        print('format         %4.2f sec.' % self.beautify_time)
-        print('check          %4.2f sec.' % self.check_time)
-        print('total          %4.2f sec.' % self.total_time)
-    #@+node:ekr.20150526194715.1: *4* ptb.run (called by test_beautifier)
-    def run(self,p,tokens):
-        '''The main line of PythonTokenBeautifier class.'''
-
-        def oops():
-            g.trace('unknown kind',self.kind)
-
-        self.code_list = []
-        self.state_stack = []
-        self.file_start()
-        for token5tuple in tokens:
-            t1,t2,t3,t4,t5 = token5tuple
-            self.kind = token.tok_name[t1].lower()
-            self.val = g.toUnicode(t2)
-            self.raw_val = g.toUnicode(t5)
-            # g.trace('%10s %r'% (self.kind,self.val))
-            func = getattr(self,'do_' + self.kind,oops)
-            func()
-        self.file_end()
-        return ''.join([z.to_string() for z in self.code_list])
-    #@+node:ekr.20150528171420.1: *4* ppp.replace_body
-    def replace_body (self,p,s):
-        '''Replace the body with the pretty version.'''
-        c,u = self.c,self.c.undoer
-        undoType = 'Pretty Print'
-        if p.b == s:
-            return
-        # g.trace('changed',p.h)
-        self.n_changed_nodes += 1
-        if not self.changed:
-            # Start the group.
-            u.beforeChangeGroup(p,undoType)
-            self.changed = True
-            self.dirtyVnodeList = []
-        undoData = u.beforeChangeNodeContents(p)
-        c.setBodyString(p,s)
-        dirtyVnodeList2 = p.setDirty()
-        self.dirtyVnodeList.extend(dirtyVnodeList2)
-        u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
     #@+node:ekr.20150526194736.1: *3* ptb.Input token Handlers
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
         '''Handle a comment token.'''
         s = self.raw_val.rstrip()
         n1 = len(self.lws)
-        n2 = g.computeLeadingWhitespaceWidth (s,4)
+        n2 = g.computeLeadingWhitespaceWidth (s,self.tab_width)
         if n2 > n1:
             self.add_token('indent-comment',' '*(n2-n1))
             self.add_token('comment',self.val)
@@ -915,7 +725,7 @@ class PythonTokenBeautifier:
     def do_dedent (self):
         '''Handle dedent token.'''
         self.level -= 1
-        self.lws = self.level*4*' '
+        self.lws = self.level*self.tab_width*' '
         self.line_start()
         state = self.state_stack[-1]
         if state.kind == 'indent' and state.value == self.level:
@@ -930,7 +740,7 @@ class PythonTokenBeautifier:
     def do_indent (self):
         '''Handle indent token.'''
         self.level += 1
-        # assert self.val == ' '*4*self.level,(repr(self.val),self.level,g.callers())
+        # assert self.val == ' '*self.tab_width*self.level,(repr(self.val),self.level,g.callers())
         self.lws = self.val
         self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
@@ -1179,24 +989,259 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
     def word(self,s):
         '''Add a word request to the code list.'''
-        # assert s and g.isString(s),repr(s)
+        assert s and g.isString(s),repr(s)
         self.blank()
         self.add_token('word',s)
         self.blank()
 
     def word_op(self,s):
         '''Add a word request to the code list.'''
-        # assert s and g.isString(s),repr(s)
+        assert s and g.isString(s),repr(s)
         self.blank()
         self.add_token('word-op',s)
         self.blank()
-    #@+node:ekr.20150528084644.1: *3* ptb.push_state
+    #@+node:ekr.20150528171137.1: *3* ptb.prettyPrintNode (entry) & helper
+    def prettyPrintNode(self,p):
+        '''The driver for beautification: beautify a single node.'''
+        c = self.c
+        trace = False and not g.unitTesting
+        if not p.b:
+            # Pretty printing might add text!
+            return
+        if not p.b.strip():
+            self.replace_body(p,'')
+            return
+        t1 = time.clock()
+        # Replace Leonine syntax with special comments.
+        comment_string,s0 = self.comment_leo_lines(p)
+        try:
+            s1 = g.toEncodedString(s0)
+            node1 = ast.parse(s1,filename='before',mode='exec')
+        except IndentationError:
+            self.skip_message('IndentationError',p)
+            return
+        except SyntaxError:
+            self.skip_message('SyntaxError',p)
+            return
+        except Exception:
+            g.es_exception()
+            self.skip_message('Exception',p)
+            return
+        t2 = time.clock()
+        readlines = g.ReadLinesClass(s0).next
+        tokens = list(tokenize.generate_tokens(readlines))
+        t3 = time.clock()
+        s2 = self.run(p,tokens)
+        t4 = time.clock()
+        try:
+            s2_e = g.toEncodedString(s2)
+            node2 = ast.parse(s2_e,filename='before',mode='exec')
+            ok = compare_ast(node1, node2)
+        except Exception:
+            g.es_exception()
+            self.skip_message('BeautifierError',p)
+            return
+        if not ok:
+            self.skip_message('BeautifierError',p)
+            return
+        t5 = time.clock()
+        # Restore the tags after the compare
+        s3 = self.uncomment_leo_lines(comment_string,p,s2)
+        self.replace_body(p,s3)
+        # Update the stats
+        self.n_input_tokens += len(tokens)
+        self.n_output_tokens += len(self.code_list)
+        self.n_strings += len(s3)
+        self.parse_time += (t2-t1)
+        self.tokenize_time += (t3-t2)
+        self.beautify_time += (t4-t3)
+        self.check_time += (t5-t4)
+        self.total_time += (t5-t1)
+    #@+node:ekr.20150529084212.1: *4* ptb.comment_leo_lines
+    def comment_leo_lines(self,p):
+        '''Replace lines with Leonine syntax with special comments.'''
+        # Choose the comment string so it appears nowhere in s.
+        s0 = p.b
+        n = 5
+        while s0.find('#' + ('!' * n)) > -1:
+            n += 1
+        comment = '#' + ('!' * n)
+        # Create a dict of directives.
+        d = {}
+        for z in g.globalDirectiveList:
+            d[z] = True
+        # Convert all Leonine lines to special comments.
+        i, lines, result = 0, g.splitLines(s0), []
+        while i < len(lines):
+            progress = i
+            s = lines[i]
+            # Comment out any containing a section reference.
+            j = s.find('<<')
+            k = j > -1 and s.find('>>') or -1
+            if -1 < j < k:
+                result.append(comment+s)
+            elif s.lstrip().startswith('@'):
+                # Comment out all other Leonine constructs.
+                if (
+                    s.startswith('@\n') or s.startswith('@doc\n') or
+                    s.startswith('@ ') or s.startswith('@doc ')
+                ):
+                    # Comment the entire doc part, until @c or @code.
+                    result.append(comment+s)
+                    i += 1
+                    while i < len(lines):
+                        s = lines[i]
+                        result.append(comment+s)
+                        i += 1
+                        if (
+                            s.startswith('@c\n') or s.startswith('@code\n') or
+                            s.startswith('@c ') or s.startswith('@code ')
+                        ):
+                            break
+                else:
+                    j = g.skip_ws(s, 0)
+                    assert s[j] == '@'
+                    j += 1
+                    k = g.skip_id(s, j, chars='-')
+                    if k > j:
+                        word = s[j:k]
+                        if word == 'others':
+                            # Remember the original @others line.
+                            result.append(comment+s)
+                            # Generate a properly-indented pass line.
+                            result.append('%spass\n' % (' ' * (j-1)))
+                        else:
+                            # Comment only Leo directives, not decorators.
+                            result.append(comment+s if word in d else s)
+                    else:
+                        result.append(s)
+            else:
+                # A plain line.
+                result.append(s)
+            if i == progress:
+                i += 1
+        # g.trace(''.join(result))
+        return comment,''.join(result)
+    #@+node:ekr.20150529095117.1: *4* ptb.uncomment_leo_lines
+    def uncomment_leo_lines(self,comment,p,s0):
+        '''Reverse the effect of comment_leo_lines.'''
+        i, lines, result = 0, g.splitLines(s0), []
+        # g.trace(s0)
+        while i < len(lines):
+            s = lines[i]
+            i += 1
+            j = s.find(comment)
+            if j == -1:
+                # A regular line.
+                result.append(s)
+                continue
+            # A special line. i now points at the *next* line.
+            s = s.lstrip().lstrip(comment)
+            if (
+                s.startswith('@\n') or s.startswith('@doc\n') or
+                s.startswith('@ ') or s.startswith('@doc ')
+            ):
+                result.append(s)
+                while i < len(lines):
+                    s = lines[i].lstrip().lstrip(comment)
+                    result.append(s)
+                    i += 1
+                    if (
+                        s.startswith('@c\n') or s.startswith('@code\n') or
+                        s.startswith('@c ') or s.startswith('@code ')
+                    ):
+                        break
+            elif s.find('@others') > -1:
+                # Restore the @others line, including leading whitespace.
+                result.append(s)
+                # The beautifier may insert blank lines after @others.
+                while i < len(lines) and not lines[i].strip():
+                    i += 1
+                # Skip the pass line.
+                if i < len(lines) and lines[i].lstrip().startswith('pass'):
+                    i += 1
+                else:
+                    g.trace('*** no pass after @others',p.h)
+            else:
+                result.append(s)
+        return ''.join(result)
+    #@+node:ekr.20150526194715.1: *4* ptb.run 
+    def run(self,p,tokens):
+        '''
+        The main line of PythonTokenBeautifier class.
+        Called by prettPrintNode & test_beautifier.
+        '''
+
+        def oops():
+            g.trace('unknown kind',self.kind)
+
+        self.code_list = []
+        self.state_stack = []
+        self.file_start()
+        for token5tuple in tokens:
+            t1,t2,t3,t4,t5 = token5tuple
+            self.kind = token.tok_name[t1].lower()
+            self.val = g.toUnicode(t2)
+            self.raw_val = g.toUnicode(t5)
+            # g.trace('%10s %r'% (self.kind,self.val))
+            func = getattr(self,'do_' + self.kind,oops)
+            func()
+        self.file_end()
+        return ''.join([z.to_string() for z in self.code_list])
+    #@+node:ekr.20150530064617.1: *3* ptb.Utils
+    #@+node:ekr.20150528171420.1: *4* ppp.replace_body
+    def replace_body (self,p,s):
+        '''Replace the body with the pretty version.'''
+        c,u = self.c,self.c.undoer
+        undoType = 'Pretty Print'
+        if p.b == s:
+            return
+        self.n_changed_nodes += 1
+        if not self.changed:
+            # Start the group.
+            u.beforeChangeGroup(p,undoType)
+            self.changed = True
+            self.dirtyVnodeList = []
+        undoData = u.beforeChangeNodeContents(p)
+        c.setBodyString(p,s)
+        dirtyVnodeList2 = p.setDirty()
+        self.dirtyVnodeList.extend(dirtyVnodeList2)
+        u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20150528180738.1: *4* ptb.end_undo
+    def end_undo (self):
+        '''Complete undo processing.'''
+        c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
+        current = c.p
+        if self.changed:
+            # Tag the end of the command.
+            u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
+    #@+node:ekr.20150528172940.1: *4* ptb.print_stats
+    def print_stats(self):
+
+        print('==================== stats')
+        print('changed nodes  %s' % self.n_changed_nodes)
+        print('tokens         %s' % self.n_input_tokens)
+        print('len(code_list) %s' % self.n_output_tokens)
+        print('len(s)         %s' % self.n_strings)
+        print('parse          %4.2f sec.' % self.parse_time)
+        print('tokenize       %4.2f sec.' % self.tokenize_time)
+        print('format         %4.2f sec.' % self.beautify_time)
+        print('check          %4.2f sec.' % self.check_time)
+        print('total          %4.2f sec.' % self.total_time)
+    #@+node:ekr.20150528084644.1: *4* ptb.push_state
     def push_state(self,kind,value=None):
         '''Append a state to the state stack.'''
         state = self.ParseState(kind,value)
         self.state_stack.append(state)
+    #@+node:ekr.20150528192109.1: *4* ptb.skip_message
+    def skip_message(self,s,p):
+        '''Print a standard message about skipping a node.'''
+        message = '%s. skipped:' % s
+        g.warning('%22s %s' % (message,p.h))
     #@-others
 #@-others
+if __name__ == "__main__":
+    main()
 #@@language python
 #@@tabwidth -4
 #@-leo
