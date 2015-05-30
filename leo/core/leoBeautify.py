@@ -6,13 +6,15 @@
 try:
     import leo.core.leoGlobals as g
 except ImportError:
+    # Allow main() to run in any folder containing leoGlobals.py
+    # pylint: disable=relative-import
     import leoGlobals as g
     # Create a dummy decorator.
     def command(func):
         return func
     g.command = command
 import ast
-import re
+# import re
 import sys
 import time
 import token
@@ -193,13 +195,13 @@ def compare_ast(node1, node2):
         return all(itertools.starmap(compare_ast, itertools.izip(node1, node2)))
     else:
         return node1 == node2
-#@+node:ekr.20150524215322.1: *3* dumpTokens & dumpToken
-def dumpTokens(tokens,verbose=True):
+#@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
+def dump_tokens(tokens,verbose=True):
     last_line_number = 0
     for token5tuple in tokens:
-        last_line_number = dumpToken(last_line_number,token5tuple,verbose)
+        last_line_number = dump_token(last_line_number,token5tuple,verbose)
 
-def dumpToken (last_line_number,token5tuple,verbose):
+def dump_token (last_line_number,token5tuple,verbose):
     '''Dump the given token.'''
     t1,t2,t3,t4,t5 = token5tuple
     name = token.tok_name[t1].lower()
@@ -273,10 +275,10 @@ def test_beautifier(c,h,p,settings):
             print('%4s %s' % (i+1,z.rstrip()))
     if settings.get('input_lines'):
         print('==================== input_lines')
-        dumpTokens(tokens,verbose=False)
+        dump_tokens(tokens,verbose=False)
     if settings.get('input_tokens'):
         print('==================== input_tokens')
-        dumpTokens(tokens,verbose=True)
+        dump_tokens(tokens,verbose=True)
     if settings.get('output_tokens'):
         print('==================== code_list')
         for i,z in enumerate(beautifier.code_list):
@@ -290,6 +292,7 @@ def test_beautifier(c,h,p,settings):
     if not ok:
         print('*************** fail: %s ***************' % (h))
     return beautifier
+        # For statistics.
 #@+node:ekr.20150529095117.1: *3* uncomment_leo_lines
 def uncomment_leo_lines(comment,p,s0):
     '''Reverse the effect of comment_leo_lines.'''
@@ -782,9 +785,8 @@ class PythonTokenBeautifier:
         self.c = c
         # Globals...
         self.code_list = [] # The list of output tokens.
-        self.regex_lws = re.compile(r'([ \t]*)')
         # The present line and token...
-        self.line_lws = ''
+        self.last_line_number = 0
         self.extra_ws = ''
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
@@ -899,9 +901,22 @@ class PythonTokenBeautifier:
         self.file_start()
         for token5tuple in tokens:
             t1,t2,t3,t4,t5 = token5tuple
+            srow,scol = t3
             self.kind = token.tok_name[t1].lower()
             self.val = g.toUnicode(t2)
             self.raw_val = g.toUnicode(t5)
+            if srow != self.last_line_number:
+                # Start a new row.
+                if self.paren_level > 0:
+                    s = self.raw_val.rstrip()
+                    n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
+                    self.extra_ws = ' '*(max(0,n-1))
+                    self.clean('line-indent')
+                    self.add_token('hard-line-indent',self.extra_ws)
+                else:
+                    self.extra_ws = ''
+                self.last_line_number = srow
+                self.last_extra_ws = self.extra_ws
             # g.trace('%10s %r'% (self.kind,self.val))
             func = getattr(self,'do_' + self.kind,oops)
             func()
@@ -911,15 +926,15 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
         '''Handle a comment token.'''
-        s = self.raw_val.rstrip()
-        n1 = len(self.lws)
-        n2 = g.computeLeadingWhitespaceWidth (s,self.tab_width)
-        if n2 > n1:
-            self.add_token('indent-comment',' '*(n2-n1))
+        if self.paren_level > 0:
+            # run() handles indentation.
             self.add_token('comment',self.val)
         else:
-            self.blank()
-            self.add_token('comment',self.val)
+            s = self.raw_val.rstrip()
+            n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
+            self.extra_ws = ' '*(max(0,n-1))
+            self.clean('line-indent')
+            self.add_token('hard-line-indent',self.extra_ws)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
@@ -1054,6 +1069,7 @@ class PythonTokenBeautifier:
             'blank','blank-lines',
                 # Suppress duplicates.
             'file-start',
+            'hard-line-indent',
             'line-start','line-end','line-indent',
             'unary-op',
                 # These tokens implicitly suppress blanks.
@@ -1123,8 +1139,8 @@ class PythonTokenBeautifier:
         self.clean('line-indent')
         self.add_token('line-end','\n')
         self.add_token('line-indent',self.lws)
-            # Add then indentation for all lines
-            # until the next indent or unindent token.
+        # Add then indentation for all lines
+        # until the next indent or unindent token.
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
