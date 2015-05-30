@@ -787,7 +787,6 @@ class PythonTokenBeautifier:
         self.code_list = [] # The list of output tokens.
         # The present line and token...
         self.last_line_number = 0
-        self.extra_ws = ''
         self.raw_val = None # Raw value for strings, comments.
         self.s = None # The string containing the line.
         self.val = None
@@ -910,13 +909,10 @@ class PythonTokenBeautifier:
                 if self.paren_level > 0:
                     s = self.raw_val.rstrip()
                     n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
-                    self.extra_ws = ' '*(max(0,n-1))
+                    ws = ' '*(max(0,n-1))
                     self.clean('line-indent')
-                    self.add_token('hard-line-indent',self.extra_ws)
-                else:
-                    self.extra_ws = ''
+                    self.add_token('hard-line-indent',ws)
                 self.last_line_number = srow
-                self.last_extra_ws = self.extra_ws
             # g.trace('%10s %r'% (self.kind,self.val))
             func = getattr(self,'do_' + self.kind,oops)
             func()
@@ -931,11 +927,14 @@ class PythonTokenBeautifier:
             self.add_token('comment',self.val)
         else:
             s = self.raw_val.rstrip()
-            n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
-            self.extra_ws = ' '*n
-            self.clean('line-indent')
-            self.add_token('hard-line-indent',self.extra_ws)
-            self.add_token('comment',self.val)
+            n1 = len(self.lws)
+            n2 = g.computeLeadingWhitespaceWidth (s,self.tab_width)
+            if n2 > n1:
+                self.add_token('indent-comment',' '*(n2-n1))
+                self.add_token('comment',self.val)
+            else:
+                self.blank()
+                self.add_token('comment',self.val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
