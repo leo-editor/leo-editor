@@ -6451,12 +6451,12 @@ made to work reliably.
 .. @+node:ekr.20150527092711.1: ** Unused code: backups
 @language python
 @ignore
-.. @+node:ekr.20150530075611.1: *3* @@button TEST PTB (backup)
+.. @+node:ekr.20150530080057.1: *3* @@button TEST PTB (backup)
 r'''The script to test AddTokensToTree class.'''
 g.cls()
 if c.isChanged():
     c.save()
-project = 'leo'
+project = None # 'leo'
 << imports >>
 if project:
     # 17.1 sec.
@@ -6470,7 +6470,7 @@ if project:
 else:
     aList = [
         # 'unit test: leoBeautify.py',
-        '@file leoColorizer.py',
+        # '@file leoColorizer.py',
         '@file leoBeautify.py',
         # '@file leoCommands.py',
     ]
@@ -6481,7 +6481,7 @@ else:
         'input_tokens': small,
         'output_tokens': small,
         'output_string': small,
-        'stats': not small and len(aList) == 1,
+        'stats': not small # and len(aList) == 1,
     }
 assert aList,'no input in %s' % (p.h)
 << init total stats >>
@@ -6496,15 +6496,17 @@ for h in aList:
             g.es_exception()
 if len(aList) > 1:
     << print total stats >>
-if project:
-    tot_time = time.clock()-t1
+tot_time = time.clock()-t1
+if len(aList) > 1:
     print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
-.. @+node:ekr.20150530075611.2: *4* << imports >>
+else:
+    print('done: %4.2f sec.' % (tot_time))
+.. @+node:ekr.20150530080057.2: *4* << imports >>
 import leo.core.leoBeautify as leoBeautify
 import imp
 import time
 imp.reload(leoBeautify)
-.. @+node:ekr.20150530075611.3: *4* << init total stats >>
+.. @+node:ekr.20150530080057.3: *4* << init total stats >>
 tot_beautify_time = 0.0
 tot_changed_nodes = 0
 tot_check_time = 0.0
@@ -6515,7 +6517,7 @@ tot_parse_time = 0.0
 tot_strings = 0
 tot_tokenize_time = 0.0
 tot_total_time = 0.0
-.. @+node:ekr.20150530075611.4: *4* << update total stats >>
+.. @+node:ekr.20150530080057.4: *4* << update total stats >>
 tot_beautify_time += b.beautify_time
 tot_changed_nodes += b.n_changed_nodes
 tot_check_time += b.check_time
@@ -6526,8 +6528,8 @@ tot_parse_time += b.parse_time
 tot_strings += b.n_strings
 tot_tokenize_time += b.tokenize_time
 tot_total_time += b.total_time
-.. @+node:ekr.20150530075611.5: *4* << print total stats >>
-print('===== totals =====')
+.. @+node:ekr.20150530080057.5: *4* << print total stats >>
+print('========== totals ==========')
 print('files          %s' % tot_files)
 print('changed nodes  %s' % tot_changed_nodes)
 print('tokens         %s' % tot_input_tokens)
