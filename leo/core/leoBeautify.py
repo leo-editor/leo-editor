@@ -961,20 +961,16 @@ class PythonTokenBeautifier:
     #@+node:ekr.20150526203605.1: *4* ptb.do_comment
     def do_comment(self):
         '''Handle a comment token.'''
-        if self.paren_level > 0:
-            # run() handles indentation.
+        raw_val = self.raw_val.rstrip()
+        val = self.val.rstrip()
+        entire_line = raw_val.lstrip().startswith('#')
+        # g.trace(entire_line,raw_val)
+        if entire_line:
+            self.clean('line-indent')
+            self.add_token('comment',raw_val)
+        else:
             self.blank()
             self.add_token('comment',self.val)
-        else:
-            s = self.raw_val.rstrip()
-            n1 = len(self.lws)
-            n2 = g.computeLeadingWhitespaceWidth (s,self.tab_width)
-            if n2 > n1:
-                self.add_token('indent-comment',' '*(n2-n1))
-                self.add_token('comment',self.val)
-            else:
-                self.blank()
-                self.add_token('comment',self.val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
