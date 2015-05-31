@@ -93,7 +93,8 @@ def beautifyPythonTree (event):
     # pp.print_stats()
     g.es_print('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes,t2-t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
-#@+node:ekr.20150529084212.1: *3* comment_leo_lines
+#@+node:ekr.20150531042746.1: *3* munging leo directives
+#@+node:ekr.20150529084212.1: *4* comment_leo_lines
 def comment_leo_lines(p):
     '''Replace lines with Leonine syntax with special comments.'''
     # Choose the comment string so it appears nowhere in s.
@@ -116,12 +117,12 @@ def comment_leo_lines(p):
         k = j > -1 and s.find('>>') or -1
         if -1 < j < k:
             result.append(comment+s)
+            # Generate a properly-indented pass line.
+            j2 = g.skip_ws(s, 0)
+            result.append('%spass\n' % (' ' * j2))
         elif s.lstrip().startswith('@'):
             # Comment out all other Leonine constructs.
-            if (
-                s.startswith('@\n') or s.startswith('@doc\n') or
-                s.startswith('@ ') or s.startswith('@doc ')
-            ):
+            if starts_doc_part(s):
                 # Comment the entire doc part, until @c or @code.
                 result.append(comment+s)
                 i += 1
@@ -129,10 +130,7 @@ def comment_leo_lines(p):
                     s = lines[i]
                     result.append(comment+s)
                     i += 1
-                    if (
-                        s.startswith('@c\n') or s.startswith('@code\n') or
-                        s.startswith('@c ') or s.startswith('@code ')
-                    ):
+                    if ends_doc_part(s):
                         break
             else:
                 j = g.skip_ws(s, 0)
@@ -158,6 +156,77 @@ def comment_leo_lines(p):
             i += 1
     # g.trace(''.join(result))
     return comment,''.join(result)
+#@+node:ekr.20150531042830.1: *4* starts_doc_part & ends_doc_part
+def starts_doc_part(s):
+    '''Return True if s word matches @ or @doc.'''
+    for delim in ('@\n','@doc\n','@ ','@doc '):
+        if s.startswith(delim):
+            return True
+    return False
+    
+def ends_doc_part(s):
+    '''Return True if s word matches @c or @code.'''
+    for delim in ('@c\n','@code\n','@c ','@code '):
+        if s.startswith(delim):
+            return True
+    return False
+#@+node:ekr.20150529095117.1: *4* uncomment_leo_lines
+def uncomment_leo_lines(comment,p,s0):
+    '''Reverse the effect of comment_leo_lines.'''
+    lines = g.splitLines(s0)
+    i, result = 0, []
+    # g.trace(s0)
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        i += 1
+        if s.find(comment) == -1:
+            # A regular line.
+            result.append(s)
+        else:
+            # One or more special lines.
+            i = uncomment_special_lines(comment,i,lines,p,result,s)
+        assert progress < i
+    return ''.join(result).rstrip()+'\n'
+#@+node:ekr.20150531041720.1: *4* uncomment_special_line & helpers
+def uncomment_special_lines(comment,i,lines,p,result,s):
+    '''
+    s is a line containing the comment delim.
+    i points at the *next* line.
+    Handle one or more lines, appending stripped lines to result.
+    '''
+    s = s.lstrip().lstrip(comment)
+    if starts_doc_part(s):
+        result.append(s)
+        while i < len(lines):
+            s = lines[i].lstrip().lstrip(comment)
+            i += 1
+            result.append(s)
+            if ends_doc_part(s):
+                break
+        return i
+    else:
+        j = s.find('<<')
+        k = j > -1 and s.find('>>') or -1
+        if -1 < j < k or s.find('@others') > -1:
+            # A section reference line or an @others line.
+            # Such lines are followed by a pass line.
+            # The beautifier may insert blank lines before the pass line.
+            kind = 'section ref' if -1 < j < k else '@others'
+            # Restore the original line, including leading whitespace.
+            result.append(s)
+            # Skip blank lines.
+            while i < len(lines) and not lines[i].strip():
+                i += 1
+            # Skip the pass line.
+            if i < len(lines) and lines[i].lstrip().startswith('pass'):
+                i += 1
+            else:
+                g.trace('*** no pass after %s: %s' %(kind,p.h))
+        else:
+            # A directive line.
+            result.append(s)
+        return i
 #@+node:ekr.20150526115312.1: *3* compare_ast
 # http://stackoverflow.com/questions/3312989/
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
@@ -300,49 +369,6 @@ def test_beautifier(c,h,p,settings):
         print('*************** fail: %s ***************' % (h))
     return beautifier
         # For statistics.
-#@+node:ekr.20150529095117.1: *3* uncomment_leo_lines
-def uncomment_leo_lines(comment,p,s0):
-    '''Reverse the effect of comment_leo_lines.'''
-    i, lines, result = 0, g.splitLines(s0), []
-    # g.trace(s0)
-    while i < len(lines):
-        s = lines[i]
-        i += 1
-        j = s.find(comment)
-        if j == -1:
-            # A regular line.
-            result.append(s)
-            continue
-        # A special line. i now points at the *next* line.
-        s = s.lstrip().lstrip(comment)
-        if (
-            s.startswith('@\n') or s.startswith('@doc\n') or
-            s.startswith('@ ') or s.startswith('@doc ')
-        ):
-            result.append(s)
-            while i < len(lines):
-                s = lines[i].lstrip().lstrip(comment)
-                result.append(s)
-                i += 1
-                if (
-                    s.startswith('@c\n') or s.startswith('@code\n') or
-                    s.startswith('@c ') or s.startswith('@code ')
-                ):
-                    break
-        elif s.find('@others') > -1:
-            # Restore the @others line, including leading whitespace.
-            result.append(s)
-            # The beautifier may insert blank lines after @others.
-            while i < len(lines) and not lines[i].strip():
-                i += 1
-            # Skip the pass line.
-            if i < len(lines) and lines[i].lstrip().startswith('pass'):
-                i += 1
-            else:
-                g.trace('*** no pass after @others',p.h)
-        else:
-            result.append(s)
-    return ''.join(result)
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
 
