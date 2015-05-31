@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -11,16 +12,6 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
-<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
-<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
-<v t="ekr.20140919093158.17876"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
-<v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
-<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
-<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
-<v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
-<v t="ekr.20150407140807.1"><vh>@button cfa-code</vh></v>
-<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
 <v t="ekr.20150508071622.1"><vh>create_decorator</vh></v>
@@ -39,25 +30,36 @@
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
+<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
+<v t="ekr.20150407140807.1"><vh>@button cfa-code</vh></v>
+<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
+<v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
+<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
+<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
+<v t="ekr.20140919093158.17876"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
+<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
+<v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150514123457.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150517150846.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150514123457.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150517150846.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150514123457.3"><vh>@gnxs</vh></v>
+<v t="ekr.20150517150846.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150514123457.4"><vh>@gnxs</vh></v>
+<v t="ekr.20150517150846.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150514123457.5"><vh>@gnxs</vh></v>
+<v t="ekr.20150517150846.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -68,7 +70,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005505302e332e3071017d7102285808000000616e6e6f7461746571037d71042855087072696f7269747971054d0f27550a707269736574646174657106550a323031352d30352d3237710775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -82,26 +84,12 @@
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
-<v t="ekr.20150514035207.1"><vh>Command classes</vh>
-<v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
-<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
-<v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
-<v t="ekr.20150514040100.1"><vh>@file ../commands/controlCommands.py</vh></v>
-<v t="ekr.20150514040118.1"><vh>@file ../commands/debugCommands.py</vh></v>
-<v t="ekr.20150514035813.1"><vh>@file ../commands/editCommands.py</vh></v>
-<v t="ekr.20150514041209.1"><vh>@file ../commands/editFileCommands.py</vh></v>
-<v t="ekr.20150514040138.1"><vh>@file ../commands/helpCommands.py</vh></v>
-<v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
-<v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
-<v t="ekr.20150514040144.1"><vh>@file ../commands/macroCommands.py</vh></v>
-<v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
-<v t="ekr.20150514040234.1"><vh>@file ../commands/registerCommands.py</vh></v>
-<v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
-</v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
+<v t="ekr.20150521115018.1" descendentVnodeUnknownAttributes="7d71002855013071017d7102285508616e6e6f7461746571037d71042855087072696f7269747971054d0f27550870726f6772657373710655007107550874696d655f72657171086807550a707269736574646174657109550a323031352d30352d3330710a75550b6c696e65594f6666736574710b4b00755505302e322e35710c7d710d285508616e6e6f74617465710e7d710f2855087072696f7269747971104d0f27550a707269736574646174657111550a323031352d30352d3330711275550b6c696e65594f666673657471134b0075752e"
+expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
@@ -111,6 +99,7 @@
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
@@ -126,6 +115,22 @@
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
+</v>
+<v t="ekr.20150514035207.1"><vh>Command classes</vh>
+<v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
+<v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
+<v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
+<v t="ekr.20150514040100.1"><vh>@file ../commands/controlCommands.py</vh></v>
+<v t="ekr.20150514040118.1"><vh>@file ../commands/debugCommands.py</vh></v>
+<v t="ekr.20150514035813.1"><vh>@file ../commands/editCommands.py</vh></v>
+<v t="ekr.20150514041209.1"><vh>@file ../commands/editFileCommands.py</vh></v>
+<v t="ekr.20150514040138.1"><vh>@file ../commands/helpCommands.py</vh></v>
+<v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
+<v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
+<v t="ekr.20150514040144.1"><vh>@file ../commands/macroCommands.py</vh></v>
+<v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
+<v t="ekr.20150514040234.1"><vh>@file ../commands/registerCommands.py</vh></v>
+<v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -1105,7 +1110,9 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">run-pylint
+<t tx="ekr.20150425145248.1">beautify-tree
+run-pylint
+test-ptb
 cfa-code
 sort-lines
 check-clones
@@ -1606,28 +1613,29 @@ def define_s(self):
 '''
 </t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150514123457.1">gnx: ekr.20150407124229.1
+<t tx="ekr.20150517150846.1">gnx: ekr.20150517150823.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150514123457.2">gnx: ekr.20150407124230.1
+<t tx="ekr.20150517150846.2">gnx: ekr.20150517150823.2
 unl: qt_main declarations
-gnx: ekr.20150407124230.2
+gnx: ekr.20150517150823.3
 unl: class Ui_MainWindow
-gnx: ekr.20150407124230.3
+gnx: ekr.20150517150823.4
 unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20150407124230.4
+gnx: ekr.20150517150823.5
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20150514123457.3"></t>
-<t tx="ekr.20150514123457.4">gnx: ekr.20150407124230.5
+<t tx="ekr.20150517150846.3"></t>
+<t tx="ekr.20150517150846.4">gnx: ekr.20150517150823.6
 unl: qt_quicksearch declarations
-gnx: ekr.20150407124230.6
+gnx: ekr.20150517150823.7
 unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20150407124230.7
+gnx: ekr.20150517150823.8
 unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20150407124230.8
+gnx: ekr.20150517150823.9
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20150514123457.5"></t>
+<t tx="ekr.20150517150846.5"></t>
+<t tx="ekr.20150531102337.1"></t>
 </tnodes>
 </leo_file>
