@@ -1073,6 +1073,10 @@ class PythonTokenBeautifier:
                 self.op(val)
         elif val in '+-':
             self.possible_unary_op(val)
+        elif val == '*':
+            self.star_op()
+        elif val == '**':
+            self.star_star_op()
         else:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
@@ -1252,6 +1256,40 @@ class PythonTokenBeautifier:
         assert s and g.isString(s),repr(s)
         self.blank()
         self.add_token('unary-op',s)
+    #@+node:ekr.20150531051827.1: *4* ptb.star_op
+    def star_op(self):
+        '''Put a '*' op, with special cases for *args.'''
+        val = '*'
+        if self.paren_level:
+            i = len(self.code_list) -1
+            if self.code_list[i].kind == 'blank':
+                i -= 1
+            token = self.code_list[i]
+            if token.kind == 'lt':
+                self.op_no_blanks(val)
+            elif token.value == ',':
+                self.blank()
+                self.add_token('op-no-blanks',val)
+            else:
+                self.op(val)
+        else:
+            self.op(val)
+    #@+node:ekr.20150531053417.1: *4* ptb.star_star_op
+    def star_star_op(self):
+        '''Put a ** operator, with a special case for **kwargs.'''
+        val = '**'
+        if self.paren_level:
+            i = len(self.code_list) -1
+            if self.code_list[i].kind == 'blank':
+                i -= 1
+            token = self.code_list[i]
+            if token.value == ',':
+                self.blank()
+                self.add_token('op-no-blanks',val)
+            else:
+                self.op(val)
+        else:
+            self.op(val)
     #@+node:ekr.20150526201701.13: *4* ptb.word & word_op
     def word(self,s):
         '''Add a word request to the code list.'''
