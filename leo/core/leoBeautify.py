@@ -875,7 +875,7 @@ class PythonTokenBeautifier:
             elif 'nobeautify' in d:
                 # This message would quickly become annoying.
                 # self.skip_message('@nobeautify',p)
-                return ''
+                return
         t1 = time.clock()
         # Replace Leonine syntax with special comments.
         comment_string,s0 = comment_leo_lines(p)
