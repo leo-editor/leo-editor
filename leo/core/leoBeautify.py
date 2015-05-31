@@ -1148,6 +1148,7 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == 'file-start':
             return
+        self.clean('blank') # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
