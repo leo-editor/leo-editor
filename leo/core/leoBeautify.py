@@ -72,7 +72,6 @@ def prettyPrintPythonNode (event):
     '''Beautify a single Python node.'''
     c = event.get('c')
     if not c: return
-    ### pp = PythonPrettyPrinter(c)
     pp = PythonTokenBeautifier(c)
     if g.scanForAtLanguage(c,c.p) == "python":
         pp.prettyPrintNode(c.p)
@@ -202,7 +201,7 @@ def dump_tokens(tokens,verbose=True):
         last_line_number = dump_token(last_line_number,token5tuple,verbose)
 
 def dump_token (last_line_number,token5tuple,verbose):
-    '''Dump the given token.'''
+    '''Dump the given input token.'''
     t1,t2,t3,t4,t5 = token5tuple
     name = token.tok_name[t1].lower()
     val = str(t2) # can fail
@@ -238,9 +237,9 @@ def test_beautifier(c,h,p,settings):
         g.trace('not found: %s' % h)
         return
     s = g.getScript(c, p,
-                    useSelectedText=False,
-                    forcePythonSentinels=True,
-                    useSentinels=False)
+            useSelectedText=False,
+            forcePythonSentinels=True,
+            useSentinels=False)
     g.trace(h.strip())
     t1 = time.clock()
     s1 = g.toEncodedString(s)
@@ -250,6 +249,9 @@ def test_beautifier(c,h,p,settings):
     tokens = list(tokenize.generate_tokens(readlines))
     t3 = time.clock()
     beautifier = PythonTokenBeautifier(c)
+    keep_blank_lines = settings.get('tidy-keep-blank-lines')
+    if keep_blank_lines is not None:
+        beautifier.delete_blank_lines = not keep_blank_lines
     s2 = beautifier.run(p,tokens)
     t4 = time.clock()
     try:
@@ -286,7 +288,12 @@ def test_beautifier(c,h,p,settings):
     if settings.get('output_string'):
         print('==================== output_string')
         for i,z in enumerate(g.splitLines(s2)):
-            print('%4s %s' % (i+1,z.rstrip()))
+            if z == '\n':
+                print('%4s' % (i+1))
+            elif z.rstrip():
+                print('%4s %s' % (i+1,z.rstrip()))
+            else:
+                print('%4s %r' % (i+1,str(z)))
     if settings.get('stats'):
         beautifier.print_stats()
     if not ok:
@@ -760,7 +767,11 @@ class PythonTokenBeautifier:
             self.value = value
 
         def __repr__(self):
-            return '%15s %s' % (self.kind,repr(self.value))
+            if self.kind == 'line-indent':
+                assert not self.value.strip(' ')
+                return '%15s %s' % (self.kind,len(self.value))
+            else:
+                return '%15s %r' % (self.kind,self.value)
 
         __str__ = __repr__
 
@@ -909,9 +920,11 @@ class PythonTokenBeautifier:
                 if self.paren_level > 0:
                     s = self.raw_val.rstrip()
                     n = g.computeLeadingWhitespaceWidth(s,self.tab_width)
-                    ws = ' '*(max(0,n-1))
-                    self.clean('line-indent')
-                    self.add_token('hard-line-indent',ws)
+                    # This n will be one-too-many if formatting has
+                    # changed: foo (
+                    # to:      foo(
+                    self.line_indent(ws = ' ' * n)
+                        # Do not set self.lws here!
                 self.last_line_number = srow
             # g.trace('%10s %r'% (self.kind,self.val))
             func = getattr(self,'do_' + self.kind,oops)
@@ -1066,16 +1079,13 @@ class PythonTokenBeautifier:
     def blank(self):
         '''Add a blank request on the code list.'''
         prev = self.code_list[-1]
-        if prev.kind not in (
+        if not prev.kind in (
             'blank','blank-lines',
-                # Suppress duplicates.
             'file-start',
-            'hard-line-indent',
-            'line-start','line-end','line-indent',
-            'unary-op',
-                # These tokens implicitly suppress blanks.
-            'arg-start','lt','op-no-blanks',
-                # These tokens explicity suppress blanks.
+            'line-end','line-indent',
+            'lt','op-no-blanks','unary-op',
+            ### 'arg-end','arg-start',
+            ### Not yet generated.
         ):
             self.add_token('blank',' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
@@ -1093,7 +1103,7 @@ class PythonTokenBeautifier:
                 self.add_token('line-end','\n')
             # Retain the intention for debugging.
             self.add_token('blank-lines',n)
-            self.add_token('line-indent',self.lws)
+            self.line_indent()
     #@+node:ekr.20150526201701.6: *4* ptb.clean
     def clean(self,kind):
         '''Remove the last item of token list if it has the given kind.'''
@@ -1108,12 +1118,8 @@ class PythonTokenBeautifier:
     def clean_blank_lines(self):
         '''Remove all vestiges of previous lines.'''
         table = ('blank-lines','line-end','line-indent')
-        while True:
-            for kind in table:
-                if self.clean(kind):
-                    break
-            else:
-                break
+        while self.code_list[-1].kind in table:
+            self.code_list.pop()
     #@+node:ekr.20150526201701.8: *4* ptb.file_start & file_end
     def file_end(self):
         '''
@@ -1122,13 +1128,20 @@ class PythonTokenBeautifier:
         '''
         self.clean_blank_lines()
         self.add_token('line-end','\n')
-        # self.add_token('line-end','\n')
+        self.add_token('line-end','\n')
         self.add_token('file-end')
 
     def file_start(self):
         '''Add a file-start token to the code list and the state stack.'''
         self.add_token('file-start')
         self.push_state('file-start')
+    #@+node:ekr.20150530190758.1: *4* ptb.line_indent
+    def line_indent(self,ws=None):
+        '''Add a line-indent token if indentation is non-empty.'''
+        self.clean('line-indent')
+        ws = ws or self.lws
+        if ws:
+            self.add_token('line-indent',ws)
     #@+node:ekr.20150526201701.9: *4* ptb.line_start & line_end
     def line_end(self):
         '''Add a line-end request to the code list.'''
@@ -1139,14 +1152,14 @@ class PythonTokenBeautifier:
             self.clean_blank_lines()
         self.clean('line-indent')
         self.add_token('line-end','\n')
-        self.add_token('line-indent',self.lws)
-        # Add then indentation for all lines
-        # until the next indent or unindent token.
+        self.line_indent()
+            # Add then indentation for all lines
+            # until the next indent or unindent token.
 
     def line_start(self):
         '''Add a line-start request to the code list.'''
-        self.clean('line-indent')
-        self.add_token('line-indent',self.lws)
+        self.line_indent()
+        
     #@+node:ekr.20150526201701.11: *4* ptb.lt & rt
     def lt(self,s):
         '''Add a left paren request to the code list.'''
@@ -1157,9 +1170,9 @@ class PythonTokenBeautifier:
         # g.trace(prev.kind,prev.value)
         if prev.kind in ('op','word-op'):
             self.blank()
-            self.add_token('op-no-blanks',s)
+            self.add_token('lt',s)
         elif prev.kind == 'word':
-            self.add_token('op-no-blanks',s)
+            self.add_token('lt',s)
         elif prev.kind == 'op':
             self.op(s)
         else:
