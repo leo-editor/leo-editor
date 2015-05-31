@@ -135,38 +135,38 @@ globalDirectiveList = [
 #@-<< define g.globalDirectiveList >>
 #@+<< define global decorator dicts >>
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
+#@@nobeautify
+
 global_commands_dict = {}
     # was g.app.global_commands_dict.
 cmd_instance_dict = {
     # Keys are class names, values are attribute chains.
-    'AbbrevCommandsClass': ['c', 'abbrevCommands'],
-    'AtFile': ['c', 'atFileCommands'],
-    'AutoCompleterClass': ['c', 'k', 'autoCompleter'],
-    'BufferCommandsClass': ['c', 'bufferCommands'],
-    'ChapterController': ['c', 'chapterController'],
-    'Commands': ['c'],
-    'ControlCommandsClass': ['c', 'controlCommands'],
-    'DebugCommandsClass': ['c', 'debugCommands'],
-    'EditCommandsClass': ['c', 'editCommands'],
-    'EditFileCommandsClass': ['c', 'editFileCommands'],
-    'FileCommands': ['c', 'fileCommands'],
-    'HelpCommandsClass': ['c', 'helpCommands'],
-    'KeyHandlerClass': ['c', 'k'],
-    'KeyHandlerCommandsClass': ['c', 'keyHandlerCommands'],
-    'KillBufferCommandsClass': ['c', 'killBufferCommands'],
-    'LeoApp': ['g', 'app'],
-    'LeoFind': ['c', 'findCommands'],
-    'LeoImportCommands': ['c', 'importCommands'],
-    'MacroCommandsClass': ['c', 'macroCommands'],
-    'PrintingController': ['c', 'printingController'],
-    'RectangleCommandsClass': ['c', 'rectangleCommands'],
-    'RegisterCommandsClass': ['c', 'registerCommands'],
-    'RstCommands': ['c', 'rstCommands'],
-    'SpellCommandsClass': ['c', 'spellCommands'],
-    # 'TangleCommands': ['c','tangleCommands'],
-        # The Commands class defines all tangle/untangle commands.
-    'Undoer': ['c', 'undoer'],
-    'VimCommands': ['c', 'vimCommands'],
+    'AbbrevCommandsClass':      ['c', 'abbrevCommands'],
+    'AtFile':                   ['c', 'atFileCommands'],
+    'AutoCompleterClass':       ['c', 'k', 'autoCompleter'],
+    'BufferCommandsClass':      ['c', 'bufferCommands'],
+    'ChapterController':        ['c', 'chapterController'],
+    'Commands':                 ['c'],
+    'ControlCommandsClass':     ['c', 'controlCommands'],
+    'DebugCommandsClass':       ['c', 'debugCommands'],
+    'EditCommandsClass':        ['c', 'editCommands'],
+    'EditFileCommandsClass':    ['c', 'editFileCommands'],
+    'FileCommands':             ['c', 'fileCommands'],
+    'HelpCommandsClass':        ['c', 'helpCommands'],
+    'KeyHandlerClass':          ['c', 'k'],
+    'KeyHandlerCommandsClass':  ['c', 'keyHandlerCommands'],
+    'KillBufferCommandsClass':  ['c', 'killBufferCommands'],
+    'LeoApp':                   ['g', 'app'],
+    'LeoFind':                  ['c', 'findCommands'],
+    'LeoImportCommands':        ['c', 'importCommands'],
+    'MacroCommandsClass':       ['c', 'macroCommands'],
+    'PrintingController':       ['c', 'printingController'],
+    'RectangleCommandsClass':   ['c', 'rectangleCommands'],
+    'RegisterCommandsClass':    ['c', 'registerCommands'],
+    'RstCommands':              ['c', 'rstCommands'],
+    'SpellCommandsClass':       ['c', 'spellCommands'],
+    'Undoer':                   ['c', 'undoer'],
+    'VimCommands':              ['c', 'vimCommands'],
 }
 #@-<< define global decorator dicts >>
 tree_popup_handlers = [] # Set later.
@@ -398,34 +398,26 @@ def isStroke(obj):
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
-# From the Python cookbook, recipe 5.23
+#@@nobeautify
 
 class NullObject:
     """
     An object that does nothing, and does it very well.
     From the Python cookbook, recipe 5.23
     """
-
     def __init__(self, *args, **keys): pass
-
     def __call__(self, *args, **keys): return self
     # def __len__    (self): return 0 # Debatable.
-
     def __repr__(self): return "NullObject"
-
     def __str__(self): return "NullObject"
     if isPython3:
-
         def __bool__(self): return False
     else:
-
         def __nonzero__(self): return 0
-
     def __delattr__(self, attr): return self
-
     def __getattr__(self, attr): return self
-
     def __setattr__(self, attr, val): return self
+
 nullObject = NullObject
     # For compatibility
 #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
@@ -619,7 +611,7 @@ class SherlockTracer:
     A stand-alone tracer class with many of Sherlock's features.
 
     This class should work in any environment containing the re, os and sys modules.
-    
+
     The arguments in the pattern lists determine which functions get traced
     or which stats get printed. Each pattern starts with "+", "-", "+:" or
     "-:", followed by a regular expression::
@@ -629,19 +621,19 @@ class SherlockTracer:
     "-x"  Disables tracing for functions/methods.
     "+:x" Enables tracing for all functions in the **file** whose name matches x.
     "-:x" Disables tracing for an entire file.
-    
+
     Enabling and disabling depends on the order of arguments in the pattern
     list. Consider the arguments for the Rope trace::
-    
+
     patterns=['+.*','+:.*',
         '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
         '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
-    
+
     This enables tracing for everything, then disables tracing for all
     library modules, except for all rope modules. Finally, it disables the
     tracing for Rope's worder, prefs and resources modules. Btw, this is
     one of the best uses for regular expressions that I know of.
-    
+
     Being able to zero in on the code of interest can be a big help in
     studying other people's code. This is a non-invasive method: no tracing
     code needs to be inserted anywhere.
@@ -1282,7 +1274,7 @@ def check_cmd_instance_dict(c, g):
 class Command:
     '''
     A global decorator for functions outside of any class.
-    
+
     g can *not* be used anywhere in this class!
     '''
 
@@ -2895,7 +2887,7 @@ def utils_stat(fileName):
 def find_word(s, word, i=0):
     '''
     Return the index of the first occurance of word in s, or -1 if not found.
-    
+
     g.find_word is *not* the same as s.find(i,word);
     g.find_word ensures that only word-matches are reported.
     '''
@@ -2920,7 +2912,7 @@ def find_word(s, word, i=0):
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
     """try and move to unl in the commander c
-    
+
     All parameters passed on to recursiveUNLFind(), see that for docs.
 
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
@@ -2947,7 +2939,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     """
     Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()
-                             
+
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
 
@@ -3721,7 +3713,7 @@ def IdleTime(handler, delay=500, tag=None):
 
     The IdleTime class executes a handler with a given delay at idle time.
     The handler takes a single argument, the IdleTime instance::
-        
+
         def handler(timer):
             """IdleTime handler.  timer is an IdleTime instance."""
             delta_t = timer.time-timer.starting_time
@@ -3729,11 +3721,11 @@ def IdleTime(handler, delay=500, tag=None):
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
-    
+
         # Execute handler every 500 msec. at idle time.
         timer = g.IdleTime(c,handler,delay=500)
         if timer: timer.start()
-        
+
     Timer instances are completely independent::
 
         def handler1(timer):
@@ -3742,7 +3734,7 @@ def IdleTime(handler, delay=500, tag=None):
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
-    
+
         def handler2(timer):
             delta_t = timer.time-timer.starting_time
             g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
@@ -3766,7 +3758,7 @@ trace_count = 0
 def idleTimeHookHandler(timer):
     '''
     The one and only idle-time event handler.
-    
+
     Calls c.doHook('idle') for each commander.
     '''
     global trace_count
@@ -3795,7 +3787,7 @@ def doHook(tag, *args, **keywords):
     '''
     This global function calls a hook routine. Hooks are identified by the
     tag param.
-    
+
     Returns the value returned by the hook routine, or None if the there is
     an exception.
 
@@ -3803,7 +3795,7 @@ def doHook(tag, *args, **keywords):
     1. c.hookFunction
     2. app.hookFunction
     3. leoPlugins.doPlugins()
-    
+
     Set app.hookError on all exceptions.
     Scripts may reset app.hookError to try again.
     '''
@@ -3897,7 +3889,7 @@ def importModule(moduleName, pluginName=None, verbose=False):
     Try to import a module as Python's import command does.
 
     moduleName is the module's name, without file extension.
-    
+
     This function first attempts to import from sys.modules,
     then from the extensions and external directories.
     '''
@@ -3969,7 +3961,7 @@ def importExtension(moduleName, pluginName=None, verbose=False, required=False):
 def importFromPath(moduleName, path, verbose=False):
     '''
     Import a module whose name is given from the directory given by path.
-    
+
     **Warning**: This is a thin wrapper for imp.load_module, which is
     equivalent to reload! Reloading Leo files while running will crash Leo.
     '''
@@ -4155,7 +4147,7 @@ def join_list(aList, indent='', leading='', sep='', trailing=''):
 def list_to_string(obj):
     '''
     Convert obj (a list of lists) to a single string.
-    
+
     This function stresses the gc; it will usually be better to
     work with the much smaller strings generated by flatten_list.
 
@@ -4352,9 +4344,9 @@ def stripBOM(s):
     '''
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
-    
+
     If there is no BOM, return (None,s)
-    
+
     s must be the contents of a file (a string) read in binary mode.
     '''
     table = (
