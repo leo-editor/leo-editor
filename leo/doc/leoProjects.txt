@@ -141,6 +141,122 @@ These directives are inherited as usual.
 .. @+node:ekr.20150529182422.1: *4* Rewrote Leo's Python beautifier
 May 19 to 26: Work on Ast-based beautifier.  This failed.
 May 26 to 30: Token-based beautifier.
+
+Rev 174427d makes Leo's new beautifier fully functional.  I consider this project complete, with one possible exception, discussed below.
+
+Three files, leoGlobals.py, leoAst.py and leoBeautify.py have already been beautified. All of Leo's core files will soon be beautified, including plugins I wrote or am responsible for.
+
+**Executive summary**
+
+- The beautifier just works for all code except aligned dictionary definitions.
+- The beautifier never attempts to make difficult choices.
+- The beautifier never splits lines.
+- @nobeautify protects a node and its descendants from unwanted beautification.
+- @beautify re-enables beautification.
+- The code will work on either Python 2 or 3.
+
+The rest of this post discusses the details...
+
+**Sweet Spot**
+
+Earlier today I had intended to continue work on this project.  But after seeing the code in action I realized that adding more settings and "frills" could be a step backwards.
+
+The present code handles all the uncontroversial parts of pep8 as expected, while leaving all difficult, ambiguous or idiosyncratic decisions to the user.
+
+With just one exception, discussed below, the present code should just work for everybody without the need for other preferences!  This is a happy surprise.
+
+**What the beautifies does**
+
+The beautifier follows the pep 8 recommendations for whitespace. It ensures that names, operators, strings and comments are separated by zero or one blanks, as expected::
+
+    def spam(a, b, c=5, *args, **keys):
+        foo(a, 25, b=2)
+        a = b + c - 5
+        b = -d
+        if 0 < b < 26:
+            ...
+
+Leo follows the pep 8 recommendations for blank lines, with minor variations due to Leo's node structure.
+
+Optionally, the beautifier can remove blank lines within classes and defs, controlled by the one and only one beautifier setting::
+
+    @bool tidy-keep-blank-lines = False
+
+That's all!
+
+**What the beautifier doesn't do**
+
+The beautifier never creates new lines! The beautifier never adds or changes:
+
+- Line breaks for "long" lines.
+- Line breaks in function argument lists.
+- Leading whitespace in continued argument lines.
+- Line breaks call arguments.
+- Leading whitespace in continue function call arguments.
+- Whitespace (including line breaks) within statements.
+
+Yesterday I saw that I had seriously misunderstood the pep 8 recommendations for indentation.  pep 8 allows much more flexibility than I thought.
+
+The beautifier will leave all of the following unchanged, whether or not they conform to the pep 8 recommendation::
+
+    def function1 (a, b, c):
+        pass
+    
+    def function2 (
+    a = 2, # a comment
+    b = 3, # another comment
+    ):
+        pass
+    
+    def function3 (
+        a = 2, # a comment
+        b = 3, # another comment
+    ):
+        pass
+    
+    def function4(
+                  a = 2, # a comment
+                  b = 3, # another comment
+                 ):
+        pass
+
+Similarly, the beautifier will not touch arguments in function calls.
+
+In short, *the beautifier won't mess with your code*! There is one exception...
+
+**Formatting dict definitions**
+
+At present, the beautifier unaligns dict definitions.  It will convert::
+
+    cmd_instance_dict = {
+        'AbbrevCommands':    ['c', 'abbrevCommands'],
+        'AtFile':            ['c', 'atFileCommands'],
+        ...
+    }
+
+to::
+
+    cmd_instance_dict = {
+        'AbbrevCommands': ['c', 'abbrevCommands'],
+        'AtFile': ['c', 'atFileCommands'],
+        ...
+    }
+
+The workaround is to disable formatting for such nodes with the new @nobeautify directive.  There is also an @beautify directive. These two directives work together as usual.
+
+The tokens provided by Python's tokenizer might provide enough data to preserve indentation in such cases.  I'll check before declaring the beautifier fully complete.
+
+**Summary**
+
+The present beautifier is maximally useful with just one setting. Except for dictionary definitions, the beautifier does what is expected, leaving difficult or idiosyncratic cases completely at the user's discretion. Git can revert unwanted changes to dicts.
+
+Further "improvements" to the beautifier would imply settings that most people will neither know about nor understand. The present beautifier is almost as easy to use as the camera with the giant red button ;-)
+ 
+The @bool tidy-keep-blank-lines setting tells the beautifier whether to remove blank lines within classes, functions and methods.  The beautifier inserts reasonable blanks lines between classes, functions and methods in almost all cases.
+
+The @nobeautify directive protects code from unwanted beautification.
+
+The @beautify/@nobeautify directives act on a node and its descendants, as usual.
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
