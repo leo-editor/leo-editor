@@ -1888,7 +1888,7 @@ def findLanguageDirectives(c, p):
     '''Return the language in effect at position p.'''
     trace = False and not g.unitTesting
     if c is None:
-        return # c may be None for testing. 
+        return # c may be None for testing.
     if c.target_language:
         language = c.target_language.lower()
     else:

@@ -970,7 +970,7 @@ class PythonTokenBeautifier:
             self.add_token('comment',raw_val)
         else:
             self.blank()
-            self.add_token('comment',self.val)
+            self.add_token('comment',val)
     #@+node:ekr.20041021102938: *4* ptb.do_endmarker
     def do_endmarker (self):
         '''Handle an endmarker token.'''
