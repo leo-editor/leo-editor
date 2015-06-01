@@ -879,6 +879,7 @@ class PythonTokenBeautifier:
             ok = compare_ast(node1, node2)
         except Exception:
             g.es_exception()
+            g.trace('Error in %s...\n%s' % (p.h, s2_e))
             self.skip_message('BeautifierError', p)
             return
         if not ok:
@@ -1067,6 +1068,8 @@ class PythonTokenBeautifier:
     def do_string(self):
         '''Handle a 'string' token.'''
         self.add_token('string', self.val)
+        if self.val.find('\\\n'):
+            self.backslash_seen = False
             # This does retain the string's spelling.
         self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
@@ -1089,6 +1092,7 @@ class PythonTokenBeautifier:
         '''Add a backslash token and clear .backslash_seen'''
         self.add_token('backslash', '\\')
         self.add_token('line-end', '\n')
+        self.line_indent()
         self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
