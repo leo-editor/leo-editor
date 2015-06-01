@@ -1079,15 +1079,14 @@ class PythonTokenBeautifier:
     # def arg_end(self):
         # '''Add a token indicating the end of an argument list.'''
         # self.add_token('arg-end')
-
     # def arg_start(self):
         # '''Add a token indicating the start of an argument list.'''
         # self.add_token('arg-start')
     #@+node:ekr.20150601095528.1: *4* ptb.backslash
     def backslash(self):
         '''Add a backslash token and clear .backslash_seen'''
-        self.add_token('backslash','\\')
-        self.add_token('line-end','\n')
+        self.add_token('backslash', '\\')
+        self.add_token('line-end', '\n')
         self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
