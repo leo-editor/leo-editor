@@ -144,7 +144,7 @@ class AstFormatter:
     def do_ClassDef(self, node):
         result = []
         name = node.name # Only a plain string is valid.
-        bases = [self.visit(z) for z in node.bases] if node.bases else[]
+        bases = [self.visit(z) for z in node.bases] if node.bases else []
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
