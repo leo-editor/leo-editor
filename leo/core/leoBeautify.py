@@ -254,36 +254,43 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
 
 def compare_ast(node1, node2):
-    import itertools
+
+    def fail(node1,node2):
+        name1 = node1.__class__.__name__
+        name2 = node2.__class__.__name__
+        tag = 'compare_ast failed:',
+        if name1 == 'str':
+            g.pr(tag, repr(node1), repr(node2))
+        elif name1 == 'Str':
+            g.pr(tag,'Str', repr(node1.s), repr(node2.s))
+        else:
+            g.pr(tag, getattr(node1, 'lineno', '???'),
+                 getattr(node2, 'lineno', '???'))
+    
     if type(node1) is not type(node2):
+        fail(node1,node2)
         return False
     if isinstance(node1, ast.AST):
-        for k, v in vars(node1).iteritems():
-            if k in (
-                'lineno', 'col_offset', 'ctx',
-                    # standard fields
-                # 'trailing_tokens', 'str_spelling',
-                    # fields injected by LeoTidy.
-            ):
-                continue
-            v2 = getattr(node2, k)
-            if not compare_ast(v, v2):
-                name1, name2 = v.__class__.__name__, v2.__class__.__name__
-                if name1 == 'str':
-                    g.trace('str', repr(v), repr(v2))
-                elif name1 == 'Str':
-                    g.trace('Str', repr(v.s), repr(v2.s))
-                else:
-                    n1 = getattr(v, 'lineno', '???')
-                    n2 = getattr(v2, 'lineno', '???')
-                    g.trace(n1, n2, name1, name2)
-                    # g.trace(v)
-                    # g.trace(v2)
-                return False
+        for kind, var in vars(node1).items():
+            if kind not in ('lineno', 'col_offset', 'ctx'):
+                # var and var2 may be None
+                var2 = getattr(node2, kind, None)
+                if not compare_ast(var, var2):
+                    fail(var, var2)
+                    return False
         return True
     elif isinstance(node1, list):
-        return all(itertools.starmap(compare_ast, itertools.izip(node1, node2)))
+        if len(node1) != len(node2):
+            fail(node1,node2)
+            return False
+        for i in range(len(node1)):
+            if not compare_ast(node1[i],node2[i]):
+                fail(node1,node2)
+                return False
+        return True
     else:
+        if node1 != node2:
+            fail(node1, node2)
         return node1 == node2
 #@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
 def dump_tokens(tokens, verbose=True):
