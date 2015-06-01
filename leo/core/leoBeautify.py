@@ -799,6 +799,7 @@ class PythonTokenBeautifier:
         self.s = None # The string containing the line.
         self.val = None
         # State vars...
+        self.backslash_seen = False
         self.decorator_seen = False
         self.level = 0 # indentation level.
         self.lws = '' # Leading whitespace.
@@ -916,7 +917,13 @@ class PythonTokenBeautifier:
             self.val = g.toUnicode(t2)
             self.raw_val = g.toUnicode(t5)
             if srow != self.last_line_number:
+                # Handle a previous backslash.
+                if self.backslash_seen:
+                    self.backslash()
                 # Start a new row.
+                raw_val = self.raw_val.rstrip()
+                self.backslash_seen = raw_val.endswith('\\')
+                # g.trace('backslash_seen',self.backslash_seen)
                 if self.paren_level > 0:
                     s = self.raw_val.rstrip()
                     n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
@@ -1058,23 +1065,30 @@ class PythonTokenBeautifier:
     def do_string(self):
         '''Handle a 'string' token.'''
         self.add_token('string', self.val)
-        self.blank()
             # This does retain the string's spelling.
+        self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
         '''Add a token to the code list.'''
-        # g.trace(kind,repr(value))
+        # if kind in ('line-indent','line-start','line-end'):
+            # g.trace(kind,repr(value),g.callers())
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
-    #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end
-    def arg_end(self):
-        '''Add a token indicating the end of an argument list.'''
-        self.add_token('arg-end')
+    #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end (not used)
+    # def arg_end(self):
+        # '''Add a token indicating the end of an argument list.'''
+        # self.add_token('arg-end')
 
-    def arg_start(self):
-        '''Add a token indicating the start of an argument list.'''
-        self.add_token('arg-start')
+    # def arg_start(self):
+        # '''Add a token indicating the start of an argument list.'''
+        # self.add_token('arg-start')
+    #@+node:ekr.20150601095528.1: *4* ptb.backslash
+    def backslash(self):
+        '''Add a backslash token and clear .backslash_seen'''
+        self.add_token('backslash','\\')
+        self.add_token('line-end','\n')
+        self.backslash_seen = False
     #@+node:ekr.20150526201701.4: *4* ptb.blank
     def blank(self):
         '''Add a blank request on the code list.'''
@@ -1084,8 +1098,6 @@ class PythonTokenBeautifier:
             'file-start',
             'line-end', 'line-indent',
             'lt', 'op-no-blanks', 'unary-op',
-            ### 'arg-end','arg-start',
-            ### Not yet generated.
         ):
             self.add_token('blank', ' ')
     #@+node:ekr.20150526201701.5: *4* ptb.blank_lines
@@ -1110,9 +1122,10 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
-            return True
-        else:
-            return False
+        ###
+            # return True
+        # else:
+            # return False
     #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
     def clean_blank_lines(self):
         '''Remove all vestiges of previous lines.'''
@@ -1151,6 +1164,8 @@ class PythonTokenBeautifier:
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
+        if self.backslash_seen:
+            self.backslash()
         self.add_token('line-end', '\n')
         self.line_indent()
             # Add then indentation for all lines
