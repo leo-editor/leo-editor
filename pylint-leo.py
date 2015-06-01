@@ -432,17 +432,16 @@ def scanOptions():
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-( # To suppress beatify.
-    g_option_fn     = None
-    scope           = scanOptions()
-    commandList     = getCommandList()
-    coreList        = getCoreList()
-    externalList    = getExternalList()
-    guiPluginsList  = getGuiPluginsList()
-    modesList       = getModesList()
-    passList        = getPassList()
-    pluginsList     = getPluginsList()
-)
+g_option_fn     = None
+scope           = scanOptions()
+commandList     = getCommandList()
+coreList        = getCoreList()
+externalList    = getExternalList()
+guiPluginsList  = getGuiPluginsList()
+modesList       = getModesList()
+passList        = getPassList()
+pluginsList     = getPluginsList()
+
 if scope == 'version':
     report_version()
 else:
