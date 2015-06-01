@@ -1547,9 +1547,8 @@ class LeoImportCommands:
         s = s.rstrip()
         return s
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (leoImport)
-    def setEncoding (self,p=None,atAuto=False):
-
-        # c.scanAllDirectives checks the encoding: may return None.
+    def setEncoding(self, p=None, atAuto=False):
+        # c.scanAllDirectives checks the encoding. It may return None.
         c = self.c
         if p is None: p = c.p
         theDict = c.scanAllDirectives(p)
@@ -1560,7 +1559,6 @@ class LeoImportCommands:
             self.encoding = c.config.default_at_auto_file_encoding
         else:
             self.encoding = 'utf-8'
-
         # g.trace(self.encoding)
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
