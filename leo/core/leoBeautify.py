@@ -1150,8 +1150,8 @@ class PythonTokenBeautifier:
             self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'word':
-            # Only suppress blanks before '(' for non-keyworks.
-            if s in '[{' or prev.value in ('if','else','return'):
+            # Only suppress blanks before '(' or '[' for non-keyworks.
+            if s == '{' or prev.value in ('if','else','return'):
                 self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'op':
