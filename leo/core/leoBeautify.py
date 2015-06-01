@@ -33,13 +33,19 @@ def prettyPrintAllPythonCode(event):
     if not c: return
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
+    prev_changed = 0
     for p in c.all_unique_positions():
         if g.scanForAtLanguage(c, p) == "python":
             if p.isAnyAtFileNode():
+                # Report changed nodes in previous @<file> node.
+                if pp.n_changed_nodes != prev_changed:
+                    g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
                 prev_changed = pp.n_changed_nodes
+                g.es_print(p.h)
             pp.prettyPrintNode(p)
-            if p.isAnyAtFileNode() and pp.n_changed_nodes != prev_changed:
-                g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
+    # Report any nodes in the last @<file> tree.
+    if pp.n_changed_nodes != prev_changed:
+        g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
@@ -91,14 +97,19 @@ def beautifyPythonTree(event):
     c = event.get('c')
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
+    prev_changed = 0
     for p in c.p.self_and_subtree():
         if g.scanForAtLanguage(c, p) == "python":
             if p.isAnyAtFileNode():
-                g.es_print(p.h)
+                # Report changed nodes in previous @<file> node.
+                if pp.n_changed_nodes != prev_changed:
+                    g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
                 prev_changed = pp.n_changed_nodes
+                g.es_print(p.h)
             pp.prettyPrintNode(p)
-            if p.isAnyAtFileNode() and pp.n_changed_nodes != prev_changed:
-                g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
+    # Report any nodes in the last @<file> tree.
+    if pp.n_changed_nodes != prev_changed:
+        g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
