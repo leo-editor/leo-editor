@@ -69,7 +69,8 @@ if 0:
             if '_ns_layout' in c.db:
                 name = c.db['_ns_layout']
                 if layout:
-                    g.es("NOTE: embedded layout in @settings/@data free-layout-layout "                     "overrides saved layout " + name)
+                    g.es("NOTE: embedded layout in @settings/@data free-layout-layout"
+                         "overrides saved layout " + name)
                 elif g.app and g.app.db:
                     layout = g.app.db['ns_layouts'][name]
                 else:
@@ -229,7 +230,8 @@ class FreeLayoutController:
             else:
                 c.free_layout.original_layout = name
             if layout:
-                g.es("NOTE: embedded layout in @settings/@data free-layout-layout "                 "overrides saved layout " + name)
+                g.es("NOTE: embedded layout in @settings/@data free-layout-layout "
+                     "overrides saved layout " + name)
             else:
                 layout = d.get(name)
         # EKR: Create commands that will load each layout.
@@ -321,7 +323,7 @@ class FreeLayoutController:
             return True
         if id_ == '_fl_save_layout':
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout "                     "will override saved layout")
+                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
             layout = self.get_top_splitter().get_saveable_layout()
             name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
                 "Name for layout?")
@@ -334,7 +336,7 @@ class FreeLayoutController:
             return True
         if id_.startswith('_fl_load_layout:'):
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout "                     "will override saved layout")
+                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
             name = id_.split(':', 1)[1]
             self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]
@@ -380,7 +382,7 @@ class FreeLayoutController:
         nd.b = json.dumps(layout, indent=4)
         nd = nd.parent()
         if not nd or nd.h != "@settings":
-            g.es("WARNING: @data free-layout-layout node is not "             "under an active @settings node")
+            g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
     #@-others
 #@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
