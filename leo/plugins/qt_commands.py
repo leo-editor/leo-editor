@@ -1,23 +1,20 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 '''Leo's Qt-related commands defined by @g.command.'''
-
 import leo.core.leoGlobals as g
-
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
-def init ():
+def init():
     '''Top-level init function for qt_commands.py.'''
     ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
     return ok
 
-def onSelect(tag,keywords):
-    c = keywords.get('c') or keywords.get('new_c')    
+def onSelect(tag, keywords):
+    c = keywords.get('c') or keywords.get('new_c')
     wdg = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
-
 #@+node:ekr.20110605121601.18001: ** detach-editor-toggle (qt_commands.py)
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
@@ -31,7 +28,7 @@ def detach_editor_toggle_max(event):
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event):
     """ Detach or undetach body editor """
-    c = event['c']    
+    c = event['c']
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -61,7 +58,7 @@ def detach_editor(c):
 def undetach_editor(c):
     wdg = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
-    parent.insertWidget(0,wdg)
+    parent.insertWidget(0, wdg)
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
@@ -76,14 +73,16 @@ widgets = [
 ]
 for vis in 'hide', 'show', 'toggle':
     for name, widget in widgets:
+
         def dovis(event, widget=widget, vis=vis):
             c = event['c']
             w = widget(c)
             if vis == 'toggle':
                 vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
-        g.command("gui-%s-%s"%(name, vis))(dovis)
-        
+
+        g.command("gui-%s-%s" % (name, vis))(dovis)
+
     def doall(event, vis=vis):
         c = event['c']
         for name, widget in widgets:
@@ -93,7 +92,8 @@ for vis in 'hide', 'show', 'toggle':
                 # based on the state of the first
                 vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
-    g.command("gui-all-%s"%vis)(doall)
+
+    g.command("gui-all-%s" % vis)(doall)
 #@+node:tbrown.20140814090009.55874: ** style_sheet commands (qt_commands.py)
 #@+node:ekr.20140918124632.17893: *3* print-style-sheet
 @g.command('print-style-sheet')
@@ -114,7 +114,6 @@ def style_reload(event):
     c = event.get('c')
     if c:
         c.styleSheetManager.reload_style_sheets()
-        
 #@+node:ekr.20140918124632.17892: *3* style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):

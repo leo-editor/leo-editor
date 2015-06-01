@@ -173,7 +173,7 @@ But when run with ILeo via "ipython-exec" I get no notification of any error. Ei
 
 @language python
 .. @+node:ekr.20130930062914.16010: *5* LeoQtGui.exec_helper
-def exec_helper(self,event):
+def exec_helper(self, event):
     '''
     This helper is required because an unqualified "exec"
     may not appear in a nested function.
@@ -184,20 +184,18 @@ def exec_helper(self,event):
     ns = ipk.namespace # The actual IPython namespace.
     ipkernel = ipk.ipkernel # IPKernelApp
     shell = ipkernel.shell # ZMQInteractiveShell
-    
     if 0:
-        g.trace('*******',shell.showtraceback)
+        g.trace('*******', shell.showtraceback)
         old_showtraceback = shell.showtraceback
-        
-        def new_showtraceback(*args,**keys):
-            old_showtraceback(*args,**keys)
-            print('================ new_showtraceback',args,keys)
-            
-        shell.showtraceback = new_showtraceback
 
+        def new_showtraceback(*args, **keys):
+            old_showtraceback(*args, **keys)
+            print('================ new_showtraceback', args, keys)
+
+        shell.showtraceback = new_showtraceback
     if c and ns is not None:
-        script = g.getScript(c,c.p,useSentinels=False)
-        code = compile(script,c.p.h,'exec')
+        script = g.getScript(c, c.p, useSentinels=False)
+        code = compile(script, c.p.h, 'exec')
             # c.p.h becomes the file name.
         shell.run_code(code)
             # Run using IPython.

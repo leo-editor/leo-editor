@@ -3,11 +3,9 @@
 #@+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
 #@@first
 '''Leo's Qt idle-time code.'''
-
 import leo.core.leoGlobals as g
 import time
 from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
-
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
 class IdleTime:
@@ -51,7 +49,7 @@ class IdleTime:
     '''
     #@+others
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
-    def __init__(self,handler,delay=500,tag=None):
+    def __init__(self, handler, delay=500, tag=None):
         '''ctor for IdleTime class.'''
         # g.trace(tag)
         # For use by handlers...
@@ -63,7 +61,6 @@ class IdleTime:
             # Time that the handle is called.
         self.tag = tag
             # An arbitrary string/object for use during debugging.
-            
         # For use by the IdleTime class...
         self.delay = delay
             # The argument to self.timer.start:
@@ -74,7 +71,6 @@ class IdleTime:
             # The user-provided idle-time handler.
         self.waiting_for_idle = False
             # True if we have already waited for the minimum delay\
-
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.at_idle_time)
@@ -136,7 +132,7 @@ class IdleTime:
     def stop(self):
         '''Stop idle-time processing. May be called during shutdown.'''
         self.enabled = False
-        if hasattr(self,'timer') and self.timer.isActive():
+        if hasattr(self, 'timer') and self.timer.isActive():
             self.timer.stop()
     #@-others
 #@-others
