@@ -31,11 +31,9 @@ If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
 #@-<< docstring >>
-
 import leo.core.leoGlobals as g
 # import re
 # import string
-
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
 #@+at
@@ -49,12 +47,10 @@ import leo.core.leoGlobals as g
 #@@c
 
 leo_color_database = {
-
     # leo colors
     "leoblue": "#F0F8FF", #alice blue
     "leoyellow": "#ffffec",
-    "leopink":  "#FFE4E1", # misty rose
-
+    "leopink": "#FFE4E1", # misty rose
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",
     "antiquewhite1": "#FFEFDB",
@@ -296,7 +292,7 @@ leo_color_database = {
     "gray87": "#DEDEDE",
     "gray88": "#E0E0E0",
     "gray89": "#E3E3E3",
-    "gray9":  "#171717",
+    "gray9": "#171717",
     "gray90": "#E5E5E5",
     "gray91": "#E8E8E8",
     "gray92": "#EBEBEB",
@@ -712,9 +708,7 @@ leo_color_database = {
     "yellow4": "#8B8B00",
     "yellowgreen": "#9ACD32"
 }
-
 #@-<< define leo_color_database >>
-
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor
@@ -730,25 +724,18 @@ def getColor(name, default=None):
 
 
     """
-
     if not g.isString(name):
         return name
-
     #g.trace(name, default)
-
     if name[0] == '#':
         return name
-
     name = name.replace(' ', '').lower().strip()
-
     if name in leo_color_database:
         name2 = leo_color_database[name]
         # g.trace(name,name2)
         return name2
-
     if default:
         return getColor(default, default=None)
-
     return None
 
 get = getColor
@@ -757,13 +744,12 @@ def getColorRGB(name, default=None):
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
-        color = int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
+        color = int(s[1: 3], 16), int(s[3: 5], 16), int(s[5: 7], 16)
     except:
         color = None
     return color
 
 getRGB = getColorRGB
-
 #@+node:bob.20080115072302: *3* getCairo / getColorCairo
 def getColorCairo(name, default=None):
     """Convert a named color into a cairo color tuple."""
@@ -773,10 +759,9 @@ def getColorCairo(name, default=None):
         return
     else:
         r, g, b = color
-        return r/255.0, g/255.0, b/255.0
+        return r / 255.0, g / 255.0, b / 255.0
 
 getCairo = getColorCairo
-
 #@-others
 #@@language python
 #@@tabwidth -4
