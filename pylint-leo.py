@@ -24,6 +24,8 @@ import time
 rc_warning_given = False
 #@+others
 #@+node:ekr.20150514101801.1: ** getCommandList
+#@@beautify
+
 def getCommandList():
     '''Return list of all command modules in leo/commands.'''
     pattern = g.os_path_finalize_join('.', 'leo', 'commands', '*.py')
@@ -32,6 +34,8 @@ def getCommandList():
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py'])
 #@+node:ekr.20100221142603.5640: ** getCoreList
+#@@beautify
+
 def getCoreList():
     pattern = g.os_path_finalize_join('.', 'leo', 'core', 'leo*.py')
     # pattern = g.os_path_finalize_join('leo','core','leo*.py')
@@ -44,6 +48,8 @@ def getCoreList():
     ])
     return sorted(aList)
 #@+node:ekr.20140528065727.17960: ** getExternalList
+#@@beautify
+
 def getExternalList():
     '''Return list of files in leo/external'''
     return [
@@ -52,6 +58,8 @@ def getExternalList():
         'lproto',
     ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
+#@@beautify
+
 def getGuiPluginsList():
     pattern = g.os_path_finalize_join('.', 'leo', 'plugins', 'qt_*.py')
     aList = [
@@ -67,6 +75,8 @@ def getGuiPluginsList():
         aList.remove('qt_main.py')
     return sorted(aList)
 #@+node:ekr.20140727180847.17983: ** getModesList
+#@@beautify
+
 def getModesList():
     pattern = g.os_path_finalize_join('.', 'leo', 'modes', '*.py')
     return [
@@ -74,6 +84,8 @@ def getModesList():
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py']
 #@+node:ekr.20100221142603.5641: ** getPassList
+#@@beautify
+
 def getPassList():
     return (
         '__init__', 'FileActions',
@@ -103,6 +115,8 @@ def getPassList():
         'vim', 'xemacs',
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsList
+#@@beautify
+
 def getPluginsList():
     '''Return a list of all important plugins.'''
     aList = []
@@ -130,6 +144,8 @@ def getPluginsList():
     # g.trace('\n'.join(aList))
     return aList
 #@+node:ekr.20140331201252.16861: ** getTable
+#@@beautify
+
 def getTable(scope):
     d = {
         'all': (
@@ -171,6 +187,8 @@ def getTable(scope):
         tables_table = ()
     return tables_table
 #@+node:ekr.20140331201252.16859: ** main
+#@@beautify
+
 def main(tables_table):
     '''Call run on all tables in tables_table.'''
     if False and tables_table and sys.platform.startswith('win') and scope != 'file':
@@ -184,6 +202,8 @@ def main(tables_table):
             t += run(theDir, fn)
     print('time: %5.2f sec.' % t)
 #@+node:ekr.20140526142452.17594: ** report_version
+#@@beautify
+
 def report_version():
     try:
         from pylint import lint
@@ -231,147 +251,149 @@ def run(theDir,fn,rpython=False):
         print('pylint-leo.py: source:\n\n%s\n' % s)
         # Add the optional Sherlock args.
         dots = True
-        patterns=[ 
-        #@+<< Sherlock patterns for pylint >>
-        #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
-        # Note:  A leading * is never valid: change to .*
+        patterns = [ 
+            #@+<< Sherlock patterns for pylint >>
+            #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
+            #@@nobeautify
 
-        '+.*infer*',
-            # '+.*infer_name',
-            '+.*infer_stmts',
-            
-        '+YES::__init__',
+            # Note:  A leading * is never valid: change to .*
 
-        ###'+TypeChecker::add_message',
-            # '+.*add_message',
-            # '+PyLinter::add_message',
-            # '+TextReporter::add_message'
+            '+.*infer*',
+                # '+.*infer_name',
+                '+.*infer_stmts',
+                
+            '+YES::__init__',
 
-        # '+.*visit*',
-            # '+TypeChecker::visit_getattr',
-            # '+.*visit_class',
-            # '+Basic*::visit_*',
-            
-        # '+.*__init__',
-            # '+Instance::__init__',
-            # '+Class::__init__',
-            # '+Module::__init__',
-            # '+Function::__init__',
+            ###'+TypeChecker::add_message',
+                # '+.*add_message',
+                # '+PyLinter::add_message',
+                # '+TextReporter::add_message'
 
-        ###'+:.*typecheck.py',
-        ###'+:.*inference.py',
-        ###'+:.*variables.py',
+            # '+.*visit*',
+                # '+TypeChecker::visit_getattr',
+                # '+.*visit_class',
+                # '+Basic*::visit_*',
+                
+            # '+.*__init__',
+                # '+Instance::__init__',
+                # '+Class::__init__',
+                # '+Module::__init__',
+                # '+Function::__init__',
 
-        ###### Old traces
+            ###'+:.*typecheck.py',
+            ###'+:.*inference.py',
+            ###'+:.*variables.py',
 
-        # '+:.*bases.py',
-        # '+.*path_raise_wrapper',
+            ###### Old traces
 
-        # Enable everything.
-        # # '+.*',
+            # '+:.*bases.py',
+            # '+.*path_raise_wrapper',
 
-        # # Disable entire files.
-        # # '-:.*\\lib\\.*', # Disables everything.
+            # Enable everything.
+            # # '+.*',
 
-        # # Pylint files.
-        # #'-:.*base.py',
-        # #'-:.*bases.py',
-        # '-:.*builder.py',
-        # '-:.*__init__.py',
-        # '-:.*format.py',
-        # '-:.*interface.py', # implements
-        # '-:.*rebuilder.py',
-        # #'-:.*scoped_nodes',
-        # # General library files.
-        # '-:.*leoGlobals.py',
-        # '-:.*codecs.py',
-        # '-:.*config.py',
-        # '-:.*configuration.py',
-        # '-:.*ConfigParser.py',
-        # '-:.*copy\.py',
-        # '-:.*gettext.py',
-        # '-:.*genericpath.py',
-        # '-:.*graph.py',
-        # '-:.*locale.py',
-        # '-:.*optik_ext.py',
-        # '-:.*optparse.py',
-        # '-:.*os.py',
-        # '-:.*ntpath.py',
-        # '-:.*pickle.py',
-        # '-:.*re.py',
-        # '-:.*similar.py',
-        # '-:.*shlex.py',
-        # '-:.*sre_compile.py',
-        # '-:.*sre_parse.py',
-        # '-:.*string_escape.py',
-        # '-:.*text.py',
-        # '-:.*threading.py',
-        # '-:.*tokenize.py',
-        # '-:.*utils.py',
+            # # Disable entire files.
+            # # '-:.*\\lib\\.*', # Disables everything.
 
-        # # Enable entire files.
-        # # '+:.*base.py',
-        # # '+:.*bases.py',
-        # # '+:.*classes.py',
-        # # '+:.*design_analysis.py',
-        # # '+:.*format.py',
-        # # '+:.*inference.py',
-        # # '+:.*logging.py',
-        # # '+:.*mixins.py',
-        # # '+:.*newstyle.py',
-        # # '+:.*node_classes.py',
-        # # '+:.*protocols.py',
-        # # '+:.*scoped_nodes.py',
-        # # '+:.*typecheck.py',
-        # # '+:.*variables.py',
+            # # Pylint files.
+            # #'-:.*base.py',
+            # #'-:.*bases.py',
+            # '-:.*builder.py',
+            # '-:.*__init__.py',
+            # '-:.*format.py',
+            # '-:.*interface.py', # implements
+            # '-:.*rebuilder.py',
+            # #'-:.*scoped_nodes',
+            # # General library files.
+            # '-:.*leoGlobals.py',
+            # '-:.*codecs.py',
+            # '-:.*config.py',
+            # '-:.*configuration.py',
+            # '-:.*ConfigParser.py',
+            # '-:.*copy\.py',
+            # '-:.*gettext.py',
+            # '-:.*genericpath.py',
+            # '-:.*graph.py',
+            # '-:.*locale.py',
+            # '-:.*optik_ext.py',
+            # '-:.*optparse.py',
+            # '-:.*os.py',
+            # '-:.*ntpath.py',
+            # '-:.*pickle.py',
+            # '-:.*re.py',
+            # '-:.*similar.py',
+            # '-:.*shlex.py',
+            # '-:.*sre_compile.py',
+            # '-:.*sre_parse.py',
+            # '-:.*string_escape.py',
+            # '-:.*text.py',
+            # '-:.*threading.py',
+            # '-:.*tokenize.py',
+            # '-:.*utils.py',
 
-        # # Disable individual methods.
-        # '-close', # __init__.py
-        # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
-        # '-frame','-root','-scope', # scoped_nodes
-        # '-register', # various files.
+            # # Enable entire files.
+            # # '+:.*base.py',
+            # # '+:.*bases.py',
+            # # '+:.*classes.py',
+            # # '+:.*design_analysis.py',
+            # # '+:.*format.py',
+            # # '+:.*inference.py',
+            # # '+:.*logging.py',
+            # # '+:.*mixins.py',
+            # # '+:.*newstyle.py',
+            # # '+:.*node_classes.py',
+            # # '+:.*protocols.py',
+            # # '+:.*scoped_nodes.py',
+            # # '+:.*typecheck.py',
+            # # '+:.*variables.py',
 
-        # # '-abspath','-normpath','-isstring','-normalize',
-        # # '-splitext','-_splitext','-splitdrive','-splitstrip',
-        # # '-.*option.*','-get','-set_option',
-        # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
-        # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
-        # # '-_parse.*','-set_parser','-set_conflict_handler',
-        # # '-append','-match',
-        # # '-isbasestring',
-        # # '-save.*','-memoize','-put',
+            # # Disable individual methods.
+            # '-close', # __init__.py
+            # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
+            # '-frame','-root','-scope', # scoped_nodes
+            # '-register', # various files.
 
-        # # '-persistent_id',
-        # # '-__next',
-        # # '-nodes_of_class',
-        # # '-__.*',
-        # # '-_check.*',
-        # # '-_.*',
-        # # '-load_.*',
-        #@-<< Sherlock patterns for pylint >>
-        #@afterref
- ]
+            # # '-abspath','-normpath','-isstring','-normalize',
+            # # '-splitext','-_splitext','-splitdrive','-splitstrip',
+            # # '-.*option.*','-get','-set_option',
+            # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
+            # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
+            # # '-_parse.*','-set_parser','-set_conflict_handler',
+            # # '-append','-match',
+            # # '-isbasestring',
+            # # '-save.*','-memoize','-put',
+
+            # # '-persistent_id',
+            # # '-__next',
+            # # '-nodes_of_class',
+            # # '-__.*',
+            # # '-_check.*',
+            # # '-_.*',
+            # # '-load_.*',
+            #@-<< Sherlock patterns for pylint >>
+        ]
         show_return = True
         stats_patterns = [ 
-        #@+<< Sherlock stats patterns for pylint >>
-        #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
-        # '+.*__init__',
-            # astroid.bases.py
-            '+BoundMethod::__init__',
-            '+InferenceContext::__init__',
-            '+Instance::__init__',
-            '+UnboundMethod::__init__',
-            # astroid.node_classes.py
-            '+Arguments::__init__',
-            '+CallFunc::__init__',
-            '+Const::__init__',
-            # astroid.scoped_nods.py
-            '+Class::__init__',
-            '+Function::__init__',
-            '+Module::__init__',
-        #@-<< Sherlock stats patterns for pylint >>
-        #@afterref
- ]
+            #@+<< Sherlock stats patterns for pylint >>
+            #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
+            #@@nobeautify
+
+            # '+.*__init__',
+                # astroid.bases.py
+                '+BoundMethod::__init__',
+                '+InferenceContext::__init__',
+                '+Instance::__init__',
+                '+UnboundMethod::__init__',
+                # astroid.node_classes.py
+                '+Arguments::__init__',
+                '+CallFunc::__init__',
+                '+Const::__init__',
+                # astroid.scoped_nods.py
+                '+Class::__init__',
+                '+Function::__init__',
+                '+Module::__init__',
+            #@-<< Sherlock stats patterns for pylint >>
+        ]
         verbose = True
         args = args + ',' + ','.join([
             'dots=%s' % (dots),
@@ -432,6 +454,7 @@ def scanOptions():
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@nobeautify
 g_option_fn     = None
 scope           = scanOptions()
 commandList     = getCommandList()
@@ -441,7 +464,6 @@ guiPluginsList  = getGuiPluginsList()
 modesList       = getModesList()
 passList        = getPassList()
 pluginsList     = getPluginsList()
-
 if scope == 'version':
     report_version()
 else:
