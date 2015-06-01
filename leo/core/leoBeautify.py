@@ -16,7 +16,8 @@ except ImportError:
 
     g.command = command
 import ast
-# import re
+import optparse
+import os
 import sys
 import time
 import token
@@ -323,10 +324,111 @@ def dump_token(last_line_number, token5tuple, verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
-#@+node:ekr.20150530061745.1: *3* main (external entry)
+#@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
-    g.trace(sys.argv)
+    t1 = time.clock()
+    base = g.os_path_abspath(os.curdir)
+    files,options = scan_options()
+    for path in files:
+        path = g.os_path_finalize_join(base,path)
+        beautify(options,path)
+    g.trace('%s files in %4.2f sec.' % (len(files),time.clock()-t1))
+#@+node:ekr.20150601170125.1: *4* beautify (stand alone)
+def beautify(options,path):
+    '''Beautify the file with the given path.'''
+    fn = g.shortFileName(path)
+    s, e = g.readFileIntoString(path)
+    if not s:
+        return
+    print('beautifying %s' % fn)
+    ### t1 = time.clock()
+    s1 = g.toEncodedString(s)
+    node1 = ast.parse(s1, filename='before', mode='exec')
+    ### t2 = time.clock()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    ### t3 = time.clock()
+    beautifier = PythonTokenBeautifier(c=None)
+    beautifier.delete_blank_lines = not options.keep
+    # g.trace('delete blank lines',beautifier.delete_blank_lines)
+    p = None ### p not used.
+    s2 = beautifier.run(p, tokens)
+    ### t4 = time.clock()
+    try:
+        s2_e = g.toEncodedString(s2)
+        node2 = ast.parse(s2_e, filename='before', mode='exec')
+        ok = compare_ast(node1, node2)
+    except Exception:
+        g.es_exception()
+        ok = False
+    f = open(path,'wb')
+    f.write(s2_e)
+    f.close()
+    # g.trace('%s...\n%s' % (fn,s2))
+    ### t5 = time.clock()
+    ### 
+    #  Update the stats
+    # beautifier.n_input_tokens += len(tokens)
+    # beautifier.n_output_tokens += len(beautifier.code_list)
+    # beautifier.n_strings += len(s2)
+    # beautifier.parse_time += (t2 - t1)
+    # beautifier.tokenize_time += (t3 - t2)
+    # beautifier.beautify_time += (t4 - t3)
+    # beautifier.check_time += (t5 - t4)
+    # beautifier.total_time += (t5 - t1)
+    # settings = {} ######
+    # if settings.get('input_string'):
+        # print('==================== input_string')
+        # for i, z in enumerate(g.splitLines(s)):
+            # print('%4s %s' % (i + 1, z.rstrip()))
+    # if settings.get('input_lines'):
+        # print('==================== input_lines')
+        # dump_tokens(tokens, verbose=False)
+    # if settings.get('input_tokens'):
+        # print('==================== input_tokens')
+        # dump_tokens(tokens, verbose=True)
+    # if settings.get('output_tokens'):
+        # print('==================== code_list')
+        # for i, z in enumerate(beautifier.code_list):
+            # print('%4s %s' % (i, z))
+    # if settings.get('output_string'):
+        # print('==================== output_string')
+        # for i, z in enumerate(g.splitLines(s2)):
+            # if z == '\n':
+                # print('%4s' % (i + 1))
+            # elif z.rstrip():
+                # print('%4s %s' % (i + 1, z.rstrip()))
+            # else:
+                # print('%4s %r' % (i + 1, str(z)))
+    # if settings.get('stats'):
+        # beautifier.print_stats()
+    # if not ok:
+        # print('*************** fail: %s ***************' % (h))
+    # return beautifier
+        # # For statistics.
+#@+node:ekr.20150601162203.1: *4* scan_options & helper
+def scan_options():
+    '''Handle all options. Return a list of files.'''
+    
+    # This automatically implements the --help option.
+    usage = "usage: python leoBeautify -m file1, file2, ..."
+    parser = optparse.OptionParser(usage=usage)
+    add = parser.add_option
+    add('-d', '--debug', action='store_true', dest='debug',
+        help='print the list of files and exit')
+    add('-k', '--keep-blank-lines', action='store_true', dest='keep',
+        help='keep-blank-lines')
+
+    # Parse the options.
+    options, files = parser.parse_args()
+    ### sys.argv = [sys.argv[0]]; sys.argv.extend(args)
+    ### aList = sys.argv[1:]
+    if options.debug:
+        # Print the list of files and exit.
+        g.trace('files...',files)
+        sys.exit(0)
+    return files,options
 #@+node:ekr.20150527143619.1: *3* show_lws
 def show_lws(s):
     '''Show leading whitespace in a convenient format.'''
@@ -818,12 +920,16 @@ class PythonTokenBeautifier:
         self.paren_level = 0 # Number of unmatched left parens.
         self.state_stack = [] # Stack of ParseState objects.
         # Settings...
-        self.delete_blank_lines = not c.config.getBool(
-            'tidy-keep-blank-lines', default=True)
-        self.args_style = c.config.getString('tidy-args-style')
-        if self.args_style not in ('align', 'asis', 'indent'):
-            self.args_style = 'align'
-        self.tab_width = abs(c.tab_width) if c else 4
+        if c:
+            self.delete_blank_lines = not c.config.getBool(
+                'tidy-keep-blank-lines', default=True)
+            self.args_style = c.config.getString('tidy-args-style')
+            ### Not used yet.
+            # if self.args_style not in ('align', 'asis', 'indent'):
+                # self.args_style = 'align'
+            self.tab_width = abs(c.tab_width) if c else 4
+        else:
+            self.tab_width = 4
         # Statistics
         self.n_changed_nodes = 0
         self.n_input_tokens = 0
@@ -923,7 +1029,7 @@ class PythonTokenBeautifier:
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
     #@+node:ekr.20150526194715.1: *4* ptb.run
-    def run(self, p, tokens):
+    def run(self, p, tokens): ### p not used.
         '''
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
