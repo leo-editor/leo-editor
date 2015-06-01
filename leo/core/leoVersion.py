@@ -36,32 +36,29 @@ commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
 commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
-
 version = "5.1-final" # Used if no git version is available.
-
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
 theDir = os.path.dirname(__file__)
-path = os.path.join(theDir,'..','..','.git','HEAD')
+path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
 if os.path.exists(path):
-    s = open(path,'r').read()
+    s = open(path, 'r').read()
     if s.startswith('ref'):
         # on a proper branch
         pointer = s.split()[1]
         dirs = pointer.split('/')
         branch = dirs[-1]
         path = os.path.join(theDir, '..', '..', '.git', pointer)
-        s = open(path, 'r').read().strip()[0:12]
-            # shorten the hash to a unique shortname 
+        s = open(path, 'r').read().strip()[0: 12]
+            # shorten the hash to a unique shortname
             # (12 characters should be enough until the end of time, for Leo...)
         git_info['branch'] = branch
         git_info['commit'] = s
     else:
         branch = 'None'
-        s = s[0:12]
+        s = s[0: 12]
         git_info['branch'] = branch
         git_info['commit'] = s
-
 build = commit_timestamp
 date = commit_asctime
 #@@language python

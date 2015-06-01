@@ -22,21 +22,18 @@ import os
 import sys
 import time
 rc_warning_given = False
-
 #@+others
 #@+node:ekr.20150514101801.1: ** getCommandList
 def getCommandList():
     '''Return list of all command modules in leo/commands.'''
-    pattern = g.os_path_finalize_join('.','leo','commands','*.py')
+    pattern = g.os_path_finalize_join('.', 'leo', 'commands', '*.py')
     return sorted([
         g.shortFileName(fn)
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py'])
-
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
-    
-    pattern = g.os_path_finalize_join('.','leo','core','leo*.py')
+    pattern = g.os_path_finalize_join('.', 'leo', 'core', 'leo*.py')
     # pattern = g.os_path_finalize_join('leo','core','leo*.py')
     aList = [
         g.shortFileName(fn)
@@ -55,9 +52,8 @@ def getExternalList():
         'lproto',
     ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
-def getGuiPluginsList ():
-    
-    pattern = g.os_path_finalize_join('.','leo','plugins','qt_*.py')
+def getGuiPluginsList():
+    pattern = g.os_path_finalize_join('.', 'leo', 'plugins', 'qt_*.py')
     aList = [
         g.shortFileName(fn)
             for fn in glob.glob(pattern)
@@ -72,60 +68,59 @@ def getGuiPluginsList ():
     return sorted(aList)
 #@+node:ekr.20140727180847.17983: ** getModesList
 def getModesList():
-    pattern = g.os_path_finalize_join('.','leo','modes','*.py')
+    pattern = g.os_path_finalize_join('.', 'leo', 'modes', '*.py')
     return [
         g.shortFileName(fn)
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py']
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
-
     return (
-        '__init__','FileActions',
+        '__init__', 'FileActions',
         # 'UNL', # in plugins table.
-        'active_path','add_directives','attrib_edit',
-        'backlink','base64Packager','baseNativeTree','bibtex','bookmarks',
-        'codewisecompleter','colorize_headlines','contextmenu',
-        'ctagscompleter','cursesGui','datenodes','debugger_pudb',
-        'detect_urls','dtest','empty_leo_file','enable_gc','initinclass',
-        'leo_to_html','leo_interface','leo_pdf','leo_to_rtf',
-        'leoOPML','leoremote','lineNumbers',
-        'macros','mime','mod_autosave','mod_framesize','mod_leo2ascd',
+        'active_path', 'add_directives', 'attrib_edit',
+        'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
+        'codewisecompleter', 'colorize_headlines', 'contextmenu',
+        'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
+        'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
+        'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
+        'leoOPML', 'leoremote', 'lineNumbers',
+        'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
         # 'mod_scripting', # in plugins table.
-        'mod_speedups','mod_timestamp',
-        'nav_buttons','nav_qt','niceNosent','nodeActions','nodebar',
-        'open_shell','open_with','outline_export','quit_leo',
-        'paste_as_headlines','plugins_menu','pretty_print','projectwizard',
-        'qt_main','qt_quicksearch','qt_commands',
-        'quickMove','quicksearch','redirect_to_log','rClickBasePluginClasses',
+        'mod_speedups', 'mod_timestamp',
+        'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
+        'open_shell', 'open_with', 'outline_export', 'quit_leo',
+        'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
+        'qt_main', 'qt_quicksearch', 'qt_commands',
+        'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
         'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
         'rst3',
         # 'scrolledmessage', # No longer exists.
-        'setHomeDirectory','slideshow','spydershell','startfile',
-        'testRegisterCommand','todo',
+        'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
+        'testRegisterCommand', 'todo',
         # 'toolbar', # in plugins table.
-        'trace_gc_plugin','trace_keys','trace_tags',
-        'vim','xemacs',
+        'trace_gc_plugin', 'trace_keys', 'trace_tags',
+        'vim', 'xemacs',
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsList
 def getPluginsList():
     '''Return a list of all important plugins.'''
     aList = []
     # g.app.loadDir does not exist: use '.' instead.
-    for theDir in ('','importers','writers'):
-        pattern = g.os_path_finalize_join('.','leo','plugins',theDir,'*.py')
+    for theDir in ('', 'importers', 'writers'):
+        pattern = g.os_path_finalize_join('.', 'leo', 'plugins', theDir, '*.py')
         for fn in glob.glob(pattern):
             sfn = g.shortFileName(fn)
             if sfn != '__init__.py':
-                sfn = os.sep.join([theDir,sfn]) if theDir else sfn
+                sfn = os.sep.join([theDir, sfn]) if theDir else sfn
                 aList.append(sfn)
     remove = [
-        'free_layout.py',       # Gui-related.
-        'gtkDialogs.py',        # Many errors, not important.
-        'leofts.py',            # Not (yet) in leoPlugins.leo.
-        'nested_splitter.py',   # Gui-related.
-        'qtGui.py',             # Dummy file
-        'qt_main.py',           # Created automatically.
+        'free_layout.py', # Gui-related.
+        'gtkDialogs.py', # Many errors, not important.
+        'leofts.py', # Not (yet) in leoPlugins.leo.
+        'nested_splitter.py', # Gui-related.
+        'qtGui.py', # Dummy file
+        'qt_main.py', # Created automatically.
     ]
     aList = sorted([z for z in aList if z not in remove])
     # Remove all gui related items.
@@ -184,20 +179,22 @@ def main(tables_table):
     from pylint import lint
         # in pythonN/Lib/site-packages.
     t = 0.0
-    for table,theDir in tables_table:
+    for table, theDir in tables_table:
         for fn in table:
-            t += run(theDir,fn)
+            t += run(theDir, fn)
     print('time: %5.2f sec.' % t)
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():
     try:
         from pylint import lint
-        rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
-        rc_fn = rc_fn.replace('\\','/')
-        lint.Run(["--rcfile=%s" % (rc_fn),'--version',])
+        rc_fn = os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt'))
+        rc_fn = rc_fn.replace('\\', '/')
+        lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
     except ImportError:
         g.trace('can not import pylint')
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
+#@@nobeautify
+
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
     global rc_warning_given
@@ -398,23 +395,22 @@ def scanOptions():
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
     add = parser.add_option
-    add('-a', action='store_true', help = 'all')
-    add('-c', action='store_true', help = 'core')
-    add('-e', action='store_true', help = 'external')
-    add('-f', dest='filename',     help = 'filename, relative to leo folder')
-    add('-g', action='store_true', help = 'gui plugins')
-    add('-m', action='store_true', help = 'modes')
-    add('-p', action='store_true', help = 'plugins')
+    add('-a', action='store_true', help='all')
+    add('-c', action='store_true', help='core')
+    add('-e', action='store_true', help='external')
+    add('-f', dest='filename', help='filename, relative to leo folder')
+    add('-g', action='store_true', help='gui plugins')
+    add('-m', action='store_true', help='modes')
+    add('-p', action='store_true', help='plugins')
     # add('-r', action='store_true', help = 'recent')
     # add('-s', action='store_true', help = 'suppressions')
     # add('-t', action='store_true', help = 'stc')
     # add('--tt',action='store_true', help = 'stc test')
-    add('-u', action='store_true', help = 'user commands') 
-    add('-v', action='store_true', help = 'report pylint version')
-
+    add('-u', action='store_true', help='user commands')
+    add('-v', action='store_true', help='report pylint version')
     # Parse the options.
-    options,args = parser.parse_args()
-    if   options.a: return 'all'
+    options, args = parser.parse_args()
+    if options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
     elif options.filename:
@@ -431,21 +427,22 @@ def scanOptions():
     # elif options.tt:return 'stc-test'
     elif options.u: return 'commands'
     elif options.v: return 'version'
-    else:           return 'all'
+    else: return 'all'
 #@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
-g_option_fn = None
-scope = scanOptions()
-commandList     = getCommandList()      
-coreList        = getCoreList()
-externalList    = getExternalList()
-guiPluginsList  = getGuiPluginsList()
-modesList       = getModesList()
-passList        = getPassList()
-pluginsList     = getPluginsList()
+( # To suppress beatify.
+    g_option_fn     = None
+    scope           = scanOptions()
+    commandList     = getCommandList()
+    coreList        = getCoreList()
+    externalList    = getExternalList()
+    guiPluginsList  = getGuiPluginsList()
+    modesList       = getModesList()
+    passList        = getPassList()
+    pluginsList     = getPluginsList()
+)
 if scope == 'version':
     report_version()
 else:
