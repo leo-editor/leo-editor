@@ -4136,7 +4136,7 @@ def join_list(aList, indent='', leading='', sep='', trailing=''):
         if trailing and not g.isString(trailing):
             trailing = list_to_string(trailing)
     if indent or leading or sep or trailing:
-        return{
+        return {
             '_join_list': True, # Indicate that join_list created this dict.
             'aList': aList,
             'indent': indent, 'leading': leading, 'sep': sep, 'trailing': trailing,

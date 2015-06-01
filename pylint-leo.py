@@ -136,44 +136,43 @@ def getPluginsList():
     return aList
 #@+node:ekr.20140331201252.16861: ** getTable
 def getTable(scope):
-    
     d = {
         'all': (
-            (coreList,'core'),
-            (commandList,'commands'),
-            (guiPluginsList,'plugins'),
-            (pluginsList,'plugins'),
-            (externalList,'external'),
+            (coreList, 'core'),
+            (commandList, 'commands'),
+            (guiPluginsList, 'plugins'),
+            (pluginsList, 'plugins'),
+            (externalList, 'external'),
         ),
         'commands': (
-            (commandList,'commands'),
+            (commandList, 'commands'),
         ),
         'core': (
-            (coreList,'core'),
-            (guiPluginsList,'plugins'),
-            (externalList,'external'),
+            (coreList, 'core'),
+            (guiPluginsList, 'plugins'),
+            (externalList, 'external'),
         ),
         'external': (
-            (externalList,'external'),
+            (externalList, 'external'),
         ),
         'file': (
-            ([g_option_fn],''),
+            ([g_option_fn], ''),
                 # Default directory is the leo directory (was leo/core)
         ),
         'gui': (
-            (guiPluginsList,'plugins'),
+            (guiPluginsList, 'plugins'),
         ),
         'modes': (
-            (modesList,'modes'),
+            (modesList, 'modes'),
         ),
         'plugins': (
-            (pluginsList,'plugins'),
+            (pluginsList, 'plugins'),
             # (passList,'plugins'),
         ),
     }
     tables_table = d.get(scope)
     if not tables_table:
-        print('bad scope',scope)
+        print('bad scope', scope)
         tables_table = ()
     return tables_table
 #@+node:ekr.20140331201252.16859: ** main

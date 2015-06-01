@@ -26,16 +26,15 @@ class LeoMenu:
 
         self.define_enable_dict()
     #@+node:ekr.20120124042346.12937: *4* define_enable_table
+    #@@nobeautify
+
     def define_enable_dict (self):
 
         # pylint: disable=W0108
         # W0108: Lambda may not be necessary (It is).
-
         c = self.c
-
         if not c.commandsDict:
             return # This is not an error: it happens during init.
-
         self.enable_dict = d = {
 
             # File menu...

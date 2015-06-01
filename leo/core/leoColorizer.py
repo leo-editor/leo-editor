@@ -625,6 +625,8 @@ class JEditColorizer:
         for key in g.globalDirectiveList:
             self.leoKeywordsDict [key] = 'leokeyword'
     #@+node:ekr.20110605121601.18574: *5* defineDefaultColorsDict
+    #@@nobeautify
+
     def defineDefaultColorsDict (self):
 
         # These defaults are sure to exist.
@@ -674,6 +676,8 @@ class JEditColorizer:
             'operator'  :('operator_color', 'black'), # 2014/09/17
         }
     #@+node:ekr.20110605121601.18575: *5* defineDefaultFontDict
+    #@@nobeautify
+
     def defineDefaultFontDict (self):
 
         self.default_font_dict = {

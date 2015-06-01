@@ -80,8 +80,9 @@ if sys.platform != 'cli':
                 # Init the base class.
             #@+<< define dispatch dict >>
             #@+node:ekr.20060919110638.21: *5* << define dispatch dict >>
-            # There is no need for an 'end' method if all info is carried in attributes.
+            #@@nobeautify
 
+            # There is no need for an 'end' method if all info is carried in attributes.
             self.dispatchDict = {
                 'change_string':               (None,None),
                 'find_panel_settings':         (None,None),

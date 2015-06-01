@@ -11,6 +11,8 @@ import string
 
 #@+others
 #@+node:ekr.20140802183521.17997: ** show_stroke
+#@@nobeautify
+
 def show_stroke(stroke):
     '''Return the best human-readable form of stroke.'''
     s = stroke.s if g.isStroke(stroke) else stroke
@@ -93,6 +95,8 @@ class VimCommands:
                             tag,key,f2.__name__))
                         # d[key] = f2
     #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
+    #@@nobeautify
+
     def create_motion_dispatch_d(vc):
         '''
         Return the dispatch dict for motions.
@@ -1766,6 +1770,7 @@ class VimCommands:
     # N   gj              (motion) down N screen lines (differs from "j" when line wraps)
     # N   gk              (motion) up N screen lines (differs from "k" when line wraps)
     #@+node:ekr.20140222064735.16635: *5* motion non-letters (to do)
+    #@@nobeautify
     #@@nocolor-node
     #@+at
     # 

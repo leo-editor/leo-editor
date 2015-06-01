@@ -1119,6 +1119,8 @@ class FindTabManager:
         if not w.isChecked():
             w.toggle()
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
+    #@@nobeautify
+
     def toggle_checkbox(self,checkbox_name):
         '''Toggle the value of the checkbox whose name is given.'''
         find = self.c.findCommands

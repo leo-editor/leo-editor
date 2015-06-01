@@ -5797,15 +5797,16 @@ class Commands (object):
     #@+node:ekr.20080901124540.1: ** c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *3* c.scanAllDirectives
+    #@@nobeautify
+
     def scanAllDirectives(self,p=None):
+        '''
+        Scan p and ancestors for directives.
 
-        '''Scan p and ancestors for directives.
-
-        Returns a dict containing the results, including defaults.'''
-
+        Returns a dict containing the results, including defaults.
+        '''
         trace = False and not g.unitTesting
         c = self ; p = p or c.p
-
         # Set defaults
         language = c.target_language and c.target_language.lower()
         lang_dict = {
@@ -5813,7 +5814,6 @@ class Commands (object):
             'delims':g.set_delims_from_language(language),
         }
         wrap = c.config.getBool("body_pane_wraps")
-
         table = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
@@ -5823,33 +5823,27 @@ class Commands (object):
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
             ('wrap',        wrap,           g.scanAtWrapDirectives),
         )
-
         # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
         d = {}
         for key,default,func in table:
             val = func(aList)
             d[key] = default if val is None else val
-
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
-
         d = {
-            "delims"        : lang_dict.get('delims'),
-            "encoding"      : d.get('encoding'),
-            "language"      : lang_dict.get('language'),
-            "lineending"    : d.get('lineending'),
-            "pagewidth"     : d.get('pagewidth'),
-            "path"          : d.get('path'), # Redundant: or g.getBaseDirectory(c),
-            "tabwidth"      : d.get('tabwidth'),
-            "pluginsList"   : [], # No longer used.
-            "wrap"          : d.get('wrap'),
+            "delims":       lang_dict.get('delims'),
+            "encoding":     d.get('encoding'),
+            "language":     lang_dict.get('language'),
+            "lineending":   d.get('lineending'),
+            "pagewidth":    d.get('pagewidth'),
+            "path":         d.get('path'), # Redundant: or g.getBaseDirectory(c),
+            "tabwidth":     d.get('tabwidth'),
+            "pluginsList":  [], # No longer used.
+            "wrap":         d.get('wrap'),
         }
-
         if trace: g.trace(lang_dict.get('language'),g.callers())
-
         # g.trace(d.get('tabwidth'))
-
         return d
     #@+node:ekr.20080828103146.15: *3* c.scanAtPathDirectives
     def scanAtPathDirectives(self,aList):

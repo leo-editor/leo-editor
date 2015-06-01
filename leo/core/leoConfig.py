@@ -41,6 +41,8 @@ class ParserBaseClass:
     #@-<< ParserBaseClass data >>
     #@+others
     #@+node:ekr.20041119204700: *3*  ctor (ParserBaseClass)
+    #@@nobeautify
+
     def __init__ (self,c,localFlag):
         '''Ctor for the ParserBaseClass class.'''
         self.c = c
@@ -48,14 +50,11 @@ class ParserBaseClass:
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.
-
         self.shortcutsDict = g.TypedDictOfLists(
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),valType=g.ShortcutInfo)
-
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
-
         # Keys are canonicalized names.
         self.dispatchDict = {
             'abbrev':       self.doAbbrev, # New in 4.4.1 b2.
@@ -67,8 +66,8 @@ class ParserBaseClass:
             'directory':    self.doDirectory,
             'enabledplugins': self.doEnabledPlugins,
             'font':         self.doFont,
-            # 'if':           self.doIf, # Removed in 5.2 b1.
-            # 'ifgui':        self.doIfGui,  # Removed in 4.4 b3.
+            # 'if':         self.doIf, # Removed in 5.2 b1.
+            # 'ifgui':      self.doIfGui,  # Removed in 4.4 b3.
             'ifenv':        self.doIfEnv, # New in 5.2 b1.
             'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
@@ -85,12 +84,11 @@ class ParserBaseClass:
             'path':         self.doPath,
             'page':         self.doPage,
             'ratio':        self.doRatio,
-            # 'shortcut':     self.doShortcut, # Removed in 4.4.1 b1.
+            # 'shortcut':   self.doShortcut, # Removed in 4.4.1 b1.
             'shortcuts':    self.doShortcuts,
             'string':       self.doString,
             'strings':      self.doStrings,
         }
-
         self.debug_count = 0
     #@+node:ekr.20080514084054.4: *3* computeModeName (ParserBaseClass)
     def computeModeName (self,name):

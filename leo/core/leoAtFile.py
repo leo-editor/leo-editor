@@ -72,6 +72,8 @@ class AtFile:
     #@-<< define class constants >>
     #@+<< define sentinelDict >>
     #@+node:ekr.20041005105605.6: ** << define sentinelDict >>
+    #@@nobeautify
+
     sentinelDict = {
         # Unpaired sentinels: 3.x and 4.x.
         "@comment" : startComment,
@@ -209,6 +211,8 @@ class AtFile:
         elif sfn not in ('basewriter.py',):
             g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
     #@+node:ekr.20041005105605.9: *4* at.defineDispatchDict
+    #@@nobeautify
+
     def defineDispatchDict(self):
         '''Return the dispatch dictionary used by scanText4.'''
         return  {
@@ -5530,12 +5534,11 @@ class AtFile:
 
         return clonedSibs,thisClonedSibIndex
     #@+node:ekr.20041005105605.243: *3* at.sentinelName
-    # Returns the name of the sentinel for warnings.
+    #@@nobeautify
 
     def sentinelName(self, kind):
-
+        '''Returns the name of the sentinel for warnings..'''
         at = self
-
         sentinelNameDict = {
             at.endAll:        "@-all", # 4.x
             at.endAt:         "@-at",
@@ -5565,8 +5568,7 @@ class AtFile:
             at.startRef:      "@<<",
             at.startVerbatim: "@verbatim",
             at.startVerbatimAfterRef: "@verbatimAfterRef", # 3.x only.
-        } 
-
+        }
         return sentinelNameDict.get(kind,"<unknown sentinel: %s>" % kind)
     #@+node:ekr.20120110174009.9965: *3* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self,fn,p):

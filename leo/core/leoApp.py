@@ -1134,6 +1134,8 @@ class LeoApp:
             "handlebars":  "html",
         }
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
+    #@@nobeautify
+
     def define_language_delims_dict(self):
 
         self.language_delims_dict = {
@@ -1314,6 +1316,8 @@ class LeoApp:
             # "svn_commit"         : "",
         }
     #@+node:ekr.20120522160137.9910: *5* app.define_language_extension_dict
+    #@@nobeautify
+
     def define_language_extension_dict (self):
 
         # Used only by g.app.externalFilesController.get_ext.
@@ -1470,6 +1474,8 @@ class LeoApp:
             # squidconf:        .conf
             # rpmspec:          .rpm
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
+    #@@nobeautify
+
     def define_extension_dict(self):
 
         # Keys are extensions, values are languages
@@ -1636,7 +1642,6 @@ class LeoApp:
             'unknown_language': 'none',
             'w'     : 'none', # cweb
         }
-
     #@+node:ekr.20150509193629.1: *4* app.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoApp class.'''
