@@ -2017,7 +2017,7 @@ def get_directives_dict_list(p):
     result = []
     p1 = p.copy()
     for p in p1.self_and_parents():
-        root = None if p.hasParent() else[p.copy()]
+        root = None if p.hasParent() else [p.copy()]
         result.append(g.get_directives_dict(p, root=root))
     # if trace:
         # n = len(p1.h) + len(p1.b)
@@ -3076,7 +3076,7 @@ def splitLines(s):
     if s:
         return s.splitlines(True) # This is a Python string function!
     else:
-        return[]
+        return []
 
 splitlines = splitLines
 
@@ -3243,7 +3243,7 @@ def skip_heredoc_string(s, i):
     assert(g.match(s, i, "<<<"))
     # pylint: disable=anomalous-backslash-in-string
     m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
-    if(None == m):
+    if m is None:
         i += 3
         return i
     # 14-SEP-2002 DTHEIN: needed to add \n to find word, not just string
@@ -3381,7 +3381,7 @@ def escaped(s, i):
     while i - 1 >= 0 and s[i - 1] == '\\':
         count += 1
         i -= 1
-    return(count % 2) == 1
+    return (count % 2) == 1
 #@+node:ekr.20031218072017.3175: *4* find_line_start
 def find_line_start(s, i):
     '''Return the index in s of the start of the line containing s[i].'''
@@ -4182,14 +4182,14 @@ def maxStringListLength(aList):
 # Returns < < s > >
 
 def angleBrackets(s):
-    return("<<" + s +
+    return ("<<" + s +
         ">>") # must be on a separate line.
 
 virtual_event_name = angleBrackets
 #@+node:ekr.20090516135452.5777: *4* g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines(s, n):
     s = g.removeLeading(s, '\t\n\r ')
-    return('\n' * n) + s
+    return ('\n' * n) + s
 
 def ensureTrailingNewlines(s, n):
     s = g.removeTrailing(s, '\t\n\r ')
@@ -4434,9 +4434,9 @@ def computeLeadingWhitespace(width, tab_width):
     if tab_width > 1:
         tabs = int(width / tab_width)
         blanks = int(width % tab_width)
-        return('\t' * tabs) + (' ' * blanks)
+        return ('\t' * tabs) + (' ' * blanks)
     else: # 7/3/02: negative tab width always gets converted to blanks.
-        return(' ' * width)
+        return (' ' * width)
 #@+node:ekr.20120605172139.10263: *4* g.computeLeadingWhitespaceWidth (new)
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
@@ -5192,7 +5192,7 @@ def trace(*args, **keys):
     # Munge *args into s.
     # print ('g.trace:args...')
     # for z in args: print (g.isString(z),repr(z))
-    result = [name] if name else[]
+    result = [name] if name else []
     for arg in args:
         if isString(arg):
             pass
