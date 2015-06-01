@@ -1146,7 +1146,7 @@ class PythonTokenBeautifier:
         self.clean('blank')
         prev = self.code_list[-1]
         # g.trace(prev.kind,prev.value)
-        if prev.kind in ('op', 'word-op'):
+        if prev.kind in ('op', 'word', 'word-op'):
             self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'word':
