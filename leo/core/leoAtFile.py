@@ -18,6 +18,8 @@ class AtFile:
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: ** << define class constants >>
+    #@@nobeautify
+
     # The kind of at_directives.
     noDirective     =  1 # not an at-directive.
     allDirective    =  2 # at-all (4.2)
