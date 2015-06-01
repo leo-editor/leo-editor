@@ -6,9 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
 import leo.core.leoGlobals as g
-
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-
 try:
     import enchant
 except ImportError:
@@ -17,58 +15,56 @@ except ImportError:
 
 def cmd(name):
     '''Command decorator for the SpellCommandsClass class.'''
-    return g.new_cmd_decorator(name,['c','spellCommands',])
-
+    return g.new_cmd_decorator(name, ['c', 'spellCommands',])
 #@+others
 #@+node:ekr.20150514063305.510: ** class EnchantClass
 class EnchantClass:
     """A wrapper class for PyEnchant spell checker"""
     #@+others
     #@+node:ekr.20150514063305.511: *3*  __init__ (EnchantClass)
-    def __init__ (self,c):
+    def __init__(self, c):
         """Ctor for EnchantClass class."""
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
         # Set the base language
         if language and not enchant.dict_exists(language):
-            g.warning('Invalid language code for Enchant',repr(language))
+            g.warning('Invalid language code for Enchant', repr(language))
             g.es_print('Using "en_US" instead')
             language = 'en_US'
         # Compute fn, the full path to the local dictionary.
         fn = c.config.getString('enchant_local_dictionary')
         if not fn:
-            fn = g.os_path_finalize_join(g.app.loadDir,"..","plugins",'spellpyx.txt')
+            fn = g.os_path_finalize_join(g.app.loadDir, "..", "plugins", 'spellpyx.txt')
         # Fix bug https://github.com/leo-editor/leo-editor/issues/108
         if not g.os_path_exists(fn):
-            fn = g.os_path_finalize_join(g.app.homeDir,'.leo','spellpyx.txt')
-        self.open_dict(fn,language)
+            fn = g.os_path_finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
+        self.open_dict(fn, language)
     #@+node:ekr.20150514063305.512: *3* add
-    def add (self,word):
+    def add(self, word):
         '''Add a word to the user dictionary.'''
         self.d.add(word)
     #@+node:ekr.20150514063305.513: *3* clean_dict
-    def clean_dict (self,fn):
-
+    def clean_dict(self, fn):
         if g.os_path_exists(fn):
-            f = open(fn,mode='rb')
+            f = open(fn, mode='rb')
             s = f.read()
             f.close()
             # Blanks lines cause troubles.
-            s2 = s.replace(b'\r',b'').replace(b'\n\n',b'\n')
+            s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
             if s2.startswith(b'\n'): s2 = s2[1:]
             if s != s2:
-                g.es_print('cleaning',fn)
-                f = open(fn,mode='wb')
+                g.es_print('cleaning', fn)
+                f = open(fn, mode='wb')
                 f.write(s2)
                 f.close()
     #@+node:ekr.20150514063305.514: *3* create
-    def create (self,fn):
+    def create(self, fn):
         '''Create the given file with empty contents.'''
         theDir = g.os_path_dirname(fn)
-        g.makeAllNonExistentDirectories(theDir,c=self.c,force=True,verbose=True)
+        g.makeAllNonExistentDirectories(theDir, c=self.c, force=True, verbose=True)
             # Make the directories as needed.
         try:
-            f = open(fn,mode='wb')
+            f = open(fn, mode='wb')
             f.close()
             g.note('created: %s' % (fn))
         except IOError:
@@ -77,11 +73,10 @@ class EnchantClass:
             g.error('unexpected error creating: %s' % (fn))
             g.es_exception()
     #@+node:ekr.20150514063305.515: *3* ignore
-    def ignore (self,word):
-
+    def ignore(self, word):
         self.d.add_to_session(word)
     #@+node:ekr.20150514063305.516: *3* open_dict
-    def open_dict(self,fn,language):
+    def open_dict(self, fn, language):
         '''Open or create the dict with the given fn.'''
         trace = False and not g.unitTesting
         if not fn or not language:
@@ -89,7 +84,7 @@ class EnchantClass:
         d = g.app.spellDict
         if d:
             self.d = d
-            if trace: g.trace('already open',self.c.fileName(),fn)
+            if trace: g.trace('already open', self.c.fileName(), fn)
             return
         if not g.os_path_exists(fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized.
@@ -98,11 +93,11 @@ class EnchantClass:
             # Merge the local and global dictionaries.
             try:
                 self.clean_dict(fn)
-                self.d = enchant.DictWithPWL(language,fn)
-                if trace: g.trace('open',g.shortFileName(self.c.fileName()),fn)
+                self.d = enchant.DictWithPWL(language, fn)
+                if trace: g.trace('open', g.shortFileName(self.c.fileName()), fn)
             except Exception:
                 g.es_exception()
-                g.error('not a valid dictionary file',fn)
+                g.error('not a valid dictionary file', fn)
                 self.d = enchant.Dict(language)
         else:
             # A fallback.  Unlikely to happen.
@@ -115,7 +110,7 @@ class EnchantClass:
         Check the word. Return None if the word is properly spelled.
         Otherwise, return a list of alternatives.
         """
-        d = self.d 
+        d = self.d
         if not d:
             return None
         elif d.check(word):
@@ -124,11 +119,11 @@ class EnchantClass:
             return d.suggest(word)
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
-class SpellCommandsClass (BaseEditCommandsClass):
+class SpellCommandsClass(BaseEditCommandsClass):
     '''Commands to support the Spell Tab.'''
     #@+others
     #@+node:ekr.20150514063305.482: *3* ctor (SpellCommandsClass)
-    def __init__ (self,c):
+    def __init__(self, c):
         '''
         Ctor for SpellCommandsClass class.
         Inits happen when the first frame opens.
@@ -139,7 +134,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
             # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab (self,event=None):
+    def openSpellTab(self, event=None):
         '''Open the Spell Checker tab in the log pane.'''
         c = self.c
         log = c.frame.log
@@ -148,10 +143,10 @@ class SpellCommandsClass (BaseEditCommandsClass):
             log.selectTab(tabName)
         else:
             log.selectTab(tabName)
-            self.handler = SpellTabHandler(c,tabName)
+            self.handler = SpellTabHandler(c, tabName)
         # Bug fix: 2013/05/22.
         if not self.handler.loaded:
-            log.deleteTab(tabName,force=True)
+            log.deleteTab(tabName, force=True)
         # spell as you type stuff
         self.suggestions = []
         self.suggestions_idx = None
@@ -161,7 +156,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
     #@+node:ekr.20150514063305.485: *3* commands...(SpellCommandsClass)
     #@+node:ekr.20150514063305.486: *4* find
     @cmd('spell-find')
-    def find (self,event=None):
+    def find(self, event=None):
         '''
         Simulate pressing the 'Find' button in the Spell tab.
 
@@ -176,7 +171,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
-    def change(self,event=None):
+    def change(self, event=None):
         '''Simulate pressing the 'Change' button in the Spell tab.'''
         if self.handler:
             self.openSpellTab()
@@ -185,26 +180,26 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
-    def changeThenFind (self,event=None):
+    def changeThenFind(self, event=None):
         '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
         if self.handler:
             self.openSpellTab()
             # A workaround for a pylint warning:
             # self.handler.changeThenFind()
-            f = getattr(self.handler,'changeThenFind')
+            f = getattr(self.handler, 'changeThenFind')
             f()
         else:
             self.openSpellTab()
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
-    def hide (self,event=None):
+    def hide(self, event=None):
         '''Hide the Spell tab.'''
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
-    def ignore (self,event=None):
+    def ignore(self, event=None):
         '''Simulate pressing the 'Ignore' button in the Spell tab.'''
         if self.handler:
             self.openSpellTab()
@@ -213,11 +208,10 @@ class SpellCommandsClass (BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.491: *4* focusToSpell
     @cmd('focus-to-spell-tab')
-    def focusToSpell(self,event=None):
+    def focusToSpell(self, event=None):
         '''Put focus in the spell tab.'''
         self.openSpellTab()
             # Makes Spell tab visible.
-
         # This is not a great idea. There is no indication of focus.
             # if self.handler and self.handler.tab:
                 # self.handler.tab.setFocus()
@@ -287,11 +281,11 @@ class SpellCommandsClass (BaseEditCommandsClass):
             return
         c = self.c
         spell_ok = True
-        if self.spell_as_you_type:  # might just be for wrapping
+        if self.spell_as_you_type: # might just be for wrapping
             w = c.frame.body.wrapper
             txt = w.getAllText()
             i = w.getInsertPoint()
-            word = txt[:i].rsplit(None, 1)[-1]
+            word = txt[: i].rsplit(None, 1)[-1]
             word = ''.join(i if i.isalpha() else ' ' for i in word).split()
             if word:
                 word = word[-1]
@@ -299,7 +293,7 @@ class SpellCommandsClass (BaseEditCommandsClass):
                 suggests = ec.processWord(word)
                 if suggests:
                     spell_ok = False
-                    g.es(' '.join(suggests[:5]) +
+                    g.es(' '.join(suggests[: 5]) +
                          ('...' if len(suggests) > 5 else ''),
                          color='red')
                 elif suggests is not None:
@@ -314,15 +308,15 @@ class SpellCommandsClass (BaseEditCommandsClass):
             i = w.getInsertPoint()
             # calculate the current column
             parts = txt.split('\n')
-            popped = 0  # chars on previous lines
+            popped = 0 # chars on previous lines
             while len(parts[0]) + popped < i:
-                popped += len(parts.pop(0)) + 1  # +1 for the \n that's gone
+                popped += len(parts.pop(0)) + 1 # +1 for the \n that's gone
             col = i - popped
             if col > self.page_width:
-                txt = txt[:i] + '\n' + txt[i:]  # replace space with \n
+                txt = txt[: i] + '\n' + txt[i:] # replace space with \n
                 w.setAllText(txt)
                 c.p.b = txt
-                w.setInsertPoint(i+1)  # must come after c.p.b assignment
+                w.setInsertPoint(i + 1) # must come after c.p.b assignment
     #@+node:ekr.20150514063305.498: *4* as_you_type_replace
     def as_you_type_replace(self, word):
         """as_you_type_replace - replace the word behind the cursor
@@ -339,15 +333,15 @@ class SpellCommandsClass (BaseEditCommandsClass):
         while i and not txt[i].isalpha():
             i -= 1
         xtra = j - i
-        j = i+1
+        j = i + 1
         while i and txt[i].isalpha():
             i -= 1
         if i or (txt and not txt[0].isalpha()):
             i += 1
-        txt = txt[:i]+word+txt[j:]
+        txt = txt[: i] + word + txt[j:]
         w.setAllText(txt)
         c.p.b = txt
-        w.setInsertPoint(i+len(word)+xtra-1)
+        w.setInsertPoint(i + len(word) + xtra - 1)
         c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20150514063305.499: ** class SpellTabHandler
@@ -356,7 +350,7 @@ class SpellTabHandler:
     #@+others
     #@+node:ekr.20150514063305.500: *3* Birth & death
     #@+node:ekr.20150514063305.501: *4* SpellTabHandler.__init__
-    def __init__(self,c,tabName):
+    def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
         self.c = c
         self.body = c.frame.body
@@ -367,7 +361,7 @@ class SpellTabHandler:
             # Must have a parent frame even though it is not packed.
         if enchant:
             self.spellController = EnchantClass(c)
-            self.tab = g.app.gui.createSpellTab(c,self,tabName)
+            self.tab = g.app.gui.createSpellTab(c, self, tabName)
             self.loaded = True
         else:
             self.spellController = None
@@ -375,7 +369,7 @@ class SpellTabHandler:
             self.loaded = False
     #@+node:ekr.20150514063305.502: *3* Commands
     #@+node:ekr.20150514063305.503: *4* add (spellTab)
-    def add(self,event=None):
+    def add(self, event=None):
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -383,7 +377,7 @@ class SpellTabHandler:
                 self.spellController.add(w)
                 self.tab.onFindButton()
     #@+node:ekr.20150514063305.504: *4* change (spellTab)
-    def change(self,event=None):
+    def change(self, event=None):
         """Make the selected change to the text"""
         if not self.loaded:
             return
@@ -392,19 +386,19 @@ class SpellTabHandler:
         selection = self.tab.getSuggestion()
         if selection:
             # Use getattr to keep pylint happy.
-            if hasattr(self.tab,'change_i') and getattr(self.tab,'change_i') is not None:
-                start = getattr(self.tab,'change_i')
-                end   = getattr(self.tab,'change_j')
-                oldSel = start,end
+            if hasattr(self.tab, 'change_i') and getattr(self.tab, 'change_i') is not None:
+                start = getattr(self.tab, 'change_i')
+                end = getattr(self.tab, 'change_j')
+                oldSel = start, end
                 # g.trace('using',start,end)
             else:
-                start,end = oldSel = w.getSelectionRange()
+                start, end = oldSel = w.getSelectionRange()
             if start is not None:
-                if start > end: start,end = end,start
-                w.delete(start,end)
-                w.insert(start,selection)
-                w.setSelectionRange(start,start+len(selection))
-                c.frame.body.onBodyChanged("Change",oldSel=oldSel)
+                if start > end: start, end = end, start
+                w.delete(start, end)
+                w.insert(start, selection)
+                w.setSelectionRange(start, start + len(selection))
+                c.frame.body.onBodyChanged("Change", oldSel=oldSel)
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return True
@@ -413,7 +407,7 @@ class SpellTabHandler:
         c.bodyWantsFocus()
         return False
     #@+node:ekr.20150514063305.505: *4* find & helpers
-    def find (self,event=None):
+    def find(self, event=None):
         """Find the next unknown word."""
         if not self.loaded:
             return
@@ -421,8 +415,8 @@ class SpellTabHandler:
         w = c.frame.body.wrapper
         # Reload the work pane from the present node.
         s = w.getAllText().rstrip()
-        self.workCtrl.delete(0,"end")
-        self.workCtrl.insert("end",s)
+        self.workCtrl.delete(0, "end")
+        self.workCtrl.insert("end", s)
         # Reset the insertion point of the work widget.
         ins = w.getInsertPoint()
         self.workCtrl.setInsertPoint(ins)
@@ -431,12 +425,12 @@ class SpellTabHandler:
         if alts:
             # Save the selection range.
             ins = w.getInsertPoint()
-            i,j = w.getSelectionRange()
-            self.tab.fillbox(alts,word)
+            i, j = w.getSelectionRange()
+            self.tab.fillbox(alts, word)
             c.invalidateFocus()
             c.bodyWantsFocus()
             # Restore the selection range.
-            w.setSelectionRange(i,j,insert=ins)
+            w.setSelectionRange(i, j, insert=ins)
             w.see(ins)
         else:
             g.es("no more misspellings")
@@ -447,19 +441,19 @@ class SpellTabHandler:
     def findNextMisspelledWord(self):
         """Find the next unknown word."""
         trace = False and not g.unitTesting
-        c,p = self.c,self.c.p
+        c, p = self.c, self.c.p
         w = c.frame.body.wrapper
         sc = self.spellController
-        alts,word = None,None
+        alts, word = None, None
         try:
             while 1:
-                i,j,p,word = self.findNextWord(p)
+                i, j, p, word = self.findNextWord(p)
                 # g.trace(i,j,p and p.h or '<no p>')
                 if not p or not word:
                     alts = None
                     break
                 alts = sc.processWord(word)
-                if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
+                if trace: g.trace('alts', alts and len(alts) or 0, i, j, word, p and p.h or 'None')
                 if alts:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
@@ -475,16 +469,16 @@ class SpellTabHandler:
                         c.redraw(p)
                     else:
                         c.selectPosition(p)
-                    w.setSelectionRange(i,j,insert=j)
+                    w.setSelectionRange(i, j, insert=j)
                     break
         except Exception:
             g.es_exception()
         return alts, word
     #@+node:ekr.20150514063305.507: *5* findNextWord (spellTab)
-    def findNextWord(self,p):
+    def findNextWord(self, p):
         """Scan for the next word, leaving the result in the work widget"""
         trace = False and not g.unitTesting
-        c = self.c ; p = p.copy()
+        c = self.c; p = p.copy()
         while 1:
             s = self.workCtrl.getAllText()
             i = self.workCtrl.getInsertPoint()
@@ -496,32 +490,31 @@ class SpellTabHandler:
                 j = i
                 while j < len(s) and (g.isWordChar(s[j]) or s[j] == "'"):
                     j += 1
-                word = s[i:j]
+                word = s[i: j]
                 word = word.strip("'")
                 # This trace verifies that all words have been checked.
                 # g.trace(repr(word))
-                for w in (self.workCtrl,c.frame.body.wrapper):
+                for w in (self.workCtrl, c.frame.body.wrapper):
                     c.widgetWantsFocusNow(w)
-                    w.setSelectionRange(i,j,insert=j)
-                if trace: g.trace(i,j,word,p.h)
-                return i,j,p,word
+                    w.setSelectionRange(i, j, insert=j)
+                if trace: g.trace(i, j, word, p.h)
+                return i, j, p, word
             else:
                 # End of the body text.
                 p.moveToThreadNext()
                 if not p: break
-                self.workCtrl.delete(0,'end')
-                self.workCtrl.insert(0,p.b)
-                for w in (self.workCtrl,c.frame.body.wrapper):
+                self.workCtrl.delete(0, 'end')
+                self.workCtrl.insert(0, p.b)
+                for w in (self.workCtrl, c.frame.body.wrapper):
                     c.widgetWantsFocusNow(w)
-                    w.setSelectionRange(0,0,insert=0)
-                if trace: g.trace(0,0,'-->',p.h)
-        return None,None,None,None
+                    w.setSelectionRange(0, 0, insert=0)
+                if trace: g.trace(0, 0, '-->', p.h)
+        return None, None, None, None
     #@+node:ekr.20150514063305.508: *4* hide
-    def hide (self,event=None):
-
+    def hide(self, event=None):
         self.c.frame.log.selectTab('Log')
     #@+node:ekr.20150514063305.509: *4* ignore
-    def ignore(self,event=None):
+    def ignore(self, event=None):
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord

@@ -6,31 +6,29 @@
 #@+<< imports >>
 #@+node:ekr.20150514050127.1: ** << imports >> (controlCommands.py)
 import leo.core.leoGlobals as g
-
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-
 import shlex
 import subprocess
 #@-<< imports >>
 
 def cmd(name):
     '''Command decorator for the ControlCommandsClass class.'''
-    return g.new_cmd_decorator(name,['c','controlCommands',])
+    return g.new_cmd_decorator(name, ['c', 'controlCommands',])
 
-class ControlCommandsClass (BaseEditCommandsClass):
+class ControlCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.88: ** control.ctor
-    def __init__ (self,c):
+    def __init__(self, c):
         '''Ctor for ControlCommandsClass.'''
         self.c = c
         self.payload = None
     #@+node:ekr.20150514063305.90: ** advertizedUndo
     @cmd('advertised-undo')
-    def advertizedUndo (self,event):
+    def advertizedUndo(self, event):
         '''Undo the previous command.'''
         self.c.undoer.undo()
     #@+node:ekr.20150514063305.91: ** executeSubprocess
-    def executeSubprocess (self,event,command):
+    def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
         k = self.c.k
         try:
@@ -43,11 +41,11 @@ class ControlCommandsClass (BaseEditCommandsClass):
         g.es('Done: %s' % command)
     #@+node:ekr.20150514063305.92: ** print plugins info...
     @cmd('print-plugin-handlers')
-    def printPluginHandlers (self,event=None):
+    def printPluginHandlers(self, event=None):
         '''Print the handlers for each plugin.'''
         g.app.pluginsController.printHandlers(self.c)
 
-    def printPlugins (self,event=None):
+    def printPlugins(self, event=None):
         '''
         Print the file name responsible for loading a plugin.
 
@@ -57,7 +55,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         g.app.pluginsController.printPlugins(self.c)
 
     @cmd('print-plugins-info')
-    def printPluginsInfo (self,event=None):
+    def printPluginsInfo(self, event=None):
         '''
         Print the file name responsible for loading a plugin.
 
@@ -67,7 +65,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
         g.app.pluginsController.printPluginsInfo(self.c)
     #@+node:ekr.20150514063305.93: ** setSilentMode
     @cmd('set-silent-mode')
-    def setSilentMode (self,event=None):
+    def setSilentMode(self, event=None):
         '''
         Set the mode to be run silently, without the minibuffer.
         The only use for this command is to put the following in an @mode node::
@@ -77,21 +75,21 @@ class ControlCommandsClass (BaseEditCommandsClass):
         self.c.k.silentMode = True
     #@+node:ekr.20150514063305.94: ** shellCommand
     @cmd('shell-command')
-    def shellCommand (self,event):
+    def shellCommand(self, event):
         '''Execute a shell command.'''
         k = self.c.k
         state = k.getState('shell-command')
         if state == 0:
             k.setLabelBlue('shell-command: ')
-            k.getArg(event,'shell-command',1,self.shellCommand)
+            k.getArg(event, 'shell-command', 1, self.shellCommand)
         else:
             command = k.arg
             # k.commandName = 'shell-command: %s' % command
             # k.clearState()
-            self.executeSubprocess(event,command)
+            self.executeSubprocess(event, command)
     #@+node:ekr.20150514063305.95: ** shellCommandOnRegion
     @cmd('shell-command-on-region')
-    def shellCommandOnRegion (self,event):
+    def shellCommandOnRegion(self, event):
         '''Execute a command taken from the selected text in a separate process.'''
         k = self.c.k
         w = self.editWidget(event)
@@ -99,7 +97,7 @@ class ControlCommandsClass (BaseEditCommandsClass):
             if w.hasSelection():
                 command = w.getSelectedText()
                 # k.commandName = 'shell-command: %s' % command
-                self.executeSubprocess(event,command)
+                self.executeSubprocess(event, command)
             else:
                 # k.clearState()
                 g.es('No text selected')
@@ -122,24 +120,24 @@ class ControlCommandsClass (BaseEditCommandsClass):
 
         This will upcase the headline when it starts with ``@up``.
         '''
-        g.act_on_node(self.c,self.c.p,event)
+        g.act_on_node(self.c, self.c.p, event)
     #@+node:ekr.20150514063305.97: ** shutdown, saveBuffersKillEmacs & setShutdownHook
     @cmd('save-buffers-kill-leo')
-    def shutdown (self,event):
+    def shutdown(self, event):
         '''Quit Leo, prompting to save any unsaved files first.'''
         g.app.onQuit()
 
     saveBuffersKillLeo = shutdown
     #@+node:ekr.20150514063305.98: ** suspend & iconifyFrame
     @cmd('suspend')
-    def suspend (self,event):
+    def suspend(self, event):
         '''Minimize the present Leo window.'''
         w = self.editWidget(event)
         if not w: return
         self.c.frame.top.iconify()
 
     @cmd('iconify-frame')
-    def iconifyFrame (self,event):
+    def iconifyFrame(self, event):
         '''Minimize the present Leo window.'''
         self.suspend(event)
     #@-others
