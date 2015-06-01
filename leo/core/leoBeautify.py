@@ -255,20 +255,20 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
 
 def compare_ast(node1, node2):
 
-    def fail(node1,node2):
+    def fail(node1, node2):
         name1 = node1.__class__.__name__
         name2 = node2.__class__.__name__
         tag = 'compare_ast failed:',
         if name1 == 'str':
             g.pr(tag, repr(node1), repr(node2))
         elif name1 == 'Str':
-            g.pr(tag,'Str', repr(node1.s), repr(node2.s))
+            g.pr(tag, 'Str', repr(node1.s), repr(node2.s))
         else:
             g.pr(tag, getattr(node1, 'lineno', '???'),
                  getattr(node2, 'lineno', '???'))
-    
+
     if type(node1) is not type(node2):
-        fail(node1,node2)
+        fail(node1, node2)
         return False
     if isinstance(node1, ast.AST):
         for kind, var in vars(node1).items():
@@ -281,11 +281,11 @@ def compare_ast(node1, node2):
         return True
     elif isinstance(node1, list):
         if len(node1) != len(node2):
-            fail(node1,node2)
+            fail(node1, node2)
             return False
         for i in range(len(node1)):
-            if not compare_ast(node1[i],node2[i]):
-                fail(node1,node2)
+            if not compare_ast(node1[i], node2[i]):
+                fail(node1, node2)
                 return False
         return True
     else:
