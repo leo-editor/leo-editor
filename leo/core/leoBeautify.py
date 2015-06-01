@@ -946,6 +946,8 @@ class PythonTokenBeautifier:
         val = self.val.rstrip()
         entire_line = raw_val.lstrip().startswith('#')
         # g.trace(entire_line,raw_val)
+        self.backslash_seen = False
+            # Putting the comment will put the backslash.
         if entire_line:
             self.clean('line-indent')
             self.add_token('comment', raw_val)
