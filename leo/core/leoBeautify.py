@@ -88,6 +88,8 @@ def beautifyPythonTree(event):
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
     for p in c.p.self_and_subtree():
+        if p.isAnyAtFileNode():
+            g.es_print(p.h)
         if g.scanForAtLanguage(c, p) == "python":
             pp.prettyPrintNode(p)
     pp.end_undo()
