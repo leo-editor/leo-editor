@@ -35,9 +35,10 @@ def prettyPrintAllPythonCode(event):
     pp = PythonTokenBeautifier(c)
     for p in c.all_unique_positions():
         if g.scanForAtLanguage(c, p) == "python":
-            prev_changed = pp.n_changed_nodes
+            if p.isAnyAtFileNode():
+                prev_changed = pp.n_changed_nodes
             pp.prettyPrintNode(p)
-            if pp.n_changed_nodes != prev_changed:
+            if p.isAnyAtFileNode() and pp.n_changed_nodes != prev_changed:
                 g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
@@ -91,12 +92,12 @@ def beautifyPythonTree(event):
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
     for p in c.p.self_and_subtree():
-        if p.isAnyAtFileNode():
-            g.es_print(p.h)
         if g.scanForAtLanguage(c, p) == "python":
-            prev_changed = pp.n_changed_nodes
+            if p.isAnyAtFileNode():
+                g.es_print(p.h)
+                prev_changed = pp.n_changed_nodes
             pp.prettyPrintNode(p)
-            if pp.n_changed_nodes != prev_changed:
+            if p.isAnyAtFileNode() and pp.n_changed_nodes != prev_changed:
                 g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
