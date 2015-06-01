@@ -832,12 +832,6 @@ class PythonTokenBeautifier:
         '''The driver for beautification: beautify a single node.'''
         c = self.c
         trace = False and not g.unitTesting
-        if not p.b:
-            # Pretty printing might add text!
-            return
-        if not p.b.strip():
-            self.replace_body(p, '')
-            return
         # Handle @beautify and @nobeautify.
         for p2 in p.self_and_parents():
             d = g.get_directives_dict(p2)
@@ -849,6 +843,13 @@ class PythonTokenBeautifier:
                 # This message would quickly become annoying.
                 # self.skip_message('@nobeautify',p)
                 return
+        if not p.b:
+            # Pretty printing might add text!
+            return
+        if not p.b.strip():
+            # Do this *only* if we are sure @beautify is in effect.
+            self.replace_body(p, '')
+            return
         t1 = time.clock()
         # Replace Leonine syntax with special comments.
         comment_string, s0 = comment_leo_lines(p)
