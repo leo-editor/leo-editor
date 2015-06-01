@@ -922,7 +922,7 @@ class PythonTokenBeautifier:
                 if self.backslash_seen:
                     self.backslash()
                 # Start a new row.
-                raw_val = self.raw_val.rstrip('\n')
+                raw_val = self.raw_val.rstrip()
                 self.backslash_seen = raw_val.endswith('\\')
                 # g.trace('backslash_seen',self.backslash_seen)
                 if self.paren_level > 0:
