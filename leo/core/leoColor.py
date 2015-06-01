@@ -45,7 +45,6 @@ import leo.core.leoGlobals as g
 # 
 # Names are normalized by removing spaces and capitalization.
 #@@c
-
 leo_color_database = {
     # leo colors
     "leoblue": "#F0F8FF", #alice blue

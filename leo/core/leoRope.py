@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140526082700.18440: * @file leoRope.py
 #@@first
-
 #@+<< leoRope imports >>
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
@@ -16,23 +15,22 @@ imp.reload(rope.base.project)
 imp.reload(rope.base.simplify)
 imp.reload(rope.refactor)
 #@-<< leoRope imports >>
-
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController
 class RopeController:
     #@+others
     #@+node:ekr.20140525065558.15809: *3* ctor
-    def __init__(self,c):
+    def __init__(self, c):
         self.c = c
         self.proj = rope.base.project.Project(g.app.loadDir)
     #@+node:ekr.20140525065558.15806: *3* modules
     def modules(self):
         '''Return full path names of all Leo modules.'''
-        aList = glob.glob(g.os_path_join(g.app.loadDir,'*.py'))
+        aList = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
         return sorted(aList)
     #@+node:ekr.20140525065558.15808: *3* path
-    def path(self,fn):
-        return g.os_path_join(g.app.loadDir,fn)
+    def path(self, fn):
+        return g.os_path_join(g.app.loadDir, fn)
     #@+node:ekr.20140525065558.15805: *3* refactor
     def refactor(self):
         '''Perform refactorings.'''
@@ -45,10 +43,10 @@ class RopeController:
         tag2 = g.pep8_class_name(tag1)
         offset = s.find(tag1)
         if offset > -1:
-            changes = rope.refactor.rename.Rename(proj,m,offset).get_changes(tag2)
+            changes = rope.refactor.rename.Rename(proj, m, offset).get_changes(tag2)
             g.trace(changes.get_description())
         else:
-            g.trace('not found',tag1)
+            g.trace('not found', tag1)
         # prog.do(changes)
     #@+node:ekr.20140525065558.15810: *3* run
     def run(self):

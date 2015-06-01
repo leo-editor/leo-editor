@@ -2057,7 +2057,7 @@ class LeoApp:
                     if clear is None:
                         clear = g.app.gui.runAskYesNoDialog(c,
                             title='Reset open count?',
-                            message='Reset open count for %s?'                             "\nSay yes if you know this outline"                             "\nis not really open elsewhere" % (fn),
+                            message='Reset open count for %s?' "\nSay yes if you know this outline" "\nis not really open elsewhere" % (fn),
                                 yes_all=True, no_all=True
                         )
                     if '-all' in clear:

@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
 #@@first
-
 '''
 Support for the --ipython command-line option and the IPython bridge:
 http://leoeditor.com/IPythonBridge.html
@@ -69,7 +68,7 @@ class InternalIPKernel(object):
         self.namespace['app_counter'] = 0
         #self.namespace['ipkernel'] = self.ipkernel  # dbg
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
-    def pylab_kernel(self,gui):
+    def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
         log_debug = False
             # Produces a verbose IPython message log.
@@ -79,7 +78,7 @@ class InternalIPKernel(object):
             # Return the singleton instance, creating it if necessary.
         if kernel:
             # pylab is needed for Qt event loop integration.
-            args = ['python','--pylab=%s' % (gui)]
+            args = ['python', '--pylab=%s' % (gui)]
             if log_debug: args.append('--debug')
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
@@ -101,14 +100,14 @@ class InternalIPKernel(object):
             print('%s IPKernelApp.instance failed' % (tag))
         return kernel
     #@+node:ekr.20130930062914.15995: *3* print_namespace
-    def print_namespace(self,event=None):
+    def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.iteritems():
             if k not in self._init_keys and not k.startswith('_'):
                 print('%s -> %r' % (k, v))
         sys.stdout.flush()
     #@+node:ekr.20130930062914.15996: *3* new_qt_console
-    def new_qt_console(self,event=None):
+    def new_qt_console(self, event=None):
         """start a new qtconsole connected to our kernel"""
         ipk = g.app.ipk
         console = None
@@ -123,17 +122,15 @@ class InternalIPKernel(object):
                 self.consoles.append(console)
         return console
     #@+node:ekr.20130930062914.15997: *3* count
-    def count(self,event=None):
+    def count(self, event=None):
         self.namespace['app_counter'] += 1
-
     #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
-    def cleanup_consoles(self,event=None):
+    def cleanup_consoles(self, event=None):
         for c in self.consoles:
             c.kill()
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
-    
     '''An interface class passed to IPython that provides easy
     access to "g" and all commanders.
     
@@ -141,7 +138,7 @@ class LeoNameSpace(object):
     commander in g.app.windowList.
     '''
 
-    def __init__ (self):
+    def __init__(self):
         '''LeoNameSpace ctor.'''
         self.commander = None
             # The commander returned by the c property.
@@ -149,7 +146,6 @@ class LeoNameSpace(object):
             # The list of commanders returned by the commanders property.
         self.g = g
         self.update()
-
     #@+others
     #@+node:ekr.20130930062914.16006: *3* LeoNS.c property
     def __get_c(self):
@@ -162,7 +158,7 @@ class LeoNameSpace(object):
         else:
             return None
 
-    def __set_c(self,c):
+    def __set_c(self, c):
         '''Designate the commander to be returned by the getter.'''
         self.update()
         if c in self.commanders_list:
@@ -173,7 +169,7 @@ class LeoNameSpace(object):
 
     c = property(
         __get_c, __set_c,
-        doc = "LeoNameSpace c property")
+        doc="LeoNameSpace c property")
     #@+node:edward.20130930125732.11822: *3* LeoNS.commanders property
     def __get_commanders(self):
         '''Return the designated commander, or the only open commander.'''
@@ -182,9 +178,9 @@ class LeoNameSpace(object):
 
     commanders = property(
         __get_commanders, None,
-        doc = "LeoNameSpace commanders property (read-only)")
+        doc="LeoNameSpace commanders property (read-only)")
     #@+node:ekr.20130930062914.16009: *3* LeoNS.find_c
-    def find_c(self,path):
+    def find_c(self, path):
         '''Return the commander associated with path, or None.'''
         g = self.g
         self.update()
@@ -196,11 +192,10 @@ class LeoNameSpace(object):
             if fn == path or short_fn == short_path:
                 return c
     #@+node:ekr.20130930062914.16003: *3* LeoNS.update
-    def update (self):
+    def update(self):
         '''Update the list of available commanders.'''
         self.commanders_list = [frame.c for frame in g.app.windowList]
     #@-others
-    
 #@-others
 #@@language python
 #@@tabwidth -4
