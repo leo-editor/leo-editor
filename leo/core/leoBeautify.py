@@ -714,7 +714,7 @@ class ProjectUtils:
         data = d.get(name.lower())
         if not data:
             g.trace('bad project name: %s' % (name))
-            return[]
+            return []
         theDir, extList, excludeDirs = data
         files = self.files_in_dir(theDir, recursive=True, extList=extList, excludeDirs=excludeDirs)
         if files:
@@ -725,11 +725,11 @@ class ProjectUtils:
                 if fn and g.os_path_exists(fn):
                     files.append(fn)
             if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
-                return[files[0]]
+                return [files[0]]
         if not files:
             g.trace(theDir)
         if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
-            return[files[0]]
+            return [files[0]]
         else:
             return files
     #@-others
@@ -1151,7 +1151,7 @@ class PythonTokenBeautifier:
             self.add_token('lt', s)
         elif prev.kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keyworks.
-            if s == '{' or prev.value in ('if','else','return'):
+            if s == '{' or prev.value in ('if', 'else', 'return'):
                 self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'op':
