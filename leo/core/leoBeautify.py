@@ -841,7 +841,9 @@ class PythonTokenBeautifier:
         # Handle @beautify and @nobeautify.
         for p2 in p.self_and_parents():
             d = g.get_directives_dict(p2)
-            if 'beautify' in d:
+            if 'beautify' in d and 'nobeautify' in d:
+                pass
+            elif 'beautify' in d:
                 break
             elif 'nobeautify' in d:
                 # This message would quickly become annoying.
