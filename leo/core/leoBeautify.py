@@ -1146,10 +1146,13 @@ class PythonTokenBeautifier:
         self.clean('blank')
         prev = self.code_list[-1]
         # g.trace(prev.kind,prev.value)
-        if prev.kind in ('op', 'word', 'word-op'):
+        if prev.kind in ('op', 'word-op'):
             self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'word':
+            # Only suppress blanks before '(' for non-keyworks.
+            if s in '[{' or prev.value in ('if','else','return'):
+                self.blank()
             self.add_token('lt', s)
         elif prev.kind == 'op':
             self.op(s)
