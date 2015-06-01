@@ -272,6 +272,7 @@ def compare_ast(node1, node2):
     if type(node1) != type(node2):
         fail(node1, node2)
         return False
+    # The types match. Recursively compare components.
     if isinstance(node1, ast.AST):
         for kind, var in vars(node1).items():
             if kind not in ('lineno', 'col_offset', 'ctx'):
