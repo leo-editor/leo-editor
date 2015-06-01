@@ -333,7 +333,7 @@ def main():
     for path in files:
         path = g.os_path_finalize_join(base,path)
         beautify(options,path)
-    g.trace('%s files in %4.2f sec.' % (len(files),time.clock()-t1))
+    print('beautified %s files in %4.2f sec.' % (len(files),time.clock()-t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options,path):
     '''Beautify the file with the given path.'''
