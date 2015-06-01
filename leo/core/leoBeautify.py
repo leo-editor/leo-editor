@@ -258,22 +258,23 @@ def compare_ast(node1, node2):
     def fail(node1, node2):
         name1 = node1.__class__.__name__
         name2 = node2.__class__.__name__
-        tag = 'compare_ast failed:',
+        format = 'compare_ast failed: %s %s %r %r'
         if name1 == 'str':
-            g.pr(tag, repr(node1), repr(node2))
+            print(format % (name1, name2, node1, node2))
         elif name1 == 'Str':
-            g.pr(tag, 'Str', repr(node1.s), repr(node2.s))
+            print(format % (name1, name2, node1.s, node2.s))
         else:
-            g.pr(tag, getattr(node1, 'lineno', '???'),
-                 getattr(node2, 'lineno', '???'))
+            format = 'compare_ast failed: %s %s %r %r %r %r'
+            attr1 = getattr(node1, 'lineno', '???')
+            attr2 = getattr(node2, 'lineno', '???')
+            print(format % (name1, name2, node1, node2, attr1, attr2))
 
-    if type(node1) is not type(node2):
+    if type(node1) != type(node2):
         fail(node1, node2)
         return False
     if isinstance(node1, ast.AST):
         for kind, var in vars(node1).items():
             if kind not in ('lineno', 'col_offset', 'ctx'):
-                # var and var2 may be None
                 var2 = getattr(node2, kind, None)
                 if not compare_ast(var, var2):
                     fail(var, var2)
@@ -281,17 +282,18 @@ def compare_ast(node1, node2):
         return True
     elif isinstance(node1, list):
         if len(node1) != len(node2):
-            fail(node1, node2)
+            # fail(node1, node2)
             return False
         for i in range(len(node1)):
             if not compare_ast(node1[i], node2[i]):
-                fail(node1, node2)
+                # fail(node1, node2)
                 return False
         return True
+    elif node1 != node2:
+        fail(node1, node2)
+        return False
     else:
-        if node1 != node2:
-            fail(node1, node2)
-        return node1 == node2
+        return True
 #@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
 def dump_tokens(tokens, verbose=True):
     last_line_number = 0
