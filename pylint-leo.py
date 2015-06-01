@@ -24,8 +24,6 @@ import time
 rc_warning_given = False
 #@+others
 #@+node:ekr.20150514101801.1: ** getCommandList
-#@@beautify
-
 def getCommandList():
     '''Return list of all command modules in leo/commands.'''
     pattern = g.os_path_finalize_join('.', 'leo', 'commands', '*.py')
@@ -34,8 +32,6 @@ def getCommandList():
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py'])
 #@+node:ekr.20100221142603.5640: ** getCoreList
-#@@beautify
-
 def getCoreList():
     pattern = g.os_path_finalize_join('.', 'leo', 'core', 'leo*.py')
     # pattern = g.os_path_finalize_join('leo','core','leo*.py')
@@ -48,8 +44,6 @@ def getCoreList():
     ])
     return sorted(aList)
 #@+node:ekr.20140528065727.17960: ** getExternalList
-#@@beautify
-
 def getExternalList():
     '''Return list of files in leo/external'''
     return [
@@ -58,8 +52,6 @@ def getExternalList():
         'lproto',
     ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
-#@@beautify
-
 def getGuiPluginsList():
     pattern = g.os_path_finalize_join('.', 'leo', 'plugins', 'qt_*.py')
     aList = [
@@ -75,8 +67,6 @@ def getGuiPluginsList():
         aList.remove('qt_main.py')
     return sorted(aList)
 #@+node:ekr.20140727180847.17983: ** getModesList
-#@@beautify
-
 def getModesList():
     pattern = g.os_path_finalize_join('.', 'leo', 'modes', '*.py')
     return [
@@ -84,8 +74,6 @@ def getModesList():
             for fn in glob.glob(pattern)
                 if g.shortFileName(fn) != '__init__.py']
 #@+node:ekr.20100221142603.5641: ** getPassList
-#@@beautify
-
 def getPassList():
     return (
         '__init__', 'FileActions',
@@ -115,8 +103,6 @@ def getPassList():
         'vim', 'xemacs',
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsList
-#@@beautify
-
 def getPluginsList():
     '''Return a list of all important plugins.'''
     aList = []
@@ -144,8 +130,6 @@ def getPluginsList():
     # g.trace('\n'.join(aList))
     return aList
 #@+node:ekr.20140331201252.16861: ** getTable
-#@@beautify
-
 def getTable(scope):
     d = {
         'all': (
@@ -187,8 +171,6 @@ def getTable(scope):
         tables_table = ()
     return tables_table
 #@+node:ekr.20140331201252.16859: ** main
-#@@beautify
-
 def main(tables_table):
     '''Call run on all tables in tables_table.'''
     if False and tables_table and sys.platform.startswith('win') and scope != 'file':
@@ -202,8 +184,6 @@ def main(tables_table):
             t += run(theDir, fn)
     print('time: %5.2f sec.' % t)
 #@+node:ekr.20140526142452.17594: ** report_version
-#@@beautify
-
 def report_version():
     try:
         from pylint import lint
@@ -469,4 +449,5 @@ if scope == 'version':
 else:
     tables_table = getTable(scope)
     main(tables_table)
+#@@beautify
 #@-leo

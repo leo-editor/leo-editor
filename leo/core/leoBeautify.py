@@ -834,10 +834,24 @@ class PythonTokenBeautifier:
         c = self.c
         trace = False and not g.unitTesting
         # Handle @beautify and @nobeautify.
+        found = False
         for p2 in p.self_and_parents():
+            if found:
+                break
             d = g.get_directives_dict(p2)
             if 'beautify' in d and 'nobeautify' in d:
-                pass
+                if p == p2:
+                    # honor whichever comes first.
+                    for line in g.splitLines(p2.b):
+                        if line.startswith('@beautify'):
+                            found = True
+                            break
+                        elif line.startswith('@nobeautify'):
+                            return
+                    g.trace('can not happen',p2.h)
+                    return
+                else:
+                    pass # The ambiguous node has no effect.
             elif 'beautify' in d:
                 break
             elif 'nobeautify' in d:
