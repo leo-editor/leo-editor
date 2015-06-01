@@ -848,7 +848,7 @@ class PythonTokenBeautifier:
                             break
                         elif line.startswith('@nobeautify'):
                             return
-                    g.trace('can not happen',p2.h)
+                    g.trace('can not happen', p2.h)
                     return
                 else:
                     pass # The ambiguous node has no effect.
