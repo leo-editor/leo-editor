@@ -342,70 +342,21 @@ def beautify(options,path):
     if not s:
         return
     print('beautifying %s' % fn)
-    ### t1 = time.clock()
     s1 = g.toEncodedString(s)
     node1 = ast.parse(s1, filename='before', mode='exec')
-    ### t2 = time.clock()
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
-    ### t3 = time.clock()
     beautifier = PythonTokenBeautifier(c=None)
     beautifier.delete_blank_lines = not options.keep
-    # g.trace('delete blank lines',beautifier.delete_blank_lines)
     s2 = beautifier.run(tokens)
-    ### t4 = time.clock()
-    try:
-        s2_e = g.toEncodedString(s2)
-        node2 = ast.parse(s2_e, filename='before', mode='exec')
-        ok = compare_ast(node1, node2)
-    except Exception:
-        g.es_exception()
-        ok = False
-    f = open(path,'wb')
-    f.write(s2_e)
-    f.close()
-    # g.trace('%s...\n%s' % (fn,s2))
-    ### t5 = time.clock()
-    ### 
-    #  Update the stats
-    # beautifier.n_input_tokens += len(tokens)
-    # beautifier.n_output_tokens += len(beautifier.code_list)
-    # beautifier.n_strings += len(s2)
-    # beautifier.parse_time += (t2 - t1)
-    # beautifier.tokenize_time += (t3 - t2)
-    # beautifier.beautify_time += (t4 - t3)
-    # beautifier.check_time += (t5 - t4)
-    # beautifier.total_time += (t5 - t1)
-    # settings = {} ######
-    # if settings.get('input_string'):
-        # print('==================== input_string')
-        # for i, z in enumerate(g.splitLines(s)):
-            # print('%4s %s' % (i + 1, z.rstrip()))
-    # if settings.get('input_lines'):
-        # print('==================== input_lines')
-        # dump_tokens(tokens, verbose=False)
-    # if settings.get('input_tokens'):
-        # print('==================== input_tokens')
-        # dump_tokens(tokens, verbose=True)
-    # if settings.get('output_tokens'):
-        # print('==================== code_list')
-        # for i, z in enumerate(beautifier.code_list):
-            # print('%4s %s' % (i, z))
-    # if settings.get('output_string'):
-        # print('==================== output_string')
-        # for i, z in enumerate(g.splitLines(s2)):
-            # if z == '\n':
-                # print('%4s' % (i + 1))
-            # elif z.rstrip():
-                # print('%4s %s' % (i + 1, z.rstrip()))
-            # else:
-                # print('%4s %r' % (i + 1, str(z)))
-    # if settings.get('stats'):
-        # beautifier.print_stats()
-    # if not ok:
-        # print('*************** fail: %s ***************' % (h))
-    # return beautifier
-        # # For statistics.
+    s2_e = g.toEncodedString(s2)
+    node2 = ast.parse(s2_e, filename='before', mode='exec')
+    if compare_ast(node1, node2):
+        f = open(path,'wb')
+        f.write(s2_e)
+        f.close()
+    else:
+        print('failed to beautify %s' % fn)
 #@+node:ekr.20150601162203.1: *4* scan_options & helper
 def scan_options():
     '''Handle all options. Return a list of files.'''
