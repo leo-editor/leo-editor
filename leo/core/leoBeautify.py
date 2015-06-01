@@ -35,7 +35,10 @@ def prettyPrintAllPythonCode(event):
     pp = PythonTokenBeautifier(c)
     for p in c.all_unique_positions():
         if g.scanForAtLanguage(c, p) == "python":
+            prev_changed = pp.n_changed_nodes
             pp.prettyPrintNode(p)
+            if pp.n_changed_nodes != prev_changed:
+                g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
@@ -91,11 +94,14 @@ def beautifyPythonTree(event):
         if p.isAnyAtFileNode():
             g.es_print(p.h)
         if g.scanForAtLanguage(c, p) == "python":
+            prev_changed = pp.n_changed_nodes
             pp.prettyPrintNode(p)
+            if pp.n_changed_nodes != prev_changed:
+                g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
-    g.es_print('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes, t2 - t1))
+    g.es_print('changed total %s nodes in %4.2f sec.' % (pp.n_changed_nodes, t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150531042746.1: *3* munging leo directives
 #@+node:ekr.20150529084212.1: *4* comment_leo_lines
