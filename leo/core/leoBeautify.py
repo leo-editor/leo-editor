@@ -352,8 +352,7 @@ def beautify(options,path):
     beautifier = PythonTokenBeautifier(c=None)
     beautifier.delete_blank_lines = not options.keep
     # g.trace('delete blank lines',beautifier.delete_blank_lines)
-    p = None ### p not used.
-    s2 = beautifier.run(p, tokens)
+    s2 = beautifier.run(tokens)
     ### t4 = time.clock()
     try:
         s2_e = g.toEncodedString(s2)
@@ -455,7 +454,7 @@ def test_beautifier(c, h, p, settings):
     keep_blank_lines = settings.get('tidy-keep-blank-lines')
     if keep_blank_lines is not None:
         beautifier.delete_blank_lines = not keep_blank_lines
-    s2 = beautifier.run(p, tokens)
+    s2 = beautifier.run(tokens)
     t4 = time.clock()
     try:
         s2_e = g.toEncodedString(s2)
@@ -1001,7 +1000,7 @@ class PythonTokenBeautifier:
         readlines = g.ReadLinesClass(s0).next
         tokens = list(tokenize.generate_tokens(readlines))
         t3 = time.clock()
-        s2 = self.run(p, tokens)
+        s2 = self.run(tokens)
         t4 = time.clock()
         try:
             s2_e = g.toEncodedString(s2)
@@ -1029,7 +1028,7 @@ class PythonTokenBeautifier:
         self.check_time += (t5 - t4)
         self.total_time += (t5 - t1)
     #@+node:ekr.20150526194715.1: *4* ptb.run
-    def run(self, p, tokens): ### p not used.
+    def run(self, tokens):
         '''
         The main line of PythonTokenBeautifier class.
         Called by prettPrintNode & test_beautifier.
