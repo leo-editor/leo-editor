@@ -1131,7 +1131,7 @@ class PythonTokenBeautifier:
                 self.op_no_blanks(val)
             else:
                 self.op(val)
-        elif val in '+-':
+        elif val in '~+-':
             self.possible_unary_op(val)
         elif val == '*':
             self.star_op()
