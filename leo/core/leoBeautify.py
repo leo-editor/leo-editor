@@ -329,13 +329,13 @@ def main():
     '''External entry point for Leo's beautifier.'''
     t1 = time.clock()
     base = g.os_path_abspath(os.curdir)
-    files,options = scan_options()
+    files, options = scan_options()
     for path in files:
-        path = g.os_path_finalize_join(base,path)
-        beautify(options,path)
-    print('beautified %s files in %4.2f sec.' % (len(files),time.clock()-t1))
+        path = g.os_path_finalize_join(base, path)
+        beautify(options, path)
+    print('beautified %s files in %4.2f sec.' % (len(files), time.clock() - t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
-def beautify(options,path):
+def beautify(options, path):
     '''Beautify the file with the given path.'''
     fn = g.shortFileName(path)
     s, e = g.readFileIntoString(path)
@@ -352,7 +352,7 @@ def beautify(options,path):
     s2_e = g.toEncodedString(s2)
     node2 = ast.parse(s2_e, filename='before', mode='exec')
     if compare_ast(node1, node2):
-        f = open(path,'wb')
+        f = open(path, 'wb')
         f.write(s2_e)
         f.close()
     else:
@@ -360,7 +360,6 @@ def beautify(options,path):
 #@+node:ekr.20150601162203.1: *4* scan_options & helper
 def scan_options():
     '''Handle all options. Return a list of files.'''
-    
     # This automatically implements the --help option.
     usage = "usage: python leoBeautify -m file1, file2, ..."
     parser = optparse.OptionParser(usage=usage)
@@ -369,16 +368,15 @@ def scan_options():
         help='print the list of files and exit')
     add('-k', '--keep-blank-lines', action='store_true', dest='keep',
         help='keep-blank-lines')
-
     # Parse the options.
     options, files = parser.parse_args()
     ### sys.argv = [sys.argv[0]]; sys.argv.extend(args)
     ### aList = sys.argv[1:]
     if options.debug:
         # Print the list of files and exit.
-        g.trace('files...',files)
+        g.trace('files...', files)
         sys.exit(0)
-    return files,options
+    return files, options
 #@+node:ekr.20150527143619.1: *3* show_lws
 def show_lws(s):
     '''Show leading whitespace in a convenient format.'''

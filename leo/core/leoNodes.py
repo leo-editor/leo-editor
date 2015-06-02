@@ -2162,7 +2162,7 @@ class VNodeBase(object):
         '''Clear the vnode dirty bit.'''
         v = self
         # g.trace(v.h,g.callers())
-        v.statusBits &= ~ v.dirtyBit
+        v.statusBits &= ~v.dirtyBit
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
         trace = False and not g.unitTesting
@@ -2214,24 +2214,24 @@ class VNodeBase(object):
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
     def clearClonedBit(self):
-        self.statusBits &= ~ self.clonedBit
+        self.statusBits &= ~self.clonedBit
     #@+node:ekr.20031218072017.3391: *5* v.clearMarked
     def clearMarked(self):
-        self.statusBits &= ~ self.markedBit
+        self.statusBits &= ~self.markedBit
     #@+node:ekr.20080429053831.8: *5* v.clearWriteBit
     def clearWriteBit(self):
-        self.statusBits &= ~ self.writeBit
+        self.statusBits &= ~self.writeBit
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan(self):
         # if self.h.startswith('@file'): g.trace(self.h,g.callers())
-        self.statusBits &= ~ self.orphanBit
+        self.statusBits &= ~self.orphanBit
     #@+node:ekr.20031218072017.3393: *5* v.clearVisited
     def clearVisited(self):
-        self.statusBits &= ~ self.visitedBit
+        self.statusBits &= ~self.visitedBit
     #@+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
     def contract(self):
         '''Contract the node.'''
-        self.statusBits &= ~ self.expandedBit
+        self.statusBits &= ~self.expandedBit
 
     def expand(self):
         '''Expand the node.'''
@@ -2257,7 +2257,7 @@ class VNodeBase(object):
         if val:
             self.statusBits |= self.clonedBit
         else:
-            self.statusBits &= ~ self.clonedBit
+            self.statusBits &= ~self.clonedBit
     #@+node:ekr.20031218072017.3398: *5* v.setMarked & initMarkedBit
     def setMarked(self):
         self.statusBits |= self.markedBit
