@@ -319,7 +319,7 @@ def should_beautify(p):
             else:
                 # The ambiguous node has no effect.
                 # Look up the tree.
-                pass 
+                pass
         elif 'beautify' in d:
             return True
         elif 'nobeautify' in d:
