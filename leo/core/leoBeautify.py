@@ -298,6 +298,36 @@ def dump_token(last_line_number, token5tuple, verbose):
             # line[scol:ecol]
     last_line_number = srow
     return last_line_number
+#@+node:ekr.20150602154951.1: *3* should_beautify
+def should_beautify(p):
+    '''
+    Return True if @beautify is in effect for node p.
+    Ambiguous @beautify
+    '''
+    for p2 in p.self_and_parents():
+        d = g.get_directives_dict(p2)
+        if 'beautify' in d and 'nobeautify' in d:
+            if p == p2:
+                # honor whichever comes first.
+                for line in g.splitLines(p2.b):
+                    if line.startswith('@beautify'):
+                        return True
+                    elif line.startswith('@nobeautify'):
+                        return False
+                g.trace('can not happen', p2.h)
+                return False
+            else:
+                # The ambiguous node has no effect.
+                # Look up the tree.
+                pass 
+        elif 'beautify' in d:
+            return True
+        elif 'nobeautify' in d:
+            # This message would quickly become annoying.
+            # self.skip_message('@nobeautify',p)
+            return False
+    # The default is to beautify.
+    return True
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
@@ -428,7 +458,7 @@ def test_beautifier(c, h, p, settings):
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
     #@+others
-    #@+node:ekr.20110917174948.6904: *3* __init__ (CPrettyPrinter)
+    #@+node:ekr.20110917174948.6904: *3* cpp.__init__
     def __init__(self, c):
         '''Ctor for CPrettyPrinter class.'''
         self.c = c
@@ -442,10 +472,13 @@ class CPrettyPrinter:
             # The list of tokens that form the final result.
         self.tab_width = 4
             # The number of spaces in each unit of leading indentation.
-    #@+node:ekr.20110917174948.6911: *3* indent & helpers
+    #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
-        # c = self.c
-        if not p.b: return
+        '''Beautify a node with @language C in effect.'''
+        if not should_beautify(p):
+            return
+        if not p.b:
+            return
         self.p = p.copy()
         aList = self.tokenize(p.b)
         assert ''.join(aList) == p.b
@@ -626,10 +659,10 @@ class CPrettyPrinter:
                     self.result.append('\n' + s2[: -w])
                 else:
                     self.result.append(s[: -w])
-    #@+node:ekr.20110918225821.6819: *3* match
+    #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
-    #@+node:ekr.20110917174948.6930: *3* tokenize & helper
+    #@+node:ekr.20110917174948.6930: *3* cpp.tokenize & helper
     def tokenize(self, s):
         '''Tokenize comments, strings, identifiers, whitespace and operators.'''
         i, result = 0, []
@@ -670,7 +703,7 @@ class CPrettyPrinter:
     #         not g.match(s,j,'-->')
     #     ):
     #         j += 1
-    #@+node:ekr.20110917193725.6974: *4* skip_block_comment
+    #@+node:ekr.20110917193725.6974: *4* cpp.skip_block_comment
     def skip_block_comment(self, s, i):
         assert(g.match(s, i, "/*"))
         j = s.find("*/", i)
@@ -871,36 +904,14 @@ class PythonTokenBeautifier:
         '''The driver for beautification: beautify a single node.'''
         c = self.c
         trace = False and not g.unitTesting
-        # Handle @beautify and @nobeautify.
-        found = False
-        for p2 in p.self_and_parents():
-            if found:
-                break
-            d = g.get_directives_dict(p2)
-            if 'beautify' in d and 'nobeautify' in d:
-                if p == p2:
-                    # honor whichever comes first.
-                    for line in g.splitLines(p2.b):
-                        if line.startswith('@beautify'):
-                            found = True
-                            break
-                        elif line.startswith('@nobeautify'):
-                            return
-                    g.trace('can not happen', p2.h)
-                    return
-                else:
-                    pass # The ambiguous node has no effect.
-            elif 'beautify' in d:
-                break
-            elif 'nobeautify' in d:
-                # This message would quickly become annoying.
-                # self.skip_message('@nobeautify',p)
-                return
+        if not should_beautify(p):
+            # @nobeautify is in effect.
+            return
         if not p.b:
             # Pretty printing might add text!
             return
         if not p.b.strip():
-            # Do this *only* if we are sure @beautify is in effect.
+            # Do this *after* we are sure @beautify is in effect.
             self.replace_body(p, '')
             return
         t1 = time.clock()
