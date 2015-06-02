@@ -25,32 +25,6 @@ import tokenize
 #@-<< imports >>
 #@+others
 #@+node:ekr.20150528131012.1: **  commands (leoBeautifier.py)
-#@+node:ekr.20150528131012.2: *3* beautify-all-python
-@g.command('beautify-all-python')
-@g.command('pretty-print-all-python')
-def prettyPrintAllPythonCode(event):
-    '''Beautify all Python code in the entire outline.'''
-    c = event.get('c')
-    if not c: return
-    t1 = time.clock()
-    pp = PythonTokenBeautifier(c)
-    prev_changed = 0
-    for p in c.all_unique_positions():
-        if g.scanForAtLanguage(c, p) == "python":
-            if p.isAnyAtFileNode():
-                # Report changed nodes in previous @<file> node.
-                if pp.n_changed_nodes != prev_changed:
-                    g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
-                prev_changed = pp.n_changed_nodes
-                g.es_print(p.h)
-            pp.prettyPrintNode(p)
-    # Report any nodes in the last @<file> tree.
-    if pp.n_changed_nodes != prev_changed:
-        g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
-    pp.end_undo()
-    t2 = time.clock()
-    # pp.print_stats()
-    g.es_print('changed %s nodes in %4.2f sec.' % (pp.n_changed_nodes, t2 - t1))
 #@+node:ekr.20150528131012.3: *3* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
