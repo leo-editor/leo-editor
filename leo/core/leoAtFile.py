@@ -7,6 +7,7 @@
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
+import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
 import glob
 import importlib
@@ -3067,8 +3068,10 @@ class AtFile:
         the @persistence data, thereby annoyingly changing the .leo file.
         '''
         trace = False and not g.unitTesting
-        at = self; c = at.c
+        at,c = self, self.c
         at.root = root # 2014/10/21
+        if c.config.getBool('tidy-autobeautify'):
+            leoBeautify.beautifyPythonTree(event={'c':c,'p0':p})
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:

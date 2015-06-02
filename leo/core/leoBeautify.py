@@ -70,25 +70,39 @@ def prettyPrintPythonNode(event):
 def beautifyPythonTree(event):
     '''Beautify the Python code in the selected outline.'''
     c = event.get('c')
+    p0 = event.get('p0')
+    is_auto = bool(p0)
+    p0 = p0 or c.p
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
     prev_changed = 0
-    for p in c.p.self_and_subtree():
+    for p in p0.self_and_subtree():
         if g.scanForAtLanguage(c, p) == "python":
             if p.isAnyAtFileNode():
                 # Report changed nodes in previous @<file> node.
-                if pp.n_changed_nodes != prev_changed:
-                    g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
+                if pp.n_changed_nodes != prev_changed and not is_auto:
+                    g.es_print('beautified %s nodes' % (
+                        pp.n_changed_nodes - prev_changed))
                 prev_changed = pp.n_changed_nodes
-                g.es_print(p.h)
+                if not is_auto:
+                    g.es_print(p.h)
             pp.prettyPrintNode(p)
     # Report any nodes in the last @<file> tree.
-    if pp.n_changed_nodes != prev_changed:
-        g.es_print('changed %s nodes' % (pp.n_changed_nodes - prev_changed))
+    if pp.n_changed_nodes != prev_changed and not is_auto:
+        g.es_print('beautified %s nodes' % (
+            pp.n_changed_nodes - prev_changed))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
-    g.es_print('changed total %s nodes in %4.2f sec.' % (pp.n_changed_nodes, t2 - t1))
+    if is_auto:
+        if pp.n_changed_nodes > 0:
+            g.es_print('auto-beautified %s node%s in\n%s' % (
+                pp.n_changed_nodes,
+                '%s' if pp.n_changed_nodes > 1 else '',
+                p0.h))
+    else:
+        g.es_print('beautified total %s nodes in %4.2f sec.' % (
+            pp.n_changed_nodes, t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150531042746.1: *3* munging leo directives
 #@+node:ekr.20150529084212.1: *4* comment_leo_lines
