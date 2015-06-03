@@ -661,8 +661,8 @@
 <v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
 <v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
 <v t="ekr.20150318110552.23"><vh>Adding and deleting comments in body text</vh></v>
-<v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
 <v t="ekr.20150323200607.1"><vh>Moving the cursor</vh></v>
+<v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
 <v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
@@ -721,11 +721,21 @@
 <v t="ekr.20150318110552.64"><vh>Spell commands</vh></v>
 </v>
 <v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
+<v t="ekr.20150603161559.1"><vh>Code beautification commands</vh>
+<v t="ekr.20150603120140.1"><vh>What the Python beautifier does</vh></v>
+<v t="ekr.20150603120515.1"><vh>What the Python beautifier doesn't do</vh></v>
+<v t="ekr.20150603115243.1"><vh>Beautifier directives</vh></v>
+<v t="ekr.20150603115204.1"><vh>Beautifier settings</vh></v>
+<v t="ekr.20150603115311.1"><vh>Beautifier rough edges</vh></v>
+<v t="ekr.20150603115400.1"><vh>Stand-alone beautifier</vh></v>
+<v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
+<v t="ekr.20150603120150.1"><vh>Summary of the beautifier</vh></v>
+</v>
 <v t="ekr.20150318110552.86"><vh>Unit testing commands</vh></v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
-<v t="ekr.20150323102918.1"><vh>@rst-ignore Not documented</vh></v>
 </v>
+<v t="ekr.20150323102918.1"><vh>@rst-ignore Not documented</vh></v>
 </v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
@@ -1228,17 +1238,6 @@
 <v t="ekr.20150409155519.8"><vh>Improved &lt;?xml-stylesheet&gt;</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20150603065646.1"><vh>** Document new beautifier</vh>
-<v t="ekr.20150603120140.1"><vh>What the beautifier does</vh></v>
-<v t="ekr.20150603120515.1"><vh>What the beautifier doesn't do</vh></v>
-<v t="ekr.20150603115214.1"><vh>Commands</vh></v>
-<v t="ekr.20150603115243.1"><vh>Directives</vh></v>
-<v t="ekr.20150603115204.1"><vh>Settings</vh></v>
-<v t="ekr.20150603115311.1"><vh>Rough edges</vh></v>
-<v t="ekr.20150603115400.1"><vh>Stand-alone version</vh></v>
-<v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
-<v t="ekr.20150603120150.1"><vh>Summary</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -16611,15 +16610,6 @@ These commands work with either headline or body text.</t>
 </t>
 <t tx="ekr.20150318110552.24">.. _`Python's time module`: http://www.python.org/doc/current/lib/module-time.html
 
-``beautify`` and ``beautify-tree``
-    Beautifies all the Python code in the selected tree.
-``beautify-all``
-    Beautifies all Python code in the entire outline.
-``beautify-c``
-    Reformats all C code in the selected tree.
-
-**PythonTidy**: By default, Leo's beautify commands use a version of PythonTidy customized for Leo. See ``Beautify command settings`` in leoSettings.leo for settings that apply.
-
 ``clean-lines``
     Removes trailing whitespace from all lines, preserving newlines.
 ``clear-selected-text``
@@ -18348,39 +18338,19 @@ Sometimes a command requires that an action happen immediately.  The following m
     c.treeWantsFocusNow()
     c.widgetWantsFocusNow(w)
 </t>
-<t tx="ekr.20150603065646.1">@language rest
-@wrap
+<t tx="ekr.20150603115204.1">``@bool tidy-autobeautify = False``
+    When True, Leo beautifies all changed files when saving an outline. The default must always be False in leoSettings.leo and in unitTest.leo.
+
+``@bool tidy-keep-blank-lines = False``
+    When True, the beautifier retains blank lines within classes, functions and methods.
 </t>
-<t tx="ekr.20150603115204.1">@bool tidy-autobeautify = False
+<t tx="ekr.20150603115243.1">``@killbeautify``
+    This directive completely disables beautification for an entire tree. This is typically required for files containing ``@all``.
 
-When True, Leo beautifies all changed files when saving an outline.
-
-The default must always be False in leoSettings.leo and in unitTest.leo.
-
-@bool tidy-keep-blank-lines = False
-
-When True, the beautifier retains blank lines within classes, functions and methods.
-</t>
-<t tx="ekr.20150603115214.1">beautify-node: beautifies Python code in a single node.
-beautify-tree: beautifies Python code a node and its descendants.
-beautify-c: beautifies C code in a node and its descendants.
-
-These commands skip any nodes for which @language python (or c) is not in effect.
-
-The Python beautifiers (beautify-tree and beautify-node) are safe.  They can never alter the meaning of a program because they compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such beautifier errors produce debugging dumps. Please report any such errors to me.
-
-The Python beautifiers work only on syntactically correct code.  They issue a warning and do nothing for syntactically incorrect code.
-
-The Python beautifies convert Leonine syntax (directives, section references and @doc parts) to comments, possibly with a trailing "pass" statement.  Usually this produces syntactically correct text.  As discussed below, the trailing "pass" can create SyntaxError's.</t>
-<t tx="ekr.20150603115243.1">**@killbeautify**
-
-This directive completely disables beautification for an entire tree. This is typically required for files containing @all.
-
-**@beautify and @nobeautify**
-
-These directives apply to a node and its descendants, until overridden later in a descendants.
-
-Both these directives may appear in the same node.  Such **ambiguous directives** do not affect the beautification of descendant nodes.  If both @beautify and @nobeautify appear in a node, the first directive determines whether the node will be beautified.  So::
+``@beautify`` and ``@nobeautify``
+    These directives apply to a node and its descendants, until overridden later in a descendants. Both these directives may appear in the same node.  Such **ambiguous directives** do not affect the beautification of descendant nodes.  If both ``@beautify`` and ``@nobeautify`` appear in a node, the first directive determines whether the node will be beautified.
+    
+For example::
 
     @beautify
     ...
@@ -18394,9 +18364,9 @@ beautifies the entire node.  Otoh::
 
 skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough for now.
 </t>
-<t tx="ekr.20150603115311.1">The following 5 problems are relatively minor.  They apply only to the Python beautifiers. The workaround in most cases is to use @nobeautify.
+<t tx="ekr.20150603115311.1">The following 5 problems are relatively minor.  They apply only to the Python beautifier. The workaround in most cases is to use ``@nobeautify``.
 
-1. Syntax Errors
+**1. Syntax Errors**
 
 The pass hack converts::
 
@@ -18422,7 +18392,7 @@ The pass hack produces syntactically incorrect code::
         pass
     ]
 
-2. Alignment
+**2. Alignment**
 
 The beautifier eliminates blanks used to align code.  For example::
 
@@ -18433,19 +18403,19 @@ The beautifier eliminates blanks used to align code.  For example::
 
 The beautifier might preserve such lines, but there are no plans at present to do so.
 
-The regular expression: =([ ])*\{([^}])*$ will discover complex dictionaries that you may want to protect with @nobeautify.
+The regular expression: ``=([ ])*\{([^}])*$`` will discover complex dictionaries that you may want to protect with ``@nobeautify``.
 
-3. Operator priority
+**3. Operator priority**
 
 Pep 8 suggests considering eliminating blanks around higher-priority operators.  The beautifier puts blank lines about all operators, except unary operators.
 
-This is a difficult problem of style, for which no approach works in all cases.  Surprisingly, retaining blanks around '*' usually looks best in Leo's own code.
+This is a difficult problem of style, for which no approach works in all cases.  Surprisingly, retaining blanks around ``*`` usually looks best in Leo's own code.
 
-4. @clean &amp; @auto
+**4. @clean &amp; @auto**
 
-Consider adding @nobeautify for all @auto/@clean nodes, on the theory that such nodes are not primarily your responsibility.  But adding @nobeautify is completely up to you.
+Consider adding @nobeautify for all ``@auto`` and ``@clean`` nodes, on the theory that such nodes are not primarily your responsibility.  But adding ``@nobeautify`` is completely up to you.
 
-5. Extra blank lines
+**5. Extra blank lines**
 
 The beautifier will sometimes insert extra spaces between class/def lines and preceding comments.
 </t>
@@ -18469,10 +18439,14 @@ This produces::
       -h, --help             show this help message and exit
       -d, --debug            print the list of files and exit
       -k, --keep-blank-lines keep-blank-lines
-</t>
-<t tx="ekr.20150603120140.1">The beautifier will *just work* for most people. 
 
-The beautifier follows the pep 8 recommendations for whitespace. It ensures that names, operators, strings and comments are separated by zero or one blanks, as expected::
+</t>
+<t tx="ekr.20150603120140.1">.. _`Pep 8 recommendations for whitespace`: https://www.python.org/dev/peps/pep-0008/#whitespace-in-expressions-and-statements
+.. _`pep 8 recommendations for blank lines`: https://www.python.org/dev/peps/pep-0008/#blank-lines
+
+The beautifier will *just work* for most people. 
+
+The beautifier follows the `Pep 8 recommendations for whitespace`_. It ensures that names, operators, strings and comments are separated by zero or one blanks::
 
     def spam(a, b, c=5, *args, **keys):
         foo(a, 25, b=2)
@@ -18481,7 +18455,7 @@ The beautifier follows the pep 8 recommendations for whitespace. It ensures that
         if 0 &lt; b &lt; 26:
             ...
 
-Leo follows the pep 8 recommendations for blank lines *between* classes and defs, with minor variations due to Leo's node structure.
+Leo follows the `pep 8 recommendations for blank lines`_ *between* classes and defs, with minor variations due to Leo's node structure.
 
 Optionally, the beautifier can remove blank lines *within* classes and defs, controlled by the setting *@bool tidy-keep-blank-lines*.
 </t>
@@ -18490,7 +18464,7 @@ Optionally, the beautifier can remove blank lines *within* classes and defs, con
 - For the first time ever, Leo's beautify commands work properly with Leonine syntax.
 - All files in leoPy.leo can now be beautified without fuss.
 - Except for spacing around operators, the beautifier mostly leaves your code **as it is**.
-- The beautifier makes no difficult choices. It will honor your choices.
+- The beautifier makes no difficult choices. It preserves your choices.
 </t>
 <t tx="ekr.20150603120245.1">The following could be done only at the cost of more settings and debates about what the default settings should be.
 
@@ -18499,10 +18473,8 @@ Optionally, the beautifier can remove blank lines *within* classes and defs, con
 - Moving or indenting comment lines.
 
 All these involve significant personal judgments and preferences. Pep 8 explicitly allows various approaches.
-
-
 </t>
-<t tx="ekr.20150603120515.1">The beautifier never creates new lines! The beautifier never adds or changes:
+<t tx="ekr.20150603120515.1">The Python beautifier never creates new lines! The beautifier never adds or changes:
 
 - Line breaks for "long" lines.
 - Line breaks in function argument lists.
@@ -18536,6 +18508,22 @@ Pep 8 allows considerable flexibility regarding continued lines. The beautifier 
 
 Similarly, the beautifier will not touch arguments in function calls.
 </t>
+<t tx="ekr.20150603161559.1">``beautify-node``
+    Beautifies the Python code in the selected node.
+``beautify-tree``
+    Beautifies all the Python code in the selected tree.
+``beautify-c``
+    Reformats all C code in the selected tree.
+    
+These commands skip any nodes for which @language python (or c) is not in effect.
+
+The **Python beautifier** (beautify-tree and beautify-node) is *safe*.  It can never alter the meaning of a program because it compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such **beautifier errors** produce debugging dumps. Please report any such errors to Leo's developers.
+
+The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.
+
+The Python beautifier converts **Leonine syntax** (directives, section references and @doc parts) to comments, possibly with a trailing ``pass`` statement.  Usually this produces syntactically correct text.  As discussed below, the trailing ``pass`` can create SyntaxError's.
+
+The following sections describe how the beautify-tree and beautify-node commands work in more detail.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
