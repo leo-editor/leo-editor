@@ -1229,6 +1229,12 @@
 </v>
 </v>
 </v>
+<v t="ekr.20150603065646.1"><vh>** Document new beautifier</vh>
+<v t="ekr.20150603065818.2"><vh>Post 0</vh></v>
+<v t="ekr.20150603065818.3"><vh>Post 1</vh></v>
+<v t="ekr.20150603065818.4"><vh>Post 2</vh></v>
+<v t="ekr.20150603065826.1"><vh>Post 3</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18337,6 +18343,346 @@ Sometimes a command requires that an action happen immediately.  The following m
     c.treeWantsFocusNow()
     c.widgetWantsFocusNow(w)
 </t>
+<t tx="ekr.20150603065646.1">@language rest
+@wrap
+
+- Correct stc posting about "beautiful pattern"
+- Add docs for all beautify-* commands.
+- Make sure Leo's docs discuss the *new* pattern, not the old</t>
+<t tx="ekr.20150603065818.2">An amazing collapse in complexity has just happened. I wrote a new, much simpler, token-based beautifier last night.  The parse-tree based beautifier will be retired.
+
+Aha 1: The token-based beautifier can use the same code generators as the parse-tree based beautifier.
+
+This collapses the complexity of token handlers, a huge breakthrough. This complexity doomed the old token-based code.
+
+Aha 2: token handlers can easily parse incoming tokens using a state stack.
+
+The StateToken class will be almost identical to the OutputToken class. Instances will have state string and state-related data. The state string makes it easy to inspect the stack.
+
+With a token-based approach, two big problems instantly disappear:
+
+1. How to associate tokens with nodes in the parse tree.
+2. How to parenthesize expressions properly.
+
+The token-based beautifier will only ever insert or delete whitespace outside of comments and strings.  This naturally preserves all essential tokens, including the user's desired parens.
+
+The rest of this post is an entry in Leo's Engineering Notebook. It discusses technical details. Feel free to ignore.
+
+The compare_ast function
+
+The code is in leoAst.py.  It is taken from stackoverflow, modified to show the line numbers of mismatched nodes.
+
+The testing code for both beautifiers uses compare_ast to check that beautification hasn't altered the meaning of the program.
+
+compare_ast revealed the following problem in the Ast-based beautifier...
+
+The parse tree must be traversed in token order
+
+Yes, the 1 to 1 correspondence between string tokens and Ast.Str nodes makes it "easy" to associate string tokens with string nodes. Alas, to make this work, the code must visit Ast Str nodes in the same order that string tokens appear in the source.
+
+It was straightforward to modify the traversers in the AstFullTraverser base class to make this happen. But now we have a hidden global constraint on tree traversal, an unpleasant maintenance problem.
+
+Continued strings
+
+Continued strings affect the association of tokens with Ast.Str nodes.  I'm glad not to have sort this all out. The problem is much less serious in the token-based beautifier because the line numbers of tokens don't matter!
+
+Parentheses
+
+To make the Ast-based code work, the code generators had to fully parenthesize all operators. This is ridiculous: we want to retain the user's parens!
+
+Recreating the user's parentheses is a very difficult problem in the Ast world. Yes, this problem can (and has been) solved, but it simply doesn't exist in the token world.
+
+How to parse tokens
+
+The parse stack will start with a 'outer-level' state token.  This ensures that state_stack [-1] will always exist.
+
+Token handlers will work as follows:
+
+'class' and 'def' tokens ('name' tokens) will push 'class' and 'def' state on the state stack.
+
+When a  'def' token is on the top of the stack, incoming '(', ('op') tokens will push 'def-args' state token on the stack.  This token will have a parenthesis count.  Nested '(' and ')' tokens will increment and decrement this count. A ')' token that reduces the count to zero will remove the 'def-args' token.
+
+This scheme will allow whitespace to be handled differently in function arguments and other parenthesized expressions.  For example, the code generators may split long argument lists into several lines.
+
+Other kinds of state tokens can be added as need. For example, we will want to keep track of blank lines, and split long lines.
+
+Token handlers can handle all states without an explosion in complexity.
+
+Summary
+
+Using tokens eliminates big troubles inherent in Ast-based approaches.
+
+The old token handlers were unbearably complex. The new token handlers delegate look-behind and look-ahead to the code generators.  As a result, new token handlers are easy to write and maintain, a huge breakthrough.
+
+Token handlers can easily parse incoming tokens using a state stack. Python's syntax makes it straightforward to keep track of argument list, etc.
+
+Very little work remains. I expect to finish the token-based beautifier in a day or three. The new beautifier should be substantially faster than the old.
+</t>
+<t tx="ekr.20150603065818.3">**Executive summary**
+
+- The beautifier just works for all code except aligned dictionary definitions.
+- The beautifier never attempts to make difficult choices.
+- The beautifier never splits lines.
+- @nobeautify protects a node and its descendants from unwanted beautification.
+- @beautify re-enables beautification.
+- The code will work on either Python 2 or 3.
+
+The rest of this post discusses the details...
+
+**Sweet Spot**
+
+Earlier today I had intended to continue work on this project.  But after seeing the code in action I realized that adding more settings and "frills" could be a step backwards.
+
+The present code handles all the uncontroversial parts of pep8 as expected, while leaving all difficult, ambiguous or idiosyncratic decisions to the user.
+
+With just one exception, discussed below, the present code should just work for everybody without the need for other preferences!  This is a happy surprise.
+
+**What the beautifies does**
+
+The beautifier follows the pep 8 recommendations for whitespace. It ensures that names, operators, strings and comments are separated by zero or one blanks, as expected::
+
+    def spam(a, b, c=5, *args, **keys):
+        foo(a, 25, b=2)
+        a = b + c - 5
+        b = -d
+        if 0 &lt; b &lt; 26:
+            ...
+
+Leo follows the pep 8 recommendations for blank lines, with minor variations due to Leo's node structure.
+
+Optionally, the beautifier can remove blank lines within classes and defs, controlled by the one and only one beautifier setting::
+
+    @bool tidy-keep-blank-lines = False
+
+That's all!
+
+**What the beautifier doesn't do**
+
+The beautifier never creates new lines! The beautifier never adds or changes:
+
+- Line breaks for "long" lines.
+- Line breaks in function argument lists.
+- Leading whitespace in continued argument lines.
+- Line breaks call arguments.
+- Leading whitespace in continue function call arguments.
+- Whitespace (including line breaks) within statements.
+
+Yesterday I saw that I had seriously misunderstood the pep 8 recommendations for indentation.  pep 8 allows much more flexibility than I thought.
+
+The beautifier will leave all of the following unchanged, whether or not they conform to the pep 8 recommendation::
+
+    def function1 (a, b, c):
+        pass
+    
+    def function2 (
+    a = 2, # a comment
+    b = 3, # another comment
+    ):
+        pass
+    
+    def function3 (
+        a = 2, # a comment
+        b = 3, # another comment
+    ):
+        pass
+    
+    def function4(
+                  a = 2, # a comment
+                  b = 3, # another comment
+                 ):
+        pass
+
+Similarly, the beautifier will not touch arguments in function calls.
+
+In short, *the beautifier won't mess with your code*! There is one exception...
+
+**Formatting dict definitions**
+
+At present, the beautifier unaligns dict definitions.  It will convert::
+
+    cmd_instance_dict = {
+        'AbbrevCommands':    ['c', 'abbrevCommands'],
+        'AtFile':            ['c', 'atFileCommands'],
+        ...
+    }
+
+to::
+
+    cmd_instance_dict = {
+        'AbbrevCommands': ['c', 'abbrevCommands'],
+        'AtFile': ['c', 'atFileCommands'],
+        ...
+    }
+
+The workaround is to disable formatting for such nodes with the new @nobeautify directive.  There is also an @beautify directive. These two directives work together as usual.
+
+The tokens provided by Python's tokenizer might provide enough data to preserve indentation in such cases.  I'll check before declaring the beautifier fully complete.
+
+**Summary**
+
+The present beautifier is maximally useful with just one setting. Except for dictionary definitions, the beautifier does what is expected, leaving difficult or idiosyncratic cases completely at the user's discretion. Git can revert unwanted changes to dicts.
+
+Further "improvements" to the beautifier would imply settings that most people will neither know about nor understand. The present beautifier is almost as easy to use as the camera with the giant red button ;-)
+ 
+The @bool tidy-keep-blank-lines setting tells the beautifier whether to remove blank lines within classes, functions and methods.  The beautifier inserts reasonable blanks lines between classes, functions and methods in almost all cases.
+
+The @nobeautify directive protects code from unwanted beautification.
+
+The @beautify/@nobeautify directives act on a node and its descendants, as usual.
+</t>
+<t tx="ekr.20150603065818.4">As of Rev ac94cab, there are no known serious bugs in the beautifier commands.
+
+As previously discussed, the beautifier will just work for most people. The only setting is @bool tidy-keep-blank-lines = False.
+
+This post completes the documentation for Leo's beautify commands, paying close attention to details.
+
+Commands
+
+beautify-node: beautifies Python code in a single node.
+beautify-tree: beautifies Python code a node and its descendants.
+beautify-c: beautifies C code in a node and its descendants.
+
+These commands skip any nodes for which @language python (or c) is not in effect.
+
+The Python beautifiers (beautify-tree and beautify-node) are safe.  They can never alter the meaning of a program because they compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such beautifier errors produce debugging dumps. Please report any such errors to me.
+
+The Python beautifiers work only on syntactically correct code.  They issue a warning and do nothing for syntactically incorrect code.
+
+The Python beautifies convert Leonine syntax (directives, section references and @doc parts) to comments, possibly with a trailing "pass" statement.  Usually this produces syntactically correct text.  As discussed below, the trailing "pass" can create SyntaxError's.
+
+Directives
+
+@beautify: enables beautification in a node.
+@nobeautify: disables beautification in a node.
+
+These directives apply to a node and its descendants, until overridden later in a descendants.
+
+Both these directives may appear in the same node.  Such ambiguous directives do not affect the beautification of descendant nodes.  If both directives appear in a node, the first directive determines whether the node will be beautified.  So:
+
+@beautify
+...
+@nobeautify
+
+beautifies the entire node.  Otoh,
+
+@nobeautify
+...
+@beautify
+
+
+skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough for now.
+
+Note: The beautify-c command ignores these directives.
+
+Rough edges
+
+The following 5 problems are relatively minor.  They apply only to the Python beautifiers. The workaround in most cases is to use @nobeautify.
+
+1. Syntax Errors
+
+The pass hack converts:
+
+if 1:
+    &lt;&lt; a section &gt;&gt;
+
+to:
+
+if 1:
+    #!!!!! &lt;&lt; a section &gt;&gt;
+    pass
+
+which is usually, but not always, syntactically correct Python. Here is an example from Leo's core:
+
+patterns = [
+    &lt;&lt; Sherlock patterns for pylint &gt;&gt;
+]
+
+The pass hack produces syntactically incorrect code:
+
+patterns = [
+    #!!!!! &lt;&lt; Sherlock patterns for pylint &gt;&gt;
+    pass
+]
+
+2. Alignment
+
+The beautifier eliminates blanks used to align code.  For example:
+
+d = {
+    key1:     value1,
+    longKey2: value2,
+}
+
+The beautifier might preserve such lines, but there are no plans at present to do so.
+
+The regular expression: =([ ])*\{([^}])*$ will discover complex dictionaries that you may want to protect with @nobeautify.
+
+3. Operator priority
+
+Pep 8 suggests considering eliminating blanks around higher-priority operators.  The beautifier puts blank lines about all operators, except unary operators.
+
+This is a difficult problem of style, for which no approach works in all cases.  Surprisingly, retaining blanks around '*' usually looks best in Leo's own code.
+
+4. @clean &amp; @auto
+
+Consider adding @nobeautify for all @auto/@clean nodes, on the theory that such nodes are not primarily your responsibility.  But adding @nobeautify is completely up to you.
+
+5. Extra blank lines
+
+The beautifier will sometimes insert extra spaces between class/def lines and preceding comments.  The workaround is to move such comments into the class or def, including the docstring.  This is a minor issue, so it can usually be ignored.
+
+Stand-alone version
+
+You may invoke the Python beautifier from the command line. The stand-alone version of the beautifier is lightly tested.
+
+You can run leoBeautify.py from any directory, provided that a copy of leoGlobals.py exists in the same directory.
+
+Run the stand-alone beautifier as follows:
+
+python -m leoBeautify file1, file2, ...
+
+To get a usage message, do:
+
+python -m leoBeautify -h
+
+This produces:
+
+Usage: python leoBeautify -m file1, file2, ...
+
+Options:
+  -h, --help             show this help message and exit
+  -d, --debug            print the list of files and exit
+  -k, --keep-blank-lines keep-blank-lines
+
+Enough is enough
+
+This project happened because PythonTidy doesn't work with Python 3 and autopep8 is too slow, so in some sense it was necessary.  And discovering the new code generator pattern was hugely satisfying. However, it's time for a break.  Please don't ask me to do more now.
+
+The following could be done only at the cost of more settings and debates about what the default settings should be.
+
+    Splitting long lines.
+    Improve spacing around operators.
+    Moving or indenting comment lines.
+
+All these involve significant personal judgements and preferences. Pep 8 explicitly allows various approaches.
+
+Maybe
+
+On a relatively slow machine, beautify-tree beautifies all files in LeoPy.leo in 17.4 seconds.  I am dithering about adding a setting that would beautify files automatically when saving an outline. Naturally, @beautify and @nobeautify would be handled as usual.
+
+Summary
+
+    For the first time ever, Leo's beautify commands work properly with Leonine syntax.
+    All files in leoPy.leo can now be beautified without fuss.
+    Except for spacing around operators, the beautifier mostly leaves your code as it is.
+    The beautifier makes no difficult choices. It will honor your choices.
+    No further improvements are planned.  You are unlikely to convince me to do more.
+</t>
+<t tx="ekr.20150603065826.1">1. The new @bool tidy-autobeautify setting causes Leo to beautify all changed files when saving an outline. The default will always be False in leoSettings.leo, and it also must be False in unitTest.leo ;-)
+
+2. The new @killbeautify directive completely disables beautification for an entire tree.  This is typically required for files containing @all.
+
+I have been happily eating my own dog food with @bool tidy-autobeautify = True in leoPy.leo.  Speed-related optimizations ensure that auto-beautification is not annoying. In particular, clones of an @&lt;file&gt; node are beautified only once.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

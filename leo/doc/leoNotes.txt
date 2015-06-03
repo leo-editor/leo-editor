@@ -16753,9 +16753,6 @@ def do_Name(self,node):
         ti.trace('fail ',name,ctx_kind,'reach:',
             ['%s:%s' % (id(z),ti.format(z)) for z in reach])
     return t
-.. @+node:ekr.20150312225028.4: ** Unused code
-@language python
-@ignore
 .. @+node:ekr.20150312225028.127: *3* lengthHelper (LeoQTextEditWidget)
 ###
 ### Do not use this code. It is extremely slow for large text.
@@ -16772,5 +16769,283 @@ def lengthHelper(self):
         delta_t = time.time()-t1
         if delta_t > 0.1: g.trace('=========== %2.3f sec' % (delta_t))
     return n
+.. @+node:ekr.20150524200357.1: *3* testing beautifier code
+.. @+node:ekr.20150521113831.1: *4* @button TEST PTB
+r'''The script to test AddTokensToTree class.'''
+g.cls()
+if c.isChanged():
+    c.save()
+project = None # 'leo'
+<< imports >>
+if project:
+    # 17.1 sec. --> 17.4 --> 17.3
+    # The format time is about twice the tokenize time.
+    aList = leoBeautify.ProjectUtils().project_files(project)
+    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
+    settings_d = {
+        # 'output_string': True,
+        # 'stats': True,
+    }
+else:
+    aList = [
+        'unit test: leoBeautify.py',
+        # '@file leoColorizer.py',
+        # '@file leoBeautify.py',
+        # '@file leoCommands.py',
+    ]
+    small = aList[0].startswith('unit test:')
+    settings_d = {
+        'tidy-keep-blank-lines': True,
+        'input_string': small,
+        # 'input_lines':  True,
+        # 'input_tokens': small,
+        # 'output_tokens': small,
+        'output_string': small,
+        'stats': not small # and len(aList) == 1,
+    }
+assert aList,'no input in %s' % (p.h)
+<< init total stats >>
+t1 = time.clock()
+for h in aList:
+    p2 = g.findNodeAnywhere(c,h)
+    if p2:
+        try:
+            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
+            << update total stats >>
+        except Exception:
+            g.es_exception()
+if len(aList) > 1:
+    << print total stats >>
+tot_time = time.clock()-t1
+if len(aList) > 1:
+    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
+else:
+    print('done: %4.2f sec.' % (tot_time))
+.. @+node:ekr.20150525073117.1: *5* << imports >>
+import leo.core.leoBeautify as leoBeautify
+import imp
+import time
+imp.reload(leoBeautify)
+.. @+node:ekr.20150530073856.1: *5* << init total stats >>
+tot_beautify_time = 0.0
+tot_changed_nodes = 0
+tot_check_time = 0.0
+tot_files = 0
+tot_input_tokens = 0
+tot_output_tokens = 0
+tot_parse_time = 0.0
+tot_strings = 0
+tot_tokenize_time = 0.0
+tot_total_time = 0.0
+.. @+node:ekr.20150530073906.1: *5* << update total stats >>
+tot_beautify_time += b.beautify_time
+tot_changed_nodes += b.n_changed_nodes
+tot_check_time += b.check_time
+tot_files += 1
+tot_input_tokens += b.n_input_tokens
+tot_output_tokens += b.n_output_tokens
+tot_parse_time += b.parse_time
+tot_strings += b.n_strings
+tot_tokenize_time += b.tokenize_time
+tot_total_time += b.total_time
+.. @+node:ekr.20150530074429.1: *5* << print total stats >>
+print('========== totals ==========')
+print('files          %s' % tot_files)
+print('changed nodes  %s' % tot_changed_nodes)
+print('tokens         %s' % tot_input_tokens)
+print('len(code_list) %s' % tot_output_tokens)
+print('len(s)         %s' % tot_strings)
+print('parse          %4.2f sec.' % tot_parse_time)
+print('tokenize       %4.2f sec.' % tot_tokenize_time)
+print('format         %4.2f sec.' % tot_beautify_time)
+print('check          %4.2f sec.' % tot_check_time)
+print('total          %4.2f sec.' % tot_total_time)
+.. @+node:ekr.20150524071341.1: *4* unit test: leoBeautify.py
+# Extraneous backslash causes problems.
+function1("NOTE: embedded layout in @settings/@data free-layout-layout" \
+          "overrides saved layout " + name)
+function2(a,
+          b)
+function3(a, \
+          b)
+# Weird case: comments ends in backslash\\
+# Next comment
+
+def test():
+    legend = '''\
+legend:
+'''
+    c = self.c
+.. @+node:ekr.20150601042305.1: *5* new op problems
+def spam():
+    pass
+
+a = b[25]
+return {}
+.. @+node:ekr.20150601015905.1: *5* return test
+def return_test():
+    if 1: return
+    while True:
+        if 2: return
+    if 3:
+        return
+.. @+node:ekr.20150531104223.1: *5* class Command
+class Command:
+    '''
+    A global decorator for functions outside of any class.
+    
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        global_commands_dict[self.name] = func
+        if app:
+            for c in app.commanders():
+                c.k.registerCommand(self.name, shortcut=None, func=func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+command = Command
+.. @+node:ekr.20150531060949.1: *5* comments
+# Comments before class
+
+class aClass:
+    pass
+
+pass # trailing comment.
+    # indented comment.
+# Comments before def.
+
+def spam():
+    pass
+.. @+node:ekr.20150531054341.1: *5* * and ** args
+def spam(a, *args, **keys):
+    pass
+
+a = (2 ** 3)
+b = (4 * 5)
+.. @+node:ekr.20150531052201.1: *5* indented arg lists
+foo(a,
+     b=2)
+foo(a,
+    b=2)
+
+def spam(
+    c=2,
+    d=3,
+):
+    pass
+.. @+node:ekr.20150529183213.1: *5* continued args
+foo(a,
+     b=2 # foo 1
+     # foo 2
+  )
+
+def spam(a=2,
+    b=3, # spam 1
+):
+    pass
+.. @+node:ekr.20150530182531.1: *5* comments after inner def
+def spam(a=2,
+    b=3, # spam 1
+):
+
+    def inner():
+        pass
+    # spam 2:
+
+    pass # spam 3.
+    # The dedent happens after spam3, so spam2 is over-indented.
+.. @+node:ekr.20150530084744.1: *5* doc parts
+def f():
+    pass
+@ The following could be added to the 'else' clause::
+    # Accumulate everything else.
+.. @+node:ekr.20150528113231.1: *5* indent after inner class
+# Indent after inner class.
+if QtGui:
+
+    class aClass:
+        pass
+
+if Qsci:
+    pass
+.. @+node:ekr.20150528095649.1: *5* multiple dedent tokens
+def get_rc_file(self):
+    while True:
+        if False:
+            return
+    foo('oops')
+    return
+.. @+node:ekr.20150528092108.1: *5* blank lines between classes and defs
+class aClass:
+
+    def outer(a=2, b=3):
+        a = 2
+
+        def inner():
+            b = 2
+
+        c = 3
+
+    class innerClass:
+        pass
+.. @+node:ekr.20150528093928.1: *5* decorators
+class aClass:
+
+    @decr('a')
+    def outer():
+
+        @decr('b')
+        def inner():
+            pass
+
+        pass
+
+    @decr('c')
+    class innerClass:
+        pass
+.. @+node:ekr.20150528060217.1: *5* Inner defs
+def outer():
+    a = 2
+
+    def inner():
+        b = 2
+
+    c = 3
+.. @+node:ekr.20150527184101.1: *5* comments
+def f1():
+    # Comment1, flush.
+    line1 = 1
+        # Comment2, hanging.
+    line2 = 2
+    line3 = 3 # Trailing comment.
+        # Final hanging comment.
+.. @+node:ekr.20150526122041.1: *5* operators
+a = -b
+c = -(d + e)
+b = not (a and b)
+c = e or f
+.. @+node:ekr.20150527201950.1: *5* strings
+s = 'abc \
+xyz'
+s2 = 'part1' 'part2'
+s3 = 'a' + 'b'
+.. @+node:ekr.20150527182228.1: *5* Removing blank lines
+def f1():
+    line1 = 1
+    line2 = 2
+    line3 = 3
+
+class aClass():
+    line4 = 4
+    line5 = 5
 .. @-all
 .. @-leo

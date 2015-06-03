@@ -202,6 +202,76 @@ def exec_helper(self, event):
             # Run using IPython.
 .. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
+.. @+node:ekr.20150516123519.1: *5* re: semantic diff
+# This is the missing piece of the puzzle.
+
+# Can coverage tool help?
+.. @+node:ekr.20150516161000.1: *6* @@button dump-ast
+import ast
+import hashlib
+node = ast.parse(p.b,filename=p.h,mode='exec')
+s = ast.dump(node,annotate_fields=False)
+# Comments, whitespace and blank lines do not affect the hash.
+# The contents of strings & docstrings do affect the hash.
+# The order of statements does affect the hash.
+print(hashlib.sha1(s).hexdigest())
+if 0:
+    return 'xy'
+.. @+node:ekr.20150518162738.1: *6* @command proto-diff
+g.cls()
+import ast
+import difflib
+import leo.core.leoAst as leoAst
+f = leoAst.AstFormatter()
+<< define table >>
+for pair in table:
+    print('*'*40)
+    s1,s2 = pair
+    t1 = ast.parse(s1,filename='s1',mode='exec')
+    t2 = ast.parse(s2,filename='s2',mode='exec')
+    if 1:
+        a,b = f.format(t1),f.format(t2)
+    else:
+        a = ast.dump(t1,annotate_fields=False)
+        b = ast.dump(t2,annotate_fields=False)
+    if 1:
+        print(a) ; print('-'*20) ; print(b) ; print('')
+    sm = difflib.SequenceMatcher(None,a,b)
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag in ('insert','replace',):
+            # print ("%7s a[%d:%d] (%s) b[%d:%d] (%s)" %
+               # (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
+            print ("===== %s\n%s\n%s" % (
+                tag,a[i1:i2],b[j1:j2]))
+.. @+node:ekr.20150518162908.1: *7* << define table >>
+# A list of 2-tuples
+
+table = (
+# Tuple 1:Add docstring.
+('''
+def spam():
+    pass
+''',
+'''
+def spam():
+    """Docstring for spam."""
+    pass
+'''
+),
+# Tuple 2: Change docstring.
+('''
+def eggs():
+    """Old docstring."""
+    pass
+''',
+'''
+def eggs():
+    """New docstring."""
+    pass
+'''
+),
+
+)
 .. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
@@ -331,6 +401,9 @@ When I have a traceback in the log pane, I'd love to be able to select an item a
 .. @+node:ekr.20150410043749.1: *3* Maybe
 @language rest
 @wrap
+.. @+node:ekr.20150603065910.1: *4* Run autopep8 on all Leo files?
+.. @+node:ekr.20150602122614.1: *4* Maybe: beautifier warns about long lines
+compute_line_length helper: just scans backward.
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
