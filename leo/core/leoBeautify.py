@@ -320,7 +320,9 @@ def should_beautify(p):
     '''
     for p2 in p.self_and_parents():
         d = g.get_directives_dict(p2)
-        if 'beautify' in d and 'nobeautify' in d:
+        if 'killbeautify' in d:
+            return False
+        elif 'beautify' in d and 'nobeautify' in d:
             if p == p2:
                 # honor whichever comes first.
                 for line in g.splitLines(p2.b):
@@ -342,6 +344,10 @@ def should_beautify(p):
             return False
     # The default is to beautify.
     return True
+#@+node:ekr.20150602204440.1: *3* should_kill_beautify
+def should_kill_beautify(p):
+    '''Return True if p.b contains @killbeautify'''
+    return 'killbeautify' in g.get_directives_dict(p)
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
