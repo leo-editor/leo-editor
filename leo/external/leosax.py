@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120519121124.9919: * @file ../external/leosax.py
 #@@language python
-
+#@@killbeautify
 #@+others
 #@+node:ekr.20120519121124.9920: ** leosax declarations
 """Read .leo files into a simple python data structure with

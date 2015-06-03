@@ -25,7 +25,7 @@ import struct
 
 
 #@-<< imports >>
-
+#@@killbeautify
 # EKR: use this by default.
 if hasattr(socket,'AF_UNIX'):
     standard_leo_socket_name = os.path.expanduser('~/.leo/leoserv_sockname')

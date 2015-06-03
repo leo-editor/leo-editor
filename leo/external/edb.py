@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130805134749.12436: * @file ../external/edb.py
 #@@first
-
+#@@killbeautify
 #@+<< docstring >>
 #@+node:ekr.20110914171443.7240: ** << docstring >>
 """

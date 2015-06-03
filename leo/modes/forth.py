@@ -1,6 +1,5 @@
 # Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
-
 import leo.core.leoGlobals as g
 
 # Rules for forth_main ruleset.

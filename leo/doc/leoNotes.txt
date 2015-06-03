@@ -1,7 +1,7 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20031218072017.329: * @file ../doc/leoNotes.txt
 .. @@language rest
-
+.. @@killbeautify
 .. @+all
 .. @+node:ekr.20131005214621.16081: ** Notes
 .. @+node:ekr.20090202064534.4: *3*  Your mission, should you choose to accept it

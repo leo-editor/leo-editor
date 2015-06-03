@@ -556,6 +556,7 @@ The fix was in moveWordHelper.
 .. @+node:ekr.20150509180744.1: *4* Fixed remove-blank-lines command
 It now works when there is no text selection.
 .. @-all
+.. @@killbeautify
 .. @@language rest
 .. @@wrap
 .. @@pagewidth 60
