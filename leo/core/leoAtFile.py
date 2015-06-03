@@ -3139,6 +3139,8 @@ class AtFile:
         '''Auto beautify p's tree if allowed by settings and directives.'''
         c = self.c
         try:
+            if not p.isDirty():
+                return
             if leoBeautify.should_kill_beautify(p):
                 return
             if c.config.getBool('tidy-autobeautify'):
