@@ -440,13 +440,12 @@ class LeoInterface:
     An instance of this class called leox is typically injected
     into IPython's user_ns namespace by the init-ipython-command.'''
 
-    # pylint: disable=R0923
-    # R0923:LeoInterface: Interface not implemented
+    # py-lint: disable=interface-not-implemented
 
     def __init__(self,c,g,tag='@ipython-results'):
         self.c = c
         self.g = g
-#@+node:ekr.20071113084440.1: ** @file test/syntax_error_plugin.py
+#@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
 # pylint: disable=syntax-error
 
 '''
@@ -460,5 +459,8 @@ def init ():
     '''Return True if the plugin has loaded successfully.'''
     return True
 #@-all
+#@@killbeautify
 This file contains unused plugins and code
+#@@language python
+
 #@-leo
