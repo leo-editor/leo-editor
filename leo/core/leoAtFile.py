@@ -3070,7 +3070,8 @@ class AtFile:
         trace = False and not g.unitTesting
         at, c = self, self.c
         at.root = root # 2014/10/21
-        at.autoBeautify(p)
+        if not force and p.v not in writtenFiles:
+            at.autoBeautify(p)
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:
@@ -3144,6 +3145,7 @@ class AtFile:
             if leoBeautify.should_kill_beautify(p):
                 return
             if c.config.getBool('tidy-autobeautify'):
+                # g.trace(p.h)
                 leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
         except Exception:
             g.es('unexpected exception')
