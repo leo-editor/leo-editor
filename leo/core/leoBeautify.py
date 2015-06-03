@@ -32,6 +32,8 @@ def beautifyCCode(event):
     '''Beautify all C code in the selected tree.'''
     c = event.get('c')
     if not c: return
+    if should_kill_beautify(c.p):
+        return
     u, undoType = c.undoer, 'beautify-c'
     pp = CPrettyPrinter(c)
     u.beforeChangeGroup(c.p, undoType)
@@ -73,6 +75,8 @@ def beautifyPythonTree(event):
     p0 = event.get('p0')
     is_auto = bool(p0)
     p0 = p0 or c.p
+    if should_kill_beautify(p0):
+        return
     t1 = time.clock()
     pp = PythonTokenBeautifier(c)
     prev_changed = 0
