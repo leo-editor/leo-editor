@@ -551,8 +551,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18508: *3* LeoQtGui.Focus
     def get_focus(self, c=None, raw=False):
         """Returns the widget that has focus."""
-        # pylint: disable=w0221
-        # Arguments number differs from overridden method.
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         app = QtWidgets.QApplication
         w = app.focusWidget()

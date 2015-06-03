@@ -1098,7 +1098,7 @@ class Undoer:
                             # The new and old characters are not contiguous.
                             newBead = True
                         elif old_col == 0 or new_col == 0:
-                            # pylint: disable=W0511
+                            # py-lint: disable=W0511
                             # W0511:1362: TODO
                             # TODO this is not true, we might as well just have entered a char at the beginning of an existing line
                             pass # We have just inserted a line.

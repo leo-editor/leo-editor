@@ -762,8 +762,8 @@ class FileCommands:
         return root
     #@+node:ekr.20100701112151.5959: *6* getDiff
     def getDiff(self, s1, s2):
-        # pylint: disable=E1120
-        # E1120:getDiff: No value passed for parameter 'b' in function call
+        # pylint: disable=no-value-for-parameter
+        # No value passed for parameter 'b' in function call
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
         diffLines = difflib.Differ.compare(lines1, lines2)
@@ -966,8 +966,8 @@ class FileCommands:
         badchars.remove('\n')
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-        # pylint: disable=E1101
-        # E1101:cleanSaxInputString: Class 'str' has no 'maketrans' member
+        # pylint: disable=no-member
+        # Class 'str' has no 'maketrans' member
         if g.isPython3:
             flatten = bytes(flatten, 'utf-8')
             pad = bytes(pad, 'utf-8')

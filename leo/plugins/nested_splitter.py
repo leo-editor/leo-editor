@@ -308,9 +308,9 @@ if QtWidgets:
                 # so owner is not a window which might close.  Could instead
                 # set owner to main splitter explicitly.  Not sure how right now.
                 submenu = menu.addMenu('Open window')
-                # W0108: Lambda may not be necessary.
-                self.add_item(lambda: splitter.open_window(), # pylint: disable=W0108
-                    submenu, "Empty")
+                if 1:
+                    # pylint: disable=unnecessary-lambda
+                    self.add_item(lambda: splitter.open_window(), submenu, "Empty")
                 # adapted from choice_menu()
                 if (splitter.root.marked and
                     splitter.top().max_count() > 1):
@@ -326,9 +326,8 @@ if QtWidgets:
                             self.add_item(cb, submenu, title)
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
-            # E0102: function already defined.
 
-            def cb(checked, splitter=splitter): # pylint: disable=E0102
+            def cb(checked, splitter=splitter): # pylint: disable=function-redefined
                 print("\n%s\n" %
                     splitter.layout_to_text(splitter.top().get_layout()))
 

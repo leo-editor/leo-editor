@@ -85,7 +85,7 @@ import inspect
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
-import urllib # pylint: disable=E0611
+import urllib # py-lint: disable=E0611
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
 import re
@@ -6190,7 +6190,7 @@ def handleUrl(url, c=None, p=None):
             # Finalize the path *before* parsing the url.
             url = g.computeFileUrl(url, c=c, p=p)
         parsed = urlparse.urlparse(url)
-        # pylint: disable=E1103
+        # py-lint: disable=E1103
         # E1103: Instance of 'ParseResult' has no 'fragment' member
         # E1103: Instance of 'ParseResult' has no 'netloc' member
         # E1103: Instance of 'ParseResult' has no 'path' member
@@ -6279,7 +6279,7 @@ def isValidUrl(url):
     else:
         parsed = urlparse.urlparse(url)
         # E1103: Instance of 'ParseResult' has no 'scheme' member.
-        scheme = parsed.scheme # pylint: disable=E1103
+        scheme = parsed.scheme # py-lint: disable=E1103
         for s in table:
             if scheme.startswith(s):
                 return True
