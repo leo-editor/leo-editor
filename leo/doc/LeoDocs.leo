@@ -18345,10 +18345,7 @@ Sometimes a command requires that an action happen immediately.  The following m
 </t>
 <t tx="ekr.20150603065646.1">@language rest
 @wrap
-
-- Correct stc posting about "beautiful pattern"
-- Add docs for all beautify-* commands.
-- Make sure Leo's docs discuss the *new* pattern, not the old</t>
+</t>
 <t tx="ekr.20150603065818.2">An amazing collapse in complexity has just happened. I wrote a new, much simpler, token-based beautifier last night.  The parse-tree based beautifier will be retired.
 
 Aha 1: The token-based beautifier can use the same code generators as the parse-tree based beautifier.
