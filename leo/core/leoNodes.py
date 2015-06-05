@@ -1819,6 +1819,8 @@ class PosList(list):
 
 Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
+#@@nobeautify
+
 class VNodeBase(object):
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
@@ -2515,7 +2517,10 @@ if use_zodb and ZODB:
 
 else:
     VNode = VNodeBase
+
 vnode = VNode # compatibility.
+
+#@@beautify
 #@-others
 #@@language python
 #@@tabwidth -4

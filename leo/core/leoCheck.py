@@ -137,7 +137,10 @@ class ShowData:
         self.defs_d = {}
         self.files = None
         self.returns_d = {}
-        self.n = 0
+        # Statistics
+        self.n_matches = 0
+        self.tot_lines = 0
+        self.tot_s = 0
         # Regex patterns. These are really a premature optimization.
         r_class = r'class[ \t]+([a-z_A-Z][a-z_A-Z0-9]*).*:'
         r_def = r'def[ \t]+([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\((.*)\)'
@@ -170,7 +173,7 @@ class ShowData:
     def match(self, fn, i, m, s):
         '''Handle the next match.'''
         trace = False
-        self.n += 1
+        self.n_matches += 1
         indent = g.skip_ws(s, 0)
         # Update the context and enter data.
         if g.match_word(s, indent, 'def'):
@@ -217,7 +220,7 @@ class ShowData:
                     break
         if trace:
             print('%4s %4s %3s %3s %s' % (
-                self.n, i, len(self.context_stack), indent, s.rstrip()))
+                self.n_matches, i, len(self.context_stack), indent, s.rstrip()))
     #@+node:ekr.20150604163903.1: *3* run
     def run(self, files):
         '''Process all files'''
@@ -226,6 +229,7 @@ class ShowData:
         for fn in files:
             s, e = g.readFileIntoString(fn)
             if s:
+                self.tot_s += len(s)
                 self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
@@ -238,17 +242,18 @@ class ShowData:
         return 's' if len(aList) > 1 else ''
     #@+node:ekr.20150605054921.1: *3* scan
     def scan(self, fn, s):
-        g.trace('%6s %s' % (len(s), g.shortFileName(fn)))
+        g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
         # print(' hit line lvl lws line')
-        for i, s in enumerate(g.splitLines(s)):
+        lines = g.splitLines(s)
+        self.tot_lines += len(lines)
+        for i, s in enumerate(lines):
             m = re.search(self.r_all, s)
             if m and not s.startswith('@'):
-                # assert m.group(1) is not None,(s,m.group(0))
                 self.match(fn, i, m, s)
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
-        make = False
+        make = True
         multiple_only = True # True only show defs defined in more than one place.
         c = self.c
         result = ['@killcolor']
@@ -262,12 +267,16 @@ class ShowData:
                 self.show_calls(margin, name, result)
                 self.show_returns(margin, name, result)
         # Put the result in a new node.
-        summary = 'files: %s classes: %s defs: %s calls: %s returns: %s' % (
+        summary = 'files: %s lines: %s chars: %s classes: %s defs: %s calls: %s returns: %s' % (
+            # self.plural(self.files),
             len(self.files),
-            len(self.classes_d.keys()),
-            len(self.defs_d.keys()),
-            len(self.calls_d.keys()),
-            len(self.returns_d.keys()))
+            "{:,}".format(self.tot_lines),
+            "{:,}".format(self.tot_s),
+            "{:,}".format(len(self.classes_d.keys())),
+            "{:,}".format(len(self.defs_d.keys())),
+            "{:,}".format(len(self.calls_d.keys())),
+            "{:,}".format(len(self.returns_d.keys())),
+        )
         result.insert(1, summary)
         result.extend(['', summary])
         if make:
@@ -281,6 +290,13 @@ class ShowData:
     def show_defs(self, margin, name, result):
         aList = self.defs_d.get(name, [])
         name_added = False
+        max_context = 0
+        # Calculate the width
+        for def_tuple in aList:
+            context_stack, s = def_tuple
+            if context_stack:
+                fn, kind, indent, context_s = context_stack[-1]
+                max_context = max(max_context, 2 + len(context_s))
         for def_tuple in aList:
             context_stack, s = def_tuple
             if not name_added:
@@ -291,9 +307,10 @@ class ShowData:
                 fn, kind, indent, context_s = context_stack[-1]
                 context_s = context_s.lstrip('class').strip().strip(':').strip()
                 def_s = s.strip().strip('def').strip()
-                result.append('%s%s::%s' % (margin, context_s, def_s))
+                pad = max_context - len(context_s)
+                result.append('%s%s: %s' % (' ' * pad, context_s, def_s))
             else:
-                result.append('%s%s' % (margin, s.strip()))
+                result.append('%s%s' % (' ' * max_context, s.strip()))
     #@+node:ekr.20150605160218.1: *4* show_calls
     def show_calls(self, margin, name, result):
         aList = self.calls_d.get(name, [])
@@ -311,10 +328,10 @@ class ShowData:
             context2, context1, s = call_tuple
             pad = max_context - (len(context2 or '') + len(context1 or ''))
             if context2:
-                result.append('%s%s%s::%s:  %s' % (
+                result.append('%s%s%s::%s: %s' % (
                     margin, ' ' * pad, context2, context1, s))
             else:
-                result.append('%s%s%s:  %s' % (
+                result.append('%s%s%s: %s' % (
                     margin, ' ' * (pad + 2), context1, s))
     #@+node:ekr.20150605160341.1: *4* show_returns
     def show_returns(self, margin, name, result):
@@ -331,11 +348,11 @@ class ShowData:
         for returns_tuple in returns:
             context, s = returns_tuple
             pad = max_context - len(context)
-            result.append('%s%s%s:  %s' % (margin, ' ' * pad, context, s))
+            result.append('%s%s%s: %s' % (margin, ' ' * pad, context, s))
     #@+node:ekr.20150605074749.1: *3* update_context
     def update_context(self, fn, indent, kind, s):
         '''Update context info when a class or def is seen.'''
-        trace = False and self.n < 100
+        trace = False and self.n_matches < 100
         while self.context_stack:
             fn2, kind2, indent2, s2 = self.context_stack[-1]
             if indent <= indent2:
