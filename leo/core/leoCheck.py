@@ -288,45 +288,13 @@ class ShowData:
         self.n_matches = 0
         self.tot_lines = 0
         self.tot_s = 0
-        # From beautifier
-        ### self.n_changed_nodes = 0
-        self.n_input_tokens = 0
-        self.n_output_tokens = 0
-        ### self.n_strings = 0
-        ### self.parse_time = 0.0
-        ### self.tokenize_time = 0.0
-        ### self.beautify_time = 0.0
-        ### self.check_time = 0.0
-        ### self.total_time = 0.0
-        # Regex patterns. These are really a premature optimization.
-        if 1: ### To be removed.
-            r_class = r'class[ \t]+([a-z_A-Z][a-z_A-Z0-9]*).*:'
-            r_def = r'def[ \t]+([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\((.*)\)'
-            r_return = r'(return[ \t].*)$'
-            r_call = r'([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\(([^)]*)\)'
-            self.r_all = re.compile('|'.join([r_class, r_def, r_return, r_call,]))
-        # From Beautifier
-        # Globals...
-        self.code_list = [] # The list of output tokens.
-        # The present line and token...
-        self.last_line_number = 0
-        self.raw_val = None # Raw value for strings, comments.
-        self.s = None # The string containing the line.
-        self.val = None
-        # State vars...
-        self.backslash_seen = False
-        ### self.decorator_seen = False
-        self.level = 0 # indentation level.
-        self.lws = '' # Leading whitespace.
-            # Typically ' '*self.tab_width*self.level,
-            # but may be changed for continued lines.
-        self.paren_level = 0 # Number of unmatched left parens.
-        self.state_stack = [] # Stack of ParseState objects.
-        # Settings...
-        self.tab_width = abs(c.tab_width) if c else 4
-        # Undo vars
-        ### self.changed = False
-        ### self.dirtyVnodeList = []
+        self.n_undefined_calls = 0
+        # Regex patterns used by match.  A brilliant prototype.
+        r_class = r'class[ \t]+([a-z_A-Z][a-z_A-Z0-9]*).*:'
+        r_def = r'def[ \t]+([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\((.*)\)'
+        r_return = r'(return[ \t].*)$'
+        r_call = r'([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\(([^)]*)\)'
+        self.r_all = re.compile('|'.join([r_class, r_def, r_return, r_call,]))
     #@+node:ekr.20150604163903.1: *3* run & helpers
     def run(self, files):
         '''Process all files'''
@@ -465,7 +433,7 @@ class ShowData:
     def show_results(self):
         '''Print a summary of the test results.'''
         make = True
-        multiple_only = False # True only show defs defined in more than one place.
+        multiple_only = True # True only show defs defined in more than one place.
         c = self.c
         result = ['@killcolor']
         for name in sorted(self.defs_d):
@@ -474,8 +442,9 @@ class ShowData:
                 self.show_defs(name, result)
                 self.show_calls(name, result)
                 self.show_returns(name, result)
+        self.show_undefined_calls(result)
         # Put the result in a new node.
-        summary = 'files: %s lines: %s chars: %s classes: %s defs: %s calls: %s returns: %s' % (
+        summary = 'files: %s lines: %s chars: %s classes: %s defs: %s calls: %s undefined calls: %s returns: %s' % (
             # self.plural(self.files),
             len(self.files),
             "{:,}".format(self.tot_lines),
@@ -483,6 +452,7 @@ class ShowData:
             "{:,}".format(len(self.classes_d.keys())),
             "{:,}".format(len(self.defs_d.keys())),
             "{:,}".format(len(self.calls_d.keys())),
+            "{:,}".format(self.n_undefined_calls),
             "{:,}".format(len(self.returns_d.keys())),
         )
         result.insert(1, summary)
@@ -559,6 +529,53 @@ class ShowData:
             context, s = returns_tuple
             pad = w - len(context)
             result.append('%s%s: %s' % (' ' * (8 + pad), context, s))
+    #@+node:ekr.20150606092147.1: *4* show_undefined_calls
+    def show_undefined_calls(self, result):
+        '''Show all calls to undefined functions.'''
+        # g.trace(sorted(self.defs_d.keys()))
+        call_tuples = []
+        for s in self.calls_d:
+            i = 0
+            while True:
+                progress = i
+                j = s.find('.', i)
+                if j == -1:
+                    name = s[i:].strip()
+                    call_tuple = name, s
+                    call_tuples.append(call_tuple)
+                    break
+                else:
+                    i = j + 1
+                assert progress < i
+        undef = []
+        for call_tuple in call_tuples:
+            name, s = call_tuple
+            if name not in self.defs_d:
+                undef.append(call_tuple)
+        undef = list(set(undef))
+        result.extend(['', '%s undefined call%s...' % (
+            len(undef), self.plural(undef))])
+        self.n_undefined_calls = len(undef)
+        seen = set()
+        for undef_tuple in sorted(undef):
+            name, s = undef_tuple
+            calls = self.calls_d.get(s, [])
+            if name not in seen:
+                seen.add(name)
+                result.extend(['', '%s...' % name, '    %s calls...' % len(calls)])
+            w = 0
+            for call_tuple in calls:
+                context2, context1, s = call_tuple
+                w = max(w, len(context2 or '') + len(context1 or ''))
+            for call_tuple in calls:
+                context2, context1, s = call_tuple
+                pad = w - (len(context2 or '') + len(context1 or ''))
+                if context2:
+                    result.append('%s%s::%s: %s' % (
+                        ' ' * (8 + pad), context2, context1, s))
+                else:
+                    result.append('%s%s: %s' % (
+                        ' ' * (10 + pad), context1, s))
     #@-others
 #@-others
 #@@language python
