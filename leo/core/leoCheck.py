@@ -26,15 +26,16 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.context_stack = [module_tuple]
         self.controller = controller
         self.fn = g.shortFileName(fn)
-        self.formatter = leoAst.AstFormatter()
+        self.formatter = leoAst.AstPatternFormatter() # or AstFormatter
         self.trace = False
     #@+others
     #@+node:ekr.20150606035006.1: *3* sd.context_names
     def context_names(self):
         '''Return the present context names.'''
         result = []
-        for i in -1, -2:
-            try:
+        n = len(self.context_stack)
+        for i in n - 1, n - 2:
+            if i >= 0:
                 fn, kind, indent, s = self.context_stack[i]
                 assert kind in ('class', 'def', 'module'), kind
                 if kind == 'module':
@@ -46,9 +47,10 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
                     i = g.skip_ws(s, i)
                     j = g.skip_c_id(s, i)
                     result.append(s[i: j])
-            except IndexError:
+            else:
                 result.append('')
                 break
+        # g.trace(list(reversed(result)))
         return reversed(result)
     #@+node:ekr.20150606024455.16: *3* sd.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -116,6 +118,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         context_tuple = self.fn, 'def', '', s
             # fn, kind, indent, s
             # The indent is for compatibility with the regex-based code.
+        ### if node.name == 'shortFileName': g.trace(s, self.fn)
         self.context_stack.append(context_tuple)
         # Update controller data.
         def_tuple = self.context_stack[: -1], s
@@ -328,7 +331,7 @@ class ShowData:
             # Get the time exlusive of print time.
         self.show_results()
         g.trace('done: %4.1f sec.' % (t2 - t1))
-    #@+node:ekr.20150605054921.1: *4* scan (fast, inaccurate) & helpers
+    #@+node:ekr.20150605054921.1: *4* scan (inaccurate) & helpers
     # The excellent prototype code.
     # It was a roadmap for the ShowDataTraverser class.
 
@@ -497,7 +500,6 @@ class ShowData:
             context_stack, s = def_tuple
             if context_stack:
                 fn, kind, indent, context_s = context_stack[-1]
-                context_s = context_s.lstrip('class').strip().strip(':').strip()
                 w = max(w, len(context_s))
         for def_tuple in aList:
             context_stack, s = def_tuple
@@ -507,8 +509,7 @@ class ShowData:
                 result.append('    %s definition%s...' % (len(aList), self.plural(aList)))
             if context_stack:
                 fn, kind, indent, context_s = context_stack[-1]
-                context_s = context_s.lstrip('class').strip().strip(':').strip()
-                def_s = s.strip().strip('def').strip()
+                def_s = s.strip()
                 pad = w - len(context_s)
                 result.append('%s%s: %s' % (' ' * (8 + pad), context_s, def_s))
             else:
@@ -523,8 +524,6 @@ class ShowData:
         for returns_tuple in returns:
             context, s = returns_tuple
             w = max(w, len(context or ''))
-            ### returns_tuple = context, s
-            ### returns.append(returns_tuple)
         for returns_tuple in returns:
             context, s = returns_tuple
             pad = w - len(context)
