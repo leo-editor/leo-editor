@@ -9,7 +9,6 @@ import ast
 import glob
 import re
 import time
-import token
 import tokenize
 #@+others
 #@+node:ekr.20150606024455.1: ** class ShowDataTraverser
@@ -22,12 +21,37 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
 
     def __init__(self, controller):
         '''Ctor for AstFullTraverser class.'''
-        self.context = None
+        self.context = None ### To be removed
+        self.context_stack = []
         self.controller = controller
         self.formatter = leoAst.AstFormatter()
         # self.parent = None
         self.trace = False
     #@+others
+    #@+node:ekr.20150606035006.1: *3* sd.context_names (To do)
+    def context_names(self):
+        '''Return the present context names.'''
+        if 1:
+            return ['context2', 'context1']
+        else: ### to do:
+            if self.context_stack:
+                result = []
+                for stack_i in - 1, -2:
+                    try:
+                        fn, kind, indent, s = self.context_stack[stack_i]
+                    except IndexError:
+                        result.append('')
+                        break
+                    s = s.strip()
+                    assert kind in ('class', 'def'), kind
+                    i = g.skip_ws(s, 0)
+                    i += len(kind)
+                    i = g.skip_ws(s, i)
+                    j = g.skip_c_id(s, i)
+                    result.append(s[i: j])
+                return reversed(result)
+            else:
+                return ['', '']
     #@+node:ekr.20150606024455.16: *3* sd.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -36,30 +60,24 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = self.formatter.format(node)
         if self.trace: g.trace(s)
         # Update data
-        ###
-        # for i, name in enumerate(m.groups()):
-            # if name:
-                # context2, context1 = self.context_names()
-                # j = s.find('#')
-                # if j > -1:
-                    # s = s[: j]
-                # s = s.strip().strip(',').strip()
-                # if s:
-                    # aList = self.calls_d.get(name, [])
-                    # call_tuple = context2, context1, s
-                    # aList.append(call_tuple)
-                    # self.calls_d[name] = aList
-                # break
+        if 0:
+            name = self.formatter.format(node.func)
+            context2, context1 = self.context_names()
+            aList = self.controller.calls_d.get(name, [])
+            call_tuple = context2, context1, s
+            aList.append(call_tuple)
+            self.controller.calls_d[name] = aList
         # Visit.
-        # self.visit(node.func)
-        # for z in node.args:
-            # self.visit(z)
-        # for z in node.keywords:
-            # self.visit(z)
-        # if getattr(node, 'starargs', None):
-            # self.visit(node.starargs)
-        # if getattr(node, 'kwargs', None):
-            # self.visit(node.kwargs)
+        # Subnodes *can* contains further calls.
+        self.visit(node.func)
+        for z in node.args:
+            self.visit(z)
+        for z in node.keywords:
+            self.visit(z)
+        if getattr(node, 'starargs', None):
+            self.visit(node.starargs)
+        if getattr(node, 'kwargs', None):
+            self.visit(node.kwargs)
     #@+node:ekr.20150606024455.3: *3* sd.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -74,21 +92,20 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             s = 'class %s:' % node.name
         if self.trace: g.trace(s)
         # Update data
-        ###
-        # self.update_context(fn, indent, 'class', s)
-        # for i, name in enumerate(m.groups()):
-            # if name:
-                # aList = self.classes_d.get(name, [])
-                # class_tuple = self.context_stack[: -1], s
-                # aList.append(class_tuple)
-                # self.classes_d[name] = aList
+        if 0:
+            ### self.update_context(fn, indent, 'class', s)
+            aList = self.controller.classes_d.get(node.name, [])
+            ### class_tuple = self.context_stack[: -1], s
+            class_tuple = 'context1', s ###################
+            aList.append(class_tuple)
+            self.controller.classes_d[node.name] = aList
         # Visit.
         # for z in node.bases:
             # self.visit(z)
         for z in node.body:
             self.visit(z)
-        for z in node.decorator_list:
-            self.visit(z)
+        # for z in node.decorator_list:
+            # self.visit(z)
         self.context = old_context
     #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
@@ -101,15 +118,13 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = 'def %s(%s):' % (node.name, args)
         if self.trace: g.trace(s)
         # Update data.
-        ###
-        # self.update_context(fn, indent, 'def', s)
-        # for i, name in enumerate(m.groups()):
-            # if name:
-                # aList = self.defs_d.get(name, [])
-                # def_tuple = self.context_stack[: -1], s
-                # aList.append(def_tuple)
-                # self.defs_d[name] = aList
-                # break
+        if 0:
+            ### self.update_context(fn, indent, 'def', s)
+            aList = self.controller.defs_d.get(node.name, [])
+            ### def_tuple = self.context_stack[: -1], s
+            def_tuple = 'context1', s #######################
+            aList.append(def_tuple)
+            self.controller.defs_d[node.name] = aList
         # Visit
         # for z in node.decorator_list:
             # self.visit(z)
@@ -125,16 +140,12 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = self.formatter.format(node)
         if self.trace: g.trace(s)
         # Update data
-        ###
-        # context, name = self.context_names()
-        # j = s.find('#')
-        # if j > -1: s = s[: j]
-        # s = s.strip()
-        # if s:
-            # aList = self.returns_d.get(name, [])
-            # return_tuple = context, s
-            # aList.append(return_tuple)
-            # self.returns_d[name] = aList
+        if 0:
+            context, name = self.context_names()
+            aList = self.controller.returns_d.get(name, [])
+            return_tuple = context, s
+            aList.append(return_tuple)
+            self.controller.returns_d[name] = aList
         # Visit...
         # if node.value:
         #    self.visit(node.value)
@@ -439,6 +450,27 @@ class ShowData:
         if trace:
             g.trace('push', len(self.context_stack), s.rstrip())
         self.context_indent = indent
+    #@+node:ekr.20150605140911.1: *4* context_names
+    def context_names(self):
+        '''Return the present context name.'''
+        if self.context_stack:
+            result = []
+            for stack_i in - 1, -2:
+                try:
+                    fn, kind, indent, s = self.context_stack[stack_i]
+                except IndexError:
+                    result.append('')
+                    break
+                s = s.strip()
+                assert kind in ('class', 'def'), kind
+                i = g.skip_ws(s, 0)
+                i += len(kind)
+                i = g.skip_ws(s, i)
+                j = g.skip_c_id(s, i)
+                result.append(s[i: j])
+            return reversed(result)
+        else:
+            return ['', '']
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
@@ -472,6 +504,29 @@ class ShowData:
             p2.b = '\n'.join(result)
             c.redraw(p=p2)
         g.trace(summary)
+    #@+node:ekr.20150605163128.1: *4* plural
+    def plural(self, aList):
+        return 's' if len(aList) > 1 else ''
+    #@+node:ekr.20150605160218.1: *4* show_calls
+    def show_calls(self, name, result):
+        aList = self.calls_d.get(name, [])
+        if not aList:
+            return
+        result.extend(['', '    %s call%s...' % (len(aList), self.plural(aList))])
+        w = 0
+        calls = sorted(set(aList))
+        for call_tuple in calls:
+            context2, context1, s = call_tuple
+            w = max(w, len(context2 or '') + len(context1 or ''))
+        for call_tuple in calls:
+            context2, context1, s = call_tuple
+            pad = w - (len(context2 or '') + len(context1 or ''))
+            if context2:
+                result.append('%s%s::%s: %s' % (
+                    ' ' * (8 + pad), context2, context1, s))
+            else:
+                result.append('%s%s: %s' % (
+                    ' ' * (10 + pad), context1, s))
     #@+node:ekr.20150605155601.1: *4* show_defs
     def show_defs(self, name, result):
         aList = self.defs_d.get(name, [])
@@ -498,26 +553,6 @@ class ShowData:
                 result.append('%s%s: %s' % (' ' * (8 + pad), context_s, def_s))
             else:
                 result.append('%s%s' % (' ' * 4, s.strip()))
-    #@+node:ekr.20150605160218.1: *4* show_calls
-    def show_calls(self, name, result):
-        aList = self.calls_d.get(name, [])
-        if not aList:
-            return
-        result.extend(['', '    %s call%s...' % (len(aList), self.plural(aList))])
-        w = 0
-        calls = sorted(set(aList))
-        for call_tuple in calls:
-            context2, context1, s = call_tuple
-            w = max(w, len(context2 or '') + len(context1 or ''))
-        for call_tuple in calls:
-            context2, context1, s = call_tuple
-            pad = w - (len(context2 or '') + len(context1 or ''))
-            if context2:
-                result.append('%s%s::%s: %s' % (
-                    ' ' * (8 + pad), context2, context1, s))
-            else:
-                result.append('%s%s: %s' % (
-                    ' ' * (10 + pad), context1, s))
     #@+node:ekr.20150605160341.1: *4* show_returns
     def show_returns(self, name, result):
         aList = self.returns_d.get(name, [])
@@ -534,43 +569,6 @@ class ShowData:
             context, s = returns_tuple
             pad = w - len(context)
             result.append('%s%s: %s' % (' ' * (8 + pad), context, s))
-    #@+node:ekr.20150605213753.1: *3* Utils
-    #@+node:ekr.20150605203204.20: *4* add_token
-    def add_token(self, kind, value=''):
-        '''Add a token to the code list.'''
-        # if kind in ('line-indent','line-start','line-end'):
-            # g.trace(kind,repr(value),g.callers())
-        tok = self.OutputToken(kind, value)
-        self.code_list.append(tok)
-    #@+node:ekr.20150605140911.1: *4* context_names
-    def context_names(self):
-        '''Return the present context name.'''
-        if self.context_stack:
-            result = []
-            for stack_i in - 1, -2:
-                try:
-                    fn, kind, indent, s = self.context_stack[stack_i]
-                except IndexError:
-                    result.append('')
-                    break
-                s = s.strip()
-                assert kind in ('class', 'def'), kind
-                i = g.skip_ws(s, 0)
-                i += len(kind)
-                i = g.skip_ws(s, i)
-                j = g.skip_c_id(s, i)
-                result.append(s[i: j])
-            return reversed(result)
-        else:
-            return ['', '']
-    #@+node:ekr.20150605163128.1: *4* plural
-    def plural(self, aList):
-        return 's' if len(aList) > 1 else ''
-    #@+node:ekr.20150605203204.40: *4* push_state
-    def push_state(self, kind, value=None):
-        '''Append a state to the state stack.'''
-        state = self.ParseState(kind, value)
-        self.state_stack.append(state)
     #@-others
 #@-others
 #@@language python
