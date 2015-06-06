@@ -26,7 +26,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.controller = controller
         self.formatter = leoAst.AstFormatter()
         # self.parent = None
-        self.trace = True
+        self.trace = False
     #@+others
     #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
@@ -294,68 +294,31 @@ class ShowData:
             s, e = g.readFileIntoString(fn)
             if s:
                 self.tot_s += len(s)
+                g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
                 if 1:
-                    # Fast, accurate: 1.88 sec for parsing.
-                    # 2.51 sec for Null AstFullTraverer traversal.
-                    # 2.72 sec to generate all strings.
-                    g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
+                    # Fast, accurate: 1.9 sec for parsing.
+                    # 2.5 sec for Null AstFullTraverer traversal.
+                    # 2.7 sec to generate all strings.
                     s1 = g.toEncodedString(s)
                     node = ast.parse(s1, filename='before', mode='exec')
                     ShowDataTraverser(self).visit(node)
-                elif 0: # 3.25 sec for tokenizing
-                    g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
+                elif 0: # Too slow, too clumsy: 3.3 sec for tokenizing
                     readlines = g.ReadLinesClass(s).next
                     for token5tuple in tokenize.generate_tokens(readlines):
                         pass
-                else: # Inaccurate. 2.21 sec for do-nothing.
+                else: # Inaccurate. 2.2 sec for do-nothing.
                     self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
         t2 = time.clock()
             # Get the time exlusive of print time.
         self.show_results()
-        g.trace('done: %4.2f sec.' % (t2 - t1))
-    #@+node:ekr.20150605203204.7: *4* handle_tokens (slow, accurate)
-    def handle_tokens(self, tokens):
-        '''Handle all the tokens of a file.'''
-
-        def oops():
-            g.trace('unknown kind', self.kind)
-
-        self.code_list = []
-        self.state_stack = []
-        self.file_start()
-        for token5tuple in tokens:
-            t1, t2, t3, t4, t5 = token5tuple
-            srow, scol = t3
-            self.kind = token.tok_name[t1].lower()
-            self.val = g.toUnicode(t2)
-            self.raw_val = g.toUnicode(t5)
-            if srow != self.last_line_number:
-                # Handle a previous backslash.
-                ###
-                # if self.backslash_seen:
-                    # self.backslash()
-                    # self.backslash_seen = False
-                # Start a new row.
-                raw_val = self.raw_val.rstrip()
-                ### self.backslash_seen = raw_val.endswith('\\')
-                # g.trace('backslash_seen',self.backslash_seen)
-                if self.paren_level > 0:
-                    s = self.raw_val.rstrip()
-                    n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-                    self.line_indent(ws=' ' * n)
-                        # Do not set self.lws here!
-                self.last_line_number = srow
-            # g.trace('%10s %r'% (self.kind,self.val))
-            func = getattr(self, 'do_' + self.kind, oops)
-            func()
-        self.file_end()
-        return ''.join([z.to_string() for z in self.code_list])
+        g.trace('done: %4.1f sec.' % (t2 - t1))
     #@+node:ekr.20150605054921.1: *4* scan (fast, inaccurate) & helpers
+    # The excellent prototype code.
+    # It was a roadmap for the ShowDataTraverser class.
+
     def scan(self, fn, s):
-        g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
-        # print(' hit line lvl lws line')
         lines = g.splitLines(s)
         self.tot_lines += len(lines)
         for i, s in enumerate(lines):
