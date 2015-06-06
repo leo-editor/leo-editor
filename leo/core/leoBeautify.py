@@ -102,7 +102,7 @@ def beautifyPythonTree(event):
         if pp.n_changed_nodes > 0:
             g.es_print('auto-beautified %s node%s in\n%s' % (
                 pp.n_changed_nodes,
-                '%s' if pp.n_changed_nodes > 1 else '',
+                's' if pp.n_changed_nodes > 1 else '',
                 p0.h))
     else:
         g.es_print('beautified total %s nodes in %4.2f sec.' % (
