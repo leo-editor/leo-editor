@@ -28,6 +28,116 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # self.parent = None
         self.trace = False
     #@+others
+    #@+node:ekr.20150606024455.16: *3* sd.Call
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+    def do_Call(self, node):
+        # Format
+        s = self.formatter.format(node)
+        if self.trace: g.trace(s)
+        # Update data
+        ###
+        # for i, name in enumerate(m.groups()):
+            # if name:
+                # context2, context1 = self.context_names()
+                # j = s.find('#')
+                # if j > -1:
+                    # s = s[: j]
+                # s = s.strip().strip(',').strip()
+                # if s:
+                    # aList = self.calls_d.get(name, [])
+                    # call_tuple = context2, context1, s
+                    # aList.append(call_tuple)
+                    # self.calls_d[name] = aList
+                # break
+        # Visit.
+        # self.visit(node.func)
+        # for z in node.args:
+            # self.visit(z)
+        # for z in node.keywords:
+            # self.visit(z)
+        # if getattr(node, 'starargs', None):
+            # self.visit(node.starargs)
+        # if getattr(node, 'kwargs', None):
+            # self.visit(node.kwargs)
+    #@+node:ekr.20150606024455.3: *3* sd.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef(self, node):
+        old_context = self.context
+        self.context = node
+        # Format
+        if node.bases:
+            bases = [self.formatter.format(z) for z in node.bases]
+            s = 'class %s(%s):' % (node.name, ','.join(bases))
+        else:
+            s = 'class %s:' % node.name
+        if self.trace: g.trace(s)
+        # Update data
+        ###
+        # self.update_context(fn, indent, 'class', s)
+        # for i, name in enumerate(m.groups()):
+            # if name:
+                # aList = self.classes_d.get(name, [])
+                # class_tuple = self.context_stack[: -1], s
+                # aList.append(class_tuple)
+                # self.classes_d[name] = aList
+        # Visit.
+        # for z in node.bases:
+            # self.visit(z)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = old_context
+    #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef(self, node):
+        old_context = self.context
+        self.context = node
+        # Format.
+        args = self.formatter.format(node.args) if node.args else ''
+        s = 'def %s(%s):' % (node.name, args)
+        if self.trace: g.trace(s)
+        # Update data.
+        ###
+        # self.update_context(fn, indent, 'def', s)
+        # for i, name in enumerate(m.groups()):
+            # if name:
+                # aList = self.defs_d.get(name, [])
+                # def_tuple = self.context_stack[: -1], s
+                # aList.append(def_tuple)
+                # self.defs_d[name] = aList
+                # break
+        # Visit
+        # for z in node.decorator_list:
+            # self.visit(z)
+        # self.visit(node.args)
+        for z in node.body:
+            self.visit(z)
+        self.context = old_context
+    #@+node:ekr.20150606024455.55: *3* sd.Return
+    # Return(expr? value)
+
+    def do_Return(self, node):
+        # Format...
+        s = self.formatter.format(node)
+        if self.trace: g.trace(s)
+        # Update data
+        ###
+        # context, name = self.context_names()
+        # j = s.find('#')
+        # if j > -1: s = s[: j]
+        # s = s.strip()
+        # if s:
+            # aList = self.returns_d.get(name, [])
+            # return_tuple = context, s
+            # aList.append(return_tuple)
+            # self.returns_d[name] = aList
+        # Visit...
+        # if node.value:
+        #    self.visit(node.value)
     #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
@@ -47,71 +157,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
 
     def visit_children(self, node):
         assert False, 'must visit children explicitly'
-    #@+node:ekr.20150606024455.3: *3* sd.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-
-    def do_ClassDef(self, node):
-        old_context = self.context
-        self.context = node
-        # Format
-        if node.bases:
-            bases = [self.formatter.format(z) for z in node.bases]
-            s = 'class %s(%s):' % (node.name, ','.join(bases))
-        else:
-            s = 'class %s:' % node.name
-        if self.trace: g.trace(s)
-        # Visit.
-        # for z in node.bases:
-            # self.visit(z)
-        for z in node.body:
-            self.visit(z)
-        for z in node.decorator_list:
-            self.visit(z)
-        self.context = old_context
-    #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-
-    def do_FunctionDef(self, node):
-        old_context = self.context
-        self.context = node
-        # Format.
-        args = self.formatter.format(node.args) if node.args else ''
-        s = 'def %s(%s):' % (node.name, args)
-        if self.trace: g.trace(s)
-        # Visit
-        # for z in node.decorator_list:
-            # self.visit(z)
-        # self.visit(node.args)
-        for z in node.body:
-            self.visit(z)
-        self.context = old_context
-    #@+node:ekr.20150606024455.16: *3* sd.Call
-    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-
-    def do_Call(self, node):
-        # Format
-        s = self.formatter.format(node)
-        if self.trace: g.trace(s)
-        # Visit.
-        # self.visit(node.func)
-        # for z in node.args:
-            # self.visit(z)
-        # for z in node.keywords:
-            # self.visit(z)
-        # if getattr(node, 'starargs', None):
-            # self.visit(node.starargs)
-        # if getattr(node, 'kwargs', None):
-            # self.visit(node.kwargs)
-    #@+node:ekr.20150606024455.55: *3* ft.Return
-    # Return(expr? value)
-
-    def do_Return(self, node):
-        # Format...
-        s = self.formatter.format(node)
-        if self.trace: g.trace(s)
-        # Visit...
-        # if node.value:
-        #    self.visit(node.value)
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:
