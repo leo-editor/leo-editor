@@ -486,7 +486,7 @@ class Commands(object):
         c.sparce_spell = getBool('collapse_nodes_while_spelling')
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
         c.smart_tab = getBool('smart_tab')
-        c.tab_width = getInt('tab_width') or - 4
+        c.tab_width = getInt('tab_width') or -4
         c.use_body_focus_border = getBool('use_body_focus_border', default=True)
         c.use_focus_border = getBool('use_focus_border', default=True)
         c.verbose_check_outline = getBool('verbose_check_outline', default=False)
@@ -5980,7 +5980,7 @@ class Commands(object):
         j1 = line.find(">>")
         i2 = line.find("@<")
         j2 = line.find("@>")
-        return - 1 < i1 < j1 or - 1 < i2 < j2
+        return - 1 < i1 < j1 or -1 < i2 < j2
     #@+node:ekr.20031218072017.2965: *3* canFindMatchingBracket
     def canFindMatchingBracket(self):
         c = self

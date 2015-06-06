@@ -287,7 +287,7 @@ class AtFile:
         at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
-        at.tab_width = c.tab_width or - 4
+        at.tab_width = c.tab_width or -4
         at.toString = False # True: sring-oriented read or write.
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *3* at.initReadIvars
