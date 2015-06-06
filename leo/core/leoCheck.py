@@ -9,7 +9,6 @@ import ast
 import glob
 import re
 import time
-import tokenize
 #@+others
 #@+node:ekr.20150606024455.1: ** class ShowDataTraverser
 class ShowDataTraverser(leoAst.AstFullTraverser):
@@ -21,12 +20,13 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
 
     def __init__(self, controller, fn):
         '''Ctor for AstFullTraverser class.'''
-        module_tuple = g.shortFileName(fn), 'module', '', g.shortFileName(fn)
-            # fn, kind, indent, s.
+        module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
+            # fn, kind, s.
         self.context_stack = [module_tuple]
         self.controller = controller
         self.fn = g.shortFileName(fn)
-        self.formatter = leoAst.AstPatternFormatter() # or AstFormatter
+        self.formatter = leoAst.AstFormatter()
+            # leoAst.AstPatternFormatter()
         self.trace = False
     #@+others
     #@+node:ekr.20150606035006.1: *3* sd.context_names
@@ -36,7 +36,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         n = len(self.context_stack)
         for i in n - 1, n - 2:
             if i >= 0:
-                fn, kind, indent, s = self.context_stack[i]
+                fn, kind, s = self.context_stack[i]
                 assert kind in ('class', 'def', 'module'), kind
                 if kind == 'module':
                     result.append(s.strip())
@@ -88,9 +88,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             s = 'class %s:' % node.name
         if self.trace: g.trace(s)
         # Enter the new context.
-        context_tuple = self.fn, 'class', '', s
-            # fn, kind, indent, s.
-            # The indent is for compatibility with the regex-based code.
+        context_tuple = self.fn, 'class', s
         self.context_stack.append(context_tuple)
         # Update controller data.
         class_tuple = self.context_stack[: -1], s
@@ -115,10 +113,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = 'def %s(%s):' % (node.name, args)
         if self.trace: g.trace(s)
         # Enter the new context.
-        context_tuple = self.fn, 'def', '', s
-            # fn, kind, indent, s
-            # The indent is for compatibility with the regex-based code.
-        ### if node.name == 'shortFileName': g.trace(s, self.fn)
+        context_tuple = self.fn, 'def', s
         self.context_stack.append(context_tuple)
         # Update controller data.
         def_tuple = self.context_stack[: -1], s
@@ -308,130 +303,28 @@ class ShowData:
             if s:
                 self.tot_s += len(s)
                 g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
-                if 1:
-                    # Fast, accurate:
-                    # 1.9 sec for parsing.
-                    # 2.5 sec for Null AstFullTraverer traversal.
-                    # 2.7 sec to generate all strings.
-                    # 3.8 sec to generate all reports.
-                    s1 = g.toEncodedString(s)
-                    self.tot_lines += len(g.splitLines(s))
-                        # Adds less than 0.1 sec.
-                    node = ast.parse(s1, filename='before', mode='exec')
-                    ShowDataTraverser(self, fn).visit(node)
-                elif 0: # Too slow, too clumsy: 3.3 sec for tokenizing
-                    readlines = g.ReadLinesClass(s).next
-                    for token5tuple in tokenize.generate_tokens(readlines):
-                        pass
-                else: # Inaccurate. 2.2 sec to generate all reports.
-                    self.scan(fn, s)
+                # Fast, accurate:
+                # 1.9 sec for parsing.
+                # 2.5 sec for Null AstFullTraverer traversal.
+                # 2.7 sec to generate all strings.
+                # 3.8 sec to generate all reports.
+                s1 = g.toEncodedString(s)
+                self.tot_lines += len(g.splitLines(s))
+                    # Adds less than 0.1 sec.
+                node = ast.parse(s1, filename='before', mode='exec')
+                ShowDataTraverser(self, fn).visit(node)
+                # elif 0: # Too slow, too clumsy: 3.3 sec for tokenizing
+                    # readlines = g.ReadLinesClass(s).next
+                    # for token5tuple in tokenize.generate_tokens(readlines):
+                        # pass
+                # else: # Inaccurate. 2.2 sec to generate all reports.
+                    # self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
         t2 = time.clock()
             # Get the time exlusive of print time.
         self.show_results()
         g.trace('done: %4.1f sec.' % (t2 - t1))
-    #@+node:ekr.20150605054921.1: *4* scan (inaccurate) & helpers
-    # The excellent prototype code.
-    # It was a roadmap for the ShowDataTraverser class.
-
-    def scan(self, fn, s):
-        lines = g.splitLines(s)
-        self.tot_lines += len(lines)
-        for i, s in enumerate(lines):
-            m = re.search(self.r_all, s)
-            if m and not s.startswith('@'):
-                self.match(fn, i, m, s)
-    #@+node:ekr.20150605063318.1: *5* match
-    def match(self, fn, i, m, s):
-        '''Handle the next match.'''
-        trace = False
-        self.n_matches += 1
-        indent = g.skip_ws(s, 0)
-        # Update the context and enter data.
-        if g.match_word(s, indent, 'def'):
-            self.update_context(fn, indent, 'def', s)
-            for i, name in enumerate(m.groups()):
-                if name:
-                    aList = self.defs_d.get(name, [])
-                    def_tuple = self.context_stack[: -1], s
-                    aList.append(def_tuple)
-                    self.defs_d[name] = aList
-                    break
-        elif g.match_word(s, indent, 'class'):
-            self.update_context(fn, indent, 'class', s)
-            for i, name in enumerate(m.groups()):
-                if name:
-                    aList = self.classes_d.get(name, [])
-                    class_tuple = self.context_stack[: -1], s
-                    aList.append(class_tuple)
-                    self.classes_d[name] = aList
-        elif s.find('return') > -1:
-            context, name = self.context_names()
-            j = s.find('#')
-            if j > -1: s = s[: j]
-            s = s.strip()
-            if s:
-                aList = self.returns_d.get(name, [])
-                return_tuple = context, s
-                aList.append(return_tuple)
-                self.returns_d[name] = aList
-        else:
-            # A call.
-            for i, name in enumerate(m.groups()):
-                if name:
-                    context2, context1 = self.context_names()
-                    j = s.find('#')
-                    if j > -1:
-                        s = s[: j]
-                    s = s.strip().strip(',').strip()
-                    if s:
-                        aList = self.calls_d.get(name, [])
-                        call_tuple = context2, context1, s
-                        aList.append(call_tuple)
-                        self.calls_d[name] = aList
-                    break
-        if trace:
-            print('%4s %4s %3s %3s %s' % (
-                self.n_matches, i, len(self.context_stack), indent, s.rstrip()))
-    #@+node:ekr.20150605074749.1: *5* update_context
-    def update_context(self, fn, indent, kind, s):
-        '''Update context info when a class or def is seen.'''
-        trace = False and self.n_matches < 100
-        while self.context_stack:
-            fn2, kind2, indent2, s2 = self.context_stack[-1]
-            if indent <= indent2:
-                self.context_stack.pop()
-                if trace:
-                    g.trace('pop ', len(self.context_stack), indent, indent2, kind2)
-            else:
-                break
-        context_tuple = fn, kind, indent, s
-        self.context_stack.append(context_tuple)
-        if trace:
-            g.trace('push', len(self.context_stack), s.rstrip())
-        self.context_indent = indent
-    #@+node:ekr.20150605140911.1: *4* context_names
-    def context_names(self):
-        '''Return the present context name.'''
-        if self.context_stack:
-            result = []
-            for stack_i in -1, -2:
-                try:
-                    fn, kind, indent, s = self.context_stack[stack_i]
-                except IndexError:
-                    result.append('')
-                    break
-                s = s.strip()
-                assert kind in ('class', 'def'), kind
-                i = g.skip_ws(s, 0)
-                i += len(kind)
-                i = g.skip_ws(s, i)
-                j = g.skip_c_id(s, i)
-                result.append(s[i: j])
-            return reversed(result)
-        else:
-            return ['', '']
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
@@ -499,7 +392,7 @@ class ShowData:
         for def_tuple in aList:
             context_stack, s = def_tuple
             if context_stack:
-                fn, kind, indent, context_s = context_stack[-1]
+                fn, kind, context_s = context_stack[-1]
                 w = max(w, len(context_s))
         for def_tuple in aList:
             context_stack, s = def_tuple
@@ -508,7 +401,7 @@ class ShowData:
                 result.append('\n%s' % name)
                 result.append('    %s definition%s...' % (len(aList), self.plural(aList)))
             if context_stack:
-                fn, kind, indent, context_s = context_stack[-1]
+                fn, kind, context_s = context_stack[-1]
                 def_s = s.strip()
                 pad = w - len(context_s)
                 result.append('%s%s: %s' % (' ' * (8 + pad), context_s, def_s))
