@@ -4,12 +4,115 @@
 #@@first
 '''Experimental code checking for Leo.'''
 import leo.core.leoGlobals as g
+import leo.core.leoAst as leoAst
+import ast
 import glob
 import re
 import time
 import token
 import tokenize
 #@+others
+#@+node:ekr.20150606024455.1: ** class ShowDataTraverser
+class ShowDataTraverser(leoAst.AstFullTraverser):
+    '''
+    Add data about classes, defs, returns and calls to controller's dictionaries.
+
+    Sets .context and .parent ivars before visiting each node.
+    '''
+
+    def __init__(self, controller):
+        '''Ctor for AstFullTraverser class.'''
+        self.context = None
+        self.controller = controller
+        self.formatter = leoAst.AstFormatter()
+        # self.parent = None
+        self.trace = True
+    #@+others
+    #@+node:ekr.20150606024455.62: *3* sd.visit
+    def visit(self, node):
+        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        method = getattr(self, 'do_' + node.__class__.__name__)
+        method(node)
+        # assert isinstance(node, ast.AST), node.__class__.__name__
+        # trace = False
+        # # Visit the children with the new parent.
+        # old_parent = self.parent
+        # parent = node
+        # method_name = 'do_' + node.__class__.__name__
+        # method = getattr(self, method_name)
+        # if trace: g.trace(method_name)
+        # val = method(node)
+        # self.parent = old_parent
+        # return val
+
+    def visit_children(self, node):
+        assert False, 'must visit children explicitly'
+    #@+node:ekr.20150606024455.3: *3* sd.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef(self, node):
+        old_context = self.context
+        self.context = node
+        # Format
+        if node.bases:
+            bases = [self.formatter.format(z) for z in node.bases]
+            s = 'class %s(%s):' % (node.name, ','.join(bases))
+        else:
+            s = 'class %s:' % node.name
+        if self.trace: g.trace(s)
+        # Visit.
+        # for z in node.bases:
+            # self.visit(z)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = old_context
+    #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef(self, node):
+        old_context = self.context
+        self.context = node
+        # Format.
+        args = self.formatter.format(node.args) if node.args else ''
+        s = 'def %s(%s):' % (node.name, args)
+        if self.trace: g.trace(s)
+        # Visit
+        # for z in node.decorator_list:
+            # self.visit(z)
+        # self.visit(node.args)
+        for z in node.body:
+            self.visit(z)
+        self.context = old_context
+    #@+node:ekr.20150606024455.16: *3* sd.Call
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+    def do_Call(self, node):
+        # Format
+        s = self.formatter.format(node)
+        if self.trace: g.trace(s)
+        # Visit.
+        # self.visit(node.func)
+        # for z in node.args:
+            # self.visit(z)
+        # for z in node.keywords:
+            # self.visit(z)
+        # if getattr(node, 'starargs', None):
+            # self.visit(node.starargs)
+        # if getattr(node, 'kwargs', None):
+            # self.visit(node.kwargs)
+    #@+node:ekr.20150606024455.55: *3* ft.Return
+    # Return(expr? value)
+
+    def do_Return(self, node):
+        # Format...
+        s = self.formatter.format(node)
+        if self.trace: g.trace(s)
+        # Visit...
+        # if node.value:
+        #    self.visit(node.value)
+    #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:
     '''A class to compute the files in a project.'''
@@ -182,429 +285,6 @@ class ShowData:
         # Undo vars
         ### self.changed = False
         ### self.dirtyVnodeList = []
-    #@+node:ekr.20150605203204.2: *3* class OutputToken
-    class OutputToken:
-        '''A class representing Output Tokens'''
-
-        def __init__(self, kind, value):
-            self.kind = kind
-            self.value = value
-
-        def __repr__(self):
-            if self.kind == 'line-indent':
-                assert not self.value.strip(' ')
-                return '%15s %s' % (self.kind, len(self.value))
-            else:
-                return '%15s %r' % (self.kind, self.value)
-
-        __str__ = __repr__
-
-        def to_string(self):
-            '''Convert an output token to a string.'''
-            return self.value if g.isString(self.value) else ''
-    #@+node:ekr.20150605203204.3: *3* class ParseState
-    class ParseState:
-        '''A class representing items in the parse state stack.'''
-
-        def __init__(self, kind, value):
-            self.kind = kind
-            self.value = value
-
-        def __repr__(self):
-            return 'State: %10s %s' % (self.kind, repr(self.value))
-
-        __str__ = __repr__
-    #@+node:ekr.20150605203204.8: *3* Input token Handlers
-    #@+node:ekr.20150605203204.9: *4* do_comment
-    def do_comment(self):
-        '''Handle a comment token.'''
-        raw_val = self.raw_val.rstrip()
-        val = self.val.rstrip()
-        entire_line = raw_val.lstrip().startswith('#')
-        # g.trace(entire_line,raw_val)
-        self.backslash_seen = False
-            # Putting the comment will put the backslash.
-        if entire_line:
-            self.clean('line-indent')
-            self.add_token('comment', raw_val)
-        else:
-            self.blank()
-            self.add_token('comment', val)
-    #@+node:ekr.20150605203204.10: *4* do_endmarker
-    def do_endmarker(self):
-        '''Handle an endmarker token.'''
-    #@+node:ekr.20150605203204.11: *4* do_errortoken
-    def do_errortoken(self):
-        '''Handle an errortoken token.'''
-        # This code is executed for versions of Python earlier than 2.4
-        if self.val == '@':
-            self.op(self.val)
-    #@+node:ekr.20150605203204.12: *4* do_indent & do_dedent
-    def do_dedent(self):
-        '''Handle dedent token.'''
-        self.level -= 1
-        self.lws = self.level * self.tab_width * ' '
-        self.line_start()
-        state = self.state_stack[-1]
-        if state.kind == 'indent' and state.value == self.level:
-            self.state_stack.pop()
-            state = self.state_stack[-1]
-            if state.kind in ('class', 'def'):
-                self.state_stack.pop()
-                self.blank_lines(1)
-                    # Most Leo nodes aren't at the top level of the file.
-                    # self.blank_lines(2 if self.level == 0 else 1)
-
-    def do_indent(self):
-        '''Handle indent token.'''
-        self.level += 1
-        self.lws = self.val
-        self.line_start()
-    #@+node:ekr.20150605203204.13: *4* do_name (handle class, def, return)
-    #@@nobeautify
-
-    def do_name(self):
-        '''Handle a name token.'''
-        name = self.val
-        if name in ('class', 'def'):
-            ### Not needed
-            # self.decorator_seen = False
-            # state = self.state_stack[-1]
-            # if state.kind == 'decorator':
-                # # self.clean_blank_lines()
-                # # self.line_end()
-                # self.state_stack.pop()
-            # # else:
-                # # self.blank_lines(1)
-            ########## Set flag for below
-            self.push_state(name)
-            self.push_state('indent', self.level)
-                # For trailing lines after inner classes/defs.
-            self.word(name)
-        elif name in ('and', 'in', 'not', 'not in', 'or'):
-            self.word_op(name)
-        else:
-            ########## Test for class/def name here
-            self.word(name)
-
-            ### To do: handle def.
-            # self.update_context(fn, indent, 'def', s)
-            # for i, name in enumerate(m.groups()):
-                # if name:
-                    # aList = self.defs_d.get(name, [])
-                    # def_tuple = self.context_stack[: -1], s
-                    # aList.append(def_tuple)
-                    # self.defs_d[name] = aList
-                    # break
-
-            ### To do: handle class
-            # self.update_context(fn, indent, 'class', s)
-            # for i, name in enumerate(m.groups()):
-                # if name:
-                    # aList = self.classes_d.get(name, [])
-                    # class_tuple = self.context_stack[: -1], s
-                    # aList.append(class_tuple)
-                    # self.classes_d[name] = aList
-
-            ### To do: handle return
-            # context, name = self.context_names()
-            # j = s.find('#')
-            # if j > -1: s = s[: j]
-            # s = s.strip()
-            # if s:
-                # aList = self.returns_d.get(name, [])
-                # return_tuple = context, s
-                # aList.append(return_tuple)
-                # self.returns_d[name] = aList
-    #@+node:ekr.20150605203204.14: *4* do_newline
-    def do_newline(self):
-        '''Handle a regular newline.'''
-        self.line_end()
-    #@+node:ekr.20150605203204.15: *4* do_nl
-    def do_nl(self):
-        '''Handle a continuation line.'''
-        self.line_end()
-    #@+node:ekr.20150605203204.16: *4* do_number
-    def do_number(self):
-        '''Handle a number token.'''
-        self.add_token('number', self.val)
-    #@+node:ekr.20150605203204.17: *4* do_op (changed)
-    def do_op(self):
-        '''Handle an op token.'''
-        val = self.val
-        if val == '.':
-            self.op_no_blanks(val)
-        elif val == '@':
-            ###
-            # if not self.decorator_seen:
-                # self.blank_lines(1)
-                # self.decorator_seen = True
-            self.op_no_blanks(val)
-            ### self.push_state('decorator')
-        elif val in ',;:':
-            # Pep 8: Avoid extraneous whitespace immediately before
-            # comma, semicolon, or colon.
-            self.op_blank(val)
-        elif val in '([{':
-            # Pep 8: Avoid extraneous whitespace immediately inside
-            # parentheses, brackets or braces.
-            self.lt(val)
-        elif val in ')]}':
-            # Ditto.
-            self.rt(val)
-        elif val == '=':
-            # Pep 8: Don't use spaces around the = sign when used to indicate
-            # a keyword argument or a default parameter value.
-            if self.paren_level:
-                self.op_no_blanks(val)
-            else:
-                self.op(val)
-        elif val in '~+-':
-            self.possible_unary_op(val)
-        elif val == '*':
-            self.star_op()
-        elif val == '**':
-            self.star_star_op()
-        else:
-            # Pep 8: always surround binary operators with a single space.
-            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
-            # '^','~','*','**','&','|','/','//',
-            # Pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priority(ies).
-            self.op(val)
-    #@+node:ekr.20150605203204.18: *4* do_string
-    def do_string(self):
-        '''Handle a 'string' token.'''
-        self.add_token('string', self.val)
-        if self.val.find('\\\n'):
-            self.backslash_seen = False
-            # This does retain the string's spelling.
-        self.blank()
-    #@+node:ekr.20150605203204.19: *3* Output token generators
-    #@+node:ekr.20150605203204.27: *4* file_start & file_end
-    def file_end(self):
-        '''
-        Add a file-end token to the code list.
-        Retain exactly one line-end token.
-        '''
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-        self.add_token('line-end', '\n')
-        self.add_token('file-end')
-
-    def file_start(self):
-        '''Add a file-start token to the code list and the state stack.'''
-        self.add_token('file-start')
-        self.push_state('file-start')
-    #@+node:ekr.20150605203204.22: *4* backslash
-    def backslash(self):
-        '''Add a backslash token and clear .backslash_seen'''
-        self.add_token('backslash', '\\')
-        self.add_token('line-end', '\n')
-        self.line_indent()
-        self.backslash_seen = False
-    #@+node:ekr.20150605203204.23: *4* blank
-    def blank(self):
-        '''Add a blank request on the code list.'''
-        prev = self.code_list[-1]
-        if not prev.kind in (
-            'blank', ### 'blank-lines',
-            'file-start',
-            'line-end', 'line-indent',
-            'lt', 'op-no-blanks', 'unary-op',
-        ):
-            self.add_token('blank', ' ')
-    #@+node:ekr.20150605203204.24: *4* blank_lines (changed)
-    def blank_lines(self, n):
-        '''
-        Add a request for n blank lines to the code list.
-        Multiple blank-lines request yield at least the maximum of all requests.
-        '''
-        self.add_token('line-end', '\n')
-        self.line_indent()
-        ###
-        # self.clean_blank_lines()
-        # kind = self.code_list[-1].kind
-        # if kind == 'file-start':
-            # self.add_token('blank-lines', n)
-        # else:
-            # for i in range(0, n + 1):
-                # self.add_token('line-end', '\n')
-            # # Retain the intention for debugging.
-            # self.add_token('blank-lines', n)
-            # self.line_indent()
-    #@+node:ekr.20150605203204.25: *4* clean
-    def clean(self, kind):
-        '''Remove the last item of token list if it has the given kind.'''
-        prev = self.code_list[-1]
-        if prev.kind == kind:
-            self.code_list.pop()
-    #@+node:ekr.20150605203204.26: *4* clean_blank_lines
-    def clean_blank_lines(self):
-        '''Remove all vestiges of previous lines.'''
-        table = ('blank-lines', 'line-end', 'line-indent')
-        while self.code_list[-1].kind in table:
-            self.code_list.pop()
-    #@+node:ekr.20150605203204.28: *4* line_indent
-    def line_indent(self, ws=None):
-        '''Add a line-indent token if indentation is non-empty.'''
-        self.clean('line-indent')
-        ws = ws or self.lws
-        if ws:
-            self.add_token('line-indent', ws)
-    #@+node:ekr.20150605203204.29: *4* line_start & line_end
-    def line_end(self):
-        '''Add a line-end request to the code list.'''
-        prev = self.code_list[-1]
-        if prev.kind == 'file-start':
-            return
-        self.clean('blank') # Important!
-        ### if self.delete_blank_lines:
-        ###    self.clean_blank_lines()
-        self.clean('line-indent')
-        if self.backslash_seen:
-            self.backslash()
-        self.add_token('line-end', '\n')
-        self.line_indent()
-            # Add then indentation for all lines
-            # until the next indent or unindent token.
-
-    def line_start(self):
-        '''Add a line-start request to the code list.'''
-        self.line_indent()
-    #@+node:ekr.20150605203204.30: *4* lt (handle calls)
-    #@@nobeautify
-
-    def lt(self, s):
-        '''Add a left paren request to the code list.'''
-        assert s in '([{', repr(s)
-        self.paren_level += 1
-        self.clean('blank')
-        prev = self.code_list[-1]
-        # g.trace(prev.kind,prev.value)
-        if prev.kind in ('op', 'word-op'):
-            self.blank()
-            self.add_token('lt', s)
-        elif prev.kind == 'word':
-            # Only suppress blanks before '(' or '[' for non-keyworks.
-            if s == '{' or prev.value in ('if', 'else', 'return'):
-                self.blank()
-            self.add_token('lt', s)
-        elif prev.kind == 'op':
-            self.op(s)
-        else:
-            self.op_no_blanks(s)
-
-        ### To do: handle calls
-        # for i, name in enumerate(m.groups()):
-            # if name:
-                # context2, context1 = self.context_names()
-                # j = s.find('#')
-                # if j > -1:
-                    # s = s[: j]
-                # s = s.strip().strip(',').strip()
-                # if s:
-                    # aList = self.calls_d.get(name, [])
-                    # call_tuple = context2, context1, s
-                    # aList.append(call_tuple)
-                    # self.calls_d[name] = aList
-                # break
-    #@+node:ekr.20150605203204.31: *4* op*
-    def op(self, s):
-        '''Add op token to code list.'''
-        assert s and g.isString(s), repr(s)
-        self.blank()
-        self.add_token('op', s)
-        self.blank()
-
-    def op_blank(self, s):
-        '''Remove a preceding blank token, then add op and blank tokens.'''
-        assert s and g.isString(s), repr(s)
-        self.clean('blank')
-        self.add_token('op', s)
-        self.blank()
-
-    def op_no_blanks(self, s):
-        '''Add an operator *not* surrounded by blanks.'''
-        self.clean('blank')
-        self.add_token('op-no-blanks', s)
-    #@+node:ekr.20150605203204.32: *4* possible_unary_op & unary_op
-    def possible_unary_op(self, s):
-        '''Add a unary or binary op to the token list.'''
-        self.clean('blank')
-        prev = self.code_list[-1]
-        if prev.kind in ('lt', 'op', 'op-no-blanks'):
-            self.unary_op(s)
-        else:
-            self.op(s)
-
-    def unary_op(self, s):
-        '''Add an operator request to the code list.'''
-        assert s and g.isString(s), repr(s)
-        self.blank()
-        self.add_token('unary-op', s)
-    #@+node:ekr.20150605220143.1: *4* rt
-    def rt(self, s):
-        '''Add a right paren request to the code list.'''
-        assert s in ')]}', repr(s)
-        self.paren_level -= 1
-        prev = self.code_list[-1]
-        if prev.kind == 'arg-end':
-            # Remove a blank token preceding the arg-end token.
-            prev = self.code_list.pop()
-            self.clean('blank')
-            self.code_list.append(prev)
-        else:
-            self.clean('blank')
-        self.add_token('rt', s)
-    #@+node:ekr.20150605203204.33: *4* star_op
-    def star_op(self):
-        '''Put a '*' op, with special cases for *args.'''
-        val = '*'
-        if self.paren_level:
-            i = len(self.code_list) - 1
-            if self.code_list[i].kind == 'blank':
-                i -= 1
-            token = self.code_list[i]
-            if token.kind == 'lt':
-                self.op_no_blanks(val)
-            elif token.value == ',':
-                self.blank()
-                self.add_token('op-no-blanks', val)
-            else:
-                self.op(val)
-        else:
-            self.op(val)
-    #@+node:ekr.20150605203204.34: *4* star_star_op
-    def star_star_op(self):
-        '''Put a ** operator, with a special case for **kwargs.'''
-        val = '**'
-        if self.paren_level:
-            i = len(self.code_list) - 1
-            if self.code_list[i].kind == 'blank':
-                i -= 1
-            token = self.code_list[i]
-            if token.value == ',':
-                self.blank()
-                self.add_token('op-no-blanks', val)
-            else:
-                self.op(val)
-        else:
-            self.op(val)
-    #@+node:ekr.20150605203204.35: *4* word & word_op
-    def word(self, s):
-        '''Add a word request to the code list.'''
-        assert s and g.isString(s), repr(s)
-        self.blank()
-        self.add_token('word', s)
-        self.blank()
-
-    def word_op(self, s):
-        '''Add a word request to the code list.'''
-        assert s and g.isString(s), repr(s)
-        self.blank()
-        self.add_token('word-op', s)
-        self.blank()
     #@+node:ekr.20150604163903.1: *3* run & helpers
     def run(self, files):
         '''Process all files'''
@@ -614,16 +294,20 @@ class ShowData:
             s, e = g.readFileIntoString(fn)
             if s:
                 self.tot_s += len(s)
-                if 0: # 5 times slower, more accurate.
-                    ### The main unsolved problem:
-                    ### Determining the end of class/def/return statements.
+                if 1:
+                    # Fast, accurate: 1.88 sec for parsing.
+                    # 2.51 sec for Null AstFullTraverer traversal.
+                    # 2.72 sec to generate all strings.
+                    g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
+                    s1 = g.toEncodedString(s)
+                    node = ast.parse(s1, filename='before', mode='exec')
+                    ShowDataTraverser(self).visit(node)
+                elif 0: # 3.25 sec for tokenizing
                     g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
                     readlines = g.ReadLinesClass(s).next
-                    tokens = list(tokenize.generate_tokens(readlines))
-                    # self.handle_tokens(tokens)
-                    # self.n_input_tokens += len(tokens)
-                    # self.n_output_tokens += len(self.code_list)
-                else: # Fast, inaccurate.
+                    for token5tuple in tokenize.generate_tokens(readlines):
+                        pass
+                else: # Inaccurate. 2.21 sec for do-nothing.
                     self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
@@ -750,7 +434,7 @@ class ShowData:
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
-        make = True
+        make = False
         multiple_only = True # True only show defs defined in more than one place.
         c = self.c
         result = ['@killcolor']
