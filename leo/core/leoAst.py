@@ -182,7 +182,7 @@ class AstFormatter:
         return result # 'module:\n%s' % (result)
     #@+node:ekr.20141012064706.18409: *4* f.Lambda
     def do_Lambda(self, node):
-        return self.indent('lambda %s: %s\n' % (
+        return self.indent('lambda %s: %s' % (
             self.visit(node.args),
             self.visit(node.body)))
     #@+node:ekr.20141012064706.18410: *3* f.Expressions
