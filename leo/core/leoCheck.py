@@ -19,39 +19,37 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     Sets .context and .parent ivars before visiting each node.
     '''
 
-    def __init__(self, controller):
+    def __init__(self, controller, fn):
         '''Ctor for AstFullTraverser class.'''
-        self.context = None ### To be removed
-        self.context_stack = []
+        module_tuple = g.shortFileName(fn), 'module', '', g.shortFileName(fn)
+            # fn, kind, indent, s.
+        self.context_stack = [module_tuple]
         self.controller = controller
+        self.fn = g.shortFileName(fn)
         self.formatter = leoAst.AstFormatter()
-        # self.parent = None
         self.trace = False
     #@+others
-    #@+node:ekr.20150606035006.1: *3* sd.context_names (To do)
+    #@+node:ekr.20150606035006.1: *3* sd.context_names
     def context_names(self):
         '''Return the present context names.'''
-        if 1:
-            return ['context2', 'context1']
-        else: ### to do:
-            if self.context_stack:
-                result = []
-                for stack_i in - 1, -2:
-                    try:
-                        fn, kind, indent, s = self.context_stack[stack_i]
-                    except IndexError:
-                        result.append('')
-                        break
-                    s = s.strip()
-                    assert kind in ('class', 'def'), kind
+        result = []
+        for i in -1, -2:
+            try:
+                fn, kind, indent, s = self.context_stack[i]
+                assert kind in ('class', 'def', 'module'), kind
+                if kind == 'module':
+                    result.append(s.strip())
+                else:
+                    # Append the name following the class or def.
                     i = g.skip_ws(s, 0)
                     i += len(kind)
                     i = g.skip_ws(s, i)
                     j = g.skip_c_id(s, i)
                     result.append(s[i: j])
-                return reversed(result)
-            else:
-                return ['', '']
+            except IndexError:
+                result.append('')
+                break
+        return reversed(result)
     #@+node:ekr.20150606024455.16: *3* sd.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -60,15 +58,13 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = self.formatter.format(node)
         if self.trace: g.trace(s)
         # Update data
-        if 0:
-            name = self.formatter.format(node.func)
-            context2, context1 = self.context_names()
-            aList = self.controller.calls_d.get(name, [])
-            call_tuple = context2, context1, s
-            aList.append(call_tuple)
-            self.controller.calls_d[name] = aList
+        name = self.formatter.format(node.func)
+        context2, context1 = self.context_names()
+        call_tuple = context2, context1, s
+        aList = self.controller.calls_d.get(name, [])
+        aList.append(call_tuple)
+        self.controller.calls_d[name] = aList
         # Visit.
-        # Subnodes *can* contains further calls.
         self.visit(node.func)
         for z in node.args:
             self.visit(z)
@@ -82,8 +78,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
     def do_ClassDef(self, node):
-        old_context = self.context
-        self.context = node
         # Format
         if node.bases:
             bases = [self.formatter.format(z) for z in node.bases]
@@ -91,47 +85,51 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         else:
             s = 'class %s:' % node.name
         if self.trace: g.trace(s)
-        # Update data
-        if 0:
-            ### self.update_context(fn, indent, 'class', s)
-            aList = self.controller.classes_d.get(node.name, [])
-            ### class_tuple = self.context_stack[: -1], s
-            class_tuple = 'context1', s ###################
-            aList.append(class_tuple)
-            self.controller.classes_d[node.name] = aList
+        # Enter the new context.
+        context_tuple = self.fn, 'class', '', s
+            # fn, kind, indent, s.
+            # The indent is for compatibility with the regex-based code.
+        self.context_stack.append(context_tuple)
+        # Update controller data.
+        class_tuple = self.context_stack[: -1], s
+        aList = self.controller.classes_d.get(node.name, [])
+        aList.append(class_tuple)
+        self.controller.classes_d[node.name] = aList
         # Visit.
-        # for z in node.bases:
-            # self.visit(z)
+        for z in node.bases:
+            self.visit(z)
         for z in node.body:
             self.visit(z)
-        # for z in node.decorator_list:
-            # self.visit(z)
-        self.context = old_context
+        for z in node.decorator_list:
+            self.visit(z)
+        # Leave the context.
+        self.context_stack.pop()
     #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef(self, node):
-        old_context = self.context
-        self.context = node
         # Format.
         args = self.formatter.format(node.args) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)
         if self.trace: g.trace(s)
-        # Update data.
-        if 0:
-            ### self.update_context(fn, indent, 'def', s)
-            aList = self.controller.defs_d.get(node.name, [])
-            ### def_tuple = self.context_stack[: -1], s
-            def_tuple = 'context1', s #######################
-            aList.append(def_tuple)
-            self.controller.defs_d[node.name] = aList
-        # Visit
-        # for z in node.decorator_list:
-            # self.visit(z)
-        # self.visit(node.args)
+        # Enter the new context.
+        context_tuple = self.fn, 'def', '', s
+            # fn, kind, indent, s
+            # The indent is for compatibility with the regex-based code.
+        self.context_stack.append(context_tuple)
+        # Update controller data.
+        def_tuple = self.context_stack[: -1], s
+        aList = self.controller.defs_d.get(node.name, [])
+        aList.append(def_tuple)
+        self.controller.defs_d[node.name] = aList
+        # Visit.
+        for z in node.decorator_list:
+            self.visit(z)
+        self.visit(node.args)
         for z in node.body:
             self.visit(z)
-        self.context = old_context
+        # Leave the context.
+        self.context_stack.pop()
     #@+node:ekr.20150606024455.55: *3* sd.Return
     # Return(expr? value)
 
@@ -140,31 +138,19 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         s = self.formatter.format(node)
         if self.trace: g.trace(s)
         # Update data
-        if 0:
-            context, name = self.context_names()
-            aList = self.controller.returns_d.get(name, [])
-            return_tuple = context, s
-            aList.append(return_tuple)
-            self.controller.returns_d[name] = aList
-        # Visit...
-        # if node.value:
-        #    self.visit(node.value)
+        context, name = self.context_names()
+        aList = self.controller.returns_d.get(name, [])
+        return_tuple = context, s
+        aList.append(return_tuple)
+        self.controller.returns_d[name] = aList
+        # Visit.
+        if node.value:
+            self.visit(node.value)
     #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
         method = getattr(self, 'do_' + node.__class__.__name__)
         method(node)
-        # assert isinstance(node, ast.AST), node.__class__.__name__
-        # trace = False
-        # # Visit the children with the new parent.
-        # old_parent = self.parent
-        # parent = node
-        # method_name = 'do_' + node.__class__.__name__
-        # method = getattr(self, method_name)
-        # if trace: g.trace(method_name)
-        # val = method(node)
-        # self.parent = old_parent
-        # return val
 
     def visit_children(self, node):
         assert False, 'must visit children explicitly'
@@ -352,17 +338,19 @@ class ShowData:
                 self.tot_s += len(s)
                 g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
                 if 1:
-                    # Fast, accurate: 1.9 sec for parsing.
+                    # Fast, accurate:
+                    # 1.9 sec for parsing.
                     # 2.5 sec for Null AstFullTraverer traversal.
                     # 2.7 sec to generate all strings.
+                    # 3.8 sec to generate all reports.
                     s1 = g.toEncodedString(s)
                     node = ast.parse(s1, filename='before', mode='exec')
-                    ShowDataTraverser(self).visit(node)
+                    ShowDataTraverser(self, fn).visit(node)
                 elif 0: # Too slow, too clumsy: 3.3 sec for tokenizing
                     readlines = g.ReadLinesClass(s).next
                     for token5tuple in tokenize.generate_tokens(readlines):
                         pass
-                else: # Inaccurate. 2.2 sec for do-nothing.
+                else: # Inaccurate. 2.2 sec to generate all reports.
                     self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
@@ -455,7 +443,7 @@ class ShowData:
         '''Return the present context name.'''
         if self.context_stack:
             result = []
-            for stack_i in - 1, -2:
+            for stack_i in -1, -2:
                 try:
                     fn, kind, indent, s = self.context_stack[stack_i]
                 except IndexError:
@@ -474,7 +462,7 @@ class ShowData:
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
-        make = False
+        make = True
         multiple_only = True # True only show defs defined in more than one place.
         c = self.c
         result = ['@killcolor']
