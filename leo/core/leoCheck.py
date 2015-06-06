@@ -259,13 +259,10 @@ class ShowData:
         result = ['@killcolor']
         for name in sorted(self.defs_d):
             aList = self.defs_d.get(name, [])
-            multiple = len(aList) > 1
-            enabled = not name.startswith('__')
-            margin = ' ' * 8 if multiple else ' ' * 4
-            if enabled and (multiple or not multiple_only):
-                self.show_defs(margin, name, result)
-                self.show_calls(margin, name, result)
-                self.show_returns(margin, name, result)
+            if not name.startswith('__') and (len(aList) > 1 or not multiple_only):
+                self.show_defs(name, result)
+                self.show_calls(name, result)
+                self.show_returns(name, result)
         # Put the result in a new node.
         summary = 'files: %s lines: %s chars: %s classes: %s defs: %s calls: %s returns: %s' % (
             # self.plural(self.files),
@@ -287,16 +284,17 @@ class ShowData:
             c.redraw(p=p2)
         g.trace(summary)
     #@+node:ekr.20150605155601.1: *4* show_defs
-    def show_defs(self, margin, name, result):
+    def show_defs(self, name, result):
         aList = self.defs_d.get(name, [])
         name_added = False
-        max_context = 0
+        w = 0
         # Calculate the width
         for def_tuple in aList:
             context_stack, s = def_tuple
             if context_stack:
                 fn, kind, indent, context_s = context_stack[-1]
-                max_context = max(max_context, 2 + len(context_s))
+                context_s = context_s.lstrip('class').strip().strip(':').strip()
+                w = max(w, len(context_s))
         for def_tuple in aList:
             context_stack, s = def_tuple
             if not name_added:
@@ -307,48 +305,46 @@ class ShowData:
                 fn, kind, indent, context_s = context_stack[-1]
                 context_s = context_s.lstrip('class').strip().strip(':').strip()
                 def_s = s.strip().strip('def').strip()
-                pad = max_context - len(context_s)
-                result.append('%s%s: %s' % (' ' * pad, context_s, def_s))
+                pad = w - len(context_s)
+                result.append('%s%s: %s' % (' ' * (8 + pad), context_s, def_s))
             else:
-                result.append('%s%s' % (' ' * max_context, s.strip()))
+                result.append('%s%s' % (' ' * 4, s.strip()))
     #@+node:ekr.20150605160218.1: *4* show_calls
-    def show_calls(self, margin, name, result):
+    def show_calls(self, name, result):
         aList = self.calls_d.get(name, [])
         if not aList:
             return
         result.extend(['', '    %s call%s...' % (len(aList), self.plural(aList))])
-        max_context = 0
+        w = 0
         calls = sorted(set(aList))
         for call_tuple in calls:
             context2, context1, s = call_tuple
-            max_context = max(
-                max_context,
-                len(context2 or '') + len(context1 or ''))
+            w = max(w, len(context2 or '') + len(context1 or ''))
         for call_tuple in calls:
             context2, context1, s = call_tuple
-            pad = max_context - (len(context2 or '') + len(context1 or ''))
+            pad = w - (len(context2 or '') + len(context1 or ''))
             if context2:
-                result.append('%s%s%s::%s: %s' % (
-                    margin, ' ' * pad, context2, context1, s))
+                result.append('%s%s::%s: %s' % (
+                    ' ' * (8 + pad), context2, context1, s))
             else:
-                result.append('%s%s%s: %s' % (
-                    margin, ' ' * (pad + 2), context1, s))
+                result.append('%s%s: %s' % (
+                    ' ' * (10 + pad), context1, s))
     #@+node:ekr.20150605160341.1: *4* show_returns
-    def show_returns(self, margin, name, result):
+    def show_returns(self, name, result):
         aList = self.returns_d.get(name, [])
         if not aList:
             return
         result.extend(['', '    %s return%s...' % (len(aList), self.plural(aList))])
-        max_context, returns = 0, []
-        for return_tuple in sorted(set(aList)):
-            context, s = return_tuple
-            max_context = max(max_context, len(context or ''))
-            returns_tuple = context, s
-            returns.append(returns_tuple)
+        w, returns = 0, sorted(set(aList))
         for returns_tuple in returns:
             context, s = returns_tuple
-            pad = max_context - len(context)
-            result.append('%s%s%s: %s' % (margin, ' ' * pad, context, s))
+            w = max(w, len(context or ''))
+            ### returns_tuple = context, s
+            ### returns.append(returns_tuple)
+        for returns_tuple in returns:
+            context, s = returns_tuple
+            pad = w - len(context)
+            result.append('%s%s: %s' % (' ' * (8 + pad), context, s))
     #@+node:ekr.20150605074749.1: *3* update_context
     def update_context(self, fn, indent, kind, s):
         '''Update context info when a class or def is seen.'''
