@@ -70,6 +70,7 @@ import leo.core.leoGlobals as g
 import os
 import re
 import datetime
+import time
 
 NO_TIME = datetime.date(3000, 1, 1)
 
@@ -369,6 +370,7 @@ class todoController:
         self.recentIcons = []
         #X self.smiley = None
         self.redrawLevels = 0
+        self._widget_to_style = None  # see updateStyle()
         self.iconDir = g.os_path_abspath(g.os_path_normpath(
             g.os_path_join(g.app.loadDir,"..","Icons")))
         #@+<< set / read default values >>
@@ -393,6 +395,7 @@ class todoController:
            ("close-frame",self.close),
            ('select3', self.updateUI),
            ('save2', self.loadAllIcons),
+           ('idle', self.updateStyle),
         ]
         # chdir so the Icons can be located, needed for uic resources
         owd = os.getcwd()
@@ -1128,6 +1131,32 @@ class todoController:
             if pri[0] in self.priorities:
                 g.es('%s\t%d\t%s\t(%s)' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long'],pri[0]))
+    #@+node:tbrown.20150605111428.1: *3* updateStyle
+    def updateStyle(self,tag=None,k=None): 
+        """    
+        updateStyle - calling widget.setStyleSheet("/* */") is a trick to get Qt to
+        update appearance on a widget styled depending on changes in attributes.
+        It's faster than applying the whole stylesheet at top level or applying the
+        whole stylesheet to the widget, which also breaks style cascading. But it's
+        still too slow to do as the user up/down-arrows through nodes, so we just do
+        it on idle instead.
+        
+        However, the idle event isn't only called when Leo is truely idle, it's just
+        called at a set frequency. So by checking that time (0.2 sec) as passed
+        since the need to restyle the node was noted, we avoid updating every
+        idle-time seconds as the user scrolls through the outline with the arrow
+        keys, which causes hiccups in scrolling speed.
+        """
+
+        if self._widget_to_style:
+            # this would be neat, but hasPendingEvents() always returns True
+            # (google it), so check time has passed instead
+            # if QtGui.QApplication.instance().hasPendingEvents():
+            #     return  # not truely idle
+            w, old_time = self._widget_to_style
+            if time.time() - old_time > 0.2:
+                w.setStyleSheet("/* */")
+                self._widget_to_style = None
     #@+node:tbrown.20090119215428.49: *3* updateUI
     def updateUI(self,tag=None,k=None):
 
@@ -1144,7 +1173,8 @@ class todoController:
             w.setProperty('style_class', 'tododate_error')
         else:
             w.setProperty('style_class', '')
-        w.setStyleSheet("/* */")
+        # update style on this widget on idle, see updateStyle()
+        self._widget_to_style = (w, time.time())
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
