@@ -556,26 +556,36 @@ class ShowData:
         result.extend(['', '%s undefined call%s...' % (
             len(undef), self.plural(undef))])
         self.n_undefined_calls = len(undef)
-        seen = set()
-        for undef_tuple in sorted(undef):
+        # Merge all the calls for name.
+        # There may be several with different s values.
+        results_d = {}
+        for undef_tuple in undef:
             name, s = undef_tuple
             calls = self.calls_d.get(s, [])
-            if name not in seen:
-                seen.add(name)
-                result.extend(['', '%s...' % name, '    %s calls...' % len(calls)])
+            aList = results_d.get(name, [])
+            for call_tuple in calls:
+                aList.append(call_tuple)
+            results_d[name] = aList
+        # Print the final results.
+        for name in sorted(results_d):
+            calls = results_d.get(name)
+            result.extend(['', '%s %s call%s...' % (name, len(calls), self.plural(calls))])
             w = 0
             for call_tuple in calls:
                 context2, context1, s = call_tuple
-                w = max(w, len(context2 or '') + len(context1 or ''))
+                if context2:
+                    w = max(w, 2 + len(context2) + len(context1))
+                else:
+                    w = max(w, len(context1))
             for call_tuple in calls:
                 context2, context1, s = call_tuple
-                pad = w - (len(context2 or '') + len(context1 or ''))
+                pad = w - (len(context2) + len(context1))
                 if context2:
                     result.append('%s%s::%s: %s' % (
-                        ' ' * (8 + pad), context2, context1, s))
+                        ' ' * (2 + pad), context2, context1, s))
                 else:
                     result.append('%s%s: %s' % (
-                        ' ' * (10 + pad), context1, s))
+                        ' ' * (2 + pad), context1, s))
     #@-others
 #@-others
 #@@language python
