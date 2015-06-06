@@ -1218,7 +1218,7 @@ class PythonTokenBeautifier:
         '''Add a unary or binary op to the token list.'''
         self.clean('blank')
         prev = self.code_list[-1]
-        if prev.kind in ('lt', 'op', 'op-no-blanks'):
+        if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
         else:
             self.op(s)
