@@ -344,6 +344,8 @@ class ShowData:
                     # 2.7 sec to generate all strings.
                     # 3.8 sec to generate all reports.
                     s1 = g.toEncodedString(s)
+                    self.tot_lines += len(g.splitLines(s))
+                        # Adds less than 0.1 sec.
                     node = ast.parse(s1, filename='before', mode='exec')
                     ShowDataTraverser(self, fn).visit(node)
                 elif 0: # Too slow, too clumsy: 3.3 sec for tokenizing
@@ -463,7 +465,7 @@ class ShowData:
     def show_results(self):
         '''Print a summary of the test results.'''
         make = True
-        multiple_only = True # True only show defs defined in more than one place.
+        multiple_only = False # True only show defs defined in more than one place.
         c = self.c
         result = ['@killcolor']
         for name in sorted(self.defs_d):
