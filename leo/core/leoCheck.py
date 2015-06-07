@@ -340,7 +340,7 @@ class ShowData:
                 self.show_returns(name, result)
         self.show_undefined_calls(result)
         # Put the result in a new node.
-        summary = 'files: %s lines: %s chars: %s classes: %s defs: %s calls: %s undefined calls: %s returns: %s' % (
+        summary = 'files: %s lines: %s chars: %s classes: %s\ndefs: %s calls: %s undefined calls: %s returns: %s' % (
             # self.plural(self.files),
             len(self.files),
             "{:,}".format(self.tot_lines),
@@ -359,7 +359,7 @@ class ShowData:
             p2.h = 'global signatures'
             p2.b = '\n'.join(result)
             c.redraw(p=p2)
-        g.trace(summary)
+        print(summary)
     #@+node:ekr.20150605163128.1: *4* plural
     def plural(self, aList):
         return 's' if len(aList) > 1 else ''
