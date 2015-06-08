@@ -15582,8 +15582,8 @@ edge case that you should be aware of.
 **Ambiguous lines** are lines that could be placed either at the end of a
 node or at the beginning of the following node. The update algorithm must
 **guess** where to place such lines--there simply is not enough data to
-know for sure. The algorithm always places ambiguous lines at the start of
-the following node because it's more common to add lines to the end of
+know for sure. The algorithm always places ambiguous lines at the end of
+the previous node because it's more common to add lines to the end of
 nodes.
 
 The update algorithm is **sound** because guesses do not affect the
