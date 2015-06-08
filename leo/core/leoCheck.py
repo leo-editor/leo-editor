@@ -29,29 +29,34 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             # leoAst.AstPatternFormatter()
         self.trace = False
     #@+others
-    #@+node:ekr.20150606035006.1: *3* sd.context_names
-    def context_names(self):
-        '''Return the present context names.'''
-        result = []
-        n = len(self.context_stack)
-        for i in n - 1, n - 2:
-            if i >= 0:
-                fn, kind, s = self.context_stack[i]
-                assert kind in ('class', 'def', 'module'), kind
-                if kind == 'module':
-                    result.append(s.strip())
-                else:
-                    # Append the name following the class or def.
-                    i = g.skip_ws(s, 0)
-                    i += len(kind)
-                    i = g.skip_ws(s, i)
-                    j = g.skip_c_id(s, i)
-                    result.append(s[i: j])
-            else:
-                result.append('')
-                break
-        # g.trace(list(reversed(result)))
-        return reversed(result)
+    #@+node:ekr.20150607200422.1: *3* sd.Assign
+    # Assign(expr* targets, expr value)
+
+    def do_Assign(self, node):
+        # Visit and format.
+        value = self.formatter.format(self.visit(value))
+        assign_tuples = []
+        for target in node.targets:
+            s = '%s=%s' % (self.formatter.format(self.visit(target)), value)
+            context2, context1 = self.context_names()
+            assign_tuple = context1, s
+            assign_tuples.append(assign_tuple)
+        # Update data.
+        aList = self.controller.assigns_d.get(name, [])
+        aList.extend(assign_tuples)
+        self.controller.calls_d[name] = aList
+    #@+node:ekr.20150607200439.1: *3* sd.AugAssign
+    # AugAssign(expr target, operator op, expr value)
+
+    def do_AugAssign(self, node):
+        s = '%s=%s' % (
+            self.formatter.format(self.visit(target)),
+            self.formatter.format(self.visit(value)))
+        context2, context1 = self.context_names()
+        assign_tuple = context1, s
+        aList = self.controller.assigns_d.get(name, [])
+        aList.append(assign_tuple)
+        self.controller.calls_d[name] = aList
     #@+node:ekr.20150606024455.16: *3* sd.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -104,6 +109,29 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(z)
         # Leave the context.
         self.context_stack.pop()
+    #@+node:ekr.20150606035006.1: *3* sd.context_names
+    def context_names(self):
+        '''Return the present context names.'''
+        result = []
+        n = len(self.context_stack)
+        for i in n - 1, n - 2:
+            if i >= 0:
+                fn, kind, s = self.context_stack[i]
+                assert kind in ('class', 'def', 'module'), kind
+                if kind == 'module':
+                    result.append(s.strip())
+                else:
+                    # Append the name following the class or def.
+                    i = g.skip_ws(s, 0)
+                    i += len(kind)
+                    i = g.skip_ws(s, i)
+                    j = g.skip_c_id(s, i)
+                    result.append(s[i: j])
+            else:
+                result.append('')
+                break
+        # g.trace(list(reversed(result)))
+        return reversed(result)
     #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
