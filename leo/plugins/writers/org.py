@@ -12,7 +12,7 @@ class OrgModeWriter(basewriter.BaseWriter):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18154: *3* orgw.write
-    def write (self,root):
+    def write(self, root):
         """Write all the *descendants* of an @auto-org-mode node."""
         at = self
         root_level = root.level()
@@ -21,8 +21,8 @@ class OrgModeWriter(basewriter.BaseWriter):
             if p == first and p.h == 'declarations':
                 pass
             else:
-                indent = p.level()-root_level
-                self.put('%s %s' % ('*'*indent,p.h))
+                indent = p.level() - root_level
+                self.put('%s %s' % ('*' * indent, p.h))
             for s in p.b.splitlines(False):
                 self.put(s)
         root.setVisited()
@@ -30,7 +30,7 @@ class OrgModeWriter(basewriter.BaseWriter):
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-org-mode','@auto-org',],
+    '@auto': ['@auto-org-mode', '@auto-org',],
     'class': OrgModeWriter,
     'extensions': ['.org',],
 }

@@ -7,7 +7,6 @@
 import time
 # import leo.core.leoGlobals as g
 from leo.plugins.importers.basescanner import BaseScanner
-
 #@+node:tbrown.20140801105909.47551: ** class CTextScanner
 class CTextScanner(BaseScanner):
     """
@@ -37,15 +36,12 @@ class CTextScanner(BaseScanner):
     """
     #@+others
     #@+node:tbrown.20140801105909.47552: *3* write_lines
-
     def write_lines(self, node, lines):
         """write the body lines to body normalizing whitespace"""
-        node.b = '\n'.join(lines).strip('\n')+'\n'
+        node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
-
     #@+node:tbrown.20140801105909.47553: *3* run
-    def run(self,s,parent,parse_body=False,prepass=False):
-        
+    def run(self, s, parent, parse_body=False, prepass=False):
         cchar = '#'
         if self.fileType.lower() == '.tex':
             cchar = '%'
@@ -53,13 +49,12 @@ class CTextScanner(BaseScanner):
             cchar = '-'
         if self.fileType.lower() == '.js':
             cchar = '/'
-
         level = -1
         nd = parent.copy()
         start = time.time()
         lines = []
         for line in s.split('\n'):
-            if line.startswith(cchar*3):
+            if line.startswith(cchar * 3):
                 word = line.split()
                 if word[0].strip(cchar) == '':
                     self.write_lines(nd, lines)
@@ -68,23 +63,19 @@ class CTextScanner(BaseScanner):
                         # go down one level
                         level = new_level
                         nd = nd.insertAsLastChild()
-                        nd.h = ' '.join(word[1:]).strip(cchar+' ')
+                        nd.h = ' '.join(word[1:]).strip(cchar + ' ')
                     else:
                         # go up zero or more levels
                         while level > new_level and level > 0:
                             level -= 1
                             nd = nd.parent()
                         nd = nd.insertAfter()
-                        nd.h = ' '.join(word[1:]).strip(cchar+' ')
+                        nd.h = ' '.join(word[1:]).strip(cchar + ' ')
             else:
                 lines.append(line)
-                
         self.write_lines(nd, lines)
-                
         # g.es("CText import in %s" % (time.time()-start))
-
         return True
-
     #@-others
 #@-others
 importer_dict = {
