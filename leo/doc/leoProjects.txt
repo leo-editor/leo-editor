@@ -271,6 +271,16 @@ by::
     
     
 in editCommands.insertHeadlineTime.
+.. @+node:ekr.20150609082814.1: *4* Fixed Bug 162: Valid language list in Docs not up to date
+@language rest
+@wrap
+
+Valid language list in Docs not up to date
+https://github.com/leo-editor/leo-editor/issues/162
+
+cm.isValidLanguage accepts any language x for which leo/modes/X.py exists.
+
+Added a script in LeoDocs.leo that will generate all valid languages.
 .. @-all
 .. @@killbeautify
 .. @@language rest
