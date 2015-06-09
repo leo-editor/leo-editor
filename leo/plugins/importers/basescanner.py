@@ -532,7 +532,7 @@ class BaseScanner:
         '''Create an unindented @others or section reference in the parent node.'''
         if self.isRst and not self.atAuto:
             return
-        if self.treeType in ('@clear', '@file', '@nosent', None):
+        if self.treeType in ('@clean', '@file', '@nosent', None):
             self.appendStringToBody(parent, '@others\n')
         if self.treeType == '@root' and self.methodsSeen:
             self.appendStringToBody(parent,
@@ -708,7 +708,7 @@ class BaseScanner:
     #@+node:ekr.20140727075002.18221: *4* BaseScanner.getClassNodeRef
     def getClassNodeRef(self, class_name):
         '''Insert the proper body text in the class_vnode.'''
-        if self.treeType in ('@clear', '@file', '@nosent', None):
+        if self.treeType in ('@clean', '@file', '@nosent', None):
             s = '@others'
         else:
             s = g.angleBrackets(' class %s methods ' % (class_name))

@@ -245,6 +245,13 @@ The fix was in moveWordHelper.
 .. @+node:ekr.20150509180744.1: *4* Fixed remove-blank-lines command
 It now works when there is no text selection.
 .. @+node:ekr.20150514115247.1: *4* Fixed cut/paste from menus
+.. @+node:ekr.20150520071422.1: *4* Fixed bug 150: Importing file to @clean produces section references...
+Importing file to @clean produces section references following class constructor
+https://github.com/leo-editor/leo-editor/issues/150
+
+The bug was a typo in plugins/importers/basescanner.py.
+
+Also improved reporting in the RecursiveImportController class.
 .. @-all
 .. @@killbeautify
 .. @@language rest
