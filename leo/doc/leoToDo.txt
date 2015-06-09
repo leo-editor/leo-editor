@@ -26,7 +26,67 @@ https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-f
 brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
-.. @+node:ekr.20150609110852.1: *3* Alt-N should find *any* clone if p is not a clone
+.. @+node:ekr.20150609110852.1: *3* Alt-N (goto-next-clone) falls backs to find-next-clone
+.. @+node:ekr.20071213123942: *4* c.findNextClone
+@cmd('find-next-clone')
+def findNextClone(self, event=None):
+    '''Select the next cloned node.'''
+    c = self; p = c.p; cc = c.chapterController
+    if not p: return
+    if p.isCloned():
+        p.moveToThreadNext()
+    flag = False
+    while p:
+        if p.isCloned():
+            flag = True; break
+        else:
+            p.moveToThreadNext()
+    if flag:
+        if cc:
+            # name = cc.findChapterNameForPosition(p)
+            cc.selectChapterByName('main')
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.blue('no more clones')
+.. @+node:ekr.20031218072017.2916: *4* c.goToNextClone
+@cmd('goto-next-clone')
+def goToNextClone(self, event=None):
+    '''
+    Select the next node that is a clone of the selected node.
+    If the selected node is not a clone, do find-next-clone.
+    '''
+    c, p = self, self.p
+    cc = c.chapterController; p = c.p
+    if not p:
+        return
+    if not p.isCloned():
+        c.findNextClone()
+        return
+    v = p.v
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        # g.trace(p.v,p.h)
+        if p and p.v == v:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+    if p:
+        if cc:
+            cc.selectChapterByName('main')
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.blue('done')
+    # if cc:
+        # name = cc.findChapterNameForPosition(p)
+        # cc.selectChapterByName(name)
 .. @+node:ekr.20150609104701.1: *3* 8 bugs for 5.2 b1
 .. @+node:ekr.20150609111916.1: *4* Bug 195: fcol when using @first directive is inaccurate
 @language rest

@@ -4674,13 +4674,16 @@ class Commands(object):
     #@+node:ekr.20031218072017.2916: *5* c.goToNextClone
     @cmd('goto-next-clone')
     def goToNextClone(self, event=None):
-        '''Select the next node that is a clone of the selected node.'''
+        '''
+        Select the next node that is a clone of the selected node.
+        If the selected node is not a clone, do find-next-clone.
+        '''
         c, p = self, self.p
         cc = c.chapterController; p = c.p
         if not p:
             return
         if not p.isCloned():
-            g.warning('not a clone:', p.h)
+            c.findNextClone()
             return
         v = p.v
         p.moveToThreadNext()
