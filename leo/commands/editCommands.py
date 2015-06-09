@@ -3125,7 +3125,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.app.batchMode:
             c.notValidInBatchMode("Insert Headline Time")
             return
-        w = self.editWidget(event)
+        w = c.frame.tree.edit_widget(p)
+            # 2015/06/09: Fix bug 131: Insert time in headline now inserts time in body
+            # Get the wrapper from the tree itself.
+            # Do *not* set w = self.editWidget!
         if w:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
             # insert-headline-time should insert at cursor.

@@ -257,6 +257,20 @@ https://github.com/leo-editor/leo-editor/issues/193
 goto-global-line doesn't work properly in @clean files
 
 The fix was in GoToLineNumber.go: it must test for p.isAtCleanNode()
+.. @+node:ekr.20150502050809.1: *4* Fixed bug 131: Insert time in headline now inserts time in body 
+Insert time in headline now inserts time in body
+https://github.com/leo-editor/leo-editor/issues/131
+
+The fix was to replace:
+    
+    w = self.editWidget()
+    
+by::
+    
+    w = c.frame.tree.edit_widget(p)
+    
+    
+in editCommands.insertHeadlineTime.
 .. @-all
 .. @@killbeautify
 .. @@language rest
