@@ -1750,7 +1750,8 @@ class Commands(object):
             self.isAtAuto = root and root.isAtAutoNode()
             isRaw = not root or (
                 root.isAtEditNode() or root.isAtAsisFileNode() or
-                root.isAtAutoNode() or root.isAtNoSentFileNode())
+                root.isAtAutoNode() or root.isAtNoSentFileNode() or
+                root.isAtCleanNode())
             ignoreSentinels = root and root.isAtNoSentFileNode()
             if not root:
                 if scriptData: root = p.copy()

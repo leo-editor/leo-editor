@@ -252,6 +252,11 @@ https://github.com/leo-editor/leo-editor/issues/150
 The bug was a typo in plugins/importers/basescanner.py.
 
 Also improved reporting in the RecursiveImportController class.
+.. @+node:ekr.20150608184148.1: *4* Fixed bug 193: goto-global-line doesn't work properly in @clean files
+https://github.com/leo-editor/leo-editor/issues/193
+goto-global-line doesn't work properly in @clean files
+
+The fix was in GoToLineNumber.go: it must test for p.isAtCleanNode()
 .. @-all
 .. @@killbeautify
 .. @@language rest
