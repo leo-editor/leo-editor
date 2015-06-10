@@ -780,6 +780,9 @@ class ExternalFilesController:
         if not g.os_path_exists(path):
             if trace: print('%s:does not exist %s' % (tag, path))
             return False
+        if g.os_path_isdir(path):
+            if trace: print('%s: %s is a directory' % (tag, path))
+            return False
         fn = g.shortFileName(path)
         # First, check the modification times.
         old_time = efc.time_d.get(path)
