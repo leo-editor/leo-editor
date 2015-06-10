@@ -880,13 +880,15 @@ class Position(object):
             parent = p.parent()
             if not parent:
                 break
-            # Assume all child nodes have @other indentation.
-            # This isn't true of section references.
-            # The caller will have to make this adjustment.
+            # If p is a section definition, search the parent for the reference.
+            # Otherwise, search the parent for @others.
+            h = p.h.strip()
+            i = h.find('<<')
+            j = h.find('>>')
+            target = h[i: j + 2] if -1 < i < j else '@others'
             for s in parent.b.split('\n'):
-                i = s.find('@others')
-                if i >= 0:
-                    offset += i
+                if s.find(target) > -1:
+                    offset += g.skip_ws(s, 0)
                     break
         return offset if found else None
     #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
