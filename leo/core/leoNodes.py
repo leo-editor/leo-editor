@@ -871,26 +871,24 @@ class Position(object):
         http://tinyurl.com/5nescw
         '''
         p = self
-        # Return None if p0 has no ancestor @<file> node.
-        for p2 in p.self_and_parents():
-            if p2.isAnyAtFileNode():
-                root = p2.copy()
+        found, offset = False, 0
+        for p in p.self_and_parents():
+            if p.isAnyAtFileNode():
+                # Ignore parent of @<file> node.
+                found = True
                 break
-        else:
-            return None
-        offset = 0
-        while p != root:
-            # Text offsets are relative to parent indentations.
             parent = p.parent()
-            h = p.h.strip()
-            is_section = h.startswith('<<')
+            if not parent:
+                break
+            # Assume all child nodes have @other indentation.
+            # This isn't true of section references.
+            # The caller will have to make this adjustment.
             for s in parent.b.split('\n'):
-                i = s.find(h if is_section else '@others')
+                i = s.find('@others')
                 if i >= 0:
                     offset += i
                     break
-            p = parent
-        return offset
+        return offset if found else None
     #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
