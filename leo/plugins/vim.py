@@ -47,7 +47,6 @@ Settings
 #@+<< version history >>
 #@+node:ekr.20050226184411.1: ** << version history >>
 #@@killcolor
-
 #@+at
 # 
 # Contributed by Andrea Galimberti.
@@ -143,19 +142,15 @@ Settings
 #@+<< imports >>
 #@+node:ekr.20050226184411.2: ** << imports >>
 import leo.core.leoGlobals as g
-
 import os
 import subprocess
 import sys
 #@-<< imports >>
-
 # This command is used to communicate with the vim server. If you use gvim
 # you can leave the command as is, you do not need to change it to "gvim ..."
-
 # New in version 1.10 of this plugin: these are emergency defaults only.
 # They are typically overridden by the corresponding 'vim_cmd' and 'vim_exe' settings in
 # leoSettings.leo or individual .leo files.
-
 if sys.platform == 'win32':
     # Works on XP if you have gvim on PATH
     _vim_cmd = "gvim --servername LEO"
@@ -163,26 +158,22 @@ if sys.platform == 'win32':
 elif sys.platform == 'darwin':
     _vim_cmd = "/Applications/gvim.app/Contents/MacOS/gvim --servername LEO"
     _vim_exe = "gvim"
-else: 
+else:
     _vim_cmd = "gvim --servername LEO"
     _vim_exe = "gvim"
-    
 # Global message flags.
 contextmenu_message_given = False
 locationMessageGiven = False
-
 #@+others
 #@+node:ekr.20050226184624: ** init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
     if ok:
         # print ('vim.py enabled')
         # Register the handlers...
-
         # event = 'open2'
         # g.registerHandler(event,on_open_window)
-
         # Enable the os.system call if you want to
         # start a (g)vim server when Leo starts.
         if 0: os.system(_vim_cmd)
@@ -194,40 +185,37 @@ def vim_open_file_command(event):
     '''vim.py: Open the entire file in (g)vim.'''
     c = event.get('c')
     if c:
-        VimCommander(c,entire_file=True)
+        VimCommander(c, entire_file=True)
 #@+node:ekr.20120315101404.9745: ** g.command('vim-open-node')
 @g.command('vim-open-node')
 def vim_open_node_command(event):
     '''vim.py: open the selected node in (g)vim.'''
     c = event.get('c')
     if c:
-        VimCommander(c,entire_file=False)
+        VimCommander(c, entire_file=False)
 #@+node:ekr.20150326153420.1: ** class VimCommander
 class VimCommander:
-    '''A class implementing the vim plugin.'''    
+    '''A class implementing the vim plugin.'''
     #@+others
     #@+node:ekr.20150326155343.1: *3*  vim.ctor
-    def __init__(self,c,entire_file):
+    def __init__(self, c, entire_file):
         '''Ctor for the VimCommander class.'''
         self.c = c
         self.entire_file = entire_file
-        
         # compute settings.
-        getBool,getString = c.config.getBool,c.config.getString
-        self.open_url_nodes  = getBool('vim_plugin_opens_url_nodes')
+        getBool, getString = c.config.getBool, c.config.getString
+        self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
         self.position_cursor = getBool('vim_plugin_positions_cursor')
-        self.trace           = getBool('vim_plugin_trace')
-        self.uses_tab        = getBool('vim_plugin_uses_tab_feature')
-        self.vim_cmd         = getString('vim_cmd') or _vim_cmd
-        self.vim_exe         = getString('vim_exe') or _vim_exe
-
+        self.trace = getBool('vim_plugin_trace')
+        self.uses_tab = getBool('vim_plugin_uses_tab_feature')
+        self.vim_cmd = getString('vim_cmd') or _vim_cmd
+        self.vim_exe = getString('vim_exe') or _vim_exe
         # Give messages.
         global locationMessageGiven
         if self.trace and not locationMessageGiven:
             locationMessageGiven = True
             print('vim_cmd: %s' % self.vim_cmd)
             print('vim_exe: %s' % self.vim_exe)
-
         self.open_in_vim()
     #@+node:ekr.20150326183613.1: *3* vim.check_args
     def check_args(self):
@@ -244,11 +232,11 @@ class VimCommander:
         else:
             return True
     #@+node:ekr.20150326183310.1: *3* vim.error
-    def error(self,s):
+    def error(self, s):
         '''Report an error.'''
-        g.es_print(s,color='red')
+        g.es_print(s, color='red')
     #@+node:ekr.20150326173414.1: *3* vim.find_root
-    def find_root(self,p):
+    def find_root(self, p):
         '''Return the nearest ancestor @auto or @clean node.'''
         p0 = p.copy()
         while p:
@@ -261,13 +249,13 @@ class VimCommander:
         self.error('no parent @clean or @auto node: %s' % p0.h)
         return None
     #@+node:ekr.20150326180515.1: *3* vim.find_path_for_node
-    def find_path_for_node(self,p):
+    def find_path_for_node(self, p):
         '''Search the open-files list for a file corresponding to p.'''
         efc = g.app.externalFilesController
         path = efc.find_path_for_node(p)
         return path
     #@+node:ekr.20150326173301.1: *3* vim.forget_path
-    def forget_path(self,path):
+    def forget_path(self, path):
         '''
         Stop handling the path:
         - Remove the path from the list of open-with files.
@@ -284,11 +272,11 @@ class VimCommander:
     #@+node:ekr.20150326181247.1: *3* vim.get_cursor_arg
     def get_cursor_arg(self):
         '''Compute the cursor argument for vim.'''
-        if self.position_cursor:    
+        if self.position_cursor:
             wrapper = self.c.frame.body.wrapper
-            s = wrapper.getAllText()    
+            s = wrapper.getAllText()
             ins = wrapper.getInsertPoint()
-            row,col = g.convertPythonIndexToRowCol(s,ins)
+            row, col = g.convertPythonIndexToRowCol(s, ins)
             return "+" + str(row + 1)
         else:
             return ''
@@ -296,13 +284,13 @@ class VimCommander:
     def load_context_menu(self):
         '''Load the contextmenu plugin.'''
         global contextmenu_message_given
-        contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+        contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
         if not contextMenu and not contextmenu_message_given:
             contextmenu_message_given = True
             self.error('can not load contextmenu.py')
         return contextMenu
     #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
-    def open_file(self,root):
+    def open_file(self, root):
         '''Open the the file in vim using c.openWith.'''
         trace = False and not g.unitTesting
         c = self.c
@@ -312,27 +300,27 @@ class VimCommander:
         remote_arg = "--remote" + tab_arg + "-silent"
         if self.entire_file:
             # Open the entire file.
-            assert root.isAnyAtFileNode(),root
-            args = [self.vim_exe,"--servername","LEO",remote_arg] # No cursor arg.
-            dir_ = g.setDefaultDirectory(c,root)
-            fn = c.os_path_finalize_join(dir_,root.anyAtFileNodeName())
-            c_arg = '%s %s' % (' '.join(args),fn)
+            assert root.isAnyAtFileNode(), root
+            args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
+            dir_ = g.setDefaultDirectory(c, root)
+            fn = c.os_path_finalize_join(dir_, root.anyAtFileNodeName())
+            c_arg = '%s %s' % (' '.join(args), fn)
             command = 'subprocess.Popen(%s,shell=True)' % c_arg
             if trace: g.trace(command)
             try:
-                subprocess.Popen(c_arg,shell=True)
+                subprocess.Popen(c_arg, shell=True)
             except OSError:
                 g.es_print(command)
                 g.es_exception()
         else:
             root.v._vim_old_body = body = root.v.b
-            args = [self.vim_exe,"--servername","LEO",remote_arg,cursor_arg]
+            args = [self.vim_exe, "--servername", "LEO", remote_arg, cursor_arg]
             if trace: g.trace('c.openWith(%s)' % args)
-            d = {'args':args,
-                 'ext':None,
-                 'kind':'subprocess.Popen',
-                 'p':root.copy(),
-                 'p.b':body,
+            d = {'args': args,
+                 'ext': None,
+                 'kind': 'subprocess.Popen',
+                 'p': root.copy(),
+                 'p.b': body,
             }
             c.openWith(d=d)
     #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry: called from ctor)
@@ -345,8 +333,8 @@ class VimCommander:
         if not root:
             return
         path = self.find_path_for_node(root)
-        if path and self.should_open_old_file(path,root):
-            cmd = self.vim_cmd+"--remote-send '<C-\\><C-N>:e "+path+"<CR>'"
+        if path and self.should_open_old_file(path, root):
+            cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:e " + path + "<CR>'"
             if self.trace: g.trace('os.system(%s)' % cmd)
             os.system(cmd)
         else:
@@ -354,22 +342,21 @@ class VimCommander:
             if path: self.forget_path(path)
             self.open_file(root)
     #@+node:ekr.20150326173000.1: *3* vim.should_open_old_file
-    def should_open_old_file(self,path,root):
+    def should_open_old_file(self, path, root):
         '''Return True if we should open the old temp file.'''
         v = root.v
         return (
             path and g.os_path_exists(path) and
-            hasattr(v.b,'_vim_old_body') and v.b == v._vim_old_body
+            hasattr(v.b, '_vim_old_body') and v.b == v._vim_old_body
         )
     #@+node:ekr.20150326175258.1: *3* vim.write_root
-    def write_root(self,root):
+    def write_root(self, root):
         '''Return the concatenation of all bodies in p's tree.'''
         result = []
         for p in root.self_and_subtree():
             s = p.b
-            result.append(s if s.endswith('\n') else s.rstrip()+'\n')
+            result.append(s if s.endswith('\n') else s.rstrip() + '\n')
         return ''.join(result)
-        
         # return ''.join([p.b if p.b endswith('\n') else p.b.rstrip()+'\n'
             # for p in root.self_and_subtree()])
     #@-others

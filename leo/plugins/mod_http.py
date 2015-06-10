@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file mod_http.py
 #@@first
-
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
 ''' A minimal http plugin for LEO, based on AsyncHttpServer.py.
@@ -75,32 +74,25 @@ depending on settings - set ``dom.allow_scripts_to_close_windows`` to true in
 
 '''
 #@-<< docstring >>
-
 # Adapted and extended from the Python Cookbook:
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
-
 __version__ = "0.99"
-
 # This encoding must match the character encoding used in your browser.
 # If it does not, non-ascii characters will look very strange.
 browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
-
 #@+<< imports >>
 #@+node:EKR.20040517080250.3: ** << imports >>
 import leo.core.leoGlobals as g
-
 import asynchat
 import asyncore
 import cgi
 import json
-
 if g.isPython3:
     import http.server
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 else:
     import SimpleHTTPServer
     SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    
 if g.isPython3:
     import io
     StringIO = io.StringIO
@@ -115,7 +107,6 @@ if g.isPython3:
     import urllib.parse as urlparse
 else:
     import urlparse
-
 import os
 import select
 import shutil
@@ -147,7 +138,7 @@ from xml.sax.saxutils import quoteattr
 sockets_to_close = []
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     if 0:
         g.registerHandler("open2", onFileOpen)
@@ -155,7 +146,7 @@ def init ():
         getGlobalConfiguration()
         if config.http_active:
             try:
-                s=Server(config.http_ip,config.http_port,RequestHandler)
+                s = Server(config.http_ip, config.http_port, RequestHandler)
             except socket.error as e:
                 g.es("mod_http server initialization failed (%s:%s): %s" % (
                     config.http_ip, config.http_port, e))
@@ -168,36 +159,29 @@ def init ():
     return True
 #@+node:tbrown.20111005140148.18223: *3* getGlobalConfiguration
 def getGlobalConfiguration():
-
     """read config."""
-
     # timeout.
     newtimeout = g.app.config.getInt("http_timeout")
     if newtimeout is not None:
-        config.http_timeout = newtimeout  / 1000.0
-    
+        config.http_timeout = newtimeout / 1000.0
     # ip.
-    newip = g.app.config.getString("http_ip") 
+    newip = g.app.config.getString("http_ip")
     if newip:
         config.http_ip = newip
-    
     # port.
-    newport = g.app.config.getInt("http_port") 
+    newport = g.app.config.getInt("http_port")
     if newport:
         config.http_port = newport
-
     # active.
     newactive = g.app.config.getBool("http_active")
     if newactive is not None:
         config.http_active = newactive
-
     # attribute name.
     new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
-def plugin_wrapper(tag,keywords):
-
+def plugin_wrapper(tag, keywords):
     if g.app.killed:
         return
     first = True
@@ -205,37 +189,31 @@ def plugin_wrapper(tag,keywords):
         pass
 #@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
 def onFileOpen(tag, keywords):
-
     c = keywords.get("new_c")
     # g.trace('c',repr(c))
     wasactive = config.http_active
     getConfiguration(c)
     if config.http_active and not wasactive: # Ok for unit testing:
-        s=Server('',config.http_port,RequestHandler)
+        s = Server('', config.http_port, RequestHandler)
         asyncore.read = a_read
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled on port %s, version %s" % (
             config.http_port, __version__), color="purple")
 #@+node:EKR.20040517080250.48: *3* getConfiguration (not used)
 def getConfiguration(c):
-
     """Called when the user opens a new file."""
-
     # timeout.
     newtimeout = c.config.getInt("http_timeout")
     if newtimeout is not None:
-        config.http_timeout = newtimeout  / 1000.0
-    
+        config.http_timeout = newtimeout / 1000.0
     # port.
-    newport = c.config.getInt("http_port") 
+    newport = c.config.getInt("http_port")
     if newport:
         config.http_port = newport
-
     # active.
     newactive = c.config.getBool("http_active")
     if newactive is not None:
         config.http_active = newactive
-
     # attribute name.
     new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
@@ -251,19 +229,17 @@ class config:
 class delayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
     #@+node:EKR.20040517080250.5: *3* __init__
-    def __init__(self,sock):
+    def __init__(self, sock):
         self._map = asyncore.socket_map
-        self.socket=sock
+        self.socket = sock
         self.socket.setblocking(0)
-        self.closed=1   # compatibility with SocketServer
+        self.closed = 1 # compatibility with SocketServer
         self.buffer = []
     #@+node:EKR.20040517080250.6: *3* write
-    def write(self,data):
-        
+    def write(self, data):
         self.buffer.append(data)
     #@+node:EKR.20040517080250.7: *3* initiate_sending
     def initiate_sending(self):
-        
         ### Create a bytes string.
         aList = [g.toEncodedString(z) for z in self.buffer]
         self.out_buffer = b''.join(aList)
@@ -281,7 +257,6 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         pass
     #@+node:EKR.20040517080250.9: *3* writable
     def writable(self):
-
         result = (not self.connected) or len(self.out_buffer)
         if not result:
             sockets_to_close.append(self)
@@ -302,14 +277,12 @@ class leo_interface(object):
             the parent.
             The children, if any.
         """
-
         # Collecting the navigational links.
         if node:
             nodename = node.h
             threadNext = node.threadNext()
             sibling = node.next()
             parent = node.parent()
-
             f.write("<p>\n")
             children = []
             firstChild = node.firstChild()
@@ -318,9 +291,8 @@ class leo_interface(object):
                 while child:
                     children.append(child)
                     child = child.next()
-
             if threadNext is not None:
-                self.create_leo_reference(window, threadNext,  "next", f)
+                self.create_leo_reference(window, threadNext, "next", f)
             f.write("<br />")
             if sibling is not None:
                 self.create_leo_reference(window, sibling, "next Sibling", f)
@@ -331,7 +303,6 @@ class leo_interface(object):
                 self.create_leo_reference(window, parent, "Up", f)
             f.write("<br />")
             f.write("\n</p>\n")
-
         else:
             # top level
             child = window.c.rootVnode()
@@ -355,11 +326,9 @@ class leo_interface(object):
             f.write("</ol>\n")
     #@+node:EKR.20040517080250.22: *3* create_href
     def create_href(self, href, text, f):
-
         f.write('<a href="%s">' % href)
         f.write(escape(text))
         f.write("</a>\n")
-
     #@+node:bwmulder.20050319134815: *3* create_leo_h_reference
     def create_leo_h_reference(self, window, node):
         parts = [window.shortFileName()] + self.get_leo_nameparts(node)
@@ -379,7 +348,6 @@ class leo_interface(object):
 
         Include some navigational references too
         """
-
         if node:
             headString = node.h
             bodyString = node.b
@@ -393,7 +361,7 @@ class leo_interface(object):
     <html> 
     <head> 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-    <title>""")
+    <title>"""     )
         f.write(escape(window.shortFileName() + ":" + headString))
         f.write("</title>\n</head>\n<body>\n")
         # write navigation
@@ -460,9 +428,7 @@ class leo_interface(object):
                 break
         else:
             return None, None
-
         node = w.c.rootVnode()
-
         if len(path) >= 2:
             for i in range(int(path[1])):
                 node = node.next()
@@ -483,7 +449,6 @@ class leo_interface(object):
         return w, node
     #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
     def get_leo_windowlist(self):
-
         f = StringIO()
         f.write("<title>ROOT for LEO HTTP plugin</title>\n")
         f.write("<h2>Windowlist</h2>\n")
@@ -512,13 +477,10 @@ class leo_interface(object):
         while parent:
             root = parent
             parent = root.parent()
-
         while root.v._back:
             root.moveToBack()
-
         # 2. Return the window
         window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
-
         result = self.create_leo_h_reference(window, vnode)
         return result
     #@+node:bwmulder.20050322224921: *3* send_head
@@ -535,7 +497,6 @@ class leo_interface(object):
          """
         try:
             path = self.split_leo_path(self.path)
-            
             if path[0] == '_':
                 f = self.leo_actions.get_response()
             elif len(path) == 1 and path[0] == 'favicon.ico':
@@ -568,7 +529,6 @@ class leo_interface(object):
             import traceback
             traceback.print_exc()
             raise
-
     #@+node:EKR.20040517080250.30: *3* split_leo_path
     def split_leo_path(self, path):
         """
@@ -583,14 +543,13 @@ class leo_interface(object):
         return path.split('/')
     #@+node:EKR.20040517080250.28: *3* write_path
     def write_path(self, node, f):
-
         result = []
         while node:
             result.append(node.h)
             node = node.parent()
         result.reverse()
         if result:
-            result2 = result[:-1]
+            result2 = result[: -1]
             if result2:
                 result2 = ' / '.join(result2)
                 f.write("<p>\n")
@@ -609,11 +568,9 @@ class LeoActions:
     the browser. Conceptually this stuff could go in class leo_interface
     but putting it here for separation for now.
     """
-
     #@+others
     #@+node:tbrown.20110930220448.18077: *3* __init__
     def __init__(self, request_handler):
-        
         self.request_handler = request_handler
         self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
@@ -621,76 +578,56 @@ class LeoActions:
         """Return the file like 'f' that leo_interface.send_head makes
 
         """
-        
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
-        
         # print(parsed_url.query)
         # print(query)
-        
         name = query.get('name', ['NO TITLE'])[0]
         url = query['url'][0]
-        
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
             one_tab_links = json.loads(one_tab_links)
-
-        c = None  # outline for bookmarks
-        previous = None  # previous bookmark for adding selections
-        parent = None  # parent node for new bookmarks
+        c = None # outline for bookmarks
+        previous = None # previous bookmark for adding selections
+        parent = None # parent node for new bookmarks
         using_root = False
-        
         path = self.bookmark_unl
-        
         # g.trace(path)
-
         if path:
             parsed = urlparse.urlparse(path)
             leo_path = os.path.expanduser(parsed.path)
-            
-            c = g.openWithFileName(leo_path,old_c=None)
-
+            c = g.openWithFileName(leo_path, old_c=None)
             if c:
-                g.es_print("Opened '%s' for bookmarks"% path)
-
+                g.es_print("Opened '%s' for bookmarks" % path)
                 if parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"),c)
+                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
                     previous = parent.getFirstChild()
             else:
-                g.es_print("Failed to open '%s' for bookmarks"%self.bookmark_unl)
-
+                g.es_print("Failed to open '%s' for bookmarks" % self.bookmark_unl)
         if c is None:
             using_root = True
             c = g.app.commanders()[0]
             parent = c.rootPosition()
             previous = c.rootPosition()
-        
         f = StringIO()
-        
-        if previous and url == previous.b.split('\n',1)[0]:
+        if previous and url == previous.b.split('\n', 1)[0]:
             # another marking of the same page, just add selection
             self.add_bookmark_selection(
                 previous, query.get('selection', [''])[0])
-
-            c.selectPosition(previous)  # required for body text redraw
+            c.selectPosition(previous) # required for body text redraw
             c.redraw()
-
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Selection added</p></body>""")
-
+    <p>Selection added</p></body>"""         )
             return f
-        
         if '_form' in query:
             # got extra details, save to new node
-            
             f.write("""
     <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Bookmark saved</p></body>""")
-            
+    <p>Bookmark saved</p></body>"""         )
             if using_root:
                 nd = parent.insertAfter()
                 nd.moveToRoot(c.rootPosition())
@@ -699,23 +636,19 @@ class LeoActions:
             if g.pluginIsLoaded('leo.plugins.bookmarks'):
                 nd.h = name
             else:
-                nd.h = '@url '+name
-            
+                nd.h = '@url ' + name
             selection = query.get('selection', [''])[0]
             if selection:
-                selection = '\n\n"""\n'+selection+'\n"""'
-                
+                selection = '\n\n"""\n' + selection + '\n"""'
             tags = query.get('tags', [''])[0]
-            
             if one_tab_links:
                 if tags:
                     tags += ', OneTabList'
                 else:
                     tags = 'OneTabList'
                 self.get_one_tab(one_tab_links, nd)
-
             nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                url, 
+                url,
                 tags,
                 query.get('_name', [''])[0],
                 time.strftime("%c"),
@@ -723,13 +656,10 @@ class LeoActions:
                 query.get('description', [''])[0],
             )
             c.setChanged(True)
-            c.selectPosition(nd)  # required for body text redraw
+            c.selectPosition(nd) # required for body text redraw
             c.redraw()
-
             return f
-            
         # send form to collect extra details
-        
         f.write("""
     <html><head><style>
     body {font-family:mono; font-size: 80%%;}
@@ -749,12 +679,11 @@ class LeoActions:
     </table>
     <input type='submit' value='Save'/><br/>
     </form>
-    </body></html>""" % (quoteattr(name), 
-                  quoteattr(query.get('selection', [''])[0]), 
+    </body></html>"""     % (quoteattr(name),
+                  quoteattr(query.get('selection', [''])[0]),
                   quoteattr(json.dumps(one_tab_links)),
-                  quoteattr(name), 
+                  quoteattr(name),
                   quoteattr(url)))
-
         return f
     #@+node:tbrown.20131122091143.54044: *3* get_one_tab
     def get_one_tab(self, links, nd):
@@ -764,13 +693,12 @@ class LeoActions:
         - `links`: list of {'txt':, 'url':} dicts
         - `nd`: node under which to put child nodes
         """
-
         for link in links:
             if 'url' in link and 'www.one-tab.com' not in link['url'].lower():
                 nnd = nd.insertAsLastChild()
                 nnd.h = link['txt']
                 nnd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                    link['url'], 
+                    link['url'],
                     'OneTabTab',
                     link['txt'],
                     time.strftime("%c"),
@@ -802,45 +730,32 @@ class LeoActions:
 
         i.e. just above the "Users comments" line.
         '''
-        
         # g.trace(node.h)
-        
         b = node.b.split('\n')
         insert = ['', '"""', text, '"""']
-        
         collected = None
         tri_quotes = []
-        
         for n, i in enumerate(b):
-            
             if collected is None and i.startswith('Collected: '):
                 collected = n
-            
             if i == '"""':
                 tri_quotes.append(n)
-        
         if collected is None:
             # not a regularly formatted text, just append
             b.extend(insert)
-        
         elif len(tri_quotes) >= 2:
             # insert after the last balanced pair of tri quotes
-            x = tri_quotes[len(tri_quotes)-len(tri_quotes)%2-1]+1
-            b[x:x] = insert
-
+            x = tri_quotes[len(tri_quotes) - len(tri_quotes) % 2 - 1] + 1
+            b[x: x] = insert
         else:
             # found Collected but no tri quotes
-            b[collected+1:collected+1] = insert
-
+            b[collected + 1: collected + 1] = insert
         node.b = '\n'.join(b)
         node.setDirty()
     #@+node:tbrown.20111005093154.17683: *3* get_favicon
     def get_favicon(self):
-        
-        path = g.os_path_join(g.computeLeoDir(),'Icons','LeoApp16.ico')
-            
+        path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
         # g.trace(g.os_path_exists(path),path)
-        
         try:
             f = StringIO()
             # f.write(open(path).read())
@@ -850,14 +765,11 @@ class LeoActions:
             return f
         except Exception:
             return None
-
     #@+node:tbrown.20110930220448.18076: *3* get_response
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
-
         if self.request_handler.path.startswith('/_/add/bkmk/'):
             return self.add_bookmark()
-            
         f = StringIO()
         f.write("Unknown URL in LeoActions.get_response()")
         return f
@@ -881,25 +793,18 @@ class RequestHandler(
     # pylint: disable=too-many-ancestors
     #@+others
     #@+node:EKR.20040517080250.14: *3* __init__
-    def __init__(self,conn,addr,server):
-        
+    def __init__(self, conn, addr, server):
         self.leo_actions = LeoActions(self)
-        
-        asynchat.async_chat.__init__(self,conn)
-
-        self.client_address=addr
-        self.connection=conn
-        self.server=server
-        
+        asynchat.async_chat.__init__(self, conn)
+        self.client_address = addr
+        self.connection = conn
+        self.server = server
         self.wfile = delayedSocketStream(self.socket)
-        
         # Sets the terminator. When it is received, this means that the
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
         self.set_terminator(self.term)
-
         self.buffer = BytesIO() ###
-        
         ### Set self.use_encoding and self.encoding.
         ### This is used by asyn_chat.
         self.use_encoding = True
@@ -918,7 +823,6 @@ class RequestHandler(
         -- note however that this the default server uses this
         to copy binary data as well.
          """
-
         shutil.copyfileobj(source, outputfile, length=255)
     #@+node:EKR.20040517080250.16: *3* log_message
     def log_message(self, format, *args):
@@ -940,135 +844,113 @@ class RequestHandler(
         message = "%s - - [%s] %s\n" % (
             self.address_string(),
             self.log_date_time_string(),
-            format%args)
+            format % args)
         g.es(message)
     #@+node:EKR.20040517080250.17: *3* collect_incoming_data
-    def collect_incoming_data(self,data):
-
+    def collect_incoming_data(self, data):
         """Collects the data arriving on the connexion"""
-        
         self.buffer.write(data)
     #@+node:EKR.20040517080250.18: *3* prepare_POST
     def prepare_POST(self):
-        
         """Prepare to read the request body"""
-
         bytesToRead = int(self.headers.getheader('content-length'))
-        
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
-        self.buffer=StringIO()
-
+        self.buffer = StringIO()
         # control will be passed to a new found_terminator
-        self.found_terminator=self.handle_post_data
+        self.found_terminator = self.handle_post_data
     #@+node:EKR.20040517080250.19: *3* handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
-
-        self.rfile=StringIO(self.buffer.getvalue())
+        self.rfile = StringIO(self.buffer.getvalue())
         self.do_POST()
         self.finish()
     #@+node:EKR.20040517080250.31: *3* do_GET
     def do_GET(self):
         """Begins serving a GET request"""
-
         # nothing more to do before handle_data()
         self.handle_data()
     #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
-        
         """Begins serving a POST request. The request data must be readable
          on a file-like object called self.rfile"""
-
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
-            query=cgi.parse_multipart(self.rfile, pdict)
+            query = cgi.parse_multipart(self.rfile, pdict)
         elif ctype == 'application/x-www-form-urlencoded':
-            qs=self.rfile.read(length)
-            query=cgi.parse_qs(qs, keep_blank_values=1)
+            qs = self.rfile.read(length)
+            query = cgi.parse_qs(qs, keep_blank_values=1)
         else:
-            query = ''                   # Unknown content-type
+            query = '' # Unknown content-type
         # some browsers send 2 more bytes...
-        [ready_to_read,x,y]=select.select([self.connection],[],[],0)
+        [ready_to_read, x, y] = select.select([self.connection], [], [], 0)
         if ready_to_read:
             self.rfile.read(2)
-
         self.QUERY.update(self.query(query))
         self.handle_data()
     #@+node:EKR.20040517080250.33: *3* query
-    def query(self,parsedQuery):
-        
+    def query(self, parsedQuery):
         """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
          except that :
          - if the key ends with [], returns the value (a Python list)
          - if not, returns a string, empty if the list is empty, or with the
          first value in the list"""
-
-        res={}
+        res = {}
         for item in parsedQuery.keys():
-            value=parsedQuery[item] # a Python list
+            value = parsedQuery[item] # a Python list
             if item.endswith("[]"):
-                res[item[:-2]]=value
+                res[item[: -2]] = value
             else:
-                if len(value)==0:
-                    res[item]=''
+                if len(value) == 0:
+                    res[item] = ''
                 else:
-                    res[item]=value[0]
+                    res[item] = value[0]
         return res
     #@+node:EKR.20040517080250.34: *3* handle_data
     def handle_data(self):
         """Class to override"""
-
         f = self.send_head()
         if f:
             self.copyfile(f, self.wfile)
     #@+node:ekr.20110522152535.18254: *3* handle_read_event (NEW)
-    def handle_read_event (self):
-        
+    def handle_read_event(self):
         '''Over-ride SimpleHTTPRequestHandler.handle_read_event.'''
-
         asynchat.async_chat.handle_read_event(self)
     #@+node:EKR.20040517080250.35: *3* handle_request_line (aka found_terminator)
     def handle_request_line(self):
         """Called when the http request line and headers have been received"""
-
         # prepare attributes needed in parse_request()
-        self.rfile=BytesIO(self.buffer.getvalue())
-        self.raw_requestline=self.rfile.readline()
+        self.rfile = BytesIO(self.buffer.getvalue())
+        self.raw_requestline = self.rfile.readline()
         self.parse_request()
-
         # if there is a Query String, decodes it in a QUERY dictionary
-        self.path_without_qs,self.qs=self.path,''
-        if self.path.find('?')>=0:
-            self.qs=self.path[self.path.find('?')+1:]
-            self.path_without_qs=self.path[:self.path.find('?')]
-        self.QUERY=self.query(cgi.parse_qs(self.qs,1))
-
-        if self.command in ['GET','HEAD']:
+        self.path_without_qs, self.qs = self.path, ''
+        if self.path.find('?') >= 0:
+            self.qs = self.path[self.path.find('?') + 1:]
+            self.path_without_qs = self.path[: self.path.find('?')]
+        self.QUERY = self.query(cgi.parse_qs(self.qs, 1))
+        if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
-            method="do_"+self.command
-            if hasattr(self,method):
-                f = getattr(self,method)
+            method = "do_" + self.command
+            if hasattr(self, method):
+                f = getattr(self, method)
                 f()
                 self.finish()
-        elif self.command=="POST":
+        elif self.command == "POST":
             # if method is POST, call prepare_POST, don't finish before
             self.prepare_POST()
         else:
-            self.send_error(501, "Unsupported method (%s)" %self.command)
+            self.send_error(501, "Unsupported method (%s)" % self.command)
     #@+node:ekr.20110522152535.18256: *3* found_terminator
-    def found_terminator (self):
-        
+    def found_terminator(self):
         # pylint: disable=method-hidden
         # Control may be passed to another found_terminator.
         self.handle_request_line()
     #@+node:EKR.20040517080250.36: *3* finish
     def finish(self):
-
         """Reset terminator (required after POST method), then close"""
-
-        self.set_terminator (self.term)
+        self.set_terminator(self.term)
         self.wfile.initiate_sending()
         # self.close()
     #@-others
@@ -1077,42 +959,35 @@ class Server(asyncore.dispatcher):
     """Copied from http_server in medusa"""
     #@+others
     #@+node:EKR.20040517080250.38: *3* __init__
-    def __init__ (self, ip, port, handler):
-
+    def __init__(self, ip, port, handler):
         self.ip = ip
         self.port = port
-        self.handler=handler
-
-        asyncore.dispatcher.__init__ (self)
-        self.create_socket (socket.AF_INET, socket.SOCK_STREAM)
-
+        self.handler = handler
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
-        self.bind ((ip, port))
-
+        self.bind((ip, port))
         # lower this to 5 if your OS complains
-        self.listen (1024)
+        self.listen(1024)
     #@+node:EKR.20040517080250.39: *3* handle_accept
-    def handle_accept (self):
-        
+    def handle_accept(self):
         try:
             # pylint: disable=unpacking-non-sequence
             # The following except statements catch this.
             conn, addr = self.accept()
         except socket.error:
-            self.log_info ('warning: server accept() threw an exception', 'warning')
+            self.log_info('warning: server accept() threw an exception', 'warning')
             return
         except TypeError:
-            self.log_info ('warning: server accept() threw EWOULDBLOCK', 'warning')
+            self.log_info('warning: server accept() threw EWOULDBLOCK', 'warning')
             return
-
         # creates an instance of the handler class to handle the request/response
         # on the incoming connexion
-        self.handler(conn,addr,self)
+        self.handler(conn, addr, self)
     #@-others
 #@+node:ekr.20140920145803.17997: ** functions
 #@+node:EKR.20040517080250.47: *3* a_read (asynchore override)
 def a_read(obj):
-
     try:
         obj.handle_read_event()
     except asyncore.ExitNow:
@@ -1122,7 +997,6 @@ def a_read(obj):
         obj.handle_error()
 #@+node:ekr.20110522152535.18252: *3* escape
 def escape(s):
-
     s = s.replace('&', "&amp;")
     s = s.replace('<', "&lt;")
     s = s.replace('>', "&gt;")
@@ -1149,7 +1023,6 @@ def escape(s):
         else:
             result.append(line)
     s = '\n'.join(result)
-
     s = s.replace('\n', '<br />')
     s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
     # 8/9/2007
@@ -1166,7 +1039,6 @@ def loop(timeout=5.0, use_poll=0, map=None):
     return poll(timeout)
 #@+node:EKR.20040517080250.40: *3* poll
 def poll(timeout=0.0):
-
     global sockets_to_close
     map = asyncore.socket_map
     if not map:
@@ -1239,7 +1111,6 @@ def get_http_attribute(p):
     if hasattr(vnode, 'unknownAttributes'):
         return vnode.unknownAttributes.get(config.rst2_http_attributename, None)
     return None
-
 #@+node:bwmulder.20050322133050: *4* set_http_attribute
 def set_http_attribute(p, value):
     vnode = p.v
@@ -1247,7 +1118,6 @@ def set_http_attribute(p, value):
         vnode.unknownAttributes[config.rst2_http_attributename] = value
     else:
         vnode.unknownAttributes = {config.rst2_http_attributename: value}
-
 #@+node:bwmulder.20050322135114: *4* node_reference
 def node_reference(vnode):
     """
@@ -1257,5 +1127,4 @@ def node_reference(vnode):
 #@-others
 #@@language python
 #@@tabwidth -4
-
 #@-leo

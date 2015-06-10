@@ -947,7 +947,7 @@ class BaseScanner:
             elif s[i: i + 2] == '<<':
                 j = g.skip_line(s, i + 2)
                 k = s.find('>>', i + 2)
-                if - 1 < k < j:
+                if -1 < k < j:
                     g.trace(s[i: k + 2])
                     refSeen = True
                     i = k + 2

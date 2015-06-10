@@ -63,7 +63,7 @@ class IniScanner(basescanner.BaseScanner):
         k = s.find('\n', i + 1)
         if k == -1: k = len(s)
         j = s.find(']', i + 1)
-        if - 1 < j < k:
+        if -1 < j < k:
             return True, s[i: j + 1], i
         else:
             return False, None, i
