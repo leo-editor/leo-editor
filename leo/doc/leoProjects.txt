@@ -304,6 +304,16 @@ Find/Replace All Suboutline only same as Node only
 
 This bug appears to be invalid.
 
+.. @+node:ekr.20150609082814.2: *4* Fixed bug 181: Focus remains in previous file
+@language rest
+@wrap
+
+Focus remains in previous file
+https://github.com/leo-editor/leo-editor/issues/181
+
+LM.finishOpen now calls c.outerUpdate.
+
+
 .. @-all
 .. @@killbeautify
 .. @@language rest
