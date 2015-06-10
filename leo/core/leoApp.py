@@ -549,7 +549,7 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has been modified outside Leo.' % (path),
+            '%s has been modified outside Leo.' % (g.splitLongFileName(path)),
             'Overwrite this file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c, 'Overwrite modified file?', s)
@@ -562,7 +562,7 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has changed outside Leo.' % (path),
+            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
             'Update the outline from the external file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c, 'Update Outline?', s)

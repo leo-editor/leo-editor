@@ -2808,6 +2808,21 @@ def shortFileName(fileName, n=None):
         return '\\'.join(fileName.split('\\')[-n:])
 
 shortFilename = shortFileName
+#@+node:ekr.20150610125813.1: *3* g.splitLongFileName
+def splitLongFileName(fn, limit=40):
+    '''Return fn, split into lines at slash characters.'''
+    aList = fn.replace('\\', '/').split('/')
+    n, result = 0, []
+    for i, s in enumerate(aList):
+        n += len(s)
+        result.append(s)
+        if i + 1 < len(aList):
+            result.append('/')
+            n += 1
+        if n > limit:
+            result.append('\n')
+            n = 0
+    return ''.join(result)
 #@+node:ekr.20050104135720: *3* g.Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241: *4* g.update_file_if_changed
 # This is part of the tangle code.

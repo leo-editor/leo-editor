@@ -314,6 +314,14 @@ https://github.com/leo-editor/leo-editor/issues/181
 LM.finishOpen now calls c.outerUpdate.
 
 
+.. @+node:ekr.20150609082815.1: *4* Fixed bug 182: Long filenames do not wrap in notification dialogues
+@language rest
+@wrap
+
+Long filenames do not wrap in notification dialogues
+https://github.com/leo-editor/leo-editor/issues/182
+
+Added g.splitLongFileName and called it from several file dialogs.
 .. @-all
 .. @@killbeautify
 .. @@language rest

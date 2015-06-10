@@ -11554,6 +11554,13 @@ for s,table in ((s1,table1),(s2,table2)):
     for i,result in table:
         j = g.skip_to_start_of_line(s,i)
         assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@+node:ekr.20150610130646.1: *4* @test g.splitLongFileName
+table = (
+    r'abcd/xy\pdqabc/aaa.py',
+)
+for s in table:
+    print(g.splitLongFileName(s,limit=3))
+    
 #@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
 import codecs
 
