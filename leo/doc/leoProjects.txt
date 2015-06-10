@@ -282,6 +282,19 @@ https://github.com/leo-editor/leo-editor/issues/162
 cm.isValidLanguage accepts any language x for which leo/modes/X.py exists.
 
 Added a script in LeoDocs.leo that will generate all valid languages.
+.. @+node:ekr.20150609111916.1: *4* Fixed bug 195: fcol when using @first directive is inaccurate
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/195
+fcol when using @first directive is inaccurate
+
+1. p.textOffset returns None if no @<file> node is an ancestor.
+2. p.textOffset never caches its result.
+    In any case, it was quite wrong to cache results in positions.
+3. Rewrote p.textOffset to simplify it.
+4. QtStatusLineClass.update prints '' for fcol if p.textOffset returns None.
+5. Changed unit tests accordingly.
 .. @-all
 .. @@killbeautify
 .. @@language rest

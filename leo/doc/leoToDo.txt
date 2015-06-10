@@ -27,14 +27,6 @@ brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
 .. @+node:ekr.20150609104701.1: *3* 8 bugs for 5.2 b1
-.. @+node:ekr.20150609111916.1: *4* Bug 195: fcol when using @first directive is inaccurate
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/195
-fcol when using @first directive is inaccurate
-
-When using the @first directive, fcol and col (in the statusbar) are the same, but this is inaccurate as fcol should be 0 for the first character after "@first " (rather than 7.. or 8, depending how you count it).
 .. @+node:ekr.20150609104136.1: *4* Bug 194: Find Next button doesn't highlight body text
 @language rest
 @wrap
@@ -113,14 +105,14 @@ https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
-.. @+node:ekr.20150609102505.1: *4* Bugs: GitHub later, never, projects
+.. @+node:ekr.20150609102505.1: *3* Bugs: later, never
 @language rest
 @wrap
 
-.. @+node:ekr.20150609103758.1: *5* Bug 176: Won't fix: Outline pane does not scroll horizontally with node headline edit
+.. @+node:ekr.20150609103758.1: *4* Bug 176: Won't fix: Outline pane does not scroll horizontally with node headline edit
 https://github.com/leo-editor/leo-editor/issues/176
 Outline pane does not scroll horizontally with node headline edit
-.. @+node:ekr.20150403035403.1: *5* Bug 156: Project: ILeo errors not piped to Log, etc.
+.. @+node:ekr.20150403035403.1: *4* Bug 156: Project: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
 
@@ -146,7 +138,7 @@ TypeError: cannot concatenate 'str' and 'int' objects
 But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
 
 @language python
-.. @+node:ekr.20130930062914.16010: *6* LeoQtGui.exec_helper
+.. @+node:ekr.20130930062914.16010: *5* LeoQtGui.exec_helper
 def exec_helper(self, event):
     '''
     This helper is required because an unqualified "exec"
@@ -173,7 +165,7 @@ def exec_helper(self, event):
             # c.p.h becomes the file name.
         shell.run_code(code)
             # Run using IPython.
-.. @+node:ekr.20150305053156.5: *5* Bug 147: Can't fix: Python 3 clipboard encoding
+.. @+node:ekr.20150305053156.5: *4* Bug 147: Can't fix: Python 3 clipboard encoding
 @language rest
 @wrap
 https://github.com/leo-editor/leo-editor/issues/147
@@ -185,16 +177,16 @@ In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there i
 This appears to be a serious bug in older version of pyqt...
 
 @language python
-.. @+node:ekr.20150609082812.1: *5* Bug 132: Won't fix: Section Reference causes clone on Leo-Editor file open
+.. @+node:ekr.20150609082812.1: *4* Bug 132: Won't fix: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
-.. @+node:ekr.20150609103202.1: *5* Bug 89: Won't fix: Spontaneous clones when using <<sections>> 
+.. @+node:ekr.20150609103202.1: *4* Bug 89: Won't fix: Spontaneous clones when using <<sections>> 
 https://github.com/leo-editor/leo-editor/issues/89
 Spontaneous clones when using <<sections>>
-.. @+node:ekr.20150609102729.1: *5* Bug 52: Minor: Leo can't open files if launching terminal is closed
+.. @+node:ekr.20150609102729.1: *4* Bug 52: Minor: Leo can't open files if launching terminal is closed
 https://github.com/leo-editor/leo-editor/issues/25
-.. @+node:ekr.20150504090043.1: *4* Next
-.. @+node:ekr.20150316141655.14: *5* Better default for open/save file dialogs
+.. @+node:ekr.20150504090043.1: *3* Next
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
 File 'Open' or 'Import File' command to follow @path directive
 http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 
@@ -214,27 +206,27 @@ Search for:
 LeoQtGui.Dialogs & panels
 LeoQtGui.runSaveFileDialog
 LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20150513180101.1: *5* find-all should write to the body of a new node
+.. @+node:ekr.20150513180101.1: *4* find-all should write to the body of a new node
 Pretty much like clone-find-all.
-.. @+node:ekr.20150418052852.1: *5* import/export to .ipynb files
-.. @+node:ekr.20150502050830.1: *5* Improve limited searches
+.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
+.. @+node:ekr.20150502050830.1: *4* Improve limited searches
 Setting limited search "marks" a node.
 Mark with icon
 Show headline in Find panel.
 Searching outside the limit area brings up dialog.
 Ending a limited search brings up a dialog.
-.. @+node:ekr.20120520113447.9874: *5* Select node from traceback
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-.. @+node:ekr.20150211104036.477: *5* Smart paste & yank
+.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
 And perhaps other problems with yank.
 
 How does emacs work.  Settings needed?
 
 Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *6* Terry's post
+.. @+node:ekr.20150211104036.478: *5* Terry's post
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
 
 I don't think you need to view source or copy text that looks like HTML.
@@ -259,7 +251,7 @@ text posting into a regular node - somewhere in the pipeline the
 content actually delivered is selected based on the capabilities of the
 receiving end of the pipeline - not sure of the details, but remember
 clipboards can paste images and other things that aren't plain text.
-.. @+node:ekr.20150211104036.479: *6* Matt's links
+.. @+node:ekr.20150211104036.479: *5* Matt's links
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
 
 > Is it possible to have Leo analyse what type of text is being pasted and thus
@@ -269,9 +261,9 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20150501041328.1: *4* Projects
+.. @+node:ekr.20150501041328.1: *3* Projects
 Useful, non-trivial.
-.. @+node:ekr.20150418061229.1: *5* Add QQebView & OpenGl support to viewrendered.py
+.. @+node:ekr.20150418061229.1: *4* Add QQebView & OpenGl support to viewrendered.py
 OpenGL
 http://doc.qt.io/qt-5/qopenglwidget.html
 
@@ -288,19 +280,19 @@ Create one QWebView window. zoom it in to have large fonts.
 Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
 
 Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
+.. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
 Render to tex, pdf, rst, etc.
 
 c.display(x) displays object x. Support plotting objects x.
 
 Create IPython-like demo.
-.. @+node:ekr.20150311123850.7: *5* Improve --diff
+.. @+node:ekr.20150311123850.7: *4* Improve --diff
 The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150516123519.1: *6* re: semantic diff
+.. @+node:ekr.20150516123519.1: *5* re: semantic diff
 # This is the missing piece of the puzzle.
 
 # Can coverage tool help?
-.. @+node:ekr.20150516161000.1: *7* @@button dump-ast
+.. @+node:ekr.20150516161000.1: *6* @@button dump-ast
 import ast
 import hashlib
 node = ast.parse(p.b,filename=p.h,mode='exec')
@@ -311,7 +303,7 @@ s = ast.dump(node,annotate_fields=False)
 print(hashlib.sha1(s).hexdigest())
 if 0:
     return 'xy'
-.. @+node:ekr.20150518162738.1: *7* @command proto-diff
+.. @+node:ekr.20150518162738.1: *6* @command proto-diff
 g.cls()
 import ast
 import difflib
@@ -337,7 +329,7 @@ for pair in table:
                # (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
             print ("===== %s\n%s\n%s" % (
                 tag,a[i1:i2],b[j1:j2]))
-.. @+node:ekr.20150518162908.1: *8* << define table >>
+.. @+node:ekr.20150518162908.1: *7* << define table >>
 # A list of 2-tuples
 
 table = (
@@ -366,7 +358,7 @@ def eggs():
 ),
 
 )
-.. @+node:ekr.20150227040245.10: *5* Jump to definition (find-def)
+.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
 ===== EKR
@@ -391,7 +383,7 @@ Consider the following code:
         md5(p)
 
 Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20131101080215.16488: *5* Outreach to magazine editors: create videos
+.. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors: create videos
 @language rest
 @wrap
 
@@ -430,14 +422,14 @@ You're going to get some journalists excited, and those are your reviews.
 **Start publicizing different ways people use Leo.**
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412034943.1: *6* Show what rST & css can do in Leo
-.. @+node:ekr.20140104063158.16448: *5* reload-abbreviations and reload-key-bindings commands
+.. @+node:ekr.20150412034943.1: *5* Show what rST & css can do in Leo
+.. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
 reload-abbreviations and reload-key-bindings commands.
 
 - Cached settings are not necessary:
 
 1000 calls to getBool would take 0.007 sec.
-.. @+node:ekr.20140312052111.16811: *6* Notes
+.. @+node:ekr.20140312052111.16811: *5* Notes
 https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
 
     I've put adding new reload-abbreviations and reload-key-bindings
@@ -472,43 +464,43 @@ Several subcommanders create tables on startup using config settings. c.abbrevCo
 These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
 
 Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
-.. @+node:ekr.20140630071432.16748: *6* Related methods
+.. @+node:ekr.20140630071432.16748: *5* Related methods
 lm.doPrePluginsInit
 lm.computeLocalSettings.
 g.GeneralSetting
 LM.Settings suboutline.
 abbrevCommandsClass
     init_abbrev
-.. @+node:ekr.20140104063158.17235: *6* Found: \w*\.\w*\s*=\s*c.config.get
+.. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
-.. @+node:ekr.20150419103045.1: *5* Replay undo stack as a screencast
+.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
 I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
 
 The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
 
 Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
-.. @+node:ekr.20150410043749.1: *4* Maybe
+.. @+node:ekr.20150410043749.1: *3* Maybe
 @language rest
 @wrap
-.. @+node:ekr.20150601161825.1: *5* 2-to-3 command
-.. @+node:ekr.20141210123805.9: *5* Add support for rope
-.. @+node:ekr.20150602122614.1: *5* Beautifier warns about long lines
+.. @+node:ekr.20150601161825.1: *4* 2-to-3 command
+.. @+node:ekr.20141210123805.9: *4* Add support for rope
+.. @+node:ekr.20150602122614.1: *4* Beautifier warns about long lines
 compute_line_length helper: just scans backward.
-.. @+node:ekr.20150516123559.1: *5* Doc parts should colorize like rst/md by default
+.. @+node:ekr.20150516123559.1: *4* Doc parts should colorize like rst/md by default
 This seems more difficult than I thought.
-.. @+node:ekr.20150311051910.4: *5* Improve recovered nodes operation
+.. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
-.. @+node:ekr.20031218072017.795: *5* Metatags
+.. @+node:ekr.20031218072017.795: *4* Metatags
 @sectionname or @savedate are expanded to the appropriate text when saved.
 
 -marshall-  
 
 There are quite a few of these now.  It would be good to generalize:
 - Register @node type.
-.. @+node:ekr.20150413163840.1: *5* Migrate wiki to github
+.. @+node:ekr.20150413163840.1: *4* Migrate wiki to github
 https://github.com/leo-editor/leo-editor/wiki
-.. @+node:ekr.20141108064630.19: *5* Resolve clone wars based on modification dates
+.. @+node:ekr.20141108064630.19: *4* Resolve clone wars based on modification dates
 From: Joon Ro <joonpyro@gmail.com>
 
 I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
