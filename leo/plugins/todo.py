@@ -1149,6 +1149,7 @@ class todoController:
         """
 
         if self._widget_to_style:
+            # pylint: disable = unpacking-non-sequence
             # this would be neat, but hasPendingEvents() always returns True
             # (google it), so check time has passed instead
             # if QtGui.QApplication.instance().hasPendingEvents():
