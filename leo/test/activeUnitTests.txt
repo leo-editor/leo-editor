@@ -15459,7 +15459,7 @@ try:
     head = g.angleBrackets(' section ')
     p2.setHeadString(head)
     assert p1.textOffset() == 0
-    assert p2.textOffset() == 0
+    assert p2.textOffset() == 3
         # Section nodes can appear in with @others nodes,
         # so they don't get special treatment.
 finally:
