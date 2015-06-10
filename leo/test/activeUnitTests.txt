@@ -2457,6 +2457,27 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
+#@+node:ekr.20150610064911.1: *4* @test beautifier
+# This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b
+finally:
+    p1.b = s
+    c.setChanged(False)
+
+#@+node:ekr.20150610064930.1: *5* before
+def spam():
+    if - 1 < 2:
+        pass
+#@+node:ekr.20150610065241.1: *5* after
+def spam():
+    if -1 < 2:
+        pass
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
@@ -15438,7 +15459,9 @@ try:
     head = g.angleBrackets(' section ')
     p2.setHeadString(head)
     assert p1.textOffset() == 0
-    assert p2.textOffset() == 3
+    assert p2.textOffset() == 0
+        # Section nodes can appear in with @others nodes,
+        # so they don't get special treatment.
 finally:
     if 1:
         while root.hasChildren():

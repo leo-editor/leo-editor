@@ -165,8 +165,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31352e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31312e3971057d71065809000000756e69745f7465737471075804000000616263647108735805000000302e372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"
-expanded="ekr.20071113194858,ekr.20071113194424.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d7108735805000000302e372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20150529183247.1"><vh>@test ptb.comment_leo_lines &amp; ptb.uncomment_leo_lines</vh>
@@ -179,6 +178,10 @@ expanded="ekr.20071113194858,ekr.20071113194424.1,"><vh>@file activeUnitTests.tx
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
 <v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
+</v>
+<v t="ekr.20150610064911.1"><vh>@test beautifier</vh>
+<v t="ekr.20150610064930.1"><vh>before</vh></v>
+<v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -595,7 +598,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9,0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -707,7 +710,9 @@ try:
     head = g.angleBrackets(' section ')
     p2.setHeadString(head)
     assert p1.textOffset() == 0
-    assert p2.textOffset() == 3
+    assert p2.textOffset() == 0
+        # Section nodes can appear in with @others nodes,
+        # so they don't get special treatment.
 finally:
     if 1:
         while root.hasChildren():
@@ -1400,5 +1405,26 @@ for p in p.children():
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150610064911.1"># This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b
+finally:
+    p1.b = s
+    c.setChanged(False)
+
+</t>
+<t tx="ekr.20150610064930.1">def spam():
+    if - 1 &lt; 2:
+        pass
+</t>
+<t tx="ekr.20150610065241.1">def spam():
+    if -1 &lt; 2:
+        pass
+</t>
 </tnodes>
 </leo_file>

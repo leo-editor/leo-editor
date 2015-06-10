@@ -71,6 +71,10 @@ def prettyPrintPythonNode(event):
 @g.command('pretty-print-tree')
 def beautifyPythonTree(event):
     '''Beautify the Python code in the selected outline.'''
+
+    def plural(n):
+        return 's' if n > 1 else ''
+
     c = event.get('c')
     p0 = event.get('p0')
     is_auto = bool(p0)
@@ -85,28 +89,33 @@ def beautifyPythonTree(event):
             if p.isAnyAtFileNode():
                 # Report changed nodes in previous @<file> node.
                 if pp.n_changed_nodes != prev_changed and not is_auto:
-                    g.es_print('beautified %s nodes' % (
-                        pp.n_changed_nodes - prev_changed))
+                    if not g.unitTesting:
+                        n = pp.n_changed_nodes - prev_changed
+                        g.es_print('beautified %s node%s' % (
+                            n, plural(n)))
                 prev_changed = pp.n_changed_nodes
                 if not is_auto:
                     g.es_print(p.h)
             pp.prettyPrintNode(p)
     # Report any nodes in the last @<file> tree.
-    if pp.n_changed_nodes != prev_changed and not is_auto:
-        g.es_print('beautified %s nodes' % (
-            pp.n_changed_nodes - prev_changed))
+    if not g.unitTesting:
+        if pp.n_changed_nodes != prev_changed and not is_auto:
+            n = pp.n_changed_nodes - prev_changed
+            g.es_print('beautified %s node%s' % (
+                n, plural(n)))
     pp.end_undo()
     t2 = time.clock()
     # pp.print_stats()
-    if is_auto:
-        if pp.n_changed_nodes > 0:
-            g.es_print('auto-beautified %s node%s in\n%s' % (
-                pp.n_changed_nodes,
-                's' if pp.n_changed_nodes > 1 else '',
-                p0.h))
-    else:
-        g.es_print('beautified total %s nodes in %4.2f sec.' % (
-            pp.n_changed_nodes, t2 - t1))
+    if not g.unitTesting:
+        if is_auto:
+            if pp.n_changed_nodes > 0:
+                g.es_print('auto-beautified %s node%s in\n%s' % (
+                    pp.n_changed_nodes,
+                    plural(pp.n_changed_nodes),
+                    p0.h))
+        else:
+            g.es_print('beautified total %s node%s in %4.2f sec.' % (
+                pp.n_changed_nodes, plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150531042746.1: *3* munging leo directives
 #@+node:ekr.20150529084212.1: *4* comment_leo_lines
@@ -1219,6 +1228,8 @@ class PythonTokenBeautifier:
         self.clean('blank')
         prev = self.code_list[-1]
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
+            self.unary_op(s)
+        elif prev.kind == 'word' and prev.value in ('elif', 'if', 'while'):
             self.unary_op(s)
         else:
             self.op(s)
