@@ -15375,7 +15375,9 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
 #@+node:ekr.20081001094920.2: *4* tests for p.textOffset()
-#@+node:ekr.20081001094920.3: *5* @test node that doesn't belong to a derived file
+#@+node:ekr.20081001094920.3: *5* @@test node that doesn't belong to a derived file
+# This test fails because there usually *is* an ancestor @<file> node,
+# namely @file activeUnitTests.txt
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
