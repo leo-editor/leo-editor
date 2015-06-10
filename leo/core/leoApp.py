@@ -1973,16 +1973,19 @@ class LeoApp:
     #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
-        # print("app.setLog:",log)
+        # print("app.setLog: %s %s" % (log, g.callers()))
+        # print("app.setLog: %s" % log)
         if not self.logIsLocked:
             self.log = log
 
     def lockLog(self):
         """Disable changes to the log"""
+        # print("app.lockLog:")
         self.logIsLocked = True
 
     def unlockLog(self):
         """Enable changes to the log"""
+        # print("app.unlockLog:")
         self.logIsLocked = False
     #@+node:ekr.20031218072017.2619: *3* app.writeWaitingLog
     def writeWaitingLog(self, c):
@@ -3340,6 +3343,10 @@ class LoadManager:
         c.initialFocusHelper()
         if k: k.showStateAndMode()
         c.frame.initCompleteHint()
+        c.outerUpdate()
+            # Honor focus requests.
+            # This fixes bug 181: Focus remains in previous file
+            # https://github.com/leo-editor/leo-editor/issues/181
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
     def initWrapperLeoFile(self, c, fn):
         '''

@@ -2906,6 +2906,12 @@ class LeoQtLog(leoFrame.LeoLog):
             tw.installEventFilter(theFilter)
         # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
         tw.setMovable(True)
+    #@+node:ekr.20150610084508.1: *4* LeoQtLog.__repr__
+    def __repr__(self):
+        '''__repr__ for LeoQtLog.'''
+        return '<LeoQtLog: %s' % self.c.shortFileName()
+
+    __str__ = __repr__
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''

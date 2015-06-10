@@ -1295,6 +1295,7 @@ class LeoLog(object):
         '''Create the tab if necessary and make it active.'''
         c = self.c
         tabFrame = self.frameDict.get(tabName)
+        # g.trace(tabName, c.shortFileName())
         if not tabFrame:
             self.createTab(tabName, createText=createText)
         # Update the status vars.
