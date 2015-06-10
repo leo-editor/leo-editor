@@ -15378,59 +15378,48 @@ finally:
 #@+node:ekr.20081001094920.3: *5* @test node that doesn't belong to a derived file
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
-    assert p1.textOffset() == 0
-
+    assert p1.textOffset() is None
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.4: *5* @test root of a derived file
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     assert p1.textOffset() == 0
-
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.5: *5* @test organizer node
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     p2 = p1.insertAsLastChild()
     assert p1.textOffset() == 0
     assert p2.textOffset() == 0
-
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.6: *5* @test section node
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     body = '''   %s
@@ -15441,19 +15430,16 @@ try:
     p2.setHeadString(head)
     assert p1.textOffset() == 0
     assert p2.textOffset() == 3
-
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.7: *5* @test "others" directive
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     body = '''     %s
@@ -15462,12 +15448,11 @@ try:
     p2 = p1.insertAsLastChild()
     assert p1.textOffset() == 0
     assert p2.textOffset() == 5
-    root.firstChild().doDelete(newNode = None)
-
+    root.firstChild().doDelete(newNode=None)
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20140712142620.4458: *3* leoPersistence tests
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node

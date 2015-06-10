@@ -2116,21 +2116,28 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # An added editor window doesn't display line/col
             te = body.widget
             if isinstance(te, QtWidgets.QTextEdit):
+                offset = c.p.textOffset()
                 cr = te.textCursor()
                 bl = cr.block()
                 col = cr.columnNumber()
                 row = bl.blockNumber() + 1
-                line = bl.text()
+                line = g.u(bl.text())
                 if col > 0:
                     s2 = line[0: col]
                     col = g.computeWidth(s2, c.tab_width)
-                fcol = col + c.currentPosition().textOffset()
-                # g.trace('fcol',fcol,'te',id(te),g.callers(2))
-                # g.trace(row,col,fcol)
+                    # Fix bug #195: fcol when using @first directive is inaccurate
+                    # https://github.com/leo-editor/leo-editor/issues/195
+                    for tag in ('@first ', '@last'):
+                        if line.startswith(tag):
+                            col = max(0, col - len(tag))
+                            break
+                # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
+                offset = c.p.textOffset()
+                fcol = '' if offset is None else col + offset
             else:
-                row, col, fcol = 0, 0, 0
+                row, col, fcol = 0, 0, ''
             self.put1(
-                "line: %d, col: %d, fcol: %d" % (row, col, fcol))
+                "line: %d, col: %d, fcol: %s" % (row, col, fcol))
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol

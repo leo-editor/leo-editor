@@ -225,7 +225,7 @@ class Position(object):
         else:
             self.stack = []
         g.app.positions += 1
-        self.txtOffset = None # see self.textOffset()
+        # self.txtOffset = None # see self.textOffset()
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
     def __eq__(self, p2):
         """Return True if two positions are equivalent."""
@@ -866,43 +866,31 @@ class Position(object):
     #@+node:shadow.20080825171547.2: *4* p.textOffset
     def textOffset(self):
         '''
-            See http://tinyurl.com/5nescw for details
+        Return the fcol offset of self.
+        Return None if p is has no ancestor @<file> node.
+        http://tinyurl.com/5nescw
         '''
         p = self
-        # caching of p.textOffset, we need to calculate it only once
-        if p.txtOffset is not None:
-            return p.txtOffset
-        p.txtOffset = 0
-        # walk back from the current position
-        for cursor in p.self_and_parents():
-            # we also need the parent, the "text offset" is relative to it
-            parent = cursor.parent()
-            if parent == None: # root reached
+        # Return None if p0 has no ancestor @<file> node.
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                root = p2.copy()
                 break
-            parent_bodyString = parent.b
-            if parent_bodyString == '': # organizer node
-                continue
-            parent_lines = parent_bodyString.split('\n')
-            # check out if the cursor node is a section
-            cursor_is_section = False
-            cursor_headString = cursor.h
-            if cursor_headString.startswith('<<'):
-                cursor_is_section = True # section node
-            for line in parent_lines:
-                if cursor_is_section == True:
-                    # find out the section in the bodyString of the parent
-                    pos = line.find(cursor_headString)
-                else:
-                    # otherwise find the "@others" directive in the bodyString of the parent
-                    pos = line.find('@others')
-                if pos > 0:
-                    # break the iteration over lines if something is found
+        else:
+            return None
+        offset = 0
+        while p != root:
+            # Text offsets are relative to parent indentations.
+            parent = p.parent()
+            h = p.h.strip()
+            is_section = h.startswith('<<')
+            for s in parent.b.split('\n'):
+                i = s.find(h if is_section else '@others')
+                if i >= 0:
+                    offset += i
                     break
-            if pos > 0:
-                p.txtOffset += pos
-            if parent.v.isAnyAtFileNode(): # do not scan upper
-                break
-        return p.txtOffset
+            p = parent
+        return offset
     #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
