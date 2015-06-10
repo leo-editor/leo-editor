@@ -295,6 +295,15 @@ fcol when using @first directive is inaccurate
 3. Rewrote p.textOffset to simplify it.
 4. QtStatusLineClass.update prints '' for fcol if p.textOffset returns None.
 5. Changed unit tests accordingly.
+.. @+node:ekr.20150609103947.1: *4* Investigated bug 188: Find/Replace All Suboutline only same as Node only
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/188
+Find/Replace All Suboutline only same as Node only
+
+This bug appears to be invalid.
+
 .. @-all
 .. @@killbeautify
 .. @@language rest
