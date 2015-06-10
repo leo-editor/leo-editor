@@ -5461,7 +5461,7 @@ def os_path_expandExpression(s, **keys):
         return ''
     i = s.find('{{')
     j = s.find('}}')
-    if - 1 < i < j:
+    if -1 < i < j:
         exp = s[i + 2: j].strip()
         if exp:
             try:

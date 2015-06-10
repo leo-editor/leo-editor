@@ -2130,7 +2130,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     col = g.computeWidth(s2, c.tab_width)
                     i = line.find('<<')
                     j = line.find('>>')
-                    if - 1 < i < j:
+                    if -1 < i < j:
                         offset = 0
                     else:
                         for tag in ('@first ', '@last'):
@@ -3257,7 +3257,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         Adds a submenu to the parent menu, or the menubar."""
         # menu and parent are a QtMenuWrappers, subclasses of  QMenu.
         n = underline
-        if - 1 < n < len(label):
+        if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         menu.setTitle(label)
         if parent:
@@ -3281,7 +3281,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if trace: g.trace(label)
             # command is always add_commandCallback,
             # defined in c.add_command.
-        if - 1 < n < len(label):
+        if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         if accel:
             label = '%s\t%s' % (label, accel)
@@ -3331,7 +3331,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu(menuName)
         if menu and label:
             n = underline or 0
-            if - 1 > n > len(label):
+            if -1 > n > len(label):
                 label = label[: n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:

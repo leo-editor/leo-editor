@@ -1868,7 +1868,7 @@ class Commands(object):
             '''Return the first section reference in line.'''
             i = line.find('<<')
             j = line.find('>>')
-            return line[i: j + 2] if - 1 < i < j else None
+            return line[i: j + 2] if -1 < i < j else None
         #@+node:ekr.20100216141722.5626: *6* goto.findGnx
         def findGnx(self, delim, root, gnx, vnodeName):
             '''
@@ -2494,11 +2494,11 @@ class Commands(object):
         '''Return s if it starts with a section name.'''
         i = s.find('<<')
         j = s.find('>>')
-        if - 1 < i < j:
+        if -1 < i < j:
             return s
         i = s.find('@<')
         j = s.find('@>')
-        if - 1 < i < j:
+        if -1 < i < j:
             return s
         return ''
     #@+node:ekr.20031218072017.1710: *6* c.extractSectionNames

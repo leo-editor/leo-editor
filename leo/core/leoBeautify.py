@@ -139,7 +139,7 @@ def comment_leo_lines(p):
         # Comment out any containing a section reference.
         j = s.find('<<')
         k = j > -1 and s.find('>>') or -1
-        if - 1 < j < k:
+        if -1 < j < k:
             result.append(comment + s)
             # Generate a properly-indented pass line.
             j2 = g.skip_ws(s, 0)
@@ -232,11 +232,11 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
     else:
         j = s.find('<<')
         k = j > -1 and s.find('>>') or -1
-        if - 1 < j < k or s.find('@others') > -1:
+        if -1 < j < k or s.find('@others') > -1:
             # A section reference line or an @others line.
             # Such lines are followed by a pass line.
             # The beautifier may insert blank lines before the pass line.
-            kind = 'section ref' if - 1 < j < k else '@others'
+            kind = 'section ref' if -1 < j < k else '@others'
             # Restore the original line, including leading whitespace.
             result.append(s)
             # Skip blank lines.
