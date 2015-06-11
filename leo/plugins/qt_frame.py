@@ -2130,16 +2130,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 col = g.computeWidth(s2, c.tab_width)
                 i = line.find('<<')
                 j = line.find('>>')
-                if -1 < i < j:
+                if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
                     offset = None
                 else:
                     for tag in ('@first ', '@last '):
                         if line.startswith(tag):
                             fcol_offset = len(tag)
                             break
-                    k = line.find('@others')
-                    if k > -1:
-                        offset = None
                 # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
