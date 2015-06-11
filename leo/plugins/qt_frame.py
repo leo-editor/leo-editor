@@ -2125,20 +2125,23 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # Fix bug #195: fcol when using @first directive is inaccurate
                 # https://github.com/leo-editor/leo-editor/issues/195
                 offset = c.p.textOffset()
-                if col > 0:
-                    s2 = line[0: col]
-                    col = g.computeWidth(s2, c.tab_width)
-                    i = line.find('<<')
-                    j = line.find('>>')
-                    if -1 < i < j:
-                        offset = 0
-                    else:
-                        for tag in ('@first ', '@last'):
-                            if line.startswith(tag):
-                                col = max(0, col - len(tag))
-                                break
+                fcol_offset = 0
+                s2 = line[0: col]
+                col = g.computeWidth(s2, c.tab_width)
+                i = line.find('<<')
+                j = line.find('>>')
+                if -1 < i < j:
+                    offset = None
+                else:
+                    for tag in ('@first ', '@last '):
+                        if line.startswith(tag):
+                            fcol_offset = len(tag)
+                            break
+                    k = line.find('@others')
+                    if -1 < k <= col:
+                        offset = None
                 # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
-                fcol = '' if offset is None else col + offset
+                fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
                 row, col, fcol = 0, 0, ''
             self.put1(
