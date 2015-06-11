@@ -10,6 +10,9 @@
 @language rest
 @wrap
 
+Pull request.
+https://github.com/Homebrew/homebrew/pull/38980#issuecomment-98435744
+
 The homebrew docs say that beta releases are not allowed.
 
 https://github.com/leo-editor/leo-editor/issues/106
@@ -77,15 +80,12 @@ Python 2.7.3, PyQt version 4.8.1
 The problem has been observed on Leo-Editor commit f6cdb2b. It seems to occur slightly more frequently on more recent commits such as 42a5207.
 
 
-.. @+node:ekr.20150609101848.1: *4* Bug 136: Viewrendered2 chokes on displaying @html nodes
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/136
-Viewrendered2 chokes on displaying @html nodes
 .. @+node:ekr.20150609101355.1: *4* Bug 129: Font setting overridden by new workbook
 @language rest
 @wrap
+
+Leo reading CheatSheet settings
+https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
 
 https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook

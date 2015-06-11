@@ -322,6 +322,8 @@ Long filenames do not wrap in notification dialogues
 https://github.com/leo-editor/leo-editor/issues/182
 
 Added g.splitLongFileName and called it from several file dialogs.
+.. @+node:ekr.20150609101848.1: *4* Fixed bug 136: Viewrendered2 chokes on displaying @html nodes
+Revised some of the code, but probably more work is needed.
 .. @-all
 .. @@killbeautify
 .. @@language rest
