@@ -165,21 +165,9 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31362e342e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735808000000302e362e31312e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31352e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31372e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31312e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31372e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31362e342e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20150529183247.1"><vh>@@test ptb.comment_leo_lines &amp; ptb.uncomment_leo_lines</vh>
-<v t="ekr.20150529183259.1"><vh>indented docstring</vh></v>
-<v t="ekr.20150529184545.1"><vh>indented docstring2</vh></v>
-</v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
-<v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
-<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
-<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
-<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
-<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
-</v>
-<v t="ekr.20150610130646.1"><vh>@test g.splitLongFileName</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -643,97 +631,6 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
-</t>
-<t tx="ekr.20081001094920.2"></t>
-<t tx="ekr.20081001094920.3"># Change @file activeUnitTests.txt to @@file activeUnitTests.txt
-for parent in p.parents():
-    if parent.isAnyAtFileNode():
-        parent.h = '@' + parent.h
-        break
-else:
-    parent = None
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    assert p1.textOffset() is None
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    if parent:
-        parent.h = parent.h[1:]
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.4">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    assert p1.textOffset() == 0
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.5">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    p2 = p1.insertAsLastChild()
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 0
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.6">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    body = '''   %s
-    ''' % (g.angleBrackets(' section '))
-    p1.setBodyString(body)
-    p2 = p1.insertAsLastChild()
-    head = g.angleBrackets(' section ')
-    p2.setHeadString(head)
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 3
-        # Section nodes can appear in with @others nodes,
-        # so they don't get special treatment.
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.7">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    body = '''     %s
-    ''' % (chr(64) + 'others') # ugly hack
-    p1.setBodyString(body)
-    p2 = p1.insertAsLastChild()
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 5
-    root.firstChild().doDelete(newNode=None)
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -1382,32 +1279,8 @@ char t
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
-<t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
-for p in p.children():
-    b = leoBeautify.PythonTokenBeautifier(c)
-    s1 = p.b
-    comment,s = b.comment_leo_lines(p)
-    s2 = b.uncomment_leo_lines(comment,p,s)
-    assert s1 == s2,('\ns...\n%s\ns2...\n%s' % (s,s2))</t>
-<t tx="ekr.20150529183259.1">def f ():
-    pass
-@ Line 1
-    Line 2
-</t>
-<t tx="ekr.20150529184545.1">def f(): 
-    pass
-@ The following could be added to the 'else' clause::
-    # Accumulate everything else.
-</t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150610130646.1">table = (
-    r'abcd/xy\pdqabc/aaa.py',
-)
-for s in table:
-    g.splitLongFileName(s,limit=3)
-    
-</t>
 </tnodes>
 </leo_file>
