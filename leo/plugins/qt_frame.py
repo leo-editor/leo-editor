@@ -2138,7 +2138,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                             fcol_offset = len(tag)
                             break
                     k = line.find('@others')
-                    if -1 < k <= col:
+                    if k > -1:
                         offset = None
                 # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
