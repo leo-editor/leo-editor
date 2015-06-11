@@ -11559,7 +11559,7 @@ table = (
     r'abcd/xy\pdqabc/aaa.py',
 )
 for s in table:
-    print(g.splitLongFileName(s,limit=3))
+    g.splitLongFileName(s,limit=3)
     
 #@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
 import codecs
