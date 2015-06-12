@@ -8533,7 +8533,7 @@ try:
     s = w.getAllText()
 
     # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉ©BE|cz):\n'
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:

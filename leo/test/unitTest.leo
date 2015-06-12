@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.57" body_secondary_ratio="0.63">
-	<global_window_position top="91" left="362" height="947" width="1195"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -45,7 +45,16 @@
 <v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
 </v>
 </v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh>
+<v t="edward.20150612083734.1"><vh>@data:#@auto</vh></v>
+<v t="edward.20150612083734.2"><vh>@data:#@auto</vh>
+<v t="edward.20150612083734.3"><vh>@gnxs</vh></v>
+</v>
+<v t="edward.20150612083734.4"><vh>@data:#@auto</vh></v>
+<v t="edward.20150612083734.5"><vh>@data:#@auto</vh>
+<v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
@@ -165,9 +174,16 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31312e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31372e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31362e342e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285809000000302e362e382e332e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e382e372e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e382e392e3771097d710a5808000000616e6e6f74617465710b7d710c73580b000000302e362e382e382e342e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e71147573580a000000302e362e382e31382e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="edward.20150612084618.1"><vh>Recently disabled tests</vh>
+<v t="ekr.20100210222021.5388"><vh>@test save new file</vh></v>
+<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
+<v t="ekr.20111212142649.3971"><vh>@test c.pasteOutline does not clone top node</vh>
+<v t="ekr.20111212142649.3972"><vh>child</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -191,7 +207,47 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="edward.20150612083734.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="edward.20150612083734.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="edward.20150612083734.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="edward.20150612083734.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="edward.20150612083734.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="edward.20150612083734.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="edward.20150612084618.1"></t>
 <t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050208051418.1">@first # -*- coding: utf-8 -*-
+
+import sys
+# g.openWithFileName *always* opens the file.
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+elif not g.app.isExternalUnitTest:
+
+    old_c = c
+    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    try:
+        c2 = None
+        c2 = g.openWithFileName(filename,old_c=old_c)
+    finally:
+        if c2:
+            g.app.destroyWindow(c2.frame)
+        c.setLog()
+        c.bodyWantsFocus()
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -583,7 +639,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -884,6 +940,33 @@ for theDir in ('core','external','extensions','plugins','scripts','test'):
 if trace: print('tested %s files' % n)
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
+<t tx="ekr.20100210222021.5388">import os
+import sys
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+else:
+    c1 = c
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+    # print(fn)
+    if g.os_path_exists(fn):
+        os.remove(fn)
+    assert not g.os_path_exists(fn)
+    try:
+        c = c1.new()
+        assert not c.cacher.db
+        # Not a perfect unit test, but it similar to c.save.
+        c.mFileName = fn
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        # print(c.mFileName)
+        c.fileCommands.save(c.mFileName)
+        c.close()
+        assert g.os_path_exists(fn)
+    finally:
+        if g.os_path_exists(fn):
+            os.remove(fn)
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -982,6 +1065,25 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
+<t tx="ekr.20111212142649.3971">import sys
+# g.openWithFileName *always* opens the file.
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
+</t>
+<t tx="ekr.20111212142649.3972"># child text.
+</t>
 <t tx="ekr.20111213122041.3930">@language python
 @tabwidth -4
 
