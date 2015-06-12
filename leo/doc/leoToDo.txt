@@ -172,7 +172,7 @@ This appears to be a serious bug in older version of pyqt...
 .. @+node:ekr.20150609082812.1: *4* Bug 132: Won't fix: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
-.. @+node:ekr.20150609103202.1: *4* Bug 89: Won't fix: Spontaneous clones when using <<sections>> 
+.. @+node:ekr.20150609103202.1: *4* Bug 89: Won't fix: Spontaneous clones when using <<sections>>
 https://github.com/leo-editor/leo-editor/issues/89
 Spontaneous clones when using <<sections>>
 .. @+node:ekr.20150609102729.1: *4* Bug 52: Minor: Leo can't open files if launching terminal is closed

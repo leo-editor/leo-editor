@@ -608,6 +608,9 @@ class LeoQtGui(leoGui.LeoGui):
             family = 'DejaVu Sans Mono'
         try:
             font = QtGui.QFont(family, size, weight_val, italic)
+            if sys.platform.startswith('linux'):
+                font.setHintingPreference(font.PreferFullHinting)
+            # g.es(font,font.hintingPreference())
             if trace: g.trace(family, size, g.callers())
             return font
         except:
