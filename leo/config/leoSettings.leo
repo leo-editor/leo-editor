@@ -1861,6 +1861,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20140915194122.19470"></v>
+<v t="ekr.20140912075503.19369"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9531,9 +9533,11 @@ QPushButton[button_kind="quick-move"] {
 }</t>
 <t tx="ekr.20140915194122.19470">/* ========== Widgets ========== */
 
+/* ----- Destroys other background colors!
 QFrame {
-    background-color: @frame-bg;
+    background-color: at-frame-bg;
 }
+----- */
 
 QScrollArea {
     background-color: @scroll-area-bg;
