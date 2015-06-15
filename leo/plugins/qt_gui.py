@@ -709,7 +709,7 @@ class LeoQtGui(leoGui.LeoGui):
             return g.shortFileName(fn.replace('/', '\\'), n=4)
 
         if self.color_theme:
-            if trace: g.trace('color_theme', self.color_theme)
+            # if trace: g.trace('color_theme', self.color_theme)
             # normal, unthemed path to image
             pathname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
             pathname = g.os_path_normpath(g.os_path_realpath(pathname))
@@ -722,12 +722,12 @@ class LeoQtGui(leoGui.LeoGui):
                 namepart = testname.replace(pathname, '').strip('\\/')
             else:
                 namepart = testname
-            for base_dir in (g.app.homeLeoDir, g.app.loadDir):
+            for base_dir in (g.app.homeLeoDir, g.os_path_join(g.app.loadDir, '..')):
                 fullname = g.os_path_finalize_join(
                     base_dir, 'themes',
                     self.color_theme, 'Icons', namepart)
                 if g.os_path_exists(fullname):
-                    if trace: g.trace('found', sfn(fullnamne))
+                    if trace: g.trace('found', sfn(fullname))
                     return fullname
         # original behavior, if name is absolute this will just return it
         fullname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
