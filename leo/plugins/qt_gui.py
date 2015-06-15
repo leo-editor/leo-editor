@@ -639,11 +639,12 @@ class LeoQtGui(leoGui.LeoGui):
     def getIconImage(self, name):
         '''Load the icon and return it.'''
         trace = False and not g.unitTesting
-        verbose = False
+        trace_cached = False
+        trace_not_found = False
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace and verbose: # and not name.startswith('box'):
+            if trace and trace_cashed: # and not name.startswith('box'):
                 g.trace('cached', id(image), name, image)
             return image
         try:
@@ -658,13 +659,14 @@ class LeoQtGui(leoGui.LeoGui):
                         image = QtGui.QIcon(pixmap)
                     else:
                         image = QtGui.QIcon(fullname)
-                        if trace: g.trace('name', fullname, 'image', image)
+                        if trace: g.trace('found', fullname) # , 'image', image)
                     self.iconimages[name] = image
-                    if trace: g.trace('new', id(image), theDir, name)
+                    # if trace: g.trace('new', id(image), theDir, name)
                     return image
-                elif trace: g.trace('Directory not found', theDir)
+                elif trace and trace_not_found:
+                    g.trace('Directory not found', theDir)
             # No image found.
-            if trace: g.trace('Not found', name)
+            if trace: g.trace('Icon not found', name)
             return None
         except Exception:
             g.es_print("exception loading:", fullname)
@@ -701,7 +703,13 @@ class LeoQtGui(leoGui.LeoGui):
          - then in .../leo/Icons,
          - as well as trying absolute path
         '''
+        trace = False and not g.unitTesting
+
+        def sfn(fn):
+            return g.shortFileName(fn.replace('/', '\\'), n=4)
+
         if self.color_theme:
+            if trace: g.trace('color_theme', self.color_theme)
             # normal, unthemed path to image
             pathname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
             pathname = g.os_path_normpath(g.os_path_realpath(pathname))
@@ -709,32 +717,22 @@ class LeoQtGui(leoGui.LeoGui):
                 testname = g.os_path_normpath(g.os_path_realpath(name))
             else:
                 testname = name
-            #D print(name, self.color_theme)
-            #D print('pathname', pathname)
-            #D print('testname', testname)
             if testname.startswith(pathname):
                 # try after removing icons dir from path
                 namepart = testname.replace(pathname, '').strip('\\/')
             else:
                 namepart = testname
-            # home dir first
-            fullname = g.os_path_finalize_join(
-                g.app.homeLeoDir, 'themes',
-                self.color_theme, 'Icons', namepart)
-            #D print('namepart', namepart)
-            #D print('fullname', fullname)
-            if g.os_path_exists(fullname):
-                return fullname
-            # then load dir
-            fullname = g.os_path_finalize_join(
-                g.app.loadDir, "..", 'themes',
-                self.color_theme, 'Icons', namepart)
-            #D print('fullname', fullname)
-            if g.os_path_exists(fullname):
-                return fullname
+            for base_dir in (g.app.homeLeoDir, g.app.loadDir):
+                fullname = g.os_path_finalize_join(
+                    base_dir, 'themes',
+                    self.color_theme, 'Icons', namepart)
+                if g.os_path_exists(fullname):
+                    if trace: g.trace('found', sfn(fullnamne))
+                    return fullname
         # original behavior, if name is absolute this will just return it
-        #D print(g.os_path_finalize_join(g.app.loadDir,"..","Icons",name))
-        return g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
+        fullname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
+        if trace: g.trace('found', g.os_path_exists(fullname), sfn(fullname))
+        return fullname
     #@+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     def getTreeImage(self, c, path):
         image = QtGui.QPixmap(path)
