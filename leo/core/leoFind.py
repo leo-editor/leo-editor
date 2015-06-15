@@ -667,7 +667,9 @@ class LeoFind:
         c = self.c
         ftm = c.findCommands.ftm
         s = ftm.getChangeText()
-        c.frame.log.selectTab('Find')
+        ### g.new_find
+        ### Now done in stateZeroHelper.
+        ### c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[: -1]
@@ -677,7 +679,9 @@ class LeoFind:
         c = self.c; k = c.k
         ftm = c.findCommands.ftm
         s = ftm.getFindText()
-        c.frame.log.selectTab('Find')
+        ### g.new_find
+        ### Now done in stateZeroHelper.
+        ### c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[: -1]
@@ -873,6 +877,11 @@ class LeoFind:
             g.trace('no self.w')
             return
         k.setLabelBlue(prefix)
+        # New in Leo 5.2: minibuffer modes shows options in status area.
+        if self.minibuffer_mode:
+            self.showFindOptionsInStatusArea()
+        else:
+            c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
@@ -1744,6 +1753,23 @@ class LeoFind:
                     i += 1 # Skip the escaped character.
             i += 1
         return s
+    #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea
+    def showFindOptionsInStatusArea(self):
+        '''Show find options in the status area.'''
+        c = self.c
+        ftm = c.findCommands.ftm
+        table = (
+            ('Word', ftm.check_box_whole_word),
+            ('Ignore-case', ftm.check_box_ignore_case),
+            ('reg-eXp', ftm.check_box_regexp),
+            ('Body', ftm.check_box_search_body),
+            ('Head', ftm.check_box_search_headline),
+            ('wrap-Around', ftm.check_box_wrap_around),
+            ('mark-Changes', ftm.check_box_mark_changes),
+            ('mark-Finds', ftm.check_box_mark_finds),
+        )
+        result = [option for option, ivar in table if ivar.checkState()]
+        c.frame.putStatusLine('Find: %s' % ' '.join(result))
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs(self, forward=False, regexp=False, word=False):
         '''

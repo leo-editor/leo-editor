@@ -1099,7 +1099,10 @@ class FindTabManager:
 
     def toggle_checkbox(self,checkbox_name):
         '''Toggle the value of the checkbox whose name is given.'''
-        find = self.c.findCommands
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
         d = {
             'ignore_case':     self.check_box_ignore_case,
             'mark_changes':    self.check_box_mark_changes,
@@ -1117,6 +1120,9 @@ class FindTabManager:
         w.toggle() # The checkbox callback toggles the ivar.
         new_val = getattr(find,checkbox_name)
         # g.trace(checkbox_name,old_val,new_val)
+        if find.minibuffer_mode:
+            find.showFindOptionsInStatusArea()
+
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QtWidgets.QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
@@ -2906,12 +2912,6 @@ class LeoQtLog(leoFrame.LeoLog):
             tw.installEventFilter(theFilter)
         # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
         tw.setMovable(True)
-    #@+node:ekr.20150610084508.1: *4* LeoQtLog.__repr__
-    def __repr__(self):
-        '''__repr__ for LeoQtLog.'''
-        return '<LeoQtLog: %s' % self.c.shortFileName()
-
-    __str__ = __repr__
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
@@ -2942,6 +2942,9 @@ class LeoQtLog(leoFrame.LeoLog):
         w.insertTab(0, logWidget, 'Log')
         c.findCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
+    #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
+    def getName(self):
+        return 'log' # Required for proper pane bindings.
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
