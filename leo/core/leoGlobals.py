@@ -2805,7 +2805,8 @@ def shortFileName(fileName, n=None):
     if n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
-        return '\\'.join(fileName.split('\\')[-n:])
+        # return '\\'.join(fileName.split('\\')[-n:])
+        return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 
 shortFilename = shortFileName
 #@+node:ekr.20150610125813.1: *3* g.splitLongFileName
