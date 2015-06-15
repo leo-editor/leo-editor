@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'qt_quicksearch.ui'
 #
 # Created: Sat Mar 14 22:38:41 2009
 #      by: PyQt4 UI code generator 4.4.2
 #
 # WARNING! All changes made in this file will be lost!
-
 ### from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5,QtCore,QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtWidgets
 QtGui = QtWidgets
     ### Not true in general!
 
 class Ui_LeoQuickSearchWidget(object):
     def setupUi(self, LeoQuickSearchWidget):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
-        LeoQuickSearchWidget.resize(868,572)
+        LeoQuickSearchWidget.resize(868, 572)
         self.verticalLayout_2 = QtGui.QVBoxLayout(LeoQuickSearchWidget)
-        self.verticalLayout_2.setContentsMargins(0,1,0,1)
+        self.verticalLayout_2.setContentsMargins(0, 1, 0, 1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
@@ -29,15 +27,12 @@ class Ui_LeoQuickSearchWidget(object):
         self.listWidget.setObjectName("listWidget")
         self.verticalLayout.addWidget(self.listWidget)
         self.verticalLayout_2.addLayout(self.verticalLayout)
-
         self.retranslateUi(LeoQuickSearchWidget)
         QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
-
     def retranslateUi(self, LeoQuickSearchWidget):
-        
         if isQt5:
             # QApplication.UnicodeUTF8 no longer exists.
-            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget","Form",None))
+            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None))
         else:
-            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget","Form",
+            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
                 None, QtGui.QApplication.UnicodeUTF8))
