@@ -10301,8 +10301,6 @@ QTreeView::branch:closed{
     background-color:           At-tree-bg;
 }
 
-
-
 QTreeView::branch:closed:has-children{
     image: AT-tree-image-closed;
 }
@@ -10311,7 +10309,9 @@ QTreeView::branch:open:has-children{
     image: At-tree-image-open;
 }
 
-===== */</t>
+===== */
+
+</t>
 <t tx="ekr.20140915194122.19475">/* Vim mode borders... */
 
 QTextEdit#richTextEdit[vim_state~="vim_normal"] {
