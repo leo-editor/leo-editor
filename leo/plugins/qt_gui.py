@@ -364,8 +364,7 @@ class LeoQtGui(leoGui.LeoGui):
             b.NoToAll: 'no-all'
         }.get(val, 'no')
     #@+node:ekr.20150615211522.1: *4* LeoQtGui.runNonModalDialog
-    def runNonModalDialog(self,c,w):
-        
+    def runNonModalDialog(self, c, w):
         if g.unitTesting: return
         g.trace(w)
         d = QtWidgets.QDialog()
@@ -375,7 +374,6 @@ class LeoQtGui(leoGui.LeoGui):
         d.setModal(False)
         d.show()
         d.exec_()
-
         # d.setText(message)
         # d.setIcon(b.Warning)
         # d.addButton('Ok', b.YesRole)
@@ -663,7 +661,7 @@ class LeoQtGui(leoGui.LeoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace and trace_cashed: # and not name.startswith('box'):
+            if trace and trace_cached: # and not name.startswith('box'):
                 g.trace('cached', id(image), name, image)
             return image
         try:

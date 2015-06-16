@@ -2948,9 +2948,6 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
-    #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
-    def getName(self):
-        return 'log' # Required for proper pane bindings.
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName):
         g.warning('color picker not ready for qt')
