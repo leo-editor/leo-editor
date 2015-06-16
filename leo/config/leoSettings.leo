@@ -286,6 +286,35 @@
 <v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
 </v>
 </v>
+<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
+<v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
+<v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
+<v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
+</v>
+<v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
+<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
+<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
+</v>
+<v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
+<v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
+<v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
+</v>
+<v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
+<v t="ekr.20140912075503.19272"><vh>@string stacked-widget-padding = 0px</vh></v>
+</v>
+<v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
+<v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
+</v>
+<v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+</v>
+</v>
+<v t="edward.20150615144141.1"><vh>Outline indicators</vh>
+<v t="edward.20150615144141.2"><vh>@string tree-image-closed = None</vh></v>
+<v t="edward.20150615144141.3"><vh>@string tree-image-open = None</vh></v>
+</v>
 <v t="ekr.20140915194122.23440"><vh>Plugins</vh>
 <v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
 <v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
@@ -331,31 +360,6 @@
 <v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
 </v>
 </v>
-<v t="ekr.20140915194122.23442"><vh>Margins &amp; borders</vh>
-<v t="ekr.20140912075503.19338"><vh>Dialogs styles</vh>
-<v t="ekr.20140912075503.19339"><vh>@string dialog-border = 2px</vh></v>
-<v t="ekr.20140912075503.19340"><vh>@string dialog-margin = 2px</vh></v>
-</v>
-<v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
-<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
-<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
-</v>
-<v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
-<v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
-<v t="ekr.20140912075503.19329"><vh>@string minibuffer-margin = 2px</vh></v>
-</v>
-<v t="ekr.20140912075503.19270"><vh>Stacked widgets styles</vh>
-<v t="ekr.20140912075503.19272"><vh>@string stacked-widget-padding = 0px</vh></v>
-</v>
-<v t="ekr.20140915194122.23444"><vh>Status area styles</vh>
-<v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
-</v>
-<v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
-<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
-<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
-<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20131119143342.18879"><vh>Qt Gui styles sheet</vh>
 <v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
@@ -364,7 +368,7 @@
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
 <v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
 <v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
 <v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
@@ -2004,6 +2008,8 @@
 </v>
 </v>
 <v t="ekr.20140912072521.19160"></v>
+<v t="ekr.20140915194122.19474"></v>
+<v t="ekr.20140915194122.19470"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2565,6 +2571,9 @@ Foreground color must also be specified for either setting to take effect.</t>
 <t tx="edward.20150614045858.1"></t>
 <t tx="edward.20150614045915.1"></t>
 <t tx="edward.20150614045931.1"></t>
+<t tx="edward.20150615144141.1"></t>
+<t tx="edward.20150615144141.2">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
+<t tx="edward.20150615144141.3">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
 <t tx="ekr.20041119034357.1">@language rest
 @wrap
 
@@ -10249,7 +10258,7 @@ QTreeWidget {
     font-size:                  @tree-font-size;
     font-weight:                @tree-font-weight;
     font-style:                 @tree-font-style;
-    show-decoration-selected:   1 /* 1: select entire row */
+    show-decoration-selected:   0; /* 1: select entire row */
 }
 
 QTreeWidget QLineEdit {
@@ -10279,7 +10288,30 @@ QTreeWidget::item:selected {
     font-weight:        @edit-label-font-weight;
     font-style:         @edit-label-font-style;
 }
-</t>
+
+/* =====
+
+QTreeView::branch:open{
+    color:                      At-tree-fg;
+    background-color:           At-tree-bg;
+}
+
+QTreeView::branch:closed{
+    color:                      At-tree-fg;
+    background-color:           At-tree-bg;
+}
+
+
+
+QTreeView::branch:closed:has-children{
+    image: AT-tree-image-closed;
+}
+
+QTreeView::branch:open:has-children{
+    image: At-tree-image-open;
+}
+
+===== */</t>
 <t tx="ekr.20140915194122.19475">/* Vim mode borders... */
 
 QTextEdit#richTextEdit[vim_state~="vim_normal"] {
