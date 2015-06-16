@@ -363,6 +363,25 @@ class LeoQtGui(leoGui.LeoGui):
             b.YesToAll: 'yes-all',
             b.NoToAll: 'no-all'
         }.get(val, 'no')
+    #@+node:ekr.20150615211522.1: *4* LeoQtGui.runNonModalDialog
+    def runNonModalDialog(self,c,w):
+        
+        if g.unitTesting: return
+        g.trace(w)
+        d = QtWidgets.QDialog()
+        layout = QtWidgets.QVBoxLayout(d)
+        layout.addWidget(w)
+        d.setLayout(layout)
+        d.setModal(False)
+        d.show()
+        d.exec_()
+
+        # d.setText(message)
+        # d.setIcon(b.Warning)
+        # d.addButton('Ok', b.YesRole)
+        # c.in_qt_dialog = True
+        # d.exec_()
+        # c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title, startdir):
         """Create and run an Qt open directory dialog ."""

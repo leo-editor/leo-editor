@@ -213,12 +213,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
         tabWidget.addTab(findScrollArea, 'Find')
-        if 1: # Do this later, in LeoFind.finishCreate
-            self.findScrollArea = findScrollArea
-            self.findTab = findTab
-        else:
-            self.createFindTab(findTab, findScrollArea)
-            findScrollArea.setWidget(findTab)
+        # Do this later, in LeoFind.finishCreate
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        ###
+        # self.createFindTab(findTab, findScrollArea)
+        # findScrollArea.setWidget(findTab)
         # Spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('spellTab')
@@ -2940,7 +2940,10 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        c.findCommands.openFindTab(show=False)
+        if g.new_find:
+            pass
+        else:
+            c.findCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
