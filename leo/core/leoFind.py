@@ -317,7 +317,7 @@ class LeoFind:
         c = self.c
         if g.new_find:
             w = c.frame.top.findTab
-            g.app.gui.runNonModalDialog(c,w)
+            g.app.gui.runNonModalDialog(c, w)
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
@@ -340,7 +340,7 @@ class LeoFind:
         c = self.c
         if g.new_find:
             w = c.frame.top.findTab
-            g.app.gui.runNonModalDialog(c,w)
+            g.app.gui.runNonModalDialog(c, w)
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
@@ -891,7 +891,7 @@ class LeoFind:
         if self.minibuffer_mode:
             self.showFindOptionsInStatusArea()
         else:
-            c.frame.log.selectTab('Find')
+            self.c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
