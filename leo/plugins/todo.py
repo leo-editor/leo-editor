@@ -405,6 +405,9 @@ class todoController:
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
         self.loadAllIcons(setDirty=False)
+
+        # correct spinTime suffix:
+        self.ui.UI.spinTime.setSuffix(" " + self.time_name)
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
