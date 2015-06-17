@@ -31,7 +31,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -131,8 +131,8 @@
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.872"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
+<v t="tbrown.20080613095157.2" a="E"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
