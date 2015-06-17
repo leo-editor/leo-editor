@@ -1094,7 +1094,7 @@ class StyleSheetManager:
         passes = 10
         to_do = self.find_constants_referenced(sheet)
         changed = True
-        sheet, to_do = self.set_indicator_paths(sheet, to_do)
+        sheet = self.set_indicator_paths(sheet)
         while passes and to_do and changed:
             changed = False
             to_do.sort(key=len, reverse=True)
@@ -1225,23 +1225,46 @@ class StyleSheetManager:
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
     #@+node:ekr.20150617090104.1: *4* ssm.set_indicator_paths
-    def set_indicator_paths(self, sheet, to_do):
+    r_path = re.compile(r'\bimage: @tree-image-(open|closed)')
+
+    def set_indicator_paths(self, sheet):
         '''
         In the stylesheet, replace (if they exist)::
             
-            image: @tree-image-closed whatever/nodes-dark/triangles/closed.png
-            image: @tree-image-open whatever/nodes-dark/triangles/open.png
-            
+            image: @tree-image-closed
+            image: @tree-image-open
+
         by::
+
+            url(/path1/path2/closed.png)
+            url(/path1/path2/open.png)
             
-            url(<abspath to loadDir>/leo/Icons/nodes-dark/triangles/closed.png)
-            url(<abspath to loadDir>/leo/Icons/nodes-dark/triangles/open.png)
+        where path1 is the path to leo/Icons/nodes-dark
+        and   path2 is either triangles or plusminus
             
         Return the updated stylesheet and remove tree-image-closed/open from to_do.
         '''
-        aList = re.findall(r'^\s*image:\s*@tree-image-(open|closed)\s*(\S)*',sheet)
-        # g.trace(len(aList))
-        return sheet, to_do
+        c = self.c
+        for mo in re.finditer(self.r_path, sheet):
+            setting = 'tree-image-%s' % mo.group(1)
+            s = c.config.getString(setting)
+            if s:
+                table = (
+                    g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', s),
+                    g.os_path_finalize_join('~', s),
+                )
+                for path in table:
+                    if g.os_path_exists(path):
+                        old = mo.group(0)
+                        new = 'image: url(%s)' % path
+                        sheet = sheet.replace(old, new)
+                        break
+                else:
+                    g.es_print('file not found: %s' % (path), color='red')
+                    g.es_print('in setting: %s' % setting)
+            else:
+                g.es_print('Referenced setting not found: @string %s' % setting)
+        return sheet
     #@+node:ekr.20140916170549.19551: *3* ssm.get_data
     def get_data(self, setting):
         '''Return the value of the @data node for the setting.'''
