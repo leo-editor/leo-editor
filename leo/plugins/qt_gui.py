@@ -1236,13 +1236,17 @@ class StyleSheetManager:
 
         by::
 
-            url(/path1/path2/closed.png)
-            url(/path1/path2/open.png)
+            url(path/closed.png)
+            url(path/open.png)
             
-        where path1 is the path to leo/Icons/nodes-dark
-        and   path2 is either triangles or plusminus
+        path can be relative to ~ or to leo/Icons.
+        
+        Assuming that ~/myIcons/closed.png exists, either of these will work::
             
-        Return the updated stylesheet and remove tree-image-closed/open from to_do.
+            @string tree-image-closed = nodes-dark/triangles/closed.png
+            @string tree-image-closed = myIcons/closed.png
+            
+        Return the updated stylesheet.
         '''
         c = self.c
         for mo in re.finditer(self.r_path, sheet):
