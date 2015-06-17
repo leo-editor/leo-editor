@@ -1085,39 +1085,16 @@ class StyleSheetManager:
     def expand_css_constants(self, sheet, font_size_delta=None):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
-        verbose = True
+        trace_color = False
+        trace_result = True
         c = self.c
-        if 1:
-            constants = {}
-        else:
-            constants = self.find_constants_defined(sheet)
         whine = None
-        # whine at the user if they use old style style-sheet comment
-        # definition, but only once
-        deltas = c._style_deltas
-        # legacy
-        if font_size_delta:
-            deltas['font-size-body'] = font_size_delta
-        if trace: g.trace('c._style_deltas', c._style_deltas)
-        for delta in c._style_deltas:
-            # adjust @font-size-body by font_size_delta
-            # easily extendable to @font-size-*
-            val = c.config.getString(delta)
-            passes = 10
-            while passes and val and val.startswith('@'):
-                key = g.app.config.canonicalizeSettingName(val[1:])
-                val = c.config.settingsDict.get(key)
-                if val:
-                    val = val.val
-                passes -= 1
-            if deltas[delta] and (val is not None):
-                size = ''.join(i for i in val if i in '01234567890.')
-                units = ''.join(i for i in val if i not in '01234567890.')
-                size = max(1, int(size) + deltas[delta])
-                constants["@" + delta] = "%s%s" % (size, units)
+        # Warn once if the stylesheet uses old style style-sheet comment
+        constants, deltas = self.adjust_sizes(font_size_delta)
         passes = 10
         to_do = self.find_constants_referenced(sheet)
         changed = True
+        sheet, to_do = self.set_indicator_paths(sheet, to_do)
         while passes and to_do and changed:
             changed = False
             to_do.sort(key=len, reverse=True)
@@ -1141,7 +1118,7 @@ class StyleSheetManager:
                     elif key in self.color_db:
                         value = self.color_db.get(key)
                         value = '%s /* %s */' % (value, key)
-                        if trace: g.trace('found color', key, value)
+                        if trace and trace_color: g.trace('found color', key, value)
                 if value:
                     sheet = re.sub(
                         const + "(?![-A-Za-z0-9_])",
@@ -1160,8 +1137,37 @@ class StyleSheetManager:
         if not passes and to_do:
             g.es("To many iterations of substitution")
         sheet = sheet.replace('\\\n', '') # join lines ending in \
-        if trace and verbose: g.trace('returns...\n', sheet)
+        if trace and trace_result: g.trace('returns...\n', sheet)
         return sheet
+    #@+node:ekr.20150617085045.1: *4* ssm.adjust_sizes
+    def adjust_sizes(self, font_size_delta):
+        '''Adjust constants to reflect c._style_deltas.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        constants = {} # old: self.find_constants_defined(sheet)
+        deltas = c._style_deltas
+        # legacy
+        if font_size_delta:
+            deltas['font-size-body'] = font_size_delta
+        if trace:
+            g.trace('c._style_deltas', c._style_deltas)
+        for delta in c._style_deltas:
+            # adjust @font-size-body by font_size_delta
+            # easily extendable to @font-size-*
+            val = c.config.getString(delta)
+            passes = 10
+            while passes and val and val.startswith('@'):
+                key = g.app.config.canonicalizeSettingName(val[1:])
+                val = c.config.settingsDict.get(key)
+                if val:
+                    val = val.val
+                passes -= 1
+            if deltas[delta] and (val is not None):
+                size = ''.join(i for i in val if i in '01234567890.')
+                units = ''.join(i for i in val if i not in '01234567890.')
+                size = max(1, int(size) + deltas[delta])
+                constants["@" + delta] = "%s%s" % (size, units)
+        return constants, deltas
     #@+node:tbrown.20131120093739.27085: *4* ssm.find_constants_referenced
     def find_constants_referenced(self, text):
         """find_constants - Return a list of constants referenced in the supplied text,
@@ -1218,6 +1224,24 @@ class StyleSheetManager:
             print("Ten levels of recursion processing styles, abandoned.")
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
+    #@+node:ekr.20150617090104.1: *4* ssm.set_indicator_paths
+    def set_indicator_paths(self, sheet, to_do):
+        '''
+        In the stylesheet, replace (if they exist)::
+            
+            image: @tree-image-closed whatever/nodes-dark/triangles/closed.png
+            image: @tree-image-open whatever/nodes-dark/triangles/open.png
+            
+        by::
+            
+            url(<abspath to loadDir>/leo/Icons/nodes-dark/triangles/closed.png)
+            url(<abspath to loadDir>/leo/Icons/nodes-dark/triangles/open.png)
+            
+        Return the updated stylesheet and remove tree-image-closed/open from to_do.
+        '''
+        aList = re.findall(r'^\s*image:\s*@tree-image-(open|closed)\s*(\S)*',sheet)
+        # g.trace(len(aList))
+        return sheet, to_do
     #@+node:ekr.20140916170549.19551: *3* ssm.get_data
     def get_data(self, setting):
         '''Return the value of the @data node for the setting.'''
