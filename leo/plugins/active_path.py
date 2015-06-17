@@ -487,6 +487,7 @@ def openDir(c,parent,d):
             if len(directive) > 1:
                 entry = entry[len(directive[0]):].strip()
         #find existing inc/exc nodes to remove
+        #using p.h allows for example exc=/ to remove all directories 
         if not checkIncExc(p.h,inc,exc, regEx) or \
                (excdirs and entry in dirs) or \
                (excfiles and entry in files):
@@ -501,14 +502,13 @@ def openDir(c,parent,d):
             found.doDelete()
 
     # dirs trimmed by toRemove to remove redundant checks
-    # .strip('/') allows for example exc=/ to remove all directories 
     for d2 in set(dirs)-set([h.strip('/') for h in toRemove]):
         if d2 in oldlist:
             oldlist.discard(d2)
         else:
             if checkIncExc(d2,
-                           [i.strip('/') for i in inc if i.startswith('/')], 
-                           [e.strip('/') for e in exc if e.startswith('/')], 
+                           [i.strip('/') for i in inc], 
+                           [e.strip('/') for e in exc], 
                            regEx) and not excdirs:
                 newlist.append('/'+d2+'/')
                 
