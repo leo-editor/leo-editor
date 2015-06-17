@@ -21,6 +21,9 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
+new_find = False
+if new_find:
+    print('\n***** new_find')
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:
@@ -2805,9 +2808,25 @@ def shortFileName(fileName, n=None):
     if n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
-        return '\\'.join(fileName.split('\\')[-n:])
+        # return '\\'.join(fileName.split('\\')[-n:])
+        return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 
 shortFilename = shortFileName
+#@+node:ekr.20150610125813.1: *3* g.splitLongFileName
+def splitLongFileName(fn, limit=40):
+    '''Return fn, split into lines at slash characters.'''
+    aList = fn.replace('\\', '/').split('/')
+    n, result = 0, []
+    for i, s in enumerate(aList):
+        n += len(s)
+        result.append(s)
+        if i + 1 < len(aList):
+            result.append('/')
+            n += 1
+        if n > limit:
+            result.append('\n')
+            n = 0
+    return ''.join(result)
 #@+node:ekr.20050104135720: *3* g.Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241: *4* g.update_file_if_changed
 # This is part of the tangle code.
@@ -5461,7 +5480,7 @@ def os_path_expandExpression(s, **keys):
         return ''
     i = s.find('{{')
     j = s.find('}}')
-    if - 1 < i < j:
+    if -1 < i < j:
         exp = s[i + 2: j].strip()
         if exp:
             try:

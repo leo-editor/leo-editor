@@ -4,30 +4,23 @@
 #@@first
 #@@language python
 #@@tabwidth -4
-
 """
 Translate a few menu items into Simplified Chinese
 本插件将部分Leo菜单翻译成简体中文
    By Zhang Le <ejoy@xinhuanet.com>
 
 """
-
 # Chinese translation completed by Zhang Le, May 2004
 # based on the french_fm.py
-
-# NOTE: The accelerated key (&) failed to work on Chinese text, probably because 
-# the width of one Chinese character is 2 not 1, which confuses Tk. I'm not sure 
-# whether this is a bug of Tk or a bug of Leo. Although I do not use & in the 
+# NOTE: The accelerated key (&) failed to work on Chinese text, probably because
+# the width of one Chinese character is 2 not 1, which confuses Tk. I'm not sure
+# whether this is a bug of Tk or a bug of Leo. Although I do not use & in the
 # Chinese menu, Tk places an underline below the first character of each menu
 # entry. Another bug in Tk?
-
 # Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
 # All the headlines appear as "??".
-
 import leo.core.leoGlobals as g
-
 __version__ = "1.1" # Set version for the plugin handler.
-
 #@+others
 #@+node:ekr.20111104210837.9689: ** init
 def init():

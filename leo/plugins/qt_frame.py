@@ -213,12 +213,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
         tabWidget.addTab(findScrollArea, 'Find')
-        if 1: # Do this later, in LeoFind.finishCreate
-            self.findScrollArea = findScrollArea
-            self.findTab = findTab
-        else:
-            self.createFindTab(findTab, findScrollArea)
-            findScrollArea.setWidget(findTab)
+        # Do this later, in LeoFind.finishCreate
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        ###
+        # self.createFindTab(findTab, findScrollArea)
+        # findScrollArea.setWidget(findTab)
         # Spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('spellTab')
@@ -1099,7 +1099,10 @@ class FindTabManager:
 
     def toggle_checkbox(self,checkbox_name):
         '''Toggle the value of the checkbox whose name is given.'''
-        find = self.c.findCommands
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
         d = {
             'ignore_case':     self.check_box_ignore_case,
             'mark_changes':    self.check_box_mark_changes,
@@ -1117,6 +1120,9 @@ class FindTabManager:
         w.toggle() # The checkbox callback toggles the ivar.
         new_val = getattr(find,checkbox_name)
         # g.trace(checkbox_name,old_val,new_val)
+        if find.minibuffer_mode:
+            find.showFindOptionsInStatusArea()
+
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QtWidgets.QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
@@ -2116,21 +2122,33 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # An added editor window doesn't display line/col
             te = body.widget
             if isinstance(te, QtWidgets.QTextEdit):
+                offset = c.p.textOffset()
                 cr = te.textCursor()
                 bl = cr.block()
                 col = cr.columnNumber()
                 row = bl.blockNumber() + 1
-                line = bl.text()
-                if col > 0:
-                    s2 = line[0: col]
-                    col = g.computeWidth(s2, c.tab_width)
-                fcol = col + c.currentPosition().textOffset()
-                # g.trace('fcol',fcol,'te',id(te),g.callers(2))
-                # g.trace(row,col,fcol)
+                line = g.u(bl.text())
+                # Fix bug #195: fcol when using @first directive is inaccurate
+                # https://github.com/leo-editor/leo-editor/issues/195
+                offset = c.p.textOffset()
+                fcol_offset = 0
+                s2 = line[0: col]
+                col = g.computeWidth(s2, c.tab_width)
+                i = line.find('<<')
+                j = line.find('>>')
+                if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
+                    offset = None
+                else:
+                    for tag in ('@first ', '@last '):
+                        if line.startswith(tag):
+                            fcol_offset = len(tag)
+                            break
+                # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
+                fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
-                row, col, fcol = 0, 0, 0
+                row, col, fcol = 0, 0, ''
             self.put1(
-                "line: %d, col: %d, fcol: %d" % (row, col, fcol))
+                "line: %d, col: %d, fcol: %s" % (row, col, fcol))
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
@@ -2922,7 +2940,10 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        c.findCommands.openFindTab(show=False)
+        if g.new_find:
+            pass
+        else:
+            c.findCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
@@ -3245,7 +3266,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         Adds a submenu to the parent menu, or the menubar."""
         # menu and parent are a QtMenuWrappers, subclasses of  QMenu.
         n = underline
-        if - 1 < n < len(label):
+        if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         menu.setTitle(label)
         if parent:
@@ -3269,7 +3290,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if trace: g.trace(label)
             # command is always add_commandCallback,
             # defined in c.add_command.
-        if - 1 < n < len(label):
+        if -1 < n < len(label):
             label = label[: n] + '&' + label[n:]
         if accel:
             label = '%s\t%s' % (label, accel)
@@ -3319,7 +3340,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu(menuName)
         if menu and label:
             n = underline or 0
-            if - 1 > n > len(label):
+            if -1 > n > len(label):
                 label = label[: n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:

@@ -393,7 +393,7 @@ class ParserBaseClass:
         i = name.find('[')
         j = name.find(']')
         # g.trace(kind,name,val)
-        if - 1 < i < j:
+        if -1 < i < j:
             items = name[i + 1: j]
             items = items.split(',')
             name = name[: i] + name[j + 1:].strip()
@@ -765,7 +765,7 @@ class ParserBaseClass:
         name = name.strip()
         i = name.find('[')
         j = name.find(']')
-        if - 1 < i < j:
+        if -1 < i < j:
             items = name[i + 1: j]
             items = items.split(',')
             items = [item.strip() for item in items]

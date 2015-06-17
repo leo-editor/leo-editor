@@ -29,7 +29,8 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             # leoAst.AstPatternFormatter()
         self.trace = False
     #@+others
-    #@+node:ekr.20150606035006.1: *3* sd.context_names
+    #@+node:ekr.20150609053332.1: *3* sd.Helpers
+    #@+node:ekr.20150606035006.1: *4* sd.context_names
     def context_names(self):
         '''Return the present context names.'''
         result = []
@@ -52,15 +53,55 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
                 break
         # g.trace(list(reversed(result)))
         return reversed(result)
-    #@+node:ekr.20150606024455.16: *3* sd.Call
+    #@+node:ekr.20150609053010.1: *4* sd.format
+    def format(self, node):
+        '''Return the formatted version of an Ast Node.'''
+        return self.formatter.format(node).strip()
+    #@+node:ekr.20150606024455.62: *4* sd.visit
+    def visit(self, node):
+        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        method = getattr(self, 'do_' + node.__class__.__name__)
+        method(node)
+
+    def visit_children(self, node):
+        assert False, 'must visit children explicitly'
+    #@+node:ekr.20150609052952.1: *3* sd.Visitors
+    #@+node:ekr.20150607200422.1: *4* sd.Assign
+    # Assign(expr* targets, expr value)
+
+    def do_Assign(self, node):
+        # Visit and format.
+        value = self.format(self.visit(node.value))
+        assign_tuples = []
+        for target in node.targets:
+            target = self.format(self.visit(target))
+            s = '%s=%s' % (target, value)
+            context2, context1 = self.context_names()
+            assign_tuple = context2, context1, s
+            assign_tuples.append(assign_tuple)
+            # Update data.
+            aList = self.controller.assigns_d.get(target, [])
+            aList.extend(assign_tuples)
+            self.controller.calls_d[target] = aList
+    #@+node:ekr.20150607200439.1: *4* sd.AugAssign
+    # AugAssign(expr target, operator op, expr value)
+
+    def do_AugAssign(self, node):
+        # Visit and update data.
+        target = self.format(self.visit(node.target))
+        s = '%s=%s' % (target, self.format(self.visit(node.value)))
+        context2, context1 = self.context_names()
+        assign_tuple = context2, context1, s
+        aList = self.controller.assigns_d.get(target, [])
+        aList.append(assign_tuple)
+        self.controller.calls_d[target] = aList
+    #@+node:ekr.20150606024455.16: *4* sd.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self, node):
-        # Format
-        s = self.formatter.format(node)
-        if self.trace: g.trace(s)
         # Update data
-        name = self.formatter.format(node.func)
+        s = self.format(node)
+        name = self.format(node.func)
         context2, context1 = self.context_names()
         call_tuple = context2, context1, s
         aList = self.controller.calls_d.get(name, [])
@@ -76,13 +117,13 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(node.starargs)
         if getattr(node, 'kwargs', None):
             self.visit(node.kwargs)
-    #@+node:ekr.20150606024455.3: *3* sd.ClassDef
+    #@+node:ekr.20150606024455.3: *4* sd.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
     def do_ClassDef(self, node):
-        # Format
+        # Format.
         if node.bases:
-            bases = [self.formatter.format(z) for z in node.bases]
+            bases = [self.format(z) for z in node.bases]
             s = 'class %s(%s):' % (node.name, ','.join(bases))
         else:
             s = 'class %s:' % node.name
@@ -104,12 +145,12 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(z)
         # Leave the context.
         self.context_stack.pop()
-    #@+node:ekr.20150606024455.4: *3* sd.FunctionDef
+    #@+node:ekr.20150606024455.4: *4* sd.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef(self, node):
         # Format.
-        args = self.formatter.format(node.args) if node.args else ''
+        args = self.format(node.args) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)
         if self.trace: g.trace(s)
         # Enter the new context.
@@ -128,12 +169,12 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(z)
         # Leave the context.
         self.context_stack.pop()
-    #@+node:ekr.20150606024455.55: *3* sd.Return
+    #@+node:ekr.20150606024455.55: *4* sd.Return
     # Return(expr? value)
 
     def do_Return(self, node):
         # Format...
-        s = self.formatter.format(node)
+        s = self.format(node)
         if self.trace: g.trace(s)
         # Update data
         context, name = self.context_names()
@@ -144,14 +185,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Visit.
         if node.value:
             self.visit(node.value)
-    #@+node:ekr.20150606024455.62: *3* sd.visit
-    def visit(self, node):
-        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-        method = getattr(self, 'do_' + node.__class__.__name__)
-        method(node)
-
-    def visit_children(self, node):
-        assert False, 'must visit children explicitly'
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:
@@ -275,6 +308,8 @@ class ShowData:
     #@+node:ekr.20150604165500.1: *3*  ctor
     def __init__(self, c):
         self.c = c
+        # Data.
+        self.assigns_d = {}
         self.calls_d = {}
         self.classes_d = {}
         self.context_stack = []

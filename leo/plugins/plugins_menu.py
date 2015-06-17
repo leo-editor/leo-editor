@@ -52,10 +52,8 @@ __plugin_priority__
 
 '''
 #@-<< docstring >>
-
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.
-
 # **Important**: this plugin is gui-independent.
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
@@ -65,7 +63,6 @@ if g.isPython3:
 else:
     import ConfigParser
 import os
-
 #@-<< imports >>
 __version__ = "2.3"
 __plugin_name__ = "Plugins Menu"
@@ -74,19 +71,18 @@ __plugin_group__ = "Core"
 #@+others
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
-def addPluginMenuItem (p,c):
+def addPluginMenuItem(p, c):
     """
     @param p:  Plugin object for one currently loaded plugin
     @param c:  Leo-editor "commander" for the current .leo file
     """
-
     trace = False
-    plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
-
+    plugin_name = p.name.split('.')[-1] # TNB 20100304 strip module path
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
-        def callback (event,c=c,p=p):
+
+        def callback(event, c=c, p=p):
             path, name = g.os_path_split(p.filename)
             name, ext = g.os_path_splitext(name)
             pc = g.app.pluginsController
@@ -94,8 +90,9 @@ def addPluginMenuItem (p,c):
                 p.hastoplevel(c)
             else:
                 p.about()
-        table = ((plugin_name,None,callback),)
-        c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
+
+        table = ((plugin_name, None, callback),)
+        c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table, dynamicMenu=True)
     elif p.hasconfig or p.othercmds:
         #@+<< Get menu location >>
         #@+node:pap.20050305153147: *4* << Get menu location >>
@@ -104,34 +101,36 @@ def addPluginMenuItem (p,c):
         else:
             menu_location = "&Plugins"
         #@-<< Get menu location >>
-        m = c.frame.menu.createNewMenu(plugin_name,menu_location)
-        table = [("About...",None,p.about)]
+        m = c.frame.menu.createNewMenu(plugin_name, menu_location)
+        table = [("About...", None, p.about)]
         if p.hasconfig:
-            table.append(("Properties...",None,p.properties))
+            table.append(("Properties...", None, p.properties))
         if p.othercmds:
-            table.append(("-",None,None))
+            table.append(("-", None, None))
             items = []
             d = p.othercmds
             for cmd in list(d.keys()):
                 fn = d.get(cmd)
                 if 1:
-                    items.append((cmd,None,fn),)
+                    items.append((cmd, None, fn),)
                         # No need for a callback.
                 else: ### To be deleted.
                     # New in 4.4: this callback gets called with an event arg.
-                    def cmd_callback (event,c=c,fn=fn):
+
+                    def cmd_callback(event, c=c, fn=fn):
                         fn(c)
-                    items.append((cmd,None,cmd_callback),)
+
+                    items.append((cmd, None, cmd_callback),)
             items.sort()
             table.extend(items)
         if trace: g.trace(table)
-        c.frame.menu.createMenuEntries(m,table,dynamicMenu=True)
+        c.frame.menu.createMenuEntries(m, table, dynamicMenu=True)
     else:
-        table = ((plugin_name,None,p.about),)
+        table = ((plugin_name, None, p.about),)
         if trace: g.trace(plugin_name)
-        c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
+        c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table, dynamicMenu=True)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
-def createPluginsMenu (tag,keywords):
+def createPluginsMenu(tag, keywords):
     '''Create the plugins menu: calld from create-optional-menus hook.'''
     c = keywords.get("c")
     if not c: return
@@ -139,8 +138,10 @@ def createPluginsMenu (tag,keywords):
     lmd = pc.loadedModules
     if lmd:
         impModSpecList = list(lmd.keys())
+
         def key(aList):
             return aList.split('.')[-1].lower()
+
         impModSpecList.sort(key=key)
         plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
@@ -158,39 +159,38 @@ def add_menu_from_settings(c):
     # Add any items in @menu plugins
     aList = c.config.getMenusList()
     for z in aList:
-        kind,val,val2 = z
+        kind, val, val2 = z
         if kind.startswith('@menu'):
             name = kind[len('@menu'):].strip().strip('&')
             if name.lower() == 'plugins':
                 table = []
-                for kind2,val21,val22 in val:
+                for kind2, val21, val22 in val:
                     if kind2 == '@item':
                         # Similar to createMenuFromConfigList.
                         name = str(val21) # Item names must always be ascii.
                         if val21:
                             # Translated names can be unicode.
-                            table.append((val21,name),)
+                            table.append((val21, name),)
                         else:
                             table.append(name)
                 if table:
-                    c.frame.menu.createMenuEntries(c.pluginsMenu,table)
+                    c.frame.menu.createMenuEntries(c.pluginsMenu, table)
                 return
 #@+node:ekr.20070302175530: *3* init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.unitTesting:
         return False
     if not g.app.gui:
         g.app.createDefaultGui()
-    ok = g.app.gui.guiName() in ('qt','qttabs')
+    ok = g.app.gui.guiName() in ('qt', 'qttabs')
     if ok:
-        g.registerHandler("create-optional-menus",createPluginsMenu)
+        g.registerHandler("create-optional-menus", createPluginsMenu)
         g.plugin_signon(__name__)
     return ok
 #@+node:pap.20050305152751: ** class PluginDatabase
 class _PluginDatabase:
     """Stores information on Plugins"""
-
     #@+others
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self):
@@ -226,9 +226,7 @@ class _PluginDatabase:
 PluginDatabase = _PluginDatabase()
 #@+node:EKR.20040517080555.3: ** class Plugin
 class PlugIn:
-
     """A class to hold information about one plugin"""
-
     #@+others
     #@+node:EKR.20040517080555.4: *3* __init__ (Plugin) & helper
     def __init__(self, plgMod, c=None):
@@ -252,9 +250,8 @@ class PlugIn:
         except AttributeError:
             self.priority = 200 - ord(self.name[0])
         self.doc = self.mod.__doc__
-        self.version = self.mod.__dict__.get("__version__","<unknown>")
+        self.version = self.mod.__dict__.get("__version__", "<unknown>")
         # g.pr(self.version,g.shortFileName(filename))
-        
         # Configuration...
         self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
         self.hasconfig = os.path.isfile(self.configfilename)
@@ -264,7 +261,6 @@ class PlugIn:
             # This is used to apply changes in configuration from the properties window
         self.create_menu()
             # Create menu items from cmd_* functions.
-
         # Use a toplevel menu item instead of the default About.
         try:
             self.hastoplevel = self.mod.__dict__["topLevelMenu"]
@@ -279,20 +275,16 @@ class PlugIn:
         self.othercmds = {}
         for item in self.mod.__dict__.keys():
             func = self.mod.__dict__[item]
-            if getattr(func,'is_command',None):
+            if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
-
     #@+node:EKR.20040517080555.8: *3* about
-    def about(self,event=None):
-
+    def about(self, event=None):
         """Put information about this plugin in a scrolledMessage dialog."""
-
         c = self.c
         if self.doc:
-            msg = self.doc.strip()+'\n'
+            msg = self.doc.strip() + '\n'
         else:
             msg = ''
-
         # 2011/10/20: runScrolledMessageDialog looks for a scrolledmessage hook.
         # Don't do it here.
         # g.app.gui.runScrolledMessageDialog(
@@ -304,7 +296,7 @@ class PlugIn:
             # short_title = self.name,
             # title="About Plugin ( " + self.name + " )",
         # )
-        c.putHelpFor(msg,short_title=self.name)
+        c.putHelpFor(msg, short_title=self.name)
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name
@@ -323,9 +315,7 @@ class PlugIn:
         return name.capitalize()
     #@+node:EKR.20040517080555.9: *3* properties
     def properties(self, event=None):
-
         """Display a modal properties dialog for this plugin"""
-
         if self.hasapply:
 
             def callback(name, data):
@@ -334,48 +324,33 @@ class PlugIn:
                 self.writeConfiguration()
 
             buttons = ['Apply']
-
         else:
             callback = None
             buttons = []
-
         self.config = config = ConfigParser.ConfigParser()
         config.read(self.configfilename)
-
         # Load config data into dictionary of dictianaries.
         # Do no allow for nesting of sections.
-
         data = {}
-
         for section in config.sections():
             options = {}
             for option in config.options(section):
                 #g.pr('config', section, option )
-                options[option] = g.u(config.get(section,option))
+                options[option] = g.u(config.get(section, option))
             data[section] = options
-
         # Save the original config data. This will not be changed.
-
         self.sourceConfig = data
-
         # Open a modal dialog and wait for it to return.
         # Provide the dialog with a callback for the 'Appply' function.
-
         title = "Properties of " + self.name
-
         result, data = g.app.gui.runPropertiesDialog(title, data, callback, buttons)
-
         if result != 'Cancel' and data:
             self.updateConfiguration(data)
             self.writeConfiguration()
-
     #@+node:bob.20071209102050: *3* updateConfiguration
     def updateConfiguration(self, data):
         """Update the config object from the dialog 'data' structure"""
-
         # Should we clear the config object first?
-
-
         for section in data.keys():
             for option in data[section].keys():
                 # This is configParser.set, not g.app.config.set, so it is ok.
@@ -383,14 +358,12 @@ class PlugIn:
     #@+node:bob.20071208033759: *3* writeConfiguration
     def writeConfiguration(self):
         """Write the configuration to a file."""
-
         f = open(self.configfilename, "w")
         try:
             self.config.write(f)
         except:
             f.close()
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -405,6 +405,9 @@ class todoController:
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
         self.loadAllIcons(setDirty=False)
+
+        # correct spinTime suffix:
+        self.ui.UI.spinTime.setSuffix(" " + self.time_name)
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
@@ -1149,6 +1152,7 @@ class todoController:
         """
 
         if self._widget_to_style:
+            # pylint: disable = unpacking-non-sequence
             # this would be neat, but hasPendingEvents() always returns True
             # (google it), so check time has passed instead
             # if QtGui.QApplication.instance().hasPendingEvents():

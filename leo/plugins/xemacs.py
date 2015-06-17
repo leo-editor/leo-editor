@@ -12,14 +12,11 @@ appear in Leo.
 
 '''
 #@-<< docstring >>
-
 #@@language python
 #@@tabwidth -4
-
 #@+<< imports >>
 #@+node:ekr.20050218024153: ** << imports >> (xemacs.py)
 import leo.core.leoGlobals as g
-
 import os
 import sys
 #@-<< imports >>
@@ -52,12 +49,9 @@ __version__ = "2.0"
 # 2.0 EKR:
 # - Use only the emacs-open-node command.  Don't pollute clicks.
 #@-<< version history >>
-
 # useDoubleClick = True
-
 # Full path of emacsclient executable. We need the full path as spawnlp
 # is not yet implemented in leoCommands.py
-
 if sys.platform == "win32":
     # This path must not contain blanks in XP.  Sheesh.
     _emacs_cmd = r"c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe"
@@ -65,7 +59,7 @@ elif sys.platform.startswith("linux"):
     clients = ["gnuclient", "emacsclient", "xemacs"]
     _emacs_cmd = ""
     for client in clients:
-        path = "/usr/bin/"+client
+        path = "/usr/bin/" + client
         if os.path.exists(path):
             _emacs_cmd = path
             break
@@ -74,10 +68,9 @@ elif sys.platform.startswith("linux"):
         print("Unable to locate a usable version of *Emacs")
 else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-
 #@+others
 #@+node:ekr.20050218023308: ** xemacs.init
-def init ():
+def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.unitTesting
     if ok:
@@ -86,38 +79,31 @@ def init ():
 #@+node:ekr.20050313071202: ** xemacs.open_in_emacs
 contextmenu_message_given = False
 
-def open_in_emacs (tag,keywords):
-
+def open_in_emacs(tag, keywords):
     c = keywords.get('c')
     p = keywords.get('p')
     if c:
-        return open_in_emacs_helper(c,p or c.p)
-    
+        return open_in_emacs_helper(c, p or c.p)
 #@+node:ekr.20120315101404.9748: ** xemacs.open_in_emacs_helper
-def open_in_emacs_helper(c,p):
-    
+def open_in_emacs_helper(c, p):
     v = p.v
-
     # Load contextmenu plugin if required.
-    contextMenu = g.loadOnePlugin('contextmenu.py',verbose=True)
+    contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
     if not contextMenu:
         if not contextmenu_message_given:
             contextmenu_message_given = True
             g.trace('can not load contextmenu.py')
         return
-
     # Search the open-files list for a file corresponding to v.
     efc = g.app.externalFilesController
     path = efc and efc.find_path_for_node(p)
-
     # g.trace('config',c.config.getString('xemacs_exe'))
     emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
         # 2010/01/18: found by pylint.
-
     if (
         not path or
         not g.os_path_exists(path) or
-        not hasattr(v,'OpenWithOldBody') or
+        not hasattr(v, 'OpenWithOldBody') or
         v.b != v.OpenWithOldBody
     ):
         # Open a new temp file.
@@ -127,11 +113,10 @@ def open_in_emacs_helper(c,p):
             ### if efc: efc.forget_path(path)
             os.remove(path)
             os.system(emacs_cmd)
-        v.OpenWithOldBody=v.b # Remember the old contents
-
+        v.OpenWithOldBody = v.b # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         # data = "os.spawnl", emacs_cmd, None
-        d = {'kind':'os.spawnl','args':[emacs_cmd],'ext':None}
+        d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}
         c.openWith(d=d)
     else:
         # Reopen the old temp file.
@@ -139,13 +124,12 @@ def open_in_emacs_helper(c,p):
 #@+node:ekr.20120315101404.9747: ** g.command('emacs-open-node')
 @g.command('emacs-open-node')
 def open_in_emacs_command(event):
-
     """ Open current node in (x)emacs
 
     Provied by xemacs.py plugin
     """
     c = event.get('c')
     if c:
-        open_in_emacs_helper(c,c.p)
+        open_in_emacs_helper(c, c.p)
 #@-others
 #@-leo

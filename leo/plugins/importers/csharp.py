@@ -4,19 +4,17 @@
 import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18035: ** class CSharpScanner
-class CSharpScanner (basescanner.BaseScanner):
+class CSharpScanner(basescanner.BaseScanner):
 
-    def __init__ (self,importCommands,atAuto):
-
+    def __init__(self, importCommands, atAuto):
         # Init the base class.
-        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='c')
-
+        basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='c')
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
         self.blockCommentDelim2 = '*/'
         self.blockDelim1 = '{'
         self.blockDelim2 = '}'
-        self.classTags = ['class','interface','namespace',]
+        self.classTags = ['class', 'interface', 'namespace',]
         self.extraIdChars = ':'
         self.functionTags = []
         self.lineCommentDelim = '//'
@@ -24,10 +22,10 @@ class CSharpScanner (basescanner.BaseScanner):
         self.outerBlockDelim1 = '{'
         self.outerBlockDelim2 = '}'
         self.sigHeadExtraTokens = []
-        self.sigFailTokens = [';','='] # Just like C.
+        self.sigFailTokens = [';', '='] # Just like C.
 #@-others
 importer_dict = {
     'class': CSharpScanner,
-    'extensions': ['.cs','.c#',],
+    'extensions': ['.cs', '.c#',],
 }
 #@-leo

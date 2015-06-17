@@ -5009,7 +5009,7 @@ class AtFile:
                     return False
         if message is None:
             message = '%s %s\n%s\n%s' % (
-                kind, fileName,
+                kind, g.splitLongFileName(fileName),
                 g.tr('already exists.'),
                 g.tr('Overwrite this file?'))
         if trace: g.trace(c.shortFileName(), fileName, g.callers())

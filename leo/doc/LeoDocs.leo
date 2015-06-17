@@ -7026,6 +7026,13 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 .. index::
     pair: @language; Reference
+    
+..  # A script to generate the list of languages
+..  import glob
+..  dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+..  aList = sorted(glob.glob('%s/*.py' % dir_))
+..  s = ', '.join([g.shortFileName(z)[: -3] for z in aList])
+..  g.es(s)
 
 \@language &lt;language name&gt;
 
@@ -7033,13 +7040,9 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
     If no @language directive is in effect, Leo uses the defaults specified
     by the @string target-language setting.
 
-    A node may contain at most one @language directive.
+    A node may contain multiple @language directives.
 
-    The valid language names are: actionscript, ada, autohotkey, batch, c, config,
-    cpp, csharp, css, cweb, elisp, forth, fortran, fortran90, haskell, haxe,
-    html, ini, java, javascript, kshell, latex, lua, noweb, pascal, perl,
-    perlpod, php, plain, plsql, python, rapidq, rebol, rest, rst, ruby, shell,
-    tcltk, tex, unknown, unknown_language, vim, vimoutline, xml, xslt.
+    The valid language names are: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlis, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.
 
     **Note**: Shell files have comments that start with #.
 
@@ -15582,8 +15585,8 @@ edge case that you should be aware of.
 **Ambiguous lines** are lines that could be placed either at the end of a
 node or at the beginning of the following node. The update algorithm must
 **guess** where to place such lines--there simply is not enough data to
-know for sure. The algorithm always places ambiguous lines at the start of
-the following node because it's more common to add lines to the end of
+know for sure. The algorithm always places ambiguous lines at the end of
+the previous node because it's more common to add lines to the end of
 nodes.
 
 The update algorithm is **sound** because guesses do not affect the

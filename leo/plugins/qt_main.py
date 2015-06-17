@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'qt_main.ui'
 #
 # Created: Fri Apr 24 13:52:17 2009
 #      by: PyQt4 UI code generator 4.4.4
 #
 # WARNING! All changes made in this file will be lost!
-
 from PyQt4 import QtCore, QtGui
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(691, 635)
         MainWindow.setDockNestingEnabled(False)
-        MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
+        MainWindow.setDockOptions(QtGui.QMainWindow.AllowTabbedDocks | QtGui.QMainWindow.AnimatedDocks)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -345,7 +342,6 @@ class Ui_MainWindow(object):
         self.actionIPython = QtGui.QAction(MainWindow)
         self.actionIPython.setObjectName("actionIPython")
         self.label.setBuddy(self.lineEdit)
-
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(3)
         self.stackedWidget.setCurrentIndex(1)
@@ -357,7 +353,6 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.leo_spell_btn_Ignore, QtCore.SIGNAL("clicked()"), MainWindow.do_leo_spell_btn_Ignore)
         QtCore.QObject.connect(self.leo_spell_listBox, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), MainWindow.do_leo_spell_btn_FindChange)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
         self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
@@ -390,5 +385,4 @@ class Ui_MainWindow(object):
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
-
 from PyQt4 import Qsci

@@ -1570,16 +1570,17 @@ class RecursiveImportController:
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.kind = kind
+            # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.one_file = one_file
         self.recursive = not one_file
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
     #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir
-    def import_dir(self, root, dir_):
+    def import_dir(self, dir_, root):
         '''Import selected files from dir_, a directory.'''
         trace = False and not g.unitTesting
         c = self.c
-        g.es("dir: " + dir_, color="blue")
+        g.blue(g.os_path_normpath(dir_))
         files = os.listdir(dir_)
         if trace: g.trace(sorted(files))
         dirs, files2 = [], []
@@ -1624,20 +1625,29 @@ class RecursiveImportController:
                 prefix = dir_
                 self.import_dir(child, dir_)
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
-    def clean_all(self, p):
+    def clean_all(self, dir_, p):
         '''Clean all imported nodes. This takes a lot of time.'''
         t1 = time.time()
+        prev_dir = None
         for p in p.self_and_subtree():
             h = p.h
             for tag in ('@clean', '@file', '@nosent'):
                 if h.startswith('@' + tag):
                     i = 1 + len(tag)
                     path = h[i:].strip()
+                    dir_, fn = g.os_path_split(path)
+                    if prev_dir != dir_:
+                        g.blue(g.os_path_normpath(dir_))
+                        prev_dir = dir_
                     junk, ext = g.os_path_splitext(path)
                     self.clean(p, ext)
                 elif h.startswith(tag):
                     i = len(tag)
                     path = h[i:].strip()
+                    dir_, fn = g.os_path_split(path)
+                    if prev_dir != dir_:
+                        g.blue(g.os_path_normpath(dir_))
+                        prev_dir = dir_
                     junk, ext = g.os_path_splitext(path)
                     self.clean(p, ext)
         t2 = time.time()
@@ -1936,11 +1946,11 @@ class RecursiveImportController:
             root = p.insertAfter()
             root.h = 'imported files'
             prefix = dir_
-            self.import_dir(root.copy(), dir_)
+            self.import_dir(dir_, root.copy())
             for p in root.self_and_subtree():
                 n += 1
             if self.kind not in ('@auto', '@edit'):
-                self.clean_all(root.copy())
+                self.clean_all(dir_, root.copy())
             self.post_process(root.copy(), dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:

@@ -20,20 +20,20 @@ class RstWriter(basewriter.BaseWriter):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char (todo: check for root.uA)
-    def underline_char(self,p,root_level):
+    def underline_char(self, p, root_level):
         '''Return the underlining character for position p.'''
         underlines = '=+*^~"\'`-:><_'
-        i = p.level()-root_level
-        return underlines[min(i,len(underlines)-1)]
+        i = p.level() - root_level
+        return underlines[min(i, len(underlines) - 1)]
     #@+node:ekr.20140726091031.18089: *3* rstw.write
-    def write(self,root):
+    def write(self, root):
         '''Write an @auto tree containing imported rST code.'''
         root_level = root.level()
         for p in root.subtree():
-            ch = self.underline_char(p,root_level)
+            ch = self.underline_char(p, root_level)
             # Put the underlined headline
             self.put(p.h)
-            self.put(ch*len(p.h))
+            self.put(ch * len(p.h))
             # Fix bug 122: @auto-rst` should add an empty line after a heading.
             self.put('\n')
             # Put the body.
@@ -46,6 +46,6 @@ class RstWriter(basewriter.BaseWriter):
 writer_dict = {
     '@auto': ['@auto-rst',],
     'class': RstWriter,
-    'extensions': ['.rst','.rest',],
+    'extensions': ['.rst', '.rest',],
 }
 #@-leo

@@ -397,25 +397,31 @@ exclude = [
 ]
 #@+node:ekr.20100210222021.5388: ** @test save new file
 import os
-c1 = c
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
-# print(fn)
-if g.os_path_exists(fn):
-    os.remove(fn)
-assert not g.os_path_exists(fn)
-try:
-    c = c1.new()
-    assert not c.cacher.db
-    # Not a perfect unit test, but it similar to c.save.
-    c.mFileName = fn
-    c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
-    print(c.mFileName)
-    c.fileCommands.save(c.mFileName)
-    c.close()
-    assert g.os_path_exists(fn)
-finally:
+import sys
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+else:
+    c1 = c
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
+    # print(fn)
     if g.os_path_exists(fn):
         os.remove(fn)
+    assert not g.os_path_exists(fn)
+    try:
+        c = c1.new()
+        assert not c.cacher.db
+        # Not a perfect unit test, but it similar to c.save.
+        c.mFileName = fn
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        # print(c.mFileName)
+        c.fileCommands.save(c.mFileName)
+        c.close()
+        assert g.os_path_exists(fn)
+    finally:
+        if g.os_path_exists(fn):
+            os.remove(fn)
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100131171342.5486: *3* @@test that all @test nodes in derived files start with if g.unitTesting
 # print('-' * 30)
@@ -1024,9 +1030,13 @@ at.printError('test of at.printError:',s)
 #@+node:ekr.20050208051418.1: *3* @test can't open message in g.openWithFileName
 @first # -*- coding: utf-8 -*-
 
+import sys
 # g.openWithFileName *always* opens the file.
-
-if not g.app.isExternalUnitTest:
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+elif not g.app.isExternalUnitTest:
 
     old_c = c
     filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
@@ -2457,6 +2467,27 @@ static exit_values_ty indent_main_loop(void)
         }
     }                           /* end of main infinite loop */
 }
+#@+node:ekr.20150610064911.1: *4* @test beautifier
+# This tests only recent bugs.
+p1 = p.firstChild()
+s = p1.b
+p2 = p1.next()
+try:
+    c.selectPosition(p1)
+    c.k.simulateCommand('beautify-tree')
+    assert p1.b == p2.b
+finally:
+    p1.b = s
+    c.setChanged(False)
+
+#@+node:ekr.20150610064930.1: *5* before
+def spam():
+    if - 1 < 2:
+        pass
+#@+node:ekr.20150610065241.1: *5* after
+def spam():
+    if -1 < 2:
+        pass
 #@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
@@ -4556,33 +4587,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
-#@+node:ekr.20100203103015.5356: *4* @@@test c.openTempFileInExternalEditor
-arg = ''
-arg0 = 'one'
-fn = '<fn>'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
-
-table = (
-    #('os.system',       'os.system(%s)' % (arg+fn)),
-    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    #('exec',            'exec(%s)' % (arg+fn)),
-    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
-
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-#@+node:ekr.20090104053806.1: *4* @@test c.checkFileTimeStamp & c.setFileTimeStamp
+#@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
 
 import os
@@ -4620,6 +4625,39 @@ assert not val,repr(val)
 c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
+#@+node:ekr.20100203103015.5356: *4* @@@test c.openTempFileInExternalEditor
+arg = ''
+arg0 = 'one'
+fn = '<fn>'
+filename = '' # g.os.path.basename(arg)
+vtuple = [arg0,fn]
+
+table = (
+    #('os.system',       'os.system(%s)' % (arg+fn)),
+    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
+    #('exec',            'exec(%s)' % (arg+fn)),
+    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
+    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
+    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
+    ('huh?',            'bad command:'+'huh?'),
+)
+
+for openType,result in table:
+    if openType in ('os.spawnv','subprocess.Popen'):
+        arg2 = ['one']
+    else:
+        arg2 = None
+    result2 = c.openTempFileInExternalEditor(
+        arg2,fn,openType,testing=True)
+    assert result==result2,'expected %s, got %s' % (
+        repr(result),repr(result2))
+#@+node:ekr.20100209155559.5386: *4* @@@test efc.create_temp_file
+efc = g.app.externalFilesController
+d = {'ext':'.py',}
+fn = efc.create_temp_file(c,d,p)
+assert g.os_path_exists(fn),fn
+efc.shut_down()
+assert not g.os_path_exists(fn),fn
 #@+node:ekr.20120309155126.3949: *4* @test add/delete comments with multiple @language directives
 # Can't be run externally.
 w = c.frame.body.wrapper
@@ -4974,17 +5012,73 @@ pass
 #@+node:ekr.20050512084850.2: *5* child 2
 pass
 #@+node:ekr.20111212142649.3971: *4* @test c.pasteOutline does not clone top node
-c.selectPosition(p)
-c.copyOutline()
-try:
-    p2 = c.pasteOutline()
-    assert p2
-    assert not p2.isCloned()
-finally:
-    if p2: p2.doDelete()
-    c.redraw(p)
+import sys
+# g.openWithFileName *always* opens the file.
+if g.isPython3 and sys.platform.startswith('linux'):
+    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
+    # The crash causes several other unit tests to fail.
+    pass
+else:
+    c.selectPosition(p)
+    c.copyOutline()
+    try:
+        p2 = c.pasteOutline()
+        assert p2
+        assert not p2.isCloned()
+    finally:
+        if p2: p2.doDelete()
+        c.redraw(p)
 #@+node:ekr.20111212142649.3972: *5* child
 # child text.
+#@+node:ekr.20080917151620.9: *4* @test c.scanAllDirectives
+@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+# print(g.dictToString(d))
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+#@+node:ekr.20100131180007.5466: *4* @test c.scanAtPathDirectives
+p2 = p.firstChild().firstChild().firstChild()
+
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+# print (path,p2.h)
+endpath = g.os_path_normpath('one/two')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+#@+node:ekr.20100131180007.5467: *5* @path one
+#@+node:ekr.20100131180007.5468: *6* @path two
+#@+node:ekr.20100131180007.5469: *7* xyz
+#@+node:sps.20100531034136.20110: *4* @test c.scanAtPathDirectives same name subdirs
+p2 = p.firstChild().firstChild().firstChild()
+
+aList = g.get_directives_dict_list(p2)
+path = c.scanAtPathDirectives(aList)
+# print (path,p2.h)
+endpath = g.os_path_normpath('again/again')
+assert path and path.endswith(endpath),'expected ending %s got %s' % (
+    endpath,path)
+#@+node:sps.20100531034136.20111: *5* @path again
+#@+node:sps.20100531034136.20112: *6* @path again
+#@+node:sps.20100531034136.20113: *7* xyz
 #@+node:ekr.20040802065214: *4* @test c.setHeadString marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.
 h = p.h
@@ -5038,13 +5132,6 @@ assert not x.enabledPluginsFileName
 efc = g.app.externalFilesController
 result = efc.ask_conflict(c,p.h)
 assert result in (None,'cancel'),'fail 2: %s' % result
-#@+node:ekr.20100209155559.5386: *4* @test efc.create_temp_file
-efc = g.app.externalFilesController
-d = {'ext':'.py',}
-fn = efc.create_temp_file(c,d,p)
-assert g.os_path_exists(fn),fn
-efc.shut_down()
-assert not g.os_path_exists(fn),fn
 #@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
 @language python
 
@@ -5110,56 +5197,6 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoCommands tests')
-#@+node:ekr.20101021205258.6009: *4* c.Directives & directories
-#@+node:ekr.20080917151620.9: *5* @test c.scanAllDirectives
-@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-
-d = c.scanAllDirectives(p)
-# print(g.dictToString(d))
-
-table = (
-    ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
-#@+node:ekr.20100131180007.5466: *5* @test c.scanAtPathDirectives
-p2 = p.firstChild().firstChild().firstChild()
-
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-# print (path,p2.h)
-endpath = g.os_path_normpath('one/two')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-#@+node:ekr.20100131180007.5467: *6* @path one
-#@+node:ekr.20100131180007.5468: *7* @path two
-#@+node:ekr.20100131180007.5469: *8* xyz
-#@+node:sps.20100531034136.20110: *5* @test c.scanAtPathDirectives same name subdirs
-p2 = p.firstChild().firstChild().firstChild()
-
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-# print (path,p2.h)
-endpath = g.os_path_normpath('again/again')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-#@+node:sps.20100531034136.20111: *6* @path again
-#@+node:sps.20100531034136.20112: *7* @path again
-#@+node:sps.20100531034136.20113: *8* xyz
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
@@ -8495,7 +8532,7 @@ try:
     s = w.getAllText()
 
     # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉΩBぅ乼cz):\n'
+    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉ©BE|cz):\n'
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:
@@ -9624,6 +9661,29 @@ Honor this line that has a hanging
 
 Next Paragraph.
 #@+node:ekr.20061104172236.1: *4*  Function tests
+#@+node:ekr.20150430053825.1: *5* @test abbrevCommands.next_place
+ac = c.abbrevCommands
+assert ac
+child = g.findNodeInTree(c,p,'child')
+assert child
+old_b = child.b
+try:
+    i,j,val = 0,0,child.b
+    # ac.make_script_substitutions(i,j,val)
+    # ac.find_place_holder(child,True)
+    # print(ac.save_ins,ac.save_sel)
+    new_s,i,j = ac.next_place(child.b,offset=0)
+    assert i == 34 and j == 40,(i,j)
+    new_s2,i,j = ac.next_place(new_s,offset=40)
+    assert i == 54 and j == 58,(i,j)
+finally:
+    child.b = old_b
+#@+node:ekr.20150430061225.1: *6* child
+def spam ():
+    """None - Return <|return|>
+    """
+
+    <|code|>
 #@+node:ekr.20100902074747.5970: *5* @test addAbbrevHelper
 f = c.abbrevCommands.addAbbrevHelper
 d = c.abbrevCommands.abbrevs
@@ -9660,6 +9720,9 @@ for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWO
     assert word == result, 'Expected %s, got: %s' % (result,repr(word))
     i = w.getInsertPoint()
     assert i == 5, 'Expected 5, got: %d' % i
+#@+node:ekr.20100131180007.5453: *5* @test dynamicExpandHelper
+# A totally wimpy test.
+c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
 #@+node:ekr.20061104172236.5: *5* @test extendHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
@@ -9756,6 +9819,129 @@ for spot,result in (('1.0',0),(5,5)):
     ec.setMoveCol(w,spot)
     assert ec.moveSpot == result
     assert ec.moveCol == result
+#@+node:ekr.20100204165850.5371: *4* Toggle commands
+# These tests will be important when revising config code.
+#@+node:ekr.20100119102849.5108: *5* @test toggle-extend-mode
+# backward-find-character and find-character
+# can't be tested this way because they require k.getarg.
+# They pass hand tests.
+
+<< define table >>
+
+w = c.frame.body.wrapper
+child = g.findNodeInChildren(c,p,'work')
+assert child
+c.selectPosition(child)
+
+for commandName in table:
+    # Put the cursor in the middle of the middle line
+    # so all cursor moves will actually do something.
+    w.setInsertPoint(15) # for move-past-close
+    try:
+        c.editCommands.extendMode = True
+        c.keyHandler.simulateCommand(commandName)
+        i,j = w.getSelectionRange()
+        assert i != j,'i == j: %s %s' % (i,commandName)
+    finally:
+        c.editCommands.extendMode = False
+
+#@+node:ekr.20100119102849.5109: *6* << define table >>
+# Cursor movement commands affected by extend mode.
+# The x-extend-selection commands are not so affected.
+table = (
+    'back-to-indentation',
+    'back-to-home',
+    'back-char',
+    'back-page',
+    'back-paragraph',
+    'back-sentence',
+    'back-word',
+    'beginning-of-buffer',
+    'beginning-of-line',
+    'end-of-buffer',
+    'end-of-line',
+    'forward-char',
+    'forward-page',
+    'forward-paragraph',
+    'forward-sentence',
+    'forward-end-word',
+    'forward-word',
+    'move-past-close',
+    'next-line',
+    'previous-line',
+)
+#@+node:ekr.20100119102849.5110: *6* work
+line 1.
+line 2(xxx).
+line 3.
+#@+node:ekr.20100204165850.5373: *5* @test most toggle commands
+k = c.k
+colorizer = c.frame.body.getColorizer()
+ed = c.editCommands
+
+# These don't set ivars
+    # 'toggle-active-pane'),
+    # 'toggle-angle-brackets',
+    # 'toggle-input-state'),
+    # 'toggle-mini-buffer'),
+    # 'toggle-split-direction'),
+
+table = [
+    (k,'abbrevOn','toggle-abbrev-mode'),
+    (ed,'extendMode','toggle-extend-mode'),
+]
+
+# Not valid for external tests.
+table2 = [
+    (k,'enable_autocompleter','toggle-autocompleter'),
+    (k,'enable_calltips','toggle-calltips'),
+    (c,'sparse_find','toggle-find-collapses-nodes'),
+    (colorizer,'showInvisibles','toggle-invisibles'),
+    (c,'sparse_move','toggle-sparse-move'),
+]
+
+if not g.app.isExternalUnitTest:
+    table.extend(table2)
+
+for obj,ivar,command in table:
+    val1 = getattr(obj,ivar)
+    try:
+        k.simulateCommand(command)
+        val2 = getattr(obj,ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        k.simulateCommand(command)
+        val3 = getattr(obj,ivar)
+        assert val3 == val1,'failed 2 %s' % command
+        # print('pass',command)
+    finally:
+        setattr(obj,ivar,val1)
+#@+node:ekr.20100204173354.5375: *5* @test toggle-find-x
+if g.app.isExternalUnitTest:
+    pass
+else:
+    table = (
+        ('ignore_case','toggle-find-ignore-case-option'),
+        ('search_body','toggle-find-in-body-option'),
+        ('search_headline','toggle-find-in-headline-option'),
+        ('mark_changes','toggle-find-mark-changes-option'),
+        ('mark_finds','toggle-find-mark-finds-option'),
+        ('pattern_match','toggle-find-regex-option'),
+        # ('reverse','toggle-find-reverse-option'),
+        ('whole_word','toggle-find-word-option'),
+        ('wrap','toggle-find-wrap-around-option'),
+    )
+    fc = c.findCommands
+    for ivar,command in table:
+        val1 = getattr(fc,ivar)
+        try:
+            c.k.simulateCommand(command)
+            val2 = getattr(fc,ivar)
+            assert val2 == (not val1),'failed 1 %s' % command
+            c.k.simulateCommand(command)
+            val3 = getattr(fc,ivar)
+            assert val3 == val1,'failed 2 %s' % command
+        finally:
+            setattr(fc,ivar,val1)
 #@+node:ekr.20051107115231: *4*  Typing
 # These are mysteriously fragile tests, so they go first
 #@+node:ekr.20060208072415: *5* @test Delete key sticks in body
@@ -10183,32 +10369,6 @@ c.contractAllHeadlines()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 
-#@+node:ekr.20150430053825.1: *4* @test abbrevCommands.next_place
-ac = c.abbrevCommands
-assert ac
-child = g.findNodeInTree(c,p,'child')
-assert child
-old_b = child.b
-try:
-    i,j,val = 0,0,child.b
-    # ac.make_script_substitutions(i,j,val)
-    # ac.find_place_holder(child,True)
-    # print(ac.save_ins,ac.save_sel)
-    new_s,i,j = ac.next_place(child.b,offset=0)
-    assert i == 34 and j == 40,(i,j)
-    new_s2,i,j = ac.next_place(new_s,offset=40)
-    assert i == 54 and j == 58,(i,j)
-finally:
-    child.b = old_b
-#@+node:ekr.20150430061225.1: *5* child
-def spam ():
-    """None - Return <|return|>
-    """
-
-    <|code|>
-#@+node:ekr.20100131180007.5453: *4* @test dynamicExpandHelper
-# A totally wimpy test.
-c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
 #@+node:ekr.20070306091949: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -10217,129 +10377,6 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoEditCommands tests.')
-#@+node:ekr.20100204165850.5371: *4* Toggle commands
-# These tests will be important when revising config code.
-#@+node:ekr.20100119102849.5108: *5* @test toggle-extend-mode
-# backward-find-character and find-character
-# can't be tested this way because they require k.getarg.
-# They pass hand tests.
-
-<< define table >>
-
-w = c.frame.body.wrapper
-child = g.findNodeInChildren(c,p,'work')
-assert child
-c.selectPosition(child)
-
-for commandName in table:
-    # Put the cursor in the middle of the middle line
-    # so all cursor moves will actually do something.
-    w.setInsertPoint(15) # for move-past-close
-    try:
-        c.editCommands.extendMode = True
-        c.keyHandler.simulateCommand(commandName)
-        i,j = w.getSelectionRange()
-        assert i != j,'i == j: %s %s' % (i,commandName)
-    finally:
-        c.editCommands.extendMode = False
-
-#@+node:ekr.20100119102849.5109: *6* << define table >>
-# Cursor movement commands affected by extend mode.
-# The x-extend-selection commands are not so affected.
-table = (
-    'back-to-indentation',
-    'back-to-home',
-    'back-char',
-    'back-page',
-    'back-paragraph',
-    'back-sentence',
-    'back-word',
-    'beginning-of-buffer',
-    'beginning-of-line',
-    'end-of-buffer',
-    'end-of-line',
-    'forward-char',
-    'forward-page',
-    'forward-paragraph',
-    'forward-sentence',
-    'forward-end-word',
-    'forward-word',
-    'move-past-close',
-    'next-line',
-    'previous-line',
-)
-#@+node:ekr.20100119102849.5110: *6* work
-line 1.
-line 2(xxx).
-line 3.
-#@+node:ekr.20100204165850.5373: *5* @test most toggle commands
-k = c.k
-colorizer = c.frame.body.getColorizer()
-ed = c.editCommands
-
-# These don't set ivars
-    # 'toggle-active-pane'),
-    # 'toggle-angle-brackets',
-    # 'toggle-input-state'),
-    # 'toggle-mini-buffer'),
-    # 'toggle-split-direction'),
-
-table = [
-    (k,'abbrevOn','toggle-abbrev-mode'),
-    (ed,'extendMode','toggle-extend-mode'),
-]
-
-# Not valid for external tests.
-table2 = [
-    (k,'enable_autocompleter','toggle-autocompleter'),
-    (k,'enable_calltips','toggle-calltips'),
-    (c,'sparse_find','toggle-find-collapses-nodes'),
-    (colorizer,'showInvisibles','toggle-invisibles'),
-    (c,'sparse_move','toggle-sparse-move'),
-]
-
-if not g.app.isExternalUnitTest:
-    table.extend(table2)
-
-for obj,ivar,command in table:
-    val1 = getattr(obj,ivar)
-    try:
-        k.simulateCommand(command)
-        val2 = getattr(obj,ivar)
-        assert val2 == (not val1),'failed 1 %s' % command
-        k.simulateCommand(command)
-        val3 = getattr(obj,ivar)
-        assert val3 == val1,'failed 2 %s' % command
-        # print('pass',command)
-    finally:
-        setattr(obj,ivar,val1)
-#@+node:ekr.20100204173354.5375: *5* @test toggle-find-x
-if g.app.isExternalUnitTest:
-    pass
-else:
-    table = (
-        ('ignore_case','toggle-find-ignore-case-option'),
-        ('search_body','toggle-find-in-body-option'),
-        ('search_headline','toggle-find-in-headline-option'),
-        ('mark_changes','toggle-find-mark-changes-option'),
-        ('mark_finds','toggle-find-mark-finds-option'),
-        ('pattern_match','toggle-find-regex-option'),
-        # ('reverse','toggle-find-reverse-option'),
-        ('whole_word','toggle-find-word-option'),
-        ('wrap','toggle-find-wrap-around-option'),
-    )
-    fc = c.findCommands
-    for ivar,command in table:
-        val1 = getattr(fc,ivar)
-        try:
-            c.k.simulateCommand(command)
-            val2 = getattr(fc,ivar)
-            assert val2 == (not val1),'failed 1 %s' % command
-            c.k.simulateCommand(command)
-            val3 = getattr(fc,ivar)
-            assert val3 == val1,'failed 2 %s' % command
-        finally:
-            setattr(fc,ivar,val1)
 #@+node:ekr.20061001114637: *3* leoFileCommands
 # 3 failures with Alt-5
 #@+node:ekr.20100206165505.5386: *4* @@test fc.handleNodeConflicts
@@ -11533,6 +11570,13 @@ for s,table in ((s1,table1),(s2,table2)):
     for i,result in table:
         j = g.skip_to_start_of_line(s,i)
         assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@+node:ekr.20150610130646.1: *4* @test g.splitLongFileName
+table = (
+    r'abcd/xy\pdqabc/aaa.py',
+)
+for s in table:
+    g.splitLongFileName(s,limit=3)
+    
 #@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
 import codecs
 
@@ -13446,38 +13490,6 @@ g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20141111095646.11: *5* @auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-#@+node:ekr.20141111095646.12: *6* @rst-no-head rST import test declarations
-.. toc
-
-#@+node:ekr.20141111095646.13: *6* top
-The top section
-
-#@+node:ekr.20141111095646.14: *7* section 1
-section 1, line 1
---
-selction 1, line 2
-
-#@+node:ekr.20141111095646.15: *7* section 2
-section 2, line 1
-
-#@+node:ekr.20141111095646.16: *8* section 2.1
-section 2.1, line 1
-
-#@+node:ekr.20141111095646.17: *9* section 2.1.1
-section 2.2.1 line 1
-
-#@+node:ekr.20141111095646.18: *7* section 3
-section 3, line 1
-
-#@+node:ekr.20141111095646.19: *8* @rst-no-head section 3.1.1
-#@+node:ekr.20141111095646.20: *9* section 3.1.1
-section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -14880,14 +14892,6 @@ import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
-#@+node:ekr.20071113202452: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
@@ -15376,61 +15380,59 @@ finally:
     c.redraw_now(root)
 #@+node:ekr.20081001094920.2: *4* tests for p.textOffset()
 #@+node:ekr.20081001094920.3: *5* @test node that doesn't belong to a derived file
+# Change @file activeUnitTests.txt to @@file activeUnitTests.txt
+for parent in p.parents():
+    if parent.isAnyAtFileNode():
+        parent.h = '@' + parent.h
+        break
+else:
+    parent = None
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
-    assert p1.textOffset() == 0
-
+    assert p1.textOffset() is None
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
+    if parent:
+        parent.h = parent.h[1:]
     c.redraw_now()
 #@+node:ekr.20081001094920.4: *5* @test root of a derived file
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     assert p1.textOffset() == 0
-
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.5: *5* @test organizer node
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     p2 = p1.insertAsLastChild()
     assert p1.textOffset() == 0
     assert p2.textOffset() == 0
-
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.6: *5* @test section node
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     body = '''   %s
@@ -15441,19 +15443,18 @@ try:
     p2.setHeadString(head)
     assert p1.textOffset() == 0
     assert p2.textOffset() == 3
-
+        # Section nodes can appear in with @others nodes,
+        # so they don't get special treatment.
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
 #@+node:ekr.20081001094920.7: *5* @test "others" directive
 root = p.copy()
 while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-
+    p.firstChild().doDelete(newNode=None)
 try:
-
     p1 = p.insertAsLastChild()
     p1.setHeadString('@file zzz')
     body = '''     %s
@@ -15462,13 +15463,20 @@ try:
     p2 = p1.insertAsLastChild()
     assert p1.textOffset() == 0
     assert p2.textOffset() == 5
-    root.firstChild().doDelete(newNode = None)
-
+    root.firstChild().doDelete(newNode=None)
 finally:
     if 1:
         while root.hasChildren():
-            root.firstChild().doDelete(newNode = None)
+            root.firstChild().doDelete(newNode=None)
     c.redraw_now()
+#@+node:ekr.20071113202452: *4* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoNodes tests.')
 #@+node:ekr.20140712142620.4458: *3* leoPersistence tests
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
@@ -21197,10 +21205,10 @@ for a,b,in table:
     result = vc.to_eol(s,i1)
     assert result == i2,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20050120095423: ** Plugins
+#@+node:ekr.20050120095423: *3* Plugins
 # Do this last.
-#@+node:ekr.20110610082755.3362: *3*  qt gui
-#@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
+#@+node:ekr.20110610082755.3362: *4*  qt gui
+#@+node:ekr.20100131171342.5503: *5* @test c.vnode2position
 trace = False
 if trace: print('=' * 20)
 for p in c.all_positions():
@@ -21211,7 +21219,7 @@ for p in c.all_positions():
     assert p2
     assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
     assert c.positionExists(p2),'does not exist: %s' % p2
-#@+node:ekr.20100131171342.5504: *4* @test position2Item
+#@+node:ekr.20100131171342.5504: *5* @test position2Item
 tree = c.frame.tree
 # position2item does not exist when running unit tests dynamically.
 if hasattr(tree,'position2item'):
@@ -21223,7 +21231,7 @@ if hasattr(tree,'position2item'):
         if v: # New test needed with per-clone expansions.
             assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
         p.moveToVisNext(c)
-#@+node:ekr.20100131171342.5505: *4* @@test item2position
+#@+node:ekr.20100131171342.5505: *5* @@test item2position
 # This test is no longer valid because of per-position node expansions.
 def test_sibs(parent_p,parent_item):
     trace = False
@@ -21244,7 +21252,7 @@ def test_sibs(parent_p,parent_item):
 if hasattr(c.frame.tree,'item2position'):
     c.redraw()
     test_sibs(c.rootPosition(),None)
-#@+node:ekr.20050120095423.11: *3* @suite import or test syntax of all plugins
+#@+node:ekr.20050120095423.11: *4* @suite import or test syntax of all plugins
 '''Imports all plugins or just tests their syntax,
 epending on a switch in PluginTestCase.runTest.'''
 
@@ -21257,7 +21265,7 @@ import unittest
 suite = makePluginsTestSuite(c)
 
 # g.app.scriptDict['suite'] = suite
-#@+node:ekr.20050120095423.12: *4* makePluginsTestSuite
+#@+node:ekr.20050120095423.12: *5* makePluginsTestSuite
 def makePluginsTestSuite(c):
 
     '''Create a plugin test for .py file in the plugins directory'''
@@ -21289,13 +21297,13 @@ def makePluginsTestSuite(c):
         suite.addTest(lastTest)
 
     return suite
-#@+node:ekr.20050120095423.13: *4* class pluginTestCase
+#@+node:ekr.20050120095423.13: *5* class pluginTestCase
 class pluginTestCase(unittest.TestCase):
 
     '''A test case to test a single Leo plugin.'''
 
     @others
-#@+node:ekr.20050120095423.14: *5* __init__
+#@+node:ekr.20050120095423.14: *6* __init__
 def __init__ (self,c,path):
 
     # Init the base class.
@@ -21303,13 +21311,13 @@ def __init__ (self,c,path):
 
     self.c = c
     self.path = path
-#@+node:ekr.20050120095423.15: *5* fail
+#@+node:ekr.20050120095423.15: *6* fail
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
 
     g.app.unitTestDict["fail"] = g.callerName(2)
-#@+node:ekr.20050120095423.16: *5* runTest
+#@+node:ekr.20050120095423.16: *6* runTest
 def runTest(self):
 
     trace = False
@@ -21351,15 +21359,15 @@ def runTest(self):
     else: # Good for initial tests, but pollutes all other unit tests.
         exec('import leo.plugins.%s' % fn)
     
-#@+node:ekr.20050120095423.17: *5* setUp
+#@+node:ekr.20050120095423.17: *6* setUp
 def setUp(self):
 
     g.app.unitTestDict = {}
-#@+node:ekr.20050120095423.18: *5* shortDescription
+#@+node:ekr.20050120095423.18: *6* shortDescription
 def shortDescription (self):
 
     return "pluginTestCase: %s" % g.shortFileName(self.path)
-#@+node:ekr.20050120095423.20: *4* class lastTestCase
+#@+node:ekr.20050120095423.20: *5* class lastTestCase
 class lastTestCase(unittest.TestCase):
 
     '''A test case to print a message at the end of plugin tests.'''
@@ -21382,7 +21390,7 @@ class lastTestCase(unittest.TestCase):
         def shutDown(self):
             c = self.new_c
             c.close()
-#@+node:ekr.20050218015346: *3* @@suite run all plugin test routines
+#@+node:ekr.20050218015346: *4* @@suite run all plugin test routines
 # This test, if run at all, should be run elsewhere:
 # Actually importing plugins affects other unit tests.
 
@@ -21416,13 +21424,13 @@ if 1:
         # unittest.TextTestRunner(verbosity=1).run(suite)
         # c.setChanged(changed) # Restore changed state.
         # c.selectVnode(p1) # N.B. Restore the selected node.
-#@+node:ekr.20050218015346.11: *4* << class testRoutineTestCase >>
+#@+node:ekr.20050218015346.11: *5* << class testRoutineTestCase >>
 class testRoutineTestCase(unittest.TestCase):
 
     """Create a unit test from a snippet of code."""
 
     @others
-#@+node:ekr.20050218015346.12: *5* __init__
+#@+node:ekr.20050218015346.12: *6* __init__
 def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
 
      # Init the base class.
@@ -21436,13 +21444,13 @@ def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
     self.code = code
     self.p = c.p.copy()
     self.verbose = verbose
-#@+node:ekr.20050218015346.13: *5*  fail
+#@+node:ekr.20050218015346.13: *6*  fail
 def fail (self,msg=None):
 
     """Mark a unit test as having failed."""
 
     g.app.unitTestDict["fail"] = g.callerName(2)
-#@+node:ekr.20050218015346.16: *5* runTest
+#@+node:ekr.20050218015346.16: *6* runTest
 def runTest (self):
 
     f = self.f ; name = f.__name__ ; theClass = self.theClass
@@ -21484,11 +21492,11 @@ def runTest (self):
                 obj.f()
         else: # Execute a plain function.
             f(**keys)
-#@+node:ekr.20050218015346.17: *5* shortDescription
+#@+node:ekr.20050218015346.17: *6* shortDescription
 def shortDescription (self):
 
     return 'test function',repr(self.f)
-#@+node:ekr.20050218015346.18: *4* addTestRoutinesInPluginToSuite
+#@+node:ekr.20050218015346.18: *5* addTestRoutinesInPluginToSuite
 def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
 
     path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
@@ -21506,7 +21514,7 @@ def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
         suite.addTest(testCase)
 
     return len(tests)
-#@+node:ekr.20050218015346.19: *4* findTestsInModule
+#@+node:ekr.20050218015346.19: *5* findTestsInModule
 def findTestsInModule (module,moduleName):
 
     # g.trace(moduleName)
@@ -21549,7 +21557,7 @@ def findTestsInModule (module,moduleName):
     result = functions
     result.extend(allMethods)
     return result
-#@+node:ekr.20050218015346.20: *5* << print classes, methods & functions >>
+#@+node:ekr.20050218015346.20: *6* << print classes, methods & functions >>
 print('=' * 40)
 
 if classes:
@@ -21564,7 +21572,7 @@ if functions:
     print('test functions in %s...\n%s' % (moduleName,toString(functions)))
 else:
     print('no test functions in %s' % (moduleName))
-#@+node:ekr.20050218015346.22: *4* removeLeadingWs
+#@+node:ekr.20050218015346.22: *5* removeLeadingWs
 def removeLeadingWs (code):
 
     if not code.strip():
@@ -21590,7 +21598,7 @@ def removeLeadingWs (code):
 
     result = ''.join(result)
     return result
-#@+node:ekr.20100131171342.5497: *3* @@test detect_urls.py
+#@+node:ekr.20100131171342.5497: *4* @@test detect_urls.py
 import leo.plugins.detect_urls as detect_urls
 
 # print(c.frame.body.wrapper)
@@ -21606,19 +21614,19 @@ if s:
     
 @ The last line is the url
 http://webpages.charter.net/edreamleo/front.html
-#@+node:ekr.20100131171342.5500: *3* @@test macros.parameterize
+#@+node:ekr.20100131171342.5500: *4* @@test macros.parameterize
 import leo.plugins.macros as macros
 
 controller = macros.ParamClass(c)
 controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.
-#@+node:ekr.20140217055617.4230: *3* @test c.theScriptingController.atScriptNodes
+#@+node:ekr.20140217055617.4230: *4* @test c.theScriptingController.atScriptNodes
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
-#@+node:ekr.20111104214341.3835: *3* @test all plugins have top-level init method
+#@+node:ekr.20111104214341.3835: *4* @test all plugins have top-level init method
 '''Ensure all plugins have top-level init method *without* importing them.'''
 
 import glob
@@ -21658,7 +21666,7 @@ for fn in files:
         ok2 = s.find('def init ():') > -1
         assert ok1 or ok2,'fail: %s' % (fn)
     
-#@+node:ekr.20100131171342.5501: *3* @test zz restore the screen
+#@+node:ekr.20100131171342.5501: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 

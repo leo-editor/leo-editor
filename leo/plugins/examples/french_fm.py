@@ -2,18 +2,12 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080202.3: * @file examples/french_fm.py
 #@@first
-
 """traduit les menus en Français"""
-
 #@@language python
 #@@tabwidth -4
-
 # French translation completed by Frédéric Momméja, Spring 2003
-
 import leo.core.leoGlobals as g
-
 __version__ = "1.4" # Set version for the plugin handler.
-
 #@+others
 #@+node:ekr.20111104210837.9688: ** init
 def init():
@@ -26,19 +20,19 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:EKR.20040517080202.4: ** onMenu
-def onMenu (tag,keywords):
+def onMenu(tag, keywords):
     c = keywords.get("c")
     table = (
-        ("File","&Fichier"),
-            ("New","&Nouveau"),
-            ("Open...","&Ouvrir"),
-            ("OpenWith","Ouvrir Ave&c..."),
-            ("Close","&Fermer"),
-            ("Save","Enregi&strer"),
-            ("Save As","Enre&gistrer sous..."),
-            ("Save To","Enregistrer une co&pie..."),
-            ("Revert To Saved","&Version Enregistrée"),
-            ("Recent Files...","&Fichiers récents..."),
+        ("File", "&Fichier"),
+            ("New", "&Nouveau"),
+            ("Open...", "&Ouvrir"),
+            ("OpenWith", "Ouvrir Ave&c..."),
+            ("Close", "&Fermer"),
+            ("Save", "Enregi&strer"),
+            ("Save As", "Enre&gistrer sous..."),
+            ("Save To", "Enregistrer une co&pie..."),
+            ("Revert To Saved", "&Version Enregistrée"),
+            ("Recent Files...", "&Fichiers récents..."),
             ("Read/Write...", "&Lire/Écrire..."),
                 ("Read Outline Only", "Relire &Arborescence seule"),
                 ("Read @file Nodes", "Relire Structure @&file seule"),
@@ -66,10 +60,10 @@ def onMenu (tag,keywords):
                 ("Flatten Outline", "Arborescence vers &MORE"),
                 ("Remove Sentinels", "En supprimant &Sentinelles"),
                 ("Weave", "&Arborescence descendante vers .txt"),
-            ("Exit","&Quitter"),
-        ("Edit","&Edition"),
-            ("Undo Typing","Ann&uler saisie"),
-            ("Redo Typing","&Répèter saisie"),
+            ("Exit", "&Quitter"),
+        ("Edit", "&Edition"),
+            ("Undo Typing", "Ann&uler saisie"),
+            ("Redo Typing", "&Répèter saisie"),
             ("Can't Undo", "Impossible d'annuler"),
             ("Can't Redo", "Impossible de répéter"),
             ("Cut", "C&ouper"),
@@ -178,6 +172,5 @@ def onMenu (tag,keywords):
             ("Apply Settings", "Appliquer les &Réglages"))
     # Call the convenience routine to do the work.
     c.frame.menu.setRealMenuNamesFromTable(table)
-
 #@-others
 #@-leo

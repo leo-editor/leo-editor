@@ -549,7 +549,7 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has been modified outside Leo.' % (path),
+            '%s has been modified outside Leo.' % (g.splitLongFileName(path)),
             'Overwrite this file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c, 'Overwrite modified file?', s)
@@ -562,7 +562,7 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         s = '\n'.join([
-            '%s has changed outside Leo.' % (path),
+            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
             'Update the outline from the external file?'
         ])
         result = g.app.gui.runAskYesNoCancelDialog(c, 'Update Outline?', s)
@@ -779,6 +779,9 @@ class ExternalFilesController:
         tag = 'efc.has_changed'
         if not g.os_path_exists(path):
             if trace: print('%s:does not exist %s' % (tag, path))
+            return False
+        if g.os_path_isdir(path):
+            if trace: print('%s: %s is a directory' % (tag, path))
             return False
         fn = g.shortFileName(path)
         # First, check the modification times.
@@ -1970,16 +1973,19 @@ class LeoApp:
     #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
-        # print("app.setLog:",log)
+        # print("app.setLog: %s %s" % (log, g.callers()))
+        # print("app.setLog: %s" % log)
         if not self.logIsLocked:
             self.log = log
 
     def lockLog(self):
         """Disable changes to the log"""
+        # print("app.lockLog:")
         self.logIsLocked = True
 
     def unlockLog(self):
         """Enable changes to the log"""
+        # print("app.unlockLog:")
         self.logIsLocked = False
     #@+node:ekr.20031218072017.2619: *3* app.writeWaitingLog
     def writeWaitingLog(self, c):
@@ -3337,6 +3343,10 @@ class LoadManager:
         c.initialFocusHelper()
         if k: k.showStateAndMode()
         c.frame.initCompleteHint()
+        c.outerUpdate()
+            # Honor focus requests.
+            # This fixes bug 181: Focus remains in previous file
+            # https://github.com/leo-editor/leo-editor/issues/181
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
     def initWrapperLeoFile(self, c, fn):
         '''
