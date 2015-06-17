@@ -1770,16 +1770,17 @@ class LeoFind:
         ftm = c.findCommands.ftm
         table = (
             ('Word', ftm.check_box_whole_word),
-            ('Ignore-case', ftm.check_box_ignore_case),
-            ('reg-eXp', ftm.check_box_regexp),
+            ('Ig-case', ftm.check_box_ignore_case),
+            ('regeXp', ftm.check_box_regexp),
             ('Body', ftm.check_box_search_body),
             ('Head', ftm.check_box_search_headline),
             ('wrap-Around', ftm.check_box_wrap_around),
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )
+        prompt = 'wixbhacf'
         result = [option for option, ivar in table if ivar.checkState()]
-        c.frame.putStatusLine('Find: %s' % ' '.join(result))
+        c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs(self, forward=False, regexp=False, word=False):
         '''
