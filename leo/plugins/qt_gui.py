@@ -131,22 +131,16 @@ class LeoQtGui(leoGui.LeoGui):
         return ';;'.join(filters)
     #@+node:ekr.20150615211522.1: *4* LeoQtGui.openFindDialog
     def openFindDialog(self, c):
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
+        g.trace(g.callers())
         top = c.frame.top
         d = self.globalFindDialog
         if not d:
-            ###
-            # Still done in DynamicWindow class.
-                # findScrollArea = QtWidgets.QScrollArea()
-                # findScrollArea.setObjectName('findScrollArea')
-                # findTab = QtWidgets.QWidget()
-                # findTab.setObjectName('findTab')
-                # top.createFindTab(parent=findTab, tab_widget=findScrollArea)
-                # findScrollArea.setWidget(findTab)
-                # self.globalFindDialog = w = findTab
             self.globalFindDialog = d = QtWidgets.QDialog()
             layout = QtWidgets.QVBoxLayout(d)
             layout.addWidget(top.findTab)
+                # top is the DynamicWindow class.
             d.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
             d.setLayout(layout)
             d.setModal(False)

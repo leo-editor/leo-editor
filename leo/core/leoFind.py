@@ -316,7 +316,10 @@ class LeoFind:
     def focusToFind(self, event=None):
         c = self.c
         if g.new_find:
-            g.app.gui.openFindDialog(c)
+            if c.config.getBool('use_find_dialog', default=True):
+                g.app.gui.openFindDialog(c)
+            else:
+                c.frame.log.selectTab('Find')
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
@@ -338,7 +341,10 @@ class LeoFind:
         '''Open the Find tab in the log pane.'''
         c = self.c
         if g.new_find:
-            g.app.gui.openFindDialog(c)
+            if c.config.getBool('use_find_dialog', default=True):
+                g.app.gui.openFindDialog(c)
+            else:
+                c.frame.log.selectTab('Find')
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
@@ -675,9 +681,6 @@ class LeoFind:
         c = self.c
         ftm = c.findCommands.ftm
         s = ftm.getChangeText()
-        ### g.new_find
-        ### Now done in stateZeroHelper.
-        ### c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[: -1]
@@ -687,9 +690,6 @@ class LeoFind:
         c = self.c; k = c.k
         ftm = c.findCommands.ftm
         s = ftm.getFindText()
-        ### g.new_find
-        ### Now done in stateZeroHelper.
-        ### c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[: -1]
@@ -879,7 +879,7 @@ class LeoFind:
                 self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
-        k = self.k
+        c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
             g.trace('no self.w')
@@ -888,8 +888,13 @@ class LeoFind:
         # New in Leo 5.2: minibuffer modes shows options in status area.
         if self.minibuffer_mode:
             self.showFindOptionsInStatusArea()
+        elif g.new_find:
+            if c.config.getBool('use_find_dialog', default=True):
+                g.app.gui.openFindDialog(c)
+            else:
+                c.frame.log.selectTab('Find')
         else:
-            self.c.frame.log.selectTab('Find')
+            c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
