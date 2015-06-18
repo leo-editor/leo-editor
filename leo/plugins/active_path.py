@@ -67,6 +67,13 @@ time active_path will spend on a recursive operation.
 \@int active_path_max_size (default 1000000) controls the maximum
 size file active_path will open without query.
 
+Per Folder file/folder inclusion and exclusion by adding flags to the body of an active path folder (either @ or /*/), can include multiple inc= and exc= flags:
+    excdirs - excludes all directories 
+    excfiles - excludes all files
+    inc= - a single item or comma separated list of strings to include in the list of files/folders
+    exc= - a single item or comma separated list of strings to exclude in the list of files/folders
+    re - search using regular expressions (otherwise a case-sensitive 'in' comparison)
+    
 active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
 sub-folders more automatically.
@@ -183,13 +190,42 @@ def isFileNode(p):
       and (not p.b.strip() or # p.b.startswith(c.__active_path['DS_SENTINEL']
       p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
       ))
+#@+node:jlunz.20150611151435.1: ** inAny
+def inAny(item, group, regEx=False):
+    """ Helper function to check if word from list is in a string """
+    if regEx:
+        if any(re.search(word,item) for word in group):
+            return True
+        else:
+            return False
+    else:
+        if any(word in item for word in group):
+            return True
+        else:
+            return False        
+
+#@+node:jlunz.20150611151003.1: ** checkIncExc
+def checkIncExc(item,inc,exc,regEx):
+    """ Primary logic to check if an item is in either the include or exclude list """
+    if inc and not exc:
+        if inAny(item,inc,regEx):
+            return True
+        else:
+            return False
+    elif exc and not inc:
+        if not inAny(item,exc,regEx):
+            return True
+        else:
+            return False
+    elif exc and inc:
+        return True
+    else:
+        return True
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
-
     for pat in lst:
         if pat.search(txt):
             return True
-
     return False
 #@+node:tbrown.20091128094521.15040: ** subDir
 def subDir(d, p):
@@ -400,7 +436,15 @@ def openFile(c,parent,d, autoload=False):
     c.bodyWantsFocus()
 #@+node:tbrown.20080613095157.10: ** openDir
 def openDir(c,parent,d):
-    """Expand / refresh an existing folder"""
+    """
+    Expand / refresh an existing folder
+    
+    Note: With the addition of per folder inclusion/exclusion a check is done
+    against both the current list of nodes and against the files/folders as
+    they exist on the system. This check must be done in both places to keep
+    the node list in sync with the file system while respecting the inc/exc
+    lists - John Lunzer
+    """
 
     # compare folder content to children
     try:
@@ -413,8 +457,28 @@ def openDir(c,parent,d):
     # parent.expand()  # why?
 
     oldlist = set()
+    toRemove = set()
     newlist = []
 
+    bodySplit = parent.b.splitlines()
+    
+    excdirs = False
+    excfiles = False
+    regEx = False
+    if re.search('^excdirs', parent.b, flags=re.MULTILINE):
+        excdirs = True
+    if re.search('^excfiles', parent.b, flags=re.MULTILINE):
+        excfiles = True
+    if re.search('^re', parent.b, flags=re.MULTILINE):
+        regEx = True
+    
+    inc = [line.replace('inc=','') for line in bodySplit if line.startswith('inc=')]
+    exc = [line.replace('exc=','') for line in bodySplit if line.startswith('exc=')]
+    
+    #flatten lists if using comma separations
+    inc = [item for line in inc for item in line.strip(' ').split(',')]
+    exc = [item for line in exc for item in line.strip(' ').split(',')]
+    
     # get children info
     for p in flattenOrganizers(parent):
         entry = p.h.strip('/*')
@@ -422,25 +486,45 @@ def openDir(c,parent,d):
             directive = entry.split(None,1)
             if len(directive) > 1:
                 entry = entry[len(directive[0]):].strip()
-        oldlist.add(entry)
+        #find existing inc/exc nodes to remove
+        #using p.h allows for example exc=/ to remove all directories 
+        if not checkIncExc(p.h,inc,exc, regEx) or \
+               (excdirs and entry in dirs) or \
+               (excfiles and entry in files):
+            toRemove.add(p.h) #must not strip '/', so nodes can be removed
+        else:    
+            oldlist.add(entry)
+            
+    # remove existing found inc/exc nodes 
+    for headline in toRemove:
+        found = g.findNodeInChildren(c,parent,headline)
+        if found:
+            found.doDelete()
 
-    for d2 in dirs:
+    # dirs trimmed by toRemove to remove redundant checks
+    for d2 in set(dirs)-set([h.strip('/') for h in toRemove]):
         if d2 in oldlist:
             oldlist.discard(d2)
         else:
-            newlist.append('/'+d2+'/')
-    for f in files:
+            if checkIncExc(d2,
+                           [i.strip('/') for i in inc], 
+                           [e.strip('/') for e in exc], 
+                           regEx) and not excdirs:
+                newlist.append('/'+d2+'/')
+                
+    # files trimmed by toRemove, retains original functionality of plugin
+    for f in set(files)-toRemove:
         if f in oldlist:
             oldlist.discard(f)
         else:
-            newlist.append(f)
+            if checkIncExc(f, inc, exc, regEx) and not excfiles:
+                newlist.append(f)
 
     # insert newlist
     newlist.sort()
     ignored = 0
     newlist.reverse()  # un-reversed by the following loop
     for name in newlist:
-
         if inReList(name, c.__active_path['ignore']):
             ignored += 1
             continue
