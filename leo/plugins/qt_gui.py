@@ -159,7 +159,11 @@ class LeoQtGui(leoGui.LeoGui):
         # g.trace(top.find_status_label, top.find_status_edit)
         c.inCommand = False
         if d.isVisible():
-            pass
+            # The order is important, and tricky.
+            d.focusWidget()
+            d.show()
+            d.raise_()
+            d.activateWindow()
         else:
             d.show()
             d.exec_()
