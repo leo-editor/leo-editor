@@ -133,7 +133,6 @@ class LeoQtGui(leoGui.LeoGui):
     def openFindDialog(self, c):
         if g.unitTesting:
             return
-        g.trace(g.callers())
         top = c.frame.top
         d = self.globalFindDialog
         if not d:

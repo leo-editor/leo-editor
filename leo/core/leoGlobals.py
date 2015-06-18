@@ -21,7 +21,7 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
-new_find = True
+new_find = False
 if new_find:
     print('\n***** new_find')
 new_modes = False
