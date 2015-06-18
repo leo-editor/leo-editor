@@ -129,6 +129,40 @@ class LeoQtGui(leoGui.LeoGui):
         '''Return the Qt-style dialog filter from filetypes list.'''
         filters = ['%s (%s)' % (z) for z in filetypes]
         return ';;'.join(filters)
+    #@+node:ekr.20150615211522.1: *4* LeoQtGui.openFindDialog
+    def openFindDialog(self, c):
+        if g.unitTesting: return
+        top = c.frame.top
+        d = self.globalFindDialog
+        if not d:
+            ###
+            # Still done in DynamicWindow class.
+                # findScrollArea = QtWidgets.QScrollArea()
+                # findScrollArea.setObjectName('findScrollArea')
+                # findTab = QtWidgets.QWidget()
+                # findTab.setObjectName('findTab')
+                # top.createFindTab(parent=findTab, tab_widget=findScrollArea)
+                # findScrollArea.setWidget(findTab)
+                # self.globalFindDialog = w = findTab
+            self.globalFindDialog = d = QtWidgets.QDialog()
+            layout = QtWidgets.QVBoxLayout(d)
+            layout.addWidget(top.findTab)
+            d.setWindowIcon(QtWidgets.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+            d.setLayout(layout)
+            d.setModal(False)
+        # Set the commander's FindTabManager.
+        assert g.app.globalFindTabManager
+        c.ftm = g.app.globalFindTabManager
+        fn = c.shortFileName() or 'Untitled'
+        d.setWindowTitle('Find in %s' % fn)
+        top.find_status_label.setText('Find Status:') # c.shortFileName())
+        # g.trace(top.find_status_label, top.find_status_edit)
+        c.inCommand = False
+        if d.isVisible():
+            pass
+        else:
+            d.show()
+            d.exec_()
     #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
@@ -363,23 +397,6 @@ class LeoQtGui(leoGui.LeoGui):
             b.YesToAll: 'yes-all',
             b.NoToAll: 'no-all'
         }.get(val, 'no')
-    #@+node:ekr.20150615211522.1: *4* LeoQtGui.runNonModalDialog
-    def runNonModalDialog(self, c, w):
-        if g.unitTesting: return
-        g.trace(w)
-        d = QtWidgets.QDialog()
-        layout = QtWidgets.QVBoxLayout(d)
-        layout.addWidget(w)
-        d.setLayout(layout)
-        d.setModal(False)
-        d.show()
-        d.exec_()
-        # d.setText(message)
-        # d.setIcon(b.Warning)
-        # d.addButton('Ok', b.YesRole)
-        # c.in_qt_dialog = True
-        # d.exec_()
-        # c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title, startdir):
         """Create and run an Qt open directory dialog ."""

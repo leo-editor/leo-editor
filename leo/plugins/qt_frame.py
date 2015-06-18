@@ -191,7 +191,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw.setCentralWidget(w)
         # Official ivars.
         self.centralwidget = w
-    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helper
+    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
         # Create widgets.
@@ -216,9 +216,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Do this later, in LeoFind.finishCreate
         self.findScrollArea = findScrollArea
         self.findTab = findTab
-        ###
-        # self.createFindTab(findTab, findScrollArea)
-        # findScrollArea.setWidget(findTab)
         # Spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('spellTab')
@@ -230,6 +227,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
+        # Always create this, but only one is used when g.new_find is True.
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
@@ -508,12 +506,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_spell_label = lab # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
     def createFindTab(self, parent, tab_widget):
-        # g.trace('***(DynamicWindow)***',parent,tab_widget)
+        '''Create a Find Tab in the given parent.'''
+        # g.trace('***(DynamicWindow)***', parent, tab_widget)
         c, dw = self.leo_c, self
         fc = c.findCommands
         assert not fc.ftm
         fc.ftm = ftm = FindTabManager(c)
-        assert c.findCommands
+        if g.new_find:
+            g.app.globalFindTabManager = ftm
         grid = self.create_find_grid(parent)
         row = 0 # The index for the present row.
         row = dw.create_find_header(grid, parent, row)
@@ -523,6 +523,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         max_row2 = dw.create_find_checkboxes(grid, parent, max_row2, row)
         row = dw.create_find_buttons(grid, parent, max_row2, row)
         row = dw.create_help_row(grid, parent, row)
+        # Status row
+        if g.new_find:
+            dw.create_find_status(grid, parent, row)
+            row += 1
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -541,7 +545,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.setColumnStretch(2, 10)
         grid.setColumnMinimumWidth(1, 75)
         grid.setColumnMinimumWidth(2, 175)
-        grid.setColumnMinimumWidth(3, 50)
+        if g.new_find:
+            pass
+        else:
+            grid.setColumnMinimumWidth(3, 50)
         return grid
     #@+node:ekr.20131118152731.16849: *6* dw.create_find_header
     def create_find_header(self, grid, parent, row):
@@ -696,6 +703,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
             grid.addWidget(w, row, 0, 1, 3)
             row += 1
         return row
+    #@+node:ekr.20150618072619.1: *6* dw.create_find_status
+    def create_find_status(self, grid, parent, row):
+        '''Create the status line (new_find only).'''
+        dw = self
+        status_label = dw.createLabel(parent, 'status-label', 'Status')
+        status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
+        grid.addWidget(status_label, row, 0)
+        grid.addWidget(status_line, row, 1, 1, 2)
+        # Official ivar.
+        dw.find_status_label = status_label
+        dw.find_status_edit = status_line
     #@+node:ekr.20131118172620.16891: *6* dw.override_events
     def override_events(self):
         c, dw = self.leo_c, self
@@ -928,6 +946,7 @@ class FindTabManager:
     #@+others
     #@+node:ekr.20131117120458.16794: *3*  ftm.ctor
     def __init__(self, c):
+        '''Ctor for the FindTabManager class.'''
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
         self.entry_focus = None # The widget that had focus before find-pane entered.
@@ -2948,6 +2967,9 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
+    #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
+    def getName(self):
+        return 'log' # Required for proper pane bindings.
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName):
         g.warning('color picker not ready for qt')
@@ -3122,18 +3144,21 @@ class LeoQtLog(leoFrame.LeoLog):
             g.app.gui.setFilter(c, widget, self, tag='log')
             # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
             if tabName == 'Log':
-                assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-                find_widget = c.frame.top.leo_find_widget
-                # 2011/11/21: A hack: add an event filter.
-                g.app.gui.setFilter(c, find_widget, widget, 'find-widget')
-                if trace: g.trace('** Adding event filter for Find', find_widget)
-                # 2011/11/21: A hack: make the find_widget an official log widget.
-                self.contentsDict['Find'] = find_widget
-                # 2013/09/20:
-                if hasattr(c.frame.top, 'leo_spell_widget'):
-                    spell_widget = c.frame.top.leo_spell_widget
-                    if trace: g.trace('** Adding event filter for Spell', find_widget)
-                    g.app.gui.setFilter(c, spell_widget, widget, 'spell-widget')
+                if g.new_find:
+                    pass
+                else:
+                    assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+                    find_widget = c.frame.top.leo_find_widget
+                    # 2011/11/21: A hack: add an event filter.
+                    g.app.gui.setFilter(c, find_widget, widget, 'find-widget')
+                    if trace: g.trace('** Adding event filter for Find', find_widget)
+                    # 2011/11/21: A hack: make the find_widget an official log widget.
+                    self.contentsDict['Find'] = find_widget
+                    # 2013/09/20:
+                    if hasattr(c.frame.top, 'leo_spell_widget'):
+                        spell_widget = c.frame.top.leo_spell_widget
+                        if trace: g.trace('** Adding event filter for Spell', find_widget)
+                        g.app.gui.setFilter(c, spell_widget, widget, 'spell-widget')
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget, tabName)
         else:

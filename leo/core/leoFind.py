@@ -316,8 +316,7 @@ class LeoFind:
     def focusToFind(self, event=None):
         c = self.c
         if g.new_find:
-            w = c.frame.top.findTab
-            g.app.gui.runNonModalDialog(c, w)
+            g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
@@ -339,8 +338,7 @@ class LeoFind:
         '''Open the Find tab in the log pane.'''
         c = self.c
         if g.new_find:
-            w = c.frame.top.findTab
-            g.app.gui.runNonModalDialog(c, w)
+            g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand

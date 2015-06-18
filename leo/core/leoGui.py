@@ -21,14 +21,16 @@ class LeoGui:
     Subclasses are expected to override all do-nothing methods of this class.
     """
     #@+others
-    #@+node:ekr.20031218072017.3721: *3* app.gui Birth & death
-    #@+node:ekr.20031218072017.3722: *4*  LeoGui.__init__
+    #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName):
         '''Ctor for the LeoGui class.'''
         # g.trace("LeoGui",guiName,g.callers())
         self.active = None # Used only by qt_gui.
         self.bodyTextWidget = None
         self.consoleOnly = True # True if g.es goes to console.
+        self.globalFindTabManager = None
+        self.globalFindDialog = None
+        self.globalFindTab = None
         self.idleTimeClass = None
         self.isNullGui = False
         self.lastFrame = None
