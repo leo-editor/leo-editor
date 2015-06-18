@@ -147,7 +147,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.globalFindDialog = d = QtWidgets.QDialog()
             layout = QtWidgets.QVBoxLayout(d)
             layout.addWidget(top.findTab)
-            d.setWindowIcon(QtWidgets.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+            d.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
             d.setLayout(layout)
             d.setModal(False)
         # Set the commander's FindTabManager.
