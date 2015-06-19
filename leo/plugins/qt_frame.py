@@ -749,6 +749,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'toggle-find-regex-option',
                     'toggle-find-word-option',
                     'toggle-find-wrap-around-option',
+                    # New in Leo 5.2: Support these in the Find Dialog.
+                    'find-all',
+                    'find-next',
+                    'find-prev',
+                    'hide-find-tab',
+                    'replace',
+                    'replace-all',
+                    'replace-then-find',
+                    'set-find-everywhere',
+                    'set-find-node-only',
+                    'set-find-suboutline-only',
                 )
                 for cmd_name in table:
                     stroke = c.k.getShortcutForCommandName(cmd_name)
@@ -780,8 +791,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     g.trace('eat', eat, w)
                     if eat and s in ('\n', '\r'):
                         return True
-                out = s in ('\t', '\r', '\n')
-                if trace: g.trace(out, repr(s))
+                out = s and s in '\t\r\n'
+                # if trace: g.trace(out, repr(s))
                 if out:
                     # Move focus to next widget.
                     if s == '\t':
@@ -800,8 +811,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     tkKey, ch, ignore = ef.toTkKey(event)
                     stroke = ef.toStroke(tkKey, ch) # ch not used.
                     cmd_name = self.d.get(stroke)
+                    if trace: g.trace(cmd_name, s, tkKey, stroke)
                     if cmd_name:
-                        # g.trace(cmd_name,s,tkKey,stroke,
                         self.c.k.simulateCommand(cmd_name)
                         return True
                     else:
@@ -828,7 +839,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = getattr(ftm, ivar, None)
             func = getattr(fc, func_name, None)
             if w and func:
-                # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
+                # g.trace(cmd_name, ivar, bool(w), func and func.__name__)
                 next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
                 EventWrapper(c, w=w, next_w=next_w, func=func)
             else:
