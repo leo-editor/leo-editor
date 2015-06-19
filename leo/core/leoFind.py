@@ -2062,6 +2062,10 @@ class LeoFind:
                 insert, w.getSelectionRange(), w.getYScrollPosition()))
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
+        if g.new_find:
+            if hasattr(g.app.gui, 'hideFindDialog'):
+                g.app.gui.hideFindDialog()
+            c.frame.bringToFront()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars(self):

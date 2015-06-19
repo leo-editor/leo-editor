@@ -512,8 +512,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         fc = c.findCommands
         assert not fc.ftm
         fc.ftm = ftm = FindTabManager(c)
-        if g.new_find:
-            g.app.globalFindTabManager = ftm
+        ###
+        # if g.new_find:
+            # g.app.globalFindTabManager = ftm
         grid = self.create_find_grid(parent)
         row = 0 # The index for the present row.
         row = dw.create_find_header(grid, parent, row)
@@ -3149,7 +3150,9 @@ class LeoQtLog(leoFrame.LeoLog):
             # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
             if tabName == 'Log':
                 if g.new_find:
-                    pass
+                    find_widget = c.frame.top.leo_find_widget
+                    # 2011/11/21: A hack: add an event filter.
+                    g.app.gui.setFilter(c, find_widget, widget, 'find-widget')
                 else:
                     assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                     find_widget = c.frame.top.leo_find_widget

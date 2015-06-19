@@ -3115,8 +3115,8 @@ class KeyHandlerClass:
         c, k = self.c, self
         trace = False and not g.unitTesting
         traceGC = False
-        traceStroke = False
-        if trace: g.trace(commandName, func)
+        traceStroke = True
+        # if trace: g.trace(commandName, func)
         if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()

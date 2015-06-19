@@ -155,6 +155,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20150619053138.1: *5* LeoQtGui.createFindDialog
     def createFindDialog(self, c):
         '''Create and init a non-modal Find dialog.'''
+        g.app.globalFindTabManager = c.findCommands.ftm
         top = c.frame.top
             # top is the DynamicWindow class.
         w = top.findTab
@@ -165,19 +166,22 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(d)
         d.setLayout(layout)
         c.styleSheetManager.set_style_sheets(w=d)
-        c.k.completeAllBindingsForWidget(w)
-        g.app.gui.setFilter(c, obj=w, w=w, tag='find-dialog')
         d.setModal(False)
         return d
     #@+node:ekr.20150619053840.1: *5* LeoQtGui.findDialogSelectCommander
     def findDialogSelectCommander(self, c):
         '''Update the Find Dialog when c changes.'''
         if self.globalFindDialog:
-            c.ftm = g.app.globalFindTabManager
+            c.ftm = ftm = g.app.globalFindTabManager
             d = self.globalFindDialog
             fn = c.shortFileName() or 'Untitled'
             d.setWindowTitle('Find in %s' % fn)
             c.inCommand = False
+    #@+node:ekr.20150619131141.1: *5* LeoQtGui.hideFindDialog
+    def hideFindDialog(self):
+        d = self.globalFindDialog
+        if d:
+            d.hide()
     #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
