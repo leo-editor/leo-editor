@@ -608,6 +608,7 @@
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
+<v t="ekr.20150619084505.1"><vh>@bool auto-set-ignore-case = True</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
@@ -10658,6 +10659,8 @@ except KeyError:
 <t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
 <t tx="ekr.20150602160415.1"></t>
 <t tx="ekr.20150618105435.1"></t>
+<t tx="ekr.20150619084505.1">True: The ignore-case checkbox is set if the find text is mixed case, and cleared otherwise.
+False: The ignore-case checkbox remains as it was.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
