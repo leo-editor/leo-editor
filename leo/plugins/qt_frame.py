@@ -711,7 +711,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
         grid.addWidget(status_label, row, 0)
         grid.addWidget(status_line, row, 1, 1, 2)
-        # Official ivar.
+        # Official ivars.
         dw.find_status_label = status_label
         dw.find_status_edit = status_line
     #@+node:ekr.20131118172620.16891: *6* dw.override_events
@@ -2070,7 +2070,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     class QtStatusLineClass:
         '''A class representing the status line.'''
         #@+others
-        #@+node:ekr.20110605121601.18258: *4* ctor (qtFrame)
+        #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
         def __init__(self, c, parentFrame):
             '''Ctor for LeoQtFrame class.'''
             self.c = c
@@ -2116,7 +2116,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w2.contextMenuEvent = add_item
             self.put('')
             self.update()
-        #@+node:ekr.20110605121601.18260: *4* clear, get & put/1
+        #@+node:ekr.20110605121601.18260: *4* QtStatusLineClass.clear, get & put/1
         def clear(self):
             self.put('')
 
@@ -2124,14 +2124,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return self.textWidget2.text()
 
         def put(self, s, color=None):
-            self.put_helper(s, self.textWidget2)
+            self.put_helper(s, color, self.textWidget2)
 
         def put1(self, s, color=None):
-            self.put_helper(s, self.textWidget1)
+            self.put_helper(s, color, self.textWidget1)
 
-        def put_helper(self, s, w):
+        def put_helper(self, s, color, w):
+            # At present, the color argument is not honored.
             w.setText(s)
-        #@+node:ekr.20110605121601.18261: *4* update (QtStatusLineClass)
+        #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
         def update(self):
             if g.app.killed: return
             c = self.c; body = c.frame.body

@@ -1304,16 +1304,18 @@ class LeoFind:
             data = self.save()
         pos, newpos = self.findNextMatch()
         if pos is None:
-            if self.wrapping:
-                g.es("end of wrapped search")
-            else:
-                g.es("not found", "'%s'" % (self.find_text))
-                # Warn if not searching everything.
-                if not self.search_headline:
-                    g.es('body only', color='blue')
-                elif not self.search_body:
-                    g.es('headline only', color='blue')
             self.restore(data)
+            if self.wrapping:
+                # g.es("end of wrapped search")
+                self.show_status('end of wrapped search')
+            else:
+                if not self.search_headline:
+                    warn = ' (body only)'
+                elif not self.search_body:
+                    warn = ' (headline only)'
+                else:
+                    warn = ''
+                self.showStatus('not found%s: "%s"' % (warn, self.find_text))
             return False # for vim-mode find commands.
         else:
             self.showSuccess(pos, newpos)
@@ -1784,6 +1786,15 @@ class LeoFind:
         prompt = 'wixbhacf'
         result = [option for option, ivar in table if ivar.checkState()]
         c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
+    #@+node:ekr.20150619070602.1: *4* find.showStatus
+    def showStatus(self, s):
+        '''Show the find status the Find dialog, if present, and the status line.'''
+        c = self.c
+        d = getattr(g.app.gui, 'globalFindDialog', None)
+        if d:
+            top = c.frame.top
+            top.find_status_edit.setText(s)
+        c.frame.putStatusLine(s, color='blue')
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs(self, forward=False, regexp=False, word=False):
         '''
