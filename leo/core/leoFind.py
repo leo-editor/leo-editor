@@ -364,6 +364,7 @@ class LeoFind:
     @cmd('start-search')
     def startSearch(self, event):
         # Enhancement #177: Use selected text as the find string.
+        c = self.c
         ftm = self.ftm
         w = self.editWidget(event)
         if w and w.hasSelection():
