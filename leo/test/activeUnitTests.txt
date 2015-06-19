@@ -9920,7 +9920,8 @@ if g.app.isExternalUnitTest:
     pass
 else:
     table = (
-        ('ignore_case','toggle-find-ignore-case-option'),
+        # ('ignore_case','toggle-find-ignore-case-option'),
+            # This option now can be set automagically.
         ('search_body','toggle-find-in-body-option'),
         ('search_headline','toggle-find-in-headline-option'),
         ('mark_changes','toggle-find-mark-changes-option'),
