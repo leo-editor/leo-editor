@@ -129,27 +129,19 @@ class LeoQtGui(leoGui.LeoGui):
         '''Return the Qt-style dialog filter from filetypes list.'''
         filters = ['%s (%s)' % (z) for z in filetypes]
         return ';;'.join(filters)
-    #@+node:ekr.20150615211522.1: *4* LeoQtGui.openFindDialog
+    #@+node:ekr.20150615211522.1: *4* LeoQtGui.openFindDialog & helpers
     def openFindDialog(self, c):
         if g.unitTesting:
             return
-        top = c.frame.top
         d = self.globalFindDialog
         if not d:
-            self.globalFindDialog = d = QtWidgets.QDialog()
-            layout = QtWidgets.QVBoxLayout(d)
-            layout.addWidget(top.findTab)
-                # top is the DynamicWindow class.
-            d.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
-            d.setLayout(layout)
-            d.setModal(False)
+            d = self.createFindDialog(c)
+            self.globalFindDialog = d
         # Set the commander's FindTabManager.
         assert g.app.globalFindTabManager
         c.ftm = g.app.globalFindTabManager
         fn = c.shortFileName() or 'Untitled'
         d.setWindowTitle('Find in %s' % fn)
-        top.find_status_label.setText('Find Status:') # c.shortFileName())
-        # g.trace(top.find_status_label, top.find_status_edit)
         c.inCommand = False
         if d.isVisible():
             # The order is important, and tricky.
@@ -160,6 +152,31 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             d.show()
             d.exec_()
+    #@+node:ekr.20150619053138.1: *5* LeoQtGui.createFindDialog
+    def createFindDialog(self, c):
+        '''Create and init a non-modal Find dialog.'''
+        top = c.frame.top
+            # top is the DynamicWindow class.
+        w = top.findTab
+        top.find_status_label.setText('Find Status:')
+        d = QtWidgets.QDialog()
+        layout = QtWidgets.QVBoxLayout(d)
+        layout.addWidget(w)
+        d.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        d.setLayout(layout)
+        c.styleSheetManager.set_style_sheets(w=d)
+        c.k.completeAllBindingsForWidget(w)
+        g.app.gui.setFilter(c, obj=w, w=w, tag='find-dialog')
+        d.setModal(False)
+        return d
+    #@+node:ekr.20150619053840.1: *5* LeoQtGui.findDialogSelectCommander
+    def findDialogSelectCommander(self, c):
+        '''Update the Find Dialog when c changes.'''
+        c.ftm = g.app.globalFindTabManager
+        d = self.globalFindDialog
+        fn = c.shortFileName() or 'Untitled'
+        d.setWindowTitle('Find in %s' % fn)
+        c.inCommand = False
     #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
