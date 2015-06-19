@@ -363,6 +363,11 @@ class LeoFind:
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     @cmd('start-search')
     def startSearch(self, event):
+        # Enhancement #177: Use selected text as the find string.
+        w = self.editWidget(event)
+        if w and w.hasSelection():
+            self.ftm.setFindText(w.getSelectedText())
+            self.ftm.init_focus()
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
@@ -880,7 +885,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
         c, k = self.c, self.k
-        self.w = self.editWidget(event)
+        self.w = w = self.editWidget(event)
         if not self.w:
             g.trace('no self.w')
             return

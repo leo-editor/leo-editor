@@ -103,23 +103,7 @@ https://github.com/leo-editor/leo-editor/issues/177
 
 Original suggestions from Reinhard Engel here.
 
-First: IMO it would be easier to show the 'not found ' message at the bottom of the 'Find' tab and not in the 'Log' tab. There are some scenarios where this would help to keep the focus. One wouldn't have to switch back to the 'Find' tab:
-
-One has reached the end of forward search and wants to search backward. 
-One has entered a search term or a Regexp with a typo. 
-If one wants to make several changes, always switching back to the 'Find' tab is a nuisance.
-
-EKR: Hmm. I'll think about this.
-
-Second: When pressing Ctrl-F and some expression in the body or the outline is marked (highlighted), it could be shown as the default search term in the 'Find' field. This would save some time and typing if one wants to search for a special expression in other places.
-
-EKR: Great idea.
-
-Third: Showing the shortcuts is an improvement. They would stand out more, if the buttons were shorter and the shortcuts were shown left or right of the buttons.
-
-EKR: Minor.
-
-Fourth: There are some special cases concerning the case of search and replacement terms. If 'Ignore case' is activated, should a replace keep the case of the a found word (i.e. a capital letter at the beginning) or should it always use the case of the replacement term.
+If 'Ignore case' is activated, should a replace keep the case of the a found word (i.e. a capital letter at the beginning) or should it always use the case of the replacement term.
 
 EKR: Some editors use the following trick. If either the search or replace text contain mixed case, then ignore case is forced off, but only for that search. I'd like to experiment with this hack.
 .. @+node:ekr.20150612094107.1: *3* ** Fold vr2 into vr
