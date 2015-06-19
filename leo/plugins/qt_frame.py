@@ -1278,7 +1278,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     #@+node:ekr.20131115120119.17398: *3* select (leoTabbedTopLevel)
     def select(self, c):
         '''Select the tab for c.'''
-        # g.trace(c.frame.title,g.callers())
         dw = c.frame.top # A DynamicWindow
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
@@ -4562,6 +4561,8 @@ class TabbedFrameFactory:
         if f:
             if trace: g.trace(f.title)
             tabw.setWindowTitle(f.title)
+            if hasattr(g.app.gui, 'findDialogSelectCommander'):
+                g.app.gui.findDialogSelectCommander(f.c)
             # g.app.selectLeoWindow(f.c)
                 # would break --minimize
             # Fix bug 690260: correct the log.

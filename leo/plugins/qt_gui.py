@@ -162,7 +162,7 @@ class LeoQtGui(leoGui.LeoGui):
         d = QtWidgets.QDialog()
         layout = QtWidgets.QVBoxLayout(d)
         layout.addWidget(w)
-        d.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        self.attachLeoIcon(d)
         d.setLayout(layout)
         c.styleSheetManager.set_style_sheets(w=d)
         c.k.completeAllBindingsForWidget(w)
@@ -172,11 +172,12 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20150619053840.1: *5* LeoQtGui.findDialogSelectCommander
     def findDialogSelectCommander(self, c):
         '''Update the Find Dialog when c changes.'''
-        c.ftm = g.app.globalFindTabManager
-        d = self.globalFindDialog
-        fn = c.shortFileName() or 'Untitled'
-        d.setWindowTitle('Find in %s' % fn)
-        c.inCommand = False
+        if self.globalFindDialog:
+            c.ftm = g.app.globalFindTabManager
+            d = self.globalFindDialog
+            fn = c.shortFileName() or 'Untitled'
+            d.setWindowTitle('Find in %s' % fn)
+            c.inCommand = False
     #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c):
         """Create a qt color picker panel."""
