@@ -1978,6 +1978,9 @@ class LeoFind:
         if 0: # Don't do this here.
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
+        if g.new_find:
+            if hasattr(g.app.gui, 'hideFindDialog'):
+                g.app.gui.hideFindDialog()
         c.frame.bringToFront() # Needed on the Mac
         # Don't try to reedit headline.
         if p and c.positionExists(p): # 2013/11/22.
