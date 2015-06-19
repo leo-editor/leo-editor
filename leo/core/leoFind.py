@@ -364,10 +364,17 @@ class LeoFind:
     @cmd('start-search')
     def startSearch(self, event):
         # Enhancement #177: Use selected text as the find string.
+        ftm = self.ftm
         w = self.editWidget(event)
         if w and w.hasSelection():
-            self.ftm.setFindText(w.getSelectedText())
-            self.ftm.init_focus()
+            s = w.getSelectedText()
+            ftm.setFindText(s)
+            ftm.init_focus()
+        else:
+            s = ftm.getFindText()
+        # Enhancement #177: Set ignore-case if the find text is mixed case.
+        if c.config.getBool('auto-set-ignore-case', default=True):
+            ftm.set_ignore_case(s.lower() == s)
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)

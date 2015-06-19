@@ -1017,6 +1017,13 @@ class FindTabManager:
             w = c.frame.tree.treeWidget
         self.entry_focus = w
         # g.trace(w,g.app.gui.widget_name(w))
+    #@+node:ekr.20150619082825.1: *3* ftm.set_ignore_case
+    def set_ignore_case(self, aBool):
+        '''Set the ignore-case checkbox to the given value.'''
+        c = self.c
+        c.findCommands.ignore_case = False
+        w = self.check_box_ignore_case
+        w.setChecked(aBool)
     #@+node:ekr.20131117120458.16789: *3* ftm.init_widgets (creates callbacks)
     def init_widgets(self):
         '''
