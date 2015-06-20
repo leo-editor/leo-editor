@@ -81,10 +81,7 @@ Font setting overridden by new workbook
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
 .. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
-.. @+node:ekr.20150611163526.1: *4* Enhancement 183: Improve focus-border handling in qt stylesheet
-https://github.com/leo-editor/leo-editor/issues/183
 .. @+node:ekr.20150612094107.1: *3* ** Fold vr2 into vr
-Changed.
 .. @+node:ekr.20150609102505.1: *3* Bugs: later, never
 @language rest
 @wrap

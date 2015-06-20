@@ -169,7 +169,7 @@ Enable with: @bool use_find_dialog = True
 Related setting: @bool close-find-dialog-after-search = False
 
 Defaults are as shown above.
-.. @+node:ekr.20150619082041.1: *4* Completed enhancement #177: Improved operation of Find commands
+.. @+node:ekr.20150619082041.1: *4* Completed enhancement 177: Improved operation of Find commands
 @language rest
 @wrap
 
@@ -183,6 +183,23 @@ https://github.com/leo-editor/leo-editor/issues/177
 
 This is controlled by the new @bool auto-set-ignore-case setting, True by default.
 
+.. @+node:ekr.20150611163526.1: *4* Completed enhancement 183: Improve focus-border handling in qt stylesheet
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/183
+
+Added @ignore @data qt-gui-user-style-sheet to leoSettings.leo.
+This contains  alternative active pane highlighting.
+
+This completes enhancement #183: mprove focus-border handling in qt stylesheet
+https://github.com/leo-editor/leo-editor/issues/183
+
+It would be tricky, and not terribly useful, to fold this user stylesheet into
+the main @data qt-gui-plugin-style-sheet, especially considering that
+themes may want to use qt-gui-user-style-sheet.
+
+Also, the default settings aren't bad, but I prefer to change qt-gui-user-style-sheet directly.
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
