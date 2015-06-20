@@ -166,7 +166,9 @@ These directives are inherited as usual.
 .. @+node:ekr.20150609110852.1: *4* Alt-N (goto-next-clone) falls backs to find-next-clone
 .. @+node:ekr.20150619082025.1: *4* Added optional Find Dialog
 Enable with: @bool use_find_dialog = True
-Related setting: @bool close-find-dialog-after-search = True
+Related setting: @bool close-find-dialog-after-search = False
+
+Defaults are as shown above.
 .. @+node:ekr.20150619082041.1: *4* Completed enhancement #177: Improved operation of Find commands
 @language rest
 @wrap
@@ -177,7 +179,7 @@ https://github.com/leo-editor/leo-editor/issues/177
 
 2. Ctrl-F pre-loads any selected text into the search text.
 
-3. If the search text contain mixed case, then ignore case is forced off.
+3. If the search text is mixed case, then ignore case is forced off.
 
 This is controlled by the new @bool auto-set-ignore-case setting, True by default.
 
