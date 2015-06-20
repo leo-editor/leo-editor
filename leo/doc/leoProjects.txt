@@ -200,6 +200,38 @@ the main @data qt-gui-plugin-style-sheet, especially considering that
 themes may want to use qt-gui-user-style-sheet.
 
 Also, the default settings aren't bad, but I prefer to change qt-gui-user-style-sheet directly.
+.. @+node:ekr.20150620103337.1: *4* Added new Themes machinery
+leoSettings.leo now contains a new top-level node::
+
+    @ignore Themes: copy to last top-level setting in myLeoSettings.leo
+
+The body text tells what to do with it, namely:
+
+To enable a theme:
+   
+1. Copy this entire tree to myLeoSettings.leo.
+2. Move the tree so it is the last top-level node under @settings.
+3. Remove the @ignore from the copy of this node.
+4. Enable one of the three themes below by removing @ignore for its node.
+5. Test by opening another Leo outline.
+
+Important Notes
+
+1. The "Themes" node does not define @data qt-gui-plugin-style-sheet.
+
+Instead the new themes machinery uses the so-called "fully parameterized" stylesheet that we have all been using for at least several months now.  This stylesheet is defined as a descendant of the "Appearance" node.
+
+2. The only functional theme is a new ekr_dark theme.  It illustrates how to use the new themes machinery.
+
+- This theme uses a small, custom @data qt-gui-user-style-sheet that adjust colors around outline indicators.
+
+- There is a tree call "Common to all themes" which contains settings that probably can be shared by most themes.  Naturally, setting in that tree can be overridden as you desire.
+
+3. The new themes machinery is supposed to be completely self contained.  That is, there should be no need to use a script to generate a theme.
+
+Yes, the user must fill in all appearance-related settings.  But most users will already have done this, so adjusting the settings for a theme should be straightforward.
+
+4. The "Common to all themes" node contains an "Outline indicators" node that specifies a relative path to outline indicator icons (arrow icons or plus/minus) icons.  The path can be relative to either the users home directory or (as shown in leoSettings.leo) relative to the leo/Icons directory. 
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
