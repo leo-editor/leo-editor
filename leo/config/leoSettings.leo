@@ -2428,7 +2428,16 @@ Note: Do not use @-constants here.</t>
 <t tx="edward.20150620081233.26">base2     #eee8d5</t>
 <t tx="edward.20150620081233.27"></t>
 <t tx="edward.20150620081233.28"></t>
-<t tx="edward.20150620081233.29"></t>
+<t tx="edward.20150620081233.29">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
+    
+    leo/Icons/nodes-dark/plusminus/
+    leo/Icons/nodes-dark/trianges/
+    
+The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
+
+- Your home directory or
+- Leo's leo/Icons directory
+</t>
 <t tx="edward.20150620081233.3">The color of text in doc parts.
 
 was firebrick3. now comment1_color
