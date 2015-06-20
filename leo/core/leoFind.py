@@ -1320,7 +1320,7 @@ class LeoFind:
             self.restore(data)
             if self.wrapping:
                 # g.es("end of wrapped search")
-                self.show_status('end of wrapped search')
+                self.showStatus('end of wrapped search')
             else:
                 if not self.search_headline:
                     warn = ' (body only)'
