@@ -2431,7 +2431,7 @@ Note: Do not use @-constants here.</t>
 <t tx="edward.20150620081233.29">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
     
     leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/trianges/
+    leo/Icons/nodes-dark/triangles/
     
 The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
 
