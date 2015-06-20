@@ -166,6 +166,8 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(d)
         d.setLayout(layout)
         c.styleSheetManager.set_style_sheets(w=d)
+        g.app.gui.setFilter(c, d, d, 'find-dialog')
+            # This makes most standard bindings available.
         d.setModal(False)
         return d
     #@+node:ekr.20150619053840.1: *5* LeoQtGui.findDialogSelectCommander

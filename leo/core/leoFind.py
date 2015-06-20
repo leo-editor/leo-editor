@@ -1979,8 +1979,9 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         if g.new_find:
-            if hasattr(g.app.gui, 'hideFindDialog'):
-                g.app.gui.hideFindDialog()
+            if c.config.getBool('close-find-dialog-after-search', default=True):
+                if hasattr(g.app.gui, 'hideFindDialog'):
+                    g.app.gui.hideFindDialog()
         c.frame.bringToFront() # Needed on the Mac
         # Don't try to reedit headline.
         if p and c.positionExists(p): # 2013/11/22.
@@ -2066,8 +2067,9 @@ class LeoFind:
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
         if g.new_find:
-            if hasattr(g.app.gui, 'hideFindDialog'):
-                g.app.gui.hideFindDialog()
+            if c.config.getBool('close-find-dialog-after-search', default=True):
+                if hasattr(g.app.gui, 'hideFindDialog'):
+                    g.app.gui.hideFindDialog()
             c.frame.bringToFront()
         return w # Support for isearch.
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
