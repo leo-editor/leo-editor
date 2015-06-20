@@ -142,6 +142,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.ftm = g.app.globalFindTabManager
         fn = c.shortFileName() or 'Untitled'
         d.setWindowTitle('Find in %s' % fn)
+        c.frame.top.find_status_edit.setText('')
         c.inCommand = False
         if d.isVisible():
             # The order is important, and tricky.

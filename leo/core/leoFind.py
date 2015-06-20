@@ -363,19 +363,16 @@ class LeoFind:
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     @cmd('start-search')
     def startSearch(self, event):
-        # Enhancement #177: Use selected text as the find string.
         c = self.c
         ftm = self.ftm
         w = self.editWidget(event)
+        # Enhancement #177: Use selected text as the find string.
         if w and w.hasSelection():
             s = w.getSelectedText()
             ftm.setFindText(s)
             ftm.init_focus()
         else:
             s = ftm.getFindText()
-        # Enhancement #177: Set ignore-case if the find text is mixed case.
-        if c.config.getBool('auto-set-ignore-case', default=True):
-            ftm.set_ignore_case(s.lower() == s)
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
@@ -2091,6 +2088,12 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
+        # Enhancement #177: Set ignore-case if the find text is mixed case.
+        if c.config.getBool('auto-set-ignore-case', default=True):
+            # Only change the setting for mixed case.
+            mixed = s.lower() != s and s.upper() != s
+            if mixed:
+                ftm.set_ignore_case(False)
         # Get replacement text.
         s = ftm.getReplaceText()
         s = g.toUnicode(s)

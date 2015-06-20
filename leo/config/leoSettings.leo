@@ -609,7 +609,7 @@
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
 <v t="ekr.20150619084505.1"><vh>@bool auto-set-ignore-case = True</vh></v>
-<v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = True</vh></v>
+<v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
