@@ -361,7 +361,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui styles sheet</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
 <v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
@@ -382,6 +382,9 @@
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
 <v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 </v>
+</v>
+<v t="ekr.20150620100951.1"><vh>User Qt Gui style sheet</vh>
+<v t="ekr.20150620100923.1"><vh>@ignore @data qt-gui-user-style-sheet</vh></v>
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
@@ -10680,6 +10683,53 @@ except KeyError:
 False: The ignore-case checkbox remains as it was.</t>
 <t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
 False: leave the Find Dialog open after any search.</t>
+<t tx="ekr.20150620100923.1">/* alternative active pane highlighting */
+
+QTextEdit#log-widget,
+QLineEdit#lineEdit,
+QScrollArea#findScrollArea,
+LeoQTreeWidget#treeWidget,
+QTextEdit#richTextEdit {
+
+    border-color: @focused-border-unfocus-color;
+    border-style: @focused-border-style;
+    border-width: @focused-border-width;
+}
+
+QTextEdit:focus#log-widget,
+QLineEdit:focus#lineEdit,
+QScrollArea:focus#findScrollArea,
+LeoQTreeWidget:focus#treeWidget,
+QTextEdit:focus#richTextEdit {
+
+    border-color: @focused-border-focus-color;
+}
+
+QLineEdit#findPattern, QLineEdit#findChange {
+  
+    border-color: @focused-border-unfocus-color;
+    border-style: @focused-border-style;
+    border-width: @focused-border-width;
+}
+
+QLineEdit:focus#findPattern, QLineEdit:focus#findChange {
+
+    border-color: @focused-border-focus-color;
+    border-style: @focused-border-style;
+    border-width: @focused-border-width;
+}
+
+QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget,
+QTextEdit:hover#richTextEdit {
+
+}</t>
+<t tx="ekr.20150620100951.1">The following is an example user style sheet containing alternate highlighting for active panes.
+
+To enable:
+
+- Copy to myLeoSettings.leo.
+- Remove the @ignore.
+- Specify the settings used in the stylesheet.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
