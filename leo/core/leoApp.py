@@ -843,12 +843,15 @@ class LeoApp:
     #@+others
     #@+node:ekr.20150509193643.1: *3* app.Birth
     #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain langauge dicts)
+    #@@nobeautify # Don't suppress blank lines.
+
     def __init__(self):
         '''Ctor for LeoApp class.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(leoApp)')
         # These ivars are Leo's global vars.
         # leoGlobals.py contains global switches to be set by hand.
+
         # Command-line arguments...
         self.batchMode = False
             # True: run in batch mode.
@@ -887,6 +890,7 @@ class LeoApp:
             # True: use psyco optimization.
         self.use_splash_screen = True
             # True: put up a splash screen.
+
         # Debugging & statistics...
         self.count = 0
             # General purpose debugging count.
@@ -912,6 +916,7 @@ class LeoApp:
             # dict used by g.stat, g.clear_stats, g.print_stats.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
+
         # Error messages...
         self.atPathInBodyWarning = None
             # Set by get_directives_dict.
@@ -919,6 +924,7 @@ class LeoApp:
             # True: supress warnings in menu code.
         self.unicodeErrorGiven = True
             # True: suppres unicode tracebacks.
+
         # Global directories...
         self.extensionsDir = None
             # The leo/extensions directory
@@ -934,6 +940,7 @@ class LeoApp:
             # The leo/core directory.
         self.machineDir = None
             # The machine-specific directory.
+
         # Global data...
         self.atAutoNames = set()
             # The set of all @auto spellings.
@@ -960,6 +967,7 @@ class LeoApp:
             # Global list of all frames.
         self.realMenuNameDict = {}
             # Translations of menu names.
+
         # Global controller/manager objects...
         self.config = None
             # The singleton leoConfig instance.
@@ -985,7 +993,11 @@ class LeoApp:
             # The name of the command being executed.
         self.commandInterruptFlag = False
             # True: command within a command.
+
         # Global status vars...
+        self.already_open_files = []
+            # A list of file names that *might* be open in another
+            # copy of Leo.
         self.dragging = False
             # True: dragging.
         self.allow_delayed_see = False
@@ -1006,8 +1018,8 @@ class LeoApp:
             # True: quitting.  Locks out some events.
         self.reverting = False
             # True: executing the revert command.
-        # To be moved to the LogManager.
-        # The global log...
+
+        # The global log... (To be moved to the LogManager)
         self.log = None
             # The LeoFrame containing the present log.
         self.logInited = False
@@ -1021,6 +1033,7 @@ class LeoApp:
         self.signon = ''
         self.signon2 = ''
         self.signon_printed = False
+
         # Global types.
         import leo.core.leoFrame as leoFrame
         import leo.core.leoGui as leoGui
@@ -1040,6 +1053,7 @@ class LeoApp:
             # An IdleTime instance.
         self.idleTimeDelay = 500
             # Delay in msec between calls to "idle time" hook.
+
         # Support for scripting...
         self.searchDict = {}
             # For communication between find/change scripts.
@@ -1065,6 +1079,7 @@ class LeoApp:
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
+
         # Define all global data.
         self.init_at_auto_names()
         self.init_at_file_names()
@@ -2043,38 +2058,42 @@ class LeoApp:
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
     #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
     def checkForOpenFile(self, c, fn):
+        '''
+        Check to see if fn is already open.
+        Return True if the file should be opened.
+        '''
+        trace = True and not g.unitTesting
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             return True
-        else:
-            aList = d.get(tag) or []
-            if fn in aList:
-                result = getattr(g.app, '_open_again_always', None)
-                if result is None:
-                    result = g.app.gui.runAskYesNoDialog(c,
-                        title='Open Leo File Again?',
-                        message='%s is already open.  Open it again?' % (fn),
-                        yes_all=True, no_all=True
+        aList = d.get(tag) or []
+        if fn in aList:
+            result = getattr(g.app, '_open_again_always', None)
+            if result is None:
+                result = g.app.gui.runAskYesNoDialog(c,
+                    title='Open Leo File Again?',
+                    message='%s is already open.  Open it again?' % (fn),
+                    yes_all=True, no_all=True
+                )
+            if '-all' in result:
+                g.app._open_again_always = result
+            if result.startswith('yes'): # 'yes' or 'yes-all'
+                clear = getattr(g.app, '_open_again_clear_always', None)
+                if clear is None:
+                    clear = g.app.gui.runAskYesNoDialog(c,
+                        title='Reset open count?',
+                        message='Reset open count for %s?' "\nSay yes if you know this outline" "\nis not really open elsewhere" % (fn),
+                            yes_all=True, no_all=True
                     )
-                if '-all' in result:
-                    g.app._open_again_always = result
-                if result.startswith('yes'): # 'yes' or 'yes-all'
-                    clear = getattr(g.app, '_open_again_clear_always', None)
-                    if clear is None:
-                        clear = g.app.gui.runAskYesNoDialog(c,
-                            title='Reset open count?',
-                            message='Reset open count for %s?' "\nSay yes if you know this outline" "\nis not really open elsewhere" % (fn),
-                                yes_all=True, no_all=True
-                        )
-                    if '-all' in clear:
-                        g.app._open_again_clear_always = clear
-                    if clear.startswith('yes'):
-                        d[tag] = [i for i in d[tag] if i != fn]
-                        # IMPORTANT - rest of load process will add another
-                        # entry for this Leo instance, don't do it here
-                return result.startswith('yes')
-            else:
-                return True
+                if '-all' in clear:
+                    g.app._open_again_clear_always = clear
+                if clear.startswith('yes'):
+                    d[tag] = [i for i in d[tag] if i != fn]
+                    # IMPORTANT - rest of load process will add another
+                    # entry for this Leo instance, don't do it here
+            return result.startswith('yes')
+        else:
+            return True
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile(self, fn, force=False):
         '''Forget the open file, so that is no longer considered open.'''
@@ -2113,6 +2132,7 @@ class LeoApp:
                 for z in aList:
                     print('  %s' % (z))
             d[tag] = aList
+    #@+node:ekr.20150621062355.1: *4* app.runFilesChangedDialog
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
