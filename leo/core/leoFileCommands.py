@@ -658,15 +658,10 @@ class FileCommands:
         fc.initReadIvars()
         try:
             c.loading = True # disable c.changed
-            ok = True if silent else g.app.checkForOpenFile(c, fileName)
-            if ok:
-                ok = fc.getLeoFileHelper(theFile, fileName, silent)
-                    # Read the .leo file and create the outline.
-                g.app.rememberOpenFile(fileName)
-                    # Remember the open file.
-            else:
-                fc.mFileName = c.mFileName = None
-                    # Bug fix. Clear the fileName so forgetOpenFile doesn't remove it.
+            if not silent:
+                g.app.checkForOpenFile(c, fileName)
+            ok = fc.getLeoFileHelper(theFile, fileName, silent)
+                # Read the .leo file and create the outline.
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.

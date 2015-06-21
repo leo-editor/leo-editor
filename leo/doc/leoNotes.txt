@@ -17267,14 +17267,45 @@ def context_names(self):
         return reversed(result)
     else:
         return ['', '']
-.. @+node:ekr.20150619114103.1: *3* LeoQtGui.makeFindDialogBindings (no longer used)
-def makeFindDialogBindings(self, c, d):
-    '''Remake Find Dialog bindings.'''
-    ftm = g.app.globalFindTabManager
-    top = c.frame.top
-        # top is the DynamicWindow class.
-    for w in (top.findTab, ftm.find_findbox, ftm.find_replacebox):
-        c.k.completeAllBindingsForWidget(w)
-        g.app.gui.setFilter(c, obj=w, w=w, tag='find-dialog')
+.. @+node:ekr.20150621063703.1: ** Unused code
+@language python
+.. @+node:ekr.20150621063707.1: *3* app.checkForOpenFile (old version)
+def checkForOpenFile(self, c, fn):
+    '''
+    Check to see if fn is already open.
+    Return True if the file should be opened.
+    '''
+    trace = True and not g.unitTesting
+    d, tag = g.app.db, 'open-leo-files'
+    if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        return True
+    aList = d.get(tag) or []
+    if fn in aList:
+        result = getattr(g.app, '_open_again_always', None)
+        if result is None:
+            result = g.app.gui.runAskYesNoDialog(c,
+                title='Open Leo File Again?',
+                message='%s is already open.  Open it again?' % (fn),
+                yes_all=True, no_all=True
+            )
+        if '-all' in result:
+            g.app._open_again_always = result
+        if result.startswith('yes'): # 'yes' or 'yes-all'
+            clear = getattr(g.app, '_open_again_clear_always', None)
+            if clear is None:
+                clear = g.app.gui.runAskYesNoDialog(c,
+                    title='Reset open count?',
+                    message='Reset open count for %s?' "\nSay yes if you know this outline" "\nis not really open elsewhere" % (fn),
+                        yes_all=True, no_all=True
+                )
+            if '-all' in clear:
+                g.app._open_again_clear_always = clear
+            if clear.startswith('yes'):
+                d[tag] = [i for i in d[tag] if i != fn]
+                # IMPORTANT - rest of load process will add another
+                # entry for this Leo instance, don't do it here
+        return result.startswith('yes')
+    else:
+        return True
 .. @-all
 .. @-leo

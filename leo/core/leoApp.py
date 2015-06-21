@@ -2058,42 +2058,23 @@ class LeoApp:
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
     #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
     def checkForOpenFile(self, c, fn):
-        '''
-        Check to see if fn is already open.
-        Return True if the file should be opened.
-        '''
+        '''Warn if fn is already open and add fn to already_open_files list.'''
         trace = True and not g.unitTesting
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
-            return True
-        aList = d.get(tag) or []
+            return
+        aList = g.app.db.get(tag) or []
         if fn in aList:
-            result = getattr(g.app, '_open_again_always', None)
-            if result is None:
-                result = g.app.gui.runAskYesNoDialog(c,
-                    title='Open Leo File Again?',
-                    message='%s is already open.  Open it again?' % (fn),
-                    yes_all=True, no_all=True
-                )
-            if '-all' in result:
-                g.app._open_again_always = result
-            if result.startswith('yes'): # 'yes' or 'yes-all'
-                clear = getattr(g.app, '_open_again_clear_always', None)
-                if clear is None:
-                    clear = g.app.gui.runAskYesNoDialog(c,
-                        title='Reset open count?',
-                        message='Reset open count for %s?' "\nSay yes if you know this outline" "\nis not really open elsewhere" % (fn),
-                            yes_all=True, no_all=True
-                    )
-                if '-all' in clear:
-                    g.app._open_again_clear_always = clear
-                if clear.startswith('yes'):
-                    d[tag] = [i for i in d[tag] if i != fn]
-                    # IMPORTANT - rest of load process will add another
-                    # entry for this Leo instance, don't do it here
-            return result.startswith('yes')
+            # The file may be open in another copy of Leo, or not:
+            # another Leo may have been killed prematurely.
+            # Put the file on the global list.
+            # A dialog will warn the user such files later.
+            if fn not in g.app.already_open_files:
+                g.es('may be open in another Leo:', color='red')
+                g.es(fn)
+                g.app.already_open_files.append(fn)
         else:
-            return True
+            g.app.rememberOpenFile(fn)
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile(self, fn, force=False):
         '''Forget the open file, so that is no longer considered open.'''
@@ -2132,7 +2113,22 @@ class LeoApp:
                 for z in aList:
                     print('  %s' % (z))
             d[tag] = aList
-    #@+node:ekr.20150621062355.1: *4* app.runFilesChangedDialog
+    #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
+    def runAlreadyOpenDialog(self, c):
+        '''Warn about possibly already-open files.'''
+        # g.trace(g.app.already_open_files)
+        if g.app.already_open_files:
+            aList = sorted(set(g.app.already_open_files))
+            g.app.already_open_files = []
+            g.app.gui.dismiss_splash_screen()
+            message = (
+                'The following files may already be open\n'
+                'in another copy of Leo:\n\n' +
+                '\n'.join(aList))
+            g.app.gui.runAskOkDialog(c,
+                title='Already Open Files',
+                message=message,
+                text="Ok")
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
@@ -3049,6 +3045,8 @@ class LoadManager:
                     c = c1 = g.app.windowList[0].c
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
+        # Fix bug #199.
+        g.app.runAlreadyOpenDialog(c1)
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
         c = c1

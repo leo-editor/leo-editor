@@ -810,6 +810,7 @@ class Commands(object):
                 # otherwise, create an @edit node.
                 ok = c.createNodeFromExternalFile(fileName)
         c.raise_error_dialogs(kind='write')
+        g.app.runAlreadyOpenDialog(c)
         # openWithFileName sets focus if ok.
         if not ok:
             c.initialFocusHelper()
