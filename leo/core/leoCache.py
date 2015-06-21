@@ -38,7 +38,7 @@ class Cacher:
     '''A class that encapsulates all aspects of Leo's file caching.'''
     #@+others
     #@+node:ekr.20100208082353.5919: *3* cacher.Birth
-    #@+node:ekr.20100208062523.5886: *4*  ctor (Cacher)
+    #@+node:ekr.20100208062523.5886: *4* cacher.ctor
     def __init__(self, c=None):
         trace = False and not g.unitTesting
         if trace: g.trace('Cacher', 'c', c)
@@ -49,7 +49,7 @@ class Cacher:
             # When caching is enabled will be a PickleShareDB instance.
         self.dbdirname = None # A string.
         self.inited = False
-    #@+node:ekr.20100208082353.5918: *4* initFileDB
+    #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
         trace = False and not g.unitTesting
         if trace: g.trace('inited', self.inited, repr(fn))
@@ -69,7 +69,7 @@ class Cacher:
             self.c.db = self.db
             self.inited = True
             if trace: g.trace('self.c.db', self.db)
-    #@+node:ekr.20100208082353.5920: *4* initGlobalDb
+    #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
     def initGlobalDB(self):
         trace = False and not g.unitTesting
         # New in Leo 4.10.1.
@@ -82,7 +82,7 @@ class Cacher:
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100210163813.5747: *4* save (Cacher)
+    #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
         if changeName or not self.inited:
             self.initFileDB(fn)
