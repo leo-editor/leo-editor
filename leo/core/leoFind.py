@@ -1169,7 +1169,8 @@ class LeoFind:
     # If no selection, insert self.change_text at the cursor.
 
     def changeSelection(self):
-        c = self.c; p = self.p
+        c = self.c
+        p = self.p or c.p # 2015/06/22
         wrapper = c.frame.body and c.frame.body.wrapper
         w = c.edit_widget(p) if self.in_headline else wrapper
         if not w:
