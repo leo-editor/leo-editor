@@ -745,6 +745,7 @@ class JEditColorizer:
             ('@', self.match_at_language, True), # 2011/01/17
             ('@', self.match_at_nocolor, True),
             ('@', self.match_at_nocolor_node, True),
+            ('@', self.match_at_wrap, True), # 2015/06/22
             ('@', self.match_doc_part, True),
             ('f', self.match_url_f, True),
             ('g', self.match_url_g, True),
@@ -1271,6 +1272,23 @@ class JEditColorizer:
     def restartNoColorNode(self, s):
         self.setRestart(self.restartNoColorNode)
         return len(s) + 1
+    #@+node:ekr.20150622072456.1: *5* match_at_wrap
+    def match_at_wrap(self, s, i):
+        '''Match Leo's @wrap directive.'''
+        c = self.c
+        trace = (False or self.trace_leo_matches) and not g.unitTesting
+        if trace: g.trace(i, repr(s))
+        # Only matches at start of line.
+        seq = '@wrap'
+        if i == 0 and g.match_word(s, i, seq):
+            j = i + len(seq)
+            k = g.skip_ws(s, j)
+            self.colorRangeWithTag(s, i, k, 'leokeyword')
+            self.clearState()
+            c.frame.setWrap(c.p, force=True)
+            return k - i
+        else:
+            return 0
     #@+node:ekr.20110605121601.18601: *5* match_blanks
     def match_blanks(self, s, i):
         if not self.showInvisibles:

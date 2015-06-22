@@ -1370,18 +1370,20 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.LeoQtColorizer(c, self.wrapper.widget)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
-    def setWrap(self, p):
-        if not p: return
-        if self.useScintilla: return
+    def setWrap(self, p, force=False):
+        if self.useScintilla or not p:
+            return
         c = self.c
         w = c.frame.body.wrapper.widget
-        wrap = g.scanAllAtWrapDirectives(c, p)
-        # g.trace(wrap,w.verticalScrollBar())
         option, qt = QtGui.QTextOption, QtCore.Qt
-        w.setHorizontalScrollBarPolicy(
-            qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
-        wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
-            # was option WordWrap
+        if force:
+            wrap = option.WrapAtWordBoundaryOrAnywhere
+        else:
+            wrap = g.scanAllAtWrapDirectives(c, p)
+            w.setHorizontalScrollBarPolicy(
+                qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
+            wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
+                # was option WordWrap
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
@@ -2471,8 +2473,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # It *is* called from Leo's core.
         pass
     #@+node:ekr.20110605121601.18280: *4* setWrap (qtFrame)
-    def setWrap(self, p):
-        self.c.frame.body.setWrap(p)
+    def setWrap(self, p, force=False):
+        self.c.frame.body.setWrap(p, force)
     #@+node:ekr.20110605121601.18281: *4* reconfigurePanes (qtFrame)
     def reconfigurePanes(self):
         f = self; c = f.c

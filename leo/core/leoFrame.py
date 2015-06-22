@@ -2037,7 +2037,7 @@ class NullFrame(LeoFrame):
 
     def lift(self): pass
 
-    def setWrap(self, flag): pass
+    def setWrap(self, flag, force=False): pass
 
     def update(self): pass
     #@-others
