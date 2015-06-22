@@ -1315,7 +1315,7 @@ class LeoFind:
             p2 = p.clone()
             p2.moveToLastChildOf(found)
         return found
-    #@+node:ekr.20031218072017.3074: *4* find.findNext
+    #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
     def findNext(self, initFlag=True):
         '''Find the next instance of the pattern.'''
         if not self.checkArgs():
@@ -1328,26 +1328,32 @@ class LeoFind:
         else:
             data = self.save()
         pos, newpos = self.findNextMatch()
-        warn = []
-        if not self.search_headline:
-            warn.append('body only')
-        elif not self.search_body:
-            warn.append('headline only')
-        if not self.ignore_case:
-            warn.append('strict case')
-        warn = ' (%s)' % ','.join(warn) if warn else ''
+        status = self.getFindResultStatus()
         if pos is None:
             self.restore(data)
-            if self.wrapping:
-                # g.es("end of wrapped search")
-                self.showStatus('end of wrapped search%s "%s"' % (warn, self.find_text))
-            else:
-                self.showStatus('not found%s: "%s"' % (warn, self.find_text))
+            self.showStatus('not found%s: "%s"' % (status, self.find_text))
             return False # for vim-mode find commands.
         else:
             self.showSuccess(pos, newpos)
-            self.showStatus('found%s: "%s"' % (warn, self.find_text))
+            self.showStatus('found%s: "%s"' % (status, self.find_text))
             return True # for vim-mode find commands.
+    #@+node:ekr.20150622095118.1: *5* newHeadline
+    def getFindResultStatus(self):
+        '''Return the status to be shown in the status line after a find command completes.'''
+        status = []
+        if self.whole_word:
+            status.append('word-only')
+        if self.ignore_case:
+            status.append('ignore-case')
+        if self.pattern_match:
+            status.append('regex')
+        if not self.search_headline:
+            status.append('body only')
+        elif not self.search_body:
+            status.append('headline only')
+        if self.wrapping:
+            status.append('wrapping')
+        return ' (%s)' % ', '.join(status) if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         '''
