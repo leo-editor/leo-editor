@@ -274,7 +274,7 @@ class LeoFind:
         '''Init a search started by a button in the Find panel.'''
         c = self.c
         self.buttonFlag = True
-        self.p = c.p.copy()
+        self.p = c.p
         c.bringToFront()
         if 0: # We _must_ retain the editing status for incremental searches!
             c.endEditing()
@@ -491,7 +491,7 @@ class LeoFind:
         c = self.c
         p = c.p
         k = self.k
-        self.p = c.p.copy()
+        self.p = c.p
         reverse = not self.isearch_forward
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
@@ -636,7 +636,7 @@ class LeoFind:
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
         # Note: the word option can't be used with isearches!
         self.w = w = c.frame.body.wrapper
-        self.p1 = c.p.copy()
+        self.p1 = c.p
         self.sel1 = w.getSelectionRange(sort=False)
         i, j = self.sel1
         self.push(c.p, i, j, self.in_headline)
@@ -742,7 +742,7 @@ class LeoFind:
             c.vimCommands.update_dot_before_search(
                 find_pattern=find_pattern, change_pattern=change_pattern)
         c.widgetWantsFocusNow(self.w)
-        self.p = c.p.copy()
+        self.p = c.p
         if changeAll:
             self.changeAllCommand()
         else:
@@ -761,7 +761,7 @@ class LeoFind:
                 find_pattern=pattern,
                 change_pattern=None) # A flag indicating not a change command.
         c.widgetWantsFocusNow(self.w)
-        self.p = c.p.copy()
+        self.p = c.p
         if findAll:
             self.findAllCommand()
         elif cloneFindAll:
@@ -1086,7 +1086,7 @@ class LeoFind:
 
     def batchChange(self, pos1, pos2):
         c = self.c; u = c.undoer
-        p = self.p
+        p = self.p or c.p # 2015/06/22
         w = self.s_ctrl
         # Replace the selection with self.change_text
         if pos1 > pos2: pos1, pos2 = pos2, pos1
@@ -1263,13 +1263,13 @@ class LeoFind:
         if trace: g.trace(self.find_text)
         # 2014/04/24: Init suboutline-only for clone-find-all commands
         if clone_find_all or clone_find_all_flattened:
-            self.p = c.p.copy()
+            self.p = c.p
             if self.suboutline_only:
                 self.onlyPosition = self.p.copy()
         clones = set()
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
-            if not self.p: self.p = c.p.copy()
+            if not self.p: self.p = c.p
             if pos is None: break
             if clone_find_all and self.p.v in skip:
                 continue
@@ -1450,7 +1450,7 @@ class LeoFind:
         '''
         trace = False and not g.unitTesting
         c = self.c
-        p = self.p or c.p.copy()
+        p = self.p or c.p
         s = p.h if self.in_headline else p.b
         w = self.s_ctrl
         tree = c.frame and c.frame.tree
@@ -1570,7 +1570,7 @@ class LeoFind:
         """
         trace = False and not g.unitTesting
         c = self.c
-        p = self.p or c.p.copy()
+        p = self.p or c.p
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
@@ -1869,7 +1869,7 @@ class LeoFind:
         self.in_headline = self.search_headline # Search headlines first.
         # Select the first node.
         if self.suboutline_only or self.node_only:
-            self.p = c.p.copy()
+            self.p = c.p
         else:
             p = c.rootPosition()
             if self.reverse:
@@ -1885,7 +1885,7 @@ class LeoFind:
         c = self.c
         self.wrapping = False
             # Only interactive commands allow wrapping.
-        p = self.p or c.p.copy()
+        p = self.p or c.p
         s = p.h if self.in_headline else p.b
         self.init_s_ctrl(s, ins)
     #@+node:ekr.20031218072017.3086: *4* find.initInHeadline & helper
@@ -1897,7 +1897,7 @@ class LeoFind:
         '''
         trace = False and not g.unitTesting
         c = self.c
-        p = self.p or c.p.copy()
+        p = self.p or c.p
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
         if self.search_headline and self.search_body:
             # We have no choice: we *must* search the present widget!
@@ -2049,7 +2049,7 @@ class LeoFind:
         '''Display the result of a successful find operation.'''
         trace = False and not g.unitTesting
         c = self.c
-        self.p = p = self.p or c.p.copy()
+        self.p = p = self.p or c.p
         # Set state vars.
         # Ensure progress in backwards searches.
         insert = min(pos, newpos) if self.reverse else max(pos, newpos)
@@ -2099,7 +2099,7 @@ class LeoFind:
         """Update ivars from the find panel."""
         trace = False and not g.unitTesting
         c = self.c
-        self.p = c.p.copy()
+        self.p = c.p
         ftm = self.ftm
         # The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
