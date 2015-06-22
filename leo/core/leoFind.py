@@ -117,6 +117,8 @@ class LeoFind:
     #@+others
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
     #@+node:ekr.20031218072017.3053: *4* LeoFind.__init__ & helpers
+    #@@nobeautify
+
     def __init__(self, c):
         '''Ctor for LeoFind class.'''
         # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
@@ -129,6 +131,7 @@ class LeoFind:
         self.frame = None
         self.k = k = c.k
         self.re_obj = None
+
         # Options ivars: set by FindTabManager.init.
         self.batch = None
         self.ignore_case = None
@@ -142,6 +145,7 @@ class LeoFind:
         self.reverse = None
         self.wrap = None
         self.whole_word = None
+
         # For isearch commands...
         self.stack = [] # Entries are (p,sel)
         self.isearch_ignore_case = None
@@ -149,6 +153,7 @@ class LeoFind:
         self.isearch_regexp = None
         self.findTextList = []
         self.changeTextList = []
+
         # Widget ivars...
         self.change_ctrl = None
         self.s_ctrl = SearchWidget()
@@ -157,6 +162,7 @@ class LeoFind:
         self.change_text = ""
         self.radioButtonsChanged = False
             # Set by ftm.radio_button_callback
+
         # Ivars containing internal state...
         self.buttonFlag = False
         self.changeAllFlag = False
@@ -166,6 +172,8 @@ class LeoFind:
         self.p = None
             # The position being searched.
             # Never saved between searches!
+        self.previous_find_pattern = ''
+            # The previous find pattern, used to disable auto-setting ignore-case.
         self.was_in_headline = None
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
         self.onlyPosition = None
@@ -367,12 +375,19 @@ class LeoFind:
         ftm = self.ftm
         w = self.editWidget(event)
         # Enhancement #177: Use selected text as the find string.
+        s = self.ftm.getFindText()
+        self.previous_find_pattern = s
         if w and w.hasSelection():
-            s = w.getSelectedText()
-            ftm.setFindText(s)
+            s2 = w.getSelectedText()
+            # Careful: Do nothing if the previous search string matches, ignoring case.
+            # This prevents an "ignore-case" search from changing the ignore-case switch.
+            if s.lower() != s2.lower():
+                ftm.setFindText(s2)
+                if c.config.getBool('auto-set-ignore-case', default=True):
+                    mixed = s2 not in (s.lower(), s.upper())
+                    g.trace('ignore', not mixed)
+                    self.ftm.set_ignore_case(not mixed)
             ftm.init_focus()
-        else:
-            s = ftm.getFindText()
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
@@ -1313,22 +1328,25 @@ class LeoFind:
         else:
             data = self.save()
         pos, newpos = self.findNextMatch()
+        warn = []
+        if not self.search_headline:
+            warn.append('body only')
+        elif not self.search_body:
+            warn.append('headline only')
+        if not self.ignore_case:
+            warn.append('strict case')
+        warn = ' (%s)' % ','.join(warn) if warn else ''
         if pos is None:
             self.restore(data)
             if self.wrapping:
                 # g.es("end of wrapped search")
-                self.showStatus('end of wrapped search')
+                self.showStatus('end of wrapped search%s "%s"' % (warn, self.find_text))
             else:
-                if not self.search_headline:
-                    warn = ' (body only)'
-                elif not self.search_body:
-                    warn = ' (headline only)'
-                else:
-                    warn = ''
                 self.showStatus('not found%s: "%s"' % (warn, self.find_text))
             return False # for vim-mode find commands.
         else:
             self.showSuccess(pos, newpos)
+            self.showStatus('found%s: "%s"' % (warn, self.find_text))
             return True # for vim-mode find commands.
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
@@ -2090,10 +2108,13 @@ class LeoFind:
         self.find_text = s
         # Enhancement #177: Set ignore-case if the find text is mixed case.
         if c.config.getBool('auto-set-ignore-case', default=True):
-            # Only change the setting for mixed case.
-            mixed = s.lower() != s and s.upper() != s
-            if mixed:
-                ftm.set_ignore_case(False)
+            # Careful: Alter the ignore-case option only if the
+            # search pattern has actually changed.
+            if self.previous_find_pattern != s:
+                # Only change the setting for mixed case.
+                mixed = s not in (s.lower(), s.upper())
+                # g.trace(mixed, s)
+                ftm.set_ignore_case(not mixed)
         # Get replacement text.
         s = ftm.getReplaceText()
         s = g.toUnicode(s)
