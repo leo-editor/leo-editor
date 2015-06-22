@@ -6404,9 +6404,12 @@ class Commands(object):
         # raise stopIteration
     #@+node:ekr.20031218072017.2982: ** c.Getters & Setters
     #@+node:ekr.20060906211747: *3* c.Getters
-    #@+node:ekr.20040803140033: *4* c.currentPosition (changed)
+    #@+node:ekr.20040803140033: *4* c.currentPosition
     def currentPosition(self):
-        """Return the presently selected position."""
+        """
+        Return a copy of the presently selected position or a new null
+        position. So c.p.copy() is never necessary.
+        """
         c = self
         if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition'):
             # New in Leo 4.4.2: *always* return a copy.
