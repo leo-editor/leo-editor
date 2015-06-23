@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="55" left="444" height="997" width="1223"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -174,7 +174,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285508302e362e32362e3771017d71025808000000616e6e6f7461746571037d7104735508302e362e31352e3371057d71065808000000616e6e6f7461746571077d7108735508302e362e31372e3771097d710a5808000000616e6e6f74617465710b7d710c73550a302e362e31362e342e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735508302e362e31312e3971157d71165809000000756e69745f746573747117580400000061626364711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32362e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31312e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="edward.20150612084618.1"><vh>Recently disabled tests</vh>
@@ -183,6 +183,497 @@
 <v t="ekr.20111212142649.3971"><vh>@test c.pasteOutline does not clone top node</vh>
 <v t="ekr.20111212142649.3972"><vh>child</vh></v>
 </v>
+</v>
+<v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
+<v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
+<v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
+</v>
+<v t="ekr.20110610122533.3388"><vh>Tests with @auto as the root</vh>
+<v t="ekr.20110610122533.3389"><vh>@test goto-line-number @auto 1</vh></v>
+<v t="ekr.20110610122533.3390"><vh>@test goto-global-line @auto 2</vh></v>
+<v t="ekr.20110610122533.3391"><vh>@test goto-global-line @auto 3</vh></v>
+<v t="ekr.20110610122533.3392"><vh>@test goto-global-line @auto 4</vh></v>
+<v t="ekr.20110610122533.3406"><vh>@test goto-global-line @auto 5</vh></v>
+<v t="ekr.20110610122533.3401"><vh>@test GoToLineNumber.findRoot 1</vh></v>
+</v>
+<v t="ekr.20110610122533.3393"><vh>Tests with @file as the root</vh>
+<v t="ekr.20110610122533.3394"><vh>@test goto-global-line @file 1</vh></v>
+<v t="ekr.20110610122533.3395"><vh>@test goto-global-line @file 2</vh></v>
+</v>
+<v t="ekr.20110610122533.3398"><vh>Tests with @nosent as the root</vh>
+<v t="ekr.20110610122533.3399"><vh>@test goto-global-line @nosent</vh></v>
+</v>
+<v t="ekr.20110610122533.3404"><vh>@test goto_showResults not found</vh></v>
+<v t="ekr.20110610122533.3405"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
+<v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
+<v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
+<v t="ekr.20101023195640.6033"><vh>@shadow-test replace in node new &gt; old</vh>
+<v t="ekr.20101023195640.6034"><vh>old</vh>
+<v t="ekr.20101023195640.6035"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20101023195640.6037"><vh>new</vh>
+<v t="ekr.20101023195640.6038"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20101023204543.6042"><vh>@shadow-test replace in node new &lt; old</vh>
+<v t="ekr.20101023204543.6043"><vh>old</vh>
+<v t="ekr.20101023204543.6044"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20101023204543.6045"><vh>new</vh>
+<v t="ekr.20101023204543.6046"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4400"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20090529115704.4401"><vh>old</vh></v>
+<v t="ekr.20090529115704.4402"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4403"><vh>@shadow-test change first line</vh>
+<v t="ekr.20090529115704.4404"><vh>old</vh></v>
+<v t="ekr.20090529115704.4405"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4406"><vh>@shadow-test change last line</vh>
+<v t="ekr.20090529115704.4407"><vh>old</vh></v>
+<v t="ekr.20090529115704.4408"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4409"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20090529115704.4410"><vh>old</vh></v>
+<v t="ekr.20090529115704.4411"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4412"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20090529115704.4413"><vh>old</vh></v>
+<v t="ekr.20090529115704.4414"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4415"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20090529115704.4416"><vh>old</vh></v>
+<v t="ekr.20090529115704.4417"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4418"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20090529115704.4419"><vh>old</vh></v>
+<v t="ekr.20090529115704.4420"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4421"><vh>@shadow-test insert middle line (after first line)</vh>
+<v t="ekr.20090529115704.4422"><vh>old</vh></v>
+<v t="ekr.20090529115704.4423"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4424"><vh>@shadow-test insert middle line (before last line)</vh>
+<v t="ekr.20090529115704.4425"><vh>old</vh></v>
+<v t="ekr.20090529115704.4426"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4427"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20090529115704.4428"><vh>old</vh></v>
+<v t="ekr.20090529115704.4429"><vh>new</vh></v>
+</v>
+<v t="ekr.20090529115704.4430"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4431"><vh>old</vh>
+<v t="ekr.20090529115704.4432"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4433"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4434"><vh>new</vh>
+<v t="ekr.20090529115704.4435"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4436"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4444"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4445"><vh>old</vh>
+<v t="ekr.20090529115704.4446"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4447"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4448"><vh>new</vh>
+<v t="ekr.20090529115704.4449"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4450"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4451"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4452"><vh>old</vh>
+<v t="ekr.20090529115704.4453"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4454"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4455"><vh>new</vh>
+<v t="ekr.20090529115704.4456"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4457"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4458"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20090529115704.4459"><vh>old</vh>
+<v t="ekr.20090529115704.4460"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4461"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4462"><vh>new</vh>
+<v t="ekr.20090529115704.4463"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4464"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4465"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20090529115704.4466"><vh>old</vh>
+<v t="ekr.20090529115704.4467"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4468"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4469"><vh>new</vh>
+<v t="ekr.20090529115704.4470"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4471"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4472"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4473"><vh>old</vh>
+<v t="ekr.20090529115704.4474"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4475"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4476"><vh>new</vh>
+<v t="ekr.20090529115704.4477"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4478"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4486"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20090529115704.4487"><vh>old</vh>
+<v t="ekr.20090529115704.4488"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4489"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4490"><vh>new</vh>
+<v t="ekr.20090529115704.4491"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4492"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4493"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20090529115704.4494"><vh>old</vh>
+<v t="ekr.20090529115704.4495"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4496"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4497"><vh>new</vh>
+<v t="ekr.20090529115704.4498"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4499"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20100107110353.5105"><vh>@shadow-test multiple-NODE changes</vh>
+<v t="ekr.20100107110353.5106"><vh>old</vh>
+<v t="ekr.20100107110353.5107"><vh>node 1</vh></v>
+<v t="ekr.20100107110353.5108"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20100107110353.5109"><vh>new</vh>
+<v t="ekr.20100107110353.5110"><vh>node 1</vh></v>
+<v t="ekr.20100107110353.5111"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4500"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4501"><vh>old</vh>
+<v t="ekr.20090529115704.4502"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4503"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4504"><vh>new</vh>
+<v t="ekr.20090529115704.4505"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4506"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4507"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4508"><vh>old</vh>
+<v t="ekr.20090529115704.4509"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4510"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4511"><vh>new</vh>
+<v t="ekr.20090529115704.4512"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4513"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4514"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20090529115704.4515"><vh>old</vh>
+<v t="ekr.20090529115704.4516"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4517"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4518"><vh>new</vh>
+<v t="ekr.20090529115704.4519"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4520"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4521"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20090529115704.4522"><vh>old</vh>
+<v t="ekr.20090529115704.4523"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4524"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4525"><vh>new</vh>
+<v t="ekr.20090529115704.4526"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4527"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4528"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20090529115704.4529"><vh>old</vh>
+<v t="ekr.20090529115704.4530"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4531"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4532"><vh>new</vh>
+<v t="ekr.20090529115704.4533"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4534"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4535"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20090529115704.4536"><vh>old</vh>
+<v t="ekr.20090529115704.4537"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4538"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4539"><vh>new</vh>
+<v t="ekr.20090529115704.4540"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4541"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4542"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20090529115704.4543"><vh>old</vh>
+<v t="ekr.20090529115704.4544"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4545"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20090529115704.4546"><vh>new</vh>
+<v t="ekr.20090529115704.4547"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4548"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150210195923.11"><vh>@shadow-test no change, no ending newline</vh>
+<v t="ekr.20150210195923.12"><vh>old</vh></v>
+<v t="ekr.20150210195923.15"><vh>new</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20150216070628.11"><vh>@@suite @nosent with javascript</vh>
+<v t="ekr.20150216070628.12"><vh>@shadow-tests</vh>
+<v t="ekr.20150216070628.168"><vh>@shadow-test equal @nosent @doc</vh>
+<v t="ekr.20150216070628.14"><vh>old</vh>
+<v t="ekr.20150216070628.15"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20150216070628.16"><vh>new</vh>
+<v t="ekr.20150216070628.17"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.18"><vh>@shadow-test replace in node new &lt; old</vh>
+<v t="ekr.20150216070628.19"><vh>old</vh>
+<v t="ekr.20150216070628.20"><vh>node 1</vh></v>
+</v>
+<v t="ekr.20150216070628.21"><vh>new</vh>
+<v t="ekr.20150216070628.22"><vh>node 1</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.23"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20150216070628.24"><vh>old</vh></v>
+<v t="ekr.20150216070628.25"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.26"><vh>@shadow-test change first line</vh>
+<v t="ekr.20150216070628.27"><vh>old</vh></v>
+<v t="ekr.20150216070628.28"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.29"><vh>@shadow-test change last line</vh>
+<v t="ekr.20150216070628.30"><vh>old</vh></v>
+<v t="ekr.20150216070628.31"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.32"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20150216070628.33"><vh>old</vh></v>
+<v t="ekr.20150216070628.34"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.35"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20150216070628.36"><vh>old</vh></v>
+<v t="ekr.20150216070628.37"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.38"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20150216070628.39"><vh>old</vh></v>
+<v t="ekr.20150216070628.40"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.41"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20150216070628.42"><vh>old</vh></v>
+<v t="ekr.20150216070628.43"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.44"><vh>@shadow-test insert middle line (after first line)</vh>
+<v t="ekr.20150216070628.45"><vh>old</vh></v>
+<v t="ekr.20150216070628.46"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.47"><vh>@shadow-test insert middle line (before last line)</vh>
+<v t="ekr.20150216070628.48"><vh>old</vh></v>
+<v t="ekr.20150216070628.49"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.50"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20150216070628.51"><vh>old</vh></v>
+<v t="ekr.20150216070628.52"><vh>new</vh></v>
+</v>
+<v t="ekr.20150216070628.53"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.54"><vh>old</vh>
+<v t="ekr.20150216070628.55"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.56"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.57"><vh>new</vh>
+<v t="ekr.20150216070628.58"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.59"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.60"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.61"><vh>old</vh>
+<v t="ekr.20150216070628.62"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.63"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.64"><vh>new</vh>
+<v t="ekr.20150216070628.65"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.66"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.67"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20150216070628.68"><vh>old</vh>
+<v t="ekr.20150216070628.69"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.70"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.71"><vh>new</vh>
+<v t="ekr.20150216070628.72"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.73"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.74"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20150216070628.75"><vh>old</vh>
+<v t="ekr.20150216070628.76"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.77"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.78"><vh>new</vh>
+<v t="ekr.20150216070628.79"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.80"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.81"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20150216070628.82"><vh>old</vh>
+<v t="ekr.20150216070628.83"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.84"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.85"><vh>new</vh>
+<v t="ekr.20150216070628.86"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.87"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.88"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.89"><vh>old</vh>
+<v t="ekr.20150216070628.90"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.91"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.92"><vh>new</vh>
+<v t="ekr.20150216070628.93"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.94"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.95"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20150216070628.96"><vh>old</vh>
+<v t="ekr.20150216070628.97"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.98"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.99"><vh>new</vh>
+<v t="ekr.20150216070628.100"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.101"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.102"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20150216070628.103"><vh>old</vh>
+<v t="ekr.20150216070628.104"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.105"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.106"><vh>new</vh>
+<v t="ekr.20150216070628.107"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.108"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.109"><vh>@shadow-test multiple-NODE changes</vh>
+<v t="ekr.20150216070628.110"><vh>old</vh>
+<v t="ekr.20150216070628.111"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.112"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.113"><vh>new</vh>
+<v t="ekr.20150216070628.114"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.115"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.116"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20150216070628.117"><vh>old</vh>
+<v t="ekr.20150216070628.118"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.119"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.120"><vh>new</vh>
+<v t="ekr.20150216070628.121"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.122"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.123"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20150216070628.124"><vh>old</vh>
+<v t="ekr.20150216070628.125"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.126"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.127"><vh>new</vh>
+<v t="ekr.20150216070628.128"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.129"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.130"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20150216070628.131"><vh>old</vh>
+<v t="ekr.20150216070628.132"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.133"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.134"><vh>new</vh>
+<v t="ekr.20150216070628.135"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.136"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.137"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20150216070628.138"><vh>old</vh>
+<v t="ekr.20150216070628.139"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.140"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.141"><vh>new</vh>
+<v t="ekr.20150216070628.142"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.143"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.144"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20150216070628.145"><vh>old</vh>
+<v t="ekr.20150216070628.146"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.147"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.148"><vh>new</vh>
+<v t="ekr.20150216070628.149"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.150"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.151"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20150216070628.152"><vh>old</vh>
+<v t="ekr.20150216070628.153"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.154"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.155"><vh>new</vh>
+<v t="ekr.20150216070628.156"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.157"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.158"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20150216070628.159"><vh>old</vh>
+<v t="ekr.20150216070628.160"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.161"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20150216070628.162"><vh>new</vh>
+<v t="ekr.20150216070628.163"><vh>node 1</vh></v>
+<v t="ekr.20150216070628.164"><vh>node 2</vh></v>
+</v>
+</v>
+<v t="ekr.20150216070628.165"><vh>@shadow-test no change, no ending newline</vh>
+<v t="ekr.20150216070628.166"><vh>old</vh></v>
+<v t="ekr.20150216070628.167"><vh>new</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20100131180007.5363"><vh>@test class Marker.getDelims</vh></v>
+<v t="ekr.20100131180007.5362"><vh>@test class Marker.isSentinel</vh></v>
+<v t="ekr.20100131180007.5361"><vh>@test class Marker.isVerbatimSentinel</vh></v>
+<v t="ekr.20090529115704.4550"><vh>@test x.baseDirName</vh></v>
+<v t="ekr.20090529115704.4552"><vh>@test x.dirName</vh></v>
+<v t="ekr.20100131180007.5366"><vh>@test x.findAtLeoLine</vh></v>
+<v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
+</v>
+<v t="ekr.20100131180007.5365"><vh>@test x.markerFromFileLines</vh></v>
+<v t="ekr.20100131180007.5364"><vh>@test x.markerFromFileName</vh></v>
+<v t="ekr.20090529115704.4551"><vh>@test x.pathName</vh></v>
+<v t="ekr.20090529115704.4555"><vh>@@test x.rename</vh></v>
+<v t="ekr.20090529115704.4559"><vh>@test x.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5367"><vh>@test x.replaceFileWithString 2</vh></v>
+<v t="ekr.20090529115704.4554"><vh>@test x.shadowDirName</vh></v>
+<v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
+<v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -639,7 +1130,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -687,6 +1178,549 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
+</t>
+<t tx="ekr.20090529115704.4396"></t>
+<t tx="ekr.20090529115704.4397">import unittest
+import leo.core.leoShadow as leoShadow
+# Possible: replace this suite with individual @test nodes
+# exec(g.findTestScript(c,'@common @shadow test code'))
+x = c.shadowController
+suite = unittest.makeSuite(unittest.TestCase)
+root = g.findNodeInTree(c,p,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
+for p in root.children_iter():
+    h = p.h.strip()
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,trace=False)
+        suite.addTest(test)
+</t>
+<t tx="ekr.20090529115704.4398">@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+</t>
+<t tx="ekr.20090529115704.4400"></t>
+<t tx="ekr.20090529115704.4401">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4402">line 1
+line 2 changed
+line 3
+</t>
+<t tx="ekr.20090529115704.4403"></t>
+<t tx="ekr.20090529115704.4404">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4405">line 1 changed
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4406"></t>
+<t tx="ekr.20090529115704.4407">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4408">line 1
+line 2
+line 3 changed
+</t>
+<t tx="ekr.20090529115704.4409"></t>
+<t tx="ekr.20090529115704.4410">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4411">line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4412"></t>
+<t tx="ekr.20090529115704.4413">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4414">line 1
+line 3
+</t>
+<t tx="ekr.20090529115704.4415"></t>
+<t tx="ekr.20090529115704.4416">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4417">line 1
+line 2
+</t>
+<t tx="ekr.20090529115704.4418"></t>
+<t tx="ekr.20090529115704.4419">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4420">inserted line
+line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4421"></t>
+<t tx="ekr.20090529115704.4422">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4423">line 1
+inserted line
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4424"></t>
+<t tx="ekr.20090529115704.4425">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4426">line 1
+line 2
+inserted line
+line 3
+</t>
+<t tx="ekr.20090529115704.4427"></t>
+<t tx="ekr.20090529115704.4428">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20090529115704.4429">line 1
+line 2
+line 3
+inserted line
+</t>
+<t tx="ekr.20090529115704.4430"></t>
+<t tx="ekr.20090529115704.4431">@others
+</t>
+<t tx="ekr.20090529115704.4432">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4433">node 2 line 1
+</t>
+<t tx="ekr.20090529115704.4434">@others
+</t>
+<t tx="ekr.20090529115704.4435">node 1 line 1
+inserted node at end of node 1
+</t>
+<t tx="ekr.20090529115704.4436">node 2 line 1
+</t>
+<t tx="ekr.20090529115704.4444"></t>
+<t tx="ekr.20090529115704.4445">@others
+</t>
+<t tx="ekr.20090529115704.4446">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4447">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4448">@others
+</t>
+<t tx="ekr.20090529115704.4449">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4450">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4451"></t>
+<t tx="ekr.20090529115704.4452">@others
+</t>
+<t tx="ekr.20090529115704.4453">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4454">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4455">@others
+</t>
+<t tx="ekr.20090529115704.4456">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4457">node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4458"></t>
+<t tx="ekr.20090529115704.4459">@others
+</t>
+<t tx="ekr.20090529115704.4460">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4461">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4462">@others
+</t>
+<t tx="ekr.20090529115704.4463">node 1 line 1
+node 1 line 1 changed
+</t>
+<t tx="ekr.20090529115704.4464">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4465"></t>
+<t tx="ekr.20090529115704.4466">@others
+</t>
+<t tx="ekr.20090529115704.4467">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4468">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4469">@others
+</t>
+<t tx="ekr.20090529115704.4470">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4471">node 2 line 1 changed
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4472"></t>
+<t tx="ekr.20090529115704.4473">@others
+</t>
+<t tx="ekr.20090529115704.4474">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
+</t>
+<t tx="ekr.20090529115704.4475">node 2 line 1
+</t>
+<t tx="ekr.20090529115704.4476">@others
+</t>
+<t tx="ekr.20090529115704.4477">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4478">node 2 line 1
+</t>
+<t tx="ekr.20090529115704.4486"></t>
+<t tx="ekr.20090529115704.4487">@others
+</t>
+<t tx="ekr.20090529115704.4488">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20090529115704.4489">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4490">@others
+</t>
+<t tx="ekr.20090529115704.4491">node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed
+</t>
+<t tx="ekr.20090529115704.4492">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4493"></t>
+<t tx="ekr.20090529115704.4494">@others
+</t>
+<t tx="ekr.20090529115704.4495">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4496">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4497">@others
+</t>
+<t tx="ekr.20090529115704.4498">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4499">node 2 line 1 changed
+node 2 line 2 changed
+</t>
+<t tx="ekr.20090529115704.4500"></t>
+<t tx="ekr.20090529115704.4501">@others
+</t>
+<t tx="ekr.20090529115704.4502">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20090529115704.4503">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4504">@others
+</t>
+<t tx="ekr.20090529115704.4505">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4506">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4507"></t>
+<t tx="ekr.20090529115704.4508">@others
+</t>
+<t tx="ekr.20090529115704.4509">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4510">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4511">@others
+</t>
+<t tx="ekr.20090529115704.4512">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4513">node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4514"></t>
+<t tx="ekr.20090529115704.4515">@others
+</t>
+<t tx="ekr.20090529115704.4516">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20090529115704.4517">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4518">@others
+</t>
+<t tx="ekr.20090529115704.4519">node 1 line 1
+line 1 line 3
+</t>
+<t tx="ekr.20090529115704.4520">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4521"></t>
+<t tx="ekr.20090529115704.4522">@others
+</t>
+<t tx="ekr.20090529115704.4523">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4524">@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4525">@others
+</t>
+<t tx="ekr.20090529115704.4526">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4527">node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4528"></t>
+<t tx="ekr.20090529115704.4529">@others
+</t>
+<t tx="ekr.20090529115704.4530">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20090529115704.4531">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4532">@others
+</t>
+<t tx="ekr.20090529115704.4533">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20090529115704.4534">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20090529115704.4535"></t>
+<t tx="ekr.20090529115704.4536">@others
+</t>
+<t tx="ekr.20090529115704.4537">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+</t>
+<t tx="ekr.20090529115704.4538">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4539">@others
+</t>
+<t tx="ekr.20090529115704.4540">node 1 line 1
+</t>
+<t tx="ekr.20090529115704.4541">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4542"># This fails because the @all read logic inserts a second verbatim, I think.
+</t>
+<t tx="ekr.20090529115704.4543">@others
+</t>
+<t tx="ekr.20090529115704.4544">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4545">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4546">@others
+</t>
+<t tx="ekr.20090529115704.4547">node 1 line 1
+@verbatim
+#@ should be handled by verbatim
+node 1 line 2
+</t>
+<t tx="ekr.20090529115704.4548">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20090529115704.4550">x = c.shadowController
+
+path = x.baseDirName()
+expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4551">x = c.shadowController
+
+filename = 'xyzzy'
+
+path = x.pathName(filename)
+expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4552">x = c.shadowController
+
+filename = 'xyzzy'
+path = x.dirName(filename)
+expected = g.os_path_dirname(g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4553">x = c.shadowController
+
+# print(c.config.getString('shadow_subdir'))
+
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowPathName(filename)
+expected = g.os_path_abspath(g.os_path_join(
+    g.os_path_dirname(c.fileName()),subdir,prefix+filename))
+
+if 0:
+    print('prefix',prefix)
+    print(path)
+    print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4554">x = c.shadowController
+
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowDirName(filename)
+expected = g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4555">if 0: # x.rename no longer exists
+    x = c.shadowController
+
+    filename = x.pathName('xyzzy')
+    assert not g.os_path_exists(filename)
+    n = x.errors
+    x.rename('xyzzy','xyzzy2',silent=True)
+    assert x.errors == n+1
+    assert x.last_error.startswith('can not rename')
+    # print(x.last_error)
+</t>
+<t tx="ekr.20090529115704.4556">x = c.shadowController
+
+filename = x.pathName('xyzzy')
+# print(filename)
+assert not g.os_path_exists(filename)
+n = x.errors
+x.unlink('xyzzy',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not delete xyzzy')
+# print(x.last_error)
+</t>
+<t tx="ekr.20090529115704.4557">import glob
+import os
+
+x = c.shadowController
+
+@others
+
+shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
+shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
+
+if g.os_path_exists(shadow_fn):
+    g.utils_remove(shadow_fn,verbose=True)
+    assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+
+deleteShadowDir(shadow_dir)
+
+x.makeShadowDirectory(shadow_dir)
+assert os.path.exists(shadow_dir)
+
+deleteShadowDir(shadow_dir)
+</t>
+<t tx="ekr.20090529115704.4558">def deleteShadowDir(shadowDir):
+
+    if g.os_path_exists(shadow_dir):
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                # g.trace(z)
+                os.unlink(z)
+        # g.trace(shadow_dir)
+        os.rmdir(shadow_dir)
+        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
+</t>
+<t tx="ekr.20090529115704.4559">x = c.shadowController
+s = 'abc'
+
+fn = '../test/unittest/replaceFileWithStringTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+
+x.replaceFileWithString(path,s)
+f = open(path)
+s2 = f.read()
+f.close()
+assert s == s2
+</t>
+<t tx="ekr.20090529115704.4560">x = c.shadowController
+
+lines1 = ('a','b','c')
+lines2 = ('a','x','c')
+
+x.show_error(
+    lines1,lines2,
+    message = "Test of x.show_error",
+    lines1_message = "lines1",
+    lines2_message = "lines2")
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -746,6 +1780,23 @@ for p in c.all_unique_positions():
 pages = ((nodes * 10) + lines) / 50
 s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
 print(s); g.es(s)</t>
+<t tx="ekr.20100107110353.5105"></t>
+<t tx="ekr.20100107110353.5106">@others
+</t>
+<t tx="ekr.20100107110353.5107">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20100107110353.5108">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20100107110353.5109">@others
+</t>
+<t tx="ekr.20100107110353.5110">node 1 line 1
+node 1 line 2 changed
+</t>
+<t tx="ekr.20100107110353.5111">node 2 line 1 changed
+node 2 line 2 changed
+</t>
 <t tx="ekr.20100123172713.5114"></t>
 <t tx="ekr.20100123172713.5116">count = 0
 for p in c.all_unique_positions():
@@ -912,6 +1963,132 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131180007.5361">x = c.shadowController
+table = (
+    ('python','abc',False),
+    ('python','#abc',False),
+    ('python','#verbatim',False),
+    ('python','#@verbatim',True),
+    ('c','abc',False),
+    ('c','//@',False),
+    ('c','//@verbatim',True),
+    ('html','#@abc',False),
+    ('html','&lt;!--abc--&gt;',False),
+    ('html','&lt;!--@verbatim --&gt;',True),
+    ('xxxx','#--unknown-language--@verbatim',True)
+)
+for language,s,expected in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.Marker(delims)
+    result = marker.isVerbatimSentinel(s)
+    assert result==expected,'language %s s: %s expected %s got %s' % (
+        language,s,expected,result)
+</t>
+<t tx="ekr.20100131180007.5362">x = c.shadowController
+table = (
+    ('python','abc',False),
+    ('python','#abc',False),
+    ('python','#@abc',True),
+    ('python','@abc#',False),
+    ('c','abc',False),
+    ('c','//@',True),
+    ('c','// @abc',False),
+    ('c','/*@ abc */',True),
+    ('c','/*@ abc',False),
+    ('html','#@abc',False),
+    ('html','&lt;!--abc--&gt;',False),
+    ('html','&lt;!--@ abc --&gt;',True),
+    ('html','&lt;!--@ abc -&gt;',False),
+    ('xxxx','#--unknown-language--@',True)
+)
+for language,s,expected in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.Marker(delims)
+    result = marker.isSentinel(s)
+    assert result==expected,'language %s s: %s expected %s got %s' % (
+        language,s,expected,result)
+</t>
+<t tx="ekr.20100131180007.5363">x = c.shadowController
+table = (
+    ('python','#',''),
+    ('c','//',''),
+    ('html','&lt;!--','--&gt;'),
+    ('xxxx','#--unknown-language--',''),
+)
+for language,delim1,delim2 in table:
+    delims = g.set_delims_from_language(language)
+    marker = x.Marker(delims)
+    result = marker.getDelims()
+    expected = delim1,delim2
+    assert result==expected,'language %s expected %s got %s' % (
+        language,expected,result)
+</t>
+<t tx="ekr.20100131180007.5364">x = c.shadowController
+
+table = (
+    ('ini',';','',),
+    ('c','//',''),
+    ('h','//',''),
+    ('py','#',''),
+    ('xyzzy','#--unknown-language--',''),
+)
+
+for ext,delim1,delim2 in table:
+    filename = 'x.%s' % ext
+    marker = x.markerFromFileName(filename)
+    result1,result2 = marker.getDelims()
+    assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+        ext,delim1,result1)
+    assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+        ext,delim2,result2)
+</t>
+<t tx="ekr.20100131180007.5365">x = c.shadowController
+# Add -ver=4 so at.parseLeoSentinel does not complain.
+table = (
+    ('c',('//@+leo-ver=4','a'),                   '//',''),
+    ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
+    ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
+    ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
+    ('python',('#@+leo-ver=4','a'),               '#',''),
+    ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
+    ('error',('',),             '#--unknown-language--',''),
+    ('html',('&lt;!--@+leo-ver=4--&gt;','a'),                '&lt;!--','--&gt;'),
+    ('html',('&lt;!--@first--&gt;','&lt;!--@+leo-ver=4--&gt;','b'),'&lt;!--','--&gt;'),
+)
+
+for language,lines,delim1,delim2 in table:
+    s = x.findLeoLine(lines)
+    marker = x.markerFromFileLines(lines,'test-file-name')
+    result1,result2 = marker.getDelims()
+    assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
+        language,delim1,result1,'\n'.join(lines))
+    assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
+        language,delim1,result1,'\n'.join(lines))
+</t>
+<t tx="ekr.20100131180007.5366">x = c.shadowController
+table = (
+    ('c',('//@+leo','a'),                   '//@+leo'),
+    ('c',('//@first','//@+leo','b'),        '//@+leo'),
+    ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
+    ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
+    ('python',('#@+leo','a'),               '#@+leo'),
+    ('python',('#@first','#@+leo','b'),     '#@+leo'),
+    ('error',('',),''),
+    ('html',('&lt;!--@+leo--&gt;','a'),                '&lt;!--@+leo--&gt;'),
+    ('html',('&lt;!--@first--&gt;','&lt;!--@+leo--&gt;','b'),'&lt;!--@+leo--&gt;'),
+)
+for language,lines,expected in table:
+    result = x.findLeoLine(lines)
+    assert expected==result, 'language %s expected %s got %s lines %s' % (
+        language,expected,result,'\n'.join(lines))
+</t>
+<t tx="ekr.20100131180007.5367">c,p = g.getTestVars()
+x = c.shadowController
+
+fn = 'does/not/exist'
+assert not g.os_path_exists(fn)
+assert not x.replaceFileWithString (fn,'abc')
+</t>
 <t tx="ekr.20100205235740.5392">import glob
 trace = False
 failed,n = [],0
@@ -967,6 +2144,19 @@ else:
         if g.os_path_exists(fn):
             os.remove(fn)
 </t>
+<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c,p,'syntax-error')
+assert child,'no child'
+try:
+    c.goToScriptLineNumber(child,1)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()
+</t>
+<t tx="ekr.20100212072149.5342">@language python
+def spam:
+    pass
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -977,12 +2167,262 @@ False:
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.
 </t>
+<t tx="ekr.20101023195640.6033"></t>
+<t tx="ekr.20101023195640.6034">@others
+</t>
+<t tx="ekr.20101023195640.6035">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+</t>
+<t tx="ekr.20101023195640.6037">@others
+</t>
+<t tx="ekr.20101023195640.6038">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 new line 3
+node 1 line 2
+</t>
+<t tx="ekr.20101023204543.6042"></t>
+<t tx="ekr.20101023204543.6043">@others
+</t>
+<t tx="ekr.20101023204543.6044">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 old line 3
+node 1 old line 4
+node 1 line 2
+</t>
+<t tx="ekr.20101023204543.6045">@others
+</t>
+<t tx="ekr.20101023204543.6046">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 line 2
+</t>
 <t tx="ekr.20101220161557.6013"># Some of these tests give warnings.</t>
 <t tx="ekr.20101220161557.6016"># Some tests are disabled when g.app.isExternalUnitTest is True.</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
+</t>
+<t tx="ekr.20110610122533.3369"></t>
+<t tx="ekr.20110610122533.3388"></t>
+<t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    root = p.parent().parent()
+    h = '@auto unittest/at-auto-line-number-test.py'
+    target = g.findNodeAnywhere(c,h)
+    assert target,'no @auto node'
+    
+    p,n,found = c.GoToLineNumber(c).countLines(target,2)
+    assert found,'not found'
+    assert n == 1,'n: %s' % (n)
+    assert p.h == 'at_auto_child',p.h
+</t>
+<t tx="ekr.20110610122533.3390"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root = g.findNodeAnywhere(c,h)
+    assert root,'no root'
+    p,n,found = c.GoToLineNumber(c).countLines(root,20)
+    assert not found,'not found'
+</t>
+<t tx="ekr.20110610122533.3391"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n=3,p=root1)
+    assert fileName == h[6:],'fileName: %s' % (fileName)
+    assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
+    
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3392"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    scriptData = {'p':root1.copy(),'lines':['a','b','c']}
+    fileName,lines2,p2,root2 = c.GoToLineNumber(c).setup_script(scriptData)
+    
+    assert fileName == h[6:],'fileName'
+    assert lines2 == scriptData.get('lines'),'lines'
+    assert p2 == root1,'p'
+    assert root2 == root1,'root'
+    
+    if 0:
+        print('root:%s, n:%s, len(lines): %s' % (
+            root and root.h,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3393"></t>
+<t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c,h)
+    assert target,'no target'
+    gnx = target.v.fileIndex
+    assert gnx
+    
+    #gnx = g.app.nodeIndices.toString(target.v.fileIndex)
+    #assert gnx,'no gnx'
+    
+    delim = '#'
+    found = c.GoToLineNumber(c).findGnx(delim,root,gnx,h)
+    assert found,'not found'
+</t>
+<t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c,h)
+    assert target,'no target'
+    
+    n = 2
+    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n,p=target)
+    assert fileName == h[6:]
+    # print('lines\n%s' % g.listToString(lines))
+    assert root == target
+    
+    ignoreSentinels = True
+    vnodeName,gnx,offset,delim = c.GoToLineNumber(c).findVnode(root,lines,n)
+    
+    assert lines,'no lines'
+    assert offset is not None,repr(offset)
+    assert vnodeName,repr(vnodeName)
+</t>
+<t tx="ekr.20110610122533.3398"></t>
+<t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    h = '@nosent unittest/at-nosent-line-number-test.py'
+    root1 = g.findNodeAnywhere(c,h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    
+    fileName,isScript,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
+    assert fileName == h[8:],'fileName'
+    assert root2 == root1
+    
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h,isRaw,n,len(lines)))
+</t>
+<t tx="ekr.20110610122533.3401"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    
+    root = p.parent().parent()
+    h = '@auto unittest/at-auto-line-number-test.py'
+    target = g.findNodeAnywhere(c,h)
+    assert target,'no target'
+    child = target.firstChild()
+    assert child.h == 'at_auto_child','child.h'
+    
+    p,found = c.GoToLineNumber(c).findRoot(child)
+    
+    assert p == target,'p' #p and p.h
+    assert found,'not found'
+</t>
+<t tx="ekr.20110610122533.3404">c.GoToLineNumber(c).showResults(
+    found=False,p=p,n=3,n2=3,lines=['a','b'])
+
+
+
+</t>
+<t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20110610122533.3406"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+
+    fn = '../test/at-auto-unit-test.py'
+    root = g.findNodeAnywhere(c,'@auto %s' % (fn))
+    assert root,'no root'
+    
+    child1 = root.firstChild()
+    assert child1,'no child1'
+    grand11 = child1.firstChild()
+    assert grand11,'no grand11'
+    grand12 = grand11.next()
+    assert grand12,'no grand12'
+    
+    child2 = child1.next()
+    assert child2,'no child2'
+    grand21 = child2.firstChild()
+    assert grand21,'no grand21'
+    grand22 = grand21.next()
+    assert grand22,'no grand22'
+    
+    def oops(found,p2,node,n,n2):
+        result = [' ']
+        result.append('goto-global-line test failed at line %s' % (n))
+        if not found:
+            result.append('line %s not found',n)
+        else:
+            result.append('got node "%s", expected "%s"' % (p2.h,node.h))
+            result.append('got offset %s, expected %s' % (n2,n))
+        return '\n'.join(result)
+    
+    table = (
+        # Use 1-based numbers externally.
+        # countLines converts to zero-based numbers.
+        (1, child1,  0),
+        (2, grand11, 0),
+        (3, grand11, 1),
+        (4, grand12, 0),
+        (5, grand12, 1),
+        (6, child1,  2),
+        (7, child2,  0),
+        (8, grand21, 0),
+        (9, grand21, 1),
+        (10,grand22, 0),
+        (11,grand22, 1),
+        (12,root,    3),
+    )
+    
+    # Test against actual lines of the file.
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
+    f = open(path,'r') ; s = f.read() ; f.close()
+    lines = g.splitLines(s) # The lines from the file.
+    for n,node,index in table:
+        goto = c.GoToLineNumber(c)
+        p2,n2,found = goto.countLines(root,n)
+            # n, the argument to countLines, is 1-based
+            # n2, the returned index into p2.b, is zero-based
+        n -= 1
+            # Convert n to zero-based for the comparisons below.
+        lines2 = g.splitLines(p2.b)
+        if 0:
+            print('%2d %s' % (n,repr(lines[n])))
+        else:
+            ok = lines2[n2].lstrip() == lines[n].lstrip() 
+            if not ok:
+                i = 0
+                for z in lines:
+                    print('%2d %s' % (i,repr(z)))
+                    i += 1
+            if not ok:
+                print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+                    n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
+            assert ok
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
@@ -1377,6 +2817,455 @@ char t
 <t tx="ekr.20150208213643.18"># node 1 text A.
 </t>
 <t tx="ekr.20150208213643.19"># node 2 text B.
+</t>
+<t tx="ekr.20150210195923.11"></t>
+<t tx="ekr.20150210195923.12">line
+</t>
+<t tx="ekr.20150210195923.15">line
+</t>
+<t tx="ekr.20150216070628.100">node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed
+</t>
+<t tx="ekr.20150216070628.101">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.102"></t>
+<t tx="ekr.20150216070628.103">@others
+</t>
+<t tx="ekr.20150216070628.104">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.105">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.106">@others
+</t>
+<t tx="ekr.20150216070628.107">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.108">node 2 line 1 changed
+node 2 line 2 changed
+</t>
+<t tx="ekr.20150216070628.109"></t>
+<t tx="ekr.20150216070628.11">import unittest
+import leo.core.leoShadow as leoShadow
+# Possible: replace this suite with individual @test nodes
+# exec(g.findTestScript(c,'@common @shadow test code'))
+x = c.shadowController
+suite = unittest.makeSuite(unittest.TestCase)
+root = g.findNodeInTree(c,p,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
+delims = '//','',''
+for p in root.children_iter():
+    h = p.h.strip()
+    if h.startswith('@shadow-test'):
+        test = x.AtShadowTestCase(c,p,x,delims=delims,trace=False)
+        suite.addTest(test)
+</t>
+<t tx="ekr.20150216070628.110">@others
+</t>
+<t tx="ekr.20150216070628.111">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.112">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.113">@others
+</t>
+<t tx="ekr.20150216070628.114">node 1 line 1
+node 1 line 2 changed
+</t>
+<t tx="ekr.20150216070628.115">node 2 line 1 changed
+node 2 line 2 changed
+</t>
+<t tx="ekr.20150216070628.116"></t>
+<t tx="ekr.20150216070628.117">@others
+</t>
+<t tx="ekr.20150216070628.118">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20150216070628.119">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.12">@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+</t>
+<t tx="ekr.20150216070628.120">@others
+</t>
+<t tx="ekr.20150216070628.121">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.122">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.123"></t>
+<t tx="ekr.20150216070628.124">@others
+</t>
+<t tx="ekr.20150216070628.125">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.126">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.127">@others
+</t>
+<t tx="ekr.20150216070628.128">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.129">node 2 line 3
+</t>
+<t tx="ekr.20150216070628.130"></t>
+<t tx="ekr.20150216070628.131">@others
+</t>
+<t tx="ekr.20150216070628.132">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.133">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.134">@others
+</t>
+<t tx="ekr.20150216070628.135">node 1 line 1
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.136">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.137"></t>
+<t tx="ekr.20150216070628.138">@others
+</t>
+<t tx="ekr.20150216070628.139">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.14">@others
+</t>
+<t tx="ekr.20150216070628.140">@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.141">@others
+</t>
+<t tx="ekr.20150216070628.142">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.143">node 2 line 2
+</t>
+<t tx="ekr.20150216070628.144"></t>
+<t tx="ekr.20150216070628.145">@others
+</t>
+<t tx="ekr.20150216070628.146">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.147">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.148">@others
+</t>
+<t tx="ekr.20150216070628.149">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3
+</t>
+<t tx="ekr.20150216070628.15">@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.150">node 2 line 1
+node 2 line 2
+node 2 line 3
+</t>
+<t tx="ekr.20150216070628.151"></t>
+<t tx="ekr.20150216070628.152">@others
+</t>
+<t tx="ekr.20150216070628.153">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+</t>
+<t tx="ekr.20150216070628.154">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.155">@others
+</t>
+<t tx="ekr.20150216070628.156">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.157">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.158"># This fails because the @all read logic inserts a second verbatim, I think.
+</t>
+<t tx="ekr.20150216070628.159">@others
+</t>
+<t tx="ekr.20150216070628.16">@others
+</t>
+<t tx="ekr.20150216070628.160">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.161">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.162">@others
+</t>
+<t tx="ekr.20150216070628.163">node 1 line 1
+@verbatim
+#@ should be handled by verbatim
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.164">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.165"></t>
+<t tx="ekr.20150216070628.166">line
+</t>
+<t tx="ekr.20150216070628.167">line
+</t>
+<t tx="ekr.20150216070628.168"></t>
+<t tx="ekr.20150216070628.17">@
+node 1 old line 1
+node 1 old line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.18"></t>
+<t tx="ekr.20150216070628.19">@others
+</t>
+<t tx="ekr.20150216070628.20">node 1 line 1
+node 1 old line 1
+node 1 old line 2
+node 1 old line 3
+node 1 old line 4
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.21">@others
+</t>
+<t tx="ekr.20150216070628.22">node 1 line 1
+node 1 new line 1
+node 1 new line 2
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.23"></t>
+<t tx="ekr.20150216070628.24">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.25">line 1
+line 2 changed
+line 3
+</t>
+<t tx="ekr.20150216070628.26"></t>
+<t tx="ekr.20150216070628.27">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.28">line 1 changed
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.29"></t>
+<t tx="ekr.20150216070628.30">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.31">line 1
+line 2
+line 3 changed
+</t>
+<t tx="ekr.20150216070628.32"></t>
+<t tx="ekr.20150216070628.33">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.34">line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.35"></t>
+<t tx="ekr.20150216070628.36">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.37">line 1
+line 3
+</t>
+<t tx="ekr.20150216070628.38"></t>
+<t tx="ekr.20150216070628.39">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.40">line 1
+line 2
+</t>
+<t tx="ekr.20150216070628.41"></t>
+<t tx="ekr.20150216070628.42">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.43">inserted line
+line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.44"></t>
+<t tx="ekr.20150216070628.45">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.46">line 1
+inserted line
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.47"></t>
+<t tx="ekr.20150216070628.48">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.49">line 1
+line 2
+inserted line
+line 3
+</t>
+<t tx="ekr.20150216070628.50"></t>
+<t tx="ekr.20150216070628.51">line 1
+line 2
+line 3
+</t>
+<t tx="ekr.20150216070628.52">line 1
+line 2
+line 3
+inserted line
+</t>
+<t tx="ekr.20150216070628.53"></t>
+<t tx="ekr.20150216070628.54">@others
+</t>
+<t tx="ekr.20150216070628.55">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.56">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.57">@others
+</t>
+<t tx="ekr.20150216070628.58">node 1 line 1
+inserted node at end of node 1
+</t>
+<t tx="ekr.20150216070628.59">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.60"></t>
+<t tx="ekr.20150216070628.61">@others
+</t>
+<t tx="ekr.20150216070628.62">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.63">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.64">@others
+</t>
+<t tx="ekr.20150216070628.65">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.66">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.67"></t>
+<t tx="ekr.20150216070628.68">@others
+</t>
+<t tx="ekr.20150216070628.69">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.70">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.71">@others
+</t>
+<t tx="ekr.20150216070628.72">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.73">node 2 line 2
+</t>
+<t tx="ekr.20150216070628.74"></t>
+<t tx="ekr.20150216070628.75">@others
+</t>
+<t tx="ekr.20150216070628.76">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.77">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.78">@others
+</t>
+<t tx="ekr.20150216070628.79">node 1 line 1
+node 1 line 1 changed
+</t>
+<t tx="ekr.20150216070628.80">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.81"></t>
+<t tx="ekr.20150216070628.82">@others
+</t>
+<t tx="ekr.20150216070628.83">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.84">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.85">@others
+</t>
+<t tx="ekr.20150216070628.86">node 1 line 1
+node 1 line 2
+</t>
+<t tx="ekr.20150216070628.87">node 2 line 1 changed
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.88"></t>
+<t tx="ekr.20150216070628.89">@others
+</t>
+<t tx="ekr.20150216070628.90">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1
+</t>
+<t tx="ekr.20150216070628.91">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.92">@others
+</t>
+<t tx="ekr.20150216070628.93">node 1 line 1
+</t>
+<t tx="ekr.20150216070628.94">node 2 line 1
+</t>
+<t tx="ekr.20150216070628.95"></t>
+<t tx="ekr.20150216070628.96">@others
+</t>
+<t tx="ekr.20150216070628.97">node 1 line 1
+node 1 line 2
+node 1 line 3
+</t>
+<t tx="ekr.20150216070628.98">node 2 line 1
+node 2 line 2
+</t>
+<t tx="ekr.20150216070628.99">@others
 </t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>

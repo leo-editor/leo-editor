@@ -4852,6 +4852,25 @@ def getLastTracebackFileAndLineNumber():
         else:
             # Should never happen.
             return '<string>', 0
+#@+node:ekr.20150621095017.1: *3* g.goto_last_exception
+def goto_last_exception(c):
+    '''Go to the line given by sys.last_traceback.'''
+    typ, val, tb = sys.exc_info()
+    if tb:
+        file_name, line_number = g.getLastTracebackFileAndLineNumber()
+        line_number = max(0, line_number - 1)
+        if file_name.endswith('scriptFile.py'):
+            # A script.
+            c.GoToLineNumber(c).go_script_line(line_number, c.p)
+        else:
+            for p in c.all_nodes():
+                if p.isAnyAtFileNode() and p.h.endswith(file_name):
+                    g.trace('found', file_name)
+                    c.GoToLineNumber(c).go(n=line_number, p=p)
+                    return
+            g.trace('not found:', file_name)
+    else:
+        g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError(*args):
     '''Report a serious interal error in Leo.'''

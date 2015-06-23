@@ -595,7 +595,7 @@ class ShadowController:
             '''Mark an AtShadowTestCase as having failed.'''
             import leo.core.leoGlobals as g
             g.app.unitTestDict["fail"] = g.callers()
-        #@+node:ekr.20080709062932.8: *4* setUp & helpers
+        #@+node:ekr.20080709062932.8: *4* setUp & helpers (AtShadowTestCase)
         def setUp(self):
             '''AtShadowTestCase.setup.'''
             c, p = self.c, self.p
@@ -608,7 +608,7 @@ class ShadowController:
             # Change node:new to node:old in all sentinel lines.
             self.expected_private_lines = self.mungePrivateLines(
                 self.new_private_lines, 'node:new', 'node:old')
-        #@+node:ekr.20080709062932.19: *5* findNode
+        #@+node:ekr.20080709062932.19: *5* findNode (AtShadowTestCase)
         def findNode(self, c, p, headline):
             '''Return the node in p's subtree with given headline.'''
             p = g.findNodeInTree(c, p, headline)
@@ -616,31 +616,36 @@ class ShadowController:
                 g.es_print('can not find', headline)
                 assert False
             return p
-        #@+node:ekr.20080709062932.20: *5* createSentinelNode
+        #@+node:ekr.20080709062932.20: *5* createSentinelNode (AtShadowTestCase)
         def createSentinelNode(self, root, p):
             '''Write p's tree to a string, as if to a file.'''
             h = p.h
             p2 = root.insertAsLastChild()
             p2.setHeadString(h + '-sentinels')
             return p2
-        #@+node:ekr.20080709062932.21: *5* makePrivateLines
+        #@+node:ekr.20080709062932.21: *5* makePrivateLines (AtShadowTestCase)
         def makePrivateLines(self, p):
             '''Return a list of the lines of p containing sentinels.'''
             at = self.c.atFileCommands
             at.write(p,
                 nosentinels=False,
                 thinFile=False, # Debatable.
-                scriptWrite=True,
+                scriptWrite=False,
+                    # 2015/06/23: Was True, which is inaccurate and unnecessary.
+                    # All unit tests pass, which proves that this change is safe.
+                    #
+                    # We want scriptWrite = False here so at.nodeSentinelText
+                    # can generate gnx's for all real script writes.
                 toString=True)
             s = at.stringOutput
             return g.splitLines(s)
-        #@+node:ekr.20080709062932.22: *5* makePublicLines
+        #@+node:ekr.20080709062932.22: *5* makePublicLines (AtShadowTestCase)
         def makePublicLines(self, lines):
             '''Return the public lines in lines.'''
             x = self.shadowController
             lines, junk = x.separate_sentinels(lines, x.marker)
             return lines
-        #@+node:ekr.20080709062932.23: *5* mungePrivateLines
+        #@+node:ekr.20080709062932.23: *5* mungePrivateLines (AtShadowTestCase)
         def mungePrivateLines(self, lines, find, replace):
             '''Change the 'find' the 'replace' pattern in sentinel lines.'''
             x = self.shadowController
@@ -662,7 +667,7 @@ class ShadowController:
                     results.append(line)
                 i += 1
             return results
-        #@+node:ekr.20080709062932.9: *4* tearDown
+        #@+node:ekr.20080709062932.9: *4* tearDown (AtShadowTestCase)
         def tearDown(self):
             '''AtShadowTestCase.tearDown.'''
             pass
@@ -689,7 +694,7 @@ class ShadowController:
                 assert results == self.expected_private_lines
             assert self.ok
             return self.ok
-        #@+node:ekr.20080709062932.11: *4* shortDescription
+        #@+node:ekr.20080709062932.11: *4* shortDescription (AtShadowTestCase)
         def shortDescription(self):
             '''AtShadowTestCase.shortDescription.'''
             return self.p and self.p.h or '@test-shadow: no self.p'

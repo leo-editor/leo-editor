@@ -4903,20 +4903,6 @@ assert 2 == p.numberOfChildren(), 'fail 3'
 # Delete the children, but only if there are no errors.
 while p.hasChildren():
     p.firstChild().doDelete()
-#@+node:ekr.20100212072149.5341: *4* @test c.goToScriptLineNumber
-child = g.findNodeInChildren(c,p,'syntax-error')
-assert child,'no child'
-script = child.b
-try:
-    c.goToScriptLineNumber(child,script,1)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-#@+node:ekr.20100212072149.5342: *5* syntax-error
-@language python
-def spam:
-    pass
 #@+node:ekr.20141016101308.4747: *4* @test c.hiddenRootNode.fileIndex
 assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
 #@+node:ekr.20120310121839.3949: *4* @test c.hoist @chapter node
@@ -7763,6 +7749,19 @@ This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
 #@+node:ekr.20110610122533.3369: *5* goto-global-line tests
+#@+node:ekr.20100212072149.5341: *6* @test c.goToScriptLineNumber
+child = g.findNodeInChildren(c,p,'syntax-error')
+assert child,'no child'
+try:
+    c.goToScriptLineNumber(child,1)
+finally:
+    p.contract()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20100212072149.5342: *7* syntax-error
+@language python
+def spam:
+    pass
 #@+node:ekr.20110610122533.3388: *6* Tests with @auto as the root
 #@+node:ekr.20110610122533.3389: *7* @test goto-line-number @auto 1
 # Not valid for external tests: uses @<file> node.
@@ -7795,7 +7794,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,lines,n,root = c.GoToLineNumber(c).setup_file(n=3,p=root1)
+    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n=3,p=root1)
     assert fileName == h[6:],'fileName: %s' % (fileName)
     assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
     
@@ -7939,13 +7938,13 @@ if not g.app.isExternalUnitTest:
     assert target,'no target'
     
     n = 2
-    fileName,lines,n,root = c.GoToLineNumber(c).setup_file(n,p=target)
+    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n,p=target)
     assert fileName == h[6:]
     # print('lines\n%s' % g.listToString(lines))
     assert root == target
     
     ignoreSentinels = True
-    vnodeName,gnx,offset,delim = c.GoToLineNumber(c).findVnode(root,lines,n,ignoreSentinels)
+    vnodeName,gnx,offset,delim = c.GoToLineNumber(c).findVnode(root,lines,n)
     
     assert lines,'no lines'
     assert offset is not None,repr(offset)
@@ -7960,7 +7959,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
+    fileName,isScript,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
     assert fileName == h[8:],'fileName'
     assert root2 == root1
     

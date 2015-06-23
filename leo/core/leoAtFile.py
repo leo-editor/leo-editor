@@ -285,6 +285,7 @@ class AtFile:
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.root_seen = False # True: root VNode has been handled in this file.
+        at.scriptWrite = False # 2015/06/23
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -371,6 +372,7 @@ class AtFile:
         assert at.underindentEscapeString is not None
         at.atAuto = atAuto
         at.atEdit = atEdit
+        at.scriptWrite = scriptWrite # 2015/06/23
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
         at.docKind = None
@@ -3447,23 +3449,30 @@ class AtFile:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
     #@+node:ekr.20050506084734: *4* at.writeFromString
-    # This is at.write specialized for scripting.
-
     def writeFromString(self, root, s, forcePythonSentinels=True, useSentinels=True):
-        """Write a 4.x derived file from a string.
-
-        This is used by the scripting logic."""
+        """
+        Write a 4.x derived file from a string.
+        
+        This is at.write specialized for scripting.
+        """
         at = self; c = at.c
         c.endEditing()
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
-            nosentinels=not useSentinels, thinFile=False, scriptWrite=True, toString=True,
+            nosentinels=not useSentinels,
+            thinFile=False,
+            scriptWrite=True,
+            toString=True,
             forcePythonSentinels=forcePythonSentinels)
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
-            if g.app.unitTesting: assert ok, 'writeFromString' # string writes never fail.
+            if g.app.unitTesting:
+                assert ok, 'writeFromString' # string writes never fail.
             # Simulate writing the entire file so error recovery works.
-            at.writeOpenFile(root, nosentinels=not useSentinels, toString=True, fromString=s)
+            at.writeOpenFile(root,
+                nosentinels=not useSentinels,
+                toString=True,
+                fromString=s)
             at.closeWriteFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -4057,7 +4066,7 @@ class AtFile:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.onl()
     #@+node:ekr.20041005105605.187: *3* Writing 4,x sentinels...
-    #@+node:ekr.20041005105605.188: *4* nodeSentinelText
+    #@+node:ekr.20041005105605.188: *4* at.nodeSentinelText
     def nodeSentinelText(self, p):
         """Return the text of a @+node or @-node sentinel for p."""
         at = self
@@ -4076,7 +4085,9 @@ class AtFile:
             h = h.replace(start, "")
             h = h.replace(end, "")
         #@-<< remove comment delims from h if necessary >>
-        if at.thinFile:
+        # 2015/06/23: script writes now write full gnx's.
+        # This will help simplify the goto-global-line logic.
+        if at.thinFile or at.scriptWrite:
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4090,7 +4101,7 @@ class AtFile:
                 return '%s %s%s::%s' % (stars, h, pad, gnx)
         else:
             return h
-    #@+node:ekr.20041005105605.190: *4* putLeadInSentinel
+    #@+node:ekr.20041005105605.190: *4* at.putLeadInSentinel
     def putLeadInSentinel(self, s, i, j, delta):
         """
         Set at.leadingWs as needed for @+others and @+<< sentinels.
@@ -4111,12 +4122,12 @@ class AtFile:
             self.putIndent(at.indent) # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i: j])
             at.onl_sent()
-    #@+node:ekr.20041005105605.191: *4* putCloseNodeSentinel
+    #@+node:ekr.20041005105605.191: *4* at.putCloseNodeSentinel
     def putCloseNodeSentinel(self, p, middle=False):
         '''End a node.'''
         at = self
         at.raw = False # Bug fix: 2010/07/04
-    #@+node:ekr.20041005105605.192: *4* putOpenLeoSentinel 4.x
+    #@+node:ekr.20041005105605.192: *4* at.putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
         at = self
@@ -4129,7 +4140,7 @@ class AtFile:
             # New in 4.2: encoding fields end in ",."
             s = s + "-encoding=%s,." % (encoding)
         at.putSentinel(s)
-    #@+node:ekr.20041005105605.193: *4* putOpenNodeSentinel
+    #@+node:ekr.20041005105605.193: *4* at.putOpenNodeSentinel
     def putOpenNodeSentinel(self, p, inAtAll=False, middle=False):
         """Write @+node sentinel for p."""
         at = self
@@ -4143,7 +4154,7 @@ class AtFile:
         else:
             at.putSentinel("@+node:" + s)
         # Leo 4.7 b2: we never write tnodeLists.
-    #@+node:ekr.20041005105605.194: *4* putSentinel (applies cweb hack) 4.x
+    #@+node:ekr.20041005105605.194: *4* at.putSentinel (applies cweb hack) 4.x
     # This method outputs all sentinels.
 
     def putSentinel(self, s):

@@ -1630,11 +1630,10 @@ class Commands(object):
     #@+node:EKR.20040612232221: *5* c.goToScriptLineNumber
     # Called from g.handleScriptException.
 
-    def goToScriptLineNumber(self, p, script, n):
+    def goToScriptLineNumber(self, p, n):
         """Go to line n of a script."""
         c = self
-        scriptData = {'p': p.copy(), 'lines': g.splitLines(script)}
-        c.GoToLineNumber(c).go(n=n, scriptData=scriptData)
+        c.GoToLineNumber(c).go_script_line(n, p)
     #@+node:ekr.20031218072017.2086: *5* c.preferences
     @cmd('settings')
     def preferences(self, event=None):
@@ -1738,33 +1737,81 @@ class Commands(object):
             self.trace = False
                 # set in countLines.
         #@+node:ekr.20100216141722.5622: *6* goto.go
-        def go(self, n, p=None, scriptData=None):
-            '''Place the cursor on the n'th line of a derived file or script.
-            When present scriptData is a dict with 'root' and 'lines' keys.'''
+        def go(self, n, p=None):
+            '''Place the cursor on the n'th line of a derived file'''
             c = self.c
             if n < 0: return
-            if scriptData:
-                fileName, lines, p, root = self.setup_script(scriptData)
-            else:
-                if not p: p = c.p
-                fileName, lines, n, root = self.setup_file(n, p)
+            ###
+            # if scriptData:
+                # fileName, lines, p, root = self.setup_script(scriptData)
+            # else:
+                # if not p: p = c.p
+                # fileName, lines, n, root = self.setup_file(n, p)
+            if not p: p = c.p
+            fileName, isScript, lines, n, root = self.setup_file(n, p)
             self.isAtAuto = root and root.isAtAutoNode()
             isRaw = not root or (
                 root.isAtEditNode() or root.isAtAsisFileNode() or
                 root.isAtAutoNode() or root.isAtNoSentFileNode() or
                 root.isAtCleanNode())
-            ignoreSentinels = root and root.isAtNoSentFileNode()
+            ### ignoreSentinels = root and root.isAtNoSentFileNode()
             if not root:
-                if scriptData: root = p.copy()
-                else: root = c.p
-            if isRaw:
+                ### if scriptData: root = p.copy()
+                ### else: root = c.p
+                root = c.p
+            if isRaw and not isScript:
                 p, n2, found = self.countLines(root, n)
                 n2 += 1 # Convert to one-based.
             else:
-                vnodeName, gnx, n2, delim = self.findVnode(root, lines, n, ignoreSentinels)
+                vnodeName, gnx, n2, delim = self.findVnode(root, lines, n) ###, ignoreSentinels)
                 p, found = self.findGnx(delim, root, gnx, vnodeName)
             self.showResults(found, p or root, n, n2, lines)
             return found
+        #@+node:ekr.20150622140140.1: *6* goto.go_script_line & helper
+        def go_script_line(self, n, root):
+            '''Go to line n (zero based) of the script with the given root.'''
+            trace = True and not g.unitTesting
+            c = self.c
+            if n < 0:
+                return False
+            else:
+                script = g.getScript(c, root, useSelectedText=False)
+                lines = g.splitLines(script)
+                if trace:
+                    aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
+                    g.trace('script: ...\n%s' % ''.join(aList))
+                # Script lines don't have gnx's, so we carefully count lines.
+                n = self.adjust_script_n(lines, n)
+                p, n2, found = self.countLines(root, n)
+                n2 += 1 # Convert to one-based.
+                self.showResults(found, p or root, n, n2, lines)
+                return found
+        #@+node:ekr.20150622145749.1: *7* goto.adjust_script_n
+        def adjust_script_n(self, lines, n):
+            '''
+            n is a line number for a script *with* sentinels.
+            
+            Return the corresonding line number *not counting* sentinels.
+            '''
+            trace = True and not g.unitTesting
+            real = 0 # The number of real lines (in the outline)
+            for i, s in enumerate(lines):
+                s = s.strip()
+                if s.startswith('#@'):
+                    for tag in ('#@verbatim', '#@+others', '#@+<<'):
+                        # These *do* correspond to source lines.
+                        if s.startswith(tag):
+                            if trace: g.trace(s)
+                            real += 1
+                            break
+                    # else: g.trace('skip', s.rstrip())
+                else:
+                    if trace: g.trace(s)
+                    real += 1
+                if i >= n:
+                    break
+            if trace: g.trace('n', n, 'i', i, 'real', real)
+            return real
         #@+node:ekr.20100216141722.5623: *6* goto.countLines & helpers
         def countLines(self, root, n):
             '''
@@ -1774,7 +1821,7 @@ class Commands(object):
                 i: the zero-based offset of the line within the node.
                 found: True if the line n was found.
             '''
-            self.trace = False and not g.unitTesting
+            self.trace = True and not g.unitTesting
             self.target = max(0, n - 1)
                 # Invariant: the target never changes!
             self.n = 0
@@ -1910,7 +1957,7 @@ class Commands(object):
                             return p2.copy(), fileName
             return None, None
         #@+node:ekr.20100216141722.5628: *6* goto.findVnode & helpers
-        def findVnode(self, root, lines, n, ignoreSentinels):
+        def findVnode(self, root, lines, n): ###, ignoreSentinels):
             '''Search the lines of a derived file containing sentinels for a VNode.
             return (vnodeName,gnx,offset,delim):
 
@@ -1919,9 +1966,10 @@ class Commands(object):
             offset:     the offset within the node of the desired line.
             delim:      the comment delim from the @+leo sentinel.
             '''
-            trace = False and not g.unitTesting
+            trace = True and not g.unitTesting
+            trace_lines = False
             # c = self.c
-            # g.trace('lines...\n',g.listToString(lines))
+            if trace and trace_lines: g.trace('lines...\n', g.listToString(lines))
             gnx = None
             delim, readVersion5, thinFile = self.setDelimFromLines(lines)
             if not delim:
@@ -2125,7 +2173,7 @@ class Commands(object):
             return lines
         #@+node:ekr.20100216141722.5636: *6* goto.setup_file
         def setup_file(self, n, p):
-            '''Return (lines,n) where:
+            '''Return (fileName, isScript, lines, n, root) where:
 
             lines are the lines to be scanned.
             n is the effective line number (munged for @shadow nodes).
@@ -2143,8 +2191,9 @@ class Commands(object):
                     g.warning("no ancestor @<file node>: using script line numbers")
                 lines = g.getScript(c, p, useSelectedText=False)
                 lines = g.splitLines(lines)
-            return fileName, lines, n, root
-        #@+node:ekr.20100216141722.5637: *6* goto.setup_script
+            isScript = root and fileName
+            return fileName, isScript, lines, n, root
+        #@+node:ekr.20100216141722.5637: *6* goto.setup_script (to be deleted)
         def setup_script(self, scriptData):
             # c = self.c
             p = scriptData.get('p')
