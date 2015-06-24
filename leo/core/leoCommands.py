@@ -1628,10 +1628,11 @@ class Commands(object):
             frame.fontPanel = g.app.gui.createFontPanel(c)
         frame.fontPanel.bringToFront()
     #@+node:EKR.20040612232221: *5* c.goToScriptLineNumber
-    # Called from g.handleScriptException.
-
     def goToScriptLineNumber(self, p, n):
-        """Go to line n of a script."""
+        """
+        Go to line n (1-based) of a script.
+        Called from g.handleScriptException.
+        """
         c = self
         c.GoToLineNumber(c).go_script_line(n, p)
     #@+node:ekr.20031218072017.2086: *5* c.preferences
@@ -1763,14 +1764,14 @@ class Commands(object):
                 p, n2, found = self.countLines(root, n)
                 n2 += 1 # Convert to one-based.
             else:
-                vnodeName, gnx, n2, delim = self.findVnode(root, lines, n) ###, ignoreSentinels)
+                vnodeName, gnx, n2, delim = self.findVnode(root, lines, n)
                 p, found = self.findGnx(delim, root, gnx, vnodeName)
             self.showResults(found, p or root, n, n2, lines)
             return found
-        #@+node:ekr.20150622140140.1: *6* goto.go_script_line & helper
+        #@+node:ekr.20150622140140.1: *6* goto.go_script_line & helpers
         def go_script_line(self, n, root):
             '''Go to line n (zero based) of the script with the given root.'''
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             c = self.c
             if n < 0:
                 return False
@@ -1779,11 +1780,12 @@ class Commands(object):
                 lines = g.splitLines(script)
                 if trace:
                     aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
-                    g.trace('script: ...\n%s' % ''.join(aList))
-                # Script lines don't have gnx's, so we carefully count lines.
-                n = self.adjust_script_n(lines, n)
-                p, n2, found = self.countLines(root, n)
-                n2 += 1 # Convert to one-based.
+                    g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
+                # Script lines now *do* have gnx's.
+                delim = '#@'
+                n = max(0, n - 1) # Convert to zero based.
+                gnx, h, n2 = self.scan_script_lines(delim, lines, n, root)
+                p, found = self.findGnx(delim, root, gnx, h)
                 self.showResults(found, p or root, n, n2, lines)
                 return found
         #@+node:ekr.20150622145749.1: *7* goto.adjust_script_n
@@ -1812,6 +1814,53 @@ class Commands(object):
                     break
             if trace: g.trace('n', n, 'i', i, 'real', real)
             return real
+        #@+node:ekr.20150623175738.1: *7* goto.get_script_node_info
+        def get_script_node_info(self, s):
+            '''Return the gnx and headline of a #@+node.'''
+            i = s.find(':', 0)
+            j = s.find(':', i + 1)
+            if i == -1 or j == -1:
+                g.error("bad @+node sentinel", s)
+                return None, None
+            else:
+                gnx = s[i + 1: j]
+                h = s[j + 1:]
+                h = self.removeLevelStars(h).strip()
+                # g.trace(gnx, h, s.rstrip())
+                return gnx, h
+        #@+node:ekr.20150623175314.1: *7* goto.scan_script_lines
+        def scan_script_lines(self, delim, lines, n, root):
+            '''
+            Scan a list of lines containing sentinels, looking for the node and
+            offset within the node of the n'th (zero-based) line.
+            
+            Return gnx, h, offset:
+            gnx:    the gnx of the #@+node
+            h:      the headline of the #@+node
+            offset: the offset of line n within the node.
+            '''
+            trace = False and not g.unitTesting
+            gnx, h, offset = root.gnx, root.h, 0
+            stack = [(gnx, h, offset),]
+            for i, s in enumerate(lines):
+                if trace: g.trace(s.rstrip())
+                if s.startswith(delim + '+node'):
+                    offset = 0
+                    gnx, h = self.get_script_node_info(s)
+                    if trace: g.trace('node', gnx, h)
+                elif s.startswith(delim + '+others') or s.startswith(delim + '+<<'):
+                    stack.append((gnx, h, offset),)
+                    offset += 1
+                elif s.startswith(delim + '-others') or s.startswith(delim + '-<<'):
+                    gnx, h, offset = stack.pop()
+                    offset += 1
+                else:
+                    offset += 1
+                if trace: g.trace(i, offset, h, '\n')
+                if i == n:
+                    break
+            if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
+            return gnx, h, offset
         #@+node:ekr.20100216141722.5623: *6* goto.countLines & helpers
         def countLines(self, root, n):
             '''
@@ -1957,7 +2006,7 @@ class Commands(object):
                             return p2.copy(), fileName
             return None, None
         #@+node:ekr.20100216141722.5628: *6* goto.findVnode & helpers
-        def findVnode(self, root, lines, n): ###, ignoreSentinels):
+        def findVnode(self, root, lines, n):
             '''Search the lines of a derived file containing sentinels for a VNode.
             return (vnodeName,gnx,offset,delim):
 
@@ -2202,6 +2251,7 @@ class Commands(object):
             return fileName, lines, p, root
         #@+node:ekr.20100216141722.5638: *6* goto.showResults
         def showResults(self, found, p, n, n2, lines):
+            '''Place the cursor on line n2 of p.b.'''
             trace = False and not g.unitTesting
             c = self.c
             w = c.frame.body.wrapper
