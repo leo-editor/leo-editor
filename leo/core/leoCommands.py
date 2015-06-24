@@ -1861,6 +1861,47 @@ class Commands(object):
                     break
             if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
             return gnx, h, offset
+        #@+node:ekr.20150624085605.1: *7* goto.scan_nonsentinel_lines
+        def scan_nonsentinel_lines(self, delim, lines, n, root):
+            '''
+            Scan a list of lines containing sentinels, looking for the node and
+            offset within the node of the n'th (zero-based) line.  Only lines
+            that appear in the outline increment count.
+            
+            Return gnx, h, offset:
+            gnx:    the gnx of the #@+node
+            h:      the headline of the #@+node
+            offset: the offset of line n within the node.
+            '''
+            trace = True and not g.unitTesting
+            count, gnx, h, offset = 0, root.gnx, root.h, 0
+            stack = [(gnx, h, offset),]
+            for s in lines:
+                if trace: g.trace(s.rstrip())
+                if s.startswith(delim + '+node'):
+                    offset = 0
+                        # The node delim does not appear in the outline.
+                    gnx, h = self.get_script_node_info(s)
+                    if trace: g.trace('node', gnx, h)
+                elif s.startswith(delim + '+others') or s.startswith(delim + '+<<'):
+                    stack.append((gnx, h, offset),)
+                    count += 1
+                    offset += 1
+                        # The directive or section reference *does* appear in the outine.
+                elif s.startswith(delim + '-others') or s.startswith(delim + '-<<'):
+                    gnx, h, offset = stack.pop()
+                    # These do *not* appear in the outline.
+                elif s.startswith(delim + 'verbatim'):
+                    pass # Only the following line appears in the outline.
+                else:
+                    # All other lines, including Leo directives, do appear in the outline.
+                    count += 1
+                    offset += 1
+                if trace: g.trace(count, offset, h, '\n')
+                if count == n:
+                    break
+            if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
+            return gnx, h, offset
         #@+node:ekr.20100216141722.5623: *6* goto.countLines & helpers
         def countLines(self, root, n):
             '''
