@@ -4860,13 +4860,13 @@ def goto_last_exception(c):
         file_name, line_number = g.getLastTracebackFileAndLineNumber()
         if file_name.endswith('scriptFile.py'):
             # A script.
-            c.GoToLineNumber(c).go_script_line(line_number, c.p)
+            c.goToScriptLineNumber(line_number, c.p)
         else:
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
                     g.trace('found', file_name)
                     line_number = max(0, line_number - 1)
-                    c.GoToLineNumber(c).go(n=line_number, p=p)
+                    c.goToLineNumber(line_number, p)
                     return
             g.trace('not found:', file_name)
     else:
@@ -5901,7 +5901,7 @@ def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
     full = c.config.getBool('show_full_tracebacks_in_scripts')
     fileName, n = g.es_exception(full=full)
-    c.goToScriptLineNumber(p, n)
+    c.goToScriptLineNumber(n, p)
     #@+<< dump the lines near the error >>
     #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
     if g.os_path_exists(fileName):

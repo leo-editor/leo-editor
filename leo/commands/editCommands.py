@@ -2083,7 +2083,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 g.warning('goto-char takes non-negative integer argument')
             k.resetLabel()
             k.clearState()
-    #@+node:ekr.20150514063305.227: *3* gotoGlobalLine
+    #@+node:ekr.20150514063305.227: *3* gotoGlobalLine (leoEditCommands)
     @cmd('goto-global-line')
     def gotoGlobalLine(self, event):
         '''
@@ -2103,7 +2103,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.resetLabel()
             k.clearState()
             if n.isdigit():
-                c.GoToLineNumber(c).go(n=int(n))
+                c.gotoCommands.goToLineNumber(n=int(n))
     #@+node:ekr.20150514063305.228: *3* gotoLine
     @cmd('goto-line')
     def gotoLine(self, event):

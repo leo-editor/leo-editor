@@ -174,7 +174,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32362e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31362e342e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e31352e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31312e3971157d71165809000000756e69745f746573747117580400000061626364711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32362e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="edward.20150612084618.1"><vh>Recently disabled tests</vh>
@@ -992,7 +992,7 @@ else:
 <t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c,p,'syntax-error')
 assert child,'no child'
 try:
-    c.goToScriptLineNumber(child,1)
+    c.goToScriptLineNumber(1, child)
 finally:
     p.contract()
     c.selectPosition(p)
@@ -1028,8 +1028,7 @@ if not g.app.isExternalUnitTest:
     h = '@auto unittest/at-auto-line-number-test.py'
     target = g.findNodeAnywhere(c,h)
     assert target,'no @auto node'
-    
-    p,n,found = c.GoToLineNumber(c).countLines(target,2)
+    p,n,found = c.gotoCommands.countLines(target,2)
     assert found,'not found'
     assert n == 1,'n: %s' % (n)
     assert p.h == 'at_auto_child',p.h
@@ -1040,7 +1039,7 @@ if not g.app.isExternalUnitTest:
     h = '@auto unittest/at-auto-line-number-test.py'
     root = g.findNodeAnywhere(c,h)
     assert root,'no root'
-    p,n,found = c.GoToLineNumber(c).countLines(root,20)
+    p,n,found = c.gotoCommands.countLines(root,20)
     assert not found,'not found'
 </t>
 <t tx="ekr.20110610122533.3391"># Not valid for external tests: uses @&lt;file&gt; node.
@@ -1051,7 +1050,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n=3,p=root1)
+    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n=3,p=root1)
     assert fileName == h[6:],'fileName: %s' % (fileName)
     assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
     
@@ -1068,7 +1067,7 @@ if not g.app.isExternalUnitTest:
     assert root1.isAnyAtFileNode()
     
     scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-    fileName,lines2,p2,root2 = c.GoToLineNumber(c).setup_script(scriptData)
+    fileName,lines2,p2,root2 = c.gotoCommands.setup_script(scriptData)
     
     assert fileName == h[6:],'fileName'
     assert lines2 == scriptData.get('lines'),'lines'
@@ -1094,7 +1093,7 @@ if not g.app.isExternalUnitTest:
     #assert gnx,'no gnx'
     
     delim = '#'
-    found = c.GoToLineNumber(c).findGnx(delim,root,gnx,h)
+    found = c.gotoCommands.findGnx(delim,root,gnx,h)
     assert found,'not found'
 </t>
 <t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
@@ -1106,13 +1105,13 @@ if not g.app.isExternalUnitTest:
     assert target,'no target'
     
     n = 2
-    fileName,isScript,lines,n,root = c.GoToLineNumber(c).setup_file(n,p=target)
+    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n,p=target)
     assert fileName == h[6:]
     # print('lines\n%s' % g.listToString(lines))
     assert root == target
     
     ignoreSentinels = True
-    vnodeName,gnx,offset,delim = c.GoToLineNumber(c).findVnode(root,lines,n)
+    vnodeName,gnx,offset,delim = c.gotoCommands.findVnode(root,lines,n)
     
     assert lines,'no lines'
     assert offset is not None,repr(offset)
@@ -1127,7 +1126,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,isScript,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
+    fileName,isScript,lines,n,root2 = c.gotoCommands.setup_file(n=6,p=root1)
     assert fileName == h[8:],'fileName'
     assert root2 == root1
     
@@ -1145,12 +1144,12 @@ if not g.app.isExternalUnitTest:
     child = target.firstChild()
     assert child.h == 'at_auto_child','child.h'
     
-    p,found = c.GoToLineNumber(c).findRoot(child)
+    p,found = c.gotoCommands.findRoot(child)
     
     assert p == target,'p' #p and p.h
     assert found,'not found'
 </t>
-<t tx="ekr.20110610122533.3404">c.GoToLineNumber(c).showResults(
+<t tx="ekr.20110610122533.3404">c.gotoCommands.showResults(
     found=False,p=p,n=3,n2=3,lines=['a','b'])
 
 
@@ -1215,8 +1214,7 @@ if not g.app.isExternalUnitTest:
     f = open(path,'r') ; s = f.read() ; f.close()
     lines = g.splitLines(s) # The lines from the file.
     for n,node,index in table:
-        goto = c.GoToLineNumber(c)
-        p2,n2,found = goto.countLines(root,n)
+        p2,n2,found = c.gotoCommands.countLines(root,n)
             # n, the argument to countLines, is 1-based
             # n2, the returned index into p2.b, is zero-based
         n -= 1

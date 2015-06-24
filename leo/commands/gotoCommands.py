@@ -79,36 +79,10 @@ class GoToCommands:
             # Script lines now *do* have gnx's.
             delim = '#@'
             n = max(0, n - 1) # Convert to zero based.
-            gnx, h, n2 = self.scan_script_lines(delim, lines, n, root)
+            gnx, h, n2 = self.scan_sentinel_lines(delim, lines, n, root)
             p, found = self.findGnx(delim, root, gnx, h)
             self.showResults(found, p or root, n, n2, lines)
             return found
-    #@+node:ekr.20150622145749.1: *3* goto.adjust_script_n
-    def adjust_script_n(self, lines, n):
-        '''
-        n is a line number for a script *with* sentinels.
-        
-        Return the corresonding line number *not counting* sentinels.
-        '''
-        trace = True and not g.unitTesting
-        real = 0 # The number of real lines (in the outline)
-        for i, s in enumerate(lines):
-            s = s.strip()
-            if s.startswith('#@'):
-                for tag in ('#@verbatim', '#@+others', '#@+<<'):
-                    # These *do* correspond to source lines.
-                    if s.startswith(tag):
-                        if trace: g.trace(s)
-                        real += 1
-                        break
-                # else: g.trace('skip', s.rstrip())
-            else:
-                if trace: g.trace(s)
-                real += 1
-            if i >= n:
-                break
-        if trace: g.trace('n', n, 'i', i, 'real', real)
-        return real
     #@+node:ekr.20150623175738.1: *3* goto.get_script_node_info
     def get_script_node_info(self, s):
         '''Return the gnx and headline of a #@+node.'''
@@ -123,8 +97,8 @@ class GoToCommands:
             h = self.removeLevelStars(h).strip()
             # g.trace(gnx, h, s.rstrip())
             return gnx, h
-    #@+node:ekr.20150623175314.1: *3* goto.scan_script_lines
-    def scan_script_lines(self, delim, lines, n, root):
+    #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
+    def scan_sentinel_lines(self, delim, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.
