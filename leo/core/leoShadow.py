@@ -627,16 +627,18 @@ class ShadowController:
         def makePrivateLines(self, p):
             '''Return a list of the lines of p containing sentinels.'''
             at = self.c.atFileCommands
-            at.write(p,
-                nosentinels=False,
-                thinFile=False, # Debatable.
-                scriptWrite=False,
-                    # 2015/06/23: Was True, which is inaccurate and unnecessary.
-                    # All unit tests pass, which proves that this change is safe.
-                    #
-                    # We want scriptWrite = False here so at.nodeSentinelText
-                    # can generate gnx's for all real script writes.
-                toString=True)
+            # A hack: we want to suppress gnx's *only* in @+node sentinels,
+            # but we *do* want sentinels elsewhere.
+            at.at_shadow_test_hack = True
+            try:
+                at.write(p,
+                    nosentinels=False,
+                    thinFile=False, # Debatable.
+                    scriptWrite=False,
+                        # 2015/06/23: Was True, which is inaccurate and unnecessary.
+                    toString=True)
+            finally:
+                at.at_shadow_test_hack = False
             s = at.stringOutput
             return g.splitLines(s)
         #@+node:ekr.20080709062932.22: *5* makePublicLines (AtShadowTestCase)

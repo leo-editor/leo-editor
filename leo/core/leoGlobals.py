@@ -4858,6 +4858,8 @@ def goto_last_exception(c):
     typ, val, tb = sys.exc_info()
     if tb:
         file_name, line_number = g.getLastTracebackFileAndLineNumber()
+        line_number = max(0, line_number - 1)
+            # Convert to zero-based.
         if file_name.endswith('scriptFile.py'):
             # A script.
             c.goToScriptLineNumber(line_number, c.p)
@@ -4865,7 +4867,6 @@ def goto_last_exception(c):
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
                     g.trace('found', file_name)
-                    line_number = max(0, line_number - 1)
                     c.goToLineNumber(line_number, p)
                     return
             g.trace('not found:', file_name)

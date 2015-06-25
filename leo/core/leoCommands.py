@@ -1633,21 +1633,21 @@ class Commands(object):
     #@+node:EKR.20040612232221: *5* c.goToLineNumber & goToScriptLineNumber
     def goToLineNumber(self, n):
         """
-        Go to line n (1-based) of a script.
+        Go to line n (zero-based) of a script.
         Called from g.handleScriptException.
         """
         import leo.commands.gotoCommands as gotoCommands
         c = self
-        c.gotoCommands.go(n)
+        c.gotoCommands.find_file_line(n)
 
     def goToScriptLineNumber(self, n, p):
         """
-        Go to line n (1-based) of a script.
+        Go to line n (zero-based) of a script.
         Called from g.handleScriptException.
         """
         import leo.commands.gotoCommands as gotoCommands
         c = self
-        c.gotoCommands.go_script_line(n, p)
+        c.gotoCommands.find_script_line(n, p)
     #@+node:ekr.20031218072017.2086: *5* c.preferences
     @cmd('settings')
     def preferences(self, event=None):

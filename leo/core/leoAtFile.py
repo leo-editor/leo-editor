@@ -276,6 +276,7 @@ class AtFile:
         at.encoding = c.config.default_derived_file_encoding
         at.endSentinelComment = ""
         at.errors = 0
+        at.forceSentinels = False
         at.inCode = True
         at.indent = 0 # The unit of indentation is spaces, not tabs.
         at.language = None
@@ -372,6 +373,7 @@ class AtFile:
         assert at.underindentEscapeString is not None
         at.atAuto = atAuto
         at.atEdit = atEdit
+        at.forceSentinels = False # 2015/06/25
         at.scriptWrite = scriptWrite # 2015/06/23
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
@@ -3208,7 +3210,10 @@ class AtFile:
             else:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p, toString, force, trialWrite=False):
+    def writeOneAtAutoNode(self, p, toString, force,
+        trialWrite=False,
+        forceSentinels=False, # 2015/06/25
+    ):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
@@ -3235,8 +3240,11 @@ class AtFile:
         at.targetFileName = "<string-file>" if toString else fileName
         at.initWriteIvars(root, at.targetFileName,
             atAuto=True,
-            nosentinels=True, thinFile=False, scriptWrite=False,
+            nosentinels=True,
+            thinFile=False,
+            scriptWrite=False,
             toString=toString)
+        at.forceSentinels = forceSentinels # 2015/06/25
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
@@ -4071,6 +4079,7 @@ class AtFile:
         """Return the text of a @+node or @-node sentinel for p."""
         at = self
         h = p.h
+        # if g.unitTesting: g.trace(at.thinFile, at.forceSentinels)
         #@+<< remove comment delims from h if necessary >>
         #@+node:ekr.20041005105605.189: *5* << remove comment delims from h if necessary >>
         #@+at Bug fix 1/24/03:
@@ -4085,9 +4094,10 @@ class AtFile:
             h = h.replace(start, "")
             h = h.replace(end, "")
         #@-<< remove comment delims from h if necessary >>
-        # 2015/06/23: script writes now write full gnx's.
-        # This will help simplify the goto-global-line logic.
-        if at.thinFile or at.scriptWrite:
+        if getattr(at, 'at_shadow_test_hack', False):
+            # A hack for @shadow unit testing.
+            return h
+        elif at.thinFile or at.scriptWrite or at.forceSentinels:
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4131,15 +4141,14 @@ class AtFile:
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
         at = self
-        if not at.sentinels:
-            return # Handle @nosentinelsfile.
-        if at.thinFile:
-            s = s + "-thin"
-        encoding = at.encoding.lower()
-        if encoding != "utf-8":
-            # New in 4.2: encoding fields end in ",."
-            s = s + "-encoding=%s,." % (encoding)
-        at.putSentinel(s)
+        if at.sentinels or at.forceSentinels:
+            if at.thinFile:
+                s = s + "-thin"
+            encoding = at.encoding.lower()
+            if encoding != "utf-8":
+                # New in 4.2: encoding fields end in ",."
+                s = s + "-encoding=%s,." % (encoding)
+            at.putSentinel(s)
     #@+node:ekr.20041005105605.193: *4* at.putOpenNodeSentinel
     def putOpenNodeSentinel(self, p, inAtAll=False, middle=False):
         """Write @+node sentinel for p."""
@@ -4160,26 +4169,25 @@ class AtFile:
     def putSentinel(self, s):
         "Write a sentinel whose text is s, applying the CWEB hack if needed."
         at = self
-        if not at.sentinels:
-            return # Handle @file-nosent
-        at.putIndent(at.indent)
-        at.os(at.startSentinelComment)
-        #@+<< apply the cweb hack to s >>
-        #@+node:ekr.20041005105605.195: *5* << apply the cweb hack to s >>
-        #@+at The cweb hack:
-        # 
-        # If the opening comment delim ends in '@', double all '@' signs except the first,
-        # which is "doubled" by the trailing '@' in the opening comment delimiter.
-        #@@c
-        start = at.startSentinelComment
-        if start and start[-1] == '@':
-            assert(s and s[0] == '@')
-            s = s.replace('@', '@@')[1:]
-        #@-<< apply the cweb hack to s >>
-        at.os(s)
-        if at.endSentinelComment:
-            at.os(at.endSentinelComment)
-        at.onl()
+        if at.sentinels or at.forceSentinels:
+            at.putIndent(at.indent)
+            at.os(at.startSentinelComment)
+            #@+<< apply the cweb hack to s >>
+            #@+node:ekr.20041005105605.195: *5* << apply the cweb hack to s >>
+            #@+at The cweb hack:
+            # 
+            # If the opening comment delim ends in '@', double all '@' signs except the first,
+            # which is "doubled" by the trailing '@' in the opening comment delimiter.
+            #@@c
+            start = at.startSentinelComment
+            if start and start[-1] == '@':
+                assert(s and s[0] == '@')
+                s = s.replace('@', '@@')[1:]
+            #@-<< apply the cweb hack to s >>
+            at.os(s)
+            if at.endSentinelComment:
+                at.os(at.endSentinelComment)
+            at.onl()
     #@+node:ekr.20041005105605.196: *3* Writing 4.x utils...
     #@+node:ekr.20090514111518.5661: *4* checkPythonCode (leoAtFile) & helpers
     def checkPythonCode(self, root, s=None, targetFn=None):

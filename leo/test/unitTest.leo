@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr.default.stylesheet ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.77">
 	<global_window_position top="55" left="444" height="997" width="1223"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -53,6 +53,12 @@
 <v t="edward.20150612083734.4"><vh>@data:#@auto</vh></v>
 <v t="edward.20150612083734.5"><vh>@data:#@auto</vh>
 <v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150625052701.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
+<v t="ekr.20150625101430.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
+<v t="ekr.20150625101616.1"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -170,41 +176,28 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
+<v t="ekr.20080904084223.1"></v>
 <v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32362e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32362e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31312e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="edward.20150612084618.1"><vh>Recently disabled tests</vh>
-<v t="ekr.20100210222021.5388"><vh>@test save new file</vh></v>
-<v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
-<v t="ekr.20111212142649.3971"><vh>@test c.pasteOutline does not clone top node</vh>
-<v t="ekr.20111212142649.3972"><vh>child</vh></v>
-</v>
-</v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
 <v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
 <v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
 </v>
-<v t="ekr.20110610122533.3388"><vh>Tests with @auto as the root</vh>
-<v t="ekr.20110610122533.3389"><vh>@test goto-line-number @auto 1</vh></v>
-<v t="ekr.20110610122533.3390"><vh>@test goto-global-line @auto 2</vh></v>
-<v t="ekr.20110610122533.3391"><vh>@test goto-global-line @auto 3</vh></v>
-<v t="ekr.20110610122533.3392"><vh>@test goto-global-line @auto 4</vh></v>
-<v t="ekr.20110610122533.3406"><vh>@test goto-global-line @auto 5</vh></v>
-<v t="ekr.20110610122533.3401"><vh>@test GoToLineNumber.findRoot 1</vh></v>
+<v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
+<v t="ekr.20150625101047.1"><vh>@test file_file_line: @auto</vh></v>
+<v t="ekr.20110610122533.3395"><vh>@test file_file_line: @file</vh></v>
+<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent</vh></v>
+<v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
+<v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20110610122533.3393"><vh>Tests with @file as the root</vh>
-<v t="ekr.20110610122533.3394"><vh>@test goto-global-line @file 1</vh></v>
-<v t="ekr.20110610122533.3395"><vh>@test goto-global-line @file 2</vh></v>
-</v>
-<v t="ekr.20110610122533.3398"><vh>Tests with @nosent as the root</vh>
-<v t="ekr.20110610122533.3399"><vh>@test goto-global-line @nosent</vh></v>
-</v>
-<v t="ekr.20110610122533.3404"><vh>@test goto_showResults not found</vh></v>
-<v t="ekr.20110610122533.3405"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
+<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
+<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -247,29 +240,7 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="edward.20150612084618.1"></t>
 <t tx="ekr.20041121151002"></t>
-<t tx="ekr.20050208051418.1">@first # -*- coding: utf-8 -*-
-
-import sys
-# g.openWithFileName *always* opens the file.
-if g.isPython3 and sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    pass
-elif not g.app.isExternalUnitTest:
-
-    old_c = c
-    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
-    try:
-        c2 = None
-        c2 = g.openWithFileName(filename,old_c=old_c)
-    finally:
-        if c2:
-            g.app.destroyWindow(c2.frame)
-        c.setLog()
-        c.bodyWantsFocus()
-</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -661,7 +632,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -702,13 +673,6 @@ Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080907123324.3">def child():
     pass
-
-#
-#
-#
-#
-#
-#
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -962,35 +926,8 @@ for theDir in ('core','external','extensions','plugins','scripts','test'):
 if trace: print('tested %s files' % n)
 assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
-<t tx="ekr.20100210222021.5388">import os
-import sys
-if g.isPython3 and sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    pass
-else:
-    c1 = c
-    fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
-    # print(fn)
-    if g.os_path_exists(fn):
-        os.remove(fn)
-    assert not g.os_path_exists(fn)
-    try:
-        c = c1.new()
-        assert not c.cacher.db
-        # Not a perfect unit test, but it similar to c.save.
-        c.mFileName = fn
-        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
-        # print(c.mFileName)
-        c.fileCommands.save(c.mFileName)
-        c.close()
-        assert g.os_path_exists(fn)
-    finally:
-        if g.os_path_exists(fn):
-            os.remove(fn)
-</t>
-<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c,p,'syntax-error')
-assert child,'no child'
+<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c, p, 'syntax-error')
+assert child, 'no child'
 try:
     c.goToScriptLineNumber(1, child)
 finally:
@@ -1019,220 +956,95 @@ False:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
+<t tx="ekr.20110524120515.3489">c.testManager.runAtFileTest(p)
+</t>
+<t tx="ekr.20110524120515.3490"># before
+
+@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+@end_raw
+
+#after
+</t>
+<t tx="ekr.20110524120515.3491">#@+leo-ver=5
+#@+node:#@file
+# before
+
+#@@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+#@@end_raw
+
+#after
+#@-leo
+</t>
 <t tx="ekr.20110610122533.3369"></t>
-<t tx="ekr.20110610122533.3388"></t>
-<t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-    
-    root = p.parent().parent()
-    h = '@auto unittest/at-auto-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no @auto node'
-    p,n,found = c.gotoCommands.countLines(target,2)
-    assert found,'not found'
-    assert n == 1,'n: %s' % (n)
-    assert p.h == 'at_auto_child',p.h
-</t>
-<t tx="ekr.20110610122533.3390"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root = g.findNodeAnywhere(c,h)
-    assert root,'no root'
-    p,n,found = c.gotoCommands.countLines(root,20)
-    assert not found,'not found'
-</t>
-<t tx="ekr.20110610122533.3391"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n=3,p=root1)
-    assert fileName == h[6:],'fileName: %s' % (fileName)
-    assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
-    
-    if 0:
-        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-            root and root.h,isRaw,n,len(lines)))
-</t>
-<t tx="ekr.20110610122533.3392"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-    fileName,lines2,p2,root2 = c.gotoCommands.setup_script(scriptData)
-    
-    assert fileName == h[6:],'fileName'
-    assert lines2 == scriptData.get('lines'),'lines'
-    assert p2 == root1,'p'
-    assert root2 == root1,'root'
-    
-    if 0:
-        print('root:%s, n:%s, len(lines): %s' % (
-            root and root.h,n,len(lines)))
-</t>
-<t tx="ekr.20110610122533.3393"></t>
 <t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
-
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
     gnx = target.v.fileIndex
     assert gnx
-    
-    #gnx = g.app.nodeIndices.toString(target.v.fileIndex)
-    #assert gnx,'no gnx'
-    
     delim = '#'
-    found = c.gotoCommands.findGnx(delim,root,gnx,h)
-    assert found,'not found'
+    found = c.gotoCommands.find_gnx(delim, root, gnx, h)
+    assert found, 'not found'
 </t>
 <t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
-    
+    trace = False
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
-    
-    n = 2
-    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n,p=target)
-    assert fileName == h[6:]
-    # print('lines\n%s' % g.listToString(lines))
-    assert root == target
-    
-    ignoreSentinels = True
-    vnodeName,gnx,offset,delim = c.gotoCommands.findVnode(root,lines,n)
-    
-    assert lines,'no lines'
-    assert offset is not None,repr(offset)
-    assert vnodeName,repr(vnodeName)
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n)
+            break
 </t>
-<t tx="ekr.20110610122533.3398"></t>
 <t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
-    
+    trace = False
     h = '@nosent unittest/at-nosent-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    fileName,isScript,lines,n,root2 = c.gotoCommands.setup_file(n=6,p=root1)
-    assert fileName == h[8:],'fileName'
-    assert root2 == root1
-    
-    if 0:
-        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-            root and root.h,isRaw,n,len(lines)))
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    assert root.isAtNoSentFileNode(), root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 3, n
+            break
 </t>
-<t tx="ekr.20110610122533.3401"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-    
-    root = p.parent().parent()
-    h = '@auto unittest/at-auto-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
-    child = target.firstChild()
-    assert child.h == 'at_auto_child','child.h'
-    
-    p,found = c.gotoCommands.findRoot(child)
-    
-    assert p == target,'p' #p and p.h
-    assert found,'not found'
-</t>
-<t tx="ekr.20110610122533.3404">c.gotoCommands.showResults(
-    found=False,p=p,n=3,n2=3,lines=['a','b'])
-
-
-
+<t tx="ekr.20110610122533.3404">c.gotoCommands.show_results(
+    found=False, p=p, n=3, n2=3, lines=['a', 'b'])
 </t>
 <t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-
 c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-</t>
-<t tx="ekr.20110610122533.3406"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
-
-    fn = '../test/at-auto-unit-test.py'
-    root = g.findNodeAnywhere(c,'@auto %s' % (fn))
-    assert root,'no root'
-    
-    child1 = root.firstChild()
-    assert child1,'no child1'
-    grand11 = child1.firstChild()
-    assert grand11,'no grand11'
-    grand12 = grand11.next()
-    assert grand12,'no grand12'
-    
-    child2 = child1.next()
-    assert child2,'no child2'
-    grand21 = child2.firstChild()
-    assert grand21,'no grand21'
-    grand22 = grand21.next()
-    assert grand22,'no grand22'
-    
-    def oops(found,p2,node,n,n2):
-        result = [' ']
-        result.append('goto-global-line test failed at line %s' % (n))
-        if not found:
-            result.append('line %s not found',n)
-        else:
-            result.append('got node "%s", expected "%s"' % (p2.h,node.h))
-            result.append('got offset %s, expected %s' % (n2,n))
-        return '\n'.join(result)
-    
-    table = (
-        # Use 1-based numbers externally.
-        # countLines converts to zero-based numbers.
-        (1, child1,  0),
-        (2, grand11, 0),
-        (3, grand11, 1),
-        (4, grand12, 0),
-        (5, grand12, 1),
-        (6, child1,  2),
-        (7, child2,  0),
-        (8, grand21, 0),
-        (9, grand21, 1),
-        (10,grand22, 0),
-        (11,grand22, 1),
-        (12,root,    3),
-    )
-    
-    # Test against actual lines of the file.
-    path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
-    f = open(path,'r') ; s = f.read() ; f.close()
-    lines = g.splitLines(s) # The lines from the file.
-    for n,node,index in table:
-        p2,n2,found = c.gotoCommands.countLines(root,n)
-            # n, the argument to countLines, is 1-based
-            # n2, the returned index into p2.b, is zero-based
-        n -= 1
-            # Convert n to zero-based for the comparisons below.
-        lines2 = g.splitLines(p2.b)
-        if 0:
-            print('%2d %s' % (n,repr(lines[n])))
-        else:
-            ok = lines2[n2].lstrip() == lines[n].lstrip() 
-            if not ok:
-                i = 0
-                for z in lines:
-                    print('%2d %s' % (i,repr(z)))
-                    i += 1
-            if not ok:
-                print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
-                    n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
-            assert ok
+g.app.unitTestDict['restoreSelectedNode'] = False
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
@@ -1315,25 +1127,6 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20111212142649.3971">import sys
-# g.openWithFileName *always* opens the file.
-if g.isPython3 and sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    pass
-else:
-    c.selectPosition(p)
-    c.copyOutline()
-    try:
-        p2 = c.pasteOutline()
-        assert p2
-        assert not p2.isCloned()
-    finally:
-        if p2: p2.doDelete()
-        c.redraw(p)
-</t>
-<t tx="ekr.20111212142649.3972"># child text.
-</t>
 <t tx="ekr.20111213122041.3930">@language python
 @tabwidth -4
 
@@ -1634,5 +1427,46 @@ char t
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150625052701.1">gnx: ekr.20080904084223.1
+</t>
+<t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
+</t>
+<t tx="ekr.20150625101047.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if not g.app.isExternalUnitTest:
+    trace = False
+    root = p.parent().parent()
+    # h = '@auto unittest/at-auto-line-number-test.py'
+    h = '@auto ../test/at-auto-unit-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(25):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 21, n
+            if trace: print('not found: %s' % n)
+            break
+</t>
+<t tx="ekr.20150625101430.2">gnx: ekr.20150625100232.10
+unl: at_auto_child
+</t>
+<t tx="ekr.20150625101616.1">gnx: ekr.20150625100232.1
+unl: class child1
+gnx: ekr.20150625100232.2
+unl: class child1--&gt;child1_method1
+gnx: ekr.20150625100232.3
+unl: class child1--&gt;child1_method2
+gnx: ekr.20150625100232.4
+unl: class child2
+gnx: ekr.20150625100232.5
+unl: class child2--&gt;child2_method1
+gnx: ekr.20150625100232.6
+unl: class child2--&gt;child2_method2
+</t>
 </tnodes>
 </leo_file>

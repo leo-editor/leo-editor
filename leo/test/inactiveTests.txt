@@ -37,6 +37,24 @@ if not g.app.isExternalUnitTest:
     # It's dangerous to do the write, but this does test the bug fix.
     c.atFileCommands.clearAllOrphanBits(p2)
     assert p2.isOrphan(),'not an orphan after calling at.clearAllOrphanBits'
+#@+node:ekr.20150529183247.1: ** @@test ptb.comment_leo_lines & ptb.uncomment_leo_lines
+import leo.core.leoBeautify as leoBeautify
+for p in p.children():
+    b = leoBeautify.PythonTokenBeautifier(c)
+    s1 = p.b
+    comment,s = b.comment_leo_lines(p)
+    s2 = b.uncomment_leo_lines(comment,p,s)
+    assert s1 == s2,('\ns...\n%s\ns2...\n%s' % (s,s2))
+#@+node:ekr.20150529183259.1: *3* indented docstring
+def f ():
+    pass
+@ Line 1
+    Line 2
+#@+node:ekr.20150529184545.1: *3* indented docstring2
+def f(): 
+    pass
+@ The following could be added to the 'else' clause::
+    # Accumulate everything else.
 #@+node:ekr.20150214063940.11: ** @ignore @shadow tests
 #@+node:ekr.20111210175541.3957: *3* @@test at.readOneAtShadowNode retains @shadow links clones
 # Important: the child of this node must be a clone of
@@ -9425,6 +9443,84 @@ d.replace('a',[8,9,10])
 for s in sorted(d.keys()):
     print(s,d.get(s,[]))
 #@+node:ekr.20111107113442.3849: ** @ignore unused tests
+#@+node:ekr.20111112193817.3908: *3* @@test delete-body-editor 3 times
+if 0:
+    # This works, but the label sticks, presumably because of a race condition.
+    # Therefore, this is best left as a mini-test.
+
+    w = c.frame.body
+    for i in range(4):
+        print(i)
+        w.addEditor()
+        w.deleteEditor()
+#@+node:ekr.20100225094004.5405: *3* @@test loading .leo file with @file nodes
+# test/at-file-test.leo contains tnodeList.
+# test/at-file-test.py contains file-like sentinels.
+g.app.unitTestDict={}
+fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-file-test.leo')
+
+try:
+    c2 = g.openWithFileName(fn,c)
+    assert c2
+    assert c2.changed,'not changed'
+    p2 = g.findNodeAnywhere(c2,'@file at-file-test.py')
+    assert p2,'no p2'
+    assert p2.isDirty(),'not dirty'
+    assert g.app.unitTestDict.get('read-convert'),'not converted'
+    ok = True
+finally:
+    if True: # and ok:
+        # Close the frame without prompt.
+        g.app.destroyWindow(c2.frame)
+        c.setLog()
+        c.bodyWantsFocus()
+#@+node:ekr.20061104172236.23: *3* @@test tkBody.onClick
+w = c.frame.body.bodyCtrl
+y = 10
+for x in range(0,100,10):
+    event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
+    c.frame.body.onClick(event)
+#@+node:ekr.20051107115231.25: *3* @@test typing in headline recomputes width
+# getWidth no longer exists.
+k = c.keyHandler
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    w.setSelectionRange('end','end')
+    n = w.getWidth()
+    g.app.gui.event_generate(c,'X','Shift+X',w)
+    g.app.gui.event_generate(c,'Y','Shift+Y',w)
+    g.app.gui.event_generate(c,'Z','Shift+Z',w)
+    g.app.gui.event_generate(c,'\n','Return',w)
+    w.update()
+    assert w, 'fail 2'
+   
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
+#@+node:ekr.20061008162912: *3* @@test write .leo file with @ignore node
+assert p.firstChild(), 'no child node'
+assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
+ok = c.fileCommands.write_Leo_file(
+    'file-name',outlineOnlyFlag=True,toString=True,toOPML=False)
+assert ok, 'error writing file'
+count = 0
+s = g.app.write_Leo_file_string
+for line in g.splitLines(s):
+    if line.find('@ignore') != -1:
+        count += 1
+assert count >=1, "not enough @ignore's in written file: count: %s, lines:\n%s" % (count,s)
+#@+node:ekr.20061008162912.1: *4* child
+@ignore # Test that this node gets written.
 #@+node:ekr.20101021205258.6013: *3* general file stuff
 #@+node:ekr.20100204153116.5369: *4* @@test raw file copy
 import tempfile
@@ -9632,84 +9728,136 @@ assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
 assert i==expected,'expected %s, got %s %s' % (
     expected,i,repr(s[i:]))
-#@+node:ekr.20100225094004.5405: *3* @@test loading .leo file with @file nodes
-# test/at-file-test.leo contains tnodeList.
-# test/at-file-test.py contains file-like sentinels.
-g.app.unitTestDict={}
-fn = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','at-file-test.leo')
+#@+node:ekr.20110610122533.3388: *3* Old Tests with @auto as the root
+#@+node:ekr.20110610122533.3389: *4* @test goto-line-number @auto 1
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    root = p.parent().parent()
+    h = '@auto unittest/at-auto-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no @auto node'
+    p, n, found = c.gotoCommands.find_file_line(1, target)
+    assert found, 'not found'
+    assert n == 1, 'n: %s' % (n)
+    assert p.h == 'at_auto_child', p.h
+#@+node:ekr.20110610122533.3390: *4* @test goto-global-line @auto 2
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root = g.findNodeAnywhere(c, h)
+    assert root, 'no root'
+    p, n, found = c.gotoCommands.find_file_line(20, root)
+    assert not found, 'not found'
+#@+node:ekr.20110610122533.3391: *4* @test goto-global-line @auto 3
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root1 = g.findNodeAnywhere(c, h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    fileName, isScript, lines, n, root = c.gotoCommands.setup_file(n=3, p=root1)
+    assert fileName == h[6:], 'fileName: %s' % (fileName)
+    assert root == root1, 'root: %s, root1: %s' % (root and root.h, root1 and root1.h)
+    if 0:
+        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
+            root and root.h, isRaw, n, len(lines)))
+#@+node:ekr.20110610122533.3392: *4* @test goto-global-line @auto 4
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    h = '@auto unittest/at-auto-line-number-test.py'
+    root1 = g.findNodeAnywhere(c, h)
+    assert root1
+    assert root1.isAnyAtFileNode()
+    scriptData = {'p': root1.copy(), 'lines': ['a', 'b', 'c']}
+    fileName, lines2, p2, root2 = c.gotoCommands.setup_script(scriptData)
+    assert fileName == h[6:], 'fileName'
+    assert lines2 == scriptData.get('lines'), 'lines'
+    assert p2 == root1, 'p'
+    assert root2 == root1, 'root'
+    if 0:
+        print('root:%s, n:%s, len(lines): %s' % (
+            root and root.h, n, len(lines)))
+#@+node:ekr.20110610122533.3406: *4* @test goto-global-line @auto 5
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    fn = '../test/at-auto-unit-test.py'
+    root = g.findNodeAnywhere(c, '@auto %s' % (fn))
+    assert root, 'no root'
+    child1 = root.firstChild()
+    assert child1, 'no child1'
+    grand11 = child1.firstChild()
+    assert grand11, 'no grand11'
+    grand12 = grand11.next()
+    assert grand12, 'no grand12'
+    child2 = child1.next()
+    assert child2, 'no child2'
+    grand21 = child2.firstChild()
+    assert grand21, 'no grand21'
+    grand22 = grand21.next()
+    assert grand22, 'no grand22'
 
-try:
-    c2 = g.openWithFileName(fn,c)
-    assert c2
-    assert c2.changed,'not changed'
-    p2 = g.findNodeAnywhere(c2,'@file at-file-test.py')
-    assert p2,'no p2'
-    assert p2.isDirty(),'not dirty'
-    assert g.app.unitTestDict.get('read-convert'),'not converted'
-    ok = True
-finally:
-    if True: # and ok:
-        # Close the frame without prompt.
-        g.app.destroyWindow(c2.frame)
-        c.setLog()
-        c.bodyWantsFocus()
-#@+node:ekr.20061008162912: *3* @@test write .leo file with @ignore node
-assert p.firstChild(), 'no child node'
-assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
-ok = c.fileCommands.write_Leo_file(
-    'file-name',outlineOnlyFlag=True,toString=True,toOPML=False)
-assert ok, 'error writing file'
-count = 0
-s = g.app.write_Leo_file_string
-for line in g.splitLines(s):
-    if line.find('@ignore') != -1:
-        count += 1
-assert count >=1, "not enough @ignore's in written file: count: %s, lines:\n%s" % (count,s)
-#@+node:ekr.20061008162912.1: *4* child
-@ignore # Test that this node gets written.
-#@+node:ekr.20111112193817.3908: *3* @@test delete-body-editor 3 times
-if 0:
-    # This works, but the label sticks, presumably because of a race condition.
-    # Therefore, this is best left as a mini-test.
+    def oops(found, p2, node, n, n2):
+        result = [' ']
+        result.append('goto-global-line test failed at line %s' % (n))
+        if not found:
+            result.append('line %s not found', n)
+        else:
+            result.append('got node "%s", expected "%s"' % (p2.h, node.h))
+            result.append('got offset %s, expected %s' % (n2, n))
+        return '\n'.join(result)
 
-    w = c.frame.body
-    for i in range(4):
-        print(i)
-        w.addEditor()
-        w.deleteEditor()
-#@+node:ekr.20051107115231.25: *3* @@test typing in headline recomputes width
-# getWidth no longer exists.
-k = c.keyHandler
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-try:
-    assert w
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
-    w.setSelectionRange('end','end')
-    n = w.getWidth()
-    g.app.gui.event_generate(c,'X','Shift+X',w)
-    g.app.gui.event_generate(c,'Y','Shift+Y',w)
-    g.app.gui.event_generate(c,'Z','Shift+Z',w)
-    g.app.gui.event_generate(c,'\n','Return',w)
-    w.update()
-    assert w, 'fail 2'
-   
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-#@+node:ekr.20061104172236.23: *3* @@test tkBody.onClick
-w = c.frame.body.bodyCtrl
-y = 10
-for x in range(0,100,10):
-    event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
-    c.frame.body.onClick(event)
+    table = (
+        # Use 1-based numbers externally.
+        # find_file_line converts to zero-based numbers.
+        (1, child1, 0),
+        (2, grand11, 0),
+        (3, grand11, 1),
+        (4, grand12, 0),
+        (5, grand12, 1),
+        (6, child1, 2),
+        (7, child2, 0),
+        (8, grand21, 0),
+        (9, grand21, 1),
+        (10, grand22, 0),
+        (11, grand22, 1),
+        (12, root, 3),
+    )
+    # Test against actual lines of the file.
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', fn)
+    f = open(path, 'r'); s = f.read(); f.close()
+    lines = g.splitLines(s) # The lines from the file.
+    for n, node, index in table:
+        p2, n2, found = c.gotoCommands.find_file_line(n, root)
+            # n, the argument to find_file_line, is 1-based
+            # n2, the returned index into p2.b, is zero-based
+        n -= 1
+            # Convert n to zero-based for the comparisons below.
+        lines2 = g.splitLines(p2.b)
+        if 0:
+            print('%2d %s' % (n, repr(lines[n])))
+        else:
+            ok = lines2[n2].lstrip() == lines[n].lstrip()
+            if not ok:
+                i = 0
+                for z in lines:
+                    print('%2d %s' % (i, repr(z)))
+                    i += 1
+            if not ok:
+                print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
+                    n, n2, p2.h, repr(lines2[n2].lstrip()), repr(lines[n].lstrip())))
+            assert ok
+#@+node:ekr.20110610122533.3401: *4* @test GoToLineNumber.find_root 1
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    root = p.parent().parent()
+    h = '@auto unittest/at-auto-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    child = target.firstChild()
+    assert child.h == 'at_auto_child', 'child.h'
+    p, found = c.gotoCommands.find_root(child)
+    assert p == target, 'p' #p and p.h
+    assert found, 'not found'
 #@+node:ekr.20100208230953.5383: ** Cache tests
 #@+node:ekr.20100208095817.5387: *3* @@test leoCache
 # Disabled this test because it's best to open this file without caching.
@@ -9853,23 +10001,5 @@ for i in range(len(aList)):
         total += 1
 
 g.es('"%s": total tests: %s' % (p.h,total))
-#@+node:ekr.20150529183247.1: ** @@test ptb.comment_leo_lines & ptb.uncomment_leo_lines
-import leo.core.leoBeautify as leoBeautify
-for p in p.children():
-    b = leoBeautify.PythonTokenBeautifier(c)
-    s1 = p.b
-    comment,s = b.comment_leo_lines(p)
-    s2 = b.uncomment_leo_lines(comment,p,s)
-    assert s1 == s2,('\ns...\n%s\ns2...\n%s' % (s,s2))
-#@+node:ekr.20150529183259.1: *3* indented docstring
-def f ():
-    pass
-@ Line 1
-    Line 2
-#@+node:ekr.20150529184545.1: *3* indented docstring2
-def f(): 
-    pass
-@ The following could be added to the 'else' clause::
-    # Accumulate everything else.
 #@-all
 #@-leo

@@ -85,11 +85,13 @@ Font setting overridden by new workbook
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
 .. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+
+Done: When running scripts, Leo now automatically selects lines that generate exceptions.
 .. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 

@@ -7750,8 +7750,8 @@ is the  sentence.  And
 this is the last sentence.
 #@+node:ekr.20110610122533.3369: *5* goto-global-line tests
 #@+node:ekr.20100212072149.5341: *6* @test c.goToScriptLineNumber
-child = g.findNodeInChildren(c,p,'syntax-error')
-assert child,'no child'
+child = g.findNodeInChildren(c, p, 'syntax-error')
+assert child, 'no child'
 try:
     c.goToScriptLineNumber(1, child)
 finally:
@@ -7762,220 +7762,87 @@ finally:
 @language python
 def spam:
     pass
-#@+node:ekr.20110610122533.3388: *6* Tests with @auto as the root
-#@+node:ekr.20110610122533.3389: *7* @test goto-line-number @auto 1
+#@+node:ekr.20110610122533.3394: *6* @test find_gnx @file
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
-    
-    root = p.parent().parent()
-    h = '@auto unittest/at-auto-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no @auto node'
-    p,n,found = c.gotoCommands.countLines(target,2)
-    assert found,'not found'
-    assert n == 1,'n: %s' % (n)
-    assert p.h == 'at_auto_child',p.h
-#@+node:ekr.20110610122533.3390: *7* @test goto-global-line @auto 2
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root = g.findNodeAnywhere(c,h)
-    assert root,'no root'
-    p,n,found = c.gotoCommands.countLines(root,20)
-    assert not found,'not found'
-#@+node:ekr.20110610122533.3391: *7* @test goto-global-line @auto 3
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n=3,p=root1)
-    assert fileName == h[6:],'fileName: %s' % (fileName)
-    assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
-    
-    if 0:
-        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-            root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20110610122533.3392: *7* @test goto-global-line @auto 4
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    h = '@auto unittest/at-auto-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-    fileName,lines2,p2,root2 = c.gotoCommands.setup_script(scriptData)
-    
-    assert fileName == h[6:],'fileName'
-    assert lines2 == scriptData.get('lines'),'lines'
-    assert p2 == root1,'p'
-    assert root2 == root1,'root'
-    
-    if 0:
-        print('root:%s, n:%s, len(lines): %s' % (
-            root and root.h,n,len(lines)))
-#@+node:ekr.20110610122533.3406: *7* @test goto-global-line @auto 5
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
-    fn = '../test/at-auto-unit-test.py'
-    root = g.findNodeAnywhere(c,'@auto %s' % (fn))
-    assert root,'no root'
-    
-    child1 = root.firstChild()
-    assert child1,'no child1'
-    grand11 = child1.firstChild()
-    assert grand11,'no grand11'
-    grand12 = grand11.next()
-    assert grand12,'no grand12'
-    
-    child2 = child1.next()
-    assert child2,'no child2'
-    grand21 = child2.firstChild()
-    assert grand21,'no grand21'
-    grand22 = grand21.next()
-    assert grand22,'no grand22'
-    
-    def oops(found,p2,node,n,n2):
-        result = [' ']
-        result.append('goto-global-line test failed at line %s' % (n))
-        if not found:
-            result.append('line %s not found',n)
-        else:
-            result.append('got node "%s", expected "%s"' % (p2.h,node.h))
-            result.append('got offset %s, expected %s' % (n2,n))
-        return '\n'.join(result)
-    
-    table = (
-        # Use 1-based numbers externally.
-        # countLines converts to zero-based numbers.
-        (1, child1,  0),
-        (2, grand11, 0),
-        (3, grand11, 1),
-        (4, grand12, 0),
-        (5, grand12, 1),
-        (6, child1,  2),
-        (7, child2,  0),
-        (8, grand21, 0),
-        (9, grand21, 1),
-        (10,grand22, 0),
-        (11,grand22, 1),
-        (12,root,    3),
-    )
-    
-    # Test against actual lines of the file.
-    path = g.os_path_finalize_join(g.app.loadDir,'..','test',fn)
-    f = open(path,'r') ; s = f.read() ; f.close()
-    lines = g.splitLines(s) # The lines from the file.
-    for n,node,index in table:
-        p2,n2,found = c.gotoCommands.countLines(root,n)
-            # n, the argument to countLines, is 1-based
-            # n2, the returned index into p2.b, is zero-based
-        n -= 1
-            # Convert n to zero-based for the comparisons below.
-        lines2 = g.splitLines(p2.b)
-        if 0:
-            print('%2d %s' % (n,repr(lines[n])))
-        else:
-            ok = lines2[n2].lstrip() == lines[n].lstrip() 
-            if not ok:
-                i = 0
-                for z in lines:
-                    print('%2d %s' % (i,repr(z)))
-                    i += 1
-            if not ok:
-                print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
-                    n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
-            assert ok
-#@+node:ekr.20110610122533.3401: *7* @test GoToLineNumber.findRoot 1
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-    
-    root = p.parent().parent()
-    h = '@auto unittest/at-auto-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
-    child = target.firstChild()
-    assert child.h == 'at_auto_child','child.h'
-    
-    p,found = c.gotoCommands.findRoot(child)
-    
-    assert p == target,'p' #p and p.h
-    assert found,'not found'
-#@+node:ekr.20110610122533.3393: *6* Tests with @file as the root
-#@+node:ekr.20110610122533.3394: *7* @test goto-global-line @file 1
-# Not valid for external tests: uses @<file> node.
-if not g.app.isExternalUnitTest:
-
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
     gnx = target.v.fileIndex
     assert gnx
-    
-    #gnx = g.app.nodeIndices.toString(target.v.fileIndex)
-    #assert gnx,'no gnx'
-    
     delim = '#'
-    found = c.gotoCommands.findGnx(delim,root,gnx,h)
-    assert found,'not found'
-#@+node:ekr.20110610122533.3395: *7* @test goto-global-line @file 2
+    found = c.gotoCommands.find_gnx(delim, root, gnx, h)
+    assert found, 'not found'
+#@+node:ekr.20150625101047.1: *6* @test file_file_line: @auto
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
-    
+    trace = False
+    root = p.parent().parent()
+    # h = '@auto unittest/at-auto-line-number-test.py'
+    h = '@auto ../test/at-auto-unit-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(25):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 21, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20110610122533.3395: *6* @test file_file_line: @file
+# Not valid for external tests: uses @<file> node.
+if not g.app.isExternalUnitTest:
+    trace = False
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c,h)
-    assert target,'no target'
-    
-    n = 2
-    fileName,isScript,lines,n,root = c.gotoCommands.setup_file(n,p=target)
-    assert fileName == h[6:]
-    # print('lines\n%s' % g.listToString(lines))
-    assert root == target
-    
-    ignoreSentinels = True
-    vnodeName,gnx,offset,delim = c.gotoCommands.findVnode(root,lines,n)
-    
-    assert lines,'no lines'
-    assert offset is not None,repr(offset)
-    assert vnodeName,repr(vnodeName)
-#@+node:ekr.20110610122533.3398: *6* Tests with @nosent as the root
-#@+node:ekr.20110610122533.3399: *7* @test goto-global-line @nosent
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20110610122533.3399: *6* @test find_file_line: @nosent
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
-    
+    trace = False
     h = '@nosent unittest/at-nosent-line-number-test.py'
-    root1 = g.findNodeAnywhere(c,h)
-    assert root1
-    assert root1.isAnyAtFileNode()
-    
-    fileName,isScript,lines,n,root2 = c.gotoCommands.setup_file(n=6,p=root1)
-    assert fileName == h[8:],'fileName'
-    assert root2 == root1
-    
-    if 0:
-        print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-            root and root.h,isRaw,n,len(lines)))
-#@+node:ekr.20110610122533.3404: *6* @test goto_showResults not found
-c.gotoCommands.showResults(
-    found=False,p=p,n=3,n2=3,lines=['a','b'])
-
-
-
-#@+node:ekr.20110610122533.3405: *6* @test zz restore the screen
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    assert root.isAtNoSentFileNode(), root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 3, n
+            break
+#@+node:ekr.20110610122533.3404: *6* @test goto_show_results not found
+c.gotoCommands.show_results(
+    found=False, p=p, n=3, n2=3, lines=['a', 'b'])
+#@+node:ekr.20110610122533.3405: *6* @@test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
-
 c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+g.app.unitTestDict['restoreSelectedNode'] = False
 #@+node:ekr.20081111084046.3: *5* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
