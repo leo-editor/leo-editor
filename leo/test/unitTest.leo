@@ -55,10 +55,10 @@
 <v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625052701.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20150625101430.2"><vh>@gnxs</vh></v>
+<v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20150625101616.1"><vh>@gnxs</vh></v>
+<v t="ekr.20150625132619.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -176,12 +176,11 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20080904084223.1"></v>
 <v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32362e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31312e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d71187573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31362e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32362e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31312e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
@@ -194,10 +193,6 @@
 <v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
 <v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
-<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
-<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -632,7 +627,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -956,35 +951,6 @@ False:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110524120515.3489">c.testManager.runAtFileTest(p)
-</t>
-<t tx="ekr.20110524120515.3490"># before
-
-@raw
-
-@c
-
-&lt;&lt; ref &gt;&gt;
-
-@end_raw
-
-#after
-</t>
-<t tx="ekr.20110524120515.3491">#@+leo-ver=5
-#@+node:#@file
-# before
-
-#@@raw
-
-@c
-
-&lt;&lt; ref &gt;&gt;
-
-#@@end_raw
-
-#after
-#@-leo
-</t>
 <t tx="ekr.20110610122533.3369"></t>
 <t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -994,8 +960,7 @@ if not g.app.isExternalUnitTest:
     assert target, 'no target'
     gnx = target.v.fileIndex
     assert gnx
-    delim = '#'
-    found = c.gotoCommands.find_gnx(delim, root, gnx, h)
+    found = c.gotoCommands.find_gnx(root, gnx, h)
     assert found, 'not found'
 </t>
 <t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
@@ -1448,25 +1413,25 @@ if not g.app.isExternalUnitTest:
         if found:
             if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
         else:
-            assert n == 21, n
+            assert n == 13, n
             if trace: print('not found: %s' % n)
             break
 </t>
-<t tx="ekr.20150625101430.2">gnx: ekr.20150625100232.10
-unl: at_auto_child
-</t>
-<t tx="ekr.20150625101616.1">gnx: ekr.20150625100232.1
+<t tx="ekr.20150625132619.5">gnx: ekr.20150625132552.3
 unl: class child1
-gnx: ekr.20150625100232.2
+gnx: ekr.20150625132552.4
 unl: class child1--&gt;child1_method1
-gnx: ekr.20150625100232.3
+gnx: ekr.20150625132552.5
 unl: class child1--&gt;child1_method2
-gnx: ekr.20150625100232.4
+gnx: ekr.20150625132552.6
 unl: class child2
-gnx: ekr.20150625100232.5
+gnx: ekr.20150625132552.7
 unl: class child2--&gt;child2_method1
-gnx: ekr.20150625100232.6
+gnx: ekr.20150625132552.8
 unl: class child2--&gt;child2_method2
+</t>
+<t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
+unl: at_auto_child
 </t>
 </tnodes>
 </leo_file>

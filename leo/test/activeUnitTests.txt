@@ -7771,8 +7771,7 @@ if not g.app.isExternalUnitTest:
     assert target, 'no target'
     gnx = target.v.fileIndex
     assert gnx
-    delim = '#'
-    found = c.gotoCommands.find_gnx(delim, root, gnx, h)
+    found = c.gotoCommands.find_gnx(root, gnx, h)
     assert found, 'not found'
 #@+node:ekr.20150625101047.1: *6* @test file_file_line: @auto
 # Not valid for external tests: uses @<file> node.
@@ -7792,7 +7791,7 @@ if not g.app.isExternalUnitTest:
         if found:
             if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
         else:
-            assert n == 21, n
+            assert n == 13, n
             if trace: print('not found: %s' % n)
             break
 #@+node:ekr.20110610122533.3395: *6* @test file_file_line: @file

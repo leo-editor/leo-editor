@@ -6,16 +6,6 @@
 import leo.core.leoGlobals as g
 # import os
 #@+others
-#@+node:ekr.20150625050336.1: ** class Found
-class Found(Exception):
-    '''An exception thrown when the target line is found.'''
-
-    def __init__(self, i, p):
-        self.i = i
-        self.p = p
-
-    def __str__(self):
-        return "Found line at %s in %s" % (self.i, self.p.h)
 #@+node:ekr.20150625050355.1: ** class GoToCommands
 class GoToCommands:
     '''A class implementing goto-global-line.'''
@@ -24,7 +14,7 @@ class GoToCommands:
     def __init__(self, c):
         '''Ctor for GoToCommands class.'''
         self.c = c
-    #@+node:ekr.20100216141722.5622: *3* goto.find_file_line (to do)
+    #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
     def find_file_line(self, n, p=None):
         '''
         Place the cursor on the n'th line of an external file.
@@ -38,8 +28,6 @@ class GoToCommands:
         if root:
             # Step 1: Get the lines of external files *with* sentinels,
             # even if the actual external file actually contains no sentinels.
-            delims = [] ####### To do.
-            delim = '#@'
             sentinels = root.isAtFileNode()
             s = self.get_external_file_with_sentinels(root)
             lines = g.splitLines(s)
@@ -49,36 +37,19 @@ class GoToCommands:
             # Step 2: scan the lines for line n.
             if sentinels:
                 # All sentinels count as real lines.
-                gnx, h, offset = self.scan_sentinel_lines(delim, lines, n, root)
+                gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
             else:
                 # Not all sentinels cound as real lines.
-                gnx, h, offset = self.scan_nonsentinel_lines(delim, lines, n, root)
+                gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
             if gnx:
-                p, found = self.find_gnx(delim, p, gnx, h)
+                p, found = self.find_gnx(root, gnx, h)
                 self.show_results(found, p, n, offset, lines)
                 return p, offset, found
             else:
+                self.fail(lines, n, root)
                 return None, -1, False
         else:
             return self.find_script_line(n, p)
-        ### old code
-            # # # fileName, isScript, lines, n, root = self.setup_file(n, p)
-            # # # self.isAtAuto = root and root.isAtAutoNode()
-            # # # isRaw = not root or (
-                # # # root.isAtEditNode() or root.isAtAsisFileNode() or
-                # # # root.isAtAutoNode() or root.isAtNoSentFileNode() or
-                # # # root.isAtCleanNode())
-            # # # ### ignoreSentinels = root and root.isAtNoSentFileNode()
-            # # # if not root:
-                # # # root = c.p
-            # # # if isRaw and not isScript:
-                # # # p, n2, found = self.countLines(root, n)
-                # # # n2 += 1 # Convert to one-based.
-            # # # else:
-                # # # vnodeName, gnx, n2, delim = self.find_vnode(root, lines, n)
-                # # # p, found = self.find_gnx(delim, root, gnx, vnodeName)
-            # # # self.show_results(found, p or root, n, n2, lines)
-            # # # return found
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n, root):
         '''
@@ -95,16 +66,16 @@ class GoToCommands:
             aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
             g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
         # Script lines now *do* have gnx's.
-        delim = '#@'
-        gnx, h, offset = self.scan_sentinel_lines(delim, lines, n, root)
+        gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         if gnx:
-            p, found = self.find_gnx(delim, root, gnx, h)
+            p, found = self.find_gnx(root, gnx, h)
             self.show_results(found, p or root, n, offset, lines)
             return p, offset, found
         else:
+            self.fail(lines, n, root)
             return None, -1, False
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
-    def scan_nonsentinel_lines(self, delim, lines, n, root):
+    def scan_nonsentinel_lines(self, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.  Only lines
@@ -116,24 +87,27 @@ class GoToCommands:
         offset: the offset of line n within the node.
         '''
         trace = False and not g.unitTesting
+        delim1, delim2 = self.get_delims(root)
+        delim = '#@' ###
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
         for s in lines:
             if trace: g.trace(s.rstrip())
-            if s.startswith(delim + '+node'):
+            s2 = s.strip()
+            if s2.startswith(delim + '+node'):
                 offset = 0
                     # The node delim does not appear in the outline.
                 gnx, h = self.get_script_node_info(s)
                 if trace: g.trace('node', gnx, h)
-            elif s.startswith(delim + '+others') or s.startswith(delim + '+<<'):
+            elif s2.startswith(delim + '+others') or s2.startswith(delim + '+<<'):
                 stack.append((gnx, h, offset),)
                 offset += 1
-            elif s.startswith(delim + '-others') or s.startswith(delim + '-<<'):
+            elif s2.startswith(delim + '-others') or s2.startswith(delim + '-<<'):
                 gnx, h, offset = stack.pop()
                 # These do *not* appear in the outline.
-            elif s.startswith(delim + 'verbatim'):
+            elif s2.startswith(delim + 'verbatim'):
                 pass # Only the following line appears in the outline.
-            elif s.startswith(delim):
+            elif s2.startswith(delim):
                 pass # Ignore all other sentinel lines.
             else:
                 # All other lines, including Leo directives, do appear in the outline.
@@ -147,7 +121,7 @@ class GoToCommands:
         if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
-    def scan_sentinel_lines(self, delim, lines, n, root):
+    def scan_sentinel_lines(self, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.
@@ -158,19 +132,22 @@ class GoToCommands:
         offset: the offset of line n within the node.
         '''
         trace = False and not g.unitTesting
+        delim1, delim2 = self.get_delims(root)
+        delim = '#@' ### To be removed.
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
         if trace: g.trace('=====', n)
         for i, s in enumerate(lines):
             if trace: g.trace(s.rstrip())
-            if s.startswith(delim + '+node'):
+            s2 = s.strip()
+            if s2.startswith(delim + '+node'):
                 offset = 0
                 gnx, h = self.get_script_node_info(s)
                 if trace: g.trace('node', gnx, h)
-            elif s.startswith(delim + '+others') or s.startswith(delim + '+<<'):
+            elif s2.startswith(delim + '+others') or s2.startswith(delim + '+<<'):
                 stack.append((gnx, h, offset),)
                 offset += 1
-            elif s.startswith(delim + '-others') or s.startswith(delim + '-<<'):
+            elif s2.startswith(delim + '-others') or s2.startswith(delim + '-<<'):
                 gnx, h, offset = stack.pop()
                 offset += 1
             else:
@@ -183,14 +160,31 @@ class GoToCommands:
         if trace: g.trace('----- gnx', gnx, 'h', h, 'offset', offset)
         return gnx, h, offset
     #@+node:ekr.20150624142449.1: *3* goto.Utils
+    #@+node:ekr.20150625133523.1: *4* goto.fail
+    def fail(self, lines, n, root):
+        '''Select the last line of the last node of root's tree.'''
+        c = self.c
+        p = root.lastNode()
+        w = c.frame.body.wrapper
+        s = w.getAllText()
+        c.redraw(p)
+        if not g.unitTesting:
+            if len(lines) < n:
+                g.warning('only', len(lines), 'lines')
+            else:
+                g.warning('line', n, 'not found')
+        # Put the cursor on the last line of body text.
+        w.setInsertPoint(len(s))
+        c.bodyWantsFocus()
+        w.seeInsertPoint()
     #@+node:ekr.20100216141722.5626: *4* goto.find_gnx
-    def find_gnx(self, delim, root, gnx, vnodeName):
+    def find_gnx(self, root, gnx, vnodeName):
         '''
         Scan root's tree for a node with the given gnx and vnodeName.
         return (p,found)
         '''
         trace = False and not g.unitTesting
-        if delim and gnx:
+        if gnx:
             assert g.isString(gnx)
             gnx = g.toUnicode(gnx)
             for p in root.self_and_subtree():
@@ -224,6 +218,16 @@ class GoToCommands:
                     if fileName:
                         return p2.copy(), fileName
         return None, None
+    #@+node:ekr.20150625123747.1: *4* goto.get_delims
+    def get_delims(self, root):
+        '''Return the deliminters in effect at root.'''
+        c = self.c
+        d = c.scanAllDirectives(root)
+        delims1, delims2, delims3 = d.get('delims')
+        if delims1:
+            return delims1, None
+        else:
+            return delims2, delims3
     #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root):
         '''
@@ -264,6 +268,13 @@ class GoToCommands:
             h = self.remove_level_stars(h).strip()
             # g.trace(gnx, h, s.rstrip())
             return gnx, h
+    #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
+    def is_sentinel(self, delim1, delim2, s):
+        '''Return True if s is a sentinel line with the given delims.'''
+        assert delim1
+        i = s.find(delim1 + '@')
+        j = s.find(delim2 + '@') if delim2 else len(s) - 1
+        return 0 == i < j
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s):
         i = g.skip_ws(s, 0)

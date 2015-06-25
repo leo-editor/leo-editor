@@ -2103,7 +2103,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.resetLabel()
             k.clearState()
             if n.isdigit():
-                c.gotoCommands.goToLineNumber(n=int(n))
+                c.gotoCommands.find_file_line(n=int(n))
     #@+node:ekr.20150514063305.228: *3* gotoLine
     @cmd('goto-line')
     def gotoLine(self, event):
