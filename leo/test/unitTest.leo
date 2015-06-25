@@ -58,7 +58,7 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20150625132619.5"><vh>@gnxs</vh></v>
+<v t="ekr.20150625155953.6"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -180,7 +180,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31362e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32362e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31312e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e32362e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31372e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
@@ -1003,8 +1003,9 @@ if not g.app.isExternalUnitTest:
             assert n == 3, n
             break
 </t>
-<t tx="ekr.20110610122533.3404">c.gotoCommands.show_results(
-    found=False, p=p, n=3, n2=3, lines=['a', 'b'])
+<t tx="ekr.20110610122533.3404">c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
+c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
+
 </t>
 <t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -1417,21 +1418,21 @@ if not g.app.isExternalUnitTest:
             if trace: print('not found: %s' % n)
             break
 </t>
-<t tx="ekr.20150625132619.5">gnx: ekr.20150625132552.3
-unl: class child1
-gnx: ekr.20150625132552.4
-unl: class child1--&gt;child1_method1
-gnx: ekr.20150625132552.5
-unl: class child1--&gt;child1_method2
-gnx: ekr.20150625132552.6
-unl: class child2
-gnx: ekr.20150625132552.7
-unl: class child2--&gt;child2_method1
-gnx: ekr.20150625132552.8
-unl: class child2--&gt;child2_method2
-</t>
 <t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
 unl: at_auto_child
+</t>
+<t tx="ekr.20150625155953.6">gnx: ekr.20150625155946.4
+unl: class child1
+gnx: ekr.20150625155946.5
+unl: class child1--&gt;child1_method1
+gnx: ekr.20150625155946.6
+unl: class child1--&gt;child1_method2
+gnx: ekr.20150625155946.7
+unl: class child2
+gnx: ekr.20150625155946.8
+unl: class child2--&gt;child2_method1
+gnx: ekr.20150625155946.9
+unl: class child2--&gt;child2_method2
 </t>
 </tnodes>
 </leo_file>

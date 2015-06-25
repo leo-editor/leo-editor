@@ -7835,8 +7835,9 @@ if not g.app.isExternalUnitTest:
             assert n == 3, n
             break
 #@+node:ekr.20110610122533.3404: *6* @test goto_show_results not found
-c.gotoCommands.show_results(
-    found=False, p=p, n=3, n2=3, lines=['a', 'b'])
+c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
+c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
+
 #@+node:ekr.20110610122533.3405: *6* @@test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

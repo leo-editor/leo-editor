@@ -41,10 +41,10 @@ class GoToCommands:
             else:
                 # Not all sentinels cound as real lines.
                 gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
-            if gnx:
-                p, found = self.find_gnx(root, gnx, h)
-                self.show_results(found, p, n, offset, lines)
-                return p, offset, found
+            p, found = self.find_gnx(root, gnx, h)
+            if gnx and found:
+                self.success(lines, n, offset, p)
+                return p, offset, True
             else:
                 self.fail(lines, n, root)
                 return None, -1, False
@@ -67,10 +67,10 @@ class GoToCommands:
             g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
-        if gnx:
-            p, found = self.find_gnx(root, gnx, h)
-            self.show_results(found, p or root, n, offset, lines)
-            return p, offset, found
+        p, found = self.find_gnx(root, gnx, h)
+        if gnx and found:
+            self.success(lines, n, offset, p)
+            return p, offset, True
         else:
             self.fail(lines, n, root)
             return None, -1, False
@@ -88,27 +88,27 @@ class GoToCommands:
         '''
         trace = False and not g.unitTesting
         delim1, delim2 = self.get_delims(root)
-        delim = '#@' ###
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
+        if trace: g.trace('=====', delim1, delim2, n)
         for s in lines:
             if trace: g.trace(s.rstrip())
-            s2 = s.strip()
-            if s2.startswith(delim + '+node'):
-                offset = 0
-                    # The node delim does not appear in the outline.
-                gnx, h = self.get_script_node_info(s)
-                if trace: g.trace('node', gnx, h)
-            elif s2.startswith(delim + '+others') or s2.startswith(delim + '+<<'):
-                stack.append((gnx, h, offset),)
-                offset += 1
-            elif s2.startswith(delim + '-others') or s2.startswith(delim + '-<<'):
-                gnx, h, offset = stack.pop()
-                # These do *not* appear in the outline.
-            elif s2.startswith(delim + 'verbatim'):
-                pass # Only the following line appears in the outline.
-            elif s2.startswith(delim):
-                pass # Ignore all other sentinel lines.
+            if self.is_sentinel(delim1, delim2, s):
+                s2 = s.strip()[len(delim1):]
+                if s2.startswith('@+node'):
+                    offset = 0
+                        # The node delim does not appear in the outline.
+                    gnx, h = self.get_script_node_info(s)
+                    if trace: g.trace('node', gnx, h)
+                elif s2.startswith('@+others') or s2.startswith('@+<<'):
+                    stack.append((gnx, h, offset),)
+                    offset += 1
+                elif s2.startswith('@-others') or s2.startswith('@-<<'):
+                    gnx, h, offset = stack.pop()
+                    # These do *not* appear in the outline.
+                else:
+                    # Ignore all other sentinels, including @verbatim.
+                    pass
             else:
                 # All other lines, including Leo directives, do appear in the outline.
                 count += 1
@@ -133,23 +133,25 @@ class GoToCommands:
         '''
         trace = False and not g.unitTesting
         delim1, delim2 = self.get_delims(root)
-        delim = '#@' ### To be removed.
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', n)
+        if trace: g.trace('=====', delim1, delim2, n)
         for i, s in enumerate(lines):
             if trace: g.trace(s.rstrip())
-            s2 = s.strip()
-            if s2.startswith(delim + '+node'):
-                offset = 0
-                gnx, h = self.get_script_node_info(s)
-                if trace: g.trace('node', gnx, h)
-            elif s2.startswith(delim + '+others') or s2.startswith(delim + '+<<'):
-                stack.append((gnx, h, offset),)
-                offset += 1
-            elif s2.startswith(delim + '-others') or s2.startswith(delim + '-<<'):
-                gnx, h, offset = stack.pop()
-                offset += 1
+            if self.is_sentinel(delim1, delim2, s):
+                s2 = s.strip()[len(delim1):]
+                if s2.startswith('@+node'):
+                    offset = 0
+                    gnx, h = self.get_script_node_info(s)
+                    if trace: g.trace('node', gnx, h)
+                elif s2.startswith('@+others') or s2.startswith('@+<<'):
+                    stack.append((gnx, h, offset),)
+                    offset += 1
+                elif s2.startswith('@-others') or s2.startswith('@-<<'):
+                    gnx, h, offset = stack.pop()
+                    offset += 1
+                else:
+                    offset += 1
             else:
                 offset += 1
             if trace: g.trace(i, offset, h, '\n')
@@ -164,9 +166,9 @@ class GoToCommands:
     def fail(self, lines, n, root):
         '''Select the last line of the last node of root's tree.'''
         c = self.c
-        p = root.lastNode()
         w = c.frame.body.wrapper
         s = w.getAllText()
+        p = root.lastNode()
         c.redraw(p)
         if not g.unitTesting:
             if len(lines) < n:
@@ -273,8 +275,11 @@ class GoToCommands:
         '''Return True if s is a sentinel line with the given delims.'''
         assert delim1
         i = s.find(delim1 + '@')
-        j = s.find(delim2 + '@') if delim2 else len(s) - 1
-        return 0 == i < j
+        if delim2:
+            j = s.find(delim2 + '@')
+            return -1 < i < j
+        else:
+            return -1 < i
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s):
         i = g.skip_ws(s, 0)
@@ -291,34 +296,22 @@ class GoToCommands:
         if i < len(s) and s[i] == ' ':
             i += 1
         return s[i:]
-    #@+node:ekr.20100216141722.5638: *4* goto.show_results
-    def show_results(self, found, p, n, n2, lines):
+    #@+node:ekr.20100216141722.5638: *4* goto.success
+    def success(self, lines, n, n2, p):
         '''Place the cursor on line n2 of p.b.'''
         trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.
-        if found:
-            if c.p.isOutsideAnyAtFileTree():
-                p = c.findNodeOutsideAnyAtFileTree(p)
-        else:
-            p = c.p
+        if c.p.isOutsideAnyAtFileTree():
+            p = c.findNodeOutsideAnyAtFileTree(p)
         c.redraw(p)
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()
-        if found:
-            ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
-        else:
-            ins = len(s)
-            if not g.unitTesting:
-                if len(lines) < n:
-                    g.warning('only', len(lines), 'lines')
-                else:
-                    g.warning('line', n, 'not found')
+        ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
         if trace:
             i, j = g.getLine(s, ins)
-            g.trace('found: %5s %2s %2s %15s %s' % (
-                found, n, n2, p.h, repr(s[i: j])))
+            g.trace('%2s %2s %15s %s' % (n, n2, p.h, repr(s[i: j])))
         w.setInsertPoint(ins)
         c.bodyWantsFocus()
         w.seeInsertPoint()
