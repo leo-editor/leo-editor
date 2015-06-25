@@ -1332,11 +1332,11 @@ class LeoFind:
         status = self.getFindResultStatus()
         if pos is None:
             self.restore(data)
-            self.showStatus('not found%s: "%s"' % (status, self.find_text))
+            self.showStatus('not found%s: %s' % (status, self.find_text))
             return False # for vim-mode find commands.
         else:
             self.showSuccess(pos, newpos)
-            self.showStatus('found%s: "%s"' % (status, self.find_text))
+            self.showStatus('found%s: %s' % (status, self.find_text))
             return True # for vim-mode find commands.
     #@+node:ekr.20150622095118.1: *5* newHeadline
     def getFindResultStatus(self):
