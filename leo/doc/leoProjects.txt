@@ -240,13 +240,22 @@ https://github.com/leo-editor/leo-editor/issues/177
 
 Rev a1c8133:
 
-Added 4 new settings in leoSettings.leo#@settings-->Appearance (change these first)-->
-     Qt Gui settings-->Colors-->Status area colors::
-     
-     @color find-found-bg = blue
-     @color find-found-fg = white
-     @color find-not-found-bg = red
-     @color find-not-found-fg = white
+
+Leo now more clearly shows the status of successful or failed searches in the status line. Imo, this is an important addition, especially for failed searches.  You could call this the last part of #177
+
+Without this feedback, a failed search appears to do nothing, and my inevitable response was, "huh?, what just happened?"  The feedback is useful for successful searches, but successful searches change at least the selected text and often also change the selected node, so there is less huh? involved.
+
+By default, Leo reports successful searches with white text on a blue background and failed searches with white text on a red background. These colors work pretty well even for dark themes.
+
+You can choose these colors using the following settings in
+
+    leoSettings.leo#@settings-->Appearance (change these first)-->
+    Qt Gui settings-->Colors-->Status area colors::
+   
+         @color find-found-bg = blue
+         @color find-found-fg = white
+         @color find-not-found-bg = red
+         @color find-not-found-fg = white
      
 find.showStatus now gets proper colors from settings.
      
