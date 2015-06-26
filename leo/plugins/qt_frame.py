@@ -1119,6 +1119,8 @@ class FindTabManager:
     #@+node:ekr.20131117120458.16792: *3* ftm.set_radio_button
     def set_radio_button(self, name):
         '''Set the value of the radio buttons'''
+        c = self.c
+        find = c.findCommands
         d = {
             # Name is not an ivar. Set by find.setFindScope... commands.
             'node-only': self.radio_button_node_only,
@@ -1130,6 +1132,8 @@ class FindTabManager:
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
+        if find.minibuffer_mode:
+            find.showFindOptionsInStatusArea()
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
     #@@nobeautify
 

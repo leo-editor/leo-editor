@@ -50,10 +50,7 @@ https://github.com/leo-editor/leo-editor/issues/194
 .. @+node:ekr.20150626141225.1: *5* Bug 188: Find/Replace All Suboutline only same as Node only
 https://github.com/leo-editor/leo-editor/issues/188
   
-.. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
-https://github.com/leo-editor/leo-editor/issues/186
-.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
-.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
+.. @+node:ekr.20150227040245.10: *5* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
 New thought: do a cfa-flattened if there are multiple defs.
@@ -80,6 +77,9 @@ Consider the following code:
         md5(p)
 
 Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
+.. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
+https://github.com/leo-editor/leo-editor/issues/186
+.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
 .. @+node:ekr.20150626140258.1: *4* minor...
 .. @+node:ekr.20150609104046.1: *5* Bug 190: Disappearing +/- expansion boxes in outline
 @language rest

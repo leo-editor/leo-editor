@@ -1348,11 +1348,15 @@ class LeoFind:
         if self.pattern_match:
             status.append('regex')
         if not self.search_headline:
-            status.append('body only')
+            status.append('body-only')
         elif not self.search_body:
-            status.append('headline only')
+            status.append('headline-only')
         if self.wrapping:
             status.append('wrapping')
+        if self.suboutline_only:
+            status.append('[outline-only]')
+        elif self.node_only:
+            status.append('[node-only]')
         return ' (%s)' % ', '.join(status) if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
@@ -1817,8 +1821,16 @@ class LeoFind:
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )
-        prompt = 'wixbhacf'
+        prompt = 'wixbhacf[esn]'
         result = [option for option, ivar in table if ivar.checkState()]
+        table2 = (
+            ('Suboutline', ftm.radio_button_suboutline_only),
+            ('Node', ftm.radio_button_node_only),
+        )
+        for option, ivar in table2:
+            if ivar.isChecked():
+                result.append('[%s]' % option)
+                break
         c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
     #@+node:ekr.20150619070602.1: *4* find.showStatus
     def showStatus(self, found):
