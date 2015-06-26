@@ -1329,7 +1329,6 @@ class LeoFind:
         else:
             data = self.save()
         pos, newpos = self.findNextMatch()
-        status = self.getFindResultStatus()
         if pos is None:
             self.restore(data)
             self.showStatus(False)
@@ -1827,7 +1826,8 @@ class LeoFind:
         c = self.c
         d = getattr(g.app.gui, 'globalFindDialog', None)
         status = 'found' if found else 'not found'
-        s = '%s: %s' % (status, self.find_text)
+        options = self.getFindResultStatus()
+        s = '%s:%s %s' % (status, options, self.find_text)
         if d:
             top = c.frame.top
             top.find_status_edit.setText(s)
