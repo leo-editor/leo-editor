@@ -98,7 +98,7 @@ class GoToCommands:
                 if s2.startswith('@+node'):
                     offset = 0
                         # The node delim does not appear in the outline.
-                    gnx, h = self.get_script_node_info(s)
+                    gnx, h = self.get_script_node_info(s, delim2)
                     if trace: g.trace('node', gnx, h)
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
@@ -142,7 +142,7 @@ class GoToCommands:
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     offset = 0
-                    gnx, h = self.get_script_node_info(s)
+                    gnx, h = self.get_script_node_info(s, delim2)
                     if trace: g.trace('node', gnx, h)
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
@@ -242,6 +242,7 @@ class GoToCommands:
         if root.isAtAutoNode():
             # We must treat @auto nodes specially because
             # Leo does not write sentinels in the root @auto node.
+            # at.writeOneAtAutoNode handle's all kinds of @auto nodes.
             ok = at.writeOneAtAutoNode(
                 root,
                 toString=True,
@@ -249,15 +250,10 @@ class GoToCommands:
                 trialWrite=False,
                 forceSentinels=True)
             return ok and at.stringOutput or ''
-        ###
-        # elif root.isAsisNode():
-            # return ''
-        # elif root.isAtAutoRstNode():
-            # return ''
         else:
             return g.getScript(c, root, useSelectedText=False)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
-    def get_script_node_info(self, s):
+    def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''
         i = s.find(':', 0)
         j = s.find(':', i + 1)
@@ -268,6 +264,8 @@ class GoToCommands:
             gnx = s[i + 1: j]
             h = s[j + 1:]
             h = self.remove_level_stars(h).strip()
+            if delim2:
+                h = h.rstrip(delim2)
             # g.trace(gnx, h, s.rstrip())
             return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
@@ -276,7 +274,7 @@ class GoToCommands:
         assert delim1
         i = s.find(delim1 + '@')
         if delim2:
-            j = s.find(delim2 + '@')
+            j = s.find(delim2)
             return -1 < i < j
         else:
             return -1 < i

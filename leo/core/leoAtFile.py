@@ -3253,7 +3253,7 @@ class AtFile:
             junk, ext = g.os_path_splitext(fileName)
             writer = at.dispatch(ext, root)
             if writer:
-                writer(root)
+                writer(root, forceSentinels=forceSentinels) # 2015/06/26.
             elif root.isAtAutoRstNode():
                 # An escape hatch: fall back to the theRst writer
                 # if there is no rst writer plugin.
@@ -3284,7 +3284,7 @@ class AtFile:
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
     #@+node:ekr.20140728040812.17995: *7* at.writer_for_at_auto
-    def writer_for_at_auto(self, root):
+    def writer_for_at_auto(self, root, forceSentinels=False):
         '''A factory returning a writer function for the given kind of @auto directive.'''
         at = self
         d = at.atAutoWritersDict
@@ -3292,10 +3292,10 @@ class AtFile:
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
-                def writer_for_at_auto_cb(root):
+                def writer_for_at_auto_cb(root, forceSentinels):
                     # pylint: disable=cell-var-from-loop
                     try:
-                        return aClass(at.c).write(root)
+                        return aClass(at.c).write(root, forceSentinels=forceSentinels)
                     except Exception:
                         g.es_exception()
                         return None
@@ -3303,15 +3303,15 @@ class AtFile:
                 return writer_for_at_auto_cb
         return None
     #@+node:ekr.20140728040812.17997: *7* at.writer_for_ext
-    def writer_for_ext(self, ext):
+    def writer_for_ext(self, ext, forceSentinels=False):
         '''A factory returning a writer function for the given file extension.'''
         at = self
         aClass = at.writersDispatchDict.get(ext)
         if aClass:
 
-            def writer_for_ext_cb(root):
+            def writer_for_ext_cb(root,forceSentinels):
                 try:
-                    return aClass(at.c).write(root)
+                    return aClass(at.c).write(root,forceSentinels=forceSentinels)
                 except Exception:
                     g.es_exception()
                     return None

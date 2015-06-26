@@ -12,11 +12,13 @@ class OtlWriter(basewriter.BaseWriter):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18082: *3* otlw.write
-    def write(self, root):
+    def write(self, root, forceSentinels=False):
         """Write all the *descendants* of an @auto-otl node."""
         for child in root.children():
             n = child.level()
             for p in child.self_and_subtree():
+                if forceSentinels:
+                    self.put_node_sentinel(p, '#')
                 indent = '\t' * (p.level() - n)
                 self.put('%s%s' % (indent, p.h))
                 for s in p.b.splitlines(False):

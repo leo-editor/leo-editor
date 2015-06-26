@@ -26,10 +26,12 @@ class RstWriter(basewriter.BaseWriter):
         i = p.level() - root_level
         return underlines[min(i, len(underlines) - 1)]
     #@+node:ekr.20140726091031.18089: *3* rstw.write
-    def write(self, root):
+    def write(self, root, forceSentinels=False):
         '''Write an @auto tree containing imported rST code.'''
         root_level = root.level()
         for p in root.subtree():
+            if forceSentinels:
+                self.put_node_sentinel(p, '.. ')
             ch = self.underline_char(p, root_level)
             # Put the underlined headline
             self.put(p.h)
