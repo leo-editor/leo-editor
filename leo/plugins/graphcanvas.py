@@ -49,7 +49,6 @@ if not pydot:
         pygraphviz = None
 #@-<< imports >>
 c_db_key = '_graph_canvas_gnx'
-# pylint: disable=maybe-no-member
 #@+others
 #@+node:bob.20110119123023.7393: ** init
 def init ():
@@ -63,22 +62,19 @@ def init ():
     return True
 #@+node:bob.20110121094946.3410: ** colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
-
+    '''Item is a QTreeWidgetItem.'''
     if '_bklnk' in p.v.u:
-
         # f = item.font(0)
         # f.setItalic(True)
         # f.setBold(True)
         # item.setFont(0,f)
         # item.setForeground(0, QtGui.QColor(100, 0, 0))
-        
         if 'color' in p.v.u['_bklnk']:
-            item.setBackgroundColor(0, QtGui.QColor(p.v.u['_bklnk']['color']))
+            item.setBackground(0, QtGui.QColor(p.v.u['_bklnk']['color']))
         if 'tcolor' in p.v.u['_bklnk']:
             item.setForeground(0, QtGui.QColor(p.v.u['_bklnk']['tcolor']))
             f = item.font(0)
             f.setBold(True)
-
     raise leoPlugins.TryNext
 #@+node:bob.20110119123023.7394: ** onCreate
 def onCreate (tag, keys):
