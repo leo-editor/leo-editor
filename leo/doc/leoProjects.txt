@@ -232,6 +232,25 @@ Instead the new themes machinery uses the so-called "fully parameterized" styles
 Yes, the user must fill in all appearance-related settings.  But most users will already have done this, so adjusting the settings for a theme should be straightforward.
 
 4. The "Common to all themes" node contains an "Outline indicators" node that specifies a relative path to outline indicator icons (arrow icons or plus/minus) icons.  The path can be relative to either the users home directory or (as shown in leoSettings.leo) relative to the leo/Icons directory. 
+.. @+node:ekr.20150619075613.1: *4* Leo now shows find status in status line
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/177
+
+Rev a1c8133:
+
+Added 4 new settings in leoSettings.leo#@settings-->Appearance (change these first)-->
+     Qt Gui settings-->Colors-->Status area colors::
+     
+     @color find-found-bg = blue
+     @color find-found-fg = white
+     @color find-not-found-bg = red
+     @color find-not-found-fg = white
+     
+find.showStatus now gets proper colors from settings.
+     
+Changed the signature of QtStatusLineClass.putStatusLine and its helpers.
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
