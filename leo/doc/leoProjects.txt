@@ -232,6 +232,8 @@ Instead the new themes machinery uses the so-called "fully parameterized" styles
 Yes, the user must fill in all appearance-related settings.  But most users will already have done this, so adjusting the settings for a theme should be straightforward.
 
 4. The "Common to all themes" node contains an "Outline indicators" node that specifies a relative path to outline indicator icons (arrow icons or plus/minus) icons.  The path can be relative to either the users home directory or (as shown in leoSettings.leo) relative to the leo/Icons directory. 
+.. @+node:ekr.20150622075706.1: *4* @wrap now honored immediately
+This fixes an annoying hangnail.
 .. @+node:ekr.20150619075613.1: *4* Leo now shows find status in status line
 @language rest
 @wrap
@@ -435,8 +437,6 @@ What I did:
 - Added g.app.already_open_files list.
 - Added calls to new runAlreadyOpenDialog method in c.open and LM.doPostPluginsInit.
 - Rewrote app.checkForOpenFile.
-.. @+node:ekr.20150622075706.1: *4* @wrap now honored immediately
-This fixes an annoying hangnail.
 .. @+node:ekr.20150622070146.1: *4* Fixed bug 198: Find tab 'ignore case' tick box has no effect
 https://github.com/leo-editor/leo-editor/issues/198
 .. @+node:ekr.20150623040812.1: *4* Fixed bug 200: goto-global-line logic is too complex and buggy
@@ -453,6 +453,43 @@ https://github.com/leo-editor/leo-editor/issues/200
 - Added goto.scan_nonsentinel_lines & goto.scan_sentinel_lines.
   These contain the essential algorithms.
 - Added code to force any particular write to use sentinels.
+.. @+node:ekr.20150609082813.1: *4* Investigated Bug 153: Leo acts on some operator input when the Leo window is NOT the top window
+@language rest
+@wrap
+
+Leo acts on some operator input when the Leo window is NOT the top window
+https://github.com/leo-editor/leo-editor/issues/153
+
+This problem is discussed in the Leo-Editor forum thread:
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/3PPObn4JRik
+
+I can't reliably reproduce this problem, so I can't give you a test case that demonstrates it.
+
+The symptom that I first noticed was unexpected, unpredictable changes in what the tree pane showed when I switched back to Leo-Editor after switching away from Leo-Editor by executing open-url.
+
+Sometimes the node selected was unchanged, but it had been scrolled up in the tree pane; and sometimes it had been scrolled all the way out of the tree pane.
+
+Sometimes the node selected had been changed to a sibling node after the node that was selected when I switched away from Leo-Editor.
+
+In all cases, the body pane correctly showed the contents of the currently selected node.
+
+Sometimes an Alt-F4 when a non-Leo-Editor window is the only window showing, causes Leo-Editor to exit or display its "Save changes before exit?" query.
+
+Edward K. Ream currently believes: "The culprit is likely a delayed action (on the order of 0.5 sec) that Leo takes on focus-in events. If the user responds to a focus-in event before that time there will be problems."
+
+My test system:
+
+Xubuntu32 12.04
+Python 2.7.3, PyQt version 4.8.1
+
+The problem has been observed on Leo-Editor commit f6cdb2b. It seems to occur slightly more frequently on more recent commits such as 42a5207.
+
+
+.. @+node:ekr.20150626134708.1: *4* Fixed bug 196: Traceback using graphcanvas.py
+https://github.com/leo-editor/leo-editor/issues/196
+
+The fix was to use setBackground instead of setBackgroundColor.
+No real testing was done.
 .. @+node:ekr.20150620062019.1: *3* Docs
 .. @+node:ekr.20150620062023.1: *4* My git work flow
 Imo, git rivals python as the greatest productivity tool ever devised for programmers.

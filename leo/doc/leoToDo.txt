@@ -32,64 +32,25 @@ brew install --verbose --debug Leo
 .. @+node:ekr.20150609104701.1: *3* Bugs/ Enhancements for 5.2 b1
 @language rest
 @wrap
-.. @+node:ekr.20150609104046.1: *4* Bug 190: Disappearing +/- expansion boxes in outline
-@language rest
-@wrap
 
-https://github.com/leo-editor/leo-editor/issues/190
-Disappearing +/- expansion boxes in outline
-.. @+node:ekr.20150609082813.1: *4* Bug 153: Leo acts on some operator input when the Leo window is NOT the top window
-@language rest
-@wrap
+Most important:
+- find-def
+- fold vr2 into vr
+- Select prev/next from traceback
+.. @+node:ekr.20150626141131.1: *4* Bug 198: Find tab 'ignore case' tick box has no effect 
+Reopened https://github.com/leo-editor/leo-editor/issues/198
+  
+A search for boX , bOx , bOX , BOx or BoX fails. Leo reports not found: "boX", and also immediately switches off the 'ignore case' tick box. So it doesn't cope with mixed capitalisation.
 
-Leo acts on some operator input when the Leo window is NOT the top window
-https://github.com/leo-editor/leo-editor/issues/153
-
-This problem is discussed in the Leo-Editor forum thread:
-https://groups.google.com/forum/?fromgroups#!topic/leo-editor/3PPObn4JRik
-
-I can't reliably reproduce this problem, so I can't give you a test case that demonstrates it.
-
-The symptom that I first noticed was unexpected, unpredictable changes in what the tree pane showed when I switched back to Leo-Editor after switching away from Leo-Editor by executing open-url.
-
-Sometimes the node selected was unchanged, but it had been scrolled up in the tree pane; and sometimes it had been scrolled all the way out of the tree pane.
-
-Sometimes the node selected had been changed to a sibling node after the node that was selected when I switched away from Leo-Editor.
-
-In all cases, the body pane correctly showed the contents of the currently selected node.
-
-Sometimes an Alt-F4 when a non-Leo-Editor window is the only window showing, causes Leo-Editor to exit or display its "Save changes before exit?" query.
-
-Edward K. Ream currently believes: "The culprit is likely a delayed action (on the order of 0.5 sec) that Leo takes on focus-in events. If the user responds to a focus-in event before that time there will be problems."
-
-My test system:
-
-Xubuntu32 12.04
-Python 2.7.3, PyQt version 4.8.1
-
-The problem has been observed on Leo-Editor commit f6cdb2b. It seems to occur slightly more frequently on more recent commits such as 42a5207.
-
-
-.. @+node:ekr.20150609101355.1: *4* Bug 129: Font setting overridden by new workbook
-@language rest
-@wrap
-
-Leo reading CheatSheet settings
-https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
-
-https://github.com/leo-editor/leo-editor/issues/129
-Font setting overridden by new workbook
-
-If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
+If I deselect the 'ignore case' tick box and resume the search, leo switches it back on and continues to 'ignore case'.
+.. @+node:ekr.20150626141042.1: *4* Bug 194: Find Next **button** doesn't highlight body text
+https://github.com/leo-editor/leo-editor/issues/194
+.. @+node:ekr.20150626141225.1: *4* Bug 188: Find/Replace All Suboutline only same as Node only
+https://github.com/leo-editor/leo-editor/issues/188
+  
 .. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-
-Done: When running scripts, Leo now automatically selects lines that generate exceptions.
+.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
 .. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
@@ -117,7 +78,31 @@ Consider the following code:
         md5(p)
 
 Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20150612094107.1: *4* ** Fold vr2 into vr
+.. @+node:ekr.20150626140258.1: *4* minor...
+.. @+node:ekr.20150609104046.1: *5* Bug 190: Disappearing +/- expansion boxes in outline
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/190
+Disappearing +/- expansion boxes in outline
+.. @+node:ekr.20150609101355.1: *5* Bug 129: Font setting overridden by new workbook
+@language rest
+@wrap
+
+Leo reading CheatSheet settings
+https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
+
+https://github.com/leo-editor/leo-editor/issues/129
+Font setting overridden by new workbook
+
+If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+
+Done: When running scripts, Leo now automatically selects lines that generate exceptions.
 .. @+node:ekr.20150609102505.1: *3* Bugs: later, never
 @language rest
 @wrap
