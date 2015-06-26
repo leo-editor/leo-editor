@@ -86,7 +86,7 @@ class StatusLineAPI:
 
     def isEnabled(self): return False
 
-    def put(self, s, color=None): pass
+    def put(self, s, bg=None, fg=None): pass
 
     def setFocus(self): pass
 
@@ -910,8 +910,8 @@ class LeoFrame(object):
 
     getStatusObject = getStatusLine
 
-    def putStatusLine(self, s, color=None):
-        if self.statusLine: self.statusLine.put(s, color)
+    def putStatusLine(self, s, bg=None, fg=None):
+        if self.statusLine: self.statusLine.put(s, bg, fg)
 
     def setFocusStatusLine(self):
         if self.statusLine: self.statusLine.setFocus()
@@ -2192,17 +2192,23 @@ class NullStatusLineClass(object):
         self.c.widgetWantsFocus(self.textWidget)
         self.enabled = True
 
-    def clear(self): self.textWidget.delete(0, 'end')
+    def clear(self):
+        self.textWidget.delete(0, 'end')
 
-    def get(self): return self.textWidget.getAllText()
+    def get(self):
+        return self.textWidget.getAllText()
 
-    def isEnabled(self): return self.enabled
+    def isEnabled(self):
+        return self.enabled
 
-    def put(self, s, color=None): self.textWidget.insert('end', s)
+    def put(self, s, bg=None, fg=None):
+        self.textWidget.insert('end', s)
 
-    def setFocus(self): pass
+    def setFocus(self):
+        pass
 
-    def update(self): pass
+    def update(self):
+        pass
     #@-others
 #@+node:ekr.20031218072017.2233: ** class NullTree (LeoTree)
 class NullTree(LeoTree):

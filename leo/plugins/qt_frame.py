@@ -2142,14 +2142,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def get(self):
             return self.textWidget2.text()
 
-        def put(self, s, color=None):
-            self.put_helper(s, color, self.textWidget2)
+        def put(self, s, bg=None, fg=None):
+            self.put_helper(s, self.textWidget2, bg, fg)
 
-        def put1(self, s, color=None):
-            self.put_helper(s, color, self.textWidget1)
+        def put1(self, s, bg=None, fg=None):
+            self.put_helper(s, self.textWidget1, bg, fg)
 
-        def put_helper(self, s, color, w):
+        def put_helper(self, s, w, bg=None, fg=None):
             # At present, the color argument is not honored.
+            if bg or fg:
+                bg = bg or 'blue'
+                fg = fg or 'white'
+                w.setStyleSheet('QLineEdit {background: %s; color: %s; }' % (bg, fg))
+            else:
+                w.setStyleSheet('')
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
         def update(self):

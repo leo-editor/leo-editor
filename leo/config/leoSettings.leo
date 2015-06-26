@@ -207,6 +207,12 @@
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
+<v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
+<v t="ekr.20150626060718.1"><vh>@color find-found-bg = blue</vh></v>
+<v t="ekr.20150626060718.2"><vh>@color find-found-fg = white</vh></v>
+<v t="ekr.20150626060719.1"><vh>@color find-not-found-bg = red</vh></v>
+<v t="ekr.20150626060837.1"><vh>@color find-not-fouind-fg = white</vh></v>
+</v>
 <v t="ekr.20140915194122.23447"><vh>Widget colors (simple widgets)</vh>
 <v t="ekr.20140922124047.19517"><vh>@color frame-bg = white</vh></v>
 <v t="ekr.20140912075503.19271"><vh>@color stacked-widget-border-color = white</vh></v>
@@ -9939,7 +9945,11 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19342">10pt</t>
 <t tx="ekr.20140912075503.19343">@font-weight</t>
 <t tx="ekr.20140912075503.19344"> @font-style</t>
-<t tx="ekr.20140912075503.19345"></t>
+<t tx="ekr.20140912075503.19345">found_bg = c.config.getColor('find-found-bg') or 'blue'
+found_fg = c.config.getColor('find-found-fg') or 'white'
+
+not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
+not_found_fg = c.config.getColor('find-not-found-fg') or 'white'</t>
 <t tx="ekr.20140912075503.19346"></t>
 <t tx="ekr.20140912075503.19347"></t>
 <t tx="ekr.20140912075503.19348"></t>
@@ -10730,6 +10740,11 @@ To enable:
 - Copy to myLeoSettings.leo.
 - Remove the @ignore.
 - Specify the settings used in the stylesheet.</t>
+<t tx="ekr.20150626060718.1"></t>
+<t tx="ekr.20150626060718.2"></t>
+<t tx="ekr.20150626060719.1"></t>
+<t tx="ekr.20150626060837.1"></t>
+<t tx="ekr.20150626061905.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -1051,7 +1051,7 @@ class LeoFind:
         sep = '+' if head and body else ''
         frame.clearStatusLine()
         s = '%s%s%s %s  ' % (head, sep, body, scope)
-        frame.putStatusLine(s, color='blue')
+        frame.putStatusLine(s, bg='blue')
         # Set the type field.
         regex = self.pattern_match
         if regex: z.append('regex')
@@ -1332,13 +1332,13 @@ class LeoFind:
         status = self.getFindResultStatus()
         if pos is None:
             self.restore(data)
-            self.showStatus('not found%s: %s' % (status, self.find_text))
+            self.showStatus(False)
             return False # for vim-mode find commands.
         else:
             self.showSuccess(pos, newpos)
-            self.showStatus('found%s: %s' % (status, self.find_text))
+            self.showStatus(True)
             return True # for vim-mode find commands.
-    #@+node:ekr.20150622095118.1: *5* newHeadline
+    #@+node:ekr.20150622095118.1: *5* find.getFindResultStatus
     def getFindResultStatus(self):
         '''Return the status to be shown in the status line after a find command completes.'''
         status = []
@@ -1822,14 +1822,23 @@ class LeoFind:
         result = [option for option, ivar in table if ivar.checkState()]
         c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
     #@+node:ekr.20150619070602.1: *4* find.showStatus
-    def showStatus(self, s):
+    def showStatus(self, found):
         '''Show the find status the Find dialog, if present, and the status line.'''
         c = self.c
         d = getattr(g.app.gui, 'globalFindDialog', None)
+        status = 'found' if found else 'not found'
+        s = '%s: %s' % (status, self.find_text)
         if d:
             top = c.frame.top
             top.find_status_edit.setText(s)
-        c.frame.putStatusLine(s, color='blue')
+        # Set colors.
+        found_bg = c.config.getColor('find-found-bg') or 'blue'
+        not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
+        found_fg = c.config.getColor('find-found-fg') or 'white'
+        not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
+        bg = found_bg if found else not_found_bg
+        fg = found_fg if found else not_found_fg
+        c.frame.putStatusLine(s, bg=bg, fg=fg)
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs(self, forward=False, regexp=False, word=False):
         '''
