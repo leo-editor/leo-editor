@@ -3563,30 +3563,39 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i1, i2)
     #@+node:ekr.20150514063305.302: *3* extend-to-word
     @cmd('extend-to-word')
-    def extendToWord(self, event, direction='forward', select=True):
+    def extendToWord(self, event, select=True):
         '''Compute the word at the cursor. Select it if select arg is True.'''
         w = self.editWidget(event)
         if not w:
             return 0, 0
         s = w.getAllText()
         n = len(s)
-        i = w.getInsertPoint()
-        if direction == 'forward':
-            while i < n and not g.isWordChar(s[i]):
+        i = i1 = w.getInsertPoint()
+        # Find a word char on the present line if one isn't at the cursor.
+        if not (0 <= i < n and g.isWordChar(s[i])):
+            # First, look forward
+            while i < n and not g.isWordChar(s[i]) and s[i] != '\n':
                 i += 1
-        else:
-            while 0 <= i < n and not g.isWordChar(s[i]):
+            # Next, look backward.
+            if not (0 <= i < n and g.isWordChar(s[i])):
+                i = i1 - 1 if (i >= n or s[i] == '\n') else i1
+                while 0 <= i and not g.isWordChar(s[i]) and s[i] != '\n':
+                    i -= 1
+        # Make sure s[i] is a word char.
+        if 0 <= i < n and g.isWordChar(s[i]):
+            # Find the start of the word.
+            while 0 <= i < n and g.isWordChar(s[i]):
                 i -= 1
-        while 0 <= i < n and g.isWordChar(s[i]):
-            i -= 1
-        i += 1
-        i1 = i
-        # Move to the end of the word.
-        while 0 <= i < n and g.isWordChar(s[i]):
             i += 1
-        if select:
-            w.setSelectionRange(i1, i)
-        return i1, i
+            i1 = i
+            # Find the end of the word.
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+            if select:
+                w.setSelectionRange(i1, i)
+            return i1, i
+        else:
+            return 0, 0
     #@+node:ekr.20150514063305.303: *3* movePastClose & helper
     @cmd('move-past-close')
     def movePastClose(self, event):
@@ -4760,7 +4769,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         self.beginCommand(w, undoType='transpose-words')
         s = w.getAllText()
-        i1, j1 = self.extendToWord(event, direction='back', select=False)
+        i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1: j1]
         if trace: g.trace(i1, j1, s1)
         if i1 > j1: i1, j1 = j1, i1
@@ -4773,7 +4782,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             ws = s[k + 1: i1]
             if trace: g.trace(repr(ws))
             w.setInsertPoint(k + 1)
-            i2, j2 = self.extendToWord(event, direction='back', select=False)
+            i2, j2 = self.extendToWord(event, select=False)
             s2 = s[i2: j2]
             if trace: g.trace(i2, j2, repr(s2))
             s3 = s[: i2] + s1 + ws + s2 + s[j1:]
@@ -4790,7 +4799,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 ws = s[j1: k]
                 if trace: g.trace(repr(ws))
                 w.setInsertPoint(k + 1)
-                i2, j2 = self.extendToWord(event, direction='forward', select=False)
+                i2, j2 = self.extendToWord(event, select=False)
                 s2 = s[i2: j2]
                 if trace: g.trace(i2, j2, repr(s2))
                 s3 = s[: i1] + s2 + ws + s1 + s[j2:]

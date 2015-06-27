@@ -5808,7 +5808,7 @@ c.testManager.runEditCommandTest(p)
 #@+node:ekr.20081215084144.3: *6* work
 This is the first sentence.  This
 is the second sentence.  And
-this  the last sentence.
+this is the last sentence.
 #@+node:ekr.20081215084144.4: *6* before sel=3.7,3.7
 This is the first sentence.  This
 is the second sentence.  And

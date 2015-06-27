@@ -66,7 +66,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if w:
             self.beginCommand(w, undoType='backward-kill-word')
             c.editCommands.backwardWord(event)
-            self.killWordHelper(event, 'back')
+            self.killWordHelper(event)
 
     @cmd('kill-word')
     def killWord(self, event):
@@ -74,15 +74,15 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if w:
             self.beginCommand(w, undoType='kill-word')
-            self.killWordHelper(event, 'forward')
+            self.killWordHelper(event)
 
-    def killWordHelper(self, event, direction):
+    def killWordHelper(self, event):
         c = self.c
         e = c.editCommands
         w = e.editWidget(event)
         if w:
             # self.killWs(event)
-            e.extendToWord(event, direction)
+            e.extendToWord(event)
             i, j = w.getSelectionRange()
             self.kill(event, i, j, undoType=None)
             c.frame.body.forceFullRecolor()

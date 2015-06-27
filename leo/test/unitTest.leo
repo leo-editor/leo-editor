@@ -196,7 +196,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31352e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31312e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32362e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d71187573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31352e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32362e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
@@ -214,6 +214,17 @@
 <v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
 </v>
+<v t="ekr.20061101121602.214"><vh>@test extend-to-word</vh>
+<v t="ekr.20061101121602.215"><vh>work</vh></v>
+<v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
+<v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
+</v>
+<v t="ekr.20081215084144.2"><vh>@test backward-kill-word</vh>
+<v t="ekr.20081215084144.3"><vh>work</vh></v>
+<v t="ekr.20081215084144.4"><vh>before sel=3.7,3.7</vh></v>
+<v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
+</v>
+<v t="ekr.20150627071833.1"><vh>** There is no test for transpose-words</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -497,6 +508,29 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20061101121602.214">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20061101121602.215">first line
+line 1
+    line_24a a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.216">first line
+line 1
+    line_24a a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.217">first line
+line 1
+    line_24a a
+        line b
+line c
+last line
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -647,7 +681,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -688,6 +722,20 @@ Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080907123324.3">def child():
     pass
+</t>
+<t tx="ekr.20081215084144.2">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20081215084144.3">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.4">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.5">This is the first sentence.  This
+is the second sentence.  And
+this  the last sentence.
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -1559,5 +1607,6 @@ unl: section 1
 gnx: ekr.20150626104446.13
 unl: section 2
 </t>
+<t tx="ekr.20150627071833.1"></t>
 </tnodes>
 </leo_file>
