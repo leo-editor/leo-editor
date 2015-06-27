@@ -801,11 +801,12 @@ if QtWidgets:
         #@-others
 #@+node:ekr.20150403094619.1: ** class LineTextWidget(QFrame) Experimental
 class LineTextWidget(QtWidgets.QFrame):
+    '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
     #@+others
     #@+node:ekr.20150403094706.2: *3* class NumberBar
     class NumberBar(QtWidgets.QWidget):
         #@+others
-        #@+node:ekr.20150403094706.3: *4* __init__
+        #@+node:ekr.20150403094706.3: *4* NumberBar.__init__
         def __init__(self, *args):
             '''Ctor for NumberBar class.'''
             QtWidgets.QWidget.__init__(self, *args)
@@ -814,10 +815,10 @@ class LineTextWidget(QtWidgets.QFrame):
                 # A QTextEdit.
             self.highest_line = 0
                 # The highest line that is currently visibile.
-        #@+node:ekr.20150403094706.4: *4* setTextEdit
+        #@+node:ekr.20150403094706.4: *4* NumberBar.setTextEdit
         def setTextEdit(self, edit):
             self.edit = edit
-        #@+node:ekr.20150403094706.5: *4* update
+        #@+node:ekr.20150403094706.5: *4* NumberBar.update
         def update(self, *args):
             '''
             Updates the number bar to display the current set of numbers.
@@ -828,7 +829,7 @@ class LineTextWidget(QtWidgets.QFrame):
             if self.width() != width:
                 self.setFixedWidth(width)
             QtWidgets.QWidget.update(self, *args)
-        #@+node:ekr.20150403094706.6: *4* paintEvent
+        #@+node:ekr.20150403094706.6: *4* NumberBar.paintEvent
         def paintEvent(self, event):
             '''
             Enhance QFrame.paintEvent.
@@ -857,7 +858,7 @@ class LineTextWidget(QtWidgets.QFrame):
             painter.end()
             QtWidgets.QWidget.paintEvent(self, event)
                 # Propagate the event.
-        #@+node:ekr.20150403094706.7: *4* paintBlock
+        #@+node:ekr.20150403094706.7: *4* NumberBar.paintBlock
         def paintBlock(self, bold, n, painter, position, scroll_y):
             '''Paint n, right justified in the line number field.'''
             if bold: self.setBold(painter, True)
@@ -866,7 +867,7 @@ class LineTextWidget(QtWidgets.QFrame):
             y = round(position.y()) - scroll_y + self.font_metrics.ascent()
             painter.drawText(x, y, s)
             if bold: self.setBold(painter, False)
-        #@+node:ekr.20150403094706.8: *4* setBold
+        #@+node:ekr.20150403094706.8: *4* NumberBar.setBold
         def setBold(self, painter, flag):
             '''Set or clear bold facing in the painter, depending on flag.'''
             font = painter.font()
