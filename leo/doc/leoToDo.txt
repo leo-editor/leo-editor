@@ -41,10 +41,13 @@ Most important:
 @language rest
 @wrap
 
-* cfa should use selected text, just like find does.
+New ideas:
 
-- Find definition: auto-select word if necessary.
-
+1. Provisional state:
+    - find_last_find_pattern.
+    - Only used if selected text matches, otherwise clear all.
+    - find.seen_list: prevents multiple matches: can use Alt-N.
+.. @+node:ekr.20150627121357.1: *5* cfa should used selected text
 .. @+node:ekr.20150227040245.10: *5* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
