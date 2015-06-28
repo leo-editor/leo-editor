@@ -50,6 +50,10 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
             <Alt-X>help-for-python<Enter>
             <a python symbol><Enter>
+            
+        For the command bound to a key, type::
+
+            <Alt-X>help-for-keystroke<Enter><any key>
 
         '''
         #@-<< define rst_s >>
@@ -749,6 +753,28 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)
+    #@+node:ekr.20150628161341.1: ** helpForKeystroke
+    @cmd('help-for-keystroke')
+    def helpForKeystroke(self, event):
+        '''Prompts for any key and prints the bindings for that key.'''
+        c, k = self.c, self.c.k
+        state_name = 'help-for-keystroke'
+        state = k.getState(state_name)
+        if state == 0:
+            k.setLabelBlue('Enter any key: ')
+            k.setState(state_name, 1, self.helpForKeystroke)
+            c.minibufferWantsFocus()
+        else:
+            d = k.bindingsDict
+            k.clearState()
+            result = []
+            for si in d.get(event.stroke, []): # a list of ShortcutInfo objects.
+                pane, cmd = si.pane, si.commandName
+                result.append(cmd if pane == 'all' else '%s: %s' % (pane, cmd))
+            s = '%s: %s' % (event.stroke.s, ','.join(result))
+            k.showStateAndMode()
+            c.frame.putStatusLine(s, bg='blue', fg='white')
+            c.bodyWantsFocus()
     #@+node:ekr.20150514063305.396: ** helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event=None):
