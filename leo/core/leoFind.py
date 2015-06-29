@@ -167,7 +167,7 @@ class LeoFind:
         # Communication betweenfind-def and startSearch
         self.find_def_data = None
             # Saved regular find settings.
-        self.find_def_seen = set()
+        self.find_seen = set()
             # Set of vnodes.
 
         # Ivars containing internal state...
@@ -310,10 +310,19 @@ class LeoFind:
     def findAllCommand(self, event=None):
         self.setup_command()
         self.findAll()
-    #@+node:ekr.20150629084204.1: *4* find.findDef & helpers
+    #@+node:ekr.20150629084204.1: *4* find.findDef, findVar & helpers
     @cmd('find-def')
     def findDef(self, event=None):
-        '''Find the word under the cursor.'''
+        '''Find the def or class under the cursor.'''
+        self.findDefHelper(event, defFlag=True)
+
+    @cmd('find-var')
+    def findVar(self,event=None):
+        '''Find the var under the cursor.'''
+        self.findDefHelper(event, defFlag=False)
+    #@+node:ekr.20150629125733.1: *5* findDefHelper & helpers
+    def findDefHelper(self, event, defFlag):
+        '''Find the definition of the class, def or var under the cursor.'''
         c, find, ftm = self.c, self, self.ftm
         w = c.frame.body.wrapper
         if not w:
@@ -327,23 +336,26 @@ class LeoFind:
         c.selectPosition(p, enableRedrawFlag=True)
         c.bodyWantsFocusNow()
         # Set up the search.
-        prefix = 'class' if word[0].isupper() else 'def'
-        find_pattern = prefix + ' ' + word
+        if defFlag:
+            prefix = 'class' if word[0].isupper() else 'def'
+            find_pattern = prefix + ' ' + word
+        else:
+            find_pattern = word + ' ='
         find.find_text = find_pattern
         ftm.setFindText(find_pattern)
         # Save previous settings.
         find.saveBeforeFindDef(p)
         find.setFindDefOptions(p)
         save_sel = w.getSelectionRange()
-        self.find_def_seen = set()
+        self.find_seen = set()
         found = find.findNext(initFlag=False)
         if found:
-            self.find_def_seen.add(c.p.v)
+            self.find_seen.add(c.p.v)
         else:
             c.bodyWantsFocusNow()
             i, j = save_sel
             w.setSelectionRange(i,j)
-    #@+node:ekr.20150629084611.1: *5* initFindDef
+    #@+node:ekr.20150629084611.1: *6* initFindDef
     def initFindDef(self, event):
         '''Init the find-def command. Return the word to find or None.'''
         c = self.c
@@ -366,14 +378,14 @@ class LeoFind:
             if found:
                 return word[len(tag):].strip()
         return word
-    #@+node:ekr.20150629095633.1: *5* find.saveBeforeFindDef
+    #@+node:ekr.20150629095633.1: *6* find.saveBeforeFindDef
     def saveBeforeFindDef(self, p):
         '''Save the find settings in effect before a find-def command.'''
         if not self.find_def_data:
             self.find_def_data = \
                 self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
                 self.search_body, self.search_headline, self.whole_word
-    #@+node:ekr.20150629100600.1: *5* find.setFindDefOptions
+    #@+node:ekr.20150629100600.1: *6* find.setFindDefOptions
     def setFindDefOptions(self,p):
         '''Set the find options needed for the find-def command.'''
         self.ignore_case = False
@@ -383,7 +395,7 @@ class LeoFind:
         self.search_body = True
         self.search_headline = False
         self.whole_word = True
-    #@+node:ekr.20150629095511.1: *5* find.restoreAfterFindDef
+    #@+node:ekr.20150629095511.1: *6* find.restoreAfterFindDef
     def restoreAfterFindDef(self):
         '''Restore find settings in effect before a find-def command.'''
         g.trace('find_def_data',self.find_def_data)
@@ -456,6 +468,7 @@ class LeoFind:
         # Enhancement #177: Use selected text as the find string.
         if w:
             if w.hasSelection():
+                s = self.previous_find_pattern ### Correct???
                 s2 = w.getSelectedText()
                 # Careful: Do nothing if the previous search string matches, ignoring case.
                 # This prevents an "ignore-case" search from changing the ignore-case switch.
@@ -493,6 +506,7 @@ class LeoFind:
             self.restoreAfterFindDef()
         if w:
             self.preloadFindPattern(event, w)
+        self.find_seen = set()
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
@@ -764,7 +778,7 @@ class LeoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                self.preloadFindPattern(w)
+                self.preloadFindPattern(event, w)
                 self.stateZeroHelper(event, tag, 'Clone Find All: ',
                     self.minibufferCloneFindAll)
         else:
@@ -782,7 +796,7 @@ class LeoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                self.preloadFindPattern(w)
+                self.preloadFindPattern(event, w)
                 self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
                     self.minibufferCloneFindAllFlattened)
         else:
@@ -1674,6 +1688,9 @@ class LeoFind:
         trace = False and not g.unitTesting
         c = self.c
         p = self.p or c.p
+        if self.find_def_data and p.v in self.find_seen:
+            # Don't find defs/vars multiple times.
+            return None, None
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
