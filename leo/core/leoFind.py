@@ -166,6 +166,7 @@ class LeoFind:
         # Ivars containing internal state...
         self.buttonFlag = False
         self.changeAllFlag = False
+        self.def_seen = [] # For find-def command.
         self.findAllFlag = False
         self.in_headline = False
             # True: searching headline text.
@@ -359,6 +360,24 @@ class LeoFind:
     def changeAllCommand(self, event=None):
         self.setup_command()
         self.changeAll()
+    #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
+    def preloadFindPattern(self, w):
+        '''Preload the find pattern from the selected text of widget w.'''
+        c, ftm = self.c, self.ftm
+        # Enhancement #177: Use selected text as the find string.
+        s = self.ftm.getFindText()
+        self.previous_find_pattern = s
+        if w and w.hasSelection():
+            s2 = w.getSelectedText()
+            # Careful: Do nothing if the previous search string matches, ignoring case.
+            # This prevents an "ignore-case" search from changing the ignore-case switch.
+            if s.lower() != s2.lower():
+                ftm.setFindText(s2)
+                if c.config.getBool('auto-set-ignore-case', default=True):
+                    mixed = s2 not in (s.lower(), s.upper())
+                    # g.trace('ignore', not mixed)
+                    self.ftm.set_ignore_case(not mixed)
+            ftm.init_focus()
     #@+node:ekr.20031218072017.3066: *4* find.setup_command
     # Initializes a search when a command is invoked from the menu.
 
@@ -372,22 +391,9 @@ class LeoFind:
     @cmd('start-search')
     def startSearch(self, event):
         c = self.c
-        ftm = self.ftm
         w = self.editWidget(event)
-        # Enhancement #177: Use selected text as the find string.
-        s = self.ftm.getFindText()
-        self.previous_find_pattern = s
-        if w and w.hasSelection():
-            s2 = w.getSelectedText()
-            # Careful: Do nothing if the previous search string matches, ignoring case.
-            # This prevents an "ignore-case" search from changing the ignore-case switch.
-            if s.lower() != s2.lower():
-                ftm.setFindText(s2)
-                if c.config.getBool('auto-set-ignore-case', default=True):
-                    mixed = s2 not in (s.lower(), s.upper())
-                    g.trace('ignore', not mixed)
-                    self.ftm.set_ignore_case(not mixed)
-            ftm.init_focus()
+        if w:
+            self.preloadFindPattern(w)
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
@@ -658,10 +664,10 @@ class LeoFind:
         state = k.getState(tag)
         if state == 0:
             w = self.editWidget(event) # sets self.w
-            if not w: return
-            # self.setupArgs(forward=None,regexp=None,word=None)
-            # Init the pattern from the search pattern.
-            self.stateZeroHelper(event, tag, 'Clone Find All: ', self.minibufferCloneFindAll)
+            if w:
+                self.preloadFindPattern(w)
+                self.stateZeroHelper(event, tag, 'Clone Find All: ',
+                    self.minibufferCloneFindAll)
         else:
             k.clearState()
             k.resetLabel()
@@ -676,11 +682,10 @@ class LeoFind:
         state = k.getState(tag)
         if state == 0:
             w = self.editWidget(event) # sets self.w
-            if not w: return
-            # self.setupArgs(forward=None,regexp=None,word=None)
-            # Init the pattern from the search pattern.
-            self.stateZeroHelper(
-                event, tag, 'Clone Find All Flattened: ', self.minibufferCloneFindAllFlattened)
+            if w:
+                self.preloadFindPattern(w)
+                self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
+                    self.minibufferCloneFindAllFlattened)
         else:
             k.clearState()
             k.resetLabel()
@@ -1360,11 +1365,7 @@ class LeoFind:
         return ' (%s)' % ', '.join(status) if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
-        '''
-        Resume the search where it left off.
-        The caller must call set_first_incremental_search or
-        set_first_batch_search.
-        '''
+        '''Resume the search where it left off.'''
         trace = False and not g.unitTesting
         verbose = False
         c, p = self.c, self.p

@@ -37,31 +37,17 @@ Most important:
 - find-def
 - fold vr2 into vr
 - Select prev/next from traceback
-.. @+node:ekr.20150626111514.1: *4* Find bugs/enhancements
-@language rest
-@wrap
-
-New ideas:
-
-1. Provisional state:
-    - find_last_find_pattern.
-    - Only used if selected text matches, otherwise clear all.
-    - find.seen_list: prevents multiple matches: can use Alt-N.
-.. @+node:ekr.20150627121357.1: *5* cfa should used selected text
-.. @+node:ekr.20150227040245.10: *5* Jump to definition (find-def)
+.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
-New thought: do a cfa-flattened if there are multiple defs.
+- Support ctrl-click.
 
-===== EKR
-The find-def command (with ctrl-click support) would do the hyperlinking.
+Multiple defs, possibilities
 
-Create an auto-completion-like popup if there are multiple possibilities.
-
-===== Terry:
-
-Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
-
+1. Bring up popup.
+2. Do cfa-flattened.
+3. Allow F3/F2 to continue search
+.. @+node:ekr.20150629080954.1: *5* posts
 ===== Matt
 
 Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
@@ -75,13 +61,16 @@ Consider the following code:
         md5(p)
 
 Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-.. @+node:ekr.20150626141042.1: *5* Bug 194: Find Next **button** doesn't highlight body text
-https://github.com/leo-editor/leo-editor/issues/194
+
+===== Terry:
+
+Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
 .. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
 
 See LineTextWidget class
-.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
 .. @+node:ekr.20150626140258.1: *4* minor...
 .. @+node:ekr.20150609104046.1: *5* Bug 190: Disappearing +/- expansion boxes in outline
 @language rest
@@ -100,6 +89,9 @@ https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
+.. @+node:ekr.20150626141042.1: *5* Bug 194: Find Next **button** doesn't highlight body text
+https://github.com/leo-editor/leo-editor/issues/194
+
 .. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
