@@ -2,6 +2,7 @@
 #@+node:ekr.20060123151617: * @file leoFind.py
 '''Leo's gui-independent find classes.'''
 import leo.core.leoGlobals as g
+import keyword
 import re
 import sys
 #@+<< Theory of operation of find/change >>
@@ -162,11 +163,16 @@ class LeoFind:
         self.change_text = ""
         self.radioButtonsChanged = False
             # Set by ftm.radio_button_callback
+            
+        # Communication betweenfind-def and startSearch
+        self.find_def_data = None
+            # Saved regular find settings.
+        self.find_def_seen = set()
+            # Set of vnodes.
 
         # Ivars containing internal state...
         self.buttonFlag = False
         self.changeAllFlag = False
-        self.def_seen = [] # For find-def command.
         self.findAllFlag = False
         self.in_headline = False
             # True: searching headline text.
@@ -304,6 +310,89 @@ class LeoFind:
     def findAllCommand(self, event=None):
         self.setup_command()
         self.findAll()
+    #@+node:ekr.20150629084204.1: *4* find.findDef & helpers
+    @cmd('find-def')
+    def findDef(self, event=None):
+        '''Find the word under the cursor.'''
+        c, find, ftm = self.c, self, self.ftm
+        w = c.frame.body.wrapper
+        if not w:
+            return
+        word = self.initFindDef(event)
+        if not word:
+            return
+        # For the command, always start in the root position.
+        p = c.rootPosition()
+        # Required.
+        c.selectPosition(p, enableRedrawFlag=True)
+        c.bodyWantsFocusNow()
+        # Set up the search.
+        prefix = 'class' if word[0].isupper() else 'def'
+        find_pattern = prefix + ' ' + word
+        find.find_text = find_pattern
+        ftm.setFindText(find_pattern)
+        # Save previous settings.
+        find.saveBeforeFindDef(p)
+        find.setFindDefOptions(p)
+        save_sel = w.getSelectionRange()
+        self.find_def_seen = set()
+        found = find.findNext(initFlag=False)
+        if found:
+            self.find_def_seen.add(c.p.v)
+        else:
+            c.bodyWantsFocusNow()
+            i, j = save_sel
+            w.setSelectionRange(i,j)
+    #@+node:ekr.20150629084611.1: *5* initFindDef
+    def initFindDef(self, event):
+        '''Init the find-def command. Return the word to find or None.'''
+        c = self.c
+        w = c.frame.body.wrapper
+        # First get the word.
+        c.bodyWantsFocusNow()
+        w = c.frame.body.wrapper
+        if not w.hasSelection():
+            c.editCommands.extendToWord(event, select=True)
+        word = w.getSelectedText().strip()
+        if not word:
+            g.es_print('find-def: nothing under cursor', color='red')
+            return None
+        if keyword.iskeyword(word):
+            g.es_print('python keyword:',word, color='red')
+            return None
+        # Return word, stripped of preceding class or def.
+        for tag in ('class ', 'def '):
+            found = word.startswith(tag) and len(word) > len(tag)
+            if found:
+                return word[len(tag):].strip()
+        return word
+    #@+node:ekr.20150629095633.1: *5* find.saveBeforeFindDef
+    def saveBeforeFindDef(self, p):
+        '''Save the find settings in effect before a find-def command.'''
+        if not self.find_def_data:
+            self.find_def_data = \
+                self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
+                self.search_body, self.search_headline, self.whole_word
+    #@+node:ekr.20150629100600.1: *5* find.setFindDefOptions
+    def setFindDefOptions(self,p):
+        '''Set the find options needed for the find-def command.'''
+        self.ignore_case = False
+        self.p = p.copy()
+        self.pattern_match = False
+        self.reverse = False
+        self.search_body = True
+        self.search_headline = False
+        self.whole_word = True
+    #@+node:ekr.20150629095511.1: *5* find.restoreAfterFindDef
+    def restoreAfterFindDef(self):
+        '''Restore find settings in effect before a find-def command.'''
+        g.trace('find_def_data',self.find_def_data)
+        if self.find_def_data:
+            # pylint: disable=unpacking-non-sequence
+            self.ignore_case, p, self.pattern_match, self.reverse, self.search_body, \
+                self.search_headline, self.whole_word = self.find_def_data
+            self.p = p
+        self.find_def_data = None
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
     @cmd('find-next')
     def findNextCommand(self, event=None):
@@ -361,23 +450,31 @@ class LeoFind:
         self.setup_command()
         self.changeAll()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
-    def preloadFindPattern(self, w):
+    def preloadFindPattern(self, event, w):
         '''Preload the find pattern from the selected text of widget w.'''
         c, ftm = self.c, self.ftm
         # Enhancement #177: Use selected text as the find string.
+        if w:
+            if w.hasSelection():
+                s2 = w.getSelectedText()
+                # Careful: Do nothing if the previous search string matches, ignoring case.
+                # This prevents an "ignore-case" search from changing the ignore-case switch.
+                if s.lower() != s2.lower():
+                    ftm.setFindText(s2)
+                    if c.config.getBool('auto-set-ignore-case', default=True):
+                        mixed = s2 not in (s.lower(), s.upper())
+                        # g.trace('ignore', not mixed)
+                        self.ftm.set_ignore_case(not mixed)
+                ftm.init_focus()
+            elif not self.previous_find_pattern:
+                # 2015/06/29: Experimental: extend-to-word if no previous pattern.
+                c.editCommands.extendToWord(event, select=True)
+                s2 = w.getSelectedText()
+                if s2:
+                    self.find_text = s2
+                    ftm.setFindText(s2)
         s = self.ftm.getFindText()
         self.previous_find_pattern = s
-        if w and w.hasSelection():
-            s2 = w.getSelectedText()
-            # Careful: Do nothing if the previous search string matches, ignoring case.
-            # This prevents an "ignore-case" search from changing the ignore-case switch.
-            if s.lower() != s2.lower():
-                ftm.setFindText(s2)
-                if c.config.getBool('auto-set-ignore-case', default=True):
-                    mixed = s2 not in (s.lower(), s.upper())
-                    # g.trace('ignore', not mixed)
-                    self.ftm.set_ignore_case(not mixed)
-            ftm.init_focus()
     #@+node:ekr.20031218072017.3066: *4* find.setup_command
     # Initializes a search when a command is invoked from the menu.
 
@@ -392,8 +489,10 @@ class LeoFind:
     def startSearch(self, event):
         c = self.c
         w = self.editWidget(event)
+        if self.find_def_data:
+            self.restoreAfterFindDef()
         if w:
-            self.preloadFindPattern(w)
+            self.preloadFindPattern(event, w)
         if self.minibuffer_mode:
             self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
