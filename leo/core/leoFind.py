@@ -398,7 +398,7 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find.restoreAfterFindDef
     def restoreAfterFindDef(self):
         '''Restore find settings in effect before a find-def command.'''
-        g.trace('find_def_data',self.find_def_data)
+        # g.trace('find_def_data',self.find_def_data)
         if self.find_def_data:
             # pylint: disable=unpacking-non-sequence
             self.ignore_case, p, self.pattern_match, self.reverse, self.search_body, \
@@ -468,7 +468,7 @@ class LeoFind:
         # Enhancement #177: Use selected text as the find string.
         if w:
             if w.hasSelection():
-                s = self.previous_find_pattern ### Correct???
+                s = self.previous_find_pattern
                 s2 = w.getSelectedText()
                 # Careful: Do nothing if the previous search string matches, ignoring case.
                 # This prevents an "ignore-case" search from changing the ignore-case switch.
@@ -479,8 +479,8 @@ class LeoFind:
                         # g.trace('ignore', not mixed)
                         self.ftm.set_ignore_case(not mixed)
                 ftm.init_focus()
-            elif not self.previous_find_pattern:
-                # 2015/06/29: Experimental: extend-to-word if no previous pattern.
+            else:
+                # 2015/06/29: Experimental: extend-to-word
                 c.editCommands.extendToWord(event, select=True)
                 s2 = w.getSelectedText()
                 if s2:
@@ -502,8 +502,6 @@ class LeoFind:
     def startSearch(self, event):
         c = self.c
         w = self.editWidget(event)
-        if self.find_def_data:
-            self.restoreAfterFindDef()
         if w:
             self.preloadFindPattern(event, w)
         self.find_seen = set()
@@ -986,12 +984,12 @@ class LeoFind:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
-    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions
+    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers
     @cmd('set-search-string')
     def searchWithPresentOptions(self, event, findAllFlag=False, changeAllFlag=False):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
-        k = self.k; tag = 'search-with-present-options'
+        c, k, tag = self.c, self.k, 'search-with-present-options'
         state = k.getState(tag)
         if trace: g.trace('state', state, k.getArgEscapeFlag)
         if state == 0:
@@ -999,17 +997,30 @@ class LeoFind:
             self.changeAllFlag = changeAllFlag
             self.findAllFlag = findAllFlag
             self.ftm.set_entry_focus()
-            # self.setupArgs(forward=None,regexp=None,word=None)
+            escapes = ['\t']
+            escapes.extend(self.findEscapes())
             self.stateZeroHelper(
                 event, tag, 'Search: ', self.searchWithPresentOptions,
-                escapes=['\t']) # The Tab Easter Egg.
+                escapes=escapes) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
-            # Switch to the replace command.
-            if self.findAllFlag: self.changeAllFlag = True
-            self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
-            k.setState('replace-string', 1, self.setReplaceString)
-            if trace: g.trace(k.getState('replace-string'))
-            self.setReplaceString(event=None)
+             # 2015/06/30: Special cases for F2/F3 to the escapes
+            if event.stroke in self.findEscapes():
+                command = self.escapeCommand(event)
+                func = c.commandsDict.get(command)
+                k.clearState()
+                k.resetLabel()
+                k.showStateAndMode()
+                if func:
+                    func(event)
+                else:
+                    return g.trace('unknown command',command)
+            else:
+                # Switch to the replace command.
+                if self.findAllFlag: self.changeAllFlag = True
+                self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
+                k.setState('replace-string', 1, self.setReplaceString)
+                if trace: g.trace(k.getState('replace-string'))
+                self.setReplaceString(event=None)
         else:
             self.updateFindList(k.arg)
             k.clearState()
@@ -1020,6 +1031,28 @@ class LeoFind:
                 self.findAllCommand()
             else:
                 self.generalSearchHelper(k.arg)
+    #@+node:ekr.20150630072025.1: *5* find.findEscapes
+    def findEscapes(self):
+        '''Return the keystrokes corresponding to find-next & find-prev commands.'''
+        d = self.c.k.computeInverseBindingDict()
+        results = []
+        for command in ('find-def', 'find-next', 'find-prev', 'find-var',):
+            aList = d.get(command, [])
+            for data in aList:
+                pane, stroke = data
+                if pane.startswith('all'):
+                    results.append(stroke)
+        return results
+    #@+node:ekr.20150630072552.1: *5* find.escapeCommand
+    def escapeCommand(self, event):
+        '''Return the escaped command to execute.'''
+        d = self.c.k.bindingsDict
+        aList = d.get(event.stroke)
+        for si in aList:
+            if si.stroke == event.stroke:
+                return si.commandName
+        return None
+        
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
         c, k = self.c, self.k
@@ -1686,9 +1719,12 @@ class LeoFind:
         Returns (pos, newpos) or (None,None).
         """
         trace = False and not g.unitTesting
+        trace_s = False
+        trace_fail = False
         c = self.c
         p = self.p or c.p
-        if self.find_def_data and p.v in self.find_seen:
+        ignore_dups = c.config.getBool('find-ignore-duplicates',default=False)
+        if (ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
         w = self.s_ctrl
@@ -1700,24 +1736,24 @@ class LeoFind:
                 # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
                 # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if s:
-            if trace: g.trace('=====', index, repr(s[max(0, index - 10): index + 40]))
+            if trace and trace_s: g.trace('=====', index, repr(s[max(0, index - 10): index + 40]))
         else:
-            if trace: g.trace('returning: no text', p.h)
+            if trace and trace_fail: g.trace('returning: no text', p.h)
             return None, None
         stopindex = 0 if self.reverse else len(s)
         pos, newpos = self.searchHelper(s, index, stopindex, self.find_text)
-        if trace: g.trace('pos,newpos', pos, newpos)
+        # if trace: g.trace('pos,newpos', pos, newpos)
         if self.in_headline and not self.search_headline:
-            if trace: g.trace('not searching headlines')
+            if trace and trace_fail: g.trace('not searching headlines')
             return None, None
         if not self.in_headline and not self.search_body:
-            if trace: g.trace('not searching bodies')
+            if trace and trace_fail: g.trace('not searching bodies')
             return None, None
         if pos == -1:
-            if trace: g.trace('Returning: pos is -1')
+            if trace and trace_fail: g.trace('Returning: pos is -1')
             return None, None
         if self.passedWrapPoint(p, pos, newpos):
-            if trace:
+            if trace and trace_fail:
                 kind = 'reverse ' if self.reverse else ''
                 g.trace("** %swrap done", kind, pos, newpos)
             self.wrapPosition = None # Reset.
@@ -1731,11 +1767,14 @@ class LeoFind:
                 self.in_headline and self.search_headline and
                 index is not None and index in (pos, newpos)
             ):
-                if trace: g.trace('===== stuck in headline')
+                if trace and trace_fail: g.trace('===== stuck in headline')
                 return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
         w.setSelectionRange(pos, newpos, insert=ins)
-        if trace: g.trace('** returns', pos, newpos)
+        if (ignore_dups or self.find_def_data):
+            self.find_seen.add(p.v)
+        if trace and (trace_fail or newpos != -1):
+            g.trace('** returns', pos, newpos, self.find_seen)
         return pos, newpos
     #@+node:ekr.20060526140328: *5* passedWrapPoint
     def passedWrapPoint(self, p, pos, newpos):
@@ -2148,6 +2187,7 @@ class LeoFind:
             c.selectPosition(p)
         else:
             c.selectPosition(c.rootPosition()) # New in Leo 4.5.
+        self.restoreAfterFindDef()
         # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
         if in_headline:
             c.selectPosition(p)
@@ -2157,8 +2197,7 @@ class LeoFind:
                 c.treeWantsFocus()
         else:
             # Looks good and provides clear indication of failure or termination.
-            w.setSelectionRange(insert, insert)
-            w.setInsertPoint(insert)
+            w.setSelectionRange(start, end, insert=insert)
             w.seeInsertPoint()
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save

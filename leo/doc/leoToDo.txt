@@ -32,21 +32,24 @@ brew install --verbose --debug Leo
 .. @+node:ekr.20150609104701.1: *3* Bugs/ Enhancements for 5.2 b1
 @language rest
 @wrap
-.. @+node:ekr.20150227040245.10: *4* Jump to definition (find-def)
+.. @+node:ekr.20150227040245.10: *4* find-def & find-var
+@language rest
+@wrap
+
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
+To do:
 - Support ctrl-click.
+- Prefer matches in @<file> trees.
 
-Multiple defs, possibilities:
-- Best: Allow F3/F2 or find-def to continue search.
+Done:
+- find-def and F3/F2 work together.
+- Skip duplicate clones when in find-def mode.
+- @bool find-ignore-duplicates = False
+
+(Maybe) Multiple defs, other possibilities:
 - Do cfa-flattened. (Only if enabled by @bool find-def-uses-cfa-flattened).
-- Poor: bring up popup.
-
-Support benign/hidden modes:
-- Cleared by Ctrl-F.
-- Set (if different), by find-def.
-
-Optional: only find defs in/outside @<file> trees.
+- Bring up popup.
 .. @+node:ekr.20150629080954.1: *5* posts
 ===== Matt
 
