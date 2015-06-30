@@ -2915,6 +2915,37 @@ class Commands(object):
             clone.doDelete()
             c.setCurrentPosition(p)
             return None
+    #@+node:ekr.20150630152607.1: *6* c.cloneToAtSpot
+    @cmd('clone-to-at-spot')
+    def cloneToAtSpot(self, event=None):
+        '''
+        Create a clone of the selected node and move it to the last @spot node
+        of the outline. Create the @spot node if necessary.
+        '''
+        c = self; u = c.undoer; p = c.p
+        if not p:
+            return None
+        last_spot = None
+        for p2 in c.all_positions():
+            if g.match_word(p2.h, 0, '@spot'):
+                last_spot = p2.copy()
+        if not last_spot:
+            last = c.lastTopLevel()
+            last_spot = last.insertAfter()
+            last_spot.h = '@spot'
+        undoData = c.undoer.beforeCloneNode(p)
+        c.endEditing() # Capture any changes to the headline.
+        clone = p.copy()
+        clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren(), adjust=True)
+        dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        if c.validateOutline():
+            u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
+            c.redraw()
+            c.selectPosition(clone)
+        else:
+            clone.doDelete()
+            c.setCurrentPosition(p)
     #@+node:ekr.20141023154408.5: *6* c.cloneToLastNode
     @cmd('clone-node-to-last-node')
     def cloneToLastNode(self, event=None):
