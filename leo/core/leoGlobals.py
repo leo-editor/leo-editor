@@ -6261,6 +6261,15 @@ def openUrlOnClick(event):
                     g.handleUrl(url, c=c, p=p)
                 g.doHook("@url2", c=c, p=p, v=p)
                 return url
+    # Call find-def is there is a word under the cursor.
+    # lqtb.onMouseUp creates a dummy event that is only a dict.
+    # Create a g.Bunch event so that event.c and event.widget are defined.
+    event = g.Bunch(c=event.get('c'), widget=w)
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if word:
+        c.findCommands.findDef(event)
     return None
 #@-others
 # set g when the import is about to complete.

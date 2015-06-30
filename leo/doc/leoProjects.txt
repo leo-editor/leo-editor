@@ -278,6 +278,7 @@ https://groups.google.com/d/msg/leo-editor/_y1u2Vlm-0I/LoAGSH_HBgsJ
 Done:
 - find-def and F3/F2 work together.
 - @bool find-ignore-duplicates = False
+- Ctrl-click on a word executes find-def.
 
 (Maybe) Multiple defs:
 - Prefer matches in @<file> trees.
