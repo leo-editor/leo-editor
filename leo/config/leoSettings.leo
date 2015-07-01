@@ -155,6 +155,10 @@
 <v t="ekr.20140915194122.23445"><vh>Find tab colors</vh>
 <v t="ekr.20140912075503.19269"><vh>@color find-tab-bg = white</vh></v>
 </v>
+<v t="ekr.20150701073241.1"><vh>Gutter colors</vh>
+<v t="ekr.20150701073252.1"><vh>@color gutter-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20150701073308.1"><vh>@color gutter-fg = black</vh></v>
+</v>
 <v t="ekr.20140912075503.19309"><vh>Log pane colors</vh>
 <v t="ekr.20140912075503.19310"><vh>@color log-fg = black</vh></v>
 <v t="ekr.20140912075503.19311"><vh>@color log-bg = white</vh></v>
@@ -251,6 +255,12 @@
 <v t="ekr.20140912075503.19281"><vh>@string find-font-weight = @font-weight</vh></v>
 <v t="ekr.20140912075503.19278"><vh>@string find-pattern-font-family = @font-family</vh></v>
 </v>
+<v t="ekr.20150701052157.1"><vh>Gutter Fonts</vh>
+<v t="ekr.20150701052212.2"><vh>@string gutter-font-family = @font-family</vh></v>
+<v t="ekr.20150701052212.3"><vh>@string gutter-font-size = @small-font-size</vh></v>
+<v t="ekr.20150701052212.4"><vh>@string gutter-font-style = @font-style</vh></v>
+<v t="ekr.20150701052212.5"><vh>@string gutter-font-weight = @font-weight</vh></v>
+</v>
 <v t="ekr.20140915194122.23429"><vh>Log pane fonts</vh>
 <v t="ekr.20140912075503.19312"><vh>@string log-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19313"><vh>@string log-sel-bg = blue</vh></v>
@@ -300,6 +310,11 @@
 <v t="tbrown.20140514191846.42168"><vh>Focus border styles</vh>
 <v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
 <v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 3px</vh></v>
+</v>
+<v t="ekr.20150701074511.1"><vh>Gutter</vh>
+<v t="ekr.20150701074844.1"><vh>@bool use-gutter = True</vh></v>
+<v t="ekr.20150701074521.1"><vh>@int gutter-w-adjust = 12</vh></v>
+<v t="ekr.20150701074533.1"><vh>@int gutter-y-adjust = 10</vh></v>
 </v>
 <v t="ekr.20140915194122.24258"><vh>Minibuffer styles</vh>
 <v t="ekr.20140912075503.19328"><vh>@string minibuffer-border = 2px</vh></v>
@@ -373,6 +388,7 @@
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
 <v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
+<v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
 <v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
@@ -10748,6 +10764,29 @@ To enable:
 <t tx="ekr.20150626061905.1"></t>
 <t tx="ekr.20150629172742.1">True: Match each cloned node only once.
 False: Match each cloned node for every cloned instance.</t>
+<t tx="ekr.20150701052157.1"></t>
+<t tx="ekr.20150701052212.2"></t>
+<t tx="ekr.20150701052212.3"></t>
+<t tx="ekr.20150701052212.4"></t>
+<t tx="ekr.20150701052212.5"></t>
+<t tx="ekr.20150701073123.1">/* ===== Optional line-number gutter ===== */
+
+QFrame#gutter {
+    background-color:           @gutter-bg;
+    color:                      @gutter-fg;
+    font-family:                @gutter-font-family;
+    font-size:                  @gutter-font-size;
+    font-weight:                @gutter-font-weight;
+    font-style:                 @gutter-font-style;
+}</t>
+<t tx="ekr.20150701073241.1"></t>
+<t tx="ekr.20150701073252.1"></t>
+<t tx="ekr.20150701073308.1"></t>
+<t tx="ekr.20150701074511.1"></t>
+<t tx="ekr.20150701074521.1">The amount of extra width to give the gutter, in pixels</t>
+<t tx="ekr.20150701074533.1">The y offset of the first line of the gutter, in pixels.
+</t>
+<t tx="ekr.20150701074844.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

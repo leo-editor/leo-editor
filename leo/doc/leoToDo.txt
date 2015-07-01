@@ -33,10 +33,6 @@ brew install --verbose --debug Leo
 @language rest
 @wrap
 .. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
-.. @+node:ekr.20150611163439.1: *4* Enhancement 186: Left Gutter Line numbers
-https://github.com/leo-editor/leo-editor/issues/186
-
-See LineTextWidget class
 .. @+node:ekr.20150626140258.1: *4* minor...
 .. @+node:ekr.20150609104046.1: *5* Bug 190: Disappearing +/- expansion boxes in outline
 @language rest

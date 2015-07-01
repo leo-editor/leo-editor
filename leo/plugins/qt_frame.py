@@ -160,18 +160,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createBodyPane(self, parent):
         '''Create the body pane.'''
         # Create widgets.
+        c = self.leo_c
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame',
             hPolicy=QtWidgets.QSizePolicy.Expanding)
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget')
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
-        body = self.createText(page2, 'richTextEdit')
+        body = self.createText(page2, 'richTextEdit') # A LeoQTextBrowser
         # Pack.
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=6)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        vLayout.addWidget(body)
+        if c.config.getBool('use-gutter', default=False):
+            lineWidget = qt_text.LeoLineTextWidget(c, body)
+            vLayout.addWidget(lineWidget) 
+        else:
+            vLayout.addWidget(body) 
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)

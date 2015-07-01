@@ -430,6 +430,40 @@ class QLineEditWrapper(QTextMixin):
                 w.setSelection(i, length)
     # setSelectionRangeHelper = setSelectionRange
     #@-others
+#@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
+class LeoLineTextWidget(QtWidgets.QFrame):
+    '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
+    #@+others
+    #@+node:ekr.20150403094706.9: *3* __init__
+    def __init__(self, c, e, *args):
+        '''Ctor for LineTextWidget.'''
+        QtWidgets.QFrame.__init__(self, *args)
+            # Init the base class.
+        self.c = c
+        self.setFrameStyle(self.StyledPanel | self.Sunken)
+        self.edit = e # A QTextEdit
+        e.setFrameStyle(self.NoFrame)
+        # e.setAcceptRichText(False)
+        self.number_bar = NumberBar(c, e)
+        hbox = QtWidgets.QHBoxLayout(self)
+        hbox.setSpacing(0)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.addWidget(self.number_bar)
+        hbox.addWidget(e)
+        e.installEventFilter(self)
+        e.viewport().installEventFilter(self)
+    #@+node:ekr.20150403094706.10: *3* eventFilter
+    def eventFilter(self, obj, event):
+        '''
+        Update the line numbers for all events on the text edit and the viewport.
+        This is easier than connecting all necessary singals.
+        '''
+        if obj in (self.edit, self.edit.viewport()):
+            self.number_bar.update()
+            return False
+        else:
+            return QtWidgets.QFrame.eventFilter(obj, event)
+    #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
 
@@ -799,114 +833,92 @@ if QtWidgets:
                 return
             QtWidgets.QTextBrowser.wheelEvent(self, event)
         #@-others
-#@+node:ekr.20150403094619.1: ** class LineTextWidget(QFrame) Experimental
-class LineTextWidget(QtWidgets.QFrame):
-    '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
+#@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
+class NumberBar(QtWidgets.QFrame): # Was QWidget.
     #@+others
-    #@+node:ekr.20150403094706.2: *3* class NumberBar
-    class NumberBar(QtWidgets.QWidget):
-        #@+others
-        #@+node:ekr.20150403094706.3: *4* NumberBar.__init__
-        def __init__(self, *args):
-            '''Ctor for NumberBar class.'''
-            QtWidgets.QWidget.__init__(self, *args)
-                # Init the base class.
-            self.edit = None
-                # A QTextEdit.
-            self.highest_line = 0
-                # The highest line that is currently visibile.
-        #@+node:ekr.20150403094706.4: *4* NumberBar.setTextEdit
-        def setTextEdit(self, edit):
-            self.edit = edit
-        #@+node:ekr.20150403094706.5: *4* NumberBar.update
-        def update(self, *args):
-            '''
-            Updates the number bar to display the current set of numbers.
-            Also, adjusts the width of the number bar if necessary.
-            '''
-            # The + 4 is used to compensate for the current line being bold.
-            width = self.fontMetrics().width(str(self.highest_line)) + 4
-            if self.width() != width:
-                self.setFixedWidth(width)
-            QtWidgets.QWidget.update(self, *args)
-        #@+node:ekr.20150403094706.6: *4* NumberBar.paintEvent
-        def paintEvent(self, event):
-            '''
-            Enhance QFrame.paintEvent.
-            Paint all visible text blocks in the editor's document.
-            '''
-            e = self.edit
-            d = e.document()
-            layout = d.documentLayout()
-            # Compute constants.
-            current_block = d.findBlock(e.textCursor().position())
-            scroll_y = e.verticalScrollBar().value()
-            page_bottom = scroll_y + e.viewport().height()
-            # Paint each visible block.
-            painter = QtGui.QPainter(self)
-            block = d.begin()
-            n = 0
-            while block.isValid():
-                n += 1
-                position = layout.blockBoundingRect(block).topLeft()
-                if position.y() > page_bottom:
-                    break # Outside the visible area.
-                bold = block == current_block
-                self.paintBlock(bold, n, painter, position, scroll_y)
-                block = block.next()
-            self.highest_line = n
-            painter.end()
-            QtWidgets.QWidget.paintEvent(self, event)
-                # Propagate the event.
-        #@+node:ekr.20150403094706.7: *4* NumberBar.paintBlock
-        def paintBlock(self, bold, n, painter, position, scroll_y):
-            '''Paint n, right justified in the line number field.'''
-            if bold: self.setBold(painter, True)
-            s = str(n)
-            x = self.width() - self.font_metrics.width(s) - 3
-            y = round(position.y()) - scroll_y + self.font_metrics.ascent()
-            painter.drawText(x, y, s)
-            if bold: self.setBold(painter, False)
-        #@+node:ekr.20150403094706.8: *4* NumberBar.setBold
-        def setBold(self, painter, flag):
-            '''Set or clear bold facing in the painter, depending on flag.'''
-            font = painter.font()
-            font.setBold(flag)
-            painter.setFont(font)
-        #@-others
-    #@+node:ekr.20150403094706.9: *3* __init__
-    def __init__(self, *args):
-        '''Ctor for LineTextWidget.'''
-        frame = QtWidgets.QFrame
-        frame.__init__(self, *args)
+    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
+    def __init__(self, c, e, *args):
+        '''Ctor for NumberBar class.'''
+        QtWidgets.QWidget.__init__(self, *args)
             # Init the base class.
-        self.setFrameStyle(frame.StyledPanel | frame.Sunken)
-        self.edit = e = QtWidgets.QTextEdit()
-        e.setFrameStyle(frame.NoFrame)
-        e.setAcceptRichText(False)
-        self.number_bar = self.NumberBar()
-        self.number_bar.setTextEdit(e)
-        hbox = QtWidgets.QHBoxLayout(self)
-        hbox.setSpacing(0)
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.addWidget(self.number_bar)
-        hbox.addWidget(e)
-        e.installEventFilter(self)
-        e.viewport().installEventFilter(self)
-    #@+node:ekr.20150403094706.10: *3* eventFilter
-    def eventFilter(self, obj, event):
+        self.c = c
+        self.edit = e
+            # A QTextEdit.
+        self.d = e.document()
+        self.font = c.config.getFontFromParams(
+            "gutter_font_family", "gutter_font_size",
+            "gutter_font_slant", "gutter_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fm = self.fontMetrics()
+            # A QFontMetrics
+        self.highest_line = 0
+            # The highest line that is currently visibile.
+        self.w_adjust = c.config.getInt('gutter-w-adjust') or 12
+            # Extra width for column.
+        self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
+            # The y offset of the first line of the gutter.
+        # Set the name to gutter so that the QFrame#gutter style sheet applies.
+        self.setObjectName('gutter')
+    #@+node:ekr.20150403094706.5: *3* NumberBar.update
+    def update(self, *args):
         '''
-        Update the line numbers for all events on the text edit and the viewport.
-        This is easier than connecting all necessary singals.
+        Updates the number bar to display the current set of numbers.
+        Also, adjusts the width of the number bar if necessary.
         '''
-        if obj in (self.edit, self.edit.viewport()):
-            self.number_bar.update()
-            return False
-        else:
-            return QtWidgets.QFrame.eventFilter(obj, event)
-    #@+node:ekr.20150403094706.11: *3* getTextEdit
-    def getTextEdit(self):
-        return self.edit
+        # w_adjust is used to compensate for the current line being bold.
+        # Always allocate room for 2 columns
+        width = self.fm.width(str(max(10,self.highest_line))) + self.w_adjust
+        if self.width() != width:
+            self.setFixedWidth(width)
+        QtWidgets.QWidget.update(self, *args)
+    #@+node:ekr.20150403094706.6: *3* NumberBar.paintEvent
+    def paintEvent(self, event):
+        '''
+        Enhance QFrame.paintEvent.
+        Paint all visible text blocks in the editor's document.
+        '''
+        e = self.edit
+        d = self.d
+        layout = d.documentLayout()
+        # Compute constants.
+        current_block = d.findBlock(e.textCursor().position())
+        scroll_y = e.verticalScrollBar().value()
+        page_bottom = scroll_y + e.viewport().height()
+        # Paint each visible block.
+        painter = QtGui.QPainter(self)
+        painter.setFont(self.font)
+        block = d.begin()
+        n = 0
+        while block.isValid():
+            n += 1
+            top_left = layout.blockBoundingRect(block).topLeft()
+            if top_left.y() > page_bottom:
+                break # Outside the visible area.
+            bold = block == current_block
+            self.paintBlock(bold, n, painter, top_left, scroll_y)
+            block = block.next()
+        self.highest_line = n
+        painter.end()
+        QtWidgets.QWidget.paintEvent(self, event)
+            # Propagate the event.
+    #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
+    def paintBlock(self, bold, n, painter, top_left, scroll_y):
+        '''Paint n, right justified in the line number field.'''
+        c = self.c
+        if bold:
+            self.setBold(painter, True)
+        s = str(n)
+        x = self.width() - self.fm.width(s) - self.w_adjust
+        y = round(top_left.y()) - scroll_y + self.fm.ascent() + self.y_adjust
+        painter.drawText(x, y, s)
+        if bold:
+            self.setBold(painter, False)
+    #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
+    def setBold(self, painter, flag):
+        '''Set or clear bold facing in the painter, depending on flag.'''
+        font = painter.font()
+        font.setBold(flag)
+        painter.setFont(font)
     #@-others
 #@+node:ekr.20140901141402.18700: ** class PlainTextWrapper(QTextMixin)
 class PlainTextWrapper(QTextMixin):
