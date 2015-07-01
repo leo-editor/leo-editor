@@ -311,7 +311,7 @@ of the outline. Create the @spot node if necessary.
 .. @+node:ekr.20150611163439.1: *4* Completed enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
 
-News settings::
+Controlled by the following new settings in leoSettings.leo, with defaults as shown::
     
     @bool use_gutter = True
     @color gutter-bg = @LightSteelBlue1

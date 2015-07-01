@@ -834,7 +834,7 @@ if QtWidgets:
             QtWidgets.QTextBrowser.wheelEvent(self, event)
         #@-others
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
-class NumberBar(QtWidgets.QFrame): # Was QWidget.
+class NumberBar(QtWidgets.QFrame):
     #@+others
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):
