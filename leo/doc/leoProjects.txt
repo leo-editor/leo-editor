@@ -586,6 +586,43 @@ I use gitk on both platforms to review commits.
 
 And that's about it. I use "git help" and "git help command" as needed.
 
+.. @+node:ekr.20150703072334.1: *4* New commands greatly improve work flow
+@language rest
+@wrap
+
+Recent revs make ctrl-click execute the find-def command if what is under the cursor is not a url.  There is no need to select the word--that's done automatically.
+
+This quickly becomes indispensable. I have the following bindings defined, so there there is no need to move the mouse:
+
+Ctrl-4: find-def
+Ctrl-5: find-var
+
+Furthermore, several recent changes/additions are remarkably useful:
+
+clone-to-at-spot
+
+This command does the following:
+
+1. Clones the selected node.
+2. Moves the clone to the last child of the last @spot node in the outline.
+3. Collapses all nodes in the outline.
+4. Selects the newly-cloned node, thereby making it visible.
+
+I typically create the following project node:
+
+   @spot re: the project name
+
+pre-loaded find patterns
+
+Today I improved the clone-find-all commands so they pre-select the find pattern more usefully.  leoPy.leo defines @button cfa-code as::
+
+c.cloneFindAllFlattenedAtNode('Code',top_level=True)
+
+This code now preloads the find pattern before selecting the top-level "Code" node.
+
+These new and improved commands make a big difference to my work flow.
+
+Edward
 .. @-all
 .. @@killbeautify
 .. @@language rest
