@@ -1963,6 +1963,10 @@
 <v t="edward.20150620082319.22"><vh>@@color button-hover-bg = @solarized-base01</vh></v>
 <v t="edward.20150620082319.23"><vh>@@color button-hover-fg = @solarized-base03</vh></v>
 </v>
+<v t="ekr.20150703053956.1"><vh>Gutter</vh>
+<v t="ekr.20150703053956.2"><vh>@color gutter-bg = @solarized-base03</vh></v>
+<v t="ekr.20150703053956.3"><vh>@color gutter-fg = @solarized-base2</vh></v>
+</v>
 <v t="edward.20150620082319.24"><vh>Log pane</vh>
 <v t="edward.20150620082319.25"><vh>@color find-tab-bg = @solarized-base03</vh></v>
 <v t="edward.20150620082319.26"><vh>@color log-bg = @solarized-base03</vh></v>
@@ -2497,13 +2501,7 @@ Was red. Now now comment1_color</t>
 normal (light) buttons &amp; menus.
 </t>
 <t tx="edward.20150620082319.10"></t>
-<t tx="edward.20150620082319.11">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-
-    @scroll-area-bg;
-    @tabbed-widget-bg;
-    @stacked-widget-border-color;
-    @stacked-widget-bg;</t>
+<t tx="edward.20150620082319.11"></t>
 <t tx="edward.20150620082319.12"></t>
 <t tx="edward.20150620082319.13"></t>
 <t tx="edward.20150620082319.14"></t>
@@ -2599,12 +2597,7 @@ solarized-base1
 <t tx="edward.20150620082319.67"></t>
 <t tx="edward.20150620082319.68"></t>
 <t tx="edward.20150620082319.69"></t>
-<t tx="edward.20150620082319.7">QLineEdit#lineEdit {
-    background-color: @solarized-base03;
-    color: red; 
-    selection-color: @minibuffer-selection-color;
-    selection-background-color: @minibuffer-background-selection-color;
-}</t>
+<t tx="edward.20150620082319.7"></t>
 <t tx="edward.20150620082319.70"></t>
 <t tx="edward.20150620082319.71"></t>
 <t tx="edward.20150620082319.72">Name of the theme, used to find icon files</t>
@@ -10787,6 +10780,9 @@ QFrame#gutter {
 <t tx="ekr.20150701074533.1">The y offset of the first line of the gutter, in pixels.
 </t>
 <t tx="ekr.20150701074844.1"></t>
+<t tx="ekr.20150703053956.1"></t>
+<t tx="ekr.20150703053956.2">@LightSteelBlue1</t>
+<t tx="ekr.20150703053956.3"># black</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

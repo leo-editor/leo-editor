@@ -847,7 +847,7 @@ class NumberBar(QtWidgets.QFrame):
         self.d = e.document()
         self.font = c.config.getFontFromParams(
             "gutter_font_family", "gutter_font_size",
-            "gutter_font_slant", "gutter_font_weight",
+            "gutter_font_style", "gutter_font_weight",
             c.config.defaultBodyFontSize)
         self.fm = self.fontMetrics()
             # A QFontMetrics
