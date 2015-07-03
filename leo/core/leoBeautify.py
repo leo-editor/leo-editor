@@ -1229,7 +1229,7 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
             self.unary_op(s)
-        elif prev.kind == 'word' and prev.value in ('elif', 'if', 'while'):
+        elif prev.kind == 'word' and prev.value in ('elif', 'if', 'return', 'while'):
             self.unary_op(s)
         else:
             self.op(s)
