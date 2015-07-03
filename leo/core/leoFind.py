@@ -317,7 +317,7 @@ class LeoFind:
         self.findDefHelper(event, defFlag=True)
 
     @cmd('find-var')
-    def findVar(self,event=None):
+    def findVar(self, event=None):
         '''Find the var under the cursor.'''
         self.findDefHelper(event, defFlag=False)
     #@+node:ekr.20150629125733.1: *5* findDefHelper & helpers
@@ -354,7 +354,7 @@ class LeoFind:
         else:
             c.bodyWantsFocusNow()
             i, j = save_sel
-            w.setSelectionRange(i,j)
+            w.setSelectionRange(i, j)
     #@+node:ekr.20150629084611.1: *6* initFindDef
     def initFindDef(self, event):
         '''Init the find-def command. Return the word to find or None.'''
@@ -370,7 +370,7 @@ class LeoFind:
             g.es_print('find-def: nothing under cursor', color='red')
             return None
         if keyword.iskeyword(word):
-            g.es_print('python keyword:',word, color='red')
+            g.es_print('python keyword:', word, color='red')
             return None
         # Return word, stripped of preceding class or def.
         for tag in ('class ', 'def '):
@@ -383,10 +383,10 @@ class LeoFind:
         '''Save the find settings in effect before a find-def command.'''
         if not self.find_def_data:
             self.find_def_data = \
-                self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
-                self.search_body, self.search_headline, self.whole_word
+            self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
+            self.search_body, self.search_headline, self.whole_word
     #@+node:ekr.20150629100600.1: *6* find.setFindDefOptions
-    def setFindDefOptions(self,p):
+    def setFindDefOptions(self, p):
         '''Set the find options needed for the find-def command.'''
         self.ignore_case = False
         self.p = p.copy()
@@ -402,7 +402,7 @@ class LeoFind:
         if self.find_def_data:
             # pylint: disable=unpacking-non-sequence
             self.ignore_case, p, self.pattern_match, self.reverse, self.search_body, \
-                self.search_headline, self.whole_word = self.find_def_data
+            self.search_headline, self.whole_word = self.find_def_data
             self.p = p
         self.find_def_data = None
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
@@ -1014,7 +1014,7 @@ class LeoFind:
                 if func:
                     func(event)
                 else:
-                    return g.trace('unknown command',command)
+                    return g.trace('unknown command', command)
             else:
                 # Switch to the replace command.
                 if self.findAllFlag: self.changeAllFlag = True
@@ -1053,7 +1053,6 @@ class LeoFind:
             if si.stroke == event.stroke:
                 return si.commandName
         return None
-        
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
         c, k = self.c, self.k
@@ -1724,7 +1723,7 @@ class LeoFind:
         trace_fail = False
         c = self.c
         p = self.p or c.p
-        ignore_dups = c.config.getBool('find-ignore-duplicates',default=False)
+        ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         if (ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None

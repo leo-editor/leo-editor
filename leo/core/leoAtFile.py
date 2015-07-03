@@ -3309,9 +3309,9 @@ class AtFile:
         aClass = at.writersDispatchDict.get(ext)
         if aClass:
 
-            def writer_for_ext_cb(root,forceSentinels):
+            def writer_for_ext_cb(root, forceSentinels):
                 try:
-                    return aClass(at.c).write(root,forceSentinels=forceSentinels)
+                    return aClass(at.c).write(root, forceSentinels=forceSentinels)
                 except Exception:
                     g.es_exception()
                     return None

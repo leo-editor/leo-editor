@@ -174,9 +174,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
         if c.config.getBool('use-gutter', default=False):
             lineWidget = qt_text.LeoLineTextWidget(c, body)
-            vLayout.addWidget(lineWidget) 
+            vLayout.addWidget(lineWidget)
         else:
-            vLayout.addWidget(body) 
+            vLayout.addWidget(body)
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
