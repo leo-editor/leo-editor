@@ -822,7 +822,7 @@ class RstCommands:
     def isSectionRef(self, s):
         n1 = s.find("<<", 0)
         n2 = s.find(">>", 0)
-        return - 1 < n1 < n2 and s[n1 + 2: n2].strip()
+        return -1 < n1 < n2 and s[n1 + 2: n2].strip()
     #@+node:ekr.20110610144305.6750: *7* rst.expandSectionRefs
     def expandSectionRefs(self, lines, p, seen):
         '''Expand section references in lines.'''

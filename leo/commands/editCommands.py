@@ -228,7 +228,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         def is_section_ref(self, s):
             n1 = s.find("<<", 0)
             n2 = s.find(">>", 0)
-            return - 1 < n1 < n2 and s[n1 + 2: n2].strip()
+            return -1 < n1 < n2 and s[n1 + 2: n2].strip()
         #@+node:ekr.20150514063305.135: *6* is_string_or_comment
         def is_string_or_comment(self, s, i):
             # Does range checking.

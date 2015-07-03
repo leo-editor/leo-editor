@@ -112,7 +112,7 @@ class PythonQSyntaxHighlighter:
             previous = self.cb.previous()
             return previous.userState() if self.is_valid(previous) else - 1
         else:
-            return - 1
+            return -1
     #@+node:ekr.20140825132752.18565: *4* pqsh.document
     def document(self):
         '''Returns the QTextDocument on which this syntax highlighter is installed.'''
@@ -1386,7 +1386,7 @@ class JEditColorizer:
                 return j - i
             else:
                 # g.trace('fail',repr(word),repr(self.word_chars))
-                return - (j - i + 1) # An important optimization.
+                return -(j - i + 1) # An important optimization.
     #@+node:ekr.20110605121601.18605: *5* match_section_ref
     def match_section_ref(self, s, i):
         if self.trace_leo_matches: g.trace()
@@ -1588,7 +1588,7 @@ class JEditColorizer:
             return result
         else:
             if trace and traceFail: g.trace('fail', word, kind)
-            return - len(word) # An important new optimization.
+            return -len(word) # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* match_line
     def match_line(self, s, i, kind=None, delegate='', exclude_match=False):
         '''Match the rest of the line.'''
@@ -1793,13 +1793,13 @@ class JEditColorizer:
             if j == -1:
                 # Match to end of text if not found and no_line_break is False
                 if no_line_break:
-                    return - 1
+                    return -1
                 else:
                     return len(s) + 1
             elif no_word_break and j > 0 and s[j - 1] in self.word_chars:
-                return - 1 # New in Leo 4.5.
+                return -1 # New in Leo 4.5.
             elif no_line_break and '\n' in s[i: j]:
-                return - 1
+                return -1
             elif esc and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0; k = 1

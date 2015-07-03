@@ -2915,7 +2915,7 @@ def find_word(s, word, i=0):
         progress = i
         i = s.find(word, i)
         if i == -1:
-            return - 1
+            return -1
         # Make sure we are at the start of a word.
         if i > 0:
             ch = s[i - 1]
@@ -2927,7 +2927,7 @@ def find_word(s, word, i=0):
         else:
             i += len(word)
         assert progress < i
-    return - 1
+    return -1
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helper
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
@@ -3580,8 +3580,8 @@ def skip_matching_python_delims(s, i, delim1, delim2, reverse=False):
             elif ch == '\'' or ch == '"': i = g.skip_string(s, i, verbose=False)
             elif g.match(s, i, '#'): i = g.skip_to_end_of_line(s, i)
             else: i += 1
-            if i == progress: return - 1
-    return - 1
+            if i == progress: return -1
+    return -1
 #@+node:ekr.20110916215321.6712: *4* g.skip_matching_c_delims
 def skip_matching_c_delims(s, i, delim1, delim2, reverse=False):
     '''Skip from the opening delim to the matching delim2.
@@ -3619,7 +3619,7 @@ def skip_matching_c_delims(s, i, delim1, delim2, reverse=False):
             else: i -= 1
             if i == progress:
                 g.trace('oops: reverse')
-                return - 1
+                return -1
     else:
         while i < len(s):
             progress = i
@@ -3650,9 +3650,9 @@ def skip_matching_c_delims(s, i, delim1, delim2, reverse=False):
             else: i += 1
             if i == progress:
                 g.trace('oops')
-                return - 1
+                return -1
     g.trace('not found')
-    return - 1
+    return -1
 #@+node:ekr.20060627080947: *4* skip_matching_python_parens
 def skip_matching_python_parens(s, i):
     '''Skip from the opening ( to the matching ).

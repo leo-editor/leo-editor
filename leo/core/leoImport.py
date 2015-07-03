@@ -941,7 +941,7 @@ class LeoImportCommands:
         if g.match(s, i, "+ ") or g.match(s, i, "- "):
             return level, plusFlag
         else:
-            return - 1, plusFlag
+            return -1, plusFlag
     #@+node:ekr.20031218072017.3223: *5* stringIs/stringsAreValidMoreFile
     # Used by paste logic.
 

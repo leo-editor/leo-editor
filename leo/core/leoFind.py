@@ -1798,7 +1798,7 @@ class LeoFind:
         if trace: g.trace('entry', i, j, repr(s[min(i, j): max(i, j)]))
         if not s[i: j] or not pattern:
             if trace: g.trace('empty', i, j, 'len(s)', len(s), 'pattern', pattern)
-            return - 1, -1
+            return -1, -1
         if regexp:
             pos, newpos = self.regexHelper(s, i, j, pattern, backwards, nocase)
         elif backwards:
@@ -1813,7 +1813,7 @@ class LeoFind:
         re_obj = self.re_obj # Use the pre-compiled object
         if not re_obj:
             g.trace('can not happen: no re_obj')
-            return - 1, -1
+            return -1, -1
         if backwards:
             # Scan to the last match using search here.
             last_mo = None; i = 0
@@ -1844,7 +1844,7 @@ class LeoFind:
                 self.match_obj = mo
                 return mo.start(), mo.end()
         self.match_obj = None
-        return - 1, -1
+        return -1, -1
     #@+node:ekr.20060526140744: *6* backwardsHelper
     debugIndices = []
     #@+at
@@ -1875,13 +1875,13 @@ class LeoFind:
             g.trace('two zero indices')
         # short circuit the search: helps debugging.
         if s.find(pattern) == -1:
-            return - 1, -1
+            return -1, -1
         if word:
             while 1:
                 k = s.rfind(pattern, i, j)
                 if trace: g.trace('**word** %3s %3s %5s -> %s %s' % (
                     i, j, '(end)' if j == len(s) else '', k, self.p.h))
-                if k == -1: return - 1, -1
+                if k == -1: return -1, -1
                 if self.matchWord(s, k, pattern):
                     return k, k + n
                 else:
@@ -1891,7 +1891,7 @@ class LeoFind:
             if trace: g.trace('%3s %3s %5s -> %s %s' % (
                 i, j, '(end)' if j == len(s) else '', k, self.p.h))
             if k == -1:
-                return - 1, -1
+                return -1, -1
             else:
                 return k, k + n
     #@+node:ekr.20060526093531: *6* plainHelper
@@ -1909,7 +1909,7 @@ class LeoFind:
                 # g.trace(k,n)
                 if k == -1:
                     if trace: g.trace('no match word', i)
-                    return - 1, -1
+                    return -1, -1
                 elif self.matchWord(s, k, pattern):
                     if trace: g.trace('match word', k)
                     return k, k + n
@@ -1918,7 +1918,7 @@ class LeoFind:
             k = s.find(pattern, i, j)
             if k == -1:
                 if trace: g.trace('no match word', i)
-                return - 1, -1
+                return -1, -1
             else:
                 if trace: g.trace('match', k)
                 return k, k + n

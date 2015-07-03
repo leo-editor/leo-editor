@@ -5545,7 +5545,7 @@ class Commands(object):
         j1 = line.find(">>")
         i2 = line.find("@<")
         j2 = line.find("@>")
-        return - 1 < i1 < j1 or -1 < i2 < j2
+        return -1 < i1 < j1 or -1 < i2 < j2
     #@+node:ekr.20031218072017.2965: *3* c.canFindMatchingBracket
     def canFindMatchingBracket(self):
         c = self
