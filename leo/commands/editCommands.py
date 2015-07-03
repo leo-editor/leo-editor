@@ -3563,9 +3563,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i1, i2)
     #@+node:ekr.20150514063305.302: *3* extend-to-word
     @cmd('extend-to-word')
-    def extendToWord(self, event, select=True):
+    def extendToWord(self, event, select=True, w=None):
         '''Compute the word at the cursor. Select it if select arg is True.'''
-        w = self.editWidget(event)
+        if not w:
+            w = self.editWidget(event)
         if not w:
             return 0, 0
         s = w.getAllText()

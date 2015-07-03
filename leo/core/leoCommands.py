@@ -632,11 +632,13 @@ class Commands(object):
         else:
             p = g.findNodeAnywhere(c, h)
         if p:
+            # Preload the find pattern *before* selecting the new node.
+            c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
             # The next two statements are required.
             c.selectPosition(p, enableRedrawFlag=True)
             c.bodyWantsFocusNow()
             # c.k.simulateCommand('clone-find-all')
-            c.findCommands.minibufferCloneFindAllFlattened()
+            c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
         else:
             g.es_print('not found: Code')
     #@+node:ekr.20150329162736.1: *3* c.cloneFindAllFlattenedAtNode
@@ -651,11 +653,13 @@ class Commands(object):
         else:
             p = g.findNodeAnywhere(c, h)
         if p:
+            # Preload the find pattern *before* selecting the new node.
+            c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
             # The next two statements are required.
             c.selectPosition(p, enableRedrawFlag=True)
             c.bodyWantsFocusNow()
             # c.k.simulateCommand('clone-find-all-flattened')
-            c.findCommands.minibufferCloneFindAllFlattened()
+            c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
         else:
             g.es_print('not found: h' % (h))
     #@+node:ekr.20031218072017.2818: ** c.Command handlers...
@@ -2941,6 +2945,7 @@ class Commands(object):
         c.setChanged(True)
         if c.validateOutline():
             u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
+            c.contractAllHeadlines()
             c.redraw()
             c.selectPosition(clone)
         else:

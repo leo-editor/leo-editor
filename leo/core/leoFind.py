@@ -462,7 +462,7 @@ class LeoFind:
         self.setup_command()
         self.changeAll()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
-    def preloadFindPattern(self, event, w):
+    def preloadFindPattern(self, w):
         '''Preload the find pattern from the selected text of widget w.'''
         c, ftm = self.c, self.ftm
         # Enhancement #177: Use selected text as the find string.
@@ -480,8 +480,7 @@ class LeoFind:
                         self.ftm.set_ignore_case(not mixed)
                 ftm.init_focus()
             else:
-                # 2015/06/29: Experimental: extend-to-word
-                c.editCommands.extendToWord(event, select=True)
+                c.editCommands.extendToWord(event=None, select=True, w=w)
                 s2 = w.getSelectedText()
                 if s2:
                     self.find_text = s2
@@ -503,7 +502,7 @@ class LeoFind:
         c = self.c
         w = self.editWidget(event)
         if w:
-            self.preloadFindPattern(event, w)
+            self.preloadFindPattern(w)
         self.find_seen = set()
         if self.minibuffer_mode:
             self.ftm.clear_focus()
@@ -770,13 +769,14 @@ class LeoFind:
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
     @cmd('clone-find-all')
     @cmd('find-clone-all')
-    def minibufferCloneFindAll(self, event=None):
+    def minibufferCloneFindAll(self, event=None, preloaded=None):
         c = self.c; k = self.k; tag = 'clone-find-all'
         state = k.getState(tag)
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                self.preloadFindPattern(event, w)
+                if not preloaded:
+                    self.preloadFindPattern(w)
                 self.stateZeroHelper(event, tag, 'Clone Find All: ',
                     self.minibufferCloneFindAll)
         else:
@@ -788,13 +788,14 @@ class LeoFind:
     #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
-    def minibufferCloneFindAllFlattened(self, event=None):
+    def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
         c = self.c; k = self.k; tag = 'clone-find-all-flattened'
         state = k.getState(tag)
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if w:
-                self.preloadFindPattern(event, w)
+                if not preloaded:
+                    self.preloadFindPattern(w)
                 self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
                     self.minibufferCloneFindAllFlattened)
         else:
