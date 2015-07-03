@@ -845,10 +845,7 @@ class NumberBar(QtWidgets.QFrame):
         self.edit = e
             # A QTextEdit.
         self.d = e.document()
-        self.font = c.config.getFontFromParams(
-            "gutter_font_family", "gutter_font_size",
-            "gutter_font_style", "gutter_font_weight",
-            c.config.defaultBodyFontSize)
+            # A QTextDocument.
         self.fm = self.fontMetrics()
             # A QFontMetrics
         self.highest_line = 0
@@ -886,7 +883,6 @@ class NumberBar(QtWidgets.QFrame):
         page_bottom = scroll_y + e.viewport().height()
         # Paint each visible block.
         painter = QtGui.QPainter(self)
-        painter.setFont(self.font)
         block = d.begin()
         n = 0
         while block.isValid():

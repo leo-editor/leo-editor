@@ -644,10 +644,25 @@ class LeoQtGui(leoGui.LeoGui):
                 c.bodyWantsFocusNow()
         # END: copy
     #@+node:ekr.20110605121601.18510: *3* LeoQtGui.getFontFromParams
+    size_warnings = []
+
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        '''Required to handle syntax coloring.'''
         trace = False and not g.unitTesting
-        try: size = int(size)
-        except Exception: size = 0
+        # g.trace(family,size,g.callers())
+        if g.isString(size):
+            if trace: g.trace(size)
+            if size.endswith('pt'):
+                size = size[:-2].strip()
+            elif size.endswith('px'):
+                if size not in self.size_warnings:
+                    self.size_warnings.append(size)
+                    g.es('px ignored in font setting: %s' % size)
+                size = size[:-2].strip()
+        try:
+            size = int(size)
+        except Exception:
+            size = 0
         if size < 1: size = defaultSize
         d = {
             'black': QtGui.QFont.Black,

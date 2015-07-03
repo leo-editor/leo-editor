@@ -1755,14 +1755,18 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        """Compute a font from font parameters.
+        """
+        Compute a font from font parameters. This should be used *only*
+        by the syntax coloring code.  Otherwise, use Leo's style sheets.
 
         Arguments are the names of settings to be use.
         Default to size=12, slant="roman", weight="normal".
 
-        Return None if there is no family setting so we can use system default fonts."""
+        Return None if there is no family setting so we can use system default fonts.
+        """
         family = self.get(family, "family")
         if family in (None, ""): family = g.app.config.defaultFontFamily
+        # if size.startswith('gutter'): g.trace('c.config', size, self.get(size, 'size'))
         size = self.get(size, "size")
         if size in (None, 0): size = defaultSize
         slant = self.get(slant, "slant")
