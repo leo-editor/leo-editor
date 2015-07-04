@@ -234,6 +234,10 @@ Yes, the user must fill in all appearance-related settings.  But most users will
 4. The "Common to all themes" node contains an "Outline indicators" node that specifies a relative path to outline indicator icons (arrow icons or plus/minus) icons.  The path can be relative to either the users home directory or (as shown in leoSettings.leo) relative to the leo/Icons directory. 
 .. @+node:ekr.20150622075706.1: *4* @wrap now honored immediately
 This fixes an annoying hangnail.
+
+- Added match_at_wrap to jEdit colorizers.
+- Added force keyword option to all setWrap methods.
+  This is needed because text can be colorized before c.p.b stabilizes.
 .. @+node:ekr.20150619075613.1: *4* Leo now shows find status in status line
 @language rest
 @wrap
@@ -264,6 +268,10 @@ find.showStatus now gets proper colors from settings.
 Changed the signature of QtStatusLineClass.putStatusLine and its helpers.
 .. @+node:ekr.20150628182314.1: *4* Added help-for-keystroke command
 Useful: tells the command name or names associated with any keystroke.
+
+Prompts for a single character: shows corresponding command.
+
+Added leoHelpCommands.helpForKeystroke
 .. @+node:ekr.20150629080742.1: *4* cfa commands now preload search pattern with selected text
 .. @+node:ekr.20150227040245.10: *4* Added find-def & find-var
 @language rest
@@ -470,8 +478,6 @@ Focus remains in previous file
 https://github.com/leo-editor/leo-editor/issues/181
 
 LM.finishOpen now calls c.outerUpdate.
-
-
 .. @+node:ekr.20150609082815.1: *4* Fixed bug 182: Long filenames do not wrap in notification dialogues
 @language rest
 @wrap
@@ -492,7 +498,7 @@ Leo now warns in the log pane and raises a summary dialog about possibly already
 
 A (new?) bug *won't* be fixed.  Closing a file removes the file's entry from g.app.db, so reopening the file *again* won't give another warning.  This is a very minor matter.
 
-What I did:
+What I did: (See app.Detecting already-open files)
 
 - Added g.app.already_open_files list.
 - Added calls to new runAlreadyOpenDialog method in c.open and LM.doPostPluginsInit.
@@ -513,6 +519,88 @@ https://github.com/leo-editor/leo-editor/issues/200
 - Added goto.scan_nonsentinel_lines & goto.scan_sentinel_lines.
   These contain the essential algorithms.
 - Added code to force any particular write to use sentinels.
+.. @+node:ekr.20150623053643.1: *5* checkin log 1
+Several changes, preparing to simplify goto-global-line logic:
+
+leoAtFile.py:
+- Added at.scriptWrite ivar, set from the scriptWrite keyword arg to at.write.
+- at.nodeSentinelText now writes full sentinels if at.scriptWrite is True.
+  This makes sentinels available to goto-global-line.
+  
+leoCommands.py:
+- Removed the now-unused "script" keyword argument from c.goToScriptLineNumber.
+- Added GoToLineNumber.find_script_line.
+  This explicitly sets up the goto-global-line logic for scripts.
+  It may not be needed eventually, but for now it's a good step.
+- Removed the scriptData keyword argument from GoToLineNumber.find_file_line.
+  It's no longer needed now that GoToLineNumber.find_script_line exists.
+  
+leoAtShadow.py:
+- AtShadowTestCase.makePrivateLines now calls at.write with scriptWrite=False.
+  This retains the simplified node sentinels needed by AtShadowTestCase.
+  All @shadow-related unit tests pass, so this change is benign.
+
+leoGlobals.py:
+- Added g.goto_last_exception.
+  It works, modulo problems with goto-global-line.
+  
+unitTest.leo:
+- Changed several unit tests re goto-global-line to reflect new signatures.
+
+.. @+node:ekr.20150624062219.1: *5* checkin log 2
+Created goto.scan_sentinel_lines, a complete, simple solution to finding lines in scripts.
+
+Leo now automatically finds script lines that generate exceptions:
+http://sourceforge.net/forum/message.php?msg_id=3593116
+
+It is a partial solution for issue #200: goto-global-line logic is too complex and buggy
+https://github.com/leo-editor/leo-editor/issues/200
+
+Still to do: associate lines in external files with nodes/offsets within an @<file> tree.
+.. @+node:ekr.20150625112217.1: *5* checkin log 3
+The grand changeover to the new line-number scheme. All tests pass.
+
+leoAtFile.py:
+- Added forceSentinels ivar and logic.
+- Added forceSentinels keyword argument to at.writeOneAtAutoNode.
+- Changed at.nodeSentinelsText (a major change):
+    1. Made an explicit test for at_shadow_test_hack.
+       This supports some mischief in the AtShadowTestCase.
+    2. Otherwise, a full node sentinel is generated if::
+    
+        at.thinFile or at.scriptWrite or at.forceSentinels:
+        
+- In all other places, the write code generates sentinels if::
+
+        at.sentinels or at.forceSentinels.
+    
+gotoCommands.py:
+- debugged and improved goto.scan_sentinel/nonsentinel_lines.
+- Moved the following to the attic:
+    - countLines & helpers.
+    - setup_file & setup_script.
+    - find_vnode & helpers.
+- All methods are now zero-based.
+
+leoGlobals.py:
+- g.gotoLastException adjust the calls to make them zero-based.
+
+leoShadow.py
+- makePrivateLines sets and clears the at.at_shadow_test_hack ivar
+  rather than setting at.scriptWrite.
+
+    
+.. @+node:ekr.20150625161350.1: *5* checkin log 4
+Added support for general delimiters:
+
+Separated goto.show_results into goto.success and goto.fail.
+.. @+node:ekr.20150626105504.1: *5* checkin log 5
+The new line-number scheme now works with all kinds of @auto files.
+All tests pass, including new unit tests for @auto-markdown, @auto-org, @auto-otl, @auto-rst.
+
+- Fixed several bugs that show up only when two comment delims are in effect.
+- Added forceSentinels keyword argument of all write methods in subclasses of the BaseWriter class.
+- The writer methods call the new BaseWriter.put_node_sentinel method when forceSentines is True. put_node_sentinel is similar to corresponding AtFile code.
 .. @+node:ekr.20150609082813.1: *4* Investigated Bug 153: Leo acts on some operator input when the Leo window is NOT the top window
 @language rest
 @wrap
