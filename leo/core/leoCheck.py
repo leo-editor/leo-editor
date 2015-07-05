@@ -3,23 +3,25 @@
 #@+node:ekr.20150605175037.1: * @file leoCheck.py
 #@@first
 '''Experimental code checking for Leo.'''
+# To do:
+# - Option to ignore defs without args if all calls have no args.
+# * explain typical entries
 import leo.core.leoGlobals as g
 import leo.core.leoAst as leoAst
 import ast
 import glob
-import re
+# import re
 import time
 #@+others
 #@+node:ekr.20150606024455.1: ** class ShowDataTraverser
 class ShowDataTraverser(leoAst.AstFullTraverser):
     '''
-    Add data about classes, defs, returns and calls to controller's dictionaries.
-
-    Sets .context and .parent ivars before visiting each node.
+    Add data about classes, defs, returns and calls to controller's
+    dictionaries.
     '''
 
     def __init__(self, controller, fn):
-        '''Ctor for AstFullTraverser class.'''
+        '''Ctor for ShopDataTraverser class.'''
         module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
             # fn, kind, s.
         self.context_stack = [module_tuple]
@@ -28,6 +30,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.formatter = leoAst.AstFormatter()
             # leoAst.AstPatternFormatter()
         self.trace = False
+
     #@+others
     #@+node:ekr.20150609053332.1: *3* sd.Helpers
     #@+node:ekr.20150606035006.1: *4* sd.context_names
@@ -57,20 +60,22 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
     def format(self, node):
         '''Return the formatted version of an Ast Node.'''
         return self.formatter.format(node).strip()
-    #@+node:ekr.20150606024455.62: *4* sd.visit
+    #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
-        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        '''
+        Visit a *single* ast node. Visitors must visit their children
+        explicitly.
+        '''
         method = getattr(self, 'do_' + node.__class__.__name__)
         method(node)
 
     def visit_children(self, node):
+        '''Override to ensure this method is never called.'''
         assert False, 'must visit children explicitly'
     #@+node:ekr.20150609052952.1: *3* sd.Visitors
     #@+node:ekr.20150607200422.1: *4* sd.Assign
-    # Assign(expr* targets, expr value)
-
     def do_Assign(self, node):
-        # Visit and format.
+        '''Handle an assignment statement: Assign(expr* targets, expr value)'''
         value = self.format(self.visit(node.value))
         assign_tuples = []
         for target in node.targets:
@@ -79,15 +84,15 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             context2, context1 = self.context_names()
             assign_tuple = context2, context1, s
             assign_tuples.append(assign_tuple)
-            # Update data.
             aList = self.controller.assigns_d.get(target, [])
             aList.extend(assign_tuples)
             self.controller.calls_d[target] = aList
     #@+node:ekr.20150607200439.1: *4* sd.AugAssign
-    # AugAssign(expr target, operator op, expr value)
-
     def do_AugAssign(self, node):
-        # Visit and update data.
+        '''
+        Handle an augmented assignement:
+        AugAssign(expr target, operator op, expr value).
+        '''
         target = self.format(self.visit(node.target))
         s = '%s=%s' % (target, self.format(self.visit(node.value)))
         context2, context1 = self.context_names()
@@ -96,10 +101,12 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         aList.append(assign_tuple)
         self.controller.calls_d[target] = aList
     #@+node:ekr.20150606024455.16: *4* sd.Call
-    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-
     def do_Call(self, node):
-        # Update data
+        '''
+        Handle a call statement:
+        Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+        '''
+        # Update data.
         s = self.format(node)
         name = self.format(node.func)
         context2, context1 = self.context_names()
@@ -118,9 +125,11 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         if getattr(node, 'kwargs', None):
             self.visit(node.kwargs)
     #@+node:ekr.20150606024455.3: *4* sd.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-
     def do_ClassDef(self, node):
+        '''
+        Handle a class defintion:
+        ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+        '''
         # Format.
         if node.bases:
             bases = [self.format(z) for z in node.bases]
@@ -131,7 +140,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Enter the new context.
         context_tuple = self.fn, 'class', s
         self.context_stack.append(context_tuple)
-        # Update controller data.
+        # Update data.
         class_tuple = self.context_stack[: -1], s
         aList = self.controller.classes_d.get(node.name, [])
         aList.append(class_tuple)
@@ -146,9 +155,11 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Leave the context.
         self.context_stack.pop()
     #@+node:ekr.20150606024455.4: *4* sd.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-
     def do_FunctionDef(self, node):
+        '''
+        Visit a function defintion:
+        FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+        '''
         # Format.
         args = self.format(node.args) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)
@@ -156,7 +167,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Enter the new context.
         context_tuple = self.fn, 'def', s
         self.context_stack.append(context_tuple)
-        # Update controller data.
+        # Update data.
         def_tuple = self.context_stack[: -1], s
         aList = self.controller.defs_d.get(node.name, [])
         aList.append(def_tuple)
@@ -170,13 +181,11 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Leave the context.
         self.context_stack.pop()
     #@+node:ekr.20150606024455.55: *4* sd.Return
-    # Return(expr? value)
-
     def do_Return(self, node):
-        # Format...
+        '''Handle a 'return' statement: Return(expr? value)'''
+        # Update data.
         s = self.format(node)
         if self.trace: g.trace(s)
-        # Update data
         context, name = self.context_names()
         aList = self.controller.returns_d.get(name, [])
         return_tuple = context, s
@@ -304,30 +313,25 @@ class ProjectUtils:
     #@-others
 #@+node:ekr.20150604164113.1: ** class ShowData
 class ShowData:
+    '''The driver class for analysis project.'''
     #@+others
     #@+node:ekr.20150604165500.1: *3*  ctor
     def __init__(self, c):
+        '''Ctor for ShowData controller class.'''
         self.c = c
+        self.files = None
         # Data.
         self.assigns_d = {}
         self.calls_d = {}
         self.classes_d = {}
         self.context_stack = []
-        self.context_indent = -1
         self.defs_d = {}
-        self.files = None
         self.returns_d = {}
         # Statistics
         self.n_matches = 0
+        self.n_undefined_calls = 0
         self.tot_lines = 0
         self.tot_s = 0
-        self.n_undefined_calls = 0
-        # Regex patterns used by match.  A brilliant prototype.
-        r_class = r'class[ \t]+([a-z_A-Z][a-z_A-Z0-9]*).*:'
-        r_def = r'def[ \t]+([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\((.*)\)'
-        r_return = r'(return[ \t].*)$'
-        r_call = r'([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\(([^)]*)\)'
-        self.r_all = re.compile('|'.join([r_class, r_def, r_return, r_call,]))
     #@+node:ekr.20150604163903.1: *3* run & helpers
     def run(self, files):
         '''Process all files'''
@@ -338,6 +342,7 @@ class ShowData:
             if s:
                 self.tot_s += len(s)
                 g.trace('%8s %s' % ("{:,}".format(len(s)), g.shortFileName(fn)))
+                    # Print len(s), with commas.
                 # Fast, accurate:
                 # 1.9 sec for parsing.
                 # 2.5 sec for Null AstFullTraverer traversal.
@@ -388,7 +393,7 @@ class ShowData:
         )
         result.insert(1, summary)
         result.extend(['', summary])
-        if make:
+        if c and make:
             last = c.lastTopLevel()
             p2 = last.insertAfter()
             p2.h = 'global signatures'
@@ -514,6 +519,22 @@ class ShowData:
                     result.append('%s%s: %s' % (
                         ' ' * (2 + pad), context1, s))
     #@-others
+#@+node:ekr.20150704135836.1: ** test
+def test(files):
+    r'''
+    A stand-alone version of @button show-data.  Call as follows:
+        
+        import leo.core.leoCheck as leoCheck
+        files = (
+            [
+                # r'c:\leo.repo\leo-editor\leo\core\leoNodes.py',
+            ] or
+            leoCheck.ProjectUtils().project_files('leo')
+        )
+        leoCheck.test(files)
+    '''
+    import leo.core.leoCheck as leoCheck
+    leoCheck.ShowData(c=None).run(files)
 #@-others
 #@@language python
 #@@tabwidth -4
