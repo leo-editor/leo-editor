@@ -2109,7 +2109,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Create the text widgets.
             self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
             self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
-            self.textWidget2Style = ''  # cache style for speed
+            self.textWidgetStyle = {}  # cache style for speed
             w1.setObjectName('status1')
             w2.setObjectName('status2')
             w1.setReadOnly(True)
@@ -2165,9 +2165,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 fg = fg or 'white'
                 styleSheet = 'QLineEdit {background: %s; color: %s; }' % (bg, fg)
             else:
-                styleSheet = ''
-            if styleSheet != self.textWidget2Style:
-                self.textWidget2Style = styleSheet
+                styleSheet = '/* */'
+            if styleSheet != self.textWidgetStyle.setdefault(w, '/* */'):
+                self.textWidgetStyle[w] = styleSheet
                 w.setStyleSheet(styleSheet)
             
             w.setText(s)
