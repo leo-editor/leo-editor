@@ -1018,6 +1018,7 @@ class LeoApp:
             # True: quitting.  Locks out some events.
         self.reverting = False
             # True: executing the revert command.
+        self.syntax_error_files = []
 
         # The global log... (To be moved to the LogManager)
         self.log = None

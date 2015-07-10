@@ -330,6 +330,138 @@ Controlled by the following new settings in leoSettings.leo, with defaults as sh
     @string gutter-font-size = @small-font-size
     @string gutter-font-style = @font-style
     @string gutter-font-weight = @font-weight
+.. @+node:ekr.20150710064429.1: *4* Added @bool preload-find-pattern
+Rev abe5563f
+
+Added @bool preload-find-pattern and associated logic.
+This setting only affects Ctrl-F (start-search).
+Other searches always preload by default.  This may change.
+.. @+node:ekr.20150710082301.1: *5* Found: (flattened) preloadFindPattern
+.. @+node:ekr.20131117164142.16996: *6* find.minibufferCloneFindAllFlattened
+@cmd('clone-find-all-flattened')
+@cmd('find-clone-all-flattened')
+def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
+    c = self.c; k = self.k; tag = 'clone-find-all-flattened'
+    state = k.getState(tag)
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if w:
+            if not preloaded:
+                self.preloadFindPattern(w)
+            self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
+                self.minibufferCloneFindAllFlattened)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
+        c.treeWantsFocus()
+.. @+node:ekr.20150629072547.1: *6* find.preloadFindPattern
+def preloadFindPattern(self, w):
+    '''Preload the find pattern from the selected text of widget w.'''
+    c, ftm = self.c, self.ftm
+    # Enhancement #177: Use selected text as the find string.
+    if w:
+        if w.hasSelection():
+            s = self.previous_find_pattern
+            s2 = w.getSelectedText()
+            # Careful: Do nothing if the previous search string matches, ignoring case.
+            # This prevents an "ignore-case" search from changing the ignore-case switch.
+            if s.lower() != s2.lower():
+                ftm.setFindText(s2)
+                if c.config.getBool('auto-set-ignore-case', default=True):
+                    mixed = s2 not in (s.lower(), s.upper())
+                    # g.trace('ignore', not mixed)
+                    self.ftm.set_ignore_case(not mixed)
+            ftm.init_focus()
+        else:
+            c.editCommands.extendToWord(event=None, select=True, w=w)
+            s2 = w.getSelectedText()
+            if s2:
+                self.find_text = s2
+                ftm.setFindText(s2)
+    s = self.ftm.getFindText()
+    self.previous_find_pattern = s
+.. @+node:ekr.20131119060731.22452: *6* find.startSearch
+@cmd('start-search')
+def startSearch(self, event):
+    c = self.c
+    w = self.editWidget(event)
+    if w and c.config.getBool('preload-find-pattern', default=False):
+        self.preloadFindPattern(w)
+    self.find_seen = set()
+    if self.minibuffer_mode:
+        self.ftm.clear_focus()
+        self.searchWithPresentOptions(event)
+    else:
+        self.openFindTab(event)
+        self.ftm.init_focus()
+.. @+node:ekr.20131117164142.17011: *6* find.minibufferCloneFindAll
+@cmd('clone-find-all')
+@cmd('find-clone-all')
+def minibufferCloneFindAll(self, event=None, preloaded=None):
+    c = self.c; k = self.k; tag = 'clone-find-all'
+    state = k.getState(tag)
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if w:
+            if not preloaded:
+                self.preloadFindPattern(w)
+            self.stateZeroHelper(event, tag, 'Clone Find All: ',
+                self.minibufferCloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg, cloneFindAll=True)
+        c.treeWantsFocus()
+.. @+node:ekr.20150329055227.1: *6* c.cloneFindAllAtNode
+def cloneFindAllAtNode(self, h, top_level):
+    '''
+    Find and select a node with headline h,
+    then execute clone-find-all.
+    '''
+    c = self
+    if top_level:
+        p = g.findTopLevelNode(c, h)
+    else:
+        p = g.findNodeAnywhere(c, h)
+    if p:
+        # Preload the find pattern *before* selecting the new node.
+        c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
+        # The next two statements are required.
+        c.selectPosition(p, enableRedrawFlag=True)
+        c.bodyWantsFocusNow()
+        # c.k.simulateCommand('clone-find-all')
+        c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
+    else:
+        g.es_print('not found: Code')
+.. @+node:ekr.20150329162736.1: *6* c.cloneFindAllFlattenedAtNode
+def cloneFindAllFlattenedAtNode(self, h, top_level):
+    '''
+    Find and select a node with headline h,
+    then execute clone-find-all-flattened.
+    '''
+    c = self
+    if top_level:
+        p = g.findTopLevelNode(c, h)
+    else:
+        p = g.findNodeAnywhere(c, h)
+    if p:
+        # Preload the find pattern *before* selecting the new node.
+        c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
+        # The next two statements are required.
+        c.selectPosition(p, enableRedrawFlag=True)
+        c.bodyWantsFocusNow()
+        # c.k.simulateCommand('clone-find-all-flattened')
+        c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
+    else:
+        g.es_print('not found: h' % (h))
+.. @+node:ekr.20150710085715.1: *4* Added support for @bool syntax-error-popup
+@language rest
+@wrap
+
+Default is False. When True, opens a popup window to alert about syntax errors.
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed/Investigated
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f

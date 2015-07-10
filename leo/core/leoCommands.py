@@ -897,7 +897,7 @@ class Commands(object):
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
             c.redraw()
-    #@+node:ekr.20031218072017.2834: *5* c.save
+    #@+node:ekr.20031218072017.2834: *5* c.save & helper
     @cmd('save-file')
     def save(self, event=None, fileName=None):
         '''Save a Leo outline to a file.'''
@@ -929,7 +929,9 @@ class Commands(object):
             c.mFileName = ""
         if c.mFileName:
             # Calls c.setChanged(False) if no error.
+            g.app.syntax_error_files = []
             c.fileCommands.save(c.mFileName)
+            c.syntaxErrorDialog()   
         else:
             root = c.rootPosition()
             if not root.next() and root.isAtEditNode():
@@ -973,6 +975,18 @@ class Commands(object):
             p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
+    #@+node:ekr.20150710083827.1: *6* c.syntaxErrorDialog
+    def syntaxErrorDialog(self):
+        '''Warn about syntax errors in files.'''
+        c = self
+        if g.app.syntax_error_files and c.config.getBool('syntax-error-popup', default=False):
+            aList = sorted(set(g.app.syntax_error_files))
+            g.app.syntax_error_files = []
+            message = 'Syntax error in:\n\n%s' % '\n'.join(aList)
+            g.app.gui.runAskOkDialog(c,
+                title='Syntax Error',
+                message=message,
+                text="Ok")
     #@+node:ekr.20110228162720.13980: *5* c.saveAll
     @cmd('save-all')
     def saveAll(self, event=None):

@@ -606,6 +606,7 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
@@ -10785,6 +10786,7 @@ QFrame#gutter {
 <t tx="ekr.20150703053956.2">@LightSteelBlue1</t>
 <t tx="ekr.20150703053956.3"># black</t>
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
+<t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

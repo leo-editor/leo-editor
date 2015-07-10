@@ -4202,6 +4202,7 @@ class AtFile:
             ok = at.checkPythonSyntax(root, s)
             # Syntax checking catches most indentation problems.
             # if ok: at.tabNannyNode(root,s)
+            g.app.syntax_error_files.append(g.shortFileName(targetFn))
     #@+node:ekr.20090514111518.5663: *5* checkPythonSyntax (leoAtFile)
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
