@@ -638,6 +638,7 @@
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
+<v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use_find_dialog = False</vh></v>
@@ -10783,6 +10784,7 @@ QFrame#gutter {
 <t tx="ekr.20150703053956.1"></t>
 <t tx="ekr.20150703053956.2">@LightSteelBlue1</t>
 <t tx="ekr.20150703053956.3"># black</t>
+<t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

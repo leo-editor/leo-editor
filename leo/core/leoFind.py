@@ -501,7 +501,7 @@ class LeoFind:
     def startSearch(self, event):
         c = self.c
         w = self.editWidget(event)
-        if w:
+        if w and c.config.getBool('preload-find-pattern', default=False):
             self.preloadFindPattern(w)
         self.find_seen = set()
         if self.minibuffer_mode:
