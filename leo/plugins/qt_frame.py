@@ -2113,6 +2113,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # Wrong: there are two widgets, so two caches are needed.
                 # Don't cache anything unless you are *sure* that speed matters.
                 # Here, it certainly does not matter.
+            self.textWidgetStyle = {}
+                # cache style for speed
             w1.setObjectName('status1')
             w2.setObjectName('status2')
             w1.setReadOnly(True)
