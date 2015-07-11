@@ -2162,6 +2162,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
         def put1(self, s, bg=None, fg=None):
             self.put_helper(s, self.textWidget1, bg, fg)
+            
+        styleSheetCache = {}
+            # Keys are widgets, values are stylesheets.
 
         def put_helper(self, s, w, bg=None, fg=None):
             '''Put string s in the indicated widget, with proper colors.'''
@@ -2171,7 +2174,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if not fg:
                 fg = c.config.getColor('status-fg') or 'black'
             styleSheet = 'QLineEdit {background: %s; color: %s; }' % (bg, fg)
-            w.setStyleSheet(styleSheet)
+            d = self.styleSheetCache
+            if styleSheet != d.get(w):
+                # g.trace(g.app.gui.widget_name(w), styleSheet)
+                d [w] = styleSheet
+                w.setStyleSheet(styleSheet)
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
         def update(self):
