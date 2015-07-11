@@ -2109,7 +2109,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Create the text widgets.
             self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
             self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
-            self.textWidget2Style = ''  # cache style for speed
+            # self.textWidget2Style = ''  # cache style for speed.
+                # Wrong: there are two widgets, so two caches are needed.
+                # Don't cache anything unless you are *sure* that speed matters.
+                # Here, it certainly does not matter.
             w1.setObjectName('status1')
             w2.setObjectName('status2')
             w1.setReadOnly(True)
@@ -2159,17 +2162,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.put_helper(s, self.textWidget1, bg, fg)
 
         def put_helper(self, s, w, bg=None, fg=None):
-            # At present, the color argument is not honored.
-            if bg or fg:
-                bg = bg or 'blue'
-                fg = fg or 'white'
-                styleSheet = 'QLineEdit {background: %s; color: %s; }' % (bg, fg)
-            else:
-                styleSheet = ''
-            if styleSheet != self.textWidget2Style:
-                self.textWidget2Style = styleSheet
-                w.setStyleSheet(styleSheet)
-            
+            '''Put string s in the indicated widget, with proper colors.'''
+            c = self.c
+            if not bg:
+                bg = c.config.getColor('status-bg') or 'white'
+            if not fg:
+                fg = c.config.getColor('status-fg') or 'black'
+            styleSheet = 'QLineEdit {background: %s; color: %s; }' % (bg, fg)
+            w.setStyleSheet(styleSheet)
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
         def update(self):

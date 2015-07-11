@@ -4337,7 +4337,7 @@ class KeyHandlerClass:
     def showStateAndMode(self, w=None, prompt=None, setFocus=True):
         '''Show the state and mode at the start of the minibuffer.'''
         trace = False and not g.unitTesting
-        k = self; c = k.c
+        c, k = self.c, self
         state = k.unboundKeyAction
         mode = k.getStateKind()
         inOutline = False
@@ -4375,13 +4375,15 @@ class KeyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-        # if trace: g.trace('w',w,'s',s)
-        if trace: g.trace(g.callers())
+        if trace: g.trace(repr(s))
         if s:
             k.setLabelBlue(s)
         if w and isText:
             # k.showStateColors(inOutline,w)
             k.showStateCursor(state, w)
+        # 2015/07/11: reset the status line.
+        if hasattr(c.frame.tree, 'set_status_line'):
+            c.frame.tree.set_status_line(c.p)
     #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor(self, state, w):
         # g.trace(state,w)

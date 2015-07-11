@@ -1756,7 +1756,7 @@ class LeoTree(object):
             if False or delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:scroll', delta_t))
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
-    def set_status_line(self, p, traceTime):
+    def set_status_line(self, p, traceTime=False):
         '''Update the status line.'''
         if traceTime:
             t1 = time.time()

@@ -208,6 +208,7 @@
 </v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
+<v t="ekr.20150711073509.1"><vh>@color status-fg = black</vh></v>
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
@@ -9957,11 +9958,7 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19342">10pt</t>
 <t tx="ekr.20140912075503.19343">@font-weight</t>
 <t tx="ekr.20140912075503.19344"> @font-style</t>
-<t tx="ekr.20140912075503.19345">found_bg = c.config.getColor('find-found-bg') or 'blue'
-found_fg = c.config.getColor('find-found-fg') or 'white'
-
-not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
-not_found_fg = c.config.getColor('find-not-found-fg') or 'white'</t>
+<t tx="ekr.20140912075503.19345"></t>
 <t tx="ekr.20140912075503.19346"></t>
 <t tx="ekr.20140912075503.19347"></t>
 <t tx="ekr.20140912075503.19348"></t>
@@ -10276,6 +10273,7 @@ QSplitter::handle:hover {
 
 QLineEdit#status1, QLineEdit#status2 {
     background-color:   @status-bg;
+    color:              @status-fg;
     border-color:       @status-border-color;
     border-width:       @status-border-width;
     border-style:       @status-border-style;
@@ -10787,6 +10785,7 @@ QFrame#gutter {
 <t tx="ekr.20150703053956.3"># black</t>
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
+<t tx="ekr.20150711073509.1"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
