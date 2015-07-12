@@ -103,8 +103,7 @@ def install_handlers():
 @g.command('context-menu-open')
 def context_menu_open(event):
     """Provide a command for key binding to open the context menu"""
-    if 'c' in event:
-        event['c'].frame.tree.onContextMenu(QtCore.QPoint(0,0))
+    event.c.frame.tree.onContextMenu(QtCore.QPoint(0,0))
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
 def configuredcommands_rclick(c,p,menu):
