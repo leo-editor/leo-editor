@@ -18,7 +18,7 @@ def cmd(name):
 class EditFileCommandsClass(BaseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
     #@+others
-    #@+node:ekr.20150514063305.356: ** compareAnyTwoFiles & helpers
+    #@+node:ekr.20150514063305.356: ** efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-leo-files')
     def compareAnyTwoFiles(self, event):
         '''Compare two files.'''
@@ -58,7 +58,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.app.forgetOpenFile(fn=c2.fileName(), force=True)
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
-    #@+node:ekr.20150514063305.357: *3* computeChangeDicts
+    #@+node:ekr.20150514063305.357: *3* efc.computeChangeDicts
     def computeChangeDicts(self, d1, d2):
         '''
         Compute inserted, deleted, changed dictionaries.
@@ -81,7 +81,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2 # Show the node in the *other* file.
         return inserted, deleted, changed
-    #@+node:ekr.20150514063305.358: *3* createAllCompareClones & helper
+    #@+node:ekr.20150514063305.358: *3* efc.createAllCompareClones & helper
     def createAllCompareClones(self, c1, c2, inserted, deleted, changed):
         '''Create the comparison trees.'''
         c = self.c # Always use the visible commander
@@ -105,7 +105,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.selectPosition(parent)
         u.afterChangeGroup(parent, undoType, reportFlag=True)
         c.redraw()
-    #@+node:ekr.20150514063305.359: *4* createCompareClones
+    #@+node:ekr.20150514063305.359: *4* efc.createCompareClones
     def createCompareClones(self, d, kind, parent):
         if d:
             c = self.c # Use the visible commander.
@@ -125,7 +125,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     copy.moveToLastChildOf(parent)
                     for p2 in copy.self_and_subtree():
                         p2.v.context = c
-    #@+node:ekr.20150514063305.360: *3* createHiddenCommander (EditFileCommandsClass)
+    #@+node:ekr.20150514063305.360: *3* efc.createHiddenCommander
     def createHiddenCommander(self, fn):
         '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
         import leo.core.leoCommands as leoCommands
@@ -137,14 +137,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return c2
         else:
             return None
-    #@+node:ekr.20150514063305.361: *3* createFileDict
+    #@+node:ekr.20150514063305.361: *3* efc.createFileDict
     def createFileDict(self, c):
         '''Create a dictionary of all relevant positions in commander c.'''
         d = {}
         for p in c.all_positions():
             d[p.v.fileIndex] = p.copy()
         return d
-    #@+node:ekr.20150514063305.362: *3* dumpCompareNodes
+    #@+node:ekr.20150514063305.362: *3* efc.dumpCompareNodes
     def dumpCompareNodes(self, fileName1, fileName2, inserted, deleted, changed):
         for d, kind in (
             (inserted, 'inserted (only in %s)' % (fileName1)),
@@ -158,7 +158,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     g.pr('%-32s %s' % (key, p.h))
                 else:
                     g.pr('%-32s %s' % (key, g.toEncodedString(p.h, 'ascii')))
-    #@+node:ekr.20150514063305.363: ** deleteFile
+    #@+node:ekr.20150514063305.363: ** efc.deleteFile
     @cmd('file-delete')
     def deleteFile(self, event):
         '''Prompt for the name of a file and delete it.'''
@@ -176,12 +176,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 k.setStatusLabel('Deleted: %s' % k.arg)
             except Exception:
                 k.setStatusLabel('Not Deleted: %s' % k.arg)
-    #@+node:ekr.20150514063305.364: ** diff
+    #@+node:ekr.20150514063305.364: ** efc.diff
     @cmd('file-diff-files')
-    def diff(self, event):
+    def diff(self, event=None):
         '''Creates a node and puts the diff between 2 files into it.'''
-        w = self.editWidget(event)
-        if not w: return
+        c = self.c
         fn = self.getReadableTextFile()
         if not fn: return
         fn2 = self.getReadableTextFile()
@@ -190,14 +189,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if s1 is None: return
         s2, e = g.readFileIntoString(fn2)
         if s2 is None: return
-        # self.switchToBuffer(event,"*diff* of ( %s , %s )" % (name,name2))
-        data = difflib.ndiff(s1, s2)
-        idata = []
-        for z in data:
-            idata.append(z)
-        w.delete(0, 'end')
-        w.insert(0, ''.join(idata))
-    #@+node:ekr.20150514063305.365: ** getReadableTextFile (EditFileCommandsClass)
+        lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
+        aList = difflib.ndiff(lines1, lines2)
+        p = c.p.insertAfter()
+        p.h = 'diff'
+        p.b = ''.join(aList)
+        c.redraw()
+    #@+node:ekr.20150514063305.365: ** efc.getReadableTextFile
     def getReadableTextFile(self):
         '''Prompt for a text file.'''
         c = self.c
@@ -206,7 +204,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")
         return fn
-    #@+node:ekr.20150514063305.366: ** insertFile
+    #@+node:ekr.20150514063305.366: ** efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
         '''Prompt for the name of a file and put the selected text into it.'''
@@ -223,7 +221,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.seeInsertPoint()
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.367: ** makeDirectory
+    #@+node:ekr.20150514063305.367: ** efc.makeDirectory
     @cmd('directory-make')
     def makeDirectory(self, event):
         '''Prompt for the name of a directory and create it.'''
@@ -241,7 +239,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 k.setStatusLabel("Created: %s" % k.arg)
             except Exception:
                 k.setStatusLabel("Not Create: %s" % k.arg)
-    #@+node:ekr.20150514063305.368: ** openOutlineByName (EditFileCommandsClass)
+    #@+node:ekr.20150514063305.368: ** efc.openOutlineByName
     @cmd('file-open-by-name')
     def openOutlineByName(self, event):
         '''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
@@ -264,7 +262,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 pass
         else:
             g.es('ignoring: %s' % fn)
-    #@+node:ekr.20150514063305.369: ** removeDirectory
+    #@+node:ekr.20150514063305.369: ** efc.removeDirectory
     @cmd('directory-remove')
     def removeDirectory(self, event):
         '''Prompt for the name of a directory and delete it.'''
@@ -282,7 +280,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 k.setStatusLabel('Removed: %s' % k.arg)
             except Exception:
                 k.setStatusLabel('Not Removed: %s' % k.arg)
-    #@+node:ekr.20150514063305.370: ** saveFile
+    #@+node:ekr.20150514063305.370: ** efc.saveFile
     @cmd('file-save')
     def saveFile(self, event):
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
