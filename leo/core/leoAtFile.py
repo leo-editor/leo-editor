@@ -4891,6 +4891,9 @@ class AtFile:
     def create(self, fn, s):
         '''Create a file whose contents are s.'''
         at = self
+        # 2015/07/15: do this before converting to encoded string.
+        if at.output_newline != '\n':
+            s = s.replace('\r', '').replace('\n', at.output_newline)
         # This is part of the new_write logic.
         # This is the only call to g.toEncodedString in the new_write logic.
         # 2013/10/28: fix bug 1243847: unicode error when saving @shadow nodes
@@ -4898,8 +4901,6 @@ class AtFile:
             s = g.toEncodedString(s, encoding=at.encoding)
         try:
             f = open(fn, 'wb') # Must be 'wb' to preserve line endings.
-            if at.output_newline != '\n':
-                s = s.replace('\r', '').replace('\n', at.output_newline)
             f.write(s)
             f.close()
         except Exception:
