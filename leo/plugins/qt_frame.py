@@ -2946,6 +2946,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
 class LeoQtLog(leoFrame.LeoLog):
     '''A class that represents the log pane of a Qt window.'''
     #@+others
+    #@+node:ekr.20150717102609.1: *3* LeoQtLog.cmd (decorator)
+    def cmd(name):
+        '''Command decorator for the c.frame.log class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__
     def __init__(self, frame, parentFrame):
@@ -3009,6 +3014,13 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
+    #@+node:ekr.20150717102728.1: *3* LeoQtLog.Commands
+    @cmd('clear-log')
+    def clearLog(self, event=None):
+        '''Clear the log pane.'''
+        w = self.logCtrl.widget # w is a QTextBrowser
+        if w:
+            w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName):
         g.warning('color picker not ready for qt')
