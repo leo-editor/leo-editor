@@ -1392,10 +1392,11 @@ class LeoFind:
         self.initInHeadline()
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
-    #@+node:ekr.20031218072017.3073: *4* find.findAll & helper
+    #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
         trace = False and not g.unitTesting
-        c, w = self.c, self.s_ctrl
+        c, u, w = self.c, self.c.undoer, self.s_ctrl
+        both = self.search_body and self.search_headline
         if clone_find_all_flattened:
             undoType = 'Clone Find All Flattened'
         elif clone_find_all:
@@ -1418,6 +1419,7 @@ class LeoFind:
             if self.suboutline_only:
                 self.onlyPosition = self.p.copy()
         clones = set()
+        result = []
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
             if not self.p: self.p = c.p
@@ -1437,14 +1439,30 @@ class LeoFind:
                         skip.add(p2.v)
                 clones.add(self.p.copy())
             else:
-                self.printLine(line, allFlag=True)
-        if clones and (clone_find_all or clone_find_all_flattened):
-            u = c.undoer
+                if both:
+                    result.append('%s%s\n%s%s\n' % (
+                        '-' * 20, self.p.h,
+                        "head: " if self.in_headline else "body: ",
+                        line.rstrip()))
+                elif self.p.isVisited():
+                    result.append(line)
+                else:
+                    result.append('%s%s\n%s' % ('-' * 20, self.p.h, line))
+                    self.p.setVisited()   
+        if clone_find_all or clone_find_all_flattened:
+            if clones:
+                undoData = u.beforeInsertNode(c.p)
+                found = self.createCloneFindAllNodes(clones, clone_find_all_flattened)
+                u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+                c.selectPosition(found)
+                c.setChanged(True)
+        elif result:
             undoData = u.beforeInsertNode(c.p)
-            found = self.createCloneFindAllNodes(clones, clone_find_all_flattened)
+            found = self.createFindAllNode(result)
             u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
+            c.redraw()
         else:
             self.restore(data)
         c.redraw()
@@ -1457,15 +1475,22 @@ class LeoFind:
         '''
         c = self.c
         # Create the found node.
-        last = c.rootPosition()
-        while last.hasNext():
-            last.moveToNext()
-        found = last.insertAfter()
+        found = c.lastTopLevel().insertAfter()
         found.h = 'Found:%s %s' % (' (flattened)' if flattened else '', self.find_text)
         # Clone nodes as children of the found node.
         for p in clones:
             p2 = p.clone()
             p2.moveToLastChildOf(found)
+        return found
+    #@+node:ekr.20150717105329.1: *5* find.createFindAllNode
+    def createFindAllNode(self, result):
+        '''Create a "Found All" node as the last node of the outline.'''
+        c = self.c
+        found = c.lastTopLevel().insertAfter()
+        found.h = 'Found All:%s %s' % (
+            self.getFindResultStatus(find_all=True),
+            self.find_text)
+        found.b = ''.join(result)
         return found
     #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
     def findNext(self, initFlag=True):
@@ -1489,25 +1514,32 @@ class LeoFind:
             self.showStatus(True)
             return True # for vim-mode find commands.
     #@+node:ekr.20150622095118.1: *5* find.getFindResultStatus
-    def getFindResultStatus(self):
+    def getFindResultStatus(self, find_all=False):
         '''Return the status to be shown in the status line after a find command completes.'''
         status = []
         if self.whole_word:
-            status.append('word-only')
+            status.append('word' if find_all else 'word-only')
         if self.ignore_case:
             status.append('ignore-case')
         if self.pattern_match:
             status.append('regex')
-        if not self.search_headline:
-            status.append('body-only')
-        elif not self.search_body:
-            status.append('headline-only')
-        if self.wrapping:
-            status.append('wrapping')
-        if self.suboutline_only:
-            status.append('[outline-only]')
-        elif self.node_only:
-            status.append('[node-only]')
+        if find_all:
+            if self.search_headline:
+                status.append('head')
+            if self.search_body:
+                status.append('body')
+        else:
+            if not self.search_headline:
+                status.append('body-only')
+            elif not self.search_body:
+                status.append('headline-only')
+        if not find_all:
+            if self.wrapping:
+                status.append('wrapping')
+            if self.suboutline_only:
+                status.append('[outline-only]')
+            elif self.node_only:
+                status.append('[node-only]')
         return ' (%s)' % ', '.join(status) if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):

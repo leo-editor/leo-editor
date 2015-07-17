@@ -92,8 +92,6 @@ Create one QWebView window. zoom it in to have large fonts.
 Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
 
 Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20150513180101.1: *4* find-all should write to the body of a new node
-Pretty much like clone-find-all.
 .. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
 .. @+node:ekr.20150626140258.1: *4* minor...
 .. @+node:ekr.20150609104046.1: *5* Bug 190: Disappearing +/- expansion boxes in outline
