@@ -881,6 +881,7 @@
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
+<v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20071026183116"><vh>g.app.gui.run* methods run dialogs</vh></v>
@@ -894,11 +895,10 @@
 <v t="ekr.20090223065025.3"><vh>Modifying the body pane directly</vh></v>
 <v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
-<v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
+<v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
-<v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16178"><vh>Exploring Leo's Code Base</vh>
