@@ -6510,7 +6510,7 @@ class Commands(object):
             one_file        True: import only the file given by dir_.
             safe_at_file    True: produce @@file nodes instead of @file nodes.
             theTypes        A list of file extensions to import.
-                            None is equivalen to ['.py']
+                            None is equivalent to ['.py']
             
         This method cleans imported files as follows:
 
