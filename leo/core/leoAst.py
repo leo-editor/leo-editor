@@ -418,7 +418,7 @@ class AstFormatter:
             return self.indent('assert %s' % test)
     #@+node:ekr.20141012064706.18444: *4* f.Assign
     def do_Assign(self, node):
-        return self.indent('%s=%s' % (
+        return self.indent('%s=%s\n' % (
             '='.join([self.visit(z) for z in node.targets]),
             self.visit(node.value)))
     #@+node:ekr.20141012064706.18445: *4* f.AugAssign
