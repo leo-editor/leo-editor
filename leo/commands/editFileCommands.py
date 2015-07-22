@@ -158,6 +158,73 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     g.pr('%-32s %s' % (key, p.h))
                 else:
                     g.pr('%-32s %s' % (key, g.toEncodedString(p.h, 'ascii')))
+    #@+node:ekr.20150722080425.1: ** efc.compareTrees
+    def compareTrees(self, p1, p2, tag):
+        
+        class Controller:
+            #@+others
+            #@+node:ekr.20150722080308.2: *3* ct.compare
+            def compare(self, d1, d2, p1, p2, root):
+                '''Compare dicts d1 and d2.'''
+                c = self.c
+                for h in sorted(d1.keys()):
+                    p1, p2 = d1.get(h), d2.get(h)
+                    if h in d2:
+                        lines1, lines2 = g.splitLines(p1.b), g.splitLines(p2.b)
+                        aList = list(difflib.unified_diff(lines1, lines2, 'vr1', 'vr2'))
+                        if aList:
+                            p = root.insertAsLastChild()
+                            p.h = h
+                            p.b = ''.join(aList)
+                            p1.clone().moveToLastChildOf(p)
+                            p2.clone().moveToLastChildOf(p)
+                    elif p1.b.strip():
+                        # Only in p1 tree, and not an organizer node.
+                        p = root.insertAsLastChild()
+                        p.h = h + '(%s only)' % p1.h
+                        p1.clone().moveToLastChildOf(p)
+                for h in sorted(d2.keys()):
+                    p2 = d2.get(h)
+                    if h not in d1 and p2.b.strip():
+                        # Only in p2 tree, and not an organizer node.
+                        p = root.insertAsLastChild()
+                        p.h = h + '(%s only)' % p2.h
+                        p2.clone().moveToLastChildOf(p)
+                return root
+            #@+node:ekr.20150722080308.3: *3* ct.run
+            def run(self, c, p1, p2, tag):
+                '''Main line.'''
+                self.c = c
+                root = c.p.insertAfter()
+                root.h = tag
+                d1 = self.scan(p1)
+                d2 = self.scan(p2)
+                self.compare(d1, d2, p1, p2, root)
+                c.p.contract()
+                root.expand()
+                c.selectPosition(root)
+                c.redraw()
+            #@+node:ekr.20150722080308.4: *3* ct.scan
+            def scan(self, p1):
+                '''
+                Create a dict of the methods in p1.
+                Keys are headlines, stripped of prefixes.
+                Values are copies of positions.
+                '''
+                d = {} # 
+                for p in p1.self_and_subtree():
+                    h = p.h.strip()
+                    i = h.find('.')
+                    if i > -1:
+                        h = h[i + 1:].strip()
+                    if h in d:
+                        g.es_print('duplicate', p.h)
+                    else:
+                        d[h] = p.copy()
+                return d
+            #@-others
+            
+        Controller().run(self.c, p1, p2, tag)
     #@+node:ekr.20150514063305.363: ** efc.deleteFile
     @cmd('file-delete')
     def deleteFile(self, event):

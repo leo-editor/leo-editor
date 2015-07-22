@@ -522,11 +522,11 @@ if QtWidgets:
                 'svg': pc.update_svg,
                 'url': pc.update_url,
             }
-        #@+node:tbrown.20110621120042.22676: *3* closeEvent
+        #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
             self.deactivate()
-        #@+node:ekr.20130413061407.10363: *3* contract & expand
+        #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
         def contract(self):
             self.change_size(-100)
 
@@ -546,7 +546,7 @@ if QtWidgets:
                     else:
                         sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
                 splitter.setSizes(sizes)
-        #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook) (viewrendered.py)
+        #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
             '''Activate the vr-window.'''
             pc = self
@@ -556,7 +556,7 @@ if QtWidgets:
             pc.active = True
             g.registerHandler('select2', pc.update)
             g.registerHandler('idle', pc.update)
-        #@+node:ekr.20110317080650.14382: *3* deactivate (viewrendered.py)
+        #@+node:ekr.20110317080650.14382: *3* vr.deactivate
         def deactivate(self):
             '''Deactivate the vr window.'''
             pc = self
@@ -565,7 +565,7 @@ if QtWidgets:
             g.unregisterHandler('select2', pc.update)
             g.unregisterHandler('idle', pc.update)
             pc.active = False
-        #@+node:ekr.20110321072702.14508: *3* lock/unlock
+        #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
         def lock(self):
             '''Lock the vr pane.'''
             g.note('rendering pane locked')
@@ -575,7 +575,7 @@ if QtWidgets:
             '''Unlock the vr pane.'''
             g.note('rendering pane unlocked')
             self.locked = False
-        #@+node:ekr.20110319143920.14466: *3* underline
+        #@+node:ekr.20110319143920.14466: *3* vr.underline
         def underline(self, s):
             '''Generate rST underlining for s.'''
             ch = '#'
@@ -621,7 +621,7 @@ if QtWidgets:
                         pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
                 # Will be called at idle time.
                 # if trace: g.trace('no update')
-        #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
+        #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
             pc = self; c = pc.c #X ; splitter = pc.splitter
@@ -644,7 +644,7 @@ if QtWidgets:
                 w.leo_wrapper = wrapper
                 c.k.completeAllBindingsForWidget(wrapper)
                 w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-        #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
+        #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             '''Set the background color of the vr pane.'''
             pc = self
@@ -656,7 +656,7 @@ if QtWidgets:
             elif colorName not in pc.badColors:
                 pc.badColors.append(colorName)
                 g.warning('invalid body background color: %s' % (colorName))
-        #@+node:ekr.20110320120020.14476: *4* must_update
+        #@+node:ekr.20110320120020.14476: *4* vr.must_update
         def must_update(self, keywords):
             '''Return True if we must update the rendering pane.'''
             pc = self
@@ -682,7 +682,7 @@ if QtWidgets:
             # This will be called at idle time.
             # if trace: g.trace('no change')
             return False
-        #@+node:ekr.20110321151523.14463: *4* update_graphics_script
+        #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
             pc = self; c = pc.c
@@ -710,7 +710,7 @@ if QtWidgets:
             c.executeScript(
                 script=s,
                 namespace={'gs': pc.gs, 'gv': pc.gv})
-        #@+node:ekr.20110321005148.14534: *4* update_html
+        #@+node:ekr.20110321005148.14534: *4* vr.update_html
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
@@ -722,7 +722,7 @@ if QtWidgets:
                 w = pc.w
             pc.show()
             w.setHtml(s)
-        #@+node:ekr.20110320120020.14482: *4* update_image
+        #@+node:ekr.20110320120020.14482: *4* vr.update_image
         def update_image(self, s, keywords):
             '''Update an image in the vr pane.'''
             pc = self
@@ -755,7 +755,7 @@ if QtWidgets:
             w.setReadOnly(False)
             w.setHtml(template)
             w.setReadOnly(True)
-        #@+node:peckj.20130207132858.3671: *4* update_md
+        #@+node:peckj.20130207132858.3671: *4* vr.update_md
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
             pc = self; c = pc.c; p = c.p
@@ -811,7 +811,7 @@ if QtWidgets:
             if sb and pos:
                 # Restore the scrollbars
                 sb.setSliderPosition(pos)
-        #@+node:ekr.20110320120020.14481: *4* update_movie
+        #@+node:ekr.20110320120020.14481: *4* vr.update_movie
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
             # pylint: disable=maybe-no-member
@@ -849,14 +849,14 @@ if QtWidgets:
             vp = pc.vp
             vp.load(phonon.MediaSource(path))
             vp.play()
-        #@+node:ekr.20110320120020.14484: *4* update_networkx
+        #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
         def update_networkx(self, s, keywords):
             '''Update a networkx graphic in the vr pane.'''
             pc = self
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
-        #@+node:ekr.20110320120020.14477: *4* update_rst
+        #@+node:ekr.20110320120020.14477: *4* vr.update_rst
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
@@ -914,7 +914,7 @@ if QtWidgets:
             if sb and pos:
                 # Restore the scrollbars
                 sb.setSliderPosition(pos)
-        #@+node:ekr.20110320120020.14479: *4* update_svg
+        #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
@@ -940,7 +940,7 @@ if QtWidgets:
                     pc.show()
                     w.load(path)
                     w.show()
-        #@+node:ekr.20110321005148.14537: *4* update_url
+        #@+node:ekr.20110321005148.14537: *4* vr.update_url
         def update_url(self, s, keywords):
             pc = self
             w = pc.ensure_text_widget()
@@ -956,8 +956,8 @@ if QtWidgets:
             # w.setReadOnly(False)
             # w.setHtml(s)
             # w.setReadOnly(True)
-        #@+node:ekr.20110322031455.5765: *4* utils for update helpers...
-        #@+node:ekr.20110322031455.5764: *5* ensure_text_widget
+        #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
+        #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
         def ensure_text_widget(self):
             '''Swap a text widget into the rendering pane if necessary.'''
             pc = self
@@ -995,7 +995,7 @@ if QtWidgets:
                 return pc.w
             else:
                 return pc.w
-        #@+node:ekr.20110320120020.14483: *5* get_kind
+        #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
             pc = self; h = p.h
@@ -1006,7 +1006,7 @@ if QtWidgets:
                     return word
             # To do: look at ancestors, or uA's.
             return pc.default_kind # The default.
-        #@+node:ekr.20110320233639.5776: *5* get_fn
+        #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self
             c = pc.c
@@ -1030,17 +1030,17 @@ if QtWidgets:
                     fn = g.os_path_finalize(fn)
             ok = g.os_path_exists(fn)
             return ok, fn
-        #@+node:ekr.20110321005148.14536: *5* get_url
+        #@+node:ekr.20110321005148.14536: *5* vr.get_url
         def get_url(self, s, tag):
             p = self.c.p
             url = s or p.h[len(tag):]
             url = url.strip()
             return url
-        #@+node:ekr.20110322031455.5763: *5* must_change_widget
+        #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
         def must_change_widget(self, widget_class):
             pc = self
             return not pc.w or pc.w.__class__ != widget_class
-        #@+node:ekr.20110320120020.14485: *5* remove_directives
+        #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
         def remove_directives(self, s):
             lines = g.splitLines(s)
             result = []
