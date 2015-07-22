@@ -407,8 +407,6 @@ def scan_options():
         help='keep-blank-lines')
     # Parse the options.
     options, files = parser.parse_args()
-    ### sys.argv = [sys.argv[0]]; sys.argv.extend(args)
-    ### aList = sys.argv[1:]
     if options.debug:
         # Print the list of files and exit.
         g.trace('files...', files)
@@ -806,7 +804,7 @@ class PythonTokenBeautifier:
             self.delete_blank_lines = not c.config.getBool(
                 'tidy-keep-blank-lines', default=True)
             self.args_style = c.config.getString('tidy-args-style')
-            ### Not used yet.
+            # Not used yet.
             # if self.args_style not in ('align', 'asis', 'indent'):
                 # self.args_style = 'align'
             self.tab_width = abs(c.tab_width) if c else 4
@@ -936,7 +934,6 @@ class PythonTokenBeautifier:
         raw_val = self.raw_val.rstrip()
         val = self.val.rstrip()
         entire_line = raw_val.lstrip().startswith('#')
-        # g.trace(entire_line,raw_val)
         self.backslash_seen = False
             # Putting the comment will put the backslash.
         if entire_line:
@@ -974,7 +971,6 @@ class PythonTokenBeautifier:
     def do_indent(self):
         '''Handle indent token.'''
         self.level += 1
-        # assert self.val == ' '*self.tab_width*self.level,(repr(self.val),self.level,g.callers())
         self.lws = self.val
         self.line_start()
     #@+node:ekr.20041021101911.5: *4* ptb.do_name
@@ -1060,7 +1056,7 @@ class PythonTokenBeautifier:
         self.add_token('string', self.val)
         if self.val.find('\\\n'):
             self.backslash_seen = False
-            # This does retain the string's spelling.
+            # This *does* retain the string's spelling.
         self.blank()
     #@+node:ekr.20150526201902.1: *3* ptb.Output token generators
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
@@ -1074,6 +1070,7 @@ class PythonTokenBeautifier:
     # def arg_end(self):
         # '''Add a token indicating the end of an argument list.'''
         # self.add_token('arg-end')
+
     # def arg_start(self):
         # '''Add a token indicating the start of an argument list.'''
         # self.add_token('arg-start')
@@ -1108,7 +1105,7 @@ class PythonTokenBeautifier:
         else:
             for i in range(0, n + 1):
                 self.add_token('line-end', '\n')
-            # Retain the intention for debugging.
+            # Retain the token (intention) for debugging.
             self.add_token('blank-lines', n)
             self.line_indent()
     #@+node:ekr.20150526201701.6: *4* ptb.clean
@@ -1117,10 +1114,6 @@ class PythonTokenBeautifier:
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
-        ###
-            # return True
-        # else:
-            # return False
     #@+node:ekr.20150527175750.1: *4* ptb.clean_blank_lines
     def clean_blank_lines(self):
         '''Remove all vestiges of previous lines.'''
@@ -1163,7 +1156,7 @@ class PythonTokenBeautifier:
             self.backslash()
         self.add_token('line-end', '\n')
         self.line_indent()
-            # Add then indentation for all lines
+            # Add the indentation for all lines
             # until the next indent or unindent token.
 
     def line_start(self):
@@ -1176,7 +1169,6 @@ class PythonTokenBeautifier:
         self.paren_level += 1
         self.clean('blank')
         prev = self.code_list[-1]
-        # g.trace(prev.kind,prev.value)
         if prev.kind in ('op', 'word-op'):
             self.blank()
             self.add_token('lt', s)
@@ -1282,7 +1274,7 @@ class PythonTokenBeautifier:
         self.blank()
 
     def word_op(self, s):
-        '''Add a word request to the code list.'''
+        '''Add a word-op request to the code list.'''
         assert s and g.isString(s), repr(s)
         self.blank()
         self.add_token('word-op', s)
