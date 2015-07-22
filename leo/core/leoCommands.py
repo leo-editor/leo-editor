@@ -931,7 +931,7 @@ class Commands(object):
             # Calls c.setChanged(False) if no error.
             g.app.syntax_error_files = []
             c.fileCommands.save(c.mFileName)
-            c.syntaxErrorDialog()   
+            c.syntaxErrorDialog()
         else:
             root = c.rootPosition()
             if not root.next() and root.isAtEditNode():

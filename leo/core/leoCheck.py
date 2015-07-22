@@ -30,7 +30,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.formatter = leoAst.AstFormatter()
             # leoAst.AstPatternFormatter()
         self.trace = False
-
     #@+others
     #@+node:ekr.20150609053332.1: *3* sd.Helpers
     #@+node:ekr.20150606035006.1: *4* sd.context_names

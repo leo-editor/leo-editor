@@ -1070,7 +1070,6 @@ class PythonTokenBeautifier:
     # def arg_end(self):
         # '''Add a token indicating the end of an argument list.'''
         # self.add_token('arg-end')
-
     # def arg_start(self):
         # '''Add a token indicating the start of an argument list.'''
         # self.add_token('arg-start')

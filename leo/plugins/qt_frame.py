@@ -2156,7 +2156,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
         def put1(self, s, bg=None, fg=None):
             self.put_helper(s, self.textWidget1, bg, fg)
-            
+
         styleSheetCache = {}
             # Keys are widgets, values are stylesheets.
 
@@ -2171,7 +2171,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             d = self.styleSheetCache
             if styleSheet != d.get(w):
                 # g.trace(g.app.gui.widget_name(w), styleSheet)
-                d [w] = styleSheet
+                d[w] = styleSheet
                 w.setStyleSheet(styleSheet)
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update

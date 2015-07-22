@@ -1448,7 +1448,7 @@ class LeoFind:
                     result.append(line)
                 else:
                     result.append('%s%s\n%s' % ('-' * 20, self.p.h, line))
-                    self.p.setVisited()   
+                    self.p.setVisited()
         if clone_find_all or clone_find_all_flattened:
             if clones:
                 undoData = u.beforeInsertNode(c.p)
