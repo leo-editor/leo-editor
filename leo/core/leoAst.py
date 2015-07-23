@@ -3,6 +3,8 @@
 '''AST (Abstract Syntax Tree) related classes.'''
 import leo.core.leoGlobals as g
 import ast
+import os
+import textwrap
 #@+others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -1225,7 +1227,7 @@ class AstPatternFormatter(AstFormatter):
         return 'Str' # return repr(node.s)
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser (AstFullTraverser)
-class NewHTMLReportTraverser(AstFullTraverser):
+class HTMLReportTraverser(AstFullTraverser):
     '''
     Create html reports from an AST tree.
     
@@ -1236,23 +1238,25 @@ class NewHTMLReportTraverser(AstFullTraverser):
     '''
     # To do: show stc attributes in the report.
     # To do: revise report-traverser-debug.css.
+
+    # pylint: disable=no-self-argument
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
-    def __init__(self):
+    def __init__(rt):
         '''Ctor for the NewHTMLReportTraverser class.'''
-        self.visitor = self
-        AstFullTraverser.__init__(self)
+        rt.visitor = rt
+        AstFullTraverser.__init__(rt)
             # Init the base class.
-        self.code_list = []
-        self.debug = True
-        self.indent = 0
+        rt.code_list = []
+        rt.debug = True
+        rt.indent = 0
         debug_css = 'report-traverser-debug.css'
         plain_css = 'report-traverser.css'
-        self.css_fn = debug_css if self.debug else plain_css
-        self.html_footer = '\n</body>\n</html>\n'
-        self.html_header = self.define_html_header()
+        rt.css_fn = debug_css if rt.debug else plain_css
+        rt.html_footer = '\n</body>\n</html>\n'
+        rt.html_header = rt.define_html_header()
     #@+node:ekr.20150722204300.3: *4* define_html_header
-    def define_html_header(self):
+    def define_html_header(rt):
         # Use string catenation to avoid using g.adjustTripleString.
         return (
             '<?xml version="1.0" encoding="iso-8859-15"?>\n'
@@ -1264,46 +1268,272 @@ class NewHTMLReportTraverser(AstFullTraverser):
             '  <link rel="stylesheet" type="text/css" href="%(css-fn)s" />\n'
             '</head>\n<body>'
         )
-    #@+node:ekr.20150722204300.4: *3* rt.css links & popup
+    #@+node:ekr.20150723094359.1: *3* rt.code generators
+    #@+node:ekr.20150723100236.1: *4* rt.blank
+    def blank(rt):
+        rt.gen(' ')
+        
+    #@+node:ekr.20150723100208.1: *4* rt.clean (To do)
+    def clean(rt, s):
+        pass
+    #@+node:ekr.20150723105702.1: *4* rt.colon
+    def colon(rt):
+        rt.gen(':')
+    #@+node:ekr.20150723100346.1: *4* rt.comma
+    def comma(rt):
+        rt.gen(',')
+    #@+node:ekr.20150722204300.21: *4* rt.doc & helper
+    # Called by ClassDef & FunctionDef visitors.
+
+    def doc(rt, node, classes=None):
+        if node.doc is not None:
+            rt.docstring(node.doc, classes)
+    #@+node:ekr.20150722204300.22: *5* rt.docstring
+    def docstring(rt, s, classes=None):
+        if classes:
+            classes = ' ' + classes
+        rt.gen("<pre class='doc%s'>" % (classes))
+        rt.gen('"""')
+        rt.gen(rt.text(textwrap.dedent(s.replace('"""', '\\"\\"\\"'))))
+        rt.gen('"""')
+        rt.gen("</pre>\n")
+    #@+node:ekr.20150722211115.1: *4* rt.gen
+    def gen(rt,s):
+        '''Append s to the global code list.'''
+        ### To do: handle indent ???
+        rt.code_list.append(s)
+    #@+node:ekr.20150722204300.23: *4* rt.keyword (not a visitor!)
+    def keyword(rt, keyword_name, leading=False, trailing=True):
+        ###
+        # return [
+            # leading and ' ',
+            # rt.span('keyword', [
+                # keyword_name,
+            # ]),
+            # trailing and ' ',
+        # ]
+        if leading:
+            rt.blank()
+        rt.span('keyword')
+        rt.gen(keyword_name)
+        rt.end_span()
+        if trailing:
+            rt.blank()
+    #@+node:ekr.20150722204300.24: *4* rt.name
+    def name(rt, name):
+        rt.span('name')
+        rt.gen(name)
+        rt.end_span()
+    #@+node:ekr.20150723100417.1: *4* rt.newline (Improve)
+    def newline(rt):
+        rt.gen('\n')
+    #@+node:ekr.20150722204300.26: *4* rt.op
+    def op(rt, op_name, leading=False, trailing=True):
+        # g.trace(repr(op_name))
+        ###
+        # return [
+            # leading and ' ',
+            # rt.span("operation", [
+                # rt.span("operator", [
+                    # rt.text(op_name),
+                # ])
+                # # rt.popup(None,[
+                    # # rt.div('opnames',[
+                        # # rt.name_link("operator","operator.%s" % op_name,op_name),
+                    # # ]),
+                # # ]),
+            # ]),
+            # trailing and ' ',
+        # ]
+        if leading:
+            rt.blank()
+        rt.span("operation")
+        rt.span("operator")
+        rt.gen(rt.text(op_name))
+        rt.end_span() # operator
+        if trailing:
+            rt.blank()
+        rt.end_span() # operation
+    #@+node:ekr.20150723105951.1: *4* rt.op_name
+    #@@nobeautify
+
+    def op_name (self,node,strict=True):
+        '''Return the print name of an operator node.'''
+        d = {
+            # Binary operators. 
+            'Add':       '+',
+            'BitAnd':    '&',
+            'BitOr':     '|',
+            'BitXor':    '^',
+            'Div':       '/',
+            'FloorDiv':  '//',
+            'LShift':    '<<',
+            'Mod':       '%',
+            'Mult':      '*',
+            'Pow':       '**',
+            'RShift':    '>>',
+            'Sub':       '-',
+            # Boolean operators.
+            'And':   ' and ',
+            'Or':    ' or ',
+            # Comparison operators
+            'Eq':    '==',
+            'Gt':    '>',
+            'GtE':   '>=',
+            'In':    ' in ',
+            'Is':    ' is ',
+            'IsNot': ' is not ',
+            'Lt':    '<',
+            'LtE':   '<=',
+            'NotEq': '!=',
+            'NotIn': ' not in ',
+            # Context operators.
+            'AugLoad':  '<AugLoad>',
+            'AugStore': '<AugStore>',
+            'Del':      '<Del>',
+            'Load':     '<Load>',
+            'Param':    '<Param>',
+            'Store':    '<Store>',
+            # Unary operators.
+            'Invert':   '~',
+            'Not':      ' not ',
+            'UAdd':     '+',
+            'USub':     '-',
+        }
+        name = d.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        if strict: assert name,self.kind(node)
+        return name
+    #@+node:ekr.20150722204300.27: *4* rt.simple_statement
+    def simple_statement(rt, name):
+        ###
+        # return [
+            # rt.div('%s nowrap' % name, [
+                # rt.keyword(name),
+            # ]),
+        # ]
+        rt.div('%s nowrap' % name)
+        rt.keyword(name)
+        rt.end_div()
+    #@+node:ekr.20150722204300.16: *3* rt.html helpers
+    #@+node:ekr.20150722204300.17: *4* rt.attr & text
+    def attr(rt, s):
+        return rt.text(s).replace("'", "&apos;").replace('"', "&quot;")
+
+    def text(rt, s):
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    #@+node:ekr.20150722204300.18: *4* rt.br
+    def br(rt):
+        return '\n<br />'
+    #@+node:ekr.20150722204300.19: *4* rt.comment
+    def comment(rt, comment):
+        return '%s\n' % rt.span("# %s" % (comment))
+    #@+node:ekr.20150722204300.20: *4* rt.div
+    def div(rt, class_name, extra=None):
+        '''Generate the start of a div element.'''
+        if class_name and extra:
+            s = "\n<div class='%s' %s>" % (class_name, extra)
+        elif class_name:
+            s = "\n<div class='%s'>" % (class_name)
+        else:
+            assert not extra
+            s = "\n<div>"
+        rt.gen(s)
+        rt.indent += 4
+        ###
+        # assert isinstance(aList, (list, tuple))
+        # return [
+            # div,
+            # join_list(aList, indent='  '),
+            # '\n</div>'
+        # ]
+    #@+node:ekr.20150722222149.1: *4* rt.div_body
+    def div_body(rt, aList):
+        if aList:
+            rt.div_list('body nowrap', aList)
+    #@+node:ekr.20150722221408.1: *4* rt.div_keyword_colon
+    def div_keyword_colon(rt, class_name, keyword):
+        rt.div(class_name)
+        rt.keyword(keyword)
+        rt.colon()
+        rt.end_div()
+    #@+node:ekr.20150722221101.1: *4* rt.div_list & div_node
+    def div_list(rt, class_name, aList, sep=None):
+        rt.div(class_name)
+        rt.visit_list(aList, sep=sep)
+        rt.end_div()
+        
+    def div_node(rt, class_name, node):
+        rt.div(class_name)
+        rt.visit(node)
+        rt.end_div()
+
+
+
+    #@+node:ekr.20150723095033.1: *4* rt.end_div
+    def end_div(rt):
+        rt.indent -= 4
+        rt.gen('\n</div>\n')
+    #@+node:ekr.20150723095004.1: *4* rt.end_span
+    def end_span(rt):
+        rt.gen('</span>')
     #@+node:ekr.20150722204300.5: *4* rt.link
-    def link(self, class_name, href, a_text):
+    def link(rt, class_name, href, a_text):
         # g.trace(class_name,a_text)
         return "<a class='%s' href='%s'>%s</a>\n" % (class_name, href, a_text)
     #@+node:ekr.20150722204300.6: *4* rt.module_link
-    def module_link(self, module_name, classes=None):
-        r = self
-        return r.link(
+    def module_link(rt, module_name, classes=None):
+        return rt.link(
             class_name=classes or 'name',
             href='%s.xhtml' % module_name,
-            a_text=r.text(module_name))
+            a_text=rt.text(module_name))
     #@+node:ekr.20150722204300.7: *4* rt.name_link
-    def name_link(self, module_name, full_name, name, classes=None):
-        r = self
+    def name_link(rt, module_name, full_name, name, classes=None):
         # g.trace(name,classes)
-        return r.link(
+        return rt.link(
             class_name=classes or "specific-ref",
-            href='%s.xhtml#%s' % (module_name, r.attr(full_name)),
-            a_text=r.text(name))
+            href='%s.xhtml#%s' % (module_name, rt.attr(full_name)),
+            a_text=rt.text(name))
     #@+node:ekr.20150722204300.8: *4* rt.object_name_ref
-    def object_name_ref(self, module, obj, name=None, classes=None):
+    def object_name_ref(rt, module, obj, name=None, classes=None):
         """
         Link to the definition for 'module' using 'obj' with the optional 'name'
         used as the label (instead of the name of 'obj'). The optional 'classes'
         can be used to customise the CSS classes employed.
         """
-        r = self
-        return r.name_link(
+        return rt.name_link(
             module.full_name(),
             obj.full_name(),
             name or obj.name, classes)
     #@+node:ekr.20150722204300.9: *4* rt.popup
-    def popup(self, classes, aList):
-        r = self
-        r.span_list(classes or 'popup', aList)
+    def popup(rt, classes, aList):
+        rt.span_list(classes or 'popup', aList)
+    #@+node:ekr.20150722204300.28: *4* rt.span
+    def span(rt, class_name):
+        # assert isinstance(aList, (list, tuple))
+        if class_name:
+            span = "\n<span class='%s'>" % (class_name)
+        else:
+            span = '\n<span>'
+        rt.gen(span)
+        # return [
+            # span,
+            # join_list(aList, indent='  '),
+            # # '\n</span>',
+            # '</span>', # More compact
+        # ]
+    #@+node:ekr.20150722224734.1: *4* rt.span_list & span_node
+    def span_list(rt, class_name, aList, sep=None):
+        rt.span(class_name)
+        rt.visit_list(aList, sep=sep)
+        rt.end_span()
+
+    def span_node(rt, class_name, node):
+        rt.span(class_name)
+        rt.visit(node)
+        rt.end_span()
     #@+node:ekr.20150722204300.10: *4* rt.summary_link
-    def summary_link(self, module_name, full_name, name, classes=None):
-        r = self
-        return r.name_link(
+    def summary_link(rt, module_name, full_name, name, classes=None):
+        return rt.name_link(
             "%s-summary" % module_name,
             full_name, name,
             classes)
@@ -1338,22 +1568,22 @@ class NewHTMLReportTraverser(AstFullTraverser):
     #@@language python
 
     #@+node:ekr.20150722204300.12: *4* rt.get_stc_attrs & AttributeTraverser
-    def get_stc_attrs(self, node, all):
-        r = self
-        nodes = r.NameTraverser(self.u).run(node) if all else [node]
-        result = []
-        for node in nodes:
-            aList = []
-            e = getattr(node, 'e', None)
-            reach = getattr(node, 'reach', None)
-            if e:
-                aList.append(r.text('%s cx: %s defined: %s' % (
-                    e.name, e.cx.name, e.defined)))
-            if reach:
-                for item in reach:
-                    aList.append(r.text('reach: %s' % r.u.format(item)))
-            result.append(join_list(aList, sep=', '))
-        return join_list(result, sep='; ')
+    def get_stc_attrs(rt, node, all):
+        pass
+        # nodes = rt.NameTraverser().run(node) if all else [node]
+        # result = []
+        # for node in nodes:
+            # aList = []
+            # e = getattr(node, 'e', None)
+            # reach = getattr(node, 'reach', None)
+            # if e:
+                # aList.append(rt.text('%s cx: %s defined: %s' % (
+                    # e.name, e.cx.name, e.defined)))
+            # if reach:
+                # for item in reach:
+                    # aList.append(rt.text('reach: %s' % rt.u.format(item)))
+            # result.append(join_list(aList, sep=', '))
+        # return join_list(result, sep='; ')
     #@+node:ekr.20150722204300.13: *5* NameTraverser(AstFullTraverser)
     class NameTraverser(AstFullTraverser):
 
@@ -1368,242 +1598,45 @@ class NewHTMLReportTraverser(AstFullTraverser):
             self.visit(root)
             return [self.d.get(key) for key in sorted(self.d.keys())]
     #@+node:ekr.20150722204300.14: *4* rt.stc_attrs
-    def stc_attrs(self, node, all=False):
-        r = self
-        attrs = r.get_stc_attrs(node, all=all)
-        return attrs and [
-            r.span('inline-attr nowrap', [
-                attrs,
-            ]),
-            r.br(),
-        ]
-    #@+node:ekr.20150722204300.15: *4* rt.stc_popup_attrs
-    def stc_popup_attrs(self, node, all=False):
-        r = self
-        ###
-        # attrs = r.get_stc_attrs(node, all=all)
+    def stc_attrs(rt, node, all=False):
+        # attrs = rt.get_stc_attrs(node, all=all)
         # return attrs and [
-            # r.popup('attr-popup', [
+            # rt.span('inline-attr nowrap', [
+                # attrs,
+            # ]),
+            # rt.br(),
+        # ]
+        attrs = rt.get_stc_attrs(node, all=all)
+        if attrs:
+            rt.span('inline-attr nowrap')
+            rt.gen(attrs)
+            rt.end_span()
+            rt.br()
+    #@+node:ekr.20150722204300.15: *4* rt.stc_popup_attrs
+    def stc_popup_attrs(rt, node, all=False):
+        ###
+        # attrs = rt.get_stc_attrs(node, all=all)
+        # return attrs and [
+            # rt.popup('attr-popup', [
                 # attrs,
             # ]),
         # ]
-        attrs = r.get_stc_attrs(node, all=all)
+        attrs = rt.get_stc_attrs(node, all=all)
         if attrs:
-            r.popup('attr-popup', attrs)
-    #@+node:ekr.20150722204300.16: *3* rt.html helpers
-    #@+node:ekr.20150722204300.17: *4* rt.attr & text
-    def attr(self, s):
-        r = self
-        return r.text(s).replace("'", "&apos;").replace('"', "&quot;")
-
-    def text(self, s):
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    #@+node:ekr.20150722204300.18: *4* rt.br
-    def br(self):
-        r = self
-        return '\n<br />'
-    #@+node:ekr.20150722204300.19: *4* rt.comment
-    def comment(self, comment):
-        r = self
-        return '%s\n' % r.span("# %s" % (comment), "comment")
-    #@+node:ekr.20150722204300.20: *4* rt.div & end_div
-    def div(self, class_name, extra=None):
-        '''Generate the start of a div element.'''
-        r = self
-        if class_name and extra:
-            div = "\n<div class='%s' %s>" % (class_name, extra)
-        elif class_name:
-            div = "\n<div class='%s'>" % (class_name)
-        else:
-            assert not extra
-            div = "\n<div>"
-        r.gen(div)
-        self.indent += 4
-        ###
-        # assert isinstance(aList, (list, tuple))
-        # return [
-            # div,
-            # join_list(aList, indent='  '),
-            # '\n</div>'
-        # ]
-        
-    def end_div(self):
-        self.indent -= 4
-        r.gen('\n</div>\n')
-    #@+node:ekr.20150722222149.1: *4* rt.div_body
-    def div_body(self, aList):
-        r = self
-        if aList:
-            r.div_list('body nowrap', aList)
-    #@+node:ekr.20150722221408.1: *4* rt.div_keyword_colon
-    def div_keyword_colon(self, class_name, keyword):
-        r = self
-        self.div(class_name)
-        self.keyword_colon(keyword)
-        self.end_div()
-    #@+node:ekr.20150722221101.1: *4* rt.div_list & div_node
-    def div_list(self, class_name, aList, sep=None):
-        r = self
-        r.div(class_name)
-        r.visit_list(aList, sep=sep)
-        r.end_div()
-        
-    def div_node(self, class_name, node):
-        r = self
-        r.div(class_name)
-        r.visit(node)
-        r.end_div()
-
-
-
-    #@+node:ekr.20150722204300.21: *4* rt.doc & helper (to do)
-    # Called by ClassDef & FunctionDef visitors.
-
-    def doc(self, node, classes=None):
-        # if node.doc is not None:
-            # r.docstring(node.doc,classes)
-        pass
-    #@+node:ekr.20150722204300.22: *5* rt.docstring
-    def docstring(self, s, classes=None):
-        r = self
-        if classes: classes = ' ' + classes
-        return [
-            "<pre class='doc%s'>" % (classes),
-            '"""',
-            r.text(textwrap.dedent(s.replace('"""', '\\"\\"\\"'))),
-            '"""',
-            "</pre>\n",
-        ]
-    #@+node:ekr.20150722204300.23: *4* rt.keyword (a helper, not a visitor!)
-    def keyword(self, keyword_name, leading=False, trailing=True):
-        r = self
-        ###
-        # return [
-            # leading and ' ',
-            # r.span('keyword', [
-                # keyword_name,
-            # ]),
-            # trailing and ' ',
-        # ]
-        if leading:
-            r.blank()
-        r.span('keyword')
-        r.gen(keyword_name)
-        r.end_span()
-        if trailing:
-            r.blank()
-    #@+node:ekr.20150722204300.24: *4* rt.name
-    def name(self, name):
-        r = self
-        r.span('name')
-        r.gen(name)
-        r.end_span()
-    #@+node:ekr.20150722204300.25: *4* rt.object_name_def (rewrite)
-    def object_name_def(self, module, obj, classes=None):
-        """
-        Link to the summary for 'module' using 'obj'. The optional 'classes'
-        can be used to customise the CSS classes employed.
-        """
-        r = self
-        return ''
-        # if isinstance(obj,(ast.ClassDef,ast.FunctionDef)) and obj.is_method()):
-           # r.summary_link(obj.cx.full_name(),obj.full_name(),obj.name,classes)
-        # else:
-            # g.trace(obj.name)
-            # if obj.name == '<string>':
-                # obj.name = 'ModuleName'
-            # r.span(obj.name,classes)
-    #@+node:ekr.20150722204300.26: *4* rt.op
-    def op(self, op_name, leading=False, trailing=True):
-        # g.trace(repr(op_name))
-        r = self
-        ###
-        # return [
-            # leading and ' ',
-            # r.span("operation", [
-                # r.span("operator", [
-                    # r.text(op_name),
-                # ])
-                # # r.popup(None,[
-                    # # r.div('opnames',[
-                        # # r.name_link("operator","operator.%s" % op_name,op_name),
-                    # # ]),
-                # # ]),
-            # ]),
-            # trailing and ' ',
-        # ]
-        if leading:
-            r.blank()
-        r.span("operation")
-        r.span("operator")
-        r.gen(r.text(op_name))
-        r.end_span() # operator
-        if trailing:
-            r.blank()
-        r.end_span() # operation
-    #@+node:ekr.20150722204300.27: *4* rt.simple_statement
-    def simple_statement(self, name):
-        r = self
-        ###
-        # return [
-            # r.div('%s nowrap' % name, [
-                # r.keyword(name),
-            # ]),
-        # ]
-        r.div('%s nowrap' % name)
-        r.keyword(name)
-        r.end_div()
-    #@+node:ekr.20150722204300.28: *4* rt.span & end_span
-    def span(self, class_name): ###, aList):
-        r = self
-        ###assert isinstance(aList, (list, tuple))
-        if class_name:
-            span = "\n<span class='%s'>" % (class_name)
-        else:
-            span = '\n<span>'
-        r.gen(span)
-        # return [
-            # span,
-            # join_list(aList, indent='  '),
-            # # '\n</span>',
-            # '</span>', # More compact
-        # ]
-    def end_span(self):
-        r = self
-        r.gen('</span>')
-    #@+node:ekr.20150722224734.1: *4* rt.span_list & span_node
-    def span_list(self, class_name, aList):
-        r = self
-        r.span(class_name)
-        r.visit_list(aList)
-        r.end_span()
-
-    def span_node(self, class_name, node):
-        r = self
-        r.span(class_name)
-        r.visit(node)
-        r.end_span()
+            rt.popup('attr-popup', attrs)
     #@+node:ekr.20150722204300.29: *4* rt.url (not used)
-    # def url(self, url):
-        # r = self
-        # return r.attr(url).replace("#", "%23").replace("-", "%2d")
-    #@+node:ekr.20150722211115.1: *3* rt.gen
-    def gen(self,s):
-        '''Append s to the global code list.'''
-        ### To do: handle indent ???
-        self.code_list.append(s)
+    # def url(rt, url):
+        # return rt.attr(url).replace("#", "%23").replace("-", "%2d")
     #@+node:ekr.20150722204300.30: *3* rt.reporters
     #@+node:ekr.20150722204300.31: *4* rt.annotate
-    def annotate(self, fn, m):
-        r = self
+    def annotate(rt, fn, m):
         f = open(fn, "wb")
         try:
-            for s in flatten_list(r.report_file()):
-                f.write(s)
+            f.write(''.join(rt.report_file))
         finally:
             f.close()
     #@+node:ekr.20150722204300.32: *4* rt.base_fn
-    def base_fn(self, directory, m):
+    def base_fn(rt, directory, m):
         '''Return the basic html file name used by reporters.'''
         assert g.os_path_exists(directory)
         if m.fn.endswith('<string>'):
@@ -1611,85 +1644,113 @@ class NewHTMLReportTraverser(AstFullTraverser):
         else:
             return g.shortFileName(m.fn)
     #@+node:ekr.20150722204300.33: *4* rt.interfaces & helpers
-    def interfaces(self, directory, m, open_file=False):
-        r = self
-        base_fn = r.base_fn(directory, m)
+    def interfaces(rt, directory, m, open_file=False):
+        base_fn = rt.base_fn(directory, m)
         fn = g.os_path_join(directory, "%s_interfaces.xhtml" % base_fn)
         f = open(fn, "wb")
         try:
-            for s in flatten_list(r.write_interfaces(m)):
-                f.write(s)
+            f.write(''.join(rt.write_interfaces(m)))
         finally:
             f.close()
         if open_file:
             os.startfile(fn)
-    #@+node:ekr.20150722204300.34: *5* write_interfaces
-    def write_interfaces(self, m):
-        r = self
-        all_interfaces, any_interfaces = [], []
-        return join_list([
-            r.html_header % {'css-fn': self.css_fn, 'title': 'Interfaces'},
+    #@+node:ekr.20150722204300.34: *5* rt.write_interfaces
+    def write_interfaces(rt, m):
+        # all_interfaces, any_interfaces = [], []
+        # return join_list([
+            # rt.html_header % {'css-fn': rt.css_fn, 'title': 'Interfaces'},
+            # "<table cellspacing='5' cellpadding='5'>",
+            # "<thead>",
+            # "<tr>",
+            # "<th>Complete Interfaces</th>",
+            # "</tr>",
+            # "</thead>",
+            # rt.write_interface_type("complete", all_interfaces),
+            # "<thead>",
+            # "<tr>",
+            # "<th>Partial Interfaces</th>",
+            # "</tr>",
+            # "</thead>",
+            # rt.write_interface_type("partial", any_interfaces),
+            # "</table>",
+            # rt.html_footer,
+        # ], trailing='\n')
+        result = [
+            rt.html_header % {'css-fn': rt.css_fn, 'title': 'Interfaces'},
             "<table cellspacing='5' cellpadding='5'>",
             "<thead>",
             "<tr>",
             "<th>Complete Interfaces</th>",
             "</tr>",
             "</thead>",
-            r.write_interface_type("complete", all_interfaces),
+        ]
+        result.extend(rt.write_interface_type("complete", []))
+        result.extend([
             "<thead>",
             "<tr>",
             "<th>Partial Interfaces</th>",
             "</tr>",
             "</thead>",
-            r.write_interface_type("partial", any_interfaces),
+        ])
+        result.extend(rt.write_interface_type("partial", []))
+        result.extend([
             "</table>",
-            r.html_footer,
-        ], trailing='\n')
-    #@+node:ekr.20150722204300.35: *5* write_interface_type
-    def write_interface_type(self, classes, interfaces):
-        r = self
-        aList = []
+            rt.html_footer,
+        ])
+        return result
+    #@+node:ekr.20150722204300.35: *5* rt.write_interface_type
+    def write_interface_type(rt, classes, interfaces):
+        # aList = []
+        # for names, objects in interfaces:
+            # if names: aList.append([
+                # "<tr>",
+                # "<td class='summary-interface %s'>%s</td>" % (
+                    # classes,
+                    # ",".join(sorted(names))),
+                # "</tr>",
+            # ])
+        # return join_list([
+            # "<tbody>",
+            # aList,
+            # '</tbody>',
+        # ], trailing='\n')
+        result = [
+            "<tbody>\n"
+        ]
         for names, objects in interfaces:
-            if names: aList.append([
-                "<tr>",
-                "<td class='summary-interface %s'>%s</td>" % (
-                    classes,
-                    ",".join(sorted(names))),
-                "</tr>",
-            ])
-        return join_list([
-            "<tbody>",
-            aList,
-            '</tbody>',
-        ], trailing='\n')
+            if names:
+                result.append("<tr>\n")
+                result.append("<td class='summary-interface %s'>%s</td>\n" % (
+                    classes, ",".join(sorted(names))))
+                result.append("</tr>\n")
+        result.append('</tbody>\n')
+        return result
     #@+node:ekr.20150722204300.36: *4* rt.report(entry_point)
-    def report(self, directory, m, open_file=False):
+    def report(rt, directory, m, open_file=False):
         trace = False
-        r = self
-        r.module = m
-        base_fn = r.base_fn(directory, m)
+        rt.module = m
+        base_fn = rt.base_fn(directory, m)
         annotate_fn = g.os_path_join(directory, "%s.xhtml" % base_fn)
         # if trace: g.trace('writing %s' % (annotate_fn))
-        r.annotate(annotate_fn, m)
+        rt.annotate(annotate_fn, m)
         assert g.os_path_exists(annotate_fn), annotate_fn
         if open_file:
             os.startfile(annotate_fn)
         if 0: # The file is empty at present.
             summary_fn = g.os_path_join(directory, "%s_summary.xhtml" % base_fn)
             if trace: g.trace('writing %s' % (summary_fn))
-            r.summarize(summary_fn, m)
+            rt.summarize(summary_fn, m)
             if open_file:
                 os.startfile(summary_fn)
     #@+node:ekr.20150722204300.37: *4* rt.report_all_modules(needed to write interfaces)
-    def report_all_modules(self, directory):
+    def report_all_modules(rt, directory):
         trace = True
-        r = self
         join = g.os_path_join
         assert g.os_path_exists(directory)
-        d = r.u.modules_dict
+        d = {} ####### rt.u.modules_dict
         files = []
         for n, fn in enumerate(sorted(d.keys())):
-            r.module = m = d.get(fn)
+            rt.module = m = d.get(fn)
             if fn.endswith('<string>'):
                 fn = 'report_writer_string_test'
             else:
@@ -1698,79 +1759,99 @@ class NewHTMLReportTraverser(AstFullTraverser):
             annotate_fn = g.os_path_join(directory, "%s.xhtml" % fn)
             if trace: g.trace('writing: %s.xhtml' % (annotate_fn))
             files.append(annotate_fn)
-            r.annotate(annotate_fn, m)
+            rt.annotate(annotate_fn, m)
             if 0:
                 summary_fn = g.os_path_join(directory, "%s_summary.xhtml" % fn)
                 if trace: g.trace('writing %s' % (summary_fn))
-                r.summarize(summary_fn, m)
+                rt.summarize(summary_fn, m)
                 if False:
                     os.startfile(summary_fn)
-            # r.summarize(join(directory,"%s-summary.xhtml" % (base_fn)),m)
-        # r.interfaces(join(join(directory,"-interfaces.xhtml")),m)
+            # rt.summarize(join(directory,"%s-summary.xhtml" % (base_fn)),m)
+        # rt.interfaces(join(join(directory,"-interfaces.xhtml")),m)
         if 0:
             for fn in files:
                 fn2 = join(directory, fn + '.xhtml')
                 assert g.os_path_exists(fn2), fn2
                 os.startfile(fn2)
     #@+node:ekr.20150722204300.38: *4* rt.report_file
-    def report_file(self):
-        r = self
-        return [
-            r.html_header % {
-                'css-fn': self.css_fn,
-                'title': 'Module: %s' % r.module.full_name()},
-            r.visit(r.module.node),
-            r.html_footer,
-        ]
+    def report_file(rt):
+        # return [
+            # rt.html_header % {
+                # 'css-fn': rt.css_fn,
+                # 'title': 'Module: %s' % rt.module.full_name()},
+            # rt.visit(rt.module.node),
+            # rt.html_footer,
+        # ]
+        rt.gen(rt.html_header % {
+                'css-fn': rt.css_fn,
+                'title': 'Module: %s' % rt.module.full_name()})
+        rt.visit(rt.module.node)
+        rt.gen(rt.html_footer)
     #@+node:ekr.20150722204300.39: *4* rt.summarize & helpers
-    def summarize(self, directory, m, open_file=False):
-        r = self
-        base_fn = r.base_fn(directory, m)
+    def summarize(rt, directory, m, open_file=False):
+        base_fn = rt.base_fn(directory, m)
         fn = g.os_path_join(directory, "%s_summary.xhtml" % base_fn)
         f = open(fn, "wb")
         try:
-            for s in flatten_list(r.summary(m)):
-                f.write(s)
+            rt.code_list = []
+            rt.summary(m)
+            f.write(''.join(rt.code_list))
         finally:
             f.close()
         if open_file:
             os.startfile(fn)
     #@+node:ekr.20150722204300.40: *5* summary & helpers
-    def summary(self, m):
-        r = self
-        return join_list([
-            r.html_header % {
-                'css-fn': self.css_fn,
-                'title': 'Module: %s' % m.full_name()},
-            r.write_classes(m),
-            r.html_footer,
-        ], sep='\n')
+    def summary(rt, m):
+        # return join_list([
+            # rt.html_header % {
+                # 'css-fn': rt.css_fn,
+                # 'title': 'Module: %s' % m.full_name()},
+            # rt.write_classes(m),
+            # rt.html_footer,
+        # ], sep='\n')
+        header = rt.html_header % {
+            'css-fn': rt.css_fn,
+            'title': 'Module: %s' % m.full_name()}
+        rt.gen(header + '\n')
+        rt.write_classes(m)
+        rt.gen(rt.html_footer + '\n')
     #@+node:ekr.20150722204300.41: *6* write_classes
-    def write_classes(self, m):
-        r = self
-        return m.classes() and join_list([
-            "<table cellspacing='5' cellpadding='5'>",
-            "<thead>",
-            "<tr>",
-            "<th>Classes</th><th>Attributes</th>",
-            "</tr>",
-            "</thead>",
-            [r.write_class(z) for z in m.classes()],
-            "</table>",
-        ], sep='\n')
+    def write_classes(rt, m):
+        # return m.classes() and join_list([
+            # "<table cellspacing='5' cellpadding='5'>",
+            # "<thead>",
+            # "<tr>",
+            # "<th>Classes</th><th>Attributes</th>",
+            # "</tr>",
+            # "</thead>",
+            # [rt.write_class(z) for z in m.classes()],
+            # "</table>",
+        # ], sep='\n')
+        if m.classes():
+            table = [
+                "<table cellspacing='5' cellpadding='5'>",
+                "<thead>",
+                "<tr>",
+                "<th>Classes</th><th>Attributes</th>",
+                "</tr>",
+                "</thead>",
+            ]
+            table.extend([rt.write_class(z) for z in m.classes()])
+            table.append("</table>")
+            for z in table:
+                rt.gen(z + '\n')
     #@+node:ekr.20150722204300.42: *6* write_class
-    def write_class(self, obj):
-        r = self
-        d = obj.st.d
+    def write_class(rt, obj):
+        # d = obj.st.d
         # The instance attribute names in order.
-        aList = [d.get(z).name for z in sorted(d.keys())]
+        # aList = [d.get(z).name for z in sorted(d.keys())]
         # attrs = [] ### obj.instance_attributes().values()
         # if attrs:
             # for attr in sorted(attrs,cmp=lambda x,y: cmp(x.position,y.position)):
-                # aList.append("<td class='summary-attr'>%s</td>" % r.text(attr.name))
+                # aList.append("<td class='summary-attr'>%s</td>" % rt.text(attr.name))
         # else:
             # aList.append("<td class='summary-attr-absent'>None</td>")
-        instance_names = join_list(aList, sep=', ')
+        # instance_names = join_list(aList, sep=', ')
         # The class attribute names in order.
         # attrs = [] ### obj.class_attributes().values()
         # aList = []
@@ -1780,1016 +1861,1120 @@ class NewHTMLReportTraverser(AstFullTraverser):
                     # value = attr.get_value()
                     # if False: #### not isinstance(value,Const):
                         # aList.append(join_list([
-                            # "<td class='summary-class-attr' id='%s'>" % (r.attr(value.full_name())),
-                            # r.object_name_ref(r.module,value,attr.name,classes="summary-ref"),
+                            # "<td class='summary-class-attr' id='%s'>" % (rt.attr(value.full_name())),
+                            # rt.object_name_ref(rt.module,value,attr.name,classes="summary-ref"),
                             # "</td>",
                         # ],trailing='\n'))
                     # else:
-                        # aList.append("<td class='summary-class-attr'>%s</td>" % r.text(attr.name))
+                        # aList.append("<td class='summary-class-attr'>%s</td>" % rt.text(attr.name))
                 # else:
-                    # aList.append("<td class='summary-class-attr'>%s</td>" % r.text(attr.name))
+                    # aList.append("<td class='summary-class-attr'>%s</td>" % rt.text(attr.name))
         # else:
             # aList.append("<td class='summary-class-attr-absent'>None</td>")
         # class_names = join_list(aList,sep='\n')
-        return join_list([
+        # return join_list([
+            # "<tbody class='class'>",
+                # "<tr>",
+                    # "<th class='summary-class' id='%s' rowspan='2'>" % (
+                        # rt.attr(obj.full_name())),
+                        # rt.object_name_ref(rt.module, obj, classes="class-name"),
+                    # "</th>",
+                    # instance_names,
+                # "</tr>",
+                # # "<tr>",
+                    # # class_names,
+                # # "</tr>",
+            # "</tbody>",
+        # ], trailing='\n')
+        d = obj.st.d
+        aList = [d.get(z).name for z in sorted(d.keys())]
+        instance_names = ', '.join(aList) ### join_list(aList, sep=', ')
+        return (
             "<tbody class='class'>",
                 "<tr>",
                     "<th class='summary-class' id='%s' rowspan='2'>" % (
-                        r.attr(obj.full_name())),
-                        r.object_name_ref(r.module, obj, classes="class-name"),
+                        rt.attr(obj.full_name())),
+                        rt.object_name_ref(rt.module, obj, classes="class-name"),
                     "</th>",
                     instance_names,
                 "</tr>",
-                # "<tr>",
-                    # class_names,
-                # "</tr>",
             "</tbody>",
-        ], trailing='\n')
+       )
     #@+node:ekr.20150722204300.43: *3* rt.traversers
     #@+node:ekr.20150722204300.44: *4* rt.visit
-    def visit(self, node):
+    def visit(rt, node):
         """Walk a tree of AST nodes."""
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
-        method = getattr(self, method_name)
+        method = getattr(rt, method_name)
         method(node)
     #@+node:ekr.20150722204300.45: *4* rt.visit_list
-    def visit_list(self, aList, sep=None):
-        r = self
+    def visit_list(rt, aList, sep=None):
+        # pylint: disable=arguments-differ
         if aList:
             for z in aList:
-                r.visit(z)
+                rt.visit(z)
                 if sep:
-                    r.gen(sep)
+                    rt.gen(sep)
             if sep:
-                r.clean(sep)
-    #@+node:ekr.20150722204300.46: *3* rt.visitors (16 unfinished)
-    #@+node:ekr.20150722204300.47: *4* rt.arguments & helper
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+                rt.clean(sep)
+    #@+node:ekr.20150723100846.1: *3* rt.unused
+    if 0:
+        #@+others
+        #@+node:ekr.20150722204300.47: *4* rt.arguments & helper
+        # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
-    def do_arguments(self, node):
-        assert isinstance(node, ast.AST), node
-        r = self
-        first_default = len(node.args) - len(node.defaults)
-        result = []
-        first = True
-        for n, node2 in enumerate(node.args):
-            if not first: result.append(', ')
-            if isinstance(node2, tuple):
-                result.append(r.tuple_parameter(node.args, node2)) ### Huh?
-            else:
-                result.append(r.visit(node2)) ### r.assname(param,node)
-            if n >= first_default:
-                node3 = node.defaults[n - first_default]
-                result.append("=")
-                result.append(r.visit(node3))
-            first = False
-        if node.vararg:
-            result.append('*' if first else ', *')
-            result.append(r.name(node.vararg))
-            first = False
-        if node.kwarg:
-            result.append('**' if first else ', **')
-            result.append(r.name(node.kwarg))
-        return result
-    #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
-    def tuple_parameter(self, parameters, node):
-        r = self
-        result = []
-        result.append("(")
-        first = True
-        for param in parameters:
-            if not first: result.append(', ')
-            if isinstance(param, tuple):
-                result.append(r.tuple_parameter(param, node))
-            else:
-                pass ### result.append(r.assname(param,node))
-            first = False
-        result.append(")")
-        return join_list(result)
+        def do_arguments(rt, node):
+            assert isinstance(node, ast.AST), node
+            first_default = len(node.args) - len(node.defaults)
+            result = []
+            first = True
+            for n, node2 in enumerate(node.args):
+                if not first: result.append(', ')
+                if isinstance(node2, tuple):
+                    result.append(rt.tuple_parameter(node.args, node2)) ### Huh?
+                else:
+                    result.append(rt.visit(node2)) ### rt.assname(param,node)
+                if n >= first_default:
+                    node3 = node.defaults[n - first_default]
+                    result.append("=")
+                    result.append(rt.visit(node3))
+                first = False
+            if node.vararg:
+                result.append('*' if first else ', *')
+                result.append(rt.name(node.vararg))
+                first = False
+            if node.kwarg:
+                result.append('**' if first else ', **')
+                result.append(rt.name(node.kwarg))
+            return result
+        #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
+        def tuple_parameter(rt, parameters, node):
+            result = []
+            result.append("(")
+            first = True
+            for param in parameters:
+                if not first: result.append(', ')
+                if isinstance(param, tuple):
+                    result.append(rt.tuple_parameter(param, node))
+                else:
+                    pass ### result.append(rt.assname(param,node))
+                first = False
+            result.append(")")
+            # return join_list(result)
+            return ', '.join(result)
+        #@-others
+    #@+node:ekr.20150722204300.46: *3* rt.visitors
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
 
-    def do_Assert(self, node):
-        r = self
-        r.div('assert nowrap')
-        r.keyword("assert")
-        r.visit(node.test)
+    def do_Assert(rt, node):
+        rt.div('assert nowrap')
+        rt.keyword("assert")
+        rt.visit(node.test)
         if node.msg:
-            r.comma()
-            r.visit(node.msg)
-        r.div_end()
+            rt.comma()
+            rt.visit(node.msg)
+        rt.end_div()
     #@+node:ekr.20150722204300.50: *4* rt.Assign
-    def do_Assign(self, node):
-        r = self
-        show_attrs = True
-        return [
-            r.div('assign nowrap', [
-                [[r.visit(z), ' = '] for z in node.targets],
-                r.visit(node.value),
-            ]),
-            show_attrs and [
-                [r.stc_attrs(z) for z in node.targets],
-                r.stc_attrs(node.value, all=True),
-            ],
-        ]
+    def do_Assign(rt, node):
+        # show_attrs = True
+        # return [
+            # rt.div('assign nowrap', [
+                # [[rt.visit(z), ' = '] for z in node.targets],
+                # rt.visit(node.value),
+            # ]),
+            # show_attrs and [
+                # [rt.stc_attrs(z) for z in node.targets],
+                # rt.stc_attrs(node.value, all=True),
+            # ],
+        # ]
+        rt.div('assign nowrap')
+        for z in node.targets:
+            rt.visit(z)
+            rt.gen(' = ')
+        rt.visit(node.value)
+        if False: ### show_attrs:
+            for z in node.targets:
+                rt.stc_attrs(z)
+            rt.stc_attrs(node.value, all=True)
+        
     #@+node:ekr.20150722204300.51: *4* rt.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
-    def do_Attribute(self, node):
-        r = self
-        return [
-            r.visit(node.value),
-            '.',
-            node.attr,
-        ]
+    def do_Attribute(rt, node):
+        # return [
+            # rt.visit(node.value),
+            # '.',
+            # node.attr,
+        # ]
+        rt.visit(node.value)
+        rt.op('.')
+        rt.gen(node.attr)
     #@+node:ekr.20150722204300.52: *4* rt.AugAssign
     #  AugAssign(expr target, operator op, expr value)
 
-    def do_AugAssign(self, node):
-        r = self
-        op_name = r.op_name(node.op)
-        return [
-            r.div('augassign nowrap', [
-                r.visit(node.target),
-                r.op(op_name, leading=True),
-                r.visit(node.value),
-            ]),
-        ]
+    def do_AugAssign(rt, node):
+        # op_name = rt.op_name(node.op)
+        # return [
+            # rt.div('augassign nowrap', [
+                # rt.visit(node.target),
+                # rt.op(op_name, leading=True),
+                # rt.visit(node.value),
+            # ]),
+        # ]
+        op_name = rt.op_name(node.op)
+        rt.div('augassign nowrap')
+        rt.visit(node.target)
+        rt.op(op_name, leading=True)
+        rt.visit(node.value)
+        rt.end_div()
     #@+node:ekr.20150722204300.53: *4* rt.BinOp
-    def do_BinOp(self, node):
-        r = self
-        op_name = r.op_name(node.op)
-        return [
-            r.span(op_name, [
-                r.visit(node.left),
-                r.op(op_name, leading=True),
-                r.visit(node.right),
-            ]),
-        ]
+    def do_BinOp(rt, node):
+        # op_name = rt.op_name(node.op)
+        # return [
+            # rt.span(op_name, [
+                # rt.visit(node.left),
+                # rt.op(op_name, leading=True),
+                # rt.visit(node.right),
+            # ]),
+        # ]
+        op_name = rt.op_name(node.op)
+        rt.span(op_name)
+        rt.visit(node.left)
+        rt.op(op_name, leading=True)
+        rt.visit(node.right)
+        rt.end_span()
     #@+node:ekr.20150722204300.54: *4* rt.BoolOp
-    def do_BoolOp(self, node):
-        r = self
-        op_name = r.op_name(node.op)
-        ops = []
+    def do_BoolOp(rt, node):
+        # op_name = rt.op_name(node.op)
+        # ops = []
+        # for i, node2 in enumerate(node.values):
+            # if i > 0:
+                # ops.append(rt.keyword(op_name, leading=True))
+            # ops.append(rt.visit(node2))
+        # return [
+            # rt.span(op_name.strip(), [
+                # ops,
+            # ]),
+        # ]
+        op_name = rt.op_name(node.op)
+        rt.span(op_name.strip())
         for i, node2 in enumerate(node.values):
             if i > 0:
-                ops.append(r.keyword(op_name, leading=True))
-            ops.append(r.visit(node2))
-        return [
-            r.span(op_name.strip(), [
-                ops,
-            ]),
-        ]
+                rt.gen(rt.keyword(op_name, leading=True))
+            rt.visit(node2)
+        rt.end_span()
     #@+node:ekr.20150722204300.55: *4* rt.Break
-    def do_Break(self, node):
-        r = self
-        return r.simple_statement('break')
+    def do_Break(rt, node):
+        return rt.simple_statement('break')
     #@+node:ekr.20150722204300.56: *4* rt.Call & rt.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
-    def do_Call(self, node):
-        r = self
+    def do_Call(rt, node):
         ###
-        # args = [r.visit(z) for z in node.args]
+        # args = [rt.visit(z) for z in node.args]
         # args.append(# Calls rt.do_keyword.
-            # join_list([r.visit(z) for z in node.keywords], sep=','))
+            # join_list([rt.visit(z) for z in node.keywords], sep=','))
         # if node.starargs:
-            # args.append(['*', r.visit(node.starargs)])
+            # args.append(['*', rt.visit(node.starargs)])
         # if node.kwargs:
-            # args.append(['**', r.visit(node.kwargs)])
+            # args.append(['**', rt.visit(node.kwargs)])
         # return [
-            # r.span("callfunc", [
-                # r.visit(node.func),
-                # r.span("call", [
+            # rt.span("callfunc", [
+                # rt.visit(node.func),
+                # rt.span("call", [
                     # '(', args, ')',
                 # ]),
             # ]),
         # ]
-        r.span("callfunc")
-        r.visit(node.func)
-        r.span("call")
-        r.add('(')
-        self.visit_list(node.args, sep=',')
-        if node_keywords:
-            self.visit_list(node_keywords, sep=',')
+        rt.span("callfunc")
+        rt.visit(node.func)
+        rt.span("call")
+        rt.op('(')
+        rt.visit_list(node.args, sep=',')
+        if node.keywords:
+            rt.visit_list(node.keywords, sep=',')
         if node.starargs:
-            r.gen('*')
-            r.visit(node.starargs)
-            r.comma()
+            rt.gen('*')
+            rt.visit(node.starargs)
+            rt.comma()
         if node.kwargs:
-            r.gen('**')
-            r.visit(node.kwargs)
-        r.clean(',')
-        r.add(')')
-        r.end_span() # call
-        r.end_span() # callfunc
+            rt.gen('**')
+            rt.visit(node.kwargs)
+        rt.clean(',')
+        rt.op(')')
+        rt.end_span() # call
+        rt.end_span() # callfunc
         
-    #@+node:ekr.20150722204300.57: *5* rt.keyword
+    #@+node:ekr.20150722204300.57: *5* rt.do_keyword
     # keyword = (identifier arg, expr value)
     # keyword arguments supplied to call
 
-    def do_keyword(self, node):
-        r = self
-        return [
-            r.span("keyword-arg", [
-                node.arg,
-                ' = ',
-                r.visit(node.value),
-            ]),
-        ]
+    def do_keyword(rt, node):
+        # return [
+            # rt.span("keyword-arg", [
+                # node.arg,
+                # ' = ',
+                # rt.visit(node.value),
+            # ]),
+        # ]
+        rt.span("keyword-arg")
+        rt.gen(node.arg)
+        rt.op(' = ')
+        rt.visit(node.value)
+        rt.end_span()
     #@+node:ekr.20150722204300.58: *4* rt.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
-    def do_ClassDef(self, node):
-        r = self
+    def do_ClassDef(rt, node):
         ###
         # return [
             # # Write the declaration line.
-            # r.div('classdef nowrap', [
-                # r.div(None, [
-                    # r.keyword("class"),
-                    # r.span(None, [node.name]), # Always a string.
+            # rt.div('classdef nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("class"),
+                    # rt.span(None, [node.name]), # Always a string.
                     # ### cls = node.cx
-                    # ### r.object_name_def(r.module,cls,"class-name")
+                    # ### rt.object_name_def(rt.module,cls,"class-name")
                     # '(',
-                    # node.bases and r.visit_list(node.bases, sep=','),
+                    # node.bases and rt.visit_list(node.bases, sep=','),
                     # "):", #,"\n",
                 # ]),
                 # # Write the docstring and class body.
-                # r.div('body nowrap', [
-                    # r.doc(node),
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.doc(node),
+                    # rt.visit_list(node.body),
                 # ]),
             # ]),
         # ]
         
         # Write the declaration line.
-        r.div('classdef nowrap')
-        r.div(None)
-        r.keyword("class"),
-        r.span(None, [node.name]), # Always a string.
+        rt.div('classdef nowrap')
+        rt.div(None)
+        rt.keyword("class")
+        rt.span(None) # Always a string.
+        rt.gen(node.name) # Always a string.
+        rt.end_span()
         ### cls = node.cx
-        ### r.object_name_def(r.module,cls,"class-name")
+        ### rt.object_name_def(rt.module,cls,"class-name")
         if node.bases:
-            r.gen('(')
-            self.visit_list(node.bases, sep=',')
-            r.gen(')')
-        r.colon()
-        r.end_div() # None
-        r.div('body nowrap')
-        r.doc(node),
-        r.visit_list(node.body),
-        r.end_div() # body
-        r.end_div() # classdef
+            rt.gen('(')
+            rt.visit_list(node.bases, sep=',')
+            rt.gen(')')
+        rt.colon()
+        rt.end_div() # None
+        rt.div('body nowrap')
+        rt.doc(node)
+        rt.visit_list(node.body)
+        rt.end_div() # body
+        rt.end_div() # classdef
     #@+node:ekr.20150722204300.59: *4* rt.Compare
-    def do_Compare(self, node):
-        r = self
+    def do_Compare(rt, node):
+        # assert len(node.ops) == len(node.comparators)
+        # ops = []
+        # for i in range(len(node.ops)):
+            # op_name = rt.op_name(node.ops[i])
+            # ops.append(rt.op(op_name, leading=True))
+            # expr = node.comparators[i]
+            # ops.append(rt.visit(expr))
+        # return [
+            # rt.span("compare", [
+                # rt.visit(node.left),
+                # ops,
+            # ]),
+        # ]
         assert len(node.ops) == len(node.comparators)
-        ops = []
+        rt.span("compare")
+        rt.visit(node.left)
         for i in range(len(node.ops)):
-            op_name = r.op_name(node.ops[i])
-            ops.append(r.op(op_name, leading=True))
-            expr = node.comparators[i]
-            ops.append(r.visit(expr))
-        return [
-            r.span("compare", [
-                r.visit(node.left),
-                ops,
-            ]),
-        ]
+            op_name = rt.op_name(node.ops[i])
+            rt.op(op_name, leading=True)
+            rt.visit(node.comparators[i])
+        rt.end_span() # compare
     #@+node:ekr.20150722204300.60: *4* rt.comprehension
-    def do_comprehension(self, node):
-        r = self
-        ifs = node.ifs and [
-            r.keyword('if', leading=True),
-            r.span("conditional", [
-                r.visit_list(node.ifs, sep=' '),
-            ]),
-        ]
-        return [
-            r.keyword("in", leading=True),
-            r.span("collection", [
-                r.visit(node.iter),
-                ifs,
-            ]),
-        ]
+    def do_comprehension(rt, node):
+        # ifs = node.ifs and [
+            # rt.keyword('if', leading=True),
+            # rt.span("conditional", [
+                # rt.visit_list(node.ifs, sep=' '),
+            # ]),
+        # ]
+        # return [
+            # rt.keyword("in", leading=True),
+            # rt.span("collection", [
+                # rt.visit(node.iter),
+                # ifs,
+            # ]),
+        # ]
+        rt.keyword("in", leading=True)
+        rt.span("collection")
+        rt.visit(node.iter)
+        if node.ifs:
+            rt.keyword('if', leading=True)
+            rt.span_list("conditional", node.ifs, sep=' ')
+        rt.end_span() # collection
     #@+node:ekr.20150722204300.61: *4* rt.Continue
-    def do_Continue(self, node):
-        r = self
-        return r.simple_statement('break')
+    def do_Continue(rt, node):
+        return rt.simple_statement('break')
     #@+node:ekr.20150722204300.62: *4* rt.Delete
-    def do_Delete(self, node):
-        r = self
+    def do_Delete(rt, node):
         ###
         # return [
-            # r.div('del nowrap', [
-                # r.keyword('del'),
-                # r.visit_list(node.targets, sep=','),
+            # rt.div('del nowrap', [
+                # rt.keyword('del'),
+                # rt.visit_list(node.targets, sep=','),
             # ]),
         # ]
-        r.div('del nowrap')
-        r.keyword('del')
+        rt.div('del nowrap')
+        rt.keyword('del')
         if node.targets:
-            self.visit_list(node.targets, sep=',')
-        r.end_div()
+            rt.visit_list(node.targets, sep=',')
+        rt.end_div()
     #@+node:ekr.20150722204300.63: *4* rt.Dict
-    def do_Dict(self, node):
-        r = self
+    def do_Dict(rt, node):
+        # assert len(node.keys) == len(node.values)
+        # items = []
+        # for i in range(len(node.keys)):
+            # items.append(rt.visit(node.keys[i]))
+            # items.append(':')
+            # items.append(rt.visit(node.values[i]))
+            # if i < len(node.keys) - 1:
+                # items.append(',')
+        # return [
+            # rt.span("dict", [
+                # '{', items, '}',
+            # ]),
+        # ]
         assert len(node.keys) == len(node.values)
-        items = []
+        rt.span("dict")
+        rt.op('{')
         for i in range(len(node.keys)):
-            items.append(r.visit(node.keys[i]))
-            items.append(':')
-            items.append(r.visit(node.values[i]))
-            if i < len(node.keys) - 1:
-                items.append(',')
-        return [
-            r.span("dict", [
-                '{', items, '}',
-            ]),
-        ]
+            rt.visit(node.keys[i])
+            rt.colon()
+            rt.visit(node.values[i])
+            rt.comma()
+        rt.clean(',')
+        rt.op('}')
+        rt.end_span() # dict
+
     #@+node:ekr.20150722204300.64: *4* rt.Ellipsis
-    def do_Ellipsis(self, node):
-        r = self
-        r.gen('...')
+    def do_Ellipsis(rt, node):
+        rt.gen('...')
     #@+node:ekr.20150722204300.65: *4* rt.ExceptHandler
-    def do_ExceptHandler(self, node):
-        r = self
+    def do_ExceptHandler(rt, node):
         ### 
         # name = node.name and [
-            # r.keyword('as', leading=True, trailing=True),
-            # r.visit(node.name),
+            # rt.keyword('as', leading=True, trailing=True),
+            # rt.visit(node.name),
         # ]
         # return [
-            # r.div('excepthandler nowrap', [
-                # r.div(None, [
-                    # r.keyword("except", trailing=bool(node.type)),
-                    # r.visit(node.type) if node.type else '',
+            # rt.div('excepthandler nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("except", trailing=bool(node.type)),
+                    # rt.visit(node.type) if node.type else '',
                     # name, ':', #'\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
             # ]),
         # ]
-        r.div('excepthandler nowrap')
-        r.div(None)
-        r.keyword("except", trailing=bool(node.type)),
+        rt.div('excepthandler nowrap')
+        rt.div(None)
+        rt.keyword("except", trailing=bool(node.type))
         if node.type:
-            r.visit(node.type)
+            rt.visit(node.type)
         if node.name:
-            r.keyword('as', leading=True, trailing=True)
-            r.visit(node.name)
-        r.colon()
-        r.end_div() # None
-        r.div_body(node.body)
-        r.end_div() # excepthandler
+            rt.keyword('as', leading=True, trailing=True)
+            rt.visit(node.name)
+        rt.colon()
+        rt.end_div() # None
+        rt.div_body(node.body)
+        rt.end_div() # excepthandler
     #@+node:ekr.20150722204300.66: *4* rt.Exec
     # Python 2.x only.
 
-    def do_Exec(self, node):
-        r = self
+    def do_Exec(rt, node):
         # return [
-            # r.div('exec nowrap', [
-                # r.keyword('exec', leading=True),
-                # r.visit(node.body),
-                # node.globals and [',', r.visit(node.globals)],
-                # node.locals and [',', r.visit(node.locals)],
+            # rt.div('exec nowrap', [
+                # rt.keyword('exec', leading=True),
+                # rt.visit(node.body),
+                # node.globals and [',', rt.visit(node.globals)],
+                # node.locals and [',', rt.visit(node.locals)],
             # ]),
         # ]
-        r.div('exec nowrap')
-        r.keyword('exec', leading=True),
-        r.visit(node.body)
+        rt.div('exec nowrap')
+        rt.keyword('exec', leading=True)
+        rt.visit(node.body)
         if node.globals:
-            r.comma()
-            r.visit(node.globals)
+            rt.comma()
+            rt.visit(node.globals)
         if node.locals:
-            r.comma()
-            r.visit(node.locals)
-        r.end_div() # exec
+            rt.comma()
+            rt.visit(node.locals)
+        rt.end_div() # exec
     #@+node:ekr.20150722204300.67: *4* rt.Expr
-    def do_Expr(self, node):
-        r = self
+    def do_Expr(rt, node):
         ###
         # return [
-            # r.div('expr', [
-                # r.visit(node.value),
+            # rt.div('expr', [
+                # rt.visit(node.value),
             # ])
         # ]
-        r.div_node('expr', node.value)
+        rt.div_node('expr', node.value)
 
     #@+node:ekr.20150722204300.68: *4* rt.For
     # For(expr target, expr iter, stmt* body, stmt* orelse)
 
-    def do_For(self, node):
-        r = self
+    def do_For(rt, node):
         ###
         # orelse = node.orelse and [
-            # r.div(None, [
-                # r.keyword("else", trailing=False),
+            # rt.div(None, [
+                # rt.keyword("else", trailing=False),
                 # ':', # '\n',
             # ]),
-            # r.div('body nowrap', [
-                # r.visit_list(node.orelse),
+            # rt.div('body nowrap', [
+                # rt.visit_list(node.orelse),
             # ]),
         # ]
         # return [
-            # r.div('if nowrap', [
-                # r.div(None, [
-                    # r.keyword("for"),
-                    # r.visit(node.target),
-                    # r.keyword("in", leading=True),
-                    # r.visit(node.iter),
+            # rt.div('if nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("for"),
+                    # rt.visit(node.target),
+                    # rt.keyword("in", leading=True),
+                    # rt.visit(node.iter),
                     # ':', # '\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
                 # orelse,
             # ]),
         # ]
-        r.div('if nowrap')
-        r.div(None)
-        r.keyword("for"),
-        r.visit(node.target),
-        r.keyword("in", leading=True),
-        r.visit(node.iter),
-        r.colon()
-        r.end_div() # None
-        r.div_body(node.body)
+        rt.div('if nowrap')
+        rt.div(None)
+        rt.keyword("for")
+        rt.visit(node.target)
+        rt.keyword("in", leading=True)
+        rt.visit(node.iter)
+        rt.colon()
+        rt.end_div() # None
+        rt.div_body(node.body)
         if node.orelse:
-            r.div_keyword_colon(None, 'else')
-            r.div_body(node.orelse)
-        r.end_div() # if
-    #@+node:ekr.20150722204300.69: *4* rt.FunctionDef (uses extra arg)
-    def do_FunctionDef(self, node):
-        r = self
-        return [
-            ### r.div('function nowrap','id="%s"' % (node.name)),
-            r.div('function nowrap', [
-                r.div(None, [
-                    r.keyword("def"),
-                    r.summary_link(node.cx.full_name(), node.name, node.name, classes=''),
-                        ### r.object_name_def(r.module,node,"function-name")
-                    '(',
-                    r.visit(node.args),
-                    '):', # '\n',
-                        ### r.parameters(node.name,node)
-                ]),
-                r.div('body nowrap', [
-                    r.doc(node),
-                    r.visit_list(node.body),
-                ]),
-            ], extra='id="%s"' % (node.name)),
-        ]
+            rt.div_keyword_colon(None, 'else')
+            rt.div_body(node.orelse)
+        rt.end_div() # if
+    #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
+    def do_FunctionDef(rt, node):
+        # return [
+            # rt.div('function nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("def"),
+                    # rt.summary_link(node.cx.full_name(), node.name, node.name, classes=''),
+                        # ### rt.object_name_def(rt.module,node,"function-name")
+                    # '(',
+                    # rt.visit(node.args),
+                    # '):', # '\n',
+                        # ### rt.parameters(node.name,node)
+                # ]),
+                # rt.div('body nowrap', [
+                    # rt.doc(node),
+                    # rt.visit_list(node.body),
+                # ]),
+            # ], extra='id="%s"' % (node.name)),
+        # ]
+        rt.div('function nowrap', extra='id="%s"' % node.name)
+        if 1:
+            rt.div(None)
+            rt.keyword("def")
+            ### rt.summary_link(node.cx.full_name(), node.name, node.name, classes='')
+            rt.op('(')
+            rt.visit(node.args)
+            rt.op(')')
+            rt.colon()
+            ### rt.parameters(node.name,node)
+            rt.end_div() # None
+            #
+            rt.div('body nowrap')
+            rt.doc(node)
+            rt.visit_list(node.body)
+            rt.end_div() # body
+        rt.end_div() # function
     #@+node:ekr.20150722204300.70: *4* rt.GeneratorExp
-    def do_GeneratorExp(self, node):
-        r = self
-        return [
-            r.span("genexpr", [
-                "(",
-                r.visit(node.elt) if node.elt else '',
-                r.keyword('for', leading=True),
-                r.span('item', [
-                    r.visit(node.elt),
-                ]),
-                r.span('generators', [
-                    r.visit_list(node.generators),
-                ]),
-                ")",
-            ]),
-        ]
+    def do_GeneratorExp(rt, node):
+        # return [
+            # rt.span("genexpr", [
+                # "(",
+                # rt.visit(node.elt) if node.elt else '',
+                # rt.keyword('for', leading=True),
+                # rt.span('item', [
+                    # rt.visit(node.elt),
+                # ]),
+                # rt.span('generators', [
+                    # rt.visit_list(node.generators),
+                # ]),
+                # ")",
+            # ]),
+        # ]
+        rt.span("genexpr")
+        rt.op('(')
+        if node.elt:
+            rt.visit(node.elt)
+        rt.keyword('for', leading=True)
+        rt.span_node('item', node.elt)
+        rt.span_list('generators', node.generators)
+        rt.op(')')
+        rt.end_span() # genexpr
     #@+node:ekr.20150722204300.71: *4* rt.get_import_names
-    def get_import_names(self, node):
+    def get_import_names(rt, node):
         '''Return a list of the the full file names in the import statement.'''
-        r = self
         result = []
         for ast2 in node.names:
-            if r.kind(ast2) == 'alias':
+            if rt.kind(ast2) == 'alias':
                 data = ast2.name, ast2.asname
                 result.append(data)
             else:
-                g.trace('unsupported kind in Import.names list', r.kind(ast2))
+                g.trace('unsupported kind in Import.names list', rt.kind(ast2))
         # g.trace(result)
         return result
     #@+node:ekr.20150722204300.72: *4* rt.Global
-    def do_Global(self, node):
-        r = self
+    def do_Global(rt, node):
         ###
         # return [
-            # r.div('global nowrap', [
-                # r.keyword("global"),
+            # rt.div('global nowrap', [
+                # rt.keyword("global"),
                 # join_list(node.names, sep=','),
             # ]),
         # ]
-        r.div('global nowrap')
-        r.keyword("global")
+        rt.div('global nowrap')
+        rt.keyword("global")
         for z in node.names:
-            r.gen(z)
-            r.comma()
-        r.clean(',')
-        r.end_div() # global
+            rt.gen(z)
+            rt.comma()
+        rt.clean(',')
+        rt.end_div() # global
     #@+node:ekr.20150722204300.73: *4* rt.If
-    def do_If(self, node):
-        r = self
+    def do_If(rt, node):
+        # parent = node._parent
+        # # The only way to know whether to generate elif is to examine the tree.
+        # elif_flag = rt.kind(parent) == 'If' and parent.orelse and parent.orelse[0] == node
+        # elif_node = node.orelse and node.orelse[0]
+        # if elif_node and rt.kind(elif_node) == 'If':
+            # orelse = rt.visit(elif_node)
+        # else:
+            # orelse = node.orelse and [
+                # rt.div(None, [
+                    # rt.keyword('else', trailing=False),
+                    # ':', # '\n',
+                # ]),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.orelse),
+                # ]),
+            # ]
+        # # g.trace(rt.u.format(node.test))
+        # return [
+            # rt.div('if nowrap', [
+                # rt.div(None, [
+                    # rt.keyword('elif' if elif_flag else 'if'),
+                    # rt.visit(node.test),
+                    # ':', # '\n',
+                # ]),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
+                # ]),
+                # orelse,
+            # ]),
+        # ]
         parent = node._parent
-        # The only way to know whether to generate elif is to examine the tree.
-        elif_flag = self.kind(parent) == 'If' and parent.orelse and parent.orelse[0] == node
+        elif_flag = rt.kind(parent) == 'If' and parent.orelse and parent.orelse[0] == node
         elif_node = node.orelse and node.orelse[0]
-        if elif_node and self.kind(elif_node) == 'If':
-            orelse = r.visit(elif_node)
-        else:
-            orelse = node.orelse and [
-                r.div(None, [
-                    r.keyword('else', trailing=False),
-                    ':', # '\n',
-                ]),
-                r.div('body nowrap', [
-                    r.visit_list(node.orelse),
-                ]),
-            ]
-        # g.trace(r.u.format(node.test))
-        return [
-            r.div('if nowrap', [
-                r.div(None, [
-                    r.keyword('elif' if elif_flag else 'if'),
-                    r.visit(node.test),
-                    ':', # '\n',
-                ]),
-                r.div('body nowrap', [
-                    r.visit_list(node.body),
-                ]),
-                orelse,
-            ]),
-        ]
+        rt.div('if nowrap')
+        rt.div(None)
+        rt.keyword('elif' if elif_flag else 'if')
+        rt.visit(node.test)
+        rt.colon()
+        rt.end_div() # None
+        rt.div_body(node.body)
+        if elif_node and rt.kind(elif_node) == 'If':
+            rt.visit(elif_node)
+        elif node.orelse:
+            rt.div_keyword_colon(None, 'else')
+            rt.div_body(node.orelse)
+        rt.end_div() # if
     #@+node:ekr.20150722204300.74: *4* rt.IfExp (TernaryOp)
     # IfExp(expr test, expr body, expr orelse)
 
-    def do_IfExp(self, node):
-        r = self
-        return [
-            r.span("ifexp", [
-                r.visit(node.body),
-                r.keyword("if", leading=True),
-                r.visit(node.test),
-                r.keyword("else", leading=True),
-                r.visit(node.orelse),
-            ]),
-        ]
+    def do_IfExp(rt, node):
+        # return [
+            # rt.span("ifexp", [
+                # rt.visit(node.body),
+                # rt.keyword("if", leading=True),
+                # rt.visit(node.test),
+                # rt.keyword("else", leading=True),
+                # rt.visit(node.orelse),
+            # ]),
+        # ]
+        rt.span("ifexp")
+        rt.visit(node.body)
+        rt.keyword("if", leading=True)
+        rt.visit(node.test)
+        rt.keyword("else", leading=True)
+        rt.visit(node.orelse)
+        rt.end_span() # ifexp
     #@+node:ekr.20150722204300.75: *4* rt.Import
-    def do_Import(self, node):
-        r = self
-        aList = []
-        for name, alias in r.get_import_names(node):
-            if alias: aList.append([
-                r.module_link(name),
-                r.keyword("as", leading=True),
-                r.name(alias),
-            ])
+    def do_Import(rt, node):
+        # aList = []
+        # for name, alias in rt.get_import_names(node):
+            # if alias: aList.append([
+                # rt.module_link(name),
+                # rt.keyword("as", leading=True),
+                # rt.name(alias),
+            # ])
+            # else:
+                # aList.append(rt.module_link(name))
+        # return [
+            # rt.div('import nowrap', [
+                # rt.keyword("import"),
+                # aList,
+            # ]),
+        # ]
+        rt.div('import nowrap')
+        rt.keyword("import")
+        for name, alias in rt.get_import_names(node):
+            if alias:
+                rt.gen(rt.module_link(name))
+                rt.keyword("as", leading=True)
+                rt.name(alias)
             else:
-                aList.append(r.module_link(name))
-        return [
-            r.div('import nowrap', [
-                r.keyword("import"),
-                aList,
-            ]),
-        ]
+                rt.gen(rt.module_link(name))
+        rt.end_div() # import
     #@+node:ekr.20150722204300.76: *4* rt.ImportFrom
-    def do_ImportFrom(self, node):
-        r = self
-        aList = []
-        for name, alias in r.get_import_names(node):
-            if alias: aList.append([
-                r.name(name),
-                r.keyword("as", leading=True),
-                r.name(alias),
-            ])
-            else:
-                aList.append(r.name(name))
-        return [
-            r.div('from nowrap', [
-                r.keyword("from"),
-                r.module_link(node.module),
-                r.keyword("import", leading=True),
-                aList,
-            ]),
-        ]
+    def do_ImportFrom(rt, node):
+        # aList = []
+        # for name, alias in rt.get_import_names(node):
+            # if alias: aList.append([
+                # rt.name(name),
+                # rt.keyword("as", leading=True),
+                # rt.name(alias),
+            # ])
+            # else:
+                # aList.append(rt.name(name))
+        # return [
+            # rt.div('from nowrap', [
+                # rt.keyword("from"),
+                # rt.module_link(node.module),
+                # rt.keyword("import", leading=True),
+                # aList,
+            # ]),
+        # ]
+        rt.div('from nowrap')
+        rt.keyword("from")
+        rt.gen(rt.module_link(node.module))
+        rt.keyword("import", leading=True)
+        for name, alias in rt.get_import_names(node):
+            rt.name(name)
+            if alias:
+                rt.keyword("as", leading=True)
+                rt.name(alias)
+            rt.comma()
+        rt.clean(',')
+        rt.end_div() # from
     #@+node:ekr.20150722204300.77: *4* rt.Lambda
-    def do_Lambda(self, node):
-        r = self
+    def do_Lambda(rt, node):
         ###
         # return [
-            # r.span("lambda", [
-                # r.keyword("lambda"),
-                # r.visit(node.args), # r.parameters(fn,node)
+            # rt.span("lambda", [
+                # rt.keyword("lambda"),
+                # rt.visit(node.args), # rt.parameters(fn,node)
                 # ": ",
-                # r.span("code", [
-                    # r.visit(node.body),
+                # rt.span("code", [
+                    # rt.visit(node.body),
                 # ]),
             # ]),
         # ]
-        r.span("lambda")
-        r.keyword("lambda")
-        r.visit(node.args) # r.parameters(fn,node)
-        self.comma()
-        r.span_node("code", node.body)      
-        r.end_span() # lambda
+        rt.span("lambda")
+        rt.keyword("lambda")
+        rt.visit(node.args) # rt.parameters(fn,node)
+        rt.comma()
+        rt.span_node("code", node.body)      
+        rt.end_span() # lambda
     #@+node:ekr.20150722204300.78: *4* rt.List
     # List(expr* elts, expr_context ctx)
 
-    def do_List(self, node):
-        r = self
+    def do_List(rt, node):
         ###
         # return [
-            # r.span("list", [
+            # rt.span("list", [
                 # '[',
-                # r.visit_list(node.elts, sep=','),
+                # rt.visit_list(node.elts, sep=','),
                 # ']',
             # ]),
         # ]
-        r.span("list")
-        r.gen('[')
+        rt.span("list")
+        rt.gen('[')
         if node.elts:
             for z in node.elts:
-                r.visit(z)
-                r.comma()
-            r.clean(',')
-        r.gen(']')
-        r.end_span()
+                rt.visit(z)
+                rt.comma()
+            rt.clean(',')
+        rt.gen(']')
+        rt.end_span()
     #@+node:ekr.20150722204300.79: *4* rt.ListComp
-    def do_ListComp(self, node):
-        r = self
+    def do_ListComp(rt, node):
         # return [
-            # r.span("listcomp", [
+            # rt.span("listcomp", [
                 # '[',
-                # r.visit(node.elt) if node.elt else '',
-                # r.keyword('for', leading=True),
-                # r.span('item', [
-                    # r.visit(node.elt),
+                # rt.visit(node.elt) if node.elt else '',
+                # rt.keyword('for', leading=True),
+                # rt.span('item', [
+                    # rt.visit(node.elt),
                 # ]),
-                # r.span('ifgenerators', [
-                    # r.visit_list(node.generators),
+                # rt.span('ifgenerators', [
+                    # rt.visit_list(node.generators),
                 # ]),
                 # "]",
             # ]),
         # ]
-        r.span("listcomp")
-        r.gen('[')
+        rt.span("listcomp")
+        rt.gen('[')
         if node.elt:
-            r.visit(node.elt)
-        r.keyword('for', leading=True),
+            rt.visit(node.elt)
+        rt.keyword('for', leading=True)
         if node.elt:
-            r.span_node('item', node.elt)
-        r.span('ifgenerators')
-        r.visit_list(node.generators)
-        r.gen("]")
-        r.end_span() # ifgenerators
-        r.end_span() # listcomp
-
+            rt.span_node('item', node.elt)
+        rt.span('ifgenerators')
+        rt.visit_list(node.generators)
+        rt.gen("]")
+        rt.end_span() # ifgenerators
+        rt.end_span() # listcomp
     #@+node:ekr.20150722204300.80: *4* rt.Module
-    def do_Module(self, node):
-        r = self
+    def do_Module(rt, node):
         #
         # return [
-            # r.doc(node, "module"),
-            # r.visit_list(node.body),
+            # rt.doc(node, "module"),
+            # rt.visit_list(node.body),
         # ]
-        r.doc(node, "module"),
-        r.visit_list(node.body),
+        rt.doc(node, "module")
+        rt.visit_list(node.body)
     #@+node:ekr.20150722204300.81: *4* rt.Name
-    def do_Name(self, node):
-        r = self
+    def do_Name(rt, node):
         ###
         # return [
-            # r.span('name', [
+            # rt.span('name', [
                 # node.id,
-                # r.stc_popup_attrs(node),
+                # rt.stc_popup_attrs(node),
             # ]),
         # ]
-        r.span('name')
-        r.gen(node.id)
-        r.stc_popup_attrs(node)
-        r.end_span()
+        rt.span('name')
+        rt.gen(node.id)
+        rt.stc_popup_attrs(node)
+        rt.end_span()
     #@+node:ekr.20150722204300.82: *4* rt.Num
-    def do_Num(self, node):
-        r = self
-        r.gen(r.text(repr(node.n)))
+    def do_Num(rt, node):
+        rt.gen(rt.text(repr(node.n)))
     #@+node:ekr.20150722204300.83: *4* rt.Pass
-    def do_Pass(self, node):
-        r = self
-        return r.simple_statement('pass')
+    def do_Pass(rt, node):
+        return rt.simple_statement('pass')
     #@+node:ekr.20150722204300.84: *4* rt.Print
     # Print(expr? dest, expr* values, bool nl)
 
-    def do_Print(self, node):
-        r = self
+    def do_Print(rt, node):
         # return [
-            # r.div('print nowrap', [
-                # r.keyword("print"),
+            # rt.div('print nowrap', [
+                # rt.keyword("print"),
                 # "(",
-                # node.dest and '>>\n%s,\n' % r.visit(node.dest),
-                # r.visit_list(node.values, sep=',\n'),
+                # node.dest and '>>\n%s,\n' % rt.visit(node.dest),
+                # rt.visit_list(node.values, sep=',\n'),
                 # not node.nl and "newline=False",
                 # ")",
             # ]),
         # ]
-        r.div('print nowrap')
-        r.keyword("print")
-        r.gen('(')
+        rt.div('print nowrap')
+        rt.keyword("print")
+        rt.gen('(')
         if node.dest:
-            r.gen('>>\n')
-            r.visit(node.dest)
-            r.comma()
-            r.newline()
+            rt.gen('>>\n')
+            rt.visit(node.dest)
+            rt.comma()
+            rt.newline()
             if node.values:
                 for z in node.values:
-                    r.visit(z)
-                    r.comma()
-                    r.newline()
-                self.clean('\n')
-                self.clean(',')
+                    rt.visit(z)
+                    rt.comma()
+                    rt.newline()
+                rt.clean('\n')
+                rt.clean(',')
             ### not node.nl and "newline=False",
-        r.gen(')')
-        r.end_div() # print
+        rt.gen(')')
+        rt.end_div() # print
     #@+node:ekr.20150722204300.85: *4* rt.Raise
-    def do_Raise(self, node):
-        r = self
+    def do_Raise(rt, node):
         # aList = []
         # for attr in ('type', 'inst', 'tback'):
             # attr = getattr(node, attr, None)
             # if attr is not None:
-                # aList.append(r.visit(attr))
+                # aList.append(rt.visit(attr))
         # return [
-            # r.div('raise nowrap', [
-                # r.keyword("raise"),
+            # rt.div('raise nowrap', [
+                # rt.keyword("raise"),
                 # aList,
             # ]),
         # ]
-        r.div('raise nowrap')
-        r.keyword("raise")
+        rt.div('raise nowrap')
+        rt.keyword("raise")
         for attr in ('type', 'inst', 'tback'):
             attr = getattr(node, attr, None)
             if attr is not None:
-                r.visit(attr) ####
-        r.end_div() # raise
+                rt.visit(attr) ####
+        rt.end_div() # raise
     #@+node:ekr.20150722204300.86: *4* rt.Return
-    def do_Return(self, node):
-        r = self
+    def do_Return(rt, node):
         # return [
-            # r.div('return nowrap', [
-                # r.keyword("return"),
-                # node.value and r.visit(node.value),
+            # rt.div('return nowrap', [
+                # rt.keyword("return"),
+                # node.value and rt.visit(node.value),
             # ]),
         # ]
-        r.div('return nowrap')
-        r.keyword("return")
+        rt.div('return nowrap')
+        rt.keyword("return")
         if node.value:
-            r.visit(node.value)
-        r.end_div()
+            rt.visit(node.value)
+        rt.end_div()
     #@+node:ekr.20150722204300.87: *4* rt.Slice
-    def do_Slice(self, node):
-        r = self
+    def do_Slice(rt, node):
         # return [
-            # r.span("slice", [
-                # node.lower and r.visit(node.lower),
+            # rt.span("slice", [
+                # node.lower and rt.visit(node.lower),
                 # ":",
-                # node.upper and r.visit(node.upper),
-                # [':', r.visit(node.step)] if node.step else None,
+                # node.upper and rt.visit(node.upper),
+                # [':', rt.visit(node.step)] if node.step else None,
             # ]),
         # ]
-        r.span("slice")
+        rt.span("slice")
         if node.lower:
-            r.visit(node.lower)
-        self.colon()
+            rt.visit(node.lower)
+        rt.colon()
         if node.upper:
-            r.visit(node.upper)
+            rt.visit(node.upper)
         if node.step:
-            self.colon()
-            r.visit(node.step)
-        r.end_span()
+            rt.colon()
+            rt.visit(node.step)
+        rt.end_span()
     #@+node:ekr.20150722204300.88: *4* rt.Str
-    def do_Str(self, node):
+    def do_Str(rt, node):
         '''This represents a string constant.'''
-        r = self
         assert isinstance(node.s, (str, unicode))
         # return [
-            # r.span("str", [
-                # r.text(repr(node.s)), ### repr??
+            # rt.span("str", [
+                # rt.text(repr(node.s)), ### repr??
             # ]),
         # ]
-        r.span("str")
-        r.gen(r.text(repr(node.s))) ### repr??
-        r.end_span()
+        rt.span("str")
+        rt.gen(rt.text(repr(node.s))) ### repr??
+        rt.end_span()
     #@+node:ekr.20150722204300.89: *4* rt.Subscript
-    def do_Subscript(self, node):
-        r = self
+    def do_Subscript(rt, node):
         ###
         # return [
-            # r.span("subscript", [
-                # r.visit(node.value),
+            # rt.span("subscript", [
+                # rt.visit(node.value),
                 # '[',
-                # r.visit(node.slice),
+                # rt.visit(node.slice),
                 # ']',
             # ]),
         # ]
-        r.span("subscript")
-        r.visit(node.value)
-        r.gen('[')
-        r.visit(node.slice)
-        g.gen(']')
-        r.end_span() # subscript
+        rt.span("subscript")
+        rt.visit(node.value)
+        rt.gen('[')
+        rt.visit(node.slice)
+        rt.gen(']')
+        rt.end_span() # subscript
     #@+node:ekr.20150722204300.90: *4* rt.TryExcept
-    def do_TryExcept(self, node):
-        r = self
+    def do_TryExcept(rt, node):
         ###
         # orelse = node.orelse and [
-            # r.div(None, [
-                # r.keyword("else", trailing=False),
+            # rt.div(None, [
+                # rt.keyword("else", trailing=False),
                 # ':', # '\n',
             # ]),
-            # r.div('body nowrap', [
-                # r.visit_list(node.orelse),
+            # rt.div('body nowrap', [
+                # rt.visit_list(node.orelse),
             # ]),
         # ]
         # return [
-            # r.div('tryexcept nowrap', [
-                # r.div(None, [
-                    # r.keyword("try", trailing=False),
+            # rt.div('tryexcept nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("try", trailing=False),
                     # ':', # '\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
-                # r.div('body nowrap', [
+                # rt.div('body nowrap', [
                     # orelse,
                 # ]),
-                # node.handlers and r.visit_list(node.handlers),
+                # node.handlers and rt.visit_list(node.handlers),
             # ]),
         # ]
-        r.div('tryexcept nowrap')
-        r.div_keyword_colon(None, 'try')
-        r.div_list('body nowrap', node.body)
+        rt.div('tryexcept nowrap')
+        rt.div_keyword_colon(None, 'try')
+        rt.div_list('body nowrap', node.body)
         if node.orelse:
-            r.div_keyword_colon(None, 'else')
-            r.div_body(node.orelse)
-        r.div_body(node.handlers)
-        r.end_div() # tryexcept
+            rt.div_keyword_colon(None, 'else')
+            rt.div_body(node.orelse)
+        rt.div_body(node.handlers)
+        rt.end_div() # tryexcept
     #@+node:ekr.20150722204300.91: *4* rt.TryFinally
-    def do_TryFinally(self, node):
-        r = self
+    def do_TryFinally(rt, node):
         # return [
-            # r.div('tryfinally nowrap', [
-                # r.div(None, [
-                    # r.keyword("try", trailing=False),
+            # rt.div('tryfinally nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("try", trailing=False),
                     # ':', # '\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
-                # r.div(None, [
-                    # r.keyword("finally", trailing=False),
+                # rt.div(None, [
+                    # rt.keyword("finally", trailing=False),
                     # ':', # '\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # node.finalbody and r.visit_list(node.finalbody),
+                # rt.div('body nowrap', [
+                    # node.finalbody and rt.visit_list(node.finalbody),
                 # ]),
             # ]),
         # ]
-        r.div('tryfinally nowrap')
-        r.div_keyword_colon(None, 'try')
-        r.div_body(node.body)
-        r.div_keyword_colon(None, 'finally')
-        r.div_body(node.final.body)
-        r.end_div() # tryfinally
+        rt.div('tryfinally nowrap')
+        rt.div_keyword_colon(None, 'try')
+        rt.div_body(node.body)
+        rt.div_keyword_colon(None, 'finally')
+        rt.div_body(node.final.body)
+        rt.end_div() # tryfinally
     #@+node:ekr.20150722204300.92: *4* rt.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
-    def do_Tuple(self, node):
-        r = self
+    def do_Tuple(rt, node):
         ###
         # return [
-            # r.span("tuple", [
+            # rt.span("tuple", [
                 # '(',
-                # node.elts and r.visit_list(node.elts, sep=','),
+                # node.elts and rt.visit_list(node.elts, sep=','),
                 # ')',
             # ]),
         # ]
-        r.span("tuple")
-        r.op('(')
+        rt.span("tuple")
+        rt.op('(')
         for z in node.elts or []:
-            r.visit(node.elts)
-            r.comma()
-        r.clean(',')
-        r.op(')')
-        r.end_span()
+            rt.visit(node.elts)
+            rt.comma()
+        rt.clean(',')
+        rt.op(')')
+        rt.end_span()
     #@+node:ekr.20150722204300.93: *4* rt.UnaryOp
-    def do_UnaryOp(self, node):
-        r = self
+    def do_UnaryOp(rt, node):
         ###
-        # op_name = r.op_name(node.op)
+        # op_name = rt.op_name(node.op)
         # return [
-            # r.span(op_name.strip(), [
-                # r.op(op_name, trailing=False),
-                # r.visit(node.operand),
+            # rt.span(op_name.strip(), [
+                # rt.op(op_name, trailing=False),
+                # rt.visit(node.operand),
             # ]),
         # ]
-        op_name = r.op_name(node.op)
-        r.span(op_name.strip())
-        r.op(op_name, trailing=False)
-        r.visit(node.operand)
-        r.end_span()
+        op_name = rt.op_name(node.op)
+        rt.span(op_name.strip())
+        rt.op(op_name, trailing=False)
+        rt.visit(node.operand)
+        rt.end_span()
     #@+node:ekr.20150722204300.94: *4* rt.While
-    def do_While(self, node):
-        r = self
+    def do_While(rt, node):
         ###
         # orelse = node.orelse and [
-            # r.div(None, [
-                # r.keyword("else", trailing=False),
+            # rt.div(None, [
+                # rt.keyword("else", trailing=False),
                 # ':', # '\n',
             # ]),
-            # r.div('body nowrap', [
-                # r.visit_list(node.orelse),
+            # rt.div('body nowrap', [
+                # rt.visit_list(node.orelse),
             # ]),
         # ]
         # return [
-            # r.div('while nowrap', [
-                # r.div(None, [
-                    # r.keyword("while"),
-                    # r.visit(node.test),
+            # rt.div('while nowrap', [
+                # rt.div(None, [
+                    # rt.keyword("while"),
+                    # rt.visit(node.test),
                     # ':', # '\n',
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
                 # orelse,
             # ]),
         # ]
-        r.div('while nowrap')
-        r.div(None)
-        r.keyword("while"),
-        r.visit(node.test),
-        r.colon()
-        r.end_div() # None
-        r.div_list('body nowrap', node.body)
+        rt.div('while nowrap')
+        rt.div(None)
+        rt.keyword("while")
+        rt.visit(node.test)
+        rt.colon()
+        rt.end_div() # None
+        rt.div_list('body nowrap', node.body)
         if node.orelse:
-            r.div_keyword_colon(None, 'else')
-            r.div_body(node.orelse)
-        r.end_div() # while
+            rt.div_keyword_colon(None, 'else')
+            rt.div_body(node.orelse)
+        rt.end_div() # while
        
     #@+node:ekr.20150722204300.95: *4* rt.With
     # With(expr context_expr, expr? optional_vars, stmt* body)
 
-    def do_With(self, node):
-        r = self
+    def do_With(rt, node):
         ###
         # context_expr = getattr(node, 'context_expr', None)
         # optional_vars = getattr(node, 'optional_vars', None)
         # optional_vars = optional_vars and [
-            # r.keyword('as', leading=True),
-            # r.visit(optional_vars),
+            # rt.keyword('as', leading=True),
+            # rt.visit(optional_vars),
         # ]
         # return [
-            # r.div('with nowrap', [
-                # r.div(None, [
-                    # r.keyword('with'),
-                    # context_expr and r.visit(context_expr),
+            # rt.div('with nowrap', [
+                # rt.div(None, [
+                    # rt.keyword('with'),
+                    # context_expr and rt.visit(context_expr),
                     # optional_vars,
                     # ":",
                 # ]),
-                # r.div('body nowrap', [
-                    # r.visit_list(node.body),
+                # rt.div('body nowrap', [
+                    # rt.visit_list(node.body),
                 # ]),
             # ]),
         # ]
         context_expr = getattr(node, 'context_expr', None)
         optional_vars = getattr(node, 'optional_vars', None)
-        r.div('with nowrap')
-        r.div(None)
-        r.keyword('with')
+        rt.div('with nowrap')
+        rt.div(None)
+        rt.keyword('with')
         if context_expr:
-            r.visit(context_expr)
+            rt.visit(context_expr)
         if optional_vars:
-            r.keyword('as', leading=True)
-            r.visit_list(optional_vars)
-        r.colon()
-        r.end_div() # None
-        r.div_body(node.body)
-        r.end_div() # with
+            rt.keyword('as', leading=True)
+            rt.visit_list(optional_vars)
+        rt.colon()
+        rt.end_div() # None
+        rt.div_body(node.body)
+        rt.end_div() # with
     #@+node:ekr.20150722204300.96: *4* rt.Yield
-    def do_Yield(self, node):
-        r = self
+    def do_Yield(rt, node):
         ###
         # return [
-            # r.div('yield nowrap', [
-                # r.keyword("yield"),
-                # r.visit(node.value),
+            # rt.div('yield nowrap', [
+                # rt.keyword("yield"),
+                # rt.visit(node.value),
             # ]),
         # ]
-        r.div('yield nowrap')
-        r.keyword('yield')
-        r.visit(node.value)
-        r.end_div()
+        rt.div('yield nowrap')
+        rt.keyword('yield')
+        rt.visit(node.value)
+        rt.end_div()
     #@-others
 #@-others
 #@@language python
