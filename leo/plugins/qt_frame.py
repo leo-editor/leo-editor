@@ -2167,12 +2167,26 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 bg = c.config.getColor('status-bg') or 'white'
             if not fg:
                 fg = c.config.getColor('status-fg') or 'black'
-            styleSheet = 'QLineEdit {background: %s; color: %s; }' % (bg, fg)
+            
+            # Rather than put(msg, explicit_color, explicit_color) we should use
+            # put(msg, status) where status is None, 'info', or 'fail'.
+            # Just as a quick hack to avoid dealing with propagating those changes
+            # back upstream, infer status like this:
+            status = None
+            if (fg == c.config.getColor('find-found-fg') and
+                bg == c.config.getColor('find-found-bg')):
+                status = 'info'
+            elif (fg == c.config.getColor('find-not-found-fg') and
+                bg == c.config.getColor('find-not-found-bg')):
+                status = 'fail'
+
             d = self.styleSheetCache
-            if styleSheet != d.get(w):
+            if status != d.get(w, '__undefined__'):
                 # g.trace(g.app.gui.widget_name(w), styleSheet)
-                d[w] = styleSheet
-                w.setStyleSheet(styleSheet)
+                d[w] = status
+                c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
+                c.styleSheetManager.mng.add_sclass(w, status)
+                c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
         def update(self):

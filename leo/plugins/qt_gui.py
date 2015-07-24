@@ -1096,6 +1096,136 @@ class LeoQtGui(leoGui.LeoGui):
 
             QtCore.QObject.emit = new_emit
     #@-others
+#@+node:tbrown.20150724090431.1: ** class StyleClassManager
+class StyleClassManager:
+    style_sclass_property = 'style_class' # name of QObject property for styling
+    #@+others
+    #@+node:tbrown.20150724090431.2: *3* update_view
+    def update_view(self, w):
+        """update_view - Make Qt apply w's style
+
+        :param QWidgit w: widgit to style
+        """
+
+        w.setStyleSheet("/* */")  # forces visual update
+    #@+node:tbrown.20150724090431.3: *3* add_sclass
+    def add_sclass(self, w, prop):
+        """Add style class or list of classes prop to QWidget w"""
+        if not prop:
+            return
+        props = self.sclasses(w)
+        if isinstance(prop, str):
+            props.append(prop)
+        else:
+            props.extend(prop)
+        
+        self.set_sclasses(w, props)
+    #@+node:tbrown.20150724090431.4: *3* clear_sclasses
+    def clear_sclasses(self, w):
+        """Remove all style classes from QWidget w"""
+        w.setProperty(self.style_sclass_property, '')
+    #@+node:tbrown.20150724090431.5: *3* has_sclass
+    def has_sclass(self, w, prop):
+        """Check for style class or list of classes prop on QWidget w"""
+        if not prop:
+            return   
+        props = self.sclasses(w)
+        if isinstance(prop, str):
+            ans = [prop in props]
+        else:
+            ans = [i in props for i in prop]
+            
+        return all(ans)
+    #@+node:tbrown.20150724090431.6: *3* remove_sclass
+    def remove_sclass(self, w, prop):
+        """Remove style class or list of classes prop from QWidget w"""
+        if not prop:
+            return    
+        props = self.sclasses(w)
+        if isinstance(prop, str):
+            props = [i for i in props if i != prop]
+        else:
+            props = [i for i in props if i not in prop]
+        
+        self.set_sclasses(w, props)
+    #@+node:tbrown.20150724090431.7: *3* sclass_tests
+    def sclass_tests(self):
+        """Test style class property manipulation functions"""
+            
+        class W:
+            """simple standin for QWidget for testing"""
+            def __init__(self):
+                self.x = ''
+            def property(self, name, default=None):
+                return self.x or default
+            def setProperty(self, name, value):
+                self.x = value
+        
+        w = W()
+        
+        assert not self.has_sclass(w, 'nonesuch')
+        assert not self.has_sclass(w, ['nonesuch'])
+        assert not self.has_sclass(w, ['nonesuch', 'either'])
+        assert len(self.sclasses(w)) == 0
+
+        self.add_sclass(w, 'test')
+
+        assert not self.has_sclass(w, 'nonesuch')
+        assert self.has_sclass(w, 'test')
+        assert self.has_sclass(w, ['test'])
+        assert not self.has_sclass(w, ['test', 'either'])
+        assert len(self.sclasses(w)) == 1
+
+        self.add_sclass(w, 'test')
+        assert len(self.sclasses(w)) == 1
+        self.add_sclass(w, ['test', 'test', 'other'])
+        assert len(self.sclasses(w)) == 2
+        assert self.has_sclass(w, 'test')
+        assert self.has_sclass(w, 'other')
+        assert self.has_sclass(w, ['test', 'other', 'test'])
+        assert not self.has_sclass(w, ['test', 'other', 'nonesuch'])
+
+        self.remove_sclass(w, ['other', 'nothere'])
+        assert self.has_sclass(w, 'test')
+        assert not self.has_sclass(w, 'other')
+        assert len(self.sclasses(w)) == 1
+
+        self.toggle_sclass(w, 'third')
+        assert len(self.sclasses(w)) == 2
+        assert self.has_sclass(w, ['test', 'third'])
+        self.toggle_sclass(w, 'third')
+        assert len(self.sclasses(w)) == 1
+        assert not self.has_sclass(w, ['test', 'third'])
+
+        self.clear_sclasses(w)
+        assert len(self.sclasses(w)) == 0
+        assert not self.has_sclass(w, 'test')
+    #@+node:tbrown.20150724090431.8: *3* sclasses
+    def sclasses(self, w):
+        """return list of style classes for QWidget w"""
+        return str(w.property(self.style_sclass_property) or '').split()
+    #@+node:tbrown.20150724090431.9: *3* set_sclasses
+    def set_sclasses(self, w, classes):
+        """Set style classes for QWidget w to list in classes"""
+        w.setProperty(self.style_sclass_property, ' %s ' % ' '.join(set(classes)))
+    #@+node:tbrown.20150724090431.10: *3* toggle_sclass
+    def toggle_sclass(self, w, prop):
+        """Toggle style class or list of classes prop on QWidget w"""
+        if not prop:
+            return    
+        props = set(self.sclasses(w))
+        
+        if isinstance(prop, str):
+            prop = set([prop])
+        else:
+            prop = set(prop)
+
+        current = props.intersection(prop)
+        props.update(prop)
+        props = props.difference(current)
+        
+        self.set_sclasses(w, props)
+    #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
 class StyleSheetManager:
     '''A class to manage (reload) Qt style sheets.'''
@@ -1107,6 +1237,7 @@ class StyleSheetManager:
         self.color_db = leoColor.leo_color_database
         self.safe = safe
         self.settings_p = g.findNodeAnywhere(c, '@settings')
+        self.mng = StyleClassManager()
         # This warning is inappropriate in some contexts.
             # if not self.settings_p:
                 # g.es("No '@settings' node found in outline.  See:")

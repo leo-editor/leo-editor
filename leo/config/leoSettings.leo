@@ -100,7 +100,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -124,13 +124,13 @@
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
 </v>
-<v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
-<v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
+<v t="ekr.20140917051508.19548" a="E"><vh>Appearance (change these first)</vh>
+<v t="ekr.20140912075503.19369" a="E"><vh>Qt Gui settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 </v>
-<v t="ekr.20140915194122.23431"><vh>Colors</vh>
+<v t="ekr.20140915194122.23431" a="E"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
@@ -212,11 +212,11 @@
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
-<v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
+<v t="ekr.20150626061905.1" a="E"><vh>Status area colors for searches</vh>
 <v t="ekr.20150626060718.1"><vh>@color find-found-bg = blue</vh></v>
 <v t="ekr.20150626060718.2"><vh>@color find-found-fg = white</vh></v>
 <v t="ekr.20150626060719.1"><vh>@color find-not-found-bg = red</vh></v>
-<v t="ekr.20150626060837.1"><vh>@color find-not-fouind-fg = white</vh></v>
+<v t="ekr.20150626060837.1"><vh>@color find-not-found-fg = white</vh></v>
 </v>
 <v t="ekr.20140915194122.23447"><vh>Widget colors (simple widgets)</vh>
 <v t="ekr.20140922124047.19517"><vh>@color frame-bg = white</vh></v>
@@ -383,8 +383,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
-<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui style sheet</vh>
+<v t="ekr.20140912072521.19160" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
@@ -10283,6 +10283,15 @@ QLineEdit#status1, QLineEdit#status2 {
     font-style:         @status-font-style;
 }
 
+QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
+    background-color:   @find-found-bg;
+    color:              @find-found-fg;
+}
+
+QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
+    background-color:   @find-not-found-bg;
+    color:              @find-not-found-fg;
+}
 </t>
 <t tx="ekr.20140915194122.19474">/* ========== Outline pane ========== */
 
