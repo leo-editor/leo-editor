@@ -150,7 +150,7 @@ from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
-    from leo.core.leoQt import QtCore,QtGui
+    from leo.core.leoQt import QtCore,QtGui,QtWidgets
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
@@ -342,8 +342,8 @@ class quickMove(object):
 
         if parent and g.app.gui.guiName() == "qt":
             pb = parent.button
-            rc = QtGui.QAction(text, pb)
-            rc.connect(rc, QtCore.SIGNAL("triggered()"), mb.moveCurrentNodeToTarget)
+            rc = QtWidgets.QAction(text, pb)
+            rc.triggered.connect(mb.moveCurrentNodeToTarget)
             pb.insertAction(pb.actions()[0], rc)  # insert at top
             b = None
             mb.has_parent = True
@@ -361,15 +361,15 @@ class quickMove(object):
             )
             if g.app.gui.guiName() == "qt":
 
-                def cb_goto_target(event=None, c=c, v=v):
+                def cb_goto_target(checked, c=c, v=v):
                     p = c.vnode2position(v)
                     c.selectPosition(p)
                     c.redraw()
 
-                def cb_set_parent(event=None, c=c, v=v, first=which, type_=type_):
+                def cb_set_parent(checked, c=c, v=v, first=which, type_=type_):
                     c.quickMove.set_parent(v, first, type_)
 
-                def cb_permanent(event=None, c=c, v=v, type_=type_, first=which):
+                def cb_permanent(checked, c=c, v=v, type_=type_, first=which):
                     c.quickMove.permanentButton(v=v, type_=type_, first=first)
 
                 # def cb_clear(event=None, c=c, v=v):
@@ -382,8 +382,8 @@ class quickMove(object):
                     (cb_set_parent, 'Set parent'), 
                 ]:
                     but = b.button
-                    rc = QtGui.QAction(txt, but)
-                    rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                    rc = QtWidgets.QAction(txt, but)
+                    rc.triggered.connect(cb)
                     but.insertAction(but.actions()[-1], rc)
                         # insert rc before Remove Button
 
@@ -441,9 +441,8 @@ class quickMove(object):
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):
-            a = QtGui.QAction(name, menu)
-            a.connect(a, QtCore.SIGNAL("triggered()"), 
-                      lambda cb=cb, name=name: self.do_wrap(cb, name))
+            a = QtWidgets.QAction(name, menu)
+            a.triggered.connect(lambda checked, cb=cb, name=name: self.do_wrap(cb, name))
             menu.insertAction(menu.actions()[0], a)
         pathmenu = menu.addMenu("Move")
         # copy / cut to other outline
@@ -454,18 +453,18 @@ class quickMove(object):
                 a = sub.addAction(target['name'])
                 def cb(c2=target['unl'], cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(cb=cb, name=txt.strip('.')+' '+target['name']):
+                def wrap(checked, cb=cb, name=txt.strip('.')+' '+target['name']):
                     self.do_wrap(cb, name)
-                a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
+                a.triggered.connect(wrap)
             # top of open outlines
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
                 def cb(c2=c2, cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
+                def wrap(checked, cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
                     self.do_wrap(cb, name)
-                a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
+                a.triggered.connect(wrap)
         # bookmark to other outline 
         sub = pathmenu.addMenu("Bookmark to...")
         # global targets
@@ -473,17 +472,17 @@ class quickMove(object):
             a = sub.addAction(target['name'])
             def cb(c2=target['unl'], cut=cut):
                 self.bookmark_other(c2)
-            def wrap(cb=cb, name="Bookmark to "+target['name']):
+            def wrap(checked, cb=cb, name="Bookmark to "+target['name']):
                 self.do_wrap(cb, name)
-            a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
+            a.triggered.connect(wrap)
         # top of open outlines
         for c2 in g.app.commanders():
             a = sub.addAction(g.os_path_basename(c2.fileName()))
             def cb(c2=c2):
                 self.bookmark_other(c2)
-            def wrap(cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
+            def wrap(checked, cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
                 self.do_wrap(cb, name)
-            a.connect(a, QtCore.SIGNAL("triggered()"), wrap)
+            a.triggered.connect(wrap)
         # actions within this outline
         need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
         current_kind = None
@@ -497,17 +496,14 @@ class quickMove(object):
             else:
                 current_submenu = pathmenu
             a = current_submenu.addAction(name)
-            a.connect(a, QtCore.SIGNAL("triggered()"), command)
+            a.triggered.connect(lambda checked, command=command: command())
         # add new global target, etc.
         a = pathmenu.addAction("Add node as target")
-        a.connect(a, QtCore.SIGNAL("triggered()"), 
-             lambda p=p: self.add_target(p))
+        a.triggered.connect(lambda checked, p=p: self.add_target(p))
         a = pathmenu.addAction("Show targets")
-        a.connect(a, QtCore.SIGNAL("triggered()"), 
-             lambda p=p: self.show_targets())
+        a.triggered.connect(lambda checked, p=p: self.show_targets())
         a = pathmenu.addAction("Read targets")
-        a.connect(a, QtCore.SIGNAL("triggered()"), 
-             lambda p=p: self.read_targets())
+        a.triggered.connect(lambda checked, p=p: self.read_targets())
     #@+node:tbrown.20131219205216.30229: *3* keyboard_popup, action
     def keyboard_popup(self):
         """Assign a quick move action with the current node
@@ -815,7 +811,7 @@ class quickMoveButton:
         self.type_ = type_
         self.has_parent = False
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
-    def moveCurrentNodeToTarget(self):
+    def moveCurrentNodeToTarget(self, checked=False):
 
         '''Move the current position to the last child of self.target.'''
 
