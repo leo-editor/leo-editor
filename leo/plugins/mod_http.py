@@ -760,7 +760,7 @@ class LeoActions:
             f = StringIO()
             # f.write(open(path).read())
             f2 = open(path)
-            s = f.read()
+            s = f2.read()
             f.write(s)
             return f
         except Exception:
