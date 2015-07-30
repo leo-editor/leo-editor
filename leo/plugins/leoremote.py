@@ -4,6 +4,10 @@
 #@+node:ville.20091009202416.10041: ** << docstring >>
 ''' Remote control for Leo.
 
+    NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
+    the mod_http plug-in is intended to replace this module's functionality.
+    This module does not work in Python 3.x
+
     Executing the leoserve-start command will cause Leo to to listen on a local
     socket for commands from other processes.
 
@@ -16,7 +20,7 @@ Example client::
     print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
     pc.send("""
-        g.es("hello world from remote") 
+        g.es("hello world from remote")
         c = g.app.commanders()[0]
     """)
 
@@ -64,7 +68,7 @@ def leoserv_start(event):
         # print("run done")
 
     lps.set_receiver(dispatch_script)
-    
+
     # EKR: 2011/10/12
     if hasattr(socket,'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
@@ -72,7 +76,7 @@ def leoserv_start(event):
         uniqid = '172.16.0.0',1
 
     lps.listen(uniqid)
-    
+
     fullpath = lps.srv.fullServerName()
     socket_file = os.path.expanduser('~/.leo/leoserv_sockname')
     open(socket_file,'w').write(fullpath)
@@ -83,7 +87,7 @@ def run_remote_script(fname):
 
     # c and p are ambiguous for remote script
     print("rrs")
-    
+
     d = {'g': g }
     execfile(fname, d)
 #@-others

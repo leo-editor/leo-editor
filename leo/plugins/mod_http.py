@@ -4,16 +4,41 @@
 #@@first
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
-''' A minimal http plugin for LEO, based on AsyncHttpServer.py.
+'''An http plug-in for LEO, based on AsyncHttpServer.py.
 
-Use this plugin is as follows:
+This plug-in has three distinct behaviors:
 
-1. Start Leo with the plugin enabled. You will see a purple message that says
-   something like::
+    - Viewing loaded outlines in a browser, e.g. at http://localhost:8130/
+    - Storing web bookmarks in Leo outlines from a browser, e.g. at
+      http://localhost:8130/_/add/bkmk/
+    - Remotely executing code in a running Leo instance, e.g. at
+      http://localhost:8130/_/exec/?cmd=nd=p.insertAsLastChild()
 
-    "http serving enabled at 127.0.0.1:8130, version 0.91"
+Install this plug-in is as follows:
 
-2. Start a web browser, and enter the following url: http://localhost:8130/
+Start Leo with the plug-in enabled. You will see a purple message that says
+something like::
+
+    "http serving enabled at 127.0.0.1:8130"
+
+Settings
+--------
+
+``@bool http_active = True``
+    required for plug-in to be active
+``@string http_ip = 127.0.0.1``
+    address to bind to, see notes below
+``@int  http_port = 8130``
+    port to use (1 3 0 ~= L E O)
+``@bool http_allow_remote_exec = False``
+    must be changed to True for remote code execution
+``@string rst_http_attributename = 'rst_http_attribute'``
+    link to obsolete rst3 plugin
+
+Browsing Leo files
+------------------
+
+Start a web browser, and enter the following URL: http://localhost:8130/
 
 You will see a a "top" level page containing one link for every open .leo file.
 Start clicking :-)
@@ -21,44 +46,38 @@ Start clicking :-)
 You can use the browser's refresh button to update the top-level view in the
 browser after you have opened or closed files.
 
-To enable this plugin put this into your file::
-
-    @settings
-        @bool http_active = True
-        @string http_ip = 127.0.0.1
-        @int  http_port = 8130
-        @string rst_http_attributename = 'rst_http_attribute'
-
 **Note**: IP address 127.0.0.1 is accessible by all users logged into your
 local machine. That means while Leo and mod_http is running anyone logged into
 your machine will be able to browse all your leo outlines and add bookmarks.
 
-**Note**: If you want all other network accessbile machines to have access
+**Note**: If you want all other network accessible machines to have access
 to your mod_http instance, then use @string http_ip = 0.0.0.0.
 
 **Note**: the browser_encoding constant (defined in the top node of this file)
 must match the character encoding used in the browser. If it does not, non-ascii
 characters will look strange.
 
-Can also be used for bookmarking directly from the browser to Leo. To do this,
-add a bookmark to the browser with the following URL / Location::
-    
+Saving bookmarks from browser to Leo
+------------------------------------
+
+To do this, add a bookmark to the browser with the following URL / Location::
+
     javascript:w=window; d=w.document; ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');for (i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' + escape(JSON.stringify(ln)) + '&url=' + escape(w.location.href),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no");void(0);
-    
+
 and edit the port (8130 in the example above) to match the port you're using for
 mod_http.
 
 Bookmarks are created as the first node in the outline which has been opened
 longest. You can set the ``@string`` ``http_bookmark_unl`` to specify an
 alternative location, e.g.::
-    
+
     @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks-->Incoming
 
 to place them in the `Incoming` node in the `@bookmarks` node in the
 `.bookmarks.leo` outline.
-    
-The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is
-loaded. If the ``bookmarks`` plugin is loaded the bookmark will have to be moved
+
+The headline is preceded with '@url ' *unless* the ``bookmarks`` plug-in is
+loaded. If the ``bookmarks`` plug-in is loaded the bookmark will have to be moved
 to a ``@bookmarks`` tree to be useful.
 
 **Note**: there is special support for Chrome's OneTab extension as a mechanism
@@ -71,6 +90,97 @@ node for each of the listed tabs.
 The browser may or may not be able to close the bookmark form window for you,
 depending on settings - set ``dom.allow_scripts_to_close_windows`` to true in
 ``about:config`` in Firefox.
+
+Executing code remotely
+-----------------------
+
+.. warning::
+
+    Allowing remote code execution is a **HUGE SECURITY HOLE**, you need to
+    be sure that the url from which you access Leo (typically
+    http://localhost:8130/) is accessible only by people and software you trust.
+
+    Remote execution is turned off by default, you need to manually / locally
+    change the @setting ``@bool http_allow_remote_exec = False`` to ``True``
+    to enable it.
+
+Commands to be executed are submitted via HTTP GET requests, which can
+be generated in almost any language and also triggered from shortcuts,
+links in other documents or applications, etc. etc.
+
+The basic form is::
+
+    http://localhost:8130/_/exec/?cmd=<python code for Leo to execute>
+
+The query parameters are:
+
+``cmd`` (required)
+    A valid python snippet for Leo to execute.  Executed by
+    the ``vs-eval`` command in the ``valuespace`` plug-in.  Can be
+    specified multiple times, each is executed in order.  May contain
+    newlines, see examples.
+``c`` (optional)
+    Which currently loaded outline to use, can be an integer, starting
+    from zero, or the full path+filename, or just the base filename.
+    Defaults to 0 (zero), i.e. the "first" open outline.
+``enc`` (optional)
+    Encoding for response, 'str', 'repr', or 'json'.  Used to render
+    the returned value.
+``mime_type`` (optional)
+    Defaults to ``text/plain``.  Could be useful to use ``text/html`` etc.
+
+A special variant url is::
+
+    http://localhost:8130/_/exec/commanders/
+
+which returns a list of open outlines.
+
+Examples
+========
+
+This command::
+
+    curl http://localhost:8130/_/exec/?cmd='c.bringToFront()' >/dev/null
+
+will raise the Leo window, or at least make the window manager signal the
+need to raise it.
+
+::
+
+    curl --get --data-urlencode \
+      cmd='g.handleUrl("file:///home/tbrown/.leo/.contacts.leo#Contacts", c)' \
+      http://localhost:8130/_/exec/ >/dev/null
+
+will cause a running Leo instance to open ``/some/path/contacts.leo`` and select
+the ``Contacts`` node.  A desktop icon link, browser bookmark, or link in a
+spread-sheet or other document could be used the same way.
+
+In the ``bash`` shell language, this code::
+
+    TEXT="$@"
+    curl --silent --show-error --get --data-urlencode cmd="
+        nd = c.rootPosition().insertAfter()
+        nd.h = 'TODO: $TEXT'
+        import time
+        nd.b = '# created %s' % time.asctime()
+        c.selectPosition(nd)
+        c.redraw()
+        'To do item created\n'
+    " http://localhost:8130/_/exec/
+
+could be written in a file called ``td``, and then, assuming that file is
+executable and on the shell's path, entering::
+
+    td remember to vacuum the cat
+
+on the command line would create a node at the top of the first open outline in
+Leo with a headline ``TODO: remember to vacuum the cat`` and a body text ``#
+created Wed Jul 29 16:42:26 2015``. The command ``vs-eval`` returns the value of
+the last expression in a block, so the trailing ``'To do item created\n'`` gives
+better feedback than ``None`` generated by ``c.redraw()``.
+``c.selectPosition(nd)`` is important ant to stop Leo getting confused about
+which node is selected.
+
 
 '''
 #@-<< docstring >>
@@ -113,6 +223,8 @@ import shutil
 import socket
 import time
 from xml.sax.saxutils import quoteattr
+
+from leo.plugins import valuespace
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20050328104558: ** << version history >>
@@ -134,6 +246,8 @@ from xml.sax.saxutils import quoteattr
 # - Removed the old @page line from the docstring.
 # 0.98 EKR: Handle unicode characters properly.
 # 0.99 Lauri Ojansivu <lauri.ojansivu@gmail.com>: Many change for better html generation.
+# 
+# NOTE: this is legacy info., there have been more additions by other authors.
 #@-<< version history >>
 sockets_to_close = []
 #@+others
@@ -153,8 +267,8 @@ def init():
                 return False
             asyncore.read = a_read
             g.registerHandler("idle", plugin_wrapper)
-            g.es("http serving enabled at %s:%s, version %s" % (
-                config.http_ip, config.http_port, __version__), color="purple")
+            g.es("http serving enabled at %s:%s" % (
+                config.http_ip, config.http_port), color="purple")
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20111005140148.18223: *3* getGlobalConfiguration
@@ -356,11 +470,11 @@ class leo_interface(object):
             headString, bodyString = "Top level", ""
             format_info = None
         f = StringIO()
-        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
-    <html> 
-    <head> 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>"""     )
         f.write(escape(window.shortFileName() + ":" + headString))
         f.write("</title>\n</head>\n<body>\n")
@@ -521,7 +635,7 @@ class leo_interface(object):
             length = f.tell()
             f.seek(0)
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
+            self.send_header("Content-type", getattr(f, "mime_type", "text/html"))
             self.send_header("Content-Length", str(length))
             self.end_headers()
             return f
@@ -573,6 +687,7 @@ class LeoActions:
     def __init__(self, request_handler):
         self.request_handler = request_handler
         self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
+        self.exec_handler = ExecHandler(request_handler)
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
         """Return the file like 'f' that leo_interface.send_head makes
@@ -709,23 +824,23 @@ class LeoActions:
     def add_bookmark_selection(self, node, text):
         '''Insert the selected text into the bookmark node,
         after any earlier selections but before the users comments.
-        
+
             http://example.com/
-            
+
             Tags: tags, are here
-            
+
             Full title of the page
-            
+
             Collected: timestamp
-            
+
             """
             The first saved selection
             """
-            
+
             """
             The second saved selection
             """
-            
+
             Users comments
 
         i.e. just above the "Users comments" line.
@@ -770,9 +885,75 @@ class LeoActions:
         """Return the file like 'f' that leo_interface.send_head makes"""
         if self.request_handler.path.startswith('/_/add/bkmk/'):
             return self.add_bookmark()
+        if self.request_handler.path.startswith('/_/exec/'):
+            return self.exec_handler.get_response()
         f = StringIO()
         f.write("Unknown URL in LeoActions.get_response()")
         return f
+    #@-others
+#@+node:tbrown.20150729112701.1: ** class ExecHandler
+class ExecHandler:
+    """
+    Quasi-RPC GET based interface
+    """
+    #@+others
+    #@+node:tbrown.20150729112701.2: *3* __init__
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+    #@+node:tbrown.20150729112808.1: *3* get_response
+    def get_response(self):
+        """Return the file like 'f' that leo_interface.send_head makes"""
+        # self.request_handler.path.startswith('/_/exec/')
+
+        if not g.app.config.getBool("http_allow_remote_exec"):
+            return None  # fail deliberately
+
+        parsed_url = urlparse.urlparse(self.request_handler.path)
+        query = urlparse.parse_qs(parsed_url.query)
+
+        enc = query.get("enc", ["str"])[0]
+
+        if parsed_url.path.startswith('/_/exec/commanders/'):
+            ans = [i.fileName() for i in g.app.commanders()]
+            if enc != 'json':
+                ans = '\n'.join(ans)
+        else:
+            ans = self.proc_cmds()
+
+        f = StringIO()
+        f.mime_type = query.get("mime_type", ["text/plain"])[0]
+        enc = query.get("enc", ["str"])[0]
+        if enc == 'json':
+            f.write(json.dumps(ans))
+        elif enc == 'repr':
+            f.write(repr(ans))
+        else:
+            f.write(str(ans))
+        return f
+
+    #@+node:tbrown.20150729150843.1: *3* proc_cmds
+    def proc_cmds(self):
+
+        parsed_url = urlparse.urlparse(self.request_handler.path)
+        query = urlparse.parse_qs(parsed_url.query)
+
+        # work out which commander to use, zero index int, full path name, or file name
+        c_idx = query.get('c', [0])[0]
+        if c_idx is not 0:
+            try:
+                c_idx = int(c_idx)
+            except ValueError:
+                paths = [i.fileName() for i in g.app.commanders()]
+                if c_idx in paths:
+                    c_idx = paths.index(c_idx)
+                else:
+                    paths = [os.path.basename(i) for i in paths]
+                    c_idx = paths.index(c_idx)
+
+        ans = None
+        for cmd in query['cmd']:
+            ans = valuespace.eval_text(g.app.commanders()[c_idx], cmd)
+        return ans  # the last answer, if multiple commands run
     #@-others
 #@+node:EKR.20040517080250.10: ** class nodeNotFound
 class nodeNotFound(Exception):
