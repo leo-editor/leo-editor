@@ -89,6 +89,10 @@ leoscreen-jump-to-error-up
   window. `leoscreen-jump-to-error` always resets to the inner most stack-frame
   in the last traceback.
 
+leoscreen-select-screen
+  If you have multiple separate screen sessions (as seen with `screen -list`)
+  running, this lets you pick the one to interact with.  By default it's the
+  one from which Leo was launched.
 
 **Settings**
 
