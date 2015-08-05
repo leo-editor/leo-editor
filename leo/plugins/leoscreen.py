@@ -2,14 +2,16 @@
 #@+node:tbrown.20100226095909.12777: * @file leoscreen.py
 #@+<< docstring >>
 #@+node:tbrown.20100226095909.12778: ** << docstring >>
-''' Allows interaction with shell apps via screen.
+'''Allows interaction with shell apps via screen.
+
+status: daily-use py2.7 Wed Aug  5 09:30:38 2015
 
 Analysis environments like SQL, R, scipy, ipython, etc. can be
 used by pasting sections of text from an editor (Leo) and a
 shell window.  Results can be pasted back into the editor.
 
-This plugin streamlines the process by communicating with ``screen``,
-the shell multiplexer
+This plugin streamlines the process by communicating with
+``GNU screen``, the shell multiplexer
 
 **Commands**
 
@@ -147,6 +149,8 @@ try:
     import leo.plugins.stickynotes as stickynotes
 except ImportError:
     stickynotes = None
+
+from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20100226095909.12781: ** init
@@ -173,6 +177,8 @@ class leoscreen_Controller:
 
         self.c = c
         c.leo_screen = self
+        
+        self.use_screen = None  # to select a particular screen session
 
         # skip line -1, which is
         # usually a prompt and not interesting
@@ -215,9 +221,16 @@ class leoscreen_Controller:
     def screen_cmd(self, cmds):
         """Execute a screen command via screen -X"""
         cmd = [
-            'screen', '-X', 'eval',
-            'msgwait 0',    # avoid waiting for message display
+            'screen', 
         ]
+        
+        if self.use_screen:
+            cmd.extend(['-d', '-r', self.use_screen.split()[0]])
+        
+        cmd.extend([
+            '-X', 'eval',
+            'msgwait 0',    # avoid waiting for message display
+        ])
         cmd.extend(cmds)
 
         cmd.extend([
@@ -227,7 +240,8 @@ class leoscreen_Controller:
         proc = subprocess.Popen(cmd,
             stdout=subprocess.PIPE,  # don't just inherit, which alters
             stderr=subprocess.PIPE)  # screen's behavior
-        proc.communicate()
+        out, err = proc.communicate()
+        return out, err
     #@+node:tbrown.20100226095909.12787: *3* run_text
     def run_text(self, txt, c=None):
         """Send txt to screen"""
@@ -387,6 +401,27 @@ class leoscreen_Controller:
 
         if x is not None:
             self.get_line_prefix = x
+    #@+node:tbrown.20150805094115.1: *3* select_screen
+    def select_screen(self):
+        """select_screen - select which screen session to target
+        """
+        cmd = ['screen', '-ls']
+        proc = subprocess.Popen(cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        
+        screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i] 
+                   for i in out.split('\n') if i.startswith('\t')]
+        
+        ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
+        ld.exec_()
+
+        screen = [i for i in screens if i[1]]
+        if screen:
+            self.use_screen = screen[0][2]
+        else:
+            self.use_screen = None
     #@-others
 #@+node:tbrown.20100226095909.12789: ** cmd_get_line (leoscreen_Controller)
 @g.command('leoscreen-get-line')
@@ -529,6 +564,12 @@ def jump_to_error_internal(c):
             skipped += 1
     else:
         g.es("%d error frames found in console content"%skipped)
+#@+node:tbrown.20150805095656.1: ** cmd_select_screen
+@g.command('leoscreen-select-screen')
+def cmd_select_screen(event):
+    c = event.get('c')
+    c.leo_screen.select_screen()
+
 #@-others
 #@@language python
 #@@tabwidth -4

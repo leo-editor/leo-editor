@@ -308,13 +308,14 @@
             </p>
             <p>
             <div id="searchbox" style="">
-              <h3>Quick search</h3>
+              <h3>Search</h3>
               <form class="search" method="get" action="search.html">
-                <input type="text" name="q">
-                <input type="submit" value="Go">
+                <input id='q' type="text" name="q">
+                <input type="submit" value="Quick search">
                 <input type="hidden" value="yes" name="check_keywords">
                 <input type="hidden" value="default" name="area">
               </form>
+              <div><button onclick="window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);">Google search</button></div>
               <p class="searchtip" style="font-size: 90%">
                 Enter search terms or a module, class or function name.
               </p>

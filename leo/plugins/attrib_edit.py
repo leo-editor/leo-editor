@@ -443,7 +443,7 @@ class ListDialog(QtWidgets.QDialog):
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setCheckState(cb.Checked)
+                cb.setCheckState(QtCore.Qt.Checked)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
