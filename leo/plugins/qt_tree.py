@@ -53,6 +53,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
+        self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         g.registerHandler('save1', self.clear_visual_icons)
         if 0: # Drag and drop
@@ -191,9 +192,14 @@ class LeoQtTree(leoFrame.LeoTree):
     def clear_visual_icons(self, tag, keywords):
         """clear_visual_icons - remove 'declutter' icons before save
 
+        this method must return None to tell Leo to continue normal processing
+
         :param str tag: 'save1'
         :param dict keywords: Leo hook keywords
         """
+
+        if not self.use_declutter:
+            return None
 
         c = keywords['c']
         if c != self.c:
@@ -205,7 +211,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 icons = [i for i in com.getIconList(nd) if 'visualIcon' not in i]
                 com.setIconList(nd, icons, False)
 
-        return None  # tell Leo to continue normal processing
+        return None
     #@+node:tbrown.20150807090639.1: *4* qtree.declutter_node
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
@@ -218,34 +224,27 @@ class LeoQtTree(leoFrame.LeoTree):
             self.declutter_patterns = []
             lines = c.config.getData("tree-declutter-patterns")
             while lines:
-                pattern = re.compile(lines.pop(0))
-                if lines:
-                    self.declutter_patterns.append((pattern, lines.pop(0)))
-                else:
-                    g.es("WARNING: odd number of lines in tree-declutter-patterns")
-        
-        text = str(item.text(0)) if g.isPython3 else unicode(item.text(0))
-        for pattern, replace in self.declutter_patterns:
-            text = pattern.sub(replace, text)
-        if '::N:' in text:
-            text, cmds = text.split('::N:')
-        else:
-            cmds = None
-        item.setText(0, text)
+                line = lines.pop(0)
+                cmd, arg = line.split(None, 1)
+                if cmd == 'RULE':
+                    self.declutter_patterns.append((re.compile(arg), []))
+                    continue
+                self.declutter_patterns[-1][1].append((cmd, arg))
 
-        if cmds:
-            new_icons = []
-            cmds = cmds.split('::')
-            while cmds:
-                cmd = cmds.pop(0)
-                if not cmds:
-                    break  # key without value
-                arg = cmds.pop(0)
-                if cmd == 'ICON':
-                    new_icons.append(arg)
-                else:
+        text = str(item.text(0)) if g.isPython3 else unicode(item.text(0))
+        new_icons = []
+        for pattern, cmds in self.declutter_patterns:
+            if pattern.match(text):
+
+                for cmd, arg in cmds:
+                    if cmd == 'REPLACE':
+                        text = pattern.sub(arg, text)
+                        item.setText(0, text)
+                        continue
                     arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
-                    if cmd == 'BG':    
+                    if cmd == 'ICON':
+                        new_icons.append(arg)
+                    elif cmd == 'BG':
                         item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
                     elif cmd == 'FG':
                         item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
@@ -268,18 +267,18 @@ class LeoQtTree(leoFrame.LeoTree):
                         font = item.font(0)
                         font.setPointSize(int(arg))
                         item.setFont(0, font)
-            
-            if new_icons:
-                iconDir = g.os_path_abspath(g.os_path_normpath(
-                    g.os_path_join(g.app.loadDir,"..","Icons")))
-                com = c.editCommands
-                allIcons = com.getIconList(p)
-                icons = [i for i in allIcons if 'visualIcon' not in i]
-                for icon in new_icons:
-                    com.appendImageDictToList(
-                        icons, iconDir, icon, 2, on='vnode', visualIcon='1'
-                    )
-                com.setIconList(p, icons, False)
+
+        if new_icons:
+            iconDir = g.os_path_abspath(g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
+            com = c.editCommands
+            allIcons = com.getIconList(p)
+            icons = [i for i in allIcons if 'visualIcon' not in i]
+            for icon in new_icons:
+                com.appendImageDictToList(
+                    icons, iconDir, icon, 2, on='vnode', visualIcon='1'
+                )
+            com.setIconList(p, icons, False)
     #@+node:ekr.20110605121601.17874: *4* qtree.drawChildren
     def drawChildren(self, p, parent_item):
         '''Draw the children of p if they should be expanded.'''
@@ -319,7 +318,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Set the headline and maybe the icon.
         self.setItemText(item, p.h)
 
-        if c.config.getBool('tree-declutter', default=False):
+        if self.use_declutter:
             self.declutter_node(c, p, item)
 
         if p:
@@ -1023,7 +1022,8 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
-        item.setText(0, item._real_text)
+        if self.use_declutter:
+            item.setText(0, item._real_text)
         e = w.itemWidget(item, 0)
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
@@ -1160,7 +1160,8 @@ class LeoQtTree(leoFrame.LeoTree):
     def setItemText(self, item, s):
         if item:
             item.setText(0, s)
-            item._real_text = s
+            if self.use_declutter:
+                item._real_text = s
     #@+node:ekr.20110605121601.18433: ** qtree.Scroll bars
     #@+node:ekr.20110605121601.18434: *3* qtree.getSCroll
     def getScroll(self):
@@ -1280,7 +1281,8 @@ class LeoQtTree(leoFrame.LeoTree):
             # This won't do anything in the new redraw scheme.
         item = self.position2item(p)
         if item:
-            item.setText(0, item._real_text)
+            if self.use_declutter:
+                item.setText(0, item._real_text)
             e, wrapper = self.editLabelHelper(item, selectAll, selection)
         else:
             e, wrapper = None, None

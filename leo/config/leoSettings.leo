@@ -100,7 +100,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -124,7 +124,7 @@
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
 </v>
-<v t="ekr.20140917051508.19548" a="E"><vh>Appearance (change these first)</vh>
+<v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369" a="E"><vh>Qt Gui settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -1813,6 +1813,8 @@
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
@@ -11141,6 +11143,55 @@ else:
 ((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
+<t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications
+See tree-declutter-patterns
+</t>
+<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># regex patterns to reformat the appearance of nodes
+# tree-declutter must be set to True for these to function
+#
+# lines starting with '#' are ignored
+# each rules starts with 'RULE' followed by the regex pattern to match
+# non-blank non-# lines before the next RULE are commands:
+# REPLACE &lt;text on rest of line&gt;
+#   replacement text
+# ICON path/to/icon
+#   icon to add
+# FG
+#   a color, e.g. #FF8800 or @solarized-magenta
+# BG
+#   a color, e.g. #FF8800 or @solarized-magenta
+# FONT
+#   The name of a font, e.g. Times
+# PX
+#   A font size in pixels, e.g. 40
+# PT
+#   A font size in points, e.g. 40
+# ITALIC
+#   0 or 1
+# WEIGHT
+#   one of Light, Normal, DemiBold, Bold, Black
+
+# if the node name starts with 'peacock node DEMO', make a mess of it
+RULE ^(peacock node DEMO)
+REPLACE LOOK: \1
+ICON Tango/16x16/emotes/face-grin.png
+ICON Tango/16x16/emotes/face-wink.png
+FG @solarized-magenta
+BG white
+FONT Times
+PX 40
+ITALIC 1
+WEIGHT Bold
+
+# remove @clean and use an icon
+RULE ^@clean (.*)
+REPLACE \1
+ICON Tango/16x16/mimetypes/ascii.png
+
+# show the last part of long filenames
+RULE ^.{1,1000}/(.{20})
+REPLACE …/\1
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
