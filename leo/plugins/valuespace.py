@@ -262,7 +262,7 @@ def vs_update(event):
     get_vs(event['c']).update()
 #@+node:tbrown.20130227164110.21222: *3* vs-eval
 @g.command("vs-eval")
-def vs_eval(kwargs):
+def vs_eval(event):
     """
     Execute the selected text, if any.  Select next line of text.
 
@@ -284,7 +284,7 @@ def vs_eval(kwargs):
     ``g``, ``c``, and ``p`` are available to executing code, assignments
     are made in the ``c.vs`` namespace and persist for the life of ``c``.
     """
-    c = kwargs['c']
+    c = event['c']
     w = c.frame.body.wrapper
     txt = w.getSelectedText()
     # select next line ready for next select/send cycle
@@ -374,35 +374,32 @@ def eval_text(c, txt):
 
 #@+node:tbrown.20130227164110.21223: *3* vs-last
 @g.command("vs-last")
-def vs_last(kwargs):
+def vs_last(event, text=None):
     """
     Insert the last result from ``vs-eval``.
 
     Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
     insert no quotes, for ``repr()`` style insertion use ``vs-last-pretty``.
     """
-    c = kwargs['c']
-    if 'text' in kwargs:
-        txt = kwargs['text']
-    else:
-        txt = str(get_vs(c).d.get('_last'))
+    c = event['c']
+    if text is None:
+        text = str(get_vs(c).d.get('_last'))
     editor = c.frame.body.wrapper
     insert_point = editor.getInsertPoint()
-    editor.insert(insert_point, txt+'\n')
-    editor.setInsertPoint(insert_point+len(txt)+1)
+    editor.insert(insert_point, text+'\n')
+    editor.setInsertPoint(insert_point+len(text)+1)
     c.setChanged(True)
 #@+node:tbrown.20130227164110.21224: *3* vs-last-pretty
 @g.command("vs-last-pretty")
-def vs_last_pretty(kwargs):
+def vs_last_pretty(event):
     """
     Insert the last result from ``vs-eval``.
 
     Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
     '``"1\n2\n3\n4"``', see all ``vs-last``.
     """
-    c = kwargs['c']
-    kwargs['text'] = pprint.pformat(get_vs(c).d.get('_last'))
-    vs_last(kwargs)
+    c = event['c']
+    vs_last(event, text=pprint.pformat(get_vs(c).d.get('_last')))
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
 
