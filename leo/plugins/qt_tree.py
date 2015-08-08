@@ -282,7 +282,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if len(allIcons) != len(icons) or new_icons:
             for icon in new_icons:
                 com.appendImageDictToList(
-                    icons, self.declutter_iconDir, icon, 2,
+                    icons, self.declutter_iconDir, 
+                    g.app.gui.getImageImageFinder(icon), 2,
                     on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
