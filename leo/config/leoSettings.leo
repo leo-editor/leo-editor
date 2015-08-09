@@ -11184,23 +11184,23 @@ ITALIC 1
 WEIGHT Bold
 
 # remove @clean etc. and use an icon
-RULE ^@(clean) (.*)
-REPLACE \2
+RULE ^@clean (.*)
+REPLACE \1
 ICON file_icons/file_clean.png
-RULE ^@(auto) (.*)
-REPLACE \2
+RULE ^@auto (.*)
+REPLACE \1
 ICON file_icons/file_auto.png
-RULE ^@(edit) (.*)
-REPLACE \2
+RULE ^@edit (.*)
+REPLACE \1
 ICON file_icons/file_edit.png
-RULE ^@(asis) (.*)
-REPLACE \2
+RULE ^@asis (.*)
+REPLACE \1
 ICON file_icons/file_asis.png
-RULE ^@(nosent) (.*)
-REPLACE \2
+RULE ^@nosent (.*)
+REPLACE \1
 ICON file_icons/file_nosent.png
-RULE ^@(file) (.*)
-REPLACE \2
+RULE ^@file (.*)
+REPLACE \1
 ICON file_icons/file_file.png
 
 # show the last part of long filenames
