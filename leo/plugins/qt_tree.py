@@ -412,7 +412,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return None
         self.declutter_update = True
         return None
-    #@+node:tbrown.20150808082111.1: *4* qtree.update_appearance
+    #@+node:tbrown.20150808082111.1: *4* qtree.update_appearance_idle
     def update_appearance_idle(self, tag, keywords):
         """clear_visual_icons - update appearance now we're safely out of
         the redraw loop.
@@ -887,7 +887,8 @@ class LeoQtTree(leoFrame.LeoTree):
         images = [z for z in images if z] # 2013/12/23: Remove missing images.
         if not images:
             return None
-        width = sum([i.width() for i in images])
+        hsep = self.c.config.getInt('tree-icon-separation') or 0
+        width = sum([i.width() for i in images]) + hsep * (len(images)-1)
         height = max([i.height() for i in images])
         pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba()) # transparent fill, rgbA
@@ -900,7 +901,7 @@ class LeoQtTree(leoFrame.LeoTree):
         x = 0
         for i in images:
             painter.drawPixmap(x, (height - i.height()) // 2, i)
-            x += i.width()
+            x += i.width() + hsep
         painter.end()
         icon = QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
         g.app.gui.iconimages[hash] = icon

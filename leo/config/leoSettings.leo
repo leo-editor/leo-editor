@@ -125,12 +125,12 @@
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
-<v t="ekr.20140912075503.19369" a="E"><vh>Qt Gui settings</vh>
+<v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 </v>
-<v t="ekr.20140915194122.23431" a="E"><vh>Colors</vh>
+<v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
@@ -212,7 +212,7 @@
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
-<v t="ekr.20150626061905.1" a="E"><vh>Status area colors for searches</vh>
+<v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
 <v t="ekr.20150626060718.1"><vh>@color find-found-bg = blue</vh></v>
 <v t="ekr.20150626060718.2"><vh>@color find-found-fg = white</vh></v>
 <v t="ekr.20150626060719.1"><vh>@color find-not-found-bg = red</vh></v>
@@ -336,6 +336,7 @@
 <v t="edward.20150615144141.1"><vh>Outline indicators</vh>
 <v t="edward.20150615144141.2"><vh>@string tree-image-closed = None</vh></v>
 <v t="edward.20150615144141.3"><vh>@string tree-image-open = None</vh></v>
+<v t="tbrown.20150810084824.1"><vh>@int tree-icon-separation = 1</vh></v>
 </v>
 <v t="ekr.20140915194122.23440"><vh>Plugins</vh>
 <v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
@@ -383,8 +384,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui style sheet</vh>
-<v t="ekr.20140912072521.19160" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
+<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
@@ -11207,6 +11208,7 @@ ICON file_icons/file_file.png
 RULE ^.{1,1000}/(.{20})
 REPLACE …/\1
 </t>
+<t tx="tbrown.20150810084824.1">Separation between icons on tree node items</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
