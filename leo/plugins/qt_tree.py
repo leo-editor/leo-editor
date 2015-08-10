@@ -425,6 +425,15 @@ class LeoQtTree(leoFrame.LeoTree):
         c = keywords['c']
         if c != self.c:
             return None
+
+        if isinstance(QtGui.QApplication.focusWidget(), QtGui.QLineEdit):
+            # when search results are found in headlines headkey2 fires
+            # (on the second search hit in a headline), and full_redraw()
+            # below takes the headline out of edit mode, and Leo crashes,
+            # probably because the find code didn't expect to leave edit
+            # mode.  So don't update when a QLineEdit has focus
+            return None
+
         if self.declutter_update:
             self.declutter_update = False
             self.full_redraw(scroll=False)
