@@ -443,6 +443,14 @@ plugins Package
     :members:
     :undoc-members:
     :show-inheritance:
+    
+:mod:`livecode` Module
+-------------------------
+
+.. automodule:: leo.plugins.livecode
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 :mod:`macros` Module
 --------------------
@@ -595,6 +603,14 @@ plugins Package
     :members:
     :undoc-members:
     :show-inheritance:
+    
+:mod:`nodetags` Module
+----------------------
+
+.. automodule:: leo.plugins.nodetags
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 :mod:`nodewatch` Module
 -----------------------
@@ -660,18 +676,18 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`printing` Module
-----------------------
-
-.. automodule:: leo.plugins.printing
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`projectwizard` Module
 ---------------------------
 
 .. automodule:: leo.plugins.projectwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`python_terminal` Module
+---------------------------
+
+.. automodule:: leo.plugins.python_terminal
     :members:
     :undoc-members:
     :show-inheritance:
@@ -980,6 +996,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`viewrendered2` Module
+--------------------------
+
+.. automodule:: leo.plugins.viewrendered2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`vim` Module
 -----------------
 
@@ -992,6 +1016,14 @@ plugins Package
 ------------------------
 
 .. automodule:: leo.plugins.word_count
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+:mod:`wikiview` Module
+------------------------
+
+.. automodule:: leo.plugins.wikiview
     :members:
     :undoc-members:
     :show-inheritance:
