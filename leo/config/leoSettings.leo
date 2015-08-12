@@ -11204,6 +11204,26 @@ RULE ^@file (.*)
 REPLACE \1
 ICON file_icons/file_file.png
 
+# Add Icon to folders and remove /-/
+RULE ^/(.*)/$
+REPLACE \1 
+ICON file_icons/folder.png
+
+# Add icon to path folders and remove @path
+RULE ^@path (.*)
+REPLACE \1 
+ICON file_icons/folder_path.png
+
+# Add Icon to removed folders and remove */-/*
+RULE ^\*/(.*)/\*$
+REPLACE \1 
+ICON file_icons/folder_removed.png
+
+# Add Icon to removed files and remove *-*
+RULE ^\*([^/]*.*[^/]*)\*$
+REPLACE \1 
+ICON file_icons/removed.png
+
 # show the last part of long filenames
 RULE ^.{1,1000}/(.{20})
 REPLACE …/\1
