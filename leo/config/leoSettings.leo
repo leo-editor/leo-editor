@@ -11219,8 +11219,8 @@ RULE ^\*/(.*)/\*$
 REPLACE \1 
 ICON file_icons/folder_removed.png
 
-# Add Icon to removed files and remove *-*
-RULE ^\*([^/]*.*[^/]*)\*$
+# Add Icon to removed files and remove *-* but not **-**
+RULE ^\*([^\*/]*[^\*]*[^\*/]*)\*$
 REPLACE \1 
 ICON file_icons/removed.png
 
