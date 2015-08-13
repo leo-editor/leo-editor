@@ -17431,5 +17431,25 @@ class Found(Exception):
 
     def __str__(self):
         return "Found line at %s in %s" % (self.i, self.p.h)
+.. @+node:ekr.20150723205339.1: ** class OutputToken
+class OutputToken:
+    '''A class representing Output Tokens'''
+
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self):
+        if self.kind == 'line-indent':
+            assert not self.value.strip(' ')
+            return '%15s %s' % (self.kind, len(self.value))
+        else:
+            return '%15s %r' % (self.kind, self.value)
+
+    __str__ = __repr__
+
+    def to_string(self):
+        '''Convert an output token to a string.'''
+        return self.value if g.isString(self.value) else ''
 .. @-all
 .. @-leo
