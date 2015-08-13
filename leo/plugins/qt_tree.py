@@ -53,9 +53,17 @@ class LeoQtTree(leoFrame.LeoTree):
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
+
+        # "declutter", node appearance tweaking
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
+        self.declutter_iconDir = g.os_path_abspath(g.os_path_normpath(
+            g.os_path_join(g.app.loadDir,"..","Icons")))
+        self.declutter_update = False  # true when update on idle needed
         g.registerHandler('save1', self.clear_visual_icons)
+        g.registerHandler('headkey2', self.update_appearance)
+        g.registerHandler('idle', self.update_appearance_idle)
+
         if 0: # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -268,15 +276,15 @@ class LeoQtTree(leoFrame.LeoTree):
                         font.setPointSize(int(arg))
                         item.setFont(0, font)
 
-        if new_icons:
-            iconDir = g.os_path_abspath(g.os_path_normpath(
-                g.os_path_join(g.app.loadDir,"..","Icons")))
-            com = c.editCommands
-            allIcons = com.getIconList(p)
-            icons = [i for i in allIcons if 'visualIcon' not in i]
+        com = c.editCommands
+        allIcons = com.getIconList(p)
+        icons = [i for i in allIcons if 'visualIcon' not in i]
+        if len(allIcons) != len(icons) or new_icons:
             for icon in new_icons:
                 com.appendImageDictToList(
-                    icons, iconDir, icon, 2, on='vnode', visualIcon='1'
+                    icons, self.declutter_iconDir, 
+                    g.app.gui.getImageImageFinder(icon), 2,
+                    on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
     #@+node:ekr.20110605121601.17874: *4* qtree.drawChildren
@@ -389,6 +397,47 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             aList.append(item)
         d[v] = aList
+    #@+node:tbrown.20150808075906.1: *4* qtree.update_appearance
+    def update_appearance(self, tag, keywords):
+        """clear_visual_icons - update appearance, but can't call
+        self.full_redraw() now, so just set a flag to do it on idle.
+
+        :param str tag: 'headkey2'
+        :param dict keywords: Leo hook keywords
+        """
+        if not self.use_declutter:
+            return None
+        c = keywords['c']
+        if c != self.c:
+            return None
+        self.declutter_update = True
+        return None
+    #@+node:tbrown.20150808082111.1: *4* qtree.update_appearance_idle
+    def update_appearance_idle(self, tag, keywords):
+        """clear_visual_icons - update appearance now we're safely out of
+        the redraw loop.
+
+        :param str tag: 'idle'
+        :param dict keywords: Leo hook keywords
+        """
+        if not self.use_declutter:
+            return None
+        c = keywords['c']
+        if c != self.c:
+            return None
+
+        if isinstance(QtGui.QApplication.focusWidget(), QtGui.QLineEdit):
+            # when search results are found in headlines headkey2 fires
+            # (on the second search hit in a headline), and full_redraw()
+            # below takes the headline out of edit mode, and Leo crashes,
+            # probably because the find code didn't expect to leave edit
+            # mode.  So don't update when a QLineEdit has focus
+            return None
+
+        if self.declutter_update:
+            self.declutter_update = False
+            self.full_redraw(scroll=False)
+        return None
     #@+node:ekr.20110605121601.17880: *3* qtree.redraw_after_contract
     def redraw_after_contract(self, p=None):
         trace = False and not g.unitTesting
@@ -847,7 +896,8 @@ class LeoQtTree(leoFrame.LeoTree):
         images = [z for z in images if z] # 2013/12/23: Remove missing images.
         if not images:
             return None
-        width = sum([i.width() for i in images])
+        hsep = self.c.config.getInt('tree-icon-separation') or 0
+        width = sum([i.width() for i in images]) + hsep * (len(images)-1)
         height = max([i.height() for i in images])
         pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba()) # transparent fill, rgbA
@@ -860,7 +910,7 @@ class LeoQtTree(leoFrame.LeoTree):
         x = 0
         for i in images:
             painter.drawPixmap(x, (height - i.height()) // 2, i)
-            x += i.width()
+            x += i.width() + hsep
         painter.end()
         icon = QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
         g.app.gui.iconimages[hash] = icon

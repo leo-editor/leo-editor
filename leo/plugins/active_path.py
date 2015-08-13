@@ -67,12 +67,13 @@ time active_path will spend on a recursive operation.
 \@int active_path_max_size (default 1000000) controls the maximum
 size file active_path will open without query.
 
-Per Folder file/folder inclusion and exclusion by adding flags to the body of an active path folder (either @ or /*/), can include multiple inc= and exc= flags:
-    excdirs - excludes all directories 
-    excfiles - excludes all files
-    inc= - a single item or comma separated list of strings to include in the list of files/folders
-    exc= - a single item or comma separated list of strings to exclude in the list of files/folders
-    re - search using regular expressions (otherwise a case-sensitive 'in' comparison)
+Per Folder file/folder inclusion and exclusion by adding flags to the body of an active path folder (either ``@`` or ``/*/``), can include multiple ``inc=`` and ``exc=`` flags:
+    
+- ``excdirs`` - excludes all directories 
+- ``excfiles`` - excludes all files
+- ``inc=`` - a single item or comma separated list of strings to include in the list of files/folders
+- ``exc=`` - a single item or comma separated list of strings to exclude in the list of files/folders
+- ``re`` - search using regular expressions (otherwise a case-sensitive 'in' comparison)
     
 active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
