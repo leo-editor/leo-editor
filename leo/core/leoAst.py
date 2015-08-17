@@ -1273,7 +1273,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def blank(rt):
         rt.gen(' ')
         
-    #@+node:ekr.20150723100208.1: *4* rt.clean (To do)
+    #@+node:ekr.20150723100208.1: *4* rt.clean
     def clean(rt, s):
         pass
     #@+node:ekr.20150723105702.1: *4* rt.colon
@@ -1410,6 +1410,95 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div('%s nowrap' % name)
         rt.keyword(name)
         rt.end_div()
+    #@+node:ekr.20150722204300.11: *3* rt.html attribute helpers
+    #@+at
+    #@@language rest
+    #@@wrap
+    # 
+    # stc injects the following attributes into ast.AST nodes::
+    # 
+    #     'cache'         A cache object.
+    #     'call_cache'    (Not used yet) A call cache.
+    #     'e'             A SymbolTableEntry, call it e.
+    #     'reach'         A reaching set.
+    #     'typ'           (Not used yet) A list of inferred types.
+    # 
+    # This class may report any of the above attributes, plus the following ivars
+    # of e::
+    # 
+    #     e.defined       True if e is defined in cx (and is not a global)
+    #     e.referenced    True if e is reference anywhere.
+    #     e.resolved      True if e appears with 'Load' or 'Param' ctx.
+    # 
+    # Other ivars of e may be useful::
+    # 
+    #     e.cx            The context containing e
+    #     e.name          The name of the object.
+    #     e.node          For defs, the ast.FunctionDef node for this def.
+    #     e.st            The symbol table containing this name.
+    #     e.self_context  For defs and classes, the context that they define.
+    #@@c
+    #@@language python
+
+    #@+node:ekr.20150722204300.12: *4* rt.get_stc_attrs & AttributeTraverser
+    def get_stc_attrs(rt, node, all):
+        pass
+        # nodes = rt.NameTraverser().run(node) if all else [node]
+        # result = []
+        # for node in nodes:
+            # aList = []
+            # e = getattr(node, 'e', None)
+            # reach = getattr(node, 'reach', None)
+            # if e:
+                # aList.append(rt.text('%s cx: %s defined: %s' % (
+                    # e.name, e.cx.name, e.defined)))
+            # if reach:
+                # for item in reach:
+                    # aList.append(rt.text('reach: %s' % rt.u.format(item)))
+            # result.append(join_list(aList, sep=', '))
+        # return join_list(result, sep='; ')
+    #@+node:ekr.20150722204300.13: *5* NameTraverser(AstFullTraverser)
+    class NameTraverser(AstFullTraverser):
+
+        def __init__(self):
+            AstFullTraverser.__init__(self)
+            self.d = {}
+
+        def do_Name(self, node):
+            self.d[node.e.name] = node
+
+        def run(self, root):
+            self.visit(root)
+            return [self.d.get(key) for key in sorted(self.d.keys())]
+    #@+node:ekr.20150722204300.14: *4* rt.stc_attrs
+    def stc_attrs(rt, node, all=False):
+        # attrs = rt.get_stc_attrs(node, all=all)
+        # return attrs and [
+            # rt.span('inline-attr nowrap', [
+                # attrs,
+            # ]),
+            # rt.br(),
+        # ]
+        attrs = rt.get_stc_attrs(node, all=all)
+        if attrs:
+            rt.span('inline-attr nowrap')
+            rt.gen(attrs)
+            rt.end_span()
+            rt.br()
+    #@+node:ekr.20150722204300.15: *4* rt.stc_popup_attrs (not used)
+    def stc_popup_attrs(rt, node, all=False):
+        # attrs = rt.get_stc_attrs(node, all=all)
+        # return attrs and [
+            # rt.popup('attr-popup', [
+                # attrs,
+            # ]),
+        # ]
+        attrs = rt.get_stc_attrs(node, all=all)
+        if attrs:
+            rt.popup('attr-popup', attrs)
+    #@+node:ekr.20150722204300.29: *4* rt.url (not used)
+    # def url(rt, url):
+        # return rt.attr(url).replace("#", "%23").replace("-", "%2d")
     #@+node:ekr.20150722204300.16: *3* rt.html helpers
     #@+node:ekr.20150722204300.17: *4* rt.attr & text
     def attr(rt, s):
@@ -1520,103 +1609,28 @@ class HTMLReportTraverser(AstFullTraverser):
             "%s-summary" % module_name,
             full_name, name,
             classes)
-    #@+node:ekr.20150722204300.11: *3* rt.html attribute helpers
-    #@+at
-    #@@language rest
-    #@@wrap
-    # 
-    # stc injects the following attributes into ast.AST nodes::
-    # 
-    #     'cache'         A cache object.
-    #     'call_cache'    (Not used yet) A call cache.
-    #     'e'             A SymbolTableEntry, call it e.
-    #     'reach'         A reaching set.
-    #     'typ'           (Not used yet) A list of inferred types.
-    # 
-    # This class may report any of the above attributes, plus the following ivars
-    # of e::
-    # 
-    #     e.defined       True if e is defined in cx (and is not a global)
-    #     e.referenced    True if e is reference anywhere.
-    #     e.resolved      True if e appears with 'Load' or 'Param' ctx.
-    # 
-    # Other ivars of e may be useful::
-    # 
-    #     e.cx            The context containing e
-    #     e.name          The name of the object.
-    #     e.node          For defs, the ast.FunctionDef node for this def.
-    #     e.st            The symbol table containing this name.
-    #     e.self_context  For defs and classes, the context that they define.
-    #@@c
-    #@@language python
-
-    #@+node:ekr.20150722204300.12: *4* rt.get_stc_attrs & AttributeTraverser
-    def get_stc_attrs(rt, node, all):
-        pass
-        # nodes = rt.NameTraverser().run(node) if all else [node]
-        # result = []
-        # for node in nodes:
-            # aList = []
-            # e = getattr(node, 'e', None)
-            # reach = getattr(node, 'reach', None)
-            # if e:
-                # aList.append(rt.text('%s cx: %s defined: %s' % (
-                    # e.name, e.cx.name, e.defined)))
-            # if reach:
-                # for item in reach:
-                    # aList.append(rt.text('reach: %s' % rt.u.format(item)))
-            # result.append(join_list(aList, sep=', '))
-        # return join_list(result, sep='; ')
-    #@+node:ekr.20150722204300.13: *5* NameTraverser(AstFullTraverser)
-    class NameTraverser(AstFullTraverser):
-
-        def __init__(self):
-            AstFullTraverser.__init__(self)
-            self.d = {}
-
-        def do_Name(self, node):
-            self.d[node.e.name] = node
-
-        def run(self, root):
-            self.visit(root)
-            return [self.d.get(key) for key in sorted(self.d.keys())]
-    #@+node:ekr.20150722204300.14: *4* rt.stc_attrs
-    def stc_attrs(rt, node, all=False):
-        # attrs = rt.get_stc_attrs(node, all=all)
-        # return attrs and [
-            # rt.span('inline-attr nowrap', [
-                # attrs,
-            # ]),
-            # rt.br(),
-        # ]
-        attrs = rt.get_stc_attrs(node, all=all)
-        if attrs:
-            rt.span('inline-attr nowrap')
-            rt.gen(attrs)
-            rt.end_span()
-            rt.br()
-    #@+node:ekr.20150722204300.15: *4* rt.stc_popup_attrs (not used)
-    def stc_popup_attrs(rt, node, all=False):
-        # attrs = rt.get_stc_attrs(node, all=all)
-        # return attrs and [
-            # rt.popup('attr-popup', [
-                # attrs,
-            # ]),
-        # ]
-        attrs = rt.get_stc_attrs(node, all=all)
-        if attrs:
-            rt.popup('attr-popup', attrs)
-    #@+node:ekr.20150722204300.29: *4* rt.url (not used)
-    # def url(rt, url):
-        # return rt.attr(url).replace("#", "%23").replace("-", "%2d")
     #@+node:ekr.20150722204300.30: *3* rt.reporters
-    #@+node:ekr.20150722204300.31: *4* rt.annotate
+    #@+node:ekr.20150722204300.31: *4* rt.annotate & helper
     def annotate(rt, fn, m):
         f = open(fn, "wb")
         try:
             f.write(''.join(rt.report_file))
         finally:
             f.close()
+    #@+node:ekr.20150722204300.38: *5* rt.report_file
+    def report_file(rt):
+        # return [
+            # rt.html_header % {
+                # 'css-fn': rt.css_fn,
+                # 'title': 'Module: %s' % rt.module.full_name()},
+            # rt.visit(rt.module.node),
+            # rt.html_footer,
+        # ]
+        rt.gen(rt.html_header % {
+                'css-fn': rt.css_fn,
+                'title': 'Module: %s' % rt.module.full_name()})
+        rt.visit(rt.module.node)
+        rt.gen(rt.html_footer)
     #@+node:ekr.20150722204300.32: *4* rt.base_fn
     def base_fn(rt, directory, m):
         '''Return the basic html file name used by reporters.'''
@@ -1635,7 +1649,7 @@ class HTMLReportTraverser(AstFullTraverser):
         finally:
             f.close()
         if open_file:
-            os.startfile(fn)
+            rt.start_file(fn)
     #@+node:ekr.20150722204300.34: *5* rt.write_interfaces
     def write_interfaces(rt, m):
         # all_interfaces, any_interfaces = [], []
@@ -1717,13 +1731,13 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.annotate(annotate_fn, m)
         assert g.os_path_exists(annotate_fn), annotate_fn
         if open_file:
-            os.startfile(annotate_fn)
+            rt.start_file(annotate_fn)
         if 0: # The file is empty at present.
             summary_fn = g.os_path_join(directory, "%s_summary.xhtml" % base_fn)
             if trace: g.trace('writing %s' % (summary_fn))
             rt.summarize(summary_fn, m)
             if open_file:
-                os.startfile(summary_fn)
+                rt.start_file(summary_fn)
     #@+node:ekr.20150722204300.37: *4* rt.report_all_modules(needed to write interfaces)
     def report_all_modules(rt, directory):
         trace = True
@@ -1747,28 +1761,14 @@ class HTMLReportTraverser(AstFullTraverser):
                 if trace: g.trace('writing %s' % (summary_fn))
                 rt.summarize(summary_fn, m)
                 if False:
-                    os.startfile(summary_fn)
+                    rt.start_file(summary_fn)
             # rt.summarize(join(directory,"%s-summary.xhtml" % (base_fn)),m)
         # rt.interfaces(join(join(directory,"-interfaces.xhtml")),m)
         if 0:
             for fn in files:
                 fn2 = join(directory, fn + '.xhtml')
                 assert g.os_path_exists(fn2), fn2
-                os.startfile(fn2)
-    #@+node:ekr.20150722204300.38: *4* rt.report_file
-    def report_file(rt):
-        # return [
-            # rt.html_header % {
-                # 'css-fn': rt.css_fn,
-                # 'title': 'Module: %s' % rt.module.full_name()},
-            # rt.visit(rt.module.node),
-            # rt.html_footer,
-        # ]
-        rt.gen(rt.html_header % {
-                'css-fn': rt.css_fn,
-                'title': 'Module: %s' % rt.module.full_name()})
-        rt.visit(rt.module.node)
-        rt.gen(rt.html_footer)
+                rt.start_file(fn2)
     #@+node:ekr.20150722204300.39: *4* rt.summarize & helpers
     def summarize(rt, directory, m, open_file=False):
         base_fn = rt.base_fn(directory, m)
@@ -1781,7 +1781,7 @@ class HTMLReportTraverser(AstFullTraverser):
         finally:
             f.close()
         if open_file:
-            os.startfile(fn)
+            rt.start_file(fn)
     #@+node:ekr.20150722204300.40: *5* summary & helpers
     def summary(rt, m):
         # return join_list([
@@ -1885,6 +1885,12 @@ class HTMLReportTraverser(AstFullTraverser):
                 "</tr>",
             "</tbody>",
        ]
+    #@+node:ekr.20150817132645.1: *3* rt.startfile
+    def start_file(rt, fn):
+        '''start the file with the given name.'''
+        # pylint disable=no-member
+        # os.startfile is defined only on Windows.
+        os.startfile(fn)
     #@+node:ekr.20150722204300.43: *3* rt.traversers
     #@+node:ekr.20150722204300.44: *4* rt.visit
     def visit(rt, node):
@@ -1903,53 +1909,49 @@ class HTMLReportTraverser(AstFullTraverser):
                     rt.gen(sep)
             if sep:
                 rt.clean(sep)
-    #@+node:ekr.20150723100846.1: *3* rt.unused
-    if 0:
-        #@+others
-        #@+node:ekr.20150722204300.47: *4* rt.arguments & helper
-        # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-
-        def do_arguments(rt, node):
-            assert isinstance(node, ast.AST), node
-            first_default = len(node.args) - len(node.defaults)
-            result = []
-            first = True
-            for n, node2 in enumerate(node.args):
-                if not first: result.append(', ')
-                if isinstance(node2, tuple):
-                    result.append(rt.tuple_parameter(node.args, node2)) ### Huh?
-                else:
-                    result.append(rt.visit(node2)) ### rt.assname(param,node)
-                if n >= first_default:
-                    node3 = node.defaults[n - first_default]
-                    result.append("=")
-                    result.append(rt.visit(node3))
-                first = False
-            if node.vararg:
-                result.append('*' if first else ', *')
-                result.append(rt.name(node.vararg))
-                first = False
-            if node.kwarg:
-                result.append('**' if first else ', **')
-                result.append(rt.name(node.kwarg))
-            return result
-        #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
-        def tuple_parameter(rt, parameters, node):
-            result = []
-            result.append("(")
-            first = True
-            for param in parameters:
-                if not first: result.append(', ')
-                if isinstance(param, tuple):
-                    result.append(rt.tuple_parameter(param, node))
-                else:
-                    pass ### result.append(rt.assname(param,node))
-                first = False
-            result.append(")")
-            # return join_list(result)
-            return ', '.join(result)
-        #@-others
     #@+node:ekr.20150722204300.46: *3* rt.visitors
+    #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helper
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def do_arguments(rt, node):
+        assert isinstance(node, ast.AST), node
+        first_default = len(node.args) - len(node.defaults)
+        result = []
+        first = True
+        for n, node2 in enumerate(node.args):
+            if not first: result.append(', ')
+            if isinstance(node2, tuple):
+                result.append(rt.tuple_parameter(node.args, node2)) ### Huh?
+            else:
+                result.append(rt.visit(node2)) ### rt.assname(param,node)
+            if n >= first_default:
+                node3 = node.defaults[n - first_default]
+                result.append("=")
+                result.append(rt.visit(node3))
+            first = False
+        if node.vararg:
+            result.append('*' if first else ', *')
+            result.append(rt.name(node.vararg))
+            first = False
+        if node.kwarg:
+            result.append('**' if first else ', **')
+            result.append(rt.name(node.kwarg))
+        return result
+    #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
+    def tuple_parameter(rt, parameters, node):
+        result = []
+        result.append("(")
+        first = True
+        for param in parameters:
+            if not first: result.append(', ')
+            if isinstance(param, tuple):
+                result.append(rt.tuple_parameter(param, node))
+            else:
+                pass ### result.append(rt.assname(param,node))
+            first = False
+        result.append(")")
+        # return join_list(result)
+        return ', '.join(result)
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
 
@@ -2052,7 +2054,7 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150722204300.55: *4* rt.Break
     def do_Break(rt, node):
         rt.simple_statement('break')
-    #@+node:ekr.20150722204300.56: *4* rt.Call & rt.keyword
+    #@+node:ekr.20150722204300.56: *4* rt.Call & do_keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(rt, node):
