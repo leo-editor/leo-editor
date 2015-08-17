@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -9,29 +10,10 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618"><vh>Startup</vh>
-<v t="ekr.20050217093214"><vh>@settings</vh>
-<v t="ekr.20150430152019.1"><vh>@data history-list</vh></v>
-<v t="ekr.20150407140848.1"><vh>@button cfa-plugins @args add</vh></v>
-<v t="ekr.20050328101812"><vh>@page http plugin</vh>
-<v t="ekr.20050328101812.1"><vh>@bool http_active = False</vh></v>
-<v t="ekr.20050328101812.2"><vh>@int  port = 8080</vh></v>
-<v t="ekr.20050328101812.3"><vh>@string rst_http_attributename = rst_http_attribute</vh></v>
-</v>
-<v t="ekr.20100910115903.5597"><vh>screenshot settings</vh>
-<v t="ekr.20100910115903.5599"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
-</v>
-<v t="ekr.20140301063519.16882"><vh>vr2</vh>
-<v t="ekr.20140301063519.16883"><vh>@string vr_stylesheet_path = c:/users/edreamleo/vr2-css</vh></v>
-</v>
-</v>
-<v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
-<v t="ekr.20101110084839.5680"><vh>Script: plugins not in this file</vh></v>
-</v>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -131,8 +113,8 @@
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
-<v t="edream.110203113231.872" a="E"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2" a="E"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.872"><vh>Files and nodes</vh>
+<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
@@ -156,8 +138,7 @@
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
-<v t="ekr.20150107090324.1"
-marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -252,6 +233,11 @@ marks="ekr.20150107090324.16,"><vh>@file cursesGui.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 </v>
 </v>
+<v t="ekr.20150722060423.1"><vh>@button compare vr-controller</vh>
+<v t="ekr.20150722061744.1"><vh>compare</vh></v>
+<v t="ekr.20150722061557.1"><vh>run</vh></v>
+<v t="ekr.20150722061639.1"><vh>scan</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -290,7 +276,8 @@ These plugins create new kinds of nodes, some of which affect the file system.</
 
 You would typically not enable any of the following "plugins".
 
-These plugins contain example code only.</t>
+These plugins contain example code only.
+</t>
 <t tx="ekr.20040915073259">@nocolor-node
 
 These plugins add buttons and other widgets to the icon area or
@@ -357,10 +344,7 @@ Use separate nodes
 make this work, just put@others in the root of your plugin as shown.Note
 that@others may be nested, as shown in class myClass.
 </t>
-<t tx="ekr.20041211035618"></t>
 <t tx="ekr.20050111122605"></t>
-<t tx="ekr.20050217093214">@language rest
-</t>
 <t tx="ekr.20050303051035">@nocolor-node
 
 The following nodes show recommended style when writing plugins.</t>
@@ -434,13 +418,6 @@ what the plugin does and how to use it.
         g.registerHandler('start2',onStart2)
     return ok</t>
 <t tx="ekr.20050306081349"></t>
-<t tx="ekr.20050328101812">
-
-
-</t>
-<t tx="ekr.20050328101812.1"></t>
-<t tx="ekr.20050328101812.2"></t>
-<t tx="ekr.20050328101812.3"></t>
 <t tx="ekr.20050817132814">@nocolor-node
 
 Important: the rst3 plugin has largely been superceded by similar
@@ -470,80 +447,82 @@ To activate the rst3 plugin, do the following:
 <t tx="ekr.20061023142737.1"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
-<t tx="ekr.20080515173014.1">([a-zA-Z_.]+)\.bind\((.*)\)(.*)$
-c.bind(\1,\2)\3
-
-[a-zA-Z_.]+
-
-(\w)+(\.\w+)*
-
-abc.xyz.pdq
-
-# Bind w.bind with more than two args (none found)
-
-w.bind\(.*,.*,.*$
-
-[-w]\.bind\(</t>
 <t tx="ekr.20081121105001.2080"># Most other gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="ekr.20090430075506.4"></t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.
 </t>
-<t tx="ekr.20100910115903.5597"></t>
-<t tx="ekr.20100910115903.5599"></t>
 <t tx="ekr.20101004082701.5674"></t>
-<t tx="ekr.20101110084839.5680">[-w]\.bind\('''Print all plugins not in this file.'''
-
-import glob
-
-suppress=(
-    '__init__.py',
-    # Gui's
-    'baseNativeTree.py','cursesGui.py','gtkDialogs.py','gtkGui.py',
-    'ironPythonGui.py',
-    'qtframecommands.py','qtGui.py','qt_main.py','qt_quicksearch.py',
-    'swing_gui.py','tkGui.py','wxGui.py',
-    # LeoUser stuff...
-    'exampleTemacsExtension.py','temacs.py','usetemacs.py',
-    # Ancient rst stuff...
-    'rst.py','rst2.py',
-)
-
-all=glob.glob(g.os_path_finalize_join(
-    g.app.loadDir,'..','plugins','*.py'))
-all=[g.shortFileName(z) for z in all]
-all.sort()
-
-here=[v.anyAtFileNodeName() for v in c.all_unique_nodes()
-    if v.isAnyAtFileNode()]
-
-missing=[s for s in all if s not in here and s not in suppress]
-
-if missing:
-    print('='*20)
-    print('missing plugins...\n')
-    for s in missing:
-        print(s)
-else:
-    g.es_print('no_missing plugins')
-</t>
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
 </t>
 <t tx="ekr.20101110150056.9457"></t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20121126102050.10134"></t>
 <t tx="ekr.20130927050813.13031"></t>
-<t tx="ekr.20140301063519.16882"></t>
-<t tx="ekr.20140301063519.16883"></t>
 <t tx="ekr.20140723122936.17925"># These plugins now contain the importer code for all kinds of @auto nodes.
-# Each plugin must define a top-level importer_dict dictionary describing the plugin.</t>
-<t tx="ekr.20140726091031.18071"># These plugins now contain the write code for all kinds special @auto nodes.
-# Each plugin must define a top-level writer_dict dictionary describing the plugin.</t>
-<t tx="ekr.20150407140848.1">@language python
-
-c.cloneFindAllFlattenedAtNode('Plugins',top_level=True)
+# Each plugin must define a top-level importer_dict dictionary describing the plugin.
 </t>
-<t tx="ekr.20150430152019.1">run-pylint
-sort-lines
+<t tx="ekr.20140726091031.18071"># These plugins now contain the write code for all kinds special @auto nodes.
+# Each plugin must define a top-level writer_dict dictionary describing the plugin.
+</t>
+<t tx="ekr.20150722060423.1"># g.cls()
+p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
+p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
+assert p1 and p2
+tag = 'compare vr1 &amp; vr2'
+c.editFileCommands.compareTrees(p1, p2, tag)
+</t>
+<t tx="ekr.20150722061557.1">def run(self, c, p1, p2, tag):
+    '''Main line.'''
+    d1 = self.scan(p1)
+    d2 = self.scan(p2)
+    root = c.p.insertAfter()
+    root.h = tag
+    self.compare(d1, d2, p1, p2, root)
+    p.contract()
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
+</t>
+<t tx="ekr.20150722061639.1">def scan(self, p1):
+    '''Create a dict of the methods in p1.'''
+    d = {} # Keys are munged headlines, values are positions.
+    for p in p1.self_and_subtree():
+        h = p.h.strip()
+        i = h.find('.')
+        if i &gt; -1:
+            h = h[i + 1:].strip()
+        if h in d:
+            g.trace('duplicate', p.h)
+        else:
+            d[h] = p.copy()
+    return d
+</t>
+<t tx="ekr.20150722061744.1">def compare(self, d1, d2, p1, p2, root):
+    '''Compare dicts d1 and d2.'''
+    for h in sorted(d1.keys()):
+        p1, p2 = d1.get(h), d2.get(h)
+        if h in d2:
+            lines1, lines2 = g.splitLines(p1.b), g.splitLines(p2.b)
+            aList = list(difflib.unified_diff(lines1, lines2, 'vr1', 'vr2'))
+            if aList:
+                p = root.insertAsLastChild()
+                p.h = h
+                p.b = ''.join(aList)
+                p1.clone().moveToLastChildOf(p)
+                p2.clone().moveToLastChildOf(p)
+        elif p1.b.strip():
+            # Only in p1 tree, and not an organizer node.
+            p = root.insertAsLastChild()
+            p.h = h + '(%s only)' % p1.h
+            p1.clone().moveToLastChildOf(p)
+    for h in sorted(d2.keys()):
+        p2 = d2.get(h)
+        if h not in d1 and p2.b.strip():
+            # Only in p2 tree, and not an organizer node.
+            p = root.insertAsLastChild()
+            p.h = h + '(%s only)' % p2.h
+            p2.clone().moveToLastChildOf(p)
+    return root
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
