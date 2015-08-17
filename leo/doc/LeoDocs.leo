@@ -882,6 +882,7 @@
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
+<v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20071026183116"><vh>g.app.gui.run* methods run dialogs</vh></v>
@@ -18527,6 +18528,17 @@ The Python beautifier works only on syntactically correct code. It issues a warn
 The Python beautifier converts **Leonine syntax** (directives, section references and @doc parts) to comments, possibly with a trailing ``pass`` statement.  Usually this produces syntactically correct text.  As discussed below, the trailing ``pass`` can create SyntaxError's.
 
 The following sections describe how the beautify-tree and beautify-node commands work in more detail.</t>
+<t tx="ekr.20150817125512.1">efc.compareTrees does most of the work of comparing two similar outlines.
+For example, here is "@button compare vr-controller" in leoPluginsRef.leo::
+
+    p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
+    p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
+    assert p1 and p2
+    tag = 'compare vr1 &amp; vr2'
+    c.editFileCommands.compareTrees(p1, p2, tag)
+
+This script will compare the trees whose roots are p1 and p2 and show the results like "Recovered nodes".  That is, the script creates a node called "compare vr1 &amp; vr2".  This top-level node contains one child node for every node that is different.  Each child node contains a diff of the node.  The grand children are one or two clones of the changed or inserted node.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
