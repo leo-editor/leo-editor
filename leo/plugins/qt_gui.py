@@ -1151,8 +1151,8 @@ class StyleClassManager:
     #@+node:tbrown.20150724090431.7: *3* sclass_tests
     def sclass_tests(self):
         """Test style class property manipulation functions"""
-            
-        class W:
+
+        class Test_W:
             """simple standin for QWidget for testing"""
             def __init__(self):
                 self.x = ''
@@ -1161,7 +1161,7 @@ class StyleClassManager:
             def setProperty(self, name, value):
                 self.x = value
         
-        w = W()
+        w = Test_W()
         
         assert not self.has_sclass(w, 'nonesuch')
         assert not self.has_sclass(w, ['nonesuch'])
