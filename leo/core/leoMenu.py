@@ -299,6 +299,20 @@ class LeoMenu:
             self.createOpenWithMenuFromTable(aList)
     #@+node:ekr.20070927082205: *6* createMenuFromConfigList
     def createMenuFromConfigList(self, parentName, aList, level=0):
+        """Build menu based on nested list
+
+        List entries are either:
+
+            ['@item', 'command-name', 'optional-view-name']
+
+        or:
+
+            ['@menu Submenu name', <nested list>, None]
+
+        :param str parentName: name of menu under which to place this one
+        :param list aListp: list of entries as described above
+        """
+
         table = []; parentMenu = self.getMenu(parentName)
         for z in aList:
             kind, val, val2 = z
