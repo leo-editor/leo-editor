@@ -2016,28 +2016,33 @@ class SettingsFinder(object):
     #@+node:tbrown.20150817212656.1: *3* _outline_data_to_python
     def _outline_data_to_python(self, xml):
         """_outline_data_to_python - make xml from c.config.getOutlineData()
-        into a Python data structure.
+        into a detached VNode tree.
         
-        FIXME this should be elsewhere
+        FIXME this should be elsewhere, just here to allow build_menu() to
+        wortk for now.
 
         :param str xml: xml returned by c.config.getOutlineData()
-        :return: Python data representing outline data
+        :return: VNode tree representing outline data
         :rtype: VNode
         """
 
         from xml.etree import ElementTree
+        # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
+        # but @settings tree -> VNode tree, xml + paste to use is cumbersome
         
-        body = {}
         def build_tree(node, element, body):
             node.h = element.find('vh').text
+            node.b = ''
             body[element.get('t')] = node
             for sub in element.findall('v'):
                 build_tree(node.insertAsLastChild(), sub, body)
+        body = {}  # node ID to node mapping to fill in body text later
         top = VNode(self.c)
         dom = ElementTree.fromstring(xml)
         build_tree(top, dom.find('vnodes').find('v'), body)
         for t in dom.find('tnodes').findall('t'):
-            body[t.get('tx')].b = t.text
+            if t.text is not None:
+                body[t.get('tx')].b = t.text
 
         return top
     #@+node:tbrown.20150817211416.1: *3* build_menu
@@ -2045,14 +2050,26 @@ class SettingsFinder(object):
         """build_menu - build the menu of settings
         """
 
-        def _cmd_name(node):
-            return 'hello'
-            return node.b.strip()
-            
-        @g.command("hello")
-        def hello(event):
-            g.es('Hello')
+        callbacks = {}
 
+        @g.command("settings-find-undefined")
+        def f(event):
+            g.es("Settings finder: no setting defined")
+
+        def _cmd_name(node):
+            if not node.b.strip():
+                return "settings-find-undefined"
+            setting = node.b.strip()
+            name = "settings-find-%s" % setting
+            if name in callbacks:
+                return name
+            def f(event, setting=setting, c=self.c):
+                g.es("Settings finder: find %s" % setting)
+                g.es(c.config.getSettingSource(setting))
+            g.command(name)(f)
+            callbacks[name] = f
+            return name
+            
         def _proc(aList, node):
             if node.children:
                 aList.append(["@menu "+node.h, [], None])
