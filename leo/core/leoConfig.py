@@ -4,6 +4,7 @@
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
+from leo.core.leoNodes import VNode
 from leo.plugins.mod_scripting import build_rclick_tree
 import os
 import sys
@@ -1997,6 +1998,76 @@ class SettingsTreeParser(ParserBaseClass):
             else:
                 g.pr("*** no handler", kind)
         return None
+    #@-others
+#@+node:tbrown.20150817211249.1: ** class SettingsFinder
+class SettingsFinder(object):
+    """SettingsFinder - Let the user pick settings from a menu and then
+    find the relevant @settings nodes and open them.
+    """
+
+    def __init__(self, c):
+        """bind to a controller
+
+        :param controller c: outline to bind to
+        """
+        self.c = c
+
+    #@+others
+    #@+node:tbrown.20150817212656.1: *3* _outline_data_to_python
+    def _outline_data_to_python(self, xml):
+        """_outline_data_to_python - make xml from c.config.getOutlineData()
+        into a Python data structure.
+        
+        FIXME this should be elsewhere
+
+        :param str xml: xml returned by c.config.getOutlineData()
+        :return: Python data representing outline data
+        :rtype: VNode
+        """
+
+        from xml.etree import ElementTree
+        
+        body = {}
+        def build_tree(node, element, body):
+            node.h = element.find('vh').text
+            body[element.get('t')] = node
+            for sub in element.findall('v'):
+                build_tree(node.insertAsLastChild(), sub, body)
+        top = VNode(self.c)
+        dom = ElementTree.fromstring(xml)
+        build_tree(top, dom.find('vnodes').find('v'), body)
+        for t in dom.find('tnodes').findall('t'):
+            body[t.get('tx')].b = t.text
+
+        return top
+    #@+node:tbrown.20150817211416.1: *3* build_menu
+    def build_menu(self):
+        """build_menu - build the menu of settings
+        """
+
+        def _cmd_name(node):
+            return 'hello'
+            return node.b.strip()
+            
+        @g.command("hello")
+        def hello(event):
+            g.es('Hello')
+
+        def _proc(aList, node):
+            if node.children:
+                aList.append(["@menu "+node.h, [], None])
+                for child in node.children:
+                    _proc(aList[-1][1], child)
+            else:
+                aList.append(["@item", _cmd_name(node), node.h])
+        
+        settings_menu = self.c.config.getOutlineData("settings-finder-menu")
+        settings_menu = self._outline_data_to_python(settings_menu)
+        settings_menu.h = "Settings Finder"
+        aList = []
+        _proc(aList, settings_menu)
+        self.c.frame.menu.createMenuFromConfigList("Settings", aList)
+        return aList
     #@-others
 #@-others
 #@@language python
