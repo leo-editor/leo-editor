@@ -2012,8 +2012,19 @@ class SettingsFinder(object):
         :param controller c: outline to bind to
         """
         self.c = c
+        self.callbacks = {}  # keep track of callbacks made already
 
     #@+others
+    #@+node:tbrown.20150818143312.1: *3* _outline_data_build_tree
+    @classmethod
+    def _outline_data_build_tree(cls, node, element, body):
+        """see _outline_data_to_python, this just recursively
+        copies info. from xml to VNode tree"""
+        node.h = element.find('vh').text
+        node.b = ''
+        body[element.get('t')] = node
+        for sub in element.findall('v'):
+            cls._outline_data_build_tree(node.insertAsLastChild(), sub, body)
     #@+node:tbrown.20150817212656.1: *3* _outline_data_to_python
     def _outline_data_to_python(self, xml):
         """_outline_data_to_python - make xml from c.config.getOutlineData()
@@ -2031,16 +2042,10 @@ class SettingsFinder(object):
         # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
         # but @settings tree -> VNode tree, xml + paste to use is cumbersome
         
-        def build_tree(node, element, body):
-            node.h = element.find('vh').text
-            node.b = ''
-            body[element.get('t')] = node
-            for sub in element.findall('v'):
-                build_tree(node.insertAsLastChild(), sub, body)
         body = {}  # node ID to node mapping to fill in body text later
         top = VNode(self.c)
         dom = ElementTree.fromstring(xml)
-        build_tree(top, dom.find('vnodes').find('v'), body)
+        self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
         for t in dom.find('tnodes').findall('t'):
             if t.text is not None:
                 body[t.get('tx')].b = t.text
@@ -2050,52 +2055,67 @@ class SettingsFinder(object):
     def build_menu(self):
         """build_menu - build the menu of settings
         """
-
         callbacks = {}
 
-        @g.command("settings-find-undefined")
-        def f(event):
-            g.es("Settings finder: no setting defined")
-
-        def _cmd_name(node):
-            if not node.b.strip():
-                return "settings-find-undefined"
-            setting = node.b.strip()
-            name = "settings-find-%s" % setting
-            if name in callbacks:
-                return name
-            def f(event, setting=setting, c=self.c):
-                g.es("Settings finder: find %s" % setting)
-                key = g.app.config.canonicalizeSettingName(setting)
-                value = c.config.settingsDict.get(key)
-                while value and value.val.startswith('@'):
-                    g.es('%s -> %s' % (setting, value.val))
-                    setting = value.val
-                    key = g.app.config.canonicalizeSettingName(setting[1:])
-                    value = c.config.settingsDict.get(key)
-                g.es(value.val)
-                if value and value.unl:
-                    g.handleUrl(value.unl, c=self.c)
-            g.command(name)(f)
-            callbacks[name] = f
-            return name
-            
-        def _proc(aList, node):
-            if node.children:
-                child_list = []
-                aList.append(["@menu "+node.h, child_list, None])
-                for child in node.children:
-                    _proc(child_list, child)
-            else:
-                aList.append(["@item", _cmd_name(node), node.h])
-        
         settings_menu = self.c.config.getOutlineData("settings-finder-menu")
         settings_menu = self._outline_data_to_python(settings_menu)
         settings_menu.h = "Settings Finder"
         aList = []
-        _proc(aList, settings_menu)
+        self.tree_to_menulist(aList, settings_menu)
         self.c.frame.menu.createMenuFromConfigList("Settings", aList)
         return aList
+    #@+node:tbrown.20150818143706.1: *3* find_setting
+    def find_setting(self, setting):
+        g.es("Settings finder: find %s" % setting)
+        key = g.app.config.canonicalizeSettingName(setting)
+        value = self.c.config.settingsDict.get(key)
+        which = None
+        while value and value.val.startswith('@'):
+            msg = ("The relevant setting, '@{specific}', is using the value of "
+            "a more general setting, '{general}'.  Would you like to edit the "
+            "more specific setting, '@{specific}', or the more general setting, "
+            "'{general}'?  The more general setting may alter appearance / "
+            "behavior in more places, which may or may not be what you prefer."
+            ).format(specific=setting, general=value.val)
+            which = g.app.gui.runAskYesNoCancelDialog(self.c, "Which setting?",
+                message=msg, yesMessage='Edit Specific', noMessage='Edit General')
+            if which != 'no':
+                break
+            setting = value.val
+            key = g.app.config.canonicalizeSettingName(setting[1:])
+            value = self.c.config.settingsDict.get(key)
+        if which == 'cancel':
+            return
+        g.es(value.val)
+        if value and value.unl:
+            pass
+            g.handleUrl(value.unl, c=self.c)
+    #@+node:tbrown.20150818143541.1: *3* get_command
+    def get_command(self, node):
+        if not node.b.strip():
+            return "settings-find-undefined"
+        setting = node.b.strip()
+        name = "settings-find-%s" % setting
+        if name in self.callbacks:
+            return name
+        def f(event, setting=setting, self=self):
+            self.find_setting(setting)
+        g.command(name)(f)
+        self.callbacks[name] = f
+        return name
+    #@+node:tbrown.20150818144004.1: *3* settings_find_undefined
+    @g.command("settings-find-undefined")
+    def settings_find_undefined(event):
+        g.es("Settings finder: no setting defined")
+    #@+node:tbrown.20150818143938.1: *3* tree_to_menulist
+    def tree_to_menulist(self, aList, node):
+        if node.children:
+            child_list = []
+            aList.append(["@menu "+node.h, child_list, None])
+            for child in node.children:
+                self.tree_to_menulist(child_list, child)
+        else:
+            aList.append(["@item", self.get_command(node), node.h])
     #@-others
 #@-others
 #@@language python
