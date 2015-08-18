@@ -998,7 +998,8 @@ class ParserBaseClass:
             if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
+            unl=(p and p.get_UNL(with_proto=True)))
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse(self):
         '''Traverse the entire settings tree.'''
@@ -2065,16 +2066,26 @@ class SettingsFinder(object):
                 return name
             def f(event, setting=setting, c=self.c):
                 g.es("Settings finder: find %s" % setting)
-                g.es(c.config.getSettingSource(setting))
+                key = g.app.config.canonicalizeSettingName(setting)
+                value = c.config.settingsDict.get(key)
+                while value and value.val.startswith('@'):
+                    g.es('%s -> %s' % (setting, value.val))
+                    setting = value.val
+                    key = g.app.config.canonicalizeSettingName(setting[1:])
+                    value = c.config.settingsDict.get(key)
+                g.es(value.val)
+                if value and value.unl:
+                    g.handleUrl(value.unl, c=self.c)
             g.command(name)(f)
             callbacks[name] = f
             return name
             
         def _proc(aList, node):
             if node.children:
-                aList.append(["@menu "+node.h, [], None])
+                child_list = []
+                aList.append(["@menu "+node.h, child_list, None])
                 for child in node.children:
-                    _proc(aList[-1][1], child)
+                    _proc(child_list, child)
             else:
                 aList.append(["@item", _cmd_name(node), node.h])
         
