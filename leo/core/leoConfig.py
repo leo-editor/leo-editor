@@ -8,6 +8,7 @@ from leo.core.leoNodes import VNode
 from leo.plugins.mod_scripting import build_rclick_tree
 import os
 import sys
+from copy import deepcopy
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
@@ -2000,7 +2001,7 @@ class SettingsTreeParser(ParserBaseClass):
                 g.pr("*** no handler", kind)
         return None
     #@-others
-#@+node:tbrown.20150817211249.1: ** class SettingsFinder
+#@+node:tbrown.20150818161651.1: ** class SettingsFinder
 class SettingsFinder(object):
     """SettingsFinder - Let the user pick settings from a menu and then
     find the relevant @settings nodes and open them.
@@ -2015,7 +2016,7 @@ class SettingsFinder(object):
         self.callbacks = {}  # keep track of callbacks made already
 
     #@+others
-    #@+node:tbrown.20150818143312.1: *3* _outline_data_build_tree
+    #@+node:tbrown.20150818161651.2: *3* _outline_data_build_tree
     @classmethod
     def _outline_data_build_tree(cls, node, element, body):
         """see _outline_data_to_python, this just recursively
@@ -2025,7 +2026,7 @@ class SettingsFinder(object):
         body[element.get('t')] = node
         for sub in element.findall('v'):
             cls._outline_data_build_tree(node.insertAsLastChild(), sub, body)
-    #@+node:tbrown.20150817212656.1: *3* _outline_data_to_python
+    #@+node:tbrown.20150818161651.3: *3* _outline_data_to_python
     def _outline_data_to_python(self, xml):
         """_outline_data_to_python - make xml from c.config.getOutlineData()
         into a detached VNode tree.
@@ -2037,7 +2038,6 @@ class SettingsFinder(object):
         :return: VNode tree representing outline data
         :rtype: VNode
         """
-
         from xml.etree import ElementTree
         # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
         # but @settings tree -> VNode tree, xml + paste to use is cumbersome
@@ -2051,20 +2051,62 @@ class SettingsFinder(object):
                 body[t.get('tx')].b = t.text
 
         return top
-    #@+node:tbrown.20150817211416.1: *3* build_menu
+    #@+node:tbrown.20150818161651.4: *3* build_menu
     def build_menu(self):
         """build_menu - build the menu of settings
         """
-        callbacks = {}
-
-        settings_menu = self.c.config.getOutlineData("settings-finder-menu")
-        settings_menu = self._outline_data_to_python(settings_menu)
+        settings_menu = self._outline_data_to_python(
+            self.c.config.getOutlineData("settings-finder-menu"))
         settings_menu.h = "Settings Finder"
         aList = []
         self.tree_to_menulist(aList, settings_menu)
         self.c.frame.menu.createMenuFromConfigList("Settings", aList)
         return aList
-    #@+node:tbrown.20150818143706.1: *3* find_setting
+    #@+node:tbrown.20150818162156.1: *3* copy_recursively
+    @staticmethod
+    def copy_recursively(nd0, nd1):
+        """Recursively copy subtree
+        """
+        
+        nd1.h = nd0.h
+        nd1.b = nd0.b
+        nd1.v.u = deepcopy(nd0.v.u)
+        
+        for child in nd0.children():
+            SettingsFinder.copy_recursively(child, nd1.insertAsLastChild())
+    #@+node:tbrown.20150818161651.5: *3* copy_to_my_settings
+    def copy_to_my_settings(self, unl, which):
+        """copy_to_my_settings - copy setting from leoSettings.leo
+
+        :param str unl: Leo UNL to copy from
+        :param int which: 1-3, leaf, leaf's parent, leaf's grandparent
+        :return: unl of leaf copy in myLeoSettings.leo
+        :rtype: str
+        """
+        g.es(unl)
+        path, unl = unl.split('#', 1)
+        unl = unl.replace('%20', ' ').split("-->")
+        tail = []
+        if which > 1:  # copying parent or grandparent but select leaf later
+            tail = unl[-(which-1):]
+        unl = unl[:len(unl)+1-which]
+        my_settings_c = self.c.openMyLeoSettings()
+        settings = g.findNodeAnywhere(my_settings_c, '@settings')
+        nd = settings.insertAsLastChild()
+        # c2 = g.openWithFileName(path.replace("file://", ""), old_c=my_settings_c)
+        c2 = g.app.loadManager.openSettingsFile(path.replace("file://", ""))
+        found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
+        if not found:
+            g.es("Didn't find %s" % unl)
+        dest = nd.get_UNL()
+        self.copy_recursively(maxp, nd)
+        my_settings_c.redraw()
+        shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
+        self.c.config.settingsDict.update(settingsDict)
+        my_settings_c.config.settingsDict.update(settingsDict)
+        g.es('-->'.join([dest]+tail))
+        return '-->'.join([dest]+tail)
+    #@+node:tbrown.20150818161651.6: *3* find_setting
     def find_setting(self, setting):
         g.es("Settings finder: find %s" % setting)
         key = g.app.config.canonicalizeSettingName(setting)
@@ -2084,14 +2126,37 @@ class SettingsFinder(object):
             setting = value.val
             key = g.app.config.canonicalizeSettingName(setting[1:])
             value = self.c.config.settingsDict.get(key)
-        if which == 'cancel':
+        if which == 'cancel' or not value:
             return
-        g.es(value.val)
-        if value and value.unl:
-            pass
-            g.handleUrl(value.unl, c=self.c)
-    #@+node:tbrown.20150818143541.1: *3* get_command
+        unl = value and value.unl
+        if g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
+            g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')):
+            msg = ("The setting '@{specific}' is in the Leo global configuration "
+            "file 'leoSettings.leo'\nand should probably be copied to "
+            "'myLeoSettings.leo' before editing.\n"
+            "It may make more sense to copy a group or category of settings.\n\n"
+            "Please enter 1, 2, 3, or 4:\n"
+            "1. copy the one setting, '@{specific}'\n"
+            "2. copy the setting group, '{group}' (Recommended)\n"
+            "3. copy the setting whole category, '{category}'\n"
+            "4. edit the setting in 'leoSettings.leo' anyway\n"
+            ).format(specific=setting.lstrip('@'),
+                group=unl.split('-->')[-2].split(':', 1)[0].replace('%20', ' '),
+                category=unl.split('-->')[-3].split(':', 1)[0].replace('%20', ' '))
+            which = g.app.gui.runAskOkCancelNumberDialog(
+                self.c, "Copy setting?", message=msg)
+            if which is None:
+                return
+            which = int(which)  # was float
+            if which < 4:
+                unl = self.copy_to_my_settings(unl, which)
+        if unl:
+            g.handleUrl(unl, c=self.c)
+    #@+node:tbrown.20150818161651.7: *3* get_command
     def get_command(self, node):
+        """return the name of a command to find the relevant setting,
+        creating the command if needed
+        """
         if not node.b.strip():
             return "settings-find-undefined"
         setting = node.b.strip()
@@ -2103,12 +2168,15 @@ class SettingsFinder(object):
         g.command(name)(f)
         self.callbacks[name] = f
         return name
-    #@+node:tbrown.20150818144004.1: *3* settings_find_undefined
+    #@+node:tbrown.20150818161651.8: *3* settings_find_undefined
     @g.command("settings-find-undefined")
     def settings_find_undefined(event):
         g.es("Settings finder: no setting defined")
-    #@+node:tbrown.20150818143938.1: *3* tree_to_menulist
+    #@+node:tbrown.20150818161651.9: *3* tree_to_menulist
     def tree_to_menulist(self, aList, node):
+        """recursive helper for build_menu(), copies VNode tree data
+        to list format used by c.frame.menu.createMenuFromConfigList()
+        """
         if node.children:
             child_list = []
             aList.append(["@menu "+node.h, child_list, None])
