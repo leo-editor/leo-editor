@@ -2053,14 +2053,15 @@ class SettingsFinder(object):
         return top
     #@+node:tbrown.20150818161651.4: *3* build_menu
     def build_menu(self):
-        """build_menu - build the menu of settings
+        """build_menu - build the menu of settings, called from handleSpecialMenus()
         """
         settings_menu = self._outline_data_to_python(
             self.c.config.getOutlineData("settings-finder-menu"))
-        settings_menu.h = "Settings Finder"
         aList = []
         self.tree_to_menulist(aList, settings_menu)
-        self.c.frame.menu.createMenuFromConfigList("Settings", aList)
+        # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
+        # so aList[0][1] is the list of submenus
+        self.c.frame.menu.createMenuFromConfigList("Edit settings", aList[0][1])
         return aList
     #@+node:tbrown.20150818162156.1: *3* copy_recursively
     @staticmethod
@@ -2151,6 +2152,7 @@ class SettingsFinder(object):
             if which < 4:
                 unl = self.copy_to_my_settings(unl, which)
         if unl:
+            # g.es("Selecting %s" % unl)
             g.handleUrl(unl, c=self.c)
     #@+node:tbrown.20150818161651.7: *3* get_command
     def get_command(self, node):

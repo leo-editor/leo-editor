@@ -1095,6 +1095,7 @@
 <v t="ekr.20131213135427.21953"><vh>@item open-leoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
+<v t="tbrown.20150819100800.1"><vh>@menu Edit settings</vh></v>
 <v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
 <v t="tbrown.20140814090009.57476"><vh>@item style-reload</vh></v>
 <v t="tbrown.20140814090009.57475"><vh>@item -</vh></v>
@@ -11229,6 +11230,8 @@ RULE ^.{1,1000}/(.{20})
 REPLACE …/\1
 </t>
 <t tx="tbrown.20150810084824.1">Separation between icons on tree node items</t>
+<t tx="tbrown.20150819100800.1">Placeholder, populated by SettingsFinder.build_menu()
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

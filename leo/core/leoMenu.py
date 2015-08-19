@@ -310,7 +310,7 @@ class LeoMenu:
             ['@menu Submenu name', <nested list>, None]
 
         :param str parentName: name of menu under which to place this one
-        :param list aListp: list of entries as described above
+        :param list aList: list of entries as described above
         """
 
         table = []; parentMenu = self.getMenu(parentName)
@@ -351,6 +351,12 @@ class LeoMenu:
             # Just create the menu.
             # createRecentFilesMenuItems will create the contents later.
             self.createNewMenu(name, parentName)
+            return True
+        elif name2.startswith('editsettings'):
+            from leo.core.leoConfig import SettingsFinder
+            self.createNewMenu(name, parentName)
+            sf = SettingsFinder(self.c)
+            sf.build_menu()
             return True
         elif name2 == 'help' and sys.platform == 'darwin':
             helpMenu = self.getMacHelpMenu(table)
