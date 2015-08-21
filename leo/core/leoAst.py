@@ -1888,7 +1888,7 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150817132645.1: *3* rt.startfile
     def start_file(rt, fn):
         '''start the file with the given name.'''
-        # pylint disable=no-member
+        # pylint: disable=no-member
         # os.startfile is defined only on Windows.
         os.startfile(fn)
     #@+node:ekr.20150722204300.43: *3* rt.traversers
