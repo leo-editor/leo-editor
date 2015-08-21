@@ -1071,9 +1071,9 @@ class LeoQtTree(leoFrame.LeoTree):
         trace = False and not g.unitTesting
         w = self.treeWidget
         w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
         if self.use_declutter:
             item.setText(0, item._real_text)
+        w.editItem(item)
         e = w.itemWidget(item, 0)
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)

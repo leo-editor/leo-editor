@@ -1238,7 +1238,6 @@ class HTMLReportTraverser(AstFullTraverser):
     '''
     # To do: show stc attributes in the report.
     # To do: revise report-traverser-debug.css.
-
     # pylint: disable=no-self-argument
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
@@ -1272,7 +1271,6 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150723100236.1: *4* rt.blank
     def blank(rt):
         rt.gen(' ')
-        
     #@+node:ekr.20150723100208.1: *4* rt.clean
     def clean(rt, s):
         pass
@@ -1298,7 +1296,7 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.gen('"""')
         rt.gen("</pre>\n")
     #@+node:ekr.20150722211115.1: *4* rt.gen
-    def gen(rt,s):
+    def gen(rt, s):
         '''Append s to the global code list.'''
         ### To do: handle indent ???
         rt.code_list.append(s)
@@ -1539,14 +1537,11 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div(class_name)
         rt.visit_list(aList, sep=sep)
         rt.end_div()
-        
+
     def div_node(rt, class_name, node):
         rt.div(class_name)
         rt.visit(node)
         rt.end_div()
-
-
-
     #@+node:ekr.20150723095033.1: *4* rt.end_div
     def end_div(rt):
         rt.indent -= 4
@@ -2571,7 +2566,7 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.keyword("lambda")
         rt.visit(node.args) # rt.parameters(fn,node)
         rt.comma()
-        rt.span_node("code", node.body)      
+        rt.span_node("code", node.body)
         rt.end_span() # lambda
     #@+node:ekr.20150722204300.78: *4* rt.List
     # List(expr* elts, expr_context ctx)
@@ -2794,7 +2789,6 @@ class HTMLReportTraverser(AstFullTraverser):
             rt.div_body(node.orelse)
         rt.div_body(node.handlers)
         rt.end_div() # tryexcept
-
     #@+node:ekr.20150722204300.91: *4* rt.TryFinally
     def do_TryFinally(rt, node):
         # return [
@@ -2821,7 +2815,6 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div_keyword_colon(None, 'finally')
         rt.div_body(node.final.body)
         rt.end_div() # tryfinally
-
     #@+node:ekr.20150722204300.92: *4* rt.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
