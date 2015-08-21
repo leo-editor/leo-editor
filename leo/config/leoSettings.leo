@@ -109,6 +109,7 @@
 <v t="ekr.20150428102831.4"><vh>ask</vh></v>
 <v t="ekr.20150428102831.12"><vh>close_xml</vh></v>
 <v t="ekr.20150428102831.13"><vh>django_tag</vh></v>
+<v t="jlunz.20150821113251.1"><vh>html_tag</vh></v>
 <v t="ekr.20150428102831.2"><vh>do</vh></v>
 <v t="ekr.20150428102831.8"><vh>file_name</vh></v>
 <v t="ekr.20150428102831.5"><vh>get</vh></v>
@@ -2054,7 +2055,7 @@
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
+<v t="ekr.20110611092035.16463" a="E"><vh>Tree operation</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
@@ -10855,8 +10856,8 @@ except KeyError:
     in @@data abbreviations-examples
     """
     words = c.p.b.split()
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
+    tCurPosition = c.frame.body.widget.textCursor().position() 
+    i = tCurPosition - len(_abr)
     b = c.p.b
     s = []
     while i and b[i].isalpha():
@@ -10870,8 +10871,8 @@ except KeyError:
 </t>
 <t tx="ekr.20150428102831.12">def close_xml():
     """simple, but usually right, code to close open XML tags"""
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
+    tCurPosition = c.frame.body.widget.textCursor().position()    
+    i = tCurPosition - len(_abr)
     b = c.p.b
     skips = 1
     while i and skips:
@@ -10896,8 +10897,11 @@ except KeyError:
        {% block content %}\n{% end_block content %} with proper
        indentation (for Django web templates)"""
     from PyQt4 import QtCore
-    w = c.frame.body.bodyCtrl
-    i = w.getInsertPoint() - len(_abr)
+    widget = c.frame.body.widget
+    scrollPosition = widget.getYScrollPosition()
+    textCursor = widget.textCursor()
+    tCurPosition = textCursor.position()  
+    i = tCurPosition - len(_abr)
     b = c.p.b
     s = []
     while i and b[i] != '{':
@@ -10905,6 +10909,7 @@ except KeyError:
         i -= 1
     start = i
     s = ''.join(s)
+    s_close = s.split()[0]
     indent = 0
     while i and b[i] != '\n':
         indent += 1
@@ -10912,10 +10917,17 @@ except KeyError:
     if indent:
         indent -= 1
     def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
+        offset = len("%s{%% %s %%}\n    %s" % (b[:start], s, ' '*indent))
         c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
-            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
+            b[:start], s, ' '*indent, ' '*indent, s_close, b[start+len(s)+len(_abr):]
         )
+        widget.setYScrollPosition(scrollPosition)
+        textCursor.setPosition(offset)
+        widget.setTextCursor(textCursor)
+        c.bodyWantsFocusNow()
+        
     QtCore.QTimer.singleShot(0, later)
+
 </t>
 <t tx="ekr.20150428102831.2">def do(commandName):
     '''Execute a command by name.'''
@@ -11054,6 +11066,41 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
+<t tx="jlunz.20150821113251.1">def html_tag():
+    """expand &lt;tag&gt; to 
+       &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
+    from PyQt4 import QtCore
+    widget = c.frame.body.widget
+    scrollPosition = widget.getYScrollPosition()
+    textCursor = widget.textCursor()
+    tCurPosition = textCursor.position()  
+    i = tCurPosition - len(_abr)
+    b = c.p.b
+    s = []
+    while i and b[i] != '&lt;':
+        s[0:0] = b[i]
+        i -= 1
+    start = i
+    s = ''.join(s)
+    s_close = s.split()[0]
+    indent = 0
+    while i and b[i] != '\n':
+        indent += 1
+        i -= 1
+    if indent:
+        indent -= 1
+    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
+        offset = len("%s&lt;%s&gt;\n%s    " % (b[:start], s, ' '*indent))
+        c.p.b = "%s&lt;%s&gt;\n%s    \n%s&lt;/%s&gt;%s" % (
+            b[:start], s, ' '*indent, ' '*indent, s_close, b[start+len(s)+len(_abr):]
+        )
+        widget.setYScrollPosition(scrollPosition)
+        textCursor.setPosition(offset)
+        widget.setTextCursor(textCursor)
+        c.bodyWantsFocusNow()
+        
+    QtCore.QTimer.singleShot(0, later)
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

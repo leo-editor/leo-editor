@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test?>
+<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -64,7 +64,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131119143342.18880"><vh>Example abbreviations</vh>
+<v t="ekr.20131119143342.18880" a="E"><vh>Example abbreviations</vh>
 <v t="ekr.20131119143342.18914"><vh>@data abbreviations examples</vh></v>
 <v t="ekr.20131119143342.18897"><vh>@outline-data tree-abbreviations examples</vh>
 <v t="ekr.20131119143342.18898"><vh>abc;;</vh>
@@ -2189,7 +2189,9 @@ csv-table;;=.. csv-table::
 
 # close XML tags, see @data abbreviations-subst-env
 &lt;;;={|{x=close_xml()}|}
-</t>
+
+# make balanced HTML tags, see @data abbreviations-subst-env
+&gt;;;={|{x=html_tag()}|}</t>
 <t tx="ekr.20131119143342.18936">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
 base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
 base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46

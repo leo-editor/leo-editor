@@ -3543,7 +3543,7 @@ class AtFile:
             return False
         if p.hasChildren():
             g.error('@edit nodes must not have children')
-            g.es('To save your work, convert @edit to @auto or @thin')
+            g.es('To save your work, convert @edit to @auto, @file or @clean')
             return False
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fn = c.os_path_finalize_join(at.default_directory, fn)
