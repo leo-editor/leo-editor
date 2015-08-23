@@ -2092,6 +2092,7 @@ class SettingsFinder(object):
             tail = unl[-(which-1):]
         unl = unl[:len(unl)+1-which]
         my_settings_c = self.c.openMyLeoSettings()
+        my_settings_c.save()  # if it didn't exist before, save required
         settings = g.findNodeAnywhere(my_settings_c, '@settings')
         nd = settings.insertAsLastChild()
         # c2 = g.openWithFileName(path.replace("file://", ""), old_c=my_settings_c)
