@@ -412,6 +412,8 @@ class ExternalFilesController:
                     # May be None
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
+        if 'body' in d:  # don't re-use someone else's body
+            del d['body']
         return efc.create_temp_file(c, d, p)
             # May be None.
     #@+node:ekr.20100203050306.5937: *6* efc.create_temp_file (recreates d) (remove encoding)

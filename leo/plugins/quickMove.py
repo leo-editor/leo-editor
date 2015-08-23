@@ -17,7 +17,7 @@ Outline menu, and each node's context menu, if the `contextmenu` plugin is enabl
 Also adds a `Copy/Move to/Bookmark to` menu item to copy/move nodes to other currently
 open outlines.
 
-Targets in other outlines may be specified with the `Add node as target` command, 
+Targets in other outlines may be specified with the `Add node as target` command,
 and edited with the `Show targets` / `Read targets` commands.
 
 Select a node ``Foo`` and then use the `Move To Last Child Button` command.
@@ -59,7 +59,7 @@ You can right click on any of these buttons to access their context menu:
 Commands
 
 These two commands allow keyboard driven quickmove operations:
-    
+
 ``quickmove_keyboard_popup``
     Show a keyboard (arrow key) friendly menu of quick move
     actions.  Set the current node as the target for the selected action.
@@ -70,7 +70,7 @@ These two commands allow keyboard driven quickmove operations:
 These commands are available for binding, they do the same thing as the
 corresponding tree context menu item, if your using buttons you might as
 well use the context menu::
-    
+
     quickmove_bookmark_to_first_child
     quickmove_bookmark_to_last_child
     quickmove_clone_to_first_child
@@ -82,7 +82,12 @@ well use the context menu::
     quickmove_link_to
     quickmove_move_to_first_child
     quickmove_move_to_last_child
-    
+
+``quickmove_visit_next_target``
+    This cycles through the cross-file targets maintained by the
+    `Show targets` / `Read targets` commands mentioned above.  Useful if
+    the targets are To Do lists and you want to cycle through them.
+
 Set Parent Notes
   `Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
   do with a long strip of separate buttons, but it collects quickMove buttons
@@ -166,6 +171,32 @@ def init():
 
 def onCreate(tag, keywords):
     quickMove(keywords['c'])
+#@+node:tbrown.20150822130731.1: ** visit_next_target
+@g.command("quickmove_visit_next_target")
+def visit_next_target(event):
+    """visit_next_target - go to the UNL at the start of the list
+    g._quickmove_target_list, rotating that UNL to the end of the
+    list.  Intialize list to quickmove target list if not already
+    present.
+
+    :param leo event event: event from Leo
+    """
+
+    c = event.get('c')
+    if not c:
+        return
+
+    if not hasattr(g, '_quickmove_target_list'):
+        g._quickmove_target_list = [
+            i['unl'] for i in g.app.db['_quickmove']['global_targets']
+        ]
+
+    if not g._quickmove_target_list:
+        return
+
+    unl = g._quickmove_target_list[0]
+    g._quickmove_target_list = g._quickmove_target_list[1:] + [unl]
+    g.handleUrl(unl, c)
 #@+node:tbrown.20070117104409.4: ** class quickMove
 class quickMove(object):
 
@@ -646,10 +677,12 @@ class quickMove(object):
         if cut:
             self.c.selectPosition(p)
             self.c.deleteOutline()
+            self.c.setChanged(True)
             
         if nxt:        
             self.c.selectPosition(self.c.vnode2position(nxt))
 
+        c2.setChanged(True)
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
