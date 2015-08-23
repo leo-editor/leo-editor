@@ -1091,7 +1091,7 @@
 <v t="ekr.20131213135427.21949"><vh>@@item *q&amp;uery-replace-regex</vh></v>
 <v t="ekr.20131213135427.21950"><vh>Proper names</vh></v>
 </v>
-<v t="ekr.20131213135427.21951" a="E"><vh>@menu Settings</vh>
+<v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
 <v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21953"><vh>@item open-leoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
@@ -1606,87 +1606,87 @@
 <v t="tbrown.20150821171510.10"><vh>Focused border</vh></v>
 <v t="tbrown.20150821171510.11"><vh>Not focused border</vh></v>
 </v>
-<v t="tbrown.20150821171510.12"><vh>Button colors</vh>
-<v t="tbrown.20150821171510.13"><vh>run-script-btn-bg</vh></v>
-<v t="tbrown.20150821171510.14"><vh>debug-script-btn-bg</vh></v>
-<v t="tbrown.20150821171510.15"><vh>script-button-button-btn-bg</vh></v>
-<v t="tbrown.20150821171510.16"><vh>script-button-btn-bg</vh></v>
-<v t="tbrown.20150821171510.17"><vh>generic-button-btn-bg</vh></v>
-<v t="tbrown.20150821171510.18"><vh>quick-move-btn-bg</vh></v>
-<v t="tbrown.20150821171510.19"><vh>interact-btn-bg</vh></v>
-<v t="tbrown.20150821171510.20"><vh>at-button-btn-bg</vh></v>
+<v t="tbrown.20150821171510.12"><vh>Button background colors</vh>
+<v t="tbrown.20150821171510.13"><vh>Run script</vh></v>
+<v t="tbrown.20150821171510.14"><vh>Debug script</vh></v>
+<v t="tbrown.20150821171510.15"><vh>Script button</vh></v>
+<v t="tbrown.20150821171510.16"><vh>Script</vh></v>
+<v t="tbrown.20150821171510.17"><vh>Generic</vh></v>
+<v t="tbrown.20150821171510.18"><vh>Quick move</vh></v>
+<v t="tbrown.20150821171510.19"><vh>Interact</vh></v>
+<v t="tbrown.20150821171510.20"><vh>At button</vh></v>
 </v>
 <v t="tbrown.20150821171510.21"><vh>Find tab colors</vh>
-<v t="tbrown.20150821171510.22"><vh>find-tab-bg</vh></v>
+<v t="tbrown.20150821171510.22"><vh>Find tab background</vh></v>
 </v>
 <v t="tbrown.20150821171510.23"><vh>Gutter colors</vh>
-<v t="tbrown.20150821171510.24"><vh>gutter-bg</vh></v>
-<v t="tbrown.20150821171510.25"><vh>gutter-fg</vh></v>
+<v t="tbrown.20150821171510.24"><vh>Gutter background</vh></v>
+<v t="tbrown.20150821171510.25"><vh>Gutter foreground</vh></v>
 </v>
 <v t="tbrown.20150821171510.26"><vh>Log pane colors</vh>
-<v t="tbrown.20150821171510.27"><vh>log-fg</vh></v>
-<v t="tbrown.20150821171510.28"><vh>log-bg</vh></v>
+<v t="tbrown.20150821171510.27"><vh>Log foreground</vh></v>
+<v t="tbrown.20150821171510.28"><vh>Log background</vh></v>
 </v>
 <v t="tbrown.20150821171510.29"><vh>Minibuffer colors</vh>
-<v t="tbrown.20150821171510.30"><vh>minibuffer-fg</vh></v>
-<v t="tbrown.20150821171510.31"><vh>minibuffer-bg</vh></v>
-<v t="tbrown.20150821171510.32"><vh>minibuffer-sel-fg</vh></v>
-<v t="tbrown.20150821171510.33"><vh>minibuffer-sel-bg</vh></v>
+<v t="tbrown.20150821171510.30"><vh>Foreground</vh></v>
+<v t="tbrown.20150821171510.31"><vh>Background</vh></v>
+<v t="tbrown.20150821171510.32"><vh>Select foreground</vh></v>
+<v t="tbrown.20150821171510.33"><vh>Select background</vh></v>
 </v>
 <v t="tbrown.20150821171510.34"><vh>Outline colors</vh>
 <v t="tbrown.20150821171510.35"><vh>Basic outline colors</vh>
-<v t="tbrown.20150821171510.36"><vh>tree-fg</vh></v>
-<v t="tbrown.20150821171510.37"><vh>tree-bg</vh></v>
+<v t="tbrown.20150821171510.36"><vh>Tree foreground</vh></v>
+<v t="tbrown.20150821171510.37"><vh>Tree background</vh></v>
 </v>
 <v t="tbrown.20150821171510.38"><vh>Colors for headlines that *are* being edited</vh>
-<v t="tbrown.20150821171510.39"><vh>head-fg</vh></v>
-<v t="tbrown.20150821171510.40"><vh>head-bg</vh></v>
-<v t="tbrown.20150821171510.41"><vh>head-sel-fg</vh></v>
-<v t="tbrown.20150821171510.42"><vh>head-sel-bg</vh></v>
+<v t="tbrown.20150821171510.39"><vh>Head foreground</vh></v>
+<v t="tbrown.20150821171510.40"><vh>Head background</vh></v>
+<v t="tbrown.20150821171510.41"><vh>Head select foreground</vh></v>
+<v t="tbrown.20150821171510.42"><vh>Head select background</vh></v>
 </v>
 <v t="tbrown.20150821171510.43"><vh>Colors for headlines that are *not* being edited</vh>
-<v t="tbrown.20150821171510.44"><vh>edit-label-border</vh></v>
-<v t="tbrown.20150821171510.45"><vh>edit-label-margin</vh></v>
-<v t="tbrown.20150821171510.46"><vh>edit-label-bg</vh></v>
-<v t="tbrown.20150821171510.47"><vh>edit-label-fg</vh></v>
+<v t="tbrown.20150821171510.44"><vh>Edit label border</vh></v>
+<v t="tbrown.20150821171510.45"><vh>Edit label margin</vh></v>
+<v t="tbrown.20150821171510.46"><vh>Edit label background</vh></v>
+<v t="tbrown.20150821171510.47"><vh>Edit label foreground</vh></v>
 </v>
 </v>
 <v t="tbrown.20150821171510.48"><vh>Plugin colors (deprecated)</vh>
-<v t="tbrown.20150821171510.49"><vh>text-foreground</vh></v>
-<v t="tbrown.20150821171510.50"><vh>text-foreground-body</vh></v>
-<v t="tbrown.20150821171510.51"><vh>text-foreground-tree</vh></v>
-<v t="tbrown.20150821171510.52"><vh>text-foreground-log</vh></v>
+<v t="tbrown.20150821171510.49"><vh>Text foreground</vh></v>
+<v t="tbrown.20150821171510.50"><vh>Text foreground body</vh></v>
+<v t="tbrown.20150821171510.51"><vh>Text foreground tree</vh></v>
+<v t="tbrown.20150821171510.52"><vh>Text foreground log</vh></v>
 </v>
 <v t="tbrown.20150821171510.53"><vh>Render pane colors</vh>
-<v t="tbrown.20150821171510.54"><vh>render-bg</vh></v>
-<v t="tbrown.20150821171510.55"><vh>render-fg</vh></v>
+<v t="tbrown.20150821171510.54"><vh>Render background</vh></v>
+<v t="tbrown.20150821171510.55"><vh>Render foreground</vh></v>
 </v>
 <v t="tbrown.20150821171510.56"><vh>Scroll area colors</vh>
-<v t="tbrown.20150821171510.57"><vh>scroll-area-bg</vh></v>
+<v t="tbrown.20150821171510.57"><vh>Scroll area background</vh></v>
 </v>
 <v t="tbrown.20150821171510.58"><vh>Splitter colors</vh>
-<v t="tbrown.20150821171510.59"><vh>splitter-bg</vh></v>
-<v t="tbrown.20150821171510.60"><vh>splitter-handle-bg</vh></v>
-<v t="tbrown.20150821171510.61"><vh>splitter-border-fg</vh></v>
-<v t="tbrown.20150821171510.62"><vh>splitter-border-style</vh></v>
+<v t="tbrown.20150821171510.59"><vh>Splitter background</vh></v>
+<v t="tbrown.20150821171510.60"><vh>Splitter handle background</vh></v>
+<v t="tbrown.20150821171510.61"><vh>Splitter border foreground</vh></v>
+<v t="tbrown.20150821171510.62"><vh>Splitter border style</vh></v>
 </v>
 <v t="tbrown.20150821171510.63"><vh>Status area colors</vh>
-<v t="tbrown.20150821171510.64"><vh>status-bg</vh></v>
-<v t="tbrown.20150821171510.65"><vh>status-fg</vh></v>
-<v t="tbrown.20150821171510.66"><vh>status-border-style</vh></v>
-<v t="tbrown.20150821171510.67"><vh>status-border-color</vh></v>
+<v t="tbrown.20150821171510.64"><vh>Status background</vh></v>
+<v t="tbrown.20150821171510.65"><vh>Status foreground</vh></v>
+<v t="tbrown.20150821171510.66"><vh>Status border style</vh></v>
+<v t="tbrown.20150821171510.67"><vh>Status border color</vh></v>
 </v>
 <v t="tbrown.20150821171510.68"><vh>Status area colors for searches</vh>
-<v t="tbrown.20150821171510.69"><vh>find-found-bg</vh></v>
-<v t="tbrown.20150821171510.70"><vh>find-found-fg</vh></v>
-<v t="tbrown.20150821171510.71"><vh>find-not-found-bg</vh></v>
-<v t="tbrown.20150821171510.72"><vh>find-not-found-fg</vh></v>
+<v t="tbrown.20150821171510.69"><vh>Found background</vh></v>
+<v t="tbrown.20150821171510.70"><vh>Found foreground</vh></v>
+<v t="tbrown.20150821171510.71"><vh>Not found background</vh></v>
+<v t="tbrown.20150821171510.72"><vh>Not found foreground</vh></v>
 </v>
 <v t="tbrown.20150821171510.73"><vh>Widget colors (simple widgets)</vh>
-<v t="tbrown.20150821171510.74"><vh>frame-bg</vh></v>
-<v t="tbrown.20150821171510.75"><vh>stacked-widget-border-color</vh></v>
-<v t="tbrown.20150821171510.76"><vh>stacked-widget-bg</vh></v>
-<v t="tbrown.20150821171510.77"><vh>tabbed-widget-bg</vh></v>
+<v t="tbrown.20150821171510.74"><vh>Frame background</vh></v>
+<v t="tbrown.20150821171510.75"><vh>Stacked widget border color</vh></v>
+<v t="tbrown.20150821171510.76"><vh>Stacked widget background</vh></v>
+<v t="tbrown.20150821171510.77"><vh>Tabbed widget background</vh></v>
 </v>
 </v>
 <v t="tbrown.20150821171510.78"><vh>Fonts</vh>
@@ -1699,11 +1699,10 @@
 <v t="tbrown.20150821171510.85"><vh>Weight</vh></v>
 </v>
 <v t="tbrown.20150821171510.86"><vh>Body Fonts</vh>
-<v t="tbrown.20150821171510.87"><vh>body-font-family</vh></v>
-<v t="tbrown.20150821171510.88"><vh>body-font-size</vh></v>
-<v t="tbrown.20150821171510.89"><vh>body-font-style</vh></v>
-<v t="tbrown.20150821171510.90"><vh>body-font-weight</vh></v>
-<v t="tbrown.20150821171510.91"><vh>font-size-body</vh></v>
+<v t="tbrown.20150821171510.87"><vh>Family</vh></v>
+<v t="tbrown.20150821171510.88"><vh>Size</vh></v>
+<v t="tbrown.20150821171510.89"><vh>Style</vh></v>
+<v t="tbrown.20150821171510.90"><vh>Weight</vh></v>
 </v>
 <v t="tbrown.20150821171510.92"><vh>Dialog fonts</vh>
 <v t="tbrown.20150821171510.93"><vh>Family</vh></v>
@@ -1777,9 +1776,9 @@
 <v t="tbrown.20150821171510.149"><vh>Width</vh></v>
 </v>
 <v t="tbrown.20150821171510.150"><vh>Gutter</vh>
-<v t="tbrown.20150821171510.151"><vh>use-gutter</vh></v>
-<v t="tbrown.20150821171510.152"><vh>gutter-w-adjust</vh></v>
-<v t="tbrown.20150821171510.153"><vh>gutter-y-adjust</vh></v>
+<v t="tbrown.20150821171510.151"><vh>Use gutter</vh></v>
+<v t="tbrown.20150821171510.152"><vh>Gutter w adjust</vh></v>
+<v t="tbrown.20150821171510.153"><vh>Gutter y adjust</vh></v>
 </v>
 <v t="tbrown.20150821171510.154"><vh>Minibuffer styles</vh>
 <v t="tbrown.20150821171510.155"><vh>Border</vh></v>
@@ -1792,19 +1791,19 @@
 <v t="tbrown.20150821171510.160"><vh>Border width</vh></v>
 </v>
 <v t="tbrown.20150821171510.161"><vh>Vim mode borders/colors</vh>
-<v t="tbrown.20150821171510.162"><vh>vim-mode-normal-border</vh></v>
-<v t="tbrown.20150821171510.163"><vh>vim-mode-insert-border</vh></v>
-<v t="tbrown.20150821171510.164"><vh>vim-mode-visual-border</vh></v>
+<v t="tbrown.20150821171510.162"><vh>Normal border</vh></v>
+<v t="tbrown.20150821171510.163"><vh>Insert border</vh></v>
+<v t="tbrown.20150821171510.164"><vh>Visual border</vh></v>
 </v>
 </v>
 <v t="tbrown.20150821171510.165"><vh>Outline indicators</vh>
-<v t="tbrown.20150821171510.166"><vh>tree-image-closed</vh></v>
-<v t="tbrown.20150821171510.167"><vh>tree-image-open</vh></v>
-<v t="tbrown.20150821171510.168"><vh>tree-icon-separation</vh></v>
+<v t="tbrown.20150821171510.166"><vh>Tree image closed</vh></v>
+<v t="tbrown.20150821171510.167"><vh>Tree image open</vh></v>
+<v t="tbrown.20150821171510.168"><vh>Tree icon separation</vh></v>
 </v>
 <v t="tbrown.20150821171510.169"><vh>Plugins</vh>
 <v t="tbrown.20150821171510.170"><vh>bookmarks.py plugin</vh>
-<v t="tbrown.20150821171510.171"><vh>bookmarks base</vh>
+<v t="tbrown.20150821171510.171"><vh>Bookmarks base</vh>
 <v t="tbrown.20150821171510.172"><vh>Color</vh></v>
 <v t="tbrown.20150821171510.173"><vh>Border</vh></v>
 <v t="tbrown.20150821171510.174"><vh>Decoration</vh></v>
@@ -1815,7 +1814,7 @@
 <v t="tbrown.20150821171510.179"><vh>Style</vh></v>
 <v t="tbrown.20150821171510.180"><vh>Weight</vh></v>
 </v>
-<v t="tbrown.20150821171510.181"><vh>bookmarks children</vh>
+<v t="tbrown.20150821171510.181"><vh>Bookmarks children</vh>
 <v t="tbrown.20150821171510.182"><vh>Color</vh></v>
 <v t="tbrown.20150821171510.183"><vh>Decoration</vh></v>
 <v t="tbrown.20150821171510.184"><vh>Family</vh></v>
@@ -1823,14 +1822,14 @@
 <v t="tbrown.20150821171510.186"><vh>Style</vh></v>
 <v t="tbrown.20150821171510.187"><vh>Weight</vh></v>
 </v>
-<v t="tbrown.20150821171510.188"><vh>bookmarks current</vh>
+<v t="tbrown.20150821171510.188"><vh>Bookmarks current</vh>
 <v t="tbrown.20150821171510.189"><vh>Color</vh></v>
 <v t="tbrown.20150821171510.190"><vh>Decoration</vh></v>
 <v t="tbrown.20150821171510.191"><vh>Size</vh></v>
 <v t="tbrown.20150821171510.192"><vh>Style</vh></v>
 <v t="tbrown.20150821171510.193"><vh>Weight</vh></v>
 </v>
-<v t="tbrown.20150821171510.194"><vh>bookmarks expanded</vh>
+<v t="tbrown.20150821171510.194"><vh>Bookmarks expanded</vh>
 <v t="tbrown.20150821171510.195"><vh>Color</vh></v>
 <v t="tbrown.20150821171510.196"><vh>Decoration</vh></v>
 <v t="tbrown.20150821171510.197"><vh>Size</vh></v>
@@ -1839,7 +1838,7 @@
 <v t="tbrown.20150821171510.200"><vh>Size</vh></v>
 </v>
 </v>
-<v t="tbrown.20150821171510.201" a="E"><vh>screencast.py plugin</vh>
+<v t="tbrown.20150821171510.201"><vh>screencast.py plugin</vh>
 <v t="tbrown.20150821171510.202"><vh>Background</vh></v>
 <v t="tbrown.20150821171510.203"><vh>Font-family</vh></v>
 <v t="tbrown.20150821171510.204"><vh>Font-size</vh></v>
@@ -2055,7 +2054,7 @@
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16463" a="E"><vh>Tree operation</vh>
+<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
@@ -11744,7 +11743,6 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="tbrown.20150821171510.89">body-font-style</t>
 <t tx="tbrown.20150821171510.9"></t>
 <t tx="tbrown.20150821171510.90">body-font-weight</t>
-<t tx="tbrown.20150821171510.91">font-size-body</t>
 <t tx="tbrown.20150821171510.92">Warning: These affect system dialogs.
 
 Don't change these unless you are aware of the consequences</t>
