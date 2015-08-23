@@ -677,10 +677,12 @@ class quickMove(object):
         if cut:
             self.c.selectPosition(p)
             self.c.deleteOutline()
+            self.c.setChanged(True)
             
         if nxt:        
             self.c.selectPosition(self.c.vnode2position(nxt))
 
+        c2.setChanged(True)
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
