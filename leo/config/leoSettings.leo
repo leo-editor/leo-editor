@@ -1801,8 +1801,8 @@
 <v t="tbrown.20150821171510.167"><vh>Tree image open</vh></v>
 <v t="tbrown.20150821171510.168"><vh>Tree icon separation</vh></v>
 </v>
-<v t="tbrown.20150821171510.169"><vh>Plugins</vh>
-<v t="tbrown.20150821171510.170"><vh>bookmarks.py plugin</vh>
+<v t="tbrown.20150821171510.169"><vh>Misc. plugins</vh>
+<v t="tbrown.20150821171510.170"><vh>Bookmarks</vh>
 <v t="tbrown.20150821171510.171"><vh>Bookmarks base</vh>
 <v t="tbrown.20150821171510.172"><vh>Color</vh></v>
 <v t="tbrown.20150821171510.173"><vh>Border</vh></v>
@@ -1838,7 +1838,7 @@
 <v t="tbrown.20150821171510.200"><vh>Size</vh></v>
 </v>
 </v>
-<v t="tbrown.20150821171510.201"><vh>screencast.py plugin</vh>
+<v t="tbrown.20150821171510.201"><vh>Screencast</vh>
 <v t="tbrown.20150821171510.202"><vh>Background</vh></v>
 <v t="tbrown.20150821171510.203"><vh>Font-family</vh></v>
 <v t="tbrown.20150821171510.204"><vh>Font-size</vh></v>
@@ -11620,7 +11620,7 @@ version of Leo.
 <t tx="tbrown.20150821171510.166">tree-image-closed</t>
 <t tx="tbrown.20150821171510.167">tree-image-open</t>
 <t tx="tbrown.20150821171510.168">tree-icon-separation</t>
-<t tx="tbrown.20150821171510.169"></t>
+<t tx="tbrown.20150821171510.169">odd headline just to not clash with regular plugins menu</t>
 <t tx="tbrown.20150821171510.17">generic-button-btn-bg</t>
 <t tx="tbrown.20150821171510.170"></t>
 <t tx="tbrown.20150821171510.171"></t>
