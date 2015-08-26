@@ -68,6 +68,7 @@ This plugin defines the following commands that can be bound to keys:
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
+import itertools
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
@@ -78,7 +79,7 @@ from leo.core import leoNodes
 import fnmatch, re
 from leo.plugins import threadutil
     # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
-from leo.plugins import qt_quicksearch
+from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #@-<< imports >>
 #@+others
 #@+node:ville.20090314215508.8: ** init
@@ -288,8 +289,8 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
         # set to True after return is pressed in nav mode, to disable live updates until field is cleaned again
         self.frozen = False
         w = self.ui.listWidget
-        
-        cc = QuickSearchController(c,w)
+        u = self.ui
+        cc = QuickSearchController(c,w,u)
         self.scon = cc
 
         if mode == "popout":
@@ -380,13 +381,14 @@ class QuickSearchController:
     
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
-    def __init__(self,c,listWidget):
+    def __init__(self,c,listWidget,ui):
 
 
         self.c = c
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
+        self.widgetUI = ui
 
         self.frozen = False    
         def searcher(inp):
@@ -523,10 +525,19 @@ class QuickSearchController:
             hpat = pat[2:]
             bpat = pat[2:]
             flags = 0
-
-        hm = self.c.find_h(hpat, flags)
+        combo = self.widgetUI.comboBox.currentText()
+        if combo == "All":
+            hNodes = self.c.all_positions()
+            bNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+            bNodes = self.c.p.self_and_subtree()
+        else:
+            hNodes = [self.c.p]
+            bNodes = [self.c.p]
+        hm = self.find_h(hpat, hNodes, flags)
         self.addHeadlineMatches(hm)
-        bm = self.c.find_b(bpat, flags)
+        bm = self.find_b(bpat, bNodes, flags)
         self.addBodyMatches(bm)
 
         self.lw.insertItem(0, "%d hits"%self.lw.count())
@@ -546,13 +557,56 @@ class QuickSearchController:
             hpat = pat[2:]
             bpat = pat[2:]
             flags = 0
-
-        hm = self.c.find_h(hpat, flags)
+        combo = self.widgetUI.comboBox.currentText()
+        if combo == "All":
+            hNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+        else:
+            hNodes = [self.c.p]
+        hm = self.find_h(hpat, hNodes, flags)
         #self.addHeadlineMatches(hm)
         #bm = self.c.find_b(bpat, flags)
         #self.addBodyMatches(bm)
         return hm, []
         #self.lw.insertItem(0, "%d hits"%self.lw.count())
+    #@+node:jlunz.20150826091415.1: *3* find_h
+    def find_h(self, regex, nodes, flags=re.IGNORECASE):
+        """ Return list (a PosList) of all nodes where zero or more characters at
+        the beginning of the headline match regex
+        """
+
+        pat = re.compile(regex, flags)
+        res = leoNodes.PosList()
+        for p in nodes:
+            m = re.match(pat, p.h)
+            if m:
+                pc = p.copy()
+                pc.mo = m
+                res.append(pc)
+        return res
+    #@+node:jlunz.20150826091424.1: *3* find_b
+    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE):
+        """ Return list (a PosList) of all nodes whose body matches regex
+        one or more times.
+
+        """
+        pat = re.compile(regex, flags)
+        res = leoNodes.PosList()
+        for p in nodes:
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                if g.isPython3:
+                    t1.__next__()
+                else:
+                    t1.next()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        return res
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 

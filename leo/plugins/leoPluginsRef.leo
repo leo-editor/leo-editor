@@ -11,9 +11,9 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
-<v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
+<v t="ekr.20090430075506.3" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -32,179 +32,180 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
-<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
-<v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
-<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
-<v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
-<v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
-<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
-<v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
-<v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
-<v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
-<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
+<v t="ekr.20101110150056.9453" a="E"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71002855013071017d7102550b6c696e65594f666673657471034b00735503302e3371047d710558040000007465737471067d710758050000005f6564697471087d7109580400000074686973710a58120000006f6b20686f77206120626f75742074686973710b737373752e"><vh>@file attrib_edit.py</vh></v>
+<v t="ville.20090310191936.10" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file colorize_headlines.py</vh></v>
+<v t="ekr.20090701111504.5294" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file contextmenu.py</vh></v>
+<v t="ville.20090518182905.5419" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file nav_qt.py</vh></v>
+<v t="ville.20120604212857.4215" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file notebook.py</vh></v>
+<v t="ekr.20090622063842.5264" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file projectwizard.py</vh></v>
+<v t="ville.20090314215508.4" a="E" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"
+expanded="ville.20090314215508.2,ville.20090314215508.12,"><vh>@file quicksearch.py</vh></v>
+<v t="ville.20090815203828.5235" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file spydershell.py</vh></v>
+<v t="ekr.20100103093121.5329" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file stickynotes.py</vh></v>
+<v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file todo.py</vh></v>
+<v t="tbrown.20100318101414.5990" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file viewrendered.py</vh></v>
+<v t="ekr.20140225222704.16748" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file viewrendered2.py</vh></v>
+<v t="tbrown.20090206153748.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file graphcanvas.py</vh></v>
+<v t="ville.20110403115003.10348" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file valuespace.py</vh></v>
+<v t="tbrown.20130420091241.44181" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
-<v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
+<v t="ekr.20091118065749.5261" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file ctagscompleter.py</vh></v>
+<v t="ville.20091204224145.5355" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file codewisecompleter.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
-<v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
-<v t="ekr.20101110084839.5682"><vh>@file bzr_qcommands.py</vh></v>
-<v t="EKR.20040517080049.1"><vh>@file empty_leo_file.py</vh></v>
-<v t="edream.110203113231.669"><vh>@file import_cisco_config.py</vh></v>
-<v t="ekr.20101110092851.5812"><vh>@file initinclass.py</vh></v>
-<v t="ekr.20101110091234.5700"><vh>@file leo_interface.py</vh></v>
-<v t="ekr.20040419105219"><vh>@file lineNumbers.py</vh></v>
-<v t="ekr.20040916084945"><vh>@file macros.py</vh></v>
-<v t="edream.110203113231.724"><vh>@file mod_autosave.py</vh></v>
-<v t="ekr.20050301083306"><vh>@file mod_read_dir_outline.py</vh></v>
-<v t="edream.110203113231.727"><vh>@file mod_timestamp.py</vh></v>
-<v t="TL.20090225102340.32"><vh>@file nodeActions.py</vh></v>
-<v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
-<v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
-<v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
+<v t="edream.110203113231.741" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file add_directives.py</vh></v>
+<v t="ekr.20101110084839.5682" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file bzr_qcommands.py</vh></v>
+<v t="EKR.20040517080049.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file empty_leo_file.py</vh></v>
+<v t="edream.110203113231.669" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file import_cisco_config.py</vh></v>
+<v t="ekr.20101110092851.5812" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file initinclass.py</vh></v>
+<v t="ekr.20101110091234.5700" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leo_interface.py</vh></v>
+<v t="ekr.20040419105219" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file lineNumbers.py</vh></v>
+<v t="ekr.20040916084945" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file macros.py</vh></v>
+<v t="edream.110203113231.724" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_autosave.py</vh></v>
+<v t="ekr.20050301083306" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_read_dir_outline.py</vh></v>
+<v t="edream.110203113231.727" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_timestamp.py</vh></v>
+<v t="TL.20090225102340.32" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file nodeActions.py</vh></v>
+<v t="edream.110203113231.720" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file outline_export.py</vh></v>
+<v t="danr7.20060912105041.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file paste_as_headlines.py</vh></v>
+<v t="ekr.20041021120118" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file pretty_print.py</vh></v>
+<v t="tbrown.20070117104409" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
-<v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
+<v t="danr7.20061010105952.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file word_count.py</vh></v>
 </v>
 <v t="edream.110203113231.729"><vh>Debugging</vh>
-<v t="ekr.20101110091234.5689"><vh>@file debugger_pudb.py</vh></v>
-<v t="edream.110203113231.730"><vh>@file dump_globals.py</vh></v>
-<v t="edream.110203113231.732"><vh>@file enable_gc.py</vh></v>
+<v t="ekr.20101110091234.5689" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file debugger_pudb.py</vh></v>
+<v t="edream.110203113231.730" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file dump_globals.py</vh></v>
+<v t="edream.110203113231.732" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file enable_gc.py</vh></v>
 <v t="edream.110203113231.734"><vh>@file quit_leo.py</vh></v>
-<v t="edream.110203113231.735"><vh>@file trace_gc_plugin.py</vh></v>
-<v t="edream.110203113231.736"><vh>@file trace_keys.py</vh></v>
-<v t="edream.110203113231.738"><vh>@file trace_tags.py</vh></v>
+<v t="edream.110203113231.735" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file trace_gc_plugin.py</vh></v>
+<v t="edream.110203113231.736" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file trace_keys.py</vh></v>
+<v t="edream.110203113231.738" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file trace_tags.py</vh></v>
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
-<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
-<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
-<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
-<v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
-<v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
+<v t="edream.110203113231.916" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/override_classes.py</vh></v>
+<v t="edream.110203113231.919" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/override_commands.py</vh></v>
+<v t="edream.110203113231.921" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/redefine_put.py</vh></v>
+<v t="ekr.20060621123339" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/print_cp.py</vh></v>
+<v t="ekr.20040828105233" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/chinese_menu.py</vh></v>
+<v t="EKR.20040517080202.3" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file examples/french_fm.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
-<v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
-<v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
-<v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
-<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
-<v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
+<v t="danr7.20060902083957" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leo_to_rtf.py</vh></v>
+<v t="ekr.20040205071616" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mnplugins.py</vh></v>
+<v t="ekr.20101110094759.5843" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_speedups.py</vh></v>
+<v t="ekr.20040910070811.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file run_nodes.py</vh></v>
+<v t="ekr.20100103093121.5339" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
 </v>
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
-<v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
-<v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
-<v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
-<v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
-<v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
+<v t="ekr.20110125103904.12504" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file gitarchive.py</vh></v>
+<v t="EKR.20040517080049.4" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file open_shell.py</vh></v>
+<v t="ville.20090503124249.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file tomboy_import.py</vh></v>
+<v t="EKR.20040517075715.10" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file vim.py</vh></v>
+<v t="EKR.20040517075715.12" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@file word_export.py</vh></v>
 <v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.872"><vh>Files and nodes</vh>
-<v t="tbrown.20080613095157.2"><vh>@file active_path.py</vh></v>
-<v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
-<v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
-<v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
-<v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
-<v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
-<v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
-<v t="ajones.20070122153625"><vh>@file expfolder.py</vh></v>
-<v t="ekr.20040915105758.13"><vh>@file FileActions.py</vh></v>
-<v t="ekr.20110110105526.5463"><vh>@file ftp.py</vh></v>
-<v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
-<v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
-<v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
-<v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
-<v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
-<v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
-<v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
-<v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
-<v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
-<v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
-<v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
-<v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
+<v t="tbrown.20080613095157.2" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file active_path.py</vh></v>
+<v t="edream.110203113231.873" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file at_folder.py</vh></v>
+<v t="ekr.20040915085351" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file at_produce.py</vh></v>
+<v t="ktenney.20041211072654.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file at_view.py</vh></v>
+<v t="tbrown.20081223111325.3" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file backlink.py</vh></v>
+<v t="tbrown.20070322113635" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file bookmarks.py</vh></v>
+<v t="ekr.20060807103814.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file datenodes.py</vh></v>
+<v t="ajones.20070122153625" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file expfolder.py</vh></v>
+<v t="ekr.20040915105758.13" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file FileActions.py</vh></v>
+<v t="ekr.20110110105526.5463" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file ftp.py</vh></v>
+<v t="tbrown.20091214233510.5347" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file geotag.py</vh></v>
+<v t="tbrown.20100228141752.5691" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leocursor.py</vh></v>
+<v t="ville.20120503224623.3574" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leomylyn.py</vh></v>
+<v t="ekr.20101110092851.5742" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leoOPML.py</vh></v>
+<v t="dan.20090217132953.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mime.py</vh></v>
+<v t="mork.20041018204908.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file multifile.py</vh></v>
+<v t="ekr.20040331151007" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file niceNosent.py</vh></v>
+<v t="edream.110203113231.876" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file read_only_nodes.py</vh></v>
+<v t="ekr.20040828103325" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file startfile.py</vh></v>
+<v t="ekr.20130808211520.15893" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file timestamp.py</vh></v>
+<v t="tbrown.20110428144124.29061" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file xml_edit.py</vh></v>
+<v t="mork.20041010095009" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
-<v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20150107090324.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file cursesGui.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
-<v t="ekr.20140727075002.18109"><vh>@file importers/basescanner.py</vh></v>
-<v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
-<v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
-<v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
-<v t="ekr.20140723122936.18141"><vh>@file importers/elisp.py</vh></v>
-<v t="ekr.20140723122936.18138"><vh>@file importers/html.py</vh></v>
-<v t="ekr.20140723122936.18142"><vh>@file importers/ini.py</vh></v>
-<v t="ekr.20140723122936.18143"><vh>@file importers/java.py</vh></v>
-<v t="ekr.20140723122936.18144"><vh>@file importers/javascript.py</vh></v>
-<v t="ekr.20140725190808.18066"><vh>@file importers/markdown.py</vh></v>
-<v t="ekr.20140723122936.18146"><vh>@file importers/org.py</vh></v>
-<v t="ekr.20140723122936.18150"><vh>@file importers/otl.py</vh></v>
-<v t="ekr.20140723122936.18147"><vh>@file importers/pascal.py</vh></v>
-<v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
-<v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
-<v t="ekr.20140723122936.18151"><vh>@file importers/leo_rst.py</vh></v>
-<v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
-<v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
+<v t="ekr.20140727075002.18109" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/basescanner.py</vh></v>
+<v t="ekr.20140723122936.17926" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/c.py</vh></v>
+<v t="ekr.20140723122936.18140" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/csharp.py</vh></v>
+<v t="tbrown.20140801105909.47549" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/ctext.py</vh></v>
+<v t="ekr.20140723122936.18141" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/elisp.py</vh></v>
+<v t="ekr.20140723122936.18138" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/html.py</vh></v>
+<v t="ekr.20140723122936.18142" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/ini.py</vh></v>
+<v t="ekr.20140723122936.18143" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/java.py</vh></v>
+<v t="ekr.20140723122936.18144" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/javascript.py</vh></v>
+<v t="ekr.20140725190808.18066" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/markdown.py</vh></v>
+<v t="ekr.20140723122936.18146" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/org.py</vh></v>
+<v t="ekr.20140723122936.18150" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/otl.py</vh></v>
+<v t="ekr.20140723122936.18147" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/pascal.py</vh></v>
+<v t="ekr.20140723122936.18148" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/php.py</vh></v>
+<v t="ekr.20140723122936.18149" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/python.py</vh></v>
+<v t="ekr.20140723122936.18151" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/leo_rst.py</vh></v>
+<v t="ekr.20140723122936.18152" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/typescript.py</vh></v>
+<v t="ekr.20140723122936.18137" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file importers/xml.py</vh></v>
 </v>
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
-<v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
+<v t="ajones.20070122160142" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file textnode.py</vh></v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
 </v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
-<v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="tbrown.20140806084727.30174"><vh>@file livecode.py</vh></v>
-<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
-<v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
+<v t="tbrown.20100226095909.12777" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leoscreen.py</vh></v>
+<v t="tbrown.20140806084727.30174" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file livecode.py</vh></v>
+<v t="ekr.20060328125248" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_scripting.py</vh></v>
+<v t="edream.110203113231.925" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
-<v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
-<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
-<v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
+<v t="ekr.20120309073748.9872" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file bigdash.py</vh></v>
+<v t="peckj.20140804114520.9427" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file nodetags.py</vh></v>
+<v t="peckj.20131130132659.5964" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
-<v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
-<v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
-<v t="ekr.20131004162848.11444"><vh>@file rss.py</vh></v>
+<v t="ville.20091009202416.10040" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leoremote.py</vh></v>
+<v t="EKR.20040517080250.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_http.py</vh></v>
+<v t="ekr.20131004162848.11444" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file rss.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
-<v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
-<v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
-<v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
+<v t="ekr.20120913110135.10579" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file screencast.py</vh></v>
+<v t="ekr.20101121031443.5330" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file screenshots.py</vh></v>
+<v t="ekr.20060831165821" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file slideshow.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
 <v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
 <v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
-<v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
+<v t="ekr.20051016160700" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file testRegisterCommand.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
-<v t="timo.20050213160555"><vh>@file bibtex.py</vh></v>
-<v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
-<v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
-<v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
-<v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
-<v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
+<v t="timo.20050213160555" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file bibtex.py</vh></v>
+<v t="ekr.20070119094733.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file dtest.py</vh></v>
+<v t="ville.20110409151021.5699" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file jinjarender.py</vh></v>
+<v t="danr7.20060902215215.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file leo_to_html.py</vh></v>
+<v t="peckj.20140113150237.7083" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file nodediff.py</vh></v>
+<v t="tbrown.20130813134319.11942" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file richtext.py</vh></v>
 </v>
 <v t="ekr.20121126102050.10134"><vh>Threading</vh>
-<v t="ekr.20121126095734.12418"><vh>@file threadutil.py</vh></v>
+<v t="ekr.20121126095734.12418" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file threadutil.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>User interface</vh>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
@@ -213,24 +214,24 @@
 <v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt;Basics--&gt;Customizing Leo'</vh></v>
 </v>
 </v>
-<v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
-<v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
-<v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
-<v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
-<v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
-<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
+<v t="ekr.20060328125925" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file chapter_hoist.py</vh></v>
+<v t="tbrown.20090513125417.5244" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file interact.py</vh></v>
+<v t="ekr.20040915073259.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file maximizeNewWindows.py</vh></v>
+<v t="ekr.20101110093301.5818" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file mod_framesize.py</vh></v>
+<v t="EKR.20040517080555.2" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file plugins_menu.py</vh></v>
+<v t="peckj.20150428142633.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
-<v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
-<v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
+<v t="EKR.20040517080555.36" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file scripts_menu.py</vh></v>
+<v t="tbrown.20141101114322.1" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file wikiview.py</vh></v>
+<v t="ekr.20101110095202.5882" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file writers/__init__.py</vh></v>
-<v t="ekr.20140726091031.18143"><vh>@file writers/basewriter.py</vh></v>
-<v t="ekr.20140726091031.18079"><vh>@file writers/org.py</vh></v>
-<v t="ekr.20140726091031.18078"><vh>@file writers/otl.py</vh></v>
-<v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
-<v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
+<v t="ekr.20140726091031.18143" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file writers/basewriter.py</vh></v>
+<v t="ekr.20140726091031.18079" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file writers/org.py</vh></v>
+<v t="ekr.20140726091031.18078" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file writers/otl.py</vh></v>
+<v t="ekr.20140726091031.18073" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file writers/markdown.py</vh></v>
+<v t="ekr.20140726091031.18080" descendentVnodeUnknownAttributes="7d710055013071017d7102550b6c696e65594f666673657471034b0073732e"><vh>@file writers/leo_rst.py</vh></v>
 </v>
 </v>
 <v t="ekr.20150722060423.1"><vh>@button compare vr-controller</vh>
