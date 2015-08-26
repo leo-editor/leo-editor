@@ -64,6 +64,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>listWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

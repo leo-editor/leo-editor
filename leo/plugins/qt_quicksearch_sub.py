@@ -37,7 +37,8 @@ class Ui_LeoQuickSearchWidget(object):
 
         self.retranslateUi(LeoQuickSearchWidget)
         QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
-
+        LeoQuickSearchWidget.setTabOrder(self.lineEdit, self.comboBox)
+        LeoQuickSearchWidget.setTabOrder(self.comboBox, self.listWidget)
 
     def retranslateUi(self, LeoQuickSearchWidget):
         if isQt5:
