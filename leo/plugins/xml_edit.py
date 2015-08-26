@@ -146,8 +146,9 @@ def append_element(xml_node, to_leo_node):
             name.extend(xml_node.text.split(None, 10)[:9])
         
         leo_node.h = ' '.join(name)[:40]
-        leo_node.b = xml_node.text
-        
+        if xml_node.text is not None:
+            leo_node.b = xml_node.text
+
         if xml_node.tail and xml_node.tail.strip():
             leo_node.b += tail_sentinel+xml_node.tail
         
