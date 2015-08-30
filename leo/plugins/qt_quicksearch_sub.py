@@ -12,7 +12,7 @@ class Ui_LeoQuickSearchWidget(object):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
         LeoQuickSearchWidget.resize(868, 572)
         self.verticalLayout_2 = QtGui.QVBoxLayout(LeoQuickSearchWidget)
-        self.verticalLayout_2.setMargin(1)
+        self.verticalLayout_2.setContentsMargins(0, 1, 0, 1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtGui.QGridLayout()
         self.verticalLayout.setObjectName("verticalLayout")
