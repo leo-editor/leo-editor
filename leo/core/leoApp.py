@@ -211,8 +211,10 @@ class ExternalFilesController:
             # List of dictionaries created by efc.open_with.
         efc.has_changed_d = {}
             # Keys are commanders. Values are bools.
-        efc.time_d = {}
+        efc._time_d = {}
             # Keys are full paths, values are modification times.
+            # DO NOT alter directly, use set_time(path) and
+            # get_time(path), see set_time() for notes.
     #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite
     def check_overwrite(efc, c, path):
@@ -505,14 +507,27 @@ class ExternalFilesController:
         else:
             g.trace('reopening:', path)
         return path
-    #@+node:ekr.20150405122428.1: *4* efc.set_time
-    def set_time(efc, path):
+    #@+node:ekr.20150405122428.1: *4* efc.get_time
+    def get_time(efc, path):
+        '''
+        return timestamp for path
+
+        see set_time() for notes
+        '''
+        return efc._time_d.get(g.os_path_realpath(path))
+    #@+node:tbrown.20150904102518.1: *4* efc.set_time
+    def set_time(efc, path, new_time=None):
         '''
         Implements c.setTimeStamp.
 
         Update the timestamp for path.
+
+        NOTE: file paths with symbolic links occur with and without those links
+        resolved depending on the code call path.  This inconsistency is
+        probably not Leo's fault but an underlying Python issue.
+        Hence the need to call realpath() here.
         '''
-        efc.time_d[path] = efc.get_mtime(path)
+        efc._time_d[g.os_path_realpath(path)] = new_time or efc.get_mtime(path)
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(efc):
         '''
@@ -597,7 +612,7 @@ class ExternalFilesController:
                 c.redraw_now(p=p)
                 c.refreshFromDisk(p)
             # Always update the path & time to prevent future warnings.
-            efc.time_d[path] = efc.get_mtime(path)
+            self.set_time(path)
             efc.checksum_d[path] = efc.checksum(path)
     #@+node:ekr.20150407124259.1: *4* efc.check_open_with_file & helper
     def check_open_with_file(efc, d):
@@ -787,11 +802,11 @@ class ExternalFilesController:
             return False
         fn = g.shortFileName(path)
         # First, check the modification times.
-        old_time = efc.time_d.get(path)
+        old_time = efc.get_time(path)
         new_time = efc.get_mtime(path)
         if not old_time:
             # Initialize.
-            efc.time_d[path] = new_time
+            efc.set_time(path, new_time)
             efc.checksum_d[path] = checksum = efc.checksum(path)
             if trace and verbose_init:
                 print('%s:init %s %s %s' % (tag, checksum, c.shortFileName(), path))
@@ -814,13 +829,15 @@ class ExternalFilesController:
             # Update the time, so we don't keep checking the checksums.
             # Return False so we don't prompt the user for an update.
             if trace: print('%s:unchanged %s %s' % (tag, old_time, new_time))
-            efc.time_d[path] = new_time
+            efc.set_time(path, new_time)
             return False
         else:
             # The file has really changed.
             if trace: print('%s:changed %s %s %s' % (tag, old_sum, new_sum, fn))
             assert old_time, path
-            efc.time_d[path] = new_time
+            # FIXME: 20150904 - these next two lines mean that if the Leo version
+            # is changed (dirtied) again, overwrite will occur without warning.
+            efc.set_time(path, new_time)
             efc.checksum_d[path] = new_sum
             return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
