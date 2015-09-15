@@ -868,11 +868,15 @@ class BookMarkDisplay:
     def rename_bookmark(self, bm):
         """Rename bookmark"""
 
+        default = self.c.frame.body.wrapper.getSelectedText()
+        if not default or not default.strip() or len(default) > 20:
+            default = bm.head
+
         txt = g.app.gui.runAskOkCancelStringDialog(
             self.c,
             "Rename "+bm.head,
             "New name for "+bm.head,
-            default=bm.head
+            default=default
         )
         
         if txt:
