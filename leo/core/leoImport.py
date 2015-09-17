@@ -1566,7 +1566,7 @@ class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
-    def __init__(self, c, kind, one_file=False, theTypes=None, safe_at_file=True):
+    def __init__(self, c, kind, one_file=False, safe_at_file=True, theTypes=None):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.kind = kind
@@ -1623,7 +1623,7 @@ class RecursiveImportController:
         if dirs:
             for dir_ in sorted(dirs):
                 prefix = dir_
-                self.import_dir(child, dir_)
+                self.import_dir(dir_, child)
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
     def clean_all(self, dir_, p):
         '''Clean all imported nodes. This takes a lot of time.'''

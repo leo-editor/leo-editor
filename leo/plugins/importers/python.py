@@ -224,6 +224,7 @@ class PythonScanner(basescanner.BaseScanner):
 #@-others
 importer_dict = {
     'class': PythonScanner,
-    'extensions': ['.py', 'pyw',],
+    'extensions': ['.py', '.pyw', '.pyi'],
+        # mypy uses .pyi extension.
 }
 #@-leo

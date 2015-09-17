@@ -6528,7 +6528,7 @@ class Commands(object):
                 cc = leoImport.RecursiveImportController(c, kind,
                     one_file=one_file,
                     safe_at_file=safe_at_file,
-                    theTypes=['.py'] if theTypes is None else theTypes,
+                    theTypes=['.py'] if not theTypes else theTypes,
                 )
                 cc.run(dir_)
             finally:
