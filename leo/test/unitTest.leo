@@ -196,7 +196,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31312e3971057d71065809000000756e69745f746573747107580400000061626364710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31352e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32362e3771157d71165808000000616e6e6f7461746571177d711873752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31352e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32362e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31312e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e71187573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 <v t="ekr.20150629111007.1"><vh>recent tests</vh>
@@ -225,6 +225,7 @@
 <v t="ekr.20081215084144.4"><vh>before sel=3.7,3.7</vh></v>
 <v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
 </v>
+<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
 </v>
 <v t="ekr.20150627071833.1"><vh>** Create unit test for transpose-words</vh></v>
 </vnodes>
@@ -1093,6 +1094,47 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'baseNativeTree.py','leocursor.py',
+    'qtGui.py',
+    'qt_big_text.py',
+    'qt_commands.py',
+    'qt_events.py',
+    'qt_frame.py',
+    'qt_idle_time.py',
+    'qt_main.py',
+    'qt_quickheadlines.py',
+    'qt_quicksearch_sub.py',
+    'qt_text.py',
+    'qt_tree.py',
+    'qt_quicksearch.py',
+    'swing_gui.py',
+]
+
+for fn in files:
+    if not g.shortFileName(fn) in exclude:
+        f = open(fn,'r')
+        s = f.read()
+        f.close()
+        ok1 = s.find('def init():') &gt; -1
+        ok2 = s.find('def init ():') &gt; -1
+        assert ok1 or ok2,'fail: %s' % (fn)
+    
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.

@@ -21593,6 +21593,7 @@ exclude = [
     'qt_idle_time.py',
     'qt_main.py',
     'qt_quickheadlines.py',
+    'qt_quicksearch_sub.py',
     'qt_text.py',
     'qt_tree.py',
     'qt_quicksearch.py',
