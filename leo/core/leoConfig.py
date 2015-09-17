@@ -2013,8 +2013,7 @@ class SettingsFinder(object):
         :param controller c: outline to bind to
         """
         self.c = c
-        self.callbacks = {}  # keep track of callbacks made already
-
+        self.callbacks = {} # keep track of callbacks made already
     #@+others
     #@+node:tbrown.20150818161651.2: *3* _outline_data_build_tree
     @classmethod
@@ -2041,15 +2040,13 @@ class SettingsFinder(object):
         from xml.etree import ElementTree
         # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
         # but @settings tree -> VNode tree, xml + paste to use is cumbersome
-        
-        body = {}  # node ID to node mapping to fill in body text later
+        body = {} # node ID to node mapping to fill in body text later
         top = VNode(self.c)
         dom = ElementTree.fromstring(xml)
         self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
         for t in dom.find('tnodes').findall('t'):
             if t.text is not None:
                 body[t.get('tx')].b = t.text
-
         return top
     #@+node:tbrown.20150818161651.4: *3* build_menu
     def build_menu(self):
@@ -2068,11 +2065,9 @@ class SettingsFinder(object):
     def copy_recursively(nd0, nd1):
         """Recursively copy subtree
         """
-        
         nd1.h = nd0.h
         nd1.b = nd0.b
         nd1.v.u = deepcopy(nd0.v.u)
-        
         for child in nd0.children():
             SettingsFinder.copy_recursively(child, nd1.insertAsLastChild())
     #@+node:tbrown.20150818161651.5: *3* copy_to_my_settings
@@ -2088,11 +2083,11 @@ class SettingsFinder(object):
         path, unl = unl.split('#', 1)
         unl = unl.replace('%20', ' ').split("-->")
         tail = []
-        if which > 1:  # copying parent or grandparent but select leaf later
-            tail = unl[-(which-1):]
-        unl = unl[:len(unl)+1-which]
+        if which > 1: # copying parent or grandparent but select leaf later
+            tail = unl[-(which - 1):]
+        unl = unl[: len(unl) + 1 - which]
         my_settings_c = self.c.openMyLeoSettings()
-        my_settings_c.save()  # if it didn't exist before, save required
+        my_settings_c.save() # if it didn't exist before, save required
         settings = g.findNodeAnywhere(my_settings_c, '@settings')
         nd = settings.insertAsLastChild()
         # c2 = g.openWithFileName(path.replace("file://", ""), old_c=my_settings_c)
@@ -2106,8 +2101,8 @@ class SettingsFinder(object):
         shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
         self.c.config.settingsDict.update(settingsDict)
         my_settings_c.config.settingsDict.update(settingsDict)
-        g.es('-->'.join([dest]+tail))
-        return '-->'.join([dest]+tail)
+        g.es('-->'.join([dest] + tail))
+        return '-->'.join([dest] + tail)
     #@+node:tbrown.20150818161651.6: *3* find_setting
     def find_setting(self, setting):
         g.es("Settings finder: find %s" % setting)
@@ -2149,7 +2144,7 @@ class SettingsFinder(object):
                 self.c, "Copy setting?", message=msg)
             if which is None:
                 return
-            which = int(which)  # was float
+            which = int(which) # was float
             if which < 4:
                 unl = self.copy_to_my_settings(unl, which)
         if unl:
@@ -2166,14 +2161,16 @@ class SettingsFinder(object):
         name = "settings-find-%s" % setting
         if name in self.callbacks:
             return name
+
         def f(event, setting=setting, self=self):
             self.find_setting(setting)
+
         g.command(name)(f)
         self.callbacks[name] = f
         return name
     #@+node:tbrown.20150818161651.8: *3* settings_find_undefined
     @g.command("settings-find-undefined")
-    def settings_find_undefined(event):
+    def settings_find_undefined(self, event):
         g.es("Settings finder: no setting defined")
     #@+node:tbrown.20150818161651.9: *3* tree_to_menulist
     def tree_to_menulist(self, aList, node):
@@ -2182,7 +2179,7 @@ class SettingsFinder(object):
         """
         if node.children:
             child_list = []
-            aList.append(["@menu "+node.h, child_list, None])
+            aList.append(["@menu " + node.h, child_list, None])
             for child in node.children:
                 self.tree_to_menulist(child_list, child)
         else:
