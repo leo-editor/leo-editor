@@ -1423,8 +1423,8 @@ class Commands(object):
     @cmd('flatten-outline-to-node')
     def flattenOutlineToNode(self, event=None):
         '''
-        Append the headline and body text of all descendants of the selected
-        node to the body text of the selected node.
+        Append the body text of all descendants of the selected node to the
+        body text of the selected node.
         '''
         c, root, u = self, self.p, self.undoer
         if not root.hasChildren():
@@ -1432,7 +1432,7 @@ class Commands(object):
         bunch = u.beforeChangeNodeContents(root)
         aList = []
         for p in root.subtree():
-            aList.append('\n' + p.h + '\n')
+            # aList.append('\n' + p.h + '\n')
             if p.b.strip():
                 lines = g.splitLines(p.b)
                 aList.extend(lines)
