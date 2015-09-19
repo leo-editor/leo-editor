@@ -205,17 +205,30 @@ class PythonScanner(basescanner.BaseScanner):
 
     def skipSigTail(self, s, i, kind):
         '''Skip from the end of the arg list to the start of the block.'''
-        while i < len(s):
-            ch = s[i]
-            if ch == '\n':
-                break
-            elif ch in (' ', '\t',):
-                i += 1
-            elif self.startsComment(s, i):
-                i = self.skipComment(s, i)
-            else:
-                break
-        return i, g.match(s, i, ':')
+        if 1: # New code
+            while i < len(s):
+                ch = s[i]
+                if ch == ':':
+                    return i, True
+                elif ch == '\n':
+                    return i, False
+                elif self.startsComment(s, i):
+                    i = self.skipComment(s, i)
+                else:
+                    i += 1
+            return i, False
+        else: # old code
+            while i < len(s):
+                ch = s[i]
+                if ch == '\n':
+                    break
+                elif ch in (' ', '\t',):
+                    i += 1
+                elif self.startsComment(s, i):
+                    i = self.skipComment(s, i)
+                else:
+                    break
+            return i, g.match(s, i, ':')
     #@+node:ekr.20140723122936.18098: *3* skipString
     def skipString(self, s, i):
         # Returns len(s) on unterminated string.

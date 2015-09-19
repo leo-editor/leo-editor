@@ -13674,11 +13674,18 @@ try:
     before.h = 'expected' # To make the compare work.
     c.importCommands.parse_body(before)
     # compare tree.
-    tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
+    assert tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
     c.undoer.undo()
 finally:
     before.h = 'before'
     c.redraw()
+#@+node:ekr.20150919073819.1: *6* copy
+class aClass:
+    def __init__(self):
+        pass
+    def spam(self):
+        pass
+bClass = aClass
 #@+node:ekr.20140206132559.4560: *6* before
 class aClass:
     def __init__(self):
@@ -13689,15 +13696,493 @@ bClass = aClass
 #@+node:ekr.20140206132559.4564: *6* expected
 @others
 bClass = aClass
-#@+node:ekr.20140531190926.4382: *7* class aClass
+#@+node:ekr.20150919074321.1: *7* class aClass
 class aClass:
     @others
-#@+node:ekr.20140531190926.4383: *8* __init__
+#@+node:ekr.20150919074321.2: *8* __init__
 def __init__(self):
     pass
-#@+node:ekr.20140531190926.4384: *8* spam
+#@+node:ekr.20150919074321.3: *8* spam
 def spam(self):
     pass
+#@+node:ekr.20150919074122.1: *5* @test ic.parse-body mypy
+tm = c.testManager
+before   = g.findNodeInTree(c,p,'before')
+expected = g.findNodeInTree(c,p,'expected')
+assert before,expected
+try:
+    c.selectPosition(before)
+    before.h = 'expected' # To make the compare work.
+    c.importCommands.parse_body(before)
+    # compare tree.
+    assert tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
+    c.undoer.undo()
+finally:
+    before.h = 'before'
+    c.redraw()
+#@+node:ekr.20150919074220.1: *6* copy
+class TypeJoinVisitor(TypeVisitor[Type]):
+    """Implementation of the least upper bound algorithm.
+
+    Attributes:
+      s: The other (left) type operand.
+    """
+
+    def __init__(self, s: Type) -> None:
+        self.s = s
+
+    def visit_unbound_type(self, t: UnboundType) -> Type:
+        if isinstance(self.s, Void) or isinstance(self.s, ErrorType):
+            return ErrorType()
+        else:
+            return AnyType()
+
+    def visit_union_type(self, t: UnionType) -> Type:
+        if is_subtype(self.s, t):
+            return t
+        else:
+            return UnionType(t.items + [self.s])
+
+    def visit_error_type(self, t: ErrorType) -> Type:
+        return t
+
+    def visit_type_list(self, t: TypeList) -> Type:
+        assert False, 'Not supported'
+
+    def visit_any(self, t: AnyType) -> Type:
+        return t
+
+    def visit_void(self, t: Void) -> Type:
+        if isinstance(self.s, Void):
+            return t
+        else:
+            return ErrorType()
+
+    def visit_none_type(self, t: NoneTyp) -> Type:
+        if not isinstance(self.s, Void):
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_erased_type(self, t: ErasedType) -> Type:
+        return self.s
+
+    def visit_type_var(self, t: TypeVarType) -> Type:
+        if isinstance(self.s, TypeVarType) and (cast(TypeVarType, self.s)).id == t.id:
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_instance(self, t: Instance) -> Type:
+        if isinstance(self.s, Instance):
+            return join_instances(t, cast(Instance, self.s))
+        elif isinstance(self.s, FunctionLike):
+            return join_types(t, self.s.fallback)
+        else:
+            return self.default(self.s)
+
+    def visit_callable_type(self, t: CallableType) -> Type:
+        # TODO: Consider subtyping instead of just similarity.
+        if isinstance(self.s, CallableType) and is_similar_callables(
+                t, cast(CallableType, self.s)):
+            return combine_similar_callables(t, cast(CallableType, self.s))
+        elif isinstance(self.s, Overloaded):
+            # Switch the order of arguments to that we'll get to visit_overloaded.
+            return join_types(t, self.s)
+        else:
+            return join_types(t.fallback, self.s)
+
+    def visit_overloaded(self, t: Overloaded) -> Type:
+        # This is more complex than most other cases. Here are some
+        # examples that illustrate how this works.
+        #
+        # First let's define a concise notation:
+        #  - Cn are callable types (for n in 1, 2, ...)
+        #  - Ov(C1, C2, ...) is an overloaded type with items C1, C2, ...
+        #  - Callable[[T, ...], S] is written as [T, ...] -> S.
+        #
+        # We want some basic properties to hold (assume Cn are all
+        # unrelated via Any-similarity):
+        #
+        #   join(Ov(C1, C2), C1) == C1
+        #   join(Ov(C1, C2), Ov(C1, C2)) == Ov(C1, C2)
+        #   join(Ov(C1, C2), Ov(C1, C3)) == C1
+        #   join(Ov(C2, C2), C3) == join of fallback types
+        #
+        # The presence of Any types makes things more interesting. The join is the
+        # most general type we can get with respect to Any:
+        #
+        #   join(Ov([int] -> int, [str] -> str), [Any] -> str) == Any -> str
+        #
+        # We could use a simplification step that removes redundancies, but that's not
+        # implemented right now. Consider this example, where we get a redundancy:
+        #
+        #   join(Ov([int, Any] -> Any, [str, Any] -> Any), [Any, int] -> Any) ==
+        #       Ov([Any, int] -> Any, [Any, int] -> Any)
+        #
+        # TODO: Use callable subtyping instead of just similarity.
+        result = []  # type: List[CallableType]
+        s = self.s
+        if isinstance(s, FunctionLike):
+            # The interesting case where both types are function types.
+            for t_item in t.items():
+                for s_item in s.items():
+                    if is_similar_callables(t_item, s_item):
+                        result.append(combine_similar_callables(t_item, s_item))
+            if result:
+                # TODO: Simplify redundancies from the result.
+                if len(result) == 1:
+                    return result[0]
+                else:
+                    return Overloaded(result)
+            return join_types(t.fallback, s.fallback)
+        return join_types(t.fallback, s)
+
+    def visit_tuple_type(self, t: TupleType) -> Type:
+        if (isinstance(self.s, TupleType) and
+                cast(TupleType, self.s).length() == t.length()):
+            items = []  # type: List[Type]
+            for i in range(t.length()):
+                items.append(self.join(t.items[i],
+                                       (cast(TupleType, self.s)).items[i]))
+            # TODO: What if the fallback types are different?
+            return TupleType(items, t.fallback)
+        else:
+            return self.default(self.s)
+
+    def join(self, s: Type, t: Type) -> Type:
+        return join_types(s, t)
+
+    def default(self, typ: Type) -> Type:
+        if isinstance(typ, Instance):
+            return object_from_instance(typ)
+        elif isinstance(typ, UnboundType):
+            return AnyType()
+        elif isinstance(typ, Void) or isinstance(typ, ErrorType):
+            return ErrorType()
+        elif isinstance(typ, TupleType):
+            return self.default(typ.fallback)
+        elif isinstance(typ, FunctionLike):
+            return self.default(typ.fallback)
+        elif isinstance(typ, TypeVarType):
+            return self.default(typ.upper_bound)
+        else:
+            return AnyType()
+#@+node:ekr.20150919074132.1: *6* before
+class TypeJoinVisitor(TypeVisitor[Type]):
+    """Implementation of the least upper bound algorithm.
+
+    Attributes:
+      s: The other (left) type operand.
+    """
+
+    def __init__(self, s: Type) -> None:
+        self.s = s
+
+    def visit_unbound_type(self, t: UnboundType) -> Type:
+        if isinstance(self.s, Void) or isinstance(self.s, ErrorType):
+            return ErrorType()
+        else:
+            return AnyType()
+
+    def visit_union_type(self, t: UnionType) -> Type:
+        if is_subtype(self.s, t):
+            return t
+        else:
+            return UnionType(t.items + [self.s])
+
+    def visit_error_type(self, t: ErrorType) -> Type:
+        return t
+
+    def visit_type_list(self, t: TypeList) -> Type:
+        assert False, 'Not supported'
+
+    def visit_any(self, t: AnyType) -> Type:
+        return t
+
+    def visit_void(self, t: Void) -> Type:
+        if isinstance(self.s, Void):
+            return t
+        else:
+            return ErrorType()
+
+    def visit_none_type(self, t: NoneTyp) -> Type:
+        if not isinstance(self.s, Void):
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_erased_type(self, t: ErasedType) -> Type:
+        return self.s
+
+    def visit_type_var(self, t: TypeVarType) -> Type:
+        if isinstance(self.s, TypeVarType) and (cast(TypeVarType, self.s)).id == t.id:
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_instance(self, t: Instance) -> Type:
+        if isinstance(self.s, Instance):
+            return join_instances(t, cast(Instance, self.s))
+        elif isinstance(self.s, FunctionLike):
+            return join_types(t, self.s.fallback)
+        else:
+            return self.default(self.s)
+
+    def visit_callable_type(self, t: CallableType) -> Type:
+        # TODO: Consider subtyping instead of just similarity.
+        if isinstance(self.s, CallableType) and is_similar_callables(
+                t, cast(CallableType, self.s)):
+            return combine_similar_callables(t, cast(CallableType, self.s))
+        elif isinstance(self.s, Overloaded):
+            # Switch the order of arguments to that we'll get to visit_overloaded.
+            return join_types(t, self.s)
+        else:
+            return join_types(t.fallback, self.s)
+
+    def visit_overloaded(self, t: Overloaded) -> Type:
+        # This is more complex than most other cases. Here are some
+        # examples that illustrate how this works.
+        #
+        # First let's define a concise notation:
+        #  - Cn are callable types (for n in 1, 2, ...)
+        #  - Ov(C1, C2, ...) is an overloaded type with items C1, C2, ...
+        #  - Callable[[T, ...], S] is written as [T, ...] -> S.
+        #
+        # We want some basic properties to hold (assume Cn are all
+        # unrelated via Any-similarity):
+        #
+        #   join(Ov(C1, C2), C1) == C1
+        #   join(Ov(C1, C2), Ov(C1, C2)) == Ov(C1, C2)
+        #   join(Ov(C1, C2), Ov(C1, C3)) == C1
+        #   join(Ov(C2, C2), C3) == join of fallback types
+        #
+        # The presence of Any types makes things more interesting. The join is the
+        # most general type we can get with respect to Any:
+        #
+        #   join(Ov([int] -> int, [str] -> str), [Any] -> str) == Any -> str
+        #
+        # We could use a simplification step that removes redundancies, but that's not
+        # implemented right now. Consider this example, where we get a redundancy:
+        #
+        #   join(Ov([int, Any] -> Any, [str, Any] -> Any), [Any, int] -> Any) ==
+        #       Ov([Any, int] -> Any, [Any, int] -> Any)
+        #
+        # TODO: Use callable subtyping instead of just similarity.
+        result = []  # type: List[CallableType]
+        s = self.s
+        if isinstance(s, FunctionLike):
+            # The interesting case where both types are function types.
+            for t_item in t.items():
+                for s_item in s.items():
+                    if is_similar_callables(t_item, s_item):
+                        result.append(combine_similar_callables(t_item, s_item))
+            if result:
+                # TODO: Simplify redundancies from the result.
+                if len(result) == 1:
+                    return result[0]
+                else:
+                    return Overloaded(result)
+            return join_types(t.fallback, s.fallback)
+        return join_types(t.fallback, s)
+
+    def visit_tuple_type(self, t: TupleType) -> Type:
+        if (isinstance(self.s, TupleType) and
+                cast(TupleType, self.s).length() == t.length()):
+            items = []  # type: List[Type]
+            for i in range(t.length()):
+                items.append(self.join(t.items[i],
+                                       (cast(TupleType, self.s)).items[i]))
+            # TODO: What if the fallback types are different?
+            return TupleType(items, t.fallback)
+        else:
+            return self.default(self.s)
+
+    def join(self, s: Type, t: Type) -> Type:
+        return join_types(s, t)
+
+    def default(self, typ: Type) -> Type:
+        if isinstance(typ, Instance):
+            return object_from_instance(typ)
+        elif isinstance(typ, UnboundType):
+            return AnyType()
+        elif isinstance(typ, Void) or isinstance(typ, ErrorType):
+            return ErrorType()
+        elif isinstance(typ, TupleType):
+            return self.default(typ.fallback)
+        elif isinstance(typ, FunctionLike):
+            return self.default(typ.fallback)
+        elif isinstance(typ, TypeVarType):
+            return self.default(typ.upper_bound)
+        else:
+            return AnyType()
+#@+node:ekr.20150919074154.1: *6* expected
+@others
+#@+node:ekr.20150919074211.1: *7* class TypeJoinVisitor
+class TypeJoinVisitor(TypeVisitor[Type]):
+    """Implementation of the least upper bound algorithm.
+
+    Attributes:
+      s: The other (left) type operand.
+    """
+    @others
+#@+node:ekr.20150919074211.2: *8* __init__
+
+def __init__(self, s: Type) -> None:
+    self.s = s
+
+#@+node:ekr.20150919074211.3: *8* visit_unbound_type
+def visit_unbound_type(self, t: UnboundType) -> Type:
+    if isinstance(self.s, Void) or isinstance(self.s, ErrorType):
+        return ErrorType()
+    else:
+        return AnyType()
+
+#@+node:ekr.20150919074211.4: *8* visit_union_type
+def visit_union_type(self, t: UnionType) -> Type:
+    if is_subtype(self.s, t):
+        return t
+    else:
+        return UnionType(t.items + [self.s])
+
+#@+node:ekr.20150919074211.5: *8* visit_error_type
+def visit_error_type(self, t: ErrorType) -> Type:
+    return t
+
+#@+node:ekr.20150919074211.6: *8* visit_type_list
+def visit_type_list(self, t: TypeList) -> Type:
+    assert False, 'Not supported'
+
+#@+node:ekr.20150919074211.7: *8* visit_any
+def visit_any(self, t: AnyType) -> Type:
+    return t
+
+#@+node:ekr.20150919074211.8: *8* visit_void
+def visit_void(self, t: Void) -> Type:
+    if isinstance(self.s, Void):
+        return t
+    else:
+        return ErrorType()
+
+#@+node:ekr.20150919074211.9: *8* visit_none_type
+def visit_none_type(self, t: NoneTyp) -> Type:
+    if not isinstance(self.s, Void):
+        return self.s
+    else:
+        return self.default(self.s)
+
+#@+node:ekr.20150919074211.10: *8* visit_erased_type
+def visit_erased_type(self, t: ErasedType) -> Type:
+    return self.s
+
+#@+node:ekr.20150919074211.11: *8* visit_type_var
+def visit_type_var(self, t: TypeVarType) -> Type:
+    if isinstance(self.s, TypeVarType) and (cast(TypeVarType, self.s)).id == t.id:
+        return self.s
+    else:
+        return self.default(self.s)
+
+#@+node:ekr.20150919074211.12: *8* visit_instance
+def visit_instance(self, t: Instance) -> Type:
+    if isinstance(self.s, Instance):
+        return join_instances(t, cast(Instance, self.s))
+    elif isinstance(self.s, FunctionLike):
+        return join_types(t, self.s.fallback)
+    else:
+        return self.default(self.s)
+
+#@+node:ekr.20150919074211.13: *8* visit_callable_type
+def visit_callable_type(self, t: CallableType) -> Type:
+    # TODO: Consider subtyping instead of just similarity.
+    if isinstance(self.s, CallableType) and is_similar_callables(
+            t, cast(CallableType, self.s)):
+        return combine_similar_callables(t, cast(CallableType, self.s))
+    elif isinstance(self.s, Overloaded):
+        # Switch the order of arguments to that we'll get to visit_overloaded.
+        return join_types(t, self.s)
+    else:
+        return join_types(t.fallback, self.s)
+
+#@+node:ekr.20150919074211.14: *8* visit_overloaded
+def visit_overloaded(self, t: Overloaded) -> Type:
+    # This is more complex than most other cases. Here are some
+    # examples that illustrate how this works.
+    #
+    # First let's define a concise notation:
+    #  - Cn are callable types (for n in 1, 2, ...)
+    #  - Ov(C1, C2, ...) is an overloaded type with items C1, C2, ...
+    #  - Callable[[T, ...], S] is written as [T, ...] -> S.
+    #
+    # We want some basic properties to hold (assume Cn are all
+    # unrelated via Any-similarity):
+    #
+    #   join(Ov(C1, C2), C1) == C1
+    #   join(Ov(C1, C2), Ov(C1, C2)) == Ov(C1, C2)
+    #   join(Ov(C1, C2), Ov(C1, C3)) == C1
+    #   join(Ov(C2, C2), C3) == join of fallback types
+    #
+    # The presence of Any types makes things more interesting. The join is the
+    # most general type we can get with respect to Any:
+    #
+    #   join(Ov([int] -> int, [str] -> str), [Any] -> str) == Any -> str
+    #
+    # We could use a simplification step that removes redundancies, but that's not
+    # implemented right now. Consider this example, where we get a redundancy:
+    #
+    #   join(Ov([int, Any] -> Any, [str, Any] -> Any), [Any, int] -> Any) ==
+    #       Ov([Any, int] -> Any, [Any, int] -> Any)
+    #
+    # TODO: Use callable subtyping instead of just similarity.
+    result = []  # type: List[CallableType]
+    s = self.s
+    if isinstance(s, FunctionLike):
+        # The interesting case where both types are function types.
+        for t_item in t.items():
+            for s_item in s.items():
+                if is_similar_callables(t_item, s_item):
+                    result.append(combine_similar_callables(t_item, s_item))
+        if result:
+            # TODO: Simplify redundancies from the result.
+            if len(result) == 1:
+                return result[0]
+            else:
+                return Overloaded(result)
+        return join_types(t.fallback, s.fallback)
+    return join_types(t.fallback, s)
+
+#@+node:ekr.20150919074211.15: *8* visit_tuple_type
+def visit_tuple_type(self, t: TupleType) -> Type:
+    if (isinstance(self.s, TupleType) and
+            cast(TupleType, self.s).length() == t.length()):
+        items = []  # type: List[Type]
+        for i in range(t.length()):
+            items.append(self.join(t.items[i],
+                                   (cast(TupleType, self.s)).items[i]))
+        # TODO: What if the fallback types are different?
+        return TupleType(items, t.fallback)
+    else:
+        return self.default(self.s)
+
+#@+node:ekr.20150919074211.16: *8* join
+def join(self, s: Type, t: Type) -> Type:
+    return join_types(s, t)
+
+#@+node:ekr.20150919074211.17: *8* default
+def default(self, typ: Type) -> Type:
+    if isinstance(typ, Instance):
+        return object_from_instance(typ)
+    elif isinstance(typ, UnboundType):
+        return AnyType()
+    elif isinstance(typ, Void) or isinstance(typ, ErrorType):
+        return ErrorType()
+    elif isinstance(typ, TupleType):
+        return self.default(typ.fallback)
+    elif isinstance(typ, FunctionLike):
+        return self.default(typ.fallback)
+    elif isinstance(typ, TypeVarType):
+        return self.default(typ.upper_bound)
+    else:
+        return AnyType()
 #@+node:ekr.20100131180007.5393: *5* @test ic.reportMismatch
 import leo.plugins.importers.leo_rst as leo_rst
 ic = c.importCommands
