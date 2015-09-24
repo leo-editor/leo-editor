@@ -507,7 +507,7 @@ class ExternalFilesController:
         else:
             g.trace('reopening:', path)
         return path
-    #@+node:ekr.20150405122428.1: *4* efc.get_time
+    #@+node:ekr.20150405122428.1: *4* efc.set_time
     def get_time(efc, path):
         '''
         return timestamp for path
@@ -835,10 +835,12 @@ class ExternalFilesController:
             # The file has really changed.
             if trace: print('%s:changed %s %s %s' % (tag, old_sum, new_sum, fn))
             assert old_time, path
-            # FIXME: 20150904 - these next two lines mean that if the Leo version
-            # is changed (dirtied) again, overwrite will occur without warning.
-            efc.set_time(path, new_time)
-            efc.checksum_d[path] = new_sum
+            if 0: # Fix bug 208: external change overwrite protection only works once
+                # https://github.com/leo-editor/leo-editor/issues/208
+                # These next two lines mean that if the Leo version
+                # is changed (dirtied) again, overwrite will occur without warning.
+                efc.set_time(path, new_time)
+                efc.checksum_d[path] = new_sum
             return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(efc, c):
