@@ -376,7 +376,7 @@ def matchlines(b, miter):
         res.append((li, (m.start(), m.end() )))
     return res
 
-#@+node:ville.20090314215508.12: ** QuickSearchController
+#@+node:ville.20090314215508.12: ** class QuickSearchController
 class QuickSearchController:
     
     #@+others
@@ -462,12 +462,10 @@ class QuickSearchController:
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-
             self.its[id(it)] = (p, None)
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
-                #print "ml",ml,"pos",pos
-                it = QtWidgets.QListWidgetItem(ml, self.lw)   
+                it = QtWidgets.QListWidgetItem("    "+ml, self.lw)   
                 self.its[id(it)] = (p,pos)
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
@@ -536,8 +534,11 @@ class QuickSearchController:
             hNodes = [self.c.p]
             bNodes = [self.c.p]
         hm = self.find_h(hpat, hNodes, flags)
-        self.addHeadlineMatches(hm)
         bm = self.find_b(bpat, bNodes, flags)
+        bm_keys = [match.key() for match in bm]
+        hm = [match for match in hm if match.key() not in bm_keys]
+        
+        self.addHeadlineMatches(hm)
         self.addBodyMatches(bm)
 
         self.lw.insertItem(0, "%d hits"%self.lw.count())
