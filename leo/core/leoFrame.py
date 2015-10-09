@@ -837,7 +837,7 @@ class LeoFrame(object):
                             toString=False, force=True)
                     return False # Don't save and don't veto.
                 else:
-                    c.mFileName = g.app.gui.runSaveFileDialog(
+                    c.mFileName = g.app.gui.runSaveFileDialog(c,
                         initialfile='',
                         title="Save",
                         filetypes=[("Leo files", "*.leo")],
