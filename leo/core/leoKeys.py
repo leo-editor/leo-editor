@@ -1012,11 +1012,17 @@ class FileNameChooser:
         '''Compute the list of completions.'''
         trace = False and not g.unitTesting
         path = fnc.get_label()
+        # Fix bug 215: insert-file-name doesn't process ~
+        # https://github.com/leo-editor/leo-editor/issues/215
+        path = g.os_path_expanduser(path)
         sep = os.path.sep
         if g.os_path_exists(path):
             if trace: g.trace('existing directory', path)
             if g.os_path_isdir(path):
-                aList = glob.glob(path + '*')
+                if path.endswith(os.sep):
+                    aList = glob.glob(path + '*')
+                else:
+                    aList = glob.glob(path + sep + '*')
                 tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
             else:
                 # An existing file.
