@@ -126,12 +126,12 @@
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
-<v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
+<v t="ekr.20140912075503.19369" a="E"><vh>Qt Gui settings</vh>
 <v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 </v>
-<v t="ekr.20140915194122.23431"><vh>Colors</vh>
+<v t="ekr.20140915194122.23431" a="E"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
@@ -153,7 +153,7 @@
 <v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
 <v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
 </v>
-<v t="ekr.20140915194122.23445"><vh>Find tab colors</vh>
+<v t="ekr.20140915194122.23445" a="E"><vh>Find tab colors</vh>
 <v t="ekr.20140912075503.19269"><vh>@color find-tab-bg = white</vh></v>
 </v>
 <v t="ekr.20150701073241.1"><vh>Gutter colors</vh>
@@ -213,7 +213,7 @@
 <v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
-<v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
+<v t="ekr.20150626061905.1" a="E"><vh>Status area colors for searches</vh>
 <v t="ekr.20150626060718.1"><vh>@color find-found-bg = blue</vh></v>
 <v t="ekr.20150626060718.2"><vh>@color find-found-fg = white</vh></v>
 <v t="ekr.20150626060719.1"><vh>@color find-not-found-bg = red</vh></v>
@@ -226,7 +226,7 @@
 <v t="ekr.20140922124047.19516"><vh>@color tabbed-widget-bg = white</vh></v>
 </v>
 </v>
-<v t="ekr.20140912075503.19262"><vh>Fonts</vh>
+<v t="ekr.20140912075503.19262" a="E"><vh>Fonts</vh>
 <v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
 <v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
 <v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
@@ -248,7 +248,7 @@
 <v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
 <v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
 </v>
-<v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
+<v t="ekr.20140912075503.19277" a="E"><vh>Find Panel Fonts</vh>
 <v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
 <v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
 <v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
@@ -385,8 +385,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
-<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui style sheet</vh>
+<v t="ekr.20140912072521.19160" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
 <v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
@@ -641,6 +641,7 @@
 <v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
+<v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
@@ -11753,6 +11754,11 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="tbrown.20150821171510.97"></t>
 <t tx="tbrown.20150821171510.98">checkbox-font-family</t>
 <t tx="tbrown.20150821171510.99">checkbox-font-size</t>
+<t tx="tbrown.20151010094807.1">Should find commands show their result in the status line?
+This setting must be explicitly set to `False` to suppress
+the status line output, just deleting it to get a value of `None`
+won't work - this preserves the default `True` action in the
+absence of this setting.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

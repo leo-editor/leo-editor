@@ -2041,7 +2041,8 @@ class LeoFind:
         not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
         bg = found_bg if found else not_found_bg
         fg = found_fg if found else not_found_fg
-        c.frame.putStatusLine(s, bg=bg, fg=fg)
+        if c.config.getBool("show-find-result-in-status") is not False:
+            c.frame.putStatusLine(s, bg=bg, fg=fg)
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs(self, forward=False, regexp=False, word=False):
         '''
