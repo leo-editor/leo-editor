@@ -69,6 +69,7 @@ This plugin defines the following commands that can be bound to keys:
 #@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
 import itertools
+from collections import OrderedDict
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
@@ -220,6 +221,28 @@ def install_qt_quicksearch_tab(c):
         else:
             tab_widget.connect(tab_widget,
                 QtCore.SIGNAL("currentChanged(int)"), activate_input)
+#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict
+class OrderedDefaultDict(OrderedDict):
+    '''Credit:  http://stackoverflow.com/questions/4126348/how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426'''
+    def __init__(self, *args, **kwargs):
+        if not args:
+            self.default_factory = None
+        else:
+            if not (args[0] is None or callable(args[0])):
+                raise TypeError('first argument must be callable or None')
+            self.default_factory = args[0]
+            args = args[1:]
+        super(OrderedDefaultDict, self).__init__(*args, **kwargs)
+
+    def __missing__ (self, key):
+        if self.default_factory is None:
+            raise KeyError(key)
+        self[key] = default = self.default_factory()
+        return default
+
+    def __reduce__(self):  # optional, for pickle support
+        args = (self.default_factory,) if self.default_factory else ()
+        return self.__class__, args, None, None, self.iteritems()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter
 class QuickSearchEventFilter(QtCore.QObject):
 
@@ -456,7 +479,7 @@ class QuickSearchController:
      
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
-                
+        lineMatchHits = 0
         for p in poslist:
             it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
@@ -465,8 +488,36 @@ class QuickSearchController:
             self.its[id(it)] = (p, None)
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
+                lineMatchHits += 1
                 it = QtWidgets.QListWidgetItem("    "+ml, self.lw)   
                 self.its[id(it)] = (p,pos)
+        return lineMatchHits
+    #@+node:jlunz.20151027092130.1: *3* addParentMatches
+    def addParentMatches(self, parent_list):
+        lineMatchHits = 0
+        for parent_key, parent_value in parent_list.iteritems():
+            if type(parent_key) == str:
+                it = QtWidgets.QListWidgetItem(parent_key, self.lw)
+            else:
+                it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
+            f = it.font()
+            f.setItalic(True)
+            it.setFont(f)
+            self.its[id(it)] = (parent_key, None)
+            for p in parent_value:
+                it = QtWidgets.QListWidgetItem("    "+p.h, self.lw)
+                f = it.font()
+                f.setBold(True)
+                it.setFont(f)
+                self.its[id(it)] = (p, None)
+                if hasattr(p,"matchiter"): #p might be not have body matches
+                    ms = matchlines(p.b, p.matchiter)
+                    for ml, pos in ms:
+                        lineMatchHits += 1
+                        it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)   
+                        self.its[id(it)] = (p,pos)
+        return lineMatchHits
+
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
         """ Add generic callback """
@@ -535,13 +586,27 @@ class QuickSearchController:
             bNodes = [self.c.p]
         hm = self.find_h(hpat, hNodes, flags)
         bm = self.find_b(bpat, bNodes, flags)
-        bm_keys = [match.key() for match in bm]
-        hm = [match for match in hm if match.key() not in bm_keys]
-        
-        self.addHeadlineMatches(hm)
-        self.addBodyMatches(bm)
 
-        self.lw.insertItem(0, "%d hits"%self.lw.count())
+        bm_keys = [match.key() for match in bm]
+        numOfHm = len(hm) #do this before trim to get accurate count
+        hm = [match for match in hm if match.key() not in bm_keys]
+
+        if self.widgetUI.showParents.isChecked():
+            parents = OrderedDefaultDict(lambda: [])
+            for nodeList in [hm,bm]:
+                for node in nodeList:
+                    if node.level() == 0:
+                        parents["Root"].append(node)
+                    else:
+                        parents[node.parent()].append(node)
+            lineMatchHits = self.addParentMatches(parents)
+        else:
+            self.addHeadlineMatches(hm)
+            lineMatchHits = self.addBodyMatches(bm)
+
+        hits = numOfHm + lineMatchHits
+        self.lw.insertItem(0, "{} hits".format(hits))
+
     #@+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat):
 
@@ -633,20 +698,21 @@ class QuickSearchController:
             tgt()
         elif len(tgt) == 2:            
             p, pos = tgt
-            if not c.positionExists(p):
-                g.es(
-                    "Node moved or deleted.\nMaybe re-do search.",
-                    color='red'
-                )
-                return
-            c.selectPosition(p)
-            if pos is not None:
-                st, en = pos
-                w = c.frame.body.wrapper
-                w.setSelectionRange(st,en)
-                w.seeInsertPoint()
-                
-            self.lw.setFocus()
+            if hasattr(p,'v'): #p might be "Root"
+                if not c.positionExists(p):
+                    g.es(
+                        "Node moved or deleted.\nMaybe re-do search.",
+                        color='red'
+                    )
+                    return
+                c.selectPosition(p)
+                if pos is not None:
+                    st, en = pos
+                    w = c.frame.body.wrapper
+                    w.setSelectionRange(st,en)
+                    w.seeInsertPoint()
+                    
+                self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
     def onActivated (self,event):
         

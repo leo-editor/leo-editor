@@ -28,10 +28,17 @@
    </property>
    <item>
     <layout class="QGridLayout" name="verticalLayout">
-     <item row="0" column="0">
-      <widget class="QLineEdit" name="lineEdit"/>
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="showParents">
+       <property name="text">
+        <string>Show Parents</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="2" column="0" colspan="4">
       <widget class="QListWidget" name="listWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -40,6 +47,9 @@
         </sizepolicy>
        </property>
       </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLineEdit" name="lineEdit"/>
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="comboBox">
@@ -67,6 +77,7 @@
  <tabstops>
   <tabstop>lineEdit</tabstop>
   <tabstop>comboBox</tabstop>
+  <tabstop>showParents</tabstop>
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>

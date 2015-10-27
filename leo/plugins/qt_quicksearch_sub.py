@@ -16,6 +16,10 @@ class Ui_LeoQuickSearchWidget(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtGui.QGridLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+        self.showParents = QtGui.QCheckBox(LeoQuickSearchWidget)
+        self.showParents.setChecked(True)
+        self.showParents.setObjectName("showParents")
+        self.verticalLayout.addWidget(self.showParents, 0, 2, 1, 1)
         self.lineEdit = QtGui.QLineEdit(LeoQuickSearchWidget)
         self.lineEdit.setObjectName("lineEditNav")
         self.verticalLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
@@ -26,7 +30,7 @@ class Ui_LeoQuickSearchWidget(object):
         sizePolicy.setHeightForWidth(self.listWidget.sizePolicy().hasHeightForWidth())
         self.listWidget.setSizePolicy(sizePolicy)
         self.listWidget.setObjectName("listWidget")
-        self.verticalLayout.addWidget(self.listWidget, 2, 0, 1, 2)
+        self.verticalLayout.addWidget(self.listWidget, 2, 0, 1, 4)
         self.comboBox = QtGui.QComboBox(LeoQuickSearchWidget)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("All")
@@ -38,22 +42,18 @@ class Ui_LeoQuickSearchWidget(object):
         self.retranslateUi(LeoQuickSearchWidget)
         QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
         LeoQuickSearchWidget.setTabOrder(self.lineEdit, self.comboBox)
-        LeoQuickSearchWidget.setTabOrder(self.comboBox, self.listWidget)
+        LeoQuickSearchWidget.setTabOrder(self.comboBox, self.showParents)
+        LeoQuickSearchWidget.setTabOrder(self.showParents, self.listWidget)
 
     def retranslateUi(self, LeoQuickSearchWidget):
         if isQt5:
             # QApplication.UnicodeUTF8 no longer exists.
+            self.showParents.setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Show Parents", None))
             LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(0, "LeoQuickSearchWidget", "All", None))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(1, "LeoQuickSearchWidget", "Subtree", None))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(2, "LeoQuickSearchWidget", "Node", None))
         else:
             LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
                 None, QtGui.QApplication.UnicodeUTF8))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(0, "LeoQuickSearchWidget", "All", 
-            #     None, QtGui.QApplication.UnicodeUTF8))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(1, "LeoQuickSearchWidget", "Subtree", 
-            #     None, QtGui.QApplication.UnicodeUTF8))
-            # self.comboBox.setItemText(QtGui.QApplication.translate(2, "LeoQuickSearchWidget", "Node", 
-            #     None, QtGui.QApplication.UnicodeUTF8))
+            self.showParents.setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Show Parents", 
+                None, QtGui.QApplication.UnicodeUTF8))
+
 
