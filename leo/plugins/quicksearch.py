@@ -73,8 +73,12 @@ from collections import OrderedDict
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets
-
+from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets,isQt5
+if isQt5:
+    QApplication = QtWidgets.QApplication
+else:
+    QApplication = QtGui.QApplication
+    
 from leo.core import leoNodes
     # Uses leoNodes.PosList.
 import fnmatch, re
@@ -690,7 +694,7 @@ class QuickSearchController:
 
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
-        modifiers = QtGui.QApplication.keyboardModifiers()
+        modifiers = QApplication.keyboardModifiers()
         if modifiers == QtCore.Qt.ControlModifier:
             row = self.lw.row(it)
             init_indent = len(it.text()) - len(str(it.text()).lstrip())
