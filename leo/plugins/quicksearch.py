@@ -681,17 +681,35 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15700: *3* Event handlers
     #@+node:ekr.20111015194452.15686: *4* onSelectItem
     def onSelectItem(self, it, it_prev=None):
-        
+
         c = self.c
-            
+
         tgt = self.its.get(it and id(it))
 
         if not tgt: return
 
+        # if Ctrl key is down, delete item and
+        # children (based on indent) and return
+        modifiers = QtGui.QApplication.keyboardModifiers()
+        if modifiers == QtCore.Qt.ControlModifier:
+            row = self.lw.row(it)
+            init_indent = len(it.text()) - len(str(it.text()).lstrip())
+            self.lw.blockSignals(True)
+            while row < self.lw.count():
+                self.lw.item(row).setHidden(True)
+                row += 1
+                cur = self.lw.item(row)
+                indent = len(cur.text()) - len(str(cur.text()).lstrip())
+                if indent <= init_indent:
+                    break
+            self.lw.setCurrentRow(row)
+            self.lw.blockSignals(False)
+            return
+
         # generic callable
         if callable(tgt):
             tgt()
-        elif len(tgt) == 2:            
+        elif len(tgt) == 2:
             p, pos = tgt
             if hasattr(p,'v'): #p might be "Root"
                 if not c.positionExists(p):
@@ -706,7 +724,7 @@ class QuickSearchController:
                     w = c.frame.body.wrapper
                     w.setSelectionRange(st,en)
                     w.seeInsertPoint()
-                    
+
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
     def onActivated (self,event):
