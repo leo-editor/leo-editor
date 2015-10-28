@@ -242,7 +242,7 @@ class OrderedDefaultDict(OrderedDict):
 
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.iteritems()
+        return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter
 class QuickSearchEventFilter(QtCore.QObject):
 
@@ -405,8 +405,6 @@ class QuickSearchController:
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
     def __init__(self,c,listWidget,ui):
-
-
         self.c = c
         self.lw = w = listWidget # A QListWidget.
         self.its = {} # Keys are id(w),values are tuples (p,pos)
@@ -423,7 +421,6 @@ class QuickSearchController:
             
             return res
             
-            
         def dumper():
             # always run on ui thread
             if self.frozen:
@@ -431,8 +428,6 @@ class QuickSearchController:
             out = self.worker.output
             #print("dumper")
             self.throttler.add(out)
-            
-            
             
         def throttledDump(lst):
             """ dumps the last output """
@@ -448,7 +443,6 @@ class QuickSearchController:
             self.addHeadlineMatches(hm)
             self.addBodyMatches(bm)
 
-            
         self.throttler = threadutil.NowOrLater(throttledDump)        
         
         self.worker.set_worker(searcher)
@@ -462,17 +456,18 @@ class QuickSearchController:
             w.itemPressed.connect(self.onSelectItem)
             w.currentItemChanged.connect(self.onSelectItem)
         else:
-            # we want both single-clicks and activations (press enter)
-            w.connect(w,
-                QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
-                self.onActivated)
-            w.connect(w,                                  
-                QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
-                self.onSelectItem)
-            w.connect(w,
-                QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
-                self.onSelectItem)
-            # Doesn't work.
+            pass
+            # # we want both single-clicks and activations (press enter)
+            # w.connect(w,
+                # QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
+                # self.onActivated)
+            # w.connect(w,                                  
+                # QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
+                # self.onSelectItem)
+            # w.connect(w,
+                # QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
+                # self.onSelectItem)
+            # # Doesn't work.
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
         self.frozen = val   
@@ -495,7 +490,7 @@ class QuickSearchController:
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list):
         lineMatchHits = 0
-        for parent_key, parent_value in parent_list.iteritems():
+        for parent_key, parent_value in parent_list.items():
             if type(parent_key) == str:
                 it = QtWidgets.QListWidgetItem(parent_key, self.lw)
             else:
