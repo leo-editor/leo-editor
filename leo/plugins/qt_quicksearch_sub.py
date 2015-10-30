@@ -35,6 +35,7 @@ class Ui_LeoQuickSearchWidget(object):
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("All")
         self.comboBox.addItem("Subtree")
+        self.comboBox.addItem("File")
         self.comboBox.addItem("Node")
         self.verticalLayout.addWidget(self.comboBox, 0, 1, 1, 1)
         self.verticalLayout_2.addLayout(self.verticalLayout)

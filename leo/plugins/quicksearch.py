@@ -414,6 +414,9 @@ class QuickSearchController:
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
+        self.fileDirectives = ["@clean", "@file", "@asis", "@edit", 
+                               "@auto", "@auto-md", "@auto-org",
+                               "@auto-otl", "@auto-rst"]
 
         self.frozen = False    
         def searcher(inp):
@@ -422,7 +425,6 @@ class QuickSearchController:
                 return
             exp = inp.replace(" ", "*")
             res =  self.bgSearch(exp)
-            
             return res
             
         def dumper():
@@ -437,7 +439,6 @@ class QuickSearchController:
             """ dumps the last output """
             #print "Throttled dump"
             # we do get called with empty list on occasion
-            
             if not lst:
                 return
             if self.frozen: 
@@ -562,7 +563,7 @@ class QuickSearchController:
         self.addHeadlineMatches(changed)
     #@+node:ekr.20111015194452.15692: *3* doSearch
     def doSearch(self, pat):
-
+        hitBase = False
         self.clear()
 
         if not pat.startswith('r:'):
@@ -580,32 +581,51 @@ class QuickSearchController:
         elif combo == "Subtree":
             hNodes = self.c.p.self_and_subtree()
             bNodes = self.c.p.self_and_subtree()
+        elif combo == "File":
+            found = False
+            node = self.c.p
+            while not found and not hitBase:
+                h = node.h
+                if h: h=h.split()[0]
+                if h in self.fileDirectives:
+                    found = True
+                else:                
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            hNodes = node.self_and_subtree()
+            bNodes = node.self_and_subtree()          
+            
         else:
             hNodes = [self.c.p]
             bNodes = [self.c.p]
-        hm = self.find_h(hpat, hNodes, flags)
-        bm = self.find_b(bpat, bNodes, flags)
 
-        bm_keys = [match.key() for match in bm]
-        numOfHm = len(hm) #do this before trim to get accurate count
-        hm = [match for match in hm if match.key() not in bm_keys]
-
-        if self.widgetUI.showParents.isChecked():
-            parents = OrderedDefaultDict(lambda: [])
-            for nodeList in [hm,bm]:
-                for node in nodeList:
-                    if node.level() == 0:
-                        parents["Root"].append(node)
-                    else:
-                        parents[node.parent()].append(node)
-            lineMatchHits = self.addParentMatches(parents)
+        if not hitBase:
+            hm = self.find_h(hpat, hNodes, flags)
+            bm = self.find_b(bpat, bNodes, flags)
+            bm_keys = [match.key() for match in bm]
+            numOfHm = len(hm) #do this before trim to get accurate count
+            hm = [match for match in hm if match.key() not in bm_keys]
+        
+            if self.widgetUI.showParents.isChecked():
+                parents = OrderedDefaultDict(lambda: [])
+                for nodeList in [hm,bm]:
+                    for node in nodeList:
+                        if node.level() == 0:
+                            parents["Root"].append(node)
+                        else:
+                            parents[node.parent()].append(node)
+                lineMatchHits = self.addParentMatches(parents)
+            else:
+                self.addHeadlineMatches(hm)
+                lineMatchHits = self.addBodyMatches(bm)
+        
+            hits = numOfHm + lineMatchHits
+            self.lw.insertItem(0, "{} hits".format(hits))
         else:
-            self.addHeadlineMatches(hm)
-            lineMatchHits = self.addBodyMatches(bm)
-
-        hits = numOfHm + lineMatchHits
-        self.lw.insertItem(0, "{} hits".format(hits))
-
+            self.lw.insertItem(0, "External file directive not found "+
+                               "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat):
 

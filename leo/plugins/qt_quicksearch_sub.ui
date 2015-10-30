@@ -65,6 +65,11 @@
        </item>
        <item>
         <property name="text">
+         <string>File</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string extracomment="This will search only the current node.">Node</string>
         </property>
        </item>
