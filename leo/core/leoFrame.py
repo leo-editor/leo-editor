@@ -939,7 +939,12 @@ class LeoFrame(object):
         if i != j:
             s = w.get(i, j)
             g.app.gui.replaceClipboardWith(s)
-
+        else:
+            ins = w.getInsertPoint()
+            i, j = g.getLine(w.getAllText(), ins)
+            s = w.get(i,j)
+            g.app.gui.replaceClipboardWith(s)
+            
     OnCopyFromMenu = copyText
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @cmd('cut-text')
@@ -958,6 +963,12 @@ class LeoFrame(object):
         s = w.get(i, j)
         if i != j:
             w.delete(i, j)
+            g.app.gui.replaceClipboardWith(s)
+        else:
+            ins = w.getInsertPoint()
+            i, j = g.getLine(oldText, ins)
+            s = w.get(i,j)
+            w.delete(i,j)
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
             c.frame.body.forceFullRecolor()
