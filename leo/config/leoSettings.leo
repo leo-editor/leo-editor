@@ -101,8 +101,8 @@
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
-<v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
+<v t="ekr.20100904134301.11000" a="E"><vh>Abbreviations</vh>
+<v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 <v t="ekr.20150428102831.1"><vh>@data abbreviations-subst-env</vh>
@@ -124,6 +124,7 @@
 <v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = {|{</vh></v>
+<v t="tbrown.20151114110207.1"><vh>@string abbreviations-next-placeholder = ,,</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369" a="E"><vh>Qt Gui settings</vh>
@@ -5522,6 +5523,22 @@ http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 # Definitions in @data abbreviation nodes override definitions in @data
 # global-abbreviation nodes. Typically you would define @data abbreviation nodes
 # in myLeoSettings.leo
+
+# type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
+html;;=&lt;html&gt;
+\:&lt;head&gt;
+\:&lt;title&gt;&lt;|title|&gt;&lt;/title&gt;
+\:&lt;style&gt;
+\:&lt;/style&gt;
+\:&lt;/head&gt;
+\:&lt;body&gt;
+\:&lt;|content|&gt;
+\:&lt;/body&gt;
+\:&lt;/html&gt;
+
+# this abbreviation will only work with @bool scripting-abbreviations = True
+# (or @bool scripting-at-script-nodes = True)
+date;;={|{x=time.asctime()}|}
 </t>
 <t tx="ekr.20100904134301.11004"># Comments lines (lines starting with '#') are ignored.
 # Non-comment lines should have the form::
@@ -5534,9 +5551,7 @@ http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
-
-Typically you would enable abbreviations in myLeoSettings.leo or in individual
-.leo files.</t>
+</t>
 <t tx="ekr.20100907092300.6957"></t>
 <t tx="ekr.20100907092300.6958">Path to inkscape template file
 </t>
@@ -11759,6 +11774,9 @@ This setting must be explicitly set to `False` to suppress
 the status line output, just deleting it to get a value of `None`
 won't work - this preserves the default `True` action in the
 absence of this setting.</t>
+<t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
+i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
+removing the &lt;| and |&gt;</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

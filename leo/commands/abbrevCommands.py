@@ -86,6 +86,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 result.append(''.join(abbrev))
             for s in result:
                 self.addAbbrevHelper(s, tag)
+
+        # fake the next placeholder abbreviation
+        if c.config.getString("abbreviations-next-placeholder"):
+            self.addAbbrevHelper("%s=__NEXT_PLACEHOLDER" % 
+                c.config.getString("abbreviations-next-placeholder"), 'global')
     #@+node:ekr.20150514043850.7: *4* abbrev.init_env
     def init_env(self):
         '''
@@ -295,7 +300,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def expand_text(self, w, i, j, val, word, expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
         c = self.c
-        val, do_placeholder = self.make_script_substitutions(i, j, val)
+        if word == c.config.getString("abbreviations-next-placeholder"):
+            val = ''
+            do_placeholder = True
+        else:
+            val, do_placeholder = self.make_script_substitutions(i, j, val)
         self.replace_abbrev_name(w, i, j, val)
         # Search to the end.  We may have been called via a tree abbrev.
         p = c.p.copy()
