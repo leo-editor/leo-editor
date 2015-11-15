@@ -229,6 +229,8 @@ class Position(object):
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
     def __eq__(self, p2):
         """Return True if two positions are equivalent."""
+        if not isinstance(p2, self.__class__):
+            return NotImplemented
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
         # print ('p.__eq__: %s %s' % (p1 and p1.v and p1.h,p2 and p2.v and p2.h))
