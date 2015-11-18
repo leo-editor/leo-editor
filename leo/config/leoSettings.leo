@@ -4455,7 +4455,7 @@ Settings in myLeoSettings.leo override the settings in this file.
 Put myLeoSettigns.leo in your home (~) directory or in the ~/.leo directory.
 
 Distributions of Leo do not contain myLeoSettings.leo; Leo never
-changesyour personal myLeoSettings.leo file.
+changes your personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
