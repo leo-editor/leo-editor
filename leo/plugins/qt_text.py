@@ -1515,6 +1515,13 @@ class QTextEditWrapper(QTextMixin):
         self.seeInsertPoint()
         if trace: g.trace(kind, 'extend', extend, 'yscroll', w.getYScrollPosition())
         self.rememberSelectionAndScroll()
+        # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
+        if 1:
+            cursor = w.textCursor()
+            sel = cursor.selection().toPlainText()
+            cb = g.app.gui.qtApp.clipboard()
+            cb.setText(sel, mode=cb.Selection)
+            # QtWidgets.QApplication.processEvents()
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
     def pageUpDown(self, op, moveMode):
@@ -1675,10 +1682,10 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(i, tc.KeepAnchor)
         w.setTextCursor(tc)
         # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
-        if hasattr(g.app.gui,'qtApp'):
-            cb = g.app.gui.qtApp.clipboard()
-            # QtWidgets.QApplication.processEvents()
-            cb.setText(s[i:j],mode=cb.Selection)
+        if 1:
+            app = QtWidgets.QApplication
+            cb = app.clipboard()
+            cb.setText(s[i: j], mode=cb.Selection)
             # QtWidgets.QApplication.processEvents()
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
