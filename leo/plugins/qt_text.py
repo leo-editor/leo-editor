@@ -1674,6 +1674,12 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(j)
             tc.setPosition(i, tc.KeepAnchor)
         w.setTextCursor(tc)
+        # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
+        if hasattr(g.app.gui,'qtApp'):
+            cb = g.app.gui.qtApp.clipboard()
+            # QtWidgets.QApplication.processEvents()
+            cb.setText(s[i:j],mode=cb.Selection)
+            # QtWidgets.QApplication.processEvents()
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins
