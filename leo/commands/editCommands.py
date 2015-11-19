@@ -3104,18 +3104,77 @@ class EditCommandsClass(BaseEditCommandsClass):
         '''
         Prompt for a file name, then insert it at the cursor position.
         This operation is undoable if done in the body pane.
+
+        The initial path is made by concatenating path_for_p() and the selected
+        text, if there is any, or any path like text immediately preceding the
+        cursor.
         '''
         c = self.c
         w = self.editWidget(event)
         if w:
 
             def callback(arg, w=w):
-                i = w.getInsertPoint()
+                i = w.getSelectionRange()[0]
+                w.deleteTextSelection()
                 w.insert(i, arg)
                 if g.app.gui.widget_name(w) == 'body':
                     c.frame.body.onBodyChanged(undoType='Typing')
 
+            # see if the widget already contains the start of a path
+            start_text = w.getSelectedText()
+            if not start_text:  # look at text preceeding insert point
+                start_text = w.getAllText()[:w.getInsertPoint()]
+                if start_text:
+                    # make non-path characters whitespace
+                    start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
+                                         for i in start_text)
+                    if start_text[-1].isspace():  # use node path if nothing typed
+                        start_text = ''
+                    else:
+                        start_text = start_text.rsplit(None, 1)[-1]
+                        # set selection range so w.deleteTextSelection() works in the callback
+                        w.setSelectionRange(
+                            w.getInsertPoint()-len(start_text), w.getInsertPoint())
+
+            c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
             c.k.getFileName(event, callback=callback)
+    #@+node:tbrown.20151118134307.1: ** path_for_p
+    def path_for_p(self, c, p):
+        """path_for_p - return the filesystem path (directory) containing
+        node `p`.
+
+        FIXME: this general purpose code should be somewhere else, and there
+        may already be functions that do some of the work, although perhaps
+        without handling so many corner cases (@auto-my-custom-type etc.)
+
+        :param outline c: outline containing p
+        :param position p: position to locate
+        :return: path
+        :rtype: str
+        """
+
+        def atfile(p):
+            """return True if p is an @<file> node *of any kind*"""
+            word0 = p.h.split()[0]
+            return (
+                word0 in g.app.atFileNames|set(['@auto']) or
+                word0.startswith('@auto-')
+            )
+
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        while c.positionExists(p):
+            if atfile(p):  # see if it's a @<file> node of some sort
+                nodepath = p.h.split(None, 1)[-1]
+                nodepath = g.os_path_join(path, nodepath)
+                if not g.os_path_isdir(nodepath):  # remove filename
+                    nodepath = g.os_path_dirname(nodepath)
+                if g.os_path_isdir(nodepath):  # append if it's a directory
+                    path = nodepath
+                break
+            p.moveToParent()
+
+        return path
     #@+node:ekr.20150514063305.279: ** insertHeadlineTime
     @cmd('insert-headline-time')
     def insertHeadlineTime(self, event=None):
