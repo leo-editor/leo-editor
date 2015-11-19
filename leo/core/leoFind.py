@@ -474,9 +474,9 @@ class LeoFind:
                 # This prevents an "ignore-case" search from changing the ignore-case switch.
                 if s.lower() != s2.lower():
                     ftm.setFindText(s2)
-                    if c.config.getBool('auto-set-ignore-case', default=True):
+                    # This does not work.
+                    if False and c.config.getBool('auto-set-ignore-case', default=True):
                         mixed = s2 not in (s.lower(), s.upper())
-                        # g.trace('ignore', not mixed)
                         self.ftm.set_ignore_case(not mixed)
                 ftm.init_focus()
             else:
@@ -2326,14 +2326,15 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
-        # Enhancement #177: Set ignore-case if the find text is mixed case.
-        if c.config.getBool('auto-set-ignore-case', default=True):
+        # Disable part of https://github.com/leo-editor/leo-editor/issues/177
+        # Set ignore-case if the find text is mixed case.
+        # This does not work well in practice.
+        if False and c.config.getBool('auto-set-ignore-case', default=True):
             # Careful: Alter the ignore-case option only if the
             # search pattern has actually changed.
             if self.previous_find_pattern != s:
                 # Only change the setting for mixed case.
                 mixed = s not in (s.lower(), s.upper())
-                # g.trace(mixed, s)
                 ftm.set_ignore_case(not mixed)
         # Get replacement text.
         s = ftm.getReplaceText()

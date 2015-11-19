@@ -369,9 +369,9 @@ def preloadFindPattern(self, w):
             # This prevents an "ignore-case" search from changing the ignore-case switch.
             if s.lower() != s2.lower():
                 ftm.setFindText(s2)
-                if c.config.getBool('auto-set-ignore-case', default=True):
+                # This does not work.
+                if False and c.config.getBool('auto-set-ignore-case', default=True):
                     mixed = s2 not in (s.lower(), s.upper())
-                    # g.trace('ignore', not mixed)
                     self.ftm.set_ignore_case(not mixed)
             ftm.init_focus()
         else:
