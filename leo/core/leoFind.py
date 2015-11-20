@@ -1300,7 +1300,8 @@ class LeoFind:
         self.initBatchCommands()
         count = 0
         u.beforeChangeGroup(current, undoType)
-        # Fix bug 338172: ReplaceAll will not replace newlines indicated as \n in target string.
+        # Fix bug 338172: ReplaceAll will not replace newlines
+        # indicated as \n in target string.
         self.change_text = self.replaceBackSlashes(self.change_text)
         while 1:
             pos1, pos2 = self.findNextMatch()
@@ -1410,6 +1411,7 @@ class LeoFind:
             self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
+            # Sets self.p and self.onlyPosition.
         skip = set() # vnodes that should be skipped.
         count = 0
         if trace: g.trace(self.find_text)
@@ -1443,11 +1445,11 @@ class LeoFind:
                     result.append('%s%s\n%s%s\n' % (
                         '-' * 20, self.p.h,
                         "head: " if self.in_headline else "body: ",
-                        line.rstrip()))
+                        line.rstrip()+'\n'))
                 elif self.p.isVisited():
-                    result.append(line)
+                    result.append(line.rstrip()+'\n')
                 else:
-                    result.append('%s%s\n%s' % ('-' * 20, self.p.h, line))
+                    result.append('%s%s\n%s' % ('-' * 20, self.p.h, line.rstrip()+'\n'))
                     self.p.setVisited()
         if clone_find_all or clone_find_all_flattened:
             if clones:
@@ -1654,7 +1656,7 @@ class LeoFind:
             ins = 0
         if trace and self.in_headline and ins is not None: g.trace(ins, p.h)
         self.init_s_ctrl(s, ins)
-    #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper (use p.moveTo...?)
+    #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper
     def nextNodeAfterFail(self, p):
         '''Return the next node after a failed search or None.'''
         trace = False and not g.unitTesting
@@ -2083,6 +2085,9 @@ class LeoFind:
         # Select the first node.
         if self.suboutline_only or self.node_only:
             self.p = c.p
+             # Fix bug 188: Find/Replace All Suboutline only same as Node only
+            # https://github.com/leo-editor/leo-editor/issues/188
+            self.onlyPosition = self.p.copy()
         else:
             p = c.rootPosition()
             if self.reverse:
