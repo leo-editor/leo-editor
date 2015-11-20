@@ -612,7 +612,7 @@ class ExternalFilesController:
                 c.redraw_now(p=p)
                 c.refreshFromDisk(p)
             # Always update the path & time to prevent future warnings.
-            self.set_time(path)
+            efc.set_time(path)
             efc.checksum_d[path] = efc.checksum(path)
     #@+node:ekr.20150407124259.1: *4* efc.check_open_with_file & helper
     def check_open_with_file(efc, d):
