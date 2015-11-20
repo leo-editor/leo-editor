@@ -760,6 +760,7 @@ class LeoFrame(object):
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
+        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default = True)
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self):
         f = self; c = f.c
@@ -998,6 +999,9 @@ class LeoFrame(object):
         if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget', w)
             return
+        if self.cursorStay and wname.startswith('body'): 
+            tCurPosition = w.getInsertPoint()
+        
         i, j = oldSel = w.getSelectionRange() # Returns insert point if no selection.
         oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
@@ -1023,6 +1027,14 @@ class LeoFrame(object):
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
+            if self.cursorStay:
+                if tCurPosition == j: 
+                    offset = len(s)-(j-i)
+                else: 
+                    offset = 0
+                newCurPosition = tCurPosition + offset
+                w.setSelectionRange(i=newCurPosition, j=newCurPosition)
+            
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
