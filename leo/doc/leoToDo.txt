@@ -6,7 +6,94 @@
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
-.. @+node:ekr.20151119110658.1: *3* ** Allow bracket matching for JavaScript
+.. @+node:ekr.20151119110658.1: *3* Allow bracket matching for JavaScript
+.. @+node:ekr.20131117054619.16683: *3* Improve Find
+New check boxes:
+    - Find-All starts at selected node.
+    - Ignore duplicates.
+
+* (Done??) Reset wrap & onlyPosition when the find pattern changes:
+    The find command must reset several state variables whenever
+    a) The find pattern changes or
+    b) a limited (node-only, suboutline-only) search completes or
+    c) a wrapped search completes.
+    d) Whenever any radio button (find scope) changes.
+
+- Create unit tests.
+    - Check all bug reports.
+    - Test outline-only, node-only, wrap.
+    - Test isearch (forward & backward)
+* Revise theory of operation.
+- Add @bool find_all_from_present_position = True
+* Ctrl-F puts selected text into the search box.
+- Make sure to capture search string, even if do ctrl-g, etc.
+** Smart search: clear ignore case if the search text has at least one uppercase letter.
+- find-all and change-all never wrap.=
+
+Maybe:
+- Put "not found" message somewhere else.
+- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
+.. @+node:ekr.20131118113639.17705: *4* Done
+Important classes & methods:
+- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
+- dw.createFindTab & helpers
+- class FindTabManager
+- class EventWrapper
+
+What I did:
+- Added support for Alt-Ctrl keys.
+- start-find selects all text in findbox.
+- Removed eventFilter ivar
+- All defaults work in the Find pane, except the Alt-Ctrl bindings.
+  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code now sets ftm ivars, not dw ivars.
+- Added tab easter egg to searchWithPresentOptions.
+- Removed all clones and dead code from leoSettings.leo.
+  (Improved introductory comments.)
+- Createf leo/config/exampleSettings.leo.
+- fc.minibuffer_mode replaces fc.expert_mode.
+- start-find command
+- test set-replace-string.
+- Protect self.p everywhere.
+- Don't hide find pane during searches.
+- Init widgets from c.config.
+- Clicking widgets should set leoFind ivars.
+- Toggle commands should toggle widgets.
+- Move search classes from leoEditCommands.py to leoFind.py
+
+Changed methods:
+- c.initObjects now creates leoFind object.
+- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
+- Added the FindTabManager (ftm)
+- dw.createFindTab adds find buttons and calls.
+- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
+* Added find_generation ivar to vnode class.
+.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
+redoGroup oops: expecting bunch.items.  bunch.kind = typing
+redoGroup Bunch...
+dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
+kind: typing
+leading: 10
+newMiddleLines: [u'        self.setup_command() ### ']
+newNewlines: 1
+newSel: (276, 276)
+newText: None
+oldMiddleLines: [u'        self.setup_command()']
+oldNewlines: 1
+oldSel: (271, 271)
+oldText: None
+p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
+redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+trailing: 9
+undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+undoType: Typing
+yview: 0
+.. @+node:ekr.20131207054442.16335: *4* check isearch
+* unit tests?
+- Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20150813065008.1: *3* Most important
 @language rest
 @wrap
