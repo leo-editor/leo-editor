@@ -6,133 +6,11 @@
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
-.. @+node:ekr.20151119110658.1: *3* Allow bracket matching for JavaScript
-.. @+node:ekr.20131117054619.16683: *3* Improve Find
-New check boxes:
-    - Find-All starts at selected node.
-    - Ignore duplicates.
-
-* (Done??) Reset wrap & onlyPosition when the find pattern changes:
-    The find command must reset several state variables whenever
-    a) The find pattern changes or
-    b) a limited (node-only, suboutline-only) search completes or
-    c) a wrapped search completes.
-    d) Whenever any radio button (find scope) changes.
-
-- Create unit tests.
-    - Check all bug reports.
-    - Test outline-only, node-only, wrap.
-    - Test isearch (forward & backward)
-* Revise theory of operation.
-- Add @bool find_all_from_present_position = True
-* Ctrl-F puts selected text into the search box.
-- Make sure to capture search string, even if do ctrl-g, etc.
-** Smart search: clear ignore case if the search text has at least one uppercase letter.
-- find-all and change-all never wrap.=
-
-Maybe:
-- Put "not found" message somewhere else.
-- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
-.. @+node:ekr.20131118113639.17705: *4* Done
-Important classes & methods:
-- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
-- dw.createFindTab & helpers
-- class FindTabManager
-- class EventWrapper
-
-What I did:
-- Added support for Alt-Ctrl keys.
-- start-find selects all text in findbox.
-- Removed eventFilter ivar
-- All defaults work in the Find pane, except the Alt-Ctrl bindings.
-  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
-- Add shortcuts to button names.
-- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
-- Create help button in the Find pane.
-- dw code now sets ftm ivars, not dw ivars.
-- Added tab easter egg to searchWithPresentOptions.
-- Removed all clones and dead code from leoSettings.leo.
-  (Improved introductory comments.)
-- Createf leo/config/exampleSettings.leo.
-- fc.minibuffer_mode replaces fc.expert_mode.
-- start-find command
-- test set-replace-string.
-- Protect self.p everywhere.
-- Don't hide find pane during searches.
-- Init widgets from c.config.
-- Clicking widgets should set leoFind ivars.
-- Toggle commands should toggle widgets.
-- Move search classes from leoEditCommands.py to leoFind.py
-
-Changed methods:
-- c.initObjects now creates leoFind object.
-- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
-- Added the FindTabManager (ftm)
-- dw.createFindTab adds find buttons and calls.
-- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
-* Added find_generation ivar to vnode class.
-.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
-redoGroup oops: expecting bunch.items.  bunch.kind = typing
-redoGroup Bunch...
-dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
-kind: typing
-leading: 10
-newMiddleLines: [u'        self.setup_command() ### ']
-newNewlines: 1
-newSel: (276, 276)
-newText: None
-oldMiddleLines: [u'        self.setup_command()']
-oldNewlines: 1
-oldSel: (271, 271)
-oldText: None
-p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
-redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-trailing: 9
-undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-undoType: Typing
-yview: 0
-.. @+node:ekr.20131207054442.16335: *4* check isearch
-* unit tests?
-- Create save/restore_isearch_vars methods using isearch_save_d.
-.. @+node:ekr.20150813065008.1: *3* Most important
+.. @+node:ekr.20151120110118.1: *3* Installation & outreach
 @language rest
 @wrap
-.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
-.. @+node:ekr.20150418061229.1: *5* Add QWebView & OpenGl support to viewrendered.py
-How much of this does vr2 do?
 
-OpenGL
-http://doc.qt.io/qt-5/qopenglwidget.html
-
-QWebView
-http://doc.qt.io/qt-5/qwebview.html
-
-http://doc.qt.io/qt-4.8/graphicsview.html
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-Ville
-
-Create one QWebView window. zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20150801060026.1: *4* leotutor.leo
-.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
-Or .leo.ipynb files.
-.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
-I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
-
-The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
-
-Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
-.. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-
-Done: When running scripts, Leo now automatically selects lines that generate exceptions.
+These are most important
 .. @+node:ekr.20130806072439.20650: *4* Bug 106: brew install leo
 @language rest
 @wrap
@@ -156,6 +34,7 @@ https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-f
 brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
+.. @+node:ekr.20151120100841.1: *4* PyInstaller
 .. @+node:ekr.20131101080215.16488: *4* Outreach to magazine editors: create videos
 @language rest
 @wrap
@@ -196,70 +75,13 @@ You're going to get some journalists excited, and those are your reviews.
 
 Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20150412034943.1: *5* Show what rST & css can do in Leo
-.. @+node:ekr.20150504090043.1: *3* Next
+.. @+node:ekr.20150801060026.1: *4* leotutor.leo
+.. @+node:ekr.20150418052852.1: *4* import/export to .ipynb files
+Or .leo.ipynb files.
+.. @+node:ekr.20150813065008.1: *3* First
 @language rest
 @wrap
-.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
-File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
-
-Suppose my focus node is under a @path directive, say @path E:
-\Documents\Some Folder\
-
-Is there a setting that would cause the 'File>Open' or 'File>Import
-File' commands to begin the search dialog in the directory, E:
-\Documents\Some Folder\ instead of the last directory used?
-
-
-open dialogs should probably @path directory or curdir
-save dialog should probably use the directory of the saved file.
-
-Search for:
-
-LeoQtGui.Dialogs & panels
-LeoQtGui.runSaveFileDialog
-LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
-And perhaps other problems with yank.
-
-How does emacs work.  Settings needed?
-
-Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *5* Terry's post
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
-
-I don't think you need to view source or copy text that looks like HTML.
-
-For me, the most effective way to reproduce a web page from a browser
-in a Leo richtext node is to select-all (ctrl-a) copy (ctrl-c) on the
-*rendered* browser content, i.e. the web page as you usually look at it.
-
-That gave better results, fidelity of reproduction wise, than viewing
-the source and copying that.  Partly because the source includes the
-outer elements that the richtext editor probably doesn't want to see,
-remember the richtext editor is itself a complete HTML page with its
-own HTML and HEAD elements.
-
-> There is no way that Leo, or any other program, can magically recover
-> the missing data.
-
-Actually I think modern clipboard operations are based on magic ;-)
-When you copy the rendered HTML in the browser and paste into Leo you
-get WYSIWYG reproduction pasting into a richtext node and just plain
-text posting into a regular node - somewhere in the pipeline the
-content actually delivered is selected based on the capabilities of the
-receiving end of the pipeline - not sure of the details, but remember
-clipboards can paste images and other things that aren't plain text.
-.. @+node:ekr.20150211104036.479: *5* Matt's links
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
-
-> Is it possible to have Leo analyse what type of text is being pasted and thus
-define automatically the type of node (rich/plain)?
-
-It looks possible,
-`win32clipboard.EnumClipboardFormat`
-"enumerate the data formats that are currently available on the clipboard. "
-http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
+.. @+node:ekr.20151119110658.1: *4* Allow bracket matching for JavaScript
 .. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
 reload-abbreviations and reload-key-bindings commands.
 
@@ -310,15 +132,26 @@ abbrevCommandsClass
     init_abbrev
 .. @+node:ekr.20140104063158.17235: *5* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
-.. @+node:ekr.20150626140258.1: *3* Minor...
-@language rest
-@wrap
-.. @+node:ekr.20150609104046.1: *4* Bug 190: Disappearing +/- expansion boxes in outline
-@language rest
-@wrap
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 
-https://github.com/leo-editor/leo-editor/issues/190
-Disappearing +/- expansion boxes in outline
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
+
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+
+open dialogs should probably @path directory or curdir
+save dialog should probably use the directory of the saved file.
+
+Search for:
+
+LeoQtGui.Dialogs & panels
+LeoQtGui.runSaveFileDialog
+LeoQtGui.runOpenFileDialog
 .. @+node:ekr.20150609101355.1: *4* Bug 129: Font setting overridden by new workbook
 @language rest
 @wrap
@@ -330,12 +163,86 @@ https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
-.. @+node:ekr.20150626141042.1: *4* Bug 194: Find Next **button** doesn't highlight body text
-https://github.com/leo-editor/leo-editor/issues/194
+.. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
+.. @+node:ekr.20150418061229.1: *5* Add QWebView & OpenGl support to viewrendered.py
+How much of this does vr2 do?
 
+OpenGL
+http://doc.qt.io/qt-5/qopenglwidget.html
+
+QWebView
+http://doc.qt.io/qt-5/qwebview.html
+
+http://doc.qt.io/qt-4.8/graphicsview.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+Ville
+
+Create one QWebView window. zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+.. @+node:ekr.20150419103045.1: *4* Replay undo stack as a screencast
+I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
+
+The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
+
+Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
+.. @+node:ekr.20120520113447.9874: *4* Select node from traceback (partially done)
+http://sourceforge.net/forum/message.php?msg_id=3593116
+By: ktenney
+
+When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
+
+Done: When running scripts, Leo now automatically selects lines that generate exceptions.
+.. @+node:ekr.20150211104036.477: *4* Smart paste & yank
+And perhaps other problems with yank.
+
+How does emacs work.  Settings needed?
+
+Multipe yanks are not catenated.
+.. @+node:ekr.20150211104036.478: *5* Terry's post
+https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
+
+I don't think you need to view source or copy text that looks like HTML.
+
+For me, the most effective way to reproduce a web page from a browser
+in a Leo richtext node is to select-all (ctrl-a) copy (ctrl-c) on the
+*rendered* browser content, i.e. the web page as you usually look at it.
+
+That gave better results, fidelity of reproduction wise, than viewing
+the source and copying that.  Partly because the source includes the
+outer elements that the richtext editor probably doesn't want to see,
+remember the richtext editor is itself a complete HTML page with its
+own HTML and HEAD elements.
+
+> There is no way that Leo, or any other program, can magically recover
+> the missing data.
+
+Actually I think modern clipboard operations are based on magic ;-)
+When you copy the rendered HTML in the browser and paste into Leo you
+get WYSIWYG reproduction pasting into a richtext node and just plain
+text posting into a regular node - somewhere in the pipeline the
+content actually delivered is selected based on the capabilities of the
+receiving end of the pipeline - not sure of the details, but remember
+clipboards can paste images and other things that aren't plain text.
+.. @+node:ekr.20150211104036.479: *5* Matt's links
+https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
+
+> Is it possible to have Leo analyse what type of text is being pasted and thus
+define automatically the type of node (rich/plain)?
+
+It looks possible,
+`win32clipboard.EnumClipboardFormat`
+"enumerate the data formats that are currently available on the clipboard. "
+http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
 .. @+node:ekr.20150609102505.1: *3* Bugs: later, never
 @language rest
 @wrap
+
+.. @+node:ekr.20150626141042.1: *4* Bug 194: Find Next **button** doesn't highlight body text
+https://github.com/leo-editor/leo-editor/issues/194
 
 .. @+node:ekr.20150609103758.1: *4* Bug 176: Won't fix: Outline pane does not scroll horizontally with node headline edit
 https://github.com/leo-editor/leo-editor/issues/176
@@ -418,8 +325,6 @@ https://github.com/leo-editor/leo-editor/issues/25
 @wrap
 
 Useful, non-trivial.
-.. @+node:ekr.20150707052758.1: *4* py2cython
-Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
 Render to tex, pdf, rst, etc.
 
@@ -498,13 +403,95 @@ def eggs():
 ),
 
 )
-.. @+node:ekr.20150616085806.1: *4* Support solorized selected text
-I don't believe this can be done just using stylesheets.
-Probably will need custom painters.
+.. @+node:ekr.20131117054619.16683: *4* Improve Find
+New check boxes:
+    - Find-All starts at selected node.
+    - Ignore duplicates.
+
+* (Done??) Reset wrap & onlyPosition when the find pattern changes:
+    The find command must reset several state variables whenever
+    a) The find pattern changes or
+    b) a limited (node-only, suboutline-only) search completes or
+    c) a wrapped search completes.
+    d) Whenever any radio button (find scope) changes.
+
+- Create unit tests.
+    - Check all bug reports.
+    - Test outline-only, node-only, wrap.
+    - Test isearch (forward & backward)
+* Revise theory of operation.
+- Add @bool find_all_from_present_position = True
+* Ctrl-F puts selected text into the search box.
+- Make sure to capture search string, even if do ctrl-g, etc.
+- find-all and change-all never wrap.
+
+Maybe:
+- Put "not found" message somewhere else.
+- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
+.. @+node:ekr.20131118113639.17705: *5* Done
+Important classes & methods:
+- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
+- dw.createFindTab & helpers
+- class FindTabManager
+- class EventWrapper
+
+What I did:
+- Added support for Alt-Ctrl keys.
+- start-find selects all text in findbox.
+- Removed eventFilter ivar
+- All defaults work in the Find pane, except the Alt-Ctrl bindings.
+  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code now sets ftm ivars, not dw ivars.
+- Added tab easter egg to searchWithPresentOptions.
+- Removed all clones and dead code from leoSettings.leo.
+  (Improved introductory comments.)
+- Createf leo/config/exampleSettings.leo.
+- fc.minibuffer_mode replaces fc.expert_mode.
+- start-find command
+- test set-replace-string.
+- Protect self.p everywhere.
+- Don't hide find pane during searches.
+- Init widgets from c.config.
+- Clicking widgets should set leoFind ivars.
+- Toggle commands should toggle widgets.
+- Move search classes from leoEditCommands.py to leoFind.py
+
+Changed methods:
+- c.initObjects now creates leoFind object.
+- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
+- Added the FindTabManager (ftm)
+- dw.createFindTab adds find buttons and calls.
+- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
+* Added find_generation ivar to vnode class.
+.. @+node:ekr.20131123071505.16462: *5* Crash in undoer
+redoGroup oops: expecting bunch.items.  bunch.kind = typing
+redoGroup Bunch...
+dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
+kind: typing
+leading: 10
+newMiddleLines: [u'        self.setup_command() ### ']
+newNewlines: 1
+newSel: (276, 276)
+newText: None
+oldMiddleLines: [u'        self.setup_command()']
+oldNewlines: 1
+oldSel: (271, 271)
+oldText: None
+p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
+redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+trailing: 9
+undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+undoType: Typing
+yview: 0
+.. @+node:ekr.20131207054442.16335: *5* check isearch
+* unit tests?
+- Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20150410043749.1: *3* Maybe
 @language rest
 @wrap
-.. @+node:ekr.20150722052542.1: *4* python2cython
 .. @+node:ekr.20150601161825.1: *4* 2-to-3 command
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20150602122614.1: *4* Beautifier warns about long lines
@@ -523,10 +510,15 @@ There are quite a few of these now.  It would be good to generalize:
 - Register @node type.
 .. @+node:ekr.20150413163840.1: *4* Migrate wiki to github
 https://github.com/leo-editor/leo-editor/wiki
+.. @+node:ekr.20150707052758.1: *4* py2cython
+Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20141108064630.19: *4* Resolve clone wars based on modification dates
 From: Joon Ro <joonpyro@gmail.com>
 
 I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
+.. @+node:ekr.20150616085806.1: *4* Support solorized selected text
+I don't believe this can be done just using stylesheets.
+Probably will need custom painters.
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 @wrap
