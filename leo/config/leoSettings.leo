@@ -638,7 +638,6 @@
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
-<v t="ekr.20150619084505.1"><vh>@bool auto-set-ignore-case = True</vh></v>
 <v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
@@ -10992,8 +10991,6 @@ except KeyError:
 <t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
 <t tx="ekr.20150602160415.1"></t>
 <t tx="ekr.20150618105435.1"></t>
-<t tx="ekr.20150619084505.1">True: The ignore-case checkbox is set if the find text is mixed case, and cleared otherwise.
-False: The ignore-case checkbox remains as it was.</t>
 <t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
 False: leave the Find Dialog open after any search.</t>
 <t tx="ekr.20150620100923.1">/* alternative active pane highlighting */
