@@ -1286,6 +1286,15 @@ def todo_dec_pri(event, direction=1):
 @g.command('todo-inc-pri')
 def todo_inc_pri(event):
     todo_dec_pri(event, direction=-1)
+
+for cmd, method in [
+        ("todo-children-todo", "childrenTodo"),
+        ("todo-find-todo", "find_todo"),
+    ]:
+    def f(event, method=method):
+        getattr(event.c.cleo, method)()
+        event.c.redraw()
+    g.command(cmd)(f)
 #@-others
 #@@language python
 #@@tabwidth -4
