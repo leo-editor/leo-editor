@@ -11,10 +11,25 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <html>
   <head>
     <style>
-        pre { background:#FFE7C6; }
-        div.outlinepane,div.bodypane {
-          height: 50%;
-          overflow: auto;
+        /* pre { background:#FFE7C6; } */
+        /* Must use h1 for nodes: see below. */
+        h1 {
+          font-size: 12pt;
+        }
+        div.outlinepane {
+          position: absolute;
+          background: #ffffec; /* Leo yellow */
+          top: 10px;
+          height: 300px;
+          width: 700px;
+          overflow: scroll;
+        }
+        div.bodypane {
+          position: absolute;
+          top: 310px;
+          height: 300px;
+          width: 700px;
+          overflow: scroll;
         }
         div.tnode {
             visibility: hidden;
@@ -23,7 +38,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         div.node {
             position: relative;
             left: 20px;
-            background:Khaki;
         }
         div.node[has-children] > h1 {
             <!-- works -->
@@ -70,11 +84,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <body>
     <xsl:apply-templates select='tnodes'/>
     <div class="outlinepane">
+      <!-- <h4>Outline Pane</h4> -->
       <xsl:apply-templates select='vnodes'/>
     </div>
     <div class="bodypane">
-      <h1>Body Pane</h1>
-      <pre class="body-text">body</pre>
+      <!-- <h4>Body Pane</h4> -->
+      <pre class="body-text"></pre>
     </div>
   </body>
 </html>
