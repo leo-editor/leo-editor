@@ -121,9 +121,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <h1>+ <xsl:value-of select='vh'/></h1>
         <xsl:apply-templates select = 'v'/>
       </xsl:when>
+      <xsl:when test ='vh' >
+        <h1>- <xsl:value-of select='vh'/></h1>
+      </xsl:when>
+      <!--
       <xsl:otherwise>
         <h1>- <xsl:value-of select='vh'/></h1>
       </xsl:otherwise>
+      -->
     </xsl:choose>
   </div>
 </xsl:template>
