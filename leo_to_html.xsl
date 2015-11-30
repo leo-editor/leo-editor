@@ -10,11 +10,17 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match ='leo_file'>
 <html>
   <head>
+    <!--
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    -->
     <style>
         /* pre { background:#FFE7C6; } */
         /* Must use h1 for nodes: see below. */
         h1 {
           font-size: 12pt;
+          font-style: normal;
+          font-weight: normal;
         }
         div.outlinepane {
           position: absolute;
@@ -23,6 +29,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
           height: 300px;
           width: 700px;
           overflow: scroll;
+          line-height: 0.8;
+          
         }
         div.bodypane {
           position: absolute;
@@ -44,8 +52,10 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
             <!-- background: red; -->
         }
     </style>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>
+
       $(document).ready(function(){
         if (true) {
             // Toggle all but top-level nodes.
