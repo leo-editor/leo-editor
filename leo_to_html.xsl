@@ -73,7 +73,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
               target2=$(this).attr("id").substring(2);
               if (target === target2) {
                 console.log("found:"+target2)
-                $("pre.body-text").text($(this).text());
+                // $("pre.body-text").text($(this).text());
+                $("code").text($(this).text());
               };
             }); // end .each.
           };
@@ -89,7 +90,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     </div>
     <div class="bodypane">
       <!-- <h4>Body Pane</h4> -->
-      <pre class="body-text"></pre>
+      <pre class="body-text"><code></code></pre>
     </div>
   </body>
 </html>
