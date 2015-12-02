@@ -3211,7 +3211,7 @@ class Commands(object):
                 new_gnx(v)
                 g.es_print('empty v.fileIndex: %s new: %r' % (v, p.v.gnx), color='red')
         for gnx in sorted(d.keys()):
-            aList = sorted(d.get(gnx))
+            aList = list(d.get(gnx))
             if len(aList) != 1:
                 g.es_print('multiple vnodes with gnx: %r' % (gnx), color='red')
                 for v in aList:
