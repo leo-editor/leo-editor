@@ -937,8 +937,6 @@
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
-<v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
@@ -1016,6 +1014,8 @@
 <v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
 <v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
 </v>
+<v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21878"><vh>@menu &amp;Edit</vh>
 <v t="ekr.20131213135427.21879"><vh>@item undo</vh></v>

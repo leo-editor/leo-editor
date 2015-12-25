@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 
 # To do: More data files when generate_folder is True.
-# dist, external, icons, modes, scripts, test, themes, www folders.
+# dist, external, themes, www folders.
 
 # launchLeo.spec: the spec file for pyinstaller.
 # Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
@@ -50,8 +50,6 @@ datas = [
         ('leo/Icons/nodes-dark/plusminus/*.*','leo/Icons/nodes-dark/plusminus'),
         ('leo/Icons/nodes-dark/triangles/*.*','leo/Icons/nodes-dark/triangles'),
         ('leo/Icons/recorder/*.*','leo/Icons/recorder'),
-            ### To do: handle inner folders.
-        ### ('leo/Icons/Tango/16x16/*.*','leo/Icons/Tango/16x16'),
 ]
 
 if generate_folder:
@@ -66,6 +64,17 @@ if generate_folder:
             ('leo/doc/*.html','leo/doc'),
             ('leo/doc/*.leo','leo/doc'),
             ('leo/doc/*.txt','leo/doc'),
+        # User-selectable icons.
+            ('leo/Icons/Tango/16x16/actions/*.*','leo/Icons/Tango/16x16/actions'),
+            ('leo/Icons/Tango/16x16/animations/*.*','leo/Icons/Tango/16x16/animations'),
+            ('leo/Icons/Tango/16x16/apps/*.*','leo/Icons/Tango/16x16/apps'),
+            ('leo/Icons/Tango/16x16/categories/*.*','leo/Icons/Tango/16x16/categories'),
+            ('leo/Icons/Tango/16x16/devices/*.*','leo/Icons/Tango/16x16/devices'),
+            ('leo/Icons/Tango/16x16/emblems/*.*','leo/Icons/Tango/16x16/emblems'),
+            ('leo/Icons/Tango/16x16/emotes/*.*','leo/Icons/Tango/16x16/emotes'),
+            ('leo/Icons/Tango/16x16/mimetypes/*.*','leo/Icons/Tango/16x16/mimetypes'),
+            ('leo/Icons/Tango/16x16/places/*.*','leo/Icons/Tango/16x16/places'),
+            ('leo/Icons/Tango/16x16/status/*.*','leo/Icons/Tango/16x16/status'),
         # Everything in leo/scripts...
             ('leo/scripts/*.bat', 'leo/scripts'),
             ('leo/scripts/*.txt', 'leo/scripts'),
