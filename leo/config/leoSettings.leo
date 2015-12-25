@@ -930,6 +930,16 @@
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
+<v t="ekr.20151225142626.1"><vh>@menu Open &amp;Leo File</vh>
+<v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
+<v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
+<v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
+<v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
+<v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
+<v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
+</v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21833"><vh>@item close-window</vh></v>
@@ -1006,15 +1016,6 @@
 <v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
 <v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
 </v>
-<v t="ekr.20131213135427.21870"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
-<v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
-<v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
-<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
-<v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21878"><vh>@menu &amp;Edit</vh>
 <v t="ekr.20131213135427.21879"><vh>@item undo</vh></v>
@@ -6598,7 +6599,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21867">Outline To &amp;Noweb...</t>
 <t tx="ekr.20131213135427.21868">&amp;Remove Sentinels...</t>
 <t tx="ekr.20131213135427.21869">&amp;Weave...</t>
-<t tx="ekr.20131213135427.21870"></t>
 <t tx="ekr.20131213135427.21871">Open &amp;CheatSheet.leo</t>
 <t tx="ekr.20131213135427.21872">Open Leo&amp;Docs.leo</t>
 <t tx="ekr.20131213135427.21873">Open leo&amp;Plugins.leo</t>
@@ -11078,6 +11078,7 @@ QFrame#gutter {
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
+<t tx="ekr.20151225142626.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

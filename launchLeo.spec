@@ -1,9 +1,7 @@
 # -*- mode: python -*-
 
-# To do:
-# - File submenu.
-# - More data files when generating folder:
-#       dist, external, icons, modes, scripts, test, themes, www folders.
+# To do: More data files when generate_folder is True.
+# dist, external, icons, modes, scripts, test, themes, www folders.
 
 # launchLeo.spec: the spec file for pyinstaller.
 # Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
@@ -82,14 +80,13 @@ if generate_folder:
     ])
 
 a = Analysis(['launchLeo.py'],
-    pathex=[], # 'c:\\leo.repo\\leo-editor'],
+    pathex=[],
     binaries=None,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=None,
     runtime_hooks=None,
     excludes=['_tkinter',],
-        # List of module or package names to be ignored.
     win_no_prefer_redirects=None,
     win_private_assemblies=None,
     cipher=block_cipher)
