@@ -4670,6 +4670,16 @@ class Commands(object):
             webbrowser.open_new(url)
         except:
             g.es("not found:", url)
+    #@+node:ekr.20151225095102.1: *4* c.openUnittest
+    @cmd('open-unittest-leo')
+    def openUnittest(self, event=None):
+        '''Open unittest.leo.'''
+        c = self
+        fileName = g.os_path_join(g.app.loadDir, '..', 'test', 'unittest.leo')
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+        g.es('not found:', fileName)
     #@+node:ekr.20060613082924: *4* c.openLeoUsersGuide
     @cmd('open-users-guide')
     def openLeoUsersGuide(self, event=None):

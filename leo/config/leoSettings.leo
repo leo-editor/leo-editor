@@ -1012,6 +1012,7 @@
 <v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
@@ -11076,6 +11077,7 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
+<t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
