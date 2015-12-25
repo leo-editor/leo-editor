@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 
 # To do: More data files when generate_folder is True.
-# dist, external, themes, www folders.
+# dist, themes, www folders.
 
 # launchLeo.spec: the spec file for pyinstaller.
 # Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
@@ -18,9 +18,14 @@ def get_modules(name):
 	n = len(abs_dir)+1
 	aList = glob.glob(abs_dir + '/*.py')
 	return ['leo.%s.%s' % (name, z[n:][:-3]) for z in aList]
+    
+def icons(name):
+    return ('%s/*.*' % (name), name)
 
 # Define all modules in leo.plugins & leo.modes
-hiddenimports = get_modules('plugins') + get_modules('modes')
+hiddenimports = []
+for name in ('external','modes','plugins'):
+    hiddenimports.extend(get_modules(name))
 
 block_cipher = None
 
@@ -36,20 +41,27 @@ datas = [
         # These are also hidden imports...
             ('leo/plugins/*.py','leo/plugins'),
             ('leo/plugins/importers/*.py','leo/plugins/importers'),
-            ('leo/plugins/writers/*.py','leo/plugins/writers'), 
+            ('leo/plugins/writers/*.py','leo/plugins/writers'),
     # Everything in leo/config...
         ('leo/config/*.leo','leo/config'),
     # Everything in leo/modes...
         ('leo/modes/*.py','leo/modes'),
         ('leo/modes/*.xml','leo/modes'),
-    # Everything in leo/Icons...
-        ('leo/Icons/*.*','leo/Icons'),
-        ('leo/Icons/cleo/*.*','leo/Icons/cleo'),
-        ('leo/Icons/cleo/small/*.*','leo/Icons/cleo/small'),
-        ('leo/Icons/file_icons/*.*','leo/Icons/file_icons'),
-        ('leo/Icons/nodes-dark/plusminus/*.*','leo/Icons/nodes-dark/plusminus'),
-        ('leo/Icons/nodes-dark/triangles/*.*','leo/Icons/nodes-dark/triangles'),
-        ('leo/Icons/recorder/*.*','leo/Icons/recorder'),
+    # All icons in leo/Icons...
+        icons('leo/Icons'),
+        icons('leo/Icons/cleo'),
+        icons('leo/Icons/cleo/small'),
+        icons('leo/Icons/file_icons'),
+        icons('leo/Icons/nodes-dark/plusminus'),
+        icons('leo/Icons/nodes-dark/triangles'),
+        icons('leo/Icons/recorder'),
+    # All icons in leo/Themes...
+        icons('leo/Themes/generic/Icons'),
+        icons('leo/Themes/leo_dark_0/Icons'),
+        icons('leo/Themes/leo_dark_0/Icons/cleo'),
+        icons('leo/Themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/Themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/Themes/leo_dark_0/Icons/Tango/16x16/apps'),
 ]
 
 if generate_folder:
@@ -65,16 +77,19 @@ if generate_folder:
             ('leo/doc/*.leo','leo/doc'),
             ('leo/doc/*.txt','leo/doc'),
         # User-selectable icons.
-            ('leo/Icons/Tango/16x16/actions/*.*','leo/Icons/Tango/16x16/actions'),
-            ('leo/Icons/Tango/16x16/animations/*.*','leo/Icons/Tango/16x16/animations'),
-            ('leo/Icons/Tango/16x16/apps/*.*','leo/Icons/Tango/16x16/apps'),
-            ('leo/Icons/Tango/16x16/categories/*.*','leo/Icons/Tango/16x16/categories'),
-            ('leo/Icons/Tango/16x16/devices/*.*','leo/Icons/Tango/16x16/devices'),
-            ('leo/Icons/Tango/16x16/emblems/*.*','leo/Icons/Tango/16x16/emblems'),
-            ('leo/Icons/Tango/16x16/emotes/*.*','leo/Icons/Tango/16x16/emotes'),
-            ('leo/Icons/Tango/16x16/mimetypes/*.*','leo/Icons/Tango/16x16/mimetypes'),
-            ('leo/Icons/Tango/16x16/places/*.*','leo/Icons/Tango/16x16/places'),
-            ('leo/Icons/Tango/16x16/status/*.*','leo/Icons/Tango/16x16/status'),
+            icons('leo/Icons/Tango/16x16/actions'),
+            icons('leo/Icons/Tango/16x16/animations'),
+            icons('leo/Icons/Tango/16x16/apps'), 
+            icons('leo/Icons/Tango/16x16/categories'),
+            icons('leo/Icons/Tango/16x16/devices'),
+            icons('leo/Icons/Tango/16x16/emblems'),
+            icons('leo/Icons/Tango/16x16/emotes'),
+            icons('leo/Icons/Tango/16x16/mimetypes'),
+            icons('leo/Icons/Tango/16x16/places'),
+            icons('leo/Icons/Tango/16x16/status'),
+        # Everything in leo/external...
+            ('leo/external/*.py','leo/external'),
+            ('leo/external/*.txt','leo/external'),
         # Everything in leo/scripts...
             ('leo/scripts/*.bat', 'leo/scripts'),
             ('leo/scripts/*.txt', 'leo/scripts'),
