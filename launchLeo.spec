@@ -19,6 +19,14 @@ def get_modules(name):
 	aList = glob.glob(abs_dir + '/*.py')
 	return ['leo.%s.%s' % (name, z[n:][:-3]) for z in aList]
     
+def all(name):
+    return ('%s/*.*' % (name), name)
+        
+def ext(kind,name):
+    if kind.startswith('.'):
+        kind = kind[1:]
+    return ('%s/*.%s' % (name,kind), name)
+    
 def icons(name):
     return ('%s/*.*' % (name), name)
 
@@ -32,21 +40,21 @@ block_cipher = None
 datas = [
     # Required for startup...
         ('leo/core/commit_timestamp.json','leo/core'),
-        ('leo/plugins/*.ui','leo/plugins'),
+        ext('.ui','leo/plugins'),
     # Required for execute-script.
         ('leo/test/scriptFile.py', 'leo/test'),
     # Required for plugins...
         # Data requifed for startup.
-        ('leo/plugins/GraphCanvas/*.*','leo/plugins/GraphCanvas'),
+            all('leo/plugins/GraphCanvas'),
         # These are also hidden imports...
-            ('leo/plugins/*.py','leo/plugins'),
-            ('leo/plugins/importers/*.py','leo/plugins/importers'),
-            ('leo/plugins/writers/*.py','leo/plugins/writers'),
-    # Everything in leo/config...
-        ('leo/config/*.leo','leo/config'),
-    # Everything in leo/modes...
-        ('leo/modes/*.py','leo/modes'),
-        ('leo/modes/*.xml','leo/modes'),
+            ext('.py','leo/plugins'),
+            ext('.py','leo/plugins/importers'),
+            ext('.py','leo/plugins/writers'),
+    # leo/config...
+        ext('.leo','leo/config'),
+    # leo/modes...
+        ext('.py','leo/modes'),
+        ext('.xml','leo/modes'),
     # All icons in leo/Icons...
         icons('leo/Icons'),
         icons('leo/Icons/cleo'),
@@ -66,16 +74,16 @@ datas = [
 
 if generate_folder:
     datas.extend([
-        # Everything in leo.core...
-            ('leo/core/*.leo','leo/core'),
-            ('leo/core/*.py','leo/core'),
-            ('leo/core/*.txt','leo/core'),
-        # Everything in leo/doc...
-            ('leo/doc/*.css','leo/doc'),
-            ('leo/doc/*.js','leo/doc'),
-            ('leo/doc/*.html','leo/doc'),
-            ('leo/doc/*.leo','leo/doc'),
-            ('leo/doc/*.txt','leo/doc'),
+        # leo.core...
+            ext('.leo','leo/core'),
+            ext('.py','leo/core'),
+            ext('.txt','leo/core'),
+        # leo/doc...
+            ext('.css','leo/doc'),
+            ext('.js','leo/doc'),
+            ext('.html','leo/doc'),
+            ext('.leo','leo/doc'),
+            ext('.txt','leo/doc'),
         # User-selectable icons.
             icons('leo/Icons/Tango/16x16/actions'),
             icons('leo/Icons/Tango/16x16/animations'),
@@ -87,20 +95,20 @@ if generate_folder:
             icons('leo/Icons/Tango/16x16/mimetypes'),
             icons('leo/Icons/Tango/16x16/places'),
             icons('leo/Icons/Tango/16x16/status'),
-        # Everything in leo/external...
-            ('leo/external/*.py','leo/external'),
-            ('leo/external/*.txt','leo/external'),
-        # Everything in leo/scripts...
-            ('leo/scripts/*.bat', 'leo/scripts'),
-            ('leo/scripts/*.txt', 'leo/scripts'),
-            ('leo/scripts/*.py', 'leo/scripts'),
+        # leo/external...
+            ext('.py','leo/external'),
+            ext('.txt','leo/external'),
+        # leo/scripts...
+            ext('.bat', 'leo/scripts'),
+            ext('.txt', 'leo/scripts'),
+            ext('.py', 'leo/scripts'),
         # Everything required for unit tests...
-            ('leo/test/*.leo','leo/test'),
-            ('leo/test/*.py','leo/test'),
-            ('leo/test/*.txt','leo/test'),
-            ('leo/test/unittest/*.*', 'leo/test/unittest'),
-            ('leo/test/unittest/input/*.*', 'leo/test/unittest/input'),
-            ('leo/test/unittest/output/*.*', 'leo/test/unittest/output'),
+            ext('.leo','leo/test'),
+            ext('.py','leo/test'),
+            ext('.txt','leo/test'),
+            all('leo/test/unittest'),
+            all('leo/test/unittest/input'),
+            all('leo/test/unittest/output'),
     ])
 
 a = Analysis(['launchLeo.py'],
