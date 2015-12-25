@@ -1,12 +1,10 @@
 # -*- mode: python -*-
+'''
+launchLeo.spec: the spec file for pyinstaller.
+Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
+'''
 
-# To do: More data files when generate_folder is True.
-# dist, themes, www folders.
-
-# launchLeo.spec: the spec file for pyinstaller.
-# Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
-
-generate_folder = True
+generate_folder = False
     # True: generate only Leo/Leo.exe.
     # False: generate Leo/leo folder as well as Leo/Leo.exe.
 
@@ -19,6 +17,7 @@ def get_modules(name):
 	aList = glob.glob(abs_dir + '/*.py')
 	return ['leo.%s.%s' % (name, z[n:][:-3]) for z in aList]
     
+# Utilities for creating entries in the "datas" lists...
 def all(name):
     return ('%s/*.*' % (name), name)
         
@@ -78,6 +77,8 @@ if generate_folder:
             ext('.leo','leo/core'),
             ext('.py','leo/core'),
             ext('.txt','leo/core'),
+        # leo.dist...
+            all('leo/dist'),
         # leo/doc...
             ext('.css','leo/doc'),
             ext('.js','leo/doc'),
@@ -109,6 +110,8 @@ if generate_folder:
             all('leo/test/unittest'),
             all('leo/test/unittest/input'),
             all('leo/test/unittest/output'),
+        # leo/www
+            all('leo/www'),
     ])
 
 a = Analysis(['launchLeo.py'],
