@@ -2,15 +2,15 @@
 
 # To do:
 # - File submenu.
-# - Test excluding only _tkinter.
-# - Minimal data files for one-file version: .json, icons, themes, plugins, etc.
-# - More data files: dist, external, icons, modes, scripts, test, themes, www folders.
+# - More data files when generating folder:
+#       dist, external, icons, modes, scripts, test, themes, www folders.
 
 # launchLeo.spec: the spec file for pyinstaller.
-# Run with pyinstaller launchLeo.spec
+# Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
 
-generate_folder = False
-	# False: generate Leo.exe in dist folder.
+generate_folder = True
+    # True: generate only Leo/Leo.exe.
+    # False: generate Leo/leo folder as well as Leo/Leo.exe.
 
 import glob, os
 
@@ -88,7 +88,7 @@ a = Analysis(['launchLeo.py'],
     hiddenimports=hiddenimports,
     hookspath=None,
     runtime_hooks=None,
-    excludes=['tcl','tk','_tkinter',],
+    excludes=['_tkinter',],
         # List of module or package names to be ignored.
     win_no_prefer_redirects=None,
     win_private_assemblies=None,
