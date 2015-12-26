@@ -101,6 +101,8 @@ if True:
             ('launchLeo.spec', ''),
             ('pylint-leo.py', ''),
             ('setup.py', ''),
+	# leo.commands...
+            ext('.py', 'leo/commands'),
         # leo.core...
             ext('.leo', 'leo/core'),
             ext('.py', 'leo/core'),
@@ -112,6 +114,7 @@ if True:
             ext('.js', 'leo/doc'),
             ext('.html', 'leo/doc'),
             ext('.leo', 'leo/doc'),
+	    ext('.py', 'leo/doc'),
             ext('.txt', 'leo/doc'),
 	    all('leo/doc/html'),
 	    # ext('.jif','leo/doc/html'),
