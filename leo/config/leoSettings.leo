@@ -934,6 +934,7 @@
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
 <v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
 <v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
+<v t="ekr.20151225193848.1"><vh>@item open-leoPy-leo</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
@@ -11079,6 +11080,7 @@ QFrame#gutter {
 <t tx="ekr.20150711073509.1"></t>
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
+<t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -4567,6 +4567,19 @@ class Commands(object):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2: return
         g.es('not found:', ', '.join(names))
+    #@+node:ekr.20151225193723.1: *4* c.openLeoPy
+    @cmd('open-leoPy-leo')
+    def openLeoPy(self, event=None):
+        '''Open leoPy.leo in a new Leo window.'''
+        c = self
+        names = ('leoPy.leo', 'leoPyRef.leo',) # Used in error message.
+        for name in names:
+            fileName = g.os_path_join(g.app.loadDir, "..", "core", name)
+            # Only call g.openWithFileName if the file exists.
+            if g.os_path_exists(fileName):
+                c2 = g.openWithFileName(fileName, old_c=c)
+                if c2: return
+        g.es('not found:', ', '.join(names))
     #@+node:ekr.20061018094539: *4* c.openLeoScripts
     @cmd('open-scripts-leo')
     def openLeoScripts(self, event=None):
