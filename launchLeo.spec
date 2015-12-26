@@ -3,19 +3,26 @@
 launchLeo.spec: the spec file for pyinstaller.
 Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
 '''
-import glob, os, sys
+import glob, os
 
-# Same code as in runLeo.py.
-path = os.getcwd()
-if path not in sys.path:
-    print('appending %s to sys.path' % path)
-    sys.path.append(path)
+if 0:
+	# This does not work: __file__ does not exist.
+	path = os.path.basename(__file__)
+	loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
+else:
+	import sys
 
-import leo.core.leoGlobals as g
-import leo.core.leoApp as leoApp
+	# Same code as in runLeo.py.
+	path = os.getcwd()
+	if path not in sys.path:
+	    print('launchLeo.spec: appending %s to sys.path' % path)
+	    sys.path.append(path)
 
-LM = leoApp.LoadManager()
-loadDir = LM.computeLoadDir()
+	import leo.core.leoGlobals as g
+	import leo.core.leoApp as leoApp
+
+	LM = leoApp.LoadManager()
+	loadDir = LM.computeLoadDir()
 
 generate_folder = False
     # True:  generate only Leo/Leo.exe.
@@ -100,12 +107,16 @@ if True:
             ext('.txt', 'leo/core'),
         # leo.dist...
             all('leo/dist'),
-        # leo/doc...
+        # leo/doc & leo/doc/html
             ext('.css', 'leo/doc'),
             ext('.js', 'leo/doc'),
             ext('.html', 'leo/doc'),
             ext('.leo', 'leo/doc'),
             ext('.txt', 'leo/doc'),
+	    all('leo/doc/html'),
+	    # ext('.jif','leo/doc/html'),
+	    # ext('.py','leo/doc/html'),
+	    # ext('.txt','leo/doc/html'),
         # User-selectable icons.
             icons('leo/Icons/Tango/16x16/actions'),
             icons('leo/Icons/Tango/16x16/animations'),
@@ -130,6 +141,7 @@ if True:
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
             ext('.leo', 'leo/plugins'),
+	    ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
         # leo/scripts...
