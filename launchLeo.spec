@@ -3,8 +3,19 @@
 launchLeo.spec: the spec file for pyinstaller.
 Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
 '''
+import glob, os, sys
 
-import glob, os
+# Same code as in runLeo.py.
+path = os.getcwd()
+if path not in sys.path:
+    print('appending %s to sys.path' % path)
+    sys.path.append(path)
+
+import leo.core.leoGlobals as g
+import leo.core.leoApp as leoApp
+
+LM = leoApp.LoadManager()
+loadDir = LM.computeLoadDir()
 
 generate_folder = False
     # True:  generate only Leo/Leo.exe.
@@ -12,11 +23,12 @@ generate_folder = False
     # False: generate Leo/leo folder as well as Leo/Leo.exe.
 
 def get_modules(name):
-	'''return a list of module names in the given subdirector of the leo directory.'''
-	abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
-	n = len(abs_dir) + 1
-	aList = glob.glob(abs_dir + '/*.py')
-	return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+    '''return a list of module names in the leo/name directory.'''
+    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
+    n = len(abs_dir) + 1
+    aList = glob.glob(abs_dir + '/*.py')
+    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
 
 # Utilities for creating entries in the "datas" lists...
 def all(name):
@@ -78,7 +90,8 @@ datas = [
 # On windows: ~\AppData\Local\Temp\_MEInnnn
 if True:
     datas.extend([
-        # leo-editor
+        # leo-editor: loaded by LeoPy.leo...
+            ('launchLeo.spec', ''),
             ('pylint-leo.py', ''),
             ('setup.py', ''),
         # leo.core...
