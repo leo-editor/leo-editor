@@ -11718,13 +11718,19 @@ else:
     assert g.isTextWrapper(wrapper),wrapper
     assert g.isTextWidget(w),w
     filter_obj = qt_events.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
-    # Create an Alt-9 key event.
-    ev = QtCore.QEvent
-    e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
-    filter_obj.eventFilter(w,e)
-    # Assert that handleUnboundChar actually ignored it.
-    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            # print('Alt-9 is bound')
+            break
+    else:
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 #@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
