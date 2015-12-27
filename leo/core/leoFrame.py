@@ -426,7 +426,7 @@ class LeoBody(object):
     selectEditorLockout = False
 
     def selectEditor(self, w):
-        '''Select the editor give by w and node w.leo_p.'''
+        '''Select the editor given by w and node w.leo_p.'''
         #  Called whenever wrapper must be selected.
         c = self.c
         if self.selectEditorLockout:
