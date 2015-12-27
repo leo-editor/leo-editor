@@ -8,7 +8,7 @@ Notes:
 1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
 
 2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
-   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result starting leo.exe
+   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
    is slower than usual.
 
 3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
