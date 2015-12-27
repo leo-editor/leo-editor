@@ -6,23 +6,23 @@ Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
 import glob, os
 
 if 0:
-	# This does not work: __file__ does not exist.
-	path = os.path.basename(__file__)
-	loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
+    # This does not work: __file__ does not exist.
+    path = os.path.basename(__file__)
+    loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
 else:
-	import sys
+    import sys
 
-	# Same code as in runLeo.py.
-	path = os.getcwd()
-	if path not in sys.path:
-	    print('launchLeo.spec: appending %s to sys.path' % path)
-	    sys.path.append(path)
+    # Same code as in runLeo.py.
+    path = os.getcwd()
+    if path not in sys.path:
+        print('launchLeo.spec: appending %s to sys.path' % path)
+        sys.path.append(path)
 
-	import leo.core.leoGlobals as g
-	import leo.core.leoApp as leoApp
+    import leo.core.leoGlobals as g
+    import leo.core.leoApp as leoApp
 
-	LM = leoApp.LoadManager()
-	loadDir = LM.computeLoadDir()
+    LM = leoApp.LoadManager()
+    loadDir = LM.computeLoadDir()
 
 generate_folder = False
     # True:  generate only Leo/Leo.exe.
@@ -62,8 +62,6 @@ datas = [
     # Required for startup...
         ('leo/core/commit_timestamp.json', 'leo/core'),
         ext('.ui', 'leo/plugins'),
-    # Required for execute-script.
-        ('leo/test/scriptFile.py', 'leo/test'),
     # Required for plugins...
         # Data requifed for startup.
             all('leo/plugins/GraphCanvas'),
@@ -101,7 +99,7 @@ if True:
             ('launchLeo.spec', ''),
             ('pylint-leo.py', ''),
             ('setup.py', ''),
-	# leo.commands...
+    # leo.commands...
             ext('.py', 'leo/commands'),
         # leo.core...
             ext('.leo', 'leo/core'),
@@ -114,12 +112,12 @@ if True:
             ext('.js', 'leo/doc'),
             ext('.html', 'leo/doc'),
             ext('.leo', 'leo/doc'),
-	    ext('.py', 'leo/doc'),
+        ext('.py', 'leo/doc'),
             ext('.txt', 'leo/doc'),
-	    all('leo/doc/html'),
-	    # ext('.jif','leo/doc/html'),
-	    # ext('.py','leo/doc/html'),
-	    # ext('.txt','leo/doc/html'),
+        all('leo/doc/html'),
+        # ext('.jif','leo/doc/html'),
+        # ext('.py','leo/doc/html'),
+        # ext('.txt','leo/doc/html'),
         # User-selectable icons.
             icons('leo/Icons/Tango/16x16/actions'),
             icons('leo/Icons/Tango/16x16/animations'),
@@ -144,7 +142,7 @@ if True:
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
             ext('.leo', 'leo/plugins'),
-	    ext('.txt', 'leo/plugins'),
+        ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
         # leo/scripts...
@@ -153,6 +151,7 @@ if True:
             ext('.txt', 'leo/scripts'),
             ext('.py', 'leo/scripts'),
         # Everything required for unit tests...
+    # The leo/test folder itself is required for the execute-script command.
             ext('.leo', 'leo/test'),
             ext('.py', 'leo/test'),
             ext('.txt', 'leo/test'),
@@ -189,7 +188,7 @@ exe = EXE(pyz,
     console=True)
 
 if generate_folder:
-	coll = COLLECT(
+    coll = COLLECT(
         exe,
         a.binaries,
         a.zipfiles,
