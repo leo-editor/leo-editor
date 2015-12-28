@@ -1,33 +1,20 @@
 # -*- mode: python -*-
-'''
-launchLeo.spec: the spec file for pyinstaller.
-Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
-'''
-import glob, os
 
-if 0:
-    # This does not work: __file__ does not exist.
-    path = os.path.basename(__file__)
-    loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
-else:
-    import sys
+block_cipher = None
 
-    # Same code as in runLeo.py.
-    path = os.getcwd()
-    if path not in sys.path:
-        print('launchLeo.spec: appending %s to sys.path' % path)
-        sys.path.append(path)
+import glob, os, sys
 
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
+# Same code as in runLeo.py.
+path = os.getcwd()
+if path not in sys.path:
+    print('launchLeo.spec: appending %s to sys.path' % path)
+    sys.path.append(path)
 
-    LM = leoApp.LoadManager()
-    loadDir = LM.computeLoadDir()
+import leo.core.leoGlobals as g
+import leo.core.leoApp as leoApp
 
-generate_folder = False
-    # True:  generate only Leo/Leo.exe.
-    #        Data files are unpacked to a known location.
-    # False: generate Leo/leo folder as well as Leo/Leo.exe.
+LM = leoApp.LoadManager()
+loadDir = LM.computeLoadDir()
 
 def get_modules(name):
     '''return a list of module names in the leo/name directory.'''
@@ -36,6 +23,10 @@ def get_modules(name):
     n = len(abs_dir) + 1
     aList = glob.glob(abs_dir + '/*.py')
     return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+    
+hiddenimports = []
+for name in ('external', 'modes', 'plugins'):
+    hiddenimports.extend(get_modules(name))
 
 # Utilities for creating entries in the "datas" lists...
 def all(name):
@@ -49,14 +40,6 @@ def ext(kind, name):
     if kind.startswith('.'):
         kind = kind[1:]
     return ('%s/*.%s' % (name, kind), name)
-
-# Define all modules in leo.plugins & leo.modes
-
-hiddenimports = []
-for name in ('external', 'modes', 'plugins'):
-    hiddenimports.extend(get_modules(name))
-
-block_cipher = None
 
 datas = [
     # Required for startup...
@@ -88,18 +71,14 @@ datas = [
         icons('leo/themes/leo_dark_0/Icons/cleo/small'),
         icons('leo/themes/leo_dark_0/Icons/file_icons'),
         icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-]
-
-# These files *are* useful in one-file operation.
-# sys._MEIPASS points to the temp folder.
-# On windows: ~\AppData\Local\Temp\_MEInnnn
-if True:
-    datas.extend([
-        # leo-editor: loaded by LeoPy.leo...
-            ('launchLeo.spec', ''),
-            ('pylint-leo.py', ''),
-            ('setup.py', ''),
-    # leo.commands...
+    # Additional Leo data fles...
+    # leo-editor: loaded by LeoPy.leo...
+        ('launchLeo-folder.spec', ''),
+	('launchLeo-single.spec', ''),
+	('leo_to_html.xsl', ''),
+	('pylint-leo.py', ''),
+        ('setup.py', ''),
+        # leo.commands...
             ext('.py', 'leo/commands'),
         # leo.core...
             ext('.leo', 'leo/core'),
@@ -142,7 +121,7 @@ if True:
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
             ext('.leo', 'leo/plugins'),
-        ext('.txt', 'leo/plugins'),
+            ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
         # leo/scripts...
@@ -151,7 +130,8 @@ if True:
             ext('.txt', 'leo/scripts'),
             ext('.py', 'leo/scripts'),
         # Everything required for unit tests...
-    # The leo/test folder itself is required for the execute-script command.
+        # The leo/test folder itself is required for
+        # the execute-script command.
             ext('.leo', 'leo/test'),
             ext('.py', 'leo/test'),
             ext('.txt', 'leo/test'),
@@ -160,10 +140,11 @@ if True:
             all('leo/test/unittest/output'),
         # leo/www...
             all('leo/www'),
-    ])
+]
 
-a = Analysis(['launchLeo.py'],
-    pathex=[],
+a = Analysis(
+    ['launchLeo.py'],
+    pathex=[], ###'c:\\leo.repo\\leo-editor'],
     binaries=None,
     datas=datas,
     hiddenimports=hiddenimports,
@@ -178,21 +159,17 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
+    exclude_binaries=True,
     name='leo',
     debug=False,
     strip=None,
     upx=True,
-    console=True)
-
-if generate_folder:
-    coll = COLLECT(
-        exe,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        strip=None,
-        upx=False,
-        name='Leo')
+    console=True )
+    
+coll = COLLECT(exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=None,
+    upx=True,
+    name='Leo')
