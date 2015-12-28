@@ -82,12 +82,12 @@ datas = [
         icons('leo/Icons/nodes-dark/plusminus'),
         icons('leo/Icons/nodes-dark/triangles'),
         icons('leo/Icons/recorder'),
-        icons('leo/Themes/generic/Icons'),
-        icons('leo/Themes/leo_dark_0/Icons'),
-        icons('leo/Themes/leo_dark_0/Icons/cleo'),
-        icons('leo/Themes/leo_dark_0/Icons/cleo/small'),
-        icons('leo/Themes/leo_dark_0/Icons/file_icons'),
-        icons('leo/Themes/leo_dark_0/Icons/Tango/16x16/apps'),
+        icons('leo/themes/generic/Icons'),
+        icons('leo/themes/leo_dark_0/Icons'),
+        icons('leo/themes/leo_dark_0/Icons/cleo'),
+        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
 ]
 
 # These files *are* useful in one-file operation.
