@@ -1,4 +1,8 @@
 # -*- mode: python -*-
+'''
+launchLeo-folder.spec: a spec file for pyinstaller that creates a folder-based install of Leo.
+Run with pyinstaller launchLeo-folder.spec, **not** with launchLeo.py.
+'''
 
 block_cipher = None
 

@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 '''
-launchLeo.spec: the spec file for pyinstaller.
-Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
+launchLeo-single.spec: a spec file for pyinstaller that creates a single-executable version of Leo.
+Run with pyinstaller launchLeo-single.spec, **not** with launchLeo.py.
 '''
 import glob, os
 
@@ -20,7 +20,7 @@ else:
     # Same code as in runLeo.py.
     path = os.getcwd()
     if path not in sys.path:
-        print('launchLeo.spec: appending %s to sys.path' % path)
+        print('launchLeo-single.spec: appending %s to sys.path' % path)
         sys.path.append(path)
 
     import leo.core.leoGlobals as g
@@ -96,13 +96,16 @@ datas = [
 if True:
     datas.extend([
         # leo-editor: loaded by LeoPy.leo...
-            ('launchLeo.spec', ''),
+	    ('launchLeo-folder.spec', ''),
+            ('launchLeo-single.spec', ''),
             ('pylint-leo.py', ''),
             ('setup.py', ''),
     # leo.commands...
             ext('.py', 'leo/commands'),
         # leo.core...
-            ext('.leo', 'leo/core'),
+	# Only include reference files.
+                # ext('.leo', 'leo/core'),
+		('leo/core/LeoPyRef.leo', 'leo/core'),
             ext('.py', 'leo/core'),
             ext('.txt', 'leo/core'),
         # leo.dist...
@@ -141,7 +144,10 @@ if True:
             ext('.json', 'leo/external/ckeditor'),
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
-            ext('.leo', 'leo/plugins'),
+            # Only include reference files.
+            # ext('.leo', 'leo/plugins'),
+	        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
+	        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
         ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
