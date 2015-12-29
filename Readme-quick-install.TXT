@@ -21,4 +21,4 @@ There are two disadvantages to using the single-file method:
    when you exit leo.exe. If you want to do real work with Leo you must
    create .leo files in a permanent folder on your machine.
    
-Both the folder-based and single-file version were Installer: http://pythonhosted.org/PyInstaller.
+Both the folder-based and single-file version were created by PyInstaller: http://pythonhosted.org/PyInstaller.
