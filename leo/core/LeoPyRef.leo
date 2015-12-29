@@ -47,19 +47,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150517150846.1"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150517150846.2"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150517150846.3"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150517150846.4"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150517150846.5"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -162,7 +162,8 @@
 </v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
-<v t="ekr.20151226101146.1"><vh>@clean ../../launchLeo.spec</vh></v>
+<v t="ekr.20151228151130.1"><vh>@clean ../../launchLeo-single.spec</vh></v>
+<v t="ekr.20151228151148.1"><vh>@clean ../../launchLeo-folder.spec</vh></v>
 <v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
 <v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
@@ -187,7 +188,6 @@
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20141010141310.18627"><vh>@file ../external/PythonTidy.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
@@ -1595,60 +1595,60 @@ def define_s(self):
 '''
 </t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150517150846.1">gnx: ekr.20150517150823.1
+<t tx="ekr.20150531102337.1"></t>
+<t tx="ekr.20151226101445.1">gnx: ekr.20151226100951.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150517150846.2">gnx: ekr.20150517150823.2
+<t tx="ekr.20151226101445.2">gnx: ekr.20151226100951.2
 unl: qt_main declarations
-gnx: ekr.20150517150823.3
+gnx: ekr.20151226100951.3
 unl: class Ui_MainWindow
-gnx: ekr.20150517150823.4
+gnx: ekr.20151226100951.4
 unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20150517150823.5
+gnx: ekr.20151226100951.5
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20150517150846.3"></t>
-<t tx="ekr.20150517150846.4">gnx: ekr.20150517150823.6
+<t tx="ekr.20151226101445.3"></t>
+<t tx="ekr.20151226101445.4">gnx: ekr.20151226100951.6
 unl: qt_quicksearch declarations
-gnx: ekr.20150517150823.7
+gnx: ekr.20151226100951.7
 unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20150517150823.8
+gnx: ekr.20151226100951.8
 unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20150517150823.9
+gnx: ekr.20151226100951.9
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20150517150846.5"></t>
-<t tx="ekr.20150531102337.1"></t>
-<t tx="ekr.20151226101146.1"># -*- mode: python -*-
+<t tx="ekr.20151226101445.5"></t>
+<t tx="ekr.20151228151130.1"># -*- mode: python -*-
 '''
 launchLeo.spec: the spec file for pyinstaller.
 Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
 '''
 import glob, os
 
-if 0:
-	# This does not work: __file__ does not exist.
-	path = os.path.basename(__file__)
-	loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
-else:
-	import sys
-
-	# Same code as in runLeo.py.
-	path = os.getcwd()
-	if path not in sys.path:
-	    print('launchLeo.spec: appending %s to sys.path' % path)
-	    sys.path.append(path)
-
-	import leo.core.leoGlobals as g
-	import leo.core.leoApp as leoApp
-
-	LM = leoApp.LoadManager()
-	loadDir = LM.computeLoadDir()
-
-generate_folder = False
+generate_folder = True
     # True:  generate only Leo/Leo.exe.
     #        Data files are unpacked to a known location.
     # False: generate Leo/leo folder as well as Leo/Leo.exe.
+
+if 0:
+    # This does not work: __file__ does not exist.
+    path = os.path.basename(__file__)
+    loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
+else:
+    import sys
+
+    # Same code as in runLeo.py.
+    path = os.getcwd()
+    if path not in sys.path:
+        print('launchLeo.spec: appending %s to sys.path' % path)
+        sys.path.append(path)
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoApp as leoApp
+
+    LM = leoApp.LoadManager()
+    loadDir = LM.computeLoadDir()
 
 def get_modules(name):
     '''return a list of module names in the leo/name directory.'''
@@ -1683,8 +1683,6 @@ datas = [
     # Required for startup...
         ('leo/core/commit_timestamp.json', 'leo/core'),
         ext('.ui', 'leo/plugins'),
-    # Required for execute-script.
-        ('leo/test/scriptFile.py', 'leo/test'),
     # Required for plugins...
         # Data requifed for startup.
             all('leo/plugins/GraphCanvas'),
@@ -1705,12 +1703,12 @@ datas = [
         icons('leo/Icons/nodes-dark/plusminus'),
         icons('leo/Icons/nodes-dark/triangles'),
         icons('leo/Icons/recorder'),
-        icons('leo/Themes/generic/Icons'),
-        icons('leo/Themes/leo_dark_0/Icons'),
-        icons('leo/Themes/leo_dark_0/Icons/cleo'),
-        icons('leo/Themes/leo_dark_0/Icons/cleo/small'),
-        icons('leo/Themes/leo_dark_0/Icons/file_icons'),
-        icons('leo/Themes/leo_dark_0/Icons/Tango/16x16/apps'),
+        icons('leo/themes/generic/Icons'),
+        icons('leo/themes/leo_dark_0/Icons'),
+        icons('leo/themes/leo_dark_0/Icons/cleo'),
+        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
 ]
 
 # These files *are* useful in one-file operation.
@@ -1722,6 +1720,8 @@ if True:
             ('launchLeo.spec', ''),
             ('pylint-leo.py', ''),
             ('setup.py', ''),
+    # leo.commands...
+            ext('.py', 'leo/commands'),
         # leo.core...
             ext('.leo', 'leo/core'),
             ext('.py', 'leo/core'),
@@ -1733,11 +1733,12 @@ if True:
             ext('.js', 'leo/doc'),
             ext('.html', 'leo/doc'),
             ext('.leo', 'leo/doc'),
+        ext('.py', 'leo/doc'),
             ext('.txt', 'leo/doc'),
-	    all('leo/doc/html'),
-	    # ext('.jif','leo/doc/html'),
-	    # ext('.py','leo/doc/html'),
-	    # ext('.txt','leo/doc/html'),
+        all('leo/doc/html'),
+        # ext('.jif','leo/doc/html'),
+        # ext('.py','leo/doc/html'),
+        # ext('.txt','leo/doc/html'),
         # User-selectable icons.
             icons('leo/Icons/Tango/16x16/actions'),
             icons('leo/Icons/Tango/16x16/animations'),
@@ -1762,7 +1763,7 @@ if True:
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
             ext('.leo', 'leo/plugins'),
-	    ext('.txt', 'leo/plugins'),
+        ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
         # leo/scripts...
@@ -1771,6 +1772,7 @@ if True:
             ext('.txt', 'leo/scripts'),
             ext('.py', 'leo/scripts'),
         # Everything required for unit tests...
+    # The leo/test folder itself is required for the execute-script command.
             ext('.leo', 'leo/test'),
             ext('.py', 'leo/test'),
             ext('.txt', 'leo/test'),
@@ -1807,7 +1809,7 @@ exe = EXE(pyz,
     console=True)
 
 if generate_folder:
-	coll = COLLECT(
+    coll = COLLECT(
         exe,
         a.binaries,
         a.zipfiles,
@@ -1815,6 +1817,187 @@ if generate_folder:
         strip=None,
         upx=False,
         name='Leo')
+</t>
+<t tx="ekr.20151228151148.1"># -*- mode: python -*-
+
+block_cipher = None
+
+import glob, os, sys
+
+# Same code as in runLeo.py.
+path = os.getcwd()
+if path not in sys.path:
+    print('launchLeo.spec: appending %s to sys.path' % path)
+    sys.path.append(path)
+
+import leo.core.leoGlobals as g
+import leo.core.leoApp as leoApp
+
+LM = leoApp.LoadManager()
+loadDir = LM.computeLoadDir()
+
+def get_modules(name):
+    '''return a list of module names in the leo/name directory.'''
+    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
+    n = len(abs_dir) + 1
+    aList = glob.glob(abs_dir + '/*.py')
+    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+    
+hiddenimports = []
+for name in ('external', 'modes', 'plugins'):
+    hiddenimports.extend(get_modules(name))
+
+# Utilities for creating entries in the "datas" lists...
+def all(name):
+    '''Return a tuple that causes all files in name to be included.'''
+    return ('%s/*.*' % (name), name)
+
+icons = all
+
+def ext(kind, name):
+    '''Return a tuple that causes all files with the given extension in name to be included.'''
+    if kind.startswith('.'):
+        kind = kind[1:]
+    return ('%s/*.%s' % (name, kind), name)
+
+datas = [
+    # Required for startup...
+        ('leo/core/commit_timestamp.json', 'leo/core'),
+        ext('.ui', 'leo/plugins'),
+    # Required for plugins...
+        # Data requifed for startup.
+            all('leo/plugins/GraphCanvas'),
+        # These are also hidden imports...
+            ext('.py', 'leo/plugins'),
+            ext('.py', 'leo/plugins/importers'),
+            ext('.py', 'leo/plugins/writers'),
+    # leo/config...
+        ext('.leo', 'leo/config'),
+    # leo/modes...
+        ext('.py', 'leo/modes'),
+        ext('.xml', 'leo/modes'),
+    # All icons...
+        icons('leo/Icons'),
+        icons('leo/Icons/cleo'),
+        icons('leo/Icons/cleo/small'),
+        icons('leo/Icons/file_icons'),
+        icons('leo/Icons/nodes-dark/plusminus'),
+        icons('leo/Icons/nodes-dark/triangles'),
+        icons('leo/Icons/recorder'),
+        icons('leo/themes/generic/Icons'),
+        icons('leo/themes/leo_dark_0/Icons'),
+        icons('leo/themes/leo_dark_0/Icons/cleo'),
+        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
+    # Additional Leo data fles...
+    # leo-editor: loaded by LeoPy.leo...
+        ('launchLeo-folder.spec', ''),
+	('launchLeo-single.spec', ''),
+	('leo_to_html.xsl', ''),
+	('pylint-leo.py', ''),
+        ('setup.py', ''),
+        # leo.commands...
+            ext('.py', 'leo/commands'),
+        # leo.core...
+	    # Only include reference files.
+                # ext('.leo', 'leo/core'),
+		('leo/core/LeoPyRef.leo', 'leo/core'),
+            ext('.py', 'leo/core'),
+            ext('.txt', 'leo/core'),
+        # leo.dist...
+            all('leo/dist'),
+        # leo/doc &amp; leo/doc/html
+            ext('.css', 'leo/doc'),
+            ext('.js', 'leo/doc'),
+            ext('.html', 'leo/doc'),
+            ext('.leo', 'leo/doc'),
+        ext('.py', 'leo/doc'),
+            ext('.txt', 'leo/doc'),
+        all('leo/doc/html'),
+        # ext('.jif','leo/doc/html'),
+        # ext('.py','leo/doc/html'),
+        # ext('.txt','leo/doc/html'),
+        # User-selectable icons.
+            icons('leo/Icons/Tango/16x16/actions'),
+            icons('leo/Icons/Tango/16x16/animations'),
+            icons('leo/Icons/Tango/16x16/apps'),
+            icons('leo/Icons/Tango/16x16/categories'),
+            icons('leo/Icons/Tango/16x16/devices'),
+            icons('leo/Icons/Tango/16x16/emblems'),
+            icons('leo/Icons/Tango/16x16/emotes'),
+            icons('leo/Icons/Tango/16x16/mimetypes'),
+            icons('leo/Icons/Tango/16x16/places'),
+            icons('leo/Icons/Tango/16x16/status'),
+        # leo/extensions...
+            ext('.py', 'leo/extensions'),
+            all('leo/extensions/hooks'),
+        # leo/external...
+            ext('.leo', 'leo/external'),
+            ext('.py', 'leo/external'),
+            ext('.txt', 'leo/external'),
+            ext('.css', 'leo/external/ckeditor'),
+            ext('.js', 'leo/external/ckeditor'),
+            ext('.json', 'leo/external/ckeditor'),
+            ext('.md', 'leo/external/ckeditor'),
+        # leo/plugins...
+	    # Only include reference files.
+            # ext('.leo', 'leo/plugins'),
+	        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
+	        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
+            ext('.txt', 'leo/plugins'),
+            ext('.py', 'leo/plugins/examples'),
+            ext('.py', 'leo/plugins/test'),
+        # leo/scripts...
+            ext('.bat', 'leo/scripts'),
+            ext('.leo', 'leo/scripts'),
+            ext('.txt', 'leo/scripts'),
+            ext('.py', 'leo/scripts'),
+        # Everything required for unit tests...
+        # The leo/test folder itself is required for
+        # the execute-script command.
+            ext('.leo', 'leo/test'),
+            ext('.py', 'leo/test'),
+            ext('.txt', 'leo/test'),
+            all('leo/test/unittest'),
+            all('leo/test/unittest/input'),
+            all('leo/test/unittest/output'),
+        # leo/www...
+            all('leo/www'),
+]
+
+a = Analysis(
+    ['launchLeo.py'],
+    pathex=[], ###'c:\\leo.repo\\leo-editor'],
+    binaries=None,
+    datas=datas,
+    hiddenimports=hiddenimports,
+    hookspath=None,
+    runtime_hooks=None,
+    excludes=['_tkinter',],
+    win_no_prefer_redirects=None,
+    win_private_assemblies=None,
+    cipher=block_cipher)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(pyz,
+    a.scripts,
+    exclude_binaries=True,
+    name='leo',
+    debug=False,
+    strip=None,
+    upx=True,
+    console=True )
+    
+coll = COLLECT(exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=None,
+    upx=True,
+    name='Leo')
 </t>
 </tnodes>
 </leo_file>
