@@ -78,16 +78,16 @@ datas = [
     # Additional Leo data fles...
     # leo-editor: loaded by LeoPy.leo...
         ('launchLeo-folder.spec', ''),
-	('launchLeo-single.spec', ''),
-	('leo_to_html.xsl', ''),
-	('pylint-leo.py', ''),
+        ('launchLeo-single.spec', ''),
+        ('leo_to_html.xsl', ''),
+        ('pylint-leo.py', ''),
         ('setup.py', ''),
         # leo.commands...
             ext('.py', 'leo/commands'),
         # leo.core...
-	    # Only include reference files.
+            # Only include reference files.
                 # ext('.leo', 'leo/core'),
-		('leo/core/LeoPyRef.leo', 'leo/core'),
+                ('leo/core/LeoPyRef.leo', 'leo/core'),
             ext('.py', 'leo/core'),
             ext('.txt', 'leo/core'),
         # leo.dist...
@@ -126,10 +126,10 @@ datas = [
             ext('.json', 'leo/external/ckeditor'),
             ext('.md', 'leo/external/ckeditor'),
         # leo/plugins...
-	    # Only include reference files.
+            # Only include reference files.
             # ext('.leo', 'leo/plugins'),
-	        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
-	        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
+                ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
+                ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
             ext('.txt', 'leo/plugins'),
             ext('.py', 'leo/plugins/examples'),
             ext('.py', 'leo/plugins/test'),
