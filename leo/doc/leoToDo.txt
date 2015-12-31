@@ -153,6 +153,9 @@ File "/usr/local/lib/python3.5/site-packages/jupyter_client/connect.py", line 18
 raise IOError("Could not find %r in %r" % (filename, path))
 
 OSError: Could not find 'kernel-86433.json' in ['.', '/Users/lo/.ipython/profile_default/security']
+.. @+node:ekr.20151231121326.1: *4* Bug 217: vim plugin does not work as described
+https://github.com/leo-editor/leo-editor/issues/217
+The plugins seems to be pretty much broken.  Only one temp file seems to be created.
 .. @+node:ekr.20151227084623.1: *4* Bug 221: goto-global-line navigating to wrong line reported by PyLint
 https://github.com/leo-editor/leo-editor/issues/221
 
