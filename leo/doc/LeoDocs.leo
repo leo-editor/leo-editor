@@ -2086,7 +2086,10 @@ They contain sphinx markup. See::
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
-To generate these docs, see the next node: "Generating the Users Guide"
+To generate these docs::
+
+    cd leo/doc/html
+    make html
     
 Important files:
 
