@@ -110,8 +110,6 @@ I suspect this is not really a bookmark specific problem. Rather, the point in c
 What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
 .. @+node:ekr.20151231100058.1: *4* Bug 196: traceback using graphcanvas.py
 https://github.com/leo-editor/leo-editor/issues/196
-.. @+node:ekr.20151231095917.1: *4* Bug 201: Leo does not work with PyQt5 5.5.0
-https://github.com/leo-editor/leo-editor/issues/201
 .. @+node:ekr.20151231095352.1: *4* Bug 205: @ or @doc does't work perfectly in @clean 
 @language rest
 
