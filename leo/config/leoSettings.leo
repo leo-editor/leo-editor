@@ -436,6 +436,8 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20160112110352.1"><vh>@data stub-types</vh></v>
+<v t="ekr.20160112111247.1"><vh>@data stub-prefix</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
@@ -11081,6 +11083,31 @@ QFrame#gutter {
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
 <t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
+<t tx="ekr.20160112110352.1"># For use by make-stub-files command.
+# To do: allow per-file overrides.
+aList List
+aList1 List
+aList2 List
+c C
+c1 C
+c2 C
+i int
+j int
+k int
+node ast.Ast
+p P
+p1 P
+p2 P
+s str
+s2 str
+v V
+v1 V
+v2 V</t>
+<t tx="ekr.20160112111247.1"># Lines to start each stub file.
+# These would typically be type aliases:
+# stub prefix line 1
+# stub prefix line 2
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

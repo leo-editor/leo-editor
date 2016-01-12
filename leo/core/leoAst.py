@@ -2962,8 +2962,9 @@ class StubFormatter (AstPatternFormatter):
 #@+node:ekr.20160111112318.1: ** class StubTraverser (AstFullTraverser)
 class StubTraverser (AstFullTraverser):
     
-    def __init__(self, d, output_fn):
+    def __init__(self, c, d, output_fn):
         '''Ctor for StubTraverser class.'''
+        self.c = c
         self.d = d
         self.format = StubFormatter().format
         self.in_function = False
@@ -2986,10 +2987,15 @@ class StubTraverser (AstFullTraverser):
             print(self.indent(s))
     #@+node:ekr.20160111163602.1: *3* st.run
     def run(self, node):
-
+        '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
+        c = self.c
         dir_ = g.os_path_dirname(self.output_fn)
         if g.os_path_exists(dir_):
             self.output_file = open(self.output_fn, 'w')
+            aList = c.config.getData('stub-prefix')
+            if aList:
+                for z in aList:
+                    self.out(z.strip())
             self.visit(node)
             self.output_file.close()
             self.output_file = None

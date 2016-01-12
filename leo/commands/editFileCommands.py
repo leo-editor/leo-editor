@@ -291,20 +291,17 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160111190632.1: ** efc.makeStubFiles
     @cmd('make-stub-files')
     def make_stub_files(self, event):
-        import leo.core.leoAst as leoAst
-        import ast
         #@+others
         #@+node:ekr.20160111202214.1: *3* class MakeStubFile
         class MakeStubFile:
             '''A class to make Python stub (.pyi) files.'''
-            
+            #@+others
+            #@+node:ekr.20160112104836.1: *4* msf.ctors & helpers
             def __init__(self, c):
                 self.c = c
-                self.d = self.make_types_dict(c)
+                self.d = self.scan_types_data(c) or self.make_types_dict(c)
                     # Keys are strings, values are Type objects.
-
-            #@+others
-            #@+node:ekr.20160111202214.2: *4* msf.make_types_dict
+            #@+node:ekr.20160111202214.2: *5* msf.make_types_dict
             def make_types_dict(self, c):
                 '''Return a dict whose keys are names and values are type specs.'''
                 return {
@@ -320,7 +317,22 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     's2': 'str',
                     'v': 'VNode',
                 }
-            #@+node:ekr.20160111202214.3: *4* msf.run
+            #@+node:ekr.20160112104450.1: *5* msf.scan_types_data
+            def scan_types_data(self, c):
+                '''Create self.d from @data stub-types nodes.'''
+                aList = c.config.getData(
+                    'stub-types',
+                    strip_comments=True,
+                    strip_data=True)
+                d = {}
+                for s in aList:
+                    name, value = s.split(None,1)
+                    d[name.strip()] = value.strip()
+                if False:
+                    for key in sorted(d.keys()):
+                        g.trace(key, d.get(key))
+                return d
+            #@+node:ekr.20160111202214.3: *4* msf.run & helper
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''
                 if p.isAnyAtFileNode():
@@ -344,9 +356,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                             break
                     else:
                         g.es('no files found', p.h)
-            #@+node:ekr.20160111202214.4: *4* msf.make_stub_file
+            #@+node:ekr.20160111202214.4: *5* msf.make_stub_file
             def make_stub_file(self, p):
                 '''Make a stub file in ~/stubs for the @<file> node at p.'''
+                import ast
+                import leo.core.leoAst as leoAst
                 assert p.isAnyAtFileNode()
                 fn = p.anyAtFileNodeName()
                 if not fn.endswith('.py'):
@@ -365,7 +379,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 out_fn = out_fn[:-3] + '.pyi'
                 s = open(fn).read()
                 node = ast.parse(s,filename=fn,mode='exec')
-                leoAst.StubTraverser(self.d, out_fn).run(node)
+                leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
             #@-others
         #@-others
         MakeStubFile(self.c).run(self.c.p)
