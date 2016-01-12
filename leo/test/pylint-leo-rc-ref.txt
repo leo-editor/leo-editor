@@ -15,8 +15,8 @@
 # pygtk.require().
 #init-hook=
 
-# Profiled execution.
-profile=no
+# Profiled execution. (to be removed in Pylint 1.6)
+# profile=no
 
 # Add <file or directory> to the black list. It should be a base name, not a
 # path. You may set this option multiple times.
