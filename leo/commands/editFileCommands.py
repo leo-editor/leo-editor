@@ -357,7 +357,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     return
                 stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
                 if g.os_path_exists(stubs):
-                    out_fn = g.os_path_finalize_join(stubs,fn)
+                    base_fn = g.os_path_basename(fn)
+                    out_fn = g.os_path_finalize_join(stubs,base_fn)
                 else:
                     g.es_print('not found', stubs)
                     out_fn = g.os_path_finalize_join(g.app.loadDir, fn)

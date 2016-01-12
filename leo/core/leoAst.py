@@ -2987,11 +2987,16 @@ class StubTraverser (AstFullTraverser):
     #@+node:ekr.20160111163602.1: *3* st.run
     def run(self, node):
 
-        self.output_file = open(self.output_fn, 'w')
-        self.visit(node)
-        self.output_file.close()
-        self.output_file = None
-        g.es_print('wrote', self.output_fn)
+        dir_ = g.os_path_dirname(self.output_fn)
+        if g.os_path_exists(dir_):
+            self.output_file = open(self.output_fn, 'w')
+            self.visit(node)
+            self.output_file.close()
+            self.output_file = None
+            g.es_print('wrote', self.output_fn)
+        else:
+            g.es_print('not found:', dir_)
+
     #@+node:ekr.20160111112426.1: *3* st.visit
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
@@ -3013,9 +3018,12 @@ class StubTraverser (AstFullTraverser):
             self.out('class %s%s:' % (node.name, s))
         # Visit...
         self.level += 1
+        old_in_function = self.in_function
+        self.in_function = False
         for z in node.body:
             self.visit(z)
         self.level -= 1
+        self.in_function = old_in_function
     #@+node:ekr.20160111112723.3: *4* st.FunctionDef & helpers
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
