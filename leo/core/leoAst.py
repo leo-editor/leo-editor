@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 '''AST (Abstract Syntax Tree) related classes.'''
-import leo.core.leoGlobals as g
 import ast
 import os
 import textwrap
+import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper:
@@ -113,6 +113,7 @@ class AstFormatter:
     Also supports optional annotations such as line numbers, file names, etc.
     '''
     # No ctor.
+    # pylint: disable=consider-using-enumerate
     #@+others
     #@+node:ekr.20141012064706.18400: *3*  f.Entries
     #@+node:ekr.20141012064706.18401: *4* f.__call__ (not used)
@@ -137,6 +138,7 @@ class AstFormatter:
             method_name = 'do_' + node.__class__.__name__
             method = getattr(self, method_name)
             s = method(node)
+            # pylint: disable=unidiomatic-typecheck
             assert type(s) == type('abc'), type(s)
             return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
@@ -942,6 +944,7 @@ class AstFullTraverser:
         for z in node.elts:
             self.visit(z)
         # self.visit(node.ctx)
+
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
@@ -1199,7 +1202,7 @@ class AstFullTraverser:
             self.visit(z)
         return None
     #@-others
-#@+node:ekr.20141012064706.18530: ** class AstPatternFormatter
+#@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
     '''
     A subclass of AstFormatter that replaces values of constants by Bool,
@@ -1239,6 +1242,7 @@ class HTMLReportTraverser(AstFullTraverser):
     # To do: show stc attributes in the report.
     # To do: revise report-traverser-debug.css.
     # pylint: disable=no-self-argument
+    # pylint: disable=using-constant-test
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
     def __init__(rt):
@@ -2932,6 +2936,168 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.keyword('yield')
         rt.visit(node.value)
         rt.end_div()
+    #@-others
+#@+node:ekr.20160111133948.1: ** class StubFormatter (AstPatternFormatter)
+class StubFormatter (AstPatternFormatter):
+    #@+others
+    #@+node:ekr.20160111143936.1: *3* sf.Constants & Name
+    # Return generic markers allow better pattern matches.
+
+    def do_BoolOp(self, node): # Python 2.x only.
+        return 'bool'
+
+    def do_Bytes(self, node): # Python 3.x only.
+        return 'bytes' # return str(node.s)
+
+    def do_Name(self, node):
+        return 'bool' if node.id in ('True', 'False') else node.id
+
+    def do_Num(self, node):
+        return 'number' # return repr(node.n)
+
+    def do_Str(self, node):
+        '''This represents a string constant.'''
+        return 'str' # return repr(node.s)
+    #@-others
+#@+node:ekr.20160111112318.1: ** class StubTraverser (AstFullTraverser)
+class StubTraverser (AstFullTraverser):
+    
+    def __init__(self, d, output_fn):
+        '''Ctor for StubTraverser class.'''
+        self.d = d
+        self.format = StubFormatter().format
+        self.in_function = False
+        self.level = 0
+        self.output_file = None
+        self.output_fn = output_fn
+        self.returns = set()
+
+    #@+others
+    #@+node:ekr.20160111113550.1: *3* st.indent & out
+    def indent(self, s):
+        '''Return s, properly indented.'''
+        return '%s%s' % (' ' * 4 * self.level, s)
+
+    def out(self, s):
+        '''Output the string to the console or the file.'''
+        if self.output_file:
+            self.output_file.write(self.indent(s)+'\n')
+        else:
+            print(self.indent(s))
+    #@+node:ekr.20160111163602.1: *3* st.run
+    def run(self, node):
+
+        self.output_file = open(self.output_fn, 'w')
+        self.visit(node)
+        self.output_file.close()
+        self.output_file = None
+        g.es_print('wrote', self.output_fn)
+    #@+node:ekr.20160111112426.1: *3* st.visit
+    def visit(self, node):
+        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        assert isinstance(node, ast.AST), node.__class__.__name__
+        method = getattr(self, 'do_' + node.__class__.__name__)
+        method(node)
+    #@+node:ekr.20160111113607.1: *3* st.Visitors
+    #@+node:ekr.20160111112723.2: *4* st.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef(self, node):
+
+        # Format...
+        if not node.name.startswith('_'):
+            if node.bases:
+                s = '(%s)' % ','.join([self.format(z) for z in node.bases])
+            else:
+                s = ''
+            self.out('class %s%s:' % (node.name, s))
+        # Visit...
+        self.level += 1
+        for z in node.body:
+            self.visit(z)
+        self.level -= 1
+    #@+node:ekr.20160111112723.3: *4* st.FunctionDef & helpers
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef(self, node):
+        
+        # Do nothing if we are already in a function.
+        # We do not generate stubs for inner defs.
+        if self.in_function or node.name.startswith('_'):
+            return
+        # First, visit the function body.
+        self.returns = set()
+        self.in_function = True
+        self.level += 1
+        for z in node.body:
+            self.visit(z)
+        self.level -= 1
+        self.in_function = False
+        # Format *after* traversing
+        self.out('def %s(%s) -> %s: ...' % (
+            node.name,
+            self.format_arguments(node.args),
+            self.format_returns(node)))
+    #@+node:ekr.20160111150912.1: *5* format_arguments & helper
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def format_arguments(self, node):
+        '''
+        Format the arguments node.
+        Similar to AstFormat.do_arguments, but it is not a visitor!
+        '''
+        kind = self.kind(node)
+        assert kind == 'arguments', kind
+        args = [self.format(z) for z in node.args]
+        defaults = [self.format(z) for z in node.defaults]
+        # Assign default values to the last args.
+        result = []
+        n_plain = len(args) - len(defaults)
+        # pylint: disable=consider-using-enumerate
+        for i in range(len(args)):
+            s = self.munge_arg(args[i])
+            if i < n_plain:
+                result.append(s)
+            else:
+                result.append('%s=%s' % (s, defaults[i - n_plain]))
+        # Now add the vararg and kwarg args.
+        name = getattr(node, 'vararg', None)
+        if name: result.append('*' + name)
+        name = getattr(node, 'kwarg', None)
+        if name: result.append('**' + name)
+        return ', '.join(result)
+    #@+node:ekr.20160111155328.1: *6* munge_arg
+    def munge_arg(self, s):
+        '''Add an annotation for s if possible.'''
+        a = self.d.get(s)
+        return '%s: %s' % (s, a) if a else s
+    #@+node:ekr.20160111140401.1: *5* format_returns
+    def format_returns(self, node):
+        '''Calculate the return type.'''
+        def split(s):
+            return '\n     ' + self.indent(s) if len(s) > 30 else s
+            
+        r = list(self.returns)
+        r = [self.format(z) for z in r]
+        # if r: g.trace(r)
+        if len(r) == 0:
+            return 'None'
+        if len(r) == 1:
+            return split(r[0])
+        elif 'None' in r:
+            r.remove('None')
+            return split('Optional[%s]' % ', '.join(r))
+        else:
+            # return 'Any'
+            s = ', '.join(r)
+            if len(s) > 30:
+                return ', '.join(['\n    ' + self.indent(z) for z in r])
+            else:
+                return split(', '.join(r))
+    #@+node:ekr.20160111142025.1: *4* st.Return
+    def do_Return(self, node):
+
+        self.returns.add(node.value)
     #@-others
 #@-others
 #@@language python

@@ -10,111 +10,618 @@ import leo.core.leoGlobals as g
 import leo.core.leoAst as leoAst
 import ast
 import glob
+import imp
 import re
     # Used only in the disused prototype code.
 import time
 #@+others
-#@+node:ekr.20150606024455.1: ** class ShowDataTraverser
-class ShowDataTraverser(leoAst.AstFullTraverser):
+#@+node:ekr.20160109173821.1: ** class BindNames
+class BindNames:
+    '''A class that binds all names to objects without traversing any tree.'''
+    def __init__(self):
+        self.module_context = None
+        self.context = None
+#@+node:ekr.20160109173938.1: *3* bind_all_names
+def bind_all_names(self, module_context):
+    '''Bind all names in the given module context and in all inner contexts.'''
+    self.parent_context = None
+    self.module_context = module_context
+    self.bind_names(module_context)
+#@+node:ekr.20160109174258.1: *3* bind_names
+def bind_names(context):
+    '''Bind all names in the given context and in all inner contexts.'''
+    # First, create objects for all names defined in this context.
+    
+    # Next, bind names in inner contexts.
+    old_parent = self.parent_context
+    self.parent_context = context
+    
+    # Restore the context.
+    self.parent_context = old_parent
+#@+node:ekr.20160109102859.1: ** class Context
+class Context:
     '''
-    Add data about classes, defs, returns and calls to controller's
-    dictionaries.
+    Context class (NEW)
+    
+    Represents a binding context: module, class or def.
+    
+    For any Ast context node N, N.cx is a reference to a Context object.
     '''
-
-    def __init__(self, controller, fn):
-        '''Ctor for ShopDataTraverser class.'''
-        module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
-            # fn, kind, s.
-        self.context_stack = [module_tuple]
-        self.controller = controller
-        self.fn = g.shortFileName(fn)
-        self.formatter = leoAst.AstFormatter()
-            # leoAst.AstPatternFormatter()
-        self.trace = False
     #@+others
-    #@+node:ekr.20150609053332.1: *3* sd.Helpers
-    #@+node:ekr.20150606035006.1: *4* sd.context_names
-    def context_names(self):
-        '''Return the present context names.'''
-        result = []
-        n = len(self.context_stack)
-        for i in n - 1, n - 2:
-            if i >= 0:
-                fn, kind, s = self.context_stack[i]
-                assert kind in ('class', 'def', 'module'), kind
-                if kind == 'module':
-                    result.append(s.strip())
-                else:
-                    # Append the name following the class or def.
-                    i = g.skip_ws(s, 0)
-                    i += len(kind)
-                    i = g.skip_ws(s, i)
-                    j = g.skip_c_id(s, i)
-                    result.append(s[i: j])
-            else:
-                result.append('')
-                break
-        # g.trace(list(reversed(result)))
-        return reversed(result)
-    #@+node:ekr.20150609053010.1: *4* sd.format
-    def format(self, node):
-        '''Return the formatted version of an Ast Node.'''
-        return self.formatter.format(node).strip()
-    #@+node:ekr.20150606024455.62: *3* sd.visit
-    def visit(self, node):
-        '''
-        Visit a *single* ast node. Visitors must visit their children
-        explicitly.
-        '''
-        method = getattr(self, 'do_' + node.__class__.__name__)
-        method(node)
+    #@+node:ekr.20160109103533.1: *3* Context.ctor
+    def __init__ (self, fn, kind, name, node, parent_context):
+        '''Ctor for Context class.'''
+        self.fn = fn
+        self.kind = kind
+        self.name = name
+        self.node = node
+        self.parent_context = parent_context
+        # Name Data...
+        self.defined_names = set()
+        self.global_names = set()
+        self.imported_names = set()
+        self.nonlocal_names = set() ### To do.
+        self.st = {}
+            # Keys are names seen in this context, values are defining contexts.
+        self.referenced_names = set()
+        # Node lists. Entries are Ast nodes...
+        self.inner_contexts_list = []
+        self.minor_contexts_list = []
+        self.assignments_list = []
+        self.calls_list = []
+        self.classes_list = []
+        self.defs_list = []
+        self.expressions_list = []
+        self.returns_list = []
+        self.statements_list = []
+        self.yields_list = []
+        # Add this context to the inner context of the parent context.
+        if parent_context:
+            parent_context.inner_contexts_list.append(self)
+    #@+node:ekr.20160109134527.1: *3* Context.define_name
+    def define_name(self, name):
+        '''Define a name in this context.'''
+        self.defined_names.add(name)
+        if name in self.referenced_names:
+            self.referenced_names.remove(name)
+        ### Old
+            # e = old_cx.st.define_name(name)
+            # e.node = node # 2012/12/25
+            # node.e = e # 2012/12/25
+            # e.self_context = new_cx
+    #@+node:ekr.20160109143040.1: *3* Context.global_name
+    def global_name(self, name):
+        '''Handle a global name in this context.'''
+        self.global_names.add(name)
+        ### Not yet.
+            # Both Python 2 and 3 generate SyntaxWarnings when a name
+            # is used before the corresponding global declarations.
+            # We can make the same assumpution here:
+            # give an *error* if an STE appears in this context for the name.
+            # The error indicates that scope resolution will give the wrong result.
+            # e = cx.st.d.get(name)
+            # if e:
+                # self.u.error('name \'%s\' used prior to global declaration' % (name))
+                # # Add the name to the global_names set in *this* context.
+                # # cx.global_names.add(name)
+            # # Regardless of error, bind the name in *this* context,
+            # # using the STE from the module context.
+            # cx.st.d[name] = module_e
+    #@+node:ekr.20160109144139.1: *3* Context.import_name
+    def import_name(self, module, name):
+        
+        if True and name == '*':
+            g.trace('From x import * not ready yet')
+        else:
+            self.imported_names.add(name)
+        
+        ###
+        # e_list.append(e)
+        # if trace: g.trace('define: (ImportFrom) %s' % (name))
+        # # Get the ModuleContext corresponding to fn2.
+        # mod_cx = self.u.modules_dict.get(fn2)
+        # ###
+        # ### if not mod_cx:
+        # ###    self.u.modules_dict[name] = mod_cx = ModuleContext(name)
+        # if mod_cx:
+            # # module_type is the singleton *constant* type of the module.
+            # module_type = mod_cx.module_type
+            # # Add the constant type to the list of types for the *variable*.
+            # e.defined = True # Indicate there is at least one definition.
+            # e.types_cache[''] = mod_cx.module_type
+            # mname = u.module_name(name)
+            # ### if mname not in self.u.module_names:
+            # ###    self.u.module_names.append(mname)
+            # ### u.stats.n_imports += 1
 
-    def visit_children(self, node):
-        '''Override to ensure this method is never called.'''
-        assert False, 'must visit children explicitly'
-    #@+node:ekr.20150609052952.1: *3* sd.Visitors
-    #@+node:ekr.20150607200422.1: *4* sd.Assign
-    def do_Assign(self, node):
-        '''Handle an assignment statement: Assign(expr* targets, expr value)'''
-        value = self.format(self.visit(node.value))
-        assign_tuples = []
-        for target in node.targets:
-            target = self.format(self.visit(target))
-            s = '%s=%s' % (target, value)
-            context2, context1 = self.context_names()
-            assign_tuple = context2, context1, s
-            assign_tuples.append(assign_tuple)
-            aList = self.controller.assigns_d.get(target, [])
-            aList.extend(assign_tuples)
-            self.controller.calls_d[target] = aList
-    #@+node:ekr.20150607200439.1: *4* sd.AugAssign
-    def do_AugAssign(self, node):
+        # for e in e_list:
+            # e.defs_list.append(node)
+            # e.refs_list.append(node)
+    #@+node:ekr.20160109145526.1: *3* Context.reference_name
+    def reference_name(self, name):
+        
+        self.referenced_names.add(name)
+    #@-others
+#@+node:ekr.20160109185501.1: ** class Obj
+#@+node:ekr.20160108105958.1: ** class Pass1 (AstFullTraverser)
+class Pass1 (leoAst.AstFullTraverser): # V2
+    
+    ''' Pass1 does the following:
+        
+    1. Creates Context objects and injects them into the new_cx field of
+       ast.Class, ast.FunctionDef and ast.Lambda nodes.
+       
+    2. Calls the following Context methods: cx.define/global/import/reference_name.
+       These methods update lists used later to bind names to objects.
+    '''
+
+    #@+others
+    #@+node:ekr.20160108105958.2: *3*  p1.ctor
+    def __init__(self, fn):
+        
+        # Init the base class.
+        leoAst.AstFullTraverser.__init__(self)
+        self.fn = fn
+        # Abbreviations...
+        self.stats = Stats()
+        self.u = ProjectUtils()
+        self.format = leoAst.AstFormatter.format
+        # Present context...
+        self.context = None
+        self.in_attr = False
+            # True: traversing inner parts of an AST.Attribute tree.
+        self.module_context = None
+        self.parent_node = None
+    #@+node:ekr.20160108105958.3: *3*  p1.run (entry point)
+    def run (self,root):
+
+        self.visit(root)
+    #@+node:ekr.20160109125654.1: *3*  p1.visit
+    def visit(self, node):
+        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        assert isinstance(node, ast.AST), node.__class__.__name__
+        # Visit the children with the new parent.
+        old_parent = self.parent_node
+        parent = node
+        method_name = 'do_' + node.__class__.__name__
+        method = getattr(self, method_name)
+        # g.trace(method_name)
+        method(node)
+        self.parent_node = old_parent
+    #@+node:ekr.20160108105958.11: *3* p1.visitors
+    #@+node:ekr.20160109134854.1: *4* Contexts
+    #@+node:ekr.20160108105958.8: *5* p1.def_args_helper
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def def_args_helper (self,cx,node):
+        
+        assert self.kind(node) == 'arguments'
+        self.visit_list(node.args)
+        self.visit_list(node.defaults)
+        for field in ('vararg','kwarg'): # node.field is a string.
+            name = getattr(node,field,None)
+            if name:
+                ### e = cx.st.define_name(name)
+                self.stats.n_param_names += 1
+    #@+node:ekr.20160108105958.16: *5* p1.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef (self,node):
+
+        old_cx = self.context
+        name = node.name
+        # Define the class name in the old context.
+        old_cx.define_name(name)
+        # Visit bases in the old context.
+        bases = self.visit_list(node.bases)
+        new_cx = Context(
+            fn=None,
+            kind='class',
+            name=name,
+            node=node,
+            parent_context=old_cx)
+        setattr(node,'new_cx',new_cx)
+        # Visit the body in the new context.
+        self.context = new_cx
+        self.visit_list(node.body)
+        self.context = old_cx
+        # Stats.
+        old_cx.classes_list.append(new_cx)
+    #@+node:ekr.20160108105958.19: *5* p1.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef (self,node):
+        
+        # Define the function/method name in the old context.
+        old_cx = self.context
+        name = node.name
+        old_cx.define_name(name)
+        # Create the new context.
+        new_cx = Context(
+            fn=None,
+            kind='def',
+            name=name,
+            node=node,
+            parent_context=old_cx)
+        setattr(node,'new_cx',new_cx) # Bug fix.
+        # Visit in the new context...
+        self.context = new_cx
+        self.def_args_helper(new_cx,node.args)
+        self.visit_list(node.body)
+        self.context = old_cx
+        # Stats
+        old_cx.defs_list.append(new_cx)
+            ### Old
+            # args = node.args.args
+            # n = len(args) if args else 0
+            # d = self.stats.formal_args_dict
+            # d[n] = 1 + d.get(n,0)
+    #@+node:ekr.20160108105958.23: *5* p1.Interactive
+    def do_Interactive(self,node):
+        
+        assert False,'Interactive context not supported'
+    #@+node:ekr.20160108105958.24: *5* p1.Lambda
+    def do_Lambda (self,node):
+
+        # Synthesize a lambda name in the old context.
+        # This name must not conflict with split names of the form name@n.
+        old_cx = self.context
+        name = 'Lambda@@%s' % self.stats.n_lambdas
+        # Define a Context for the 'lambda' variables.
+        new_cx = Context(
+            fn=None,
+            kind='lambda',
+            name=name,
+            node=node,
+            parent_context=old_cx)
+        setattr(node,'new_cx',new_cx)
+        # Evaluate expression in the new context.
+        self.context = new_cx
+        self.def_args_helper(new_cx,node.args)
+        self.visit(node.body)
+        self.context = old_cx
+        # Stats...
+        self.stats.n_lambdas += 1
+    #@+node:ekr.20160108105958.26: *5* p1.Module
+    def do_Module (self,node):
+
+        ### Not yet: Get the module context from the global dict if possible.
+        new_cx = Context(
+            fn=self.fn,
+            kind='module',
+            name=None,
+            node=node,
+            parent_context=None)
+        self.context = new_cx
+        self.visit_list(node.body)
+        self.context = None
+    #@+node:ekr.20160109135022.1: *4* Expressions
+    #@+node:ekr.20160108105958.13: *5* p1.Attribute (Revise)
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self,node):
+
+        # Visit...
+        cx = self.context
+        old_attr,self.in_attr = self.in_attr,True
+        ctx = self.kind(node.ctx)
+        self.visit(node.value)
+        # self.visit(node.ctx)
+        self.in_attr = old_attr
+        if not self.in_attr:
+            base_node = node ### self.attribute_base(node)
+            ### assert base_node
+            kind = self.kind(base_node)
+            if kind in ('Builtin','Name'):
+                base_name = base_node.id
+                ### assert base_node and base_name
+                ### e = cx.st.add_name(base_name)
+                ### e.refs_list.append(base_node)
+                ### e.add_chain(base,node) ### ?
+            elif kind in ('Dict','List','Num','Str','Tuple',):
+                pass
+            elif kind in ('BinOp','UnaryOp'):
+                pass
+            else:
+                assert False,kind
+        # Stats...
+        self.stats.n_attributes += 1
+    #@+node:ekr.20160108105958.17: *5* p1.Expr
+    # Expr(expr value)
+
+    def do_Expr(self,node):
+        
+        # Visit...
+        cx = self.context
+        self.visit(node.value)
+        # Stats...
+        self.stats.n_expressions += 1
+        cx.expressions_list.append(node)
+        cx.statements_list.append(node)
+    #@+node:ekr.20160108105958.27: *5* p1.Name (REWRITE)
+    def do_Name(self,node):
+
+        trace = False
+        cx  = self.context
+        ctx = self.kind(node.ctx)
+        name = node.id
+        
+        ###
+            # # Create the symbol table entry, even for builtins.
+            # e = cx.st.add_name(name)
+            # setattr(node,'e',e)
+            # setattr(node,'cx',cx)
+        
+        def_flag,ref_flag=False,False
+        
+        if ctx in ('AugLoad','AugStore','Load'):
+            # Note: AugStore does *not* define the symbol.
+            ### e.referenced = ref_flag = True
+            cx.reference_name(name)
+            self.stats.n_load_names += 1
+        elif ctx == 'Store':
+            # if name not in cx.global_names:
+            ### e.defined = def_flag = True
+            if trace: g.trace('Store: %s in %s' % (name,cx))
+            self.stats.n_store_names += 1
+        elif ctx == 'Param':
+            if trace: g.trace('Param: %s in %s' % (name,cx))
+            ### e.defined = def_flag = True
+            self.stats.n_param_refs += 1
+        else:
+            assert ctx == 'Del',ctx
+            ### e.referenced = ref_flag = True
+            self.stats.n_del_names += 1
+
+        ###
+        # if isPython3:
+            # if name in self.u.module_names:
+                # return None
+        # else:
+            # if name in dir(__builtin__) or name in self.u.module_names:
+                # return None
+
+        ###
+        # if not self.in_attr:
+            # if def_flag: e.defs_list.append(node)
+            # if ref_flag: e.refs_list.append(node)
+    #@+node:ekr.20160109140648.1: *4* Imports
+    #@+node:ekr.20160108105958.21: *5* p1.Import
+    #@+at From Guido:
+    # 
+    # import x            -->  x = __import__('x')
+    # import x as y       -->  y = __import__('x')
+    # import x.y.z        -->  x = __import__('x.y.z')
+    # import x.y.z as p   -->  p = __import__('x.y.z').y.z
+    #@@c
+
+    def do_Import(self,node):
         '''
-        Handle an augmented assignement:
-        AugAssign(expr target, operator op, expr value).
+        Add the imported file to u.files_list if needed
+        and create a context for the file.'''
+        trace = False
+        cx = self.context
+        cx.statements_list.append(node)
+        e_list,names = [],[]
+        for fn,asname in self.get_import_names(node):
+            fn2 = self.resolve_import_name(fn)
+            ### Not yet.
+            # # Important: do *not* analyze modules not in the files list.
+            # if fn2:
+                # mname = self.u.module_name(fn2)
+                # if g.shortFileName(fn2) in self.u.files_list: 
+                    # if mname not in self.u.module_names:
+                        # self.u.module_names.append(mname)
+                # # if trace: g.trace('%s as %s' % (mname,asname))
+                # def_name = asname or mname
+                # names.append(def_name)
+                # e = cx.st.define_name(def_name) # sets e.defined.
+                # cx.imported_symbols_list.append(def_name)
+                # if trace: g.trace('define: (Import) %10s in %s' % (def_name,cx))
+                # e_list.append(e)
+
+                # # Add the constant type to the list of types for the *variable*.
+                # mod_cx = self.u.modules_dict.get(fn2) or LibraryModuleContext(self.u,fn2)
+                # e.types_cache[''] = mod_cx.module_type
+                # ### self.u.stats.n_imports += 1
+            # else:
+                # if trace: g.trace('can not resolve %s in %s' % (fn,cx))
+
+        # for e in e_list:
+            # e.defs_list.append(node)
+            # e.refs_list.append(node)
+    #@+node:ekr.20160108105958.22: *5* p1.ImportFrom
+    #@+at From Guido:
+    #     
+    # from p.q import x       -->  x = __import__('p.q', fromlist=['x']).x
+    # from p.q import x as y  -->  y = __import__('p.q', fromlist=['x']).x
+    # from ..x.y import z     -->  z = __import('x.y', level=2, fromlist=['z']).z
+    # 
+    # All these equivalences are still somewhat approximate; __import__
+    # isn't looked up the way other variables are looked up (it is taken
+    # from the current builtins), and if the getattr operation in the "from"
+    # versions raises AttributeError that is translated into ImportError.
+    # 
+    # There's also a subtlety where "import x.y" implies that y must be a
+    # submodule/subpackage of x, whereas in "from x import y" it may be
+    # either a submodule/subpackage or a plain attribute (e.g. a class,
+    # function or some other variable).
+    #@@c
+
+    def do_ImportFrom(self,node):
         '''
-        target = self.format(self.visit(node.target))
-        s = '%s=%s' % (target, self.format(self.visit(node.value)))
-        context2, context1 = self.context_names()
-        assign_tuple = context2, context1, s
-        aList = self.controller.assigns_d.get(target, [])
-        aList.append(assign_tuple)
-        self.controller.calls_d[target] = aList
-    #@+node:ekr.20150606024455.16: *4* sd.Call
-    def do_Call(self, node):
+        Add the imported file to u.files_list if needed
+        and add the imported symbols to the *present* context.
         '''
-        Handle a call statement:
-        Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-        '''
-        # Update data.
-        s = self.format(node)
-        name = self.format(node.func)
-        context2, context1 = self.context_names()
-        call_tuple = context2, context1, s
-        aList = self.controller.calls_d.get(name, [])
-        aList.append(call_tuple)
-        self.controller.calls_d[name] = aList
-        # Visit.
+        trace = False ; dump = False
+        cx = self.context
+        cx.statements_list.append(node)
+        module = self.resolve_import_name(node.module)
+        ###
+        # if m and m not in self.u.files_list:
+            # if trace: g.trace('adding module',m)
+            # self.u.files_list.append(m)
+        # e_list,names = [],[]
+        for fn,asname in self.get_import_names(node):
+            fn2 = asname or fn
+            cx.import_name(fn2)
+    #@+node:ekr.20160108105958.9: *5* p1.get_import_names
+    def get_import_names (self,node):
+        '''Return a list of the the full file names in the import statement.'''
+        result = []
+        for ast2 in node.names:
+
+            if self.kind(ast2) == 'alias':
+                data = ast2.name,ast2.asname
+                result.append(data)
+            else:
+                g.trace('unsupported kind in Import.names list',self.kind(ast2))
+        return result
+    #@+node:ekr.20160108105958.10: *5* p1.resolve_import_name
+    def resolve_import_name (self,spec):
+        '''Return the full path name corresponding to the import spec.'''
+        trace = False ; verbose = False
+        if not spec:
+            if trace: g.trace('no spec')
+            return ''
+        ### This may not work for leading dots.
+        aList,path,paths = spec.split('.'),None,None
+        for name in aList:
+            try:
+                f,path,description = imp.find_module(name,paths)
+                if not path: break
+                paths = [path]
+                if f: f.close()
+            except ImportError:
+                # Important: imports can fail due to Python version.
+                # Thus, such errors are not necessarily searious.
+                if trace: g.trace('failed: %s paths: %s cx: %s' % (
+                    name,paths,self.context))
+                path = None
+                break
+        if trace and verbose: g.trace(name,path)
+        if not path:
+            if trace: g.trace('no path')
+            return ''
+        if path.endswith('.pyd'):
+            if trace: g.trace('pyd: %s' % path)
+            return ''
+        else:
+            if trace: g.trace('path: %s' % path)
+            return path
+    #@+node:ekr.20160108105958.29: *4* Operators... To be deleted???
+    # operator = Add | BitAnd | BitOr | BitXor | Div
+    # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
+
+    def do_Add(self,node):       setattr(node,'op_name','+')
+    def do_BitAnd(self,node):    setattr(node,'op_name','&')
+    def do_BitOr(self,node):     setattr(node,'op_name','|')
+    def do_BitXor(self,node):    setattr(node,'op_name','^')
+    def do_Div(self,node):       setattr(node,'op_name','/')
+    def do_FloorDiv(self,node):  setattr(node,'op_name','//')
+    def do_LShift(self,node):    setattr(node,'op_name','<<')
+    def do_Mod(self,node):       setattr(node,'op_name','%')
+    def do_Mult(self,node):      setattr(node,'op_name','*')
+    def do_Pow(self,node):       setattr(node,'op_name','**')
+    def do_RShift(self,node):    setattr(node,'op_name','>>')
+    def do_Sub(self,node):       setattr(node,'op_name','-')
+
+    # boolop = And | Or
+    def do_And(self,node):       setattr(node,'op_name',' and ')
+    def do_Or(self,node):        setattr(node,'op_name',' or ')
+
+    # cmpop = Eq | Gt | GtE | In |
+    # Is | IsNot | Lt | LtE | NotEq | NotIn
+    def do_Eq(self,node):        setattr(node,'op_name','==')
+    def do_Gt(self,node):        setattr(node,'op_name','>')
+    def do_GtE(self,node):       setattr(node,'op_name','>=')
+    def do_In(self,node):        setattr(node,'op_name',' in ')
+    def do_Is(self,node):        setattr(node,'op_name',' is ')
+    def do_IsNot(self,node):     setattr(node,'op_name',' is not ')
+    def do_Lt(self,node):        setattr(node,'op_name','<')
+    def do_LtE(self,node):       setattr(node,'op_name','<=')
+    def do_NotEq(self,node):     setattr(node,'op_name','!=')
+    def do_NotIn(self,node):     setattr(node,'op_name',' not in ')
+
+    # unaryop = Invert | Not | UAdd | USub
+    def do_Invert(self,node):   setattr(node,'op_name','~')
+    def do_Not(self,node):      setattr(node,'op_name',' not ')
+    def do_UAdd(self,node):     setattr(node,'op_name','+')
+    def do_USub(self,node):     setattr(node,'op_name','-')
+    #@+node:ekr.20160109134929.1: *4* Minor contexts
+    #@+node:ekr.20160109130719.1: *5* p1.comprehension (to do)
+    # comprehension (expr target, expr iter, expr* ifs)
+
+    def do_comprehension(self, node):
+
+        # Visit...
+        self.visit(node.target) # A name.
+        self.visit(node.iter) # An attribute.
+        for z in node.ifs:
+            self.visit(z)
+    #@+node:ekr.20160108105958.18: *5* p1.For
+    # For(expr target, expr iter, stmt* body, stmt* orelse)
+
+    def do_For(self,node):
+
+        # Visit...
+        cx = self.context
+        self.visit(node.target)
+        self.visit(node.iter)
+        for z in node.body:
+            self.visit(z)
+        for z in node.orelse:
+            self.visit(z)
+        # Stats...
+        self.stats.n_fors += 1
+        cx.statements_list.append(node)
+        cx.assignments_list.append(node)
+    #@+node:ekr.20160108105958.30: *5* p1.With
+    def do_With(self,node):
+        
+        # Visit...
+        cx = self.context
+        self.visit(node.context_expr)
+        if node.optional_vars:
+            self.visit(node.optional_vars)
+        for z in node.body:
+            self.visit(z)
+        # Stats...
+        self.stats.n_withs += 1
+        cx.statements_list.append(node)
+    #@+node:ekr.20160109135003.1: *4* Statements
+    #@+node:ekr.20160108105958.12: *5* p1.Assign
+    def do_Assign(self,node):
+        
+        # Visit...
+        for z in node.targets:
+            self.visit(z)
+        self.visit(node.value)
+        # Stats...
+        cx = self.context
+        self.stats.n_assignments += 1
+        cx.assignments_list.append(node)
+        cx.statements_list.append(node)
+    #@+node:ekr.20160108105958.14: *5* p1.AugAssign
+    # AugAssign(expr target, operator op, expr value)
+
+    def do_AugAssign(self,node):
+        
+        # Visit...
+        self.visit(node.target)
+        self.visit(node.value)
+        # Stats...
+        cx = self.context
+        self.stats.n_assignments += 1
+        cx.assignments_list.append(node)
+        cx.statements_list.append(node)
+            
+    #@+node:ekr.20160108105958.15: *5* p1.Call
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+    def do_Call(self,node):
+        
+        # Visit...
         self.visit(node.func)
         for z in node.args:
             self.visit(z)
@@ -124,76 +631,37 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(node.starargs)
         if getattr(node, 'kwargs', None):
             self.visit(node.kwargs)
-    #@+node:ekr.20150606024455.3: *4* sd.ClassDef
-    def do_ClassDef(self, node):
-        '''
-        Handle a class defintion:
-        ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-        '''
-        # Format.
-        if node.bases:
-            bases = [self.format(z) for z in node.bases]
-            s = 'class %s(%s):' % (node.name, ','.join(bases))
-        else:
-            s = 'class %s:' % node.name
-        if self.trace: g.trace(s)
-        # Enter the new context.
-        context_tuple = self.fn, 'class', s
-        self.context_stack.append(context_tuple)
-        # Update data.
-        class_tuple = self.context_stack[: -1], s
-        aList = self.controller.classes_d.get(node.name, [])
-        aList.append(class_tuple)
-        self.controller.classes_d[node.name] = aList
-        # Visit.
-        for z in node.bases:
-            self.visit(z)
-        for z in node.body:
-            self.visit(z)
-        for z in node.decorator_list:
-            self.visit(z)
-        # Leave the context.
-        self.context_stack.pop()
-    #@+node:ekr.20150606024455.4: *4* sd.FunctionDef
-    def do_FunctionDef(self, node):
-        '''
-        Visit a function defintion:
-        FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-        '''
-        # Format.
-        args = self.format(node.args) if node.args else ''
-        s = 'def %s(%s):' % (node.name, args)
-        if self.trace: g.trace(s)
-        # Enter the new context.
-        context_tuple = self.fn, 'def', s
-        self.context_stack.append(context_tuple)
-        # Update data.
-        def_tuple = self.context_stack[: -1], s
-        aList = self.controller.defs_d.get(node.name, [])
-        aList.append(def_tuple)
-        self.controller.defs_d[node.name] = aList
-        # Visit.
-        for z in node.decorator_list:
-            self.visit(z)
-        self.visit(node.args)
-        for z in node.body:
-            self.visit(z)
-        # Leave the context.
-        self.context_stack.pop()
-    #@+node:ekr.20150606024455.55: *4* sd.Return
-    def do_Return(self, node):
-        '''Handle a 'return' statement: Return(expr? value)'''
-        # Update data.
-        s = self.format(node)
-        if self.trace: g.trace(s)
-        context, name = self.context_names()
-        aList = self.controller.returns_d.get(name, [])
-        return_tuple = context, s
-        aList.append(return_tuple)
-        self.controller.returns_d[name] = aList
-        # Visit.
+        # Stats...
+        cx = self.context
+        self.stats.n_calls += 1
+        cx.calls_list.append(node)
+        ###
+        # n = len(node.args or []) + int(bool(node.starargs)) + int(bool(node.kwargs))
+        # d = self.stats.actual_args_dict
+        # d[n] = 1 + d.get(n,0)
+    #@+node:ekr.20160108105958.20: *5* p1.Global
+    def do_Global(self,node):
+
+        # Visit
+        cx = self.context
+        for name in node.names:
+            cx.global_name(name)
+        # Stats...
+        cx.statements_list.append(node)
+        self.stats.n_globals += 1
+    #@+node:ekr.20160108105958.28: *5* p1.Return
+    def do_Return(self,node):
+
+        # Visit...
+        ### if getattr(node,'value'):
         if node.value:
             self.visit(node.value)
+        # Stats...
+        self.stats.n_returns += 1
+        cx = self.context
+        cx.returns_list.append(node)
+        cx.statements_list.append(node)
+        # g.trace('%s %s' % (cx.name,self.format(node)))
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:
@@ -453,34 +921,13 @@ class ShowData:
         if trace:
             g.trace('push', len(self.context_stack), s.rstrip())
         self.context_indent = indent
-    #@+node:ekr.20150605140911.1: *4* context_names
-    def context_names(self):
-        '''Return the present context name.'''
-        if self.context_stack:
-            result = []
-            for stack_i in -1, -2:
-                try:
-                    fn, kind, indent, s = self.context_stack[stack_i]
-                except IndexError:
-                    result.append('')
-                    break
-                s = s.strip()
-                assert kind in ('class', 'def'), kind
-                i = g.skip_ws(s, 0)
-                i += len(kind)
-                i = g.skip_ws(s, i)
-                j = g.skip_c_id(s, i)
-                result.append(s[i: j])
-            return reversed(result)
-        else:
-            return ['', '']
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):
         '''Print a summary of the test results.'''
         make = True
-        multiple_only = True # True only show defs defined in more than one place.
+        multiple_only = False # True only show defs defined in more than one place.
         c = self.c
-        result = ['@killcolor']
+        result = ['@killcolor\n']
         for name in sorted(self.defs_d):
             aList = self.defs_d.get(name, [])
             if len(aList) > 1 or not multiple_only: # not name.startswith('__') and (
@@ -627,9 +1074,327 @@ class ShowData:
                 else:
                     result.append('%s%s: %s' % (
                         ' ' * (2 + pad), context1, s))
+    #@+node:ekr.20150605140911.1: *3* context_names
+    def context_names(self):
+        '''Return the present context name.'''
+        if self.context_stack:
+            result = []
+            for stack_i in -1, -2:
+                try:
+                    fn, kind, indent, s = self.context_stack[stack_i]
+                except IndexError:
+                    result.append('')
+                    break
+                s = s.strip()
+                assert kind in ('class', 'def'), kind
+                i = g.skip_ws(s, 0)
+                i += len(kind)
+                i = g.skip_ws(s, i)
+                j = g.skip_c_id(s, i)
+                result.append(s[i: j])
+            return reversed(result)
+        else:
+            return ['', '']
     #@-others
+#@+node:ekr.20150606024455.1: ** class ShowDataTraverser
+class ShowDataTraverser(leoAst.AstFullTraverser):
+    '''
+    Add data about classes, defs, returns and calls to controller's
+    dictionaries.
+    '''
+
+    def __init__(self, controller, fn):
+        '''Ctor for ShopDataTraverser class.'''
+        module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
+            # fn, kind, s.
+        self.context_stack = [module_tuple]
+        self.controller = controller
+        self.fn = g.shortFileName(fn)
+        self.formatter = leoAst.AstFormatter()
+            # leoAst.AstPatternFormatter()
+        self.trace = False
+    #@+others
+    #@+node:ekr.20150609053332.1: *3* sd.Helpers
+    #@+node:ekr.20150606035006.1: *4* sd.context_names
+    def context_names(self):
+        '''Return the present context names.'''
+        result = []
+        n = len(self.context_stack)
+        for i in n - 1, n - 2:
+            if i >= 0:
+                fn, kind, s = self.context_stack[i]
+                assert kind in ('class', 'def', 'module'), kind
+                if kind == 'module':
+                    result.append(s.strip())
+                else:
+                    # Append the name following the class or def.
+                    i = g.skip_ws(s, 0)
+                    i += len(kind)
+                    i = g.skip_ws(s, i)
+                    j = g.skip_c_id(s, i)
+                    result.append(s[i: j])
+            else:
+                result.append('')
+                break
+        # g.trace(list(reversed(result)))
+        return reversed(result)
+    #@+node:ekr.20150609053010.1: *4* sd.format
+    def format(self, node):
+        '''Return the formatted version of an Ast Node.'''
+        return self.formatter.format(node).strip()
+    #@+node:ekr.20150606024455.62: *3* sd.visit
+    def visit(self, node):
+        '''
+        Visit a *single* ast node. Visitors must visit their children
+        explicitly.
+        '''
+        method = getattr(self, 'do_' + node.__class__.__name__)
+        method(node)
+
+    def visit_children(self, node):
+        '''Override to ensure this method is never called.'''
+        assert False, 'must visit children explicitly'
+    #@+node:ekr.20150609052952.1: *3* sd.Visitors
+    #@+node:ekr.20150607200422.1: *4* sd.Assign
+    def do_Assign(self, node):
+        '''Handle an assignment statement: Assign(expr* targets, expr value)'''
+        value = self.format(self.visit(node.value))
+        assign_tuples = []
+        for target in node.targets:
+            target = self.format(self.visit(target))
+            s = '%s=%s' % (target, value)
+            context2, context1 = self.context_names()
+            assign_tuple = context2, context1, s
+            assign_tuples.append(assign_tuple)
+            aList = self.controller.assigns_d.get(target, [])
+            aList.extend(assign_tuples)
+            self.controller.calls_d[target] = aList
+    #@+node:ekr.20150607200439.1: *4* sd.AugAssign
+    def do_AugAssign(self, node):
+        '''
+        Handle an augmented assignement:
+        AugAssign(expr target, operator op, expr value).
+        '''
+        target = self.format(self.visit(node.target))
+        s = '%s=%s' % (target, self.format(self.visit(node.value)))
+        context2, context1 = self.context_names()
+        assign_tuple = context2, context1, s
+        aList = self.controller.assigns_d.get(target, [])
+        aList.append(assign_tuple)
+        self.controller.calls_d[target] = aList
+    #@+node:ekr.20150606024455.16: *4* sd.Call
+    def do_Call(self, node):
+        '''
+        Handle a call statement:
+        Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+        '''
+        # Update data.
+        s = self.format(node)
+        name = self.format(node.func)
+        context2, context1 = self.context_names()
+        call_tuple = context2, context1, s
+        aList = self.controller.calls_d.get(name, [])
+        aList.append(call_tuple)
+        self.controller.calls_d[name] = aList
+        # Visit.
+        self.visit(node.func)
+        for z in node.args:
+            self.visit(z)
+        for z in node.keywords:
+            self.visit(z)
+        if getattr(node, 'starargs', None):
+            self.visit(node.starargs)
+        if getattr(node, 'kwargs', None):
+            self.visit(node.kwargs)
+    #@+node:ekr.20150606024455.3: *4* sd.ClassDef
+    def do_ClassDef(self, node):
+        '''
+        Handle a class defintion:
+        ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+        '''
+        # Format.
+        if node.bases:
+            bases = [self.format(z) for z in node.bases]
+            s = 'class %s(%s):' % (node.name, ','.join(bases))
+        else:
+            s = 'class %s:' % node.name
+        if self.trace: g.trace(s)
+        # Enter the new context.
+        context_tuple = self.fn, 'class', s
+        self.context_stack.append(context_tuple)
+        # Update data.
+        class_tuple = self.context_stack[: -1], s
+        aList = self.controller.classes_d.get(node.name, [])
+        aList.append(class_tuple)
+        self.controller.classes_d[node.name] = aList
+        # Visit.
+        for z in node.bases:
+            self.visit(z)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        # Leave the context.
+        self.context_stack.pop()
+    #@+node:ekr.20150606024455.4: *4* sd.FunctionDef
+    def do_FunctionDef(self, node):
+        '''
+        Visit a function defintion:
+        FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+        '''
+        # Format.
+        args = self.format(node.args) if node.args else ''
+        s = 'def %s(%s):' % (node.name, args)
+        if self.trace: g.trace(s)
+        # Enter the new context.
+        context_tuple = self.fn, 'def', s
+        self.context_stack.append(context_tuple)
+        # Update data.
+        def_tuple = self.context_stack[: -1], s
+        aList = self.controller.defs_d.get(node.name, [])
+        aList.append(def_tuple)
+        self.controller.defs_d[node.name] = aList
+        # Visit.
+        for z in node.decorator_list:
+            self.visit(z)
+        self.visit(node.args)
+        for z in node.body:
+            self.visit(z)
+        # Leave the context.
+        self.context_stack.pop()
+    #@+node:ekr.20150606024455.55: *4* sd.Return
+    def do_Return(self, node):
+        '''Handle a 'return' statement: Return(expr? value)'''
+        # Update data.
+        s = self.format(node)
+        if self.trace: g.trace(s)
+        context, name = self.context_names()
+        aList = self.controller.returns_d.get(name, [])
+        return_tuple = context, s
+        aList.append(return_tuple)
+        self.controller.returns_d[name] = aList
+        # Visit.
+        if node.value:
+            self.visit(node.value)
+    #@-others
+#@+node:ekr.20160109150703.1: ** class Stats
+class Stats:
+    '''A class containing global statistics & other data'''
+    #@+others
+    #@+node:ekr.20160109150703.2: *3*  sd.ctor
+    def __init__ (self):
+
+        # Files...
+        # self.completed_files = [] # Files handled by do_files.
+        # self.failed_files = [] # Files that could not be opened.
+        # self.files_list = [] # Files given by user or by import statements.
+        # self.module_names = [] # Module names corresponding to file names.
+        
+        # Contexts.
+        # self.context_list = {}
+            # Keys are fully qualified context names; values are contexts.
+        # self.modules_dict = {}
+            # Keys are full file names; values are ModuleContext's.
+        
+        # Statistics...
+        # self.n_chains = 0
+        self.n_contexts = 0
+        # self.n_errors = 0
+        self.n_lambdas = 0
+        self.n_modules = 0
+        # self.n_relinked_pointers = 0
+        # self.n_resolvable_names = 0
+        # self.n_resolved_contexts = 0
+        # self.n_relinked_names = 0
+        
+        # Names...
+        self.n_attributes = 0
+        self.n_expressions = 0
+        self.n_ivars = 0
+        self.n_names = 0        # Number of symbol table entries.
+        self.n_del_names = 0
+        self.n_load_names = 0
+        self.n_param_names = 0
+        self.n_param_refs = 0
+        self.n_store_names = 0
+        
+        # Statements...
+        self.n_assignments = 0
+        self.n_calls = 0
+        self.n_classes = 0
+        self.n_defs = 0
+        self.n_fors = 0
+        self.n_globals = 0
+        self.n_imports = 0
+        self.n_lambdas = 0
+        self.n_list_comps = 0
+        self.n_returns = 0
+        self.n_withs = 0
+        
+        # Times...
+        self.parse_time = 0.0
+        self.pass1_time = 0.0
+        self.pass2_time = 0.0
+        self.total_time = 0.0
+    #@+node:ekr.20160109150703.6: *3* sd.print_times
+    def print_times (self):
+        
+        sd = self
+        times = (
+            'parse_time',
+            'pass1_time',
+            # 'pass2_time', # the resolve_names pass is no longer used.
+            'total_time',
+        )
+        max_n = 5
+        for s in times:
+            max_n = max(max_n,len(s))
+        print('\nScan times...\n')
+        for s in times:
+            pad = ' ' * (max_n - len(s))
+            print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
+        print('')
+    #@+node:ekr.20160109150703.7: *3* sd.print_stats
+    def print_stats (self):
+        
+        sd = self
+        table = (
+            '*', 'errors',
+
+            '*Contexts',
+            'classes','contexts','defs','modules',
+            
+            '*Statements',
+            'assignments','calls','fors','globals','imports',
+            'lambdas','list_comps','returns','withs',
+            
+            '*Names',
+            'attributes','del_names','load_names','names',
+            'param_names','param_refs','store_names',
+            #'resolvable_names','relinked_names','relinked_pointers',
+            # 'ivars',
+            # 'resolved_contexts',
+        )
+        max_n = 5
+        for s in table:
+            max_n = max(max_n,len(s))
+        print('\nStatistics...\n')
+        for s in table:
+            var = 'n_%s' % s
+            pad = ' ' * (max_n - len(s))
+            if s.startswith('*'):
+                if s[1:].strip():
+                    print('\n%s\n' % s[1:])
+                else:
+                    pass # print('')
+            else:
+                pad = ' ' * (max_n - len(s))
+                print('%s%s: %s' % (pad,s,getattr(sd,var)))
+        print('')
+    #@-others
+    
 #@+node:ekr.20150704135836.1: ** test
-def test(files):
+def test(c, files):
     r'''
     A stand-alone version of @button show-data.  Call as follows:
         
@@ -643,7 +1408,7 @@ def test(files):
         leoCheck.test(files)
     '''
     import leo.core.leoCheck as leoCheck
-    leoCheck.ShowData(c=None).run(files)
+    leoCheck.ShowData(c=c).run(files)
 #@-others
 #@@language python
 #@@tabwidth -4
