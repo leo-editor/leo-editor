@@ -1810,6 +1810,7 @@ class Commands(object):
             # Test  ((x)(unmatched
             #@+node:ekr.20160119104148.1: *7* mb.oops
             def oops(self, s):
+                '''Report an error in the match-brackets command.'''
                 g.es(s, color='red')
             #@+node:ekr.20160119094053.1: *7* mb.run
             def run(self):
