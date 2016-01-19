@@ -245,7 +245,8 @@ def onIconDoubleClickNA(tag, keywords):
 #@+node:TL.20080507213950.7: ** init (nodeActions.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.blue("nodeActions: Init")
+    if not g.app.batchMode:
+        g.blue("nodeActions: Init")
     ok = not g.app.unitTesting # Dangerous for unit testing.
     if ok:
         g.registerHandler("icondclick1", onIconDoubleClickNA)

@@ -47,19 +47,19 @@
 </v>
 <v t="ekr.20140808103117.18035"><vh>@persistence</vh>
 <v t="ekr.20140808103117.18036"><vh>@data:@auto ../test/qtui_generate.py</vh>
-<v t="ekr.20150517150846.1"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150517150846.2"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20150517150846.3"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150517150846.4"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20150517150846.5"><vh>@gnxs</vh></v>
+<v t="ekr.20151226101445.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
@@ -70,7 +70,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005505302e332e3071017d7102285808000000616e6e6f7461746571037d71042855087072696f7269747971054d0f27550a707269736574646174657106550a323031352d30352d3237710775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -88,8 +88,7 @@
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
-<v t="ekr.20150521115018.1" descendentVnodeUnknownAttributes="7d71002855013071017d7102285508616e6e6f7461746571037d71042855087072696f7269747971054d0f27550870726f6772657373710655007107550874696d655f72657171086807550a707269736574646174657109550a323031352d30352d3330710a75550b6c696e65594f6666736574710b4b00755505302e322e35710c7d710d285508616e6e6f74617465710e7d710f2855087072696f7269747971104d0f27550a707269736574646174657111550a323031352d30352d3330711275550b6c696e65594f666673657471134b0075752e"
-expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
+<v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
@@ -98,7 +97,7 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -110,7 +109,7 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285505302e332e3271017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6174696d657107580d000000313331393436373035302e34387108755505302e332e3371097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6174696d65710f580d000000313332303433343235372e33367110755505302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6174696d657117580d000000313331393534393339302e38397118755505302e332e3171197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6174696d65711f580c000000313332303432323637302e397120755505302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755505302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -163,6 +162,8 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 </v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20151228151130.1"><vh>@clean ../../launchLeo-single.spec</vh></v>
+<v t="ekr.20151228151148.1"><vh>@clean ../../launchLeo-folder.spec</vh></v>
 <v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
 <v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
@@ -187,7 +188,6 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20141010141310.18627"><vh>@file ../external/PythonTidy.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
@@ -195,7 +195,7 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+<v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -205,7 +205,7 @@ expanded="ekr.20150528131012.1,"><vh>@file leoBeautify.py</vh></v>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 </t>
 <t tx="ekr.20031218072017.2604">
@@ -485,17 +485,22 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 &lt;xsl:template match ='leo_file'&gt;
 &lt;html&gt;
   &lt;head&gt;
+    &lt;!--
+    &lt;link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css"&gt;
+    &lt;script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"&gt;&lt;/script&gt;
+    --&gt;
     &lt;&lt;style&gt;&gt;
     &lt;&lt;scripts&gt;&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;xsl:apply-templates select='tnodes'/&gt;
     &lt;div class="outlinepane"&gt;
+      &lt;!-- &lt;h4&gt;Outline Pane&lt;/h4&gt; --&gt;
       &lt;xsl:apply-templates select='vnodes'/&gt;
     &lt;/div&gt;
     &lt;div class="bodypane"&gt;
-      &lt;h1&gt;Body Pane&lt;/h1&gt;
-      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
+      &lt;!-- &lt;h4&gt;Body Pane&lt;/h4&gt; --&gt;
+      &lt;pre class="body-text"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -527,9 +532,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
         &lt;h1&gt;+ &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
         &lt;xsl:apply-templates select = 'v'/&gt;
       &lt;/xsl:when&gt;
+      &lt;xsl:when test ='vh' &gt;
+        &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+      &lt;/xsl:when&gt;
+      &lt;!--
       &lt;xsl:otherwise&gt;
         &lt;h1&gt;- &lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
       &lt;/xsl:otherwise&gt;
+      --&gt;
     &lt;/xsl:choose&gt;
   &lt;/div&gt;
 &lt;/xsl:template&gt;
@@ -594,10 +604,29 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 &lt;/xsl:stylesheet&gt;
 </t>
 <t tx="ekr.20150304130753.5">&lt;style&gt;
-    pre { background:#FFE7C6; }
-    div.outlinepane,div.bodypane {
-      height: 50%;
-      overflow: auto;
+    /* pre { background:#FFE7C6; } */
+    /* Must use h1 for nodes: see below. */
+    h1 {
+      font-size: 12pt;
+      font-style: normal;
+      font-weight: normal;
+    }
+    div.outlinepane {
+      position: absolute;
+      background: #ffffec; /* Leo yellow */
+      top: 10px;
+      height: 300px;
+      width: 700px;
+      overflow: scroll;
+      line-height: 0.8;
+      
+    }
+    div.bodypane {
+      position: absolute;
+      top: 310px;
+      height: 300px;
+      width: 700px;
+      overflow: scroll;
     }
     div.tnode {
         visibility: hidden;
@@ -606,16 +635,17 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
     div.node {
         position: relative;
         left: 20px;
-        background:Khaki;
     }
     div.node[has-children] &gt; h1 {
         &lt;!-- works --&gt;
         &lt;!-- background: red; --&gt;
     }
 &lt;/style&gt;
+
 </t>
 <t tx="ekr.20150304130753.6">&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script&gt;
+
 @language javascript
   $(document).ready(function(){
     if (true) {
@@ -644,7 +674,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
           target2=$(this).attr("id").substring(2);
           if (target === target2) {
             console.log("found:"+target2)
-            $("pre.body-text").text($(this).text());
+            // $("pre.body-text").text($(this).text());
+            $("code").text($(this).text());
           };
         }); // end .each.
       };
@@ -655,13 +686,10 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 </t>
 <t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
-
 import leo.core.leoGlobals as g
-
 &lt;&lt; define mode rules &gt;&gt;
 &lt;&lt; define mode data &gt;&gt;
 &lt;&lt; define extendForth class &gt;&gt;
-
 e = extendForth()
 
 def pre_init_mode(c):
@@ -672,65 +700,54 @@ def pre_init_mode(c):
     e.createBracketRules()
     e.createDefiningWordRules()
 </t>
-<t tx="ekr.20150326145530.10">def createKeywords (self):
-
+<t tx="ekr.20150326145530.10">def createKeywords(self):
     '''Create the mode keyword table and
     entries in the rulesDict for the forth_keyword_rule'''
-
     # global forth_main_keywords_dict
     # global forth_keyword_rule
-
     table = (
-        (self.keywords,         'keyword1'),
+        (self.keywords, 'keyword1'),
       # (self.definingwords,    'keyword2'), # Done in createDefiningWordRules.
-        (self.boldwords,        'keyword3'),
-        (self.bolditalicwords,  'keyword4'),
-        (self.italicwords,      'keyword5'),
-        (self.stringwords,      'string'),
+        (self.boldwords, 'keyword3'),
+        (self.bolditalicwords, 'keyword4'),
+        (self.italicwords, 'keyword5'),
+        (self.stringwords, 'string'),
     )
-
     d = forth_main_keywords_dict
-    for keywordList,kind in table:
+    for keywordList, kind in table:
         for z in keywordList:
             # Create the entry in the keyword table.
             if kind == 'string':
-                func = self.createStringRule(d,z)
+                func = self.createStringRule(d, z)
             else:
                 func = forth_keyword_rule
-
             # Always make the entry.
-            d [z] = kind
-            self.extendRulesDict(ch=z[0],func=func)
+            d[z] = kind
+            self.extendRulesDict(ch=z[0], func=func)
 </t>
-<t tx="ekr.20150326145530.11">def createStringRule (self,d,pair):
-
+<t tx="ekr.20150326145530.11">def createStringRule(self, d, pair):
     '''Create an entry in d for a string keyword.'''
-
     aList = pair.split(' ')
     if len(aList) != 2:
-        g.trace('can not happen: expecting pair of forth strings:',pair)
+        g.trace('can not happen: expecting pair of forth strings:', pair)
         return
-
-    begin,end = aList
+    begin, end = aList
 
     def forth_string_word_rule(colorer, s, i):
         return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
             at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False) # Don't require ending word.
 
     return forth_string_word_rule
 </t>
-<t tx="ekr.20150326145530.12">def extendRulesDict (self,ch,func):
-
+<t tx="ekr.20150326145530.12">def extendRulesDict(self, ch, func):
     global rulesDict
-
     # Extend the rulesDict entry for the first character of z.
-    aList = rulesDict.get(ch,[])
+    aList = rulesDict.get(ch, [])
     if func not in aList:
         aList.append(func)
         rulesDict[ch] = aList
-
     # g.trace(z,kind)
 </t>
 <t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
@@ -738,7 +755,7 @@ def pre_init_mode(c):
 def forth_block_comment_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def forth_comment_rule(colorer, s, i):
@@ -752,10 +769,10 @@ def forth_keyword_rule(colorer, s, i):
 def forth_string_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-
 # ==========================
+
 if 0:
 
     def forth_rule0(colorer, s, i):
@@ -766,25 +783,25 @@ if 0:
     def forth_rule1(colorer, s, i):
         return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
 
     def forth_rule2(colorer, s, i):
         return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
 
     def forth_rule3(colorer, s, i):
         return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
 
     def forth_rule4(colorer, s, i):
         return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
 
     def forth_rule5(colorer, s, i):
@@ -857,81 +874,62 @@ if 0:
 <t tx="ekr.20150326145530.3"># Properties for forth mode.
 properties = {
 	# "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
-	"lineComment": "\\",
+    "lineComment": "\\",
 }
-
 # Attributes dict for forth_main ruleset.
 forth_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
+    "default": "null",
+    "digit_re": "",
 	# "escape": "\\",
-	"highlight_digits": "false",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "highlight_digits": "false",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
-
 # Dictionary of attributes dictionaries for forth mode.
 attributesDictDict = {
-	"forth_main": forth_main_attributes_dict,
+    "forth_main": forth_main_attributes_dict,
 }
-
 # Keywords dict for forth_main ruleset.
 forth_main_keywords_dict = {} # Created by extendForth class.
-
 # Dictionary of keywords dictionaries for forth mode.
 keywordsDictDict = {
-	"forth_main": forth_main_keywords_dict,
+    "forth_main": forth_main_keywords_dict,
 }
-
 # Rules dict for forth_main ruleset.
 # This is extended by extendForth.
 rulesDict = {
-    '(':    [forth_block_comment_rule],
-    '\\':   [forth_comment_rule],
-    '"':    [forth_string_rule],
+    '(': [forth_block_comment_rule],
+    '\\': [forth_comment_rule],
+    '"': [forth_string_rule],
 }
-
 # x.rulesDictDict for forth mode.
 rulesDictDict = {
     "forth_main": rulesDict,
 }
-
 # Import dict for forth mode.
 importDict = {}
-
 </t>
 <t tx="ekr.20150326145530.4">class extendForth:
-
     '''A helper class to extend the mode tables from @data forth-x settings.'''
-
+    def __init__(self):
     @others
 </t>
-<t tx="ekr.20150326145530.5">def __init__ (self):
-
-    self.c = None # set by pre_init_mode function.
-
+<t tx="ekr.20150326145530.5">    self.c = None # set by pre_init_mode function.
     # g.trace('modes/forth.py:extendForth')
-
     # Default forth keywords: extended by @data forth-words
-
     # Forth words to be rendered in boldface: extended by @data forth-bold-words
-    self.boldwords = [ ]
-
+    self.boldwords = []
     # Forth bold-italics words: extended by @data forth-bold-italic-words
     # Note: on some boxen, bold italics may show in plain bold.
-    self.bolditalicwords = [ ]
-
+    self.bolditalicwords = []
     # Forth words that define brackets: extended by @data forth-delimiter-pairs
-    self.brackets = []  # Helper: a list of tuples.
+    self.brackets = [] # Helper: a list of tuples.
     self.brackets1 = []
     self.brackets2 = []
-
     # Words which define other words: extended by forth-defwords
     self.definingwords = []
-
     # Forth words to be rendered in italics: extended by forth-italic-words
     self.italicwords = []
-
     # Default keywords: extended by @data forth-keywords
     self.keywords = []
         # "variable", "constant", "code", "end-code",
@@ -948,22 +946,17 @@ importDict = {}
         # "@", "!", ",", "1+", "+", "-",
         # "&lt;", "&lt;=", "=", "&gt;=", "&gt;",
         # "invert", "and", "or",
-
     # Forth words which start strings: extended by @data forth-string-word-pairs
     self.stringwords = []
     self.stringwords1 = []
     self.stringwords2 = []
-
     self.verbose = False # True: tell when extending forth words.
     # g.trace('rulesDict...\n',g.dictToString(rulesDict),tag='rulesDict...')
 </t>
-<t tx="ekr.20150326145530.6">def init (self):
-
+<t tx="ekr.20150326145530.6">def init(self):
     '''Set our ivars from settings.'''
-
     c = self.c
     assert(c)
-
     table = (
         (self.definingwords, "forth-defwords"),
         (self.brackets, "forth-delimiter-pairs"),
@@ -973,9 +966,8 @@ importDict = {}
         (self.bolditalicwords, "forth-bold-italic-words"),
         (self.italicwords, "forth-italic-words"),
     )
-
     # Add entries from @data nodes (if they exist) to the corresponding lists.
-    for (ivarList, setting) in table:
+    for(ivarList, setting) in table:
         extras = []
         aList = c.config.getData(setting)
         if aList:
@@ -989,26 +981,21 @@ importDict = {}
                     if not g.app.unitTesting and not g.app.batchMode:
                         g.pr("Found extra forth: %s" % " ".join(extras))
                 ivarList.extend(extras)
-
     # Create brackets1/2 and stringwords1/2 lists.
     table2 = (
-        ("brackets",    "@data forth-delimiter-pairs"),
+        ("brackets", "@data forth-delimiter-pairs"),
         ("stringwords", "@data forth-string-word-pairs"),
     )
-    for (ivar, setting) in table2:
-        self.splitList (ivar,setting)
-
+    for(ivar, setting) in table2:
+        self.splitList(ivar, setting)
     # g.trace('keywords',self.keywords)
 </t>
-<t tx="ekr.20150326145530.7">def splitList (self,ivar,setting):
-
+<t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
     '''Process lines containing pairs of entries 
     in a list whose *name* is ivar.
     Put the results in ivars whose names are ivar1 and ivar2.'''
-
-    result1 = [] ; result2 = []
-    aList = getattr(self,ivar)
-
+    result1 = []; result2 = []
+    aList = getattr(self, ivar)
     # Look for pairs.  Comments have already been removed.
     for s in aList:
         pair = s.split(' ')
@@ -1016,47 +1003,42 @@ importDict = {}
             result1.append(pair[0].strip())
             result2.append(pair[1].strip())
         else:
-            g.es_print('%s: ignoring line: %s' % (setting,s))
-
+            g.es_print('%s: ignoring line: %s' % (setting, s))
     # Set the ivars.
     name1 = '%s1' % ivar
     name2 = '%s2' % ivar
-    setattr(self,name1, result1)
-    setattr(self,name2, result2)
-
+    setattr(self, name1, result1)
+    setattr(self, name2, result2)
     if 0:
-        g.trace(name1,getattr(self,name1))
-        g.trace(name2,getattr(self,name2))
+        g.trace(name1, getattr(self, name1))
+        g.trace(name2, getattr(self, name2))
 </t>
-<t tx="ekr.20150326145530.8">def createBracketRules (self):
-
+<t tx="ekr.20150326145530.8">def createBracketRules(self):
     for z in self.brackets1:
         func = self.createBracketRule(z)
-        self.extendRulesDict(ch=z[0],func=func)
+        self.extendRulesDict(ch=z[0], func=func)
 
-def createBracketRule (self,begin):
-
+def createBracketRule(self, begin):
     i = self.brackets1.index(begin)
     end = self.brackets2[i]
 
     def forth_bracket_rule(colorer, s, i):
         return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
             at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=True) # Require word.
 
     return forth_bracket_rule
 </t>
-<t tx="ekr.20150326145530.9">def createDefiningWordRules (self):
-
+<t tx="ekr.20150326145530.9">def createDefiningWordRules(self):
     for z in self.definingwords:
         func = self.createDefiningWordRule(z)
-        self.extendRulesDict(ch=z[0],func=func)
+        self.extendRulesDict(ch=z[0], func=func)
 
-def createDefiningWordRule (self,word):
+def createDefiningWordRule(self, word):
 
     def forth_defining_word_rule(colorer, s, i):
-        pattern=''
+        pattern = ''
         return colorer.match_word_and_regexp(s, i,
             kind1="keyword2", # defining word
             word=word,
@@ -1613,29 +1595,409 @@ def define_s(self):
 '''
 </t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150517150846.1">gnx: ekr.20150517150823.1
+<t tx="ekr.20150531102337.1"></t>
+<t tx="ekr.20151226101445.1">gnx: ekr.20151226100951.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150517150846.2">gnx: ekr.20150517150823.2
+<t tx="ekr.20151226101445.2">gnx: ekr.20151226100951.2
 unl: qt_main declarations
-gnx: ekr.20150517150823.3
+gnx: ekr.20151226100951.3
 unl: class Ui_MainWindow
-gnx: ekr.20150517150823.4
+gnx: ekr.20151226100951.4
 unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20150517150823.5
+gnx: ekr.20151226100951.5
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
-<t tx="ekr.20150517150846.3"></t>
-<t tx="ekr.20150517150846.4">gnx: ekr.20150517150823.6
+<t tx="ekr.20151226101445.3"></t>
+<t tx="ekr.20151226101445.4">gnx: ekr.20151226100951.6
 unl: qt_quicksearch declarations
-gnx: ekr.20150517150823.7
+gnx: ekr.20151226100951.7
 unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20150517150823.8
+gnx: ekr.20151226100951.8
 unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20150517150823.9
+gnx: ekr.20151226100951.9
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
-<t tx="ekr.20150517150846.5"></t>
-<t tx="ekr.20150531102337.1"></t>
+<t tx="ekr.20151226101445.5"></t>
+<t tx="ekr.20151228151130.1"># -*- mode: python -*-
+'''
+launchLeo.spec: the spec file for pyinstaller.
+Run with pyinstaller launchLeo.spec, **not** with launchLeo.py.
+'''
+import glob, os
+
+generate_folder = True
+    # True:  generate only Leo/Leo.exe.
+    #        Data files are unpacked to a known location.
+    # False: generate Leo/leo folder as well as Leo/Leo.exe.
+
+if 0:
+    # This does not work: __file__ does not exist.
+    path = os.path.basename(__file__)
+    loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
+else:
+    import sys
+
+    # Same code as in runLeo.py.
+    path = os.getcwd()
+    if path not in sys.path:
+        print('launchLeo.spec: appending %s to sys.path' % path)
+        sys.path.append(path)
+
+    import leo.core.leoGlobals as g
+    import leo.core.leoApp as leoApp
+
+    LM = leoApp.LoadManager()
+    loadDir = LM.computeLoadDir()
+
+def get_modules(name):
+    '''return a list of module names in the leo/name directory.'''
+    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
+    n = len(abs_dir) + 1
+    aList = glob.glob(abs_dir + '/*.py')
+    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+
+# Utilities for creating entries in the "datas" lists...
+def all(name):
+    '''Return a tuple that causes all files in name to be included.'''
+    return ('%s/*.*' % (name), name)
+
+icons = all
+
+def ext(kind, name):
+    '''Return a tuple that causes all files with the given extension in name to be included.'''
+    if kind.startswith('.'):
+        kind = kind[1:]
+    return ('%s/*.%s' % (name, kind), name)
+
+# Define all modules in leo.plugins &amp; leo.modes
+
+hiddenimports = []
+for name in ('external', 'modes', 'plugins'):
+    hiddenimports.extend(get_modules(name))
+
+block_cipher = None
+
+datas = [
+    # Required for startup...
+        ('leo/core/commit_timestamp.json', 'leo/core'),
+        ext('.ui', 'leo/plugins'),
+    # Required for plugins...
+        # Data requifed for startup.
+            all('leo/plugins/GraphCanvas'),
+        # These are also hidden imports...
+            ext('.py', 'leo/plugins'),
+            ext('.py', 'leo/plugins/importers'),
+            ext('.py', 'leo/plugins/writers'),
+    # leo/config...
+        ext('.leo', 'leo/config'),
+    # leo/modes...
+        ext('.py', 'leo/modes'),
+        ext('.xml', 'leo/modes'),
+    # All icons...
+        icons('leo/Icons'),
+        icons('leo/Icons/cleo'),
+        icons('leo/Icons/cleo/small'),
+        icons('leo/Icons/file_icons'),
+        icons('leo/Icons/nodes-dark/plusminus'),
+        icons('leo/Icons/nodes-dark/triangles'),
+        icons('leo/Icons/recorder'),
+        icons('leo/themes/generic/Icons'),
+        icons('leo/themes/leo_dark_0/Icons'),
+        icons('leo/themes/leo_dark_0/Icons/cleo'),
+        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
+]
+
+# These files *are* useful in one-file operation.
+# sys._MEIPASS points to the temp folder.
+# On windows: ~\AppData\Local\Temp\_MEInnnn
+if True:
+    datas.extend([
+        # leo-editor: loaded by LeoPy.leo...
+            ('launchLeo.spec', ''),
+            ('pylint-leo.py', ''),
+            ('setup.py', ''),
+    # leo.commands...
+            ext('.py', 'leo/commands'),
+        # leo.core...
+            ext('.leo', 'leo/core'),
+            ext('.py', 'leo/core'),
+            ext('.txt', 'leo/core'),
+        # leo.dist...
+            all('leo/dist'),
+        # leo/doc &amp; leo/doc/html
+            ext('.css', 'leo/doc'),
+            ext('.js', 'leo/doc'),
+            ext('.html', 'leo/doc'),
+            ext('.leo', 'leo/doc'),
+        ext('.py', 'leo/doc'),
+            ext('.txt', 'leo/doc'),
+        all('leo/doc/html'),
+        # ext('.jif','leo/doc/html'),
+        # ext('.py','leo/doc/html'),
+        # ext('.txt','leo/doc/html'),
+        # User-selectable icons.
+            icons('leo/Icons/Tango/16x16/actions'),
+            icons('leo/Icons/Tango/16x16/animations'),
+            icons('leo/Icons/Tango/16x16/apps'),
+            icons('leo/Icons/Tango/16x16/categories'),
+            icons('leo/Icons/Tango/16x16/devices'),
+            icons('leo/Icons/Tango/16x16/emblems'),
+            icons('leo/Icons/Tango/16x16/emotes'),
+            icons('leo/Icons/Tango/16x16/mimetypes'),
+            icons('leo/Icons/Tango/16x16/places'),
+            icons('leo/Icons/Tango/16x16/status'),
+        # leo/extensions...
+            ext('.py', 'leo/extensions'),
+            all('leo/extensions/hooks'),
+        # leo/external...
+            ext('.leo', 'leo/external'),
+            ext('.py', 'leo/external'),
+            ext('.txt', 'leo/external'),
+            ext('.css', 'leo/external/ckeditor'),
+            ext('.js', 'leo/external/ckeditor'),
+            ext('.json', 'leo/external/ckeditor'),
+            ext('.md', 'leo/external/ckeditor'),
+        # leo/plugins...
+            ext('.leo', 'leo/plugins'),
+        ext('.txt', 'leo/plugins'),
+            ext('.py', 'leo/plugins/examples'),
+            ext('.py', 'leo/plugins/test'),
+        # leo/scripts...
+            ext('.bat', 'leo/scripts'),
+            ext('.leo', 'leo/scripts'),
+            ext('.txt', 'leo/scripts'),
+            ext('.py', 'leo/scripts'),
+        # Everything required for unit tests...
+    # The leo/test folder itself is required for the execute-script command.
+            ext('.leo', 'leo/test'),
+            ext('.py', 'leo/test'),
+            ext('.txt', 'leo/test'),
+            all('leo/test/unittest'),
+            all('leo/test/unittest/input'),
+            all('leo/test/unittest/output'),
+        # leo/www...
+            all('leo/www'),
+    ])
+
+a = Analysis(['launchLeo.py'],
+    pathex=[],
+    binaries=None,
+    datas=datas,
+    hiddenimports=hiddenimports,
+    hookspath=None,
+    runtime_hooks=None,
+    excludes=['_tkinter',],
+    win_no_prefer_redirects=None,
+    win_private_assemblies=None,
+    cipher=block_cipher)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    name='leo',
+    debug=False,
+    strip=None,
+    upx=True,
+    console=True)
+
+if generate_folder:
+    coll = COLLECT(
+        exe,
+        a.binaries,
+        a.zipfiles,
+        a.datas,
+        strip=None,
+        upx=False,
+        name='Leo')
+</t>
+<t tx="ekr.20151228151148.1"># -*- mode: python -*-
+
+block_cipher = None
+
+import glob, os, sys
+
+# Same code as in runLeo.py.
+path = os.getcwd()
+if path not in sys.path:
+    print('launchLeo.spec: appending %s to sys.path' % path)
+    sys.path.append(path)
+
+import leo.core.leoGlobals as g
+import leo.core.leoApp as leoApp
+
+LM = leoApp.LoadManager()
+loadDir = LM.computeLoadDir()
+
+def get_modules(name):
+    '''return a list of module names in the leo/name directory.'''
+    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
+    n = len(abs_dir) + 1
+    aList = glob.glob(abs_dir + '/*.py')
+    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+    
+hiddenimports = []
+for name in ('external', 'modes', 'plugins'):
+    hiddenimports.extend(get_modules(name))
+
+# Utilities for creating entries in the "datas" lists...
+def all(name):
+    '''Return a tuple that causes all files in name to be included.'''
+    return ('%s/*.*' % (name), name)
+
+icons = all
+
+def ext(kind, name):
+    '''Return a tuple that causes all files with the given extension in name to be included.'''
+    if kind.startswith('.'):
+        kind = kind[1:]
+    return ('%s/*.%s' % (name, kind), name)
+
+datas = [
+    # Required for startup...
+        ('leo/core/commit_timestamp.json', 'leo/core'),
+        ext('.ui', 'leo/plugins'),
+    # Required for plugins...
+        # Data requifed for startup.
+            all('leo/plugins/GraphCanvas'),
+        # These are also hidden imports...
+            ext('.py', 'leo/plugins'),
+            ext('.py', 'leo/plugins/importers'),
+            ext('.py', 'leo/plugins/writers'),
+    # leo/config...
+        ext('.leo', 'leo/config'),
+    # leo/modes...
+        ext('.py', 'leo/modes'),
+        ext('.xml', 'leo/modes'),
+    # All icons...
+        icons('leo/Icons'),
+        icons('leo/Icons/cleo'),
+        icons('leo/Icons/cleo/small'),
+        icons('leo/Icons/file_icons'),
+        icons('leo/Icons/nodes-dark/plusminus'),
+        icons('leo/Icons/nodes-dark/triangles'),
+        icons('leo/Icons/recorder'),
+        icons('leo/themes/generic/Icons'),
+        icons('leo/themes/leo_dark_0/Icons'),
+        icons('leo/themes/leo_dark_0/Icons/cleo'),
+        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
+        icons('leo/themes/leo_dark_0/Icons/file_icons'),
+        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
+    # Additional Leo data fles...
+    # leo-editor: loaded by LeoPy.leo...
+        ('launchLeo-folder.spec', ''),
+	('launchLeo-single.spec', ''),
+	('leo_to_html.xsl', ''),
+	('pylint-leo.py', ''),
+        ('setup.py', ''),
+        # leo.commands...
+            ext('.py', 'leo/commands'),
+        # leo.core...
+	    # Only include reference files.
+                # ext('.leo', 'leo/core'),
+		('leo/core/LeoPyRef.leo', 'leo/core'),
+            ext('.py', 'leo/core'),
+            ext('.txt', 'leo/core'),
+        # leo.dist...
+            all('leo/dist'),
+        # leo/doc &amp; leo/doc/html
+            ext('.css', 'leo/doc'),
+            ext('.js', 'leo/doc'),
+            ext('.html', 'leo/doc'),
+            ext('.leo', 'leo/doc'),
+        ext('.py', 'leo/doc'),
+            ext('.txt', 'leo/doc'),
+        all('leo/doc/html'),
+        # ext('.jif','leo/doc/html'),
+        # ext('.py','leo/doc/html'),
+        # ext('.txt','leo/doc/html'),
+        # User-selectable icons.
+            icons('leo/Icons/Tango/16x16/actions'),
+            icons('leo/Icons/Tango/16x16/animations'),
+            icons('leo/Icons/Tango/16x16/apps'),
+            icons('leo/Icons/Tango/16x16/categories'),
+            icons('leo/Icons/Tango/16x16/devices'),
+            icons('leo/Icons/Tango/16x16/emblems'),
+            icons('leo/Icons/Tango/16x16/emotes'),
+            icons('leo/Icons/Tango/16x16/mimetypes'),
+            icons('leo/Icons/Tango/16x16/places'),
+            icons('leo/Icons/Tango/16x16/status'),
+        # leo/extensions...
+            ext('.py', 'leo/extensions'),
+            all('leo/extensions/hooks'),
+        # leo/external...
+            ext('.leo', 'leo/external'),
+            ext('.py', 'leo/external'),
+            ext('.txt', 'leo/external'),
+            ext('.css', 'leo/external/ckeditor'),
+            ext('.js', 'leo/external/ckeditor'),
+            ext('.json', 'leo/external/ckeditor'),
+            ext('.md', 'leo/external/ckeditor'),
+        # leo/plugins...
+	    # Only include reference files.
+            # ext('.leo', 'leo/plugins'),
+	        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
+	        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
+            ext('.txt', 'leo/plugins'),
+            ext('.py', 'leo/plugins/examples'),
+            ext('.py', 'leo/plugins/test'),
+        # leo/scripts...
+            ext('.bat', 'leo/scripts'),
+            ext('.leo', 'leo/scripts'),
+            ext('.txt', 'leo/scripts'),
+            ext('.py', 'leo/scripts'),
+        # Everything required for unit tests...
+        # The leo/test folder itself is required for
+        # the execute-script command.
+            ext('.leo', 'leo/test'),
+            ext('.py', 'leo/test'),
+            ext('.txt', 'leo/test'),
+            all('leo/test/unittest'),
+            all('leo/test/unittest/input'),
+            all('leo/test/unittest/output'),
+        # leo/www...
+            all('leo/www'),
+]
+
+a = Analysis(
+    ['launchLeo.py'],
+    pathex=[], ###'c:\\leo.repo\\leo-editor'],
+    binaries=None,
+    datas=datas,
+    hiddenimports=hiddenimports,
+    hookspath=None,
+    runtime_hooks=None,
+    excludes=['_tkinter',],
+    win_no_prefer_redirects=None,
+    win_private_assemblies=None,
+    cipher=block_cipher)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(pyz,
+    a.scripts,
+    exclude_binaries=True,
+    name='leo',
+    debug=False,
+    strip=None,
+    upx=True,
+    console=True )
+    
+coll = COLLECT(exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=None,
+    upx=True,
+    name='Leo')
+</t>
 </tnodes>
 </leo_file>

@@ -75,6 +75,7 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
+<v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
@@ -1855,6 +1856,24 @@ is a PIM, a Python scripting IDE and outliner. (16-Apr-15)
     system bin/"python", "-c", "import leo"
   end
 end
+</t>
+<t tx="ekr.20151227063335.1">leo.exe contains everything you need to run Leo on Windows without
+installing *anything* else. It contains all needed libraries, including
+Python itself, PyQt, pylint and other packages. It also contains many data
+files, including Leo's source code and various .leo files.
+
+Notes:
+
+1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
+
+2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
+   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
+   is slower than usual.
+
+3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
+   but these files will be in the temp folder. They will be *destroyed*
+   when you exit leo.exe. If you want to do real work with Leo you must
+   create .leo files in a permanent folder on your machine.
 </t>
 </tnodes>
 </leo_file>

@@ -5,10 +5,10 @@
 '''Leo's file-editing commands.'''
 #@+<< imports >>
 #@+node:ekr.20150514050328.1: ** << imports >> (editFileCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import difflib
 import os
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -288,6 +288,101 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.seeInsertPoint()
             self.endCommand(changed=True, setLabel=True)
+    #@+node:ekr.20160111190632.1: ** efc.makeStubFiles
+    @cmd('make-stub-files')
+    def make_stub_files(self, event):
+        #@+others
+        #@+node:ekr.20160111202214.1: *3* class MakeStubFile
+        class MakeStubFile:
+            '''A class to make Python stub (.pyi) files.'''
+            #@+others
+            #@+node:ekr.20160112104836.1: *4* msf.ctors & helpers
+            def __init__(self, c):
+                self.c = c
+                self.d = self.scan_types_data(c) or self.make_types_dict(c)
+                    # Keys are strings, values are Type objects.
+            #@+node:ekr.20160111202214.2: *5* msf.make_types_dict
+            def make_types_dict(self, c):
+                '''Return a dict whose keys are names and values are type specs.'''
+                return {
+                    'aList': 'Sequence',
+                    'aList2': 'Sequence',
+                    'c': 'Commander',
+                    'i': 'int',
+                    'j': 'int',
+                    'k': 'int',
+                    'node': 'ast.Ast',
+                    'p': 'Position',
+                    's': 'str',
+                    's2': 'str',
+                    'v': 'VNode',
+                }
+            #@+node:ekr.20160112104450.1: *5* msf.scan_types_data
+            def scan_types_data(self, c):
+                '''Create self.d from @data stub-types nodes.'''
+                aList = c.config.getData(
+                    'stub-types',
+                    strip_comments=True,
+                    strip_data=True)
+                d = {}
+                for s in aList:
+                    name, value = s.split(None,1)
+                    d[name.strip()] = value.strip()
+                if False:
+                    for key in sorted(d.keys()):
+                        g.trace(key, d.get(key))
+                return d
+            #@+node:ekr.20160111202214.3: *4* msf.run & helper
+            def run(self, p):
+                '''Make stub files for all files in p's tree.'''
+                if p.isAnyAtFileNode():
+                    self.make_stub_file(p)
+                    return
+                # First, look down tree.
+                after, p2 = p.nodeAfterTree(), p.firstChild()
+                found = False
+                while p2 and p != after:
+                    if p2.isAnyAtFileNode():
+                        self.make_stub_file(p2)
+                        p2.moveToNext()
+                        found = True
+                    else:
+                        p2.moveToThreadNext()
+                if not found:
+                    # Look up the tree.
+                    for p2 in p.parents():
+                        if p2.isAnyAtFileNode():
+                            self.make_stub_file(p2)
+                            break
+                    else:
+                        g.es('no files found', p.h)
+            #@+node:ekr.20160111202214.4: *5* msf.make_stub_file
+            def make_stub_file(self, p):
+                '''Make a stub file in ~/stubs for the @<file> node at p.'''
+                import ast
+                import leo.core.leoAst as leoAst
+                assert p.isAnyAtFileNode()
+                fn = p.anyAtFileNodeName()
+                if not fn.endswith('.py'):
+                    return
+                abs_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+                if not g.os_path_exists(abs_fn):
+                    g.es_print('not found', abs_fn)
+                    return
+                stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
+                if g.os_path_exists(stubs):
+                    base_fn = g.os_path_basename(fn)
+                    out_fn = g.os_path_finalize_join(stubs,base_fn)
+                else:
+                    g.es_print('not found', stubs)
+                    out_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+                out_fn = out_fn[:-3] + '.pyi'
+                s = open(fn).read()
+                node = ast.parse(s,filename=fn,mode='exec')
+                leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
+            #@-others
+        #@-others
+        MakeStubFile(self.c).run(self.c.p)
     #@+node:ekr.20150514063305.367: ** efc.makeDirectory
     @cmd('directory-make')
     def makeDirectory(self, event):

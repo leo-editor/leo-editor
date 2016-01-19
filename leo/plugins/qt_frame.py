@@ -1478,7 +1478,7 @@ class LeoQtBody(leoFrame.LeoBody):
     def deleteEditor(self, event=None):
         '''Delete the presently selected body text editor.'''
         trace = False and not g.unitTesting
-        c = self.c; d = self.editorWidgets
+        c, d = self.c, self.editorWidgets
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
         # This seems not to be a valid assertion.
@@ -1492,6 +1492,8 @@ class LeoQtBody(leoFrame.LeoBody):
         if name == '1':
             g.warning('can not delete leftmost editor')
             return
+        # Fix bug 228: make *sure* the old text is saved.
+        c.p.b = wrapper.getAllText()
         # Actually delete the widget.
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name, id(wrapper), id(w)))

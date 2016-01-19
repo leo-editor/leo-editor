@@ -436,6 +436,8 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20160112110352.1"><vh>@data stub-types</vh></v>
+<v t="ekr.20160112111247.1"><vh>@data stub-prefix</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
@@ -930,6 +932,15 @@
 <v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
+<v t="ekr.20151225142626.1"><vh>@menu Open &amp;Leo File</vh>
+<v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
+<v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
+<v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
+<v t="ekr.20151225193848.1"><vh>@item open-leoPy-leo</vh></v>
+<v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
+<v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
+</v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21833"><vh>@item close-window</vh></v>
@@ -1006,12 +1017,6 @@
 <v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
 <v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
 </v>
-<v t="ekr.20131213135427.21870"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
-<v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
-<v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
@@ -6597,7 +6602,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21867">Outline To &amp;Noweb...</t>
 <t tx="ekr.20131213135427.21868">&amp;Remove Sentinels...</t>
 <t tx="ekr.20131213135427.21869">&amp;Weave...</t>
-<t tx="ekr.20131213135427.21870"></t>
 <t tx="ekr.20131213135427.21871">Open &amp;CheatSheet.leo</t>
 <t tx="ekr.20131213135427.21872">Open Leo&amp;Docs.leo</t>
 <t tx="ekr.20131213135427.21873">Open leo&amp;Plugins.leo</t>
@@ -11076,6 +11080,34 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
+<t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
+<t tx="ekr.20151225142626.1"></t>
+<t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
+<t tx="ekr.20160112110352.1"># For use by make-stub-files command.
+# To do: allow per-file overrides.
+aList List
+aList1 List
+aList2 List
+c C
+c1 C
+c2 C
+i int
+j int
+k int
+node ast.Ast
+p P
+p1 P
+p2 P
+s str
+s2 str
+v V
+v1 V
+v2 V</t>
+<t tx="ekr.20160112111247.1"># Lines to start each stub file.
+# These would typically be type aliases:
+# stub prefix line 1
+# stub prefix line 2
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

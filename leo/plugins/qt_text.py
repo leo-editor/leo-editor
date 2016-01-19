@@ -1519,8 +1519,9 @@ class QTextEditWrapper(QTextMixin):
         if 1:
             cursor = w.textCursor()
             sel = cursor.selection().toPlainText()
-            cb = g.app.gui.qtApp.clipboard()
-            cb.setText(sel, mode=cb.Selection)
+            if sel:
+                cb = g.app.gui.qtApp.clipboard()
+                cb.setText(sel, mode=cb.Selection)
             # QtWidgets.QApplication.processEvents()
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
@@ -1685,7 +1686,8 @@ class QTextEditWrapper(QTextMixin):
         if 1:
             app = QtWidgets.QApplication
             cb = app.clipboard()
-            cb.setText(s[i: j], mode=cb.Selection)
+            if s[i: j]:
+                cb.setText(s[i: j], mode=cb.Selection)
             # QtWidgets.QApplication.processEvents()
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
