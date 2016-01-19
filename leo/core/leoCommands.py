@@ -3008,7 +3008,7 @@ class Commands(object):
     #@+node:ekr.20031218072017.1760: *6* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *7* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root, parent, warningFlag):
-        """Return False if root or any of root's descedents is a clone of
+        """Return False if root or any of root's descendents is a clone of
         parent or any of parents ancestors."""
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
@@ -3070,7 +3070,11 @@ class Commands(object):
         '''
         c = self; u = c.undoer; p = c.p
         if not p:
-            return None
+            return
+        # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
+        if p.h.startswith('@spot'):
+            g.es("can not clone @spot node", color='red')
+            return
         last_spot = None
         for p2 in c.all_positions():
             if g.match_word(p2.h, 0, '@spot'):
@@ -3082,11 +3086,16 @@ class Commands(object):
         undoData = c.undoer.beforeCloneNode(p)
         c.endEditing() # Capture any changes to the headline.
         clone = p.copy()
-        clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren(), adjust=True)
+        clone._linkAsNthChild(last_spot,
+                              n=last_spot.numberOfChildren(),
+                              adjust=True)
         dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
         if c.validateOutline():
-            u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
+            u.afterCloneNode(clone,
+                             'Clone Node',
+                             undoData,
+                             dirtyVnodeList=dirtyVnodeList)
             c.contractAllHeadlines()
             c.redraw()
             c.selectPosition(clone)
@@ -4695,6 +4704,19 @@ class Commands(object):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2: return
         g.es('not found:', ', '.join(names))
+    #@+node:ekr.20151225193723.1: *4* c.openLeoPy
+    @cmd('open-leoPy-leo')
+    def openLeoPy(self, event=None):
+        '''Open leoPy.leo in a new Leo window.'''
+        c = self
+        names = ('leoPy.leo', 'leoPyRef.leo',) # Used in error message.
+        for name in names:
+            fileName = g.os_path_join(g.app.loadDir, "..", "core", name)
+            # Only call g.openWithFileName if the file exists.
+            if g.os_path_exists(fileName):
+                c2 = g.openWithFileName(fileName, old_c=c)
+                if c2: return
+        g.es('not found:', ', '.join(names))
     #@+node:ekr.20061018094539: *4* c.openLeoScripts
     @cmd('open-scripts-leo')
     def openLeoScripts(self, event=None):
@@ -4798,6 +4820,16 @@ class Commands(object):
             webbrowser.open_new(url)
         except:
             g.es("not found:", url)
+    #@+node:ekr.20151225095102.1: *4* c.openUnittest
+    @cmd('open-unittest-leo')
+    def openUnittest(self, event=None):
+        '''Open unittest.leo.'''
+        c = self
+        fileName = g.os_path_join(g.app.loadDir, '..', 'test', 'unittest.leo')
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+        g.es('not found:', fileName)
     #@+node:ekr.20060613082924: *4* c.openLeoUsersGuide
     @cmd('open-users-guide')
     def openLeoUsersGuide(self, event=None):
