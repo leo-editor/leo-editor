@@ -17431,5 +17431,165 @@ class Found(Exception):
 
     def __str__(self):
         return "Found line at %s in %s" % (self.i, self.p.h)
+.. @+node:ekr.20160119213532.1: *3* Unused bracket matching code
+.. @+node:ekr.20031218072017.3189: *4* g.skip_matching_python_delims
+def skip_matching_python_delims(s, i, delim1, delim2, reverse=False):
+    '''
+    Skip from the opening delim to the matching delim2.
+    Return the index of the matching ')', or -1
+    Deprecated.  Use g.MatchBrackets class instead.
+    '''
+    level = 0; n = len(s)
+    # g.trace('delim1/2',repr(delim1),repr(delim2),'i',i,'s[i]',repr(s[i]),'s',repr(s[i-5:i+5]))
+    assert(g.match(s, i, delim1))
+    if reverse:
+        while i >= 0:
+            ch = s[i]
+            if ch == delim1:
+                level += 1; i -= 1
+            elif ch == delim2:
+                level -= 1
+                if level <= 0: return i
+                i -= 1
+            # Doesn't handle strings and comments properly...
+            else: i -= 1
+    else:
+        while i < n:
+            progress = i
+            ch = s[i]
+            if ch == delim1:
+                level += 1; i += 1
+            elif ch == delim2:
+                level -= 1
+                if level <= 0: return i
+                i += 1
+            elif ch == '\'' or ch == '"': i = g.skip_string(s, i, verbose=False)
+            elif g.match(s, i, '#'): i = g.skip_to_end_of_line(s, i)
+            else: i += 1
+            if i == progress: return -1
+    return -1
+.. @+node:ekr.20110916215321.6712: *4* g.skip_matching_c_delims
+def skip_matching_c_delims(s, i, delim1, delim2, reverse=False):
+    '''Skip from the opening delim to the matching delim2.
+
+    Return the index of the matching ')', or -1
+    '''
+    level = 0
+    assert(g.match(s, i, delim1))
+    if reverse:
+        # Reverse scanning is tricky.
+        # This doesn't handle single-line comments properly.
+        while i >= 0:
+            progress = i
+            ch = s[i]
+            if ch == delim1:
+                level += 1; i -= 1
+            elif ch == delim2:
+                level -= 1
+                if level <= 0: return i - 1
+                i -= 1
+            elif ch in ('\'', '"'):
+                i -= 1
+                while i >= 0:
+                    if s[i] == ch and not s[i - 1] == '\\':
+                        i -= 1; break
+                    else:
+                        i -= 1
+            elif g.match(s, i, '*/'):
+                i += 2
+                while i >= 0:
+                    if g.match(s, i, '/*'):
+                        i -= 2
+                        break
+                    else:
+                        i -= 1
+            else: i -= 1
+            if i == progress:
+                g.trace('oops: reverse')
+                return -1
+    else:
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            # g.trace(i,repr(ch))
+            if ch == delim1:
+                level += 1; i += 1
+            elif ch == delim2:
+                level -= 1; i += 1
+                if level <= 0: return i
+            elif ch in ('\'', '"'):
+                i += 1
+                while i < len(s):
+                    if s[i] == ch and not s[i - 1] == '\\':
+                        i += 1; break
+                    else:
+                        i += 1
+            elif g.match(s, i, '//'):
+                i = g.skip_to_end_of_line(s, i + 2)
+            elif g.match(s, i, '/*'):
+                i += 2
+                while i < len(s):
+                    if g.match(s, i, '*/'):
+                        i += 2
+                        break
+                    else:
+                        i += 1
+            else: i += 1
+            if i == progress:
+                g.trace('oops')
+                return -1
+    g.trace('not found')
+    return -1
+.. @+node:ekr.20150514063305.120: *4* selectToMatchingBracket (leoEditCommands) (no longer used)
+# No longer used: use c.findMatchingBracket instead.
+@cmd('select-to-matching-bracket')
+def selectToMatchingBracket(self, event):
+    '''Select text that matches the bracket near the cursor.'''
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+    i = w.getInsertPoint()
+    s = w.getAllText()
+    allBrackets = self.openBracketsList + self.closeBracketsList
+    if i < len(s) and s[i] in allBrackets:
+        ch = s[i]
+    elif i > 0 and s[i - 1] in allBrackets:
+        i -= 1
+        ch = s[i]
+    else:
+        g.es('no bracket selected')
+        return
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d[self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d[self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+    delim2 = d.get(ch)
+    # This should be generalized...
+    language = g.findLanguageDirectives(c, c.p)
+    if language in ('c', 'cpp', 'csharp'):
+        j = g.skip_matching_c_delims(s, i, ch, delim2, reverse=reverse)
+    else:
+        j = g.skip_matching_python_delims(s, i, ch, delim2, reverse=reverse)
+    # g.trace(i,j,ch,delim2,reverse,language)
+    if j not in (-1, i):
+        if reverse:
+            i += 1
+            j += 1
+        w.setSelectionRange(i, j, insert=j)
+            # 2011/11/21: Bug fix: was ins=j.
+        w.see(j)
+.. @+node:ekr.20060627080947: *4* skip_matching_python_parens (no longer used)
+def skip_matching_python_parens(s, i):
+    '''Skip from the opening ( to the matching ).
+
+    Return the index of the matching ')', or -1
+    '''
+    # Deprecated: No longer used in Leo's core.
+    return skip_matching_python_delims(s, i, '(', ')')
 .. @-all
 .. @-leo

@@ -402,6 +402,211 @@ def isStroke(obj):
 
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj, KeyStroke)
+#@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
+class MatchBrackets:
+        
+    #@+others
+    #@+node:ekr.20160119104510.1: *4* mb.ctor
+    def __init__(self, c, p, language):
+        '''Ctor for MatchBrackets class.'''
+        self.c = c
+        self.p = p.copy()
+        self.language = language
+        # Constants.
+        self.close_brackets = ")]}>"
+        self.open_brackets = "([{<"
+        self.brackets = self.open_brackets + self.close_brackets
+        self.matching_brackets = self.close_brackets + self.open_brackets
+        # Language dependent.
+        d1, d2, d3 = g.set_delims_from_language(language)
+        self.single_comment, self.start_comment, self.end_comment = d1, d2, d3
+        # g.trace(repr(d1), repr(d2), repr(d3))
+    #@+node:ekr.20061113221414: *4* mb.findMatchingBracket
+    # Test  unmatched())
+
+    def findMatchingBracket(self, ch1, s, i):
+        '''Find the bracket matching s[i] for self.language.'''
+        self.forward = ch1 in self.open_brackets
+        offset = 1 if self.forward else - 1
+        # Find the character matching the initial bracket.
+        for n in range(len(self.brackets)):
+            if ch1 == self.brackets[n]:
+                target = self.matching_brackets[n]
+                break
+        else:
+            return None
+        level = 0
+        while 0 <= i < len(s):
+            progress = i
+            ch = s[i]
+            # g.trace('forward' if self.forward else 'backward',repr(ch),'i',i)
+            if ch in '"\'':
+                # Scan to the end/beginning of the string.
+                i = self.scanString(s, i)
+            elif self.startsComment(s, i):
+                i = self.scanComment(s, i)
+            else:
+                # Handle non-string, non-comment characters.
+                if ch == ch1:
+                    level += 1
+                if ch == target:
+                    level -= 1
+                    if level <= 0:
+                        return i
+                i += offset
+            if self.forward:
+                assert i > progress
+            else:
+                assert i < progress
+        # Not found
+        return None
+    # Test  (
+    # ([(x){y}]))
+    # Test  ((x)(unmatched
+    #@+node:ekr.20160119104148.1: *4* mb.oops
+    def oops(self, s):
+        '''Report an error in the match-brackets command.'''
+        g.es(s, color='red')
+    #@+node:ekr.20160119094053.1: *4* mb.run
+    def run(self):
+        '''The driver for the MatchBrackets class.'''
+        # A partial fix for bug 127: Bracket matching is buggy.
+        w = self.c.frame.body.wrapper
+        brackets = "()[]{}<>"
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
+        ch2 = 0 <= ins < len(s) and s[ins] or ''
+        # g.trace(repr(ch1),repr(ch2),ins)
+        # Prefer to match the character to the left of the cursor.
+        if ch1 and ch1 in self.brackets:
+            ch = ch1; index = max(0, ins - 1)
+        elif ch2 and ch2 in self.brackets:
+            ch = ch2; index = ins
+        else:
+            return
+        index2 = self.findMatchingBracket(ch, s, index)
+        # g.trace('index,index2',index,index2)
+        if index2 is not None:
+            if index2 < index:
+                w.setSelectionRange(index2, index + 1, insert=index2)
+                # w.setSelectionRange(index + 1, index2, insert=index2)
+                # g.trace('case 1',s[index2:index+1])
+            else:
+                w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
+                # g.trace('case2',s[index:index2+1])
+            w.see(index2)
+        else:
+            g.es("unmatched", repr(ch))
+    #@+node:ekr.20160119090634.1: *4* mb.scanComment
+    def scanComment(self, s, i):
+        '''Return the index of the character after a comment.'''
+        trace = False and not g.unitTesting
+        i1 = i
+        start = self.start_comment if self.forward else self.end_comment
+        end = self.end_comment if self.forward else self.start_comment
+        offset = 1 if self.forward else - 1
+        if g.match(s, i, start):
+            if not self.forward:
+                i1 += len(end)
+            i += offset
+            while 0 <= i < len(s):
+                if g.match(s, i, end):
+                    i = i + len(end) if self.forward else i - 1
+                    if trace: g.trace('multi-line',s[min(i1,i):max(i1,i)])
+                    return i
+                i += offset
+            self.oops('unmatched multiline comment')
+        elif self.forward:
+            # Scan to the newline.
+            target = '\n'
+            while 0 <= i < len(s):
+                if s[i] == '\n':
+                    i += 1
+                    if trace: g.trace('single-line',s[i1,i].rstrip())
+                    return i
+                i += 1
+        else:
+            # Careful: scan to the *first* target on the line
+            target = self.single_comment
+            found = None
+            i -= 1
+            while 0 <= i < len(s) and s[i] != '\n':
+                if g.match(s, i, target):
+                    if trace: g.trace('single-line',s[i:i1].rstrip())
+                    found = i
+                i -= 1
+            if found is None:
+                self.oops('can not happen: unterminated single-line comment')
+                found = 0
+            return found
+        return i
+    #@+node:ekr.20160119095519.1: *4* mb.scanString
+    def scanString(self, s, i):
+        '''
+        Scan the string starting at s[i] (forward or backward).
+        Return the index of the next character.
+        '''
+        trace = False and not g.unitTesting
+        i1 = i if self.forward else i+1
+        delim = s[i]
+        assert delim in "'\"", repr(delim)
+        offset = 1 if self.forward else - 1
+        i += offset
+        while 0 <= i < len(s):
+            ch = s[i]
+            i2 = i - 1 # in case we have to look behind.
+            i += offset
+            if ch == delim:
+                # Count the preceding backslashes.
+                n = 0
+                while 0 <= i2 < len(s) and s[i2] == '\\':
+                    n += 1
+                    i2 -= 1
+                if (n % 2) == 0:
+                    if trace:
+                        i9 = i if self.forward else i+1
+                        g.trace(i, s[min(i1,i9):max(i1,i9)].strip())
+                    return i
+        self.oops('unmatched string')
+        return i + offset
+    #@+node:ekr.20160119101851.1: *4* mb.startsComment
+    def startsComment(self, s, i):
+        '''Return True if s[i] starts a comment.'''
+        trace = False and not g.unitTesting
+        assert 0 <= i < len(s)
+        if self.forward:
+            if self.single_comment and g.match(s, i, self.single_comment):
+                if trace: g.trace(i, self.single_comment)
+                return True
+            else:
+                val = (
+                    self.start_comment and
+                    self.end_comment and 
+                    g.match(s, i, self.start_comment))
+                if trace and val: g.trace(i, self.start_comment)
+                return val
+        else:
+            if s[i] == '\n':
+                if self.single_comment:
+                    # Scan backward for any single-comment delim.
+                    found = None
+                    i -= 1
+                    while 0 <= i and s[i] != '\n':
+                        if g.match(s, i, self.single_comment):
+                            if trace: g.trace(i, self.single_comment)
+                            return True
+                        i -= 1
+                return False
+            else:
+                val = (
+                    self.start_comment and
+                    self.end_comment and 
+                    g.match(s, i, self.end_comment))
+                if trace and val: g.trace(i, self.end_comment)
+                return val
+    #@-others
+    
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
 #@@nobeautify
 
@@ -3549,117 +3754,6 @@ def skip_long(s, i):
         return i, val
     except Exception:
         return i, None
-#@+node:ekr.20031218072017.3189: *4* skip_matching_python_delims
-def skip_matching_python_delims(s, i, delim1, delim2, reverse=False):
-    '''Skip from the opening delim to the matching delim2.
-
-    Return the index of the matching ')', or -1'''
-    level = 0; n = len(s)
-    # g.trace('delim1/2',repr(delim1),repr(delim2),'i',i,'s[i]',repr(s[i]),'s',repr(s[i-5:i+5]))
-    assert(g.match(s, i, delim1))
-    if reverse:
-        while i >= 0:
-            ch = s[i]
-            if ch == delim1:
-                level += 1; i -= 1
-            elif ch == delim2:
-                level -= 1
-                if level <= 0: return i
-                i -= 1
-            # Doesn't handle strings and comments properly...
-            else: i -= 1
-    else:
-        while i < n:
-            progress = i
-            ch = s[i]
-            if ch == delim1:
-                level += 1; i += 1
-            elif ch == delim2:
-                level -= 1
-                if level <= 0: return i
-                i += 1
-            elif ch == '\'' or ch == '"': i = g.skip_string(s, i, verbose=False)
-            elif g.match(s, i, '#'): i = g.skip_to_end_of_line(s, i)
-            else: i += 1
-            if i == progress: return -1
-    return -1
-#@+node:ekr.20110916215321.6712: *4* g.skip_matching_c_delims
-def skip_matching_c_delims(s, i, delim1, delim2, reverse=False):
-    '''Skip from the opening delim to the matching delim2.
-
-    Return the index of the matching ')', or -1'''
-    level = 0
-    assert(g.match(s, i, delim1))
-    if reverse:
-        # Reverse scanning is tricky.
-        # This doesn't handle single-line comments properly.
-        while i >= 0:
-            progress = i
-            ch = s[i]
-            if ch == delim1:
-                level += 1; i -= 1
-            elif ch == delim2:
-                level -= 1
-                if level <= 0: return i - 1
-                i -= 1
-            elif ch in ('\'', '"'):
-                i -= 1
-                while i >= 0:
-                    if s[i] == ch and not s[i - 1] == '\\':
-                        i -= 1; break
-                    else:
-                        i -= 1
-            elif g.match(s, i, '*/'):
-                i += 2
-                while i >= 0:
-                    if g.match(s, i, '/*'):
-                        i -= 2
-                        break
-                    else:
-                        i -= 1
-            else: i -= 1
-            if i == progress:
-                g.trace('oops: reverse')
-                return -1
-    else:
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            # g.trace(i,repr(ch))
-            if ch == delim1:
-                level += 1; i += 1
-            elif ch == delim2:
-                level -= 1; i += 1
-                if level <= 0: return i
-            elif ch in ('\'', '"'):
-                i += 1
-                while i < len(s):
-                    if s[i] == ch and not s[i - 1] == '\\':
-                        i += 1; break
-                    else:
-                        i += 1
-            elif g.match(s, i, '//'):
-                i = g.skip_to_end_of_line(s, i + 2)
-            elif g.match(s, i, '/*'):
-                i += 2
-                while i < len(s):
-                    if g.match(s, i, '*/'):
-                        i += 2
-                        break
-                    else:
-                        i += 1
-            else: i += 1
-            if i == progress:
-                g.trace('oops')
-                return -1
-    g.trace('not found')
-    return -1
-#@+node:ekr.20060627080947: *4* skip_matching_python_parens
-def skip_matching_python_parens(s, i):
-    '''Skip from the opening ( to the matching ).
-
-    Return the index of the matching ')', or -1'''
-    return skip_matching_python_delims(s, i, '(', ')')
 #@+node:ekr.20031218072017.3190: *4* skip_nl
 # We need this function because different systems have different end-of-line conventions.
 

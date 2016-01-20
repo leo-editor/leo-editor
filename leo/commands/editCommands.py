@@ -53,49 +53,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     def doNothing(self, event):
         '''A placeholder command, useful for testing bindings.'''
         pass
-    #@+node:ekr.20150514063305.119: ** brackets (leoEditCommands)
-    #@+node:ekr.20150514063305.120: *3* selectToMatchingBracket (leoEditCommands)
-    @cmd('select-to-matching-bracket')
-    def selectToMatchingBracket(self, event):
-        '''Select text that matches the bracket near the cursor.'''
-        c = self.c
-        w = self.editWidget(event)
-        if not w: return
-        i = w.getInsertPoint()
-        s = w.getAllText()
-        allBrackets = self.openBracketsList + self.closeBracketsList
-        if i < len(s) and s[i] in allBrackets:
-            ch = s[i]
-        elif i > 0 and s[i - 1] in allBrackets:
-            i -= 1
-            ch = s[i]
-        else:
-            g.es('no bracket selected')
-            return
-        d = {}
-        if ch in self.openBracketsList:
-            for z in range(len(self.openBracketsList)):
-                d[self.openBracketsList[z]] = self.closeBracketsList[z]
-            reverse = False # Search forward
-        else:
-            for z in range(len(self.openBracketsList)):
-                d[self.closeBracketsList[z]] = self.openBracketsList[z]
-            reverse = True # Search backward
-        delim2 = d.get(ch)
-        # This should be generalized...
-        language = g.findLanguageDirectives(c, c.p)
-        if language in ('c', 'cpp', 'csharp'):
-            j = g.skip_matching_c_delims(s, i, ch, delim2, reverse=reverse)
-        else:
-            j = g.skip_matching_python_delims(s, i, ch, delim2, reverse=reverse)
-        # g.trace(i,j,ch,delim2,reverse,language)
-        if j not in (-1, i):
-            if reverse:
-                i += 1
-                j += 1
-            w.setSelectionRange(i, j, insert=j)
-                # 2011/11/21: Bug fix: was ins=j.
-            w.see(j)
     #@+node:ekr.20150514063305.121: ** c/ts/toPY
     #@+<< theory of operation >>
     #@+node:ekr.20150514063305.122: *3* << theory of operation >>
@@ -2945,7 +2902,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         flashes = self.bracketsFlashCount or 3
         delay = self.bracketsFlashDelay or 75
         w.flashCharacter(i, bg, fg, flashes, delay)
-    #@+node:ekr.20150514063305.272: *4* flashMatchingBracketsHelper
+    #@+node:ekr.20150514063305.272: *4* flashMatchingBracketsHelper (leoEditCommands)
     def flashMatchingBracketsHelper(self, c, ch, i, p, w):
         '''Flash matching brackets at char ch at position i at widget w.'''
         d = {}
@@ -2961,11 +2918,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         # A partial fix for bug 127: Bracket matching is buggy.
         language = g.getLanguageAtPosition(c, p)
-        if language in ('javascript', 'perl'):
+        if language ==  'perl':
             return
-        j = g.skip_matching_python_delims(s, i, ch, delim2, reverse=reverse)
-        if j != -1:
+        j = g.MatchBrackets(c, p, language).findMatchingBracket(ch, s, i)
+        if j is not None:
             self.flashCharacter(w, j)
+       
     #@+node:ekr.20150514063305.273: *4* initBracketMatcher
     def initBracketMatcher(self, c):
         '''Init the bracket matching code in selfInsertCommand.'''
