@@ -1770,7 +1770,7 @@ class Commands(object):
             # Test  unmatched())
 
             def findMatchingBracket(self, ch1, s, i):
-                '''Find the bracket matching s[index] for self.language.'''
+                '''Find the bracket matching s[i] for self.language.'''
                 self.forward = ch1 in self.open_brackets
                 offset = 1 if self.forward else - 1
                 # Find the character matching the initial bracket.
@@ -1796,7 +1796,7 @@ class Commands(object):
                             level += 1
                         if ch == target:
                             level -= 1
-                            if level <= 1:
+                            if level <= 0:
                                 return i
                         i += offset
                     if self.forward:
@@ -1862,18 +1862,29 @@ class Commands(object):
                             return i
                         i += offset
                     self.oops('unmatched multiline comment')
-                else:
-                    target = '\n' if self.forward else self.single_comment
-                    i += offset
+                elif self.forward:
+                    # Scan to the newline.
+                    target = '\n'
                     while 0 <= i < len(s):
-                        if g.match(s, i, target):
-                            i += offset
-                            if trace: g.trace('single-line',s[min(i1,i):max(i1,i)].rstrip())
+                        if s[i] == '\n':
+                            i += 1
+                            if trace: g.trace('single-line',s[i1,i].rstrip())
                             return i
-                        i += offset
-                    # End of string ends the comment.
-                    if not self.forward:
+                        i += 1
+                else:
+                    # Careful: scan to the *first* target on the line
+                    target = self.single_comment
+                    found = None
+                    i -= 1
+                    while 0 <= i < len(s) and s[i] != '\n':
+                        if g.match(s, i, target):
+                            if trace: g.trace('single-line',s[i:i1].rstrip())
+                            found = i
+                        i -= 1
+                    if found is None:
                         self.oops('can not happen: unterminated single-line comment')
+                        found = 0
+                    return found
                 return i
             #@+node:ekr.20160119095519.1: *7* mb.scanString
             def scanString(self, s, i):
@@ -1923,7 +1934,8 @@ class Commands(object):
                 else:
                     if s[i] == '\n':
                         if self.single_comment:
-                            # Scan backward for the single-comment delim.
+                            # Scan backward for any single-comment delim.
+                            found = None
                             i -= 1
                             while 0 <= i and s[i] != '\n':
                                 if g.match(s, i, self.single_comment):
