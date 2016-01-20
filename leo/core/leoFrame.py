@@ -964,12 +964,14 @@ class LeoFrame(object):
         s = w.get(i, j)
         if i != j:
             w.delete(i, j)
+            w.see(i) # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         else:
             ins = w.getInsertPoint()
             i, j = g.getLine(oldText, ins)
             s = w.get(i,j)
             w.delete(i,j)
+            w.see(i) # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
             c.frame.body.forceFullRecolor()
