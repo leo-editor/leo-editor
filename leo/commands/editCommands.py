@@ -2920,7 +2920,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         language = g.getLanguageAtPosition(c, p)
         if language ==  'perl':
             return
-        j = g.MatchBrackets(c, p, language).findMatchingBracket(ch, s, i)
+        j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
         if j is not None:
             self.flashCharacter(w, j)
        

@@ -421,10 +421,85 @@ class MatchBrackets:
         d1, d2, d3 = g.set_delims_from_language(language)
         self.single_comment, self.start_comment, self.end_comment = d1, d2, d3
         # g.trace(repr(d1), repr(d2), repr(d3))
-    #@+node:ekr.20061113221414: *4* mb.findMatchingBracket
-    # Test  unmatched())
-
-    def findMatchingBracket(self, ch1, s, i):
+    #@+node:ekr.20160121164723.1: *4* mb.bi-directional helpers
+    #@+node:ekr.20160121112812.1: *5* mb.is_regex
+    def is_regex(self, s, i):
+        '''Return true if there is another slash on the line.'''
+        if self.language in ('javascript', 'perl',):
+            assert s[i] == '/'
+            offset = 1 if self.forward else - 1
+            i1 = i
+            i += offset
+            while 0 <= i < len(s) and s[i] != '\n':
+                if s[i] == '/':
+                    return True
+                i += offset
+            return False
+        else:
+            return False
+        
+    #@+node:ekr.20160121112536.1: *5* mb.scan_regex
+    def scan_regex(self, s, i):
+        '''Scan a regex (or regex substitution for perl).'''
+        assert s[i] == '/'
+        offset = 1 if self.forward else -1
+        i1 = i
+        i += offset
+        found = False
+        while 0 <= i < len(s) and s[i] != '\n':
+            ch = s[i]
+            i2 = i - 1 # in case we have to look behind.
+            i += offset
+            if ch == '/':
+                # Count the preceding backslashes.
+                n = 0
+                while 0 <= i2 < len(s) and s[i2] == '\\':
+                    n += 1
+                    i2 -= 1
+                if (n % 2) == 0:
+                    # i9 = i if self.forward else i+1
+                    # g.trace(i, s[min(i1,i9):max(i1,i9)].strip())
+                    if self.language == 'perl' and found is None:
+                        found = i
+                    else:
+                        found = i
+                        break
+        if found is None:
+            self.oops('unmatched regex delim')
+            return i1 + offset
+        else:
+            return found
+    #@+node:ekr.20160121112303.1: *5* mb.scan_string 
+    def scan_string(self, s, i):
+        '''
+        Scan the string starting at s[i] (forward or backward).
+        Return the index of the next character.
+        '''
+        # if not self.forward: g.pdb()
+        i1 = i if self.forward else i + 1
+        delim = s[i]
+        assert delim in "'\"", repr(delim)
+        offset = 1 if self.forward else -1
+        i += offset
+        while 0 <= i < len(s):
+            ch = s[i]
+            i2 = i - 1 # in case we have to look behind.
+            i += offset
+            if ch == delim:
+                # Count the preceding backslashes.
+                n = 0
+                while 0 <= i2 < len(s) and s[i2] == '\\':
+                    n += 1
+                    i2 -= 1
+                if (n % 2) == 0:
+                    # i9 = i if self.forward else i + 1
+                    # g.trace(i, s[min(i1, i9): max(i1, i9)].strip())
+                    return i
+        # Annoying when matching brackets on the fly.
+        # self.oops('unmatched string')
+        return i + offset
+    #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
+    def find_matching_bracket(self, ch1, s, i):
         '''Find the bracket matching s[i] for self.language.'''
         self.forward = ch1 in self.open_brackets
         offset = 1 if self.forward else - 1
@@ -435,6 +510,11 @@ class MatchBrackets:
                 break
         else:
             return None
+        f = self.scan if self.forward else self.scan_back
+        return f(ch1, target, s, i)
+    #@+node:ekr.20160121164556.1: *4* mb.scan & helpers
+    def scan(self, ch1, target, s, i):
+        '''Scan forward for target.'''
         level = 0
         while 0 <= i < len(s):
             progress = i
@@ -442,64 +522,26 @@ class MatchBrackets:
             # g.trace('forward' if self.forward else 'backward',repr(ch),'i',i)
             if ch in '"\'':
                 # Scan to the end/beginning of the string.
-                i = self.scanString(s, i)
-            elif self.startsComment(s, i):
-                i = self.scanComment(s, i)
+                i = self.scan_string(s, i)
+            elif self.starts_comment(s, i):
+                i = self.scan_comment(s, i)
+            elif ch == '/' and self.is_regex(s, i):
+                i = self.scan_regex(s, i)
+            elif ch == ch1:
+                level += 1
+                i += 1
+            elif ch == target:
+                level -= 1
+                if level <= 0:
+                    return i
+                i += 1
             else:
-                # Handle non-string, non-comment characters.
-                if ch == ch1:
-                    level += 1
-                if ch == target:
-                    level -= 1
-                    if level <= 0:
-                        return i
-                i += offset
-            if self.forward:
-                assert i > progress
-            else:
-                assert i < progress
+                i += 1
+            assert i > progress
         # Not found
         return None
-    # Test  (
-    # ([(x){y}]))
-    # Test  ((x)(unmatched
-    #@+node:ekr.20160119104148.1: *4* mb.oops
-    def oops(self, s):
-        '''Report an error in the match-brackets command.'''
-        g.es(s, color='red')
-    #@+node:ekr.20160119094053.1: *4* mb.run
-    def run(self):
-        '''The driver for the MatchBrackets class.'''
-        # A partial fix for bug 127: Bracket matching is buggy.
-        w = self.c.frame.body.wrapper
-        brackets = "()[]{}<>"
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
-        ch2 = 0 <= ins < len(s) and s[ins] or ''
-        # g.trace(repr(ch1),repr(ch2),ins)
-        # Prefer to match the character to the left of the cursor.
-        if ch1 and ch1 in self.brackets:
-            ch = ch1; index = max(0, ins - 1)
-        elif ch2 and ch2 in self.brackets:
-            ch = ch2; index = ins
-        else:
-            return
-        index2 = self.findMatchingBracket(ch, s, index)
-        # g.trace('index,index2',index,index2)
-        if index2 is not None:
-            if index2 < index:
-                w.setSelectionRange(index2, index + 1, insert=index2)
-                # w.setSelectionRange(index + 1, index2, insert=index2)
-                # g.trace('case 1',s[index2:index+1])
-            else:
-                w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
-                # g.trace('case2',s[index:index2+1])
-            w.see(index2)
-        else:
-            g.es("unmatched", repr(ch))
-    #@+node:ekr.20160119090634.1: *4* mb.scanComment
-    def scanComment(self, s, i):
+    #@+node:ekr.20160119090634.1: *5* mb.scan_comment
+    def scan_comment(self, s, i):
         '''Return the index of the character after a comment.'''
         trace = False and not g.unitTesting
         i1 = i
@@ -541,37 +583,8 @@ class MatchBrackets:
                 found = 0
             return found
         return i
-    #@+node:ekr.20160119095519.1: *4* mb.scanString
-    def scanString(self, s, i):
-        '''
-        Scan the string starting at s[i] (forward or backward).
-        Return the index of the next character.
-        '''
-        trace = False and not g.unitTesting
-        i1 = i if self.forward else i+1
-        delim = s[i]
-        assert delim in "'\"", repr(delim)
-        offset = 1 if self.forward else - 1
-        i += offset
-        while 0 <= i < len(s):
-            ch = s[i]
-            i2 = i - 1 # in case we have to look behind.
-            i += offset
-            if ch == delim:
-                # Count the preceding backslashes.
-                n = 0
-                while 0 <= i2 < len(s) and s[i2] == '\\':
-                    n += 1
-                    i2 -= 1
-                if (n % 2) == 0:
-                    if trace:
-                        i9 = i if self.forward else i+1
-                        g.trace(i, s[min(i1,i9):max(i1,i9)].strip())
-                    return i
-        self.oops('unmatched string')
-        return i + offset
-    #@+node:ekr.20160119101851.1: *4* mb.startsComment
-    def startsComment(self, s, i):
+    #@+node:ekr.20160119101851.1: *5* mb.starts_comment
+    def starts_comment(self, s, i):
         '''Return True if s[i] starts a comment.'''
         trace = False and not g.unitTesting
         assert 0 <= i < len(s)
@@ -605,6 +618,125 @@ class MatchBrackets:
                     g.match(s, i, self.end_comment))
                 if trace and val: g.trace(i, self.end_comment)
                 return val
+    #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
+    def scan_back(self, ch1, target, s, i):
+        '''Scan backwards for delim.'''
+        level = 0
+        while 0 <= i:
+            progress = i
+            ch = s[i]
+            # g.trace(repr(ch),'i',i)
+            if self.ends_comment(s, i):
+                i = self.back_scan_comment(s, i)
+            elif ch in '"\'':
+                # Scan to the beginning of the string.
+                i = self.scan_string(s, i)
+            elif ch == '/' and self.is_regex(s, i):
+                i = self.scan_regex(s, i)
+            elif ch == ch1:
+                level += 1
+                i -= 1
+                # n1, n2 = g.getLine(s, i)
+                # g.trace(ch, level, n1, n2, s[n1:n2].rstrip())
+            elif ch == target:
+                level -= 1
+                # n1, n2 = g.getLine(s, i)
+                # g.trace(ch, level, n1, n2, s[n1:n2].rstrip())
+                if level <= 0:
+                    return i
+                i -= 1
+            else:
+                i -= 1
+            assert i < progress
+        # Not found
+        g.trace('not found! level: %s ch1: %s target: %s' % (level, ch1, target))
+        return None
+    #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
+    def back_scan_comment(self, s, i):
+        '''Return the index of the character after a comment.'''
+        trace = False and not g.unitTesting
+        i1 = i
+        if g.match(s, i, self.end_comment):
+            i1 += len(self.end_comment) # For traces.
+            i -= 1
+            while 0 <= i:
+                if g.match(s, i, self.start_comment):
+                    i -= 1
+                    # g.trace('multi-line',s[i:i1])
+                    return i
+                i -= 1
+            self.oops('unmatched multiline comment')
+            return i
+        else:
+            # Careful: scan to the *first* target on the line
+            found = None
+            i -= 1
+            while 0 <= i and s[i] != '\n':
+                if g.match(s, i, self.single_comment):
+                    # g.trace('single-line',s[i:i1].rstrip())
+                    found = i-1
+                i -= 1
+            if found is None:
+                self.oops('can not happen: unterminated single-line comment')
+                found = 0
+            return found
+    #@+node:ekr.20160119230141.4: *5* mb.ends_comment
+    def ends_comment(self, s, i):
+        '''Return True if s[i] ends a comment.'''
+        i1 = i
+        if s[i] == '\n':
+            if self.single_comment:
+                # Scan backward for any single-comment delim.
+                found = None
+                i -= 1
+                while 0 <= i and s[i] != '\n':
+                    if g.match(s, i, self.single_comment):
+                        # g.trace(i, i1, self.single_comment)
+                        return True
+                    i -= 1
+            return False
+        else:
+            val = (
+                self.start_comment and
+                self.end_comment and 
+                g.match(s, i, self.end_comment))
+            # if val: g.trace(i, i1, self.end_comment)
+            return val
+    #@+node:ekr.20160119104148.1: *4* mb.oops
+    def oops(self, s):
+        '''Report an error in the match-brackets command.'''
+        g.es(s, color='red')
+    #@+node:ekr.20160119094053.1: *4* mb.run
+    def run(self):
+        '''The driver for the MatchBrackets class.'''
+        # A partial fix for bug 127: Bracket matching is buggy.
+        w = self.c.frame.body.wrapper
+        brackets = "()[]{}<>"
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
+        ch2 = 0 <= ins < len(s) and s[ins] or ''
+        # g.trace(repr(ch1),repr(ch2),ins)
+        # Prefer to match the character to the left of the cursor.
+        if ch1 and ch1 in self.brackets:
+            ch = ch1; index = max(0, ins - 1)
+        elif ch2 and ch2 in self.brackets:
+            ch = ch2; index = ins
+        else:
+            return
+        index2 = self.find_matching_bracket(ch, s, index)
+        # g.trace('index,index2',index,index2)
+        if index2 is not None:
+            if index2 < index:
+                w.setSelectionRange(index2, index + 1, insert=index2)
+                # w.setSelectionRange(index + 1, index2, insert=index2)
+                # g.trace('case 1',s[index2:index+1])
+            else:
+                w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
+                # g.trace('case2',s[index:index2+1])
+            w.see(index2)
+        else:
+            g.es("unmatched", repr(ch))
     #@-others
     
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
