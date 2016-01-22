@@ -693,8 +693,10 @@ class MatchBrackets:
         i1 = i
         if s[i] == '\n':
             # This is the hard (dubious) case.
-            # Case 1: "whatever//" Assume // is inside a string.
-            # Case 2: whatever//" Assume " is inside the comment.
+            # Let w, x, y and z stand for any strings not containg // or quotes.
+            # Case 1: w"x//y"z Assume // is inside a string.
+            # Case 2: x//y"z Assume " is inside the comment.
+            # Case 3: w//x"y"z Assume both quotes are inside the comment.
             #
             # That is, we assume (perhaps wrongly) that a quote terminates a
             # string if and *only* if the string starts *and* ends on the line.
@@ -704,7 +706,10 @@ class MatchBrackets:
                 i -= 1
                 while 0 <= i and  s[i] != '\n':
                     progress = i
-                    if s[i] in '"\'':
+                    if quote and s[i] == quote:
+                        quote = None
+                        i -= 1
+                    elif s[i] in '"\'':
                         if not quote:
                             quote = s[i]
                         i -= 1
