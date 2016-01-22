@@ -404,7 +404,11 @@ def isStrokeOrNone(obj):
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
 class MatchBrackets:
-        
+    '''
+    A class implementing the match-brackets command. In the interest of
+    speed, the code assumes that the user invokes the match-bracket command
+    ouside of any string, comment or (for perl or javascript) regex.
+    '''
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
     def __init__(self, c, p, language):
@@ -682,26 +686,46 @@ class MatchBrackets:
             return found
     #@+node:ekr.20160119230141.4: *5* mb.ends_comment
     def ends_comment(self, s, i):
-        '''Return True if s[i] ends a comment.'''
+        '''
+        Return True if s[i] ends a comment. This is called while scanning
+        backward, so this is a bit of a guess.
+        '''
         i1 = i
         if s[i] == '\n':
+            # This is the hard (dubious) case.
+            # Case 1: "whatever//" Assume // is inside a string.
+            # Case 2: whatever//" Assume " is inside the comment.
+            #
+            # That is, we assume (perhaps wrongly) that a quote terminates a
+            # string if and *only* if the string starts *and* ends on the line.
             if self.single_comment:
-                # Scan backward for any single-comment delim.
-                found = None
+                # Scan backward for single-line comment delims or quotes.
+                quote = None
                 i -= 1
-                while 0 <= i and s[i] != '\n':
-                    if g.match(s, i, self.single_comment):
-                        # g.trace(i, i1, self.single_comment)
+                while 0 <= i and  s[i] != '\n':
+                    progress = i
+                    if s[i] in '"\'':
+                        if not quote:
+                            quote = s[i]
+                        i -= 1
+                    elif g.match(s, i, self.single_comment):
+                        # Assume that there is a comment only if the comment delim
+                        # isn't inside a string that begins and ends on *this* line.
+                        if quote:
+                            while 0 <= i and s[i] != 'n':
+                                if s[i] == quote:
+                                    return False
+                                i -= 1
                         return True
-                    i -= 1
+                    else:
+                        i -= 1
+                    assert progress > i
             return False
         else:
-            val = (
+            return (
                 self.start_comment and
                 self.end_comment and 
                 g.match(s, i, self.end_comment))
-            # if val: g.trace(i, i1, self.end_comment)
-            return val
     #@+node:ekr.20160119104148.1: *4* mb.oops
     def oops(self, s):
         '''Report an error in the match-brackets command.'''
