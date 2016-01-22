@@ -26,6 +26,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         self.blockDelim2 = '}'
         self.hasClasses = False
         self.hasFunctions = True
+        self.hasRegex = True
         # self.ignoreBlankLines = True
         self.lineCommentDelim = '//'
         self.lineCommentDelim2 = None

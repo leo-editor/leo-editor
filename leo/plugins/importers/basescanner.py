@@ -114,6 +114,7 @@ class BaseScanner:
         self.hasDecls = True
         self.hasFunctions = True
         self.hasNestedClasses = False
+        self.hasRegex = False
         self.ignoreBlankLines = False
         self.ignoreLeadingWs = False
         self.lineCommentDelim = None
@@ -1046,6 +1047,8 @@ class BaseScanner:
                 i = self.skipComment(s, i)
             elif self.startsString(s, i):
                 i = self.skipString(s, i)
+            elif self.hasRegex and self.startsRegex(s, i):
+                i = self.skipRegex(s, i)
             elif self.startsClass(s, i): # Sets sigStart,sigEnd & codeEnd ivars.
                 putRef = True
                 if bodyIndent is None: bodyIndent = self.getIndent(s, i)
@@ -1297,6 +1300,25 @@ class BaseScanner:
     def skipParens(self, s, i):
         '''Skip a parenthisized list, that might contain strings or comments.'''
         return self.skipBlock(s, i, delim1='(', delim2=')')
+    #@+node:ekr.20160122061237.1: *4* BaseScanner.skipRegex
+    def skipRegex(self, s, i):
+        '''Skip the regular expression starting at s[i].'''
+        delim = s[i]
+        i1 = i
+        i += 1
+        while i < len(s):
+            if s[i] == delim:
+                # Count the preceding backslashes.
+                i2, n = i - 1, 0
+                while 0 <= i2 and s[i2] == '\\':
+                    n += 1
+                    i2 -= 1
+                if (n % 2) == 0:
+                    return i + 1
+            i += 1
+        g.trace('unterminated regex starting at', i1)
+        return i
+        
     #@+node:ekr.20140727075002.18248: *4* BaseScanner.skipString
     def skipString(self, s, i):
         # Returns len(s) on unterminated string.
@@ -1304,7 +1326,8 @@ class BaseScanner:
     #@+node:ekr.20140727075002.18249: *4* BaseScanner.skipWs
     def skipWs(self, s, i):
         return g.skip_ws(s, i)
-    #@+node:ekr.20140727075002.18250: *3* BaseScanner.startsClass/Function & helpers
+    #@+node:ekr.20160122061209.1: *3* BaseSCanner.Parse starts methods
+    #@+node:ekr.20140727075002.18250: *4* BaseScanner.startsClass/Function & helpers
     # We don't expect to override this code, but subclasses may override the helpers.
 
     def startsClass(self, s, i):
@@ -1318,13 +1341,13 @@ class BaseScanner:
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
         val = self.hasFunctions and self.startsHelper(s, i, kind='function', tags=self.functionTags)
         return val
-    #@+node:ekr.20140727075002.18251: *4* BaseScanner.getSigId
+    #@+node:ekr.20140727075002.18251: *5* BaseScanner.getSigId
     def getSigId(self, ids):
         '''Return the signature's id.
 
         By default, this is the last id in the ids list.'''
         return ids and ids[-1]
-    #@+node:ekr.20140727075002.18252: *4* BaseScanner.skipSigStart
+    #@+node:ekr.20140727075002.18252: *5* BaseScanner.skipSigStart
     def skipSigStart(self, s, i, kind, tags):
         '''Skip over the start of a function/class signature.
 
@@ -1352,7 +1375,7 @@ class BaseScanner:
                 else: break
         if trace: g.trace('*exit ', kind, i, i < len(s) and s[i], ids, classId)
         return i, ids, classId
-    #@+node:ekr.20140727075002.18253: *4* BaseScanner.skipSigTail
+    #@+node:ekr.20140727075002.18253: *5* BaseScanner.skipSigTail
     def skipSigTail(self, s, i, kind):
         '''Skip from the end of the arg list to the start of the block.'''
         trace = False and self.trace
@@ -1372,7 +1395,7 @@ class BaseScanner:
                 i += 1
         if trace: g.trace('no block delim')
         return i, False
-    #@+node:ekr.20140727075002.18254: *4* BaseScanner.startsHelper
+    #@+node:ekr.20140727075002.18254: *5* BaseScanner.startsHelper
     def startsHelper(self, s, i, kind, tags, tag=None):
         '''
         tags is a list of id's.  tag is a debugging tag.
@@ -1471,7 +1494,7 @@ class BaseScanner:
                 first_line = g.splitLines(s[self.sigStart: i])[0]
                 g.trace(kind, first_line.rstrip())
         return True
-    #@+node:ekr.20140727075002.18255: *3* BaseScanner.startsComment
+    #@+node:ekr.20140727075002.18255: *4* BaseScanner.startsComment
     def startsComment(self, s, i):
         return (
             g.match(s, i, self.lineCommentDelim) or
@@ -1479,10 +1502,14 @@ class BaseScanner:
             g.match(s, i, self.blockCommentDelim1) or
             g.match(s, i, self.blockCommentDelim1_2)
         )
-    #@+node:ekr.20140727075002.18256: *3* BaseScanner.startsId
+    #@+node:ekr.20140727075002.18256: *4* BaseScanner.startsId
     def startsId(self, s, i):
         return g.is_c_id(s[i: i + 1])
-    #@+node:ekr.20140727075002.18257: *3* BaseScanner.startsString
+    #@+node:ekr.20160122061038.1: *4* BaseScanner.startsRegex
+    def startsRegex(self, s, i):
+        '''Return True if s[i] starts a regular expression.'''
+        return s[i] == '/'
+    #@+node:ekr.20140727075002.18257: *4* BaseScanner.startsString
     def startsString(self, s, i):
         return g.match(s, i, '"') or g.match(s, i, "'")
     #@+node:ekr.20140727075002.18258: ** BaseScanner.run
