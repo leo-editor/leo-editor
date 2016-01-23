@@ -41,6 +41,9 @@ There are commands on the Plugins active_path submenu:
 - update recursive - recursive load of directories, use with caution on large
   file systems
 - pick dir - select a folder interactively to make a new top level @path node
+- mark-content - mark outline content in the @path tree, as opposed to
+  filesystem content.  Useful if you want to delete the @path tree to
+  check for content not on the filesystem first
 
 If you want to use an input other than double clicking a node
 set active_path_event to a value like 'hypercclick1' or 'headrclick1'.
@@ -796,6 +799,41 @@ def cmd_PickDir(event):
     nd = c.p.insertAfter()
     nd.h = "@path %s" % dir_
     c.redraw()
+#@+node:tbnorth.20160122134156.1: ** cmd MarkContent (active_path.py)
+@g.command('active-path-mark-content')
+def cmd_MarkContent(event):
+    """cmd_MarkContent - mark nodes in @path sub-tree with non-filesystem content
+
+    i.e. not organizer nodes (no body), subdirs (body starts with @path)
+    vanished file placeholders, or @<file> nodes.
+    """
+    c = event.get('c')
+    p = c.p
+
+    while not p.h.startswith("@path "):
+        p.moveToParent()
+        if not p:
+            g.es("Not in a @path tree")
+            return
+    c.unmarkAll()
+    def find_content(nd, count):
+        if nd.isAnyAtFileNode():
+            return
+        content = True
+        if len(nd.b.strip()) == 0:
+            content = False
+        elif len(nd.b.strip().split('\n')) == 1 and nd.b.startswith('@path '):
+            content = False
+        if content:
+            nd.setMarked()
+            count[0] += 1
+        for child in nd.children():
+            find_content(child, count)
+    count = [0]
+    find_content(p, count)
+    g.es("%d content nodes marked" % count[0])
+    if count[0]:
+        c.redraw()
 #@+node:tbrown.20080619080950.14: ** testing
 #@+node:tbrown.20080619080950.15: *3* makeTestHierachy
 files="""
