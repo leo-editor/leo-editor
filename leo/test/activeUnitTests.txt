@@ -14935,6 +14935,13 @@ finally:
 # This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
     p.OnHyperLinkControlClick(event=None)
+#@+node:ekr.20160123044102.1: *4* @test p.__eq__
+# These must not raise NotImplemented!
+root = c.rootPosition()
+assert p.__eq__(None) is False, p.__eq__(None)
+assert p.__ne__(None) is True, p.__ne__(None)
+assert p.__eq__(root) is False, p.__eq__(root)
+assert p.__ne__(root) is True, p.__ne__(root)
 #@+node:ekr.20131220083358.3982: *4* @test p._relinkAsCloneOf
 u = c.undoer
 p1 = g.findNodeInTree(c,p,'a')
@@ -15323,6 +15330,14 @@ import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
+#@+node:ekr.20071113202452: *4* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
@@ -15900,14 +15915,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()
-#@+node:ekr.20071113202452: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-print('\nEnd of leoNodes tests.')
 #@+node:ekr.20140712142620.4458: *3* leoPersistence tests
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
