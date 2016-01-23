@@ -2937,8 +2937,8 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.visit(node.value)
         rt.end_div()
     #@-others
-#@+node:ekr.20160111133948.1: ** class StubFormatter (AstPatternFormatter)
-class StubFormatter (AstPatternFormatter):
+#@+node:ekr.20160111133948.1: ** class StubFormatter (AstFormatter)
+class StubFormatter (AstFormatter):
     #@+others
     #@+node:ekr.20160111143936.1: *3* sf.Constants & Name
     # Return generic markers allow better pattern matches.
@@ -2959,8 +2959,8 @@ class StubFormatter (AstPatternFormatter):
         '''This represents a string constant.'''
         return 'str' # return repr(node.s)
     #@-others
-#@+node:ekr.20160111112318.1: ** class StubTraverser (AstFullTraverser)
-class StubTraverser (AstFullTraverser):
+#@+node:ekr.20160111112318.1: ** class StubTraverser (ast.NodeVisitor)
+class StubTraverser (ast.NodeVisitor):
     
     def __init__(self, c, d, output_fn):
         '''Ctor for StubTraverser class.'''
@@ -3003,17 +3003,19 @@ class StubTraverser (AstFullTraverser):
         else:
             g.es_print('not found:', dir_)
 
-    #@+node:ekr.20160111112426.1: *3* st.visit
-    def visit(self, node):
-        '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-        assert isinstance(node, ast.AST), node.__class__.__name__
-        method = getattr(self, 'do_' + node.__class__.__name__)
-        method(node)
+    #@+node:ekr.20160111112426.1: *3* st.visit (not used)
+    # This is needed only when subclassing from the leoAst.AstFullTraverser class.
+
+    # def visit(self, node):
+        # '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+        # assert isinstance(node, ast.AST), node.__class__.__name__
+        # method = getattr(self, 'do_' + node.__class__.__name__)
+        # method(node)
     #@+node:ekr.20160111113607.1: *3* st.Visitors
     #@+node:ekr.20160111112723.2: *4* st.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
-    def do_ClassDef(self, node):
+    def visit_ClassDef(self, node):
 
         # Format...
         if not node.name.startswith('_'):
@@ -3033,7 +3035,7 @@ class StubTraverser (AstFullTraverser):
     #@+node:ekr.20160111112723.3: *4* st.FunctionDef & helpers
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
-    def do_FunctionDef(self, node):
+    def visit_FunctionDef(self, node):
         
         # Do nothing if we are already in a function.
         # We do not generate stubs for inner defs.
@@ -3060,8 +3062,7 @@ class StubTraverser (AstFullTraverser):
         Format the arguments node.
         Similar to AstFormat.do_arguments, but it is not a visitor!
         '''
-        kind = self.kind(node)
-        assert kind == 'arguments', kind
+        assert isinstance(node,ast.arguments), node
         args = [self.format(z) for z in node.args]
         defaults = [self.format(z) for z in node.defaults]
         # Assign default values to the last args.
@@ -3109,7 +3110,7 @@ class StubTraverser (AstFullTraverser):
             else:
                 return split(', '.join(r))
     #@+node:ekr.20160111142025.1: *4* st.Return
-    def do_Return(self, node):
+    def visit_Return(self, node):
 
         self.returns.add(node.value)
     #@-others

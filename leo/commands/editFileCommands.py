@@ -291,6 +291,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160111190632.1: ** efc.makeStubFiles
     @cmd('make-stub-files')
     def make_stub_files(self, event):
+        '''
+        Write stub (.pyi) files for all @<file> nodes in the selected outline
+        to the ~/stubs directory. Do nothing if ~/stubs does not exist.
+        '''
         #@+others
         #@+node:ekr.20160111202214.1: *3* class MakeStubFile
         class MakeStubFile:
@@ -332,7 +336,35 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     for key in sorted(d.keys()):
                         g.trace(key, d.get(key))
                 return d
-            #@+node:ekr.20160111202214.3: *4* msf.run & helper
+            #@+node:ekr.20160111202214.4: *4* msf.make_stub_file
+            def make_stub_file(self, p):
+                '''Make a stub file in ~/stubs for the @<file> node at p.'''
+                import ast
+                import leo.core.leoAst as leoAst
+                assert p.isAnyAtFileNode()
+                c = self.c
+                fn = p.anyAtFileNodeName()
+                if not fn.endswith('.py'):
+                    g.es_print('not a python file', fn)
+                    return
+                ### abs_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+                abs_fn = g.fullPath(c, p)
+                if not g.os_path_exists(abs_fn):
+                    g.es_print('not found', abs_fn)
+                    return
+                stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
+                if g.os_path_exists(stubs):
+                    base_fn = g.os_path_basename(fn)
+                    out_fn = g.os_path_finalize_join(stubs,base_fn)
+                else:
+                    g.es_print('not found', stubs)
+                    return
+                    # out_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+                out_fn = out_fn[:-3] + '.pyi'
+                s = open(abs_fn).read()
+                node = ast.parse(s,filename=fn,mode='exec')
+                leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
+            #@+node:ekr.20160111202214.3: *4* msf.run
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''
                 if p.isAnyAtFileNode():
@@ -355,31 +387,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                             self.make_stub_file(p2)
                             break
                     else:
-                        g.es('no files found', p.h)
-            #@+node:ekr.20160111202214.4: *5* msf.make_stub_file
-            def make_stub_file(self, p):
-                '''Make a stub file in ~/stubs for the @<file> node at p.'''
-                import ast
-                import leo.core.leoAst as leoAst
-                assert p.isAnyAtFileNode()
-                fn = p.anyAtFileNodeName()
-                if not fn.endswith('.py'):
-                    return
-                abs_fn = g.os_path_finalize_join(g.app.loadDir, fn)
-                if not g.os_path_exists(abs_fn):
-                    g.es_print('not found', abs_fn)
-                    return
-                stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
-                if g.os_path_exists(stubs):
-                    base_fn = g.os_path_basename(fn)
-                    out_fn = g.os_path_finalize_join(stubs,base_fn)
-                else:
-                    g.es_print('not found', stubs)
-                    out_fn = g.os_path_finalize_join(g.app.loadDir, fn)
-                out_fn = out_fn[:-3] + '.pyi'
-                s = open(fn).read()
-                node = ast.parse(s,filename=fn,mode='exec')
-                leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
+                        g.es('no files found in tree:', p.h)
             #@-others
         #@-others
         MakeStubFile(self.c).run(self.c.p)
