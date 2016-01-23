@@ -345,6 +345,7 @@
 <v t="ekr.20050830115714.115"><vh>Error messages from the rst3 plugin aren't helpful. What can I do?</vh></v>
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
+<v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
@@ -18548,6 +18549,24 @@ This script will compare the trees whose roots are p1 and p2 and show the result
 I believe with tools of this weight and impact, there will always be an investment in learning them. They're all vast forests of features filled with hidden treasures and in the case of each of them he/she that invests in the tool will be rewarded for their effort. It is, however, the responsibility of the community (led by the developers) to help make that treasure hunt as enjoyable and adventurous as possible, as any good treasure hunt should be. 
 
 And this is where Leo does not falter, in the helpfulness of its community (small though it may be). I will reiterate what Edward has said many times, do not struggle on your own if you are lost, confused, or bewildered. Please ask questions. If the documentation or examples do not meet your needs, please ask questions. In my own experience as a once new user (though there may be the occasional disagreement) you will not be chided, scorned, or belittled but will be met with more even more help than you originally asked for. -- john lunzer &lt;lunzer@gmail.com&gt;</t>
+<t tx="ekr.20160123060917.1">This key is normally bound to delete-comments. It is annoying not to have it work.
+
+For Windows 10, do the following (it may be a bit different for Windows 8):
+
+1. In the control panel, click Language.
+   This brings up the "Language" panel.
+
+2. Choose "Advanced Settings" in the left area.
+   This brings up the "Advanced Settings" panel.
+
+3. Choose "Change language bar hot keys" in the left area.
+   This brings up the "Text Services &amp; Input Language" panel.
+
+4. You will see Shift-Ctrl-0 as the binding for "Between input languages".
+    Select that item and click the "Change Key Sequence" button.
+    This brings up the "Change Key Sequence" panel.
+
+5. Set both radio buttons to "Not Assigned" and click OK.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
