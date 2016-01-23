@@ -1323,12 +1323,15 @@ class TestManager:
         trace = False
         verbose = False
         c, tm = self.c, self
-        p = c.rootPosition() if all else c.p
-        limit = None if all else p.nodeAfterTree()
+        # Bug fix 2016/01/23: Scan entire file if marked.
+        p = c.rootPosition() if all or marked else c.p
+        limit = None if all or marked else p.nodeAfterTree()
         seen, result = [], []
-        if trace: g.trace('all: %s marked: %s %s' % (all, marked, p.h))
+        if trace: g.trace('all: %s marked: %s p: %s limit: %s' % (
+            all, marked, p.h, limit and limit.h))
         # 2012/08/13: Add special cases only after this loop.
         while p and p != limit:
+            if trace and verbose: g.trace(p.h)
             if p.v in seen:
                 if trace and verbose: g.trace('already seen', p.h)
                 p.moveToNodeAfterTree()
@@ -1414,10 +1417,10 @@ class TestManager:
                     result.append(p.copy())
                     break
         # Remove duplicates.
-        result2, seen = [], []
+        result2, seen2 = [], []
         for p in result:
-            if p.v not in seen:
-                seen.append(p.v)
+            if p.v not in seen2:
+                seen2.append(p.v)
                 result2.append(p)
         if trace:
             g.trace([z.h for z in result2])
