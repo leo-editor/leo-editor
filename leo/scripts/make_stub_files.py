@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 The stand-alone version of Leo's make-stub-files command.
 Make a stub file in the ~/stubs directory for every file

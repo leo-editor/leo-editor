@@ -2177,7 +2177,8 @@ import time
 imp.reload(leoAst)
 imp.reload(leoBeautify)
 # imp.reload(PythonTidy)</t>
-<t tx="ekr.20160123185231.1">'''
+<t tx="ekr.20160123185231.1">#!/usr/bin/env python
+'''
 The stand-alone version of Leo's make-stub-files command.
 Make a stub file in the ~/stubs directory for every file
 mentioned in the [Files] section of ~/stubs/make_stub_files.cfg.
