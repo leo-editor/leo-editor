@@ -2971,7 +2971,7 @@ class StubTraverser (ast.NodeVisitor):
         self.level = 0
         self.output_file = None
         self.output_fn = output_fn
-        self.returns = set()
+        self.returns = []
 
     #@+others
     #@+node:ekr.20160111113550.1: *3* st.indent & out
@@ -3042,7 +3042,7 @@ class StubTraverser (ast.NodeVisitor):
         if self.in_function or node.name.startswith('_'):
             return
         # First, visit the function body.
-        self.returns = set()
+        self.returns = []
         self.in_function = True
         self.level += 1
         for z in node.body:
@@ -3054,7 +3054,7 @@ class StubTraverser (ast.NodeVisitor):
             node.name,
             self.format_arguments(node.args),
             self.format_returns(node)))
-    #@+node:ekr.20160111150912.1: *5* format_arguments & helper
+    #@+node:ekr.20160111150912.1: *5* format_arguments
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
     def format_arguments(self, node):
@@ -3081,20 +3081,15 @@ class StubTraverser (ast.NodeVisitor):
         name = getattr(node, 'kwarg', None)
         if name: result.append('**' + name)
         return ', '.join(result)
-    #@+node:ekr.20160111155328.1: *6* munge_arg
-    def munge_arg(self, s):
-        '''Add an annotation for s if possible.'''
-        a = self.d.get(s)
-        return '%s: %s' % (s, a) if a else s
     #@+node:ekr.20160111140401.1: *5* format_returns
     def format_returns(self, node):
         '''Calculate the return type.'''
         def split(s):
             return '\n     ' + self.indent(s) if len(s) > 30 else s
-            
-        r = list(self.returns)
-        r = [self.format(z) for z in r]
-        # if r: g.trace(r)
+
+        r = [self.format(z) for z in self.returns]
+        r = [self.munge_arg(z) for z in r] # Make type substitutions.
+        r = sorted(set(r)) # Remove duplicates
         if len(r) == 0:
             return 'None'
         if len(r) == 1:
@@ -3109,10 +3104,15 @@ class StubTraverser (ast.NodeVisitor):
                 return ', '.join(['\n    ' + self.indent(z) for z in r])
             else:
                 return split(', '.join(r))
+    #@+node:ekr.20160111155328.1: *5* munge_arg
+    def munge_arg(self, s):
+        '''Add an annotation for s if possible.'''
+        a = self.d.get(s)
+        return '%s: %s' % (s, a) if a else s
     #@+node:ekr.20160111142025.1: *4* st.Return
     def visit_Return(self, node):
 
-        self.returns.add(node.value)
+        self.returns.append(node.value)
     #@-others
 #@-others
 #@@language python

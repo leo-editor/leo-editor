@@ -347,20 +347,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 if not fn.endswith('.py'):
                     g.es_print('not a python file', fn)
                     return
-                ### abs_fn = g.os_path_finalize_join(g.app.loadDir, fn)
                 abs_fn = g.fullPath(c, p)
                 if not g.os_path_exists(abs_fn):
                     g.es_print('not found', abs_fn)
                     return
-                stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
+                stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs/output'))
                 if g.os_path_exists(stubs):
                     base_fn = g.os_path_basename(fn)
                     out_fn = g.os_path_finalize_join(stubs,base_fn)
                 else:
                     g.es_print('not found', stubs)
                     return
-                    # out_fn = g.os_path_finalize_join(g.app.loadDir, fn)
                 out_fn = out_fn[:-3] + '.pyi'
+                out_fn = os.path.normpath(out_fn)
                 s = open(abs_fn).read()
                 node = ast.parse(s,filename=fn,mode='exec')
                 leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
