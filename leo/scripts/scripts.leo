@@ -341,6 +341,7 @@
 </v>
 </v>
 <v t="ekr.20160123185231.1"></v>
+<v t="ekr.20160124163833.1"><vh>@clean make_stub_files.cfg</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -4233,6 +4234,34 @@ script.
 Edward K. Ream
 January, 2016
 '''
+</t>
+<t tx="ekr.20160124163833.1"># An example configuration file for make_stub_files.py.
+# This should be placed in your ~/stubs directory.
+
+[Global]
+files:
+    c:/leo.repo/leo-editor/leo/core/leoAst.py
+    # c:/leo.repo/leo-editor/leo/core/*.py
+    # c:/leo.repo/leo-editor/plugins/*.py
+    
+output_directory: ~/stubs
+    
+prefix:
+    from typing import TypeVar, Iterable, Tuple
+    T = TypeVar('T', int, float, complex)
+
+[Types]
+aList: Sequence
+aList2: Sequence
+c: Commander
+i: int
+j: int
+k: int
+node: ast.Ast
+p: Position
+s: str
+s2: str
+v: VNode
 </t>
 </tnodes>
 </leo_file>
