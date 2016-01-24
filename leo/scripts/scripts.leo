@@ -3101,7 +3101,8 @@ def visit(self, node):
         return s
 </t>
 <t tx="ekr.20160123185312.12">
-# Contexts...</t>
+# Contexts...
+</t>
 <t tx="ekr.20160123185312.13">
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -3155,7 +3156,8 @@ def do_Lambda(self, node):
         self.visit(node.body)))
 </t>
 <t tx="ekr.20160123185312.18">
-# Expressions...</t>
+# Expressions...
+</t>
 <t tx="ekr.20160123185312.19">
 def do_Expr(self, node):
     '''An outer expression: must be indented.'''
@@ -3200,7 +3202,8 @@ def do_Store(self, node):
     return 'Store'
 </t>
 <t tx="ekr.20160123185312.23">
-# Operands...</t>
+# Operands...
+</t>
 <t tx="ekr.20160123185312.24">
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -3374,7 +3377,8 @@ def do_Tuple(self, node):
     return '(%s)' % ','.join(elts)
 </t>
 <t tx="ekr.20160123185312.44">
-# Operators...</t>
+# Operators...
+</t>
 <t tx="ekr.20160123185312.45">
 def do_BinOp(self, node):
     return '%s%s%s' % (
@@ -3416,7 +3420,8 @@ def do_IfExp(self, node):
         self.visit(node.orelse))
 </t>
 <t tx="ekr.20160123185312.50">
-# Statements...</t>
+# Statements...
+</t>
 <t tx="ekr.20160123185312.51">
 def do_Assert(self, node):
     test = self.visit(node.test)
@@ -3708,7 +3713,8 @@ def do_Yield(self, node):
         return self.indent('yield\n')
 </t>
 <t tx="ekr.20160123185312.75">
-# Utils...</t>
+# Utils...
+</t>
 <t tx="ekr.20160123185312.76">
 def kind(self, node):
     '''Return the name of node's class.'''
@@ -3826,21 +3832,25 @@ def out(self, s):
 <t tx="ekr.20160123185312.83">
 def run(self, node):
     '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
-    dir_ = os.path.dirname(self.output_fn)
-    if os.path.exists(dir_):
-        self.output_file = open(self.output_fn, 'w')
+    fn = self.output_fn
+    dir_ = os.path.dirname(fn)
+    if os.path.exists(fn):
+        print('file exists: %s' % fn)
+    elif os.path.exists(dir_):
+        self.output_file = open(fn, 'w')
         for z in self.prefix_lines or []:
             self.out(z.strip())
         self.visit(node)
         self.output_file.close()
         self.output_file = None
-        print('wrote: %s' % self.output_fn)
+        print('wrote: %s' % fn)
     else:
         print('not found: %s' % dir_)
 
 </t>
 <t tx="ekr.20160123185312.85">
-# Visitors...</t>
+# Visitors...
+</t>
 <t tx="ekr.20160123185312.86">
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -3920,7 +3930,8 @@ def format_arguments(self, node):
     return ', '.join(result)
 </t>
 <t tx="ekr.20160123185312.9">
-# Entries...</t>
+# Entries...
+</t>
 <t tx="ekr.20160123185312.90">
 def format_returns(self, node):
     '''Calculate the return type.'''
@@ -4032,6 +4043,8 @@ def __init__ (self):
 '''
 The stand-alone version of Leo's make-stub-files command.
 
+This file is in the public domain.
+
 **In brief**
 
 This script makes a stub file in the ~/stubs directory for every file
@@ -4135,12 +4148,15 @@ in the ~/stubs directory. This is mypy's default directory for stubs.
 
 The configuration file uses the .ini format. It has two sections:
 
-- The [Global] section specifies the files list and prefix lines.
+- The [Global] section specifies the files list, prefix lines and output directory:
+
 - The [Types] section specifies naming conventions. For example::
 
     [Global]
     files:
         ~/leo-editor/leo/core/*.py
+        
+    output_directory: ~/stubs
         
     prefix:
         from typing import TypeVar, Iterable, Tuple
@@ -4159,7 +4175,7 @@ The configuration file uses the .ini format. It has two sections:
     s: str
     v: VNode
 
-Why this script is imporant
+Why this script is important
 ===========================
 
 The script eliminates most of the drudgery from creating stub files.
@@ -4216,6 +4232,7 @@ script.
 
 Edward K. Ream
 January, 2016
-'''</t>
+'''
+</t>
 </tnodes>
 </leo_file>

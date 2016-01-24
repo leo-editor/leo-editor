@@ -2989,9 +2989,12 @@ class StubTraverser (ast.NodeVisitor):
     def run(self, node):
         '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
         c = self.c
+        fn = self.output_fn
         dir_ = g.os_path_dirname(self.output_fn)
-        if g.os_path_exists(dir_):
-            self.output_file = open(self.output_fn, 'w')
+        if g.os_path_exists(fn):
+            g.es_print('file exists: %s' % fn)
+        elif g.os_path_exists(dir_):
+            self.output_file = open(fn, 'w')
             aList = c.config.getData('stub-prefix')
             if aList:
                 for z in aList:
@@ -2999,10 +3002,9 @@ class StubTraverser (ast.NodeVisitor):
             self.visit(node)
             self.output_file.close()
             self.output_file = None
-            g.es_print('wrote', self.output_fn)
+            g.es_print('wrote', fn)
         else:
             g.es_print('not found:', dir_)
-
     #@+node:ekr.20160111112426.1: *3* st.visit (not used)
     # This is needed only when subclassing from the leoAst.AstFullTraverser class.
 

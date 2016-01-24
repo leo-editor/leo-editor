@@ -3,6 +3,8 @@
 '''
 The stand-alone version of Leo's make-stub-files command.
 
+This file is in the public domain.
+
 **In brief**
 
 This script makes a stub file in the ~/stubs directory for every file
@@ -106,12 +108,15 @@ in the ~/stubs directory. This is mypy's default directory for stubs.
 
 The configuration file uses the .ini format. It has two sections:
 
-- The [Global] section specifies the files list and prefix lines.
+- The [Global] section specifies the files list, prefix lines and output directory:
+
 - The [Types] section specifies naming conventions. For example::
 
     [Global]
     files:
         ~/leo-editor/leo/core/*.py
+        
+    output_directory: ~/stubs
         
     prefix:
         from typing import TypeVar, Iterable, Tuple
@@ -928,15 +933,18 @@ class StubTraverser (ast.NodeVisitor):
 
     def run(self, node):
         '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
-        dir_ = os.path.dirname(self.output_fn)
-        if os.path.exists(dir_):
-            self.output_file = open(self.output_fn, 'w')
+        fn = self.output_fn
+        dir_ = os.path.dirname(fn)
+        if os.path.exists(fn):
+            print('file exists: %s' % fn)
+        elif os.path.exists(dir_):
+            self.output_file = open(fn, 'w')
             for z in self.prefix_lines or []:
                 self.out(z.strip())
             self.visit(node)
             self.output_file.close()
             self.output_file = None
-            print('wrote: %s' % self.output_fn)
+            print('wrote: %s' % fn)
         else:
             print('not found: %s' % dir_)
 
