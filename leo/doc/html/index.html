@@ -81,6 +81,14 @@
     <link rel="top" title="Leo 5.1 documentation" href="index.html" />
     <link rel="Users Guide" title="Leo&#8217;s Users Guide" href="leo_toc.html" />
     <!-- <link rel="prev" title="Using Leo's Commands" href="commands.html" />--> 
+
+    <script type="text/javascript">
+    function search(event) {
+      if (event === null || (event.keyCode || event.which) === 13) {
+        window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+      }
+    }
+    </script>
     <!--@-<< head >>-->
 </head>
 <body>
@@ -309,16 +317,11 @@
             <p>
             <div id="searchbox" style="">
               <h3>Search</h3>
-              <form class="search" method="get" action="search.html">
-                <input id='q' type="text" name="q">
-                <input type="submit" value="Quick search">
-                <input type="hidden" value="yes" name="check_keywords">
-                <input type="hidden" value="default" name="area">
-              </form>
-              <div><button onclick="window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);">Google search</button></div>
-              <p class="searchtip" style="font-size: 90%">
-                Enter search terms or a module, class or function name.
-              </p>
+                <input id='q' type="text" name="q" onkeypress="search(event)">
+              <div><button onclick="search(null)">Google search</button></div>
+              <div class="searchtip" style="font-size: 90%">
+                Use quotes for "@file" and similar symbols.
+              </div>
             </div>
             </p>
 
