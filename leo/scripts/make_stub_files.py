@@ -1,7 +1,8 @@
 '''
 The stand-alone version of Leo's make-stub-files command.
 Make a stub file in the ~/stubs directory for every file
-mentioned in the [Source Files] section of ~/stubs/make_stub_files.cfg.
+mentioned in the [Files] section of ~/stubs/make_stub_files.cfg.
+The [Global] section specifies prefix lines and type annotations.
 '''
 import ast
 try:
@@ -18,12 +19,10 @@ class AstFormatter:
     A class to recreate source code from an AST.
     
     This does not have to be perfect, but it should be close.
-    
-    Also supports optional annotations such as line numbers, file names, etc.
     '''
-    # No ctor.
     # pylint: disable=consider-using-enumerate
 
+    # Entries...
 
     def format(self, node):
         '''Format the node (or list of nodes) and its descendants.'''
@@ -45,6 +44,8 @@ class AstFormatter:
             # pylint: disable=unidiomatic-typecheck
             assert type(s) == type('abc'), type(s)
             return s
+
+    # Contexts...
 
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -93,6 +94,8 @@ class AstFormatter:
             self.visit(node.args),
             self.visit(node.body)))
 
+    # Expressions...
+
     def do_Expr(self, node):
         '''An outer expression: must be indented.'''
         return self.indent('%s\n' % self.visit(node.value))
@@ -121,6 +124,8 @@ class AstFormatter:
 
     def do_Store(self, node):
         return 'Store'
+
+    # Operands...
 
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -178,6 +183,7 @@ class AstFormatter:
             args.append('**%s' % (self.visit(node.kwargs)))
         args = [z for z in args if z] # Kludge: Defensive coding.
         return '%s(%s)' % (func, ','.join(args))
+
     # keyword = (identifier arg, expr value)
 
     def do_keyword(self, node):
@@ -273,6 +279,8 @@ class AstFormatter:
         elts = [self.visit(z) for z in node.elts]
         return '(%s)' % ','.join(elts)
 
+    # Operators...
+
     def do_BinOp(self, node):
         return '%s%s%s' % (
             self.visit(node.left),
@@ -307,6 +315,8 @@ class AstFormatter:
             self.visit(node.body),
             self.visit(node.test),
             self.visit(node.orelse))
+
+    # Statements...
 
     def do_Assert(self, node):
         test = self.visit(node.test)
@@ -450,7 +460,6 @@ class AstFormatter:
         if getattr(node, 'dest', None):
             vals.append('dest=%s' % self.visit(node.dest))
         if getattr(node, 'nl', None):
-            # vals.append('nl=%s' % self.visit(node.nl))
             vals.append('nl=%s' % node.nl)
         return self.indent('print(%s)\n' % (
             ','.join(vals)))
@@ -549,6 +558,8 @@ class AstFormatter:
         else:
             return self.indent('yield\n')
 
+    # Utils...
+
     def kind(self, node):
         '''Return the name of node's class.'''
         return node.__class__.__name__
@@ -611,7 +622,6 @@ class StandAloneMakeStubFile:
     ~/stubs/make_stub_files.cfg.
     '''
 
-
     def __init__ (self):
         '''Ctor for StandAloneMakeStubFile class.'''
         self.d = {}
@@ -649,7 +659,6 @@ class StandAloneMakeStubFile:
 
     def scan_options(self):
         '''Set all configuration-related ivars.'''
-        # import leo.core.leoGlobals as g ; g.pdb()
         parser = configparser.ConfigParser()
         fn = '~/stubs/make_stub_files.cfg'
         fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
@@ -675,7 +684,10 @@ class StandAloneMakeStubFile:
 
 
 class StubFormatter (AstFormatter):
-
+    '''
+    Just like the AstFormatter class, except it prints the class
+    names of constants instead of actual values.
+    '''
 
     # Return generic markers allow better pattern matches.
 
@@ -697,7 +709,7 @@ class StubFormatter (AstFormatter):
 
 
 class StubTraverser (ast.NodeVisitor):
-    
+    '''An ast.Node traverser class that outputs a stub for each class or def.'''
 
     def __init__(self, d, prefix_lines, output_fn):
         '''Ctor for StubTraverser class.'''
@@ -735,6 +747,8 @@ class StubTraverser (ast.NodeVisitor):
         else:
             print('not found:', dir_)
 
+
+    # Visitors...
 
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -777,6 +791,7 @@ class StubTraverser (ast.NodeVisitor):
             node.name,
             self.format_arguments(node.args),
             self.format_returns(node)))
+
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
     def format_arguments(self, node):

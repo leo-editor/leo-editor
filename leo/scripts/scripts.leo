@@ -2180,7 +2180,8 @@ imp.reload(leoBeautify)
 <t tx="ekr.20160123185231.1">'''
 The stand-alone version of Leo's make-stub-files command.
 Make a stub file in the ~/stubs directory for every file
-mentioned in the [Source Files] section of ~/stubs/make_stub_files.cfg.
+mentioned in the [Files] section of ~/stubs/make_stub_files.cfg.
+The [Global] section specifies prefix lines and type annotations.
 '''
 import ast
 try:
@@ -3104,7 +3105,8 @@ def visit(self, node):
         assert type(s) == type('abc'), type(s)
         return s
 </t>
-<t tx="ekr.20160123185312.12"></t>
+<t tx="ekr.20160123185312.12">
+# Contexts...</t>
 <t tx="ekr.20160123185312.13">
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -3157,7 +3159,8 @@ def do_Lambda(self, node):
         self.visit(node.args),
         self.visit(node.body)))
 </t>
-<t tx="ekr.20160123185312.18"></t>
+<t tx="ekr.20160123185312.18">
+# Expressions...</t>
 <t tx="ekr.20160123185312.19">
 def do_Expr(self, node):
     '''An outer expression: must be indented.'''
@@ -3171,7 +3174,6 @@ class StandAloneMakeStubFile:
     every file mentioned in the [Source Files] section of
     ~/stubs/make_stub_files.cfg.
     '''
-
     @others
 </t>
 <t tx="ekr.20160123185312.20">
@@ -3202,7 +3204,8 @@ def do_Param(self, node):
 def do_Store(self, node):
     return 'Store'
 </t>
-<t tx="ekr.20160123185312.23"></t>
+<t tx="ekr.20160123185312.23">
+# Operands...</t>
 <t tx="ekr.20160123185312.24">
 # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -3265,7 +3268,8 @@ def do_Call(self, node):
     args = [z for z in args if z] # Kludge: Defensive coding.
     return '%s(%s)' % (func, ','.join(args))
 </t>
-<t tx="ekr.20160123185312.29"># keyword = (identifier arg, expr value)
+<t tx="ekr.20160123185312.29">
+# keyword = (identifier arg, expr value)
 
 def do_keyword(self, node):
     # node.arg is a string.
@@ -3374,7 +3378,8 @@ def do_Tuple(self, node):
     elts = [self.visit(z) for z in node.elts]
     return '(%s)' % ','.join(elts)
 </t>
-<t tx="ekr.20160123185312.44"></t>
+<t tx="ekr.20160123185312.44">
+# Operators...</t>
 <t tx="ekr.20160123185312.45">
 def do_BinOp(self, node):
     return '%s%s%s' % (
@@ -3415,7 +3420,8 @@ def do_IfExp(self, node):
         self.visit(node.test),
         self.visit(node.orelse))
 </t>
-<t tx="ekr.20160123185312.50"></t>
+<t tx="ekr.20160123185312.50">
+# Statements...</t>
 <t tx="ekr.20160123185312.51">
 def do_Assert(self, node):
     test = self.visit(node.test)
@@ -3598,7 +3604,6 @@ def do_Print(self, node):
     if getattr(node, 'dest', None):
         vals.append('dest=%s' % self.visit(node.dest))
     if getattr(node, 'nl', None):
-        # vals.append('nl=%s' % self.visit(node.nl))
         vals.append('nl=%s' % node.nl)
     return self.indent('print(%s)\n' % (
         ','.join(vals)))
@@ -3710,7 +3715,8 @@ def do_Yield(self, node):
     else:
         return self.indent('yield\n')
 </t>
-<t tx="ekr.20160123185312.75"></t>
+<t tx="ekr.20160123185312.75">
+# Utils...</t>
 <t tx="ekr.20160123185312.76">
 def kind(self, node):
     '''Return the name of node's class.'''
@@ -3771,7 +3777,10 @@ def op_name (self,node,strict=True):
 <t tx="ekr.20160123185312.79">
 
 class StubFormatter (AstFormatter):
-
+    '''
+    Just like the AstFormatter class, except it prints the class
+    names of constants instead of actual values.
+    '''
     @others
 </t>
 <t tx="ekr.20160123185312.8">
@@ -3780,12 +3789,8 @@ class AstFormatter:
     A class to recreate source code from an AST.
     
     This does not have to be perfect, but it should be close.
-    
-    Also supports optional annotations such as line numbers, file names, etc.
     '''
-    # No ctor.
     # pylint: disable=consider-using-enumerate
-
     @others
 </t>
 <t tx="ekr.20160123185312.80">
@@ -3810,7 +3815,7 @@ def do_Str(self, node):
 <t tx="ekr.20160123185312.81">
 
 class StubTraverser (ast.NodeVisitor):
-    
+    '''An ast.Node traverser class that outputs a stub for each class or def.'''
     @others
 </t>
 <t tx="ekr.20160123185312.82">
@@ -3841,7 +3846,8 @@ def run(self, node):
         print('not found:', dir_)
 
 </t>
-<t tx="ekr.20160123185312.85"></t>
+<t tx="ekr.20160123185312.85">
+# Visitors...</t>
 <t tx="ekr.20160123185312.86">
 # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
@@ -3886,7 +3892,8 @@ def visit_FunctionDef(self, node):
         self.format_arguments(node.args),
         self.format_returns(node)))
 </t>
-<t tx="ekr.20160123185312.88"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+<t tx="ekr.20160123185312.88">
+# arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def format_arguments(self, node):
     '''
@@ -3919,7 +3926,8 @@ def munge_arg(self, s):
     a = self.d.get(s)
     return '%s: %s' % (s, a) if a else s
 </t>
-<t tx="ekr.20160123185312.9"></t>
+<t tx="ekr.20160123185312.9">
+# Entries...</t>
 <t tx="ekr.20160123185312.90">
 def format_returns(self, node):
     '''Calculate the return type.'''
@@ -3965,7 +3973,6 @@ def main():
 <t tx="ekr.20160123185719.1">
 def scan_options(self):
     '''Set all configuration-related ivars.'''
-    # import leo.core.leoGlobals as g ; g.pdb()
     parser = configparser.ConfigParser()
     fn = '~/stubs/make_stub_files.cfg'
     fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
