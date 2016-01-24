@@ -82,6 +82,7 @@
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005506302e352e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 <v t="ekr.20160123185231.1"><vh>@clean make_stub_files.py</vh>
+<v t="ekr.20160124120818.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20160123185312.8"><vh>class AstFormatter</vh>
 <v t="ekr.20160123185312.9"><vh> f.Entries</vh>
 <v t="ekr.20160123185312.10"><vh>f.format</vh></v>
@@ -2176,12 +2177,8 @@ imp.reload(leoAst)
 imp.reload(leoBeautify)
 # imp.reload(PythonTidy)</t>
 <t tx="ekr.20160123185231.1">#!/usr/bin/env python
-'''
-The stand-alone version of Leo's make-stub-files command.
-Make a stub file in the ~/stubs directory for every file
-mentioned in the [Files] section of ~/stubs/make_stub_files.cfg.
-The [Global] section specifies prefix lines and type annotations.
-'''
+&lt;&lt; docstring &gt;&gt;
+
 import ast
 try:
     import ConfigParser as configparser # Python 2
@@ -4029,5 +4026,196 @@ def __init__ (self):
     self.output_directory = os.path.expanduser('~/stubs')
     self.prefix_lines = []
 </t>
+<t tx="ekr.20160124120818.1">@language rest
+@nowrap
+
+'''
+The stand-alone version of Leo's make-stub-files command.
+
+**In brief**
+
+This script makes a stub file in the ~/stubs directory for every file
+mentioned in the [Files] section of ~/stubs/make_stub_files.cfg. The
+[Global] section specifies output directory, prefix lines and annotation
+pairs.
+
+**In detail**
+
+This docstring documents the make_stub_files.py script, explaining what it
+does, how it works and why it is important.
+
+Executive summary
+=================
+
+The make_stub_files script eliminates much of the drudgery of creating
+python stub (.pyi) files https://www.python.org/dev/peps/pep-0484/#stub-files
+from python source files. To my knowledge, no such tool presently exists.
+
+The script does no type inference. Instead, it creates function annotations
+using user-supplied **type conventions**, pairs of strings of the form
+"name: type-annotation".
+
+A **configuration file**, ~/stubs/make_stub_files.cfg, specifies the
+**source list**, (a list files to be processed), the type conventions, and
+a list of **prefix lines** to be inserted verbatim at the start of each
+stub file.
+
+This script should encourage more people to use mypy. Stub files can be
+used by people using Python 2.x code bases. As discussed below, stub files
+can be thought of as design documents or as executable and checkable design
+tools.
+
+What the script does
+====================
+
+For each file in source list (file names may contain wildcards), the script
+creates a corresponding stub file in the ~/stubs directory. This is the
+default directory for mypy stubs. For each source file, the script does the
+following:
+
+1. The script writes the prefix lines verbatim. This makes it easy to add
+   common code to the start of stub files. For example::
+
+    from typing import TypeVar, Iterable, Tuple
+    T = TypeVar('T', int, float, complex)
+    
+2. The script walks the parse (ast) tree for the source file, generating
+   stub lines for each function, class or method. The script generates no
+   stub lines for defs nested within other defs.
+
+For example, given the naming conventions::
+
+    aList: Sequence
+    i: int
+    c: Commander
+    s: str
+    
+and a function::
+
+    def scan(s, i, x):
+        whatever
+        
+the script will generate::
+
+    def scan(s: str, i:int, x): --&gt; (see below):
+    
+Handling function returns
+=========================
+    
+The script handles function returns pragmatically. The tree walker simply
+writes a list of return expressions for each def. For example, here is the
+output at the start of leoAst.pyi::
+
+    class AstDumper:
+        def dump(self, node: ast.Ast, level=number) -&gt; 
+            repr(node), 
+            str%(name,sep,sep1.join(aList)), 
+            str%(name,str.join(aList)), 
+            str%str.join(str%(sep,self.dump(z,level+number)) for z in node): ...
+        def get_fields(self, node: ast.Ast) -&gt; result: ...
+        def extra_attributes(self, node: ast.Ast) -&gt; Sequence: ...
+
+The stub for the dump function is not syntactically correct because there
+are 4 returns listed. You must edit stubs to specify a proper return type.
+For the dump method, all the returns are obviously strings, so its stub
+should be::
+
+    def dump(self, node: ast.Ast, level=number) -&gt; str: ...
+
+Not all types are obvious from naming conventions. In that case, the human
+will have to update the stub using the actual source code as a guide. For
+example, the type of "result" in get_fields could be just about anything.
+In fact, it is a list of strings.
+
+The configuration file
+======================
+
+As mentioned above, the configuration file, make_stub_files.cfg, is located
+in the ~/stubs directory. This is mypy's default directory for stubs.
+
+The configuration file uses the .ini format. It has two sections:
+
+- The [Global] section specifies the files list and prefix lines.
+- The [Types] section specifies naming conventions. For example::
+
+    [Global]
+    files:
+        ~/leo-editor/leo/core/*.py
+        
+    prefix:
+        from typing import TypeVar, Iterable, Tuple
+        T = TypeVar('T', int, float, complex)
+
+    [Types]
+    aList: Sequence
+    c: Commander
+    i: int
+    j: int
+    k: int
+    n: int
+    node: ast.Ast
+    p: Position
+    result: str
+    s: str
+    v: VNode
+
+Why this script is imporant
+===========================
+
+The script eliminates most of the drudgery from creating stub files.
+Creating a syntactically correct stub file from the output of the script is
+straightforward.
+
+Stub files are real data. mypy will check the syntax for us. More
+importantly, mypy will do its type inference on the stub files. That means
+that mypy will discover both errors in the stubs and actual type errors in
+the program under test. There is now a simple way to use mypy!
+
+Stubs express design intentions and intuitions as well as types. We
+programmers think we *do* know most of the types of arguments passed into
+and out of functions and methods. Up until now, there has been no practical
+way of expressing and *testing* these assumptions. Using mypy, we can be as
+specific as we like about types. For example, we can simply say that d is a
+dict, or we can say that d is a dict whose keys are strings and whose
+values are executables with a union of possible signatures. In short, stubs
+are the easy way to play with type inference.
+
+Most importantly, from my point of view, stub files clarify issues that I
+have been struggling with for many years. To what extent *do* we understand
+types? mypy will tell us. How dynamic (RPython-like) *are* our programs?
+mypy will tell us. Could we use type annotation to convert our programs to
+C. Heh, not likely, but the data in the stubs will tell where things get
+sticky.
+
+Finally, stubs can simplify the general type inference problem. Without
+type hints or annotations, the type of everything depends on the type of
+everything else. Stubs could allow robust, maybe even complete, type
+inference to be done locally. We might expect stubs to make mypy work
+faster.
+
+Summary
+=======
+
+The make-stub-files script does for type/design analysis what Leo's c2py
+command did for converting C sources to python. It eliminates much of the
+drudgery associated with creating stub files, leaving the programmer to
+make non-trivial inferences.
+
+Stub files allow us to explore type checking using mypy as a guide and
+helper. Stub files are both a design document and an executable, checkable,
+type specification. Stub files allow those with a Python 2 code base to use
+mypy.
+
+The make-stub-files script is useful as is. All contributions are
+gratefully accepted.
+
+One could imagine a similar insert_annotations script that would inject
+function annotations into source files using stub files as data. This
+"reverse" script should be about as straightfoward as the make-stub-files
+script.
+
+Edward K. Ream
+January, 2016
+'''</t>
 </tnodes>
 </leo_file>
