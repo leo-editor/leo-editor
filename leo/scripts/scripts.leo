@@ -178,9 +178,7 @@
 <v t="ekr.20160123185312.85"><vh>st.Visitors</vh>
 <v t="ekr.20160123185312.86"><vh>st.ClassDef</vh></v>
 <v t="ekr.20160123185312.87"><vh>st.FunctionDef &amp; helpers</vh>
-<v t="ekr.20160123185312.88"><vh>format_arguments &amp; helper</vh>
-<v t="ekr.20160123185312.89"><vh>munge_arg</vh></v>
-</v>
+<v t="ekr.20160123185312.88"><vh>format_arguments</vh></v>
 <v t="ekr.20160123185312.90"><vh>format_returns</vh></v>
 </v>
 <v t="ekr.20160123185312.91"><vh>st.Return</vh></v>
@@ -3521,14 +3519,10 @@ def make_stub_file(self, fn):
     if not os.path.exists(fn):
         print('not found', fn)
         return
-    stubs = os.path.expanduser('~/stubs')
-    if os.path.exists(stubs):
-        base_fn = os.path.basename(fn)
-        out_fn = os.path.join(stubs,base_fn)
-    else:
-        print('not found', stubs)
-        return
+    base_fn = os.path.basename(fn)
+    out_fn = os.path.join(self.output_directory,base_fn)
     out_fn = out_fn[:-3] + '.pyi'
+    out_fn = os.path.normpath(out_fn)
     s = open(fn).read()
     node = ast.parse(s,filename=fn,mode='exec')
     StubTraverser(self.d, self.prefix_lines, out_fn).run(node)
@@ -3631,8 +3625,9 @@ def do_Return(self, node):
 <t tx="ekr.20160123185312.7">
 def run(self):
     '''Make stub files for all files.'''
-    for fn in self.files:
-        self.make_stub_file(fn)
+    if os.path.exists(self.output_directory):
+        for fn in self.files:
+            self.make_stub_file(fn)
 </t>
 <t tx="ekr.20160123185312.70">
 def do_TryExcept(self, node):
@@ -3842,9 +3837,9 @@ def run(self, node):
         self.visit(node)
         self.output_file.close()
         self.output_file = None
-        print('wrote', self.output_fn)
+        print('wrote: %s' % self.output_fn)
     else:
-        print('not found:', dir_)
+        print('not found: %s' % dir_)
 
 </t>
 <t tx="ekr.20160123185312.85">
@@ -3880,7 +3875,7 @@ def visit_FunctionDef(self, node):
     if self.in_function or node.name.startswith('_'):
         return
     # First, visit the function body.
-    self.returns = set()
+    self.returns = []
     self.in_function = True
     self.level += 1
     for z in node.body:
@@ -3901,6 +3896,12 @@ def format_arguments(self, node):
     Format the arguments node.
     Similar to AstFormat.do_arguments, but it is not a visitor!
     '''
+    
+    def munge_arg(s):
+        '''Add an annotation for s if possible.'''
+        a = self.d.get(s)
+        return '%s: %s' % (s, a) if a else s
+
     assert isinstance(node,ast.arguments), node
     args = [self.format(z) for z in node.args]
     defaults = [self.format(z) for z in node.defaults]
@@ -3909,7 +3910,7 @@ def format_arguments(self, node):
     n_plain = len(args) - len(defaults)
     # pylint: disable=consider-using-enumerate
     for i in range(len(args)):
-        s = self.munge_arg(args[i])
+        s = munge_arg(args[i])
         if i &lt; n_plain:
             result.append(s)
         else:
@@ -3921,12 +3922,6 @@ def format_arguments(self, node):
     if name: result.append('**' + name)
     return ', '.join(result)
 </t>
-<t tx="ekr.20160123185312.89">
-def munge_arg(self, s):
-    '''Add an annotation for s if possible.'''
-    a = self.d.get(s)
-    return '%s: %s' % (s, a) if a else s
-</t>
 <t tx="ekr.20160123185312.9">
 # Entries...</t>
 <t tx="ekr.20160123185312.90">
@@ -3936,8 +3931,14 @@ def format_returns(self, node):
     def split(s):
         return '\n     ' + self.indent(s) if len(s) &gt; 30 else s
         
-    r = list(self.returns)
-    r = [self.format(z) for z in r]
+    def munge_ret(s):
+        '''replace a return value by a type if possible.'''
+        return self.d.get(s.strip()) or s
+
+    r = [self.format(z) for z in self.returns]
+    # if r: print(r)
+    r = [munge_ret(z) for z in r] # Make type substitutions.
+    r = sorted(set(r)) # Remove duplicates
     if len(r) == 0:
         return 'None'
     if len(r) == 1:
@@ -3956,7 +3957,7 @@ def format_returns(self, node):
 <t tx="ekr.20160123185312.91">
 def visit_Return(self, node):
 
-    self.returns.add(node.value)
+    self.returns.append(node.value)
 </t>
 <t tx="ekr.20160123185348.1">
 def main():
@@ -3975,6 +3976,7 @@ def main():
 def scan_options(self):
     '''Set all configuration-related ivars.'''
     parser = configparser.ConfigParser()
+    parser.optionxform=str
     fn = '~/stubs/make_stub_files.cfg'
     fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
     if os.path.exists(fn):
@@ -3986,6 +3988,15 @@ def scan_options(self):
             files2.extend(glob.glob(z))
         self.files = [z for z in files2 if os.path.exists(z)]
         # print('Files...\n%s' % '\n'.join(self.files))
+        if 'output_directory' in parser.options('Global'):
+            s = parser.get('Global', 'output_directory')
+            output_dir = os.path.expanduser(s)
+            if os.path.exists(output_dir):
+                self.output_directory = output_dir
+                print('output_dir: %s' % self.output_directory)
+            else:
+                print('output_dir not found: %s' % self.output_directory)
+                self.output_directory = None # inhibit run().
         print('Types...')
         for key in sorted(parser.options('Types')):
             value = parser.get('Types', key)
@@ -4007,7 +4018,7 @@ def __init__(self, d, prefix_lines, output_fn):
     self.output_file = None
     self.output_fn = output_fn
     self.prefix_lines = prefix_lines
-    self.returns = set()
+    self.returns = []
 </t>
 <t tx="ekr.20160123193846.1">
 def __init__ (self):
@@ -4015,6 +4026,7 @@ def __init__ (self):
     self.d = {}
     self.files = []
     self.options = {}
+    self.output_directory = os.path.expanduser('~/stubs')
     self.prefix_lines = []
 </t>
 </tnodes>
