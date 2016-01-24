@@ -3062,6 +3062,12 @@ class StubTraverser (ast.NodeVisitor):
         Format the arguments node.
         Similar to AstFormat.do_arguments, but it is not a visitor!
         '''
+        
+        def munge_arg(s):
+            '''Add an annotation for s if possible.'''
+            a = self.d.get(s)
+            return '%s: %s' % (s, a) if a else s
+
         assert isinstance(node,ast.arguments), node
         args = [self.format(z) for z in node.args]
         defaults = [self.format(z) for z in node.defaults]
@@ -3070,7 +3076,7 @@ class StubTraverser (ast.NodeVisitor):
         n_plain = len(args) - len(defaults)
         # pylint: disable=consider-using-enumerate
         for i in range(len(args)):
-            s = self.munge_arg(args[i])
+            s = munge_arg(args[i])
             if i < n_plain:
                 result.append(s)
             else:
@@ -3086,10 +3092,16 @@ class StubTraverser (ast.NodeVisitor):
         '''Calculate the return type.'''
         def split(s):
             return '\n     ' + self.indent(s) if len(s) > 30 else s
+            
+        def munge_ret(s):
+            '''replace a return value by a type if possible.'''
+            return self.d.get(s.strip()) or s
 
         r = [self.format(z) for z in self.returns]
-        r = [self.munge_arg(z) for z in r] # Make type substitutions.
+        # if r: print(r)
+        r = [munge_ret(z) for z in r] # Make type substitutions.
         r = sorted(set(r)) # Remove duplicates
+
         if len(r) == 0:
             return 'None'
         if len(r) == 1:
@@ -3104,11 +3116,6 @@ class StubTraverser (ast.NodeVisitor):
                 return ', '.join(['\n    ' + self.indent(z) for z in r])
             else:
                 return split(', '.join(r))
-    #@+node:ekr.20160111155328.1: *5* munge_arg
-    def munge_arg(self, s):
-        '''Add an annotation for s if possible.'''
-        a = self.d.get(s)
-        return '%s: %s' % (s, a) if a else s
     #@+node:ekr.20160111142025.1: *4* st.Return
     def visit_Return(self, node):
 

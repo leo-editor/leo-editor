@@ -366,6 +366,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160111202214.3: *4* msf.run
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''
+                print('@data stub-types...')
+                for key in sorted(self.d.keys()):
+                    print('%s: %s' % (key, self.d.get(key)))
                 if p.isAnyAtFileNode():
                     self.make_stub_file(p)
                     return

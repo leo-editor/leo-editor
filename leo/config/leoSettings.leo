@@ -11085,9 +11085,9 @@ QFrame#gutter {
 <t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
 <t tx="ekr.20160112110352.1"># For use by make-stub-files command.
 # To do: allow per-file overrides.
-aList List
-aList1 List
-aList2 List
+aList Sequence
+aList1 Sequence
+aList2 Sequence
 c C
 c1 C
 c2 C
