@@ -14936,7 +14936,7 @@ finally:
 if g.app.gui.guiName() == 'tkinter':
     p.OnHyperLinkControlClick(event=None)
 #@+node:ekr.20160123044102.1: *4* @test p.__eq__
-# These must not raise NotImplemented!
+# These must not return NotImplemented!
 root = c.rootPosition()
 assert p.__eq__(None) is False, p.__eq__(None)
 assert p.__ne__(None) is True, p.__ne__(None)

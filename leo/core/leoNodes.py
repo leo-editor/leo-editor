@@ -231,19 +231,15 @@ class Position(object):
         """Return True if two positions are equivalent."""
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
-        # print ('p.__eq__: %s %s' % (p1 and p1.v and p1.h,p2 and p2.v and p2.h))
         if p2 is None or p2.v is None:
-            # print('p1.v is None',p1.v is None)
             return p1.v is None
-        elif not isinstance(p2, self.__class__):
-            # Bug fix 2016/01/23 by EKR: do this after testing the test above.
-            return NotImplemented
-        else:
-            # val = p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
-            # print('p.__eq__',val,p1.v and p1.v.h,p2.v and p2.v.h)
+        elif isinstance(p2, self.__class__):
             return (p1.v == p2.v and
                 p1._childIndex == p2._childIndex and
                 p1.stack == p2.stack)
+        else:
+            # Do this only after testing for None.
+            return NotImplemented
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
