@@ -130,7 +130,7 @@ The configuration file uses the .ini format. It has two sections:
     s: str
     v: VNode
 
-Why this script is imporant
+Why this script is important
 ===========================
 
 The script eliminates most of the drudgery from creating stub files.
