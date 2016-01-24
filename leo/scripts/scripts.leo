@@ -81,6 +81,113 @@
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005506302e352e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
+<v t="ekr.20160123185231.1"><vh>@clean make_stub_files.py</vh>
+<v t="ekr.20160123185312.8"><vh>class AstFormatter</vh>
+<v t="ekr.20160123185312.9"><vh> f.Entries</vh>
+<v t="ekr.20160123185312.10"><vh>f.format</vh></v>
+<v t="ekr.20160123185312.11"><vh>f.visit</vh></v>
+</v>
+<v t="ekr.20160123185312.12"><vh>f.Contexts</vh>
+<v t="ekr.20160123185312.13"><vh>f.ClassDef</vh></v>
+<v t="ekr.20160123185312.14"><vh>f.FunctionDef</vh></v>
+<v t="ekr.20160123185312.15"><vh>f.Interactive</vh></v>
+<v t="ekr.20160123185312.16"><vh>f.Module</vh></v>
+<v t="ekr.20160123185312.17"><vh>f.Lambda</vh></v>
+</v>
+<v t="ekr.20160123185312.18"><vh>f.Expressions</vh>
+<v t="ekr.20160123185312.19"><vh>f.Expr</vh></v>
+<v t="ekr.20160123185312.20"><vh>f.Expression</vh></v>
+<v t="ekr.20160123185312.21"><vh>f.GeneratorExp</vh></v>
+<v t="ekr.20160123185312.22"><vh>f.ctx nodes</vh></v>
+</v>
+<v t="ekr.20160123185312.23"><vh>f.Operands</vh>
+<v t="ekr.20160123185312.24"><vh>f.arguments</vh></v>
+<v t="ekr.20160123185312.25"><vh>f.arg (Python3 only)</vh></v>
+<v t="ekr.20160123185312.26"><vh>f.Attribute</vh></v>
+<v t="ekr.20160123185312.27"><vh>f.Bytes</vh></v>
+<v t="ekr.20160123185312.28"><vh>f.Call &amp; f.keyword</vh>
+<v t="ekr.20160123185312.29"><vh>f.keyword</vh></v>
+</v>
+<v t="ekr.20160123185312.30"><vh>f.comprehension</vh></v>
+<v t="ekr.20160123185312.31"><vh>f.Dict</vh></v>
+<v t="ekr.20160123185312.32"><vh>f.Ellipsis</vh></v>
+<v t="ekr.20160123185312.33"><vh>f.ExtSlice</vh></v>
+<v t="ekr.20160123185312.34"><vh>f.Index</vh></v>
+<v t="ekr.20160123185312.35"><vh>f.List</vh></v>
+<v t="ekr.20160123185312.36"><vh>f.ListComp</vh></v>
+<v t="ekr.20160123185312.37"><vh>f.Name</vh></v>
+<v t="ekr.20160123185312.38"><vh>f.Num</vh></v>
+<v t="ekr.20160123185312.39"><vh>f.Repr</vh></v>
+<v t="ekr.20160123185312.40"><vh>f.Slice</vh></v>
+<v t="ekr.20160123185312.41"><vh>f.Str</vh></v>
+<v t="ekr.20160123185312.42"><vh>f.Subscript</vh></v>
+<v t="ekr.20160123185312.43"><vh>f.Tuple</vh></v>
+</v>
+<v t="ekr.20160123185312.44"><vh>f.Operators</vh>
+<v t="ekr.20160123185312.45"><vh>f.BinOp</vh></v>
+<v t="ekr.20160123185312.46"><vh>f.BoolOp</vh></v>
+<v t="ekr.20160123185312.47"><vh>f.Compare</vh></v>
+<v t="ekr.20160123185312.48"><vh>f.UnaryOp</vh></v>
+<v t="ekr.20160123185312.49"><vh>f.ifExp (ternary operator)</vh></v>
+</v>
+<v t="ekr.20160123185312.50"><vh>f.Statements</vh>
+<v t="ekr.20160123185312.51"><vh>f.Assert</vh></v>
+<v t="ekr.20160123185312.52"><vh>f.Assign</vh></v>
+<v t="ekr.20160123185312.53"><vh>f.AugAssign</vh></v>
+<v t="ekr.20160123185312.54"><vh>f.Break</vh></v>
+<v t="ekr.20160123185312.55"><vh>f.Continue</vh></v>
+<v t="ekr.20160123185312.56"><vh>f.Delete</vh></v>
+<v t="ekr.20160123185312.57"><vh>f.ExceptHandler</vh></v>
+<v t="ekr.20160123185312.58"><vh>f.Exec</vh></v>
+<v t="ekr.20160123185312.59"><vh>f.For</vh></v>
+<v t="ekr.20160123185312.60"><vh>f.Global</vh></v>
+<v t="ekr.20160123185312.61"><vh>f.If</vh></v>
+<v t="ekr.20160123185312.62"><vh>f.Import &amp; helper</vh>
+<v t="ekr.20160123185312.63"><vh>f.get_import_names</vh></v>
+</v>
+<v t="ekr.20160123185312.64"><vh>f.ImportFrom</vh></v>
+<v t="ekr.20160123185312.65"><vh>f.Pass</vh></v>
+<v t="ekr.20160123185312.66"><vh>f.Print</vh></v>
+<v t="ekr.20160123185312.67"><vh>f.Raise</vh></v>
+<v t="ekr.20160123185312.68"><vh>f.Return</vh></v>
+<v t="ekr.20160123185312.70"><vh>f.TryExcept</vh></v>
+<v t="ekr.20160123185312.71"><vh>f.TryFinally</vh></v>
+<v t="ekr.20160123185312.72"><vh>f.While</vh></v>
+<v t="ekr.20160123185312.73"><vh>f.With</vh></v>
+<v t="ekr.20160123185312.74"><vh>f.Yield</vh></v>
+</v>
+<v t="ekr.20160123185312.75"><vh>f.Utils</vh>
+<v t="ekr.20160123185312.76"><vh>f.kind</vh></v>
+<v t="ekr.20160123185312.77"><vh>f.indent</vh></v>
+<v t="ekr.20160123185312.78"><vh>f.op_name</vh></v>
+</v>
+</v>
+<v t="ekr.20160123185312.2"><vh>class StandAloneMakeStubFile</vh>
+<v t="ekr.20160123193846.1"><vh>msf.ctor</vh></v>
+<v t="ekr.20160123185312.6"><vh>msf.make_stub_file</vh></v>
+<v t="ekr.20160123185312.7"><vh>msf.run</vh></v>
+<v t="ekr.20160123185719.1"><vh>msf.scan_options</vh></v>
+</v>
+<v t="ekr.20160123185312.79"><vh>class StubFormatter (AstFormatter)</vh>
+<v t="ekr.20160123185312.80"><vh>sf.Constants &amp; Name</vh></v>
+</v>
+<v t="ekr.20160123185312.81"><vh>class StubTraverser (ast.NodeVisitor)</vh>
+<v t="ekr.20160123193632.1"><vh>st.ctor</vh></v>
+<v t="ekr.20160123185312.82"><vh>st.indent &amp; out</vh></v>
+<v t="ekr.20160123185312.83"><vh>st.run</vh></v>
+<v t="ekr.20160123185312.85"><vh>st.Visitors</vh>
+<v t="ekr.20160123185312.86"><vh>st.ClassDef</vh></v>
+<v t="ekr.20160123185312.87"><vh>st.FunctionDef &amp; helpers</vh>
+<v t="ekr.20160123185312.88"><vh>format_arguments &amp; helper</vh>
+<v t="ekr.20160123185312.89"><vh>munge_arg</vh></v>
+</v>
+<v t="ekr.20160123185312.90"><vh>format_returns</vh></v>
+</v>
+<v t="ekr.20160123185312.91"><vh>st.Return</vh></v>
+</v>
+</v>
+<v t="ekr.20160123185348.1"><vh>main</vh></v>
+</v>
 </v>
 <v t="ekr.20150508132430.1"><vh>Recent</vh>
 <v t="ekr.20150508132423.1"><vh>Found: getPublicCommands</vh>
@@ -125,115 +232,116 @@
 <v t="ekr.20150525161132.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20160123100911.1"><vh>@button make_stub_files script</vh>
-<v t="ekr.20160123100911.2"><vh>class MakeStubFile</vh>
-<v t="ekr.20160123100911.3"><vh>msf.ctors &amp; helpers</vh>
-<v t="ekr.20160123100911.4"><vh>msf.make_types_dict</vh></v>
-<v t="ekr.20160123100911.5"><vh>msf.scan_types_data</vh></v>
+<v t="ekr.20160123185308.1"><vh>@button make_stub_files script</vh>
+<v t="ekr.20160123185308.2"><vh>class MakeStubFile</vh>
+<v t="ekr.20160123185308.3"><vh>msf.ctors &amp; helpers</vh>
+<v t="ekr.20160123185308.4"><vh>msf.make_types_dict</vh></v>
+<v t="ekr.20160123185308.5"><vh>msf.scan_types_data</vh></v>
 </v>
-<v t="ekr.20160123100911.6"><vh>msf.make_stub_file</vh></v>
-<v t="ekr.20160123100911.7"><vh>msf.run</vh></v>
+<v t="ekr.20160123185308.6"><vh>msf.make_stub_file</vh></v>
+<v t="ekr.20160123185308.7"><vh>msf.run</vh></v>
 </v>
-<v t="ekr.20160123100911.8"><vh>class AstFormatter</vh>
-<v t="ekr.20160123100911.9"><vh> f.Entries</vh>
-<v t="ekr.20160123100911.10"><vh>f.format</vh></v>
-<v t="ekr.20160123100911.11"><vh>f.visit</vh></v>
+<v t="ekr.20160123185308.8"><vh>class AstFormatter</vh>
+<v t="ekr.20160123185308.9"><vh> f.Entries</vh>
+<v t="ekr.20160123185308.10"><vh>f.format</vh></v>
+<v t="ekr.20160123185308.11"><vh>f.visit</vh></v>
 </v>
-<v t="ekr.20160123100911.12"><vh>f.Contexts</vh>
-<v t="ekr.20160123100911.13"><vh>f.ClassDef</vh></v>
-<v t="ekr.20160123100911.14"><vh>f.FunctionDef</vh></v>
-<v t="ekr.20160123100911.15"><vh>f.Interactive</vh></v>
-<v t="ekr.20160123100911.16"><vh>f.Module</vh></v>
-<v t="ekr.20160123100911.17"><vh>f.Lambda</vh></v>
+<v t="ekr.20160123185308.12"><vh>f.Contexts</vh>
+<v t="ekr.20160123185308.13"><vh>f.ClassDef</vh></v>
+<v t="ekr.20160123185308.14"><vh>f.FunctionDef</vh></v>
+<v t="ekr.20160123185308.15"><vh>f.Interactive</vh></v>
+<v t="ekr.20160123185308.16"><vh>f.Module</vh></v>
+<v t="ekr.20160123185308.17"><vh>f.Lambda</vh></v>
 </v>
-<v t="ekr.20160123100911.18"><vh>f.Expressions</vh>
-<v t="ekr.20160123100911.19"><vh>f.Expr</vh></v>
-<v t="ekr.20160123100911.20"><vh>f.Expression</vh></v>
-<v t="ekr.20160123100911.21"><vh>f.GeneratorExp</vh></v>
-<v t="ekr.20160123100911.22"><vh>f.ctx nodes</vh></v>
+<v t="ekr.20160123185308.18"><vh>f.Expressions</vh>
+<v t="ekr.20160123185308.19"><vh>f.Expr</vh></v>
+<v t="ekr.20160123185308.20"><vh>f.Expression</vh></v>
+<v t="ekr.20160123185308.21"><vh>f.GeneratorExp</vh></v>
+<v t="ekr.20160123185308.22"><vh>f.ctx nodes</vh></v>
 </v>
-<v t="ekr.20160123100911.23"><vh>f.Operands</vh>
-<v t="ekr.20160123100911.24"><vh>f.arguments</vh></v>
-<v t="ekr.20160123100911.25"><vh>f.arg (Python3 only)</vh></v>
-<v t="ekr.20160123100911.26"><vh>f.Attribute</vh></v>
-<v t="ekr.20160123100911.27"><vh>f.Bytes</vh></v>
-<v t="ekr.20160123100911.28"><vh>f.Call &amp; f.keyword</vh>
-<v t="ekr.20160123100911.29"><vh>f.keyword</vh></v>
+<v t="ekr.20160123185308.23"><vh>f.Operands</vh>
+<v t="ekr.20160123185308.24"><vh>f.arguments</vh></v>
+<v t="ekr.20160123185308.25"><vh>f.arg (Python3 only)</vh></v>
+<v t="ekr.20160123185308.26"><vh>f.Attribute</vh></v>
+<v t="ekr.20160123185308.27"><vh>f.Bytes</vh></v>
+<v t="ekr.20160123185308.28"><vh>f.Call &amp; f.keyword</vh>
+<v t="ekr.20160123185308.29"><vh>f.keyword</vh></v>
 </v>
-<v t="ekr.20160123100911.30"><vh>f.comprehension</vh></v>
-<v t="ekr.20160123100911.31"><vh>f.Dict</vh></v>
-<v t="ekr.20160123100911.32"><vh>f.Ellipsis</vh></v>
-<v t="ekr.20160123100911.33"><vh>f.ExtSlice</vh></v>
-<v t="ekr.20160123100911.34"><vh>f.Index</vh></v>
-<v t="ekr.20160123100911.35"><vh>f.List</vh></v>
-<v t="ekr.20160123100911.36"><vh>f.ListComp</vh></v>
-<v t="ekr.20160123100911.37"><vh>f.Name</vh></v>
-<v t="ekr.20160123100911.38"><vh>f.Num</vh></v>
-<v t="ekr.20160123100911.39"><vh>f.Repr</vh></v>
-<v t="ekr.20160123100911.40"><vh>f.Slice</vh></v>
-<v t="ekr.20160123100911.41"><vh>f.Str</vh></v>
-<v t="ekr.20160123100911.42"><vh>f.Subscript</vh></v>
-<v t="ekr.20160123100911.43"><vh>f.Tuple</vh></v>
+<v t="ekr.20160123185308.30"><vh>f.comprehension</vh></v>
+<v t="ekr.20160123185308.31"><vh>f.Dict</vh></v>
+<v t="ekr.20160123185308.32"><vh>f.Ellipsis</vh></v>
+<v t="ekr.20160123185308.33"><vh>f.ExtSlice</vh></v>
+<v t="ekr.20160123185308.34"><vh>f.Index</vh></v>
+<v t="ekr.20160123185308.35"><vh>f.List</vh></v>
+<v t="ekr.20160123185308.36"><vh>f.ListComp</vh></v>
+<v t="ekr.20160123185308.37"><vh>f.Name</vh></v>
+<v t="ekr.20160123185308.38"><vh>f.Num</vh></v>
+<v t="ekr.20160123185308.39"><vh>f.Repr</vh></v>
+<v t="ekr.20160123185308.40"><vh>f.Slice</vh></v>
+<v t="ekr.20160123185308.41"><vh>f.Str</vh></v>
+<v t="ekr.20160123185308.42"><vh>f.Subscript</vh></v>
+<v t="ekr.20160123185308.43"><vh>f.Tuple</vh></v>
 </v>
-<v t="ekr.20160123100911.44"><vh>f.Operators</vh>
-<v t="ekr.20160123100911.45"><vh>f.BinOp</vh></v>
-<v t="ekr.20160123100911.46"><vh>f.BoolOp</vh></v>
-<v t="ekr.20160123100911.47"><vh>f.Compare</vh></v>
-<v t="ekr.20160123100911.48"><vh>f.UnaryOp</vh></v>
-<v t="ekr.20160123100911.49"><vh>f.ifExp (ternary operator)</vh></v>
+<v t="ekr.20160123185308.44"><vh>f.Operators</vh>
+<v t="ekr.20160123185308.45"><vh>f.BinOp</vh></v>
+<v t="ekr.20160123185308.46"><vh>f.BoolOp</vh></v>
+<v t="ekr.20160123185308.47"><vh>f.Compare</vh></v>
+<v t="ekr.20160123185308.48"><vh>f.UnaryOp</vh></v>
+<v t="ekr.20160123185308.49"><vh>f.ifExp (ternary operator)</vh></v>
 </v>
-<v t="ekr.20160123100911.50"><vh>f.Statements</vh>
-<v t="ekr.20160123100911.51"><vh>f.Assert</vh></v>
-<v t="ekr.20160123100911.52"><vh>f.Assign</vh></v>
-<v t="ekr.20160123100911.53"><vh>f.AugAssign</vh></v>
-<v t="ekr.20160123100911.54"><vh>f.Break</vh></v>
-<v t="ekr.20160123100911.55"><vh>f.Continue</vh></v>
-<v t="ekr.20160123100911.56"><vh>f.Delete</vh></v>
-<v t="ekr.20160123100911.57"><vh>f.ExceptHandler</vh></v>
-<v t="ekr.20160123100911.58"><vh>f.Exec</vh></v>
-<v t="ekr.20160123100911.59"><vh>f.For</vh></v>
-<v t="ekr.20160123100911.60"><vh>f.Global</vh></v>
-<v t="ekr.20160123100911.61"><vh>f.If</vh></v>
-<v t="ekr.20160123100911.62"><vh>f.Import &amp; helper</vh>
-<v t="ekr.20160123100911.63"><vh>f.get_import_names</vh></v>
+<v t="ekr.20160123185308.50"><vh>f.Statements</vh>
+<v t="ekr.20160123185308.51"><vh>f.Assert</vh></v>
+<v t="ekr.20160123185308.52"><vh>f.Assign</vh></v>
+<v t="ekr.20160123185308.53"><vh>f.AugAssign</vh></v>
+<v t="ekr.20160123185308.54"><vh>f.Break</vh></v>
+<v t="ekr.20160123185308.55"><vh>f.Continue</vh></v>
+<v t="ekr.20160123185308.56"><vh>f.Delete</vh></v>
+<v t="ekr.20160123185308.57"><vh>f.ExceptHandler</vh></v>
+<v t="ekr.20160123185308.58"><vh>f.Exec</vh></v>
+<v t="ekr.20160123185308.59"><vh>f.For</vh></v>
+<v t="ekr.20160123185308.60"><vh>f.Global</vh></v>
+<v t="ekr.20160123185308.61"><vh>f.If</vh></v>
+<v t="ekr.20160123185308.62"><vh>f.Import &amp; helper</vh>
+<v t="ekr.20160123185308.63"><vh>f.get_import_names</vh></v>
 </v>
-<v t="ekr.20160123100911.64"><vh>f.ImportFrom</vh></v>
-<v t="ekr.20160123100911.65"><vh>f.Pass</vh></v>
-<v t="ekr.20160123100911.66"><vh>f.Print</vh></v>
-<v t="ekr.20160123100911.67"><vh>f.Raise</vh></v>
-<v t="ekr.20160123100911.68"><vh>f.Return</vh></v>
-<v t="ekr.20160123100911.69"><vh>f.Suite</vh></v>
-<v t="ekr.20160123100911.70"><vh>f.TryExcept</vh></v>
-<v t="ekr.20160123100911.71"><vh>f.TryFinally</vh></v>
-<v t="ekr.20160123100911.72"><vh>f.While</vh></v>
-<v t="ekr.20160123100911.73"><vh>f.With</vh></v>
-<v t="ekr.20160123100911.74"><vh>f.Yield</vh></v>
+<v t="ekr.20160123185308.64"><vh>f.ImportFrom</vh></v>
+<v t="ekr.20160123185308.65"><vh>f.Pass</vh></v>
+<v t="ekr.20160123185308.66"><vh>f.Print</vh></v>
+<v t="ekr.20160123185308.67"><vh>f.Raise</vh></v>
+<v t="ekr.20160123185308.68"><vh>f.Return</vh></v>
+<v t="ekr.20160123185308.69"><vh>f.Suite</vh></v>
+<v t="ekr.20160123185308.70"><vh>f.TryExcept</vh></v>
+<v t="ekr.20160123185308.71"><vh>f.TryFinally</vh></v>
+<v t="ekr.20160123185308.72"><vh>f.While</vh></v>
+<v t="ekr.20160123185308.73"><vh>f.With</vh></v>
+<v t="ekr.20160123185308.74"><vh>f.Yield</vh></v>
 </v>
-<v t="ekr.20160123100911.75"><vh>f.Utils</vh>
-<v t="ekr.20160123100911.76"><vh>f.kind</vh></v>
-<v t="ekr.20160123100911.77"><vh>f.indent</vh></v>
-<v t="ekr.20160123100911.78"><vh>f.op_name</vh></v>
-</v>
-</v>
-<v t="ekr.20160123100911.79"><vh>class StubFormatter (AstFormatter)</vh>
-<v t="ekr.20160123100911.80"><vh>sf.Constants &amp; Name</vh></v>
-</v>
-<v t="ekr.20160123100911.81"><vh>class StubTraverser (ast.NodeVisitor)</vh>
-<v t="ekr.20160123100911.82"><vh>st.indent &amp; out</vh></v>
-<v t="ekr.20160123100911.83"><vh>st.run</vh></v>
-<v t="ekr.20160123100911.84"><vh>st.visit (not used)</vh></v>
-<v t="ekr.20160123100911.85"><vh>st.Visitors</vh>
-<v t="ekr.20160123100911.86"><vh>st.ClassDef</vh></v>
-<v t="ekr.20160123100911.87"><vh>st.FunctionDef &amp; helpers</vh>
-<v t="ekr.20160123100911.88"><vh>format_arguments &amp; helper</vh>
-<v t="ekr.20160123100911.89"><vh>munge_arg</vh></v>
-</v>
-<v t="ekr.20160123100911.90"><vh>format_returns</vh></v>
-</v>
-<v t="ekr.20160123100911.91"><vh>st.Return</vh></v>
+<v t="ekr.20160123185308.75"><vh>f.Utils</vh>
+<v t="ekr.20160123185308.76"><vh>f.kind</vh></v>
+<v t="ekr.20160123185308.77"><vh>f.indent</vh></v>
+<v t="ekr.20160123185308.78"><vh>f.op_name</vh></v>
 </v>
 </v>
+<v t="ekr.20160123185308.79"><vh>class StubFormatter (AstFormatter)</vh>
+<v t="ekr.20160123185308.80"><vh>sf.Constants &amp; Name</vh></v>
 </v>
+<v t="ekr.20160123185308.81"><vh>class StubTraverser (ast.NodeVisitor)</vh>
+<v t="ekr.20160123185308.82"><vh>st.indent &amp; out</vh></v>
+<v t="ekr.20160123185308.83"><vh>st.run</vh></v>
+<v t="ekr.20160123185308.84"><vh>st.visit (not used)</vh></v>
+<v t="ekr.20160123185308.85"><vh>st.Visitors</vh>
+<v t="ekr.20160123185308.86"><vh>st.ClassDef</vh></v>
+<v t="ekr.20160123185308.87"><vh>st.FunctionDef &amp; helpers</vh>
+<v t="ekr.20160123185308.88"><vh>format_arguments &amp; helper</vh>
+<v t="ekr.20160123185308.89"><vh>munge_arg</vh></v>
+</v>
+<v t="ekr.20160123185308.90"><vh>format_returns</vh></v>
+</v>
+<v t="ekr.20160123185308.91"><vh>st.Return</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20160123185231.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2069,7 +2177,26 @@ import time
 imp.reload(leoAst)
 imp.reload(leoBeautify)
 # imp.reload(PythonTidy)</t>
-<t tx="ekr.20160123100911.1">'''
+<t tx="ekr.20160123185231.1">'''
+The stand-alone version of Leo's make-stub-files command.
+Make a stub file in the ~/stubs directory for every file
+mentioned in the [Source Files] section of ~/stubs/make_stub_files.cfg.
+'''
+import ast
+try:
+    import ConfigParser as configparser # Python 2
+except ImportError:
+    import configparser # Python 3
+import glob
+import os
+import sys
+
+@others
+
+if __name__ == "__main__":
+    main()
+</t>
+<t tx="ekr.20160123185308.1">'''
 Make a stub file in the ~/home directory for every @&lt;file&gt; node in the
 selected tree.
 '''
@@ -2080,13 +2207,13 @@ import leo.core.leoGlobals as g
 @others
 MakeStubFile(c).run(c.p)
 </t>
-<t tx="ekr.20160123100911.10">def format(self, node):
+<t tx="ekr.20160123185308.10">def format(self, node):
     '''Format the node (or list of nodes) and its descendants.'''
     self.level = 0
     val = self.visit(node)
     return val and val.strip() or ''
 </t>
-<t tx="ekr.20160123100911.11">def visit(self, node):
+<t tx="ekr.20160123185308.11">def visit(self, node):
     '''Return the formatted version of an Ast node, or list of Ast nodes.'''
     if isinstance(node, (list, tuple)):
         return ','.join([self.visit(z) for z in node])
@@ -2101,8 +2228,8 @@ MakeStubFile(c).run(c.p)
         assert type(s) == type('abc'), type(s)
         return s
 </t>
-<t tx="ekr.20160123100911.12"></t>
-<t tx="ekr.20160123100911.13"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+<t tx="ekr.20160123185308.12"></t>
+<t tx="ekr.20160123185308.13"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def do_ClassDef(self, node):
     result = []
@@ -2118,7 +2245,7 @@ def do_ClassDef(self, node):
         self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.14"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+<t tx="ekr.20160123185308.14"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def do_FunctionDef(self, node):
     '''Format a FunctionDef node.'''
@@ -2135,40 +2262,40 @@ def do_FunctionDef(self, node):
         self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.15">def do_Interactive(self, node):
+<t tx="ekr.20160123185308.15">def do_Interactive(self, node):
     for z in node.body:
         self.visit(z)
 </t>
-<t tx="ekr.20160123100911.16">def do_Module(self, node):
+<t tx="ekr.20160123185308.16">def do_Module(self, node):
     assert 'body' in node._fields
     result = ''.join([self.visit(z) for z in node.body])
     return result # 'module:\n%s' % (result)
 </t>
-<t tx="ekr.20160123100911.17">def do_Lambda(self, node):
+<t tx="ekr.20160123185308.17">def do_Lambda(self, node):
     return self.indent('lambda %s: %s' % (
         self.visit(node.args),
         self.visit(node.body)))
 </t>
-<t tx="ekr.20160123100911.18"></t>
-<t tx="ekr.20160123100911.19">def do_Expr(self, node):
+<t tx="ekr.20160123185308.18"></t>
+<t tx="ekr.20160123185308.19">def do_Expr(self, node):
     '''An outer expression: must be indented.'''
     return self.indent('%s\n' % self.visit(node.value))
 </t>
-<t tx="ekr.20160123100911.2">class MakeStubFile:
+<t tx="ekr.20160123185308.2">class MakeStubFile:
     '''A class to make Python stub (.pyi) files.'''
     @others
 </t>
-<t tx="ekr.20160123100911.20">def do_Expression(self, node):
+<t tx="ekr.20160123185308.20">def do_Expression(self, node):
     '''An inner expression: do not indent.'''
     return '%s\n' % self.visit(node.body)
 </t>
-<t tx="ekr.20160123100911.21">def do_GeneratorExp(self, node):
+<t tx="ekr.20160123185308.21">def do_GeneratorExp(self, node):
     elt = self.visit(node.elt) or ''
     gens = [self.visit(z) for z in node.generators]
     gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
     return '&lt;gen %s for %s&gt;' % (elt, ','.join(gens))
 </t>
-<t tx="ekr.20160123100911.22">def do_AugLoad(self, node):
+<t tx="ekr.20160123185308.22">def do_AugLoad(self, node):
     return 'AugLoad'
 
 def do_Del(self, node):
@@ -2183,8 +2310,8 @@ def do_Param(self, node):
 def do_Store(self, node):
     return 'Store'
 </t>
-<t tx="ekr.20160123100911.23"></t>
-<t tx="ekr.20160123100911.24"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+<t tx="ekr.20160123185308.23"></t>
+<t tx="ekr.20160123185308.24"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def do_arguments(self, node):
     '''Format the arguments node.'''
@@ -2207,7 +2334,7 @@ def do_arguments(self, node):
     if name: args2.append('**' + name)
     return ','.join(args2)
 </t>
-<t tx="ekr.20160123100911.25"># Python 3:
+<t tx="ekr.20160123185308.25"># Python 3:
 # arg = (identifier arg, expr? annotation)
 
 def do_arg(self, node):
@@ -2216,18 +2343,18 @@ def do_arg(self, node):
     else:
         return ''
 </t>
-<t tx="ekr.20160123100911.26"># Attribute(expr value, identifier attr, expr_context ctx)
+<t tx="ekr.20160123185308.26"># Attribute(expr value, identifier attr, expr_context ctx)
 
 def do_Attribute(self, node):
     return '%s.%s' % (
         self.visit(node.value),
         node.attr) # Don't visit node.attr: it is always a string.
 </t>
-<t tx="ekr.20160123100911.27">def do_Bytes(self, node): # Python 3.x only.
+<t tx="ekr.20160123185308.27">def do_Bytes(self, node): # Python 3.x only.
     assert g.isPython3
     return str(node.s)
 </t>
-<t tx="ekr.20160123100911.28"># Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+<t tx="ekr.20160123185308.28"># Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
 def do_Call(self, node):
     # g.trace(node,Utils().dump_ast(node))
@@ -2243,7 +2370,7 @@ def do_Call(self, node):
     args = [z for z in args if z] # Kludge: Defensive coding.
     return '%s(%s)' % (func, ','.join(args))
 </t>
-<t tx="ekr.20160123100911.29"># keyword = (identifier arg, expr value)
+<t tx="ekr.20160123185308.29"># keyword = (identifier arg, expr value)
 
 def do_keyword(self, node):
     # node.arg is a string.
@@ -2251,12 +2378,12 @@ def do_keyword(self, node):
     # This is a keyword *arg*, not a Python keyword!
     return '%s=%s' % (node.arg, value)
 </t>
-<t tx="ekr.20160123100911.3">def __init__(self, c):
+<t tx="ekr.20160123185308.3">def __init__(self, c):
     self.c = c
     self.d = self.scan_types_data(c) or self.make_types_dict(c)
         # Keys are strings, values are Type objects.
 </t>
-<t tx="ekr.20160123100911.30">def do_comprehension(self, node):
+<t tx="ekr.20160123185308.30">def do_comprehension(self, node):
     result = []
     name = self.visit(node.target) # A name.
     it = self.visit(node.iter) # An attribute.
@@ -2266,7 +2393,7 @@ def do_keyword(self, node):
         result.append(' if %s' % (''.join(ifs)))
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.31">def do_Dict(self, node):
+<t tx="ekr.20160123185308.31">def do_Dict(self, node):
     result = []
     keys = [self.visit(z) for z in node.keys]
     values = [self.visit(z) for z in node.values]
@@ -2282,40 +2409,40 @@ def do_keyword(self, node):
             repr(keys), repr(values)))
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.32">def do_Ellipsis(self, node):
+<t tx="ekr.20160123185308.32">def do_Ellipsis(self, node):
     return '...'
 </t>
-<t tx="ekr.20160123100911.33">def do_ExtSlice(self, node):
+<t tx="ekr.20160123185308.33">def do_ExtSlice(self, node):
     return ':'.join([self.visit(z) for z in node.dims])
 </t>
-<t tx="ekr.20160123100911.34">def do_Index(self, node):
+<t tx="ekr.20160123185308.34">def do_Index(self, node):
     return self.visit(node.value)
 </t>
-<t tx="ekr.20160123100911.35">def do_List(self, node):
+<t tx="ekr.20160123185308.35">def do_List(self, node):
     # Not used: list context.
     # self.visit(node.ctx)
     elts = [self.visit(z) for z in node.elts]
     elst = [z for z in elts if z] # Defensive.
     return '[%s]' % ','.join(elts)
 </t>
-<t tx="ekr.20160123100911.36">def do_ListComp(self, node):
+<t tx="ekr.20160123185308.36">def do_ListComp(self, node):
     elt = self.visit(node.elt)
     gens = [self.visit(z) for z in node.generators]
     gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
     return '%s for %s' % (elt, ''.join(gens))
 </t>
-<t tx="ekr.20160123100911.37">def do_Name(self, node):
+<t tx="ekr.20160123185308.37">def do_Name(self, node):
     return node.id
 </t>
-<t tx="ekr.20160123100911.38">def do_Num(self, node):
+<t tx="ekr.20160123185308.38">def do_Num(self, node):
     return repr(node.n)
 </t>
-<t tx="ekr.20160123100911.39"># Python 2.x only
+<t tx="ekr.20160123185308.39"># Python 2.x only
 
 def do_Repr(self, node):
     return 'repr(%s)' % self.visit(node.value)
 </t>
-<t tx="ekr.20160123100911.4">def make_types_dict(self, c):
+<t tx="ekr.20160123185308.4">def make_types_dict(self, c):
     '''Return a dict whose keys are names and values are type specs.'''
     return {
         'aList': 'Sequence',
@@ -2331,7 +2458,7 @@ def do_Repr(self, node):
         'v': 'VNode',
     }
 </t>
-<t tx="ekr.20160123100911.40">def do_Slice(self, node):
+<t tx="ekr.20160123185308.40">def do_Slice(self, node):
     lower, upper, step = '', '', ''
     if getattr(node, 'lower', None) is not None:
         lower = self.visit(node.lower)
@@ -2344,34 +2471,34 @@ def do_Repr(self, node):
     else:
         return '%s:%s' % (lower, upper)
 </t>
-<t tx="ekr.20160123100911.41">def do_Str(self, node):
+<t tx="ekr.20160123185308.41">def do_Str(self, node):
     '''This represents a string constant.'''
     return repr(node.s)
 </t>
-<t tx="ekr.20160123100911.42"># Subscript(expr value, slice slice, expr_context ctx)
+<t tx="ekr.20160123185308.42"># Subscript(expr value, slice slice, expr_context ctx)
 
 def do_Subscript(self, node):
     value = self.visit(node.value)
     the_slice = self.visit(node.slice)
     return '%s[%s]' % (value, the_slice)
 </t>
-<t tx="ekr.20160123100911.43">def do_Tuple(self, node):
+<t tx="ekr.20160123185308.43">def do_Tuple(self, node):
     elts = [self.visit(z) for z in node.elts]
     return '(%s)' % ','.join(elts)
 </t>
-<t tx="ekr.20160123100911.44"></t>
-<t tx="ekr.20160123100911.45">def do_BinOp(self, node):
+<t tx="ekr.20160123185308.44"></t>
+<t tx="ekr.20160123185308.45">def do_BinOp(self, node):
     return '%s%s%s' % (
         self.visit(node.left),
         self.op_name(node.op),
         self.visit(node.right))
 </t>
-<t tx="ekr.20160123100911.46">def do_BoolOp(self, node):
+<t tx="ekr.20160123185308.46">def do_BoolOp(self, node):
     op_name = self.op_name(node.op)
     values = [self.visit(z) for z in node.values]
     return op_name.join(values)
 </t>
-<t tx="ekr.20160123100911.47">def do_Compare(self, node):
+<t tx="ekr.20160123185308.47">def do_Compare(self, node):
     result = []
     lt = self.visit(node.left)
     # ops   = [self.visit(z) for z in node.ops]
@@ -2385,18 +2512,18 @@ def do_Subscript(self, node):
         g.trace('ops', repr(ops), 'comparators', repr(comps))
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.48">def do_UnaryOp(self, node):
+<t tx="ekr.20160123185308.48">def do_UnaryOp(self, node):
     return '%s%s' % (
         self.op_name(node.op),
         self.visit(node.operand))
 </t>
-<t tx="ekr.20160123100911.49">def do_IfExp(self, node):
+<t tx="ekr.20160123185308.49">def do_IfExp(self, node):
     return '%s if %s else %s ' % (
         self.visit(node.body),
         self.visit(node.test),
         self.visit(node.orelse))
 </t>
-<t tx="ekr.20160123100911.5">def scan_types_data(self, c):
+<t tx="ekr.20160123185308.5">def scan_types_data(self, c):
     '''Create self.d from @data stub-types nodes.'''
     aList = c.config.getData(
         'stub-types',
@@ -2411,8 +2538,8 @@ def do_Subscript(self, node):
             g.trace(key, d.get(key))
     return d
 </t>
-<t tx="ekr.20160123100911.50"></t>
-<t tx="ekr.20160123100911.51">def do_Assert(self, node):
+<t tx="ekr.20160123185308.50"></t>
+<t tx="ekr.20160123185308.51">def do_Assert(self, node):
     test = self.visit(node.test)
     if getattr(node, 'msg', None):
         message = self.visit(node.msg)
@@ -2420,28 +2547,28 @@ def do_Subscript(self, node):
     else:
         return self.indent('assert %s' % test)
 </t>
-<t tx="ekr.20160123100911.52">def do_Assign(self, node):
+<t tx="ekr.20160123185308.52">def do_Assign(self, node):
     return self.indent('%s=%s\n' % (
         '='.join([self.visit(z) for z in node.targets]),
         self.visit(node.value)))
 </t>
-<t tx="ekr.20160123100911.53">def do_AugAssign(self, node):
+<t tx="ekr.20160123185308.53">def do_AugAssign(self, node):
     return self.indent('%s%s=%s\n' % (
         self.visit(node.target),
         self.op_name(node.op), # Bug fix: 2013/03/08.
         self.visit(node.value)))
 </t>
-<t tx="ekr.20160123100911.54">def do_Break(self, node):
+<t tx="ekr.20160123185308.54">def do_Break(self, node):
     return self.indent('break\n')
 </t>
-<t tx="ekr.20160123100911.55">def do_Continue(self, node):
+<t tx="ekr.20160123185308.55">def do_Continue(self, node):
     return self.indent('continue\n')
 </t>
-<t tx="ekr.20160123100911.56">def do_Delete(self, node):
+<t tx="ekr.20160123185308.56">def do_Delete(self, node):
     targets = [self.visit(z) for z in node.targets]
     return self.indent('del %s\n' % ','.join(targets))
 </t>
-<t tx="ekr.20160123100911.57">def do_ExceptHandler(self, node):
+<t tx="ekr.20160123185308.57">def do_ExceptHandler(self, node):
     result = []
     result.append(self.indent('except'))
     if getattr(node, 'type', None):
@@ -2458,7 +2585,7 @@ def do_Subscript(self, node):
         self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.58"># Python 2.x only
+<t tx="ekr.20160123185308.58"># Python 2.x only
 
 def do_Exec(self, node):
     body = self.visit(node.body)
@@ -2473,7 +2600,7 @@ def do_Exec(self, node):
     else:
         return self.indent('exec %s\n' % (body))
 </t>
-<t tx="ekr.20160123100911.59">def do_For(self, node):
+<t tx="ekr.20160123185308.59">def do_For(self, node):
     result = []
     result.append(self.indent('for %s in %s:\n' % (
         self.visit(node.target),
@@ -2490,7 +2617,7 @@ def do_Exec(self, node):
             self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.6">def make_stub_file(self, p):
+<t tx="ekr.20160123185308.6">def make_stub_file(self, p):
     '''Make a stub file in ~/stubs for the @&lt;file&gt; node at p.'''
     import ast
     import leo.core.leoAst as leoAst
@@ -2518,11 +2645,11 @@ def do_Exec(self, node):
     node = ast.parse(s,filename=fn,mode='exec')
     leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
 </t>
-<t tx="ekr.20160123100911.60">def do_Global(self, node):
+<t tx="ekr.20160123185308.60">def do_Global(self, node):
     return self.indent('global %s\n' % (
         ','.join(node.names)))
 </t>
-<t tx="ekr.20160123100911.61">def do_If(self, node):
+<t tx="ekr.20160123185308.61">def do_If(self, node):
     result = []
     result.append(self.indent('if %s:\n' % (
         self.visit(node.test))))
@@ -2538,7 +2665,7 @@ def do_Exec(self, node):
             self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.62">def do_Import(self, node):
+<t tx="ekr.20160123185308.62">def do_Import(self, node):
     names = []
     for fn, asname in self.get_import_names(node):
         if asname:
@@ -2548,7 +2675,7 @@ def do_Exec(self, node):
     return self.indent('import %s\n' % (
         ','.join(names)))
 </t>
-<t tx="ekr.20160123100911.63">def get_import_names(self, node):
+<t tx="ekr.20160123185308.63">def get_import_names(self, node):
     '''Return a list of the the full file names in the import statement.'''
     result = []
     for ast2 in node.names:
@@ -2559,7 +2686,7 @@ def do_Exec(self, node):
             g.trace('unsupported kind in Import.names list', self.kind(ast2))
     return result
 </t>
-<t tx="ekr.20160123100911.64">def do_ImportFrom(self, node):
+<t tx="ekr.20160123185308.64">def do_ImportFrom(self, node):
     names = []
     for fn, asname in self.get_import_names(node):
         if asname:
@@ -2570,10 +2697,10 @@ def do_Exec(self, node):
         node.module,
         ','.join(names)))
 </t>
-<t tx="ekr.20160123100911.65">def do_Pass(self, node):
+<t tx="ekr.20160123185308.65">def do_Pass(self, node):
     return self.indent('pass\n')
 </t>
-<t tx="ekr.20160123100911.66"># Python 2.x only
+<t tx="ekr.20160123185308.66"># Python 2.x only
 
 def do_Print(self, node):
     vals = []
@@ -2587,7 +2714,7 @@ def do_Print(self, node):
     return self.indent('print(%s)\n' % (
         ','.join(vals)))
 </t>
-<t tx="ekr.20160123100911.67">def do_Raise(self, node):
+<t tx="ekr.20160123185308.67">def do_Raise(self, node):
     args = []
     for attr in ('type', 'inst', 'tback'):
         if getattr(node, attr, None) is not None:
@@ -2598,18 +2725,18 @@ def do_Print(self, node):
     else:
         return self.indent('raise\n')
 </t>
-<t tx="ekr.20160123100911.68">def do_Return(self, node):
+<t tx="ekr.20160123185308.68">def do_Return(self, node):
     if node.value:
         return self.indent('return %s\n' % (
             self.visit(node.value)))
     else:
         return self.indent('return\n')
 </t>
-<t tx="ekr.20160123100911.69"># def do_Suite(self,node):
+<t tx="ekr.20160123185308.69"># def do_Suite(self,node):
     # for z in node.body:
         # s = self.visit(z)
 </t>
-<t tx="ekr.20160123100911.7">def run(self, p):
+<t tx="ekr.20160123185308.7">def run(self, p):
     '''Make stub files for all files in p's tree.'''
     if p.isAnyAtFileNode():
         self.make_stub_file(p)
@@ -2633,7 +2760,7 @@ def do_Print(self, node):
         else:
             g.es('no files found in tree:', p.h)
 </t>
-<t tx="ekr.20160123100911.70">def do_TryExcept(self, node):
+<t tx="ekr.20160123185308.70">def do_TryExcept(self, node):
     result = []
     result.append(self.indent('try:\n'))
     for z in node.body:
@@ -2651,7 +2778,7 @@ def do_Print(self, node):
             self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.71">def do_TryFinally(self, node):
+<t tx="ekr.20160123185308.71">def do_TryFinally(self, node):
     result = []
     result.append(self.indent('try:\n'))
     for z in node.body:
@@ -2665,7 +2792,7 @@ def do_Print(self, node):
         self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.72">def do_While(self, node):
+<t tx="ekr.20160123185308.72">def do_While(self, node):
     result = []
     result.append(self.indent('while %s:\n' % (
         self.visit(node.test))))
@@ -2681,7 +2808,7 @@ def do_Print(self, node):
             self.level -= 1
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.73">def do_With(self, node):
+<t tx="ekr.20160123185308.73">def do_With(self, node):
     result = []
     result.append(self.indent('with '))
     if hasattr(node, 'context_expression'):
@@ -2702,22 +2829,22 @@ def do_Print(self, node):
     result.append('\n')
     return ''.join(result)
 </t>
-<t tx="ekr.20160123100911.74">def do_Yield(self, node):
+<t tx="ekr.20160123185308.74">def do_Yield(self, node):
     if getattr(node, 'value', None):
         return self.indent('yield %s\n' % (
             self.visit(node.value)))
     else:
         return self.indent('yield\n')
 </t>
-<t tx="ekr.20160123100911.75"></t>
-<t tx="ekr.20160123100911.76">def kind(self, node):
+<t tx="ekr.20160123185308.75"></t>
+<t tx="ekr.20160123185308.76">def kind(self, node):
     '''Return the name of node's class.'''
     return node.__class__.__name__
 </t>
-<t tx="ekr.20160123100911.77">def indent(self, s):
+<t tx="ekr.20160123185308.77">def indent(self, s):
     return '%s%s' % (' ' * 4 * self.level, s)
 </t>
-<t tx="ekr.20160123100911.78">@nobeautify
+<t tx="ekr.20160123185308.78">@nobeautify
 
 def op_name (self,node,strict=True):
     '''Return the print name of an operator node.'''
@@ -2766,10 +2893,10 @@ def op_name (self,node,strict=True):
     if strict: assert name,self.kind(node)
     return name
 </t>
-<t tx="ekr.20160123100911.79">class StubFormatter (AstFormatter):
+<t tx="ekr.20160123185308.79">class StubFormatter (AstFormatter):
     @others
 </t>
-<t tx="ekr.20160123100911.8">class AstFormatter:
+<t tx="ekr.20160123185308.8">class AstFormatter:
     '''
     A class to recreate source code from an AST.
     
@@ -2781,7 +2908,7 @@ def op_name (self,node,strict=True):
     # pylint: disable=consider-using-enumerate
     @others
 </t>
-<t tx="ekr.20160123100911.80"># Return generic markers allow better pattern matches.
+<t tx="ekr.20160123185308.80"># Return generic markers allow better pattern matches.
 
 def do_BoolOp(self, node): # Python 2.x only.
     return 'bool'
@@ -2799,7 +2926,7 @@ def do_Str(self, node):
     '''This represents a string constant.'''
     return 'str' # return repr(node.s)
 </t>
-<t tx="ekr.20160123100911.81">class StubTraverser (ast.NodeVisitor):
+<t tx="ekr.20160123185308.81">class StubTraverser (ast.NodeVisitor):
     
     def __init__(self, c, d, output_fn):
         '''Ctor for StubTraverser class.'''
@@ -2814,7 +2941,7 @@ def do_Str(self, node):
 
     @others
 </t>
-<t tx="ekr.20160123100911.82">def indent(self, s):
+<t tx="ekr.20160123185308.82">def indent(self, s):
     '''Return s, properly indented.'''
     return '%s%s' % (' ' * 4 * self.level, s)
 
@@ -2825,7 +2952,7 @@ def out(self, s):
     else:
         print(self.indent(s))
 </t>
-<t tx="ekr.20160123100911.83">def run(self, node):
+<t tx="ekr.20160123185308.83">def run(self, node):
     '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
     c = self.c
     dir_ = g.os_path_dirname(self.output_fn)
@@ -2843,7 +2970,7 @@ def out(self, s):
         g.es_print('not found:', dir_)
 
 </t>
-<t tx="ekr.20160123100911.84"># This is needed only when subclassing from the leoAst.AstFullTraverser class.
+<t tx="ekr.20160123185308.84"># This is needed only when subclassing from the leoAst.AstFullTraverser class.
 
 # def visit(self, node):
     # '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
@@ -2851,8 +2978,8 @@ def out(self, s):
     # method = getattr(self, 'do_' + node.__class__.__name__)
     # method(node)
 </t>
-<t tx="ekr.20160123100911.85"></t>
-<t tx="ekr.20160123100911.86"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+<t tx="ekr.20160123185308.85"></t>
+<t tx="ekr.20160123185308.86"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
 def visit_ClassDef(self, node):
 
@@ -2872,7 +2999,7 @@ def visit_ClassDef(self, node):
     self.level -= 1
     self.in_function = old_in_function
 </t>
-<t tx="ekr.20160123100911.87"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+<t tx="ekr.20160123185308.87"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
 def visit_FunctionDef(self, node):
     
@@ -2894,7 +3021,7 @@ def visit_FunctionDef(self, node):
         self.format_arguments(node.args),
         self.format_returns(node)))
 </t>
-<t tx="ekr.20160123100911.88"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+<t tx="ekr.20160123185308.88"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
 def format_arguments(self, node):
     '''
@@ -2921,13 +3048,13 @@ def format_arguments(self, node):
     if name: result.append('**' + name)
     return ', '.join(result)
 </t>
-<t tx="ekr.20160123100911.89">def munge_arg(self, s):
+<t tx="ekr.20160123185308.89">def munge_arg(self, s):
     '''Add an annotation for s if possible.'''
     a = self.d.get(s)
     return '%s: %s' % (s, a) if a else s
 </t>
-<t tx="ekr.20160123100911.9"></t>
-<t tx="ekr.20160123100911.90">def format_returns(self, node):
+<t tx="ekr.20160123185308.9"></t>
+<t tx="ekr.20160123185308.90">def format_returns(self, node):
     '''Calculate the return type.'''
     def split(s):
         return '\n     ' + self.indent(s) if len(s) &gt; 30 else s
@@ -2950,9 +3077,937 @@ def format_arguments(self, node):
         else:
             return split(', '.join(r))
 </t>
-<t tx="ekr.20160123100911.91">def visit_Return(self, node):
+<t tx="ekr.20160123185308.91">def visit_Return(self, node):
 
     self.returns.add(node.value)
+</t>
+<t tx="ekr.20160123185312.10">
+def format(self, node):
+    '''Format the node (or list of nodes) and its descendants.'''
+    self.level = 0
+    val = self.visit(node)
+    return val and val.strip() or ''
+</t>
+<t tx="ekr.20160123185312.11">
+def visit(self, node):
+    '''Return the formatted version of an Ast node, or list of Ast nodes.'''
+    if isinstance(node, (list, tuple)):
+        return ','.join([self.visit(z) for z in node])
+    elif node is None:
+        return 'None'
+    else:
+        assert isinstance(node, ast.AST), node.__class__.__name__
+        method_name = 'do_' + node.__class__.__name__
+        method = getattr(self, method_name)
+        s = method(node)
+        # pylint: disable=unidiomatic-typecheck
+        assert type(s) == type('abc'), type(s)
+        return s
+</t>
+<t tx="ekr.20160123185312.12"></t>
+<t tx="ekr.20160123185312.13">
+# ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+def do_ClassDef(self, node):
+    result = []
+    name = node.name # Only a plain string is valid.
+    bases = [self.visit(z) for z in node.bases] if node.bases else []
+    if bases:
+        result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
+    else:
+        result.append(self.indent('class %s:\n' % name))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.14">
+# FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def do_FunctionDef(self, node):
+    '''Format a FunctionDef node.'''
+    result = []
+    if node.decorator_list:
+        for z in node.decorator_list:
+            result.append('@%s\n' % self.visit(z))
+    name = node.name # Only a plain string is valid.
+    args = self.visit(node.args) if node.args else ''
+    result.append(self.indent('def %s(%s):\n' % (name, args)))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.15">
+def do_Interactive(self, node):
+    for z in node.body:
+        self.visit(z)
+</t>
+<t tx="ekr.20160123185312.16">
+def do_Module(self, node):
+    assert 'body' in node._fields
+    result = ''.join([self.visit(z) for z in node.body])
+    return result # 'module:\n%s' % (result)
+</t>
+<t tx="ekr.20160123185312.17">
+def do_Lambda(self, node):
+    return self.indent('lambda %s: %s' % (
+        self.visit(node.args),
+        self.visit(node.body)))
+</t>
+<t tx="ekr.20160123185312.18"></t>
+<t tx="ekr.20160123185312.19">
+def do_Expr(self, node):
+    '''An outer expression: must be indented.'''
+    return self.indent('%s\n' % self.visit(node.value))
+</t>
+<t tx="ekr.20160123185312.2">
+
+class StandAloneMakeStubFile:
+    '''
+    A class to make Python stub (.pyi) files in the ~/stubs directory for
+    every file mentioned in the [Source Files] section of
+    ~/stubs/make_stub_files.cfg.
+    '''
+
+    @others
+</t>
+<t tx="ekr.20160123185312.20">
+def do_Expression(self, node):
+    '''An inner expression: do not indent.'''
+    return '%s\n' % self.visit(node.body)
+</t>
+<t tx="ekr.20160123185312.21">
+def do_GeneratorExp(self, node):
+    elt = self.visit(node.elt) or ''
+    gens = [self.visit(z) for z in node.generators]
+    gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
+    return '&lt;gen %s for %s&gt;' % (elt, ','.join(gens))
+</t>
+<t tx="ekr.20160123185312.22">
+def do_AugLoad(self, node):
+    return 'AugLoad'
+
+def do_Del(self, node):
+    return 'Del'
+
+def do_Load(self, node):
+    return 'Load'
+
+def do_Param(self, node):
+    return 'Param'
+
+def do_Store(self, node):
+    return 'Store'
+</t>
+<t tx="ekr.20160123185312.23"></t>
+<t tx="ekr.20160123185312.24">
+# arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+def do_arguments(self, node):
+    '''Format the arguments node.'''
+    kind = self.kind(node)
+    assert kind == 'arguments', kind
+    args = [self.visit(z) for z in node.args]
+    defaults = [self.visit(z) for z in node.defaults]
+    # Assign default values to the last args.
+    args2 = []
+    n_plain = len(args) - len(defaults)
+    for i in range(len(args)):
+        if i &lt; n_plain:
+            args2.append(args[i])
+        else:
+            args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+    # Now add the vararg and kwarg args.
+    name = getattr(node, 'vararg', None)
+    if name: args2.append('*' + name)
+    name = getattr(node, 'kwarg', None)
+    if name: args2.append('**' + name)
+    return ','.join(args2)
+</t>
+<t tx="ekr.20160123185312.25">
+# Python 3:
+# arg = (identifier arg, expr? annotation)
+
+def do_arg(self, node):
+    if node.annotation:
+        return self.visit(node.annotation)
+    else:
+        return ''
+</t>
+<t tx="ekr.20160123185312.26">
+# Attribute(expr value, identifier attr, expr_context ctx)
+
+def do_Attribute(self, node):
+    return '%s.%s' % (
+        self.visit(node.value),
+        node.attr) # Don't visit node.attr: it is always a string.
+</t>
+<t tx="ekr.20160123185312.27">
+def do_Bytes(self, node): # Python 3.x only.
+    return str(node.s)
+</t>
+<t tx="ekr.20160123185312.28">
+# Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+def do_Call(self, node):
+    func = self.visit(node.func)
+    args = [self.visit(z) for z in node.args]
+    for z in node.keywords:
+        # Calls f.do_keyword.
+        args.append(self.visit(z))
+    if getattr(node, 'starargs', None):
+        args.append('*%s' % (self.visit(node.starargs)))
+    if getattr(node, 'kwargs', None):
+        args.append('**%s' % (self.visit(node.kwargs)))
+    args = [z for z in args if z] # Kludge: Defensive coding.
+    return '%s(%s)' % (func, ','.join(args))
+</t>
+<t tx="ekr.20160123185312.29"># keyword = (identifier arg, expr value)
+
+def do_keyword(self, node):
+    # node.arg is a string.
+    value = self.visit(node.value)
+    # This is a keyword *arg*, not a Python keyword!
+    return '%s=%s' % (node.arg, value)
+</t>
+<t tx="ekr.20160123185312.30">
+def do_comprehension(self, node):
+    result = []
+    name = self.visit(node.target) # A name.
+    it = self.visit(node.iter) # An attribute.
+    result.append('%s in %s' % (name, it))
+    ifs = [self.visit(z) for z in node.ifs]
+    if ifs:
+        result.append(' if %s' % (''.join(ifs)))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.31">
+def do_Dict(self, node):
+    result = []
+    keys = [self.visit(z) for z in node.keys]
+    values = [self.visit(z) for z in node.values]
+    if len(keys) == len(values):
+        result.append('{\n' if keys else '{')
+        items = []
+        for i in range(len(keys)):
+            items.append('  %s:%s' % (keys[i], values[i]))
+        result.append(',\n'.join(items))
+        result.append('\n}' if keys else '}')
+    else:
+        print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
+            repr(keys), repr(values)))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.32">
+def do_Ellipsis(self, node):
+    return '...'
+</t>
+<t tx="ekr.20160123185312.33">
+def do_ExtSlice(self, node):
+    return ':'.join([self.visit(z) for z in node.dims])
+</t>
+<t tx="ekr.20160123185312.34">
+def do_Index(self, node):
+    return self.visit(node.value)
+</t>
+<t tx="ekr.20160123185312.35">
+def do_List(self, node):
+    # Not used: list context.
+    # self.visit(node.ctx)
+    elts = [self.visit(z) for z in node.elts]
+    elst = [z for z in elts if z] # Defensive.
+    return '[%s]' % ','.join(elts)
+</t>
+<t tx="ekr.20160123185312.36">
+def do_ListComp(self, node):
+    elt = self.visit(node.elt)
+    gens = [self.visit(z) for z in node.generators]
+    gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
+    return '%s for %s' % (elt, ''.join(gens))
+</t>
+<t tx="ekr.20160123185312.37">
+def do_Name(self, node):
+    return node.id
+</t>
+<t tx="ekr.20160123185312.38">
+def do_Num(self, node):
+    return repr(node.n)
+</t>
+<t tx="ekr.20160123185312.39">
+# Python 2.x only
+
+def do_Repr(self, node):
+    return 'repr(%s)' % self.visit(node.value)
+</t>
+<t tx="ekr.20160123185312.40">
+def do_Slice(self, node):
+    lower, upper, step = '', '', ''
+    if getattr(node, 'lower', None) is not None:
+        lower = self.visit(node.lower)
+    if getattr(node, 'upper', None) is not None:
+        upper = self.visit(node.upper)
+    if getattr(node, 'step', None) is not None:
+        step = self.visit(node.step)
+    if step:
+        return '%s:%s:%s' % (lower, upper, step)
+    else:
+        return '%s:%s' % (lower, upper)
+</t>
+<t tx="ekr.20160123185312.41">
+def do_Str(self, node):
+    '''This represents a string constant.'''
+    return repr(node.s)
+</t>
+<t tx="ekr.20160123185312.42">
+# Subscript(expr value, slice slice, expr_context ctx)
+
+def do_Subscript(self, node):
+    value = self.visit(node.value)
+    the_slice = self.visit(node.slice)
+    return '%s[%s]' % (value, the_slice)
+</t>
+<t tx="ekr.20160123185312.43">
+def do_Tuple(self, node):
+    elts = [self.visit(z) for z in node.elts]
+    return '(%s)' % ','.join(elts)
+</t>
+<t tx="ekr.20160123185312.44"></t>
+<t tx="ekr.20160123185312.45">
+def do_BinOp(self, node):
+    return '%s%s%s' % (
+        self.visit(node.left),
+        self.op_name(node.op),
+        self.visit(node.right))
+</t>
+<t tx="ekr.20160123185312.46">
+def do_BoolOp(self, node):
+    op_name = self.op_name(node.op)
+    values = [self.visit(z) for z in node.values]
+    return op_name.join(values)
+</t>
+<t tx="ekr.20160123185312.47">
+def do_Compare(self, node):
+    result = []
+    lt = self.visit(node.left)
+    ops = [self.op_name(z) for z in node.ops]
+    comps = [self.visit(z) for z in node.comparators]
+    result.append(lt)
+    if len(ops) == len(comps):
+        for i in range(len(ops)):
+            result.append('%s%s' % (ops[i], comps[i]))
+    else:
+        print('can not happen: ops', repr(ops), 'comparators', repr(comps))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.48">
+def do_UnaryOp(self, node):
+    return '%s%s' % (
+        self.op_name(node.op),
+        self.visit(node.operand))
+</t>
+<t tx="ekr.20160123185312.49">
+def do_IfExp(self, node):
+    return '%s if %s else %s ' % (
+        self.visit(node.body),
+        self.visit(node.test),
+        self.visit(node.orelse))
+</t>
+<t tx="ekr.20160123185312.50"></t>
+<t tx="ekr.20160123185312.51">
+def do_Assert(self, node):
+    test = self.visit(node.test)
+    if getattr(node, 'msg', None):
+        message = self.visit(node.msg)
+        return self.indent('assert %s, %s' % (test, message))
+    else:
+        return self.indent('assert %s' % test)
+</t>
+<t tx="ekr.20160123185312.52">
+def do_Assign(self, node):
+    return self.indent('%s=%s\n' % (
+        '='.join([self.visit(z) for z in node.targets]),
+        self.visit(node.value)))
+</t>
+<t tx="ekr.20160123185312.53">
+def do_AugAssign(self, node):
+    return self.indent('%s%s=%s\n' % (
+        self.visit(node.target),
+        self.op_name(node.op), # Bug fix: 2013/03/08.
+        self.visit(node.value)))
+</t>
+<t tx="ekr.20160123185312.54">
+def do_Break(self, node):
+    return self.indent('break\n')
+</t>
+<t tx="ekr.20160123185312.55">
+def do_Continue(self, node):
+    return self.indent('continue\n')
+</t>
+<t tx="ekr.20160123185312.56">
+def do_Delete(self, node):
+    targets = [self.visit(z) for z in node.targets]
+    return self.indent('del %s\n' % ','.join(targets))
+</t>
+<t tx="ekr.20160123185312.57">
+def do_ExceptHandler(self, node):
+    result = []
+    result.append(self.indent('except'))
+    if getattr(node, 'type', None):
+        result.append(' %s' % self.visit(node.type))
+    if getattr(node, 'name', None):
+        if isinstance(node.name, ast.AST):
+            result.append(' as %s' % self.visit(node.name))
+        else:
+            result.append(' as %s' % node.name) # Python 3.x.
+    result.append(':\n')
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.58">
+# Python 2.x only
+
+def do_Exec(self, node):
+    body = self.visit(node.body)
+    args = [] # Globals before locals.
+    if getattr(node, 'globals', None):
+        args.append(self.visit(node.globals))
+    if getattr(node, 'locals', None):
+        args.append(self.visit(node.locals))
+    if args:
+        return self.indent('exec %s in %s\n' % (
+            body, ','.join(args)))
+    else:
+        return self.indent('exec %s\n' % (body))
+</t>
+<t tx="ekr.20160123185312.59">
+def do_For(self, node):
+    result = []
+    result.append(self.indent('for %s in %s:\n' % (
+        self.visit(node.target),
+        self.visit(node.iter))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append(self.indent('else:\n'))
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.6">
+def make_stub_file(self, fn):
+    '''
+    Make a stub file in ~/stubs for all source files mentioned in the
+    [Source Files] section of ~/stubs/make_stub_files.cfg
+    '''
+    if not fn.endswith('.py'):
+        print('not a python file', fn)
+        return
+    if not os.path.exists(fn):
+        print('not found', fn)
+        return
+    stubs = os.path.expanduser('~/stubs')
+    if os.path.exists(stubs):
+        base_fn = os.path.basename(fn)
+        out_fn = os.path.join(stubs,base_fn)
+    else:
+        print('not found', stubs)
+        return
+    out_fn = out_fn[:-3] + '.pyi'
+    s = open(fn).read()
+    node = ast.parse(s,filename=fn,mode='exec')
+    StubTraverser(self.d, self.prefix_lines, out_fn).run(node)
+</t>
+<t tx="ekr.20160123185312.60">
+def do_Global(self, node):
+    return self.indent('global %s\n' % (
+        ','.join(node.names)))
+</t>
+<t tx="ekr.20160123185312.61">
+def do_If(self, node):
+    result = []
+    result.append(self.indent('if %s:\n' % (
+        self.visit(node.test))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append(self.indent('else:\n'))
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.62">
+def do_Import(self, node):
+    names = []
+    for fn, asname in self.get_import_names(node):
+        if asname:
+            names.append('%s as %s' % (fn, asname))
+        else:
+            names.append(fn)
+    return self.indent('import %s\n' % (
+        ','.join(names)))
+</t>
+<t tx="ekr.20160123185312.63">
+def get_import_names(self, node):
+    '''Return a list of the the full file names in the import statement.'''
+    result = []
+    for ast2 in node.names:
+        if self.kind(ast2) == 'alias':
+            data = ast2.name, ast2.asname
+            result.append(data)
+        else:
+            print('unsupported kind in Import.names list', self.kind(ast2))
+    return result
+</t>
+<t tx="ekr.20160123185312.64">
+def do_ImportFrom(self, node):
+    names = []
+    for fn, asname in self.get_import_names(node):
+        if asname:
+            names.append('%s as %s' % (fn, asname))
+        else:
+            names.append(fn)
+    return self.indent('from %s import %s\n' % (
+        node.module,
+        ','.join(names)))
+</t>
+<t tx="ekr.20160123185312.65">
+def do_Pass(self, node):
+    return self.indent('pass\n')
+</t>
+<t tx="ekr.20160123185312.66">
+# Python 2.x only
+
+def do_Print(self, node):
+    vals = []
+    for z in node.values:
+        vals.append(self.visit(z))
+    if getattr(node, 'dest', None):
+        vals.append('dest=%s' % self.visit(node.dest))
+    if getattr(node, 'nl', None):
+        # vals.append('nl=%s' % self.visit(node.nl))
+        vals.append('nl=%s' % node.nl)
+    return self.indent('print(%s)\n' % (
+        ','.join(vals)))
+</t>
+<t tx="ekr.20160123185312.67">
+def do_Raise(self, node):
+    args = []
+    for attr in ('type', 'inst', 'tback'):
+        if getattr(node, attr, None) is not None:
+            args.append(self.visit(getattr(node, attr)))
+    if args:
+        return self.indent('raise %s\n' % (
+            ','.join(args)))
+    else:
+        return self.indent('raise\n')
+</t>
+<t tx="ekr.20160123185312.68">
+def do_Return(self, node):
+    if node.value:
+        return self.indent('return %s\n' % (
+            self.visit(node.value)))
+    else:
+        return self.indent('return\n')
+</t>
+<t tx="ekr.20160123185312.7">
+def run(self):
+    '''Make stub files for all files.'''
+    for fn in self.files:
+        self.make_stub_file(fn)
+</t>
+<t tx="ekr.20160123185312.70">
+def do_TryExcept(self, node):
+    result = []
+    result.append(self.indent('try:\n'))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.handlers:
+        for z in node.handlers:
+            result.append(self.visit(z))
+    if node.orelse:
+        result.append('else:\n')
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.71">
+def do_TryFinally(self, node):
+    result = []
+    result.append(self.indent('try:\n'))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    result.append(self.indent('finally:\n'))
+    for z in node.finalbody:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.72">
+def do_While(self, node):
+    result = []
+    result.append(self.indent('while %s:\n' % (
+        self.visit(node.test))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append('else:\n')
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.73">
+def do_With(self, node):
+    result = []
+    result.append(self.indent('with '))
+    if hasattr(node, 'context_expression'):
+        result.append(self.visit(node.context_expresssion))
+    vars_list = []
+    if hasattr(node, 'optional_vars'):
+        try:
+            for z in node.optional_vars:
+                vars_list.append(self.visit(z))
+        except TypeError: # Not iterable.
+            vars_list.append(self.visit(node.optional_vars))
+    result.append(','.join(vars_list))
+    result.append(':\n')
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    result.append('\n')
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185312.74">
+def do_Yield(self, node):
+    if getattr(node, 'value', None):
+        return self.indent('yield %s\n' % (
+            self.visit(node.value)))
+    else:
+        return self.indent('yield\n')
+</t>
+<t tx="ekr.20160123185312.75"></t>
+<t tx="ekr.20160123185312.76">
+def kind(self, node):
+    '''Return the name of node's class.'''
+    return node.__class__.__name__
+</t>
+<t tx="ekr.20160123185312.77">
+def indent(self, s):
+    return '%s%s' % (' ' * 4 * self.level, s)
+</t>
+<t tx="ekr.20160123185312.78">
+def op_name (self,node,strict=True):
+    '''Return the print name of an operator node.'''
+    d = {
+        # Binary operators. 
+        'Add':       '+',
+        'BitAnd':    '&amp;',
+        'BitOr':     '|',
+        'BitXor':    '^',
+        'Div':       '/',
+        'FloorDiv':  '//',
+        'LShift':    '&lt;&lt;',
+        'Mod':       '%',
+        'Mult':      '*',
+        'Pow':       '**',
+        'RShift':    '&gt;&gt;',
+        'Sub':       '-',
+        # Boolean operators.
+        'And':   ' and ',
+        'Or':    ' or ',
+        # Comparison operators
+        'Eq':    '==',
+        'Gt':    '&gt;',
+        'GtE':   '&gt;=',
+        'In':    ' in ',
+        'Is':    ' is ',
+        'IsNot': ' is not ',
+        'Lt':    '&lt;',
+        'LtE':   '&lt;=',
+        'NotEq': '!=',
+        'NotIn': ' not in ',
+        # Context operators.
+        'AugLoad':  '&lt;AugLoad&gt;',
+        'AugStore': '&lt;AugStore&gt;',
+        'Del':      '&lt;Del&gt;',
+        'Load':     '&lt;Load&gt;',
+        'Param':    '&lt;Param&gt;',
+        'Store':    '&lt;Store&gt;',
+        # Unary operators.
+        'Invert':   '~',
+        'Not':      ' not ',
+        'UAdd':     '+',
+        'USub':     '-',
+    }
+    name = d.get(self.kind(node),'&lt;%s&gt;' % node.__class__.__name__)
+    if strict: assert name,self.kind(node)
+    return name
+</t>
+<t tx="ekr.20160123185312.79">
+
+class StubFormatter (AstFormatter):
+
+    @others
+</t>
+<t tx="ekr.20160123185312.8">
+class AstFormatter:
+    '''
+    A class to recreate source code from an AST.
+    
+    This does not have to be perfect, but it should be close.
+    
+    Also supports optional annotations such as line numbers, file names, etc.
+    '''
+    # No ctor.
+    # pylint: disable=consider-using-enumerate
+
+    @others
+</t>
+<t tx="ekr.20160123185312.80">
+# Return generic markers allow better pattern matches.
+
+def do_BoolOp(self, node): # Python 2.x only.
+    return 'bool'
+
+def do_Bytes(self, node): # Python 3.x only.
+    return 'bytes' # return str(node.s)
+
+def do_Name(self, node):
+    return 'bool' if node.id in ('True', 'False') else node.id
+
+def do_Num(self, node):
+    return 'number' # return repr(node.n)
+
+def do_Str(self, node):
+    '''This represents a string constant.'''
+    return 'str' # return repr(node.s)
+</t>
+<t tx="ekr.20160123185312.81">
+
+class StubTraverser (ast.NodeVisitor):
+    
+    @others
+</t>
+<t tx="ekr.20160123185312.82">
+def indent(self, s):
+    '''Return s, properly indented.'''
+    return '%s%s' % (' ' * 4 * self.level, s)
+
+def out(self, s):
+    '''Output the string to the console or the file.'''
+    if self.output_file:
+        self.output_file.write(self.indent(s)+'\n')
+    else:
+        print(self.indent(s))
+</t>
+<t tx="ekr.20160123185312.83">
+def run(self, node):
+    '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
+    dir_ = os.path.dirname(self.output_fn)
+    if os.path.exists(dir_):
+        self.output_file = open(self.output_fn, 'w')
+        for z in self.prefix_lines or []:
+            self.out(z.strip())
+        self.visit(node)
+        self.output_file.close()
+        self.output_file = None
+        print('wrote', self.output_fn)
+    else:
+        print('not found:', dir_)
+
+</t>
+<t tx="ekr.20160123185312.85"></t>
+<t tx="ekr.20160123185312.86">
+# ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+def visit_ClassDef(self, node):
+
+    # Format...
+    if not node.name.startswith('_'):
+        if node.bases:
+            s = '(%s)' % ','.join([self.format(z) for z in node.bases])
+        else:
+            s = ''
+        self.out('class %s%s:' % (node.name, s))
+    # Visit...
+    self.level += 1
+    old_in_function = self.in_function
+    self.in_function = False
+    for z in node.body:
+        self.visit(z)
+    self.level -= 1
+    self.in_function = old_in_function
+</t>
+<t tx="ekr.20160123185312.87">
+# FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def visit_FunctionDef(self, node):
+    
+    # Do nothing if we are already in a function.
+    # We do not generate stubs for inner defs.
+    if self.in_function or node.name.startswith('_'):
+        return
+    # First, visit the function body.
+    self.returns = set()
+    self.in_function = True
+    self.level += 1
+    for z in node.body:
+        self.visit(z)
+    self.level -= 1
+    self.in_function = False
+    # Format *after* traversing
+    self.out('def %s(%s) -&gt; %s: ...' % (
+        node.name,
+        self.format_arguments(node.args),
+        self.format_returns(node)))
+</t>
+<t tx="ekr.20160123185312.88"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+def format_arguments(self, node):
+    '''
+    Format the arguments node.
+    Similar to AstFormat.do_arguments, but it is not a visitor!
+    '''
+    assert isinstance(node,ast.arguments), node
+    args = [self.format(z) for z in node.args]
+    defaults = [self.format(z) for z in node.defaults]
+    # Assign default values to the last args.
+    result = []
+    n_plain = len(args) - len(defaults)
+    # pylint: disable=consider-using-enumerate
+    for i in range(len(args)):
+        s = self.munge_arg(args[i])
+        if i &lt; n_plain:
+            result.append(s)
+        else:
+            result.append('%s=%s' % (s, defaults[i - n_plain]))
+    # Now add the vararg and kwarg args.
+    name = getattr(node, 'vararg', None)
+    if name: result.append('*' + name)
+    name = getattr(node, 'kwarg', None)
+    if name: result.append('**' + name)
+    return ', '.join(result)
+</t>
+<t tx="ekr.20160123185312.89">
+def munge_arg(self, s):
+    '''Add an annotation for s if possible.'''
+    a = self.d.get(s)
+    return '%s: %s' % (s, a) if a else s
+</t>
+<t tx="ekr.20160123185312.9"></t>
+<t tx="ekr.20160123185312.90">
+def format_returns(self, node):
+    '''Calculate the return type.'''
+    
+    def split(s):
+        return '\n     ' + self.indent(s) if len(s) &gt; 30 else s
+        
+    r = list(self.returns)
+    r = [self.format(z) for z in r]
+    if len(r) == 0:
+        return 'None'
+    if len(r) == 1:
+        return split(r[0])
+    elif 'None' in r:
+        r.remove('None')
+        return split('Optional[%s]' % ', '.join(r))
+    else:
+        # return 'Any'
+        s = ', '.join(r)
+        if len(s) &gt; 30:
+            return ', '.join(['\n    ' + self.indent(z) for z in r])
+        else:
+            return split(', '.join(r))
+</t>
+<t tx="ekr.20160123185312.91">
+def visit_Return(self, node):
+
+    self.returns.add(node.value)
+</t>
+<t tx="ekr.20160123185348.1">
+def main():
+    '''
+    The driver for the stand-alone version of make-stub-files.
+    All options come from ~/stubs/make_stub_files.cfg.
+    '''
+    if sys.platform.lower().startswith('win'):
+        os.system('cls')
+    controller = StandAloneMakeStubFile()
+    controller.scan_options()
+    controller.run()
+    print('done')
+</t>
+<t tx="ekr.20160123185719.1">
+def scan_options(self):
+    '''Set all configuration-related ivars.'''
+    # import leo.core.leoGlobals as g ; g.pdb()
+    parser = configparser.ConfigParser()
+    fn = '~/stubs/make_stub_files.cfg'
+    fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
+    if os.path.exists(fn):
+        parser.read(os.path.expanduser('~/stubs/make_stub_files.cfg'))
+        files = parser.get('Global', 'files')
+        files = [z.strip() for z in files.split('\n') if z.strip()]
+        files2 = []
+        for z in files:
+            files2.extend(glob.glob(z))
+        self.files = [z for z in files2 if os.path.exists(z)]
+        # print('Files...\n%s' % '\n'.join(self.files))
+        print('Types...')
+        for key in sorted(parser.options('Types')):
+            value = parser.get('Types', key)
+            self.d [key] = value
+            print('%s: %s' % (key, value))
+        prefix = parser.get('Global','prefix')
+        self.prefix_lines = [z.strip() for z in prefix.split('\n') if z.strip()]
+        print('Prefix lines...')
+        for z in self.prefix_lines:
+            print(z)
+</t>
+<t tx="ekr.20160123193632.1">
+def __init__(self, d, prefix_lines, output_fn):
+    '''Ctor for StubTraverser class.'''
+    self.d = d
+    self.format = StubFormatter().format
+    self.in_function = False
+    self.level = 0
+    self.output_file = None
+    self.output_fn = output_fn
+    self.prefix_lines = prefix_lines
+    self.returns = set()
+</t>
+<t tx="ekr.20160123193846.1">
+def __init__ (self):
+    '''Ctor for StandAloneMakeStubFile class.'''
+    self.d = {}
+    self.files = []
+    self.options = {}
+    self.prefix_lines = []
 </t>
 </tnodes>
 </leo_file>
