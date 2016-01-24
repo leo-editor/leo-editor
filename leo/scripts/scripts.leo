@@ -2191,7 +2191,6 @@ except ImportError:
 import glob
 import os
 import sys
-
 @others
 
 if __name__ == "__main__":
@@ -3784,6 +3783,7 @@ class StubFormatter (AstFormatter):
     @others
 </t>
 <t tx="ekr.20160123185312.8">
+
 class AstFormatter:
     '''
     A class to recreate source code from an AST.
