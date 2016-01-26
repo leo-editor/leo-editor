@@ -22,7 +22,15 @@ Executive summary
 
 The make_stub_files script eliminates much of the drudgery of creating
 python stub (.pyi) files https://www.python.org/dev/peps/pep-0484/#stub-files
-from python source files. To my knowledge, no such tool presently exists.
+from python source files. 
+
+From GvR::
+
+    "We actually do have a stub generator as part of mypy now (most of the
+    code is in https://github.com/JukkaL/mypy/blob/master/mypy/stubgen.py;
+    it has a few options) but yours has the advantage of providing a way to
+    tune the generated signatures based on argument conventions. This
+    allows for a nice iterative way of developing stubs."
 
 The script does no type inference. Instead, it creates function annotations
 using user-supplied **type conventions**, pairs of strings of the form
@@ -201,7 +209,7 @@ except ImportError:
     import configparser # Python 3
 import glob
 import os
-import sys
+import re
 
 
 class AstFormatter:
@@ -814,11 +822,16 @@ class StandAloneMakeStubFile:
 
     def __init__ (self):
         '''Ctor for StandAloneMakeStubFile class.'''
-        self.d = {}
         self.files = []
         self.options = {}
         self.output_directory = os.path.expanduser('~/stubs')
         self.prefix_lines = []
+        # Type substitution dicts. Values are types.
+        self.args_d = {} # Keys are argument names.
+        self.def_pattern_d = {} # Keys are regex's for def names.
+        self.return_regex_d = {} # Keys are regex's for return values.
+        self.return_pattern_d = {} # Keys are simplified patterns for return values.
+       
 
     def make_stub_file(self, fn):
         '''
@@ -837,7 +850,8 @@ class StandAloneMakeStubFile:
         out_fn = os.path.normpath(out_fn)
         s = open(fn).read()
         node = ast.parse(s,filename=fn,mode='exec')
-        StubTraverser(self.d, self.prefix_lines, out_fn).run(node)
+        dicts = (self.args_d, self.def_pattern_d, self.return_pattern_d)
+        StubTraverser(self, self.prefix_lines, out_fn).run(node)
 
     def run(self):
         '''Make stub files for all files.'''
@@ -851,34 +865,56 @@ class StandAloneMakeStubFile:
         parser.optionxform=str
         fn = '~/stubs/make_stub_files.cfg'
         fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
-        if os.path.exists(fn):
-            parser.read(os.path.expanduser('~/stubs/make_stub_files.cfg'))
-            files = parser.get('Global', 'files')
-            files = [z.strip() for z in files.split('\n') if z.strip()]
-            files2 = []
-            for z in files:
-                files2.extend(glob.glob(z))
-            self.files = [z for z in files2 if os.path.exists(z)]
-            # print('Files...\n%s' % '\n'.join(self.files))
-            if 'output_directory' in parser.options('Global'):
-                s = parser.get('Global', 'output_directory')
-                output_dir = os.path.expanduser(s)
-                if os.path.exists(output_dir):
-                    self.output_directory = output_dir
-                    print('output_dir: %s' % self.output_directory)
-                else:
-                    print('output_dir not found: %s' % self.output_directory)
-                    self.output_directory = None # inhibit run().
-            print('Types...')
-            for key in sorted(parser.options('Types')):
-                value = parser.get('Types', key)
-                self.d [key] = value
-                print('%s: %s' % (key, value))
-            prefix = parser.get('Global','prefix')
+        if not os.path.exists(fn):
+            print('not found: %s' % fn)
+            return
+        parser.read(fn)
+        files = parser.get('Global', 'files')
+        files = [z.strip() for z in files.split('\n') if z.strip()]
+        files2 = []
+        for z in files:
+            files2.extend(glob.glob(os.path.expanduser(z)))
+        self.files = [z for z in files2 if os.path.exists(z)]
+        # print('Files...\n%s' % '\n'.join(self.files))
+        if 'output_directory' in parser.options('Global'):
+            s = parser.get('Global', 'output_directory')
+            output_dir = os.path.expanduser(s)
+            if os.path.exists(output_dir):
+                self.output_directory = output_dir
+                print('output_dir: %s\n' % self.output_directory)
+            else:
+                print('output_dir not found: %s\n' % self.output_directory)
+                self.output_directory = None # inhibit run().
+        if 'prefix_lines' in parser.options('Global'):
+            prefix = parser.get('Global','prefix_lines')
             self.prefix_lines = [z.strip() for z in prefix.split('\n') if z.strip()]
             print('Prefix lines...')
             for z in self.prefix_lines:
                 print(z)
+            print('')
+        self.args_d = self.scan_types(
+            parser, 'Arg Types')
+        self.def_pattern_d = self.scan_types(
+            parser, 'Def Name Patterns', )
+        self.return_pattern_d = self.scan_types(
+            parser, 'Return Patterns')
+        self.return_regex_d = self.scan_types(
+            parser, 'Return Regex Patterns')
+        
+    def scan_types(self, parser, section_name):
+        
+        d = {}
+        if section_name in parser.sections():
+            print('%s...' % section_name)
+            for key in sorted(parser.options(section_name)):
+                value = parser.get(section_name, key)
+                d [key] = value
+                print('%s: %s' % (key, value))
+        else:
+            print('no section: %s' % section_name)
+            print(parser.sections())
+        print('')
+        return d
 
 
 class StubFormatter (AstFormatter):
@@ -909,9 +945,10 @@ class StubFormatter (AstFormatter):
 class StubTraverser (ast.NodeVisitor):
     '''An ast.Node traverser class that outputs a stub for each class or def.'''
 
-    def __init__(self, d, prefix_lines, output_fn):
+    def __init__(self, controller, prefix_lines, output_fn):
         '''Ctor for StubTraverser class.'''
-        self.d = d
+        self.controller = controller # StandAloneMakeStubFile
+        self.class_name_stack = []
         self.format = StubFormatter().format
         self.in_function = False
         self.level = 0
@@ -919,6 +956,12 @@ class StubTraverser (ast.NodeVisitor):
         self.output_fn = output_fn
         self.prefix_lines = prefix_lines
         self.returns = []
+        self.trace = False
+        # Dictionaries: see StandAloneMakeStubFile.ctor.
+        self.args_d = controller.args_d
+        self.def_pattern_d = controller.def_pattern_d
+        self.return_regex_d = controller.return_regex_d
+        self.return_pattern_d = controller.return_pattern_d
 
     def indent(self, s):
         '''Return s, properly indented.'''
@@ -966,8 +1009,10 @@ class StubTraverser (ast.NodeVisitor):
         self.level += 1
         old_in_function = self.in_function
         self.in_function = False
+        self.class_name_stack.append(node.name)
         for z in node.body:
             self.visit(z)
+        self.class_name_stack.pop()
         self.level -= 1
         self.in_function = old_in_function
 
@@ -1000,12 +1045,6 @@ class StubTraverser (ast.NodeVisitor):
         Format the arguments node.
         Similar to AstFormat.do_arguments, but it is not a visitor!
         '''
-        
-        def munge_arg(s):
-            '''Add an annotation for s if possible.'''
-            a = self.d.get(s)
-            return '%s: %s' % (s, a) if a else s
-
         assert isinstance(node,ast.arguments), node
         args = [self.format(z) for z in node.args]
         defaults = [self.format(z) for z in node.defaults]
@@ -1014,7 +1053,7 @@ class StubTraverser (ast.NodeVisitor):
         n_plain = len(args) - len(defaults)
         # pylint: disable=consider-using-enumerate
         for i in range(len(args)):
-            s = munge_arg(args[i])
+            s = self.munge_arg(args[i])
             if i < n_plain:
                 result.append(s)
             else:
@@ -1032,18 +1071,30 @@ class StubTraverser (ast.NodeVisitor):
         def split(s):
             return '\n     ' + self.indent(s) if len(s) > 30 else s
             
-        def munge_ret(s):
-            '''replace a return value by a type if possible.'''
-            return self.d.get(s.strip()) or s
+        # Shortcut everything if node.name matches any
+        # pattern in self.def_pattern_d.
+        d = self.def_pattern_d
+        if self.class_name_stack:
+            name = '%s.%s' % (self.class_name_stack[-1], node.name)
+        else:
+            name = node.name
+        for pattern in d.keys():
+            match = re.search(pattern, name)
+            if match and match.group(0) == name:
+                t = d.get(pattern)
+                print('*name pattern %s: %s -> %s' % (pattern, name, t))
+                return t
 
         r = [self.format(z) for z in self.returns]
         # if r: print(r)
-        r = [munge_ret(z) for z in r] # Make type substitutions.
-        r = sorted(set(r)) # Remove duplicates
+        r = [self.munge_ret(name, z) for z in r]
+            # Make type substitutions.
+        r = sorted(set(r))
+            # Remove duplicates
         if len(r) == 0:
             return 'None'
         if len(r) == 1:
-            return split(r[0])
+            return r[0] # Never split a single value.
         elif 'None' in r:
             r.remove('None')
             return split('Optional[%s]' % ', '.join(r))
@@ -1054,6 +1105,125 @@ class StubTraverser (ast.NodeVisitor):
                 return ', '.join(['\n    ' + self.indent(z) for z in r])
             else:
                 return split(', '.join(r))
+    def munge_arg(self, s):
+        '''Add an annotation for s if possible.'''
+        a = self.args_d.get(s)
+        return '%s: %s' % (s, a) if a else s
+    def munge_ret(self, name, s):
+        '''replace a return value by a type if possible.'''
+        trace = True or self.trace
+        if trace: print('munge_ret ==== %s' % name)
+        d = self.args_d
+        # Replace all arg names (word match only) by types.
+        count = 0 # prevent any possibility of endless loops
+        found = True
+        while found and count < 40:
+            found = False
+            for arg in d.keys():
+                match = re.search(r'\b'+arg+r'\b', s)
+                if match:
+                    i = match.start(0)
+                    t = d.get(arg)
+                    s2 = s[:i] + t + s[i + len(arg):]
+                    if trace:
+                        print('arg:  %s %s ==> %s' % (arg, s, s2))
+                    s = s2
+                    count += 1
+                    found = True
+        # Next, repeatedly match simplified return patterns.
+        if trace: print('----- %s' % s)
+        count, found = 0, True
+        while found and count < 40:
+            count += 1
+            found, i, s1 = False, 0, s
+            while i < len(s) and not found:
+                s = self.match_return_patterns(name, s, i)
+                found = s1 != s
+                i += 1
+        if trace: print('*after simple patterns: %s' % s)
+        # Finally, repeatedly match regex patterns.
+        d, prev_s = self.return_regex_d, set()
+        while True:
+            found = False
+            for pattern in d.keys():
+                match = re.search(pattern, s)
+                if match:
+                    t = d.get(pattern)
+                    s2 = s.replace(match.group(0), t)
+                    if trace:
+                        print('match: %s=%s->%s: %s ==> %s' % (
+                            pattern, match.group(0), t, s, s2))
+                    if s2 in prev_s:
+                        if trace: print('*seen: %s' % (s2))
+                        return s2
+                    else:
+                        found = True
+                        prev_s.add(s2)
+                        s = s2
+            if not found:
+                if trace: print('*done: %s' % s)
+                return s
+    def match_return_patterns(self, name, s, i):
+        '''
+        Make all possible pattern matches at s[i:]. Return the new s.
+        '''
+        d = self.return_pattern_d
+        s1 = s
+        for pattern in d.keys():
+            found_s = self.match_return_pattern(pattern, s, i)
+            if found_s:
+                replace_s = d.get(pattern)
+                s = s[:i] + replace_s + s[i+len(found_s):]
+                print('match_return_patterns found: %s replace: %s' % (found_s, replace_s))
+                print('match_return_patterns old: %s' % s1)
+                print('match_return_patterns new: %s' % s)
+                break # must rescan the entire string.
+        return s
+
+            
+            
+    def match_return_pattern(self, pattern, s, i):
+        '''Return the actual string matching the pattern at s[i:] or None.'''
+        i1 = i
+        j = 0 # index into pattern
+        while i < len(s) and j < len(pattern) and s[i] == pattern[j]:
+            if pattern[j:j+3] in ('(*)', '[*]', '{*}'):
+                delim = pattern[j]
+                i = self.match_balanced(delim, s, i)
+                j += 3
+            else:
+                i += 1
+                j += 1
+        if i <= len(s) and j == len(pattern):
+            print('match_return_pattern: match %s -> %s' % (pattern, s[i1:i]))
+        return s[i1:i] if i <= len(s) and j == len(pattern) else None
+    def match_balanced(self, delim, s, i):
+        '''
+        Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
+        Return the index into s of the end of the expression, or len(s)+1 on errors.
+        
+        There is no need to handle strings or comments. Strings are represent as str,
+        and comments do not appear.
+        '''
+        trace = True
+        assert s[i] == delim, s[i]
+        assert delim in '([{'
+        delim2 = ')]}'['([{'.index(delim)]
+        assert delim2 in ')]}'
+        i1, level = i, 0
+        while i < len(s):
+            ch = s[i]
+            i += 1
+            if ch == delim:
+                level += 1
+            elif ch == delim2:
+                level -= 1
+                if level == 0:
+                    if trace: print('match_balanced: found: %s' % s[i1:i])
+                    return i
+        # Unmatched
+        print('***** unmatched %s in %s' % (delim, s))
+        return len(s) + 1
 
     def visit_Return(self, node):
 
@@ -1064,8 +1234,6 @@ def main():
     The driver for the stand-alone version of make-stub-files.
     All options come from ~/stubs/make_stub_files.cfg.
     '''
-    if sys.platform.lower().startswith('win'):
-        os.system('cls')
     controller = StandAloneMakeStubFile()
     controller.scan_options()
     controller.run()
