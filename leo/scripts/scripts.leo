@@ -185,9 +185,13 @@
 <v t="ekr.20160123185312.90"><vh>format_returns</vh></v>
 <v t="ekr.20160125130205.1"><vh>munge_arg</vh></v>
 <v t="ekr.20160125132131.1"><vh>munge_ret &amp; helpers</vh>
+<v t="ekr.20160126035753.1"><vh>match_args</vh></v>
+<v t="ekr.20160126040138.1"><vh>match_simple_patterns &amp; helpers</vh>
 <v t="ekr.20160125195414.1"><vh>match_return_patterns</vh></v>
 <v t="ekr.20160125202035.1"><vh>match_return_pattern</vh></v>
 <v t="ekr.20160125204058.1"><vh>match_balanced</vh></v>
+</v>
+<v t="ekr.20160126041450.1"><vh>match_regex_patterns</vh></v>
 </v>
 </v>
 <v t="ekr.20160123185312.91"><vh>st.Return</vh></v>
@@ -352,9 +356,10 @@
 <v t="ekr.20160123185719.1"></v>
 <v t="ekr.20160123185312.87"></v>
 <v t="ekr.20160125183341.1"><vh>** add command-line args</vh></v>
-<v t="ekr.20160123185312.90"></v>
-<v t="ekr.20160125132131.1"></v>
 <v t="ekr.20160124163833.1"><vh>@clean c:\users\edreamleo\stubs\make_stub_files.cfg</vh></v>
+<v t="ekr.20160123193846.1"></v>
+<v t="ekr.20160123193632.1"></v>
+<v t="ekr.20160125132131.1"></v>
 <v t="ekr.20160125125845.1" a="M"><vh>test munge_ret</vh></v>
 </vnodes>
 <tnodes>
@@ -3539,11 +3544,11 @@ def make_stub_file(self, fn):
     base_fn = os.path.basename(fn)
     out_fn = os.path.join(self.output_directory,base_fn)
     out_fn = out_fn[:-3] + '.pyi'
-    out_fn = os.path.normpath(out_fn)
+    self.output_fn = os.path.normpath(out_fn)
     s = open(fn).read()
     node = ast.parse(s,filename=fn,mode='exec')
     dicts = (self.args_d, self.def_pattern_d, self.return_pattern_d)
-    StubTraverser(self, self.prefix_lines, out_fn).run(node)
+    StubTraverser(controller=self).run(node)
 </t>
 <t tx="ekr.20160123185312.60">
 def do_Global(self, node):
@@ -4041,41 +4046,51 @@ def scan_options(self):
     self.def_pattern_d = self.scan_types(
         parser, 'Def Name Patterns', )
     self.return_pattern_d = self.scan_types(
-        parser, 'Return Patterns')
+        parser, 'Return Simple Patterns')
     self.return_regex_d = self.scan_types(
         parser, 'Return Regex Patterns')
     </t>
 <t tx="ekr.20160123193632.1">
-def __init__(self, controller, prefix_lines, output_fn):
+def __init__(self, controller):
     '''Ctor for StubTraverser class.'''
-    self.controller = controller # StandAloneMakeStubFile
+    self.controller = c = controller # StandAloneMakeStubFile
+    # Internal state ivars...
     self.class_name_stack = []
     self.format = StubFormatter().format
     self.in_function = False
     self.level = 0
     self.output_file = None
-    self.output_fn = output_fn
-    self.prefix_lines = prefix_lines
     self.returns = []
-    self.trace = False
-    # Dictionaries: see StandAloneMakeStubFile.ctor.
-    self.args_d = controller.args_d
-    self.def_pattern_d = controller.def_pattern_d
-    self.return_regex_d = controller.return_regex_d
-    self.return_pattern_d = controller.return_pattern_d
+    # Copies of controller ivars...
+    self.debug = c.debug
+    self.output_fn = c.output_fn
+    self.prefix_lines = c.prefix_lines
+    self.trace = c.trace
+    self.verbose = c.verbose
+    # Copies of controller dicts...
+    self.args_d = c.args_d # [Arg Types]
+    self.def_pattern_d = c.def_pattern_d # [Def Name Patterns]
+    self.return_regex_d = c.return_regex_d # [Return Regex Patterns]
+    self.return_pattern_d = c.return_pattern_d # [Return Simple Patterns]
 </t>
 <t tx="ekr.20160123193846.1">
 def __init__ (self):
     '''Ctor for StandAloneMakeStubFile class.'''
-    self.files = []
     self.options = {}
+    # Ivars set on the command line...
+    self.debug = False
+    self.files = [] # May also be set in the config file.
+    self.trace = False
+    self.verbose = False
+    # Ivars set in the config file...
+    self.output_fn = None
     self.output_directory = os.path.expanduser('~/stubs')
     self.prefix_lines = []
-    # Type substitution dicts. Values are types.
-    self.args_d = {} # Keys are argument names.
-    self.def_pattern_d = {} # Keys are regex's for def names.
-    self.return_regex_d = {} # Keys are regex's for return values.
-    self.return_pattern_d = {} # Keys are simplified patterns for return values.
+    # Type substitution dicts, set by config sections...
+    self.args_d = {} # [Arg Types]
+    self.def_pattern_d = {} # [Def Name Patterns]
+    self.return_regex_d = {} # [Return Regex Patterns]
+    self.return_pattern_d = {} # [Return Simple Patterns]
    </t>
 <t tx="ekr.20160124120818.1">@language rest
 @nowrap
@@ -4298,6 +4313,7 @@ prefix_lines:
     T = TypeVar('T', int, float, complex)
 
 [Arg Types]
+
 aList: Sequence
 aList2: Sequence
 c: Commander
@@ -4320,7 +4336,7 @@ AstFormatter.do_.*: str
 StubTraverser.format_returns: str
 StubTraverser.indent: str
 
-[Return Patterns]
+[Return Simple Patterns]
 
 # Patterns to be applied to return expressions.
 # The patterns are **not** regular expression.
@@ -4328,22 +4344,16 @@ StubTraverser.indent: str
 # (*), [*] and {*} only match *balanced* parens, square and curly brackets.
 # If the patten matches, the matched string is replaced by the given type.
 
-# __name__: str
 repr(*): str
 str.join(*): str
 str.replace(*): str
 str%(*): str
 str%str: str
 
-[Regex Return Patterns]
+[Return Regex Patterns]
 
 # Regex patterns
 .*__name__: str
-# repr\([^()]*\)$: str
-# str\.join\([^()]*\): str
-# str\.replace\([^()]*\): str
-# str\%str: str
-# str\%\([^()]*\): str
 </t>
 <t tx="ekr.20160125125845.1">g.cls()
 import imp
@@ -4368,56 +4378,14 @@ else:
     '''replace a return value by a type if possible.'''
     trace = True or self.trace
     if trace: print('munge_ret ==== %s' % name)
-    d = self.args_d
-    # Replace all arg names (word match only) by types.
-    count = 0 # prevent any possibility of endless loops
-    found = True
-    while found and count &lt; 40:
-        found = False
-        for arg in d.keys():
-            match = re.search(r'\b'+arg+r'\b', s)
-            if match:
-                i = match.start(0)
-                t = d.get(arg)
-                s2 = s[:i] + t + s[i + len(arg):]
-                if trace:
-                    print('arg:  %s %s ==&gt; %s' % (arg, s, s2))
-                s = s2
-                count += 1
-                found = True
-    # Next, repeatedly match simplified return patterns.
-    if trace: print('----- %s' % s)
-    count, found = 0, True
-    while found and count &lt; 40:
-        count += 1
-        found, i, s1 = False, 0, s
-        while i &lt; len(s) and not found:
-            s = self.match_return_patterns(name, s, i)
-            found = s1 != s
-            i += 1
-    if trace: print('*after simple patterns: %s' % s)
-    # Finally, repeatedly match regex patterns.
-    d, prev_s = self.return_regex_d, set()
-    while True:
-        found = False
-        for pattern in d.keys():
-            match = re.search(pattern, s)
-            if match:
-                t = d.get(pattern)
-                s2 = s.replace(match.group(0), t)
-                if trace:
-                    print('match: %s=%s-&gt;%s: %s ==&gt; %s' % (
-                        pattern, match.group(0), t, s, s2))
-                if s2 in prev_s:
-                    if trace: print('*seen: %s' % (s2))
-                    return s2
-                else:
-                    found = True
-                    prev_s.add(s2)
-                    s = s2
-        if not found:
-            if trace: print('*done: %s' % s)
-            return s
+    s = self.match_args(name, s)
+        # Do matches in [Arg Types]
+    s = self.match_simple_patterns(name, s)
+        # Repeatedly do all matches in [Return Simple Patterns]
+    s = self.match_regex_patterns(name, s)
+        # Repeatedly do all matches in [Return Regex Patterns]
+    if trace: print('munge_reg -----: %s' % s)
+    return s
 </t>
 <t tx="ekr.20160125141406.1">def scan_types(self, parser, section_name):
     
@@ -4436,7 +4404,8 @@ else:
 <t tx="ekr.20160125183341.1"># --trace
 # allow files on command line.
 # --config=
-# --alphabetize (alphabetize methods in classes)</t>
+# --alphabetize (alphabetize methods in classes)
+</t>
 <t tx="ekr.20160125195414.1">def match_return_patterns(self, name, s, i):
     '''
     Make all possible pattern matches at s[i:]. Return the new s.
@@ -4476,9 +4445,6 @@ else:
     '''
     Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
     Return the index into s of the end of the expression, or len(s)+1 on errors.
-    
-    There is no need to handle strings or comments. Strings are represent as str,
-    and comments do not appear.
     '''
     trace = True
     assert s[i] == delim, s[i]
@@ -4499,6 +4465,80 @@ else:
     # Unmatched
     print('***** unmatched %s in %s' % (delim, s))
     return len(s) + 1
+</t>
+<t tx="ekr.20160126035753.1">def match_args(self, name, s):
+    '''In s, make substitutions (word only) given in [Arg Types].'''
+    trace = True or self.trace
+    d = self.args_d
+    count = 0 # prevent any possibility of endless loops
+    found = True
+    while found and count &lt; 40:
+        found = False
+        for arg in d.keys():
+            match = re.search(r'\b'+arg+r'\b', s)
+            if match:
+                i = match.start(0)
+                t = d.get(arg)
+                s2 = s[:i] + t + s[i + len(arg):]
+                if trace:
+                    print('arg:  %s %s ==&gt; %s' % (arg, s, s2))
+                s = s2
+                count += 1
+                found = True
+    return s
+</t>
+<t tx="ekr.20160126040138.1">def match_simple_patterns(self, name, s):
+    '''
+    In s, do *all* subsitutions given in [Return Simple Patterns].
+    
+    All characters match verbatim, except that the patterns:
+        (*), [*] and {*}
+    match only *balanced* parens, square and curly brackets.
+    
+    Note: No special cases are needed for strings or comments.
+    Comments do not appear, and strings have been converted to "str".
+    '''
+    trace = True or self.trace
+    if trace: print('----- %s' % s)
+    count, found = 0, True
+    while found and count &lt; 40:
+        count += 1
+        found, i, s1 = False, 0, s
+        while i &lt; len(s) and not found:
+            s = self.match_return_patterns(name, s, i)
+            found = s1 != s
+            i += 1
+    if trace: print('*after simple patterns: %s' % s)
+    return s</t>
+<t tx="ekr.20160126041450.1">def match_regex_patterns(self, name, s):
+    '''
+    In s, repeatedly match regex patterns in [Return Regex Patterns].
+    '''
+    trace = True or self.trace
+    d, prev_s = self.return_regex_d, set()
+    while True:
+        found = False
+        for pattern in d.keys():
+            match = re.search(pattern, s)
+            if match:
+                t = d.get(pattern)
+                s2 = s.replace(match.group(0), t)
+                if trace:
+                    print('match: %s=%s-&gt;%s: %s ==&gt; %s' % (
+                        pattern, match.group(0), t, s, s2))
+                if s2 in prev_s:
+                    # A strange loop. return s2.
+                    if trace: print('seen: %s' % (s2))
+                    s = s2
+                    found = False
+                    break
+                else:
+                    found = True
+                    prev_s.add(s2)
+                    s = s2
+        if not found:
+            break
+    return s
 </t>
 </tnodes>
 </leo_file>
