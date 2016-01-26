@@ -208,8 +208,10 @@ try:
 except ImportError:
     import configparser # Python 3
 import glob
+import optparse
 import os
 import re
+import sys
 
 
 class AstFormatter:
@@ -824,13 +826,14 @@ class StandAloneMakeStubFile:
         '''Ctor for StandAloneMakeStubFile class.'''
         self.options = {}
         # Ivars set on the command line...
-        self.debug = False
+        self.config_fn = os.path.normpath(os.path.expanduser(
+            '~/stubs/make_stub_files.cfg'))
         self.files = [] # May also be set in the config file.
-        self.trace = True
-        self.verbose = False
+        self.trace = False # Trace pattern substitutions.
+        self.verbose = False # Trace config arguments.
         # Ivars set in the config file...
         self.output_fn = None
-        self.output_directory = os.path.expanduser('~/stubs')
+        self.output_directory = os.path.normpath(os.path.expanduser('~/stubs'))
         self.prefix_lines = []
         # Type substitution dicts, set by config sections...
         self.args_d = {} # [Arg Types]
@@ -865,39 +868,96 @@ class StandAloneMakeStubFile:
             for fn in self.files:
                 self.make_stub_file(fn)
 
+    def scan_command_line(self):
+        '''Set ivars from command-line arguments.'''
+        # print('scan_command_line sys.argv: %s' % sys.argv)
+        # This automatically implements the --help option.
+        usage = "usage: make_stub_files.py [options] file1, file2, ..."
+        parser = optparse.OptionParser(usage=usage)
+        add = parser.add_option
+        add('-c', '--config', dest='fn',
+            help='full path to alternate configuration file')
+        add('-d', '--dir', dest='dir',
+            help='full path to the output directory')
+        add('-t', '--trace', action='store_true', default=False,
+            help='trace argument substitutions')
+        add('-v', '--verbose', action='store_true', default=False,
+            help='trace configuration settings')
+        # Parse the options
+        options, args = parser.parse_args()
+        # print('scan_command_line args: %s' % args)
+        # Handle the options...
+        self.trace = self.trace or options.trace
+        self.verbose = self.verbose or options.verbose
+        if options.fn:
+            self.config_fn = options.fn
+        if options.dir:
+            dir_ = options.dir
+            dir_ = os.path.normpath(os.path.expanduser(dir_))
+            if os.path.exists(dir_):
+                self.output_directory = dir_
+            else:
+                print('--dir: does not exist: %s, using %s' % (
+                    dir_, self.output_directory))
+        # If any files remain, set self.files.
+        if args:
+            args = [os.path.normpath(os.path.expanduser(z)) for z in args]
+            # args = [z for z in args if os.path.exists(z)]
+            if args:
+                self.files = args
+            # print('command-line files: %s' % args)
+
     def scan_options(self):
         '''Set all configuration-related ivars.'''
+        verbose = self.verbose
         parser = configparser.ConfigParser()
         parser.optionxform=str
-        fn = '~/stubs/make_stub_files.cfg'
-        fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
+        fn = os.path.expanduser(self.config_fn)
+        fn = os.path.normpath(fn)
         if not os.path.exists(fn):
             print('not found: %s' % fn)
             return
+        if verbose: print('\nconfiguration file: %s\n' % fn)
         parser.read(fn)
-        files = parser.get('Global', 'files')
-        files = [z.strip() for z in files.split('\n') if z.strip()]
-        files2 = []
-        for z in files:
-            files2.extend(glob.glob(os.path.expanduser(z)))
-        self.files = [z for z in files2 if os.path.exists(z)]
-        # print('Files...\n%s' % '\n'.join(self.files))
+        if self.files:
+            # if verbose: print('using command-line files')
+            files2 = []
+            for z in self.files:
+                files2.extend(glob.glob(os.path.expanduser(z)))
+            # self.files = [z for z in files2 if os.path.exists(z)]
+            self.files = files2
+            if verbose:
+                print('Files...\n')
+                for z in self.files:
+                    print(z)
+                print('')
+        else:
+            files = parser.get('Global', 'files')
+            files = [z.strip() for z in files.split('\n') if z.strip()]
+            files2 = []
+            for z in files:
+                files2.extend(glob.glob(os.path.expanduser(z)))
+            self.files = [z for z in files2 if os.path.exists(z)]
+            # print('Files...\n%s' % '\n'.join(self.files))
         if 'output_directory' in parser.options('Global'):
             s = parser.get('Global', 'output_directory')
-            output_dir = os.path.expanduser(s)
+            output_dir = os.path.normpath(os.path.expanduser(s))
             if os.path.exists(output_dir):
                 self.output_directory = output_dir
-                print('output_dir: %s\n' % self.output_directory)
+                if verbose:
+                    print('output_dir: %s\n' % self.output_directory)
             else:
-                print('output_dir not found: %s\n' % self.output_directory)
+                if verbose:
+                    print('output_dir not found: %s\n' % self.output_directory)
                 self.output_directory = None # inhibit run().
         if 'prefix_lines' in parser.options('Global'):
             prefix = parser.get('Global','prefix_lines')
             self.prefix_lines = [z.strip() for z in prefix.split('\n') if z.strip()]
-            print('Prefix lines...')
-            for z in self.prefix_lines:
-                print(z)
-            print('')
+            if verbose:
+                print('Prefix lines...\n')
+                for z in self.prefix_lines:
+                    print(z)
+                print('')
         self.args_d = self.scan_types(
             parser, 'Arg Types')
         self.def_pattern_d = self.scan_types(
@@ -906,20 +966,22 @@ class StandAloneMakeStubFile:
             parser, 'Return Simple Patterns')
         self.return_regex_d = self.scan_types(
             parser, 'Return Regex Patterns')
-        
+
     def scan_types(self, parser, section_name):
         
+        verbose = self.verbose
         d = {}
         if section_name in parser.sections():
-            print('%s...' % section_name)
+            if verbose: print('%s...\n' % section_name)
             for key in sorted(parser.options(section_name)):
                 value = parser.get(section_name, key)
                 d [key] = value
-                print('%s: %s' % (key, value))
-        else:
+                if verbose: print('%s: %s' % (key, value))
+            if verbose: print('')
+        elif verbose:
             print('no section: %s' % section_name)
             print(parser.sections())
-        print('')
+            print('')
         return d
 
 
@@ -963,7 +1025,6 @@ class StubTraverser (ast.NodeVisitor):
         self.output_file = None
         self.returns = []
         # Copies of controller ivars...
-        self.debug = c.debug
         self.output_fn = c.output_fn
         self.prefix_lines = c.prefix_lines
         self.trace = c.trace
@@ -1084,6 +1145,7 @@ class StubTraverser (ast.NodeVisitor):
             
         # Shortcut everything if node.name matches any
         # pattern in self.def_pattern_d.
+        trace = self.trace
         d = self.def_pattern_d
         if self.class_name_stack:
             name = '%s.%s' % (self.class_name_stack[-1], node.name)
@@ -1093,7 +1155,7 @@ class StubTraverser (ast.NodeVisitor):
             match = re.search(pattern, name)
             if match and match.group(0) == name:
                 t = d.get(pattern)
-                print('*name pattern %s: %s -> %s' % (pattern, name, t))
+                if trace: print('*name pattern %s: %s -> %s' % (pattern, name, t))
                 return t
 
         r = [self.format(z) for z in self.returns]
@@ -1202,6 +1264,7 @@ class StubTraverser (ast.NodeVisitor):
 
     def match_return_pattern(self, pattern, s, i):
         '''Return the actual string matching the pattern at s[i:] or None.'''
+        trace = self.trace
         i1 = i
         j = 0 # index into pattern
         while i < len(s) and j < len(pattern) and s[i] == pattern[j]:
@@ -1212,7 +1275,7 @@ class StubTraverser (ast.NodeVisitor):
             else:
                 i += 1
                 j += 1
-        if i <= len(s) and j == len(pattern):
+        if trace and i <= len(s) and j == len(pattern):
             print('match_return_pattern: match %s -> %s' % (pattern, s[i1:i]))
         return s[i1:i] if i <= len(s) and j == len(pattern) else None
 
@@ -1221,7 +1284,7 @@ class StubTraverser (ast.NodeVisitor):
         Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
         Return the index into s of the end of the expression, or len(s)+1 on errors.
         '''
-        trace = True
+        trace = self.trace
         assert s[i] == delim, s[i]
         assert delim in '([{'
         delim2 = ')]}'['([{'.index(delim)]
@@ -1281,6 +1344,7 @@ def main():
     All options come from ~/stubs/make_stub_files.cfg.
     '''
     controller = StandAloneMakeStubFile()
+    controller.scan_command_line()
     controller.scan_options()
     controller.run()
     print('done')

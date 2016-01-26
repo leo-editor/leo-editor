@@ -167,6 +167,7 @@
 <v t="ekr.20160123193846.1"><vh>msf.ctor</vh></v>
 <v t="ekr.20160123185312.6"><vh>msf.make_stub_file</vh></v>
 <v t="ekr.20160123185312.7"><vh>msf.run</vh></v>
+<v t="ekr.20160126045709.1"><vh>msf.scan_command_line</vh></v>
 <v t="ekr.20160123185719.1"><vh>msf.scan_options &amp; helper</vh>
 <v t="ekr.20160125141406.1"><vh>msf.scan_types</vh></v>
 </v>
@@ -243,7 +244,8 @@
 <v t="ekr.20150525161132.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20160123185308.1"><vh>@button make_stub_files script</vh>
+<v t="ekr.20160126063017.1"><vh>make_stub_files stuff</vh>
+<v t="ekr.20160123185308.1"><vh>@@button make_stub_files script</vh>
 <v t="ekr.20160123185308.2"><vh>class MakeStubFile</vh>
 <v t="ekr.20160123185308.3"><vh>msf.ctors &amp; helpers</vh>
 <v t="ekr.20160123185308.4"><vh>msf.make_types_dict</vh></v>
@@ -352,15 +354,16 @@
 </v>
 </v>
 </v>
+<v t="ekr.20160125125845.1"><vh>test munge_ret</vh></v>
 <v t="ekr.20160123185231.1"></v>
-<v t="ekr.20160123185719.1"></v>
-<v t="ekr.20160123185312.87"></v>
-<v t="ekr.20160125183341.1"><vh>** add command-line args</vh></v>
 <v t="ekr.20160124163833.1"><vh>@clean c:\users\edreamleo\stubs\make_stub_files.cfg</vh></v>
+</v>
+<v t="ekr.20160123185312.87"></v>
 <v t="ekr.20160123193846.1"></v>
 <v t="ekr.20160123193632.1"></v>
 <v t="ekr.20160125132131.1"></v>
-<v t="ekr.20160125125845.1" a="M"><vh>test munge_ret</vh></v>
+<v t="ekr.20160123185719.1"></v>
+<v t="ekr.20160126045709.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2205,8 +2208,10 @@ try:
 except ImportError:
     import configparser # Python 3
 import glob
+import optparse
 import os
 import re
+import sys
 @others
 
 if __name__ == "__main__":
@@ -3958,6 +3963,7 @@ def format_returns(self, node):
         
     # Shortcut everything if node.name matches any
     # pattern in self.def_pattern_d.
+    trace = self.trace
     d = self.def_pattern_d
     if self.class_name_stack:
         name = '%s.%s' % (self.class_name_stack[-1], node.name)
@@ -3967,7 +3973,7 @@ def format_returns(self, node):
         match = re.search(pattern, name)
         if match and match.group(0) == name:
             t = d.get(pattern)
-            print('*name pattern %s: %s -&gt; %s' % (pattern, name, t))
+            if trace: print('*name pattern %s: %s -&gt; %s' % (pattern, name, t))
             return t
 
     r = [self.format(z) for z in self.returns]
@@ -4003,6 +4009,7 @@ def main():
     All options come from ~/stubs/make_stub_files.cfg.
     '''
     controller = StandAloneMakeStubFile()
+    controller.scan_command_line()
     controller.scan_options()
     controller.run()
     print('done')
@@ -4010,37 +4017,55 @@ def main():
 <t tx="ekr.20160123185719.1">
 def scan_options(self):
     '''Set all configuration-related ivars.'''
+    verbose = self.verbose
     parser = configparser.ConfigParser()
     parser.optionxform=str
-    fn = '~/stubs/make_stub_files.cfg'
-    fn = os.path.expanduser('~/stubs/make_stub_files.cfg')
+    fn = os.path.expanduser(self.config_fn)
+    fn = os.path.normpath(fn)
     if not os.path.exists(fn):
         print('not found: %s' % fn)
         return
+    if verbose: print('\nconfiguration file: %s\n' % fn)
     parser.read(fn)
-    files = parser.get('Global', 'files')
-    files = [z.strip() for z in files.split('\n') if z.strip()]
-    files2 = []
-    for z in files:
-        files2.extend(glob.glob(os.path.expanduser(z)))
-    self.files = [z for z in files2 if os.path.exists(z)]
-    # print('Files...\n%s' % '\n'.join(self.files))
+    if self.files:
+        # if verbose: print('using command-line files')
+        files2 = []
+        for z in self.files:
+            files2.extend(glob.glob(os.path.expanduser(z)))
+        # self.files = [z for z in files2 if os.path.exists(z)]
+        self.files = files2
+        if verbose:
+            print('Files...\n')
+            for z in self.files:
+                print(z)
+            print('')
+    else:
+        files = parser.get('Global', 'files')
+        files = [z.strip() for z in files.split('\n') if z.strip()]
+        files2 = []
+        for z in files:
+            files2.extend(glob.glob(os.path.expanduser(z)))
+        self.files = [z for z in files2 if os.path.exists(z)]
+        # print('Files...\n%s' % '\n'.join(self.files))
     if 'output_directory' in parser.options('Global'):
         s = parser.get('Global', 'output_directory')
-        output_dir = os.path.expanduser(s)
+        output_dir = os.path.normpath(os.path.expanduser(s))
         if os.path.exists(output_dir):
             self.output_directory = output_dir
-            print('output_dir: %s\n' % self.output_directory)
+            if verbose:
+                print('output_dir: %s\n' % self.output_directory)
         else:
-            print('output_dir not found: %s\n' % self.output_directory)
+            if verbose:
+                print('output_dir not found: %s\n' % self.output_directory)
             self.output_directory = None # inhibit run().
     if 'prefix_lines' in parser.options('Global'):
         prefix = parser.get('Global','prefix_lines')
         self.prefix_lines = [z.strip() for z in prefix.split('\n') if z.strip()]
-        print('Prefix lines...')
-        for z in self.prefix_lines:
-            print(z)
-        print('')
+        if verbose:
+            print('Prefix lines...\n')
+            for z in self.prefix_lines:
+                print(z)
+            print('')
     self.args_d = self.scan_types(
         parser, 'Arg Types')
     self.def_pattern_d = self.scan_types(
@@ -4049,7 +4074,7 @@ def scan_options(self):
         parser, 'Return Simple Patterns')
     self.return_regex_d = self.scan_types(
         parser, 'Return Regex Patterns')
-    </t>
+</t>
 <t tx="ekr.20160123193632.1">
 def __init__(self, controller):
     '''Ctor for StubTraverser class.'''
@@ -4063,7 +4088,6 @@ def __init__(self, controller):
     self.output_file = None
     self.returns = []
     # Copies of controller ivars...
-    self.debug = c.debug
     self.output_fn = c.output_fn
     self.prefix_lines = c.prefix_lines
     self.trace = c.trace
@@ -4079,13 +4103,14 @@ def __init__ (self):
     '''Ctor for StandAloneMakeStubFile class.'''
     self.options = {}
     # Ivars set on the command line...
-    self.debug = False
+    self.config_fn = os.path.normpath(os.path.expanduser(
+        '~/stubs/make_stub_files.cfg'))
     self.files = [] # May also be set in the config file.
-    self.trace = True
-    self.verbose = False
+    self.trace = False # Trace pattern substitutions.
+    self.verbose = False # Trace config arguments.
     # Ivars set in the config file...
     self.output_fn = None
-    self.output_directory = os.path.expanduser('~/stubs')
+    self.output_directory = os.path.normpath(os.path.expanduser('~/stubs'))
     self.prefix_lines = []
     # Type substitution dicts, set by config sections...
     self.args_d = {} # [Arg Types]
@@ -4299,11 +4324,14 @@ January, 2016
 '''
 </t>
 <t tx="ekr.20160124163833.1"># An example configuration file for make_stub_files.py.
-# This should be placed in your ~/stubs directory.
+# By default, this is ~/stubs/make_stub_files.cfg.
+# Can be changed using the --config=path command-line option.
 
 [Global]
+
 files:
-    c:/leo.repo/leo-editor/leo/core/leoAst.py
+# Typically set on the command line.
+    # c:/leo.repo/leo-editor/leo/core/leoAst.py
     # c:/leo.repo/leo-editor/leo/core/*.py
     # c:/leo.repo/leo-editor/plugins/*.py
     
@@ -4314,6 +4342,10 @@ prefix_lines:
     T = TypeVar('T', int, float, complex)
 
 [Arg Types]
+
+# Patterns to be applied both argument lists and return values.
+# Lines have the form:
+#   verbatim-pattern: replacement
 
 aList: Sequence
 aList2: Sequence
@@ -4329,9 +4361,11 @@ v: VNode
 
 [Def Name Patterns]
 
-# Regular expression specifying def names.
-# Methods names have the form class_name.method_name.
+# Regular expressions specifying names of functions or methods.
+# Methods names should have the form class_name.method_name.
 # These  patterns are matched *before* any return patterns.
+# Each line has the form:
+#   regex: replacement
 
 AstFormatter.do_.*: str
 StubTraverser.format_returns: str
@@ -4340,10 +4374,13 @@ StubTraverser.indent: str
 [Return Simple Patterns]
 
 # Patterns to be applied to return expressions.
+# Each line has the form:
+#    pattern: replacement
+
 # The patterns are **not** regular expression.
-# All characters match verbatim, except that the patterns
-# (*), [*] and {*} only match *balanced* parens, square and curly brackets.
-# If the patten matches, the matched string is replaced by the given type.
+# All characters match verbatim, except that the patterns:
+#   (*), [*] and {*}
+# only match *balanced* parens, square and curly brackets.
 
 repr(*): str
 str.join(*): str
@@ -4353,22 +4390,23 @@ str%str: str
 
 [Return Regex Patterns]
 
-# Regex patterns
+# Regular expression patterns to be applied to return expressions.
+# Each line has the form:
+#   regex: replacement
+
 .*__name__: str
 </t>
-<t tx="ekr.20160125125845.1">g.cls()
+<t tx="ekr.20160125125845.1"># For initial testing only.
+# The script should now be run on the command line.
+g.cls()
 import imp
 import os
 import make_stub_files
 imp.reload(make_stub_files)
 fn = 'c:/users/edreamleo/stubs/leoAst.pyi'
-if 1:
-    if os.path.exists(fn):
-        os.remove(fn)
-    make_stub_files.main()
-else:
-    x = make_stub_files.StandAloneMakeStubFile()
-    x.scan_options()
+if os.path.exists(fn):
+    os.remove(fn)
+make_stub_files.main()
 </t>
 <t tx="ekr.20160125130205.1">
 def munge_arg(self, s):
@@ -4390,25 +4428,23 @@ def munge_ret(self, name, s):
     if trace: print('munge_reg -----: %s' % s)
     return s
 </t>
-<t tx="ekr.20160125141406.1">def scan_types(self, parser, section_name):
+<t tx="ekr.20160125141406.1">
+def scan_types(self, parser, section_name):
     
+    verbose = self.verbose
     d = {}
     if section_name in parser.sections():
-        print('%s...' % section_name)
+        if verbose: print('%s...\n' % section_name)
         for key in sorted(parser.options(section_name)):
             value = parser.get(section_name, key)
             d [key] = value
-            print('%s: %s' % (key, value))
-    else:
+            if verbose: print('%s: %s' % (key, value))
+        if verbose: print('')
+    elif verbose:
         print('no section: %s' % section_name)
         print(parser.sections())
-    print('')
+        print('')
     return d</t>
-<t tx="ekr.20160125183341.1"># --trace
-# allow files on command line.
-# --config=
-# --alphabetize (alphabetize methods in classes)
-</t>
 <t tx="ekr.20160125195414.1">
 def match_return_patterns(self, name, s, i):
     '''
@@ -4433,6 +4469,7 @@ def match_return_patterns(self, name, s, i):
 <t tx="ekr.20160125202035.1">
 def match_return_pattern(self, pattern, s, i):
     '''Return the actual string matching the pattern at s[i:] or None.'''
+    trace = self.trace
     i1 = i
     j = 0 # index into pattern
     while i &lt; len(s) and j &lt; len(pattern) and s[i] == pattern[j]:
@@ -4443,7 +4480,7 @@ def match_return_pattern(self, pattern, s, i):
         else:
             i += 1
             j += 1
-    if i &lt;= len(s) and j == len(pattern):
+    if trace and i &lt;= len(s) and j == len(pattern):
         print('match_return_pattern: match %s -&gt; %s' % (pattern, s[i1:i]))
     return s[i1:i] if i &lt;= len(s) and j == len(pattern) else None
 </t>
@@ -4453,7 +4490,7 @@ def match_balanced(self, delim, s, i):
     Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
     Return the index into s of the end of the expression, or len(s)+1 on errors.
     '''
-    trace = True
+    trace = self.trace
     assert s[i] == delim, s[i]
     assert delim in '([{'
     delim2 = ')]}'['([{'.index(delim)]
@@ -4550,5 +4587,46 @@ def match_regex_patterns(self, name, s):
             break
     return s
 </t>
+<t tx="ekr.20160126045709.1">
+def scan_command_line(self):
+    '''Set ivars from command-line arguments.'''
+    # print('scan_command_line sys.argv: %s' % sys.argv)
+    # This automatically implements the --help option.
+    usage = "usage: make_stub_files.py [options] file1, file2, ..."
+    parser = optparse.OptionParser(usage=usage)
+    add = parser.add_option
+    add('-c', '--config', dest='fn',
+        help='full path to alternate configuration file')
+    add('-d', '--dir', dest='dir',
+        help='full path to the output directory')
+    add('-t', '--trace', action='store_true', default=False,
+        help='trace argument substitutions')
+    add('-v', '--verbose', action='store_true', default=False,
+        help='trace configuration settings')
+    # Parse the options
+    options, args = parser.parse_args()
+    # print('scan_command_line args: %s' % args)
+    # Handle the options...
+    self.trace = self.trace or options.trace
+    self.verbose = self.verbose or options.verbose
+    if options.fn:
+        self.config_fn = options.fn
+    if options.dir:
+        dir_ = options.dir
+        dir_ = os.path.normpath(os.path.expanduser(dir_))
+        if os.path.exists(dir_):
+            self.output_directory = dir_
+        else:
+            print('--dir: does not exist: %s, using %s' % (
+                dir_, self.output_directory))
+    # If any files remain, set self.files.
+    if args:
+        args = [os.path.normpath(os.path.expanduser(z)) for z in args]
+        # args = [z for z in args if os.path.exists(z)]
+        if args:
+            self.files = args
+        # print('command-line files: %s' % args)
+</t>
+<t tx="ekr.20160126063017.1"></t>
 </tnodes>
 </leo_file>
