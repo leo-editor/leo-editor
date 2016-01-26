@@ -826,7 +826,7 @@ class StandAloneMakeStubFile:
         # Ivars set on the command line...
         self.debug = False
         self.files = [] # May also be set in the config file.
-        self.trace = False
+        self.trace = True
         self.verbose = False
         # Ivars set in the config file...
         self.output_fn = None
@@ -953,7 +953,8 @@ class StubTraverser (ast.NodeVisitor):
 
     def __init__(self, controller):
         '''Ctor for StubTraverser class.'''
-        self.controller = c = controller # StandAloneMakeStubFile
+        self.controller = c = controller
+            # A StandAloneMakeStubFile instance.
         # Internal state ivars...
         self.class_name_stack = []
         self.format = StubFormatter().format
@@ -1115,13 +1116,15 @@ class StubTraverser (ast.NodeVisitor):
                 return ', '.join(['\n    ' + self.indent(z) for z in r])
             else:
                 return split(', '.join(r))
+
     def munge_arg(self, s):
         '''Add an annotation for s if possible.'''
         a = self.args_d.get(s)
         return '%s: %s' % (s, a) if a else s
+
     def munge_ret(self, name, s):
         '''replace a return value by a type if possible.'''
-        trace = True or self.trace
+        trace = self.trace
         if trace: print('munge_ret ==== %s' % name)
         s = self.match_args(name, s)
             # Do matches in [Arg Types]
@@ -1131,9 +1134,10 @@ class StubTraverser (ast.NodeVisitor):
             # Repeatedly do all matches in [Return Regex Patterns]
         if trace: print('munge_reg -----: %s' % s)
         return s
+
     def match_args(self, name, s):
         '''In s, make substitutions (word only) given in [Arg Types].'''
-        trace = True or self.trace
+        trace = self.trace
         d = self.args_d
         count = 0 # prevent any possibility of endless loops
         found = True
@@ -1151,6 +1155,7 @@ class StubTraverser (ast.NodeVisitor):
                     count += 1
                     found = True
         return s
+
     def match_simple_patterns(self, name, s):
         '''
         In s, do *all* subsitutions given in [Return Simple Patterns].
@@ -1162,7 +1167,7 @@ class StubTraverser (ast.NodeVisitor):
         Note: No special cases are needed for strings or comments.
         Comments do not appear, and strings have been converted to "str".
         '''
-        trace = True or self.trace
+        trace = self.trace
         if trace: print('----- %s' % s)
         count, found = 0, True
         while found and count < 40:
@@ -1174,10 +1179,12 @@ class StubTraverser (ast.NodeVisitor):
                 i += 1
         if trace: print('*after simple patterns: %s' % s)
         return s
+
     def match_return_patterns(self, name, s, i):
         '''
         Make all possible pattern matches at s[i:]. Return the new s.
         '''
+        trace = self.trace
         d = self.return_pattern_d
         s1 = s
         for pattern in d.keys():
@@ -1185,14 +1192,14 @@ class StubTraverser (ast.NodeVisitor):
             if found_s:
                 replace_s = d.get(pattern)
                 s = s[:i] + replace_s + s[i+len(found_s):]
-                print('match_return_patterns found: %s replace: %s' % (found_s, replace_s))
-                print('match_return_patterns old: %s' % s1)
-                print('match_return_patterns new: %s' % s)
+                if trace:
+                    print('match_return_patterns found: %s replace: %s' % (
+                        found_s, replace_s))
+                    print('match_return_patterns old: %s' % s1)
+                    print('match_return_patterns new: %s' % s)
                 break # must rescan the entire string.
         return s
 
-            
-            
     def match_return_pattern(self, pattern, s, i):
         '''Return the actual string matching the pattern at s[i:] or None.'''
         i1 = i
@@ -1208,6 +1215,7 @@ class StubTraverser (ast.NodeVisitor):
         if i <= len(s) and j == len(pattern):
             print('match_return_pattern: match %s -> %s' % (pattern, s[i1:i]))
         return s[i1:i] if i <= len(s) and j == len(pattern) else None
+
     def match_balanced(self, delim, s, i):
         '''
         Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
@@ -1232,11 +1240,12 @@ class StubTraverser (ast.NodeVisitor):
         # Unmatched
         print('***** unmatched %s in %s' % (delim, s))
         return len(s) + 1
+
     def match_regex_patterns(self, name, s):
         '''
         In s, repeatedly match regex patterns in [Return Regex Patterns].
         '''
-        trace = True or self.trace
+        trace = self.trace
         d, prev_s = self.return_regex_d, set()
         while True:
             found = False

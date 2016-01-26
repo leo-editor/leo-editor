@@ -4053,7 +4053,8 @@ def scan_options(self):
 <t tx="ekr.20160123193632.1">
 def __init__(self, controller):
     '''Ctor for StubTraverser class.'''
-    self.controller = c = controller # StandAloneMakeStubFile
+    self.controller = c = controller
+        # A StandAloneMakeStubFile instance.
     # Internal state ivars...
     self.class_name_stack = []
     self.format = StubFormatter().format
@@ -4080,7 +4081,7 @@ def __init__ (self):
     # Ivars set on the command line...
     self.debug = False
     self.files = [] # May also be set in the config file.
-    self.trace = False
+    self.trace = True
     self.verbose = False
     # Ivars set in the config file...
     self.output_fn = None
@@ -4369,14 +4370,16 @@ else:
     x = make_stub_files.StandAloneMakeStubFile()
     x.scan_options()
 </t>
-<t tx="ekr.20160125130205.1">def munge_arg(self, s):
+<t tx="ekr.20160125130205.1">
+def munge_arg(self, s):
     '''Add an annotation for s if possible.'''
     a = self.args_d.get(s)
     return '%s: %s' % (s, a) if a else s
 </t>
-<t tx="ekr.20160125132131.1">def munge_ret(self, name, s):
+<t tx="ekr.20160125132131.1">
+def munge_ret(self, name, s):
     '''replace a return value by a type if possible.'''
-    trace = True or self.trace
+    trace = self.trace
     if trace: print('munge_ret ==== %s' % name)
     s = self.match_args(name, s)
         # Do matches in [Arg Types]
@@ -4406,10 +4409,12 @@ else:
 # --config=
 # --alphabetize (alphabetize methods in classes)
 </t>
-<t tx="ekr.20160125195414.1">def match_return_patterns(self, name, s, i):
+<t tx="ekr.20160125195414.1">
+def match_return_patterns(self, name, s, i):
     '''
     Make all possible pattern matches at s[i:]. Return the new s.
     '''
+    trace = self.trace
     d = self.return_pattern_d
     s1 = s
     for pattern in d.keys():
@@ -4417,15 +4422,16 @@ else:
         if found_s:
             replace_s = d.get(pattern)
             s = s[:i] + replace_s + s[i+len(found_s):]
-            print('match_return_patterns found: %s replace: %s' % (found_s, replace_s))
-            print('match_return_patterns old: %s' % s1)
-            print('match_return_patterns new: %s' % s)
+            if trace:
+                print('match_return_patterns found: %s replace: %s' % (
+                    found_s, replace_s))
+                print('match_return_patterns old: %s' % s1)
+                print('match_return_patterns new: %s' % s)
             break # must rescan the entire string.
     return s
-
-        
-        </t>
-<t tx="ekr.20160125202035.1">def match_return_pattern(self, pattern, s, i):
+</t>
+<t tx="ekr.20160125202035.1">
+def match_return_pattern(self, pattern, s, i):
     '''Return the actual string matching the pattern at s[i:] or None.'''
     i1 = i
     j = 0 # index into pattern
@@ -4441,7 +4447,8 @@ else:
         print('match_return_pattern: match %s -&gt; %s' % (pattern, s[i1:i]))
     return s[i1:i] if i &lt;= len(s) and j == len(pattern) else None
 </t>
-<t tx="ekr.20160125204058.1">def match_balanced(self, delim, s, i):
+<t tx="ekr.20160125204058.1">
+def match_balanced(self, delim, s, i):
     '''
     Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
     Return the index into s of the end of the expression, or len(s)+1 on errors.
@@ -4466,9 +4473,10 @@ else:
     print('***** unmatched %s in %s' % (delim, s))
     return len(s) + 1
 </t>
-<t tx="ekr.20160126035753.1">def match_args(self, name, s):
+<t tx="ekr.20160126035753.1">
+def match_args(self, name, s):
     '''In s, make substitutions (word only) given in [Arg Types].'''
-    trace = True or self.trace
+    trace = self.trace
     d = self.args_d
     count = 0 # prevent any possibility of endless loops
     found = True
@@ -4487,7 +4495,8 @@ else:
                 found = True
     return s
 </t>
-<t tx="ekr.20160126040138.1">def match_simple_patterns(self, name, s):
+<t tx="ekr.20160126040138.1">
+def match_simple_patterns(self, name, s):
     '''
     In s, do *all* subsitutions given in [Return Simple Patterns].
     
@@ -4498,7 +4507,7 @@ else:
     Note: No special cases are needed for strings or comments.
     Comments do not appear, and strings have been converted to "str".
     '''
-    trace = True or self.trace
+    trace = self.trace
     if trace: print('----- %s' % s)
     count, found = 0, True
     while found and count &lt; 40:
@@ -4510,11 +4519,12 @@ else:
             i += 1
     if trace: print('*after simple patterns: %s' % s)
     return s</t>
-<t tx="ekr.20160126041450.1">def match_regex_patterns(self, name, s):
+<t tx="ekr.20160126041450.1">
+def match_regex_patterns(self, name, s):
     '''
     In s, repeatedly match regex patterns in [Return Regex Patterns].
     '''
-    trace = True or self.trace
+    trace = self.trace
     d, prev_s = self.return_regex_d, set()
     while True:
         found = False
