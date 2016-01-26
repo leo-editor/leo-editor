@@ -297,7 +297,7 @@
 <v t="ekr.20160125130205.1"><vh>munge_arg</vh></v>
 <v t="ekr.20160125132131.1"><vh>munge_ret &amp; helpers</vh>
 <v t="ekr.20160126035753.1"><vh>match_args</vh></v>
-<v t="ekr.20160126040138.1"><vh>match_simple_patterns &amp; helpers</vh>
+<v t="ekr.20160126040138.1"><vh>match_balanced_patterns &amp; helpers</vh>
 <v t="ekr.20160125195414.1"><vh>match_return_patterns</vh></v>
 <v t="ekr.20160125202035.1"><vh>match_return_pattern</vh></v>
 <v t="ekr.20160125204058.1"><vh>match_balanced</vh></v>
@@ -353,16 +353,8 @@
 <v t="ekr.20150525161132.1"><vh>@@button tokens2tree</vh>
 <v t="ekr.20150525161132.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20160125125845.1"><vh>test make_stub_files</vh></v>
 </v>
-<v t="ekr.20160126063017.1"><vh>make_stub_files stuff</vh>
-<v t="ekr.20160125125845.1"><vh>test munge_ret</vh></v>
-<v t="ekr.20160123193846.1"></v>
-<v t="ekr.20160123193632.1"></v>
-<v t="ekr.20160123185719.1"></v>
-<v t="ekr.20160126045709.1"></v>
-<v t="ekr.20160123185312.87"></v>
-</v>
-<v t="ekr.20160124120818.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -4070,7 +4062,7 @@ def scan_options(self):
     self.def_pattern_d = self.scan_types(
         parser, 'Def Name Patterns', )
     self.return_pattern_d = self.scan_types(
-        parser, 'Return Simple Patterns')
+        parser, 'Return Balanced Patterns')
     self.return_regex_d = self.scan_types(
         parser, 'Return Regex Patterns')
 </t>
@@ -4096,7 +4088,7 @@ def __init__(self, controller):
     self.args_d = c.args_d # [Arg Types]
     self.def_pattern_d = c.def_pattern_d # [Def Name Patterns]
     self.return_regex_d = c.return_regex_d # [Return Regex Patterns]
-    self.return_pattern_d = c.return_pattern_d # [Return Simple Patterns]
+    self.return_pattern_d = c.return_pattern_d # [Return Balanced Patterns]
 </t>
 <t tx="ekr.20160123193846.1">
 def __init__ (self):
@@ -4117,7 +4109,7 @@ def __init__ (self):
     self.args_d = {} # [Arg Types]
     self.def_pattern_d = {} # [Def Name Patterns]
     self.return_regex_d = {} # [Return Regex Patterns]
-    self.return_pattern_d = {} # [Return Simple Patterns]
+    self.return_pattern_d = {} # [Return Balanced Patterns]
    </t>
 <t tx="ekr.20160124120818.1">@language rest
 @nowrap
@@ -4167,7 +4159,7 @@ From GvR::
 The script does no type inference. Instead, it creates function annotations
 using user-supplied **type conventions**, pairs of strings of the form
 "name: type-annotation".  As described below, the script simplifies return
-values using several different kinds of user-supplied patterns.
+values using several different kinds of user-supplied **patterns**.
 
 This script should encourage more people to use mypy. Stub files can be
 used by people using Python 2.x code bases. As discussed below, stub files
@@ -4230,7 +4222,7 @@ are four returns listed. As discussed below, the configuration file can
 specify several kinds of patterns to be applied to return values.
 
 **These patterns often suffice to collapse all return values** In fact,
-just a few simple patterns (given below) will convert::
+just a few patterns (given below) will convert::
 
     def dump(self, node: ast.Ast, level=number) -&gt; 
         repr(node), 
@@ -4318,28 +4310,28 @@ pattern matching is done if any of these patterns match. For example::
     [Def Name Patterns]
 
     # These  patterns are matched *before* the patterns in the
-    # [Return Simple Patterns] and [Return Regex Patterns] sections.
+    # [Return Balanced Patterns] and [Return Regex Patterns] sections.
     
     AstFormatter.do_.*: str
     StubTraverser.format_returns: str
     StubTraverser.indent: str
     
-The [Return Simple Patterns] section
-------------------------------------
+The [Return Balanced Patterns] section
+--------------------------------------
 
-This configuration section gives **simple patterns** to be applied to
-return values. Simple patterns match verbatim, except that the three
+This configuration section gives **balanced patterns** to be applied to
+return values. Balanced patterns match verbatim, except that the three
 patterns:
   
   (*), [*], and {*} 
     
 match only *balanced* parens, square and curly brackets.
 
-Return values are rescanned until no more simple patterns apply. Simple
+Return values are rescanned until no more balanced patterns apply. Balanced
 patterns are *much* simpler to use than regex's. Indeed, the following
-simple patterns suffice to collapse most string expressions to str::
+balanced patterns suffice to collapse most string expressions to str::
 
-    [Return Simple Patterns]
+    [Return Balanced Patterns]
 
     repr(*): str
     str.join(*): str
@@ -4364,11 +4356,28 @@ replacements are possible. For example::
 Important note about pattern matching
 -------------------------------------
 
-The patterns in the [Return Simple Patterns] and [Return Regex Patterns]
+The patterns in the [Return Balanced Patterns] and [Return Regex Patterns]
 sections are applied to each individual return value separately. Comments
 never appear in return values, and all strings in return values appear as
 str. As a result, there is no context to worry about and very short
 patterns suffice.
+
+Command-line arguments
+======================
+
+There is the output of `python make_stub_files.py -h`::
+
+    Usage: make_stub_files.py [options] file1, file2, ...
+    
+    Options:
+      -h, --help          show this help message and exit
+      -c FN, --config=FN  full path to alternate configuration file
+      -d DIR, --dir=DIR   full path to the output directory
+      -o, --overwrite     overwrite existing stub (.pyi) files
+      -t, --trace         trace argument substitutions
+      -v, --verbose       trace configuration settings
+      
+*Note*: glob.blob wildcards can be used in file1, file2, ...
 
 Why this script is important
 ===========================
@@ -4382,7 +4391,7 @@ straightforward:
 Stub files are real data. mypy will check the syntax for us. More
 importantly, mypy will do its type inference on the stub files. That means
 that mypy will discover both errors in the stubs and actual type errors in
-the program under test. There is now a simple way to use mypy!
+the program under test. There is now an easy way to use mypy!
 
 Stubs express design intentions and intuitions as well as types. We
 programmers think we *do* know most of the types of arguments passed into
@@ -4420,12 +4429,11 @@ type specification. Stub files allow those with a Python 2 code base to use
 mypy.
 
 One could imagine a similar insert_annotations script that would inject
-function annotations into source files using stub files as data. This
-"reverse" script should be about as straightfoward as the make-stub-files
-script.
+function annotations into source files using stub files as data. The
+"reverse" script should be more straightfoward than this script.
 
 Edward K. Ream
-January 25-26, 2016
+January 2016
 '''
 </t>
 <t tx="ekr.20160124163833.1"># An example configuration file for make_stub_files.py.
@@ -4475,22 +4483,16 @@ v: VNode
 # Regular expressions specifying names of functions or methods.
 # Methods names should have the form class_name.method_name.
 # These  patterns are matched *before* the patterns in the
-# [Return Simple Patterns] and [Return Regex Patterns] sections.
-# Each line has the form:
-#   regex: replacement
+# [Return Balanced Patterns] and [Return Regex Patterns] sections.
 
 AstFormatter.do_.*: str
 StubTraverser.format_returns: str
 StubTraverser.indent: str
 
-[Return Simple Patterns]
+[Return Balanced Patterns]
 
-# Patterns to be applied to return expressions.
-# Each line has the form:
-#    pattern: replacement
-
-# The patterns are **not** regular expression.
-# All characters match verbatim, except that the patterns:
+# Balanced patterns to be applied to return expressions.
+# Balanced patterns match verbatim, except that the patterns:
 #   (*), [*] and {*}
 # only match *balanced* parens, square and curly brackets.
 
@@ -4533,8 +4535,8 @@ def munge_ret(self, name, s):
     if trace: print('munge_ret ==== %s' % name)
     s = self.match_args(name, s)
         # Do matches in [Arg Types]
-    s = self.match_simple_patterns(name, s)
-        # Repeatedly do all matches in [Return Simple Patterns]
+    s = self.match_balanced_patterns(name, s)
+        # Repeatedly do all matches in [Return Balance Patterns]
     s = self.match_regex_patterns(name, s)
         # Repeatedly do all matches in [Return Regex Patterns]
     if trace: print('munge_reg -----: %s' % s)
@@ -4645,9 +4647,9 @@ def match_args(self, name, s):
     return s
 </t>
 <t tx="ekr.20160126040138.1">
-def match_simple_patterns(self, name, s):
+def match_balanced_patterns(self, name, s):
     '''
-    In s, do *all* subsitutions given in [Return Simple Patterns].
+    In s, do *all* subsitutions given in [Return Balanced Patterns].
     
     All characters match verbatim, except that the patterns:
         (*), [*] and {*}
@@ -4666,7 +4668,7 @@ def match_simple_patterns(self, name, s):
             s = self.match_return_patterns(name, s, i)
             found = s1 != s
             i += 1
-    if trace: print('*after simple patterns: %s' % s)
+    if trace: print('*after balanced patterns: %s' % s)
     return s</t>
 <t tx="ekr.20160126041450.1">
 def match_regex_patterns(self, name, s):
@@ -4742,6 +4744,5 @@ def scan_command_line(self):
             self.files = args
         # print('command-line files: %s' % args)
 </t>
-<t tx="ekr.20160126063017.1"></t>
 </tnodes>
 </leo_file>
