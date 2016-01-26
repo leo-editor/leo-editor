@@ -5,17 +5,27 @@ The stand-alone version of Leo's make-stub-files command.
 
 This file is in the public domain.
 
-**In brief**
-
-This script makes a stub file in the ~/stubs directory for every file
-mentioned in the [Files] section of ~/stubs/make_stub_files.cfg. The
-[Global] section specifies output directory, prefix lines and annotation
-pairs.
-
-**In detail**
-
 This docstring documents the make_stub_files.py script, explaining what it
 does, how it works and why it is important.
+
+**In brief**
+
+This script makes a stub (.pyi) file in the **output directory** for each
+source file listed on the command line (wildcard file names are supported).
+
+A **configuration file** (default: ~/stubs/make_stub_files.cfg) specifies
+annotation pairs and various **patterns** to be applied to return values.
+The configuration file can also supply a list of **prefix lines** to be
+inserted verbatim at the start of each stub file.
+
+Command-line arguments can override the locations of the configuration file
+and output directory. The configuration file can supply default source
+files to be used if none are supplied on the command line.
+
+This script never creates directories automatically, nor does it overwrite
+stub files unless the --overwrite command-line option is in effect.
+
+**In detail**
 
 Executive summary
 =================
@@ -34,12 +44,8 @@ From GvR::
 
 The script does no type inference. Instead, it creates function annotations
 using user-supplied **type conventions**, pairs of strings of the form
-"name: type-annotation".
-
-A **configuration file**, ~/stubs/make_stub_files.cfg, specifies the
-**source list**, (a list files to be processed), the type conventions, and
-a list of **prefix lines** to be inserted verbatim at the start of each
-stub file.
+"name: type-annotation".  As described below, the script simplifies return
+values using several different kinds of user-supplied patterns.
 
 This script should encourage more people to use mypy. Stub files can be
 used by people using Python 2.x code bases. As discussed below, stub files
@@ -49,10 +55,10 @@ tools.
 What the script does
 ====================
 
-For each file in source list (file names may contain wildcards), the script
-creates a corresponding stub file in the ~/stubs directory. This is the
-default directory for mypy stubs. For each source file, the script does the
-following:
+This script makes a stub (.pyi) file in the **output directory** for each
+source file listed on the command line (wildcard file names are supported).
+
+For each source file, the script does the following:
 
 1. The script writes the prefix lines verbatim. This makes it easy to add
    common code to the start of stub files. For example::
@@ -62,7 +68,8 @@ following:
     
 2. The script walks the parse (ast) tree for the source file, generating
    stub lines for each function, class or method. The script generates no
-   stub lines for defs nested within other defs.
+   stub lines for defs nested within other defs. Return values are handled
+   in a clever way as described below.
 
 For example, given the naming conventions::
 
@@ -78,14 +85,14 @@ and a function::
         
 the script will generate::
 
-    def scan(s: str, i:int, x): --> (see below):
+    def scan(s: str, i:int, x): --> (see next section):
     
 Handling function returns
 =========================
     
 The script handles function returns pragmatically. The tree walker simply
 writes a list of return expressions for each def. For example, here is the
-output at the start of leoAst.pyi::
+*default* output at the start of leoAst.pyi, before any patterns are applied::
 
     class AstDumper:
         def dump(self, node: ast.Ast, level=number) -> 
@@ -95,18 +102,29 @@ output at the start of leoAst.pyi::
             str%str.join(str%(sep,self.dump(z,level+number)) for z in node): ...
         def get_fields(self, node: ast.Ast) -> result: ...
         def extra_attributes(self, node: ast.Ast) -> Sequence: ...
-
+        
 The stub for the dump function is not syntactically correct because there
-are 4 returns listed. You must edit stubs to specify a proper return type.
-For the dump method, all the returns are obviously strings, so its stub
-should be::
+are four returns listed. As discussed below, the configuration file can
+specify several kinds of patterns to be applied to return values.
 
-    def dump(self, node: ast.Ast, level=number) -> str: ...
+**These patterns often suffice to collapse all return values** In fact,
+just a few simple patterns (given below) will convert::
 
-Not all types are obvious from naming conventions. In that case, the human
-will have to update the stub using the actual source code as a guide. For
-example, the type of "result" in get_fields could be just about anything.
-In fact, it is a list of strings.
+    def dump(self, node: ast.Ast, level=number) -> 
+        repr(node), 
+        str%(name,sep,sep1.join(aList)), 
+        str%(name,str.join(aList)), 
+        str%str.join(str%(sep,self.dump(z,level+number)) for z in node): ...
+        
+to:
+
+    def dump(self, node: ast.Ast, level=number) -> str: ... 
+
+If multiple return values still remain after applying all patterns, you
+must edit stubs to specify a proper return type. And even if only a single
+value remains, its "proper" value may not obvious from naming conventions.
+In that case, you will have to update the stub using the actual source code
+as a guide.
 
 The configuration file
 ======================
@@ -114,41 +132,130 @@ The configuration file
 As mentioned above, the configuration file, make_stub_files.cfg, is located
 in the ~/stubs directory. This is mypy's default directory for stubs.
 
-The configuration file uses the .ini format. It has two sections:
+The configuration file uses the .ini format. It has the following sections,
+all optional.
 
-- The [Global] section specifies the files list, prefix lines and output directory:
+The [Global] section
+--------------------
 
-- The [Types] section specifies naming conventions. For example::
+This configuration section specifies the files list, prefix lines and
+output directory. For example::
 
     [Global]
+
     files:
+        # Files to be used *only* if no files are given on the command line.
+        # glob.glob wildcards are supported.
         ~/leo-editor/leo/core/*.py
         
-    output_directory: ~/stubs
+    output_directory:
+        # The output directory to be used if no --dir option is given.
+        ~/stubs
         
     prefix:
+        # Lines to be inserted at the start of each stub file.
         from typing import TypeVar, Iterable, Tuple
         T = TypeVar('T', int, float, complex)
+        
+The [Arg Types] section
+-----------------------
 
-    [Types]
+This configuration section specifies naming conventions. These conventions
+are applied to *both* argument lists *and* return values.
+  
+- For argument lists, the replacement becomes the annotation.
+- For return values, the replacement *replaces* the pattern.
+
+For example::
+
+    [Arg Types]
+
+    # Lines have the form:
+    #   verbatim-pattern: replacement
+    
     aList: Sequence
+    aList2: Sequence
     c: Commander
     i: int
     j: int
     k: int
-    n: int
     node: ast.Ast
     p: Position
-    result: str
     s: str
+    s2: str
     v: VNode
+    
+The [Def Name Patterns] section
+-------------------------------
+
+This configuration specifies the *final* return value to be associated with
+functions or methods. The pattern is a regex matching the names of defs.
+Methods names should have the form class_name.method_name. No further
+pattern matching is done if any of these patterns match. For example::
+
+    [Def Name Patterns]
+
+    # These  patterns are matched *before* the patterns in the
+    # [Return Simple Patterns] and [Return Regex Patterns] sections.
+    
+    AstFormatter.do_.*: str
+    StubTraverser.format_returns: str
+    StubTraverser.indent: str
+    
+The [Return Simple Patterns] section
+------------------------------------
+
+This configuration section gives **simple patterns** to be applied to
+return values. Simple patterns match verbatim, except that the three
+patterns:
+  
+  (*), [*], and {*} 
+    
+match only *balanced* parens, square and curly brackets.
+
+Return values are rescanned until no more simple patterns apply. Simple
+patterns are *much* simpler to use than regex's. Indeed, the following
+simple patterns suffice to collapse most string expressions to str::
+
+    [Return Simple Patterns]
+
+    repr(*): str
+    str.join(*): str
+    str.replace(*): str
+    str%(*): str
+    str%str: str
+    
+The [Return Regex Patterns] section
+-----------------------------------
+    
+This configuration section gives regex patterns to be applied to return
+values. These patterns are applied last, after all other patterns have been
+applied.
+  
+Again, these regex patterns are applied repeatedly until no further
+replacements are possible. For example::
+
+    [Return Regex Patterns]
+
+    .*__name__: str
+    
+Important note about pattern matching
+-------------------------------------
+
+The patterns in the [Return Simple Patterns] and [Return Regex Patterns]
+sections are applied to each individual return value separately. Comments
+never appear in return values, and all strings in return values appear as
+str. As a result, there is no context to worry about and very short
+patterns suffice.
 
 Why this script is important
 ===========================
 
 The script eliminates most of the drudgery from creating stub files.
 Creating a syntactically correct stub file from the output of the script is
-straightforward.
+straightforward:
+
+**Just a few patterns will collapse most return values to a single value.**
 
 Stub files are real data. mypy will check the syntax for us. More
 importantly, mypy will do its type inference on the stub files. That means
@@ -190,16 +297,13 @@ helper. Stub files are both a design document and an executable, checkable,
 type specification. Stub files allow those with a Python 2 code base to use
 mypy.
 
-The make-stub-files script is useful as is. All contributions are
-gratefully accepted.
-
 One could imagine a similar insert_annotations script that would inject
 function annotations into source files using stub files as data. This
 "reverse" script should be about as straightfoward as the make-stub-files
 script.
 
 Edward K. Ream
-January, 2016
+January 25-26, 2016
 '''
 
 import ast
@@ -834,6 +938,7 @@ class StandAloneMakeStubFile:
         # Ivars set in the config file...
         self.output_fn = None
         self.output_directory = os.path.normpath(os.path.expanduser('~/stubs'))
+        self.overwrite = False
         self.prefix_lines = []
         # Type substitution dicts, set by config sections...
         self.args_d = {} # [Arg Types]
@@ -879,6 +984,8 @@ class StandAloneMakeStubFile:
             help='full path to alternate configuration file')
         add('-d', '--dir', dest='dir',
             help='full path to the output directory')
+        add('-o', '--overwrite', action='store_true', default=False,
+            help='overwrite existing stub (.pyi) files')
         add('-t', '--trace', action='store_true', default=False,
             help='trace argument substitutions')
         add('-v', '--verbose', action='store_true', default=False,
@@ -888,6 +995,7 @@ class StandAloneMakeStubFile:
         # print('scan_command_line args: %s' % args)
         # Handle the options...
         self.trace = self.trace or options.trace
+        self.overwrite = options.overwrite
         self.verbose = self.verbose or options.verbose
         if options.fn:
             self.config_fn = options.fn
@@ -1026,6 +1134,7 @@ class StubTraverser (ast.NodeVisitor):
         self.returns = []
         # Copies of controller ivars...
         self.output_fn = c.output_fn
+        self.overwrite = c.overwrite
         self.prefix_lines = c.prefix_lines
         self.trace = c.trace
         self.verbose = c.verbose
@@ -1050,7 +1159,7 @@ class StubTraverser (ast.NodeVisitor):
         '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
         fn = self.output_fn
         dir_ = os.path.dirname(fn)
-        if os.path.exists(fn):
+        if os.path.exists(fn) and not self.overwrite:
             print('file exists: %s' % fn)
         elif os.path.exists(dir_):
             self.output_file = open(fn, 'w')
