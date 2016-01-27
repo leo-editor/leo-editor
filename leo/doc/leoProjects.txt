@@ -79,6 +79,8 @@ Changing the interface of an object by wrapping it is unacceptable. c.universalC
 .. @+node:ekr.20150501041440.1: *4* Reorganized Leo's commands files
 The leo/commands directory contains the new code.
 .. @+node:ekr.20150503050557.1: *4* re: replace all has_key by "in"
+.. @+node:ekr.20150622130738.1: *4* Verified that c.p.copy() is always redundant
+Examined c.p and c.currentPosition
 .. @+node:ekr.20150427042446.1: *3* Features
 .. @+node:ekr.20150412053053.1: *4* Finished leoOPML plugin
 .. @+node:ekr.20150420130845.1: *4* Added File:Print menus
@@ -273,6 +275,10 @@ Prompts for a single character: shows corresponding command.
 
 Added leoHelpCommands.helpForKeystroke
 .. @+node:ekr.20150629080742.1: *4* cfa commands now preload search pattern with selected text
+- c.cloneFindAll/FlattenedAtNode now preload the search argument
+  *before* selecting the node.
+- extendToWord now takes a new "w" keyword arg, so event is not needed.
+- minibufferCloneFindAll/Flattened now take a new "preloaded" keyword argument.
 .. @+node:ekr.20150227040245.10: *4* Added find-def & find-var
 @language rest
 @wrap
@@ -313,6 +319,8 @@ Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever n
 
 Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
 
+.. @+node:ekr.20150630092648.1: *5* ctrl-click now supports find-def
+The code involves lqtb.onMouseUp and g.openUrlOnClick
 .. @+node:ekr.20150630160037.1: *4* Added clone-to-at-spot command
 Create a clone of the selected node and move it to the last @spot node
 of the outline. Create the @spot node if necessary.
@@ -330,6 +338,12 @@ Controlled by the following new settings in leoSettings.leo, with defaults as sh
     @string gutter-font-size = @small-font-size
     @string gutter-font-style = @font-style
     @string gutter-font-weight = @font-weight
+    
+Code involves:
+    
+- dw.createBodyPane.
+- class NumberBar(QFrame)
+- class LeoLineTextWidget(QFrame)
 .. @+node:ekr.20150710064429.1: *4* Added @bool preload-find-pattern
 Rev abe5563f
 
@@ -579,7 +593,14 @@ Stub files allow us to explore type checking using mypy as a guide and helper. S
 One could imagine a similar insert_annotations script that would inject function annotations into source files using stub files as data. This "reverse" script should be about as straightforward as the make-stub-files script.
 
 Edward
+.. @+node:ekr.20150710063700.1: *4* Added optional popup on syntax error
+Added @bool syntax-error-popup & supporting logic: c.syntaxErrorDialog
+.. @+node:ekr.20160127031500.1: *4* is flatten-outline-to-node new?
+.. @+node:ekr.20150710103707.1: *4* Ctrl-G now resets status line
+Useful after a failed Ctrl-F
 .. @+node:ekr.20150427042510.1: *3* Bugs Fixed/Investigated
+@language rest
+@wrap
 .. @+node:ekr.20150417045902.1: *4* Recover from orphan bit in leoPyBad.leo
 Rev dc1bf6f
 
@@ -915,6 +936,64 @@ https://github.com/leo-editor/leo-editor/issues/220
 
 Executing clone-to-at-spot with an @spot node selected causes Leo to become
 unresponsive and python process slowly eats up all system memory.
+.. @+node:ekr.20151010055931.1: *4* Fixed bug 211: Saving untitled document on window close not working on Qt GUI
+https://github.com/leo-editor/leo-editor/issues/211
+
+Saving untitled document on window close not working on Qt GUI
+.. @+node:ekr.20151026105904.1: *4* Fixed Bug 215: insert-file-name doesn't process ~
+https://github.com/leo-editor/leo-editor/issues/215
+.. @+node:ekr.20151118152036.1: *4* Fixed bug 218: Select Text and Clipboard
+https://github.com/leo-editor/leo-editor/issues/218
+
+Here's a shell script you can run in a console
+
+https://gist.github.com/tbnorth/4b781ba2b8f59c83dd5e
+
+to show the content of the primary and secondary selections, and the
+clip-board.  You'll probably need to install xclip
+
+When the mouse is released after drag-selecting text in Leo, the
+primary selection updates as expected.  This doesn't happen with
+shift-arrow selection.
+
+It looks like keyboard shift-arrow selection should call
+QClipboard::setText(const QString & text, Mode mode = QClipboard::Selection)
+.. @+node:ekr.20150622103132.1: *4* Fixed Find crash
+@language rest
+@wrap
+
+https://groups.google.com/d/msg/leo-editor/tA5Q2YrEu-w/9mzqFAHMcX4J
+
+The fix was in find.changeSelection
+
+I'm getting weirdness when trying to use minibuffer replace, first if nothing is selected it tells me "no text selected", if I have text selected sometimes it just deletes the selected text and sometimes I see this:
+
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\core\leoCommands.py", line 5496, in doCommand
+
+val = command(event)
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\core\leoGlobals.py", line 1334, in wrapper
+
+func(self, event=event)
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\core\leoFind.py", line 1121, in change
+
+self.changeSelection()
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\core\leoFind.py", line 1194, in changeSelection
+
+c.frame.tree.drawIcon(p) # redraw only the icon.
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\plugins\qt_tree.py", line 709, in drawIcon
+
+itemOrTree = self.position2item(p) or w
+
+File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\plugins\qt_tree.py", line 847, in position2item
+
+item = self.position2itemDict.get(p.key())
+AttributeError: 'NoneType' object has no attribute 'key' 
+.. @+node:ekr.20160123062001.1: *4* Fixed bug in p.__eq__(!!)
 .. @+node:ekr.20150620062019.1: *3* Docs
 .. @+node:ekr.20150620062023.1: *4* My git work flow
 Imo, git rivals python as the greatest productivity tool ever devised for programmers.
