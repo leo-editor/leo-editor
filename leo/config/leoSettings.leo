@@ -11127,7 +11127,9 @@ T = TypeVar('T', int, float, complex)
 
 AstFormatter.do_.*: str
 StubTraverser.format_returns: str
-StubTraverser.indent: str</t>
+StubTraverser.indent: str
+__init__: None
+    # Per pep 484.</t>
 <t tx="ekr.20160127045525.1"># Balanced patterns to be applied to return expressions.
 # Balanced patterns match verbatim, except that the patterns:
 #   (*), [*] and {*}
