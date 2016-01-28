@@ -473,7 +473,7 @@ class MatchBrackets:
             return i1 + offset
         else:
             return found
-    #@+node:ekr.20160121112303.1: *5* mb.scan_string 
+    #@+node:ekr.20160121112303.1: *5* mb.scan_string
     def scan_string(self, s, i):
         '''
         Scan the string starting at s[i] (forward or backward).
@@ -653,7 +653,8 @@ class MatchBrackets:
                 i -= 1
             assert i < progress
         # Not found
-        g.trace('not found! level: %s ch1: %s target: %s' % (level, ch1, target))
+        # This trace is annoying and unnecessary.
+        # g.trace('not found! level: %s ch1: %s target: %s' % (level, ch1, target))
         return None
     #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
     def back_scan_comment(self, s, i):
