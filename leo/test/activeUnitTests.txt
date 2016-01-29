@@ -15300,6 +15300,15 @@ finally:
     c.selectPosition(p)
 #@+node:ekr.20040802071519.1: *5* child
 before
+#@+node:ekr.20160129082128.1: *4* @test p.u
+assert p.u == p.v.u, (p.u, p.v.u)
+p.v.u = None
+assert p.u == {}, p.u
+assert p.v.u == {}, p.v.u
+d = {'my_plugin': 'val'}
+p.u = d
+assert p.u == d, (p.u, d)
+assert p.v.u == d, (p.v.u, d)
 #@+node:ekr.20110502130500.3471: *4* @test p.unique_nodes
 aList = [z for z in p.unique_nodes()]
 assert len(aList) == 3,len(aList)

@@ -1592,7 +1592,7 @@ class Position(object):
     #@+node:ekr.20160129073222.1: *4* p.u Property (new)
     def __get_u(self):
         p = self
-        return p.u
+        return p.v.u
 
     def __set_u(self, val):
         p = self
