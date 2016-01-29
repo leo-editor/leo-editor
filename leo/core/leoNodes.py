@@ -1589,6 +1589,18 @@ class Position(object):
     nosentinels = property(
         __get_nosentinels, # __set_nosentinels
         doc="position property returning the body text without sentinels")
+    #@+node:ekr.20160129073222.1: *4* p.u Property (new)
+    def __get_u(self):
+        p = self
+        return p.u
+
+    def __set_u(self, val):
+        p = self
+        p.v.u = val
+
+    u = property(
+        __get_u, __set_u,
+        doc="p.u property")
     #@+node:ekr.20040305222924: *3* p.Setters
     #@+node:ekr.20040306220634: *4* p.VNode proxies
     #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
@@ -2470,6 +2482,8 @@ class VNodeBase(object):
     #@+node:ekr.20090130114732.6: *4* v.u Property
     def __get_u(self):
         v = self
+        # Wrong: return getattr(v, 'unknownAttributes', {})
+        # It is does not set v.unknownAttributes, which can cause problems.
         if not hasattr(v, 'unknownAttributes'):
             v.unknownAttributes = {}
         return v.unknownAttributes
@@ -2486,7 +2500,7 @@ class VNodeBase(object):
 
     u = property(
         __get_u, __set_u,
-        doc="VNode unknownAttribute property")
+        doc="VNode u property")
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
