@@ -2223,14 +2223,15 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *3* deleteNodeIcons
     @cmd('delete-node-icons')
-    def deleteNodeIcons(self, event=None):
+    def deleteNodeIcons(self, event=None, p=None):
         '''Delete all of the selected node's icons.'''
-        c, p = self.c, self.c.p
-        if hasattr(p.v, "unknownAttributes"):
+        c = self.c
+        p = p or c.p
+        if p.u:
             a = p.v.unknownAttributes
             p.v._p_changed = 1
             self.setIconList(p, [])
-            a["lineYOffset"] = 0
+            p.u["lineYOffset"] = 0
             p.setDirty()
             c.setChanged(True)
             c.redraw_after_icons_changed()
