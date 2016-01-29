@@ -1050,6 +1050,130 @@ This code now preloads the find pattern before selecting the top-level "Code" no
 These new and improved commands make a big difference to my work flow.
 
 Edward
+.. @+node:ekr.20160128201207.1: *3* ==== Code academy
+@language rest
+@wrap
+
+To do
+
+- create p.temp_u and v.temp_u properties.
+.. @+node:ekr.20160129054828.1: *4* First post: topics
+@language rest
+@wrap
+
+Here is a quick list topics for the code academy.  Most can already be done easy, if you know where to look.  Some may require a few new lines in Leo's core. These topics should also be included in Leo's cheat sheet, or somewhere similar.
+
+uA's
+
+They are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
+
+Everyone needs to know how to get, set and search uA's.  You can get and set uA's with v.u. Just a few lines of code will search the entire outline for all nodes/positions having a given uA.
+
+Quick additions to Leo's core:
+- Define the p.u property, so code can do p.u instead of p.v.u.
+- Possibly make the api for uA's more convenient.
+
+A more ambitious addition: Define a gui interface for uA's.
+
+Other topics
+
+- Clones: making and deleting them. Clones are cheap to create!
+- How to create new panes in the log window, and how to put cool stuff in them.
+- How to hoist outlines programmatically.
+- How to write a plugin so it can respond to events.
+- How to create new panes in Leo's window with Terry's free_layout and nested_splitter plugins.  In essence, these plugin are part of Leo's core.
+- How to put multiple icons in a single headline.  This may be possible already.  If not it would require just a few lines of code in Leo's core.
+
+We discussed the so-called Easter-Egg interface to create new panes this from the gui, but a summary of how to do this programmatically is needed. Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+
+- How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
+
+New directions
+
+Putting all this together, we all agreed that being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
+
+- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
+
+- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
+.. @+node:ekr.20160129103906.1: *4* uA's and the new p.u property
+A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
+
+The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
+
+plugin_name = 'test_plugin'
+d = p.u.get(plugin_name,{})
+d ['n'] = 8
+p.u [plugin_name] = d
+
+p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
+
+It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
+
+for p in c.all_unique_positions():
+    if p.u:
+        print(p.h, sorted(p.u.keys()))
+
+This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
+
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
+
+aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
+print('\n'.join([p.h for p in aList]))
+
+Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
+
+Important: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
+
+Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setting temp uA's will be as easy as getting and setting uA's. I'll do this today.
+
+These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
+
+As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
+.. @+node:ekr.20160129101736.1: *4* icons
+@language rest
+@wrap
+
+During our conference call, someone asked whether nodes may have more than one icon.  Indeed they can.
+
+For example, running this script will insert three icons. Running the script again will insert three more.
+
+@language python
+
+
+table = (
+    'edittrash.png',
+    'connect_no.png',
+    'error.png',
+)
+for icon in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,
+        '..', 'Icons', 'Tango', '16x16', 'status', icon)
+    if g.os_path_exists(fn):
+        c.editCommands.insertIconFromFile(path=fn)
+        
+@language rest
+@wrap
+        
+With a minor change to Leo's core, it is now easy to delete the icons of the node at position p:
+
+    c.editCommands.deleteNodeIcons(p=p)
+
+.. @+node:ekr.20160129103813.1: *4* git
+If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
+
+    git clone https://github.com/leo-editor/leo-editor.git
+
+Once you have done that, you can get the latest sources with:
+
+    git pull
+
+Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
+
+I've been wondering when to say this, but recent developments have forced my hand.  Today, as the result of our Code Academy discussion, I have added the p.u property and a keyword arg to c.editCommands.deleteNodeIcons.  If you don't use git you will quickly get out of the loop.
+
+Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
+
+I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
 .. @-all
 .. @@killbeautify
 .. @@language rest
