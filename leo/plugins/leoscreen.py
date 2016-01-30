@@ -369,7 +369,8 @@ class leoscreen_Controller:
     def show(self, what, title=None, plain=False):
 
         try:
-            from PyQt4.QtGui import QTextEdit, QTextCursor
+            from leo.core.leoQt import QtWidgets, QtGui
+            QTextEdit, QTextCursor = QtWidgets.QTextEdit, QtGui.QTextCursor
         except ImportError:
             g.es("Need Qt for show command")
             return
