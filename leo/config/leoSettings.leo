@@ -1472,6 +1472,14 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
+<v t="tbrown.20160130094511.1"><vh>@menu Arrange Panes</vh>
+<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
+</v>
+<v t="tbrown.20160130100249.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
 <v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
@@ -11848,6 +11856,13 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
+<t tx="tbrown.20160130094511.1"></t>
+<t tx="tbrown.20160130095933.1">Pane management menu</t>
+<t tx="tbrown.20160130095933.2">Load pane layout</t>
+<t tx="tbrown.20160130095933.3">Restore pane layout</t>
+<t tx="tbrown.20160130095933.4">Zoom pane</t>
+<t tx="tbrown.20160130100023.1">Pane layout help</t>
+<t tx="tbrown.20160130100249.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
