@@ -470,11 +470,11 @@
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
-<v t="ekr.20160112110352.1"><vh>@data stub-arg-types</vh></v>
+<v t="ekr.20160112110352.1"><vh>@data stub-arg-patterns</vh></v>
 <v t="ekr.20160127043520.1"><vh>@data stub-def-name-patterns</vh></v>
+<v t="ekr.20160130145944.1"><vh>@data stub-general-patterns</vh></v>
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
-<v t="ekr.20160127045525.1"><vh>@data stub-return-balanced-patterns</vh></v>
-<v t="ekr.20160127051811.1"><vh>@data stub-return-regex-patterns</vh></v>
+<v t="ekr.20160127051811.1"><vh>@data stub-return-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command</vh>
@@ -11090,11 +11090,7 @@ QFrame#gutter {
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
 <t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
-<t tx="ekr.20160112110352.1"># Patterns to be applied both argument lists *and* return values.
-# Lines have the form:
-#   verbatim-pattern: replacement
-# For argument lists, the replacement becomes the annotation.
-# For return values, the replacement *replaces* the pattern.
+<t tx="ekr.20160112110352.1"># Patterns to be applied to argument lists.
 
 aList: Sequence
 aList1: Sequence
@@ -11116,38 +11112,48 @@ v1: V
 v2: V</t>
 <t tx="ekr.20160112111247.1"># Lines to be inserted at the start of each stub file.
 
-from typing import TypeVar, Iterable, Tuple
-T = TypeVar('T', int, float, complex)
+from typing import Any, Dict, Optional, Sequence, Tuple, Union
+# At present, I don't understand how to tell mypy about ast.Node
+# import ast
+# Node = ast.Node
+
+Node = Any
 </t>
 <t tx="ekr.20160127043440.1">For use by make-stub-files command.</t>
-<t tx="ekr.20160127043520.1"># Regular expressions specifying names of functions or methods.
-# Methods names should have the form class_name.method_name.
-# These  patterns are matched *before* the patterns in the
-# [Return Balanced Patterns] and [Return Regex Patterns] sections.
-
-AstFormatter.do_.*: str
+<t tx="ekr.20160127043520.1">AstFormatter.*: str
+Pattern.all_matches: Sequence
+Pattern.full_balanced_match: Optional[int]
+Pattern.match_balanced: int
+Pattern.match_entire_string: bool
+StandAloneMakeStubFile.scan_types: Dict[str, str]
+StubFormatter.do_.*: str
 StubTraverser.format_returns: str
-StubTraverser.indent: str
-__init__: None
-    # Per pep 484.</t>
-<t tx="ekr.20160127045525.1"># Balanced patterns to be applied to return expressions.
-# Balanced patterns match verbatim, except that the patterns:
-#   (*), [*] and {*}
-# only match *balanced* parens, square and curly brackets.
+StubTraverser.match_return_patterns: Tuple[bool,str]
+StubTraverser.match_return_pattern: Optional[str]
+StubTraverser.match_balanced: int</t>
+<t tx="ekr.20160127051243.1">The directory to which stub files are written.</t>
+<t tx="ekr.20160127051552.1">True: allow stub files to be overwritten
+</t>
+<t tx="ekr.20160127051811.1"># Patterns to be applied to return expressions.
 
 repr(*): str
 str.join(*): str
 str.replace(*): str
 str%(*): str
 str%str: str
-</t>
-<t tx="ekr.20160127051243.1">The directory to which stub files are written.</t>
-<t tx="ekr.20160127051552.1">True: allow stub files to be overwritten
-</t>
-<t tx="ekr.20160127051811.1"># Regular expression patterns to be applied to return expressions.
 
 .*__name__: str
 </t>
+<t tx="ekr.20160130145944.1"># Patterns to be applied to argument lists and return expressions.
+
+aList: Sequence
+controller: StandAloneMakeStubFile
+fn: str
+i[0-3]*: int
+parser: optparse.OptionParser
+node: Node
+s[0-3]*: str
+strict: bool</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

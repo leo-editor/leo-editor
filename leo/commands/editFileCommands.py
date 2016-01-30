@@ -482,16 +482,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160112104836.1: *4* msf.ctors & helpers
             def __init__(self, c):
                 self.c = c
-                # From @data nodes...
-                self.args_d = self.scan_d('stub-arg-types')
-                self.def_pattern_d = self.scan_d('stub-def-name-patterns')
-                self.prefix_lines = self.scan('stub-prefix-lines')
-                self.return_pattern_d = self.scan_d('stub-return-balanced-patterns')
-                self.return_regex_d = self.scan_d('stub-return-regex-patterns')
-                # State ivars...
+                # Settings...
+                self.arg_patterns = self.scan_d('stub-arg-patterns')
+                self.def_patterns = self.scan_d('stub-def-name-patterns')
+                self.general_patterns = self.scan_d('stub-general-patterns')
+                self.overwrite = c.config.getBool('stub-overwrite', default=False)
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '~/stubs')
-                self.overwrite = c.config.getBool('stub-overwrite', default=False)
+                self.prefix_lines = self.scan('stub-prefix-lines')
+                self.return_patterns = self.scan_d('stub-return-patterns')
+                # Compatibility with stand-alone version...
+                self.output_fn = None
+                self.trace = False
+                self.warn = False
             #@+node:ekr.20160127045807.1: *5* msf.scan
             def scan(self, kind):
                 '''Return a list of *all* lines from an @data node, including comments.'''
@@ -507,13 +510,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 '''Return a dict created from an @data node of the given kind.'''
                 trace = False and not g.unitTesting
                 c = self.c
-                aList = c.config.getData(kind,
-                    strip_comments=True,
-                    strip_data=True)
+                aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
                 if not aList:
                     g.trace('warning: no @data %s node' % kind)
-                for s in aList:
+                for s in aList or []:
                     name, value = s.split(':',1)
                     # g.trace('name',name,'value',value)
                     d[name.strip()] = value.strip()
@@ -541,7 +542,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 if not g.os_path_exists(abs_fn):
                     g.es_print('not found', abs_fn)
                     return
-                ### stubs = self.finalize('~/stubs/output')
                 if g.os_path_exists(self.output_directory):
                     base_fn = g.os_path_basename(fn)
                     out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
@@ -550,9 +550,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     return
                 out_fn = out_fn[:-3] + '.pyi'
                 out_fn = os.path.normpath(out_fn)
+                self.output_fn = out_fn
+                    # compatibility with stand-alone script
                 s = open(abs_fn).read()
                 node = ast.parse(s,filename=fn,mode='exec')
-                leoAst.StubTraverser(controller=self, ).run(node, out_fn)
+                leoAst.StubTraverser(controller=self).run(node)
             #@+node:ekr.20160111202214.3: *4* msf.run
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''

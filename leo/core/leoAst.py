@@ -2938,6 +2938,127 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.visit(node.value)
         rt.end_div()
     #@-others
+#@+node:ekr.20160130144851.1: ** class Pattern
+
+
+class Pattern:
+    '''
+    A class representing regex or balanced patterns.
+    
+    Sample matching code, for either kind of pattern::
+        
+        for start, end in reversed(pattern.all_matches(s)):
+            s = s[:start] + pattern.repl_s + s[end:]
+    '''
+    #@+others
+    #@+node:ekr.20160130144851.2: *3* pattern.ctor
+
+    def __init__ (self, find_s, repl_s, trace=False):
+        '''Ctor for the Pattern class.'''
+        sep = r'\b'
+        self.find_s = find_s
+        self.repl_s = repl_s
+        self.regex = (
+            None if self.is_balanced() else
+            re.compile(sep+find_s.strip(sep)+sep))
+        self.trace = trace
+    #@+node:ekr.20160130144851.3: *3* pattern.str & repr
+
+    def __repr__(self):
+        '''Pattern.__repr__'''
+        return 'Pattern: %s ==> %s' % (self.find_s, self.repl_s)
+        
+    __str__ = __repr__
+    #@+node:ekr.20160130144851.4: *3* pattern.is_balanced
+
+    def is_balanced(self):
+        '''Return True if self.s is a balanced pattern.'''
+        s = self.find_s
+        for pattern in ('(*)', '[*]', '{*}'):
+            if s.find(pattern) > -1:
+                return True
+        return False
+    #@+node:ekr.20160130144851.5: *3* pattern.all_matches & helpers
+
+    def all_matches(self, s, trace=False):
+        '''Return a list of tubles (start, end) for all matches in s.'''
+        trace = trace or self.trace
+        if self.is_balanced():
+            aList, i = [], 0
+            while i < len(s):
+                progress = i
+                j = self.full_balanced_match(s, i, trace=trace)
+                if j is None:
+                    i += 1
+                else:
+                    aList.append((i,j),)
+                    i = j
+                assert progress < i
+            return aList
+        else:
+            return [tuple((m.start(), m.end()),) for m in self.regex.finditer(s)]
+    #@+node:ekr.20160130144851.6: *4* pattern.full_balanced_match
+
+    def full_balanced_match(self, s, i, trace=False):
+        '''Return the index of the end of the match found at s[i:] or None.'''
+        i1 = i
+        trace = trace or self.trace
+        pattern = self.find_s
+        j = 0 # index into pattern
+        while i < len(s) and j < len(pattern) and s[i] == pattern[j]:
+            progress = i
+            if pattern[j:j+3] in ('(*)', '[*]', '{*}'):
+                delim = pattern[j]
+                i = self.match_balanced(delim, s, i)
+                j += 3
+            else:
+                i += 1
+                j += 1
+            assert progress < i
+        found = i <= len(s) and j == len(pattern)
+        if trace and found:
+            print('full_balanced_match %s -> %s' % (pattern, s[i1:i]))
+        return i if found else None
+    #@+node:ekr.20160130144851.7: *4* pattern.match_balanced
+
+    def match_balanced(self, delim, s, i):
+        '''
+        delim == s[i] and delim is in '([{'
+        Return the index of the end of the balanced parenthesized string, or len(s)+1.
+        '''
+        trace = self.trace
+        assert s[i] == delim, s[i]
+        assert delim in '([{'
+        delim2 = ')]}'['([{'.index(delim)]
+        assert delim2 in ')]}'
+        i1, level = i, 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            i += 1
+            if ch == delim:
+                level += 1
+            elif ch == delim2:
+                level -= 1
+                if level == 0:
+                    if trace: print('match_balanced: found: %s' % s[i1:i])
+                    return i
+            assert progress < i
+        # Unmatched: a syntax error.
+        print('***** unmatched %s in %s' % (delim, s))
+        return len(s) + 1
+    #@+node:ekr.20160130144851.8: *3* pattern.match_entire_string
+
+    def match_entire_string(self, s):
+        '''Return True if s matches self.find_s'''
+        trace = True
+        if self.is_balanced():
+            j = self.full_balanced_match(s, 0)
+            return j is not None
+        else:
+            m = self.regex.match(s)
+            return m and m.group(0) == s
+    #@-others
 #@+node:ekr.20160111133948.1: ** class StubFormatter (AstFormatter)
 class StubFormatter (AstFormatter):
     #@+others
@@ -2960,30 +3081,11 @@ class StubFormatter (AstFormatter):
         '''This represents a string constant.'''
         return 'str' # return repr(node.s)
     #@-others
-#@+node:ekr.20160127040557.83: ** class StubTraverser (ast.NodeVisitor)
+#@+node:ekr.20160130143718.1: ** class StubTraverser (ast.NodeVisitor)
 class StubTraverser (ast.NodeVisitor):
     '''An ast.Node traverser class that outputs a stub for each class or def.'''
-    #@+<< change log >>
-    #@+node:ekr.20160127041923.1: *3* << change log >>
-    #@+at
-    #@@language rest
-    #@@wrap
-    # 
-    # Changes made from the external make_stub_files project at
-    # https://github.com/edreamleo/make-stub-files
-    # 
-    # - Removed self.verbose ivar: there is no --trace command-line argument.
-    #     - changed trace = self.trace to trace = False and not g.unitTesting.
-    #   
-    # - Removed unused self.verbose ivar.
-    # 
-    # - Changed print to g.es_print or g.trace.
-    # 
-    # - The run() method now takes an fn arg.
-    #     - There is not output_fn ivar.
-    #@-<< change log >>
     #@+others
-    #@+node:ekr.20160127040557.84: *3* st.ctor
+    #@+node:ekr.20160130143718.2: *3* st.ctor
     def __init__(self, controller):
         '''Ctor for StubTraverser class.'''
         self.controller = x = controller
@@ -2994,15 +3096,21 @@ class StubTraverser (ast.NodeVisitor):
         self.in_function = False
         self.level = 0
         self.output_file = None
+        self.raw_format = AstFormatter().format
         self.returns = []
+        self.warn_list = []
         # Copies of controller ivars...
-        self.args_d = x.args_d # [Arg Types]
-        self.def_pattern_d = x.def_pattern_d # [Def Name Patterns]
+        self.output_fn = x.output_fn
         self.overwrite = x.overwrite
         self.prefix_lines = x.prefix_lines
-        self.return_pattern_d = x.return_pattern_d # [Return Balanced Patterns]
-        self.return_regex_d = x.return_regex_d # [Return Regex Patterns]
-    #@+node:ekr.20160127040557.85: *3* st.indent & out
+        self.trace = x.trace
+        self.warn = x.warn
+        # Copies of controller patterns...
+        self.arg_patterns = x.arg_patterns
+        self.def_patterns = x.def_patterns
+        self.general_patterns = x.general_patterns
+        self.return_patterns = x.return_patterns
+    #@+node:ekr.20160130143718.3: *3* st.indent & out
     def indent(self, s):
         '''Return s, properly indented.'''
         return '%s%s' % (' ' * 4 * self.level, s)
@@ -3013,12 +3121,13 @@ class StubTraverser (ast.NodeVisitor):
             self.output_file.write(self.indent(s)+'\n')
         else:
             print(self.indent(s))
-    #@+node:ekr.20160127040557.86: *3* st.run
-    def run(self, node, fn):
+    #@+node:ekr.20160130143718.4: *3* st.run
+    def run(self, node):
         '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
+        fn = self.output_fn
         dir_ = os.path.dirname(fn)
         if os.path.exists(fn) and not self.overwrite:
-            g.es_print('file exists: %s' % fn)
+            print('file exists: %s' % fn)
         elif not dir_ or os.path.exists(dir_):
             self.output_file = open(fn, 'w')
             for z in self.prefix_lines or []:
@@ -3026,14 +3135,11 @@ class StubTraverser (ast.NodeVisitor):
             self.visit(node)
             self.output_file.close()
             self.output_file = None
-            g.es_print('wrote: %s' % fn)
+            print('wrote: %s' % fn)
         else:
-            g.es_print('output directory not not found: %s' % dir_)
+            print('output directory not not found: %s' % dir_)
 
-    #@+node:ekr.20160127040557.87: *3* st.Visitors
-
-    # Visitors...
-    #@+node:ekr.20160127040557.88: *4* st.ClassDef
+    #@+node:ekr.20160130143718.5: *3* st.visit_ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
 
     def visit_ClassDef(self, node):
@@ -3055,14 +3161,14 @@ class StubTraverser (ast.NodeVisitor):
         self.class_name_stack.pop()
         self.level -= 1
         self.in_function = old_in_function
-    #@+node:ekr.20160127040557.89: *4* st.FunctionDef & helpers
+    #@+node:ekr.20160130143718.6: *3* st.visit_FunctionDef & helpers
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def visit_FunctionDef(self, node):
         
         # Do nothing if we are already in a function.
         # We do not generate stubs for inner defs.
-        if self.in_function: #  or node.name.startswith('_'):
+        if self.in_function: # or node.name.startswith('_'):
             return
         # First, visit the function body.
         self.returns = []
@@ -3073,11 +3179,11 @@ class StubTraverser (ast.NodeVisitor):
         self.level -= 1
         self.in_function = False
         # Format *after* traversing
-        self.out('def %s(%s) -> %s: ...' % (
+        self.out('def %s(%s) -> %s' % (
             node.name,
             self.format_arguments(node.args),
             self.format_returns(node)))
-    #@+node:ekr.20160127040557.90: *5* format_arguments
+    #@+node:ekr.20160130143718.7: *4* st.format_arguments & helper
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
     def format_arguments(self, node):
@@ -3087,7 +3193,7 @@ class StubTraverser (ast.NodeVisitor):
         '''
         assert isinstance(node,ast.arguments), node
         args = [self.format(z) for z in node.args]
-        defaults = [self.format(z) for z in node.defaults]
+        defaults = [self.raw_format(z) for z in node.defaults]
         # Assign default values to the last args.
         result = []
         n_plain = len(args) - len(defaults)
@@ -3104,202 +3210,200 @@ class StubTraverser (ast.NodeVisitor):
         name = getattr(node, 'kwarg', None)
         if name: result.append('**' + name)
         return ', '.join(result)
-    #@+node:ekr.20160127040557.91: *5* format_returns
-    def format_returns(self, node):
-        '''Calculate the return type.'''
-        
-        def split(s):
-            return '\n     ' + self.indent(s) if len(s) > 30 else s
-            
-        # Shortcut everything if node.name matches any
-        # pattern in self.def_pattern_d.
-        trace = False and not g.unitTesting
-        d = self.def_pattern_d
-        if self.class_name_stack:
-            name = '%s.%s' % (self.class_name_stack[-1], node.name)
+    #@+node:ekr.20160130143718.8: *5* st.munge_arg
+    def munge_arg(self, s):
+        '''Add an annotation for s if possible.'''
+        if s == 'self':
+            return s
+        default_pattern = None
+        for patterns in (self.arg_patterns, self.general_patterns):
+            for pattern in patterns:
+                if pattern.find_s == '.*':
+                    default_pattern = pattern
+                        # Match the default pattern last.
+                else:
+                    # Succeed only if the entire pattern matches.
+                    if pattern.match_entire_string(s):
+                        return '%s: %s' % (s, pattern.repl_s)
+        if default_pattern:
+            return '%s: %s' % (s, default_pattern.repl_s)
         else:
-            name = node.name
-        for pattern in d.keys():
-            match = re.search(pattern, name)
-            if match and match.group(0) == name:
-                t = d.get(pattern)
-                if trace: g.trace('*name pattern %s: %s -> %s' % (pattern, name, t))
-                return t
-
+            if self.warn and s not in self.warn_list:
+                self.warn_list.append(s)
+                print('no annotation for %s' % s)
+            return s
+    #@+node:ekr.20160130143718.9: *4* st.format_returns & helpers
+    def format_returns(self, node):
+        '''
+        Calculate the return type:
+        - Return None if there are no return statements.
+        - Patterns in [Def Name Patterns] override all other patterns.
+        - Otherwise, return a list of return values.
+        '''
+        # Shortcut everything if node.name matches any
+        # pattern in self.def_patterns
+        trace = self.trace
+        name = self.get_def_name(node)
         r = [self.format(z) for z in self.returns]
+        # Step 1: Return None if there are no return statements.
+        if trace and self.returns:
+            print('format_returns: name: %s r:\n%s' % (name, r))
+        if not [z for z in self.returns if z != None]:
+            return 'None: ...'
+        # Step 2: [Def Name Patterns] override all other patterns.
+        for pattern in self.def_patterns:
+            find_s, repl_s = pattern.find_s, pattern.repl_s
+            match = re.search(find_s, name)
+            if match and match.group(0) == name:
+                if trace:
+                    print('*name pattern %s: %s -> %s' % (find_s, name, repl_s))
+                return repl_s + ': ...'
+        # Step 3: munge each return value, and merge them.
         r = [self.munge_ret(name, z) for z in r]
             # Make type substitutions.
         r = sorted(set(r))
             # Remove duplicates
         if len(r) == 0:
-            return 'None'
+            return 'None: ...'
         if len(r) == 1:
-            return r[0] # Never split a single value.
+            kind = None
         elif 'None' in r:
             r.remove('None')
-            return split('Optional[%s]' % ', '.join(r))
+            kind = 'Optional'
         else:
-            # return 'Any'
-            s = ', '.join(r)
-            if len(s) > 30:
-                return ', '.join(['\n    ' + self.indent(z) for z in r])
-            else:
-                return split(', '.join(r))
-    #@+node:ekr.20160127040557.92: *5* munge_arg
-    def munge_arg(self, s):
-        '''Add an annotation for s if possible.'''
-        a = self.args_d.get(s)
-        return '%s: %s' % (s, a) if a else s
-    #@+node:ekr.20160127040557.93: *5* munge_ret & helpers
+            kind = 'Union'
+        return self.format_return_expressions(r, kind)
+    #@+node:ekr.20160130143718.10: *5* st.format_return_expressions
+    def format_return_expressions(self, aList, kind):
+        '''
+        aList is a list of return expressions.
+        All patterns have been applied.
+        For each expression e:
+        - If e is a single known type, add e to the result.
+        - Otherwise, add Any # e to the result.
+        Return the properly indented result.
+        '''
+        comments, results, unknowns = [], [], False
+        lws =  '\n' + ' '*4
+        for i, e in enumerate(aList):
+            comma = ',' if i < len(aList) - 1 else ''
+            comments.append('# ' + e)
+            results.append(e + comma)
+            if not self.is_known_type(e):
+                unknowns = True
+        if unknowns:
+            comments = ''.join([lws + self.indent(z) for z in comments])
+            return 'Any: ...' + comments
+        if kind == 'Union' and len(results) == 1:
+            kind = None
+        if len(results) == 1:
+            s = results[0]
+        else:
+            s = ''.join([lws + self.indent(z) for z in results])
+        if kind:
+            s = '%s[%s]' % (kind, s)
+        return s + ': ...'
+        
+    #@+node:ekr.20160130143718.11: *5* st.is_known_type
+    def is_known_type(self, s):
+        '''
+        Return True if s is nothing but a single known type.
+        Recursively test inner types in square brackets.
+        '''
+        if s in (
+            'bool', 'bytes', 'complex', 'dict', 'float', 'int',
+            'list', 'long', 'str', 'tuple', 'unicode',
+        ):
+            return True
+        table = (
+            'AbstractSet', 'Any', 'AnyMeta', 'AnyStr',
+            'BinaryIO', 'ByteString',
+            'Callable', 'CallableMeta', 'Container',
+            'Dict', 'Final', 'Generic', 'GenericMeta', 'Hashable',
+            'IO', 'ItemsView', 'Iterable', 'Iterator',
+            'KT', 'KeysView', 'List',
+            'Mapping', 'MappingView', 'Match',
+            'MutableMapping', 'MutableSequence', 'MutableSet',
+            'NamedTuple', 'Optional', 'OptionalMeta',
+            # 'POSIX', 'PY2', 'PY3',
+            'Pattern', 'Reversible',
+            'Sequence', 'Set', 'Sized',
+            'SupportsAbs', 'SupportsFloat', 'SupportsInt', 'SupportsRound',
+            'T', 'TextIO', 'Tuple', 'TupleMeta',
+            'TypeVar', 'TypingMeta',
+            'Undefined', 'Union', 'UnionMeta',
+            'VT', 'ValuesView', 'VarBinding',
+        )
+        for s2 in table:
+            if s2 == s:
+                return True
+            pattern = Pattern(s2+'[*]', s)
+            if pattern.match_entire_string(s):
+                # Look inside the square brackets.
+                brackets = s[len(s2):]
+                assert brackets and brackets[0] == '[' and brackets[-1] == ']'
+                s3 = brackets[1:-1]
+                if s3:
+                    return all([self.is_known_type(z) for z in s3.split(',')])
+                else:
+                    return True
+        return False
+    #@+node:ekr.20160130143718.12: *5* st.get_def_name
+    def get_def_name(self, node):
+        '''Return the representaion of a function or method name.'''
+        if self.class_name_stack:
+            name = '%s.%s' % (self.class_name_stack[-1], node.name)
+            # All ctors should return None
+            if node.name == '__init__':
+                name = 'None'
+        else:
+            name = node.name
+        return name
+    #@+node:ekr.20160130143718.13: *5* st.munge_ret & helper
     def munge_ret(self, name, s):
         '''replace a return value by a type if possible.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('munge_ret ==== %s' % name)
-        s = self.match_args(name, s)
-            # Do matches in [Arg Types]
-        s = self.match_balanced_patterns(name, s)
-            # Repeatedly do all matches in [Return Balance Patterns]
-        s = self.match_regex_patterns(name, s)
-            # Repeatedly do all matches in [Return Regex Patterns]
-        if trace: g.trace('munge_reg -----: %s' % s)
-        return s
-    #@+node:ekr.20160127040557.94: *6* match_args
-    def match_args(self, name, s):
-        '''In s, make substitutions (word only) given in [Arg Types].'''
-        trace = False and not g.unitTesting
-        d = self.args_d
-        count = 0 # prevent any possibility of endless loops
-        found = True
-        while found and count < 40:
-            found = False
-            for arg in d.keys():
-                match = re.search(r'\b'+arg+r'\b', s)
-                if match:
-                    i = match.start(0)
-                    t = d.get(arg)
-                    s2 = s[:i] + t + s[i + len(arg):]
-                    if trace:
-                        g.trace('arg:  %s %s ==> %s' % (arg, s, s2))
-                    s = s2
-                    count += 1
-                    found = True
-        return s
-    #@+node:ekr.20160127040557.95: *6* match_balanced_patterns & helpers
-    def match_balanced_patterns(self, name, s):
-        '''
-        In s, do *all* subsitutions given in [Return Balanced Patterns].
-        
-        All characters match verbatim, except that the patterns:
-            (*), [*] and {*}
-        match only *balanced* parens, square and curly brackets.
-        
-        Note: No special cases are needed for strings or comments.
-        Comments do not appear, and strings have been converted to "str".
-        '''
-        trace = False and not g.unitTesting
-        if trace: g.trace('----- %s' % s)
+        trace = self.trace
+        if trace: print('munge_ret ==== %s' % name)
         count, found = 0, True
-        while found and count < 40:
-            count += 1
-            found, i, s1 = False, 0, s
-            while i < len(s) and not found:
-                s = self.match_return_patterns(name, s, i)
-                found = s1 != s
-                i += 1
-        if trace: g.trace('*after balanced patterns: %s' % s)
+        while found and count < 100:
+            count, found = count + 1, False
+            for patterns in ( self.general_patterns, self.return_patterns):
+                found2, s = self.match_return_patterns(name, patterns, s)
+                found = found or found2
+        if trace: print('munge_ret -----: %s' % s)
         return s
-    #@+node:ekr.20160127040557.96: *7* match_return_patterns
-    def match_return_patterns(self, name, s, i):
+    #@+node:ekr.20160130143718.14: *6* st.match_ret_patterns
+    def match_return_patterns(self, name, patterns, s):
         '''
-        Make all possible pattern matches at s[i:]. Return the new s.
+        Match all the given patterns, except the .* pattern.
+        Return (found, s) if any succeed.
         '''
-        trace = False and not g.unitTesting
-        d = self.return_pattern_d
+        trace = self.trace # or name.endswith('munge_arg')
         s1 = s
-        for pattern in d.keys():
-            found_s = self.match_return_pattern(pattern, s, i)
-            if found_s:
-                replace_s = d.get(pattern)
-                s = s[:i] + replace_s + s[i+len(found_s):]
-                if trace:
-                    g.trace('found: %s replace: %s' % (found_s, replace_s))
-                    g.trace('old: %s' % s1)
-                    g.trace('new: %s' % s)
-                break # must rescan the entire string.
-        return s
-    #@+node:ekr.20160127040557.97: *7* match_return_pattern
-    def match_return_pattern(self, pattern, s, i):
-        '''Return the actual string matching the pattern at s[i:] or None.'''
-        trace = False and not g.unitTesting
-        i1 = i
-        j = 0 # index into pattern
-        while i < len(s) and j < len(pattern) and s[i] == pattern[j]:
-            if pattern[j:j+3] in ('(*)', '[*]', '{*}'):
-                delim = pattern[j]
-                i = self.match_balanced(delim, s, i)
-                j += 3
+        default_pattern = None
+        if trace: print('match_patterns ===== %s: %s' % (name, s1))
+        for pattern in patterns:
+            if pattern.find_s == '.*':
+                # The user should use [Def Name Patterns] instead.
+                pass
             else:
-                i += 1
-                j += 1
-        if trace and i <= len(s) and j == len(pattern):
-            g.trace('match %s -> %s' % (pattern, s[i1:i]))
-        return s[i1:i] if i <= len(s) and j == len(pattern) else None
-    #@+node:ekr.20160127040557.98: *7* match_balanced
-    def match_balanced(self, delim, s, i):
-        '''
-        Scan over the python expression at s[i:] that starts with '(', '[' or '{'.
-        Return the index into s of the end of the expression, or len(s)+1 on errors.
-        '''
-        trace = False and not g.unitTesting
-        assert s[i] == delim, s[i]
-        assert delim in '([{'
-        delim2 = ')]}'['([{'.index(delim)]
-        assert delim2 in ')]}'
-        i1, level = i, 0
-        while i < len(s):
-            ch = s[i]
-            i += 1
-            if ch == delim:
-                level += 1
-            elif ch == delim2:
-                level -= 1
-                if level == 0:
-                    if trace: g.trace('found: %s' % s[i1:i])
-                    return i
-        # Unmatched
-        g.trace('***** unmatched %s in %s' % (delim, s))
-        return len(s) + 1
-    #@+node:ekr.20160127040557.99: *6* match_regex_patterns
-    def match_regex_patterns(self, name, s):
-        '''
-        In s, repeatedly match regex patterns in [Return Regex Patterns].
-        '''
-        trace = False and not g.unitTesting
-        d, prev_s = self.return_regex_d, set()
-        while True:
-            found = False
-            for pattern in d.keys():
-                match = re.search(pattern, s)
-                if match:
-                    t = d.get(pattern)
-                    s2 = s.replace(match.group(0), t)
-                    if trace:
-                        g.trace('match: %s=%s->%s: %s ==> %s' % (
-                            pattern, match.group(0), t, s, s2))
-                    if s2 in prev_s:
-                        # A strange loop. return s2.
-                        if trace: g.trace('seen: %s' % (s2))
-                        s = s2
-                        found = False
-                        break
-                    else:
-                        found = True
-                        prev_s.add(s2)
-                        s = s2
-            if not found:
-                break
-        return s
-    #@+node:ekr.20160127040557.100: *4* st.Return
+                # Find all non-overlapping matches.
+                matches = pattern.all_matches(s, trace=trace)
+                # Replace in reverse order.
+                s2 = s
+                for start, end in reversed(matches):
+                    s = s[:start] + pattern.repl_s + s[end:]
+                    if trace and s2 != s:
+                        print('match_patterns %s' % matches)
+                        sep = '\n' if len(s2) > 20 or len(s) > 20 else ' '
+                        print('match_patterns match: %s%s%s -->%s%s' % (
+                            pattern.repl_s, sep, s2, sep, s))
+        found = s1 != s
+        if trace and found:
+            print('match_patterns returns %s\n' % s)
+        return found, s
+        
+    #@+node:ekr.20160130143718.15: *3* st.visit_Return
     def visit_Return(self, node):
 
         self.returns.append(node.value)
