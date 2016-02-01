@@ -641,6 +641,55 @@ class Commands(object):
             c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
         else:
             g.es_print('not found: Code')
+    #@+node:ekr.20160201072634.1: *3* c.cloneFindPredicate
+    def cloneFindPredicate(self,
+        generator,     # The generator used to traverse the tree.   
+        predicate,     # A function of one argument p, returning True
+                       # if p should be included in the results.
+        flatten=False, # True: Put all matches at the top level.
+        undoType=None, # The undo name, shown in the Edit:Undo menu.
+                       # The default is 'clone-find-predicate'
+    ):
+        '''
+        Traverse the tree given using the generator, cloning all positions for
+        which predicate(p) is True. Undoably move all clones to a new node, created
+        as the last top-level node. Arguments:
+
+        generator,      The generator used to traverse the tree.
+        predicate,      A function of one argument p returning true if p should be included.
+        flatten=False,  True: Move all node to be parents of the root node.
+        undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                        The default is 'clone-find-predicate'
+        '''
+        c = self
+        u, undoType = c.undoer, undoType or 'clone-find-predicate'
+        clones, seen = [], set(), 
+        for p in generator():
+            if predicate(p) and p.v not in seen:
+                if flatten:
+                    seen.add(p.v)
+                else:
+                    for p2 in p.self_and_subtree():
+                        seen.add(p2.v)
+                clones.append(p.copy())
+        if clones:
+            undoData = u.beforeInsertNode(c.p)
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            for child in clones:
+                child.moveToLastChildOf(root)
+            u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(root)
+            c.setChanged(True)
+            c.redraw()
+        else:
+            g.es_print('not found:', undoType)
+    #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
+    def createCloneFindPredicateRoot(self, flatten, undoType):
+        '''Create a root node for clone-find-predicate.'''
+        c = self
+        root = c.lastTopLevel().insertAfter()
+        root.h = undoType + (' (flattened)' if flatten else '')
+        return root
     #@+node:ekr.20150329162736.1: *3* c.cloneFindAllFlattenedAtNode
     def cloneFindAllFlattenedAtNode(self, h, top_level):
         '''

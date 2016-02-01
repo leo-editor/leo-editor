@@ -1053,6 +1053,21 @@ Edward
 .. @+node:ekr.20160128201207.1: *3* ==== Code academy posts
 @language rest
 @wrap
+
+To do:
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a give uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+
+- Redraw mode that hides siblings.
+- Key bindings in the nav pane.
+    - Arrow keys.
+    - Enter shift to outline pane.
+    - Some key to shift back to the nav pane.
+- Clone-find-predicate.
 .. @+node:ekr.20160129054828.1: *4* First post: topics
 @language rest
 @wrap
