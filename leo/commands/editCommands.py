@@ -2163,7 +2163,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
             # g.es((p.h,uaLoc.unknownAttributes['icons']))
-            uaLoc.unknownAttributes["lineYOffset"] = 3
             uaLoc._p_changed = 1
             if setDirty:
                 p.setDirty()
@@ -2172,7 +2171,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             if hasattr(uaLoc, 'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
-                    uaLoc.unknownAttributes["lineYOffset"] = 0
                     uaLoc._p_changed = 1
                     if setDirty:
                         p.setDirty()
@@ -2231,7 +2229,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             a = p.v.unknownAttributes
             p.v._p_changed = 1
             self.setIconList(p, [])
-            p.u["lineYOffset"] = 0
             p.setDirty()
             c.setChanged(True)
             c.redraw_after_icons_changed()
