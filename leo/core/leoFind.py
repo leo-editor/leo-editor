@@ -1478,10 +1478,17 @@ class LeoFind:
         c = self.c
         # Create the found node.
         found = c.lastTopLevel().insertAfter()
-        found.h = 'Found:%s%s %s' % (
-            ' (flattened)' if flattened else '',
-            self.getFindResultStatus(find_all=True),
-            self.find_text)
+        if 1:
+            found.h = 'Found:%s' % self.find_text
+            status = self.getFindResultStatus(find_all=True)
+            status = status.strip().lstrip('(').rstrip(')').strip()
+            flat = 'flattened, ' if flattened else ''
+            found.b = '# ' + flat + status
+        else:
+            found.h = 'Found:%s%s %s' % (
+                ' (flattened)' if flattened else '',
+                self.getFindResultStatus(find_all=True),
+                self.find_text)
         # Clone nodes as children of the found node.
         for p in clones:
             p2 = p.clone()
