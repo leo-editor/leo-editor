@@ -677,7 +677,7 @@ for p in p.self_and_subtree():
            targetfilename=fullfilename,
            marker_from_extension = marker_from_extension)
        g.es("File %s is now shadowed" % filename)
-#@+node:ville.20090508224531.9799: *3* @@button Dump nodes to ~/.leo/dump 
+#@+node:ville.20090508224531.9799: *3* @@button Dump nodes to ~/.leo/dump
 """ Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:
@@ -8236,7 +8236,8 @@ def clean_file(p):
 @others
 
 # Change test_dir as desired: it must already exist.
-test_dir = g.os_path_finalize_join(g.app.loadDir,'..','test')
+# test_dir = g.os_path_finalize_join(g.app.loadDir,'..','test')
+test_dir = os.path.dirname(c.fileName())+os.sep+'test'
 
 if 1:
     # Writes each test to a separate file in the test directory.

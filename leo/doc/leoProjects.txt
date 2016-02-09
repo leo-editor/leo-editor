@@ -351,6 +351,7 @@ Added @bool preload-find-pattern and associated logic.
 This setting only affects Ctrl-F (start-search).
 Other searches always preload by default.  This may change.
 .. @+node:ekr.20150710082301.1: *5* Found: (flattened) preloadFindPattern
+@language python
 .. @+node:ekr.20131117164142.16996: *6* find.minibufferCloneFindAllFlattened
 @cmd('clone-find-all-flattened')
 @cmd('find-clone-all-flattened')
@@ -1061,6 +1062,7 @@ To do:
     - Put Qt stuff in it.
 - Key bindings.
 - Create new panes.
+- Scripts can handle events.
 
 - Redraw mode that hides siblings.
 - Key bindings in the nav pane.
