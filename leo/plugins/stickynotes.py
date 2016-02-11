@@ -97,26 +97,11 @@ else:
         # QPlainTextEdit,
 #@-<< imports >>
 #@+others
-#@+node:vivainio2.20091008140054.14555: ** styling
-stickynote_stylesheet = """
-/* The body pane */
-QPlainTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-"""
-
-def decorate_window(w):
-    w.setStyleSheet(stickynote_stylesheet)
+#@+node:vivainio2.20091008140054.14555: ** decorate_window
+def decorate_window(c, w):
+    w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
     w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
-
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
@@ -336,7 +321,7 @@ def stickynoter_f(event):
 
     nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
     nf.dirty = False
-    decorate_window(nf)
+    decorate_window(c, nf)
     nf.setWindowTitle(p.h)
     nf.setHtml(p.b)
     p.setDirty()
@@ -485,7 +470,7 @@ def mknote(c,p, parent=None):
         # print "closeevent"
 
     nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
-    nf.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    decorate_window(c, nf)
     nf.dirty = False
     nf.resize(600, 300)
     nf.setWindowTitle(p.h)
