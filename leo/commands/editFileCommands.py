@@ -291,211 +291,57 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160111190632.1: ** efc.makeStubFiles
     @cmd('make-stub-files')
     def make_stub_files(self, event):
-        #@+<< make-stub-files-docstring >>
-        #@+node:ekr.20160127040557.2: *3* << make-stub-files-docstring >>
-        #@@language rest
-        #@@nowrap
-
         '''
-        This command eliminates much of the drudgery of creating python stub (.pyi)
-        files https://www.python.org/dev/peps/pep-0484/#stub-files from python
-        source files. It writes stub files for all @<file> nodes in the selected
-        outline. The @string stub-output-directory setting tells where to write
-        files. By default, this is the ~/stubs directory.
-
-        Overview
-        ========
-
-        Leo settings specify:
-        - **naming conventions** telling the types of arguments and other variables.
-        - Various **patterns** to be applied to return values.
-        - A list of **prefix lines** to be inserted verbatim at the start of each stub file.
-
-        This command never creates directories automatically, nor does it overwrite
-        stub files unless the @bool stub-overwrite setting is in effect.
-
-        For each source file, the script does the following:
-
-        1. The script writes the prefix lines verbatim. This makes it easy to add
-           common code to the start of stub files. For example::
-
-            from typing import TypeVar, Iterable, Tuple
-            T = TypeVar('T', int, float, complex)
-            
-        2. The script walks the parse (ast) tree for the source file, generating
-           stub lines for each function, class or method. The script generates no
-           stub lines for defs nested within other defs. Return values are handled
-           in a clever way as described below.
-
-        For example, given the naming conventions::
-
-            aList: Sequence
-            i: int
-            c: Commander
-            s: str
-            
-        and a function::
-
-            def scan(s, i, x):
-                whatever
-                
-        the script will generate::
-
-            def scan(s: str, i:int, x): --> (return values: see next section):
-            
-        Handling function returns
-        =========================
-            
-        The script handles function returns pragmatically. The tree walker simply
-        writes a list of return expressions for each def. For example, here is the
-        *default* output at the start of leoAst.pyi, before any patterns are applied::
-
-            class AstDumper:
-                def dump(self, node: ast.Ast, level=number) -> 
-                    repr(node), 
-                    str%(name,sep,sep1.join(aList)), 
-                    str%(name,str.join(aList)), 
-                    str%str.join(str%(sep,self.dump(z,level+number)) for z in node): ...
-                def get_fields(self, node: ast.Ast) -> result: ...
-                def extra_attributes(self, node: ast.Ast) -> Sequence: ...
-                
-        The stub for the dump function is not syntactically correct because there
-        are four returns listed.
-
-        The configuration file can specify several kinds of patterns to be applied
-        to return values. Just a few patterns (given below) will convert::
-
-            def dump(self, node: ast.Ast, level=number) -> 
-                repr(node), 
-                str%(name,sep,sep1.join(aList)), 
-                str%(name,str.join(aList)), 
-                str%str.join(str%(sep,self.dump(z,level+number)) for z in node): ...
-                
-        to:
-
-            def dump(self, node: ast.Ast, level=number) -> str: ... 
-
-        If multiple return values still remain after applying all patterns, you
-        must edit stubs to specify a proper return type. And even if only a single
-        value remains, its "proper" value may not obvious from naming conventions.
-        In that case, you will have to update the stub using the actual source code
-        as a guide.
-
-        Settings
-        ========
-
-        ``@string stub-output-directory = ~/stubs``
-
-        The location of the output directory
-
-        ``@data stub-arg-types``
-           
-        Lines to be inserted at the start of each stub file.
-
-        ``@data stub-arg-types``
-                
-        Specifies naming conventions. These conventions are applied to *both*
-        argument lists *and* return values.
-          
-        - For argument lists, the replacement becomes the annotation.
-        - For return values, the replacement *replaces* the pattern.
-
-        For example::
-            
-            aList: Sequence
-            aList2: Sequence
-            c: Commander
-            i: int
-            j: int
-            k: int
-            node: ast.Ast
-            p: Position
-            s: str
-            s2: str
-            v: VNode
-            
-        ``@data stub-def-name-patterns``
-            
-        Specifies the *final* return value to be associated with functions or
-        methods. The pattern is a regex matching the names of defs. Methods names
-        should have the form class_name.method_name. No further pattern matching is
-        done if any of these patterns match. For example::
-            
-            AstFormatter.do_.*: str
-            StubTraverser.format_returns: str
-            StubTraverser.indent: str
-            
-        ``@data stub-return-balanced-patterns``
-
-        Specifies **balanced patterns** to be applied to return values. Balanced
-        patterns match verbatim, except that the patterns ``(*), [*], and {*}``
-        match only *balanced* parens, square and curly brackets.
-
-        Return values are rescanned until no more balanced patterns apply. Balanced
-        patterns are *much* simpler to use than regex's. Indeed, the following
-        balanced patterns suffice to collapse most string expressions to str::
-
-            repr(*): str
-            str.join(*): str
-            str.replace(*): str
-            str%(*): str
-            str%str: str
-
-        ``@data stub-return-regex-patterns``
-            
-        Specifies regex patterns to be applied to return values. These patterns are
-        applied last, after all other patterns have been applied. Again, these
-        regex patterns are applied repeatedly until no further replacements are
-        possible. For example::
-
-            .*__name__: str
-            
-        **Note**: Return patterns are applied to each individual return value
-        separately. Comments never appear in return values, and all strings in
-        return values appear as str. As a result, there is no context to worry
-        about and very short patterns suffice.
+        Make stub files for all nearby @<file> nodes.
+        Take configuration settings from @x stub-y nodes.
         '''
-        #@-<< make-stub-files-docstring >>
         #@+others
-        #@+node:ekr.20160111202214.1: *3* class MakeStubFile
-        class MakeStubFile:
-            '''A class to make Python stub (.pyi) files.'''
-            #@+<< MakeStubFile change log >>
-            #@+node:ekr.20160127043809.1: *4* << MakeStubFile change log >>
-            #@+at
-            #@@language rest
-            #@@wrap
-            # 
-            # Changes made to bring this code nearer to StandAloneMakeStubFile class.
-            # 
-            # - changed self.d to self.args.d.
-            # 
-            # - Added show_data() to dump all data.
-            # 
-            # - Added finalize() from the stand-alone class.
-            # 
-            # - Added scan() method and changed scan_d method:
-            #     - scan_d now splits lines on ":", not blank.
-            #     - This allows the same patterns to be used as with the stand-alone version.
-            #@-<< MakeStubFile change log >>
+        #@+node:ekr.20160213070235.1: *3* class MakeStubFileAdapter
+        class MakeStubFileAdapter:
+            '''
+            An class that adapts leo/external/make_stub_files.py to Leo.
+            
+            Settings are taken from Leo settings nodes, not a .cfg file.
+            '''
             #@+others
-            #@+node:ekr.20160112104836.1: *4* msf.ctors & helpers
+            #@+node:ekr.20160213070235.2: *4* msf.ctor & helpers
             def __init__(self, c):
+                '''MakeStubFile.ctor. From StandAloneMakeStubFile.ctor.'''
                 self.c = c
-                # Settings...
-                self.arg_patterns = self.scan_d('stub-arg-patterns')
-                self.def_patterns = self.scan_d('stub-def-name-patterns')
-                self.general_patterns = self.scan_d('stub-general-patterns')
-                self.overwrite = c.config.getBool('stub-overwrite', default=False)
+                self.msf = msf = g.importExtension(moduleName='make_stub_files',
+                    pluginName=None, verbose=False, required=False)
+                x = msf.StandAloneMakeStubFile()
+                    # x is used *only* to init ivars.
+                # Ivars set on the command line...
+                self.config_fn = None
+                self.enable_unit_tests = False
+                self.files = [] # May also be set in the config file.
                 self.output_directory = self.finalize(
-                    c.config.getString('stub-output-directory') or '~/stubs')
-                self.prefix_lines = self.scan('stub-prefix-lines')
-                self.return_patterns = self.scan_d('stub-return-patterns')
-                # Compatibility with stand-alone version...
+                    c.config.getString('stub-output-directory') or '.')
                 self.output_fn = None
-                self.trace = False
-                self.warn = False
-            #@+node:ekr.20160127045807.1: *5* msf.scan
+                self.overwrite = c.config.getBool('stub-overwrite', default=False)
+                self.trace_matches =  c.config.getBool('stub-trace-matches', default = False)
+                self.trace_patterns =  c.config.getBool('stub-trace-patterns', default = False)
+                self.trace_reduce =  c.config.getBool('stub-trace-reduce', default = False)
+                self.trace_visitors =  c.config.getBool('stub-trace-visitors', default = False)
+                self.update_flag = c.config.getBool('stub-update', default = False)
+                self.verbose =  c.config.getBool('stub-verbose', default = False)
+                self.warn =  c.config.getBool('stub-warn', default = False)
+                # Pattern lists & dicts, set by config sections...
+                self.patterns_dict = {}
+                self.names_dict = {}
+                self.def_patterns = self.scan_patterns('stub-def-name-patterns')
+                self.general_patterns = self.scan_patterns('stub-general-patterns')
+                self.prefix_lines = self.scan('stub-prefix-lines')
+                # Complete the dicts.
+                x.make_patterns_dict()
+                self.patterns_dict = x.patterns_dict
+                self.op_name_dict = x.op_name_dict = x.make_op_name_dict()
+                # Copy the ivars.
+                x.def_patterns = self.def_patterns
+                x.general_patterns = self.general_patterns
+                x.prefix_lines = self.prefix_lines
+            #@+node:ekr.20160213070235.3: *5* msf.scan
             def scan(self, kind):
                 '''Return a list of *all* lines from an @data node, including comments.'''
                 c = self.c
@@ -505,7 +351,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 if not aList:
                     g.trace('warning: no @data %s node' % kind)
                 return aList
-            #@+node:ekr.20160112104450.1: *5* msf.scan_d
+            #@+node:ekr.20160213070235.4: *5* msf.scan_d
             def scan_d(self, kind):
                 '''Return a dict created from an @data node of the given kind.'''
                 trace = False and not g.unitTesting
@@ -523,15 +369,38 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     for key in sorted(d.keys()):
                         print('  %s: %s' % (key, d.get(key)))
                 return d
-            #@+node:ekr.20160127043632.1: *4* msf.finalize
+            #@+node:ekr.20160213070235.5: *5* msf.scan_patterns
+            def scan_patterns(self, kind):
+                '''Parse the config section into a list of patterns, preserving order.'''
+                trace = False or self.trace_patterns
+                d = self.scan_d(kind)
+                aList = []
+                seen = set()
+                for key in d:
+                    value = d.get(key)
+                    # A kludge: strip leading \\ from patterns.
+                    # if key.startswith(r'\\'):
+                        # key = '[' + key[2:]
+                        # if trace: g.trace('removing escapes', key)
+                    if key in seen:
+                        g.trace('duplicate key', key)
+                    else:
+                        seen.add(key)
+                        aList.append(self.msf.Pattern(key, value))
+                if trace:
+                    g.trace('@data %s ...\n' % kind)
+                    for z in aList:
+                        print(z)
+                    print('')
+                return aList
+            #@+node:ekr.20160213070235.6: *4* msf.finalize
             def finalize(self, fn):
                 '''Finalize and regularize a filename.'''
                 return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
-            #@+node:ekr.20160111202214.4: *4* msf.make_stub_file
+            #@+node:ekr.20160213070235.7: *4* msf.make_stub_file
             def make_stub_file(self, p):
                 '''Make a stub file in ~/stubs for the @<file> node at p.'''
                 import ast
-                import leo.core.leoAst as leoAst
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
@@ -549,13 +418,22 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     g.es_print('not found', self.output_directory)
                     return
                 out_fn = out_fn[:-3] + '.pyi'
-                out_fn = os.path.normpath(out_fn)
+                out_fn = g.os_path_normpath(out_fn)
                 self.output_fn = out_fn
                     # compatibility with stand-alone script
                 s = open(abs_fn).read()
                 node = ast.parse(s,filename=fn,mode='exec')
-                leoAst.StubTraverser(controller=self).run(node)
-            #@+node:ekr.20160111202214.3: *4* msf.run
+                # Make the traverser *after* creating output_fn and output_directory ivars.
+                x = self.msf.StubTraverser(controller=self)
+                x.output_fn = self.output_fn
+                x.output_directory = self.output_directory
+                x.trace_matches = self.trace_matches
+                x.trace_patterns = self.trace_patterns
+                x.trace_reduce = self.trace_reduce
+                x.trace_visitors = self.trace_visitors
+                x.run(node)
+
+            #@+node:ekr.20160213070235.8: *4* msf.run
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''
                 if p.isAnyAtFileNode():
@@ -581,7 +459,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         g.es('no files found in tree:', p.h)
             #@-others
         #@-others
-        MakeStubFile(self.c).run(self.c.p)
+        MakeStubFileAdapter(self.c).run(self.c.p)
     #@+node:ekr.20150514063305.367: ** efc.makeDirectory
     @cmd('directory-make')
     def makeDirectory(self, event):
