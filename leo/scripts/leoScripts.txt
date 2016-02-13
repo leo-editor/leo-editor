@@ -7950,6 +7950,165 @@ def ReST2Leo(input):
     c.redraw()    
 #@+node:ekr.20150416061426.1: ** Testing & profiling
 #@+node:ekr.20061029095517: *3* * Scripts that make unit tests
+#@+node:ekr.20160213075418.1: *4* @@button write-unit-tests
+'''
+Write all @test nodes to the test directory of the present .leo file,
+under control of two templates in the TestWriter class.
+
+First developed for the make_stub_files project.
+
+It disables any @other directives in the @test nodes,
+but leaves section references intact.
+'''
+
+# **Note**: this is a Leo script.
+# It **does** have access to c, g and p.
+import os
+import re
+@others
+test_dir = os.path.dirname(c.fileName())+os.sep+'test'
+assert os.path.exists(test_dir), test_dir
+assert os.path.isdir(test_dir), test_dir
+
+if 1:
+    # Writes each test to a separate file in the test directory.
+    TestWriter(c,path=test_dir).run(fn=None)    
+if 0:
+    # Writes all tests to a single file: test/unit_tests.py
+    TestWriter(c,path=test_dir).run(fn='unit_tests.py')
+#@+node:ekr.20160213075418.3: *5* class TestWriter
+
+
+class TestWriter:
+    
+    << define file_template >>
+    << define test_template >>
+
+    @others
+#@+node:ekr.20160213075418.4: *6* << define file_template >>
+# Add any other common imports here.
+
+file_template = '''\
+import unittest
+from make_stub_files import *
+'''
+
+file_template = g.adjustTripleString(file_template,c.tab_width)
+#@+node:ekr.20160213075418.5: *6* << define test_template >>
+test_template = '''
+class %s (unittest.TestCase):
+    def runTest(self):
+%s
+'''
+
+test_template = g.adjustTripleString(test_template,c.tab_width)
+#@+node:ekr.20160213075418.6: *6*  ctor
+
+def __init__(self,c,path=''):
+    '''TestWriter ctor.'''
+    self.c = c
+    load_dir = g.os_path_dirname(c.fileName())
+    self.path = g.os_path_finalize_join(load_dir,path)
+    self.nodes = []
+    assert g.os_path_exists(self.path),self.path
+#@+node:ekr.20160213075418.7: *6* clean
+
+def clean(self,s):
+    '''Munge s so that it can be used as a file name.'''
+    result,tag = [],'@test'
+    if s.startswith(tag):
+        s = s[len(tag):]
+    for ch in s.strip():
+        if ch.isalnum():
+            result.append(ch)
+        else:
+            result.append('_')
+        # elif ch.isspace():
+            # result.append('_')
+    s = ''.join(result)
+    if s.endswith('.py'):
+        s = s[:-3]
+    if not s.startswith('test'):
+        s = 'test_' + s
+    return s.replace('__','_').strip()
+#@+node:ekr.20160213075418.8: *6* get_body
+
+def get_body(self, p):
+    '''Convert p.b to a valid script.'''
+    s_old = p.b
+    # Suppress @others but not section references.
+    p.b = p.b.replace('@others', '')
+    assert p.b.find('@others') == -1
+    s = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=True,
+                    useSentinels=False)
+    p.b = s_old
+    s = ''.join([' '*8+z for z in g.splitLines(s) if z.strip()])
+            # Add leading indentation needed by test_template.
+    return s.rstrip()+'\n'
+#@+node:ekr.20160213075418.9: *6* run
+
+def run(self,fn=None):
+    
+    n, p = 0, c.rootPosition()
+    while p:
+        if p.h.startswith('@ignore '):
+            p.moveToNodeAfterTree()
+        elif p.h.startswith('@test '):
+            self.nodes.append(p.copy())
+            if not fn:
+                fn2 = self.clean(p.h)+'.py'
+                self.write_file(fn2)
+                self.test(fn2)
+                self.nodes=[]
+            n += 1
+            p.moveToThreadNext()
+        else:
+            p.moveToThreadNext()
+    if n == 0:
+        print('no @file or @suite nodes found.')
+    else:
+        if fn:
+            self.write_file(fn)
+            self.test(fn)
+        dest = g.os_path_join(self.path, fn) if fn else self.path
+        print('wrote %s test%s to %s' % (n,self.plural(n), dest))
+#@+node:ekr.20160213075418.10: *6* plural
+
+def plural(self, n):
+    return 's' if n > 1 else ''
+#@+node:ekr.20160213075418.11: *6* test
+
+def test(self,fn):
+    '''Test the newly created file.'''
+    import imp
+    import sys
+
+    if self.path not in sys.path:
+        sys.path.append(self.path)
+    assert fn.endswith('.py')
+    name = fn[:-3]
+    try:
+        f,path,desc = imp.find_module(name,[self.path])
+        imp.load_module(name,f,path,desc)
+        # print('imported %s' % (name))
+    except Exception:
+        print('can not import: %s' % (name))
+        g.es_print_exception()
+#@+node:ekr.20160213075418.12: *6* write_file
+
+def write_file(self,fn):
+
+    assert g.os_path_exists(self.path),self.path
+    fn = g.os_path_finalize_join(self.path,fn)
+    f = open(fn,'w')
+    f.write(self.file_template)
+    # g.trace(''.join([z.h for z in self.nodes]))
+    for p in self.nodes:
+        f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
+    f.close()
+    g.trace('wrote', fn)
 #@+node:ekr.20061029095517.1: *4* @command make-test
 p1 = p.insertAfter()
 c.setHeadString(p1,'@test ')
