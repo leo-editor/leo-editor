@@ -6,6 +6,585 @@
 .. @+node:ekr.20150326053120.1: ** To do: Leo 5.2
 @language rest
 @wrap
+.. @+node:ekr.20160120075825.1: *3* To do First
+@language rest
+@wrap
+
+- Add p/v.temp_u properties. Revise docs.
+- Add Code Academy section to Cheat Sheet.
+- Focus to Nav pane should select search area.
+    - Something like ctrl-Enter shouild go back to Nav pane.
+.. @+node:ekr.20160215152812.1: *4* 1. Fix search on Leo's home page
+@language rest
+@wrap
+
+Leoeditor.com search can't read ctrl characters or punctuation #203
+
+https://github.com/leo-editor/leo-editor/issues/203#issuecomment-174237522
+
+From Terry:
+
+I think the alternate homepage in eda764f fixes this, if you want to try uploading it to the site. There was something similar in the repo. prior to eda764f, but it never made it to the site - we discussed it some time ago and agree it was better to drop the Sphinx search altogether rather than offer two search options (eda764f drops Sphinx), downside is some delay in new content making it into the search results, but I'm guessing not much of a delay, and not being able to find directives is a major issue.
+.. @+node:ekr.20151120100841.1: *4* 2. Fix PyInstaller
+@language rest
+@wrap
+
+Create a 32-bit only installation.
+
+http://www.pyinstaller.org/
+
+Docs: http://pythonhosted.org/PyInstaller/
+
+When things go wrong:
+https://github.com/pyinstaller/pyinstaller/wiki/If-Things-Go-Wrong
+.. @+node:ekr.20160216050026.1: *4* 3. Fix @clean problems
+- Fix git issues.
+- Correct blanks before def and class (see child node)
+
+I wrote the following Leo script to check for blank lines.
+
+@button check-leading-lines
+for p1 in c.all_unique_positions():
+    if p1.h.startswith('@clean'):
+        for p in p1.subtree():
+            if (not p.h.strip().startswith('<<') and
+                p.b.strip() and not p.b.startswith('\n')
+            ):
+                print(repr(p.b[:3]), p.h)
+print('done')
+
+It might be possible for the @clean read/write code to insert the blank lines automatically.
+.. @+node:ekr.20160213094227.1: *5* Script to correct blanks in @clean files
+
+# From benzolius: https://github.com/benzolius
+# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
+
+# print('\n\n\n\n')
+# print('Now:\n')
+
+for p in c.all_positions():
+    try:
+        # Corrects empty lines around @language python\n@tabwidth -4
+        if p.h.startswith('@clean') and p.h.endswith('py'):
+            # Corrects empty lines after @first
+            try:
+                if '@language python\n@tabwidth -4' in p.b:
+                    splited = p.b.partition('@language python\n@tabwidth -4')
+                    p.b = ''.join((splited[0].rstrip(), '\n', splited[1], '\n', splited[2].lstrip()))
+                    print(p.h)
+            except Exception:
+                g.es_exception()
+
+        # Corrects empty lines between main blocks
+        else:
+            parent = p.parent().h
+            if parent.startswith('@clean'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+            # Corrects empty lines between methods
+            elif parent.startswith('class'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+
+    except Exception:
+        g.es_exception()
+.. @+node:ekr.20160216045711.1: *4* 4. Code Academy stuff
+.. @+node:ekr.20160128201207.1: *5* ==== Code academy posts
+@language rest
+@wrap
+
+To do:
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a give uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+- Scripts can handle events.
+
+- Redraw mode that hides siblings.
+- Key bindings in the nav pane.
+    - Arrow keys.
+    - Enter shift to outline pane.
+    - Some key to shift back to the nav pane.
+- Clone-find-predicate.
+.. @+node:ekr.20160129054828.1: *6* First post: topics
+@language rest
+@wrap
+
+Here is a quick list topics for the code academy.  Most can already be done easy, if you know where to look.  Some may require a few new lines in Leo's core. These topics should also be included in Leo's cheat sheet, or somewhere similar.
+
+uA's
+
+They are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
+
+Everyone needs to know how to get, set and search uA's.  You can get and set uA's with v.u. Just a few lines of code will search the entire outline for all nodes/positions having a given uA.
+
+Quick additions to Leo's core:
+- Define the p.u property, so code can do p.u instead of p.v.u.
+- Possibly make the api for uA's more convenient.
+
+A more ambitious addition: Define a gui interface for uA's.
+
+Other topics
+
+- Clones: making and deleting them. Clones are cheap to create!
+- How to create new panes in the log window, and how to put cool stuff in them.
+- How to hoist outlines programmatically.
+- How to write a plugin so it can respond to events.
+- How to create new panes in Leo's window with Terry's free_layout and nested_splitter plugins.  In essence, these plugin are part of Leo's core.
+- How to put multiple icons in a single headline.  This may be possible already.  If not it would require just a few lines of code in Leo's core.
+
+We discussed the so-called Easter-Egg interface to create new panes this from the gui, but a summary of how to do this programmatically is needed. Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+
+- How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
+
+New directions
+
+Putting all this together, we all agreed that being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
+
+- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
+
+- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
+.. @+node:ekr.20160129103906.1: *6* uA's and the new p.u property
+A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
+
+The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
+
+plugin_name = 'test_plugin'
+d = p.u.get(plugin_name,{})
+d ['n'] = 8
+p.u [plugin_name] = d
+
+p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
+
+It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
+
+for p in c.all_unique_positions():
+    if p.u:
+        print(p.h, sorted(p.u.keys()))
+
+This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
+
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
+
+aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
+print('\n'.join([p.h for p in aList]))
+
+Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
+
+Important: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
+
+Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setting temp uA's will be as easy as getting and setting uA's. I'll do this today.
+
+These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
+
+As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
+.. @+node:ekr.20160129101736.1: *6* icons
+@language rest
+@wrap
+
+During our conference call, someone asked whether nodes may have more than one icon.  Indeed they can.
+
+For example, running this script will insert three icons. Running the script again will insert three more.
+
+@language python
+
+
+table = (
+    'edittrash.png',
+    'connect_no.png',
+    'error.png',
+)
+for icon in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,
+        '..', 'Icons', 'Tango', '16x16', 'status', icon)
+    if g.os_path_exists(fn):
+        c.editCommands.insertIconFromFile(path=fn)
+        
+@language rest
+@wrap
+        
+With a minor change to Leo's core, it is now easy to delete the icons of the node at position p:
+
+    c.editCommands.deleteNodeIcons(p=p)
+
+.. @+node:ekr.20160129103813.1: *6* git
+If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
+
+    git clone https://github.com/leo-editor/leo-editor.git
+
+Once you have done that, you can get the latest sources with:
+
+    git pull
+
+Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
+
+I've been wondering when to say this, but recent developments have forced my hand.  Today, as the result of our Code Academy discussion, I have added the p.u property and a keyword arg to c.editCommands.deleteNodeIcons.  If you don't use git you will quickly get out of the loop.
+
+Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
+
+I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
+.. @+node:ekr.20160216045559.1: *5* == New Code Academy posts
+.. @+node:ekr.20160201072634.1: *6* c.cloneFindPredicate
+def cloneFindPredicate(self,
+    generator,     # The generator used to traverse the tree.   
+    predicate,     # A function of one argument p, returning True
+                   # if p should be included in the results.
+    flatten=False, # True: Put all matches at the top level.
+    undoType=None, # The undo name, shown in the Edit:Undo menu.
+                   # The default is 'clone-find-predicate'
+):
+    '''
+    Traverse the tree given using the generator, cloning all positions for
+    which predicate(p) is True. Undoably move all clones to a new node, created
+    as the last top-level node. Arguments:
+
+    generator,      The generator used to traverse the tree.
+    predicate,      A function of one argument p returning true if p should be included.
+    flatten=False,  True: Move all node to be parents of the root node.
+    undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                    The default is 'clone-find-predicate'
+    '''
+    c = self
+    u, undoType = c.undoer, undoType or 'clone-find-predicate'
+    clones, seen = [], set(), 
+    for p in generator():
+        if predicate(p) and p.v not in seen:
+            if flatten:
+                seen.add(p.v)
+            else:
+                for p2 in p.self_and_subtree():
+                    seen.add(p2.v)
+            clones.append(p.copy())
+    if clones:
+        undoData = u.beforeInsertNode(c.p)
+        root = c.createCloneFindPredicateRoot(flatten, undoType)
+        for child in clones:
+            child.moveToLastChildOf(root)
+        u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
+        c.selectPosition(root)
+        c.setChanged(True)
+        c.redraw()
+    else:
+        g.es_print('not found:', undoType)
+.. @+node:ekr.20160201075438.1: *7* c.createCloneFindPredicateRoot
+def createCloneFindPredicateRoot(self, flatten, undoType):
+    '''Create a root node for clone-find-predicate.'''
+    c = self
+    root = c.lastTopLevel().insertAfter()
+    root.h = undoType + (' (flattened)' if flatten else '')
+    return root
+.. @+node:ekr.20160130160940.1: *6* How to rearrange layout programatically
+# A summary of how to do [rearrange panes] programmatically is needed.
+
+.. @+node:ekr.20160130161058.1: *7* full and minimal examples
+# https://github.com/leo-editor/snippets/blob/master/examples/demo_widget.py
+
+# full and minimal examples for adding widgets in panes in Leo
+
+# Note: to add the widget, right click a pane divider, and select
+# Insert.  Then click the Action button that appears, and select
+# your widget.
+
+from leo.core.leoQt import QtCore, QtWidgets
+
+class DemoProvider:
+    def ns_provides(self):
+        """should return a list of ('Item name', '__item_id') strings, 
+        'Item name' is displayed in the Action button menu, and
+        '__item_id' is used in ns_provide()."""
+        return [
+            ("Demo horizontal slider", "__demo_provider_hs"),
+            ("Demo vertical slider", "__demo_provider_vs"),
+        ]
+    def ns_provide(self, id_):
+        """should return the widget to replace the Action button based on
+        id_, or None if the called thing is not the provider for this id_"""
+        if id_ == "__demo_provider_hs":
+            w = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+            return w
+        if id_ == "__demo_provider_vs":
+            w = QtWidgets.QSlider()
+            return w
+        return None
+    def ns_context(self):
+        """should return a list of ('Item name', '__item_id') strings, 
+        'Item name' is displayed in the splitter handle context-menu, and
+        '__item_id' is used in ns_do_context().  May also return a dict,
+        in which case each key is used as a sub-menu title, whose menu
+        items are the corresponding dict value, a list of tuples as above.
+        dicts and tuples may be interspersed in lists."""
+        return [
+            ("Put 'text' in log", "__demo_provider_til"),
+            {
+                'More texts': [
+                    ("Put 'frog' in log", "__demo_provider_txt_frog"),
+                    ("Put 'otters' in log", "__demo_provider_txt_otters"),
+                ],
+                'Numbers': [
+                    ("Put 7 in log", "__demo_provider_txt_7"),
+                    ("Put 77 in log", "__demo_provider_txt_77"),
+                ],
+            }
+        ]
+    def ns_do_context(self,id_, splitter, index):
+        """should do something based on id_ and return True, or return False
+        if the called thing is not the provider for this id_
+        
+        splitter and index as per QSplitter"""
+        if id_ == '__demo_provider_til':
+            g.es("'text'")
+            return True
+        if id_.startswith('__demo_provider_txt_'):
+            # silly example, but storing info in id_ is legitimate
+            g.es(id_.replace('__demo_provider_txt_', ''))
+            return True
+        return False
+    def ns_provider_id(self):
+        """return a string identifying the provider (at class or instance level),
+        any providers with the same id will be removed before a new one is
+        added"""
+        return "__demo_provider"
+        
+class MinimalDemoProvider:
+    def ns_provides(self):
+        return [("Demo minimal slider", "__demo_provider_minimal_slider")]
+    def ns_provide(self, id_):
+        if id_ == "__demo_provider_minimal_slider":
+            w = QtWidgets.QSlider()
+            return w
+        return None
+    def ns_provider_id(self):
+        return "__demo_provider_minimal"
+        
+c.free_layout.get_top_splitter().register_provider(DemoProvider())
+c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
+.. @+node:ekr.20160130161140.1: *7* adds web browser
+# https://gist.github.com/tbnorth/6165576
+
+# Adds a web-browser pane, as written it opens it in a separate window,
+# which is part of the free_layout system.
+
+from PyQt4 import QtGui, QtWebKit, QtCore, Qt
+from PyQt4.QtCore import Qt as QtConst
+
+class WebKitPaneProvider:
+    ns_id = '_add_tmce_pane'
+    def __init__(self, c):
+        self.c = c
+        ### Added this.
+        self.ns_id = 'xyzzy' #'_add_tmce_pane'
+        # Careful: we may be unit testing.
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        g.trace(self.ns_id)
+        return[('WebKit browser', self.ns_id)]
+
+    def ns_provide(self, id_):
+        g.trace(id_)
+        if id_ != self.ns_id:
+            return
+
+        w = QtGui.QWidget()
+        w.setLayout(QtGui.QVBoxLayout())
+        location = QtGui.QLineEdit("http://www.google.com/")
+        w.layout().addWidget(location)
+        web_browser = QtWebKit.QWebView()
+        w.layout().addWidget(web_browser)
+
+        QtWebKit.QWebSettings.globalSettings().setAttribute(
+            QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+            
+        location.returnPressed.connect(
+            lambda: web_browser.setUrl(QtCore.QUrl(location.text())))
+        
+        location.returnPressed.emit()
+        
+        web_browser.urlChanged.connect(
+            lambda url: location.setText(url.toString()))
+        
+        return w
+
+    def ns_provider_id(self):
+        return self.ns_id
+        
+### WebKitPaneProvider(c).ns_id
+        
+single = False
+
+if single:
+    id_ = WebKitPaneProvider(c).ns_id
+
+if hasattr(c, 'free_layout'):
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        ### Original code.  Very weird.
+        ### splitter.open_window(action=WebKitPaneProvider.ns_id)
+        if single:
+            splitter.open_window(action=id_)
+        else:
+            splitter.open_window(action=WebKitPaneProvider(c).ns_id)
+        
+.. @+node:ekr.20160211104305.1: *4* 5. Fix problems with @language rest in .md files
+This is important now that git uses .md files.
+
+\@language rest is needed to render the docs properly within Leo, but Leo
+converts @language rest to @language md when reading .md files.
+.. @+node:ekr.20160215153627.1: *4* ** Notes re clones & multi-tree
+@language rest
+@wrap
+
+The big questions:
+
+- Can we fix the problems with clones by limiting/improving searches?
+
+- Should we be thinking about operations instead of views?
+
+- Can we have alternate parents/children without changing views?
+
+
+
+
+    
+
+    
+.. @+node:ekr.20160216043439.1: *5* SWIM: Search Where I Mean
+- Can we just reduce duplicate searches?
+- Isn't this really all that is needed?
+- Prioritize searches? Limit searches?
+- Alt-Ctrl-f: search in view?
+- Would search anchors be useful?
+- I want something simpler than changing search scope.
+.. @+node:ekr.20160216050933.1: *5* I love clones, I hate clones
+I used clones intensely in the make-stub-files project.
+
+- For unit testing, I moved clones of all code needed by the @test node to be children of the @test node.  Considered in isolation, this looks like the ultimate unit-testing pattern. There is never any need to execute the unit test externally because all code is up-to-date.
+
+- I've just created a set of "views" on the code that would help experienced Leo users understand the code.
+
+Alas, this expert usage of clones comes with a price. Views will bewilder people who don't use Leo. Second, clones gum up searches, even (especially) for experts. Every unit test created its own set of clones!
+
+The clone-find-all commands are kinda a workaround, because I can search just from the created node to the end of the file.  But these commands create more clones, so if I search from anywhere else the situation just gets worse.  Boo hoo.
+
+This morning a new thought arose.  Is it possible to use an improved Nav pane to avoid the problems with clones?  In particular:
+
+A. I want a way to mark (with an attribute) nodes to be incorporated into unit tests, as if they were cloned as children of @test nodes.  It should be possible!
+
+B. I want a way to mark (with an attribute) nodes that are part of a view.  Richard et. al. may already have done this!  My requirements are probably more stringent than most people's.  I'm excited to think of the possibilities.
+.. @+node:ekr.20160216044338.1: *5* Views
+- Views might unify bookmarks, chapters, nav, clone-find, find-by-predicate.
+    
+    views <==> bookmarks, chapters, nav, clone-find, find-by-predicate.
+
+- Do clones create view or vice versa?
+- Is it all about views?
+- Do @test nodes create views?
+
+.. @+node:ekr.20160216044113.1: *5* New commands
+- go-to-parent (Better than Alt-N)
+- show-children/hide-children.
+- clone-without-children?
+- find-in-view
+- find-parent-in-view.
+
+For Chapters & views
+hoist-children
+Alt-Enter: hoist (create-chapter)
+Alt-Ctrl-G: dehoist or show-main-chapter.
+.. @+node:ekr.20160216043458.1: *5* Smarter clone command
+All clone operations imply a move (at present).
+    - Should this move be to a new view?
+    - Or other designated spot?
+    
+- Clone-bare-node implies moving to a new thread color (view plane).
+.. @+node:ekr.20160216043537.1: *5* Improve chapters
+* @chapter should be allowed *anywhere*.
+    - It takes 0.07 sec to search all of Leo.
+    - chapter commands should always search for @chapter nodes.
+    - There is no need for @chapters.
+
+- Replace ChapterController by ChapterCommands class.
+- Why do we have all the chapters code?
+- Actually switching chapters is easy?
+- I suspect the reason has to do with commands, not drawing.
+- However, this may have been done when I was chronically sleep deprived.
+.. @+node:ekr.20160216043726.1: *6* How long does it take to search LeoPy.leo?
+@language python
+
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20160216044817.1: *5* Why are multiple body panes hard?
+Why is switching nodes so hard?
+.. @+node:ekr.20160216044718.1: *5* New directive: @include & @include-node
+Possible, but I would prefer solving the problems with clones.
+.. @+node:ekr.20160211094257.1: *5* @test includes nodes based on attributes?
+An alternative to clones.
+.. @+node:ekr.20160215043815.1: *4* ask Guido to announce make_stub_files
+.. @+node:ekr.20160211093017.1: *4* Better Git diffs of .leo files
+@language rest
+@wrap
+
+- Ignore all html elements except <t> elements.
+- Strip <t> and <\t> elements.
+
+Make this a git addon?
+
+I am constantly annoyed at what git diff showed for .leo files. A few
+months ago I experimented with having Leo be the diff agent, but a) that
+didn't work well even for me and b) it's out of the question for people who
+don't use Leo.
+
+It would be good to create a git plugin/addon that would more clearly show
+diffs to .leo files. The requirements are actually very simple:
+
+- Ignore all html elements except <t> elements.
+- Strip <t> and <\t>and show only diffs to the body pane.
+- Show the headline in the diff.
+
+The result could be awesome!
+.. @+node:ekr.20160119131726.1: *4* Fix bug: g.getLanguageFromPosition
+# If a node contains multiple @language directives, we
+# must use the correct language!
+.. @+node:ekr.20150325075144.1: *5* g.getLanguageFromPosition
+def getLanguageAtPosition(c, p):
+    '''
+    Return the language in effect at position p.
+    This is always a lowercase language name, never None.
+    '''
+    aList = g.get_directives_dict_list(p)
+    d = g.scanAtCommentAndAtLanguageDirectives(aList)
+    language = (
+        d and d.get('language') or
+        g.getLanguageFromAncestorAtFileNode(p) or
+        c.config.getString('target_language') or
+        'python'
+    )
+    return language.lower()
+.. @+node:ekr.20160120075723.1: *4* Better Javascript Importer
+Use regex in importers?
+
+At present, the new code is stashed.
 .. @+node:ekr.20151120110118.1: *3* Installation & outreach
 @language rest
 @wrap
@@ -115,7 +694,7 @@ I was able to install 64-bit versions of PyQt5.5.1 with Python 3.4.4 on Windows 
 However, there are now problems with the clipboard, as discussed in #201.
 
 Also, have not been able to install enchant.
-.. @+node:ekr.20151231095352.1: *4* Bug 205: @ or @doc does't work perfectly in @clean 
+.. @+node:ekr.20151231095352.1: *4* Bug 205: @ or @doc does't work perfectly in @clean
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/205
@@ -130,7 +709,7 @@ in @clean node, the @doc only work like this:
 without @('@ bbb' -> 'bbb'), it will be transfer into comment in file(in '# xxxxx' form).
 .. @+node:ekr.20151231100137.1: *4* Bug 212: Yet Another Encoding Problem
 https://github.com/leo-editor/leo-editor/issues/212
-.. @+node:ekr.20151231095140.1: *4* Bug 213: leo --ipython fails to connect with python3.5 and jupyter 
+.. @+node:ekr.20151231095140.1: *4* Bug 213: leo --ipython fails to connect with python3.5 and jupyter
 https://github.com/leo-editor/leo-editor/issues/213
 leo --ipython fails to connect with python3.5 and jupyter
 
@@ -167,7 +746,7 @@ See debuggotogloballine.leo
 https://github.com/leo-editor/leo-editor/issues/226
 .. @+node:ekr.20151231120042.1: *4* Fix links in home page
 Eliminate http://leoeditor.com/ prefix for links from home page.
-.. @+node:ekr.20150813065008.1: *3* First
+.. @+node:ekr.20150813065008.1: *3* Next
 @language rest
 @wrap
 .. @+node:ekr.20151119110658.1: *4* Allow bracket matching for JavaScript
@@ -242,6 +821,17 @@ Search for:
 LeoQtGui.Dialogs & panels
 LeoQtGui.runSaveFileDialog
 LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20150609101355.1: *4* Bug 129: Font setting overridden by new workbook
+@language rest
+@wrap
+
+Leo reading CheatSheet settings
+https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
+
+https://github.com/leo-editor/leo-editor/issues/129
+Font setting overridden by new workbook
+
+If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
 .. @+node:ekr.20150612094107.1: *4* Fold vr2 into vr
 .. @+node:ekr.20150418061229.1: *5* Add QWebView & OpenGl support to viewrendered.py
 How much of this does vr2 do?
@@ -585,6 +1175,7 @@ yview: 0
 .. @+node:ekr.20150410043749.1: *3* Maybe
 @language rest
 @wrap
+.. @+node:ekr.20150723205725.1: *4* fix or remove HTMLReportTraverser
 .. @+node:ekr.20150601161825.1: *4* 2-to-3 command
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20150602122614.1: *4* Beautifier warns about long lines

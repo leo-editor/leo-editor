@@ -74,7 +74,7 @@
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@asis ../../README.MD</vh></v>
 <v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
