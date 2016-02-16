@@ -448,28 +448,80 @@ converts @language rest to @language md when reading .md files.
 @language rest
 @wrap
 
-The big questions:
 
-- Can we fix the problems with clones by limiting/improving searches?
 
-- Should we be thinking about operations instead of views?
 
+    
+
+    
+.. @+node:ekr.20160216093010.1: *5* Aha: think function, not scope
+@language rest
+@wrap
+
+Summary:
+
+- Clones are great! They show multiple views.
+- Replace interactive commands with non-interactive functional find commands.
+    - There are *many* possible functional find commands.
+    - There is no need to limit the scope of searches!  Hurray!
+- Clone-find commands should *always* search the entire outline,
+  unless node-only or suboutline-only searches are in effect.
+.. @+node:ekr.20160216044113.1: *6* New commands
+- find-primary-parent (Better than Alt-N), find-primary-node.
+- find-in-view
+- find-parent-in-view.
+- find-definition (of class, def, vars, etc.)
+- find-bookmarks, find-chapters, find-at-test nodes, find-at-button nodes.
+- find-nodes-by-attribute, find-nodes-by-predicate.
+
+Experimental:
+- show-children/hide-children.
+- clone-without-children? (implies moving to a new thread color).
 - Can we have alternate parents/children without changing views?
 
+For Chapters & views:
+- hoist-children
+- Alt-Enter: hoist (create-chapter)
+- Alt-Ctrl-G: dehoist or show-main-chapter.
+.. @+node:ekr.20160216122023.1: *6* Clones are great!
+Why confine ourselves to one view at a time?
+- A single outline can (and should!) contain many views.
 
+If we do want to focus on a single view, we can use hoists.
+- Do we want typed hoists?
+.. @+node:ekr.20160216121958.1: *6* Cloning implies a move
+The clone operation always implies a move.
+- To a particular *spot*.
+- At the last top-level node.
 
+The clone-find-by-attribute/predicate implicitly creates a new view.
+.. @+node:ekr.20160216121413.1: *6* Think function, not interactive find
+1. Use *non-interactive* searches to perform those functions.
+- Such functions are fast, even for large outlines.
+- Function seldem (never?) depends on scope.
+- Worrying about scope is a red herring.
 
+2. Avoid general, interactive find.
+- It's almost never what is actually wanted!
     
-
+3. A key task is to *find a view*.
+- **command-history completion** could handle all the new commands.
     
-.. @+node:ekr.20160216043439.1: *5* SWIM: Search Where I Mean
-- Can we just reduce duplicate searches?
-- Isn't this really all that is needed?
-- Prioritize searches? Limit searches?
-- Alt-Ctrl-f: search in view?
-- Would search anchors be useful?
-- I want something simpler than changing search scope.
-.. @+node:ekr.20160216050933.1: *5* I love clones, I hate clones
+    Example:  Alt-x find up-arrow or down-arrow.
+  
+.. @+node:ekr.20160216120900.1: *6* Diebenkorn
+In order of importance:
+
+1. Do search. But in order to find other than what is searched for.
+
+2. Attempt what is not certain. Certainty may or may not come later. It may then be a valuable delusion.
+
+3. The pretty, initial position which falls short of completeness is not to be valued — except as a stimulus for further moves.
+.. @+node:ekr.20160216122924.1: *5* Obsolete ideas
+Focusing on commands clarifies everything.
+.. @+node:ekr.20160211094257.1: *6* @test includes nodes based on attributes?
+An alternative to clones.
+.. @+node:ekr.20160216050933.1: *6* I love clones, I hate clones
 I used clones intensely in the make-stub-files project.
 
 - For unit testing, I moved clones of all code needed by the @test node to be children of the @test node.  Considered in isolation, this looks like the ultimate unit-testing pattern. There is never any need to execute the unit test externally because all code is up-to-date.
@@ -485,7 +537,21 @@ This morning a new thought arose.  Is it possible to use an improved Nav pane to
 A. I want a way to mark (with an attribute) nodes to be incorporated into unit tests, as if they were cloned as children of @test nodes.  It should be possible!
 
 B. I want a way to mark (with an attribute) nodes that are part of a view.  Richard et. al. may already have done this!  My requirements are probably more stringent than most people's.  I'm excited to think of the possibilities.
-.. @+node:ekr.20160216044338.1: *5* Views
+.. @+node:ekr.20160216044718.1: *6* New directive: @include & @include-node
+Possible, but I would prefer solving the problems with clones.
+.. @+node:ekr.20160216043439.1: *6* SWIM: Search Where I Mean
+- Can we just reduce duplicate searches?
+- Isn't this really all that is needed?
+- Prioritize searches? Limit searches?
+- Alt-Ctrl-f: search in view?
+- Would search anchors be useful?
+- I want something simpler than changing search scope.
+.. @+node:ekr.20160216121042.1: *6* The main tree/view
+The clone-find commands should always be limited to the **main tree/view**.
+
+By default, this could either be a) the entire outline or b) only @<file> nodes.
+
+.. @+node:ekr.20160216044338.1: *6* Views
 - Views might unify bookmarks, chapters, nav, clone-find, find-by-predicate.
     
     views <==> bookmarks, chapters, nav, clone-find, find-by-predicate.
@@ -493,25 +559,7 @@ B. I want a way to mark (with an attribute) nodes that are part of a view.  Rich
 - Do clones create view or vice versa?
 - Is it all about views?
 - Do @test nodes create views?
-
-.. @+node:ekr.20160216044113.1: *5* New commands
-- go-to-parent (Better than Alt-N)
-- show-children/hide-children.
-- clone-without-children?
-- find-in-view
-- find-parent-in-view.
-
-For Chapters & views
-hoist-children
-Alt-Enter: hoist (create-chapter)
-Alt-Ctrl-G: dehoist or show-main-chapter.
-.. @+node:ekr.20160216043458.1: *5* Smarter clone command
-All clone operations imply a move (at present).
-    - Should this move be to a new view?
-    - Or other designated spot?
-    
-- Clone-bare-node implies moving to a new thread color (view plane).
-.. @+node:ekr.20160216043537.1: *5* Improve chapters
+.. @+node:ekr.20160216043537.1: *5* To do: Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
     - chapter commands should always search for @chapter nodes.
@@ -534,12 +582,6 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-.. @+node:ekr.20160216044817.1: *5* Why are multiple body panes hard?
-Why is switching nodes so hard?
-.. @+node:ekr.20160216044718.1: *5* New directive: @include & @include-node
-Possible, but I would prefer solving the problems with clones.
-.. @+node:ekr.20160211094257.1: *5* @test includes nodes based on attributes?
-An alternative to clones.
 .. @+node:ekr.20160215043815.1: *4* ask Guido to announce make_stub_files
 .. @+node:ekr.20160211093017.1: *4* Better Git diffs of .leo files
 @language rest
