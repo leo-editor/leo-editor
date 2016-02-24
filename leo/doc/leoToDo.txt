@@ -10,6 +10,14 @@
 @language rest
 @wrap
 
+Urgent:
+- preload search strings *only* if the setting is on!
+- Auto-move clones.
+- PyInstaller & regular releases
+    - Small bugs don't matter!
+    - It's much more important to release Leo every two months or so.
+
+Next:
 - Add p/v.temp_u properties. Revise docs.
 - Add Code Academy section to Cheat Sheet.
 - Focus to Nav pane should select search area.
@@ -444,7 +452,7 @@ This is important now that git uses .md files.
 
 \@language rest is needed to render the docs properly within Leo, but Leo
 converts @language rest to @language md when reading .md files.
-.. @+node:ekr.20160215153627.1: *4* ** Notes re clones & multi-tree
+.. @+node:ekr.20160215153627.1: *4* Notes re clones & multi-tree
 @language rest
 @wrap
 
