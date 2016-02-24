@@ -465,6 +465,9 @@ class LeoFind:
     def preloadFindPattern(self, w):
         '''Preload the find pattern from the selected text of widget w.'''
         c, ftm = self.c, self.ftm
+        if not c.config.getBool('preload-find-pattern', default=False):
+            # 2016/02/24: Make *sure* we don't preload the find pattern if it is not wanted.
+            return
         # Enhancement #177: Use selected text as the find string.
         if w:
             if w.hasSelection():
@@ -501,7 +504,7 @@ class LeoFind:
     def startSearch(self, event):
         c = self.c
         w = self.editWidget(event)
-        if w and c.config.getBool('preload-find-pattern', default=False):
+        if w:
             self.preloadFindPattern(w)
         self.find_seen = set()
         if self.minibuffer_mode:
