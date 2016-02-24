@@ -1472,10 +1472,10 @@ class LeoFind:
             u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
-            c.redraw()
         else:
             self.restore(data)
-        c.redraw()
+        c.contractAllHeadlines()
+        # c.redraw()
         g.es("found", count, "matches for", self.find_text)
     #@+node:ekr.20141023110422.1: *5* find.createCloneFindAllNodes
     def createCloneFindAllNodes(self, clones, flattened):

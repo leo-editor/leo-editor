@@ -11,8 +11,6 @@
 @wrap
 
 Urgent:
-- preload search strings *only* if the setting is on!
-- fix bug: cff sometimes doesn't select the target node.
 - Auto-move clones.
 - PyInstaller & regular releases
     - Small bugs don't matter!
