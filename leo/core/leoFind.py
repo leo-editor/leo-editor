@@ -1543,12 +1543,13 @@ class LeoFind:
         if g.match_word(p.h, 0, '@ignore'):
             if trace: g.trace('ignoring', p.h)
             return True
-        else:
+        elif p.isAnyAtFileNode():
             for s in g.splitLines(p.b):
                 if g.match_word(s, 0, '@all'):
                     if trace: g.trace('@all in', p.h)
                     return True
             return False
+        return False
     #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
     def findNext(self, initFlag=True):
         '''Find the next instance of the pattern.'''
