@@ -769,6 +769,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
     @cmd('clone-find-all')
     @cmd('find-clone-all')
+    @cmd('cfa')
     def minibufferCloneFindAll(self, event=None, preloaded=None):
         c = self.c; k = self.k; tag = 'clone-find-all'
         state = k.getState(tag)
@@ -788,6 +789,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
+    @cmd('cff')
     def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
         c = self.c; k = self.k; tag = 'clone-find-all-flattened'
         state = k.getState(tag)
@@ -1415,11 +1417,14 @@ class LeoFind:
         skip = set() # vnodes that should be skipped.
         count = 0
         if trace: g.trace(self.find_text)
-        # 2014/04/24: Init suboutline-only for clone-find-all commands
+        # Init suboutline-only for clone-find-all commands
         if clone_find_all or clone_find_all_flattened:
             self.p = c.p
             if self.suboutline_only:
                 self.onlyPosition = self.p.copy()
+            else:
+                # 2016/02/20: Always search the entire outline.
+                self.p = c.rootPosition()
         clones = set()
         result = []
         while 1:

@@ -52,7 +52,7 @@ This plugin defines the following commands that can be bound to keys:
   focus is still in line editor & you can keep on typing (sort of like
   sublime text).
 
-  **Clever**: paces in search string are replaced with * wild card. So if
+  **Clever**: spaces in search string are replaced with * wild card. So if
   you search for, say "file txt", it will search for "file*txt", matching
   e.g. @file readme.txt.
 

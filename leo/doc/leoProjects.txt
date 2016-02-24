@@ -352,25 +352,6 @@ This setting only affects Ctrl-F (start-search).
 Other searches always preload by default.  This may change.
 .. @+node:ekr.20150710082301.1: *5* Found: (flattened) preloadFindPattern
 @language python
-.. @+node:ekr.20131117164142.16996: *6* find.minibufferCloneFindAllFlattened
-@cmd('clone-find-all-flattened')
-@cmd('find-clone-all-flattened')
-def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
-    c = self.c; k = self.k; tag = 'clone-find-all-flattened'
-    state = k.getState(tag)
-    if state == 0:
-        w = self.editWidget(event) # sets self.w
-        if w:
-            if not preloaded:
-                self.preloadFindPattern(w)
-            self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
-                self.minibufferCloneFindAllFlattened)
-    else:
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
-        c.treeWantsFocus()
 .. @+node:ekr.20150629072547.1: *6* find.preloadFindPattern
 def preloadFindPattern(self, w):
     '''Preload the find pattern from the selected text of widget w.'''
@@ -414,6 +395,7 @@ def startSearch(self, event):
 .. @+node:ekr.20131117164142.17011: *6* find.minibufferCloneFindAll
 @cmd('clone-find-all')
 @cmd('find-clone-all')
+@cmd('cfa')
 def minibufferCloneFindAll(self, event=None, preloaded=None):
     c = self.c; k = self.k; tag = 'clone-find-all'
     state = k.getState(tag)

@@ -539,13 +539,6 @@ A. I want a way to mark (with an attribute) nodes to be incorporated into unit t
 B. I want a way to mark (with an attribute) nodes that are part of a view.  Richard et. al. may already have done this!  My requirements are probably more stringent than most people's.  I'm excited to think of the possibilities.
 .. @+node:ekr.20160216044718.1: *6* New directive: @include & @include-node
 Possible, but I would prefer solving the problems with clones.
-.. @+node:ekr.20160216043439.1: *6* SWIM: Search Where I Mean
-- Can we just reduce duplicate searches?
-- Isn't this really all that is needed?
-- Prioritize searches? Limit searches?
-- Alt-Ctrl-f: search in view?
-- Would search anchors be useful?
-- I want something simpler than changing search scope.
 .. @+node:ekr.20160216121042.1: *6* The main tree/view
 The clone-find commands should always be limited to the **main tree/view**.
 
@@ -582,7 +575,8 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-.. @+node:ekr.20160215043815.1: *4* ask Guido to announce make_stub_files
+.. @+node:ekr.20160219101028.1: *4* make_stub_file --prefix-file
+Solves problem with leading whitespace.
 .. @+node:ekr.20160211093017.1: *4* Better Git diffs of .leo files
 @language rest
 @wrap
