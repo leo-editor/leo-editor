@@ -10,12 +10,8 @@
 @language rest
 @wrap
 
-Release next Friday: goal: to release within 2 weeks of major work.
+Release next Friday: The goal is to release within 2 months of major work.
 
-Moved TokenSync class into leoAst.py.
-
-Urgent:
-- Finish py2cs
 - Write coffeescript hello world, desktop and browser.
 - Fix vim & xemacs bugs: use git bisect.
 
