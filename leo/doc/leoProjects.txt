@@ -82,20 +82,50 @@ The leo/commands directory contains the new code.
 .. @+node:ekr.20150622130738.1: *4* Verified that c.p.copy() is always redundant
 Examined c.p and c.currentPosition
 .. @+node:ekr.20150427042446.1: *3* Features
-.. @+node:ekr.20150412053053.1: *4* Finished leoOPML plugin
-.. @+node:ekr.20150420130845.1: *4* Added File:Print menus
-jasonic
+.. @+node:ekr.20160225053416.1: *4* Major feature: improved searching
+The new **clone-find-marked** commands and improved **clone-find** commands revolutionize my workflow.
 
-Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
+.. @+node:ekr.20150619082025.1: *5* Added optional Find Dialog
+Enable with: @bool use_find_dialog = True
+Related setting: @bool close-find-dialog-after-search = False
 
-print-to-web (htmlize) should definitely be on Leo's missing PRINT MENU.
+Defaults are as shown above.
+.. @+node:ekr.20160225050603.1: *5* Improved cfa and cff commands
+@language rest
+@wrap
 
-Having a little library of export scripts--well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
-.. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
-The fix was to create a dummy root position in abbrev.init_env.
-.. @+node:ekr.20150422124650.1: *4* Added c.backup
-Useful for per-file backups.
-.. @+node:ekr.20150425135844.1: *4* Added support for @data history-list
+Rev 38db98ff improves Leo's *existing* clone-find commands:
+
+- cff (clone-find-flattened)
+- cfa (clone-find-all)
+
+in the following extremely important ways:
+
+1. These commands search the entire outline, regardless of the presently selected node. This is a *huge* improvement to my workflow—I don't have to worry about where I start searches. These commands do honor suboutline-only searches. For me, this is moot because I almost never use suboutline-only-restricted searches.
+
+2. These commands ignore @ignore trees and any @<file> tree whose root nodes contains an @all directive. This is a super tweak: I don't get false matches about nodes in the attic.
+
+3. These commands are significantly than before because they search body text in one step.
+.. @+node:ekr.20160225045341.1: *5* Added clone-marked commands
+@language rest
+@wrap
+
+I said previously that clones are just fine as they are. What is needed isn't fancier clones, but rather better search commands.
+
+Rev e561ca86 adds two commands that will revolutionize my workflow:
+    
+- cffm, aka clone-find-flattened-marked
+- cfam, aka clone-find-all-marked
+
+These commands create a "target" node as the last top-level node, and clone all marked nodes under the target node.  cffm makes each marked node a child of the target. cffa does not create a child for marked nodes that are descendants of a marked node.
+
+This makes gathering nodes a snap. Just mark the desired nodes, then execute cfam or cffm.  I prefer cffm because all found nodes appear as direct children of the target. These two commands are much better than auto-moving clones as they are made, as I had intended to do yesterday.
+
+Leo's clone-find and clone-find-marked commands allow me to quickly gather desired nodes without duplicates, *regardless* of how many clones there are in an outline. These commands are the magic bullets for searching that I have wanted for decades.
+
+Please try these commands. They are extremely useful.
+
+.. @+node:ekr.20150425135844.1: *5* Added support for @data history-list
 If you aren't using the @data history-list setting chances are that you missing a big chance to simplify your workflow. At one time I thought the history list was a minor feature.  I could not have been more wrong.
 
 The body of the @data history-list node should contain a list of command names, one per line.  This list can include commands created by @command/@button nodes.
@@ -105,6 +135,115 @@ You execute items in the history list by doing Alt-X followed by an up arrow to 
 The history list works well for commands that aren't quite worth a separate key binding, but that nevertheless you find you using quite often.
 
 Even better, the history list is a perfect complement to @button and @command nodes that are tailored for a particular outline. For example, there is a button called cfa-code in leoPy.leo that executes the clone-find-all-flattened command starting at the top-level "Code" node.
+.. @+node:ekr.20150325052301.1: *5* Added enhancement 165: vim-open-file command
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/165
+
+Later: preserve cursor positions.
+
+All the changes were to the ExternalFilesController class.
+.. @+node:ekr.20150530084545.1: *5* Added support for @beautify and @nobeautify
+These directives are inherited as usual.
+.. @+node:ekr.20150420130845.1: *5* Added File:Print menus
+jasonic
+
+Leo deserves good friendly printing features which anyone can use. At the moment we have a confusing patchwork of choices. Printing Leo seems to be both harder and easier than  first meets the eye.
+
+print-to-web (htmlize) should definitely be on Leo's missing PRINT MENU.
+
+Having a little library of export scripts--well named, documented and intended to aid printing woudl go a long way. Thesse scripts anyone coiuld be called by onayone given a Leo Outline, accessing a navabr button. PRINT MENU or list. Or they can just insert the appropriate script  into an outline giving finer grained print control on the fly.
+.. @+node:ekr.20150609110852.1: *5* Alt-N (goto-next-clone) falls backs to find-next-clone
+.. @+node:ekr.20150619075613.1: *5* Leo now shows find status in status line
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/177
+
+Rev a1c8133:
+
+
+Leo now more clearly shows the status of successful or failed searches in the status line. Imo, this is an important addition, especially for failed searches.  You could call this the last part of #177
+
+Without this feedback, a failed search appears to do nothing, and my inevitable response was, "huh?, what just happened?"  The feedback is useful for successful searches, but successful searches change at least the selected text and often also change the selected node, so there is less huh? involved.
+
+By default, Leo reports successful searches with white text on a blue background and failed searches with white text on a red background. These colors work pretty well even for dark themes.
+
+You can choose these colors using the following settings in
+
+    leoSettings.leo#@settings-->Appearance (change these first)-->
+    Qt Gui settings-->Colors-->Status area colors::
+   
+         @color find-found-bg = blue
+         @color find-found-fg = white
+         @color find-not-found-bg = red
+         @color find-not-found-fg = white
+     
+find.showStatus now gets proper colors from settings.
+     
+Changed the signature of QtStatusLineClass.putStatusLine and its helpers.
+.. @+node:ekr.20150629080742.1: *5* cfa commands now preload search pattern with selected text
+- c.cloneFindAll/FlattenedAtNode now preload the search argument
+  *before* selecting the node.
+- extendToWord now takes a new "w" keyword arg, so event is not needed.
+- minibufferCloneFindAll/Flattened now take a new "preloaded" keyword argument.
+.. @+node:ekr.20150227040245.10: *5* Added find-def & find-var
+@language rest
+@wrap
+
+Leo's new find-def & find-var commands
+https://groups.google.com/d/msg/leo-editor/mq_sQ2cpa9k/3rtHZyKnMTIJ
+
+About recent changes to Leo's find commands
+https://groups.google.com/d/msg/leo-editor/_y1u2Vlm-0I/LoAGSH_HBgsJ
+
+Done:
+- find-def and F3/F2 work together.
+- @bool find-ignore-duplicates = False
+- Ctrl-click on a word executes find-def.
+
+(Maybe) Multiple defs:
+- Prefer matches in @<file> trees.
+- Do cfa-flattened. (Only if enabled by @bool find-def-uses-cfa-flattened).
+- Bring up popup.
+.. @+node:ekr.20150629080954.1: *6* posts
+https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
+
+===== Matt
+
+Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
+
+Consider the following code:
+
+    print "Downloading", ', '.join(packages)
+    for p in packages:
+        do_download(p)
+        ball(p)
+        md5(p)
+
+Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
+
+===== Terry:
+
+Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
+
+.. @+node:ekr.20150630092648.1: *6* ctrl-click now supports find-def
+The code involves lqtb.onMouseUp and g.openUrlOnClick
+.. @+node:ekr.20150630160037.1: *5* Added clone-to-at-spot command
+Create a clone of the selected node and move it to the last @spot node
+of the outline. Create the @spot node if necessary.
+.. @+node:ekr.20150710064429.1: *5* Added @bool preload-find-pattern
+Rev abe5563f
+
+Added @bool preload-find-pattern and associated logic.
+.. @+node:ekr.20150513180101.1: *5* find-all now write to the body of a new top-level node
+Pretty much like clone-find-all.
+.. @+node:ekr.20150412053053.1: *4* Finished leoOPML plugin
+.. @+node:ekr.20150416060248.1: *4* Allow Leo directives in @data abbreviations-subst-env
+The fix was to create a dummy root position in abbrev.init_env.
+.. @+node:ekr.20150422124650.1: *4* Added c.backup
+Useful for per-file backups.
 .. @+node:ekr.20150426052139.1: *4* Added @ifenv, improved @ifplatform & @ifhostname
 @language rest
 @wrap
@@ -147,30 +286,6 @@ Includes descendant settings if os.environ('HOSTNAME') == name
 Includes descendant settings if os.environ('HOSTNAME') != name
 .. @+node:ekr.20150211131925.4: *4* abbreviations now support auto-close quotes
 https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
-.. @+node:ekr.20150325052301.1: *4* Added enhancement 165: vim-open-file command
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/165
-
-Later: preserve cursor positions.
-
-All the changes were to the ExternalFilesController class.
-.. @+node:ekr.20150530084545.1: *4* Added support for @beautify and @nobeautify
-These directives are inherited as usual.
-.. @+node:ekr.20150529182422.1: *4* Rewrote Leo's Python beautifier
-@language rest
-@wrap
-
-
-
-
-.. @+node:ekr.20150609110852.1: *4* Alt-N (goto-next-clone) falls backs to find-next-clone
-.. @+node:ekr.20150619082025.1: *4* Added optional Find Dialog
-Enable with: @bool use_find_dialog = True
-Related setting: @bool close-find-dialog-after-search = False
-
-Defaults are as shown above.
 .. @+node:ekr.20150619082041.1: *4* Completed enhancement 177: Improved operation of Find commands
 @language rest
 @wrap
@@ -240,90 +355,12 @@ This fixes an annoying hangnail.
 - Added match_at_wrap to jEdit colorizers.
 - Added force keyword option to all setWrap methods.
   This is needed because text can be colorized before c.p.b stabilizes.
-.. @+node:ekr.20150619075613.1: *4* Leo now shows find status in status line
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/177
-
-Rev a1c8133:
-
-
-Leo now more clearly shows the status of successful or failed searches in the status line. Imo, this is an important addition, especially for failed searches.  You could call this the last part of #177
-
-Without this feedback, a failed search appears to do nothing, and my inevitable response was, "huh?, what just happened?"  The feedback is useful for successful searches, but successful searches change at least the selected text and often also change the selected node, so there is less huh? involved.
-
-By default, Leo reports successful searches with white text on a blue background and failed searches with white text on a red background. These colors work pretty well even for dark themes.
-
-You can choose these colors using the following settings in
-
-    leoSettings.leo#@settings-->Appearance (change these first)-->
-    Qt Gui settings-->Colors-->Status area colors::
-   
-         @color find-found-bg = blue
-         @color find-found-fg = white
-         @color find-not-found-bg = red
-         @color find-not-found-fg = white
-     
-find.showStatus now gets proper colors from settings.
-     
-Changed the signature of QtStatusLineClass.putStatusLine and its helpers.
 .. @+node:ekr.20150628182314.1: *4* Added help-for-keystroke command
 Useful: tells the command name or names associated with any keystroke.
 
 Prompts for a single character: shows corresponding command.
 
 Added leoHelpCommands.helpForKeystroke
-.. @+node:ekr.20150629080742.1: *4* cfa commands now preload search pattern with selected text
-- c.cloneFindAll/FlattenedAtNode now preload the search argument
-  *before* selecting the node.
-- extendToWord now takes a new "w" keyword arg, so event is not needed.
-- minibufferCloneFindAll/Flattened now take a new "preloaded" keyword argument.
-.. @+node:ekr.20150227040245.10: *4* Added find-def & find-var
-@language rest
-@wrap
-
-Leo's new find-def & find-var commands
-https://groups.google.com/d/msg/leo-editor/mq_sQ2cpa9k/3rtHZyKnMTIJ
-
-About recent changes to Leo's find commands
-https://groups.google.com/d/msg/leo-editor/_y1u2Vlm-0I/LoAGSH_HBgsJ
-
-Done:
-- find-def and F3/F2 work together.
-- @bool find-ignore-duplicates = False
-- Ctrl-click on a word executes find-def.
-
-(Maybe) Multiple defs:
-- Prefer matches in @<file> trees.
-- Do cfa-flattened. (Only if enabled by @bool find-def-uses-cfa-flattened).
-- Bring up popup.
-.. @+node:ekr.20150629080954.1: *5* posts
-https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
-
-===== Matt
-
-Wanted Leo function or plugin: Ctrl-X click or R-click {selected text} or ... that jumps to the associated node or function.
-
-Consider the following code:
-
-    print "Downloading", ', '.join(packages)
-    for p in packages:
-        do_download(p)
-        ball(p)
-        md5(p)
-
-Wouldn't be nice to ctrl-click `do_download` and have Leo navigate to whatever node contains def do_download(): ?
-
-===== Terry:
-
-Seems like the codewise ctags thing Ville worked on does most of that, may need refreshing though. 
-
-.. @+node:ekr.20150630092648.1: *5* ctrl-click now supports find-def
-The code involves lqtb.onMouseUp and g.openUrlOnClick
-.. @+node:ekr.20150630160037.1: *4* Added clone-to-at-spot command
-Create a clone of the selected node and move it to the last @spot node
-of the outline. Create the @spot node if necessary.
 .. @+node:ekr.20150611163439.1: *4* Completed enhancement 186: Left Gutter Line numbers
 https://github.com/leo-editor/leo-editor/issues/186
 
@@ -344,16 +381,10 @@ Code involves:
 - dw.createBodyPane.
 - class NumberBar(QFrame)
 - class LeoLineTextWidget(QFrame)
-.. @+node:ekr.20150710064429.1: *4* Added @bool preload-find-pattern
-Rev abe5563f
-
-Added @bool preload-find-pattern and associated logic.
 .. @+node:ekr.20150710085715.1: *4* Added support for @bool syntax-error-popup
 @language rest
 @wrap
 .. @+node:ekr.20150717103242.1: *4* Added clear-log command
-.. @+node:ekr.20150513180101.1: *4* find-all now write to the body of a new top-level node
-Pretty much like clone-find-all.
 .. @+node:ekr.20160124055305.1: *4* Created make_stub_files.py
 @language rest
 @wrap

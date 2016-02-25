@@ -679,8 +679,9 @@ class Commands(object):
         if clones:
             undoData = u.beforeInsertNode(c.p)
             root = c.createCloneFindPredicateRoot(flatten, undoType)
-            for child in clones:
-                child.moveToLastChildOf(root)
+            for p in clones:
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
             u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
             c.selectPosition(root)
             c.setChanged(True)
