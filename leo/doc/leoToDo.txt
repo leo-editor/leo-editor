@@ -12,14 +12,10 @@
 
 Release next Friday: goal: to release within 2 weeks of major work.
 
-Urgent:
+Moved TokenSync class into leoAst.py.
 
-- What's in the stash?
-- Finish py2cs:
-    - cv.format should check that all strings have been consumed.
-    - post about success
-    * Update theory.md and readme.md.
-    - Respond to http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node
+Urgent:
+- Finish py2cs
 - Write coffeescript hello world, desktop and browser.
 - Fix vim & xemacs bugs: use git bisect.
 
