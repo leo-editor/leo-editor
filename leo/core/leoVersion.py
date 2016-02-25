@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
+trace = False
 import os
 import json
 #@+<< version dates >>
@@ -36,11 +37,12 @@ commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
 commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
-version = "5.1-final" # Used if no git version is available.
+version = "5.1.1-devel" # Always used.
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
 theDir = os.path.dirname(__file__)
 path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
+if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
 if os.path.exists(path):
     s = open(path, 'r').read()
     if s.startswith('ref'):

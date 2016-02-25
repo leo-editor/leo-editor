@@ -13,8 +13,7 @@
 Release next Friday: goal: to release within 2 weeks of major work.
 
 Urgent:
-- clone-find-marked: cffm & cfam
-- Fix vim & xemacs bugs: use git bisect.
+
 - What's in the stash?
 - Finish py2cs:
     - cv.format should check that all strings have been consumed.
@@ -22,9 +21,7 @@ Urgent:
     * Update theory.md and readme.md.
     - Respond to http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node
 - Write coffeescript hello world, desktop and browser.
-* PyInstaller & regular releases
-    - Small bugs don't matter!
-    - It's much more important to release Leo every two months or so.
+- Fix vim & xemacs bugs: use git bisect.
 
 Next:
 - Add p/v.temp_u properties. Revise docs.
