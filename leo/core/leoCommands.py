@@ -581,6 +581,31 @@ class Commands(object):
         test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke), repr(expected), repr(got)))
     #@+node:ekr.20150329162703.1: ** c.cloneFind...
+    #@+node:ekr.20160224175312.1: *3* c.cffm & c.cfam
+    @cmd('clone-find-all-marked')
+    @cmd('cfam')
+    def cloneFindAllMarked(self, event=None):
+        '''The clone-find-all-marked command.'''
+        self.cloneFindMarkedHelper(flatten=False)
+        
+    @cmd('clone-find-all-flattened-marked')
+    @cmd('cffm')
+    def cloneFindAllFlattenedMarked(self, event=None):
+        '''The clone-find-all-flattened-marked command.'''
+        self.cloneFindMarkedHelper(flatten=True)
+        
+    def cloneFindMarkedHelper(self, flatten):
+        '''Helper for clone-find-marked commands.'''
+        
+        def isMarked(p):
+            return p.isMarked()
+            
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
     #@+node:ekr.20140828080010.18532: *3* c.cloneFindParents
     @cmd('clone-find-parents')
     def cloneFindParents(self, event=None):
@@ -620,29 +645,8 @@ class Commands(object):
         c.selectPosition(found)
         c.setChanged(True)
         c.redraw()
-    #@+node:ekr.20150329055227.1: *3* c.cloneFindAllAtNode
-    def cloneFindAllAtNode(self, h, top_level):
-        '''
-        Find and select a node with headline h,
-        then execute clone-find-all.
-        '''
-        c = self
-        if top_level:
-            p = g.findTopLevelNode(c, h)
-        else:
-            p = g.findNodeAnywhere(c, h)
-        if p:
-            # Preload the find pattern *before* selecting the new node.
-            c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
-            # The next two statements are required.
-            c.selectPosition(p, enableRedrawFlag=True)
-            c.bodyWantsFocusNow()
-            # c.k.simulateCommand('clone-find-all')
-            c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
-        else:
-            g.es_print('not found: Code')
-    #@+node:ekr.20160201072634.1: *3* c.cloneFindPredicate
-    def cloneFindPredicate(self,
+    #@+node:ekr.20160201072634.1: *3* c.cloneFindByPredicate (not a command)
+    def cloneFindByPredicate(self,
         generator,     # The generator used to traverse the tree.   
         predicate,     # A function of one argument p, returning True
                        # if p should be included in the results.
@@ -690,27 +694,6 @@ class Commands(object):
         root = c.lastTopLevel().insertAfter()
         root.h = undoType + (' (flattened)' if flatten else '')
         return root
-    #@+node:ekr.20150329162736.1: *3* c.cloneFindAllFlattenedAtNode
-    def cloneFindAllFlattenedAtNode(self, h, top_level):
-        '''
-        Find and select a node with headline h,
-        then execute clone-find-all-flattened.
-        '''
-        c = self
-        if top_level:
-            p = g.findTopLevelNode(c, h)
-        else:
-            p = g.findNodeAnywhere(c, h)
-        if p:
-            # Preload the find pattern *before* selecting the new node.
-            c.findCommands.preloadFindPattern(w=c.frame.body.wrapper)
-            # The next two statements are required.
-            c.selectPosition(p, enableRedrawFlag=True)
-            c.bodyWantsFocusNow()
-            # c.k.simulateCommand('clone-find-all-flattened')
-            c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
-        else:
-            g.es_print('not found: h' % (h))
     #@+node:ekr.20031218072017.2818: ** c.Command handlers...
     #@+node:ekr.20031218072017.2819: *3* File Menu
     #@+node:ekr.20031218072017.2820: *4* c.top level (file menu)

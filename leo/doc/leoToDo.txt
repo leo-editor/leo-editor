@@ -13,10 +13,9 @@
 Release next Friday: goal: to release within 2 weeks of major work.
 
 Urgent:
-- Remove old cff stuff from startup.
-- Auto-move clones.
+- clone-find-marked: cffm & cfam
 - Fix vim & xemacs bugs: use git bisect.
-
+- What's in the stash?
 - Finish py2cs:
     - cv.format should check that all strings have been consumed.
     - post about success
@@ -254,8 +253,8 @@ Although git is unique behind the scenes, using git is very similar to using bzr
 
 I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
 .. @+node:ekr.20160216045559.1: *5* == New Code Academy posts
-.. @+node:ekr.20160201072634.1: *6* c.cloneFindPredicate
-def cloneFindPredicate(self,
+.. @+node:ekr.20160201072634.1: *6* c.cloneFindByPredicate (not a command)
+def cloneFindByPredicate(self,
     generator,     # The generator used to traverse the tree.   
     predicate,     # A function of one argument p, returning True
                    # if p should be included in the results.

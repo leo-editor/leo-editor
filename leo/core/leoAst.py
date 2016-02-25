@@ -3,7 +3,7 @@
 '''AST (Abstract Syntax Tree) related classes.'''
 import ast
 import os
-import re
+# import re
 import textwrap
 import leo.core.leoGlobals as g
 #@+others

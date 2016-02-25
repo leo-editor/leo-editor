@@ -18,7 +18,9 @@ import time
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames:
     '''A class that binds all names to objects without traversing any tree.'''
+
     def __init__(self):
+        '''Ctor for BindNames class.'''
         self.module_context = None
         self.context = None
 #@+node:ekr.20160109173938.1: *3* bind_all_names
@@ -28,7 +30,7 @@ def bind_all_names(self, module_context):
     self.module_context = module_context
     self.bind_names(module_context)
 #@+node:ekr.20160109174258.1: *3* bind_names
-def bind_names(context):
+def bind_names(self, context):
     '''Bind all names in the given context and in all inner contexts.'''
     # First, create objects for all names defined in this context.
     
