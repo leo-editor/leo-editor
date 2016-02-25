@@ -112,19 +112,18 @@ in the following extremely important ways:
 
 I said previously that clones are just fine as they are. What is needed isn't fancier clones, but rather better search commands.
 
-Rev e561ca86 adds two commands that will revolutionize my workflow:
+Rev c8a3581c9 adds two commands that will revolutionize my workflow:
     
 - cffm, aka clone-find-flattened-marked
 - cfam, aka clone-find-all-marked
 
-These commands create a "target" node as the last top-level node, and clone all marked nodes under the target node.  cffm makes each marked node a child of the target. cffa does not create a child for marked nodes that are descendants of a marked node.
+These commands create a "target" node as the last top-level node, and clone all marked nodes under the target node.  cffm makes each marked node a child of the target. cfam does not create a child for marked nodes that are descendants of a marked node.
 
-This makes gathering nodes a snap. Just mark the desired nodes, then execute cfam or cffm.  I prefer cffm because all found nodes appear as direct children of the target. These two commands are much better than auto-moving clones as they are made, as I had intended to do yesterday.
+This makes gathering nodes a snap. Just go through the outline, marking the desired nodes, then execute cfam or cffm.  I prefer cffm because all found nodes appear as direct children of the target. These two commands are much better than auto-moving clones as they are made, as I had intended to do yesterday.
 
 Leo's clone-find and clone-find-marked commands allow me to quickly gather desired nodes without duplicates, *regardless* of how many clones there are in an outline. These commands are the magic bullets for searching that I have wanted for decades.
 
 Please try these commands. They are extremely useful.
-
 .. @+node:ekr.20150425135844.1: *5* Added support for @data history-list
 If you aren't using the @data history-list setting chances are that you missing a big chance to simplify your workflow. At one time I thought the history list was a minor feature.  I could not have been more wrong.
 
@@ -1094,6 +1093,95 @@ I've been wondering when to say this, but recent developments have forced my han
 Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
 
 I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
+.. @+node:ekr.20160225050421.1: *4* Code Academy: find by predicate or attribute
+@language rest
+@wrap
+
+Writing the cffm and cfam commands was snap using c.cloneFindByPredicate, a powerful new addition to Leo.
+
+Here is the entire code for the new commands:
+
+@language python
+
+    @cmd('clone-find-all-marked')
+    @cmd('cfam')
+    def cloneFindAllMarked(self, event=None):
+        '''The clone-find-all-marked command.'''
+        self.cloneFindMarkedHelper(flatten=False)
+        
+    @cmd('clone-find-all-flattened-marked')
+    @cmd('cffm')
+    def cloneFindAllFlattenedMarked(self, event=None):
+        '''The clone-find-all-flattened-marked command.'''
+        self.cloneFindMarkedHelper(flatten=True)
+
+    def cloneFindMarkedHelper(self, flatten):
+        '''Helper for clone-find-marked commands.'''
+        
+        def isMarked(p):
+            return p.isMarked()
+            
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
+        
+@language rest
+@wrap
+
+It's hard to imagine anything simpler. **Important**: the predicate could filter on an attribute or *combination* of attributes. For example, the predicate could return p has attributes A and B but *not* attribute C. Instantly we have full database query capabilities. If we then hoist the resulting node we see *all and only* those nodes satisfying the query.
+        
+Here is c.findNodeByPredicate. **Important**: Rev c8a3581c9b corrects a serious blunder in c.cloneFindByPredicate. Don't use previous versions!
+
+@language python
+    
+    def cloneFindByPredicate(self,
+        generator,     # The generator used to traverse the tree.   
+        predicate,     # A function of one argument p, returning True
+                       # if p should be included in the results.
+        flatten=False, # True: Put all matches at the top level.
+        undoType=None, # The undo name, shown in the Edit:Undo menu.
+                       # The default is 'clone-find-predicate'
+    ):
+        '''
+        Traverse the tree given using the generator, cloning all positions
+        for which predicate(p) is True. Undoably move all clones to a new
+        node, created as the last top-level node. Arguments:
+    
+        generator,      The generator used to traverse the tree.
+        predicate,      A function of one argument p returning true if
+                        p should be included.
+        flatten=False,  True: Move all node to be parents of the root node.
+        undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                        The default is 'clone-find-predicate'
+        '''
+        c = self
+        u, undoType = c.undoer, undoType or 'clone-find-predicate'
+        clones, seen = [], set(), 
+        for p in generator():
+            if predicate(p) and p.v not in seen:
+                if flatten:
+                    seen.add(p.v)
+                else:
+                    for p2 in p.self_and_subtree():
+                        seen.add(p2.v)
+                clones.append(p.copy())
+        if clones:
+            undoData = u.beforeInsertNode(c.p)
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            # This was botched in previous versions.
+            # The result was low-level vnode failures.
+            for p in clones: 
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
+            u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(root)
+            c.setChanged(True)
+            c.redraw()
+        else:
+            g.es_print('not found:', undoType)
 .. @-all
 .. @@killbeautify
 .. @@language rest
