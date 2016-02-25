@@ -56,6 +56,9 @@ patterns, one per line.  Directory entries matching any pattern in the list will
 The body of the @setting ``@data active_path_autoload`` is a list of regex
 patterns, one per line.  File entries matching any pattern in the list will be loaded automatically.  This works only with files, not directories (but you can load directories recursively anyway).
 
+Autoloading can be toggled with `active-path-toggle-autoload`, autoloading defaults
+to initially on unless @bool active-path-do-autoload = False.
+
 Set ``@bool active_path_load_docstring = True`` to have active_path load the docstring
 of .py files automatically.  These nodes start with the special string::
 
@@ -121,7 +124,8 @@ def attachToCommander(t,k):
     g.registerHandler(event, lambda t,k: onSelect(t,k))
 
     # not using a proper class, so
-    c.__active_path = {'ignore': [], 'autoload': []}
+    c.__active_path = {'ignore': [], 'autoload': [],
+        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
 
     if c.config.getData('active_path_ignore'):
         c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
@@ -407,6 +411,8 @@ def openFile(c,parent,d, autoload=False):
     if not os.path.isfile(path):
         return
 
+    oversize = os.stat(path).st_size > c.__active_path['max_size']
+
     if not autoload:
         binary_open = g.os_path_splitext(path)[-1].lower() in (
             c.config.getData('active_path_bin_open') or '')
@@ -425,10 +431,13 @@ def openFile(c,parent,d, autoload=False):
             #     return
             return
 
-        if os.stat(path).st_size > c.__active_path['max_size']:
+        if oversize:
             if not query(c, "File size greater than %d bytes, continue?" %
               c.__active_path['max_size']):
                 return
+
+    if autoload and oversize:
+        return
 
     atType = c.config.getString('active_path_attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
@@ -511,8 +520,8 @@ def openDir(c,parent,d):
             oldlist.discard(d2)
         else:
             if checkIncExc(d2,
-                           [i.strip('/') for i in inc], 
-                           [e.strip('/') for e in exc], 
+                           [i.strip('/') for i in inc],
+                           [e.strip('/') for e in exc],
                            regEx) and not excdirs:
                 newlist.append('/'+d2+'/')
                 
@@ -539,10 +548,15 @@ def openDir(c,parent,d):
         if name.startswith('/'): 
             # sufficient test of dirness as we created newlist
             c.setBodyString(p, '@path '+name.strip('/'))
-        elif inReList(name, c.__active_path['autoload']):
+        elif (c.__active_path['do_autoload'] and
+              inReList(name, c.__active_path['autoload'])):
             openFile(c, p, os.path.join(d, p.h), autoload=True)
-        elif (c.__active_path['load_docstring'] and
-            name.lower().endswith(".py")):
+        elif (c.__active_path['do_autoload'] and 
+              c.__active_path['load_docstring'] and
+              name.lower().endswith(".py")):
+            # do_autoload suppresses doc string loading because turning
+            # autoload off is supposed to address situations where autoloading
+            # causes problems, so don't still do some form of autoloading 
             p.b = c.__active_path['DS_SENTINEL']+"\n\n"+loadDocstring(os.path.join(d, p.h))
         p.setMarked()
         p.contract()
@@ -799,7 +813,7 @@ def cmd_PickDir(event):
     nd = c.p.insertAfter()
     nd.h = "@path %s" % dir_
     c.redraw()
-#@+node:tbnorth.20160122134156.1: ** cmd MarkContent (active_path.py)
+#@+node:tbnorth.20160122134156.1: ** cmd_MarkContent (active_path.py)
 @g.command('active-path-mark-content')
 def cmd_MarkContent(event):
     """cmd_MarkContent - mark nodes in @path sub-tree with non-filesystem content
@@ -834,6 +848,15 @@ def cmd_MarkContent(event):
     g.es("%d content nodes marked" % count[0])
     if count[0]:
         c.redraw()
+#@+node:tbnorth.20160224113800.1: ** cmd_ToggleAutoLoad (active_path.py)
+@g.command('active-path-toggle-autoload')
+def cmd_ToggleAutoLoad(event):
+    """cmd_ToggleAutoLoad - toggle autoloading behavior
+    """
+    c = event.get('c')
+    c.__active_path['do_autoload'] = not c.__active_path['do_autoload']
+    g.es("Autoload: %s" % c.__active_path['do_autoload'])
+
 #@+node:tbrown.20080619080950.14: ** testing
 #@+node:tbrown.20080619080950.15: *3* makeTestHierachy
 files="""
