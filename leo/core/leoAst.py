@@ -946,7 +946,6 @@ class AstFullTraverser:
         for z in node.elts:
             self.visit(z)
         # self.visit(node.ctx)
-
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
@@ -2940,14 +2939,11 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.end_div()
     #@-others
 #@+node:ekr.20160225102931.1: ** class TokenSync
-
-
 class TokenSync(object):
     '''A class to sync and remember tokens.'''
     # To do: handle comments, line breaks...
     #@+others
     #@+node:ekr.20160225102931.2: *3*  ts.ctor & helpers
-
     def __init__(self, s, tokens):
         '''Ctor for TokenSync class.'''
         assert isinstance(tokens, list) # Not a generator.
@@ -2961,7 +2957,6 @@ class TokenSync(object):
         self.string_tokens = self.make_string_tokens()
         self.ignored_lines = self.make_ignored_lines()
     #@+node:ekr.20160225102931.3: *4* ts.make_blank_lines
-
     def make_blank_lines(self):
         '''Return of list of line numbers of blank lines.'''
         result = []
@@ -2971,7 +2966,6 @@ class TokenSync(object):
                 result.append(i)
         return result
     #@+node:ekr.20160225102931.4: *4* ts.make_ignored_lines
-
     def make_ignored_lines(self):
         '''
         Return a copy of line_tokens containing ignored lines,
@@ -2998,7 +2992,6 @@ class TokenSync(object):
             self.first_leading_line = len(result)
         return result
     #@+node:ekr.20160225102931.5: *4* ts.make_line_tokens (trace tokens)
-
     def make_line_tokens(self, tokens):
         '''
         Return a list of lists of tokens for each list in self.lines.
@@ -3006,20 +2999,19 @@ class TokenSync(object):
         '''
         trace = False
         n, result = len(self.lines), []
-        for i in range(0, n+1):
+        for i in range(0, n + 1):
             result.append([])
         for token in tokens:
             t1, t2, t3, t4, t5 = token
             kind = token_module.tok_name[t1].lower()
             srow, scol = t3
             erow, ecol = t4
-            line = erow-1 if kind == 'string' else srow-1 
+            line = erow - 1 if kind == 'string' else srow - 1
             result[line].append(token)
             if trace: g.trace('%3s %s' % (line, self.dump_token(token)))
         assert len(self.lines) + 1 == len(result), len(result)
         return result
     #@+node:ekr.20160225102931.6: *4* ts.make_nl_token
-
     def make_nl_token(self):
         '''Return a newline token with '\n' as both val and raw_val.'''
         t1 = token_module.NEWLINE
@@ -3029,7 +3021,6 @@ class TokenSync(object):
         t5 = '\n'
         return t1, t2, t3, t4, t5
     #@+node:ekr.20160225102931.7: *4* ts.make_string_tokens
-
     def make_string_tokens(self):
         '''Return a copy of line_tokens containing only string tokens.'''
         result = []
@@ -3038,7 +3029,6 @@ class TokenSync(object):
         assert len(result) == len(self.line_tokens)
         return result
     #@+node:ekr.20160225102931.8: *3* ts.check_strings
-
     def check_strings(self):
         '''Check that all strings have been consumed.'''
         # g.trace(len(self.string_tokens))
@@ -3046,7 +3036,6 @@ class TokenSync(object):
             if aList:
                 g.trace('warning: line %s. unused strings: %s' % (i, aList))
     #@+node:ekr.20160225102931.9: *3* ts.dump_token
-
     def dump_token(self, token, verbose=False):
         '''Dump the token. It is either a string or a 5-tuple.'''
         if g.isString(token):
@@ -3061,7 +3050,6 @@ class TokenSync(object):
             else:
                 return val
     #@+node:ekr.20160225102931.10: *3* ts.is_line_comment
-
     def is_line_comment(self, token):
         '''Return True if the token represents a full-line comment.'''
         t1, t2, t3, t4, t5 = token
@@ -3069,27 +3057,25 @@ class TokenSync(object):
         raw_val = t5
         return kind == 'comment' and raw_val.lstrip().startswith('#')
     #@+node:ekr.20160225102931.11: *3* ts.join
-
     def join(self, aList, sep=','):
         '''return the items of the list joined by sep string.'''
         tokens = []
         for i, token in enumerate(aList or []):
             tokens.append(token)
-            if i < len(aList) -1:
+            if i < len(aList) - 1:
                 tokens.append(sep)
         return tokens
     #@+node:ekr.20160225102931.12: *3* ts.last_node
-
     def last_node(self, node):
         '''Return the node of node's tree with the largest lineno field.'''
 
         class LineWalker(ast.NodeVisitor):
-            
-            def __init__ (self):
+
+            def __init__(self):
                 '''Ctor for LineWalker class.'''
                 self.node = None
                 self.lineno = -1
-                
+
             def visit(self, node):
                 '''LineWalker.visit.'''
                 if hasattr(node, 'lineno'):
@@ -3101,13 +3087,11 @@ class TokenSync(object):
                         self.visit(z)
                 else:
                     self.generic_visit(node)
-     
+
         w = LineWalker()
         w.visit(node)
         return w.node
-                
     #@+node:ekr.20160225102931.13: *3* ts.leading_lines
-
     def leading_lines(self, node):
         '''Return a list of the preceding comment and blank lines'''
         # This can be called on arbitrary nodes.
@@ -3118,53 +3102,49 @@ class TokenSync(object):
             while i < n:
                 token = self.ignored_lines[i]
                 if token:
-                    s = self.token_raw_val(token).rstrip()+'\n'
+                    s = self.token_raw_val(token).rstrip() + '\n'
                     leading.append(s)
                     if trace: g.trace('%11s: %s' % (i, s.rstrip()))
                 i += 1
             self.first_leading_line = i
         return leading
     #@+node:ekr.20160225102931.14: *3* ts.leading_string
-
     def leading_string(self, node):
         '''Return a string containing all lines preceding node.'''
         return ''.join(self.leading_lines(node))
     #@+node:ekr.20160225102931.15: *3* ts.line_at
-
     def line_at(self, node, continued_lines=True):
         '''Return the lines at the node, possibly including continuation lines.'''
         n = getattr(node, 'lineno', None)
         if n is None:
             return '<no line> for %s' % node.__class__.__name__
         elif continued_lines:
-            aList, n = [], n-1
+            aList, n = [], n - 1
             while n < len(self.lines):
                 s = self.lines[n]
                 if s.endswith('\\'):
-                    aList.append(s[:-1])
+                    aList.append(s[: -1])
                     n += 1
                 else:
                     aList.append(s)
                     break
             return ''.join(aList)
         else:
-            return self.lines[n-1]
+            return self.lines[n - 1]
     #@+node:ekr.20160225102931.16: *3* ts.sync_string
-
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
         # g.trace('%-10s %2s: %s' % (' ', node.lineno, self.line_at(node)))
         n = node.lineno
-        tokens = self.string_tokens[n-1]
+        tokens = self.string_tokens[n - 1]
         if tokens:
             token = tokens.pop(0)
-            self.string_tokens[n-1] = tokens
+            self.string_tokens[n - 1] = tokens
             return self.token_val(token)
         else:
             g.trace('===== underflow', n, node.s)
             return node.s
     #@+node:ekr.20160225102931.17: *3* ts.token_kind/raw_val/val
-
     def token_kind(self, token):
         '''Return the token's type.'''
         t1, t2, t3, t4, t5 = token
@@ -3174,27 +3154,21 @@ class TokenSync(object):
         '''Return the value of the token.'''
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(t5)
-        
+
     def token_val(self, token):
         '''Return the raw value of the token.'''
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(t2)
     #@+node:ekr.20160225102931.18: *3* ts.tokens_for_statement
-
     def tokens_for_statement(self, node):
-        
         assert isinstance(node, ast.AST), node
         name = node.__class__.__name__
         if hasattr(node, 'lineno'):
-            tokens = self.line_tokens[node.lineno-1]
+            tokens = self.line_tokens[node.lineno - 1]
             g.trace(' '.join([self.dump_token(z) for z in tokens]))
         else:
             g.trace('no lineno', name)
-
-        
-        
     #@+node:ekr.20160225102931.19: *3* ts.trailing_comment
-
     def trailing_comment(self, node):
         '''
         Return a string containing the trailing comment for the node, if any.
@@ -3206,11 +3180,10 @@ class TokenSync(object):
             g.trace('no lineno', node.__class__.__name__, g.callers())
             return '\n'
     #@+node:ekr.20160225102931.20: *3* ts.trailing_comment_at_lineno
-
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''
         trace = False
-        tokens = self.line_tokens[lineno-1]
+        tokens = self.line_tokens[lineno - 1]
         for token in tokens:
             if self.token_kind(token) == 'comment':
                 raw_val = self.token_raw_val(token).rstrip()
@@ -3221,7 +3194,6 @@ class TokenSync(object):
                     return s
         return '\n'
     #@+node:ekr.20160225102931.21: *3* ts.trailing_lines
-
     def trailing_lines(self):
         '''return any remaining ignored lines.'''
         trace = False
@@ -3230,7 +3202,7 @@ class TokenSync(object):
         while i < len(self.ignored_lines):
             token = self.ignored_lines[i]
             if token:
-                s = self.token_raw_val(token).rstrip()+'\n'
+                s = self.token_raw_val(token).rstrip() + '\n'
                 trailing.append(s)
                 if trace: g.trace('%11s: %s' % (i, s.rstrip()))
             i += 1

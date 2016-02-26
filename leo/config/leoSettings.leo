@@ -440,16 +440,6 @@
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
-<v t="ekr.20150602160415.1"><vh>@ignore no longer used</vh>
-<v t="ekr.20141011084458.20513"><vh>@bool use_python_tidy = False</vh></v>
-<v t="ekr.20141010095448.19777"><vh>@bool tidy_add_blank_lines_around_comments =True</vh></v>
-<v t="ekr.20141010095448.19778"><vh>@bool tidy_double_quoted_strings = False</vh></v>
-<v t="ekr.20141010141310.21454"><vh>@bool tidy_java_style_list_dedent = True</vh></v>
-<v t="ekr.20141010141310.21455"><vh>@bool tidy_keep_unassigned_constants = False</vh></v>
-<v t="ekr.20141010095448.19780"><vh>@bool tidy_left_adjust_docstrings = False</vh></v>
-<v t="ekr.20141010141310.21456"><vh>@bool tidy_parenthesized_tuple_display = True</vh></v>
-<v t="ekr.20141010095448.19781"><vh>@int  tidy_lines_before_split_lit = 2</vh></v>
-</v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -10733,18 +10723,7 @@ else:
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19777"></t>
-<t tx="ekr.20141010095448.19778"></t>
 <t tx="ekr.20141010095448.19779"></t>
-<t tx="ekr.20141010095448.19780"></t>
-<t tx="ekr.20141010095448.19781"></t>
-<t tx="ekr.20141010141310.21454"></t>
-<t tx="ekr.20141010141310.21455"></t>
-<t tx="ekr.20141010141310.21456"></t>
-<t tx="ekr.20141011084458.20513">True:   Use PythonTidy (in leo/external/PythonTidy.py).
-        Experimental: use at your own risk.
-False:  Use the newly-improved legacy beautify code.
-</t>
 <t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
@@ -11008,7 +10987,6 @@ except KeyError:
     return ""
 </t>
 <t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
-<t tx="ekr.20150602160415.1"></t>
 <t tx="ekr.20150618105435.1"></t>
 <t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
 False: leave the Find Dialog open after any search.</t>
