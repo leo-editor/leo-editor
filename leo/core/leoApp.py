@@ -1177,6 +1177,7 @@ class LeoApp:
             "clojure"            : ";", # 2013/09/25: Fix bug 879338.
             "cobol"              : "*",
             "coldfusion"         : "<!-- -->",
+            "coffeescript"       : "#", # 2016/02/26.
             "config"             : "#", # Leo 4.5.1
             "cplusplus"          : "// /* */",
             "cpp"                : "// /* */",# C++.
@@ -1355,6 +1356,7 @@ class LeoApp:
             "clojure"       : "clj", # 2013/09/25: Fix bug 879338.
             "cobol"         : "cbl", # Only one extension is valid: .cob
             "coldfusion"    : "cfm",
+            "coffeescript"  : "coffee",
             "config"        : "cfg",
             "cplusplus"     : "c++",
             "cpp"           : "cpp",
@@ -1511,6 +1513,7 @@ class LeoApp:
             "cfm":      "coldfusion",
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
             "ch":       "chill", # Other extensions, .c186,.c286
+            "coffee":   "coffeescript",
             "conf":     "apacheconf",
             "cpp":      "cpp",
             "css":      "css",

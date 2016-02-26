@@ -11,6 +11,7 @@ Fix PyInstaller for Windows, Linux, MacOs.
 Later:
 - Create unit test for transpose-words.
 - Add p/v.temp_u properties. Revise docs.
+- jEdit2py barfs on non-ascii characters.
 - Fix vim & xemacs bugs: use git bisect.
 - Clean up javascript importer. Fix unit test & pylint
 - Add Code Academy section to Cheat Sheet.
