@@ -603,6 +603,7 @@ class Commands(object):
         self.cloneFindByPredicate(
             generator = self.all_unique_positions,
             predicate = isMarked,
+            failMsg = 'No marked nodes',
             flatten = flatten,
             undoType = 'clone-find-marked',
         )
@@ -650,6 +651,7 @@ class Commands(object):
         generator,     # The generator used to traverse the tree.   
         predicate,     # A function of one argument p, returning True
                        # if p should be included in the results.
+        failMsg,       # Failure message.
         flatten=False, # True: Put all matches at the top level.
         undoType=None, # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
@@ -687,7 +689,7 @@ class Commands(object):
             c.setChanged(True)
             c.redraw()
         else:
-            g.es_print('not found:', undoType)
+            g.es_print(failMsg, color='red')
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
     def createCloneFindPredicateRoot(self, flatten, undoType):
         '''Create a root node for clone-find-predicate.'''

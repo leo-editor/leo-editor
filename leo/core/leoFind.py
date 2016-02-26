@@ -1438,7 +1438,7 @@ class LeoFind:
             while p and p != after:
                 if p.v in skip:
                     p.moveToThreadNext()
-                elif self.shouldSkipCloneFind(p):
+                elif p.is_at_ignore() or p.is_at_all():
                     p.moveToNodeAfterTree()
                 else:
                     found = self.findNextBatchMatch(p)
@@ -1535,20 +1535,6 @@ class LeoFind:
             pos, newpos = self.searchHelper(s, 0, len(s), self.find_text)
             self.reverse = old_backward
             if pos != -1: return True
-        return False
-    #@+node:ekr.20160224141315.1: *5* find.shouldSkipCloneFind
-    def shouldSkipCloneFind(self, p):
-        '''Return True if p is an @ignore node or an @<file> node containing @all.'''
-        trace = False
-        if g.match_word(p.h, 0, '@ignore'):
-            if trace: g.trace('ignoring', p.h)
-            return True
-        elif p.isAnyAtFileNode():
-            for s in g.splitLines(p.b):
-                if g.match_word(s, 0, '@all'):
-                    if trace: g.trace('@all in', p.h)
-                    return True
-            return False
         return False
     #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
     def findNext(self, initFlag=True):
@@ -2067,7 +2053,7 @@ class LeoFind:
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )
-        prompt = 'wixbhacf[esn]'
+        prompt = 'wixbhacf[esn]' # This quickly become cruft.
         result = [option for option, ivar in table if ivar.checkState()]
         table2 = (
             ('Suboutline', ftm.radio_button_suboutline_only),
@@ -2077,7 +2063,8 @@ class LeoFind:
             if ivar.isChecked():
                 result.append('[%s]' % option)
                 break
-        c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
+        # c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
+        c.frame.putStatusLine('Find: %s' % ' '.join(result))
     #@+node:ekr.20150619070602.1: *4* find.showStatus
     def showStatus(self, found):
         '''Show the find status the Find dialog, if present, and the status line.'''

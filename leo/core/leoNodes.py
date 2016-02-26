@@ -1760,6 +1760,35 @@ class Position(object):
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
         dirtyVnodeList.extend(dirtyVnodeList2)
         return dirtyVnodeList
+    #@+node:ekr.20160225153333.1: *3* p.Predicates
+    #@+node:ekr.20160225153414.1: *4* p.is_at_all & is_at_all_tree
+    def is_at_all(self):
+        '''Return True if p.b contains an @all directive.'''
+        p = self
+        return (
+            p.isAnyAtFileNode() and
+            any([g.match_word(s, 0, '@all') for s in g.splitLines(p.b)]))
+
+    def in_at_all_tree(self):
+        '''Return True if p or one of p's ancestors is an @all node.'''
+        p = self
+        for p in p.self_and_parents():
+            if p.is_at_all():
+                return True
+        return False
+    #@+node:ekr.20160225153430.1: *4* p.is_at_ignore & in_at_ignore_tree
+    def is_at_ignore(self):
+        '''Return True if p is an @ignore node.'''
+        p = self
+        return g.match_word(p.h, 0, '@ignore')
+        
+    def in_at_ignore_tree(self):
+        '''Return True if p or one of p's ancestors is an @ignore node.'''
+        p = self
+        for p in p.self_and_parents():
+            if g.match_word(p.h, 0, '@ignore'):
+                return True
+        return False
     #@-others
 
 position = Position # compatibility.
