@@ -651,7 +651,7 @@ class Commands(object):
         generator,     # The generator used to traverse the tree.   
         predicate,     # A function of one argument p, returning True
                        # if p should be included in the results.
-        failMsg,       # Failure message.
+        failMsg=None,  # Failure message.
         flatten=False, # True: Put all matches at the top level.
         undoType=None, # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
@@ -663,12 +663,14 @@ class Commands(object):
 
         generator,      The generator used to traverse the tree.
         predicate,      A function of one argument p returning true if p should be included.
+        failMsg=None,   Message given if nothing found.
         flatten=False,  True: Move all node to be parents of the root node.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                         The default is 'clone-find-predicate'
         '''
         c = self
         u, undoType = c.undoer, undoType or 'clone-find-predicate'
+        failMsg = failMsg or 'nothing found'
         clones, seen = [], set(), 
         for p in generator():
             if predicate(p) and p.v not in seen:
