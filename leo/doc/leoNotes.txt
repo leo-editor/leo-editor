@@ -18024,5 +18024,9 @@ def cloneFindAllAtNode(self, h, top_level):
         c.findCommands.minibufferCloneFindAllFlattened(preloaded=True)
     else:
         g.es_print('not found: Code')
+.. @+node:ekr.20160224141315.1: *3* find.shouldSkipCloneFind
+def shouldSkipCloneFind(self, p):
+    '''Return True if p is an @ignore node or an @<file> node containing @all.'''
+    return p.is_at_ignore() or p.is_at_all()
 .. @-all
 .. @-leo
