@@ -1,7 +1,9 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20150417044242.1: ** 5.2-b1
+.. @+node:ekr.20150417044242.1: ** 5.1.1 Documentation
+@language rest
+@wrap
 .. @+node:ekr.20150512102759.1: *3* Code
 .. @+node:ekr.20150512102801.1: *4* Decorators simplify Leo's command dispatching
 Please read carefully if you write plugins or are one of Leo's core developers.  Everyone else can safely ignore this post.
