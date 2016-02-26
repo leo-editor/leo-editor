@@ -5,6 +5,7 @@ import ast
 import os
 # import re
 import textwrap
+import token as token_module
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
