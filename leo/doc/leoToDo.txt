@@ -6,14 +6,15 @@
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
 Release Friday, March 4.
 
+Fix PyInstaller for Windows, Linux, MacOs.
+
+Later:
 - Create unit test for transpose-words.
 - Add p/v.temp_u properties. Revise docs.
-*** Fix PyInstaller for Windows, Linux, MacOs.
 - Fix vim & xemacs bugs: use git bisect.
 - Clean up javascript importer. Fix unit test & pylint
 - Add Code Academy section to Cheat Sheet.
 - Document stupendous Aha
-
 
 @language rest
 @wrap
