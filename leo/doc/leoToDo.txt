@@ -6,9 +6,14 @@
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
 Release Friday, March 4.
 
-Fix PyInstaller for Windows, Linux, MacOs.
+- Fix Python 3 shutdown crash.
+- Fix PyInstaller for Windows, Linux, MacOs.
+
+8 bugs for Leo 5.1.1:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
 Later:
+- Add icons to cloneFBP.
 - Create unit test for transpose-words.
 - Add p/v.temp_u properties. Revise docs.
 - jEdit2py barfs on non-ascii characters.
@@ -19,7 +24,6 @@ Later:
 
 @language rest
 @wrap
-
 .. @+node:ekr.20151231121326.1: *3* Bug 217: vim plugin does not work as described
 https://github.com/leo-editor/leo-editor/issues/217
 The plugins seems to be pretty much broken.  Only one temp file seems to be created.

@@ -689,7 +689,10 @@ class Commands(object):
             u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
             c.selectPosition(root)
             c.setChanged(True)
+            c.contractAllHeadlines()
+            root.expand()
             c.redraw()
+            c.selectPosition(root)
         else:
             g.es_print(failMsg, color='red')
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
