@@ -6,7 +6,7 @@
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
 Release Friday, March 4.
 
-- Fix Python 3 shutdown crashes.
+- Post re Anaconda, IPython, Jupyter.
 - Add optional icon to cloneFBP.
 - Fix PyInstaller for Windows, Linux, MacOs.
 

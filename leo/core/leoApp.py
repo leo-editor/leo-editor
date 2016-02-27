@@ -901,6 +901,7 @@ class LeoApp:
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_shutdown = False
         self.trace_plugins = False
             # True: trace imports of plugins.
         self.translateToUpperCase = False
@@ -1671,9 +1672,9 @@ class LeoApp:
                       during initial load, so UI remains for files
                       further along the command line.
         """
-        trace = False and not g.unitTesting
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('closeLeoWindow: %s' % frame.c.shortFileName())
         c = frame.c
-        if trace: g.trace(frame.c, g.callers())
         c.endEditing() # Commit any open edits.
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
@@ -1690,6 +1691,7 @@ class LeoApp:
             # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
+            g.app.windowList.remove(frame)
         else:
             # Fix bug https://github.com/leo-editor/leo-editor/issues/69
             g.app.forgetOpenFile(fn=c.fileName(), force=True)
@@ -1799,37 +1801,42 @@ class LeoApp:
     #@+node:ekr.20031218072017.2612: *3* app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles(self):
         '''Remove temp files created with the Open With command.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('destroyAllOpenWithFiles')
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
     #@+node:ekr.20031218072017.2615: *3* app.destroyWindow
     def destroyWindow(self, frame):
         '''Destroy all ivars in a Leo frame.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('destroyWindow:  %s' %  frame.c.shortFileName())
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
-            # g.trace(g.app.windowList)
+            # print('destroyWindow', (g.app.windowList)
             g.app.forgetOpenFile(frame.c.fileName())
-            g.app.windowList.remove(frame)
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
     #@+node:ekr.20031218072017.1732: *3* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # Don't use g.trace!
-        # print('app.finishQuit: setting g.app.killed',g.callers())
+        # if trace: print('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
             # even after the following code.
         if g.app.gui:
             g.app.gui.destroySelf()
+                # Calls qtApp.quit()
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown
     def forceShutdown(self):
         """
@@ -1837,7 +1844,8 @@ class LeoApp:
 
         In particular, may be called from plugins during startup.
         """
-        trace = False
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('forceShutdown')
         # Wait until everything is quiet before really quitting.
         if trace: print('forceShutdown: before end1')
         g.doHook("end1")
@@ -1858,13 +1866,14 @@ class LeoApp:
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
-    #@+node:ekr.20031218072017.2617: *3* app.onQuit
+    #@+node:ekr.20031218072017.2617: *3* app.onQuit (enabled)
     @cmd('exit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: print('onQuit: %s' % g.callers())
         g.app.quitting = True
-        # Don't use g.trace here.
-        # print('onQuit',g.app.save_session,g.app.sessionManager)
+        # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
         if g.app.save_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()
         while g.app.windowList:
@@ -2103,7 +2112,7 @@ class LeoApp:
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile(self, fn, force=False):
         '''Forget the open file, so that is no longer considered open.'''
-        trace = False and not g.unitTesting
+        trace = self.trace_shutdown and not g.unitTesting
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
             # Fix https://github.com/leo-editor/leo-editor/issues/69
@@ -2114,12 +2123,12 @@ class LeoApp:
         if fn in aList:
             aList.remove(fn)
             if trace:
-                g.trace('removed: %s' % (fn))
-                for z in aList:
-                    print('  %s' % (z))
+                print('forgetOpenFile: %s' % g.shortFileName(fn))
+                # for z in aList:
+                #    print('  %s' % (z))
             d[tag] = aList
         else:
-            if trace: g.trace('did not remove: %s' % (fn))
+            if trace: print('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         trace = False and not g.unitTesting

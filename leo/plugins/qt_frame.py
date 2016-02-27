@@ -2093,7 +2093,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Destroys all the objects of the commander.
             self.destroyAllObjects()
         c.exists = False # Make sure this one ivar has not been destroyed.
-        # g.trace('qtFrame',c,g.callers(4))
+        # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18257: *3* class QtStatusLineClass (qtFrame)
     class QtStatusLineClass:

@@ -74,12 +74,13 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = qt_frame.TabbedFrameFactory()
         else:
             self.frameFactory = qt_frame.SDIFrameFactory()
-    #@+node:ekr.20110605121601.18484: *3*  LeoQtGui.destroySelf
+    #@+node:ekr.20110605121601.18484: *3*  LeoQtGui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
+        trace = g.app.trace_shutdown
         QtCore.pyqtRemoveInputHook()
-        # print('LeoQtGui.destroySelf: %s' % self.qtApp)
-        self.qtApp.exit(0)
-        self.qtApp.deleteLater()
+        if trace: print('LeoQtGui.destroySelf: calling qtApp.Quit')
+        self.qtApp.quit()
+
     #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
