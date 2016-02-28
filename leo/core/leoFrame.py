@@ -1917,7 +1917,7 @@ class NullBody(LeoBody):
 
     def setFocus(self): pass
     #@-others
-#@+node:ekr.20031218072017.2218: ** class NullColorizer
+#@+node:ekr.20031218072017.2218: ** class NullColorizer (ColorizerMixin)
 class NullColorizer(leoColorizer.ColorizerMixin):
     '''
     A colorizer class that doesn't color,
@@ -1927,6 +1927,7 @@ class NullColorizer(leoColorizer.ColorizerMixin):
     #@+node:ekr.20031218072017.2219: *3* __init__ (NullColorizer)
     def __init__(self, c):
         '''NullColorizer'''
+        leoColorizer.ColorizerMixin.__init__(self, c)
         self.c = c
         self.count = 0
         self.enabled = False

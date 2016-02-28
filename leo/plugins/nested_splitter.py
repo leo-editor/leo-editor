@@ -1045,9 +1045,10 @@ if QtWidgets:
                         return provided
             return "Leo unnamed window"
         #@+node:ekr.20110605121601.17990: *3* layout_to_text
-        def layout_to_text(self, layout, _depth=0, _ans=[]):
+        def layout_to_text(self, layout, _depth=0, _ans=None):
             """convert the output from get_layout to indented human readable text
             for development/debugging"""
+            if _ans is None: _ans = []
             if _depth == 0:
                 _ans = []
             orientation = 'vertical'

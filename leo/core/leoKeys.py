@@ -1372,7 +1372,7 @@ class GetArg:
     #@+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
     def get_arg(ga, event,
         returnKind=None, returnState=None, handler=None,
-        tabList=[], completion=True, oneCharacter=False,
+        tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):
         #@+<< ga.get_arg docstring >>
@@ -1411,6 +1411,7 @@ class GetArg:
         #@-<< ga.get_arg docstring >>
         # pylint: disable=unpacking-non-sequence
         trace = False and not g.app.unitTesting
+        if tabList is None: tabList = []
         c, k = ga.c, ga.k
         state = k.getState('getArg')
         c.check_event(event)
@@ -2909,7 +2910,7 @@ class KeyHandlerClass:
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
     def getArg(self, event,
         returnKind=None, returnState=None, handler=None,
-        prefix=None, tabList=[], completion=True, oneCharacter=False,
+        prefix=None, tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):
         '''Convenience method mapping k.getArg to ga.get_arg.'''

@@ -1108,6 +1108,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
 
     def __init__(self, controller, fn):
         '''Ctor for ShopDataTraverser class.'''
+        leoAst.AstFullTraverser.__init__(self)
         module_tuple = g.shortFileName(fn), 'module', g.shortFileName(fn)
             # fn, kind, s.
         self.context_stack = [module_tuple]

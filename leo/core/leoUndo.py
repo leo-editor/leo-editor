@@ -440,12 +440,13 @@ class Undoer:
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
-    def afterChangeGroup(self, p, undoType, reportFlag=False, dirtyVnodeList=[]):
+    def afterChangeGroup(self, p, undoType, reportFlag=False, dirtyVnodeList=None):
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
         u = self; c = self.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
         bunch = u.beads[u.bead]
         if not u.beads:
@@ -475,11 +476,12 @@ class Undoer:
         u.setUndoTypes()
         # g.trace(u.undoMenuLabel,u.redoMenuLabel)
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
-    def afterChangeNodeContents(self, p, command, bunch, dirtyVnodeList=[], inHead=False):
+    def afterChangeNodeContents(self, p, command, bunch, dirtyVnodeList=None, inHead=False):
         '''Create an undo node using d created by beforeChangeNode.'''
         u = self; c = self.c; w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # Set the type & helpers.
         bunch.kind = 'node'
         bunch.undoType = command
@@ -543,9 +545,10 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.5: *5* u.afterCloneNode
-    def afterCloneNode(self, p, command, bunch, dirtyVnodeList=[]):
+    def afterCloneNode(self, p, command, bunch, dirtyVnodeList=None):
         u = self; c = u.c
         if u.redoing or u.undoing: return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # Set types & helpers
         bunch.kind = 'clone'
         bunch.undoType = command
@@ -573,9 +576,11 @@ class Undoer:
         bunch.redoHelper = u.redoDehoistNode
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.8: *5* u.afterDeleteNode
-    def afterDeleteNode(self, p, command, bunch, dirtyVnodeList=[]):
+    def afterDeleteNode(self, p, command, bunch, dirtyVnodeList=None):
         u = self; c = u.c
-        if u.redoing or u.undoing: return
+        if u.redoing or u.undoing:
+            return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # Set types & helpers
         bunch.kind = 'delete'
         bunch.undoType = command
@@ -625,7 +630,8 @@ class Undoer:
     #@+node:ekr.20050411193627.7: *5* u.afterHoist
     def afterHoist(self, p, command):
         u = self
-        if u.redoing or u.undoing: return
+        if u.redoing or u.undoing:
+            return
         bunch = u.createCommonBunch(p)
         # Set types & helpers
         bunch.kind = 'hoist'
@@ -635,9 +641,11 @@ class Undoer:
         bunch.redoHelper = u.redoHoistNode
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.9: *5* u.afterInsertNode
-    def afterInsertNode(self, p, command, bunch, dirtyVnodeList=[]):
+    def afterInsertNode(self, p, command, bunch, dirtyVnodeList=None):
         u = self; c = u.c
-        if u.redoing or u.undoing: return
+        if u.redoing or u.undoing:
+            return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # Set types & helpers
         bunch.kind = 'insert'
         bunch.undoType = command
@@ -663,11 +671,12 @@ class Undoer:
             # g.trace(afterTree)
         u.pushBead(bunch)
     #@+node:ekr.20050526124257: *5* u.afterMark
-    def afterMark(self, p, command, bunch, dirtyVnodeList=[]):
+    def afterMark(self, p, command, bunch, dirtyVnodeList=None):
         '''Create an undo node for mark and unmark commands.'''
         # 'command' unused, but present for compatibility with similar methods.
         u = self
         if u.redoing or u.undoing: return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # Set the type & helpers.
         bunch.undoHelper = u.undoMark
         bunch.redoHelper = u.redoMark
@@ -679,7 +688,8 @@ class Undoer:
     #@+node:ekr.20111005152227.15562: *5* u.afterMoveMarkedNodes
     def afterMoveMarkedNodes(self, data, p):
         u = self; c = u.c
-        if u.redoing or u.undoing: return
+        if u.redoing or u.undoing:
+            return
         bunch = u.createCommonBunch(p)
         # Set types & helpers
         bunch.kind = 'move-marked-nodes'
@@ -695,9 +705,10 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050410110343: *5* u.afterMoveNode
-    def afterMoveNode(self, p, command, bunch, dirtyVnodeList=[]):
+    def afterMoveNode(self, p, command, bunch, dirtyVnodeList=None):
         u = self; c = u.c
         if u.redoing or u.undoing: return
+        if dirtyVnodeList is None: dirtyVnodeList = []
         # g.trace(p.v,p.childIndex(),g.callers())
         # Set the types & helpers.
         bunch.kind = 'move'
@@ -796,8 +807,9 @@ class Undoer:
         bunch.oldParent = p.parent()
         return bunch
     #@+node:ekr.20050411193627.4: *5* u.beforeInsertNode
-    def beforeInsertNode(self, p, pasteAsClone=False, copiedBunchList=[]):
+    def beforeInsertNode(self, p, pasteAsClone=False, copiedBunchList=None):
         u = self
+        if copiedBunchList is None: copiedBunchList = []
         bunch = u.createCommonBunch(p)
         bunch.pasteAsClone = pasteAsClone
         if pasteAsClone:

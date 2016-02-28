@@ -23,6 +23,7 @@ class TryNext(Exception):
     """
 
     def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
         self.args = args
         self.kwargs = kwargs
 #@+node:ekr.20100908125007.6033: ** class CommandChainDispatcher

@@ -1492,8 +1492,9 @@ class TestManager:
         files.sort()
         return files
     #@+node:ekr.20051104075904.102: *4* TM.importAllModulesInPath
-    def importAllModulesInPath(self, path, exclude=[]):
+    def importAllModulesInPath(self, path, exclude=None):
         tm = self
+        if exclude is None: exclude = []
         path = g.os_path_finalize(path)
         if not g.os_path_exists(path):
             g.es("path does not exist:", path)
