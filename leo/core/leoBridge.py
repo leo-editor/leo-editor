@@ -199,7 +199,7 @@ class BridgeController:
         except ImportError:
             print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0
-        except:
+        except Exception:
             print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
             import traceback; traceback.print_exc()
             return 0
@@ -210,7 +210,7 @@ class BridgeController:
                 print(message)
                 g.app.gui.runAskOkDialog(None, "Python version error", message=message, text="Exit")
             return ok
-        except:
+        except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback; traceback.print_exc()
             return 0

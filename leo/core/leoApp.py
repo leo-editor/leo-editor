@@ -2385,7 +2385,7 @@ class LoadManager:
             loadDir = g.os_path_finalize(loadDir)
             # g.trace(loadDir)
             return loadDir
-        except:
+        except Exception:
             print("Exception getting load directory")
             raise
     #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName

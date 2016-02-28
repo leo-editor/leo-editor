@@ -1310,7 +1310,8 @@ class BaseTangleCommands:
                 #@+node:ekr.20031218072017.1155: *6* << Erase the temporary file >>
                 try: # Just delete the temp file.
                     os.remove(temp_name)
-                except: pass
+                except Exception:
+                    pass
                 #@-<< Erase the temporary file >>
     #@+node:ekr.20031218072017.3506: *5* put_code
     #@+at

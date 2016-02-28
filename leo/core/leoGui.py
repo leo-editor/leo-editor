@@ -56,7 +56,7 @@ class LeoGui:
     def guiName(self):
         try:
             return self.mGuiName
-        except:
+        except Exception:
             return "invalid gui name"
     #@+node:ekr.20031218072017.2231: *4* setScript
     def setScript(self, script=None, scriptFileName=None):

@@ -1430,7 +1430,7 @@ class RstCommands:
             for line in attr[3:]:
                 try:
                     parser.feed(line)
-                except:
+                except Exception:
                     line = ''.join([ch for ch in line if ord(ch) <= 127])
                     parser.feed(line)
             replacements = parser.get_replacements()

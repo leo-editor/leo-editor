@@ -1312,7 +1312,7 @@ class Commands(object):
             frame.deiconify()
             frame.lift()
             c.fileCommands.readOutlineOnly(theFile, fileName) # closes file.
-        except:
+        except Exception:
             g.es("can not open:", fileName)
     #@+node:ekr.20070915142635: *5* c.writeFileFromNode
     @cmd('write-file-from-node')
@@ -2319,7 +2319,7 @@ class Commands(object):
         except(ImportError, NameError):
             g.warning("time.strftime not available on this platform")
             return ""
-        except:
+        except Exception:
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format, time.gmtime())
         return s
@@ -4497,7 +4497,7 @@ class Commands(object):
         url = "http://leoeditor.com/"
         try:
             webbrowser.open_new(url)
-        except:
+        except Exception:
             g.es("not found:", url)
     #@+node:ekr.20090628075121.5994: *4* c.leoQuickStart
     @cmd('open-quickstart-leo')
@@ -4657,7 +4657,7 @@ class Commands(object):
         url = "http://leoeditor.com/leo_toc.html"
         try:
             webbrowser.open_new(url)
-        except:
+        except Exception:
             g.es("not found:", url)
     #@+node:ekr.20131213072223.19435: *4* c.openLeoTutorials
     @cmd('open-online-tutorials')
@@ -4667,7 +4667,7 @@ class Commands(object):
         url = "http://leoeditor.com/tutorial.html"
         try:
             webbrowser.open_new(url)
-        except:
+        except Exception:
             g.es("not found:", url)
     #@+node:ekr.20151225095102.1: *4* c.openUnittest
     @cmd('open-unittest-leo')
@@ -4687,7 +4687,7 @@ class Commands(object):
         url = "http://leoeditor.com/usersguide.html"
         try:
             webbrowser.open_new(url)
-        except:
+        except Exception:
             g.es("not found:", url)
     #@+node:ekr.20131213072223.19437: *4* c.openLeoVideos
     @cmd('open-online-videos')
@@ -4697,7 +4697,7 @@ class Commands(object):
         url = "http://leoeditor.com/screencasts.html"
         try:
             webbrowser.open_new(url)
-        except:
+        except Exception:
             g.es("not found:", url)
     #@+node:peckj.20131023115434.10114: ** c.createNodeHierarchy
     def createNodeHierarchy(self, heads, parent=None, forcecreate=False):

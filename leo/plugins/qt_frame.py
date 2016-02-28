@@ -2459,7 +2459,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 # Panes arranged horizontally; vertical splitter bar
                 bar.configure(relief=relief, width=w, bg=color, cursor="sb_h_double_arrow")
-        except: # Could be a user error. Use all defaults
+        except Exception:
+            # Could be a user error. Use all defaults
             g.es("exception in user configuration for splitbar")
             g.es_exception()
             if verticalFlag:
@@ -2484,7 +2485,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         try:
             bar1.configure(relief=relief, height=w, bg=color)
             bar2.configure(relief=relief, width=w, bg=color)
-        except: # Could be a user error.
+        except Exception:
+            # Could be a user error.
             g.es("exception in user configuration for splitbar")
             g.es_exception()
     #@+node:ekr.20110605121601.18277: *4* reconfigureFromConfig (qtFrame)
@@ -2606,7 +2608,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
                 g.doHook("bodyclick2", c=c, p=p, v=p, event=event)
-        except:
+        except Exception:
             g.es_event_exception("bodyclick")
 
     def OnBodyRClick(self, event=None):
@@ -2618,7 +2620,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
                 g.doHook("bodyrclick2", c=c, p=p, v=p, event=event)
-        except:
+        except Exception:
             g.es_event_exception("iconrclick")
     #@+node:ekr.20110605121601.18292: *4* OnBodyDoubleClick (Events) (not used)
     # Not called
@@ -2630,7 +2632,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.editCommands.extendToWord(event) # Handles unicode properly.
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
             g.doHook("bodydclick2", c=c, p=p, v=p, event=event)
-        except:
+        except Exception:
             g.es_event_exception("bodydclick")
         return "break" # Restore this to handle proper double-click logic.
     #@+node:ekr.20110605121601.18293: *3* Gui-dependent commands
@@ -2895,7 +2897,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     import webbrowser
                     os.chdir(g.app.loadDir)
                     webbrowser.open_new(url)
-                except:
+                except Exception:
                     if 0:
                         g.es("exception downloading", "sbooks.chm")
                         g.es_exception()

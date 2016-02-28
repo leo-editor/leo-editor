@@ -396,7 +396,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             # EKR.
             # return eval(arg, self.curframe.f_globals, self.curframe_locals)
             return eval(arg,f_globals,f_locals)
-        except:
+        except Exception:
             exc_info = sys.exc_info()[:2]
             self.error(traceback.format_exception_only(*exc_info)[-1].strip())
             raise
@@ -540,7 +540,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 sys.stdout = save_stdout
                 sys.stdin = save_stdin
                 sys.displayhook = save_displayhook
-        except:
+        except Exception:
             exc_info = sys.exc_info()[:2]
             self.error(traceback.format_exception_only(*exc_info)[-1].strip())
 
@@ -750,7 +750,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         else:
             try:
                 bnum = int(arg)
-            except:
+            except Exception:
                 self.error("Usage: commands [bnum]\n        ...\n        end")
                 return
         self.commands_bnum = bnum
@@ -844,7 +844,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                     func = eval(arg,
                                 self.curframe.f_globals,
                                 self.curframe_locals)
-                except:
+                except Exception:
                     func = arg
                 try:
                     if hasattr(func, '__func__'):
@@ -855,7 +855,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                     funcname = code.co_name
                     lineno = code.co_firstlineno
                     filename = code.co_filename
-                except:
+                except Exception:
                     # last thing to try
                     (ok, filename, ln) = self.lineinfo(arg)
                     if not ok:
@@ -888,7 +888,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 return eval(arg, self.curframe.f_globals, self.curframe_locals)
             else:
                 return eval(arg, frame.f_globals, frame.f_locals)
-        except:
+        except Exception:
             exc_info = sys.exc_info()[:2]
             err = traceback.format_exception_only(*exc_info)[-1].strip()
             return _rstr('** raised %s **' % err)
@@ -1179,7 +1179,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         args = arg.split()
         try:
             count = int(args[1].strip())
-        except:
+        except Exception:
             count = 0
         try:
             bp = self.get_bpbynumber(args[0].strip())
@@ -1272,7 +1272,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         """
         try:
             self.message(repr(self._getval(arg)))
-        except:
+        except Exception:
             pass
 
     # make "print" an alias of "p" since print isn't a Python statement anymore
@@ -1284,7 +1284,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         """
         try:
             self.message(pprint.pformat(self._getval(arg)))
-        except:
+        except Exception:
             pass
 
     #@+node:ekr.20110914171443.7306: *5* do_quit
@@ -1345,7 +1345,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         try:
             obj = self._getval(arg)
-        except:
+        except Exception:
             return
         try:
             # print('edb.do_source: obj',repr(arg))
@@ -1476,7 +1476,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         """
         try:
             value = self._getval(arg)
-        except:
+        except Exception:
             # _getval() already printed the error
             return
         code = None
@@ -1805,7 +1805,7 @@ def main():
             # In most cases SystemExit does not warrant a post-mortem session.
             print("The program exited via sys.exit(). Exit status:", end=' ')
             print(sys.exc_info()[1])
-        except:
+        except Exception:
             traceback.print_exc()
             print("Uncaught exception. Entering post mortem debugging")
             print("Running 'cont' or 'step' will restart the program")

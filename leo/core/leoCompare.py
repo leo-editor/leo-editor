@@ -96,11 +96,11 @@ class BaseLeoCompare:
             return self.show("Please pick distinct directories.")
         try:
             list1 = os.listdir(dir1)
-        except:
+        except Exception:
             return self.show("invalid directory:" + dir1)
         try:
             list2 = os.listdir(dir2)
-        except:
+        except Exception:
             return self.show("invalid directory:" + dir2)
         if self.outputFileName:
             self.openOutputFile()
@@ -134,7 +134,7 @@ class BaseLeoCompare:
                     val = filecmp.cmp(name1, name2, 0)
                     if val: yes.append(f1)
                     else: no.append(f1)
-                except:
+                except Exception:
                     self.show("exception in filecmp.cmp")
                     g.es_exception()
                     missing1.append(f1)
@@ -173,7 +173,7 @@ class BaseLeoCompare:
             ok = 1 if ok and ok != 0 else 0
             if f1 and f2 and ok: # Don't compare if there is an error opening the output file.
                 self.compare_open_files(f1, f2, name1, name2)
-        except:
+        except Exception:
             self.show("exception comparing files")
             g.es_exception()
         try:
@@ -181,7 +181,7 @@ class BaseLeoCompare:
             if f2: f2.close()
             if self.outputFile:
                 self.outputFile.close(); self.outputFile = None
-        except:
+        except Exception:
             self.show("exception closing files")
             g.es_exception()
     #@+node:ekr.20031218072017.3637: *3* compare_lines
@@ -310,7 +310,7 @@ class BaseLeoCompare:
         try:
             f = open(name, 'r')
             return f
-        except:
+        except Exception:
             self.show("can not open:" + '"' + name + '"')
             return None
     #@+node:ekr.20031218072017.3647: *4* dump
@@ -387,7 +387,7 @@ class BaseLeoCompare:
                 else:
                     self.show("writing to " + self.outputFileName)
                     self.outputFile = open(self.outputFileName, "wb")
-            except:
+            except Exception:
                 self.outputFile = None
                 self.show("exception opening output file")
                 g.es_exception()

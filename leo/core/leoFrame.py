@@ -1487,7 +1487,7 @@ class LeoTree(object):
                         c.redraw()
                         c.frame.body.wrapper.setInsertPoint(0)
                     g.doHook("hypercclick2", c=c, p=p, v=p, event=event)
-                except:
+                except Exception:
                     g.es_event_exception("hypercclick")
         #@+node:ekr.20040803072955.24: *6* OnHyperLinkEnter
         def OnHyperLinkEnter(self, event=None, c=c):
@@ -1496,7 +1496,7 @@ class LeoTree(object):
                 p = self
                 g.doHook("hyperenter1", c=c, p=p, v=p, event=event)
                 g.doHook("hyperenter2", c=c, p=p, v=p, event=event)
-            except:
+            except Exception:
                 g.es_event_exception("hyperenter")
         #@+node:ekr.20040803072955.25: *6* OnHyperLinkLeave
         def OnHyperLinkLeave(self, event=None, c=c):
@@ -1505,7 +1505,7 @@ class LeoTree(object):
                 p = self
                 g.doHook("hyperleave1", c=c, p=p, v=p, event=event)
                 g.doHook("hyperleave2", c=c, p=p, v=p, event=event)
-            except:
+            except Exception:
                 g.es_event_exception("hyperleave")
         #@-others
         #@-<< define callbacks to be injected in the position class >>
@@ -2098,8 +2098,10 @@ class NullIconBarClass(object):
         '''Add a (virtual) button to the (virtual) icon bar.'''
         command = keys.get('command')
         text = keys.get('text')
-        try: g.app.iconWidgetCount += 1
-        except: g.app.iconWidgetCount = 1
+        try:
+            g.app.iconWidgetCount += 1
+        except Exception:
+            g.app.iconWidgetCount = 1
         n = g.app.iconWidgetCount
         name = 'nullButtonWidget %d' % n
         if not command:

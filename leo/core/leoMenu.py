@@ -454,8 +454,10 @@ class LeoMenu:
     #@+node:ekr.20031218072017.3757: *6* defineEditMenuTop2Table
     def defineEditMenuTop2Table(self):
         c = self.c
-        try: show = c.frame.body.getColorizer().showInvisibles
-        except: show = False
+        try:
+            show = c.frame.body.getColorizer().showInvisibles
+        except Exception:
+            show = False
         label = "Hide In&visibles" if show else "Show In&visibles"
         self.editMenuTop2Table = [
             '*&goto-global-line',
@@ -1162,7 +1164,7 @@ class LeoMenu:
                     g.es_print("menu does not exist: %s" % (menuName))
                 return
             self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
-        except:
+        except Exception:
             g.es_print("exception creating items for", menuName, "menu")
             g.es_exception()
         g.app.menuWarningsGiven = True
@@ -1188,7 +1190,7 @@ class LeoMenu:
                 else:
                     self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
                 return menu
-        except:
+        except Exception:
             g.es("exception creating", menuName, "menu")
             g.es_exception()
             return None
@@ -1223,11 +1225,11 @@ class LeoMenu:
         try:
             index = parent.index(label)
             parent.delete(index)
-        except:
+        except Exception:
             try:
                 index = parent.index("Open With...")
                 parent.delete(index)
-            except:
+            except Exception:
                 g.trace('unexpected exception')
                 g.es_exception()
                 return
@@ -1320,7 +1322,7 @@ class LeoMenu:
                 self.destroyMenu(menuName)
             else:
                 g.es("can't delete menu:", menuName)
-        except:
+        except Exception:
             g.es("exception deleting", menuName, "menu")
             g.es_exception()
     #@+node:ekr.20031218072017.3806: *4* deleteMenuItem
@@ -1333,7 +1335,7 @@ class LeoMenu:
                 self.delete(menu, realItemName)
             else:
                 g.es("menu not found:", menuName)
-        except:
+        except Exception:
             g.es("exception deleting", itemName, "from", menuName, "menu")
             g.es_exception()
     #@+node:ekr.20031218072017.3782: *4* get/setRealMenuName & setRealMenuNamesFromTable
@@ -1351,7 +1353,7 @@ class LeoMenu:
         try:
             for untrans, trans in table:
                 self.setRealMenuName(untrans, trans)
-        except:
+        except Exception:
             g.es("exception in", "setRealMenuNamesFromTable")
             g.es_exception()
     #@+node:ekr.20031218072017.3807: *4* getMenu, setMenu, destroyMenu (LeoMenu)

@@ -6553,9 +6553,11 @@ def handleUrl(url, c=None, p=None):
                 g.app.unitTestDict['browser'] = url
             else:
                 # Mozilla throws a weird exception, then opens the file!
-                try: webbrowser.open(url)
-                except: pass
-    except:
+                try:
+                    webbrowser.open(url)
+                except Exception:
+                    pass
+    except Exception:
         g.es("exception opening", leo_path)
         g.es_exception()
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl

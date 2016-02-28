@@ -869,7 +869,7 @@ class JEditColorizer:
             # Must use foreground, not fg.
             try:
                 wrapper.tag_configure(name, foreground=color)
-            except: # Recover after a user error.
+            except Exception: # Recover after a user error.
                 g.es_exception()
                 wrapper.tag_configure(name, foreground=default_color)
         # underline=var doesn't seem to work.
@@ -903,7 +903,7 @@ class JEditColorizer:
                 color = option_name and c.config.getColor(option_name) or ''
             try:
                 wrapper.tag_configure(name, background=color)
-            except: # A user error.
+            except Exception: # A user error.
                 wrapper.tag_configure(name, background=default_color)
         # Special case:
         if not self.showInvisibles:

@@ -685,7 +685,7 @@ class LeoQtGui(leoGui.LeoGui):
             # g.es(font,font.hintingPreference())
             if trace: g.trace(family, size, g.callers())
             return font
-        except:
+        except Exception:
             g.es("exception setting font", g.callers(4))
             g.es("", "family,size,slant,weight:", "", family, "", size, "", slant, "", weight)
             # g.es_exception() # This just confuses people.

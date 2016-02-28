@@ -744,7 +744,7 @@ def getColorRGB(name, default=None):
     s = getColor(name, default)
     try:
         color = int(s[1: 3], 16), int(s[3: 5], 16), int(s[5: 7], 16)
-    except:
+    except Exception:
         color = None
     return color
 

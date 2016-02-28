@@ -871,7 +871,7 @@ class FileCommands:
             bin = binascii.unhexlify(s) # Throws a TypeError if val is not a hex string.
             val = pickle.loads(bin)
             return val
-        except:
+        except Exception:
             g.es_exception()
             g.trace('Can not unpickle', type(s), v and v.h, s[: 40])
             return None
