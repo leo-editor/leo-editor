@@ -4,7 +4,6 @@
 
 Run the unit tests in test.leo using the Execute Script command.
 '''
-# pylint: disable=global-statement
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g

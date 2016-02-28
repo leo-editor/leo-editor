@@ -8,6 +8,8 @@ Global constants, variables and utility functions used throughout Leo.
 Important: This module imports no other Leo module.
 '''
 # pylint: disable=eval-used
+# pylint: disable=global-variable-not-assigned
+# pylint: disable=import-self
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+<< global switches >>
@@ -389,6 +391,8 @@ class KeyStroke:
     #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
     def toGuiChar(self):
         '''Replace special chars by the actual gui char.'''
+        # pylint: disable=undefined-loop-variable
+        # looks like a pylint bug
         s = self.s.lower()
         if s in ('\n', 'return'): s = '\n'
         elif s in ('\t', 'tab'): s = '\t'
@@ -2451,6 +2455,8 @@ def getOutputNewline(c=None, name=None):
     else: s = app.config.output_newline
     if not s: s = ''
     s = s.lower()
+    # pylint: disable=undefined-loop-variable
+    # looks like a pylint bug
     if s in ("nl", "lf"): s = '\n'
     elif s == "cr": s = '\r'
     elif s == "platform": s = os.linesep # 12/2/03: emakital
@@ -5533,6 +5539,8 @@ def translateArgs(args, d):
 #@+node:ekr.20060810095921: *3* g.translateString & tr
 def translateString(s):
     '''Return the translated text of s.'''
+    # pylint: disable=undefined-loop-variable
+    # looks like a pylint bug
     if isPython3:
         if not isString(s):
             s = str(s, 'utf-8')

@@ -26,6 +26,7 @@ Notes:
 '''
 #@-<< docstring>>
 # As in leo.py we must be very careful about imports.
+# pylint: disable = global-variable-not-assigned
 g = None # set by init: do *not* import it here!
 inited = False
 pymacsFile = __file__
