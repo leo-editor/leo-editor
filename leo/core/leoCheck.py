@@ -488,6 +488,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             return ''
         ### This may not work for leading dots.
         aList,path,paths = spec.split('.'),None,None
+        name = 'no name'
         for name in aList:
             try:
                 f,path,description = imp.find_module(name,paths)
@@ -1409,6 +1410,7 @@ def test(c, files):
         )
         leoCheck.test(files)
     '''
+    # pylint: disable=import-self
     import leo.core.leoCheck as leoCheck
     leoCheck.ShowData(c=c).run(files)
 #@-others

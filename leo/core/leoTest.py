@@ -4,6 +4,7 @@
 
 Run the unit tests in test.leo using the Execute Script command.
 '''
+# pylint: disable=global-statement
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
@@ -1255,7 +1256,9 @@ class TestManager:
     def compareOutlines(self, root1, root2, compareHeadlines=True, tag='', report=True):
         """Compares two outlines, making sure that their topologies,
         content and join lists are equivalent"""
-        p2 = root2.copy(); ok = True
+        p2 = root2.copy()
+        ok = True
+        p1 = None
         for p1 in root1.self_and_subtree():
             b1 = p1.b
             b2 = p2.b

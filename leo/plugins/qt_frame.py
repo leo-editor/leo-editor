@@ -1312,7 +1312,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 #@+node:ekr.20110605121601.18180: ** class LeoQtBody(leoFrame.LeoBody)
 class LeoQtBody(leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
-    # pylint: disable=interface-not-implemented
     #@+others
     #@+node:ekr.20150521061618.1: *3* LeoQtBody.cmd (decorator)
     def cmd(name):
