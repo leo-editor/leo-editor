@@ -441,7 +441,7 @@ class MatchBrackets:
             return False
         else:
             return False
-        
+
     #@+node:ekr.20160121112536.1: *5* mb.scan_regex
     def scan_regex(self, s, i):
         '''Scan a regex (or regex substitution for perl).'''
@@ -599,7 +599,7 @@ class MatchBrackets:
             else:
                 val = (
                     self.start_comment and
-                    self.end_comment and 
+                    self.end_comment and
                     g.match(s, i, self.start_comment))
                 if trace and val: g.trace(i, self.start_comment)
                 return val
@@ -618,7 +618,7 @@ class MatchBrackets:
             else:
                 val = (
                     self.start_comment and
-                    self.end_comment and 
+                    self.end_comment and
                     g.match(s, i, self.end_comment))
                 if trace and val: g.trace(i, self.end_comment)
                 return val
@@ -730,7 +730,7 @@ class MatchBrackets:
         else:
             return (
                 self.start_comment and
-                self.end_comment and 
+                self.end_comment and
                 g.match(s, i, self.end_comment))
     #@+node:ekr.20160119104148.1: *4* mb.oops
     def oops(self, s):
@@ -768,7 +768,7 @@ class MatchBrackets:
         else:
             g.es("unmatched", repr(ch))
     #@-others
-    
+
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
 #@@nobeautify
 
@@ -1866,6 +1866,8 @@ def checkUnchangedIvars(obj, d, exceptions=None):
 def pause(s):
     g.pr(s)
     i = 0
+    # pylint: disable=undefined-variable
+    # long does not exist in Python 3.
     n = 1000 * 1000 if g.isPython3 else long(1000) * long(1000)
     while i < n:
         i += 1
@@ -1961,17 +1963,28 @@ def collectGarbage():
 no_gc_message = False
 
 def enable_gc_debug(event=None):
+    # pylint: disable=no-member
     if gc:
         if g.trace_gc_verbose:
-            gc.set_debug(
-                gc.DEBUG_STATS | # prints statistics.
-                gc.DEBUG_LEAK | # Same as all below.
-                gc.DEBUG_COLLECTABLE |
-                gc.DEBUG_UNCOLLECTABLE |
-                gc.DEBUG_INSTANCES |
-                gc.DEBUG_OBJECTS |
-                gc.DEBUG_SAVEALL
-            )
+
+            if g.isPython3:
+                gc.set_debug(
+                    gc.DEBUG_STATS | # prints statistics.
+                    gc.DEBUG_LEAK | # Same as all below.
+                    gc.DEBUG_COLLECTABLE |
+                    gc.DEBUG_UNCOLLECTABLE |
+                    # gc.DEBUG_INSTANCES |
+                    # gc.DEBUG_OBJECTS |
+                    gc.DEBUG_SAVEALL)
+            else:
+                gc.set_debug(
+                    gc.DEBUG_STATS | # prints statistics.
+                    gc.DEBUG_LEAK | # Same as all below.
+                    gc.DEBUG_COLLECTABLE |
+                    gc.DEBUG_UNCOLLECTABLE |
+                    gc.DEBUG_INSTANCES |
+                    gc.DEBUG_OBJECTS |
+                    gc.DEBUG_SAVEALL)
         # else:
             # gc.set_debug(gc.DEBUG_STATS)
     elif not g.no_gc_message:
@@ -4536,7 +4549,6 @@ def getPythonEncodingFromString(s):
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
-        # Generates a pylint warning, but that can't be helped.
         return type(s) == type(bytes('a', 'utf-8'))
     else:
         return False
@@ -4549,6 +4561,7 @@ def isCallable(obj):
 
 def isChar(s):
     '''Return True if s is a Python2K character type.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return False
     else:
@@ -4556,6 +4569,7 @@ def isChar(s):
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a')
     else:
@@ -4563,6 +4577,7 @@ def isString(s):
 
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a')
     else:
@@ -4675,9 +4690,11 @@ if isPython3: # g.not defined yet.
 else:
 
     def u(s):
+        # pylint: disable=undefined-variable
         return unicode(s)
 
     def ue(s, encoding):
+        # pylint: disable=undefined-variable
         return unicode(s, encoding)
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
@@ -4921,7 +4938,7 @@ def skip_leading_ws(s, i, ws, tab_width):
     return i
 #@+node:ekr.20031218072017.3205: *4* g.skip_leading_ws_with_indent
 def skip_leading_ws_with_indent(s, i, tab_width):
-    """Skips leading whitespace and returns (i, indent), 
+    """Skips leading whitespace and returns (i, indent),
 
     - i points after the whitespace
     - indent is the width of the whitespace, assuming tab_width wide tabs."""
@@ -5276,6 +5293,8 @@ def pr(*args, **keys):
             app.printWaiting.append(s2)
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
+    # pylint: disable=no-member
+    # These do not exist in Python 3.
     if g.isPython3:
         if type(obj) in (types.MethodType, types.BuiltinMethodType):
             return 'method'
@@ -6348,6 +6367,8 @@ def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
 def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     '''For unit testing: convert s to unicode and return (s,ok).'''
     ok = True
+    # pylint: disable=undefined-variable
+    # unicode does not exist in Python 3.
     f = str if g.isPython3 else unicode
     if s is None:
         s = g.u('')

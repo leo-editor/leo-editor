@@ -27,7 +27,7 @@ def get_modules(name):
     n = len(abs_dir) + 1
     aList = glob.glob(abs_dir + '/*.py')
     return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
-    
+
 hiddenimports = []
 for name in ('external', 'modes', 'plugins'):
     hiddenimports.extend(get_modules(name))
@@ -174,7 +174,7 @@ exe = EXE(pyz,
     strip=None,
     upx=True,
     console=True )
-    
+
 coll = COLLECT(exe,
     a.binaries,
     a.zipfiles,

@@ -12,7 +12,7 @@ class IdleTime:
     '''
     A class that executes a handler with a given delay at idle time. The
     handler takes a single argument, the IdleTime instance::
-        
+
         def handler(timer):
             """IdleTime handler.  timer is an IdleTime instance."""
             delta_t = timer.time-timer.starting_time
@@ -20,11 +20,11 @@ class IdleTime:
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
-    
+
         # Execute handler every 500 msec. at idle time.
         timer = g.IdleTime(c,handler,delay=500)
         if timer: timer.start()
-        
+
     Timer instances are completely independent::
 
         def handler1(timer):
@@ -33,14 +33,14 @@ class IdleTime:
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
-    
+
         def handler2(timer):
             delta_t = timer.time-timer.starting_time
             g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
             if timer.count >= 10:
                 g.trace('done')
                 timer.stop()
-    
+
         timer1 = g.IdleTime(c,handler1,delay=500)
         timer2 = g.IdleTime(c,handler2,delay=1000)
         if timer1 and timer2:

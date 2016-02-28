@@ -32,7 +32,7 @@ class LeoImportCommands:
     '''
     A class implementing all of Leo's import/export code. This class
     uses **importers** in the leo/plugins/importers folder.
-    
+
     For more information, see leo/plugins/importers/howto.txt.
     '''
     #@+others
@@ -150,7 +150,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s, i, p, result):
         '''
-        # Headlines not containing a section reference are ignored in noweb 
+        # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
         '''
         # g.trace(g.get_line(s,i))
@@ -1969,15 +1969,15 @@ class ZimImportController:
     '''
     A class to import Zim folders and files: http://zim-wiki.org/
     First use Zim to export your project to rst files.
-    
+
     Original script by Davy Cottet.
-    
+
     User options:
         @int rst_level = 0
         @string rst_type
         @string zim_node_name
         @string path_to_zim
-    
+
     '''
     #@+others
     #@+node:ekr.20141210051628.31: *3* zic.__init__

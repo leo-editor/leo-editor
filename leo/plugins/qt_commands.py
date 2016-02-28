@@ -106,7 +106,7 @@ def print_style_sheet(event):
 @g.command('style-reload')
 def style_reload(event):
     """reload-styles command.
-    
+
     Find the appropriate style sheet and re-apply it.
 
     This replaces execution of the `stylesheet & source` node in settings files.

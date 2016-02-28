@@ -587,19 +587,19 @@ class Commands(object):
     def cloneFindAllMarked(self, event=None):
         '''The clone-find-all-marked command.'''
         self.cloneFindMarkedHelper(flatten=False)
-        
+
     @cmd('clone-find-all-flattened-marked')
     @cmd('cffm')
     def cloneFindAllFlattenedMarked(self, event=None):
         '''The clone-find-all-flattened-marked command.'''
         self.cloneFindMarkedHelper(flatten=True)
-        
+
     def cloneFindMarkedHelper(self, flatten):
         '''Helper for clone-find-marked commands.'''
-        
+
         def isMarked(p):
             return p.isMarked()
-            
+
         self.cloneFindByPredicate(
             generator = self.all_unique_positions,
             predicate = isMarked,
@@ -648,7 +648,7 @@ class Commands(object):
         c.redraw()
     #@+node:ekr.20160201072634.1: *3* c.cloneFindByPredicate (not a command)
     def cloneFindByPredicate(self,
-        generator,     # The generator used to traverse the tree.   
+        generator,     # The generator used to traverse the tree.
         predicate,     # A function of one argument p, returning True
                        # if p should be included in the results.
         failMsg=None,  # Failure message.
@@ -671,7 +671,7 @@ class Commands(object):
         c = self
         u, undoType = c.undoer, undoType or 'clone-find-predicate'
         failMsg = failMsg or 'nothing found'
-        clones, seen = [], set(), 
+        clones, seen = [], set(),
         for p in generator():
             if predicate(p) and p.v not in seen:
                 if flatten:
@@ -1359,7 +1359,7 @@ class Commands(object):
     def tangleAll(self, event=None):
         '''
         Tangle all @root nodes in the entire outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -1370,7 +1370,7 @@ class Commands(object):
     def tangleMarked(self, event=None):
         '''
         Tangle all marked @root nodes in the entire outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -1381,7 +1381,7 @@ class Commands(object):
     def tangle(self, event=None):
         '''
         Tangle all @root nodes in the selected outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -1393,7 +1393,7 @@ class Commands(object):
     def untangleAll(self, event=None):
         '''
         Untangle all @root nodes in the entire outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -1405,7 +1405,7 @@ class Commands(object):
     def untangleMarked(self, event=None):
         '''
         Untangle all marked @root nodes in the entire outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -1416,7 +1416,7 @@ class Commands(object):
     @cmd('untangle')
     def untangle(self, event=None):
         '''Untangle all @root nodes in the selected outline.
-        
+
         **Important**: @root and all tangle and untangle commands are
         deprecated. They are documented nowhere but in these docstrings.
         '''
@@ -3159,7 +3159,7 @@ class Commands(object):
     def fullCheckOutline(self, event=None):
         '''
         Performs a full check of the consistency of a .leo file.
-        
+
         As of Leo 5.1, Leo performs checks of gnx's and outline structure
         before writes and after reads, pastes and undo/redo.
         '''
@@ -4701,9 +4701,9 @@ class Commands(object):
             g.es("not found:", url)
     #@+node:peckj.20131023115434.10114: ** c.createNodeHierarchy
     def createNodeHierarchy(self, heads, parent=None, forcecreate=False):
-        ''' Create the proper hierarchy of nodes with headlines defined in 
+        ''' Create the proper hierarchy of nodes with headlines defined in
             'heads' under 'parent'
-            
+
             params:
             parent - parent node to start from.  Set to None for top-level nodes
             heads - list of headlines in order to create, i.e. ['foo','bar','baz']
@@ -4756,10 +4756,10 @@ class Commands(object):
         '''
         Delete all vnodes corresponding to the positions in aList. If a
         callback is given, the callback is called for every node in the list.
-        
+
         The callback takes one explicit argument, p. As usual, the callback can
         bind values using keyword arguments.
-        
+
         This is *very* tricky code. The theory of operation section explains why.
         '''
         #@+<< theory of operation >>
@@ -6520,7 +6520,7 @@ class Commands(object):
             safe_at_file    True: produce @@file nodes instead of @file nodes.
             theTypes        A list of file extensions to import.
                             None is equivalent to ['.py']
-            
+
         This method cleans imported files as follows:
 
         - Replace backslashes with forward slashes in headlines.

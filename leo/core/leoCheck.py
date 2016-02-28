@@ -33,20 +33,20 @@ def bind_all_names(self, module_context):
 def bind_names(self, context):
     '''Bind all names in the given context and in all inner contexts.'''
     # First, create objects for all names defined in this context.
-    
+
     # Next, bind names in inner contexts.
     old_parent = self.parent_context
     self.parent_context = context
-    
+
     # Restore the context.
     self.parent_context = old_parent
 #@+node:ekr.20160109102859.1: ** class Context
 class Context:
     '''
     Context class (NEW)
-    
+
     Represents a binding context: module, class or def.
-    
+
     For any Ast context node N, N.cx is a reference to a Context object.
     '''
     #@+others
@@ -111,12 +111,12 @@ class Context:
             # cx.st.d[name] = module_e
     #@+node:ekr.20160109144139.1: *3* Context.import_name
     def import_name(self, module, name):
-        
+
         if True and name == '*':
             g.trace('From x import * not ready yet')
         else:
             self.imported_names.add(name)
-        
+
         ###
         # e_list.append(e)
         # if trace: g.trace('define: (ImportFrom) %s' % (name))
@@ -141,18 +141,18 @@ class Context:
             # e.refs_list.append(node)
     #@+node:ekr.20160109145526.1: *3* Context.reference_name
     def reference_name(self, name):
-        
+
         self.referenced_names.add(name)
     #@-others
 #@+node:ekr.20160109185501.1: ** class Obj
 #@+node:ekr.20160108105958.1: ** class Pass1 (AstFullTraverser)
 class Pass1 (leoAst.AstFullTraverser): # V2
-    
+
     ''' Pass1 does the following:
-        
+
     1. Creates Context objects and injects them into the new_cx field of
        ast.Class, ast.FunctionDef and ast.Lambda nodes.
-       
+
     2. Calls the following Context methods: cx.define/global/import/reference_name.
        These methods update lists used later to bind names to objects.
     '''
@@ -160,7 +160,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+others
     #@+node:ekr.20160108105958.2: *3*  p1.ctor
     def __init__(self, fn):
-        
+
         # Init the base class.
         leoAst.AstFullTraverser.__init__(self)
         self.fn = fn
@@ -196,7 +196,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
     def def_args_helper (self,cx,node):
-        
+
         assert self.kind(node) == 'arguments'
         self.visit_list(node.args)
         self.visit_list(node.defaults)
@@ -233,7 +233,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef (self,node):
-        
+
         # Define the function/method name in the old context.
         old_cx = self.context
         name = node.name
@@ -260,7 +260,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             # d[n] = 1 + d.get(n,0)
     #@+node:ekr.20160108105958.23: *5* p1.Interactive
     def do_Interactive(self,node):
-        
+
         assert False,'Interactive context not supported'
     #@+node:ekr.20160108105958.24: *5* p1.Lambda
     def do_Lambda (self,node):
@@ -332,7 +332,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     # Expr(expr value)
 
     def do_Expr(self,node):
-        
+
         # Visit...
         cx = self.context
         self.visit(node.value)
@@ -347,15 +347,15 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx  = self.context
         ctx = self.kind(node.ctx)
         name = node.id
-        
+
         ###
             # # Create the symbol table entry, even for builtins.
             # e = cx.st.add_name(name)
             # setattr(node,'e',e)
             # setattr(node,'cx',cx)
-        
+
         def_flag,ref_flag=False,False
-        
+
         if ctx in ('AugLoad','AugStore','Load'):
             # Note: AugStore does *not* define the symbol.
             ### e.referenced = ref_flag = True
@@ -411,7 +411,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             # # Important: do *not* analyze modules not in the files list.
             # if fn2:
                 # mname = self.u.module_name(fn2)
-                # if g.shortFileName(fn2) in self.u.files_list: 
+                # if g.shortFileName(fn2) in self.u.files_list:
                     # if mname not in self.u.module_names:
                         # self.u.module_names.append(mname)
                 # # if trace: g.trace('%s as %s' % (mname,asname))
@@ -434,7 +434,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             # e.refs_list.append(node)
     #@+node:ekr.20160108105958.22: *5* p1.ImportFrom
     #@+at From Guido:
-    #     
+    # 
     # from p.q import x       -->  x = __import__('p.q', fromlist=['x']).x
     # from p.q import x as y  -->  y = __import__('p.q', fromlist=['x']).x
     # from ..x.y import z     -->  z = __import('x.y', level=2, fromlist=['z']).z
@@ -513,7 +513,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             return path
     #@+node:ekr.20160108105958.29: *4* Operators... To be deleted???
     # operator = Add | BitAnd | BitOr | BitXor | Div
-    # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub | 
+    # FloorDiv | LShift | Mod | Mult | Pow | RShift | Sub |
 
     def do_Add(self,node):       setattr(node,'op_name','+')
     def do_BitAnd(self,node):    setattr(node,'op_name','&')
@@ -580,7 +580,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx.assignments_list.append(node)
     #@+node:ekr.20160108105958.30: *5* p1.With
     def do_With(self,node):
-        
+
         # Visit...
         cx = self.context
         self.visit(node.context_expr)
@@ -594,7 +594,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+node:ekr.20160109135003.1: *4* Statements
     #@+node:ekr.20160108105958.12: *5* p1.Assign
     def do_Assign(self,node):
-        
+
         # Visit...
         for z in node.targets:
             self.visit(z)
@@ -608,7 +608,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     # AugAssign(expr target, operator op, expr value)
 
     def do_AugAssign(self,node):
-        
+
         # Visit...
         self.visit(node.target)
         self.visit(node.value)
@@ -617,12 +617,12 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.stats.n_assignments += 1
         cx.assignments_list.append(node)
         cx.statements_list.append(node)
-            
+
     #@+node:ekr.20160108105958.15: *5* p1.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self,node):
-        
+
         # Visit...
         self.visit(node.func)
         for z in node.args:
@@ -846,7 +846,7 @@ class ShowData:
         r_return = r'(return[ \t].*)$'
         r_call = r'([a-z_A-Z][a-z_A-Z0-9]*)[ \t]*\(([^)]*)\)'
         r_all = re.compile('|'.join([r_class, r_def, r_return, r_call,]))
-        
+
         def scan(self, fn, s):
             lines = g.splitLines(s)
             self.tot_lines += len(lines)
@@ -1291,13 +1291,13 @@ class Stats:
         # self.failed_files = [] # Files that could not be opened.
         # self.files_list = [] # Files given by user or by import statements.
         # self.module_names = [] # Module names corresponding to file names.
-        
+
         # Contexts.
         # self.context_list = {}
             # Keys are fully qualified context names; values are contexts.
         # self.modules_dict = {}
             # Keys are full file names; values are ModuleContext's.
-        
+
         # Statistics...
         # self.n_chains = 0
         self.n_contexts = 0
@@ -1308,7 +1308,7 @@ class Stats:
         # self.n_resolvable_names = 0
         # self.n_resolved_contexts = 0
         # self.n_relinked_names = 0
-        
+
         # Names...
         self.n_attributes = 0
         self.n_expressions = 0
@@ -1319,7 +1319,7 @@ class Stats:
         self.n_param_names = 0
         self.n_param_refs = 0
         self.n_store_names = 0
-        
+
         # Statements...
         self.n_assignments = 0
         self.n_calls = 0
@@ -1332,7 +1332,7 @@ class Stats:
         self.n_list_comps = 0
         self.n_returns = 0
         self.n_withs = 0
-        
+
         # Times...
         self.parse_time = 0.0
         self.pass1_time = 0.0
@@ -1340,7 +1340,7 @@ class Stats:
         self.total_time = 0.0
     #@+node:ekr.20160109150703.6: *3* sd.print_times
     def print_times (self):
-        
+
         sd = self
         times = (
             'parse_time',
@@ -1358,18 +1358,18 @@ class Stats:
         print('')
     #@+node:ekr.20160109150703.7: *3* sd.print_stats
     def print_stats (self):
-        
+
         sd = self
         table = (
             '*', 'errors',
 
             '*Contexts',
             'classes','contexts','defs','modules',
-            
+
             '*Statements',
             'assignments','calls','fors','globals','imports',
             'lambdas','list_comps','returns','withs',
-            
+
             '*Names',
             'attributes','del_names','load_names','names',
             'param_names','param_refs','store_names',
@@ -1394,12 +1394,12 @@ class Stats:
                 print('%s%s: %s' % (pad,s,getattr(sd,var)))
         print('')
     #@-others
-    
+
 #@+node:ekr.20150704135836.1: ** test
 def test(c, files):
     r'''
     A stand-alone version of @button show-data.  Call as follows:
-        
+
         import leo.core.leoCheck as leoCheck
         files = (
             [

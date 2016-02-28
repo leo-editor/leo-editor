@@ -88,7 +88,7 @@ datas = [
     # The following files *are* useful in one-file operation.
     # sys._MEIPASS points to the temp folder.
     # On windows: ~\AppData\Local\Temp\_MEInnnn
-    
+
     # leo-editor: loaded by LeoPy.leo...
         ('launchLeo-folder.spec', ''),
         ('launchLeo-single.spec', ''),

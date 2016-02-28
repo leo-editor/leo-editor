@@ -41,7 +41,7 @@ class CommandChainDispatcher:
             self.chain = commands
 
     def __call__(self, *args, **kw):
-        """ Command chain is called just like normal func. 
+        """ Command chain is called just like normal func.
 
         This will call all funcs in chain with the same args as were given to this
         function, and return the result of first func that didn't raise
@@ -119,7 +119,7 @@ class BaseLeoPlugin(object):
 
     - setCommand::
 
-            def setCommand(self, commandName, handler, 
+            def setCommand(self, commandName, handler,
                     shortcut = None, pane = 'all', verbose = True):
 
     - setMenuItem::
@@ -153,7 +153,7 @@ class BaseLeoPlugin(object):
                 # call parent __init__
                 BaseLeoPlugin.__init__(self, tag, keywords)
 
-                # if the plugin object defines only one command, 
+                # if the plugin object defines only one command,
                 # just give it a name. You can then create a button and menu entry
                 self.setCommand('Hello', self.hello)
                 self.setButton()
@@ -168,7 +168,7 @@ class BaseLeoPlugin(object):
                 # create a menu item with default text
                 self.setMenuItem('Cmds')
 
-                # define a command using setMenuItem 
+                # define a command using setMenuItem
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
             def hello(self, event):
@@ -195,7 +195,7 @@ class BaseLeoPlugin(object):
     #@+node:ekr.20100908125007.6013: *3* setCommand
     def setCommand(self, commandName, handler,
                     shortcut=None, pane='all', verbose=True):
-        """Associate a command name with handler code, 
+        """Associate a command name with handler code,
         optionally defining a keystroke shortcut
         """
         self.commandNames.append(commandName)

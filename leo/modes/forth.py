@@ -236,7 +236,7 @@ class extendForth:
             self.splitList(ivar, setting)
         # g.trace('keywords',self.keywords)
     def splitList(self, ivar, setting):
-        '''Process lines containing pairs of entries 
+        '''Process lines containing pairs of entries
         in a list whose *name* is ivar.
         Put the results in ivars whose names are ivar1 and ivar2.'''
         result1 = []; result2 = []

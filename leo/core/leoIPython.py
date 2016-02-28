@@ -133,7 +133,7 @@ class InternalIPKernel(object):
 class LeoNameSpace(object):
     '''An interface class passed to IPython that provides easy
     access to "g" and all commanders.
-    
+
     A convenience property, "c" provides access to the first
     commander in g.app.windowList.
     '''

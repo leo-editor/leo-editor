@@ -14,7 +14,7 @@ class AstDumper:
     Return a formatted dump (a string) of the AST node.
 
     Adapted from Python's ast.dump.
-    
+
     annotate_fields:    True: show names of fields (can't eval the dump).
     disabled_field:     List of names of fields not to show: e.g. ['ctx',]
     include_attributes: True: show line numbers and column offsets.
@@ -109,9 +109,9 @@ class AstDumper:
 class AstFormatter:
     '''
     A class to recreate source code from an AST.
-    
+
     This does not have to be perfect, but it should be close.
-    
+
     Also supports optional annotations such as line numbers, file names, etc.
     '''
     # No ctor.
@@ -673,7 +673,7 @@ class AstFormatter:
     def op_name (self,node,strict=True):
         '''Return the print name of an operator node.'''
         d = {
-            # Binary operators. 
+            # Binary operators.
             'Add':       '+',
             'BitAnd':    '&',
             'BitOr':     '|',
@@ -1234,7 +1234,7 @@ class AstPatternFormatter(AstFormatter):
 class HTMLReportTraverser(AstFullTraverser):
     '''
     Create html reports from an AST tree.
-    
+
     Adapted from micropython, by Paul Boddie. See the copyright notices.
 
     This new version writes all html to a global code list.
@@ -1360,7 +1360,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def op_name (self,node,strict=True):
         '''Return the print name of an operator node.'''
         d = {
-            # Binary operators. 
+            # Binary operators.
             'Add':       '+',
             'BitAnd':    '&',
             'BitOr':     '|',

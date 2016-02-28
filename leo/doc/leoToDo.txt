@@ -14,6 +14,7 @@ Release Friday, March 4.
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
 Later:
+- Fix pylint complaint in the javascript importer.
 - Create unit test for transpose-words.
 - Add p/v.temp_u properties. Revise docs.
 - jEdit2py barfs on non-ascii characters.
@@ -28,6 +29,448 @@ Later:
 .. @+node:ekr.20151231121326.1: *3* Bug 217: vim plugin does not work as described
 https://github.com/leo-editor/leo-editor/issues/217
 The plugins seems to be pretty much broken.  Only one temp file seems to be created.
+.. @+node:ekr.20160221121545.1: *3* Discuss improved clone-find commands
+- cff and cfa.
+- Always search the entire file.
+.. @+node:ekr.20160215153627.1: *3* Notes re clones & multi-tree
+@language rest
+@wrap
+
+
+
+
+    
+
+    
+.. @+node:ekr.20160216093010.1: *4* Aha: think function, not scope
+@language rest
+@wrap
+
+Summary:
+
+- Clones are great! They show multiple views.
+- Replace interactive commands with non-interactive functional find commands.
+    - There are *many* possible functional find commands.
+    - There is no need to limit the scope of searches!  Hurray!
+- Clone-find commands should *always* search the entire outline,
+  unless node-only or suboutline-only searches are in effect.
+.. @+node:ekr.20160216044113.1: *5* New commands
+- find-primary-parent (Better than Alt-N), find-primary-node.
+- find-in-view
+- find-parent-in-view.
+- find-definition (of class, def, vars, etc.)
+- find-bookmarks, find-chapters, find-at-test nodes, find-at-button nodes.
+- find-nodes-by-attribute, find-nodes-by-predicate.
+
+Experimental:
+- show-children/hide-children.
+- clone-without-children? (implies moving to a new thread color).
+- Can we have alternate parents/children without changing views?
+
+For Chapters & views:
+- hoist-children
+- Alt-Enter: hoist (create-chapter)
+- Alt-Ctrl-G: dehoist or show-main-chapter.
+.. @+node:ekr.20160216122023.1: *5* Clones are great!
+Why confine ourselves to one view at a time?
+- A single outline can (and should!) contain many views.
+
+If we do want to focus on a single view, we can use hoists.
+- Do we want typed hoists?
+.. @+node:ekr.20160216121958.1: *5* Cloning implies a move
+The clone operation always implies a move.
+- To a particular *spot*.
+- At the last top-level node.
+
+The clone-find-by-attribute/predicate implicitly creates a new view.
+.. @+node:ekr.20160216121413.1: *5* Think function, not interactive find
+1. Use *non-interactive* searches to perform those functions.
+- Such functions are fast, even for large outlines.
+- Function seldem (never?) depends on scope.
+- Worrying about scope is a red herring.
+
+2. Avoid general, interactive find.
+- It's almost never what is actually wanted!
+    
+3. A key task is to *find a view*.
+- **command-history completion** could handle all the new commands.
+    
+    Example:  Alt-x find up-arrow or down-arrow.
+  
+.. @+node:ekr.20160216120900.1: *5* Diebenkorn
+In order of importance:
+
+1. Do search. But in order to find other than what is searched for.
+
+2. Attempt what is not certain. Certainty may or may not come later. It may then be a valuable delusion.
+
+3. The pretty, initial position which falls short of completeness is not to be valued — except as a stimulus for further moves.
+.. @+node:ekr.20160216122924.1: *4* Obsolete ideas
+Focusing on commands clarifies everything.
+.. @+node:ekr.20160211094257.1: *5* @test includes nodes based on attributes?
+An alternative to clones.
+.. @+node:ekr.20160216050933.1: *5* I love clones, I hate clones
+I used clones intensely in the make-stub-files project.
+
+- For unit testing, I moved clones of all code needed by the @test node to be children of the @test node.  Considered in isolation, this looks like the ultimate unit-testing pattern. There is never any need to execute the unit test externally because all code is up-to-date.
+
+- I've just created a set of "views" on the code that would help experienced Leo users understand the code.
+
+Alas, this expert usage of clones comes with a price. Views will bewilder people who don't use Leo. Second, clones gum up searches, even (especially) for experts. Every unit test created its own set of clones!
+
+The clone-find-all commands are kinda a workaround, because I can search just from the created node to the end of the file.  But these commands create more clones, so if I search from anywhere else the situation just gets worse.  Boo hoo.
+
+This morning a new thought arose.  Is it possible to use an improved Nav pane to avoid the problems with clones?  In particular:
+
+A. I want a way to mark (with an attribute) nodes to be incorporated into unit tests, as if they were cloned as children of @test nodes.  It should be possible!
+
+B. I want a way to mark (with an attribute) nodes that are part of a view.  Richard et. al. may already have done this!  My requirements are probably more stringent than most people's.  I'm excited to think of the possibilities.
+.. @+node:ekr.20160216044718.1: *5* New directive: @include & @include-node
+Possible, but I would prefer solving the problems with clones.
+.. @+node:ekr.20160216121042.1: *5* The main tree/view
+The clone-find commands should always be limited to the **main tree/view**.
+
+By default, this could either be a) the entire outline or b) only @<file> nodes.
+
+.. @+node:ekr.20160216044338.1: *5* Views
+- Views might unify bookmarks, chapters, nav, clone-find, find-by-predicate.
+    
+    views <==> bookmarks, chapters, nav, clone-find, find-by-predicate.
+
+- Do clones create view or vice versa?
+- Is it all about views?
+- Do @test nodes create views?
+.. @+node:ekr.20160216043537.1: *4* To do: Improve chapters
+* @chapter should be allowed *anywhere*.
+    - It takes 0.07 sec to search all of Leo.
+    - chapter commands should always search for @chapter nodes.
+    - There is no need for @chapters.
+
+- Replace ChapterController by ChapterCommands class.
+- Why do we have all the chapters code?
+- Actually switching chapters is easy?
+- I suspect the reason has to do with commands, not drawing.
+- However, this may have been done when I was chronically sleep deprived.
+.. @+node:ekr.20160216043726.1: *5* How long does it take to search LeoPy.leo?
+@language python
+
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20160219115402.1: *3* attribute gui
+@language rest
+@wrap
+
+A better attribute gui would help *everyone*.
+- We need to be *associate icons with attributes*.
+- This can be used for chapters, bookmarks, my-view-a/b/c, etc.
+
+An **attribute calculus** would form union & intersections of attributes.
+
+We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
+
+clone-mark-all could also set define attribues.
+.. @+node:ekr.20160217135810.1: *3* searches & attributes
+@language rest
+@wrap
+
+Improve clone-find commands:
+- Always search *everywhere* except for @<file> nodes containing @all.
+- Define cfa and cfaf as synonyms everywhere.
+
+Interactive replace is the hard case. It can be done as follows:
+1. do cfa to get **candidate nodes**.
+2. Do a regular interactive search within the selected tree.
+   No new command is needed!
+   
+Note: cfa is similar to a gather-all-attributes command.
+
+These new commands would be useful after cfa:
+- add-attribute-to-tree/node
+- remove-attribute-from-tree/node
+
+
+.. @+node:ekr.20160219115029.1: *4* Smart search is a bad idea
+Smart search would be an *interactive* search that seached as follows:
+- First: search in the present tree.
+- Second: search all @<file> nodes, except those containing @all
+- Third: search everything.
+
+**preamble searches** init interactive search/replaces.
+
+
+    
+.. @+node:ekr.20160201135549.1: *3* unused args & code for clone_find_predicate
+def clone_find_predicate(self,
+    description=None   # A description of the predicate and match.
+    parent=None,       # Create the root node as the last child of parent.
+    sibling=None,      # Create the root node after sibling.
+                       # parent overrides sibling if both exist.
+                       # If neither exist, use sibling=c.lastTopLevel()
+    sort=False,        # True: sort by headlines. bool(sort): use sort as a key function.
+):
+    '''
+    description="all", # A description of the predicate.
+    parent=None       The root node is the last child of parent.
+    sibling=None      Create the new node after sibling.
+    sort=False        If True, sort results using headlines.
+                      If sort is a callable, use sort(result, key=sort)
+    
+    The parent arg overrides the sibling arg if both args exist.
+    Create the root node as last top-level node if neither parent nor sibling exist.
+    '''
+    
+    if sort is True:
+        children = sorted(clones, key=lambda p, p.h)
+    elif sort:
+        children = sorted(clones, key=sort)
+    else:
+        children = clones
+.. @+node:ekr.20160224100702.1: *3* Rant: why doesn't js have a bozo script?
+.. @+node:ekr.20160128201207.1: *3* ==== Code academy posts
+@language rest
+@wrap
+
+To do:
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a give uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+- Scripts can handle events.
+
+- Redraw mode that hides siblings.
+- Key bindings in the nav pane.
+    - Arrow keys.
+    - Enter shift to outline pane.
+    - Some key to shift back to the nav pane.
+- Clone-find-predicate.
+.. @+node:ekr.20160129054828.1: *4* First post: topics
+@language rest
+@wrap
+
+Here is a quick list topics for the code academy.  Most can already be done easy, if you know where to look.  Some may require a few new lines in Leo's core. These topics should also be included in Leo's cheat sheet, or somewhere similar.
+
+uA's
+
+They are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
+
+Everyone needs to know how to get, set and search uA's.  You can get and set uA's with v.u. Just a few lines of code will search the entire outline for all nodes/positions having a given uA.
+
+Quick additions to Leo's core:
+- Define the p.u property, so code can do p.u instead of p.v.u.
+- Possibly make the api for uA's more convenient.
+
+A more ambitious addition: Define a gui interface for uA's.
+
+Other topics
+
+- Clones: making and deleting them. Clones are cheap to create!
+- How to create new panes in the log window, and how to put cool stuff in them.
+- How to hoist outlines programmatically.
+- How to write a plugin so it can respond to events.
+- How to create new panes in Leo's window with Terry's free_layout and nested_splitter plugins.  In essence, these plugin are part of Leo's core.
+- How to put multiple icons in a single headline.  This may be possible already.  If not it would require just a few lines of code in Leo's core.
+
+We discussed the so-called Easter-Egg interface to create new panes this from the gui, but a summary of how to do this programmatically is needed. Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+
+- How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
+
+New directions
+
+Putting all this together, we all agreed that being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
+
+- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
+
+- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
+.. @+node:ekr.20160129103906.1: *4* uA's and the new p.u property
+A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
+
+The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
+
+plugin_name = 'test_plugin'
+d = p.u.get(plugin_name,{})
+d ['n'] = 8
+p.u [plugin_name] = d
+
+p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
+
+It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
+
+for p in c.all_unique_positions():
+    if p.u:
+        print(p.h, sorted(p.u.keys()))
+
+This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
+
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
+
+aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
+print('\n'.join([p.h for p in aList]))
+
+Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
+
+Important: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
+
+Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setting temp uA's will be as easy as getting and setting uA's. I'll do this today.
+
+These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
+
+As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
+.. @+node:ekr.20160129101736.1: *4* icons
+@language rest
+@wrap
+
+During our conference call, someone asked whether nodes may have more than one icon.  Indeed they can.
+
+For example, running this script will insert three icons. Running the script again will insert three more.
+
+@language python
+
+
+table = (
+    'edittrash.png',
+    'connect_no.png',
+    'error.png',
+)
+for icon in table:
+    fn = g.os_path_finalize_join(g.app.loadDir,
+        '..', 'Icons', 'Tango', '16x16', 'status', icon)
+    if g.os_path_exists(fn):
+        c.editCommands.insertIconFromFile(path=fn)
+        
+@language rest
+@wrap
+        
+With a minor change to Leo's core, it is now easy to delete the icons of the node at position p:
+
+    c.editCommands.deleteNodeIcons(p=p)
+
+.. @+node:ekr.20160129103813.1: *4* git
+If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
+
+    git clone https://github.com/leo-editor/leo-editor.git
+
+Once you have done that, you can get the latest sources with:
+
+    git pull
+
+Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
+
+I've been wondering when to say this, but recent developments have forced my hand.  Today, as the result of our Code Academy discussion, I have added the p.u property and a keyword arg to c.editCommands.deleteNodeIcons.  If you don't use git you will quickly get out of the loop.
+
+Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
+
+I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
+.. @+node:ekr.20160225050421.1: *4* Code Academy: find by predicate or attribute
+@language rest
+@wrap
+
+Writing the cffm and cfam commands was snap using c.cloneFindByPredicate, a powerful new addition to Leo.
+
+Here is the entire code for the new commands:
+
+@language python
+
+    @cmd('clone-find-all-marked')
+    @cmd('cfam')
+    def cloneFindAllMarked(self, event=None):
+        '''The clone-find-all-marked command.'''
+        self.cloneFindMarkedHelper(flatten=False)
+        
+    @cmd('clone-find-all-flattened-marked')
+    @cmd('cffm')
+    def cloneFindAllFlattenedMarked(self, event=None):
+        '''The clone-find-all-flattened-marked command.'''
+        self.cloneFindMarkedHelper(flatten=True)
+
+    def cloneFindMarkedHelper(self, flatten):
+        '''Helper for clone-find-marked commands.'''
+        
+        def isMarked(p):
+            return p.isMarked()
+            
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
+        
+@language rest
+@wrap
+
+It's hard to imagine anything simpler. **Important**: the predicate could filter on an attribute or *combination* of attributes. For example, the predicate could return p has attributes A and B but *not* attribute C. Instantly we have full database query capabilities. If we then hoist the resulting node we see *all and only* those nodes satisfying the query.
+        
+Here is c.findNodeByPredicate. **Important**: Rev c8a3581c9b corrects a serious blunder in c.cloneFindByPredicate. Don't use previous versions!
+
+@language python
+    
+    def cloneFindByPredicate(self,
+        generator,     # The generator used to traverse the tree.   
+        predicate,     # A function of one argument p, returning True
+                       # if p should be included in the results.
+        flatten=False, # True: Put all matches at the top level.
+        undoType=None, # The undo name, shown in the Edit:Undo menu.
+                       # The default is 'clone-find-predicate'
+    ):
+        '''
+        Traverse the tree given using the generator, cloning all positions
+        for which predicate(p) is True. Undoably move all clones to a new
+        node, created as the last top-level node. Arguments:
+    
+        generator,      The generator used to traverse the tree.
+        predicate,      A function of one argument p returning true if
+                        p should be included.
+        flatten=False,  True: Move all node to be parents of the root node.
+        undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                        The default is 'clone-find-predicate'
+        '''
+        c = self
+        u, undoType = c.undoer, undoType or 'clone-find-predicate'
+        clones, seen = [], set(), 
+        for p in generator():
+            if predicate(p) and p.v not in seen:
+                if flatten:
+                    seen.add(p.v)
+                else:
+                    for p2 in p.self_and_subtree():
+                        seen.add(p2.v)
+                clones.append(p.copy())
+        if clones:
+            undoData = u.beforeInsertNode(c.p)
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            # This was botched in previous versions.
+            # The result was low-level vnode failures.
+            for p in clones: 
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
+            u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(root)
+            c.setChanged(True)
+            c.redraw()
+        else:
+            g.es_print('not found:', undoType)
+.. @+node:ekr.20160225061721.1: *3* Post: Leo 5.1.1 final coming March 4
+@language rest
+@wrap
+
+I recently had an Aha about releases: minor bugs don't matter! Leo's latest code is typically more stable than any previous "final" release, so we can (and should, imo) release "final" releases much more often. Say every two months or so.
+
+Regular releases are important. Some people will only download so-called "final" releases. And they keep Leo in the public eye.
+
+The remaining tasks before Leo 5.1.1 final are:
+
+- Get PyInstaller versions of Leo working on Windows, Linux  & MacOS.
+- Fix problesm with the vim and xemacs plugins.
+- Polish the Code Academy posts.
 .. @+node:ekr.20160227093754.1: ** To do: 5.2
 - New managers for icons, attributes & windows.
   Easy to use. Easy documentation.

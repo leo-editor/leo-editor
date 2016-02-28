@@ -529,7 +529,7 @@ class VimCommands:
     def ignore(vc):
         '''
         Ignore the present key without passing it to k.masterKeyHandler.
-        
+
         **Important**: all code now calls vc.quit() after vc.ignore.
         This code could do that, but the calling v.quit() emphasizes what happens.
         '''
@@ -720,7 +720,7 @@ class VimCommands:
         '''
         A callback that updates the dot just before searching.
         At present, this **leaves the dot unchanged**.
-        Use the n or N commands to repeat searches, 
+        Use the n or N commands to repeat searches,
         '''
         vc.command_list = []
         if 0: # Don't do anything else!
@@ -1657,8 +1657,8 @@ class VimCommands:
     #@+node:ekr.20140220134748.16630: *5* vc.vim_y
     def vim_y(vc):
         '''
-        N   yy          yank N lines 
-        N   y{motion}   yank the text moved over with {motion} 
+        N   yy          yank N lines
+        N   y{motion}   yank the text moved over with {motion}
         '''
         if vc.is_text_wrapper(vc.w):
             vc.accept(handler=vc.vim_y2)
@@ -1780,11 +1780,11 @@ class VimCommands:
     # N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
     # 
     # Later or never:
-    #     
+    # 
     # N   CTRL-I          (motion) go to Nth newer position in jump list
     # N   CTRL-O          (motion) go to Nth older position in jump list
     # N   CTRL-T          (motion) Jump back from Nth older tag in tag list
-    #     
+    # 
     # N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
     # N   _               (motion) down N-1 lines, on the first non-blank character
     # N   -               (motion) up N lines, on the first non-blank character

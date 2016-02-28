@@ -2921,7 +2921,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
         if j is not None:
             self.flashCharacter(w, j)
-       
+
     #@+node:ekr.20150514063305.273: *4* initBracketMatcher
     def initBracketMatcher(self, c):
         '''Init the bracket matching code in selfInsertCommand.'''

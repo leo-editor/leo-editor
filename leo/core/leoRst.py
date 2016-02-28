@@ -112,7 +112,7 @@ else:
 class RstCommands:
     '''
     A class to write rst markup in Leo outlines.
-    
+
     This class optionally stores information for the http plugin.
     Each node may have an rst_http_attributename attribute, a list.
     The first three elements are a stack of tags, the rest is html code::
@@ -316,7 +316,7 @@ class RstCommands:
         On exit:
             self.source contains rst sources
             self.stringOutput contains docutils output if docutils called.
-            
+
         **Important**: This command works as much like the rst3 command as possible.
         Difference arise because there is no @rst node to specify a filename.
         Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
@@ -1816,7 +1816,7 @@ class LinkAnchorParserClass(HTMLParser.HTMLParser):
     and the next.
 
     The parser classes are used to construct the html code for nodes.
-    
+
     The algorithm has two phases:
     - Phase 1 AnchorHtmlParserClass: gets the html code for each node.
     - Phase 2 LinkHtmlParserClass: finds all links and checks whethr
@@ -1908,7 +1908,7 @@ class HtmlParserClass(LinkAnchorParserClass):
     def handle_starttag(self, tag, attrs):
         '''
         1. Find out if the current tag is an achor.
-        2. If it is an anchor, we check if this anchor marks the beginning of a new 
+        2. If it is an anchor, we check if this anchor marks the beginning of a new
            node
         3. If a new node begins, then we might have to store html code for the previous
            node.

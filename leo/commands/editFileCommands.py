@@ -160,7 +160,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     g.pr('%-32s %s' % (key, g.toEncodedString(p.h, 'ascii')))
     #@+node:ekr.20150722080425.1: ** efc.compareTrees
     def compareTrees(self, p1, p2, tag):
-        
+
         class Controller:
             #@+others
             #@+node:ekr.20150722080308.2: *3* ct.compare
@@ -211,7 +211,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 Keys are headlines, stripped of prefixes.
                 Values are copies of positions.
                 '''
-                d = {} # 
+                d = {} #
                 for p in p1.self_and_subtree():
                     h = p.h.strip()
                     i = h.find('.')
@@ -223,7 +223,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         d[h] = p.copy()
                 return d
             #@-others
-            
+
         Controller().run(self.c, p1, p2, tag)
     #@+node:ekr.20150514063305.363: ** efc.deleteFile
     @cmd('file-delete')
@@ -300,7 +300,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         class MakeStubFileAdapter:
             '''
             An class that adapts leo/external/make_stub_files.py to Leo.
-            
+
             Settings are taken from Leo settings nodes, not a .cfg file.
             '''
             #@+others

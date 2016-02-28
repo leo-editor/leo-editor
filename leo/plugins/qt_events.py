@@ -203,7 +203,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return tkKey, ch, ignore
     #@+node:ekr.20110605121601.18546: *5* LeoQtEventFilter.tkKey & helper
     def tkKey(self, event, mods, keynum, text, toString, ch):
-        '''Carefully convert the Qt key to a 
+        '''Carefully convert the Qt key to a
         Tk-style binding compatible with Leo's core
         binding dictionaries.'''
         trace = False and not g.unitTesting

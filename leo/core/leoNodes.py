@@ -400,7 +400,7 @@ class Position(object):
     #@@c
 
     def moreBody(self):
-        """Returns the body string in MORE format.  
+        """Returns the body string in MORE format.
 
         Inserts a backslash before any leading plus, minus or backslash."""
         p = self; array = []
@@ -1352,9 +1352,9 @@ class Position(object):
             child.copyTreeFromSelfTo(child2)
     #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
     def createNodeHierarchy(self, heads, forcecreate=False):
-        ''' Create the proper hierarchy of nodes with headlines defined in 
+        ''' Create the proper hierarchy of nodes with headlines defined in
             'heads' as children of the current position
-            
+
             params:
             heads - list of headlines in order to create, i.e. ['foo','bar','baz']
                     will create:
@@ -1432,7 +1432,7 @@ class Position(object):
         '''Inserts a new position before self.
 
         Returns the newly created position.
-        
+
         '''
         p = self
         parent = p.parent()
@@ -1781,7 +1781,7 @@ class Position(object):
         '''Return True if p is an @ignore node.'''
         p = self
         return g.match_word(p.h, 0, '@ignore')
-        
+
     def in_at_ignore_tree(self):
         '''Return True if p or one of p's ancestors is an @ignore node.'''
         p = self

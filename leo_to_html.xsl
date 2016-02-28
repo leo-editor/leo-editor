@@ -30,7 +30,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
           width: 700px;
           overflow: scroll;
           line-height: 0.8;
-          
+
         }
         div.bodypane {
           position: absolute;

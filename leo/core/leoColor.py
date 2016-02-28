@@ -24,7 +24,7 @@ These are::
 
 Use these functions as follows::
 
-    import leo.core.leoColor as leoColor    
+    import leo.core.leoColor as leoColor
     leoColor.getRGB(name, default)
 
 If neither 'name' nor 'default' can be translated then accessor functions

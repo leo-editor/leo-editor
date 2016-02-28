@@ -82,7 +82,7 @@ class SessionManager:
     def load_snapshot(self):
         '''
         Load a snapshot of a session from the leo.session file.
-        
+
         Called when --restore-session is in effect.
         '''
         fn = self.path
@@ -97,7 +97,7 @@ class SessionManager:
     def save_snapshot(self, c=None):
         '''
         Save a snapshot of the present session to the leo.session file.
-        
+
         Called automatically during shutdown when --session-save is in effect.
         '''
         if self.path:

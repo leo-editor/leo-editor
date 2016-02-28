@@ -23,7 +23,7 @@ def get_long_description():
         return """
 Leo is an outline-oriented IDE written in 100% pure Python.
 Leo features a multi-window outlining editor, Python colorizing,
-powerful outline commands and many other things, including 
+powerful outline commands and many other things, including
 unlimited Undo/Redo and an integrated Python shell(IDLE) window.
 Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Requires PyQt and SIP preinstalled.

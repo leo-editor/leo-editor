@@ -24,7 +24,6 @@ import pickle
 import string
 import sys
 import tempfile
-import types
 import zipfile
 try:
     # IronPython has problems with this.
@@ -178,12 +177,9 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.30: *4* sax.characters
         def characters(self, content):
             '''Handle the characters element.'''
-            if g.isPython3:
-                if content and type(content) != type('a'):
-                    g.trace('Non-unicode content', repr(content))
-            else:
-                if content and type(content) != types.UnicodeType:
-                    g.trace('Non-unicode content', repr(content))
+            if content and not g.isUnicode(content):
+                g.trace('Non-unicode content', repr(content))
+                content = g.toUnicode(content)
             content = content.replace('\r', '')
             if not content:
                 return
@@ -1128,7 +1124,7 @@ class FileCommands:
         """recursively convert bytes objects in strings / lists / dicts to str
         objects, thanks to TNT
         http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
-        
+
         Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
         """
         t = type(ob)
@@ -1580,11 +1576,11 @@ class FileCommands:
     def putStyleSheetLine(self):
         '''
         Put the xml stylesheet line.
-        
+
         Old: The xml stylesheet element in the .leo file took precedence over
              the @string stylesheet setting. This made it impossible to change
              the stylesheet!
-             
+
         New: The @string stylesheet x setting takes precedence.
         '''
         trace = False and not g.unitTesting

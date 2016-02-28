@@ -35,7 +35,7 @@ except ImportError:
 class DynamicWindow(QtWidgets.QMainWindow):
     '''
     A class representing all parts of the main Qt window.
-    
+
     **Important**: when using tabs, the LeoTabbedTopLevel widget
     is the top-level window, **not** this QMainWindow!
 
@@ -2053,7 +2053,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.initComplete = True
         # g.trace(self.c)
     #@+node:ekr.20110605121601.18253: *4* Destroying the qtFrame
-    #@+node:ekr.20110605121601.18254: *5* destroyAllObjects
+    #@+node:ekr.20110605121601.18254: *5* destroyAllObjects (not used)
     def destroyAllObjects(self):
         """Clear all links to objects in a Leo window."""
         frame = self; c = self.c
@@ -2168,7 +2168,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 bg = c.config.getColor('status-bg') or 'white'
             if not fg:
                 fg = c.config.getColor('status-fg') or 'black'
-            
+
             # Rather than put(msg, explicit_color, explicit_color) we should use
             # put(msg, status) where status is None, 'info', or 'fail'.
             # Just as a quick hack to avoid dealing with propagating those changes
@@ -2369,7 +2369,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             '''
             Set the "Goto Script" rlick item of an @button button.
             Called from mod_scripting plugin.
-            
+
             button is a leoIconBarButton.
             command is a callback, defined in mod_scripting.py.
             command_p exists only if the @button node exists in the local .leo file.

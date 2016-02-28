@@ -10,13 +10,12 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
 '''
-# import leo.core.leoGlobals as g
-    # Warning: importing leoGlobals can crash pylint!
 # pylint: disable=unused-import
+
 # Define...
-# Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
-# QtDeclarative, Qsci, QtSvg, QtWebKit, QtWebKitWidgets
-# printsupport
+    # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
+    # QtDeclarative, Qsci, QtSvg, QtWebKit, QtWebKitWidgets
+    # printsupport
 import leo.core.leoGlobals as g
 strict = False
 trace = False

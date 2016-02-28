@@ -465,7 +465,7 @@ class UnitTestGui(NullGui):
 
         def runAtIdle(self, aFunc):
             '''Run aFunc immediately for a unit test.
-        
+
             This is a kludge, but it is probably the best that can be done.
             '''
             aFunc()

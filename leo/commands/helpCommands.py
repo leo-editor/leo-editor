@@ -50,7 +50,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
             <Alt-X>help-for-python<Enter>
             <a python symbol><Enter>
-            
+
         For the command bound to a key, type::
 
             <Alt-X>help-for-keystroke<Enter><any key>
@@ -867,7 +867,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             (?#...)         A comment; ignored.
             (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
                             re.I, re.L, re.M, re.S, re.U, re.X.
-            \number         Matches content of the group of the same number.     
+            \number         Matches content of the group of the same number.
             \A              Matches only at the start of the string.
             \b              Empty str at beginning or end of word:
                             '\bis\b' matches 'is', but not 'his'.
@@ -1044,7 +1044,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             p.moveToLastNode()
             p.moveToNext()
             p.moveToNodeAfterTree(p2)
-            p.moveToNthChild(n)) 
+            p.moveToNthChild(n))
             p.moveToParent()
             p.moveToThreadBack()
             p.moveToThreadNext()

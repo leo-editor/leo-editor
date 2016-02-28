@@ -87,7 +87,7 @@ class LeoNode:
 
     #@+node:ekr.20120519121124.9925: *3* flat
     def flat(self):
-        """iterate this node and all its descendants in a flat list, 
+        """iterate this node and all its descendants in a flat list,
         useful for finding things and building an UNL based view"""
         if self.parent != self:
             yield(self)
@@ -127,7 +127,7 @@ class LeoReader(ContentHandler):
         ContentHandler.__init__(self, *args, **kwargs)
         self.root = LeoNode()
 
-        self.root.h = 'ROOT'  
+        self.root.h = 'ROOT'
         # changes type from [] to str, done by endElement() for other vnodes
 
         self.cur = self.root

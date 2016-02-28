@@ -60,7 +60,7 @@ After restarting Leo, type, for example, in the body pane::
     c.op<ctrl-space>
 
 that is, use use the autocomplete-force command,
-to find all the c. methods starting with 'op' etc. 
+to find all the c. methods starting with 'op' etc.
 
 Theory of operation
 ===================

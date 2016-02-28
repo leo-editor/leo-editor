@@ -2,7 +2,7 @@
 #@+node:ville.20091010232339.6117: * @file ../external/lproto.py
 #@+<< docstring >>
 #@+node:ville.20091010205847.1364: ** << docstring >>
-""" lproto - simple local socket protocol dispatcher (reactor) for PyQt 
+""" lproto - simple local socket protocol dispatcher (reactor) for PyQt
 
 Author: Ville M. Vainio <vivainio@gmail.com>
 
@@ -17,7 +17,7 @@ if isQt5:
     from PyQt5 import QtNetwork
 else:
     from PyQt4 import QtNetwork
-import os   
+import os
 import socket
 import struct
 
@@ -36,7 +36,7 @@ else:
 #@+node:tbrown.20130319124904.18711: ** lprint
 def lprint(*args):
     """lprint "Log Print" - print args
-    
+
     To replace all the print() statements so the can be
     easily dis/enabled
 
@@ -45,7 +45,7 @@ def lprint(*args):
     """
 
     # print(args)
-    
+
     return
 #@+node:ville.20091010205847.1363: ** sending
 def mk_send_bytes(msg):

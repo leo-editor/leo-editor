@@ -324,7 +324,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runAskOkCancelStringDialog(self, c, title, message, cancelButtonText=None,
                                    okButtonText=None, default="", wide=False):
         """Create and run askOkCancelString dialog.
-        
+
         wide - edit a long string
         """
         if g.unitTesting: return None
@@ -747,9 +747,9 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18517: *4* LeoQtGui.getImageImage
     def getImageImage(self, name):
         '''Load the image in file named `name` and return it.
-        
+
         If self.color_theme, set from @settings -> @string color_theme is set,
-        
+
          - look first in $HOME/.leo/themes/<theme_name>/Icons,
          - then in .../leo/themes/<theme_name>/Icons,
          - then in .../leo/Icons,
@@ -767,9 +767,9 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:tbrown.20130316075512.28478: *4* LeoQtGui.getImageImageFinder
     def getImageImageFinder(self, name):
         '''Theme aware image (icon) path searching
-        
+
         If self.color_theme, set from @settings -> @string color_theme is set,
-        
+
          - look first in $HOME/.leo/themes/<theme_name>/Icons,
          - then in .../leo/themes/<theme_name>/Icons,
          - then in .../leo/Icons,
@@ -1119,7 +1119,7 @@ class StyleClassManager:
             props.append(prop)
         else:
             props.extend(prop)
-        
+
         self.set_sclasses(w, props)
     #@+node:tbrown.20150724090431.4: *3* clear_sclasses
     def clear_sclasses(self, w):
@@ -1129,25 +1129,25 @@ class StyleClassManager:
     def has_sclass(self, w, prop):
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
-            return   
+            return
         props = self.sclasses(w)
         if isinstance(prop, str):
             ans = [prop in props]
         else:
             ans = [i in props for i in prop]
-            
+
         return all(ans)
     #@+node:tbrown.20150724090431.6: *3* remove_sclass
     def remove_sclass(self, w, prop):
         """Remove style class or list of classes prop from QWidget w"""
         if not prop:
-            return    
+            return
         props = self.sclasses(w)
         if isinstance(prop, str):
             props = [i for i in props if i != prop]
         else:
             props = [i for i in props if i not in prop]
-        
+
         self.set_sclasses(w, props)
     #@+node:tbrown.20150724090431.7: *3* sclass_tests
     def sclass_tests(self):
@@ -1161,9 +1161,9 @@ class StyleClassManager:
                 return self.x or default
             def setProperty(self, name, value):
                 self.x = value
-        
+
         w = Test_W()
-        
+
         assert not self.has_sclass(w, 'nonesuch')
         assert not self.has_sclass(w, ['nonesuch'])
         assert not self.has_sclass(w, ['nonesuch', 'either'])
@@ -1213,9 +1213,9 @@ class StyleClassManager:
     def toggle_sclass(self, w, prop):
         """Toggle style class or list of classes prop on QWidget w"""
         if not prop:
-            return    
+            return
         props = set(self.sclasses(w))
-        
+
         if isinstance(prop, str):
             prop = set([prop])
         else:
@@ -1224,7 +1224,7 @@ class StyleClassManager:
         current = props.intersection(prop)
         props.update(prop)
         props = props.difference(current)
-        
+
         self.set_sclasses(w, props)
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
@@ -1358,7 +1358,7 @@ class StyleSheetManager:
     def find_constants_referenced(self, text):
         """find_constants - Return a list of constants referenced in the supplied text,
         constants match::
-        
+
             @[A-Za-z_][-A-Za-z0-9_]*
             i.e. @foo_1-5
 
@@ -1369,14 +1369,14 @@ class StyleSheetManager:
     #@+node:tbrown.20130411121812.28335: *4* ssm.find_constants_defined (no longer used)
     def find_constants_defined(self, text):
         r"""find_constants - Return a dict of constants defined in the supplied text.
-        
+
         NOTE: this supports a legacy way of specifying @<identifiers>, regular
         @string and @color settings should be used instead, so calling this
         wouldn't be needed.  expand_css_constants() issues a warning when
         @<identifiers> are found in the output of this method.
-        
+
         Constants match::
-        
+
             ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
             i.e.
             @foo_1-5=a
@@ -1416,7 +1416,7 @@ class StyleSheetManager:
     def set_indicator_paths(self, sheet):
         '''
         In the stylesheet, replace (if they exist)::
-            
+
             image: @tree-image-closed
             image: @tree-image-open
 
@@ -1424,14 +1424,14 @@ class StyleSheetManager:
 
             url(path/closed.png)
             url(path/open.png)
-            
+
         path can be relative to ~ or to leo/Icons.
-        
+
         Assuming that ~/myIcons/closed.png exists, either of these will work::
-            
+
             @string tree-image-closed = nodes-dark/triangles/closed.png
             @string tree-image-closed = myIcons/closed.png
-            
+
         Return the updated stylesheet.
         '''
         c = self.c

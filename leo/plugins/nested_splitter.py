@@ -52,10 +52,10 @@ if QtWidgets:
     class NestedSplitterTopLevel(QtWidgets.QWidget):
         """A QWidget to wrap a NestedSplitter to allow it to live in a top
         level window and handle close events properly.
-    
+
         These windows are opened by the splitter handle context-menu item
         'Open Window'.
-    
+
         The NestedSplitter itself can't be the top-level widget/window,
         because it assumes it can wrap itself in another NestedSplitter
         when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
@@ -740,14 +740,14 @@ if QtWidgets:
             the registered things, and calls them when needed if they exist.
 
             ns_provides()
-              should return a list of ('Item name', '__item_id') strings, 
+              should return a list of ('Item name', '__item_id') strings,
               'Item name' is displayed in the Action button menu, and
               '__item_id' is used in ns_provide().
             ns_provide(id_)
               should return the widget to replace the Action button based on
               id_, or None if the called thing is not the provider for this id_
             ns_context()
-              should return a list of ('Item name', '__item_id') strings, 
+              should return a list of ('Item name', '__item_id') strings,
               'Item name' is displayed in the splitter handle context-menu, and
               '__item_id' is used in ns_do_context().  May also return a dict,
               in which case each key is used as a sub-menu title, whose menu

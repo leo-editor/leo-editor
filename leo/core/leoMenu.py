@@ -32,7 +32,7 @@ class LeoMenu:
         self.enable_dict = d = {
 
             # File menu...
-                # 'revert':         True, # Revert is always enabled.               
+                # 'revert':         True, # Revert is always enabled.
                 # 'open-with':      True, # Open-With is always enabled.
 
             # Edit menu...

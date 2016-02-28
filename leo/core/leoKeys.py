@@ -338,7 +338,7 @@ class AutoCompleterClass:
     def attr_matches(self, s, namespace):
         """Compute matches when string s is of the form name.name....name.
 
-        Evaluates s using eval(s,namespace) 
+        Evaluates s using eval(s,namespace)
 
         Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
         the namespace, it will be evaluated and its attributes (as revealed by
@@ -1175,9 +1175,9 @@ class FileNameChooser:
 class GetArg:
     '''
     A class encapsulating all k.getArg logic.
-    
+
     k.getArg maps to ga.get_arg, which gets arguments in the minibuffer.
-    
+
     For details, see the docstring for ga.get_arg
     '''
     # pylint: disable=no-self-argument
@@ -1385,9 +1385,9 @@ class GetArg:
         All commands needing user input call k.getArg, which just calls ga.get_arg.
 
         The arguments to ga.get_arg are as follows:
-            
+
         event:              The event passed to the command.
-            
+
         returnKind=None:    A string.
         returnState=None,   An int.
         handler=None,       A function.
@@ -1397,7 +1397,7 @@ class GetArg:
                 if kind: k.setState(kind,n,handler)
 
         tabList=[]:         A list of possible completions.
-              
+
         completion=True:    True if completions are enabled.
 
         oneCharacter=False: True if k.arg should be a single character.
@@ -3687,7 +3687,7 @@ class KeyHandlerClass:
     def setStatusLabel(self, s):
         '''
         Set the label to s.
-        
+
         Use k.setStatusLabel, not k.setLael, to report the status of a Leo
         command. This allows the option to use g.es instead of the minibuffer
         to report status.

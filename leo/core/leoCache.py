@@ -492,7 +492,7 @@ class PickleShareDB:
         """ Open this file.  Return a file object.
 
         Do not print an error message.
-        It is not an error for this to fail. 
+        It is not an error for this to fail.
         """
         try:
             return open(fn, mode)

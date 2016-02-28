@@ -88,7 +88,7 @@ class FreeLayoutController:
     code should be in here, none in NestedSplitter.
 
     *ALSO* implements the provider interface for NestedSplitter, in
-    ns_provides, ns_provide, ns_context, ns_do_context, which 
+    ns_provides, ns_provide, ns_context, ns_do_context, which
     NestedSplitter uses as callbacks to populate splitter-handle context-menu
     and the empty pane Action button menu:
 
@@ -204,7 +204,7 @@ class FreeLayoutController:
         - `tag`: from hook event
         - `keys`: from hook event
         - `reloading`: True if this is not the initial load, see below
-        
+
         When called from the `after-create-leo-frame2` hook this defaults
         to False.  When called from the `resotre-layout` command, this is set
         True, and the layout the outline had *when first loaded* is restored.

@@ -583,7 +583,7 @@ class PersistenceDataController:
     def find_representative_node(self, root, target):
         '''
         root is a foreign node. target is a gnxs node within root's tree.
-        
+
         Return a node *outside* of root's tree that is cloned to target,
         preferring nodes outside any @<file> tree.
         Never return any node in any @persistence tree.

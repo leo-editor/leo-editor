@@ -80,7 +80,7 @@ class GoToCommands:
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.  Only lines
         that appear in the outline increment count.
-        
+
         Return gnx, h, offset:
         gnx:    the gnx of the #@+node
         h:      the headline of the #@+node
@@ -125,7 +125,7 @@ class GoToCommands:
         '''
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.
-        
+
         Return gnx, h, offset:
         gnx:    the gnx of the #@+node
         h:      the headline of the #@+node

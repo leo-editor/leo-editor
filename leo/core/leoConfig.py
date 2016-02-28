@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
 '''Configuration classes for Leo.'''
+# pylint: disable=unsubscriptable-object
 #@+<< imports >>
 #@+node:ekr.20041227063801: ** << imports >> (leoConfig)
 import leo.core.leoGlobals as g
@@ -308,7 +309,7 @@ class ParserBaseClass:
     def doIfEnv(self, p, kind, name, val):
         '''
         Support @ifenv in @settings trees.
-        
+
         Enable descendant settings if the value of os.getenv is in any of the names.
         '''
         trace = False
@@ -2029,7 +2030,7 @@ class SettingsFinder(object):
     def _outline_data_to_python(self, xml):
         """_outline_data_to_python - make xml from c.config.getOutlineData()
         into a detached VNode tree.
-        
+
         FIXME this should be elsewhere, just here to allow build_menu() to
         wortk for now.
 

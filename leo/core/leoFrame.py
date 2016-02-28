@@ -945,7 +945,7 @@ class LeoFrame(object):
             i, j = g.getLine(w.getAllText(), ins)
             s = w.get(i,j)
             g.app.gui.replaceClipboardWith(s)
-            
+
     OnCopyFromMenu = copyText
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @cmd('cut-text')
@@ -1001,9 +1001,9 @@ class LeoFrame(object):
         if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget', w)
             return
-        if self.cursorStay and wname.startswith('body'): 
+        if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
-        
+
         i, j = oldSel = w.getSelectionRange() # Returns insert point if no selection.
         oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
@@ -1030,13 +1030,13 @@ class LeoFrame(object):
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
             if self.cursorStay:
-                if tCurPosition == j: 
+                if tCurPosition == j:
                     offset = len(s)-(j-i)
-                else: 
+                else:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            
+
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
@@ -1921,7 +1921,7 @@ class NullBody(LeoBody):
 class NullColorizer(leoColorizer.ColorizerMixin):
     '''
     A colorizer class that doesn't color,
-    but does support methods 
+    but does support methods
     '''
     #@+others
     #@+node:ekr.20031218072017.2219: *3* __init__ (NullColorizer)

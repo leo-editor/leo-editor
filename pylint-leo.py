@@ -231,7 +231,7 @@ def run(theDir,fn,rpython=False):
         print('pylint-leo.py: source:\n\n%s\n' % s)
         # Add the optional Sherlock args.
         dots = True
-        patterns = [ 
+        patterns = [
             #@+<< Sherlock patterns for pylint >>
             #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
             #@@nobeautify
@@ -241,7 +241,7 @@ def run(theDir,fn,rpython=False):
             '+.*infer*',
                 # '+.*infer_name',
                 '+.*infer_stmts',
-                
+
             '+YES::__init__',
 
             ###'+TypeChecker::add_message',
@@ -253,7 +253,7 @@ def run(theDir,fn,rpython=False):
                 # '+TypeChecker::visit_getattr',
                 # '+.*visit_class',
                 # '+Basic*::visit_*',
-                
+
             # '+.*__init__',
                 # '+Instance::__init__',
                 # '+Class::__init__',
@@ -353,7 +353,7 @@ def run(theDir,fn,rpython=False):
             #@-<< Sherlock patterns for pylint >>
         ]
         show_return = True
-        stats_patterns = [ 
+        stats_patterns = [
             #@+<< Sherlock stats patterns for pylint >>
             #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
             #@@nobeautify
@@ -389,7 +389,7 @@ def run(theDir,fn,rpython=False):
     t1 = time.clock()
     g.execute_shell_commands(command)
     t2 = time.clock()
-    return t2-t1 
+    return t2-t1
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''

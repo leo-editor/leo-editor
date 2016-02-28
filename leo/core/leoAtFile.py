@@ -463,10 +463,10 @@ class AtFile:
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
     # The vnode ctor must not create this ivar!
     # 
-    # at.terminateBody detects clone conflicts. The old value is v.b. The new value is:: 
+    # at.terminateBody detects clone conflicts. The old value is v.b. The new value is::
     # 
     #     ''.join(v.tempBodyList)
-    #     
+    # 
     # at.terminateBody calls at.indicateNodeChanged when a mismatch is detected. at.indicateNodeChanged adds an entry in c.nodeConflictList for each clone conflict.
     # 
     # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
@@ -1120,10 +1120,10 @@ class AtFile:
     def completeFirstDirectives(self, out, firstLines):
         '''
         14-SEP-2002 DTHEIN
-        
+
         Scans the lines in the list 'out' for @first directives, appending the
         corresponding line from 'firstLines' to each @first directive found.
-        
+
         NOTE: the @first directives must be the very first lines in 'out'.
         '''
         trace = False and not g.unitTesting
@@ -1150,10 +1150,10 @@ class AtFile:
     def completeLastDirectives(self, out, lastLines):
         '''
         14-SEP-2002 DTHEIN.
-        
+
         Scans the lines in the list 'out' for @last directives, appending the
         corresponding line from 'lastLines' to each @last directive found.
-        
+
         NOTE: the @last directives must be the very last lines in 'out'.
         '''
         trace = False and not g.unitTesting
@@ -1190,7 +1190,7 @@ class AtFile:
         """
         Return the next VNode in at.root.tnodeList.
         Called only for **legacy** @file nodes.
-        
+
         tnodeLists are used *only* when reading @file (not @thin) nodes.
         tnodeLists compensate for not having gnx's in derived files!
         """
@@ -1225,16 +1225,16 @@ class AtFile:
         '''
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string. Calls at.initReadLine if all went well.
-        
+
         Sets at.encoding as follows:
         1. Use the BOM, if present. This unambiguously determines the encoding.
         2. Use the -encoding= field in the @+leo header, if present and valid.
         3. Otherwise, uses existing value of at.encoding, which comes from:
             A. An @encoding directive, found by at.scanAllDirectives.
             B. The value of c.config.default_derived_file_encoding.
-        
+
         Returns the string, or None on failure.
-        
+
         This method is now part of the main @file read code.
         at.openFileForReading calls this method to read all @file nodes.
         Previously only at.scanHeaderForThin (import code) called this method.
@@ -2695,7 +2695,7 @@ class AtFile:
 
         Empty lines are ignored because empty @first directives are
         ignored.
-        
+
         We can not call sentinelKind here because that depends on the comment
         delimiters we set here.
         '''
@@ -2709,7 +2709,7 @@ class AtFile:
     def scanHeaderForThin(self, fileName):
         '''
         Return true if the derived file is a thin file.
-        
+
         This is a kludgy method used only by the import code.'''
         at = self
         s = at.readFileToUnicode(fileName)
@@ -3460,7 +3460,7 @@ class AtFile:
     def writeFromString(self, root, s, forcePythonSentinels=True, useSentinels=True):
         """
         Write a 4.x derived file from a string.
-        
+
         This is at.write specialized for scripting.
         """
         at = self; c = at.c
@@ -4243,7 +4243,9 @@ class AtFile:
                 g.es_print(' ' * (7 + offset) + '^')
     #@+node:ekr.20090514111518.5665: *5* tabNannyNode (leoAtFile)
     def tabNannyNode(self, p, body, suppress=False):
-        import parser, tabnanny, tokenize
+        import parser
+        import tabnanny
+        import tokenize
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
@@ -4293,7 +4295,7 @@ class AtFile:
             at.outputContents = s
             theFile.close()
             at.outputFile = None
-            at.outputFileName = '' if g.isPython3 else unicode('')
+            at.outputFileName = g.u('')
             at.shortFileName = ''
             at.targetFileName = None
             return s
@@ -4686,7 +4688,7 @@ class AtFile:
         '''Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
-        
+
         This is used only by the @shadow logic.
         '''
         trace = False and not g.unitTesting
@@ -5199,8 +5201,8 @@ class AtFile:
             at.startLeo:      "@+leo",
             at.startNode:     "@+node",
             at.startOthers:   "@+others",
-            at.startAll:      "@+all",    
-            at.startMiddle:   "@+middle", 
+            at.startAll:      "@+all",
+            at.startMiddle:   "@+middle",
             at.startAfterRef: "@afterref", # 4.x
             at.startComment:  "@comment",
             at.startDelims:   "@delims",

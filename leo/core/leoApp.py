@@ -60,7 +60,7 @@ def join_leo_irc(event=None):
 def openUrl(event=None):
     '''
     Open the url in the headline or body text of the selected node.
-    
+
     Use the headline if it contains a valid url.
     Otherwise, look *only* at the first line of the body.
     '''
@@ -248,7 +248,7 @@ class ExternalFilesController:
                 os.remove(path)
                 if not g.unitTesting:
                     g.pr("deleting temp file: %s" % g.shortFileName(path))
-            except:
+            except Exception:
                 g.pr("can not delete temp file: %s" % path)
         if d in efc.open_with_files:
             efc.open_with_files.remove(d)
@@ -288,7 +288,7 @@ class ExternalFilesController:
         '''
         This routine handles the items in the Open With... menu.
         See efc.open_temp_file for documentation for d.
-        
+
         Called by c.openWith.
         '''
         trace = False and not g.unitTesting
@@ -309,7 +309,7 @@ class ExternalFilesController:
     def open_temp_file(efc, c, d, fn, testing=False):
         '''
         Open the closed mkstemp file fn in an external editor.
-        
+
         LeoMenu.createOpenWithMenuFromTable creates d with these keys:
 
         'args':     command-line args.
@@ -319,7 +319,7 @@ class ExternalFilesController:
                     This argument may also be a callable.
         'shortcut': the keystroke that created the command.
         'name':     the menu label, for example, Idle, Scite, etc.
-        
+
         efc.create_temp_file recreates the dict with these keys:
 
         'body':        The body text of the file. Defaults to c.p.b
@@ -414,7 +414,7 @@ class ExternalFilesController:
                     # May be None
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
-        if 'body' in d:  # don't re-use someone else's body
+        if 'body' in d: # don't re-use someone else's body
             del d['body']
         return efc.create_temp_file(c, d, p)
             # May be None.
@@ -1329,7 +1329,7 @@ class LeoApp:
     #@+node:ekr.20120522160137.9910: *5* app.define_language_extension_dict
     #@@nobeautify
 
-    def define_language_extension_dict (self):
+    def define_language_extension_dict(self):
 
         # Used only by g.app.externalFilesController.get_ext.
 
@@ -1810,7 +1810,7 @@ class LeoApp:
     def destroyWindow(self, frame):
         '''Destroy all ivars in a Leo frame.'''
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('destroyWindow:  %s' %  frame.c.shortFileName())
+        if trace: print('destroyWindow:  %s' % frame.c.shortFileName())
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
@@ -3783,7 +3783,7 @@ class RecentFilesManager:
         Write the appropriate .leoRecentFiles.txt file.
 
         Write a message if force is True, or if it hasn't been written yet.
-        
+
         '''
         tag = '.leoRecentFiles.txt'
         rf = self

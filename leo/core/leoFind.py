@@ -163,7 +163,7 @@ class LeoFind:
         self.change_text = ""
         self.radioButtonsChanged = False
             # Set by ftm.radio_button_callback
-            
+
         # Communication betweenfind-def and startSearch
         self.find_def_data = None
             # Saved regular find settings.
@@ -523,7 +523,7 @@ class LeoFind:
         - !<isearch-forward>! repeats the search.
         - Esc or any non-plain key ends the search.
         - Backspace reverses the search.
-        - Backspacing to an empty search pattern 
+        - Backspacing to an empty search pattern
           completely undoes the effect of the search.
         '''
         self.startIncremental(event, 'isearch-forward',
@@ -537,7 +537,7 @@ class LeoFind:
         - !<isearch-forward>! repeats the search.
         - Esc or any non-plain key ends the search.
         - Backspace reverses the search.
-        - Backspacing to an empty search pattern 
+        - Backspacing to an empty search pattern
           completely undoes the effect of the search.
         '''
         self.startIncremental(event, 'isearch-backward',
@@ -551,7 +551,7 @@ class LeoFind:
         - !<isearch-forward-regexp>! repeats the search.
         - Esc or any non-plain key ends the search.
         - Backspace reverses the search.
-        - Backspacing to an empty search pattern 
+        - Backspacing to an empty search pattern
           completely undoes the effect of the search.
         '''
         self.startIncremental(event, 'isearch-forward-regexp',
@@ -565,7 +565,7 @@ class LeoFind:
         - !<isearch-forward-regexp>! repeats the search.
         - Esc or any non-plain key ends the search.
         - Backspace reverses the search.
-        - Backspacing to an empty search pattern 
+        - Backspacing to an empty search pattern
           completely undoes the effect of the search.
         '''
         self.startIncremental(event, 'isearch-backward-regexp',
@@ -579,7 +579,7 @@ class LeoFind:
         - !<isearch-forward-regexp>! repeats the search.
         - Esc or any non-plain key ends the search.
         - Backspace reverses the search.
-        - Backspacing to an empty search pattern 
+        - Backspacing to an empty search pattern
           completely undoes the effect of the search.
         '''
         self.startIncremental(event, 'isearch-with-present-options',
@@ -1479,7 +1479,7 @@ class LeoFind:
                     result.append(line.rstrip()+'\n')
                 else:
                     result.append('%s%s\n%s' % ('-' * 20, self.p.h, line.rstrip()+'\n'))
-                    self.p.setVisited()       
+                    self.p.setVisited()
             if result:
                 undoData = u.beforeInsertNode(c.p)
                 found = self.createFindAllNode(result)
@@ -2167,7 +2167,7 @@ class LeoFind:
     def focusInTree(self):
         '''
         Return True is the focus widget w is anywhere in the tree pane.
-        
+
         Note: the focus may be in the find pane.
         '''
         trace = False and not g.unitTesting
@@ -2193,7 +2193,7 @@ class LeoFind:
     def initInteractiveCommands(self):
         '''
         Init an interactive command.  This is tricky!
-        
+
         *Always* start in the presently selected widget, provided that
         searching is enabled for that widget. Always start at the present
         insert point for the body pane. For headlines, start at beginning or

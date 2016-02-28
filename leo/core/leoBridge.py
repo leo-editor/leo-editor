@@ -22,7 +22,7 @@
 #     if bridge.isOpen():
 #         g = bridge.globals()
 #         c = bridge.openLeoFile(path)
-#         
+# 
 # Notes:
 # 
 # - The leoBridge module imports no modules at the top level.

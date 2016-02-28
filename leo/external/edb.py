@@ -153,7 +153,7 @@ def find_function(funcname, filename):
     return answer
 #@+node:ekr.20110914171443.7247: *3* getsourcelines
 def getsourcelines(obj):
-    
+
     print('edb.getsourcelines',obj)
 
     lines, lineno = inspect.findsource(obj)
@@ -186,13 +186,13 @@ class _rstr(str):
 line_prefix = '\n-> '   # Probably a better default
 
 class Pdb(bdb.Bdb, cmd.Cmd):
-    
+
     # List of all the commands making the program resume execution.
     commands_resuming = [
         'do_continue', 'do_step', 'do_next', 'do_return',
         'do_quit', 'do_jump',
     ]
-    
+
     #@+others
     #@+node:ekr.20110914171443.7251: *3* __init__ (edb.Pdb)
     def __init__(self, completekey='tab', stdin=None, stdout=None, skip=None,
@@ -305,9 +305,9 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     #@+node:ekr.20110914171443.7257: *3* Actual overrides of Bdb methods
     #@+node:ekr.20110914171443.7258: *4* break_here (edb, overrides bdb)
     def break_here(self, frame):
-        
+
         filename = self.canonic(frame.f_code.co_filename)
-        
+
         # EKR.
         if filename == '<string>':
             filename = self._getval('__file__',frame=frame)
@@ -341,7 +341,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         frame, lineno = frame_lineno
         filename = self.canonic(frame.f_code.co_filename)
-        
+
         ### EKR.
         if filename == '<string>':
             filename = self._getval('__file__')
@@ -364,7 +364,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         if args:
             s += reprlib.repr(args)
-            
+
         # EKR.
         # else:
             # s += '()'
@@ -383,7 +383,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     #@+node:ekr.20110914171443.7260: *3* Actual overrides of Pdb methods
     #@+node:ekr.20110914171443.7261: *4* _getval (edb)
     def _getval(self, arg,frame=None):
-        
+
         # EKR: added the frame keyword argument.
         if frame:
             f_globals = frame.f_globals
@@ -391,7 +391,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         else:
             f_globals = self.curframe.f_globals
             f_locals  = self.curframe_locals
-            
+
         try:
             # EKR.
             # return eval(arg, self.curframe.f_globals, self.curframe_locals)
@@ -404,11 +404,10 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     def defaultFile(self):
         """Produce a reasonable default."""
         filename = self.curframe.f_code.co_filename
-        
-        
+
         # if filename == '<string>' and self.mainpyfile:
             # filename = self.mainpyfile
-            
+
         # EKR:
         if filename == '<string>':
             if self.mainpyfile:
@@ -416,7 +415,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             else:
                 filename = self._getval('__file__')
                 filename = self.canonic(filename)
-            
+
         return filename
 
     #@+node:ekr.20110914171443.7263: *4* do_list (edb, overrides Pdb)
@@ -460,12 +459,12 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             last = first + 10
 
         filename = self.curframe.f_code.co_filename
-        
+
         # EKR.
         if filename == '<string>':
             filename = self._getval('__file__')
             filename = self.canonic(filename)
-        
+
         # print('edb.do_list: arg: %s, filename %s' % (repr(arg),repr(filename)))
 
         breaklist = self.get_file_breaks(filename)
@@ -878,7 +877,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 bp = self.get_breaks(filename, line)[-1]
                 self.message("Breakpoint %d at %s:%d" %
                              (bp.number, bp.file, bp.line))
-                             
+
     do_b = do_break
     #@+node:ekr.20110914171443.7284: *4* To be overridden
     # To be overridden in derived debuggers
@@ -1026,7 +1025,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             else:
                 self.clear_bpbynumber(i)
                 self.message('Deleted %s' % bp)
-                
+
     do_cl = do_clear # 'c' is already an abbreviation for 'continue'
 
     #@+node:ekr.20110914171443.7291: *5* do_condition
@@ -1238,7 +1237,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 self.print_stack_entry(self.stack[self.curindex])
             except ValueError as e:
                 self.error('Jump failed: %s' % e)
-                
+
     do_j = do_jump
 
     #@+node:ekr.20110914171443.7302: *5* do_longlist
@@ -1341,9 +1340,9 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         """source expression
         Try to get source code for the given object and display it.
         """
-        
+
         # print('edb.do_source: arg',repr(arg))
-        
+
         try:
             obj = self._getval(arg)
         except:
@@ -1557,7 +1556,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             prefix = '> '
         else:
             prefix = '  '
-            
+
         # print('edb.print_stack_entry')
 
         self.message(prefix + self.format_stack_entry(frame_lineno, prompt_prefix))
@@ -1723,7 +1722,7 @@ def runcall(*args, **kwds):
 
 #@+node:ekr.20110914171443.7336: *3* set_trace
 def set_trace():
-    
+
     Pdb().set_trace(sys._getframe().f_back)
 #@+node:ekr.20110914171443.7337: ** Post-mortem interface
 

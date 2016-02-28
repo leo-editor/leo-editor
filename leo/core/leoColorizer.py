@@ -19,7 +19,7 @@ import time
 class PythonQSyntaxHighlighter:
     '''
     Python implementation of QtGui.QSyntaxHighlighter.
-    
+
     This allows incremental coloring of text at idle time, trading slower
     overall speed for much faster response time.
     '''
@@ -736,6 +736,8 @@ class JEditColorizer:
     #@+node:ekr.20110605121601.18577: *4* addLeoRules
     def addLeoRules(self, theDict):
         '''Put Leo-specific rules to theList.'''
+        # pylint: disable=no-member
+        # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
         table = (
             # Rules added at front are added in **reverse** order.
             ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
@@ -2562,7 +2564,7 @@ if QtGui:
     class LeoQtSyntaxHighlighter(base_highlighter):
         '''A subclass of QSyntaxHighlighter that overrides
         the highlightBlock and rehighlight methods.
-    
+
         All actual syntax coloring is done in the jeditColorer class.'''
         #@+others
         #@+node:ekr.20110605121601.18566: *3* ctor (LeoQtSyntaxHighlighter)
