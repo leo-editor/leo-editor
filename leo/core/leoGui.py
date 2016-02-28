@@ -107,7 +107,7 @@ class LeoGui:
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
 
-    def runPropertiesDialog(self, title='Properties', data={}, callback=None, buttons=None):
+    def runPropertiesDialog(self, title='Properties', data=None, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
     #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs

@@ -218,7 +218,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18496: *4* LeoQtGui.runAskDateTimeDialog
     def runAskDateTimeDialog(self, c, title,
-        message='Select Date/Time', init=None, step_min={}):
+        message='Select Date/Time', init=None, step_min=None):
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -241,7 +241,8 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent=None, init=None, step_min={}):
+            def __init__(self, parent=None, init=None, step_min=None):
+                if step_min is None: step_min = {}
                 self.step_min = step_min
                 if init:
                     QtWidgets.QDateTimeEdit.__init__(self, init, parent)
@@ -257,7 +258,8 @@ class LeoQtGui(leoGui.LeoGui):
         class Calendar(QtWidgets.QDialog):
 
             def __init__(self, parent=None, message='Select Date/Time',
-                init=None, step_min={}):
+                init=None, step_min=None):
+                if step_min is None: step_min = {}
                 QtWidgets.QDialog.__init__(self, parent)
                 layout = QtWidgets.QVBoxLayout()
                 self.setLayout(layout)
@@ -273,6 +275,7 @@ class LeoQtGui(leoGui.LeoGui):
                 buttonBox.rejected.connect(self.reject)
 
         if g.unitTesting: return None
+        if step_min is None: step_min = {}
         b = Calendar
         if not init:
             init = datetime.datetime.now()
@@ -456,15 +459,18 @@ class LeoQtGui(leoGui.LeoGui):
                 return g.u(s)
     #@+node:ekr.20110605121601.18501: *4* LeoQtGui.runPropertiesDialog
     def runPropertiesDialog(self,
-        title='Properties', data={}, callback=None, buttons=None):
+        title='Properties', data=None, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
+        if data is None: data = {}
         # g.trace(data)
         g.warning('Properties menu not supported for Qt gui')
         result = 'Cancel'
         return result, data
     #@+node:ekr.20110605121601.18502: *4* LeoQtGui.runSaveFileDialog
-    def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=[], defaultextension=''):
+    def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
+        if filetypes is None:
+            filetypes = []
         if g.unitTesting:
             return ''
         else:
@@ -484,14 +490,16 @@ class LeoQtGui(leoGui.LeoGui):
         title='Message',
         label='',
         msg='',
-        c=None, **kw
+        c=None, **keys
     ):
+        # pylint: disable=dangerous-default-value
+        # How are we supposed to avoid **keys?
         if g.unitTesting: return None
 
-        def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        def send(title=title, label=label, msg=msg, c=c, keys=keys):
             return g.doHook('scrolledMessage',
                 short_title=short_title, title=title,
-                label=label, msg=msg, c=c, **kw)
+                label=label, msg=msg, c=c, **keys)
 
         if not c or not c.exists:
             #@+<< no c error>>
