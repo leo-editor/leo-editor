@@ -79,6 +79,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''Skip from the opening delim to *past* the matching closing delim.
 
         If no matching is found i is set to len(s)'''
+        # pylint: disable=signature-differs
         trace = False and not g.unitTesting
         # k1, k2 = g.getLine(s,i)
         # g.trace(s[i:])
@@ -129,8 +130,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
         ### Do any language-specific post-processing.
         ### self.endGen(s)
     #@+node:ekr.20160122071725.2: *4* jss.scanHelper
+    # scanHelper(self, s, i, end, parent, kind)
     def scanHelper(self, parent, s):
         '''Common scanning code used by both scan and putClassHelper.'''
+        # pylint: disable=arguments-differ
         i = 0
         while i < len(s):
             progress = i
@@ -224,7 +227,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             if self.startsComment(s, i):
                 i = self.skipComment(s, i)
             elif g.match(s, i, self.blockDelim1):
-                if trace: g.trace(repr(s[start: i]))
+                if trace: g.trace(repr(s[i1: i]))
                 return i, True
             else:
                 i += 1
