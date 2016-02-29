@@ -48,7 +48,10 @@ class Cacher:
             # 2011/07/30
             # When caching is enabled will be a PickleShareDB instance.
         self.dbdirname = None # A string.
+        self.globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
+            # Apparently, the key of the same .leo file changes in Python 2 and 3.
         self.inited = False
+        
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
         trace = False and not g.unitTesting
@@ -223,13 +226,11 @@ class Cacher:
         c = self.c
         if not c:
             return g.internalError('no commander')
-        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-        # globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = self.fileKey(c.mFileName, globals_tag)
+        key = self.fileKey(c.mFileName, self.globals_tag)
         ratio = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
         ratio2 = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
         if trace:
-            g.trace('key', key, '%1.2f %1.2f' % (ratio, ratio2))
+            g.trace('  %s %1.2f %1.2f' % (c.shortFileName(), ratio, ratio2))
         return ratio, ratio2
     #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
     def getCachedStringPosition(self):
@@ -237,12 +238,9 @@ class Cacher:
         c = self.c
         if not c:
             return g.internalError('no commander')
-        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-            # Huh???
-        # globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = self.fileKey(c.mFileName, globals_tag)
+        key = self.fileKey(c.mFileName, self.globals_tag)
         str_pos = self.db.get('current_position_%s' % key)
-        if trace: g.trace(str_pos, key)
+        if trace: g.trace(c.shortFileName(), str_pos)
         return str_pos
     #@+node:ekr.20100208082353.5922: *4* cacher.getCachedWindowPositionDict
     def getCachedWindowPositionDict(self, fn):
@@ -252,8 +250,7 @@ class Cacher:
         if not c:
             g.internalError('no commander')
             return {}
-        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-        key = self.fileKey(fn, globals_tag)
+        key = self.fileKey(c.mFileName, self.globals_tag)
         data = self.db.get('window_position_%s' % (key))
         # pylint: disable=unpacking-non-sequence
         if data:
@@ -262,7 +259,7 @@ class Cacher:
             d = {'top': top, 'left': left, 'height': height, 'width': width}
         else:
             d = {}
-        if trace: g.trace(fn, key, data)
+        if trace: g.trace(c.shortFileName(), d)
         return d
     #@+node:ekr.20100208071151.5905: *4* cacher.readFile
     def readFile(self, fileName, root):
@@ -314,9 +311,7 @@ class Cacher:
         c = self.c
         if not c:
             return g.internalError('no commander')
-        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-        key = self.fileKey(fn, globals_tag)
-        if trace: g.trace(c.mFileName, key, g.callers(5))
+        key = self.fileKey(c.mFileName, self.globals_tag)
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
         if trace: g.trace('ratios: %1.2f %1.2f' % (
@@ -325,18 +320,18 @@ class Cacher:
         self.db['window_position_%s' % key] = (
             str(top), str(left), str(height), str(width))
         if trace:
-            g.trace('top', top, 'left', left, 'height', height, 'width', width)
+            g.trace(c.shortFileName(),
+                    'top', top, 'left', left,
+                    'height', height, 'width', width)
     #@+node:ekr.20100208082353.5928: *4* cacher.setCachedStringPosition
     def setCachedStringPosition(self, str_pos):
         trace = False and not g.unitTesting
         c = self.c
         if not c:
             return g.internalError('no commander')
-        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-        # globals_tag = g.toEncodedString(globals_tag,'ascii')
-        key = self.fileKey(c.mFileName, globals_tag)
+        key = self.fileKey(c.mFileName, self.globals_tag)
         self.db['current_position_%s' % key] = str_pos
-        if trace: g.trace(str_pos, key)
+        if trace: g.trace(c.shortFileName(), str_pos)
     #@+node:ekr.20100208071151.5903: *4* cacher.writeFile
     def writeFile(self, p, fileKey):
         '''Update the cache after reading the file.'''
