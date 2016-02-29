@@ -184,6 +184,10 @@ which node is selected.
 
 '''
 #@-<< docstring >>
+
+# pylint: disable=deprecated-method
+# parse_qs
+
 # Adapted and extended from the Python Cookbook:
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
 __version__ = "0.99"
@@ -344,6 +348,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
     #@+node:EKR.20040517080250.5: *3* __init__
     def __init__(self, sock):
+        # pylint: disable=super-init-not-called
         self._map = asyncore.socket_map
         self.socket = sock
         self.socket.setblocking(0)
@@ -542,6 +547,8 @@ class leo_interface(object):
                 break
         else:
             return None, None
+        # pylint: disable=undefined-loop-variable
+        # w *is* defined here.
         node = w.c.rootVnode()
         if len(path) >= 2:
             for i in range(int(path[1])):
@@ -972,6 +979,7 @@ class RequestHandler(
     SimpleHTTPRequestHandler
 ):
     # pylint: disable=too-many-ancestors
+    # pylint: disable=super-init-not-called
     #@+others
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self, conn, addr, server):
