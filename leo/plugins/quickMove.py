@@ -343,7 +343,7 @@ class quickMove(object):
             g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c):
-
+        # pylint: disable=unexpected-special-method-signature
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove)
@@ -477,6 +477,7 @@ class quickMove(object):
             menu.insertAction(menu.actions()[0], a)
         pathmenu = menu.addMenu("Move")
         # copy / cut to other outline
+        cut = None
         for txt, cut in ("Copy to...", False), ("Move to...", True):
             sub = pathmenu.addMenu(txt)
             # global targets
