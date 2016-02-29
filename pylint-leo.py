@@ -245,7 +245,7 @@ def run(theDir,fn,silent,rpython=False):
 
             '+YES::__init__',
 
-            ###'+TypeChecker::add_message',
+            # '+TypeChecker::add_message',
                 # '+.*add_message',
                 # '+PyLinter::add_message',
                 # '+TextReporter::add_message'
@@ -261,11 +261,11 @@ def run(theDir,fn,silent,rpython=False):
                 # '+Module::__init__',
                 # '+Function::__init__',
 
-            ###'+:.*typecheck.py',
-            ###'+:.*inference.py',
-            ###'+:.*variables.py',
+            # '+:.*typecheck.py',
+            # '+:.*inference.py',
+            # '+:.*variables.py',
 
-            ###### Old traces
+            # Old traces
 
             # '+:.*bases.py',
             # '+.*path_raise_wrapper',
