@@ -66,6 +66,7 @@ def onCreate (tag, keys):
 #@+node:ville.20110206142055.10648: ** fetch
 
 class MLStripper(HTMLParser.HTMLParser):
+    # pylint: disable=super-init-not-called
     def __init__(self):
         self.reset()
         self.fed = []
