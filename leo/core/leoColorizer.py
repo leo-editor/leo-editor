@@ -2757,7 +2757,7 @@ class QScintillaColorizer(ColorizerMixin):
         c = self.c
         qcolor, qfont = QtGui.QColor, QtGui.QFont
         # font = qfont("Courier New",8,qfont.Bold)
-        font = qfont("DejaVu Sans Mono", 14) ###,qfont.Bold)
+        font = qfont("DejaVu Sans Mono", 14)
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
         lexer.setStringsOverNewlineAllowed(False)
@@ -2853,7 +2853,7 @@ if Qsci:
             g.trace(self.tag, start, end)
             self.lexer = Qsci.QsciLexerPython(parent=self.parent)
             self.lexer.setStringsOverNewlineAllowed(True)
-            ### self.lexer.styleText(start,end)
+            # self.lexer.styleText(start,end)
 
         def configure_lexer(self):
             '''Configure the QScintilla lexer.'''

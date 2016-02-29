@@ -123,7 +123,7 @@ class FreeLayoutController:
         # outline, can't do that sooner as plugins must be loaded first
         # to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
-        ### self.init()
+        # self.init()
     #@+node:ekr.20110318080425.14393: *3* create_renderer
     def XXcreate_renderer(self, w):
         """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""

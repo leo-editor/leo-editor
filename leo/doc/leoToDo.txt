@@ -9,12 +9,13 @@ Release Friday, March 4.
 - Post re Anaconda, IPython, Jupyter.
 - Add optional icon to cloneFBP.
 - Fix PyInstaller for Windows, Linux, MacOs.
+* Current position is different with leo2/3
 
 8 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
 Later:
-- Fix pylint complaint in the javascript importer.
+- Unit tests are failing on Ubuntu with Python 3.
 - Create unit test for transpose-words.
 - Add p/v.temp_u properties. Revise docs.
 - jEdit2py barfs on non-ascii characters.

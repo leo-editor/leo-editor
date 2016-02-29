@@ -385,7 +385,8 @@ def translateArgs(args, d):
         n += 1
         # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        if type(arg) == type('a'):
+        ### if type(arg) == type('a'):
+        if g.isString(arg):
             arg = g.toUnicode(arg, g.consoleEncoding)
         # Just do this for the stand-alone version.
         if not g.isString(arg):
@@ -395,14 +396,16 @@ def translateArgs(args, d):
             result.append(arg)
     return ''.join(result)
 #@+node:ekr.20110310093050.14280: *4* Unicode utils (codewise)...
-#@+node:ekr.20110310093050.14282: *5* isBytes, isCallable, isChar, isString & isUnicode (codewise)
+#@+node:ekr.20110310093050.14282: *5* isBytes, isCallable, isString & isUnicode (codewise)
 # The syntax of these functions must be valid on Python2K and Python3K.
+
+# Codewise
 
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
-        # Generates a pylint warning, but that can't be helped.
-        return type(s) == type(bytes('a', 'utf-8'))
+        ### return type(s) == type(bytes('a', 'utf-8'))
+        return isinstance(s, bytes)
     else:
         return False
 
@@ -411,13 +414,6 @@ def isCallable(obj):
         return hasattr(obj, '__call__')
     else:
         return callable(obj)
-
-def isChar(s):
-    '''Return True if s is a Python2K character type.'''
-    if g.isPython3:
-        return False
-    else:
-        return type(s) == types.StringType
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''

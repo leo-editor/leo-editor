@@ -1658,7 +1658,7 @@ class KeyHandlerClass:
         self.inited = False
             # Set at end of finishCreate.
         self.swap_mac_keys = False
-            ### How to init this ????
+            # How to init this??
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -4600,8 +4600,6 @@ class ModeInfo:
             prompt = s
         return prompt
     #@+node:ekr.20120208064440.10160: *3* createModeBindings (ModeInfo) (NOT USED)
-    ### k.createModeBindings is used instead????
-
     def createModeBindings(self, w):
         '''Create mode bindings for w, a text widget.'''
         trace = False and not g.unitTesting
@@ -4657,7 +4655,7 @@ class ModeInfo:
         c, k = self.c, self.k
         c.inCommand = False
             # Allow inner commands in the mode.
-        event = None ###
+        event = None
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* init (ModeInfo) (Can we check command names here??)
     def init(self, name, dataList):
@@ -4668,8 +4666,8 @@ class ModeInfo:
             assert g.isShortcutInfo(si), si
             if not name:
                 if trace: g.trace('entry command', si)
-                #### An entry command: put it in the special *entry-commands* key.
-                #### d.add('*entry-commands*',si)
+                # An entry command: put it in the special *entry-commands* key.
+                # d.add('*entry-commands*',si)
                 self.entryCommands.append(si)
             elif si is not None:
                 # A regular shortcut.

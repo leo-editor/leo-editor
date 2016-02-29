@@ -62,7 +62,7 @@ class Context:
         self.defined_names = set()
         self.global_names = set()
         self.imported_names = set()
-        self.nonlocal_names = set() ### To do.
+        self.nonlocal_names = set() # To do.
         self.st = {}
             # Keys are names seen in this context, values are defining contexts.
         self.referenced_names = set()
@@ -86,16 +86,11 @@ class Context:
         self.defined_names.add(name)
         if name in self.referenced_names:
             self.referenced_names.remove(name)
-        ### Old
-            # e = old_cx.st.define_name(name)
-            # e.node = node # 2012/12/25
-            # node.e = e # 2012/12/25
-            # e.self_context = new_cx
     #@+node:ekr.20160109143040.1: *3* Context.global_name
     def global_name(self, name):
         '''Handle a global name in this context.'''
         self.global_names.add(name)
-        ### Not yet.
+        # Not yet.
             # Both Python 2 and 3 generate SyntaxWarnings when a name
             # is used before the corresponding global declarations.
             # We can make the same assumpution here:
@@ -116,29 +111,6 @@ class Context:
             g.trace('From x import * not ready yet')
         else:
             self.imported_names.add(name)
-
-        ###
-        # e_list.append(e)
-        # if trace: g.trace('define: (ImportFrom) %s' % (name))
-        # # Get the ModuleContext corresponding to fn2.
-        # mod_cx = self.u.modules_dict.get(fn2)
-        # ###
-        # ### if not mod_cx:
-        # ###    self.u.modules_dict[name] = mod_cx = ModuleContext(name)
-        # if mod_cx:
-            # # module_type is the singleton *constant* type of the module.
-            # module_type = mod_cx.module_type
-            # # Add the constant type to the list of types for the *variable*.
-            # e.defined = True # Indicate there is at least one definition.
-            # e.types_cache[''] = mod_cx.module_type
-            # mname = u.module_name(name)
-            # ### if mname not in self.u.module_names:
-            # ###    self.u.module_names.append(mname)
-            # ### u.stats.n_imports += 1
-
-        # for e in e_list:
-            # e.defs_list.append(node)
-            # e.refs_list.append(node)
     #@+node:ekr.20160109145526.1: *3* Context.reference_name
     def reference_name(self, name):
 
@@ -203,7 +175,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         for field in ('vararg','kwarg'): # node.field is a string.
             name = getattr(node,field,None)
             if name:
-                ### e = cx.st.define_name(name)
+                # e = cx.st.define_name(name)
                 self.stats.n_param_names += 1
     #@+node:ekr.20160108105958.16: *5* p1.ClassDef
     # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
@@ -253,11 +225,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.context = old_cx
         # Stats
         old_cx.defs_list.append(new_cx)
-            ### Old
-            # args = node.args.args
-            # n = len(args) if args else 0
-            # d = self.stats.formal_args_dict
-            # d[n] = 1 + d.get(n,0)
     #@+node:ekr.20160108105958.23: *5* p1.Interactive
     def do_Interactive(self,node):
 
@@ -287,7 +254,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+node:ekr.20160108105958.26: *5* p1.Module
     def do_Module (self,node):
 
-        ### Not yet: Get the module context from the global dict if possible.
+        # Not yet: Get the module context from the global dict if possible.
         new_cx = Context(
             fn=self.fn,
             kind='module',
@@ -311,15 +278,10 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         # self.visit(node.ctx)
         self.in_attr = old_attr
         if not self.in_attr:
-            base_node = node ### self.attribute_base(node)
-            ### assert base_node
+            base_node = node
             kind = self.kind(base_node)
             if kind in ('Builtin','Name'):
                 base_name = base_node.id
-                ### assert base_node and base_name
-                ### e = cx.st.add_name(base_name)
-                ### e.refs_list.append(base_node)
-                ### e.add_chain(base,node) ### ?
             elif kind in ('Dict','List','Num','Str','Tuple',):
                 pass
             elif kind in ('BinOp','UnaryOp'):
@@ -348,45 +310,23 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         ctx = self.kind(node.ctx)
         name = node.id
 
-        ###
-            # # Create the symbol table entry, even for builtins.
-            # e = cx.st.add_name(name)
-            # setattr(node,'e',e)
-            # setattr(node,'cx',cx)
-
         def_flag,ref_flag=False,False
 
         if ctx in ('AugLoad','AugStore','Load'):
             # Note: AugStore does *not* define the symbol.
-            ### e.referenced = ref_flag = True
             cx.reference_name(name)
             self.stats.n_load_names += 1
         elif ctx == 'Store':
             # if name not in cx.global_names:
-            ### e.defined = def_flag = True
             if trace: g.trace('Store: %s in %s' % (name,cx))
             self.stats.n_store_names += 1
         elif ctx == 'Param':
             if trace: g.trace('Param: %s in %s' % (name,cx))
-            ### e.defined = def_flag = True
             self.stats.n_param_refs += 1
         else:
             assert ctx == 'Del',ctx
-            ### e.referenced = ref_flag = True
             self.stats.n_del_names += 1
 
-        ###
-        # if isPython3:
-            # if name in self.u.module_names:
-                # return None
-        # else:
-            # if name in dir(__builtin__) or name in self.u.module_names:
-                # return None
-
-        ###
-        # if not self.in_attr:
-            # if def_flag: e.defs_list.append(node)
-            # if ref_flag: e.refs_list.append(node)
     #@+node:ekr.20160109140648.1: *4* Imports
     #@+node:ekr.20160108105958.21: *5* p1.Import
     #@+at From Guido:
@@ -407,7 +347,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         e_list,names = [],[]
         for fn,asname in self.get_import_names(node):
             fn2 = self.resolve_import_name(fn)
-            ### Not yet.
+            # Not yet.
             # # Important: do *not* analyze modules not in the files list.
             # if fn2:
                 # mname = self.u.module_name(fn2)
@@ -425,7 +365,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
                 # # Add the constant type to the list of types for the *variable*.
                 # mod_cx = self.u.modules_dict.get(fn2) or LibraryModuleContext(self.u,fn2)
                 # e.types_cache[''] = mod_cx.module_type
-                # ### self.u.stats.n_imports += 1
+                # # self.u.stats.n_imports += 1
             # else:
                 # if trace: g.trace('can not resolve %s in %s' % (fn,cx))
 
@@ -459,7 +399,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx = self.context
         cx.statements_list.append(node)
         module = self.resolve_import_name(node.module)
-        ###
         # if m and m not in self.u.files_list:
             # if trace: g.trace('adding module',m)
             # self.u.files_list.append(m)
@@ -486,7 +425,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         if not spec:
             if trace: g.trace('no spec')
             return ''
-        ### This may not work for leading dots.
+        # This may not work for leading dots.
         aList,path,paths = spec.split('.'),None,None
         name = 'no name'
         for name in aList:
@@ -638,10 +577,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx = self.context
         self.stats.n_calls += 1
         cx.calls_list.append(node)
-        ###
-        # n = len(node.args or []) + int(bool(node.starargs)) + int(bool(node.kwargs))
-        # d = self.stats.actual_args_dict
-        # d[n] = 1 + d.get(n,0)
     #@+node:ekr.20160108105958.20: *5* p1.Global
     def do_Global(self,node):
 
@@ -656,7 +591,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     def do_Return(self,node):
 
         # Visit...
-        ### if getattr(node,'value'):
         if node.value:
             self.visit(node.value)
         # Stats...
@@ -664,7 +598,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx = self.context
         cx.returns_list.append(node)
         cx.statements_list.append(node)
-        # g.trace('%s %s' % (cx.name,self.format(node)))
+
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils:

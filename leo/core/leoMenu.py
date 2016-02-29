@@ -1097,7 +1097,8 @@ class LeoMenu:
         '''Compute commandName from command.'''
         trace = False and not g.unitTesting
         c = self.c
-        if type(command) == type(''):
+        ### if type(command) == type(''):
+        if g.isString(command):
             # Command is really a command name.
             commandName = command
         else:
@@ -1122,7 +1123,8 @@ class LeoMenu:
                 self.add_separator(menu)
                 done = True # That's all.
         else:
-            ok = type(data) in (type(()), type([])) and len(data) in (2, 3)
+            ### ok = type(data) in (type(()), type([])) and len(data) in (2, 3)
+            ok = isinstance(data, (list, tuple)) and len(data) in (2, 3)
             if ok:
                 if len(data) == 2:
                     # Command can be a minibuffer-command name.
@@ -1144,7 +1146,8 @@ class LeoMenu:
         format = '%40s %s'
         g.trace('*' * 40, g.callers())
         for data in table:
-            if type(data) in (type(()), type([])):
+            ### if type(data) in (type(()), type([])):
+            if isinstance(data, (list, tuple)):
                 n = len(data)
                 if n == 2:
                     print(format % (data[0], data[1]))

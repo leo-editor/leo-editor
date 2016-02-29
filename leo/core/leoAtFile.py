@@ -1656,7 +1656,7 @@ class AtFile:
         at.thinChildIndexStack.append(0)
         at.lastThinNode = v
         # Ensure that the body text is set only once.
-        ### ???
+        # Huh?
         if v.isVisited():
             if hasattr(v, 'tempBodyList'):
                 delattr(v, 'tempBodyList')

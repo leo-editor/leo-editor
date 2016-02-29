@@ -1439,11 +1439,12 @@ class LeoFind:
                 if p.v in skip:
                     p.moveToThreadNext()
                 elif p.is_at_ignore() or p.is_at_all():
+                    if trace: g.trace('skipping tree', p.h)
                     p.moveToNodeAfterTree()
                 else:
                     found = self.findNextBatchMatch(p)
                     if found:
-                        if trace: g.trace('found', p.h)
+                        # if trace: g.trace('found', p.h)
                         clones.add(p.copy())
                         count += 1
                     if clone_find_all_flattened:

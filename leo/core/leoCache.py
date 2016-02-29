@@ -116,8 +116,6 @@ class Cacher:
         Compute the hash of s (usually a headline) and content.
         s may be unicode, content must be bytes (or plain string in Python 2.x)
         '''
-        ### Changed for reversion testing.
-        ### This comment will be reverted in git to attempt to recreate the caching problem.
         m = hashlib.md5()
         if g.isUnicode(s):
             s = g.toEncodedString(s)
@@ -240,6 +238,7 @@ class Cacher:
         if not c:
             return g.internalError('no commander')
         globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
+            ######################### Huh???
         # globals_tag = g.toEncodedString(globals_tag,'ascii')
         key = self.fileKey(c.mFileName, globals_tag)
         str_pos = self.db.get('current_position_%s' % key)
@@ -353,7 +352,6 @@ class Cacher:
         else:
             if trace: g.trace('caching ', p.h, fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-              ### Isn't this the only possible place for errors?
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
         if g.app.gui.guiName() == 'nullGui':

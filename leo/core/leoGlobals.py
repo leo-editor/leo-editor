@@ -335,9 +335,7 @@ class KeyStroke:
     def __init__(self, s):
         trace = False and not g.unitTesting and s == 'name'
         if trace: g.trace('(KeyStroke)', s, g.callers())
-        assert s, repr(s)
-        assert g.isString(s)
-            # type('s') does not work in Python 3.x.
+        assert s and g.isString(s), repr(s)
         self.s = s
     #@+node:ekr.20120204061120.10068: *4*  Special methods
     #@+node:ekr.20120203053243.10118: *5* ks.__hash__
@@ -1853,7 +1851,8 @@ def getIvarsDict(obj):
     '''Return a dictionary of ivars:values for non-methods of obj.'''
     d = dict(
         [[key, getattr(obj, key)] for key in dir(obj)
-            if type(getattr(obj, key)) != types.MethodType])
+            if not isinstance(getattr(obj, key), types.MethodType)])
+            ### if type(getattr(obj, key)) != types.MethodType])
     return d
 
 def checkUnchangedIvars(obj, d, exceptions=None):
@@ -2027,7 +2026,7 @@ def printGcAll(tag=''):
         if t == 'instance':
             try: t = obj.__class__
             except Exception: pass
-        # if type(obj) == type(()):
+        # if isinstance(obj, (tuple, list)):
             # g.pr(id(obj),repr(obj))
         # 2011/02/28: Some types may not be hashable.
         try:
@@ -2101,10 +2100,9 @@ def printGcObjects(tag=''):
             funcDict = {}
             n = 0 # Don't print more than 50 objects.
             for obj in gc.get_objects():
-                if type(obj) == types.FunctionType:
+                ### if type(obj) == types.FunctionType:
+                if isinstance(obj, types.FunctionType):
                     n += 1
-            for obj in gc.get_objects():
-                if type(obj) == types.FunctionType:
                     key = repr(obj) # Don't create a pointer to the object!
                     funcDict[key] = None
                     if n < 50 and key not in lastFunctionsDict:
@@ -2150,8 +2148,11 @@ def printGcVerbose(tag=''):
     i = 0; n = len(newObjects)
     while i < 100 and i < n:
         o = newObjects[i]
-        if type(o) == type({}): dicts += 1
-        elif type(o) in (type(()), type([])):
+        ### if type(o) == type({}): dicts += 1
+        if isinstance(o, dict):
+            dicts += 1
+        ### elif type(o) in (type(()), type([])):
+        elif isinstance(o, (list, tuple)):
             #g.pr(id(o),repr(o))
             seqs += 1
         #else:
@@ -2171,7 +2172,8 @@ clearStats = clear_stats
 #@+node:ekr.20031218072017.3135: *4* g.print_stats
 def print_stats(name=None):
     if name:
-        if type(name) != type(""):
+        ### if type(name) != type(""):
+        if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
@@ -2185,7 +2187,8 @@ def stat(name=None):
     """
     d = g.app.statsDict
     if name:
-        if type(name) != type(""):
+        ### if type(name) != type(""):
+        if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
@@ -4358,7 +4361,8 @@ def toPythonIndex(s, index):
     '''
     if index is None:
         return 0
-    elif type(index) == type(99):
+    ### elif type(index) == type(99):
+    elif g.isInt(index):
         return index
     elif index == '1.0':
         return 0
@@ -4549,45 +4553,50 @@ def getPythonEncodingFromString(s):
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding
-#@+node:ekr.20080816125725.2: *4* g.isBytes, isCallable, isChar, isString & isUnicode
+#@+node:ekr.20080816125725.2: *4* g.isBytes/Callable/Int/String/Unicode
 # The syntax of these functions must be valid on Python2K and Python3K.
-
+#@+node:ekr.20160229070349.2: *5* g.isBytes
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
-        return type(s) == type(bytes('a', 'utf-8'))
+        # assert type(b'0') == type(bytes('a', 'utf-8'))
+        return isinstance(s, bytes)
     else:
         return False
-
+#@+node:ekr.20160229070349.3: *5* g.isCallable
 def isCallable(obj):
     if g.isPython3:
         return hasattr(obj, '__call__')
     else:
         return callable(obj)
-
-def isChar(s):
-    '''Return True if s is a Python2K character type.'''
+#@+node:ekr.20160229070429.1: *5* g.isInt
+def isInt(obj):
+    '''Return True if obj is an int or a long.'''
     # pylint: disable=no-member
     if g.isPython3:
-        return False
+        return isinstance(obj, int)
     else:
-        return type(s) == types.StringType
-
+        return isinstance(obj, (int, long))
+#@+node:ekr.20160229070349.5: *5* g.isString
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
     # pylint: disable=no-member
     if g.isPython3:
-        return type(s) == type('a')
+        ### return type(s) == type('a')
+        return isinstance(s, str)
     else:
-        return type(s) in types.StringTypes
-
+        ### return type(s) in types.StringTypes
+        return isinstance(s, types.StringTypes)
+#@+node:ekr.20160229070349.6: *5* g.isUnicode
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
     # pylint: disable=no-member
     if g.isPython3:
-        return type(s) == type('a')
+        ### return type(s) == type('a')
+        return isinstance(s, str)
     else:
-        return type(s) == types.UnicodeType
+        ### return type(s) == types.UnicodeType
+        return isinstance(s, types.UnicodeType)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
     '''Return True if the encooding is valid.'''
@@ -5301,44 +5310,35 @@ def pr(*args, **keys):
 def prettyPrintType(obj):
     # pylint: disable=no-member
     # These do not exist in Python 3.
+    if g.isString(obj):
+        return 'string'
+    # Compute method types.
+    method_types = [types.MethodType, types.BuiltinMethodType]
     if g.isPython3:
-        if type(obj) in (types.MethodType, types.BuiltinMethodType):
-            return 'method'
-        elif type(obj) in (types.BuiltinFunctionType, types.FunctionType):
-            return 'function'
-        elif type(obj) == types.ModuleType:
-            return 'module'
-        elif g.isString(obj):
-            return 'string'
-        else:
-            theType = str(type(obj))
-            if theType.startswith("<type '"): theType = theType[7:]
-            if theType.endswith("'>"): theType = theType[: -2]
-            return theType
+        method_types.append(types.UnboundMethodType)
+    t = type(obj)
+    if t in (types.BuiltinFunctionType, types.FunctionType):
+        return 'function'
+    elif t == types.ModuleType:
+        return 'module'
+    elif t == types.InstanceType:
+        return 'object'
+    elif t in method_types:
+        return 'method'
     else:
-        if type(obj) in (
-            types.MethodType, types.UnboundMethodType, types.BuiltinMethodType):
-            return 'method'
-        elif type(obj) in (types.BuiltinFunctionType, types.FunctionType):
-            return 'function'
-        elif type(obj) == types.ModuleType:
-            return 'module'
-        elif type(obj) == types.InstanceType:
-            return 'object'
-        elif type(obj) in (types.UnicodeType, types.StringType):
-            return 'string'
-        else:
-            theType = str(type(obj))
-            if theType.startswith("<type '"): theType = theType[7:]
-            if theType.endswith("'>"): theType = theType[: -2]
-            return theType
+        # Fall back to a hack.
+        t = str(type(obj))
+        if t.startswith("<type '"): t = t[7:]
+        if t.endswith("'>"): t = t[: -2]
+        return t
 #@+node:ekr.20041224080039: *3* g.print_dict & dictToString
 def print_dict(d, tag='', verbose=True, indent=''):
     '''Pretty print a Python dict using g.pr.'''
     if d:
         n = 6
         for key in sorted(d):
-            if type(key) == type(''):
+            ### if type(key) == type(''):
+            if g.isString(key):
                 n = max(n, len(key))
         g.pr('%s...{' % (tag) if tag else '{')
         for key in sorted(d):
@@ -5402,17 +5402,21 @@ def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
         return '[%s]' % s
 #@+node:ekr.20050819064157: *3* g.print_obj & toString
 def print_obj(obj, tag=None, sort=False, verbose=True, indent=''):
-    if type(obj) in (type(()), type([])):
+    ### if type(obj) in (type(()), type([])):
+    if isinstance(obj, (list, tuple)):
         g.print_list(obj, tag, sort, indent)
-    elif type(obj) == type({}):
+    ### elif type(obj) == type({}):
+    elif isinstance(obj, dict):
         g.print_dict(obj, tag, verbose, indent)
     else:
         g.pr('%s%s' % (indent, repr(obj).strip()))
 
 def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    if type(obj) in (type(()), type([])):
+    ### if type(obj) in (type(()), type([])):
+    if isinstance(obj, (list, tuple)):
         return g.listToString(obj, tag, sort, indent)
-    elif type(obj) == type({}):
+    ### elif type(obj) == type({}):
+    elif isinstance(obj, dict):
         return g.dictToString(obj, tag, verbose, indent)
     else:
         return '%s%s' % (indent, repr(obj).strip())
@@ -5523,7 +5527,8 @@ def translateArgs(args, d):
         n += 1
         # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        if type(arg) == type('a'):
+        #### if type(arg) == type('a'):
+        if g.isString(arg):
             arg = toUnicode(arg, console_encoding)
         # Now translate.
         if not isString(arg):

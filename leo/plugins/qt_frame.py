@@ -1086,9 +1086,9 @@ class FindTabManager:
                 val = w.isChecked()
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                ### Too kludgy: we must use an accurate setting.
-                ### It would be good to have an "about to change" signal.
-                ### Put focus in minibuffer if minibuffer find is in effect.
+                # Too kludgy: we must use an accurate setting.
+                # It would be good to have an "about to change" signal.
+                # Put focus in minibuffer if minibuffer find is in effect.
                 c.bodyWantsFocusNow()
 
             w.stateChanged.connect(check_box_callback)
@@ -4247,7 +4247,8 @@ class LeoQtTreeTab:
         tt.iconBar.addWidget(w)
 
         def onIndexChanged(s, tt=tt):
-            if type(s) == type(9):
+            ### if type(s) == type(9):
+            if g.isInt(s):
                 s = '' if s == -1 else tt.w.currentText()
             else: # s is the tab name.
                 s = g.u(s)
@@ -4331,7 +4332,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others
 #@+node:ekr.20110605121601.18458: ** class QtMenuWrapper (LeoQtMenu,QMenu)
-class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu): ### Reversed order.
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
     def __init__(self, c, frame, parent, label):
@@ -4341,15 +4342,11 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu): ### Reversed order.
         if parent is None:
             parent = c.frame.top.menuBar()
         # g.trace('(QtMenuWrapper) label: %s parent: %s' % (label,parent))
-        if True: ### isQt5:
-            # g.trace(QtWidgets.QMenu.__init__)
-            # For reasons unknown, the calls must be in this order.
-            # Presumably, the order of base classes also matters(!)
-            LeoQtMenu.__init__(self, c, frame, label)
-            QtWidgets.QMenu.__init__(self, parent)
-        else:
-            QtWidgets.QMenu.__init__(self, parent)
-            LeoQtMenu.__init__(self, c, frame, label)
+        # g.trace(QtWidgets.QMenu.__init__)
+        # For reasons unknown, the calls must be in this order.
+        # Presumably, the order of base classes also matters(!)
+        LeoQtMenu.__init__(self, c, frame, label)
+        QtWidgets.QMenu.__init__(self, parent)
         label = label.replace('&', '').lower()
         self.leo_menu_label = label
         action = self.menuAction()

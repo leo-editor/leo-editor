@@ -2522,7 +2522,8 @@ class VNodeBase(object):
         if val is None:
             if hasattr(v, 'unknownAttributes'):
                 delattr(v, 'unknownAttributes')
-        elif type(val) == type({}):
+        ### elif type(val) == type({}):
+        elif isinstance(val, dict):
             v.unknownAttributes = val
         else:
             raise ValueError

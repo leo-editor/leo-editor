@@ -1031,6 +1031,8 @@ class Commands(object):
     @cmd('save-all')
     def saveAll(self, event=None):
         '''Save all open tabs windows/tabs.'''
+        c = self
+        c.save() # Force a write of the present window.
         for f in g.app.windowList:
             c = f.c
             if c.isChanged():
@@ -5050,7 +5052,8 @@ class Commands(object):
                 op, p, n = z
                 ok = (op in ('insert', 'delete') and
                     isinstance(p, leoNodes.position) and
-                    type(n) == type(9))
+                    ### type(n) == type(9))
+                    g.isInt(n))
                 if ok:
                     aList2 = d.get(p.v, [])
                     data = n, op

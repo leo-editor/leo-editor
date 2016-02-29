@@ -1568,7 +1568,7 @@ class RstCommands:
             f = open(fn, 'w', encoding=self.encoding)
         else:
             f = open(fn, 'w')
-            ### Huh?  Shouldn't this always be done???
+            # Huh?  Shouldn't this always be done???
             s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
         f.write(s)
         f.close()

@@ -161,7 +161,8 @@ def printGc(message=None):
         global lastFunctionsDict
         funcDict = {}
         for obj in gc.get_objects():
-            if type(obj) == types.FunctionType:
+            ### if type(obj) == types.FunctionType:
+            if isinstance(obj, types.FunctionType):
                 key = repr(obj) # Don't create a pointer to the object!
                 funcDict[key] = None
                 if key not in lastFunctionsDict:

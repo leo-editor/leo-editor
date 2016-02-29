@@ -270,7 +270,7 @@ def compare_ast(node1, node2):
             attr1 = getattr(node1, 'lineno', '???')
             attr2 = getattr(node2, 'lineno', '???')
             print(format % (name1, name2, node1, node2, attr1, attr2))
-
+    # pylint: disable=unidiomatic-typecheck
     if type(node1) != type(node2):
         fail(node1, node2)
         return False

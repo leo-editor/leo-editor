@@ -487,7 +487,6 @@ class FileCommands:
             'expanded', 'marks', 't', 'tnodeList',
             # 'vtag',
         )
-        ### self.checkOutlineBeforeSave = c.config.getBool('check_outline_before_save',default=False)
         self.initIvars()
     #@+node:ekr.20090218115025.5: *3* fc.initIvars
     def initIvars(self):
@@ -602,7 +601,7 @@ class FileCommands:
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
-            ### What does checkPaste do ???
+            # What does checkPaste do??
             if check and not self.checkPaste(current, p):
                 return None
             p._linkAsNthChild(current, 0, adjust=False)
@@ -868,7 +867,8 @@ class FileCommands:
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
             s = g.toEncodedString(s) # 2011/02/22
-            bin = binascii.unhexlify(s) # Throws a TypeError if val is not a hex string.
+            bin = binascii.unhexlify(s)
+                # Throws a TypeError if val is not a hex string.
             val = pickle.loads(bin)
             return val
         except Exception:
@@ -1127,10 +1127,13 @@ class FileCommands:
 
         Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
         """
+        # pylint: disable=unidiomatic-typecheck
+        # This is simpler than using isinstance.
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i for i in l]
+            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
+                for i in l]
             ro = tuple(l) if t is tuple else l
         elif t is dict:
             byte_keys = [i for i in ob if type(i) is bytes]
@@ -1148,7 +1151,6 @@ class FileCommands:
             ro = str(ob, 'utf-8')
         else:
             ro = ob
-            # print("unprocessed object: {0} {1}".format(t, ob))
         return ro
     #@+node:ekr.20061003093021: *4* fc.getSaxUa
     def getSaxUa(self, attr, val, kind=None): # Kind is for unit testing.
@@ -1164,10 +1166,12 @@ class FileCommands:
             return None
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
-            if type(val) == type(''):
-                return val
-            elif type(val) == type(b''):
-                # 2011/05/26.
+            ### Old. Weird.
+            # if type(val) == type(''):
+                # return val
+            # elif type(val) == type(b''):
+               # return g.toUnicode(val)
+            if g.isString(val) or g.isBytes(val):
                 return g.toUnicode(val)
         # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
         if 0: # Not ready yet.
@@ -1207,7 +1211,7 @@ class FileCommands:
             if g.isPython3:
                 if theFile:
                     # Use the open binary file, opened by the caller.
-                    s = theFile.read() # type(s) is bytes.
+                    s = theFile.read() # isinstance(s, bytes)
                     s = self.cleanSaxInputString(s)
                     theFile = BytesIO(s)
                 else:
@@ -1308,28 +1312,35 @@ class FileCommands:
         return last_v
     #@+node:ekr.20060919110638.13: *4* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
-        trace = False and not g.unitTesting
-        c = self.c; p = c.rootPosition()
+        trace = True and not g.unitTesting
+        c, root = self.c, self.c.rootPosition()
         current, str_pos = None, None
         use_db = g.enableDB and c.mFileName
         if use_db:
             str_pos = c.cacher.getCachedStringPosition()
+            if trace: g.trace('cached str_pos', str_pos)
         if not str_pos:
-            d = hasattr(p.v, 'unknownAttributes') and p.v.unknownAttributes
+            ### d = hasattr(root.v, 'unknownAttributes') and root.v.unknownAttributes
+            d = root.v.u
+            if trace: g.trace(d)
             if d: str_pos = d.get('str_leo_pos')
-            if trace: g.trace('from p.v.u', str_pos)
+            if trace: g.trace('p.v.u', str_pos)
         if str_pos:
             current = self.archivedPositionToPosition(str_pos)
+            if trace: g.trace(current and current.h)
+        elif trace:
+            g.trace('no str_pos!')
         c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
+        trace = True and not g.unitTesting
         c = self.c
         s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')
         try:
             aList = [int(z) for z in aList]
         except Exception:
-            # g.trace('oops: bad archived position. not an int:',aList,c)
+            if trace: g.trace('not all ints:', aList)
             aList = None
         if not aList: return None
         p = c.rootPosition(); level = 0
@@ -2007,9 +2018,8 @@ class FileCommands:
         where d contains all picklable items of torv.unknownAttributes.'''
         result = []
         for p, torv in aList:
-            if type(torv.unknownAttributes) != type({}):
-                g.warning("ignoring non-dictionary uA for", p)
-            else:
+            ### if type(torv.unknownAttributes) != type({}):
+            if isinstance(torv.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(torv.unknownAttributes) # Copy the dict.
                 for key in d:
@@ -2020,6 +2030,8 @@ class FileCommands:
                         g.warning("ignoring bad unknownAttributes key", key, "in", p.h)
                 if d:
                     result.append((torv, d),)
+            else:
+                g.warning("ignoring non-dictionary uA for", p)
         return result
     #@+node:ekr.20080805085257.2: *3* fc.pickle
     def pickle(self, torv, val, tag):
@@ -2095,11 +2107,13 @@ class FileCommands:
         '''Put attribute whose name is key and value is val to the output stream.'''
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
-            if type(val) == type(''):
-                attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
-                return attr
-            elif g.isUnicode(val):
-                val = g.toEncodedString(val)
+            ###
+            # if type(val) == type(''):
+                # attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
+                # return attr
+            # el
+            if g.isString(val) or g.isBytes(val):
+                val = g.toUnicode(val)
                 attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
                 return attr
             else:
@@ -2112,13 +2126,15 @@ class FileCommands:
     def putUnknownAttributes(self, torv):
         """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
         attrDict = torv.unknownAttributes
-        if type(attrDict) != type({}):
+        ### if type(attrDict) != type({}):
+        if isinstance(attrDict, dict):
+            val = ''.join(
+                [self.putUaHelper(torv, key, val)
+                    for key, val in attrDict.items()])
+            return val
+        else:
             g.warning("ignoring non-dictionary unknownAttributes for", torv)
             return ''
-        else:
-            val = ''.join([self.putUaHelper(torv, key, val) for key, val in attrDict.items()])
-            # g.trace(torv,attrDict)
-            return val
     #@+node:ekr.20031218072017.3045: *3* fc.setDefaultDirectoryForNewFiles
     def setDefaultDirectoryForNewFiles(self, fileName):
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""

@@ -341,7 +341,7 @@ class LeoBody(object):
     def assignPositionToEditor(self, p):
         '''Called *only* from tree.select to select the present body editor.'''
         c = self.c
-        w = c.frame.body.widget ### wrapper?
+        w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
         # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)

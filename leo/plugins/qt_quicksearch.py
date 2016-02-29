@@ -5,11 +5,9 @@
 #      by: PyQt4 UI code generator 4.4.2
 #
 # WARNING! All changes made in this file will be lost!
-### from PyQt4 import QtCore, QtGui
+
 from leo.core.leoQt import isQt5, QtCore, QtWidgets
 QtGui = QtWidgets
-    ### Not true in general!
-
 class Ui_LeoQuickSearchWidget(object):
     def setupUi(self, LeoQuickSearchWidget):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")

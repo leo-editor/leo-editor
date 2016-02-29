@@ -88,7 +88,7 @@ import re
 import sys
 
 import cmd
-### import ekr_cmd as cmd
+# import ekr_cmd as cmd
 
 import bdb
 import dis
@@ -342,7 +342,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         frame, lineno = frame_lineno
         filename = self.canonic(frame.f_code.co_filename)
 
-        ### EKR.
+        # EKR.
         if filename == '<string>':
             filename = self._getval('__file__')
             filename = self.canonic(filename)

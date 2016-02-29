@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setMargin(0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.richTextEdit = QtWidgets.QTextEdit(self.page_2) ### Was QtGui.QTextEdit.
+        self.richTextEdit = QtWidgets.QTextEdit(self.page_2) # Was QtGui.QTextEdit.
         self.richTextEdit.setFrameShape(QtGui.QFrame.NoFrame)
         self.richTextEdit.setFrameShadow(QtGui.QFrame.Plain)
         self.richTextEdit.setLineWidth(0)

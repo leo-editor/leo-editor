@@ -455,7 +455,7 @@ class ExternalFilesController:
         d = {
             'body': body,
             'c': c,
-            'encoding': encoding, ### To be removed.
+            'encoding': encoding, # To be removed.
             'ext': ext,
             'p': p.copy(),
             'path': path,
@@ -770,7 +770,7 @@ class ExternalFilesController:
             indent = ''
             n = 6
             for key in sorted(d):
-                if type(key) == type(''):
+                if g.isString(key):
                     n = max(n, len(key))
             g.pr('%s...{' % (tag) if tag else '{')
             for key in sorted(d):
@@ -3332,7 +3332,7 @@ class LoadManager:
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
-            ### The log is not set properly here.
+            # The log is not set properly here.
             ok = lm.readOpenedLeoFile(c, gui, fn, readAtFileNodesFlag, theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
             if not ok: return None

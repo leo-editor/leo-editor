@@ -648,22 +648,7 @@ class ParserBaseClass:
                             aList.extend(aList3)
                         aList.append(si)
                         d.replace(name, aList)
-                        if 0: #### Why would we want to do this????
-                            #### Old code: we have to save/restore self.shortcutsDict.
-                                #### self.set(p,"shortcut",name,aList)
-                            # Set the entry directly.
-                            d2 = self.shortcutsDict
-                            gs = d2.get(key2)
-                            if gs:
-                                assert g.isGeneralSetting(gs)
-                                path = gs.path
-                                if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
-                                    g.es("over-riding setting:", name, "from", path)
-                            # Important: we can't use c here: it may be destroyed!
-                            d2[key2] = g.GeneralSetting(
-                                kind, path=c.mFileName, val=val, tag='setting')
                 # Restore the global shortcutsDict.
-                ##### self.shortcutsDict = old_d
                 if trace: g.trace(d.dump())
                 # Create the command, but not any bindings to it.
                 self.createModeCommand(modeName, name1, d)

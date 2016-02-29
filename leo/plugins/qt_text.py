@@ -623,8 +623,6 @@ if QtWidgets:
                 if j > i:
                     w.delete(i, j)
                 w.setInsertPoint(i)
-                ### This makes no sense.
-                ### c.k.autoCompleter.klass = completion
                 c.k.autoCompleter.compute_completion_list()
             #@+node:ekr.20110605121601.18015: *5* lqlw.set_position
             def set_position(self, c):
@@ -936,7 +934,6 @@ class QHeadlineWrapper(QLineEditWrapper):
         '''The ctor for the QHeadlineWrapper class.'''
         # g.trace('(QHeadlineWrapper)',item,widget)
         assert isinstance(widget, QtWidgets.QLineEdit), widget
-        ### QTextMixin.__init__(self,c)
         QLineEditWrapper.__init__(self, widget, name, c)
             # Init the base class.
         # Set ivars.
@@ -1729,7 +1726,8 @@ class QTextEditWrapper(QTextMixin):
         te = self.widget
         if index is None:
             return 0
-        if type(index) == type(99):
+        ### if type(index) == type(99):
+        elif g.isInt(index):
             return index
         elif index == '1.0':
             return 0

@@ -265,7 +265,8 @@ class Undoer:
         trace = False and not g.unitTesting
         if trace: g.trace(theType, g.callers(4))
         u = self; frame = u.c.frame
-        if type(theType) != type(''):
+        ### if type(theType) != type(''):
+        if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
             g.trace(g.callers())
             theType = '<unknown>'
@@ -287,7 +288,8 @@ class Undoer:
         trace = False and not g.unitTesting
         if trace: g.trace(theType, g.callers(4))
         u = self; frame = u.c.frame
-        if type(theType) != type(''):
+        ### if type(theType) != type(''):
+        if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
             g.trace(g.callers())
             theType = '<unknown>'

@@ -153,7 +153,7 @@ datas = [
 
 a = Analysis(
     ['launchLeo.py'],
-    pathex=[], ###'c:\\leo.repo\\leo-editor'],
+    pathex=[], #'c:\\leo.repo\\leo-editor'],
     binaries=None,
     datas=datas,
     hiddenimports=hiddenimports,

@@ -839,7 +839,7 @@ class VimCommands:
         VIS c         change the highlighted text
         '''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_c2)
+        # vc.accept(handler=vc.vim_c2)
 
     def vim_c2(vc):
         if vc.is_text_wrapper(vc.w):
@@ -1285,7 +1285,7 @@ class VimCommands:
     def vim_m(vc):
         '''m<a-zA-Z> mark current position with mark.'''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_m2)
+        # vc.accept(handler=vc.vim_m2)
 
     def vim_m2(vc):
         g.trace(vc.stroke)
@@ -1397,7 +1397,7 @@ class VimCommands:
         q<a-z>  record typed characters into register <a-z>
         '''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_q2)
+        # vc.accept(handler=vc.vim_q2)
 
     def vim_q2(vc):
         g.trace(vc.stroke)
@@ -1425,7 +1425,7 @@ class VimCommands:
     def vim_r(vc):
         '''Replace next N characters with <char>'''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_r2)
+        # vc.accept(handler=vc.vim_r2)
 
     def vim_r2(vc):
         g.trace(vc.n, vc.stroke)
@@ -1438,7 +1438,7 @@ class VimCommands:
     def vim_s(vc):
         '''Change N characters'''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_s2)
+        # vc.accept(handler=vc.vim_s2)
 
     def vim_s2(vc):
         g.trace(vc.n, vc.stroke)
@@ -1735,7 +1735,7 @@ class VimCommands:
         zt redraw current line at top of window
         '''
         vc.not_ready()
-        ### vc.accept(handler=vc.vim_z2)
+        # vc.accept(handler=vc.vim_z2)
 
     def vim_z2(vc):
         g.trace(vc.stroke)
@@ -1839,13 +1839,13 @@ class VimCommands:
         '''Join the highlighted lines.'''
         vc.state = 'normal'
         vc.not_ready()
-        ### vc.done(set_dot=True)
+        # vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16656: *5* vis_c (to do)
     def vis_c(vc):
         '''Change the highlighted text.'''
         vc.state = 'normal'
         vc.not_ready()
-        ### vc.done(set_dot=True)
+        # vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16657: *5* vis_d
     def vis_d(vc):
         '''Delete the highlighted text and terminate visual mode.'''
@@ -1864,7 +1864,7 @@ class VimCommands:
         '''Make highlighted text lowercase.'''
         vc.state = 'normal'
         vc.not_ready()
-        ### vc.done(set_dot=True)
+        # vc.done(set_dot=True)
     #@+node:ekr.20140222064735.16681: *5* vis_v
     def vis_v(vc):
         '''End visual mode.'''
