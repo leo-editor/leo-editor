@@ -48,6 +48,7 @@ import mailbox
 #@+node:ville.20110125222411.10547: *3* << stripping >>
 
 class MLStripper(HTMLParser):
+    # pylint: disable=super-init-not-called
     def __init__(self):
         self.reset()
         self.fed = []
