@@ -5051,9 +5051,7 @@ class Commands(object):
             try:
                 op, p, n = z
                 ok = (op in ('insert', 'delete') and
-                    isinstance(p, leoNodes.position) and
-                    ### type(n) == type(9))
-                    g.isInt(n))
+                    isinstance(p, leoNodes.position) and g.isInt(n))
                 if ok:
                     aList2 = d.get(p.v, [])
                     data = n, op

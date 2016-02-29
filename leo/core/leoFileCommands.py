@@ -1166,11 +1166,6 @@ class FileCommands:
             return None
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
-            ### Old. Weird.
-            # if type(val) == type(''):
-                # return val
-            # elif type(val) == type(b''):
-               # return g.toUnicode(val)
             if g.isString(val) or g.isBytes(val):
                 return g.toUnicode(val)
         # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
@@ -1312,7 +1307,7 @@ class FileCommands:
         return last_v
     #@+node:ekr.20060919110638.13: *4* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c, root = self.c, self.c.rootPosition()
         current, str_pos = None, None
         use_db = g.enableDB and c.mFileName
@@ -1320,7 +1315,6 @@ class FileCommands:
             str_pos = c.cacher.getCachedStringPosition()
             if trace: g.trace('cached str_pos', str_pos)
         if not str_pos:
-            ### d = hasattr(root.v, 'unknownAttributes') and root.v.unknownAttributes
             d = root.v.u
             if trace: g.trace(d)
             if d: str_pos = d.get('str_leo_pos')
@@ -2018,7 +2012,6 @@ class FileCommands:
         where d contains all picklable items of torv.unknownAttributes.'''
         result = []
         for p, torv in aList:
-            ### if type(torv.unknownAttributes) != type({}):
             if isinstance(torv.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(torv.unknownAttributes) # Copy the dict.
@@ -2107,11 +2100,6 @@ class FileCommands:
         '''Put attribute whose name is key and value is val to the output stream.'''
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
-            ###
-            # if type(val) == type(''):
-                # attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
-                # return attr
-            # el
             if g.isString(val) or g.isBytes(val):
                 val = g.toUnicode(val)
                 attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
@@ -2126,7 +2114,6 @@ class FileCommands:
     def putUnknownAttributes(self, torv):
         """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
         attrDict = torv.unknownAttributes
-        ### if type(attrDict) != type({}):
         if isinstance(attrDict, dict):
             val = ''.join(
                 [self.putUaHelper(torv, key, val)

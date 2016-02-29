@@ -385,7 +385,6 @@ def translateArgs(args, d):
         n += 1
         # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        ### if type(arg) == type('a'):
         if g.isString(arg):
             arg = g.toUnicode(arg, g.consoleEncoding)
         # Just do this for the stand-alone version.
@@ -404,7 +403,6 @@ def translateArgs(args, d):
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
-        ### return type(s) == type(bytes('a', 'utf-8'))
         return isinstance(s, bytes)
     else:
         return False

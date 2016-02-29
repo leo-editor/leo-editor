@@ -201,7 +201,6 @@ class ChapterController:
     #@+node:ekr.20070603190617: *4* cc.createChapterByName (common helper)
     def createChapterByName(self, name, p, undoType='Create Chapter'):
         cc, c = self, self.c
-        ### if type(name) == type(9):
         if g.isInt(name):
             return cc.note('PyQt5 chapters not supported yet.')
         if not name:
@@ -411,7 +410,6 @@ class ChapterController:
         '''Select a chapter.  Return True if a redraw is needed.'''
         trace = False and not g.unitTesting
         cc, c = self, self.c
-        ### if type(name) == type(9):
         if g.isInt(name):
             return cc.note('PyQt5 chapaters not supported')
         chapter = cc.chaptersDict.get(name)

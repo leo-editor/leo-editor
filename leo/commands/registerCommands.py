@@ -211,7 +211,6 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 key = char.lower()
                 val = self.registers.get(key)
                 if val:
-                    ### if type(val) == type([]):
                     if isinstance(val, list):
                         c.rectangleCommands.yankRectangle(val)
                     else:
@@ -323,7 +322,6 @@ class RegisterCommandsClass(BaseEditCommandsClass):
         c, k = self.c, self.c.k
         key = event and event.char.lower() or ''
         val = self.registers.get(key)
-        ### if val and type(val) == type([]):
         if isinstance(val, list):
             k.clearState()
             k.setLabelGrey("Register contains Rectangle, not text")

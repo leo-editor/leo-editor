@@ -1726,7 +1726,6 @@ class QTextEditWrapper(QTextMixin):
         te = self.widget
         if index is None:
             return 0
-        ### if type(index) == type(99):
         elif g.isInt(index):
             return index
         elif index == '1.0':

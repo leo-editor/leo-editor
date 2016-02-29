@@ -346,7 +346,6 @@ class LeoPluginsController:
     #@+node:ekr.20100909065501.5950: *3* plugins.Information
     #@+node:ekr.20100908125007.6019: *4* plugins.getHandlersForTag
     def getHandlersForTag(self, tags):
-        ### if type(tags) in (type((),), type([])):
         if isinstance(tags, (list, tuple)):
             result = []
             for tag in tags:
@@ -570,7 +569,6 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6028: *4* plugins.registerExclusiveHandler
     def registerExclusiveHandler(self, tags, fn):
         """ Register one or more exclusive handlers"""
-        ### if type(tags) in (type((),), type([])):
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneExclusiveHandler(tag, fn)
@@ -595,7 +593,6 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""
-        ### if type(tags) in (type((),), type([])):
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneHandler(tag, fn)
@@ -618,7 +615,6 @@ class LeoPluginsController:
         self.handlers[tag] = items
     #@+node:ekr.20100908125007.6031: *4* plugins.unregisterHandler
     def unregisterHandler(self, tags, fn):
-        ### if type(tags) in (type((),), type([])):
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.unregisterOneHandler(tag, fn)

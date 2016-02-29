@@ -4247,7 +4247,6 @@ class LeoQtTreeTab:
         tt.iconBar.addWidget(w)
 
         def onIndexChanged(s, tt=tt):
-            ### if type(s) == type(9):
             if g.isInt(s):
                 s = '' if s == -1 else tt.w.currentText()
             else: # s is the tab name.

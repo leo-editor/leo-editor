@@ -1852,7 +1852,6 @@ def getIvarsDict(obj):
     d = dict(
         [[key, getattr(obj, key)] for key in dir(obj)
             if not isinstance(getattr(obj, key), types.MethodType)])
-            ### if type(getattr(obj, key)) != types.MethodType])
     return d
 
 def checkUnchangedIvars(obj, d, exceptions=None):
@@ -2100,7 +2099,6 @@ def printGcObjects(tag=''):
             funcDict = {}
             n = 0 # Don't print more than 50 objects.
             for obj in gc.get_objects():
-                ### if type(obj) == types.FunctionType:
                 if isinstance(obj, types.FunctionType):
                     n += 1
                     key = repr(obj) # Don't create a pointer to the object!
@@ -2148,10 +2146,8 @@ def printGcVerbose(tag=''):
     i = 0; n = len(newObjects)
     while i < 100 and i < n:
         o = newObjects[i]
-        ### if type(o) == type({}): dicts += 1
         if isinstance(o, dict):
             dicts += 1
-        ### elif type(o) in (type(()), type([])):
         elif isinstance(o, (list, tuple)):
             #g.pr(id(o),repr(o))
             seqs += 1
@@ -2172,7 +2168,6 @@ clearStats = clear_stats
 #@+node:ekr.20031218072017.3135: *4* g.print_stats
 def print_stats(name=None):
     if name:
-        ### if type(name) != type(""):
         if not isString(name):
             name = repr(name)
     else:
@@ -2187,12 +2182,10 @@ def stat(name=None):
     """
     d = g.app.statsDict
     if name:
-        ### if type(name) != type(""):
         if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
-    # g.trace(name)
     d[name] = 1 + d.get(name, 0)
 #@+node:ekr.20031218072017.3137: *3* g.Timing
 def getTime():
@@ -4361,7 +4354,6 @@ def toPythonIndex(s, index):
     '''
     if index is None:
         return 0
-    ### elif type(index) == type(99):
     elif g.isInt(index):
         return index
     elif index == '1.0':
@@ -4582,20 +4574,16 @@ def isString(s):
     '''Return True if s is any string, but not bytes.'''
     # pylint: disable=no-member
     if g.isPython3:
-        ### return type(s) == type('a')
         return isinstance(s, str)
     else:
-        ### return type(s) in types.StringTypes
         return isinstance(s, types.StringTypes)
 #@+node:ekr.20160229070349.6: *5* g.isUnicode
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
     # pylint: disable=no-member
     if g.isPython3:
-        ### return type(s) == type('a')
         return isinstance(s, str)
     else:
-        ### return type(s) == types.UnicodeType
         return isinstance(s, types.UnicodeType)
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding):
@@ -5337,7 +5325,6 @@ def print_dict(d, tag='', verbose=True, indent=''):
     if d:
         n = 6
         for key in sorted(d):
-            ### if type(key) == type(''):
             if g.isString(key):
                 n = max(n, len(key))
         g.pr('%s...{' % (tag) if tag else '{')
@@ -5402,20 +5389,16 @@ def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
         return '[%s]' % s
 #@+node:ekr.20050819064157: *3* g.print_obj & toString
 def print_obj(obj, tag=None, sort=False, verbose=True, indent=''):
-    ### if type(obj) in (type(()), type([])):
     if isinstance(obj, (list, tuple)):
         g.print_list(obj, tag, sort, indent)
-    ### elif type(obj) == type({}):
     elif isinstance(obj, dict):
         g.print_dict(obj, tag, verbose, indent)
     else:
         g.pr('%s%s' % (indent, repr(obj).strip()))
 
 def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    ### if type(obj) in (type(()), type([])):
     if isinstance(obj, (list, tuple)):
         return g.listToString(obj, tag, sort, indent)
-    ### elif type(obj) == type({}):
     elif isinstance(obj, dict):
         return g.dictToString(obj, tag, verbose, indent)
     else:
@@ -5527,7 +5510,6 @@ def translateArgs(args, d):
         n += 1
         # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        #### if type(arg) == type('a'):
         if g.isString(arg):
             arg = toUnicode(arg, console_encoding)
         # Now translate.

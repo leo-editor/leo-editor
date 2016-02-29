@@ -238,7 +238,7 @@ class Cacher:
         if not c:
             return g.internalError('no commander')
         globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-            ######################### Huh???
+            # Huh???
         # globals_tag = g.toEncodedString(globals_tag,'ascii')
         key = self.fileKey(c.mFileName, globals_tag)
         str_pos = self.db.get('current_position_%s' % key)
