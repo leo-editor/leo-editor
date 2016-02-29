@@ -195,7 +195,7 @@ class SFTPController:
         if has_port:
             try:
                 port = int(headline[headline.find('!')+1:headline.find(':')])
-            except:
+            except Exception:
                 self.log("ERROR parsing port.  Falling back to port 22.", color='red')
           
         if has_username:
@@ -292,7 +292,7 @@ class SFTPController:
                     data = sftp.open(remotefile, 'r').read()
                     p.b = data
                     t.close()
-            except:
+            except Exception:
                 self.log('Communications error!', color='red')
         else:
             self.log('Not an @sftp node!', color='red')
@@ -323,7 +323,7 @@ class SFTPController:
                     sftp.open(remotefile, 'w').write(data)
                     p.b = data 
                     t.close()
-            except:
+            except Exception:
                 self.log('Communications error!', color='red')
        
         else:
