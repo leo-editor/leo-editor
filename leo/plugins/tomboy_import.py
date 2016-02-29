@@ -49,6 +49,8 @@ def onCreate (tag, keys):
     tomboy_install()
 #@+node:ville.20090503124249.7: ** the code
 class MLStripper(HTMLParser.HTMLParser):
+    # pylint: disable=super-init-not-called
+    # Apparently not needed.
     def __init__(self):
         self.reset()
         self.fed = []
