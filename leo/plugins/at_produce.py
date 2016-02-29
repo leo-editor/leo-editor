@@ -9,7 +9,7 @@ WARNING: trying to execute a non-existent command will hang Leo.
 To use, put in the body text of a node::
 
     @produce echo hi
-    
+
 This plugin creates two new commands: at-produce-all and at-produce-selected.
 
 at-produce-all scans the entire tree for body text containing @produce.
@@ -44,6 +44,8 @@ pr = '@' + 'produce'
 #@+node:ekr.20040915085351.7: ** addMenu (no longer used)
 def addMenu( tag, keywords ):
     '''Produce two new entries at the end of the Outlines menu.'''
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get('c')
     if not c: return
     mc = c.frame.menu
@@ -115,6 +117,8 @@ def runList(c,aList):
     Run all commands in aList (in a separate thread).
     Do not do change Leo's outline in this thread!
     '''
+    # pylint: disable=deprecated-method
+    # popen3() is deprecated.
     f = open('produce.log', 'w+')
     try:
         for z in aList:
@@ -133,13 +137,13 @@ def runList(c,aList):
                     if txt == '': break
                 fi.close()
                 fo.close()
-                fe.close() 
-                f.write('===============\n' )    
+                fe.close()
+                f.write('===============\n' )
         f.seek(0)
         s = f.read()
     finally:
         f.close()
-    
+
 #@+node:ekr.20140920173002.17966: *3* timer_callback_helper
 def timer_callback_helper(c,t,timer):
     '''All drawing must be done in the main thread.'''

@@ -72,10 +72,13 @@ try:
     __ENCKEY = [None]
     encOK = True
 except ImportError:
-    from leo.core.leoQt import Qt, QtWidgets # QtCore, 
+    pass
+
+# from leo.core.leoQt import Qt, QtWidgets # QtCore,
 
 from leo.core.leoQt import isQt5, Qt, QtWidgets # QtCore,
 
+# pylint: disable=no-name-in-module
 if isQt5:
     from PyQt5.QtCore import QTimer
     try:
@@ -100,20 +103,20 @@ else:
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    ok = g.app.gui.guiName() == 'qt'  
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.plugin_signon(__name__)
-    g.app.stickynotes = {}    
+    g.app.stickynotes = {}
     return ok
 #@+node:tbrown.20141214173054.3: ** class TextEditSearch
 class TextEditSearch(QtWidgets.QWidget):
     """A QTextEdit with a search box
-    
+
     Used to make decoded encoded body text searchable, so when you've decoded
     your password list you dont't have to scan through five pages of text to
     find the one you need.
@@ -131,7 +134,7 @@ class TextEditSearch(QtWidgets.QWidget):
 
         # invoke find when return pressed
         self.searchbox.returnPressed.connect(self.search)
-        
+
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.setSpacing(0)
@@ -159,7 +162,7 @@ class TextEditSearch(QtWidgets.QWidget):
 class FocusingPlaintextEdit(TextEditSearch):
 
     def __init__(self, focusin, focusout, closed = None, parent = None):
-        TextEditSearch.__init__(self, parent)        
+        TextEditSearch.__init__(self, parent)
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
@@ -167,7 +170,7 @@ class FocusingPlaintextEdit(TextEditSearch):
     def focusOutEvent (self, event):
         self.focusout()
 
-    def focusInEvent (self, event):        
+    def focusInEvent (self, event):
         self.focusin()
 
     def closeEvent(self, event):
@@ -177,11 +180,11 @@ class FocusingPlaintextEdit(TextEditSearch):
         self.focusout()
 #@+node:ville.20091023181249.5264: ** class SimpleRichText
 class SimpleRichText(QTextEdit):
-    
+
     # pylint: disable=method-hidden
 
     def __init__(self, focusin, focusout):
-        QTextEdit.__init__(self)        
+        QTextEdit.__init__(self)
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
@@ -191,12 +194,12 @@ class SimpleRichText(QTextEdit):
     def focusOutEvent ( self, event ):
         self.focusout()
 
-    def focusInEvent ( self, event ):        
+    def focusInEvent ( self, event ):
         self.focusin()
 
 
     def closeEvent(self, event):
-        event.accept()        
+        event.accept()
 
     def createActions(self):
         self.boldAct = QAction(self.tr("&Bold"), self)
@@ -266,11 +269,11 @@ def stickynote_new_f(event):
 
     c = event['c']
     p,wb = find_or_create_stickynotes()
-    
+
     n = p.insertAsLastChild()
     c.redraw(n)
     n.h = time.asctime()
-    
+
     nf = mknote(wb,n)
 #@+node:ville.20110304230157.6527: ** get_workbook
 def get_workbook():
@@ -288,10 +291,10 @@ def find_or_create_stickynotes():
         p.h = "stickynotes"
     else:
         p = pl[0]
-        
+
     return p, wb
-                  
-# print(get_workbook())       
+
+# print(get_workbook())
 #@+node:ville.20091023181249.5266: ** g.command('stickynoter')
 @g.command('stickynoter')
 def stickynoter_f(event):
@@ -334,7 +337,7 @@ def stickynoter_f(event):
     nf.show()
     g.app.stickynotes[p.gnx] = nf
 #@+node:tbrown.20100120100336.7829: ** g.command('stickynoteenc')
-if encOK:    
+if encOK:
     @g.command('stickynoterekey')
     def stickynoteenc_rk(event):
         stickynoteenc_f(event, rekey=True)
@@ -378,15 +381,15 @@ if encOK:
             sn_getenckey()
             secret = sn_encode(unsecret)
             v.b = secret
-            
+
         c = event['c']
         p = c.p
         nf = mknote(c,p)
         nf.focusout = focusout
         nf.focusin = focusin
-        
+
         nf.setPlainText(sn_decode(v.b))
-        
+
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: ** sn_de/encode
@@ -406,7 +409,7 @@ if encOK:
         txt,ok = QInputDialog.getText(None, 'Enter key', 'Enter key.\nData lost if key is lost.\nSee docs. for key upgrade notes.')
         if not ok:
             return
-        
+
         if str(txt).startswith('v0:'):
             txt = QString(txt[3:])
         else:
@@ -422,7 +425,7 @@ if encOK:
             raise Exception("sn_getenckey failed to build key")
 #@+node:ville.20100707205336.5610: ** create_subnode
 def create_subnode(c, heading):
-    """  Find node with heading, then add new node as child under this heading 
+    """  Find node with heading, then add new node as child under this heading
 
     Returns new position.
 
@@ -452,7 +455,7 @@ def mknote(c,p, parent=None):
                 nf.setPlainText(g.u(v.b))
             nf.setWindowTitle(v.h)
             nf.dirty = False
-            
+
 
     def focusout():
         #print "focus out"
@@ -491,7 +494,7 @@ def tabula_show(c):
     try:
         t = c.tabula
     except AttributeError:
-        t = c.tabula = Tabula(c) 
+        t = c.tabula = Tabula(c)
     t.show()
     return t
 
@@ -616,10 +619,10 @@ class Tabula(QMainWindow):
             self.add_note(n)
 
         def do_edit_h():
-            p, w = self.get_current_pos()        
+            p, w = self.get_current_pos()
 
             new, r = QInputDialog.getText(None, "Edit headline", "", QLineEdit.Normal, p.h)
-            if not r: 
+            if not r:
                 return
             new = g.u(new)
             p.h = new

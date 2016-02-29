@@ -12,9 +12,9 @@ The Task Tab
 ============
 
 The plugin creates a "Task" Tab in the log pane.  It looks like this:
-    
+
     .. image:: ../Icons/cleo/LeoTaskTab.png
-    
+
 Along the top are icons that you can associate with nodes.
 Just click on the icon: it will appear on the presently selected node.
 
@@ -124,13 +124,13 @@ if g.app.gui.guiName() == "qt":
                     if g.os_path_exists(testPath):
                         iconPath = g.os_path_dirname(testPath)
                     else:
-                        iconPath = g.os_path_join(g.app.leoDir, 'Icons') 
+                        iconPath = g.os_path_join(g.app.leoDir, 'Icons')
             else:
                 iconPath = g.os_path_join(g.app.leoDir, 'Icons')
             os.chdir(iconPath)
             form_class, base_class = uic.loadUiType(uiPath)
             if logTab:
-                self.owner.c.frame.log.createTab('Task', widget = self) 
+                self.owner.c.frame.log.createTab('Task', widget = self)
             self.UI = form_class()
             self.UI.setupUi(self)
             u = self.UI
@@ -180,11 +180,11 @@ if g.app.gui.guiName() == "qt":
                 lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate'))
             u.nxtwkTimeToggle.stateChanged.connect(
                 lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime'))
-                
+
             for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
                 "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
-                "butPriQuery", "butPriBullet", "butPri7", 
+                "butPriQuery", "butPriBullet", "butPri7",
                 "butPri3"]:
 
                 w = getattr(u, but)
@@ -196,9 +196,13 @@ if g.app.gui.guiName() == "qt":
                         pri, ok = w.property('priority').toInt()
                     except (TypeError, ValueError):
                         pri = -1
+
                 # pylint: disable=cell-var-from-loop
+                # pylint: disable=undefined-variable
+                # 'setter' *is* defined.
                 def setter(pri=pri):
                     o.setPri(pri)
+
                 if isQt5:
                     w.clicked.connect(lambda checked, setter=setter: setter())
                 else:
@@ -220,7 +224,7 @@ if g.app.gui.guiName() == "qt":
                     lambda v: o.set_date_offset(field='duedate'))
             u.nxtwkDateOffset.addItems(offsets)
             u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
-            
+
             if isQt5:
                 self.UI.nxtwkDateOffset.activated.connect(
                     lambda v: o.set_date_offset(field='nextworkdate'))
@@ -231,19 +235,19 @@ if g.app.gui.guiName() == "qt":
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
                 datetime.date.today() + datetime.timedelta(self.date_offset_default))
-                 
+
             self.setDueTime = self.make_func(self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle, 'setTime',
                 datetime.datetime.now().time())
-                
+
             self.setNextWorkDate = self.make_func(self.UI.nxtwkDateEdit,
                 self.UI.nxtwkDateToggle, 'setDate',
                 datetime.date.today() + datetime.timedelta(self.date_offset_default))
-                 
+
             self.setNextWorkTime = self.make_func(self.UI.nxtwkTimeEdit,
                 self.UI.nxtwkTimeToggle, 'setTime',
                 datetime.datetime.now().time())
-                
+
             if isQt5:
                 self.UI.butDetails.clicked.connect(
                     lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
@@ -251,7 +255,7 @@ if g.app.gui.guiName() == "qt":
                 self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
                     lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
             if self.owner.c.config.getBool("todo_compact_interface"):
-                self.UI.frmDetails.setVisible(False) 
+                self.UI.frmDetails.setVisible(False)
 
             if isQt5:
                 self.UI.butNext.clicked.connect(
@@ -271,18 +275,18 @@ if g.app.gui.guiName() == "qt":
                     lambda: o.set_date_offset(field='duedate'))
                 self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
                     lambda: o.set_date_offset(field='nextworkdate'))
-            
-            n = g.app.config.getInt("todo_calendar_n")  
-            cols = g.app.config.getInt("todo_calendar_cols")  
+
+            n = g.app.config.getInt("todo_calendar_n")
+            cols = g.app.config.getInt("todo_calendar_cols")
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
 
-            def func(value, edit=edit, toggle=toggle, 
+            def func(value, edit=edit, toggle=toggle,
                      method=method, default=default, self=self):
-                         
+
                 edit.blockSignals(True)
                 toggle.blockSignals(True)
                 if value:
@@ -296,10 +300,10 @@ if g.app.gui.guiName() == "qt":
                 toggle.blockSignals(False)
 
             return func
-                    
+
         #@+node:ekr.20111118104929.10205: *3* populateMenu
         @staticmethod
-        def populateMenu(menu,o): 
+        def populateMenu(menu,o):
             menu.addAction('Find next ToDo', o.find_todo)
             m = menu.addMenu("Priority")
             m.addAction('Priority Sort', o.priSort)
@@ -465,7 +469,7 @@ class todoController:
                 fn = 'prg%03d.png' % prog
             else:
                 fn = self.priorities[pri]["icon"]
-            
+
             # use getImageImage because it's theme aware
             fn = g.os_path_join('cleo', fn)
             self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
@@ -591,8 +595,9 @@ class todoController:
 
         if (not hasattr(node,'unknownAttributes') or
             "annotate" not in node.unknownAttributes or
-            not type(node.unknownAttributes["annotate"]) == type({}) or
-            attrib not in node.unknownAttributes["annotate"]):
+            type(node.unknownAttributes["annotate"]) != type({}) or
+            attrib not in node.unknownAttributes["annotate"]
+        ):
             if attrib == "priority":
                 return 9999
             else:
@@ -610,8 +615,8 @@ class todoController:
         "new attrbiute setter"
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
-            
-            if (not hasattr(node, '_cached_src_vnode') or 
+
+            if (not hasattr(node, '_cached_src_vnode') or
                 not node._cached_src_vnode):
                 src_unl = node.u['annotate']['src_unl']
                 c1 = self.c
@@ -649,7 +654,7 @@ class todoController:
                 if ("annotate" not in node.unknownAttributes or
                     type(node.unknownAttributes["annotate"]) != type({})):
                     node.unknownAttributes["annotate"] = {}
-                    
+
             # node.unknownAttributes["annotate"]['created'] = datetime.datetime.now()
 
             node.unknownAttributes["annotate"][attrib] = val
@@ -759,7 +764,7 @@ class todoController:
             tr = self.getat(nd.v, 'time_req')
             pr = self.getat(nd.v, 'progress')
             try: pr = float(pr)
-            except: pr = ''
+            except Exception: pr = ''
             if tr != '' or pr != '':
                 ans = ' <'
                 if tr != '':
@@ -872,12 +877,12 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-        
+
         if field == 'duedate':
             toggle = self.ui.UI.dueDateToggle
         else:
             toggle = self.ui.UI.nxtwkDateToggle
-        
+
         if mode == 'check':
             if toggle.checkState() == QtConst.Unchecked:
                 self.setat(v, field, "")
@@ -886,7 +891,7 @@ class todoController:
         else:
             toggle.setCheckState(QtConst.Checked)
             self.setat(v, field, val.toPyDate())
-        
+
         self.updateUI()  # if change was made to date with offset selector
         self.loadIcons(p)
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
@@ -916,7 +921,7 @@ class todoController:
         """set_nxtwk_date_offset - update date by selected offset
 
         offset sytax::
-            
+
             +5 five days after today
             -5 five days before today
             >5 move current date 5 days later
@@ -928,17 +933,17 @@ class todoController:
             offset = str(self.ui.UI.nxtwkDateOffset.currentText())
         else:
             offset = str(self.ui.UI.dueDateOffset.currentText())
-        
+
         mult = 1  # to handle '<' as a negative relative offset
 
         date = QtCore.QDate.currentDate()
 
         if '<' in offset or '>' in offset:
             date = self.ui.UI.nxtwkDateEdit.date()
-        
+
         if offset.startswith('<'):
             mult = -1
-        
+
         self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field=field)
         p = self.c.currentPosition()
         self.loadIcons(p)
@@ -972,7 +977,7 @@ class todoController:
         if v is not None:
             pri = self.getat(v, 'priority')
             due = self.getat(v, 'duedate')
-        
+
         return (pri in self.todo_priorities) or (due and pri == 9999)
     #@+node:tbrown.20090119215428.42: *4* find_todo
     @redrawer
@@ -988,7 +993,7 @@ class todoController:
 
         # see if this node is a todo
         if stage != 0 and self.needs_doing(p.v):
-            if p.getParent(): 
+            if p.getParent():
                 self.c.selectPosition(p.getParent())
                 self.c.expandNode()
             self.c.selectPosition(p)
@@ -1021,10 +1026,9 @@ class todoController:
     #@+node:tbrown.20110213153425.16373: *4* duekey
     def duekey(self, v, field='due'):
         """key function for sorting by due date/time"""
-
+        # pylint: disable=boolean-datetime
         date_ = self.getat(v, field+'date') or datetime.date(3000,1,1)
         time_ = self.getat(v, field+'time') or datetime.time(23, 59, 59)
-            
         return date_, time_
     #@+node:tbrown.20110213153425.16377: *4* dueSort
     @redrawer
@@ -1083,7 +1087,7 @@ class todoController:
 
                 x0 = [int(i) for i in x0.replace(',',' ').split()]
                       # if int(i) in self.todo_priorities]
-            except:
+            except Exception:
                 g.es('Not understood, no action')
                 return
             if not x0:
@@ -1129,21 +1133,21 @@ class todoController:
                 pris[pri] = 1
             else:
                 pris[pri] += 1
-        pris = sorted([(k,v) for k,v in pris.items()]) 
+        pris = sorted([(k,v) for k,v in pris.items()])
         for pri in pris:
             if pri[0] in self.priorities:
                 g.es('%s\t%d\t%s\t(%s)' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long'],pri[0]))
     #@+node:tbrown.20150605111428.1: *3* updateStyle
-    def updateStyle(self,tag=None,k=None): 
-        """    
+    def updateStyle(self,tag=None,k=None):
+        """
         updateStyle - calling widget.setStyleSheet("/* */") is a trick to get Qt to
         update appearance on a widget styled depending on changes in attributes.
         It's faster than applying the whole stylesheet at top level or applying the
         whole stylesheet to the widget, which also breaks style cascading. But it's
         still too slow to do as the user up/down-arrows through nodes, so we just do
         it on idle instead.
-        
+
         However, the idle event isn't only called when Leo is truely idle, it's just
         called at a set frequency. So by checking that time (0.2 sec) as passed
         since the need to restyle the node was noted, we avoid updating every
@@ -1182,12 +1186,12 @@ class todoController:
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
-        
+
         self.ui.setDueDate(self.getat(v, 'duedate'))
         # default is "", which is understood by setDueDate()
         self.ui.setDueTime(self.getat(v, 'duetime'))
         # ditto
-        
+
         self.ui.setDueDate(self.getat(v, 'duedate'))
         self.ui.setDueTime(self.getat(v, 'duetime'))
         self.ui.setNextWorkDate(self.getat(v, 'nextworkdate'))
@@ -1210,11 +1214,11 @@ class todoController:
             except Exception:
                 created = None
             if created:
-                self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?")) 
+                self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?"))
                 self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
             else:
                 self.ui.UI.createdTxt.setText("")
-        
+
         due = self.getat(v, 'duedate')
         ago = (datetime.date.today()-created.date()).days if created else 0
         txt = "%s\nCreated%s %d days ago, due in %s" % (
@@ -1223,7 +1227,7 @@ class todoController:
             ago,
             (due - datetime.date.today()).days if due else 'N/A',
         )
-        
+
         self.ui.UI.txtDetails.setText(txt)
         prisetdate = self.getat(v, 'prisetdate')
         self.ui.UI.txtDetails.setToolTip("Priority set %s" %
@@ -1232,10 +1236,10 @@ class todoController:
     #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
     def unl_to_pos(self, unl, for_p):
         """"unl may be an outline (like c) or an UNL (string)
-        
+
         return c, p where c is an outline and p is a node to copy data to
         in that outline
-        
+
         for_p is the p to be copied - needed to check for invalid recursive
         copy / move
         """
@@ -1248,13 +1252,13 @@ class todoController:
         c2 = g.openWithFileName(path, old_c=self.c)
         self.c.bringToFront(c2=self.c)
         found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
-        
+
         if found:
-            
+
             if (for_p == maxp or for_p.isAncestorOf(maxp)):
                 g.es("Invalid move")
                 return None, None
-            
+
             nd = maxp
         else:
             g.es("Could not find '%s'"%full_path)

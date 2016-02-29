@@ -46,7 +46,7 @@ The plugin searches the outline, goes to level one and finds a Node with the Hea
             < <2$> >
             < <1$> >
 
-6. Examine the new subnodes of Node A:  
+6. Examine the new subnodes of Node A:
 
         < < meow ( purrrrrr, zzooot ) > >
             contains the body text of the < < meow > > node.

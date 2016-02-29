@@ -639,7 +639,7 @@ class leo_interface(object):
             self.send_header("Content-Length", str(length))
             self.end_headers()
             return f
-        except:
+        except Exception:
             import traceback
             traceback.print_exc()
             raise
@@ -1173,7 +1173,7 @@ def a_read(obj):
         obj.handle_read_event()
     except asyncore.ExitNow:
         raise
-    except:
+    except Exception:
         # g.trace('error')
         obj.handle_error()
 #@+node:ekr.20110522152535.18252: *3* escape

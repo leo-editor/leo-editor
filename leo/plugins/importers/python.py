@@ -22,7 +22,7 @@ class PythonScanner(basescanner.BaseScanner):
         self.strict = True
     #@+node:ekr.20140723122936.18091: *3* adjustDefStart (PythonScanner)
     def adjustDefStart(self, s, i):
-        '''A hook to allow the Python importer to adjust the 
+        '''A hook to allow the Python importer to adjust the
         start of a class or function to include decorators.
         '''
         # Invariant: i does not change.

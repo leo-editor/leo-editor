@@ -59,7 +59,7 @@ def global_search_f(event):
     """
     Do global search.
     To restore the original appearance of the window, type help.
-    
+
     The per-commander @int fts_max_hits setting controls the maximum hits returned.
     """
     c = event['c']
@@ -141,7 +141,7 @@ class BigDash:
     <table cellspacing="10">
     <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
     <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
-    <tr><td> <b>fts add</b></td><td>    <i>Add currently open, still unindexed leo files to index</i></td></tr>                    
+    <tr><td> <b>fts add</b></td><td>    <i>Add currently open, still unindexed leo files to index</i></td></tr>
     <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
     <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
     <tr><td> <b>help</b></td><td>       <i>Show this help</i></td></tr>
@@ -178,11 +178,11 @@ class GlobalSearch:
             self.bd.add_cmd_handler(self.do_stats)
         else:
             self.fts = None
-        self.anchors = {}        
+        self.anchors = {}
     #@+node:ekr.20140919160020.17922: *3* add_anchor
     def add_anchor(self,l,tgt, text):
 
-        l.append('<a href="%s">%s</a>' % (tgt, text))    
+        l.append('<a href="%s">%s</a>' % (tgt, text))
     #@+node:ekr.20140919160020.17906: *3* do_find
     def do_find(self, tgt, q, target_outline=None):
         self._old_tgt = tgt
@@ -207,17 +207,17 @@ class GlobalSearch:
             if '#' in r["parent"]:
                 file_name, node = r["parent"].split('#', 1)
             else:
-                file_name, node = r["parent"], None                
+                file_name, node = r["parent"], None
             outlines.setdefault(file_name, []).append(r)
         hits.append("<p>%d hits (max. hits reported = %d)</p>"%
             (len(res), fts_max_hits))
         if len(outlines) > 1:
             hits.append("<p><div>Hits in:</div>")
             for outline in outlines:
-                hits.append("<div><a href='#%s'>%s</a>"%(outline, outline))   
+                hits.append("<div><a href='#%s'>%s</a>"%(outline, outline))
                 if outline == target_outline:
                     hits.append("<b> (moved to top)</b>")
-                hits.append("</div>")       
+                hits.append("</div>")
             hits.append("</p>")
         outline_order = outlines.keys()
         outline_order.sort(key=lambda x:'' if x==target_outline else x)
@@ -239,8 +239,8 @@ class GlobalSearch:
                 hl = r.get("highlight")
                 if hl:
                     hits.append("<pre>%s</pre>" % hl)
-                hits.append("""<div><small><i>%s</i>%s</small></div>""" % (r["parent"], opener))          
-                hits.append("</p>")    
+                hits.append("""<div><small><i>%s</i>%s</small></div>""" % (r["parent"], opener))
+                hits.append("</p>")
             hits.append("<hr/></div>")
         hits.append("</body></html>")
         html = "".join(hits)
@@ -283,7 +283,7 @@ class GlobalSearch:
                 fts.drop_document(fn)
                 fts.index_nodes(c2)
             g.es_print('Refresh complete')
-            gc = self.gnxcache         
+            gc = self.gnxcache
             gc.clear()
             gc.update_new_cs()
         if q:
@@ -315,10 +315,10 @@ class GlobalSearch:
             c.selectPosition(p)
             c.bringToFront()
             return
-        g.es_print("Not found in any open document: %s" % l)        
+        g.es_print("Not found in any open document: %s" % l)
     #@+node:ekr.20140919160020.17903: *3* do_search
-    def do_search(self,tgt, qs):   
-         
+    def do_search(self,tgt, qs):
+
         ss = str(qs)
         hitparas = []
         def em(l):
@@ -327,7 +327,7 @@ class GlobalSearch:
             return False
         s = ss[2:]
         for ndxc,c2 in enumerate(g.app.commanders()):
-            hits = c2.find_b(s)                          
+            hits = c2.find_b(s)
             for ndxh, h in enumerate(hits):
                 b = h.b
                 mlines = self.matchlines(b, h.matchiter)
@@ -340,9 +340,9 @@ class GlobalSearch:
                     em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
                     em(post)
                     em("</pre>")
-                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL()) 
+                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
         html = "".join(hitparas)
-        tgt.web.setHtml(html)     
+        tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link)
 
     #@+node:ekr.20140919160020.17900: *3* do_stats
@@ -364,7 +364,7 @@ class GlobalSearch:
             ipost = b.find("\n", en +1 )
             spre = b[ipre +1 : st-1] + "\n"
             spost = b[en : ipost]
-            
+
             res.append((li, (m.start()-st, m.end()-st ), (spre, spost)))
         return res
     #@+node:ekr.20140919160020.17919: *3* open_unl
@@ -382,11 +382,11 @@ class GlobalSearch:
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
 if QtCore:
-    
+
     class LeoConnector(QtCore.QObject):
         pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
-class LeoFts:    
+class LeoFts:
     #@+others
     #@+node:ekr.20140920041848.17940: *3* __init__
     def __init__(self,gnxcache,idx_dir):
@@ -412,7 +412,7 @@ class LeoFts:
         return schema
     #@+node:ekr.20140920041848.17942: *3* create
     def create(self):
-        
+
         schema = self.schema()
         self.ix = ix = create_in(self.idx_dir, schema)
     #@+node:ekr.20140920041848.17943: *3* index_nodes
@@ -442,8 +442,8 @@ class LeoFts:
         # print("stats: %s" % r)
         return r
     #@+node:ekr.20140920041848.17946: *3* search
-    def search(self, searchstring, limit=30):        
-                
+    def search(self, searchstring, limit=30):
+
         res = []
         gnxcache = self.gnxcache
         gnxcache.update_new_cs()
@@ -493,7 +493,7 @@ class GnxCache:
 
         if not self.ps:
             self.update_new_cs()
-        res = self.ps.get(gnx,None)                               
+        res = self.ps.get(gnx,None)
         return res
     #@+node:ekr.20140920041848.17937: *3* get_p
     def get_p(self,gnx):

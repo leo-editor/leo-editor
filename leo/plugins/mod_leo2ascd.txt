@@ -97,7 +97,7 @@ my part.
 @ascskip # Time-stamp: "Mon, Jan 19 15:28 CST 2004  michael@redpriest License_141615068.txt"
 
 This is part of the Leo2AsciiDoc software package, which is released
-as open source.  
+as open source.
 
 The license is the most "open" I know of, and is sometimes referred
 to as the "X11" or "MIT" license.  Boiled down, in non-legal terms:
@@ -231,7 +231,7 @@ beginning of the line.
 
 {amp}commat;ascconfig::
     e.g. `{amp}commat;ascconfig maxCodeLineLength 70` -- see
-    Configuration below. 
+    Configuration below.
 
 
 @code
@@ -249,12 +249,12 @@ Configuration settings in the top node of the outline are effective
 for the whole outline, unless overridden by settings in sub-nodes.
 
 maxCodeLineLength::
-    e.g. `{amp}commat;ascconfig maxCodeLineLength 70` -- 
+    e.g. `{amp}commat;ascconfig maxCodeLineLength 70` --
     sets the maximum length of code printout lines to 70 characters.
     Longer lines will be wrapped and a line continuation character
     displayed.
 
-PrintHeadings::    
+PrintHeadings::
     e.g. `{amp}commat;ascconfig PrintHeadings off` -- turns off the
     export of outline node headings as section titles.  In that
     case, you must have correctly entered AsciiDoc section titles in
@@ -320,7 +320,7 @@ following line of tildes.  For example,
 @doc
 
 is the heading of Section One of this chapter.  Section Two markup
-is a following line of "^".  For example, 
+is a following line of "^".  For example,
 
 @code
 
@@ -434,7 +434,7 @@ Leo::
     http://leoeditor.com/
 Python::
     http://www.python.org[]
-Docbook::    
+Docbook::
     http://docbook.org/[]
 Literate Programming::
     http://www.literateprogramming.com/[]
@@ -570,7 +570,7 @@ The main elements of the configuration file below:
 
     - adds chapter and web site document types
     - switches code listings to use the DocBook "programlisting"
-      element 
+      element
 
     *note*
 
@@ -665,13 +665,13 @@ The following replacements ensure basic Python code indexing.
 # would slow things down.
 #
 # index python classes and defs
-^(def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, functions</primary><secondary>\2</secondary></indexterm> 
-^(class +)(.+?)(:)=\1\2\3<indexterm><primary>Python code, classes</primary><secondary>\2</secondary></indexterm> 
-^( +def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, methods and nested functions</primary><secondary>\2</secondary></indexterm> 
+^(def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, functions</primary><secondary>\2</secondary></indexterm>
+^(class +)(.+?)(:)=\1\2\3<indexterm><primary>Python code, classes</primary><secondary>\2</secondary></indexterm>
+^( +def +)(.+?)(\(.+:)=\1\2\3<indexterm><primary>Python code, methods and nested functions</primary><secondary>\2</secondary></indexterm>
 
 # index code extracts
 (\&lt\;\&lt\;)(.+?)(\&gt\;\&gt\;\=)=\2<indexterm><primary>Python code, extracts explained</primary><secondary>\2</secondary></indexterm>
-(\&lt\;\&lt\;)(.+?)(\&gt\;\&gt\;)(\s*$)=\1\2\3\4<indexterm><primary>Python code, extracts used</primary><secondary>\2</secondary></indexterm> 
+(\&lt\;\&lt\;)(.+?)(\&gt\;\&gt\;)(\s*$)=\1\2\3\4<indexterm><primary>Python code, extracts used</primary><secondary>\2</secondary></indexterm>
 
 @doc
 
@@ -896,7 +896,7 @@ LC_ALL=C TZ=UTC0 diff -Naur 5.0.2-original 5.0.2-mrc-patched \
 
 I include this mainly so that you can see the exact changes I made.
 However, you may want to patch a copy of the original in exactly the
-same way. 
+same way.
 
 To patch a copy of the original asciidoc.py (version 5.0.2), one
 would use the patch command as follows (when in the same directory
@@ -1151,7 +1151,7 @@ ASCIIDOC_CONFIG=asciidoc/leo-docbook.conf
 
 %.pdf	:	%.xml
     xsltproc --xinclude  --output ${OUTPUT}/$*.fo $(STYLESHEET) $*.final.xml
-    fop -fo  ${OUTPUT}/$*.fo  -pdf ${OUTPUT}/$*.pdf 
+    fop -fo  ${OUTPUT}/$*.fo  -pdf ${OUTPUT}/$*.pdf
     -$(RM) ${OUTPUT}/$*.fo
 
 #----- usage ---------------------------------------------------------------
@@ -1248,7 +1248,7 @@ mkdirpdf	:
 
 
 #----- clean ---------------------------------------------------------------
-clean	: cleanhtml cleanchunk cleanpdf cleanman cleanclutter 
+clean	: cleanhtml cleanchunk cleanpdf cleanman cleanclutter
 
 cleanhtml	:	cleanhtmluser cleanhtmldev
 
@@ -1272,7 +1272,7 @@ cleanpdf	:
 cleanman	:
     -$(RM) -r $(MAN_OUTPUT_DIR)
 
-cleanclutter: 
+cleanclutter:
     -$(RM) -r *.xml
 
 .PRECIOUS	:	%.xml
@@ -1314,19 +1314,19 @@ This stylesheet is called by both HTML and PDF stylesheets.
 @root "doc/common-links.xsl"
 << General >>
 @code
-<?xml version='1.0'?> 
-<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<?xml version='1.0'?>
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
 
-<!--===== 
+<!--=====
     This changes a chapter cross-reference to include the chapter
-    title text. 
+    title text.
 -->
-<xsl:param name="local.l10n.xml" select="document('')"/> 
-<l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"> 
-  <l:l10n language="en"> 
-    <l:context name="xref"> 
-      <l:template name="chapter" text="Chapter %n: &#8220;%t&#8221;"/> 
-    </l:context>   
+<xsl:param name="local.l10n.xml" select="document('')"/>
+<l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
+  <l:l10n language="en">
+    <l:context name="xref">
+      <l:template name="chapter" text="Chapter %n: &#8220;%t&#8221;"/>
+    </l:context>
   </l:l10n>
 </l:i18n>
 
@@ -1399,13 +1399,13 @@ AWK, sed, or other tools.
   <title>
   <xsl:value-of select="substring-after(text(),$AppendBegin)"/>
   </title>
-  <xsl:apply-templates select="*" /> 
+  <xsl:apply-templates select="*" />
 </xsl:template>
 
 <!--~~~~~~ change appendix chapter element to appendix element ~~~~~~~~~~-->
 <xsl:template match="/book/chapter[starts-with(title,$AppendBegin)]">
   <appendix>
-    <xsl:apply-templates select="*" /> 
+    <xsl:apply-templates select="*" />
   </appendix>
 </xsl:template>
 
@@ -1466,8 +1466,8 @@ This is the "html.xsl" stylesheet.
 @root "doc/html.xsl"
 << HTML: One File >>
 @code
-<?xml version='1.0'?> 
-<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<?xml version='1.0'?>
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
 
 <!--===== the catalog (/etx/xml/catalog) will convert this to the local pathname -->
 <xsl:import href="docbook.xsl"/>
@@ -1475,7 +1475,7 @@ This is the "html.xsl" stylesheet.
 <xsl:import href="common-links.xsl"/>
 <xsl:import href="common-html.xsl"/>
 
-</xsl:stylesheet> 
+</xsl:stylesheet>
 @doc
 @ascskip xemacs-xsl-mode-off
 
@@ -1500,8 +1500,8 @@ The following code is the entire chunkit style sheet
 @root "doc/chunkit.xsl"
 << HTML: Individual Pages >>
 @code
-<?xml version='1.0'?> 
-<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<?xml version='1.0'?>
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
 
 <xsl:import href="chunk.xsl"/>
 
@@ -1586,7 +1586,7 @@ pre             { white-space: pre }
 /            * comment             */
 /* http://www.w3.org/TR/CSS21/visuren.html#propdef-display lists inline-block */
 button, textarea,
-input, object, 
+input, object,
 select, img { display:inline-block; }
 
 big             { font-size: 1.17em }
@@ -1698,7 +1698,7 @@ h1, h2, h3, h4, h5, h6 {
 /*   margin-right: 10em; */
 /* } */
 
-h1.title 
+h1.title
 {
   margin-top: 3em;
   border-top: 3px solid #660000;
@@ -1708,7 +1708,7 @@ h1.title
   text-align: center;
 }
 
-h2.title 
+h2.title
 {
   margin-top: 3em;
   border-top: 3px solid #660000;
@@ -1875,7 +1875,7 @@ div.sidebar  {
   margin-top: 2em;
   margin-bottom: 0.5em;
   /* margin-left: 1em; */
-  margin-right: 33%; 
+  margin-right: 33%;
   padding: 4pt;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
@@ -1896,7 +1896,7 @@ ol.vert, ol.inline {
 }
 
 hr, .toc, .title
-{ color: #660000 
+{ color: #660000
 }
 
 
@@ -1941,7 +1941,7 @@ div.revhistory table
 
 div.revhistory td[colspan="3"]
 {
-  padding-left: 2em;  
+  padding-left: 2em;
  }
 
 
@@ -1969,8 +1969,8 @@ The following section is the entire common-html style sheet
 @root "doc/common-html.xsl"
 << HTML: common>>
 @code
-<?xml version='1.0'?> 
-<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<?xml version='1.0'?>
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
 <!--===== ==========================================================-->
 <xsl:param name="default.table.width" select="'100%'"></xsl:param>
 <xsl:param name="html.stylesheet" select="'dbstyle.css'"/>
@@ -2002,8 +2002,8 @@ used by a Formatting Object processor to produce a PDF file.
 @root "doc/fo-fop.xsl"
 << PDF >>
 @code
-<?xml version='1.0'?> 
-<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0"> 
+<?xml version='1.0'?>
+<xsl:stylesheet  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0">
 <!--===== ==========================================================-->
 
 <!--===== catalog will convert the url to our file location =========-->
@@ -2057,7 +2057,7 @@ used by a Formatting Object processor to produce a PDF file.
   <xsl:attribute name="break-before">page</xsl:attribute>
   <xsl:attribute name="border-bottom">1pt</xsl:attribute>
   <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
-  <xsl:attribute name="border-bottom-color">black</xsl:attribute>  
+  <xsl:attribute name="border-bottom-color">black</xsl:attribute>
   <xsl:attribute name="margin-right">6em</xsl:attribute>
 </xsl:attribute-set>
 <xsl:attribute-set name="section.title.level2.properties">
@@ -2208,7 +2208,7 @@ if Tk: # Register the handlers...
                             f=open(path)
                             s=f.read()
                             f.close()
-                        except:
+                        except Exception:
                             g.es("can not open " + g.shortFileName(path))
                             break
 
@@ -2236,7 +2236,7 @@ if Tk: # Register the handlers...
                             dict["body"] = s
                         elif conflict:
                             g.warning("not updated from: " + g.shortFileName(path))
-                except:
+                except Exception:
                     g.es_exception() # testing
                     pass
     def create_open_with_menu (tag,keywords):
@@ -2244,17 +2244,17 @@ if Tk: # Register the handlers...
         if  (tag in ("start2","open2") or
             (tag=="command2" and keywords.get("label")=="new")):
 
-            # Entries in the following table are the tuple 
+            # Entries in the following table are the tuple
             # (commandName,shortcut,data).
-            # 
+            #
             # - data is the tuple (command,arg,ext).
-            # - command is one of "os.system", "os.startfile", "os.spawnl", 
+            # - command is one of "os.system", "os.startfile", "os.spawnl",
             # "os.spawnv" or "exec".
-            # 
-            # Leo executes command(arg+path) where path is the full path to 
+            #
+            # Leo executes command(arg+path) where path is the full path to
             # the temp file.
             # If ext is not None, the temp file has the extension ext,
-            # Otherwise, Leo computes an extension based on what @language 
+            # Otherwise, Leo computes an extension based on what @language
             # directive is in effect.
 
             idle_arg = "c:/python22/tools/idle/idle.py -e "
@@ -2427,11 +2427,11 @@ def openWithTempFilePath (self,v,ext):
 
     """Return the path to the temp file corresponding to v and ext.
 
-    Replaces the Commands method."""    
+    Replaces the Commands method."""
 
     try:
         leoTempDir = getpass.getuser() + "_" + "Leo"
-    except:
+    except Exception:
         leoTempDir = "LeoTemp"
         g.es("Could not retrieve your user name.")
         g.es("Temporary files will be stored in: %s" % leoTempDir)
@@ -2535,7 +2535,7 @@ Leo file that is in XEmacs Python mode, and/or has a ".py" suffix:
       Otherwise, XEmacs will be in Python mode in that buffer.
 
 Similarly, makefile-mode, xsl-mode and emacs-lisp-mode are added to
-temporary Leo files that created with a ".txt" extension.      
+temporary Leo files that created with a ".txt" extension.
 
 A future project may be to create a Leo module to use in the
 Leo "openWith" function that examines each node for these mmm-mode

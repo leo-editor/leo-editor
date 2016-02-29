@@ -251,7 +251,7 @@ class linkAnchorParserClass (HTMLParser.HTMLParser):
 
     '''
     A class to recognize anchors and links in HTML documents.
-    A special marker is the "node_marker" which demarkates the border between 
+    A special marker is the "node_marker" which demarkates the border between
     node and the next.
     '''
 
@@ -359,7 +359,7 @@ class htmlParserClass (linkAnchorParserClass):
     def handle_starttag (self,tag,attrs):
         '''
         1. Find out if the current tag is an achor.
-        2. If it is an anchor, we check if this anchor marks the beginning of a new 
+        2. If it is an anchor, we check if this anchor marks the beginning of a new
            node
         3. If a new node begins, then we might have to store html code for the previous
            node.
@@ -569,7 +569,7 @@ class rstClass:
         self.nodeNumber = 0
         # All nodes are numbered so that unique anchors can be generated.
 
-        self.http_map = {} 
+        self.http_map = {}
         # Keys are named hyperlink targets.  Value are positions.
         # The targets mark the beginning of the html code specific
         # for this position.
@@ -853,7 +853,7 @@ class rstClass:
                 ('default_path_prefix','default_prefix',''), # '@rst-default-path'
                 ('rst_prefix','code_mode',False), # '@rst'
                 ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
-                ('show_headline_prefix','show_this_headline',True), # '@rst-head'  
+                ('show_headline_prefix','show_this_headline',True), # '@rst-head'
                 ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
                 ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
                 ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
@@ -1175,7 +1175,7 @@ class rstClass:
 
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
-
+        writer = None
         for ext,writer in (
             ('.html','html'),
             ('.htm','html'),
@@ -1327,7 +1327,7 @@ class rstClass:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        lines = p.b.rstrip().split('\n') 
+        lines = p.b.rstrip().split('\n')
 
         if self.getOption('code_mode'):
             if not self.getOption('show_options_doc_parts'):
@@ -1598,7 +1598,7 @@ class rstClass:
 
         h = p.h.strip()
 
-        # Remove any headline command before writing the 
+        # Remove any headline command before writing the
         i = g.skip_id(h,0,chars='@-')
         word = h [:i]
         if word:
@@ -1814,11 +1814,11 @@ class rstClass:
                 try:
                     parser.feed(line)
                 # bwm: changed to unicode(line)
-                except:
+                except Exception:
                     line = ''.join([ch for ch in line if ord(ch) <= 127])
                     # filter out non-ascii characters.
                     # bwm: not quite sure what's going on here.
-                    parser.feed(line)        
+                    parser.feed(line)
         # g.trace(g.dictToString(self.anchor_map,tag='anchor_map'))
     #@+node:ekr.20050805162550.37: *5* relocate_references
     #@+at Relocate references here if we are only running for one file.
@@ -1842,7 +1842,7 @@ class rstClass:
             for line in attr [3:]:
                 try:
                     parser.feed(line)
-                except:
+                except Exception:
                     line = ''.join([ch for ch in line if ord(ch) <= 127])
                     parser.feed(line)
             replacements = parser.get_replacements()
@@ -1853,7 +1853,7 @@ class rstClass:
                 print >> bwm_file, "relocate_references(2): Replacements:"
                 pprint.pprint(replacements, bwm_file)
             for line, column, href, href_file, http_node_ref in replacements:
-                if bwm_file: 
+                if bwm_file:
                     print >> bwm_file, "relocate_references(3): line:", line, "Column:", column, "href:", href, "href_file:", href_file, "http_node_ref:", http_node_ref
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
@@ -1862,14 +1862,14 @@ class rstClass:
                     try:
                         attr [line + 2] = attr [line + 2].replace(
                             'href="%s"' % href,'href="%s"' % replacement)
-                    except:
+                    except Exception:
                         g.es("Skipped ", attr[line + 2])
                 else:
                     filename = marker_parts [0]
                     try:
                         attr [line + 2] = attr [line + 2].replace(
                             'href="%s"' % href,'href="%s"' % http_node_ref)
-                    except:
+                    except Exception:
                         g.es("Skipped", attr[line+2])
         # g.trace('after %s\n\n\n',attr)
     #@+node:ekr.20050805162550.35: *5* http_attribute_iter

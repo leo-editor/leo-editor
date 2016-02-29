@@ -5,7 +5,7 @@
 """ Sends code to the doctest module and reports the result.
 
 When the Dtest plugin is enabled, the ``dtest`` command is active.
-Typing:: 
+Typing::
 
     Alt-X dtest
 
@@ -14,18 +14,18 @@ If text is selected only the selection is tested.
 
 From Wikipedia::
 
-    'Doctest' is a module included in the Python programming language's 
-    standard library that allows for easy generation of tests based on 
+    'Doctest' is a module included in the Python programming language's
+    standard library that allows for easy generation of tests based on
     output from the standard Python interpreter.
 
-http://tinyurl.com/cqh53 - Python.org doctest page    
+http://tinyurl.com/cqh53 - Python.org doctest page
 
 http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 
     Literate Testing:
     Automated Testing with doctest
 
-"""    
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20070119094733.2: ** <<imports>>
@@ -70,7 +70,7 @@ class DT(BaseLeoPlugin):
     Traceback (most recent call last):
         ...
     ImportError: No module named notfound
-    >>>   
+    >>>
     """
 
     #@+others
@@ -111,7 +111,7 @@ class DT(BaseLeoPlugin):
 
         tempfile = open(tempfilename)
         text = tempfile.readlines()
-        tempfile.close()    
+        tempfile.close()
         # strip trailing whitespace, an annoying source of doctest failures
         text = [line.rstrip() for line in text]
         text = "\n".join(text)
@@ -125,7 +125,7 @@ class DT(BaseLeoPlugin):
         globals = {'c':copy.copy(self.c), 'g':g}
 
         # run doctest on temporary file
-        failures, tests = doctest.testfile(tempfilename, module_relative = False, 
+        failures, tests = doctest.testfile(tempfilename, module_relative = False,
                             optionflags = doctest.ELLIPSIS, globs = globals)
 
         #@+<<report summary of results>>
@@ -133,11 +133,11 @@ class DT(BaseLeoPlugin):
         if selected:
             g.es('Result of running doctest on selected text;')
         else:
-            g.es('Result of running doctest on this subtree;')        
+            g.es('Result of running doctest on this subtree;')
         if failures == 0:
             g.blue("%s tests run successfully" % tests)
         if failures == 1:
-            g.error("There was one failure in %s tests" % tests)    
+            g.error("There was one failure in %s tests" % tests)
         if failures > 1:
             g.error("%s failures in %s tests" % (failures, tests))
         #@-<<report summary of results>>

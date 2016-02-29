@@ -84,7 +84,7 @@ class View:
 
         '''Place the contents of a file in the body pane
 
-        the file is either in the current headstring, 
+        the file is either in the current headstring,
         or found by ascending the tree
         '''
 

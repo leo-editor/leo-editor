@@ -58,7 +58,7 @@ def auto_walk(c, directory, parent=None, isroot=True):
 
         path = join(directory, name)
 
-        if isfile(path) and not any(fnmatch(name, p) for p in patterns_to_import):           
+        if isfile(path) and not any(fnmatch(name, p) for p in patterns_to_import):
             continue
 
         if isfile(path):
@@ -104,7 +104,7 @@ def project_wizard(event):
     c.redraw()
 
 
-#project_wizard()    
+#project_wizard()
 #@+node:ville.20090910010217.5230: ** context menu import
 def rclick_path_importfile(c,p,menu):
     if not p.h.startswith('@path'):
@@ -117,14 +117,14 @@ def rclick_path_importfile(c,p,menu):
         table = [("All files","*"),
             ("Python files","*.py"),]
         fnames = g.app.gui.runOpenFileDialog(c,
-            title = "Import files",filetypes = table, 
+            title = "Import files",filetypes = table,
             defaultextension = '.notused',
             multiple=True)
 
         print("import files from",path)
 
     action = menu.addAction("Import files")
-    action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)        
+    action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)
 
 def install_contextmenu_handlers():
     """ Install all the wanted handlers (menu creators) """

@@ -2,7 +2,7 @@
 #@+node:ekr.20101110094759.5843: * @file mod_speedups.py
 ''' Experimental speedups
 
-Various optimizations. Use at your own risk. 
+Various optimizations. Use at your own risk.
 
 If stuff breaks, disable this plugin before reporting bugs.
 
@@ -21,7 +21,7 @@ def init ():
 def speedup_toUnicodeFileEncoding(s, arg = None):
     #if g:
         #print s,g.callers(10)
-    return s    
+    return s
 
 g.toUnicodeFileEncoding = speedup_toUnicodeFileEncoding
 #@+node:ville.20090804155017.12332: ** os.path shortcuts
@@ -73,7 +73,7 @@ def os_path_expanduser_cached(path, encoding = None):
     _expanduser_cache[path] = res
     return res
 
-def os_path_join_speedup(*args, **kw):    
+def os_path_join_speedup(*args, **kw):
     path = os.path.join(*args)
     return path
 

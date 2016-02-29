@@ -14,15 +14,15 @@ RSS feeds
 
 This plugin requires the python module 'feedparser' to be installed.
 
-This plugin operates on RSS feed definitions, which are defined as nodes 
-with headlines that start with `@feed`, and with bodies that contain a 
+This plugin operates on RSS feed definitions, which are defined as nodes
+with headlines that start with `@feed`, and with bodies that contain a
 valid `@url` directive.
 
 For example, the following is a valid feed definition::
-    
+
     @feed  Hack a Day
         @url http://feeds2.feedburner.com/hackaday/LgoM
-        
+
         Hack a Day's feed.  Awesome tech stuff.
 
 Each `@feed` node also stores a viewed history of previous stories, so that
@@ -56,7 +56,7 @@ If True, newest entries are placed before older entries.  If False, older entrie
 The format of an entry headline, specified with various tokens.  Defaults to '[<date>] <title>' if not provided.
 
 Valid tokens are:
-    
+
 | <date> - the date, formatted according to `@string rss-date-format`
 | <title> - the entry title
 | <link> - the entry link (not recommended in headline)
@@ -68,7 +68,7 @@ Anything that isn't a valid token is retained untouched, such as the square brac
 ---------------------
 
 The body of this node will provide the structure of the body of parsed entry nodes.  Empty lines should be denoted with '\\n' on a line by itself.  It defaults to the following, if not provided::
-    
+
     @url <link>
     \n
     <title>
@@ -82,9 +82,9 @@ Valid tokens are the same as for `@string rss-headline-format`.  Any instance of
 Commands
 ========
 
-This plugin uses commands to operate on these `@feed` definitions.  The following 
+This plugin uses commands to operate on these `@feed` definitions.  The following
 commands are available:
-    
+
 rss-parse-selected-feed
 -----------------------
 
@@ -161,27 +161,27 @@ def init ():
     return ok
 #@+node:peckj.20131002201824.5543: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     theRSSController = RSSController(c)
     c.theRSSController = theRSSController
 #@+node:peckj.20131002201824.5544: ** class RSSController
 class RSSController:
-    
+
     #@+others
     #@+node:peckj.20131002201824.5545: *3* __init__ (RSSController, rss.py)
     def __init__ (self,c):
-        
+
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-        
+
         self._NO_TIME = (3000,0,0,0,0,0,0,0,0)
         self._NO_SUMMARY = 'NO SUMMARY'
         self._NO_NAME = 'NO TITLE'
         self._NO_LINK = 'NO LINK'
-        
+
         # register commands
         c.k.registerCommand('rss-parse-selected-feed',shortcut=None,func=self.parse_selected_feed)
         c.k.registerCommand('rss-parse-all-feeds',shortcut=None,func=self.parse_all_feeds)
@@ -205,7 +205,7 @@ class RSSController:
     #@+node:peckj.20131002201824.11901: *4* parse_feed
     def parse_feed(self, feed):
         c = self.c
-        
+
         g.es("Parsing feed: %s" % feed.h, color='blue')
         feedurl = g.getUrlFromNode(feed)
         data = feedparser.parse(feedurl)
@@ -213,7 +213,7 @@ class RSSController:
         if data.bozo == 1:
             g.es("Error: bad feed data.", color='red')
             return
-        
+
         # grab config settings
         sort_newest_first = c.config.getBool('rss-sort-newest-first', default=True)
         body_format = c.config.getData('rss-body-format') or ['@url <link>','\\n','<title>','<date>','\\n','<summary>']
@@ -221,7 +221,7 @@ class RSSController:
         body_format = body_format.replace('\\n','')
         headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
-        
+
         # process entries
         # pylint: disable=unnecessary-lambda
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
@@ -240,12 +240,12 @@ class RSSController:
                 newp.h = headline
                 newp.b = body
                 self.add_entry_to_history(feed, entry)
-        
+
         self.c.redraw_now()
-        
-            
-        
-            
+
+
+
+
     #@+node:peckj.20131011131135.5848: *4* grab_date_parsed
     def grab_date_parsed(self, entry):
         published = None
@@ -272,7 +272,7 @@ class RSSController:
         s = entry.title + self.grab_date(entry) + entry.summary + entry.link
         return str(hash(s) & 0xffffffff)
 
-        
+
     #@+node:peckj.20131003095152.10663: *4* add_entry_to_history
     def add_entry_to_history(self, feed, entry):
         e_hash = self.hash_entry(entry)

@@ -7,7 +7,7 @@
 - sudo apt-get install python-jinja2
 
 Create headline like this:
-    
+
 @jinja ~/foo.txt
 
 Select the node and do alt-x act-on-node
@@ -39,7 +39,7 @@ import leo.core.leoGlobals as g
 
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
-    
+
 try:
     from jinja2 import Template
 except ImportError:
@@ -58,25 +58,25 @@ def init ():
 #@+node:ville.20110409151021.5705: ** install & act-on-node
 #@+node:ekr.20120525090541.10863: *3* untangle
 def untangle(c,p):
-    
+
     return g.getScript(c,p,
         useSelectedText=False,
         useSentinels=False)
 
 #@+node:ekr.20120525090541.10864: *3* jinja_render
-def jinja_render(template, fname, d):    
+def jinja_render(template, fname, d):
     tmpl = Template(template)
     out = tmpl.render(d)
     open(fname,"w").write(out)
-     
+
 #@+node:ekr.20120525090541.10865: *3* jinja_act_on_node
 def jinja_act_on_node(c,p, event):
     h = p.h
-    
+
     #print "try act"
     if not h.startswith('@jinja '):
         raise leoPlugins.TryNext
-    
+
     #print "act"
     tail = h[7:].strip()
     pth = c.getNodePath(p)
@@ -84,7 +84,7 @@ def jinja_act_on_node(c,p, event):
     g.es("Rendering "+ fullpath)
     body = untangle(c,p)
     jinja_render(body, fullpath, c.vs)
-        
+
 #@+node:ekr.20120525090541.10866: *3* jinja_install
 def jinja_install():
     g.act_on_node.add(jinja_act_on_node, 50)
@@ -98,14 +98,14 @@ class JinjaCl:
     #@+node:ekr.20120525090541.10869: *4* __call__
     def __call__(self,body):
         """ Render body through jinja
-        
+
         To be used from @cl nodes
         """
         #print "jinja called on",body
         tmpl = Template(body)
         out = tmpl.render(self.c.vs)
         return out
-            
+
     #@-others
 #@-others
 #@-leo

@@ -10,7 +10,7 @@ define new Commands  "insertOK" + "insertUser"
 create Usermenu with new Commands
 
 new Commands:
-insertOK: 
+insertOK:
     insert 'OK' in headline and a stamp in the first body line
     are there child nodes without 'OK' verhindern OK in actual node.
     The right-click-icon command also inserts 'OK'.
@@ -99,12 +99,12 @@ def onRclick(tag,keywords):
 #@+node:ekr.20040205071616.8: ** insertOKcmd
 def insertOKcmd(self,event=None):
 
-    c=self; v=c.currentVnode()  
+    c=self; v=c.currentVnode()
 
     if is_subnodesOK(v) :
         setHeadOK(c,v)
         insertBodystamp(c,v)
-    else: 
+    else:
         g.es('OK in child missing')
 #@+node:ekr.20040205071616.9: ** insertUser
 def insertUser (self,event=None):

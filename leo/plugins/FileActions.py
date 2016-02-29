@@ -174,7 +174,7 @@ def applyFileAction(p, filename, c):
                 g.restoreStderr()
                 g.restoreStdout()
             #@-<< unredirect output >>
-        except:
+        except Exception:
             #@+<< unredirect output >>
             #@+node:ekr.20040915105758.18: *3* << unredirect output >>
             if c.config.redirect_execute_script_output_to_log_pane:

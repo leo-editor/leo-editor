@@ -21,7 +21,7 @@ Enabling this plugin will add a new tab to the Log pane, labeled "Python Console
 python command shell, with access to `g`, `c`, and `p` included!
 
 Features:
-    
+
     - Includes support for g, c, and p
     - Each outline tab has a separate python console, with a separate namespace (aside from g, of course)
     - Extremely primitive tab-completion
@@ -29,7 +29,7 @@ Features:
     - !clear to clear the console
 
 Caveats:
-    
+
     - Stdout and stderr are proprely redirected to the interactive console pane while it has focus, but proprely reset to their previous values when focus is lost.  If code executed inside the interactive console pane needs to output to the command-line stdout/stderr, please use sys.__stdout__ and sys.__stderr__.
     - Just as with scripts, if you do something dangerous, you're on your own
 
@@ -62,7 +62,7 @@ class MyInterpreter(QtWidgets.QWidget):
         self.setLayout(hBox)
         self.textEdit = PyInterp(self, c)
         # this is how you pass in locals to the interpreter
-        self.textEdit.initInterpreter(locals()) 
+        self.textEdit.initInterpreter(locals())
         hBox.addWidget(self.textEdit)
         hBox.setContentsMargins(0,0,0,0)
         hBox.setSpacing(0)
@@ -94,31 +94,31 @@ class PyInterp(QtWidgets.QTextEdit):
     def __init__(self,  parent, c):
         super(PyInterp,  self).__init__(parent)
 
-        # this widget swallows stdout + stderr while focused, 
+        # this widget swallows stdout + stderr while focused,
         # but resets them upon losing focus
 
         if not g.user_dict.get('old_stdout', None):
             g.user_dict['old_stdout'] = sys.stdout
         if not g.user_dict.get('old_stderr', None):
             g.user_dict['old_stderr'] = sys.stderr
-        
+
         self.refreshMarker      = False # to change back to >>> from ...
         self.multiLine          = False # code spans more than one line
         self.command            = ''    # command to be ran
         self.printBanner()              # print sys info
-        self.marker()                   # make the >>> or ... marker        
+        self.marker()                   # make the >>> or ... marker
         self.history            = []    # list of commands entered
         self.historyIndex       = -1
         self.interpreterLocals  = {}
-        
+
         self.c = c
 
         # initilize interpreter with self locals
         self.initInterpreter(locals())
-        
+
         # update p when new node selected
         g.registerHandler('select2', self.select2_hook)
-        
+
     #@+node:peckj.20150428142729.10: *3* select2_hook
     def select2_hook(self, tag, keywords):
         self.interpreter.runIt('p = c.p')
@@ -180,7 +180,7 @@ class PyInterp(QtWidgets.QTextEdit):
         return True
     #@+node:peckj.20150428142729.18: *3* customCommands
     def customCommands(self, command):
-        
+
         # pylint: disable=anomalous-backslash-in-string
 
         if command == '!hist': # display history
@@ -199,7 +199,7 @@ class PyInterp(QtWidgets.QTextEdit):
             self.marker()
             return True
 
-        
+
         if re.match('!hist\(\d+\)', command): # recall command from history
             backup = self.interpreterLocals.copy()
             history = self.history[:]
@@ -212,13 +212,13 @@ class PyInterp(QtWidgets.QTextEdit):
             self.write(command)
             self.updateInterpreterLocals(backup)
             return True
-        
+
         if re.match('(quit|exit)\(\)', command): # prevent quitting!
             self.append('')
             self.write('Cannot quit() from an embedded console.\n')
             self.marker()
             return True
-            
+
         if re.match('!clear', command): # clear the screen
             self.clear()
             self.marker()
@@ -245,7 +245,7 @@ class PyInterp(QtWidgets.QTextEdit):
                     self.recallHistory()
                 else:
                     self.clearCurrentBlock()
-            except:
+            except Exception:
                 pass
             return None
 
@@ -256,7 +256,7 @@ class PyInterp(QtWidgets.QTextEdit):
                     self.recallHistory()
                 else:
                     self.historyIndex = len(self.history)
-            except:
+            except Exception:
                 pass
             return None
 
@@ -297,7 +297,7 @@ class PyInterp(QtWidgets.QTextEdit):
                     if line[-1] == ':':
                         self.multiLine = True
                     self.history.insert(0, line)
-                except:
+                except Exception:
                     self.haveLine = False
 
                 if self.haveLine and self.multiLine: # multi line command

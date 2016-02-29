@@ -41,7 +41,7 @@ def on_icondclick(tag, keywords):
     c = keywords['c']
     p = keywords['p']
     h = p.h
-    if g.match_word(h,0,"@text"): 
+    if g.match_word(h,0,"@text"):
         if p.b != "":
             result = g.app.gui.runAskYesNoDialog(c, "Query", "Read from file "+h[6:]+"?")
             if result == "no":

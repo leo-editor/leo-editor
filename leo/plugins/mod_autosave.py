@@ -40,7 +40,7 @@ def onCreate(tag, keywords):
     c = keywords.get('c')
     if g.app.killed or not c or not c.exists: return
     if g.unitTesting: return  # 2011/02/28
-    
+
     # 2011/02/28: do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())
     if d: return

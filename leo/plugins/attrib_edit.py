@@ -40,7 +40,7 @@ attrib-edit-modes
     Select which attribute setting / getting modes to use.  More than one mode
     can be used at the same time.
 
-    You can also control which modes are active by listing them 
+    You can also control which modes are active by listing them
     with the @data attrib_edit_active_modes setting.  For example::
 
         Field:
@@ -191,7 +191,7 @@ class AttributeGetterUA(AttributeGetter):
                             # ek is '_int' or similar
                             type_ = self.typeMap[ek]
                             for ekt in d[k][ek]:
-                                ans.append((self, 
+                                ans.append((self,
                                     ekt, d[k][ek][ekt], tuple(path+['_edit',ek,ekt]),
                                     type_, k != '_edit'))
                         else:
@@ -492,7 +492,7 @@ class editWatcher(object):
         if not self._widget:
             self._widget = w = QtWidgets.QLineEdit(str(self.value))
             w.textChanged.connect(self.updateValue)
-                # QtCore.QObject.connect(w, 
+                # QtCore.QObject.connect(w,
                     # QtCore.SIGNAL("textChanged(QString)"), self.updateValue)
             self._widget.focusOutEvent = self.lostFocus
             # see lostFocus()
@@ -555,8 +555,8 @@ class attrib_edit_Controller:
 
         # 'body' or 'tab' mode
         # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
-        
-        self.guiMode = 'tab'  
+
+        self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
 
         if self.guiMode == 'body':
@@ -731,7 +731,7 @@ class attrib_edit_Controller:
         dat.sort(key=lambda x: x[0])
 
         res = ListDialog(self.parent, "Enter attribute path",
-            "Enter path to attribute (space separated words)", 
+            "Enter path to attribute (space separated words)",
             dat)
 
         res.exec_()
@@ -765,7 +765,7 @@ class attrib_edit_Controller:
         modes = [ [i[0].name(), i[1]] for i in self.getsetters ]
 
         res = ListDialog(self.parent, "Enter attribute path",
-            "Enter path to attribute (space separated words)", 
+            "Enter path to attribute (space separated words)",
             modes)
 
         res.exec_()

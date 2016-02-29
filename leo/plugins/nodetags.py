@@ -10,8 +10,8 @@ API
 ===
 
 This plugin registers a controller object to c.theTagController, which provides the following API::
-    
-    tc = c.theTagController   
+
+    tc = c.theTagController
     tc.get_all_tags() # return a list of all tags used in the current outline, automatically updated to be consistent
     tc.get_tagged_nodes('foo') # return a list of positions tagged 'foo'
     tc.get_tags(p) # return a list of tags applied to the node at position p; returns [] if node has no tags
@@ -37,7 +37,7 @@ Searching
 ---------
 
 Searching on tags in the UI is based on set algebra.  The following syntax is used::
-    
+
     <tag>&<tag> - return nodes tagged with both the given tags
     <tag>|<tag> - return nodes tagged with either of the given tags (or both)
     <tag>-<tag> - return nodes tagged with the first tag, but not the second tag
@@ -77,10 +77,10 @@ def init ():
     return ok
 #@+node:peckj.20140804103733.9245: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     theTagController = TagController(c)
     c.theTagController = theTagController
 
@@ -125,12 +125,12 @@ class TagController:
     def get_tagged_nodes(self, tag):
         ''' return a list of positions of nodes containing the tag, with * as a wildcard '''
         nodelist = []
-        
+
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
-        
+
         regex = re.compile(tag)
-        
+
         for node in self.c.all_unique_nodes():
             p = self.c.vnode2position(node)
             for t in self.get_tags(p):
@@ -188,20 +188,20 @@ class LeoTagWidget(QtWidgets.QWidget):
         # create GUI components
         ## this code is atrocious... don't look too closely
         self.setObjectName("LeoTagWidget")
-        
+
         # verticalLayout_2: contains
         # verticalLayout
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        
+
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        
+
         # horizontalLayout2: contains
         # label2
         # not much by default -- it's a place to add buttons for current tags
@@ -212,7 +212,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         label2.setObjectName("label2")
         label2.setText("Tags for current node:")
         self.horizontalLayout2.addWidget(label2)
-        
+
         # verticalLayout: contains
         # horizontalLayout
         # listWidget
@@ -220,12 +220,12 @@ class LeoTagWidget(QtWidgets.QWidget):
         # label
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        
+
         self.comboBox = QtWidgets.QComboBox(self)
         self.comboBox.setObjectName("comboBox")
         self.comboBox.setEditable(True)
         self.horizontalLayout.addWidget(self.comboBox)
-        
+
         self.pushButton = QtWidgets.QPushButton("+", self)
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setMinimumSize(24,24)
@@ -266,7 +266,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         label = QtWidgets.QLabel(self)
         label.setText('Tags for current node:')
         hl2.addWidget(label)
-        
+
         tags = self.tc.get_tags(pos)
         # add tags
         for tag in tags:
@@ -274,7 +274,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             l.setText(tag)
             hl2.addWidget(l)
             l.mouseReleaseEvent = self.callback_factory(tag)
-        
+
     #@+node:peckj.20140804194839.6569: *6* callback_factory
     def callback_factory(self, tag):
         c = self.c
@@ -297,7 +297,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         tags = self.tc.get_all_tags()
         self.comboBox.addItems(tags)
         self.comboBox.addItems(self.custom_searches)
-        
+
     #@+node:peckj.20140804114520.15207: *4* update_list
     def update_list(self):
         key = str(self.comboBox.currentText()).strip()
@@ -305,9 +305,9 @@ class LeoTagWidget(QtWidgets.QWidget):
         if key not in current_tags and key not in self.custom_searches:
             if len(re.split(self.search_re, key)) > 1:
                 self.custom_searches.append(key)
-        
+
         query = re.split(self.search_re, key)
-        
+
         tags = []
         operations = []
         for i in range(len(query)):
@@ -317,7 +317,7 @@ class LeoTagWidget(QtWidgets.QWidget):
                 operations.append(query[i].strip())
         tags.reverse()
         operations.reverse()
-        
+
         resultset = set(self.tc.get_tagged_nodes(tags.pop()))
         while len(operations) > 0:
             op = operations.pop()
@@ -349,7 +349,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             idx = self.comboBox.findText(key)
             if idx == -1: idx = 0
         else:
-            idx = 0 
+            idx = 0
         self.comboBox.setCurrentIndex(idx)
         self.update_list()
         self.update_current_tags(self.c.p)
@@ -376,7 +376,7 @@ class LeoTagWidget(QtWidgets.QWidget):
                       'paste-retaining-clones']
         if keywords.get('label') not in paste_cmds:
             return
-        
+
         self.tc.initialize_taglist()
         self.update_all()
     #@-others

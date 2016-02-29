@@ -54,7 +54,7 @@ def git_dump_f(event):
     #titlename = c.frame.getTitle() + '.html'
     pth, bname = os.path.split(c.mFileName)
     if pth and bname:
-        dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
+        dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()
     titlename = dbdirname + '.html'
     codecs.open(titlename,'w', encoding='utf-8').write(html)
     g.es("committing to " + flatroot)

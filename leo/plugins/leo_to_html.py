@@ -69,7 +69,7 @@ The following commands are the same as above except only the current node is con
 **Properties**
 
 .. note::
-    
+
     As of Mar. 2014 regular Leo @string settings starting with
     `leo_to_html_` are checked first, before the ``.ini`` file.
     E.g. ``@string leo_to_html_flagjustheadlines = No`` has the
@@ -226,13 +226,11 @@ def createExportMenus (tag,keywords):
     appear in the menu and where.
 
     """
-
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get("c")
-
     if c.config.getBool('leo_to_html_no_menus'):
         return
-
-
     for item, cmd in (
         ('Show Node as HTML', 'show-html-node'),
         ('Show Outline as HTML', 'show-html'),
@@ -496,7 +494,7 @@ class Leo_to_HTML(object):
 
         s = p.h
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
-            return True 
+            return True
     #@+node:bob.20080107154746.9: *3* main
     def main(self, bullet=None, show=False, node=False):
         """Generate the html and write the files.
@@ -525,7 +523,7 @@ class Leo_to_HTML(object):
     #@+node:bob.20080109063110.7: *3* announce
     def announce(self, msg, prefix=None, color=None, silent=None):
 
-        """Print a message if flags allow."""    
+        """Print a message if flags allow."""
 
         if silent is None:
             silent = self.silent
@@ -536,20 +534,20 @@ class Leo_to_HTML(object):
         g.es('%s%s' % (prefix or self.msgPrefix, msg), color=color or self.reportColor)
 
     def announce_start(self, msg='running ...', prefix=None, color=None):
-        self.announce(msg, prefix, color) 
+        self.announce(msg, prefix, color)
 
     def announce_end(self, msg='done', prefix=None, color=None):
         self.announce(msg, prefix, color)
 
     def announce_fail(self, msg='failed', prefix=None, color=None):
-        self.announce(msg, prefix, color= color or self.errorColor, silent=False) 
+        self.announce(msg, prefix, color= color or self.errorColor, silent=False)
     #@+node:bob.20080107154746.11: *3* loadConfig
     def loadConfig(self):
 
         """Load configuration from a .ini file."""
 
         def config(s):
-            
+
             ss = self.c.config.getString("leo_to_html_%s"%s)
             if ss is None:
                 s = configParser.get("Main", s)
@@ -673,7 +671,7 @@ class Leo_to_HTML(object):
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
 
-        filename = g.sanitize_filename(self.myFileName)  
+        filename = g.sanitize_filename(self.myFileName)
         filepath = g.os_path_finalize_join(tempdir, filename + '.html')
 
         self.write(filepath, self.xhtml, basedir='', path='')
@@ -688,7 +686,7 @@ class Leo_to_HTML(object):
             try:
                 subprocess.Popen([self.browser_command, url])
                 return True
-            except:
+            except Exception:
                 msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
                 'Using default browser instead.'
 
@@ -743,7 +741,7 @@ class Leo_to_HTML(object):
                 ok = False
         finally:
             f.close()
-            
+
         return ok
     #@+node:bob.20080107175154: *3* getXHTMLTemplate
     def getXHTMLTemplate(self):

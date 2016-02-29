@@ -47,7 +47,10 @@ def init():
 #@+node:danr7.20060912105041.5: ** createPasteAsHeadlinesMenu
 def createPasteAsHeadlinesMenu (tag,keywords):
 
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get("c")
+    if not c: return
 
     # Use code to find index number of menu shortcut
     index_label = 'Pa&ste as Headlines'
@@ -67,7 +70,7 @@ def createPasteAsHeadlinesMenu (tag,keywords):
 def paste_as_headlines(c):
     # g.es("Starting...")
 
-    currentPos = c.p 
+    currentPos = c.p
     clipText = g.app.gui.getTextFromClipboard()
 
     # Split clipboard text elements into a list

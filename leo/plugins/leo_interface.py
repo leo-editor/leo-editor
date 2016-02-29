@@ -110,7 +110,7 @@ class LeoNode:
 #@+node:ekr.20101110092416.5722: ** class leo_file
 class leo_file(LeoNode):
     """Leo specific class representing a file."""
-    
+
     #@+others
     #@+node:ekr.20101110092416.5724: *3* headString
     def headString(self):
@@ -184,12 +184,12 @@ class leo_file(LeoNode):
 class leo_node(LeoNode, node_with_parent):
     """
     Leo specific class representing a node.
-    
-    These nodes correspond to tnodes in LEO. 
+
+    These nodes correspond to tnodes in LEO.
     They have a headline and a body.
-    
+
     They also represent the (only) vnode in an outline without clones.
-    
+
     """
     __super_leo_node = LeoNode
     count = 0
@@ -259,7 +259,7 @@ class leo_node(LeoNode, node_with_parent):
 
     #@+node:ekr.20101110092416.5771: *3* write_headline
     def write_headline(self, file):
-        file.write(self.headline) 
+        file.write(self.headline)
     #@+node:ekr.20101110092416.5773: *3* write_headline_escaped
     def write_headline_escaped(self, file):
         file.write(escape(self.headline.encode("UTF-8")))
@@ -268,17 +268,17 @@ class leo_node(LeoNode, node_with_parent):
 class leo_clone(node_with_parent):
     """
     Class representing a clone.
-    
+
     The (only) data of a clone is the reference to a leo_node.
-    
+
     When you encounter the first clone of a set of clones, generate
     a leo_node. The second clone should then reference this leo_node,
     and contain no other data.
-    
+
     Since clones are indistinguishable, there is really not much to do in
     this class.
     """
-    
+
     #@+others
     #@+node:ekr.20101110092416.5776: *3* __init__
     def __init__(self, orig):

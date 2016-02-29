@@ -560,7 +560,7 @@ class ValueSpaceController:
                     self.let_body(tail,self.untangle(parent))
                 try:
                     self.parse_body(parent)
-                except:
+                except Exception:
                     g.es_exception()
                     g.es("Error parsing " + parent.h)
         # g.trace(self.d)
@@ -590,7 +590,7 @@ class ValueSpaceController:
         print("rest",rest)
         try:
             translator = eval(rest, self.d)
-        except:
+        except Exception:
             g.es_exception()
             g.es("Can't instantate @cl xlator: " + rest)
         translated = translator(body[lend+1:])
@@ -603,7 +603,7 @@ class ValueSpaceController:
                 sio = BytesIO(val)
                 try:
                     d = yaml.load(sio)
-                except:
+                except Exception:
                     g.es_exception()
                     g.es("yaml error for: " + var)
                     return
@@ -627,7 +627,7 @@ class ValueSpaceController:
         # print(body)
         if self.trace and self.verbose: g.trace('pass1',p.h,'\n',body)
         self.d ['p'] = p.copy()
-        backop = None
+        backop = []
         segs = re.finditer('^(@x (.*))$',body,re.MULTILINE)
         for mo in segs:
             op = mo.group(2).strip()
@@ -673,7 +673,7 @@ class ValueSpaceController:
                 expr = h[3:].strip()
                 try:
                     result = eval(expr,self.d)
-                except:
+                except Exception:
                     g.es_exception()
                     g.es("Failed to render " + h)
                     continue
@@ -685,7 +685,7 @@ class ValueSpaceController:
                 bname, ext = os.path.splitext(expr)
                 try:
                     result = eval(bname,self.d)
-                except:
+                except Exception:
                     g.es_exception()
                     g.es("@vso failed: " + h)
                     continue

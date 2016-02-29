@@ -171,7 +171,7 @@ def getTable(scope):
         tables_table = ()
     return tables_table
 #@+node:ekr.20140331201252.16859: ** main
-def main(tables_table):
+def main(tables_table, silent):
     '''Call run on all tables in tables_table.'''
     if False and tables_table and sys.platform.startswith('win') and scope != 'file':
         g.cls()
@@ -181,7 +181,7 @@ def main(tables_table):
     t = 0.0
     for table, theDir in tables_table:
         for fn in table:
-            t += run(theDir, fn)
+            t += run(theDir, fn, silent)
     print('time: %5.2f sec.' % t)
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():
@@ -195,7 +195,7 @@ def report_version():
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 #@@nobeautify
 
-def run(theDir,fn,rpython=False):
+def run(theDir,fn,silent,rpython=False):
     '''Run pylint on fn.'''
     global rc_warning_given
     # A little hack. theDir is empty for the -f option.
@@ -216,7 +216,8 @@ def run(theDir,fn,rpython=False):
     path = g.os_path_dirname(fn)
     dirs = path.split(os.sep)
     theDir = dirs and dirs[-1] or ''
-    print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
+    if not silent:
+        print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Create the required args.
     args = ','.join([
         "fn=r'%s'" % (fn),
@@ -404,39 +405,38 @@ def scanOptions():
     add('-g', action='store_true', help='gui plugins')
     add('-m', action='store_true', help='modes')
     add('-p', action='store_true', help='plugins')
+    add('-s', action='store_true', help='silent')
     # add('-r', action='store_true', help = 'recent')
-    # add('-s', action='store_true', help = 'suppressions')
-    # add('-t', action='store_true', help = 'stc')
-    # add('--tt',action='store_true', help = 'stc test')
     add('-u', action='store_true', help='user commands')
     add('-v', action='store_true', help='report pylint version')
     # Parse the options.
     options, args = parser.parse_args()
-    if options.a: return 'all'
-    elif options.c: return 'core'
-    elif options.e: return 'external'
+    silent = options.s
+    if options.a: scope = 'all'
+    elif options.c: scope = 'core'
+    elif options.e: scope = 'external'
     elif options.filename:
         fn = options.filename
         if fn.startswith('='): fn = fn[1:]
         g_option_fn = fn.strip('"')
-        return 'file'
-    elif options.g: return 'gui'
-    elif options.m: return 'modes'
-    elif options.p: return 'plugins'
-    # elif options.r: return 'recent'
-    # elif options.s: return 'suppressions'
-    # elif options.t: return 'stc'
-    # elif options.tt:return 'stc-test'
-    elif options.u: return 'commands'
-    elif options.v: return 'version'
-    else: return 'all'
+        scope = 'file'
+    elif options.g: scope = 'gui'
+    elif options.m: scope = 'modes'
+    elif options.p: scope = 'plugins'
+    # elif options.r: scope = 'recent'
+    elif options.s: scope = 'silent'
+    elif options.u: scope = 'commands'
+    elif options.v: scope = 'version'
+    else: scope = 'all'
+    return scope, silent
+
 #@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 #@@nobeautify
 g_option_fn     = None
-scope           = scanOptions()
+scope, silent   = scanOptions()
 commandList     = getCommandList()
 coreList        = getCoreList()
 externalList    = getExternalList()
@@ -448,6 +448,6 @@ if scope == 'version':
     report_version()
 else:
     tables_table = getTable(scope)
-    main(tables_table)
+    main(tables_table, silent)
 #@@beautify
 #@-leo

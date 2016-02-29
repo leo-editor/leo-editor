@@ -30,7 +30,7 @@ Settings
 
 ``@string vim_cmd``
     The command to execute to start gvim. Something like::
-    
+
         <path-to-gvim>/gvim --servername LEO
 
 ``@string vim_exe``
@@ -104,14 +104,14 @@ Settings
 # 
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["gvim.exe", "--servername", "LEO", "--remote", "foo.txt"])
-#         
+# 
 # 
 # If the call is made without the command-name as the first item in the list of args, like so::
 # 
 # 
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["--servername", "LEO", "--remote", "foo.txt"])
-#         
+# 
 # 
 # an error message pops up::
 # 

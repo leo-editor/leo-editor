@@ -5,9 +5,9 @@
 Usage:
 
 * Create a node with the headline 'tomboy'
-* Select the node, and do alt+x act-on-node    
+* Select the node, and do alt+x act-on-node
 * The notes will appear as children of 'tomboy' node
-* The next time you do act-on-node, existing notes will be updated (they don't need to 
+* The next time you do act-on-node, existing notes will be updated (they don't need to
   be under 'tomboy' node anymore) and new notes added.
 
 '''
@@ -84,7 +84,8 @@ def pos_for_gnx(c,gnx):
     return None
 
 def capturenotes(c,pos):
-    import glob, os
+    import glob
+    import os
     notes = glob.glob(os.path.expanduser('~/.tomboy/*.note'))
 
     # map tomboy file name => gnx
@@ -106,7 +107,7 @@ def capturenotes(c,pos):
             po = pos.insertAsLastChild()
 
         po.h = title
-        po.b = body        
+        po.b = body
         old_nodes[fname] = po.gnx
     c.db['tomboy_notes'] = old_nodes
 

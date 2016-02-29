@@ -16,7 +16,7 @@ This plugin leverages Leo's scripting abilities to create programmable lists of 
 A @nodewatch node must be a child of a @settings node for this plugin to use it.  This is a safety feature, and will not be changed.
 
 A @nodewatch node is a Leo script that interacts with the 'c.theNodewatchController' object, namely calling the 'add' method on it, providing it with a category name (string) and a list of vnodes (list).  An example minimal @nodewatch node is as follows (first line is headline, rest is body)::
-    
+
     @nodewatch Nodewatch Demo
       @language python
       categoryname = 'All @file nodes'
@@ -25,7 +25,7 @@ A @nodewatch node is a Leo script that interacts with the 'c.theNodewatchControl
           if vnode.h.startswith('@file'):
               nodes.append(vnode)
       c.theNodewatchController.add(categoryname,nodes)
-    
+
 If that node is a child of a @settings node, it will be run every time the 'Refresh' button in the GUI is clicked.
 
 GUI Operation
@@ -92,10 +92,10 @@ def init ():
     return ok
 #@+node:peckj.20131101132841.6449: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     theNodewatchController = NodewatchController(c)
     c.theNodewatchController = theNodewatchController
 #@+node:peckj.20131101132841.6450: ** class NodewatchController
@@ -137,27 +137,27 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         # create GUI components
         ## this code is atrocious... don't look too closely
         self.setObjectName("LeoNodewatchWidget")
-        
+
         # verticalLayout_2: contains
         # verticalLayout
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        
+
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        
+
         # verticalLayout: contains
         # horizontalLayout
         # listWidget
         # label
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        
+
         self.comboBox = QtWidgets.QComboBox(self)
         self.comboBox.setObjectName("comboBox")
         self.horizontalLayout.addWidget(self.comboBox)
@@ -221,7 +221,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
             idx = self.comboBox.findText(key)
             if idx == -1: idx = 0
         else:
-            idx = 0 
+            idx = 0
         self.comboBox.setCurrentIndex(idx)
         self.update_list()
     #@+node:peckj.20131104093045.6578: *3* helpers

@@ -361,7 +361,7 @@ class PlugIn:
         f = open(self.configfilename, "w")
         try:
             self.config.write(f)
-        except:
+        except Exception:
             f.close()
     #@-others
 #@-others

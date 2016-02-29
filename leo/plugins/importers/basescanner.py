@@ -908,7 +908,7 @@ class BaseScanner:
     #@+at Scan and skipDecls would typically not be overridden.
     #@+node:ekr.20140727075002.18231: *3* BaseScanner.adjustDefStart
     def adjustDefStart(self, unused_s, i):
-        '''A hook to allow the Python importer to adjust the 
+        '''A hook to allow the Python importer to adjust the
         start of a class or function to include decorators.'''
         return i
     #@+node:ekr.20140727075002.18232: *3* BaseScanner.extendSignature
@@ -1318,7 +1318,7 @@ class BaseScanner:
             i += 1
         g.trace('unterminated regex starting at', i1)
         return i
-        
+
     #@+node:ekr.20140727075002.18248: *4* BaseScanner.skipString
     def skipString(self, s, i):
         # Returns len(s) on unterminated string.

@@ -11,7 +11,7 @@ the node.
 For files not previously seen in a folder a new node will appear on top of the
 children list (with a mark).
 
-Folders appear in the list as /foldername/. If you double click on the 
+Folders appear in the list as /foldername/. If you double click on the
 folder node, it will have children added to it based on the contents of
 the folder on disk. These folders have the '@path' directive as the first line
 of their body text.
@@ -74,13 +74,13 @@ time active_path will spend on a recursive operation.
 size file active_path will open without query.
 
 Per Folder file/folder inclusion and exclusion by adding flags to the body of an active path folder (either ``@`` or ``/*/``), can include multiple ``inc=`` and ``exc=`` flags:
-    
-- ``excdirs`` - excludes all directories 
+
+- ``excdirs`` - excludes all directories
 - ``excfiles`` - excludes all files
 - ``inc=`` - a single item or comma separated list of strings to include in the list of files/folders
 - ``exc=`` - a single item or comma separated list of strings to exclude in the list of files/folders
 - ``re`` - search using regular expressions (otherwise a case-sensitive 'in' comparison)
-    
+
 active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
 sub-folders more automatically.
@@ -94,9 +94,10 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
     # uses leoPlugins.TryNext
 
+import ast # for docstring loading
 import os
 import re
-import ast # for docstring loading
+import shutil
 import time # for recursion bailout
 
 # from leo.plugins.plugins_menu import PlugIn
@@ -166,7 +167,7 @@ def popup_entry(c,p,menu):
         if key.startswith('active-path'):
             a = pathmenu.addAction(key)
             command = d.get(key)
-            
+
             def active_path_wrapper(aBool,command=command,c=c):
                 event = {'c':c}
                 command(event)
@@ -185,7 +186,7 @@ def popup_entry(c,p,menu):
 def isDirNode(p):
 
     return (
-        p.h.startswith('@path ') or 
+        p.h.startswith('@path ') or
         #  '/foo/' form *assumes* @path in body
         (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
         or p.h.strip().startswith('/')
@@ -210,7 +211,7 @@ def inAny(item, group, regEx=False):
         if any(word in item for word in group):
             return True
         else:
-            return False        
+            return False
 
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
@@ -332,8 +333,8 @@ def flattenOrganizers(p):
             nodeE
          oldStuff
             nodeF
-            nodeG    
-    """    
+            nodeG
+    """
     for n in p.children():
         yield n
         if (not isDirNode(n)
@@ -416,14 +417,14 @@ def openFile(c,parent,d, autoload=False):
     if not autoload:
         binary_open = g.os_path_splitext(path)[-1].lower() in (
             c.config.getData('active_path_bin_open') or '')
-            
+
         if not binary_open:
             start = open(path).read(100)
             for i in start:
                 if ord(i) == 0:
                     binary_open = True
                     break
-                    
+
         if binary_open:
             g.es('Treating file as binary')
             g.handleUrl('file://' + path,c=c)
@@ -451,7 +452,7 @@ def openFile(c,parent,d, autoload=False):
 def openDir(c,parent,d):
     """
     Expand / refresh an existing folder
-    
+
     Note: With the addition of per folder inclusion/exclusion a check is done
     against both the current list of nodes and against the files/folders as
     they exist on the system. This check must be done in both places to keep
@@ -474,7 +475,7 @@ def openDir(c,parent,d):
     newlist = []
 
     bodySplit = parent.b.splitlines()
-    
+
     excdirs = False
     excfiles = False
     regEx = False
@@ -484,14 +485,14 @@ def openDir(c,parent,d):
         excfiles = True
     if re.search('^re', parent.b, flags=re.MULTILINE):
         regEx = True
-    
+
     inc = [line.replace('inc=','') for line in bodySplit if line.startswith('inc=')]
     exc = [line.replace('exc=','') for line in bodySplit if line.startswith('exc=')]
-    
+
     #flatten lists if using comma separations
     inc = [item for line in inc for item in line.strip(' ').split(',')]
     exc = [item for line in exc for item in line.strip(' ').split(',')]
-    
+
     # get children info
     for p in flattenOrganizers(parent):
         entry = p.h.strip('/*')
@@ -500,15 +501,15 @@ def openDir(c,parent,d):
             if len(directive) > 1:
                 entry = entry[len(directive[0]):].strip()
         #find existing inc/exc nodes to remove
-        #using p.h allows for example exc=/ to remove all directories 
+        #using p.h allows for example exc=/ to remove all directories
         if not checkIncExc(p.h,inc,exc, regEx) or \
                (excdirs and entry in dirs) or \
                (excfiles and entry in files):
             toRemove.add(p.h) #must not strip '/', so nodes can be removed
-        else:    
+        else:
             oldlist.add(entry)
-            
-    # remove existing found inc/exc nodes 
+
+    # remove existing found inc/exc nodes
     for headline in toRemove:
         found = g.findNodeInChildren(c,parent,headline)
         if found:
@@ -524,7 +525,7 @@ def openDir(c,parent,d):
                            [e.strip('/') for e in exc],
                            regEx) and not excdirs:
                 newlist.append('/'+d2+'/')
-                
+
     # files trimmed by toRemove, retains original functionality of plugin
     for f in set(files)-toRemove:
         if f in oldlist:
@@ -545,18 +546,18 @@ def openDir(c,parent,d):
         p = parent.insertAsNthChild(0)
         c.setChanged(True)
         c.setHeadString(p,name)
-        if name.startswith('/'): 
+        if name.startswith('/'):
             # sufficient test of dirness as we created newlist
             c.setBodyString(p, '@path '+name.strip('/'))
         elif (c.__active_path['do_autoload'] and
               inReList(name, c.__active_path['autoload'])):
             openFile(c, p, os.path.join(d, p.h), autoload=True)
-        elif (c.__active_path['do_autoload'] and 
+        elif (c.__active_path['do_autoload'] and
               c.__active_path['load_docstring'] and
               name.lower().endswith(".py")):
             # do_autoload suppresses doc string loading because turning
             # autoload off is supposed to address situations where autoloading
-            # causes problems, so don't still do some form of autoloading 
+            # causes problems, so don't still do some form of autoloading
             p.b = c.__active_path['DS_SENTINEL']+"\n\n"+loadDocstring(os.path.join(d, p.h))
         p.setMarked()
         p.contract()
@@ -567,7 +568,7 @@ def openDir(c,parent,d):
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
         h = p.h.strip('/*')  # strip / and *
-        if (h not in oldlist 
+        if (h not in oldlist
             or (p.hasChildren() and not isDirNode(p))):  # clears bogus '*' marks
             nh = p.h.strip('*')  # strip only *
         else:
@@ -611,7 +612,7 @@ def run_recursive(c):
 
     c.__active_path['start_time'] = time.time()
     p = c.p
-    
+
     aList = [z.copy() for z in c.p.self_and_subtree()]
     for p2 in reversed(aList):
         if time.time() - c.__active_path['start_time'] >= c.__active_path['timeout']:
@@ -876,7 +877,6 @@ c/
 2
 3
 """
-import os, shutil
 def makeTestHierachy(c):
 
     shutil.rmtree('active_directory_test')
@@ -894,8 +894,10 @@ def deleteTestHierachy(c):
         if 'c/' in f and f.endswith('/'):
             shutil.rmtree(os.path.normpath(f))
         elif '2' in f:
-            try: os.remove(os.path.normpath(f))
-            except: pass  # already gone
+            try:
+                os.remove(os.path.normpath(f))
+            except Exception:
+                pass  # already gone
 
 if testing:
     cmd_MakeTestHierachy = makeTestHierachy

@@ -5,7 +5,7 @@
 #@@first
 #@@first
 
-''' This NOT a Leo plugin: this is a docutils writer for .pdf files.  
+''' This NOT a Leo plugin: this is a docutils writer for .pdf files.
 
 That file uses the reportlab module to convert html markup to pdf.
 
@@ -97,13 +97,13 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #	are permitted provided that the following conditions are met:
 #
 #		*	Redistributions of source code must retain the above copyright notice,
-#			this list of conditions and the following disclaimer. 
+#			this list of conditions and the following disclaimer.
 #		*	Redistributions in binary form must reproduce the above copyright notice,
 #			this list of conditions and the following disclaimer in the documentation
-#			and/or other materials provided with the distribution. 
+#			and/or other materials provided with the distribution.
 #		*	Neither the name of the company nor the names of its contributors may be
 #			used to endorse or promote products derived from this software without
-#			specific prior written permission. 
+#			specific prior written permission.
 #
 #	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 #	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -241,7 +241,7 @@ __docformat__ = 'reStructuredText'
 #@+<< imports >>
 #@+node:ekr.20090704103932.5162: ** << imports >>
 import sys
-sys.path.append(r'c:\reportlab_1_20') 
+sys.path.append(r'c:\reportlab_1_20')
 
 if 1: # This dependency could easily be removed.
     # Used only for tracing and error reporting.
@@ -321,7 +321,7 @@ def getStyleSheet():
                                   leftIndent=36,
                                   firstLineIndent=0)
                    )
-    
+
     stylesheet.add(ParagraphStyle(name='BodyText',
                                   parent=stylesheet['Normal'],
                                   spaceBefore=6)
@@ -348,7 +348,7 @@ def getStyleSheet():
                                   spaceBefore=10,
                                   spaceAfter=6),
                    alias='h2')
-    
+
     stylesheet.add(ParagraphStyle(name='Heading3',
                                   parent=stylesheet['Normal'],
                                   fontName = 'Times-BoldItalic',
@@ -484,7 +484,7 @@ def getStyleSheet():
                                   textColor=colors.navy,
                                   alignment=TA_CENTER),
                    alias='u')
- 
+
     stylesheet.add(ParagraphStyle(name='Centred',
                                   parent=stylesheet['Normal'],
                                   alignment=TA_CENTER
@@ -494,7 +494,7 @@ def getStyleSheet():
                                   parent=stylesheet['Centred'],
                                   fontName='Times-Italic'
                                   ))
-    
+
     return stylesheet
 #@+node:ekr.20111106070228.12430: *3* get_language
 def get_language (doctree):
@@ -503,13 +503,13 @@ def get_language (doctree):
     class Reporter (object):
         def warning(self,s):
             g.es_print('Reporter.warning',s)
-    
+
     try:
         reporter = Reporter()
         language = docutils.languages.get_language(doctree.settings.language_code,reporter)
     except TypeError:
         language = docutils.languages.get_language(doctree.settings.language_code)
-        
+
     return language
 #@+node:ekr.20090704103932.5179: ** class Bunch (object)
 #@+at
@@ -524,7 +524,7 @@ def get_language (doctree):
 # 
 # You can read/write the named attributes you just created, add others, del some
 # of them, etc::
-#     
+# 
 #     if point.squared > threshold:
 #         point.isok = True
 #@@c
@@ -618,35 +618,35 @@ if docutils:
             if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
                 self.styleSheet = visitor.styleSheet
                 self.encode = visitor.encode
-                
+
             if reportlab:
 
                 out = StringIO.StringIO()
-            
+
                 doc = reportlab.platypus.SimpleDocTemplate(out,
                     pagesize=reportlab.lib.pagesizes.A4)
-            
+
                 # The 'real' code is doc.build(story)
                 visitor.buildFromIntermediateFile(s,story,visitor)
-            
+
                 return out.getvalue()
-                
+
             else:
                 return ''
         #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
         def createPDF_usingPlatypus (self,story):
-            
+
             if reportlab:
 
                 out = StringIO.StringIO()
-            
+
                 doc = reportlab.platypus.SimpleDocTemplate(out,
                     pagesize=reportlab.lib.pagesizes.A4)
-            
+
                 doc.build(story)
-            
+
                 return out.getvalue()
-                
+
             else:
                 return ''
         #@+node:ekr.20090704103932.5186: *3* lower
@@ -758,7 +758,7 @@ if docutils:
                 self.putParaFromIntermediateFile(para,style)
         #@+node:ekr.20090704103932.5194: *3* putParaFromIntermediateFile
         def putParaFromIntermediateFile (self,lines,style):
-            
+
             if not reportlab:
                 return
 
@@ -776,7 +776,6 @@ if docutils:
 #@+node:ekr.20090704103932.5195: ** class PDFTranslator (docutils.nodes.NodeVisitor)
 if docutils:
     class PDFTranslator (docutils.nodes.NodeVisitor):
-        # pylint: disable=abstract-class-not-used
         #@+others
         #@+node:ekr.20090704103932.5196: *3* __init__ (PDFTranslator)
         def __init__(self, writer,doctree):
@@ -789,7 +788,7 @@ if docutils:
             self.language = get_language(doctree)
                 ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
             self.in_docinfo = False
-            self.head = [] # Set only by meta() method.  
+            self.head = [] # Set only by meta() method.
             self.body = [] # The body text being accumulated.
             self.foot = []
             self.sectionlevel = 0
@@ -1019,7 +1018,7 @@ if docutils:
                 style = b.style
             except AttributeError:
                 style = 'Normal'
-                
+
             self.putTail(b.start,style)
         #@+node:ekr.20090704103932.5213: *3* Helpers
         #@+node:ekr.20090704103932.5214: *4*  starttag
@@ -1067,15 +1066,15 @@ if docutils:
             return self.story
         #@+node:ekr.20090704103932.5216: *4* createParagraph
         def createParagraph (self,text,style='Normal',bulletText=None):
-            
+
             if not reportlab:
                 return
 
             if type(text) in (types.ListType,types.TupleType):
                 text = ''.join(text)
-            
+
             #### text = self.encode(text)
-            
+
             # This escapes too much.
             # text = self.escape(text)
 
@@ -1097,16 +1096,16 @@ if docutils:
                 g.es_print_exception(full=False)
                 g.es_exception(full=False)
                 print(repr(text))
-                
+
                 # self.dumpContext()
         #@+node:ekr.20090704103932.5217: *4* dumpContext
         def dumpContext (self):
-            
+
             if self.context:
 
                 print('-' * 40)
                 print('Dump of context...')
-            
+
                 i = 0
                 for bunch in self.context:
                     print('%2d %s' % (i,bunch))
@@ -1182,7 +1181,7 @@ if docutils:
             return text
         #@+node:ekr.20111107181638.9742: *4* escape (PDFTranslator)
         def escape (self,s):
-            
+
             return s.replace('<','&lt').replace('>','&gt')
         #@+node:ekr.20090704103932.5221: *4* inContext
         def inContext (self,kind):
@@ -1217,7 +1216,7 @@ if docutils:
             bunch = Bunch(**keys)
             self.context.append(bunch)
             # g.trace(bunch)
-            
+
 
         def pop (self,kind):
 
@@ -1683,7 +1682,7 @@ if docutils:
         def depart_subtitle(self, node):
 
             b = self.pop('subtitle')
-            
+
             try:
                 style = b.style
             except AttributeError:
@@ -1750,7 +1749,7 @@ if docutils:
             raise docutils.nodes.SkipNode
         #@+node:ekr.20090704103932.5292: *5*  literal_blocks...
         def visit_literal_block(self, node):
-            
+
             if reportlab:
                 self.story.append(
                     reportlab.platypus.Preformatted(
@@ -1826,7 +1825,7 @@ if docutils:
         depart_substitution_definition = depart_comment
         visit_figure = visit_comment
         depart_figure = depart_comment
-    
+
         visit_sidebar = invisible_visit
         visit_warning = invisible_visit
         visit_tip = invisible_visit

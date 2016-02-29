@@ -40,18 +40,18 @@ consist of just one or two of the following calls:
 - **m.image(file_name)** overlays a scaled image on Leo's window. For
   example, a screencast could discuss Leo's icon box by shown greatly
   magnified images of various kinds of icon box.
-  
+
 - **m.body(text)** overlays a caption on Leo's body pane. By default,
   captions have a bright yellow background so that they clearly stand out
   from the normal appearance of Leo's screen. Similarly **m.log(text)** and
   **m.tree(text)** overlay captions on Leo's log and tree panes.
-  
+
 - **m.body_keys(text)** and **m.head_keys(text)** animate typing of text in
   body text and headlines respectively.
 
 - **m.single_key(key_setting)** allows any key to be handled exactly as if
   the user had typed the key.
-  
+
 - **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
   with a mouse click. **m.dismiss_menubar()** closes all open menus.
 
@@ -68,14 +68,14 @@ short:
 
 - The human presenter moves to the next slide using the RtArrow key.
   The LtArrow key moves back to the previous slide.
-  
+
 - Scripts in an \@screencast tree create slides. The 'm' variable allows
   such scripts to animate keystrokes or overlay images or captions on the
   screen.
-  
+
 Before reading further, please look at the example \@screencast trees in
 test.leo. Then run those screencasts to see the what the scripts do.
-  
+
 
 Reference
 =========
@@ -108,10 +108,10 @@ executes screencast scripts as the screencast moves from node to node.
 The SCC only traps the RtArrow and LtArrow keys during a screencast. The
 SCC passes all other keys to Leo's key-handling code. This allows key
 handling in key-states during the execution of a screencast. For example::
-    
+
     m.single_key('Alt-X')
     m.plain_keys('ins\\tno\\t\\n')
-    
+
 actually executes the insert-node command!
 
 SCC methods
@@ -166,10 +166,10 @@ given, that position becomes c.p, the presently selected node.
 **m.selectPosition(p)** Same as m.redraw(p)
 
 **m.single_key(setting)** generates a key event. Examples::
-    
+
    m.single_key('Alt-X') # Activates the minibuffer
    m.single_key('Ctrl-F') # Activates Leo's Find command
-   
+
 The 'setting' arg can be anything that would be a valid key setting. The
 following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F"
 is different from "ctrl-shift-f".
@@ -193,7 +193,7 @@ By default, after executing a screencast script, the SCC advances m.p to
 the next non-empty, non-ignored node in the \@screencast tree. However, if
 the just-executed screencast script has set m.p to a new, non-empty value,
 that value will be the new value of m.p.
-  
+
 Stylesheets
 -----------
 
@@ -623,7 +623,7 @@ class ScreenCastController:
     #@+node:ekr.20120914074855.10720: *4* start
     def start(self, p):
         '''Start a screencast whose root node is p.
-        
+
         Important: p is not necessarily c.p!
         '''
         m = self; c = m.c; k = c.k

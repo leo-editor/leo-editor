@@ -13,7 +13,7 @@ __ http://ckeditor.com/
 
 ``richtext.py`` provides these ``Alt-X`` commands (also available from
 Plugins -> richtext menu):
-    
+
   cke-text-close
     Close the rich text editor, unhide the regular editor.
   cke-text-open
@@ -34,14 +34,14 @@ ancestors will automatically open the rich text editor. ``@norich`` cancels this
 action.  Manually opened editors are not affected.
 
 ``richtext.py`` uses these ``@settings``:
-    
+
   @bool richtext_cke_autosave = False
     Set this to True for rich text edits to be saved automatically.
-    
+
     *BE CAREFUL* - plain-text nodes will be converted to rich text
     without confirmation if you edit them in rich text mode when
     this is True.
-    
+
   @data richtext_cke_config Configuration info. for CKEditor, see
     http://docs.ckeditor.com/#!/guide/dev_configuration the content of this node
     is the javascript object passed to ``CKEDITOR.replace()`` as it's second
@@ -49,9 +49,9 @@ action.  Manually opened editors are not affected.
     toolbar. To enable *all* CKEditor toolbar features copy this setting to
     myLeoSettings.leo and remove the default content, i.e. make this node blank,
     then CKEditor will generate a toolbar with all available features.
-    
+
 To make a button to toggle the editor on and off, use::
-    
+
     @button rich
       c.k.simulateCommand('cke-text-switch')
 
@@ -85,22 +85,22 @@ def init():
     return ok
 #@+node:tbrown.20130813134319.5691: ** class CKEEditor
 if QtWidgets:
-    
+
     class CKEEditor(QtWidgets.QWidget):
         #@+others
         #@+node:tbrown.20130813134319.7225: *3* __init__
         def __init__(self, *args, **kwargs):
-            
+
             self.c = kwargs['c']
-            
+
             del kwargs['c']
             QtWidgets.QWidget.__init__(self, *args, **kwargs)
-            
+
             # were we opened by an @ rich node? Calling code will set
             self.at_rich = False
             # are we being closed by leaving an @ rich node? Calling code will set
             self.at_rich_close = False
-            
+
             # read autosave preference
             if not hasattr(self.c, '_ckeeditor_autosave'):
                 auto = self.c.config.getBool("richtext_cke_autosave") or False
@@ -119,13 +119,13 @@ if QtWidgets:
             )
             self.template = self.template.replace(
                 '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
-            
+
             # load config
             self.config = self.c.config.getData("richtext_cke_config")
             if self.config:
                 self.config = '\n'.join(self.config).strip()
 
-            # make widget containing QWebView    
+            # make widget containing QWebView
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setSpacing(0)
             self.layout().setContentsMargins(0,0,0,0)
@@ -135,7 +135,7 @@ if QtWidgets:
 
             self.webview = QtWebKitWidgets.QWebView()
             self.layout().addWidget(self.webview)
-            
+
             g.registerHandler('select3', self.select_node)
             g.registerHandler('unselect1', self.unselect_node)
 
@@ -148,11 +148,11 @@ if QtWidgets:
                 return
 
             p = kwargs['new_p']
-            
+
             self.v = p.v  # to ensure unselect_node is working on the right node
             # currently (20130814) insert doesn't trigger unselect/select, but
             # even if it did, this would be safest
-            
+
             data = self.template
             if p.b.startswith('<'):  # already rich text, probably
                 content = p.b
@@ -161,7 +161,7 @@ if QtWidgets:
                 self.was_rich = p.b.strip() == ''
                 # put anything except whitespace in a <pre/>
                 content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
-                
+
             data = data.replace('[CONTENT]', content)
 
             # replace textarea with CKEditor, with or without config.
@@ -184,12 +184,12 @@ if QtWidgets:
             self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path+"/"))
         #@+node:tbrown.20130813134319.7228: *3* unselect_node
         def unselect_node(self, tag, kwargs):
-            
+
             c = kwargs['c']
             if c != self.c:
                 return
 
-            # read initial content and request and wait for final content    
+            # read initial content and request and wait for final content
             frame = self.webview.page().mainFrame()
             ele = frame.findFirstElement("#initial")
             text = str(ele.toPlainText()).strip()
@@ -206,10 +206,10 @@ if QtWidgets:
             if new_text == '[empty]':
                 print("Didn't get new text")
                 return
-                
+
             text = unquote(str(text))
             new_text = unquote(str(new_text))
-            
+
             if new_text != text:
 
                 if self.c._ckeeditor_autosave:
@@ -279,7 +279,7 @@ def at_rich_check(tag, key):
         if '@rich' in nd.h or '@rich' in nd.b[:1000]:
             do = 'open'
             break
-    
+
     if do == 'close':
         cmd_CloseEditor(key, at_rich=True)
     elif do == 'open':
@@ -347,7 +347,7 @@ def cmd_ToggleAutosave(event):
     ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     c._ckeeditor_autosave = not c._ckeeditor_autosave
-    g.es("Rich text autosave " + 
+    g.es("Rich text autosave " +
          ("ENABLED" if c._ckeeditor_autosave else "disabled"))
 #@-others
 #@@language python

@@ -118,7 +118,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
 
         Create a child of self.root containing section references for
         top-level functions and objects containing functions.
-        
+
         Rescan all functions for innner functions.
         '''
         i = self.scanHelper(parent, s)
@@ -284,7 +284,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         self.startSigIndent = oldStartSigIndent
     #@+node:ekr.20160122074204.1: *3* jss.endGen
     def endGen(self, s):
-        
+
         g.trace(len(s))
     #@+node:ekr.20140723122936.18054: *3* jss.skipNewline
     def skipNewline(self, s, i, kind):

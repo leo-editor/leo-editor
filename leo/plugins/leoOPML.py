@@ -535,7 +535,7 @@ class PutToOPML:
         for v in p.v.tnodeList:
             try: # Will fail for None or any pre 4.1 file index.
                 theId, time, n = p.v.fileIndex
-            except:
+            except Exception:
                 g.trace("assigning gnx for ", p.v)
                 gnx = g.app.nodeIndices.getNewIndex()
                 p.v.setFileIndex(gnx) # Don't convert to string until the actual write.

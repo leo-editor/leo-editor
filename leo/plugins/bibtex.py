@@ -68,7 +68,7 @@ __version__ = '0.7'
 # 
 # 0.2 Timo Honkasalo 2005/02/14
 # - Importing BibTeX files added.
-#   
+# 
 # 0.3 Timo Honkasalo 2005/02/15
 # - Automatic inserting of templates when new entries are created.
 # 
@@ -78,7 +78,7 @@ __version__ = '0.7'
 # - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@' (whitespace stripped) instead of '@', so that fields may contain '@' (like a 'mailto' field most likely would).
 # - Changed <<write template>> to move cursor to the entry point of first field (16 columns right).
 # - Bugfix: templates now include commas after each field
-#   
+# 
 # 0.5 EKR: 2014/12/11: This plugin now works with Python 3.
 # - Use p, not v, for positions.
 # - Improved messages and cleaned up code.
@@ -145,9 +145,9 @@ def onHeadKey(tag,keywords):
 
     If body pane is empty, get template for the entry from a dictionary
     'templates ' and write it in the body pane.
-    
+
     20141127 - note headkey2 now only fires on `Enter`, no need
-    to check which key brought us here.    
+    to check which key brought us here.
     """
     # To do: check for duplicate keys here.
     p = keywords.get("p") or keywords.get("v")
@@ -174,7 +174,7 @@ def onIconDoubleClick(tag,keywords):
     """
     Read or write a bibtex file when the node is double-clicked.
 
-    Write the @bibtex tree as bibtex file when the root node is double-clicked. 
+    Write the @bibtex tree as bibtex file when the root node is double-clicked.
     If it has no child nodes, read bibtex file.
     """
     p = keywords.get("p") or keywords.get("v")
@@ -182,7 +182,7 @@ def onIconDoubleClick(tag,keywords):
     if not c or not p:
         return
     h = p.h.strip()
-    if g.match_word(h,0,"@bibtex"): 
+    if g.match_word(h,0,"@bibtex"):
         fn = g.os_path_finalize_join(g.os_path_dirname(c.fileName() or ''),h[8:])
         if p.hasChildren():
             bibFile = open(fn,'w')
@@ -190,12 +190,12 @@ def onIconDoubleClick(tag,keywords):
             bibFile.close()
             g.es('wrote: %s' % fn)
         else:
-            try: 
+            try:
                 bibFile = open(fn,'r')
             except IOError:
                 g.es('not found: %s' % fn,color='red')
                 return
-            g.es('reading: ' + fn) 
+            g.es('reading: ' + fn)
             readBibTexFileIntoTree(bibFile,c)
             bibFile.close()
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
@@ -231,7 +231,7 @@ def writeTreeAsBibTex(bibFile,root,c):
     d = c.scanAllDirectives(p=root)
     encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
     strings,entries = [],[]
-    for p in root.subtree():    
+    for p in root.subtree():
         h = p.h
         if h.lower() == '@string':
             strings.extend([('@string{%s}\n\n' % z.rstrip())
@@ -248,7 +248,7 @@ def writeTreeAsBibTex(bibFile,root,c):
     if entries:
         s = ''.join(entries)
         if trace: g.trace('entries...\n%s' % s)
-        bibFile.write(s)  
+        bibFile.write(s)
 #@-others
 #@@language python
 #@@tabwidth -4

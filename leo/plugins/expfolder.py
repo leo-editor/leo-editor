@@ -55,7 +55,7 @@ def init():
     textexts.extend(config.get("Main", "TextExtensions").split())
     return True
 #@+node:ajones.20070122153625.2: ** on_icondclick
-def on_icondclick(tag, keywords):    
+def on_icondclick(tag, keywords):
     c = keywords.get("c")
     p = keywords.get("p")
     h = p.h

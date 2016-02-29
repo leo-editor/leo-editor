@@ -43,8 +43,11 @@ def init ():
 #@+node:danr7.20061010105952.5: ** createWordCountMenu
 def createWordCountMenu (tag,keywords):
 
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get("c")
-
+    if not c:
+        return
     # Get reference to current File > Export... menu
 
     # Use code to find index of menu shortcut
@@ -68,7 +71,7 @@ def word_count(c):
             paraNum -= 1
     lineNum = len(s.splitlines())
 
-    answer = g.es("Words: %s, Chars: %s\nParagraphs: %s, Lines: %s" % (
+    g.es("Words: %s, Chars: %s\nParagraphs: %s, Lines: %s" % (
         wordNum,charNum,paraNum,lineNum))
 #@-others
 #@-leo

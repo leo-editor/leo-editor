@@ -125,7 +125,7 @@ def OnBodyKey(tag,keywords):
     h=p.h
     ch=keywords.get("ch")
 
-    # handle the @run "\r" body key	
+    # handle the @run "\r" body key
     if ch == "\r" and g.match_word(h,0,"@run") and RunNode != None and RunNode==p:
         try:
             In.write(p.b.encode(Encoding))
@@ -143,7 +143,7 @@ def OnIconDoubleClick(tag,keywords):
     c=keywords.get('c')
     if not c or not c.exists: return
     p = c.p
-    
+
     # g.trace(c.shortFileName())
 
     h = p.h
@@ -159,7 +159,7 @@ def OnIconDoubleClick(tag,keywords):
                 if g.match_word(p2.h,0,"@run"):
                     # g.trace(p2.h)
                     # 2009/10/30: don't use iter copy arg.
-                    RunList.append(p2.copy())	
+                    RunList.append(p2.copy())
 
             ExitCode = None
             OwnIdleHook = True
@@ -189,19 +189,19 @@ def OnIdle(tag,keywords):
     if not c or not c.exists: return
 
     if not OwnIdleHook: return
-    
+
     # g.trace(c.shortFileName())
 
     if RunNode:
         o = UpdateText(OutThread)
         e = UpdateText(ErrThread,"red")
         if not o and not e:
-            CloseProcess(c)	
+            CloseProcess(c)
     elif RunList:
         fn = RunList[0]
         del RunList[0]
         if fn and ExitCode is None:
-            OpenProcess(fn)					
+            OpenProcess(fn)
     else:
         OwnIdleHook = False
         g.disableIdleTimeHook()
@@ -232,7 +232,7 @@ class readingThread(threading.Thread):
     #@+others
     #@+node:ekr.20040910070811.7: *3* run
     def run(self):
-        
+
         '''Called automatically when the thread is created.'''
 
         global Encoding
@@ -276,7 +276,7 @@ def CloseProcess(c):
     if ExitCode is None:
         g.blue("@run done")
     else:
-        g.error("@run exits with code: %s" % (str(ExitCode)))	
+        g.error("@run exits with code: %s" % (str(ExitCode)))
 
     # Redraw.
     c.redraw()
@@ -287,7 +287,7 @@ def FindRunChildren(p):
 
     for child in p.children():
         if g.match_word(child.h,0,"@run"):
-            RunList.append(child)	
+            RunList.append(child)
         FindRunChildren(child)
 #@+node:ekr.20040910070811.10: ** OpenProcess
 def OpenProcess(p):
@@ -351,21 +351,21 @@ def OpenProcess(p):
 
     # Start the threads and open the pipe.
     OutThread = readingThread()
-    ErrThread = readingThread()		
-				
+    ErrThread = readingThread()
+
     # In,OutThread.File,ErrThread.File	= os.popen3(command,"t")
     #### OutThread.File,In,ErrThread.File = os.popen3(command,"t")
-    
+
     PIPE = subprocess.PIPE
     proc = subprocess.Popen(command, shell=True) # , # bufsize=bufsize,
     #     stdin=PIPE,stdout=PIPE,stderr=PIPE) # ,close_fds=True)
-        
+
     In             = proc.stdin
     OutThread.File = proc.stdout
     ErrThread.File = proc.stderr
-    	
+
     OutThread.start()
-    ErrThread.start()	
+    ErrThread.start()
 
     # Mark and select the node.
     RunNode.setMarked()
@@ -380,7 +380,7 @@ def UpdateText(t,wcolor="black"):
 
     if t.TextLock.acquire(0) == 1:
         if t.Text:
-            if t.Text != "\n":				
+            if t.Text != "\n":
                 g.es(t.Text,color=wcolor)
             t.Text=""
         else:

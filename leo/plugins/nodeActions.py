@@ -408,7 +408,7 @@ def applyNodeAction(pScript, pClicked, c):
             if c.config.redirect_execute_script_output_to_log_pane:
                 g.restoreStderr()
                 g.restoreStdout()
-        except:
+        except Exception:
             #Unredirect output
             if c.config.redirect_execute_script_output_to_log_pane:
                 g.restoreStderr()

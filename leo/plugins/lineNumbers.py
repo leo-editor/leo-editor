@@ -55,7 +55,7 @@ def init():
                 line = 'line 1 "node:%s (%s)"' % (self.nodeSentinelText(p),self.shortFileName)
                 self.putSentinel(line)
 
-        g.funcToMethod(putLineNumberDirective,	
+        g.funcToMethod(putLineNumberDirective,
             leoAtFile.AtFile,"putOpenNodeSentinel")
         #@-<< override write methods >>
         #@+<< override read methods >>
@@ -64,9 +64,9 @@ def init():
 
         def skipLineNumberDirective(self, s, i):
 
-            if linere.search(s): 
+            if linere.search(s):
                 return  # Skipt the line.
-            else:		
+            else:
                 readNormalLine(self,s,i)
 
         g.funcToMethod(skipLineNumberDirective,

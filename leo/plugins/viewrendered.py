@@ -23,12 +23,12 @@ viewrendered.py creates the following (``Alt-X``) commands:
 
 ``viewrendered (abbreviated vr)``
     Opens a new rendering window.
-    
+
     By default, the rendering pane renders body text as reStructuredText,
     with all Leo directives removed.
     However, if the body text starts with ``<`` (after removing directives),
     the body text is rendered as html.
-    
+
     **Important**: The default rendering just described does not apply to nodes
     whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
     See the section called **Special Renderings** below.
@@ -51,7 +51,7 @@ viewrendered.py creates the following (``Alt-X``) commands:
     of the presently selected node.
     When locked, the rendering pane does not change when other nodes are selected.
     This is useful for playing movies in the rendering pane.
-    
+
 ``vr-pause-play-movie``
     This command has effect only if the rendering pane is presently showing a movie.
     It pauses the movie if playing, or resumes the movie if paused.
@@ -61,13 +61,13 @@ viewrendered.py creates the following (``Alt-X``) commands:
 
 ``vr-toggle``
     Shows the rendering pane if invisible, otherwise hides it.
-    
+
 ``vr-update``
     Forces an update of the rendering pane.
     This is especially useful for @graphics-script nodes:
     such nodes are update automatically only when selected,
     not when the body text changes.
-    
+
 Rendering reStructuredText
 ==========================
 
@@ -89,7 +89,7 @@ will look something like:
     **Heading**
 
     `This` is **really** a line of text.
-    
+
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 
 Rendering markdown
@@ -117,10 +117,10 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 - ``@graphics-script`` executes the script in the body text in a context containing
   two predefined variables:
-      
+
     - gs is the QGraphicsScene for the rendering pane.
     - gv is the QGraphicsView for the rendering pane.
-    
+
   Using these variables, the script in the body text may create graphics to the rendering pane.
 
 - ``@image`` renders the file as an image.
@@ -150,16 +150,16 @@ Settings
 
 - ``@bool view-rendered-auto-create = False``
   When True, show the rendering pane when Leo opens an outline.
-  
+
 - ``@bool view-rendered-auto-hide = False``
   When True, hide the rendering pane for text-only renderings.
 
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,md,html)
-  
+
 - ``@string view-rendered-md-extensions = extra``
   A comma-delineated list of markdown extensions to use.
-  Suitable extensions can be seen here: 
+  Suitable extensions can be seen here:
   http://pythonhosted.org/Markdown/extensions/index.html
 
 Acknowledgments

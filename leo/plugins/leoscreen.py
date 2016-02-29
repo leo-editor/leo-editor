@@ -26,7 +26,7 @@ leoscreen-run-all-text
 leoscreen-run-all-here
   Like leoscreen-run-all-text without the inconvenient selection
   of the next node.
-  
+
 leoscreen-get-line
   Insert a line of the last result from the shell into Leo's body text
   at the current insert point.  Lines are pulled one at a time starting
@@ -76,7 +76,7 @@ leoscreen-less-prompt
 leoscreen-jump-to-error
   Jump to the python error reported in the shell window, if the file's
   loaded in the current Leo session.  Just looks for a line::
-      
+
       File "somefile.py", line NNN, in xxx
 
   and looks for a node starting with "@" and ending with "somefile.py", then
@@ -181,7 +181,7 @@ class leoscreen_Controller:
 
         self.c = c
         c.leo_screen = self
-        
+
         self.use_screen = None  # to select a particular screen session
 
         # skip line -1, which is
@@ -206,12 +206,12 @@ class leoscreen_Controller:
         else:
             self.get_line_prefix = ''
 
-        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S' 
+        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
 
         self._get_output()  # prime output diffing system
 
         self.popups = []  # store references to popup windows
-        
+
         self.stack_frame = 0
         # used by jump to error commands, 0 = innermost frame
     #@+node:tbrown.20100226095909.12785: *3* __del__
@@ -225,12 +225,12 @@ class leoscreen_Controller:
     def screen_cmd(self, cmds):
         """Execute a screen command via screen -X"""
         cmd = [
-            'screen', 
+            'screen',
         ]
-        
+
         if self.use_screen:
             cmd.extend(['-d', '-r', self.use_screen.split()[0]])
-        
+
         cmd.extend([
             '-X', 'eval',
             'msgwait 0',    # avoid waiting for message display
@@ -257,7 +257,7 @@ class leoscreen_Controller:
             c = self.c
 
         if not txt:
-            return  
+            return
             # otherwise there's an annoying delay for "Slurped zero chars" msg.
 
         if self.output:
@@ -295,7 +295,7 @@ class leoscreen_Controller:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.communicate()
 
-        if g.isPython3: 
+        if g.isPython3:
             f = open(self.tmpfile, encoding='latin-1')
         else:
             f = open(self.tmpfile)
@@ -415,10 +415,10 @@ class leoscreen_Controller:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         out, err = proc.communicate()
-        
-        screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i] 
+
+        screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i]
                    for i in out.split('\n') if i.startswith('\t')]
-        
+
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
         ld.exec_()
 
@@ -545,13 +545,13 @@ def cmd_jump_to_error_up(event):
     jump_to_error_internal(c)
 
 def jump_to_error_internal(c):
-    
+
     import re
     regex = re.compile(r'  File "(.*)", line (\d+), in')
-    
+
     lines = c.leo_screen.get_all(c)
     lines = lines.split('\n')
-    
+
     skipped = 0
     for i in reversed(lines):
         match = regex.match(i)

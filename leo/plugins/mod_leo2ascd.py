@@ -176,8 +176,8 @@ def GetAscFilename(c,p):
             ascFileName = containsAscFileDirective.group(1)
             if (ascFileName != None):
                 base = os.path.split(c.mFileName)[0]  # linux or windows
-                if (((base[0]=="/") and (ascFileName[0] != "/")) or 
-                   ((base[1]==":") and (ascFileName[1] != ":"))): 
+                if (((base[0]=="/") and (ascFileName[0] != "/")) or
+                   ((base[1]==":") and (ascFileName[1] != ":"))):
                     # no full pathname specified
                     ascFileName = os.path.join(base, ascFileName)
                 Conf.GetCurrentOptions(c,p)

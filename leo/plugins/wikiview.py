@@ -4,7 +4,7 @@
 #@+node:tbrown.20141101114322.2: ** << docstring >>
 r"""
 Hide text in the body editor, each time a new node is selected.  Makes::
-    
+
   file;//#some-->headlines-->mynode appear as mynode,
   http;//www.google.com/search as search, and
   `Python <https;//www.python.org/>`_ as Python
@@ -33,14 +33,14 @@ Settings
         # regex patterns for text to be hidden by the wikiview plugin
         # each non-blank link not starting with '#' is treated as a
         # separate pattern, use [#] for patterns starting with '#'
-        
+
         # only `groups` within the pattern, i.e. parts of the pattern
         # in (parentheses), will be hidden, e.g. the first \S+ in the
         # restructuredText pattern is not hidden
-        
+
         # restructuredText `Visible text <http://invisible.url/here>`
         (`)\S+(\s*<(https?|file)://\S+>`_)
-        
+
         # regular urls
         ((https?|file)://(\S+)?(-->|[/#])(?=[.%/a-zA-Z0-9_]))
 """
@@ -62,7 +62,7 @@ from leo.core.leoQt import QtGui # ,QtWidgets
 #@+others
 #@+node:tbrown.20141101114322.4: ** init
 def init():
-    
+
     if g.unitTesting:
         return False
 
@@ -72,9 +72,9 @@ def init():
     return True
 #@+node:tbrown.20141101114322.5: ** onCreate
 def onCreate(tag, keys):
-    
+
     c = keys.get('c')
-    
+
     WikiView(c)
 #@+node:tbrown.20141101114322.6: ** wikiview-toggle
 @g.command('wikiview-toggle')
@@ -136,10 +136,10 @@ class WikiView:
 
         w = c.frame.body.wrapper.widget
         curse = w.textCursor()
-             
+
         s = w.toPlainText()
         for urlpat in self.urlpats:
-            for match in urlpat.finditer(s):   
+            for match in urlpat.finditer(s):
                 for group_n, group in enumerate(match.groups()):
                     # print group_n, group, match.start(group_n+1), match.end(group_n+1)
                     if group is None:

@@ -23,10 +23,10 @@ It will places copy of the written file in each of these directories.
 There is an additional directive that simplifies common paths, it is called
 @multiprefix. By typing @multiprefix with a path following it, before a
 @multipath directive you set the beginning of the paths in the @multipath
-directive. For example:: 
+directive. For example::
 
 #@verbatim
-    #@multiprefix /leo #@multipath /plugins 
+    #@multiprefix /leo #@multipath /plugins
 
 or::
 
@@ -53,7 +53,7 @@ beginning of the line and by themselves.
 
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
-import leo.core.leoGlobals as g 
+import leo.core.leoGlobals as g
 import leo.core.leoAtFile as leoAtFile
 
 import os.path
@@ -83,9 +83,9 @@ __version__ = ".9"
 # 0.9 EKR: add entries to g.globalDirectiveList so that this plugin will work with the new colorizer.
 #@-<< version history >>
 
-multiprefix = '@multiprefix'   
+multiprefix = '@multiprefix'
 multipath = '@multipath'
-haveseen = {}   
+haveseen = {}
 files = {}
 originalOpenFileForWriting = None
 
@@ -110,11 +110,12 @@ haveseen = weakref.WeakKeyDictionary()
 
 def addMenu (tag,keywords):
 
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get('c')
     # if not c or haveseen.has_key(c):
     if not c or c in haveseen:
         return
-
     haveseen [c] = None
     m = c.frame.menu.getMenu('Edit')
     c.add_command(m,
@@ -146,7 +147,7 @@ def decoratedOpenFileForWriting (self,root,fileName,toString):
     if root.isDirty(): files [fileName] = root.copy()
 
     # Return whatever the original method returned.
-    return val 
+    return val
 #@+node:mork.20041018204908.6: ** stop
 def stop (tag,keywords):
 
@@ -167,7 +168,7 @@ def stop (tag,keywords):
                     g.blue("multifile:\nWrote %s to %s" % (fileName,path))
                 else:
                     g.error("multifile:\n%s is not a directory, not writing %s" % (path,fileName))
-            except:
+            except Exception:
                 g.error("multifile:\nCant write %s to %s" % (fileName,path))
                 g.es_exception_type()
     files.clear()

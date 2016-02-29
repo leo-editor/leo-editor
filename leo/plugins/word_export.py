@@ -32,10 +32,11 @@ import leo.core.leoGlobals as g
 
 try:
     # From win32 extensions: http://www.python.org/windows/win32/
-    import win32com.client 
+    import win32com.client
     client = win32com.client
 except ImportError:
-    client = g.cantImport('win32com.client')
+    g.cantImport('win32com.client')
+    client = None
 
 if g.isPython3:
     import configparser as ConfigParser
@@ -89,7 +90,7 @@ def doPara(word, text, style=None):
     if style:
         try:
             sel.Style = doc.Styles(style)
-        except:
+        except Exception:
             g.es("Unknown style: '%s'" % style)
     sel.TypeText(text)
     sel.TypeParagraph()
@@ -110,7 +111,7 @@ def writeNodeAndTree (c, word, header_style, level,
     if encoding == None:
         # encoding = c.config.default_derived_file_encoding
         encoding = sys.getdefaultencoding()
-    # 
+    #
     s = vnode.b
     s = g.toEncodedString(s,encoding,reportErrors=True)
     doPara(word,s)
@@ -142,7 +143,7 @@ def cmd_Export(event):
                 1,
                 int(config.get("Main", "max_headings")),
                 config.get("Main", "use_section_numbers") == "Yes",
-                "")						 
+                "")
             g.es("Done!")
     except Exception as err:
         g.error("Exception writing Word")

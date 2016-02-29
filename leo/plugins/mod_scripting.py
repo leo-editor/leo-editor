@@ -68,7 +68,7 @@ You can specify the following options in leoSettings.leo.  See the node:
 
     @bool scripting-at-button-nodes = True
     True: adds a button for every @button node.
-    
+
     @bool scripting-at-rclick-nodes = False
     True: define a minibuffer command for every @rclick node.
 
@@ -120,11 +120,11 @@ For example:
 will set sys.argv to [u'a',u'b',u'c']
 
 You can set the background color of buttons created by @button nodes by using @color:
-    
+
 @button name @color=color
 
 For example:
-    
+
 @button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
 
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
@@ -708,7 +708,7 @@ class ScriptingController:
         An optional @key=shortcut defines a shortcut that is bound to the button's script.
         The @key=shortcut does not appear in the button's name, but
         it *does* appear in the statutus line shown when the mouse moves over the button.
-        
+
         An optional @color=colorname defines a color for the button's background.  It does
         not appear in the status line nor the button name.
         '''
@@ -732,7 +732,9 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
+            # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
+
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
         # Minibuffer commands created by mod_scripting.py have no docstrings
 
@@ -776,6 +778,7 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
+            # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
 
         self.registerAllCommands(

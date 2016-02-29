@@ -19,6 +19,7 @@ def onStart(tag, keywords):
     try:
         import gc
         gc.set_debug(gc.DEBUG_LEAK)
-    except: pass
+    except Exception:
+        pass
 #@-others
 #@-leo

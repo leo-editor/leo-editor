@@ -7,7 +7,7 @@ screen_capture.py
 =================
 
 Capture screen shots - single frames are useful.  The
-`Recorder` class can also capture frames continuously but that's not 
+`Recorder` class can also capture frames continuously but that's not
 really useful, it doesn't handle audio or video encoding, and can't maintain
 a 30 fps frame rate.  The code for doing so is not hooked up in this plugin.
 
@@ -47,9 +47,9 @@ def init():
 #@+node:tbrown.20130419143128.29669: ** class Recorder
 class Recorder(object):
     """Recorder - record video of Leo
-    
+
     These shell commands convert saved frames to video
-    
+
     ls /tmp/image*.ppm | xargs -IFILE -n1 -P4 mogrify -format png FILE
     mencoder mf:///tmp/image*.png -mf fps=12:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o output.avi
     rm -k /tmp/image*.ppm /tmp/image*.png
@@ -82,13 +82,13 @@ class Recorder(object):
 
         if not self.recording and not filename:
             return
-          
-        # performance measuring  
+
+        # performance measuring
         # self.times.append(time.time() - self.last_time)
         # self.last_time = time.time()
 
         pm = QtGui.QPixmap.grabWindow(self.winId)
-        
+
         if False:
             # don't remove this code - all during dev. the above did
             # not capture the pointer in the image, which is quite
@@ -114,11 +114,11 @@ class Recorder(object):
         if not filename:
             filename = "/tmp/image%04d.bmp"%self.frame
             # save .bmp in video mode because .png is too slow
-        
+
         pm.save(filename)
-        
+
         self.frame += 1
-        
+
         # print '  ', time.time() - self.last_time
         # self.last_time = time.time()
     #@+node:tbrown.20130419143128.29672: *3* make_pointer
@@ -144,16 +144,16 @@ class Recorder(object):
 
 #@+node:tbrown.20130419143128.29677: ** screen_capture_now
 @g.command('screen-capture-now')
-def screen_capture_now(kwargs={}):
+def screen_capture_now(kwargs=None):
     """screen_capture_now - save a screenshot
 
     :Parameters:
     - `kwargs`: g.command arguments
     """
-  
+    if kwargs is None:
+        kwargs = {}
     if not hasattr(g, '_recorder'):
         g._recorder = Recorder()
-        
     c = g.app.commanders()[0]
     dirname = c.config.getString("screen-capture-save-path")
     if not dirname:
@@ -170,10 +170,8 @@ def screen_capture_now(kwargs={}):
         time.strftime('%Y-%m-%dT%H-%M-%S')+'.png'
     )
     g._recorder.grab_frame(filename=filename)
-    
     # *only* print, don't want output messing up log view in screen shots
     print("Screenshot: %s"%filename)
-
 #@+node:tbrown.20130419143128.29679: ** screen_capture_5sec
 @g.command('screen-capture-5sec')
 def screen_capture_5sec(kwargs):

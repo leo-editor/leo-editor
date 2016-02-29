@@ -22,9 +22,9 @@ def init():
         return True
 #@+node:tbrown.20140806084727.30179: ** onCreate
 def onCreate(tag, keys):
-    
+
     c = keys.get('c')
-    
+
     LiveCodeDisplayProvider(c)
 #@+node:tbrown.20140806084727.31749: ** livecode-show
 @g.command('livecode-show')
@@ -43,24 +43,24 @@ class LiveCodeDisplay:
     #@+others
     #@+node:tbrown.20140806084727.30188: *3* __init__ (livecode.py)
     def __init__(self, c):
-        
+
         self.c = c
         c._livecode = self
         self.v = c.p.v
-        
+
         self.active = True
         self.codeblocks = []
         self.scope = {'c': c, 'g': g}
         self.dump = False
-      
+
         self._build_gui()
-        
+
 
         g.registerHandler('idle', self.update)
     #@+node:tbrown.20140806084727.39166: *3* _build_gui
     def _build_gui(self):
         self.w = w = QtWidgets.QWidget()
-        
+
         w.setObjectName('show_livecode')
         w.setLayout(QtWidgets.QVBoxLayout())
         self.status = QtWidgets.QLabel()
@@ -100,13 +100,13 @@ class LiveCodeDisplay:
 
     #@+node:tbrown.20140806084727.31744: *3* toggle_active
     def toggle_active(self):
-        
+
         self.active = not self.active
         self.status.setText("ACTIVE" if self.active else "(paused)")
         self.activate.setText("STOP" if self.active else "START")
     #@+node:tbrown.20140806084727.31743: *3* update
     def update(self, tag, kwargs):
-        """update - Return 
+        """update - Return
         """
         c = self.c
         if kwargs['c'] != c:
@@ -119,25 +119,25 @@ class LiveCodeDisplay:
         if not self.active:
             return
         self.status.setText("ACTIVE")
-        
+
         source = c.p.b
         lines = source.split('\n')
-        
+
         try:
             top_level = ast.parse(source)
         except SyntaxError:
             self.status.setText("ACTIVE - INCOMPLETE CODE")
             return
-            
+
         if self.dump:
             self.dump = False
             print(ast.dump(top_level))
-        
+
         block = []  # blocks (strings) of source code
         nodes = list(ast.iter_child_nodes(top_level))
         self.scope['p'] = c.p
         run_count = 0
-        
+
         # break source up into blocks corresponding to top level nodes
         for n, node in enumerate(nodes):
             if n == len(nodes) - 1:
@@ -145,12 +145,12 @@ class LiveCodeDisplay:
             else:
                 next_node = nodes[n+1].lineno
             block.append("\n".join(lines[node.lineno-1:next_node-1]))
-        
+
         result = []
         for n, node in enumerate(nodes):
-            
+
             node_result = None
-            
+
             if (n < len(self.codeblocks) and
                 self.codeblocks[n].code == block[n]):
                 # same code, assume same result
@@ -159,7 +159,7 @@ class LiveCodeDisplay:
                 run_count += 1
                 # drop all remaining stored results (maybe none)
                 del self.codeblocks[n:]
-                
+
                 try:
                     if isinstance(node, ast.Expr):
                         # pylint: disable=eval-used
@@ -168,11 +168,11 @@ class LiveCodeDisplay:
                         # exec block[n] in self.scope
                         # EKR: Python 3 compatibility.
                         exec(block[n],self.scope)
-                except:
+                except Exception:
                     self.status.setText("ACTIVE: fail at %s" %
                         block[n].split('\n')[0])
                     break
-                    
+
                 if isinstance(node, ast.Expr):
                     pass  # already handled above
                 elif isinstance(node, (ast.Assign, ast.AugAssign)):

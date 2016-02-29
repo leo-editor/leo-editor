@@ -71,7 +71,7 @@ if g.isPython3:
     # pylint: disable=no-name-in-module
     import urllib.parse as urlparse
 else:
-    import urlparse 
+    import urlparse
 
 from formatter import AbstractFormatter, DumbWriter
 
@@ -120,7 +120,7 @@ class FTPurl:
     #@+others
     #@+node:edream.110203113231.880: *3* __init__
     def __init__(self, ftpURL, mode=''):
-        
+
         parse = urlparse(ftpURL)
         if parse[0] != 'ftp':
             raise IOError("error reading %s: malformed ftp URL" % ftpURL)
@@ -172,7 +172,7 @@ class FTPurl:
                 s = file.getvalue()
                 file.close()
             return s
-        except:
+        except Exception:
             exception, msg, tb = sys.exc_info()
             raise IOError(msg)
 
@@ -206,7 +206,7 @@ class FTPurl:
             else: # mode='b': binary mode
                 self.ftp.storbinary('STOR %s' % self.path, file)
             file.close()
-        except:
+        except Exception:
             exception, msg, tb = sys.exc_info()
             raise IOError(msg)
     #@+node:edream.110203113231.886: *3* Utilities
@@ -227,7 +227,7 @@ class FTPurl:
             listcmd = 'LIST %s' % path
             self.ftp.retrlines(listcmd.rstrip(), s.append)
             return '\n'.join(s)
-        except:
+        except Exception:
             exception, msg, tb = sys.exc_info()
             raise IOError(msg)
     #@+node:edream.110203113231.890: *4* exists
@@ -252,7 +252,7 @@ class FTPurl:
         """Close an existing FTPurl connection."""
         try:
             self.ftp.quit()
-        except:
+        except Exception:
             self.ftp.close()
         del self.ftp
         self.isConnectionOpen = 0
@@ -269,7 +269,8 @@ def enable_body(body):
             g.pr(insertOffTime,insertOnTime)
             body.configure(state="normal")
             body.configure(insertontime=insertOnTime,insertofftime=insertOffTime)
-        except: g.es_exception()
+        except Exception:
+            g.es_exception()
 
 def disable_body(body):
     global insertOnTime,insertOffTime
@@ -280,7 +281,8 @@ def disable_body(body):
             insertOffTime = body.cget("insertofftime")
             g.pr(insertOffTime,insertOnTime)
             body.configure(state="disabled")
-        except: g.es_exception()
+        except Exception:
+            g.es_exception()
 #@+node:edream.110203113231.894: ** insert_read_only_node (FTP version)
 # Sets p's body text from the file with the given name.
 # Returns True if the body text changed.

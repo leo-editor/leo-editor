@@ -72,10 +72,10 @@ def start_file(c,p):
     try:
         os.chdir(startdir)
         dirfound = 1
-    except:
+    except Exception:
         g.es(startdir+' - folder not found')
         dirfound = 0
-    
+
     if dirfound:
         fullpath = g.os_path_join(startdir,filename)
         fullpath = g.os_path_abspath(fullpath)

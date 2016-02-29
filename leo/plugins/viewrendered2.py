@@ -23,12 +23,12 @@ viewrendered.py creates the following (``Alt-X``) commands:
 
 ``viewrendered (abbreviated vr)``
     Opens a new rendering window.
-    
+
     By default, the rendering pane renders body text as reStructuredText,
     with all Leo directives removed.
     However, if the body text starts with ``<`` (after removing directives),
     the body text is rendered as html.
-    
+
     **Important**: The default rendering just described does not apply to nodes
     whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
     See the section called **Special Renderings** below.
@@ -51,7 +51,7 @@ viewrendered.py creates the following (``Alt-X``) commands:
     of the presently selected node.
     When locked, the rendering pane does not change when other nodes are selected.
     This is useful for playing movies in the rendering pane.
-    
+
 ``pause-play-movie``
     This command has effect only if the rendering pane is presently showing a movie.
     It pauses the movie if playing, or resumes the movie if paused.
@@ -61,13 +61,13 @@ viewrendered.py creates the following (``Alt-X``) commands:
 
 ``toggle-rendering-pane``
     Shows the rendering pane if invisible, otherwise hides it.
-    
+
 ``update-rendering-pane``
     Forces an update of the rendering pane.
     This is especially useful for @graphics-script nodes:
     such nodes are update automatically only when selected,
     not when the body text changes.
-    
+
 Rendering reStructuredText
 ==========================
 
@@ -89,7 +89,7 @@ will look something like:
     **Heading**
 
     `This` is **really** a line of text.
-    
+
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 
 Rendering markdown
@@ -117,10 +117,10 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 - ``@graphics-script`` executes the script in the body text in a context containing
   two predefined variables:
-      
+
     - gs is the QGraphicsScene for the rendering pane.
     - gv is the QGraphicsView for the rendering pane.
-    
+
   Using these variables, the script in the body text may create graphics to the rendering pane.
 
 - ``@image`` renders the file as an image.
@@ -147,7 +147,7 @@ Settings
 ========
 
 The following settings are the same as in the viewrendered.py plugin:
-    
+
 - ``@bool view-rendered-auto-create = False``
   When True, show the rendering pane when Leo opens an outline.
 
@@ -156,16 +156,16 @@ The following settings are the same as in the viewrendered.py plugin:
 
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,md,html)
-  
+
 - ``@string view-rendered-md-extensions = extra``
   A comma-delineated list of markdown extensions to use.
-  Suitable extensions can be seen here: 
+  Suitable extensions can be seen here:
   http://pythonhosted.org/Markdown/extensions/index.html
-  
+
 The following settings are new in the viewrendered2.py plugin:
 
 These settings directly override the corresponiding docutils settings:
-  
+
 - ``@string vr-stylesheet-path``
 - ``@int vr-halt-level = 6``
 - ``@string vr-math-output = mathjax``
@@ -283,7 +283,7 @@ controllers = {}
 # 
 # - You can also use the export button to push it to your browser, from which
 #   you can save in (typically many formats).
-#   
+# 
 # - Google "restructuredtext screen shots"
 # 
 #@+node:ekr.20140226125539.16819: *3* Intro post
@@ -345,7 +345,7 @@ controllers = {}
 # 
 # * Be able to *export* any of these renderings to a full web-browser to take advantage
 #   of the large rendering window (especially for slideshows, as well as printing, saving output.
-#   
+# 
 # * Be able to integrate automatically executed code nodes intermingled with
 #   reST nodes to provide an automatic calculation-based "Notebook" or "Report"
 #   type output.
@@ -353,7 +353,7 @@ controllers = {}
 # * Don't increase the dependencies of Leo.
 # 
 # Implementation
-# ---------------------- 
+# ----------------------
 # 
 # VR2 is implemented mostly as an ~600 line expansion of the update_rst
 # method in the viewrendered.py plugin. The text-oriented class used for
@@ -399,17 +399,17 @@ controllers = {}
 #   types.  This means it jumps back to whatever pane type VR1 uses, so the
 #   features of VR2 disappear.  I suspect that VR2 could incorporate these types
 #   into the new version and retain these new features.  I should look at that.
-#     
+# 
 # * Doesn't integrate with rst3 plugin, especially honouring @others etc.
 #   There are some conflicts in objectives, so this may never be fully resolved.
 #   It would probably make sense for rst3 settings to get used for VR2 as well,
 #   along with additional VR2 specific settings.  Currently, VR2 has its own
 #   @settings-style settings.  The rst3 code is not used.
-#   
+# 
 # * For slideshow purposes, a patch to docutils s5_writer is required to be able
 #   to handle an arbitrary hierarchy of nodes (forces all headings to start a new
 #   slide).  Otherwise, only the 2nd level nodes (from the root) force a new slide.
-#   
+# 
 # * The integration of VR2 code into the existing viewrendered plugin code is
 #   rudimentary.  I took the shortcut of not trying to understand this code well
 #   and confining my integration to the rst rendering only.  Better integration
@@ -422,7 +422,7 @@ controllers = {}
 # Future?
 # -----------
 # * Expand the export button if pandoc is installed, adding optional
-#   output formats such as docx, odt, plus additional slideshow formats. 
+#   output formats such as docx, odt, plus additional slideshow formats.
 # * Use new reST functionality to replace other media viewrendered methods
 #   for images, svg, movies, etc.
 # * Integrate better with rst3?
@@ -653,11 +653,11 @@ class WebViewPlus(QtWidgets.QWidget):
         self.toolbar.setToolTip(self.tooltip_text(
             """
             Toolbar:
-            -  Navigation buttons (like a normal browser), 
+            -  Navigation buttons (like a normal browser),
             -  Reload button which is used to "update" this rendering pane
             -  Options tool-button to control the way rendering is done
             -  Export button to export to the standard browser
-                    
+
             Keyboard shortcuts:
             <b>Ctl-C</b>  Copy html/text from the pane
             Ctl-+  Zoom in
@@ -1042,7 +1042,7 @@ class WebViewPlus(QtWidgets.QWidget):
     def process_nodes(self, p, tree=True):
         """
         Process the reST for a node, defaulting to node's entire tree.
-        
+
         Any code blocks found (designated by @language python) will be executed
         in order found as the tree is walked. No section references are heeded.
         Output directed to stdout and stderr are included in the reST source.
@@ -1184,13 +1184,13 @@ class WebViewPlus(QtWidgets.QWidget):
         The most unused underline characters are used here, so as not to clash
         with headings used in the reST.  These characters must not be used for
         underlining in nodes.
-        
+
         Note that the full range of valid characters defined for reST is ::
-            
+
             ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
-        
+
         and the recommended ones are::
-            
+
             = - ` : . ' " ~ ^ _ * + #
         """
         # Use relatively unused underline characters, cater for many levels
@@ -1301,7 +1301,7 @@ class WebViewPlus(QtWidgets.QWidget):
     def md_process_nodes(self, p, tree=True):
         """
         Process the markdown for a node, defaulting to node's entire tree.
-        
+
         Any code blocks found (designated by @language python) will be executed
         in order found as the tree is walked. No section references are heeded.
         Output directed to stdout and stderr are included in the md source.
@@ -1454,7 +1454,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20140226075611.16803: *3* export
     def export(self):
         """Sends self.html to an external browser through leo.html.
-        
+
         Note: If rendering outputs a file, e.g. leo.html, then this routine
         need not write the file again as is presently the case."""
         import webbrowser

@@ -179,7 +179,7 @@ commands do the following:
 
     @url built slide
     @url screenshot
-    @url working file 
+    @url working file
     @url final output file
 
 **Options and settings**
@@ -294,7 +294,7 @@ child of an @slide node.
 **Settings**
 
 @string screenshot-bin = <path to inkscape.exe>
-  The full path to the Inkscape program.   
+  The full path to the Inkscape program.
 
 **File names**
 

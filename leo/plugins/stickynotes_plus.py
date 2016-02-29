@@ -8,6 +8,7 @@ alt-x stickynote to pop out current node as a note.
 
 '''
 #@-<< docstring >>
+# Disable Qt warnings.
 #@+<< imports >>
 #@+node:ekr.20100103100944.5391: ** << imports >>
 import leo.core.leoGlobals as g
@@ -27,10 +28,11 @@ except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
 
+# pylint: disable=no-name-in-module
 from PyQt4.QtCore import (QSize,QVariant, Qt,SIGNAL,QTimer,QString)
 from PyQt4.QtGui import (QAction,QFont,QIcon,QMenu,QTextCursor,
     QTextCharFormat,QTextBlockFormat,QTextListFormat,QTextEdit,QPlainTextEdit)
-    # QApplication,QColor,QFontMetrics,QKeySequence, QPixmap, 
+    # QApplication,QColor,QFontMetrics,QKeySequence, QPixmap,
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100103100944.5392: ** styling
@@ -50,7 +52,7 @@ QPlainTextEdit {
 
 def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
+    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 
 #@+node:ekr.20100103100944.5393: ** init
@@ -61,13 +63,13 @@ def init ():
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-    g.app.stickynotes = {}    
+    g.app.stickynotes = {}
     return ok
 #@+node:ekr.20100103100944.5394: ** class FocusingPlainTextEdit
 class FocusingPlaintextEdit(QPlainTextEdit):
 
     def __init__(self, focusin, focusout):
-        QPlainTextEdit.__init__(self)        
+        QPlainTextEdit.__init__(self)
         self.focusin = focusin
         self.focusout = focusout
 
@@ -75,7 +77,7 @@ class FocusingPlaintextEdit(QPlainTextEdit):
         #print "focus out"
         self.focusout()
 
-    def focusInEvent (self, event):        
+    def focusInEvent (self, event):
         self.focusin()
 
     def closeEvent(self, event):
@@ -86,7 +88,7 @@ class FocusingPlaintextEdit(QPlainTextEdit):
 #@+node:ekr.20100103100944.5395: ** class SimpleRichText
 class SimpleRichText(QTextEdit):
     def __init__(self, focusin, focusout):
-        QTextEdit.__init__(self)        
+        QTextEdit.__init__(self)
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
@@ -97,12 +99,12 @@ class SimpleRichText(QTextEdit):
         #print "focus out"
         self.focusout()
 
-    def focusInEvent ( self, event ):        
+    def focusInEvent ( self, event ):
         self.focusin()
 
 
     def closeEvent(self, event):
-        event.accept()        
+        event.accept()
 
     def createActions(self):
         self.boldAct = QAction(self.tr("&Bold"), self)
@@ -194,7 +196,7 @@ class notetextedit(QTextEdit):
         self.focusout()
 
     #@+node:ekr.20100103100944.5399: *3* focusInEvent
-    def focusInEvent__(self, event):        
+    def focusInEvent__(self, event):
         self.focusin()
 
     #@+node:ekr.20100103100944.5400: *3* toggleItalic
@@ -397,7 +399,7 @@ class notetextedit(QTextEdit):
                  self.fontItalic()),
                 ("&Monospaced", None, notetextedit.Code,
                  self.fontFixedPitch())
-                ): 
+                ):
 
             action = menu.addAction(text, self.setTextEffect)
             #if shortcut is not None:
@@ -497,7 +499,7 @@ class notetextedit(QTextEdit):
         #print("mouseReleaseEvent")
         pos = event.pos()
         url = g.u(self.anchorAt(pos))
-        if url:            
+        if url:
             if not url.startswith('http://'): #linux seems to need this
                 url = 'http://{0}'.format(url)
             webbrowser.open(g.u(url),new=2,autoraise=True)
@@ -515,7 +517,7 @@ class notetextedit(QTextEdit):
             else:
                 text = '<a href="http://{0}">{0}</a> '.format(text)
             self.insertHtml(text)
-        else:   
+        else:
             QTextEdit.insertFromMimeData(self, source)
 
     #@+node:ekr.20100103100944.5419: *3* toMarkdown
@@ -538,7 +540,7 @@ class notetextedit(QTextEdit):
                 #doc += textList.itemText(block) + ' ' + textList.item(textList.itemNumber(block)).text() + '\n\n'
             else:
                 if block.textList():
-                    doc += '  '+block.textList().itemText(block) + ' ' 
+                    doc += '  '+block.textList().itemText(block) + ' '
                 # para = QString()
                 para = g.u('')
                 iterator = block.begin()
@@ -556,7 +558,7 @@ class notetextedit(QTextEdit):
                         if char_format.isAnchor():
                             ref = text if text.startswith('http://') else 'http://{0}'.format(text)
                             # too lazy right now to check if URL has already been referenced but should
-                            references += "  [{0}]: {1}\n".format(i,ref)                            
+                            references += "  [{0}]: {1}\n".format(i,ref)
                             text = "[{0}][{1}]".format(text,i)
                             i+=1
                         elif font_size > 10:

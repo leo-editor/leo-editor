@@ -18,7 +18,7 @@ prepends (negative values) or appends (positive values) the
 required number of parent names to the other nodes name.
 
 So for example, you may see links listed as::
-    
+
     <- taxa
     <- taxa
     <- taxa
@@ -35,9 +35,9 @@ where the extra information is the name of the linked node's parent.
 #@+<< notes >>
 #@+node:ekr.20140920145803.17983: ** << notes >>
 # Notes
-# 
+#
 # Backlink will store all its stuff in v.unknownAttributes['_bklnk']
-# 
+#
 # When nodes are copied and pasted unknownAttributes are duplicated.
 # during load, backlink will create a dict. of vnode ids.  Duplicates
 # will be split, so that a node linking to a node which is copied and
@@ -46,13 +46,13 @@ where the extra information is the name of the linked node's parent.
 # vnode originally held the id
 #
 # TODO
-# 
+#
 # - provide API
-# 
+#
 # - mark Src / Dst - vnodes more robust that positions?
-# 
+#
 # - store attributes for link start/whole-link/end (name, weight)
-# 
+#
 # - restore dropped links (cut / paste or undo)?
 
 # UI class signatures, main class signature
@@ -154,7 +154,7 @@ class backlinkController(object):
             self.showMessage("Error: no such link")
 
         self.updateTabInt()
-        
+
         # gcc = getattr(self.c, 'graphcanvasController')
         try:
             gcc = self.c.graphcanvasController
@@ -576,7 +576,7 @@ class backlinkController(object):
                 self.showMessage('Click a link to follow it', optional=True)
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
-                    
+
                     name = i[1].h
                     # add self.name_levels worth of ancestor names on left or right
                     nl = self.name_levels
@@ -592,11 +592,11 @@ class backlinkController(object):
                         else:
                             nl -= 1
                             name += ' < ' + nl_txt
-                        
+
                     txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
                     texts.append(txt)
 
-        self.ui.loadList(texts) 
+        self.ui.loadList(texts)
     #@+node:ekr.20090616105756.3969: *3* vnodePosition
     def vnodePosition(self,v):
         """Return a position for vnode v, if there is one"""
@@ -616,7 +616,7 @@ if g.app.gui.guiName() == "qt":
             QtWidgets.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Links', widget = self) 
+            self.owner.c.frame.log.createTab('Links', widget = self)
             self.UI = form_class()
             self.UI.setupUi(self)
             u = self.UI
@@ -630,7 +630,7 @@ if g.app.gui.guiName() == "qt":
                 u.dirRightBtn.clicked.connect( self.dirClicked)
                 u.linkList.itemClicked.connect(self.listClicked)
                 u.deleteBtn.stateChanged.connect(o.deleteSet)
-            else: # old code 
+            else: # old code
                 self.connect(u.markBtn,
                     QtCore.SIGNAL("clicked()"), o.mark)
                 self.connect(u.swapBtn,
@@ -639,9 +639,9 @@ if g.app.gui.guiName() == "qt":
                     QtCore.SIGNAL("clicked()"), self.linkClicked)
                 self.connect(u.rescanBtn,
                     QtCore.SIGNAL("clicked()"), o.loadLinksInt)
-                self.connect(u.dirLeftBtn, 
+                self.connect(u.dirLeftBtn,
                     QtCore.SIGNAL("clicked()"), self.dirClicked)
-                self.connect(u.dirRightBtn, 
+                self.connect(u.dirRightBtn,
                     QtCore.SIGNAL("clicked()"), self.dirClicked)
                 self.connect(u.linkList,
                     QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
@@ -672,7 +672,7 @@ if g.app.gui.guiName() == "qt":
             else:
                 self.owner.linkAction('to', newChild=newChild)
         #@+node:ekr.20140920145803.17991: *3* loadList
-        def loadList(self, lst): 
+        def loadList(self, lst):
             self.UI.linkList.clear()
             self.UI.linkList.addItems(lst)
         #@+node:ekr.20140920145803.17992: *3* showMessage
@@ -823,7 +823,7 @@ def init ():
     if ok:
         g.registerHandler('after-create-leo-frame',onCreate)
         # can't use before-create-leo-frame because Qt dock's not ready
-        g.plugin_signon(__name__) 
+        g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20090616105756.3941: *3* onCreate
 def onCreate (tag, keys):

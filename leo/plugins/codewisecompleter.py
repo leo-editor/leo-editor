@@ -53,7 +53,7 @@ keep_tag_lines = True
 #@+others
 #@+node:ville.20091205173337.10141: ** class ContextSniffer
 class ContextSniffer:
-    
+
     """ Class to analyze surrounding context and guess class
 
     For simple dynamic code completion engines.
@@ -63,23 +63,23 @@ class ContextSniffer:
 
         self.vars = {}
             # Keys are var names; values are list of classes
-        
+
     #@+others
     #@+node:ekr.20110309051057.14285: *3* get_classes
     def get_classes (self,s,varname):
-        
+
         '''Return a list of classes for string s.'''
-        
+
         self.push_declarations(s)
 
         aList = self.vars.get(varname,[])
-        
+
         g.trace(aList)
-        
+
         return aList
     #@+node:ekr.20110309051057.14282: *3* set_small_context
     # def set_small_context(self, body):
-        
+
         # """ Set immediate function """
 
         # self.push_declarations(body)
@@ -96,7 +96,7 @@ class ContextSniffer:
                     self.declare(a.strip(),b.strip())
     #@+node:ekr.20110309051057.14284: *4* declare
     def declare(self, var, klass):
-        
+
         # g.trace(var,klass) # Very large trace.
 
         vars = self.vars.get(var, [])
@@ -131,7 +131,7 @@ def init ():
             # 'codewise-suggest',None, codewise_suggest)
 
 #@+node:ville.20091204224145.5361: *3* onCreate (codewisecompleter.py)
-def onCreate (tag, keys): 
+def onCreate (tag, keys):
     '''Register the ctags-complete command for the newly-created commander.'''
     c = keys.get('c')
     if c:
@@ -164,9 +164,9 @@ def read_tags_file():
         return []
 #@+node:ekr.20110309051057.14269: *3* start (top-level)
 def start(event):
-    
+
     '''Call cc.start() where cc is the controller for event's commander.'''
-    
+
     global conrollers
 
     c = event.get('c')
@@ -178,14 +178,14 @@ def start(event):
         cc.start(event)
 #@+node:vivainio.20091217144258.5737: *3* suggest (top-level)
 def suggest(event):
-    
+
     '''Call cc.suggest() where cc is the controller for event's commander.'''
-    
+
     global conrollers
 
     c = event.get('c')
     if not c: return
-    
+
     h = c.hash()
     cc = controllers.get(h)
     if not cc:
@@ -194,11 +194,11 @@ def suggest(event):
     cc.suggest(event)
 #@+node:ekr.20110309051057.14270: ** class CodewiseController
 class CodewiseController:
-    
+
     #@+others
     #@+node:ekr.20110309051057.14275: *3*  ctor
     def __init__ (self,c):
-            
+
         self.active = False
         self.body = c.frame.top.ui.richTextEdit
         self.c = c
@@ -206,10 +206,10 @@ class CodewiseController:
         self.popup = None
         self.popup_filter = None
         self.w = c.frame.body.wrapper # A LeoQTextBrowser
-        
+
         # Init.
         self.ev_filter = self.w.ev_filter
-        
+
         # g.trace('CodewiseController',c.shortFileName(),self.body)
     #@+node:ville.20091204224145.5363: *3* complete
     def complete(self,event):
@@ -236,11 +236,11 @@ class CodewiseController:
 
         model = QtGui.QStringListModel(hits)
         cpl.setModel(model)
-        cpl.setCompletionPrefix(prefix)  
+        cpl.setCompletionPrefix(prefix)
         cpl.complete()
     #@+node:ekr.20110309051057.14280: *3* get_attr_target_python
     def get_attr_target_python(self,s):
-        
+
         """ a.b.foob """
 
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", s.lstrip())
@@ -248,7 +248,7 @@ class CodewiseController:
         return m
     #@+node:ekr.20110309051057.14279: *3* get_current_line
     def get_current_line(self,w):
-        
+
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
@@ -257,14 +257,14 @@ class CodewiseController:
         return head, tail
     #@+node:ekr.20110309051057.14288: *3* get_word
     def get_word (self):
-        
-        body = self.body 
+
+        body = self.body
         tc = body.textCursor()
         tc.select(tc.WordUnderCursor)
         return tc.selectedText()
     #@+node:ville.20091205173337.10142: *3* guess_class
     def guess_class(self,c,p,varname):
-        
+
         '''Return the applicable classes for c,p'''
 
         # if varname == 'g':
@@ -307,7 +307,7 @@ class CodewiseController:
         return aList
     #@+node:ville.20091205173337.10140: *3* lookup_methods
     def lookup_methods(self,klasses, prefix):
-        
+
         trace = True
 
         aList = codewise.cmd_members([klasses[0]])
@@ -326,19 +326,19 @@ class CodewiseController:
 
         aList = list(set(desc))
         aList.sort()
-        
+
         if trace: g.trace(prefix,len(aList))
         return aList
     #@+node:ekr.20110309051057.14273: *3* start
     def start (self,event):
-        
+
         c = self.c
-        
+
         # Create the callback to insert the selected completion.
         def completion_callback(completion,self=self):
             # pylint: disable=maybe-no-member
             self.end(completion)
-        
+
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body)
@@ -349,7 +349,7 @@ class CodewiseController:
         self.ev_filter.ctagscompleter_active = True
         self.ev_filter.ctagscompleter_onKey = self.complete
             # EKR: was self.onKey, which does not exist.
-        
+
         # Show the completions.
         self.complete(event)
     #@+node:ekr.20110309051057.14272: *3* suggest
@@ -357,10 +357,10 @@ class CodewiseController:
 
         trace = True
         c,w = self.c,self.w ; p = c.p
-        
+
         if not pattern:
             pattern,tail = self.get_current_line(w)
-         
+
         m = self.get_attr_target_python(pattern)
 
         if m:
@@ -385,7 +385,7 @@ class CodewiseController:
             cpl = self.completer
             model = QtGui.QStringListModel(hits)
             cpl.setModel(model)
-            cpl.setCompletionPrefix(prefix)  
+            cpl.setCompletionPrefix(prefix)
             cpl.complete()
         else:
             print("%s Completions for %s:" % (len(hits),prefix))

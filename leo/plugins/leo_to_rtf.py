@@ -37,7 +37,10 @@ def init():
 #@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)
 def createExportMenu (tag,keywords):
 
+    # pylint: disable=undefined-variable
+    # c *is* defined.
     c = keywords.get("c")
+    if not c: return
 
     # Insert leoToRTF in #3 position of the File > Export menu.
     c.frame.menu.insert('Export...',3,
@@ -48,7 +51,7 @@ def export_rtf( c ):
 
     # g.es("Exporting...")
 
-    # Get user preferences from INI file 
+    # Get user preferences from INI file
     fileName = g.os_path_join(g.app.loadDir,"..","plugins","leo_to_rtf.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
@@ -135,7 +138,7 @@ def export_rtf( c ):
                 f.write("}")                 # If this is not the 1st level written, close the last before begin
             levelIndent = str(720*curLevel) # Generate the pixel indent for the current level
             f.write(levelHeader)            # Output the generic RTF level info
-            f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel-1) + "\\lin" + levelIndent)        
+            f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel-1) + "\\lin" + levelIndent)
             f.write("{")
 
         myLevel = curLevel
@@ -149,15 +152,15 @@ def export_rtf( c ):
             f.write(myOutput)
             # If including outline body text, convert it to RTF usable format
             if not flagJustHeadlines:
-                myBody = p.b.encode( "utf-8" ) 
-                myBody = myBody.rstrip().rstrip("\n") 
+                myBody = p.b.encode( "utf-8" )
+                myBody = myBody.rstrip().rstrip("\n")
                 f.write(myBody + "\\par ")
 
     # Write final level close
-    f.write("}")  
+    f.write("}")
 
     # Write RTF close
-    f.write("}")  
+    f.write("}")
 
     # Close file
     f.close()

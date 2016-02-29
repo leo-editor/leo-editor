@@ -246,7 +246,7 @@ def startIPython(self,event=None):
                 return
                 #try:
                 #    import ipy_qt.qtipywidget
-                #except:
+                #except Exception:
                 #    g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
                 #    raise
 

@@ -105,7 +105,7 @@ class DateNodes:
     # Names of settings that have to be read with getBool()
     boolean_settings = [
         "datenodes_month_node_omit_saturdays",
-        "datenodes_month_node_omit_sundays", 
+        "datenodes_month_node_omit_sundays",
         "datenodes_year_node_omit_saturdays",
         "datenodes_year_node_omit_sundays"
     ]
@@ -210,7 +210,7 @@ class DateNodes:
         for month in range(1, 13):
             month_date = datetime.date(year, month, day)
 
-            self._insert_month_node(parent = year_node, date = month_date, day_fmt = day_fmt, month_fmt = month_fmt, 
+            self._insert_month_node(parent = year_node, date = month_date, day_fmt = day_fmt, month_fmt = month_fmt,
                                     omit_saturdays = omit_saturdays, omit_sundays = omit_sundays)
 
 

@@ -4,12 +4,12 @@
 
 class BaseWriter:
     '''The base writer class for all writers in leo.plugins.writers.'''
-    
+
     def __init__(self, c):
         '''Ctor for leo.plugins.writers.BaseWriter.'''
         self.c = c
         self.at = c.atFileCommands
-        
+
     #@+others
     #@+node:ekr.20150626092123.1: ** basewriter.put
     def put(self, s):

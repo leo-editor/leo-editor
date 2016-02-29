@@ -75,7 +75,7 @@ Scripting
 nodediff.py can be used by scripts to run any of the three styles of diff.
 The following are available to scripts, and all of them take a list of two
 positions as input::
-    
+
     c.theNodeDiffController.run_compare()
     c.theNodeDiffController.run_ndiff()
     c.theNodeDiffController.run_unified_diff()
@@ -101,7 +101,7 @@ import subprocess
 
 try:
     from cStringIO import StringIO
-except:
+except Exception:
     # python 3
     from io import StringIO
 
@@ -123,30 +123,30 @@ def init ():
     return ok
 #@+node:peckj.20140113131037.5796: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     theNodeDiffController = NodeDiffController(c)
     c.theNodeDiffController = theNodeDiffController
 #@+node:peckj.20140113131037.5797: ** class NodeDiffController
 class NodeDiffController:
-    
+
     #@+others
     #@+node:peckj.20140113131037.5798: *3* __init__ (NodeDiffController, nodediff.py)
     def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-        
+
         self.tab_name = 'NodeDiff'
-        
-        self.valid_styles = {'compare': self.run_compare, 
-                             'ndiff': self.run_ndiff, 
+
+        self.valid_styles = {'compare': self.run_compare,
+                             'ndiff': self.run_ndiff,
                              'unified_diff': self.run_unified_diff}
         self.diff_style = c.config.getString('node-diff-style') or 'compare'
         if self.diff_style not in self.valid_styles.keys():
             self.diff_style = 'compare'
-        
+
         # register commands
         c.k.registerCommand('diff-marked',shortcut=None,func=self.run_diff_on_marked)
         c.k.registerCommand('diff-selected',shortcut=None,func=self.run_diff_on_selected)
@@ -185,7 +185,7 @@ class NodeDiffController:
         diff = d.compare(n1.b.splitlines(), n2.b.splitlines())
         g.es('Node 1: %s' % n1.h, color='blue', tabName=self.tab_name)
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
-        for l in diff: 
+        for l in diff:
             color = None
             if l.startswith('+'): color='forestgreen'
             if l.startswith('-'): color='red'
@@ -202,7 +202,7 @@ class NodeDiffController:
         diff = difflib.ndiff(n1.b.splitlines(), n2.b.splitlines())
         g.es('Node 1: %s' % n1.h, color='blue', tabName=self.tab_name)
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
-        for l in diff: 
+        for l in diff:
             color = None
             if l.startswith('+'): color='forestgreen'
             if l.startswith('-'): color='red'
@@ -219,7 +219,7 @@ class NodeDiffController:
         diff = difflib.unified_diff(n1.b.splitlines(), n2.b.splitlines())
         g.es('Node 1: %s' % n1.h, color='blue', tabName=self.tab_name)
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
-        for l in diff: 
+        for l in diff:
             color = None
             if l.startswith('+'): color='forestgreen'
             if l.startswith('-'): color='red'
@@ -266,21 +266,15 @@ class NodeDiffController:
         :Parameters:
         - `event`: Leo event
         """
-
         c = self.c
-        
         gnx = c.p.gnx
-        
         tree = leosax.get_leo_data(c.fileName())
         for node in tree.flat():
             if node.gnx == gnx:
-                break
-        else:
-            g.es("Node (gnx) not found in saved file")
-            return
-
-        node.b = ''.join(node.b)
-        self.run_appropriate_diff([node, c.p])
+                node.b = ''.join(node.b)
+                self.run_appropriate_diff([node, c.p])
+                return
+        g.es("Node (gnx) not found in saved file")
     #@+node:tbrown.20140118145024.25562: *4* run_diff_on_vcs
     def run_diff_on_vcs(self, event=None):
         """run_diff_on_vcs - try and check out the previous version of the Leo
@@ -292,10 +286,10 @@ class NodeDiffController:
         """
 
         c = self.c
-        
+
         dir_, filename = g.os_path_split(c.fileName())
         relative_path = []  # path from top of repo. to .leo file
-        
+
         mode = None  # mode is which VCS to use
         # given A=/a/b/c/d/e, B=file.leo adjust to A=/a/b/c, B=d/e/file.leo
         # so that A is the path to the repo. and B the path in the repo. to
@@ -311,13 +305,13 @@ class NodeDiffController:
                 if not subpath:
                     break
                 relative_path[0:0] = [subpath]
-                
+
         if not mode:
             g.es("No supported VCS found in '%s'"%dir_)
             return
-        
+
         gnx = c.p.gnx
-        
+
         if mode == 'git':
             cmd = [
                 'git',
@@ -333,7 +327,7 @@ class NodeDiffController:
                 c.fileName(),  # path,
                 # g.os_path_join( *(relative_path + [filename]) ),
             ]
-            
+
         cmd = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         data, err = cmd.communicate()
@@ -342,13 +336,11 @@ class NodeDiffController:
         tree = leosax.get_leo_data(aFile)
         for node in tree.flat():
             if node.gnx == gnx:
-                break
-        else:
-            g.es("Node (gnx) not found in previous version")
-            return
+                node.b = ''.join(node.b)
+                self.run_appropriate_diff([node, c.p])
+                return
+        g.es("Node (gnx) not found in previous version")
 
-        node.b = ''.join(node.b)
-        self.run_appropriate_diff([node, c.p])
     #@-others
 #@-others
 #@-leo

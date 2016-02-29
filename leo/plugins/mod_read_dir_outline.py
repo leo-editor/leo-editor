@@ -161,7 +161,7 @@ class controller:
             c.setChanged(True)
             #sélectionne le noeud parent
             c.selectPosition(current)
-        except:
+        except Exception:
             if language == 'french':
                 g.es("erreur d'insertion de noeud...")
             else:

@@ -26,10 +26,10 @@ def init ():
 def get_timestamp_now():
     '''Use standard Unix timestamps
     '''
-    
+
     # local time as a time struct
     now = time.localtime()
-    
+
     # convert time struct to seconds since epoch (timestamp)
     local = time.mktime(now)
     return str(local)
@@ -39,7 +39,7 @@ def new_hook(tag, keywords):
     '''Hooked to <new> event, fired when a Leo file is created,
     which the create_node_hook doesn't handle.
     '''
-    
+
     c = keywords['c']
     root = c.rootPosition()
     d = root.v.u

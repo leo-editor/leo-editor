@@ -10,7 +10,7 @@ Scoring is based on how much you edit the nodes.
 '''
 
 # By VMV.
-
+# pylint: disable=wildcard-import
 #@+<< imports >>
 #@+node:ville.20120503224623.3577: ** << imports >>
 # import sys
@@ -34,7 +34,7 @@ def init ():
 class MylynController:
     def __init__(self):
         self.scoring = {}
-        
+
     def add_score(self, v, points):
         cur = self.scoring.get(v, 0)
         cur+=points
@@ -42,20 +42,20 @@ class MylynController:
     def children_hnd(self, tag, kw):
         print(tag, kw)
         ns = kw["nodes"]
-        for v in ns:            
+        for v in ns:
             self.add_score(v, 100)
 
     def content_hnd(self,tag, kw):
         print(tag, kw)
         ns = kw["nodes"]
-        for v in ns:            
+        for v in ns:
             self.add_score(v, 1)
-                
+
     def set_handlers(self):
-        
+
         g.registerHandler("childrenModified", self.children_hnd)
         g.registerHandler("contentModified", self.content_hnd)
-        
+
         @g.command("mylyn-scores")
         def mylyn_scores_f(*a):
             for k,v in self.scoring.items():

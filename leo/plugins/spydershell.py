@@ -22,7 +22,7 @@ g.assertUi('qt')
 #@+node:ville.20090815203828.5239: ** init
 def init ():
     '''Return True if the plugin has loaded successfully.'''
-    return g.app.gui.guiName() == 'qt'    
+    return g.app.gui.guiName() == 'qt'
 #@+node:ville.20090815203828.5240: ** Leo commands
 @g.command('spyder-launch')
 def spyder_launch(event):
@@ -56,11 +56,11 @@ def spyder_light(event):
 
 @g.command('spyder-update')
 def spyder_update(event):
-    """ Reset commander and position to current in pydee session 
+    """ Reset commander and position to current in pydee session
 
     Also shows pydee window if it was closed earlier
 
-    """    
+    """
 
     c = event['c']
     ns = g.spyderns

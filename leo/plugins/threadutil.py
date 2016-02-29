@@ -172,8 +172,8 @@ class SysProcessRunner:
         self.q = {}
         self.cur = {}
         self.default_cb = None
-    
-    
+
+
     def add(self, argv, key = "", cb = None):
         """ argv = [program, arg1, ...] """
         ent = {
@@ -182,17 +182,17 @@ class SysProcessRunner:
         }
         self.q.setdefault(key, deque()).append(ent)
         self.sched()
-    
+
     def sched(self):
         for k,q in self.q.items():
             if q and k not in self.cur:
                 ent = q.popleft()
                 self.cur[k] = ent
                 self.run_one(ent, k)
-    
+
     def run_one(self, ent, key):
         p = ent['proc'] = QtCore.QProcess()
-    
+
         def fini(code, status):
             del self.cur[key]
             out = str(p.readAllStandardOutput())
@@ -200,8 +200,8 @@ class SysProcessRunner:
             cb = ent['cb'] or self.default_cb
             later(self.sched)
             cb(out, err, status, ent)
-    
-    
+
+
         cmd = ent['arg'][0]
         args = ent['arg'][1:]
         p.start(cmd, args)

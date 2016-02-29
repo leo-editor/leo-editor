@@ -16,7 +16,7 @@ want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
 Regexp matching is case sensitive; if you want to do a case-insensitive regular
 expression search (or any kind of case-sensitive search in the first place), do it
 by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expression
-syntax, as documented in 
+syntax, as documented in
 
 http://docs.python.org/library/re.html#regular-expression-syntax
 
@@ -24,7 +24,7 @@ Commands
 ========
 
 This plugin defines the following commands that can be bound to keys:
-    
+
 - find-quick:
   Opens the Nav tab.
 
@@ -44,7 +44,7 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-changed:
   Lists all nodes that are changed (aka "dirty") since last save.  Handy when
   you want to see why a file's marked as changed.
-  
+
 - go-anywhere
   Nav bar does live search on headline. Press enter to force search of bodies.
 
@@ -58,7 +58,7 @@ This plugin defines the following commands that can be bound to keys:
 
 - history:
   Lists nodes from c.nodeHistory.
-    
+
 - marked-list:
   List all marked nodes.
 
@@ -78,10 +78,11 @@ if isQt5:
     QApplication = QtWidgets.QApplication
 else:
     QApplication = QtGui.QApplication
-    
+
 from leo.core import leoNodes
     # Uses leoNodes.PosList.
-import fnmatch, re
+import fnmatch
+import re
 from leo.plugins import threadutil
     # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -121,20 +122,20 @@ def show_unittest_failures(event):
                 if p.gnx == gnx:
                     pos = p.copy()
                     break
-    
+
             def mkcb(pos, stack):
-                def focus():            
+                def focus():
                     g.es(stack)
-                    c.selectPosition(pos)        
+                    c.selectPosition(pos)
                 return focus
-    
+
             it = nav.scon.addGeneric(pos.h, mkcb(pos,stack))
             it.setToolTip(stack)
 
     c.k.simulateCommand('focus-to-nav')
 #@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c):
-    
+
     #tabw = c.frame.top.tabWidget
 
     wdg = LeoQuickSearchWidget(c, mode="nav")
@@ -150,7 +151,7 @@ def install_qt_quicksearch_tab(c):
     def focus_to_nav(event):
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
-        
+
     def find_selected(event):
         text = c.frame.body.wrapper.getSelectedText()
         if text.strip():
@@ -159,7 +160,7 @@ def install_qt_quicksearch_tab(c):
             focus_to_nav(event)
         else:
             focus_quicksearch_entry(event)
-            
+
     def nodehistory(event):
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
@@ -207,7 +208,7 @@ def install_qt_quicksearch_tab(c):
         #w.setGeometry(100,0,800,500)
         c._popout = w
 
-    c.frame.nav = wdg            
+    c.frame.nav = wdg
 
     # make activating this tab activate the input box
     def activate_input(idx, c=c):
@@ -256,7 +257,7 @@ class QuickSearchEventFilter(QtCore.QObject):
 
         # Init the base class.
         QtCore.QObject.__init__(self)
-        
+
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit
@@ -266,12 +267,12 @@ class QuickSearchEventFilter(QtCore.QObject):
         #print "Event filter"
         eventType = event.type()
         ev = QtCore.QEvent
-        
+
         # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         kinds = [ev.KeyPress,ev.KeyRelease]
-        
+
         #g.trace(eventType,eventType in kinds)
-        
+
         if eventType == ev.KeyRelease:
             #print "key event"
             lw = self.listWidget
@@ -279,19 +280,19 @@ class QuickSearchEventFilter(QtCore.QObject):
             moved = False
             if k == QtConst.Key_Up:
                 lw.setCurrentRow(lw.currentRow()-1)
-                moved = True            
+                moved = True
             if k == QtConst.Key_Down:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
             if k == QtConst.Key_Return:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-                
+
             if moved:
                 self.lineEdit.setFocus(True)
                 self.lineEdit.deselect()
             #self.w.onKeyPress(event)
-            
+
         return False
     #@-others
 #@+node:ville.20121223213319.3670: ** dumpfocus
@@ -301,13 +302,13 @@ def dumpfocus():
     print("Focus: " + 'f')
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
 class LeoQuickSearchWidget(QtWidgets.QWidget):
-    
+
     """ 'Find in files'/grep style search widget """
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3*  ctor
     def __init__(self,c, mode = "nav", parent=None):
-        
+
         QtWidgets.QWidget.__init__(self, parent)
 
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
@@ -325,22 +326,22 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
             if 1:
                 self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
             else:
-                self.connect(self.ui.lineEdit, 
+                self.connect(self.ui.lineEdit,
                     QtCore.SIGNAL("returnPressed()"),
                     self.selectAndDismiss)
             threadutil.later(self.ui.lineEdit.setFocus)
         else:
             if 1:
-                self.ui.lineEdit.returnPressed.connect(self.returnPressed)    
+                self.ui.lineEdit.returnPressed.connect(self.returnPressed)
             else:
                 self.connect(self.ui.lineEdit,
                     QtCore.SIGNAL("returnPressed()"),
-                    self.returnPressed)    
+                    self.returnPressed)
         if 1:
             self.ui.lineEdit.textChanged.connect(self.liveUpdate)
         else:
-            self.connect(self.ui.lineEdit, 
-                QtCore.SIGNAL("textChanged(QString)"), 
+            self.connect(self.ui.lineEdit,
+                QtCore.SIGNAL("textChanged(QString)"),
                 self.liveUpdate)
 
         self.ev_filter = QuickSearchEventFilter(c,w, self.ui.lineEdit)
@@ -356,7 +357,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
 
         if t == g.u('m'):
             self.scon.doShowMarked()
-        else:        
+        else:
             self.scon.doSearch(t)
 
         if self.scon.its:
@@ -376,21 +377,21 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
                 self.scon.freeze(False)
                 self.scon.clear()
             return
-            
+
         if len(t) < 3:
             return
 
         if self.scon.frozen:
             return
-            
+
         if t == g.u('m'):
             self.scon.doShowMarked()
             return
-                    
+
         self.scon.worker.set_input(t)
-        
-        
-        
+
+
+
 
     #@-others
 #@+node:ekr.20111014074810.15659: ** matchLines
@@ -405,7 +406,7 @@ def matchlines(b, miter):
 
 #@+node:ville.20090314215508.12: ** class QuickSearchController
 class QuickSearchController:
-    
+
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
     def __init__(self,c,listWidget,ui):
@@ -414,11 +415,11 @@ class QuickSearchController:
         self.its = {} # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
-        self.fileDirectives = ["@clean", "@file", "@asis", "@edit", 
+        self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
                                "@auto", "@auto-md", "@auto-org",
                                "@auto-otl", "@auto-rst"]
 
-        self.frozen = False    
+        self.frozen = False
         def searcher(inp):
             #print("searcher", inp)
             if self.frozen:
@@ -426,7 +427,7 @@ class QuickSearchController:
             exp = inp.replace(" ", "*")
             res =  self.bgSearch(exp)
             return res
-            
+
         def dumper():
             # always run on ui thread
             if self.frozen:
@@ -434,27 +435,27 @@ class QuickSearchController:
             out = self.worker.output
             #print("dumper")
             self.throttler.add(out)
-            
+
         def throttledDump(lst):
             """ dumps the last output """
             #print "Throttled dump"
             # we do get called with empty list on occasion
             if not lst:
                 return
-            if self.frozen: 
+            if self.frozen:
                 return
             hm,bm = lst[-1]
             self.clear()
             self.addHeadlineMatches(hm)
             self.addBodyMatches(bm)
 
-        self.throttler = threadutil.NowOrLater(throttledDump)        
-        
+        self.throttler = threadutil.NowOrLater(throttledDump)
+
         self.worker.set_worker(searcher)
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
-        
+
         if 1: # Compatible with PyQt5
             # we want both single-clicks and activations (press enter)
             w.itemActivated.connect(self.onActivated)
@@ -466,7 +467,7 @@ class QuickSearchController:
             # w.connect(w,
                 # QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
                 # self.onActivated)
-            # w.connect(w,                                  
+            # w.connect(w,
                 # QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
                 # self.onSelectItem)
             # w.connect(w,
@@ -475,8 +476,8 @@ class QuickSearchController:
             # # Doesn't work.
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
-        self.frozen = val   
-     
+        self.frozen = val
+
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
         lineMatchHits = 0
@@ -489,7 +490,7 @@ class QuickSearchController:
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 lineMatchHits += 1
-                it = QtWidgets.QListWidgetItem("    "+ml, self.lw)   
+                it = QtWidgets.QListWidgetItem("    "+ml, self.lw)
                 self.its[id(it)] = (p,pos)
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
@@ -514,7 +515,7 @@ class QuickSearchController:
                     ms = matchlines(p.b, p.matchiter)
                     for ml, pos in ms:
                         lineMatchHits += 1
-                        it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)   
+                        it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)
                         self.its[id(it)] = (p,pos)
         return lineMatchHits
 
@@ -528,7 +529,7 @@ class QuickSearchController:
     def addHeadlineMatches(self, poslist):
 
         for p in poslist:
-            it = QtWidgets.QListWidgetItem(p.h, self.lw)   
+            it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -589,14 +590,14 @@ class QuickSearchController:
                 if h: h=h.split()[0]
                 if h in self.fileDirectives:
                     found = True
-                else:                
+                else:
                     if node.level() == 0:
                         hitBase = True
                     else:
                         node = node.parent()
             hNodes = node.self_and_subtree()
-            bNodes = node.self_and_subtree()          
-            
+            bNodes = node.self_and_subtree()
+
         else:
             hNodes = [self.c.p]
             bNodes = [self.c.p]
@@ -607,7 +608,7 @@ class QuickSearchController:
             bm_keys = [match.key() for match in bm]
             numOfHm = len(hm) #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
-        
+
             if self.widgetUI.showParents.isChecked():
                 parents = OrderedDefaultDict(lambda: [])
                 for nodeList in [hm,bm]:
@@ -620,7 +621,7 @@ class QuickSearchController:
             else:
                 self.addHeadlineMatches(hm)
                 lineMatchHits = self.addBodyMatches(bm)
-        
+
             hits = numOfHm + lineMatchHits
             self.lw.insertItem(0, "{} hits".format(hits))
         else:
@@ -633,7 +634,7 @@ class QuickSearchController:
 
         if self.frozen:
             return
-            
+
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
             bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
@@ -752,7 +753,7 @@ class QuickSearchController:
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
     def onActivated (self,event):
-        
+
         c = self.c
 
         c.bodyWantsFocusNow()

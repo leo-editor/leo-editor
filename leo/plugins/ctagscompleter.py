@@ -5,7 +5,7 @@
 ''' This plugin uses ctags to provide an autocompletion list.
 
 Requirements:
-    - Exuberant Ctags: 
+    - Exuberant Ctags:
 
 Usage:
     - You need to create ctags file to ~/.leo/tags. Example::
@@ -17,15 +17,17 @@ Usage:
       (or bind/execute ctags-complete command yourself).
 
 Exuberant Ctags supports wide array of programming languages. It does not
-do type inference, so you need to remember at least the start 
+do type inference, so you need to remember at least the start
 of the function yourself. That is, attempting to complete 'foo->'
-is useless, but 'foo->ba' will work (provided you don't have 2000 
+is useless, but 'foo->ba' will work (provided you don't have 2000
 functions/methods starting with 'ba'. 'foo->' portion is ignored in completion
 search.
 
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
+
+# pylint: disable=no-name-in-module
 from leo.core.leoQt import isQt5,QtCore,QtGui
 if isQt5:
     from PyQt5.QtGui import QCompleter
@@ -66,7 +68,7 @@ def init ():
     return ok
 #@+node:ville.20090317180704.12: *3* onCreate (ctagscompleter.py)
 def onCreate (tag, keys):
-    
+
     '''Register the ctags-complete command for the newly-created commander.'''
 
     c = keys.get('c')
@@ -99,9 +101,9 @@ def read_tags_file():
         return []
 #@+node:ekr.20110307092028.14160: *3* start
 def start(event):
-    
+
     '''Call cc.start() where cc is the CtagsController for event's commander.'''
-    
+
     global conrollers
 
     c = event.get('c')
@@ -113,24 +115,24 @@ def start(event):
         cc.start(event)
 #@+node:ekr.20110307092028.14154: ** class CtagsController
 class CtagsController:
-    
+
     # To do: put cursor at end of word initially.
-   
+
     #@+others
     #@+node:ekr.20110307092028.14161: *3*  ctor
     def __init__ (self,c):
-            
+
         self.active = False
         self.body = c.frame.top.ui.richTextEdit
         self.c = c
         self.completer = None
         self.popup = None
         self.popup_filter = None
-        
+
         # Init.
         w = c.frame.body.wrapper # A LeoQTextBrowser.
         self.ev_filter = w.ev_filter
-        
+
         # g.trace('CtagsController',c.shortFileName(),self.body)
     #@+node:ekr.20091015185801.5243: *3* complete
     def complete(self,event):
@@ -145,17 +147,17 @@ class CtagsController:
         hits = self.lookup(prefix)
         model = QtGui.QStringListModel(hits)
         cpl.setModel(model)
-        cpl.setCompletionPrefix(prefix)  
+        cpl.setCompletionPrefix(prefix)
         cpl.complete()
     #@+node:ekr.20110307141357.14195: *3* end
     def end (self,completion=''):
-        
+
         body = self.body ; cpl = self.completer
         kill = not completion
 
         if not completion:
             completion = g.u(cpl.currentCompletion())
-        
+
         if completion:
             cmpl = g.u(completion).split(None,1)[0]
             cmpl = g.u(cmpl)
@@ -167,11 +169,11 @@ class CtagsController:
             tc.movePosition(tc.EndOfWord)
             tc.insertText(cmpl[-extra:])
             body.setTextCursor(tc)
-        
+
         self.kill()
     #@+node:ekr.20110307141357.14198: *3* kill
     def kill (self):
-        
+
         # Delete the completer.
         # g.trace()
 
@@ -181,7 +183,7 @@ class CtagsController:
         self.ev_filter.ctagscompleter_active = False
     #@+node:ville.20090321223959.2: *3* lookup
     def lookup(self,prefix):
-        
+
         '''Return a list of all items starting with prefix.'''
 
         trace = True ; verbose = False
@@ -220,11 +222,11 @@ class CtagsController:
         return aList
     #@+node:ekr.20110307092028.14159: *3* onKey
     def onKey (self,event,stroke):
-        
+
         # g.trace(stroke)
-        
+
         stroke = stroke.lower()
-        
+
         if stroke in ('space','return'):
             event.accept() # Doesn't work.
             self.end()
@@ -236,18 +238,18 @@ class CtagsController:
             self.complete(event)
     #@+node:ekr.20110307092028.14157: *3* start
     def start (self,event):
-        
+
         c = self.c
-        
+
         # Create the callback to insert the selected completion.
         def completion_callback(completion,self=self):
             self.end(completion)
-        
+
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body)
         cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
-        
+
         # Connect key strokes to the popup.
         # self.popup = cpl.popup()
         # self.popup_filter = PopupEventFilter(c,self.popup) # Required
@@ -258,7 +260,7 @@ class CtagsController:
         self.active = True
         self.ev_filter.ctagscompleter_active = True
         self.ev_filter.ctagscompleter_onKey = self.onKey
-        
+
         # Show the completions.
         self.complete(event)
     #@-others

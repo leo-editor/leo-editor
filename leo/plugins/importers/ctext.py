@@ -11,28 +11,28 @@ from leo.plugins.importers.basescanner import BaseScanner
 class CTextScanner(BaseScanner):
     """
     Read/Write simple text files with hierarchy embedded in headlines::
-        
+
         Leading text in root node of subtree
-        
+
         Etc. etc.
-        
+
         ### A level one node #####################################
-        
+
         This would be the text in this level one node.
-        
+
         And this.
-        
+
         ### Another level one node ###############################
-        
+
         Another one
-        
+
         #### A level 2 node ######################################
-        
+
         See what we did there - one more '#' - this is a subnode.
-        
+
     Leading / trailing whitespace may not be preserved.  '-' and '/'
     are used in place of '#' for SQL and JavaScript.
-        
+
     """
     #@+others
     #@+node:tbrown.20140801105909.47552: *3* write_lines

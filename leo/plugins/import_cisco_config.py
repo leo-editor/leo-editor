@@ -146,7 +146,7 @@ def importCiscoConfig(c):
                     while linelist[i].startswith(' '):
                         value.append(linelist[i])
                         i = i+1
-                except:
+                except Exception:
                     # EOF
                     pass
                 i = i-1 # restore index
@@ -177,7 +177,7 @@ def importCiscoConfig(c):
         # extract the key from the headline. Uhm... :)
         key = child.h.split('<<'
             )[1].split('>>')[0].strip()
-        
+
         # if blocks.has_key(key):
         if key in blocks:
             if type(blocks[key][0]) == type(''):

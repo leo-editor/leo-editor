@@ -89,7 +89,7 @@ class chapterHoist:
     #@+node:ekr.20060328125925.10: *3* createChapterHoistButton
     def createChapterHoistButton (self,sc,c,p):
 
-        '''Generates a hoist button for the headline at the given position'''    
+        '''Generates a hoist button for the headline at the given position'''
         h = p.h
         buttonText = sc.getButtonText(h)
         statusLine = "Hoist %s" % h
