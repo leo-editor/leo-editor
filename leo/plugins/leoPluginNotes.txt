@@ -460,7 +460,7 @@ def init ():
     return True
 #@-all
 #@@killbeautify
-This file contains unused plugins and code
+# This file contains unused plugins and code
 #@@language python
 
 #@-leo
