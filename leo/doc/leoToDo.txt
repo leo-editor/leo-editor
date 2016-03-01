@@ -4,26 +4,25 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
-Release Friday, March 4.
+Release PyInstaller versions for Windows, Linux, MacOs.
 
-- Post re Anaconda, IPython, Jupyter.
-- Add optional icon to cloneFBP.
-- Fix PyInstaller for Windows, Linux, MacOs.
-* Current position is different with leo2/3
+Release Leo 5.1.1 Friday, March 11.
 
-8 bugs for Leo 5.1.1:
+7 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
-Later:
+- #234: Hard crash on UnicodeDecodeError
+  https://github.com/leo-editor/leo-editor/issues/234
+
+- #217: Fix vim & xemacs bugs: use git bisect.
+  https://github.com/leo-editor/leo-editor/issues/217
+  
+Tests and docs:
 - Unit tests are failing on Ubuntu with Python 3.
+- Re-enable and fix javascript unit test.
 - Create unit test for transpose-words.
-- Add p/v.temp_u properties. Revise docs.
-- jEdit2py barfs on non-ascii characters.
-- Fix vim & xemacs bugs: use git bisect.
-- Clean up javascript importer. Fix unit test & pylint
 - Add Code Academy section to Cheat Sheet.
 - Document stupendous Aha
-- Study IPython.
 
 @language rest
 @wrap
@@ -472,20 +471,27 @@ The remaining tasks before Leo 5.1.1 final are:
 - Get PyInstaller versions of Leo working on Windows, Linux  & MacOS.
 - Fix problesm with the vim and xemacs plugins.
 - Polish the Code Academy posts.
-.. @+node:ekr.20160227093754.1: ** To do: 5.2
-- New managers for icons, attributes & windows.
+.. @+node:ekr.20160301044139.1: ** To do: 5.1.2
+- Add optional icon and attributes keyword args to cloneFBP.
+- New plugin: console window in log pane.
+- New apis and commands for icons, attributes & windows.
   Easy to use. Easy documentation.
-  Terry, I am beginning to understand declutter idea.
+- Add p/v.temp_u properties. Revise docs.
+- jEdit2py barfs on non-ascii characters.
+- Add coffeescript importer.
+- Maybe: javascript importer.
+
+@language rest
+@wrap
+.. @+node:ekr.20160227093754.1: ** To do: 5.2
 - Add status line showing type of window. Like Emacs.
-- Add console window for Leo.
-    - Study Python Console code.
-- Add ncurses window for Leo.
 - Rethink IPython: rewrite plugin? Target to Anaconda.
-- Rethink Windows
+- Rethink Windows:
     - Decouple commander from outline?
     - Notifications might simplify viewrendered plugin.
     - Notifications might simplify multiple body panes.
-    - A good platform for web development and anything needing multiple consoles.
+    - A good platform for web development and anything
+      needing multiple consoles.
 - Rethink running code in separate processes.
 
 @language rest
