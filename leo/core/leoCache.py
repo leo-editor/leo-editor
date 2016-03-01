@@ -41,15 +41,14 @@ class Cacher:
     #@+node:ekr.20100208062523.5886: *4* cacher.ctor
     def __init__(self, c=None):
         trace = False and not g.unitTesting
-        if trace: g.trace('Cacher', 'c', c)
+        if trace: g.trace('(Cacher)', c and c.shortFileName() or '<no c>')
         self.c = c
         # set by initFileDB and initGlobalDB...
         self.db = {}
-            # 2011/07/30
             # When caching is enabled will be a PickleShareDB instance.
         self.dbdirname = None # A string.
-        self.globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
-            # Apparently, the key of the same .leo file changes in Python 2 and 3.
+        self.globals_tag = 'leo.globals'
+            # 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         self.inited = False
         
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
@@ -119,6 +118,7 @@ class Cacher:
         Compute the hash of s (usually a headline) and content.
         s may be unicode, content must be bytes (or plain string in Python 2.x)
         '''
+        trace = False and not g.unitTesting
         m = hashlib.md5()
         if g.isUnicode(s):
             s = g.toEncodedString(s)
@@ -128,6 +128,7 @@ class Cacher:
             content = g.toEncodedString(content)
         m.update(s)
         m.update(content)
+        if trace: g.trace(m.hexdigest())
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
     #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
@@ -251,6 +252,7 @@ class Cacher:
             g.internalError('no commander')
             return {}
         key = self.fileKey(c.mFileName, self.globals_tag)
+        if trace: g.trace(self.db.__class__.__name__)
         data = self.db.get('window_position_%s' % (key))
         # pylint: disable=unpacking-non-sequence
         if data:
@@ -259,7 +261,7 @@ class Cacher:
             d = {'top': top, 'left': left, 'height': height, 'width': width}
         else:
             d = {}
-        if trace: g.trace(c.shortFileName(), d)
+        if trace: g.trace(c.shortFileName(), key[-10:], d)
         return d
     #@+node:ekr.20100208071151.5905: *4* cacher.readFile
     def readFile(self, fileName, root):
@@ -384,7 +386,7 @@ class PickleShareDB:
         """
         trace = False and not g.unitTesting
         self.root = abspath(expanduser(root))
-        if trace: g.trace('PickleShareDB', self.root)
+        if trace: g.trace('(PickleShareDB)', self.root)
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
         self.cache = {}
@@ -542,11 +544,13 @@ class PickleShareDB:
             self.__delitem__(z)
     #@+node:ekr.20100208223942.5979: *3* get
     def get(self, key, default=None):
-        trace = False and g.unitTesting
-        if trace: g.trace('(PickleShareDB)')
+        trace = False and not g.unitTesting
         try:
-            return self[key]
+            val = self[key]
+            if trace: g.trace('(PickleShareDB) SUCCESS', key)
+            return val
         except KeyError:
+            if trace: g.trace('(PickleShareDB) ERROR',  key)
             return default
     #@+node:ekr.20100208223942.5980: *3* has_key (PickleShareDB)
     def has_key(self, key):
