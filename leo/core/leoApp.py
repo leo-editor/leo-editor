@@ -6,6 +6,7 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import getpass
+import glob
 import os
 import optparse
 import string
@@ -3055,7 +3056,10 @@ class LoadManager:
         for arg in sys.argv[1:]:
             if arg and not arg.startswith('-'):
                 files.append(arg)
-        return [lm.completeFileName(z) for z in files]
+        result = []
+        for z in files:
+            result.extend(glob.glob(lm.completeFileName(z)))
+        return result
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
