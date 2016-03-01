@@ -5,9 +5,17 @@ launchLeo-unified.spec
 a pyinstaller .spec file that creates a stand-alone version of Leo.
 This is a single .exe file or a folder, depending on generate_folder.
 
-Run with pyinstaller launchLeo-unified.spec, **not** with launchLeo.py.
+>pyinstaller2 launchLeo-unified.spec
+>pyinstaller3 launchLeo-unified.spec
 '''
+# Notes:
+# 1. Delete dist and build folders before running this script.
+# 2. Requires setuptools 19.2 (19.4 is broken)
+#    https://github.com/pyinstaller/pyinstaller/issues/1781
+
 import glob, os, sys
+
+# os.system('cls')
 
 generate_folder = True
     # True: generate Leo/leo folder as well as Leo/Leo.exe.
@@ -17,7 +25,7 @@ generate_folder = True
 # Same code as in runLeo.py.
 path = os.getcwd()
 if path not in sys.path:
-    print('launchLeo-single.spec: appending %s to sys.path' % path)
+    print('launchLeo-unified.spec: appending %s to sys.path' % path)
     sys.path.append(path)
 
 import leo.core.leoGlobals as g
@@ -27,8 +35,7 @@ LM = leoApp.LoadManager()
 loadDir = LM.computeLoadDir()
 
 def get_modules(name):
-    '''return a list of module names in the leo/x directory.'''
-    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    '''return a list of module names (separated by dots) in the leo/x directory.'''
     abs_dir = g.os_path_finalize_join(loadDir, '..', name)
     n = len(abs_dir) + 1
     aList = glob.glob(abs_dir + '/*.py')
@@ -48,9 +55,21 @@ def ext(kind, name):
     return ('%s/*.%s' % (name, kind), name)
 
 # Define all modules in leo.plugins & leo.modes
-hiddenimports = []
-for name in ('external', 'modes', 'plugins'):
-    hiddenimports.extend(get_modules(name))
+hidden_imports = []
+for name in ('external', 'modes', 'plugins',
+             'plugins/importers', 'plugins/writers',
+):
+    hidden_imports.extend(get_modules(name))
+    
+hidden_imports = [z.replace('/','.') for z in hidden_imports]
+
+exclude_modules = ['_tkinter',]
+    
+if 0:
+    print('hidden imports...')
+    for z in sorted(hidden_imports):
+        print(z)
+    sys.exit()
 
 block_cipher = None
 
@@ -60,11 +79,11 @@ datas = [
         ext('.ui', 'leo/plugins'),
     # Required for plugins...
         # Data requifed for startup.
-            all('leo/plugins/GraphCanvas'),
+        all('leo/plugins/GraphCanvas'),
         # These are also hidden imports...
-            ext('.py', 'leo/plugins'),
-            ext('.py', 'leo/plugins/importers'),
-            ext('.py', 'leo/plugins/writers'),
+        ext('.py', 'leo/plugins'),
+        ext('.py', 'leo/plugins/importers'),
+        ext('.py', 'leo/plugins/writers'),
     # leo/config...
         ext('.leo', 'leo/config'),
     # leo/modes...
@@ -84,14 +103,11 @@ datas = [
         icons('leo/themes/leo_dark_0/Icons/cleo/small'),
         icons('leo/themes/leo_dark_0/Icons/file_icons'),
         icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-
     # The following files *are* useful in one-file operation.
     # sys._MEIPASS points to the temp folder.
     # On windows: ~\AppData\Local\Temp\_MEInnnn
-
     # leo-editor: loaded by LeoPy.leo...
-        ('launchLeo-folder.spec', ''),
-        ('launchLeo-single.spec', ''),
+        ('launchLeo-unified.spec', ''),
         ('leo_to_html.xsl', ''),
         ('pylint-leo.py', ''),
         ('setup.py', ''),
@@ -159,18 +175,19 @@ datas = [
         all('leo/test/unittest'),
         all('leo/test/unittest/input'),
         all('leo/test/unittest/output'),
+        all('leo/test/unittest/perfectImport'),
     # leo/www...
         all('leo/www'),
-    ]
+]
 
 a = Analysis(['launchLeo.py'],
     pathex=[],
     binaries=None,
     datas=datas,
-    hiddenimports=hiddenimports,
+    hiddenimports=hidden_imports,
     hookspath=None,
     runtime_hooks=None,
-    excludes=['_tkinter',],
+    excludes=exclude_modules,
     win_no_prefer_redirects=None,
     win_private_assemblies=None,
     cipher=block_cipher)
