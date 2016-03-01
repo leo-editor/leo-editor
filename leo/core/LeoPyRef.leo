@@ -53,13 +53,13 @@
 <v t="ekr.20150821105535.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20150821105535.2"><vh>@gnxs</vh></v>
+<v t="ekr.20160229131014.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
 <v t="ekr.20150821105535.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20150821105535.4"><vh>@gnxs</vh></v>
+<v t="ekr.20160229131014.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
 <v t="ekr.20150821105535.5"><vh>@gnxs</vh></v>
@@ -76,7 +76,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005505302e312e3071017d7102285808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031352d30352d3237710775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d71052858080000007072696f7269747971064d0f27580a000000707269736574646174657107580a000000323031352d30352d323771087575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -104,7 +104,7 @@
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -116,7 +116,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285505302e332e3271017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6174696d657107580d000000313331393436373035302e34387108755505302e332e3371097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6174696d65710f580d000000313332303433343235372e33367110755505302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6174696d657117580d000000313331393534393339302e38397118755505302e332e3171197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6174696d65711f580c000000313332303432323637302e397120755505302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755505302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3371017d71022858090000007374725f6174696d657103580d000000313332303433343235372e3336710458090000007374725f6374696d657105580c000000313331393436303438332e30710658090000007374725f6d74696d657107580d000000313332303432323639302e35347108755805000000302e332e3071097d710a2858090000007374725f6174696d65710b580d000000313331393534393339302e3839710c58090000007374725f6374696d65710d580c000000313331393439313330362e30710e58090000007374725f6d74696d65710f580d000000313331393439323330312e35327110755805000000302e332e3471117d71122858090000007374725f6174696d657113580c000000313331393634353330362e32711458090000007374725f6374696d657115580c000000313331393633383634382e30711658090000007374725f6d74696d657117580d000000313331393634313038352e30387118755805000000302e332e3271197d711a2858090000007374725f6174696d65711b580d000000313331393436373035302e3438711c58090000007374725f6374696d65711d580c000000313331393436303438332e30711e58090000007374725f6d74696d65711f580d000000313331393436373035302e34387120755805000000302e332e3171217d71222858090000007374725f6174696d657123580c000000313332303432323637302e39712458090000007374725f6374696d657125580c000000313331393436303438332e30712658090000007374725f6d74696d657127580d000000313331393436373033382e32357128755805000000302e332e3571297d712a2858090000007374725f6174696d65712b580d000000313331393634313435352e3937712c58090000007374725f6374696d65712d580c000000313331393633383634382e30712e58090000007374725f6d74696d65712f580c000000313331393634313131372e39713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -170,8 +170,6 @@
 </v>
 </v>
 <v t="ekr.20160226082945.1"><vh>PyInstaller</vh>
-<v t="ekr.20160124165435.1"><vh>@clean ../../launchLeo-single.spec</vh></v>
-<v t="ekr.20160124165557.1"><vh>@clean ../../launchLeo-folder.spec</vh></v>
 <v t="ekr.20160124165611.1"><vh>@clean ../../launchLeo-unified.spec</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
@@ -200,14 +198,14 @@
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+<v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -217,7 +215,7 @@
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858050000006c696e6b7371015d710258010000007971034b0058010000007871044b00580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -257,7 +255,7 @@ directly in the gui-specific code.  But this would be much more work
 than needed.  For example, only a few gui-specific wrappers are needed
 to implement all commands that deal with body text.  Implementing each
 of these commands 'from scratch' would duplicate a lot of code
-unnecessarily. 
+unnecessarily.
 
 Using the gui wrapper methods is a bit messy for two reasons:
 
@@ -267,7 +265,7 @@ Using the gui wrapper methods is a bit messy for two reasons:
    adding it to all gui-specific subclasses.  It's easy to forget to
    add a wrapper.  The gui base class defines all wrappers as a
    function that just calls oops().  This prints a warning that the
-   wrapper should be defined in a subclass. 
+   wrapper should be defined in a subclass.
 
 2. The original wrappers assumed Tkinter-like indices.  Wrappers that
    were defined later assume Python indices (see Rule 5 below).  The
@@ -284,20 +282,20 @@ Leo's core mostly follows this rule: there may be a few exceptions.
 A Python index is an int that runs from 0 (beginning of text) to
 len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
 indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
-text s has x lines and where the length of the last line is y-1. 
+text s has x lines and where the length of the last line is y-1.
 
 Two (recently written) functions in leoGlobals.py support conversions
 from Python indices to the row/column indices used by Tkinter.
 
 - g.convertPythonIndexToRowCol converts a Python index to a row/column
   index used by Tkinter.
-  
+
 - g.convertRowColToPythonIndex does the reverse.
 
 Important: the first Tkinter index is '1.0', not '0.0', but the row
 returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
-row.  Similar remarks apply when going in the reverse direction. 
+row.  Similar remarks apply when going in the reverse direction.
 </t>
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20080412053100.5">@language rest
@@ -364,7 +362,7 @@ v:  a Vnode
 z:  a local temp.
 
 In more limited contexts, the following conventions apply:
-    
+
 si:     a g.ShortcutInfo object.
 ks:     a g.KeyStroke object
 stroke: a KeyStroke object.
@@ -635,7 +633,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
       width: 700px;
       overflow: scroll;
       line-height: 0.8;
-      
+
     }
     div.bodypane {
       position: absolute;
@@ -1008,7 +1006,7 @@ importDict = {}
     # g.trace('keywords',self.keywords)
 </t>
 <t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
-    '''Process lines containing pairs of entries 
+    '''Process lines containing pairs of entries
     in a list whose *name* is ivar.
     Put the results in ivars whose names are ivar1 and ivar2.'''
     result1 = []; result2 = []
@@ -1372,7 +1370,7 @@ CreateDecorators().run()
             # p.b = new_body
     return found
 </t>
-<t tx="ekr.20150509183433.4">def create_decorators(self,d): ### ,root):
+<t tx="ekr.20150509183433.4">def create_decorators(self,d):
     '''Create decorators for all items in d in root's tree.'''
     table = (
         'class Commands', # c.
@@ -1627,25 +1625,7 @@ c.k.simulateCommand('pylint')
 <t tx="ekr.20150821105535.1">gnx: ekr.20150613071329.1
 unl: qtui_generate declarations
 </t>
-<t tx="ekr.20150821105535.2">gnx: ekr.20150615185451.1
-unl: qt_main declarations
-gnx: ekr.20150615185451.2
-unl: class Ui_MainWindow
-gnx: ekr.20150615185451.3
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20150615185451.4
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
 <t tx="ekr.20150821105535.3"></t>
-<t tx="ekr.20150821105535.4">gnx: ekr.20150615185451.5
-unl: qt_quicksearch declarations
-gnx: ekr.20150615185451.6
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20150615185451.7
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20150615185451.8
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
-</t>
 <t tx="ekr.20150821105535.5"></t>
 <t tx="ekr.20160122104332.1"></t>
 <t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
@@ -1655,7 +1635,7 @@ unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 [Global]
 
 files:
-    
+
     # Files to be used *only* if no files are given on the command line.
     # glob.glob wildcards are supported.
 
@@ -1664,7 +1644,7 @@ files:
     # c:/leo.repo/leo-editor/plugins/*.py
 
 output_directory: ~/stubs
-    
+
 prefix_lines:
     # Lines to be inserted at the start of each stub file.
     from typing import TypeVar, Iterable, Tuple
@@ -1674,398 +1654,6 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20160124165435.1">@language unknown_language
-# -*- mode: python -*-
-'''
-launchLeo-single.spec: a spec file for pyinstaller that creates a single-executable version of Leo.
-Run with pyinstaller launchLeo-single.spec, **not** with launchLeo.py.
-'''
-import glob, os
-
-generate_folder = True
-    # True:  generate only Leo/Leo.exe.
-    #        Data files are unpacked to a known location.
-    # False: generate Leo/leo folder as well as Leo/Leo.exe.
-
-if 0:
-    # This does not work: __file__ does not exist.
-    path = os.path.basename(__file__)
-    loadDir = os.path.abspath(os.path.join(base, 'leo', 'core'))
-else:
-    import sys
-
-    # Same code as in runLeo.py.
-    path = os.getcwd()
-    if path not in sys.path:
-        print('launchLeo-single.spec: appending %s to sys.path' % path)
-        sys.path.append(path)
-
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
-
-    LM = leoApp.LoadManager()
-    loadDir = LM.computeLoadDir()
-
-def get_modules(name):
-    '''return a list of module names in the leo/name directory.'''
-    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
-    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
-    n = len(abs_dir) + 1
-    aList = glob.glob(abs_dir + '/*.py')
-    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
-
-# Utilities for creating entries in the "datas" lists...
-def all(name):
-    '''Return a tuple that causes all files in name to be included.'''
-    return ('%s/*.*' % (name), name)
-
-icons = all
-
-def ext(kind, name):
-    '''Return a tuple that causes all files with the given extension in name to be included.'''
-    if kind.startswith('.'):
-        kind = kind[1:]
-    return ('%s/*.%s' % (name, kind), name)
-
-# Define all modules in leo.plugins &amp; leo.modes
-
-hiddenimports = []
-for name in ('external', 'modes', 'plugins'):
-    hiddenimports.extend(get_modules(name))
-
-block_cipher = None
-
-datas = [
-    # Required for startup...
-        ('leo/core/commit_timestamp.json', 'leo/core'),
-        ext('.ui', 'leo/plugins'),
-    # Required for plugins...
-        # Data requifed for startup.
-            all('leo/plugins/GraphCanvas'),
-        # These are also hidden imports...
-            ext('.py', 'leo/plugins'),
-            ext('.py', 'leo/plugins/importers'),
-            ext('.py', 'leo/plugins/writers'),
-    # leo/config...
-        ext('.leo', 'leo/config'),
-    # leo/modes...
-        ext('.py', 'leo/modes'),
-        ext('.xml', 'leo/modes'),
-    # All icons...
-        icons('leo/Icons'),
-        icons('leo/Icons/cleo'),
-        icons('leo/Icons/cleo/small'),
-        icons('leo/Icons/file_icons'),
-        icons('leo/Icons/nodes-dark/plusminus'),
-        icons('leo/Icons/nodes-dark/triangles'),
-        icons('leo/Icons/recorder'),
-        icons('leo/themes/generic/Icons'),
-        icons('leo/themes/leo_dark_0/Icons'),
-        icons('leo/themes/leo_dark_0/Icons/cleo'),
-        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
-        icons('leo/themes/leo_dark_0/Icons/file_icons'),
-        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-]
-
-# These files *are* useful in one-file operation.
-# sys._MEIPASS points to the temp folder.
-# On windows: ~\AppData\Local\Temp\_MEInnnn
-if True:
-    datas.extend([
-        # leo-editor: loaded by LeoPy.leo...
-	    ('launchLeo-folder.spec', ''),
-            ('launchLeo-single.spec', ''),
-            ('pylint-leo.py', ''),
-            ('setup.py', ''),
-    # leo.commands...
-            ext('.py', 'leo/commands'),
-        # leo.core...
-	# Only include reference files.
-                # ext('.leo', 'leo/core'),
-		('leo/core/LeoPyRef.leo', 'leo/core'),
-            ext('.py', 'leo/core'),
-            ext('.txt', 'leo/core'),
-        # leo.dist...
-            all('leo/dist'),
-        # leo/doc &amp; leo/doc/html
-            ext('.css', 'leo/doc'),
-            ext('.js', 'leo/doc'),
-            ext('.html', 'leo/doc'),
-            ext('.leo', 'leo/doc'),
-        ext('.py', 'leo/doc'),
-            ext('.txt', 'leo/doc'),
-        all('leo/doc/html'),
-        # ext('.jif','leo/doc/html'),
-        # ext('.py','leo/doc/html'),
-        # ext('.txt','leo/doc/html'),
-        # User-selectable icons.
-            icons('leo/Icons/Tango/16x16/actions'),
-            icons('leo/Icons/Tango/16x16/animations'),
-            icons('leo/Icons/Tango/16x16/apps'),
-            icons('leo/Icons/Tango/16x16/categories'),
-            icons('leo/Icons/Tango/16x16/devices'),
-            icons('leo/Icons/Tango/16x16/emblems'),
-            icons('leo/Icons/Tango/16x16/emotes'),
-            icons('leo/Icons/Tango/16x16/mimetypes'),
-            icons('leo/Icons/Tango/16x16/places'),
-            icons('leo/Icons/Tango/16x16/status'),
-        # leo/extensions...
-            ext('.py', 'leo/extensions'),
-            all('leo/extensions/hooks'),
-        # leo/external...
-            ext('.leo', 'leo/external'),
-            ext('.py', 'leo/external'),
-            ext('.txt', 'leo/external'),
-            ext('.css', 'leo/external/ckeditor'),
-            ext('.js', 'leo/external/ckeditor'),
-            ext('.json', 'leo/external/ckeditor'),
-            ext('.md', 'leo/external/ckeditor'),
-        # leo/plugins...
-            # Only include reference files.
-            # ext('.leo', 'leo/plugins'),
-	        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
-	        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
-        ext('.txt', 'leo/plugins'),
-            ext('.py', 'leo/plugins/examples'),
-            ext('.py', 'leo/plugins/test'),
-        # leo/scripts...
-            ext('.bat', 'leo/scripts'),
-            ext('.leo', 'leo/scripts'),
-            ext('.txt', 'leo/scripts'),
-            ext('.py', 'leo/scripts'),
-        # Everything required for unit tests...
-    # The leo/test folder itself is required for the execute-script command.
-            ext('.leo', 'leo/test'),
-            ext('.py', 'leo/test'),
-            ext('.txt', 'leo/test'),
-            all('leo/test/unittest'),
-            all('leo/test/unittest/input'),
-            all('leo/test/unittest/output'),
-        # leo/www...
-            all('leo/www'),
-    ])
-
-a = Analysis(['launchLeo.py'],
-    pathex=[],
-    binaries=None,
-    datas=datas,
-    hiddenimports=hiddenimports,
-    hookspath=None,
-    runtime_hooks=None,
-    excludes=['_tkinter',],
-    win_no_prefer_redirects=None,
-    win_private_assemblies=None,
-    cipher=block_cipher)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-exe = EXE(pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    name='leo',
-    debug=False,
-    strip=None,
-    upx=True,
-    console=True)
-
-if generate_folder:
-    coll = COLLECT(
-        exe,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        strip=None,
-        upx=False,
-        name='Leo')
-</t>
-<t tx="ekr.20160124165557.1">@language unknown_language
-# -*- mode: python -*-
-'''
-launchLeo-folder.spec: a spec file for pyinstaller that creates a folder-based install of Leo.
-Run with pyinstaller launchLeo-folder.spec, **not** with launchLeo.py.
-'''
-
-block_cipher = None
-
-import glob, os, sys
-
-# Same code as in runLeo.py.
-path = os.getcwd()
-if path not in sys.path:
-    print('launchLeo.spec: appending %s to sys.path' % path)
-    sys.path.append(path)
-
-import leo.core.leoGlobals as g
-import leo.core.leoApp as leoApp
-
-LM = leoApp.LoadManager()
-loadDir = LM.computeLoadDir()
-
-def get_modules(name):
-    '''return a list of module names in the leo/name directory.'''
-    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
-    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
-    n = len(abs_dir) + 1
-    aList = glob.glob(abs_dir + '/*.py')
-    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
-    
-hiddenimports = []
-for name in ('external', 'modes', 'plugins'):
-    hiddenimports.extend(get_modules(name))
-
-# Utilities for creating entries in the "datas" lists...
-def all(name):
-    '''Return a tuple that causes all files in name to be included.'''
-    return ('%s/*.*' % (name), name)
-
-icons = all
-
-def ext(kind, name):
-    '''Return a tuple that causes all files with the given extension in name to be included.'''
-    if kind.startswith('.'):
-        kind = kind[1:]
-    return ('%s/*.%s' % (name, kind), name)
-
-datas = [
-    # Required for startup...
-        ('leo/core/commit_timestamp.json', 'leo/core'),
-        ext('.ui', 'leo/plugins'),
-    # Required for plugins...
-        # Data requifed for startup.
-            all('leo/plugins/GraphCanvas'),
-        # These are also hidden imports...
-            ext('.py', 'leo/plugins'),
-            ext('.py', 'leo/plugins/importers'),
-            ext('.py', 'leo/plugins/writers'),
-    # leo/config...
-        ext('.leo', 'leo/config'),
-    # leo/modes...
-        ext('.py', 'leo/modes'),
-        ext('.xml', 'leo/modes'),
-    # All icons...
-        icons('leo/Icons'),
-        icons('leo/Icons/cleo'),
-        icons('leo/Icons/cleo/small'),
-        icons('leo/Icons/file_icons'),
-        icons('leo/Icons/nodes-dark/plusminus'),
-        icons('leo/Icons/nodes-dark/triangles'),
-        icons('leo/Icons/recorder'),
-        icons('leo/themes/generic/Icons'),
-        icons('leo/themes/leo_dark_0/Icons'),
-        icons('leo/themes/leo_dark_0/Icons/cleo'),
-        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
-        icons('leo/themes/leo_dark_0/Icons/file_icons'),
-        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-    # Additional Leo data fles...
-    # leo-editor: loaded by LeoPy.leo...
-        ('launchLeo-folder.spec', ''),
-        ('launchLeo-single.spec', ''),
-        ('leo_to_html.xsl', ''),
-        ('pylint-leo.py', ''),
-        ('setup.py', ''),
-        # leo.commands...
-            ext('.py', 'leo/commands'),
-        # leo.core...
-            # Only include reference files.
-                # ext('.leo', 'leo/core'),
-                ('leo/core/LeoPyRef.leo', 'leo/core'),
-            ext('.py', 'leo/core'),
-            ext('.txt', 'leo/core'),
-        # leo.dist...
-            all('leo/dist'),
-        # leo/doc &amp; leo/doc/html
-            ext('.css', 'leo/doc'),
-            ext('.js', 'leo/doc'),
-            ext('.html', 'leo/doc'),
-            ext('.leo', 'leo/doc'),
-        ext('.py', 'leo/doc'),
-            ext('.txt', 'leo/doc'),
-        all('leo/doc/html'),
-        # ext('.jif','leo/doc/html'),
-        # ext('.py','leo/doc/html'),
-        # ext('.txt','leo/doc/html'),
-        # User-selectable icons.
-            icons('leo/Icons/Tango/16x16/actions'),
-            icons('leo/Icons/Tango/16x16/animations'),
-            icons('leo/Icons/Tango/16x16/apps'),
-            icons('leo/Icons/Tango/16x16/categories'),
-            icons('leo/Icons/Tango/16x16/devices'),
-            icons('leo/Icons/Tango/16x16/emblems'),
-            icons('leo/Icons/Tango/16x16/emotes'),
-            icons('leo/Icons/Tango/16x16/mimetypes'),
-            icons('leo/Icons/Tango/16x16/places'),
-            icons('leo/Icons/Tango/16x16/status'),
-        # leo/extensions...
-            ext('.py', 'leo/extensions'),
-            all('leo/extensions/hooks'),
-        # leo/external...
-            ext('.leo', 'leo/external'),
-            ext('.py', 'leo/external'),
-            ext('.txt', 'leo/external'),
-            ext('.css', 'leo/external/ckeditor'),
-            ext('.js', 'leo/external/ckeditor'),
-            ext('.json', 'leo/external/ckeditor'),
-            ext('.md', 'leo/external/ckeditor'),
-        # leo/plugins...
-            # Only include reference files.
-            # ext('.leo', 'leo/plugins'),
-                ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
-                ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
-            ext('.txt', 'leo/plugins'),
-            ext('.py', 'leo/plugins/examples'),
-            ext('.py', 'leo/plugins/test'),
-        # leo/scripts...
-            ext('.bat', 'leo/scripts'),
-            ext('.leo', 'leo/scripts'),
-            ext('.txt', 'leo/scripts'),
-            ext('.py', 'leo/scripts'),
-        # Everything required for unit tests...
-        # The leo/test folder itself is required for
-        # the execute-script command.
-            ext('.leo', 'leo/test'),
-            ext('.py', 'leo/test'),
-            ext('.txt', 'leo/test'),
-            all('leo/test/unittest'),
-            all('leo/test/unittest/input'),
-            all('leo/test/unittest/output'),
-        # leo/www...
-            all('leo/www'),
-]
-
-a = Analysis(
-    ['launchLeo.py'],
-    pathex=[], ###'c:\\leo.repo\\leo-editor'],
-    binaries=None,
-    datas=datas,
-    hiddenimports=hiddenimports,
-    hookspath=None,
-    runtime_hooks=None,
-    excludes=['_tkinter',],
-    win_no_prefer_redirects=None,
-    win_private_assemblies=None,
-    cipher=block_cipher)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-exe = EXE(pyz,
-    a.scripts,
-    exclude_binaries=True,
-    name='leo',
-    debug=False,
-    strip=None,
-    upx=True,
-    console=True )
-    
-coll = COLLECT(exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=None,
-    upx=True,
-    name='Leo')
-</t>
 <t tx="ekr.20160124165611.1">@language unknown_language
 # -*- mode: python -*-
 '''
@@ -2074,9 +1662,17 @@ launchLeo-unified.spec
 a pyinstaller .spec file that creates a stand-alone version of Leo.
 This is a single .exe file or a folder, depending on generate_folder.
 
-Run with pyinstaller launchLeo-unified.spec, **not** with launchLeo.py.
+&gt;pyinstaller2 launchLeo-unified.spec
+&gt;pyinstaller3 launchLeo-unified.spec
 '''
+# Notes:
+# 1. Delete dist and build folders before running this script.
+# 2. Requires setuptools 19.2 (19.4 is broken)
+#    https://github.com/pyinstaller/pyinstaller/issues/1781
+
 import glob, os, sys
+
+# os.system('cls')
 
 generate_folder = True
     # True: generate Leo/leo folder as well as Leo/Leo.exe.
@@ -2086,7 +1682,7 @@ generate_folder = True
 # Same code as in runLeo.py.
 path = os.getcwd()
 if path not in sys.path:
-    print('launchLeo-single.spec: appending %s to sys.path' % path)
+    print('launchLeo-unified.spec: appending %s to sys.path' % path)
     sys.path.append(path)
 
 import leo.core.leoGlobals as g
@@ -2096,8 +1692,7 @@ LM = leoApp.LoadManager()
 loadDir = LM.computeLoadDir()
 
 def get_modules(name):
-    '''return a list of module names in the leo/x directory.'''
-    # abs_dir = os.path.abspath(os.path.join(r'C:\leo.repo\leo-editor\leo', name))
+    '''return a list of module names (separated by dots) in the leo/x directory.'''
     abs_dir = g.os_path_finalize_join(loadDir, '..', name)
     n = len(abs_dir) + 1
     aList = glob.glob(abs_dir + '/*.py')
@@ -2118,8 +1713,18 @@ def ext(kind, name):
 
 # Define all modules in leo.plugins &amp; leo.modes
 hiddenimports = []
-for name in ('external', 'modes', 'plugins'):
+for name in ('external', 'modes', 'plugins',
+             'plugins/importers', 'plugins/writers',
+):
     hiddenimports.extend(get_modules(name))
+    
+hiddenimports = [z.replace('/','.') for z in hiddenimports]
+    
+if 0:
+    print('hidden imports...')
+    for z in sorted(hiddenimports):
+        print(z)
+    sys.exit()
 
 block_cipher = None
 
@@ -2153,14 +1758,11 @@ datas = [
         icons('leo/themes/leo_dark_0/Icons/cleo/small'),
         icons('leo/themes/leo_dark_0/Icons/file_icons'),
         icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-
     # The following files *are* useful in one-file operation.
     # sys._MEIPASS points to the temp folder.
     # On windows: ~\AppData\Local\Temp\_MEInnnn
-    
     # leo-editor: loaded by LeoPy.leo...
-        ('launchLeo-folder.spec', ''),
-        ('launchLeo-single.spec', ''),
+        ('launchLeo-unified.spec', ''),
         ('leo_to_html.xsl', ''),
         ('pylint-leo.py', ''),
         ('setup.py', ''),
@@ -2228,6 +1830,7 @@ datas = [
         all('leo/test/unittest'),
         all('leo/test/unittest/input'),
         all('leo/test/unittest/output'),
+        all('leo/test/unittest/perfectImport'),
     # leo/www...
         all('leo/www'),
     ]
@@ -2278,5 +1881,23 @@ if generate_folder:
         name='Leo')
 </t>
 <t tx="ekr.20160226082945.1"></t>
+<t tx="ekr.20160229131014.1">gnx: ekr.20160127035721.2
+unl: qt_main declarations
+gnx: ekr.20160127035721.3
+unl: class Ui_MainWindow
+gnx: ekr.20160127035721.4
+unl: class Ui_MainWindow--&gt;setupUi
+gnx: ekr.20160127035721.5
+unl: class Ui_MainWindow--&gt;retranslateUi
+</t>
+<t tx="ekr.20160229131014.2">gnx: ekr.20160127035721.6
+unl: qt_quicksearch declarations
+gnx: ekr.20160127035721.7
+unl: class Ui_LeoQuickSearchWidget
+gnx: ekr.20160127035721.8
+unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
+gnx: ekr.20160127035721.9
+unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
+</t>
 </tnodes>
 </leo_file>
