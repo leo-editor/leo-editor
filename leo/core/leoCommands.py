@@ -660,7 +660,7 @@ class Commands(object):
         '''
         Traverse the tree given using the generator, cloning all positions for
         which predicate(p) is True. Undoably move all clones to a new node, created
-        as the last top-level node. Arguments:
+        as the last top-level node. Returns the newly-created node. Arguments:
 
         generator,      The generator used to traverse the tree.
         predicate,      A function of one argument p returning true if p should be included.
