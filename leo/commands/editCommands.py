@@ -22,6 +22,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.116: ** ctor (EditCommandsClass)
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = '0' # For comment column functions.
         self.extendMode = False # True: all cursor move commands extend the selection.
@@ -510,9 +511,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.160: *3* << class C_To_Python (To_Python) >>
     class C_To_Python(To_Python):
         #@+others
-        #@+node:ekr.20150514063305.161: *4* ctor & helpers (C_to_Python)
+        #@+node:ekr.20150514063305.161: *4* ctor & helpers (C_To_Python)
         def __init__(self, c):
             '''Ctor for C_To_Python class.'''
+            # pylint: disable=super-init-not-called
             c.editCommands.To_Python.__init__(self, c)
                 # init the base class
             # Internal state...
@@ -977,6 +979,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.177: *4* ctor (TS_To_Python)
         def __init__(self, c):
             '''Ctor for TS_To_Python class.'''
+            # pylint: disable=super-init-not-called
             c.editCommands.To_Python.__init__(self, c)
                 # init the base class
             self.class_name = ''
@@ -1069,12 +1072,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.180: *6* handle_scope_keyword
         def handle_scope_keyword(self, aList, i):
             i1 = i
+            # pylint: disable=undefined-loop-variable
+            # word *is* defined below.
             for word in ('public', 'private', 'export'):
                 if self.match_word(aList, i, word):
                     i += len(word)
                     break
             else:
-                assert False, 'not a scope id: %s' % word
+                return
+                # assert False, 'not a scope id: %s' % word
             # Skip any following spaces.
             i2 = self.skip_ws(aList, i)
             # Scan to the next newline:

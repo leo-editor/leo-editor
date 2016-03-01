@@ -552,7 +552,7 @@ Changed:
 Using c.tab_width is wrong: it is the *default* tab width.
 
 Created c.getTabWidth()
-.. @+node:ekr.20150403035558.1: *4* Fixed bug 169: import-file does not preserve gnx of root @file node
+.. @+node:ekr.20150403035558.1: *4* Fixed #169: import-file does not preserve gnx of root @file node
 @language rest
 @wrap
 
@@ -618,19 +618,19 @@ The fix was in moveWordHelper.
 .. @+node:ekr.20150509180744.1: *4* Fixed remove-blank-lines command
 It now works when there is no text selection.
 .. @+node:ekr.20150514115247.1: *4* Fixed cut/paste from menus
-.. @+node:ekr.20150520071422.1: *4* Fixed bug 150: Importing file to @clean produces section references...
+.. @+node:ekr.20150520071422.1: *4* Fixed #150: Importing file to @clean produces section references...
 Importing file to @clean produces section references following class constructor
 https://github.com/leo-editor/leo-editor/issues/150
 
 The bug was a typo in plugins/importers/basescanner.py.
 
 Also improved reporting in the RecursiveImportController class.
-.. @+node:ekr.20150608184148.1: *4* Fixed bug 193: goto-global-line doesn't work properly in @clean files
+.. @+node:ekr.20150608184148.1: *4* Fixed #193: goto-global-line doesn't work properly in @clean files
 https://github.com/leo-editor/leo-editor/issues/193
 goto-global-line doesn't work properly in @clean files
 
 The fix was in GoToLineNumber.go: it must test for p.isAtCleanNode()
-.. @+node:ekr.20150502050809.1: *4* Fixed bug 131: Insert time in headline now inserts time in body
+.. @+node:ekr.20150502050809.1: *4* Fixed #131: Insert time in headline now inserts time in body
 Insert time in headline now inserts time in body
 https://github.com/leo-editor/leo-editor/issues/131
 
@@ -644,7 +644,7 @@ by::
     
     
 in editCommands.insertHeadlineTime.
-.. @+node:ekr.20150609082814.1: *4* Fixed Bug 162: Valid language list in Docs not up to date
+.. @+node:ekr.20150609082814.1: *4* Fixed #162: Valid language list in Docs not up to date
 @language rest
 @wrap
 
@@ -654,7 +654,7 @@ https://github.com/leo-editor/leo-editor/issues/162
 cm.isValidLanguage accepts any language x for which leo/modes/X.py exists.
 
 Added a script in LeoDocs.leo that will generate all valid languages.
-.. @+node:ekr.20150609111916.1: *4* Fixed bug 195: fcol when using @first directive is inaccurate
+.. @+node:ekr.20150609111916.1: *4* Fixed #195: fcol when using @first directive is inaccurate
 @language rest
 @wrap
 
@@ -667,7 +667,7 @@ fcol when using @first directive is inaccurate
 3. Rewrote p.textOffset to simplify it.
 4. QtStatusLineClass.update prints '' for fcol if p.textOffset returns None.
 5. Changed unit tests accordingly.
-.. @+node:ekr.20150609103947.1: *4* Investigated bug 188: Find/Replace All Suboutline only same as Node only
+.. @+node:ekr.20150609103947.1: *4* Investigated #188: Find/Replace All Suboutline only same as Node only
 @language rest
 @wrap
 
@@ -676,7 +676,7 @@ Find/Replace All Suboutline only same as Node only
 
 This bug appears to be invalid.
 
-.. @+node:ekr.20150609082814.2: *4* Fixed bug 181: Focus remains in previous file
+.. @+node:ekr.20150609082814.2: *4* Fixed #181: Focus remains in previous file
 @language rest
 @wrap
 
@@ -684,7 +684,7 @@ Focus remains in previous file
 https://github.com/leo-editor/leo-editor/issues/181
 
 LM.finishOpen now calls c.outerUpdate.
-.. @+node:ekr.20150609082815.1: *4* Fixed bug 182: Long filenames do not wrap in notification dialogues
+.. @+node:ekr.20150609082815.1: *4* Fixed #182: Long filenames do not wrap in notification dialogues
 @language rest
 @wrap
 
@@ -692,9 +692,9 @@ Long filenames do not wrap in notification dialogues
 https://github.com/leo-editor/leo-editor/issues/182
 
 Added g.splitLongFileName and called it from several file dialogs.
-.. @+node:ekr.20150609101848.1: *4* Fixed bug 136: Viewrendered2 chokes on displaying @html nodes
+.. @+node:ekr.20150609101848.1: *4* Fixed #136: Viewrendered2 chokes on displaying @html nodes
 Revised some of the code, but probably more work is needed.
-.. @+node:ekr.20150620103158.1: *4* Fixed Bug 199: The "already open" logic hard crashes Leo
+.. @+node:ekr.20150620103158.1: *4* Fixed #199: The "already open" logic hard crashes Leo
 @language rest
 @wrap
 
@@ -709,9 +709,9 @@ What I did: (See app.Detecting already-open files)
 - Added g.app.already_open_files list.
 - Added calls to new runAlreadyOpenDialog method in c.open and LM.doPostPluginsInit.
 - Rewrote app.checkForOpenFile.
-.. @+node:ekr.20150622070146.1: *4* Fixed bug 198: Find tab 'ignore case' tick box has no effect
+.. @+node:ekr.20150622070146.1: *4* Fixed #198: Find tab 'ignore case' tick box has no effect
 https://github.com/leo-editor/leo-editor/issues/198
-.. @+node:ekr.20150623040812.1: *4* Fixed bug 200: goto-global-line logic is too complex and buggy
+.. @+node:ekr.20150623040812.1: *4* Fixed #200: goto-global-line logic is too complex and buggy
 @language rest
 @wrap
 
@@ -807,7 +807,7 @@ All tests pass, including new unit tests for @auto-markdown, @auto-org, @auto-ot
 - Fixed several bugs that show up only when two comment delims are in effect.
 - Added forceSentinels keyword argument of all write methods in subclasses of the BaseWriter class.
 - The writer methods call the new BaseWriter.put_node_sentinel method when forceSentines is True. put_node_sentinel is similar to corresponding AtFile code.
-.. @+node:ekr.20150609082813.1: *4* Investigated Bug 153: Leo acts on some operator input when the Leo window is NOT the top window
+.. @+node:ekr.20150609082813.1: *4* Investigated #153: Leo acts on some operator input when the Leo window is NOT the top window
 @language rest
 @wrap
 
@@ -839,12 +839,12 @@ Python 2.7.3, PyQt version 4.8.1
 The problem has been observed on Leo-Editor commit f6cdb2b. It seems to occur slightly more frequently on more recent commits such as 42a5207.
 
 
-.. @+node:ekr.20150626134708.1: *4* Fixed bug 196: Traceback using graphcanvas.py
+.. @+node:ekr.20150626134708.1: *4* Fixed #196: Traceback using graphcanvas.py
 https://github.com/leo-editor/leo-editor/issues/196
 
 The fix was to use setBackground instead of setBackgroundColor.
 No real testing was done.
-.. @+node:ekr.20150626141225.1: *4* Investigated Bug 188: Find/Replace All Suboutline only same as Node only
+.. @+node:ekr.20150626141225.1: *4* Investigated #188: Find/Replace All Suboutline only same as Node only
 https://github.com/leo-editor/leo-editor/issues/188
   
 Rev e8b134:
@@ -863,22 +863,22 @@ This makes it much easier to see what is going on.
 I suspect that #188 is invalid.  These changes will reduce confusion.
 .. @+node:ekr.20150715093109.1: *4* Fixed Python 3k problem with @lineending
 Rev a7e2e86 fixes atFile.create.
-.. @+node:ekr.20151202133537.1: *4* Fixed bug 224: TypeError: unorderable types...
+.. @+node:ekr.20151202133537.1: *4* Fixed #224: TypeError: unorderable types...
 https://github.com/leo-editor/leo-editor/issues/224
 
 The fix was in c.checkGnxs
-.. @+node:ekr.20151227104921.1: *4* Fixed bug 220: @spot bug
+.. @+node:ekr.20151227104921.1: *4* Fixed #220: @spot bug
 https://github.com/leo-editor/leo-editor/issues/220
 
 Executing clone-to-at-spot with an @spot node selected causes Leo to become
 unresponsive and python process slowly eats up all system memory.
-.. @+node:ekr.20151010055931.1: *4* Fixed bug 211: Saving untitled document on window close not working on Qt GUI
+.. @+node:ekr.20151010055931.1: *4* Fixed #211: Saving untitled document on window close not working on Qt GUI
 https://github.com/leo-editor/leo-editor/issues/211
 
 Saving untitled document on window close not working on Qt GUI
-.. @+node:ekr.20151026105904.1: *4* Fixed Bug 215: insert-file-name doesn't process ~
+.. @+node:ekr.20151026105904.1: *4* Fixed #215: insert-file-name doesn't process ~
 https://github.com/leo-editor/leo-editor/issues/215
-.. @+node:ekr.20151118152036.1: *4* Fixed bug 218: Select Text and Clipboard
+.. @+node:ekr.20151118152036.1: *4* Fixed #218: Select Text and Clipboard
 https://github.com/leo-editor/leo-editor/issues/218
 
 Here's a shell script you can run in a console
@@ -929,7 +929,307 @@ File "C:\Users\L\Documents\sourcetreeapp\leo-editor\leo\plugins\qt_tree.py", lin
 
 item = self.position2itemDict.get(p.key())
 AttributeError: 'NoneType' object has no attribute 'key' 
-.. @+node:ekr.20160123062001.1: *4* Fixed bug in p.__eq__(!!)
+.. @+node:ekr.20160123062001.1: *4* Fixed #in p.__eq__(!!)
+.. @+node:ekr.20160301135653.1: *4* Fixed #234: hard crash on UnicodeDecodeError
+https://github.com/leo-editor/leo-editor/issues/234
+
+/path/leo-editor/leo/core/leoCommands.py:581: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
+  test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
+/path/leo-editor/leo/core/leoGlobals.py:359: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
+  elif hasattr(other, 's'): return self.s == other.s
+Traceback (most recent call last):
+  File "/path/leo-editor/leo/plugins/qt_events.py", line 126, in eventFilter
+    k.masterKeyHandler(event)
+  File "/path/leo-editor/leo/core/leoKeys.py", line 3313, in masterKeyHandler
+    k.handleUnboundKeys(event, char, stroke)
+  File "/path/leo-editor/leo/core/leoKeys.py", line 3529, in handleUnboundKeys
+    k.masterCommand(event=event, stroke=stroke)
+  File "/path/leo-editor/leo/core/leoKeys.py", line 3173, in masterCommand
+    expanded = c.abbrevCommands.expandAbbrev(event, stroke)
+  File "/path/leo-editor/leo/commands/abbrevCommands.py", line 251, in expandAbbrev
+    word = prefix + ch
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xdc in position 0: ordinal not in range(128)
+fish: â€œ./launchLeo.pyâ€ terminated by signal SIGABRT (Abort)
+.. @+node:ekr.20150514043850.11: *5* abbrev.expandAbbrev & helpers (entry point)
+def expandAbbrev(self, event, stroke):
+    '''
+    Not a command.  Called from k.masterCommand to expand
+    abbreviations in event.widget.
+
+    Words start with '@'.
+    '''
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c
+    ch = g.toUnicode(event and event.char or '')
+    w = self.editWidget(event, forceFocus=False)
+    if not w: return False
+    if self.expanding: return False
+    if w.hasSelection(): return False
+    assert g.isStrokeOrNone(stroke), stroke
+    if stroke in ('BackSpace', 'Delete'):
+        if trace and verbose: g.trace(stroke)
+        return False
+    d = {'Return': '\n', 'Tab': '\t', 'space': ' ', 'underscore': '_'}
+    if stroke:
+        ch = d.get(stroke.s, stroke.s)
+        if len(ch) > 1:
+            if (stroke.find('Ctrl+') > -1 or
+                stroke.find('Alt+') > -1 or
+                stroke.find('Meta+') > -1
+            ):
+                ch = ''
+            else:
+                ch = event and event.char or ''
+    else:
+        ch = event.char
+    if trace and verbose: g.trace('ch', repr(ch), 'stroke', repr(stroke))
+    # New code allows *any* sequence longer than 1 to be an abbreviation.
+    # Any whitespace stops the search.
+    s = w.getAllText()
+    j = w.getInsertPoint()
+    i, prefixes = j - 1, []
+    while i >= 0 and s[i] not in ' \t\n':
+        prefixes.append(s[i: j])
+        i -= 1
+    prefixes = list(reversed(prefixes))
+    if '' not in prefixes: prefixes.append('')
+    for prefix in prefixes:
+        i = j - len(prefix)
+        word = g.toUnicode(prefix) + ch
+        val, tag = self.tree_abbrevs_d.get(word), 'tree'
+        # if val: g.trace('*****',word,'...\n\n',len(val))
+        if not val:
+            val, tag = self.abbrevs.get(word, (None, None))
+        if val:
+            if trace and verbose: g.trace(repr(word), 'val', val, 'tag', tag)
+            # Require a word match if the abbreviation is itself a word.
+            if ch in ' \t\n': word = word.rstrip()
+            if word.isalnum() and word[0].isalpha():
+                if i == 0 or s[i - 1] in ' \t\n':
+                    break
+                else:
+                    i -= 1
+            else:
+                break
+        else: i -= 1
+    else:
+        return False
+    c.abbrev_subst_env['_abr'] = word
+    if tag == 'tree':
+        self.last_hit = c.p.copy()
+        self.expand_tree(w, i, j, val, word)
+        c.frame.body.forceFullRecolor()
+        c.bodyWantsFocusNow()
+    else:
+        # Never expand a search for text matches.
+        place_holder = '__NEXT_PLACEHOLDER' in val
+        if place_holder:
+            expand_search = bool(self.last_hit)
+        else:
+            self.last_hit = None
+            expand_search = False
+        if trace: g.trace('expand_search', expand_search, 'last_hit', self.last_hit)
+        self.expand_text(w, i, j, val, word, expand_search)
+        c.frame.body.forceFullRecolor()
+        c.bodyWantsFocusNow()
+        # Restore the selection range.
+        if self.save_ins:
+            if trace: g.trace('sel', self.save_sel, 'ins', self.save_ins)
+            ins = self.save_ins
+            # pylint: disable=unpacking-non-sequence
+            sel1, sel2 = self.save_sel
+            if sel1 != sel2:
+                # some abbreviations *set* the selection range
+                # so only restore non-empty ranges
+                w.setSelectionRange(sel1, sel2, insert=ins)
+    return True
+.. @+node:ekr.20150514043850.12: *6* abbrev.expand_text
+def expand_text(self, w, i, j, val, word, expand_search=False):
+    '''Make a text expansion at location i,j of widget w.'''
+    c = self.c
+    if word == c.config.getString("abbreviations-next-placeholder"):
+        val = ''
+        do_placeholder = True
+    else:
+        val, do_placeholder = self.make_script_substitutions(i, j, val)
+    self.replace_abbrev_name(w, i, j, val)
+    # Search to the end.  We may have been called via a tree abbrev.
+    p = c.p.copy()
+    if expand_search:
+        while p:
+            if self.find_place_holder(p, do_placeholder):
+                return
+            else:
+                p.moveToThreadNext()
+    else:
+        self.find_place_holder(p, do_placeholder)
+.. @+node:ekr.20150514043850.13: *6* abbrev.expand_tree & helper
+def expand_tree(self, w, i, j, tree_s, word):
+    '''Paste tree_s as children of c.p.'''
+    c, u = self.c, self.c.undoer
+    if not c.canPasteOutline(tree_s):
+        return g.trace('bad copied outline: %s' % tree_s)
+    old_p = c.p.copy()
+    bunch = u.beforeChangeTree(old_p)
+    self.replace_abbrev_name(w, i, j, None)
+    self.paste_tree(old_p, tree_s)
+    # Make all script substitutions first.
+    do_placeholder = False
+    for p in old_p.subtree():
+        # Search for the next place-holder.
+        val, do_placeholder = self.make_script_substitutions(0, 0, p.b)
+        if not do_placeholder: p.b = val
+    # Now search for all place-holders.
+    for p in old_p.subtree():
+        if self.find_place_holder(p, do_placeholder):
+            break
+    u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
+.. @+node:ekr.20150514043850.14: *6* abbrev.find_place_holder
+def find_place_holder(self, p, do_placeholder):
+    '''
+    Search for the next place-holder.
+    If found, select the place-holder (without the delims).
+    '''
+    c = self.c
+    s = p.b
+    if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
+        new_s, i, j = self.next_place(s, offset=0)
+        if i is None:
+            return False
+        w = c.frame.body.wrapper
+        switch = p != c.p
+        if switch:
+            c.selectPosition(p)
+        else:
+            scroll = w.getYScrollPosition()
+        oldSel = w.getSelectionRange()
+        w.setAllText(new_s)
+        c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+        c.p.b = new_s
+        if switch:
+            c.redraw()
+        w.setSelectionRange(i, j, insert=j)
+        if switch:
+            w.seeInsertPoint()
+        else:
+            # Keep the scroll point if possible.
+            w.setYScrollPosition(scroll)
+            w.seeInsertPoint()
+        return True
+    else:
+        return False
+.. @+node:ekr.20150514043850.15: *6* abbrev.make_script_substitutions
+def make_script_substitutions(self, i, j, val):
+    '''Make scripting substitutions in node p.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    if not c.abbrev_subst_start:
+        if trace: g.trace('no subst_start')
+        return val, False
+    # Nothing to undo.
+    if c.abbrev_subst_start not in val:
+        return val, False
+    # Perform all scripting substitutions.
+    self.save_ins = None
+    self.save_sel = None
+    while c.abbrev_subst_start in val:
+        prefix, rest = val.split(c.abbrev_subst_start, 1)
+        content = rest.split(c.abbrev_subst_end, 1)
+        if len(content) != 2:
+            break
+        content, rest = content
+        if trace: g.trace('**content', content)
+        try:
+            self.expanding = True
+            c.abbrev_subst_env['x'] = ''
+            exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+        finally:
+            self.expanding = False
+        x = c.abbrev_subst_env.get('x')
+        if x is None: x = ''
+        val = "%s%s%s" % (prefix, x, rest)
+        # Save the selection range.
+        w = c.frame.body.wrapper
+        self.save_ins = w.getInsertPoint()
+        self.save_sel = w.getSelectionRange()
+        if trace: g.trace('sel', self.save_sel, 'ins', self.save_ins)
+    if val == "__NEXT_PLACEHOLDER":
+        # user explicitly called for next placeholder in an abbrev.
+        # inserted previously
+        val = ''
+        do_placeholder = True
+    else:
+        do_placeholder = False
+        # Huh?
+        oldSel = i, j
+        c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+    if trace:
+        g.trace(do_placeholder, val)
+    return val, do_placeholder
+.. @+node:ekr.20150514043850.16: *6* abbrev.next_place
+def next_place(self, s, offset=0):
+    """
+    Given string s containing a placeholder like <| block |>,
+    return (s2,start,end) where s2 is s without the <| and |>,
+    and start, end are the positions of the beginning and end of block.
+    """
+    trace = False
+    c = self.c
+    new_pos = s.find(c.abbrev_place_start, offset)
+    new_end = s.find(c.abbrev_place_end, offset)
+    if (new_pos < 0 or new_end < 0) and offset:
+        new_pos = s.find(c.abbrev_place_start)
+        new_end = s.find(c.abbrev_place_end)
+        if not (new_pos < 0 or new_end < 0):
+            g.es("Found placeholder earlier in body")
+    if new_pos < 0 or new_end < 0:
+        if trace: g.trace('new_pos', new_pos, 'new_end', new_end)
+        return s, None, None
+    start = new_pos
+    place_holder_delim = s[new_pos: new_end + len(c.abbrev_place_end)]
+    place_holder = place_holder_delim[
+        len(c.abbrev_place_start): -len(c.abbrev_place_end)]
+    s2 = s[: start] + place_holder + s[start + len(place_holder_delim):]
+    end = start + len(place_holder)
+    if trace: g.trace(start, end, g.callers())
+    return s2, start, end
+.. @+node:ekr.20150514043850.17: *6* abbrev.paste_tree
+def paste_tree(self, old_p, s):
+    '''Paste the tree corresponding to s (xml) into the tree.'''
+    c = self.c
+    c.fileCommands.leo_file_encoding = 'utf-8'
+    p = c.pasteOutline(s=s, redrawFlag=False, undoFlag=False)
+    if p:
+        # Promote the name node, then delete it.
+        p.moveToLastChildOf(old_p)
+        c.selectPosition(p)
+        c.promote(undoFlag=False)
+        p.doDelete()
+    else:
+        g.trace('paste failed')
+.. @+node:ekr.20150514043850.18: *6* abbrev.replace_abbrev_name
+def replace_abbrev_name(self, w, i, j, s):
+    '''Replace the abbreviation name by s.'''
+    c = self.c
+    if i == j:
+        abbrev = ''
+    else:
+        abbrev = w.get(i, j)
+        w.delete(i, j)
+    if s is not None:
+        w.insert(i, s)
+    oldSel = j, j
+    c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
+    # Adjust self.save_sel & self.save_ins
+    if s is not None and self.save_sel is not None:
+        # pylint: disable=unpacking-non-sequence
+        i, j = self.save_sel
+        ins = self.save_ins
+        delta = len(s) - len(abbrev)
+        # g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
+        self.save_sel = i + delta, j + delta
+        self.save_ins = ins + delta
 .. @+node:ekr.20150620062019.1: *3* Docs
 .. @+node:ekr.20150620062023.1: *4* My git work flow
 Imo, git rivals python as the greatest productivity tool ever devised for programmers.

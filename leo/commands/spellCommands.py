@@ -24,6 +24,7 @@ class EnchantClass:
     #@+node:ekr.20150514063305.511: *3*  __init__ (EnchantClass)
     def __init__(self, c):
         """Ctor for EnchantClass class."""
+        # pylint: disable=super-init-not-called
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
         # Set the base language
@@ -128,6 +129,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         Ctor for SpellCommandsClass class.
         Inits happen when the first frame opens.
         '''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.handler = None
         self.page_width = c.config.getInt("page-width")

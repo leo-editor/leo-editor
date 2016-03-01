@@ -23,6 +23,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514045829.3: ** buffer.ctor
     def __init__(self, c):
         '''Ctor for the BufferCommandsClass class.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.fromName = ''
             # Saved name from getBufferName.

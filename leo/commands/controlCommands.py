@@ -20,6 +20,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.88: ** control.ctor
     def __init__(self, c):
         '''Ctor for ControlCommandsClass.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.payload = None
     #@+node:ekr.20150514063305.90: ** advertizedUndo

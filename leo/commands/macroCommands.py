@@ -19,6 +19,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.432: ** macro.ctor
     def __init__(self, c):
         '''Ctor for MacroCommandsClass class.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.lastMacro = None
         self.macros = []

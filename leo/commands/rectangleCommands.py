@@ -18,6 +18,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.448: ** rectangle.ctor
     def __init__(self, c):
         '''Ctor for RectangleCommandsClass.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.theKillRectangle = []
             # Do not re-init this!
@@ -104,6 +105,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.beginCommand(w, 'kill-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         self.theKillRectangle = []
+        r = 0
         for r in range(r1, r3 + 1):
             s = w.get('%s.%s' % (r, r2), '%s.%s' % (r, r4))
             self.theKillRectangle.append(s)

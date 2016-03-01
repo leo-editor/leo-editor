@@ -19,6 +19,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.409: ** kill.ctor
     def __init__(self, c):
         '''Ctor for KillBufferCommandsClass class.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.kbiterator = self.iterateKillBuffer()

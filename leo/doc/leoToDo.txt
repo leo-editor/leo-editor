@@ -26,7 +26,7 @@ Tests and docs:
 
 @language rest
 @wrap
-.. @+node:ekr.20151231121326.1: *3* Bug 217: vim plugin does not work as described
+.. @+node:ekr.20151231121326.1: *3* #217: vim plugin does not work as described
 https://github.com/leo-editor/leo-editor/issues/217
 The plugins seems to be pretty much broken.  Only one temp file seems to be created.
 .. @+node:ekr.20160221121545.1: *3* Discuss improved clone-find commands
@@ -499,8 +499,8 @@ The remaining tasks before Leo 5.1.1 final are:
 .. @+node:ekr.20151231095651.1: ** Bugs (important)
 @language rest
 @wrap
-.. @+node:ekr.20160226051038.1: *3* Complete new javascript importer (Bug 127)
-.. @+node:ekr.20130806072439.20650: *3* Bug 106: brew install leo
+.. @+node:ekr.20160226051038.1: *3* Complete new javascript importer (#127)
+.. @+node:ekr.20130806072439.20650: *3* #106: brew install leo
 @language rest
 @wrap
 
@@ -524,11 +524,11 @@ brew audit --strict Leo
   # run from homebrew folder
 brew install --verbose --debug Leo
 
-.. @+node:ekr.20151231101050.1: *3* Bug 127: Bracket matching is buggy
+.. @+node:ekr.20151231101050.1: *3* #127: Bracket matching is buggy
 https://github.com/leo-editor/leo-editor/issues/127
 
 Javascript and perl need more work.
-.. @+node:ekr.20150609101355.1: *3* Bug 129: Font setting overridden by new workbook
+.. @+node:ekr.20150609101355.1: *3* #129: Font setting overridden by new workbook
 @language rest
 @wrap
 
@@ -539,18 +539,18 @@ https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
-.. @+node:ekr.20151231100930.1: *3* Bug 132: Section Reference causes clone on Leo-Editor file open
+.. @+node:ekr.20151231100930.1: *3* #132: Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
-.. @+node:ekr.20151231100535.1: *3* Bug 156: ILeo errors not piped to Log and Do not show in Ipython console
+.. @+node:ekr.20151231100535.1: *3* #156: ILeo errors not piped to Log and Do not show in Ipython console
 https://github.com/leo-editor/leo-editor/issues/156
-.. @+node:ekr.20151231100231.1: *3* Bug 180: goto-prev-history-node bugged with bookmarks
+.. @+node:ekr.20151231100231.1: *3* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
 
 Terry:
 I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
 
 What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
-.. @+node:ekr.20151231095917.1: *3* Bug 201: Leo does not work with PyQt5 5.5.0
+.. @+node:ekr.20151231095917.1: *3* #201: Leo does not work with PyQt5 5.5.0
 https://github.com/leo-editor/leo-editor/issues/201
 
 I was able to install 64-bit versions of PyQt5.5.1 with Python 3.4.4 on Windows 10.
@@ -558,7 +558,7 @@ I was able to install 64-bit versions of PyQt5.5.1 with Python 3.4.4 on Windows 
 However, there are now problems with the clipboard, as discussed in #201.
 
 Also, have not been able to install enchant.
-.. @+node:ekr.20151231095352.1: *3* Bug 205: @ or @doc does't work perfectly in @clean
+.. @+node:ekr.20151231095352.1: *3* #205: @ or @doc does't work perfectly in @clean
 @language rest
 
 https://github.com/leo-editor/leo-editor/issues/205
@@ -571,9 +571,9 @@ in @clean node, the @doc only work like this:
 @c
 
 without @('@ bbb' -> 'bbb'), it will be transfer into comment in file(in '# xxxxx' form).
-.. @+node:ekr.20151231100137.1: *3* Bug 212: Yet Another Encoding Problem
+.. @+node:ekr.20151231100137.1: *3* #212: Yet Another Encoding Problem
 https://github.com/leo-editor/leo-editor/issues/212
-.. @+node:ekr.20151231095140.1: *3* Bug 213: leo --ipython fails to connect with python3.5 and jupyter
+.. @+node:ekr.20151231095140.1: *3* #213: leo --ipython fails to connect with python3.5 and jupyter
 https://github.com/leo-editor/leo-editor/issues/213
 leo --ipython fails to connect with python3.5 and jupyter
 
@@ -599,11 +599,11 @@ File "/usr/local/lib/python3.5/site-packages/jupyter_client/connect.py", line 18
 raise IOError("Could not find %r in %r" % (filename, path))
 
 OSError: Could not find 'kernel-86433.json' in ['.', '/Users/lo/.ipython/profile_default/security']
-.. @+node:ekr.20151227084623.1: *3* Bug 221: goto-global-line navigating to wrong line reported by PyLint
+.. @+node:ekr.20151227084623.1: *3* #221: goto-global-line navigating to wrong line reported by PyLint
 https://github.com/leo-editor/leo-editor/issues/221
 
 See debuggotogloballine.leo
-.. @+node:ekr.20151227084244.1: *3* Bug 226: Unclear what leo-install.py is for
+.. @+node:ekr.20151227084244.1: *3* #226: Unclear what leo-install.py is for
 https://github.com/leo-editor/leo-editor/issues/226
 .. @+node:ekr.20151231120042.1: *3* Fix links in home page
 Eliminate http://leoeditor.com/ prefix for links from home page.
@@ -881,13 +881,13 @@ Encourage them to write in with their unique uses, and publicize them. I bet peo
 .. @+node:ekr.20120226183512.10195: *3* Bugs (maybe)
 @language rest
 @wrap
-.. @+node:ekr.20150626141042.1: *4* Bug 194: Find Next **button** doesn't highlight body text
+.. @+node:ekr.20150626141042.1: *4* #194: Find Next **button** doesn't highlight body text
 https://github.com/leo-editor/leo-editor/issues/194
 
-.. @+node:ekr.20150609103758.1: *4* Bug 176: Won't fix: Outline pane does not scroll horizontally with node headline edit
+.. @+node:ekr.20150609103758.1: *4* #176: Won't fix: Outline pane does not scroll horizontally with node headline edit
 https://github.com/leo-editor/leo-editor/issues/176
 Outline pane does not scroll horizontally with node headline edit
-.. @+node:ekr.20150403035403.1: *4* Bug 156: Project: ILeo errors not piped to Log, etc.
+.. @+node:ekr.20150403035403.1: *4* #156: Project: ILeo errors not piped to Log, etc.
 @language rest
 @wrap
 
@@ -940,7 +940,7 @@ def exec_helper(self, event):
             # c.p.h becomes the file name.
         shell.run_code(code)
             # Run using IPython.
-.. @+node:ekr.20150305053156.5: *4* Bug 147: Can't fix: Python 3 clipboard encoding
+.. @+node:ekr.20150305053156.5: *4* #147: Can't fix: Python 3 clipboard encoding
 @language rest
 @wrap
 https://github.com/leo-editor/leo-editor/issues/147
@@ -952,13 +952,13 @@ In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there i
 This appears to be a serious bug in older version of pyqt...
 
 @language python
-.. @+node:ekr.20150609082812.1: *4* Bug 132: Won't fix: Section Reference causes clone on Leo-Editor file open
+.. @+node:ekr.20150609082812.1: *4* #132: Won't fix: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
-.. @+node:ekr.20150609103202.1: *4* Bug 89: Won't fix: Spontaneous clones when using <<sections>>
+.. @+node:ekr.20150609103202.1: *4* #89: Won't fix: Spontaneous clones when using <<sections>>
 https://github.com/leo-editor/leo-editor/issues/89
 Spontaneous clones when using <<sections>>
-.. @+node:ekr.20150609102729.1: *4* Bug 52: Minor: Leo can't open files if launching terminal is closed
+.. @+node:ekr.20150609102729.1: *4* #52: Minor: Leo can't open files if launching terminal is closed
 https://github.com/leo-editor/leo-editor/issues/25
 .. @+node:ekr.20131123071505.16462: *4* Crash in undoer
 redoGroup oops: expecting bunch.items.  bunch.kind = typing
@@ -989,7 +989,7 @@ Can't get the viewrendered pane back next to the editor
 https://bugs.launchpad.net/leo-editor/+bug/1235619 BUG: Deleting multiple
 selection in pyqt if a children of a to-delete node is also to be deleted
 .. @+node:ekr.20130926053913.11562: *4* Bug-tracker: Hard
-.. @+node:ekr.20140824163757.20587: *5* Bug 1022140: scroll problem in the body pane (Hard)
+.. @+node:ekr.20140824163757.20587: *5* #1022140: scroll problem in the body pane (Hard)
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1022140
@@ -1141,7 +1141,7 @@ something hard coded.
 Qt styles are different from CSS in that CSS has a single attribute,
 `class`, which can contain a space separated list of tags, whereas Qt
 has arbitrary attributes like the `active` I just made up above.
-.. @+node:ekr.20130805080841.21380: *5* Bug 1222947: javascript import bug (Hard)
+.. @+node:ekr.20130805080841.21380: *5* #1222947: javascript import bug (Hard)
 @language javascript
 
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g

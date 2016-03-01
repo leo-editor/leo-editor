@@ -26,6 +26,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.3: *3* abbrev.ctor
     def __init__(self, c):
         '''Ctor for AbbrevCommandsClass class.'''
+        # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
         self.abbrevs = {} # Keys are names, values are (abbrev,tag).
@@ -213,7 +214,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         trace = False and not g.unitTesting
         verbose = False
         c = self.c
-        ch = event and event.char or ''
+        ch = g.toUnicode(event and event.char or '')
         w = self.editWidget(event, forceFocus=False)
         if not w: return False
         if self.expanding: return False
@@ -248,7 +249,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if '' not in prefixes: prefixes.append('')
         for prefix in prefixes:
             i = j - len(prefix)
-            word = prefix + ch
+            word = g.toUnicode(prefix) + ch
             val, tag = self.tree_abbrevs_d.get(word), 'tree'
             # if val: g.trace('*****',word,'...\n\n',len(val))
             if not val:
