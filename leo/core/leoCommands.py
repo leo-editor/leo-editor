@@ -673,7 +673,7 @@ class Commands(object):
         c = self
         u, undoType = c.undoer, undoType or 'clone-find-predicate'
         failMsg = failMsg or 'nothing found'
-        clones, seen = [], set(),
+        clones, root, seen = [], None, set(),
         for p in generator():
             if predicate(p) and p.v not in seen:
                 if flatten:
