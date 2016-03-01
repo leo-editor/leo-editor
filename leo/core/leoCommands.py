@@ -653,6 +653,7 @@ class Commands(object):
                        # if p should be included in the results.
         failMsg=None,  # Failure message.
         flatten=False, # True: Put all matches at the top level.
+        redraw=True,   # True: redraw the outline,
         undoType=None, # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
     ):
@@ -665,6 +666,7 @@ class Commands(object):
         predicate,      A function of one argument p returning true if p should be included.
         failMsg=None,   Message given if nothing found.
         flatten=False,  True: Move all node to be parents of the root node.
+        redraw=True,    True: redraw the screen.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                         The default is 'clone-find-predicate'
         '''
@@ -687,14 +689,16 @@ class Commands(object):
                 clone = p.clone()
                 clone.moveToLastChildOf(root)
             u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
-            c.selectPosition(root)
-            c.setChanged(True)
-            c.contractAllHeadlines()
-            root.expand()
-            c.redraw()
-            c.selectPosition(root)
+            if redraw:
+                c.selectPosition(root)
+                c.setChanged(True)
+                c.contractAllHeadlines()
+                root.expand()
+                c.redraw()
+                c.selectPosition(root)
         else:
             g.es_print(failMsg, color='red')
+        return root
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
     def createCloneFindPredicateRoot(self, flatten, undoType):
         '''Create a root node for clone-find-predicate.'''
