@@ -144,6 +144,7 @@ def getTable(scope):
         ),
         'core': (
             (coreList, 'core'),
+            (commandList, 'commands'),
             (guiPluginsList, 'plugins'),
             (externalList, 'external'),
         ),

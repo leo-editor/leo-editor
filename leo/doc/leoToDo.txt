@@ -8,7 +8,7 @@ Release PyInstaller versions for Windows, Linux, MacOs.
 
 Release Leo 5.1.1 Friday, March 11.
 
-7 bugs for Leo 5.1.1:
+6 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
 - #234: Hard crash on UnicodeDecodeError
