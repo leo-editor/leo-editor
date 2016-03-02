@@ -651,7 +651,7 @@ class Commands(object):
         generator,     # The generator used to traverse the tree.
         predicate,     # A function of one argument p, returning True
                        # if p should be included in the results.
-        failMsg=None,  # Failure message.
+        failMsg=None,  # Failure message. Default is no message.
         flatten=False, # True: Put all matches at the top level.
         redraw=True,   # True: redraw the outline,
         undoType=None, # The undo name, shown in the Edit:Undo menu.
@@ -664,7 +664,7 @@ class Commands(object):
 
         generator,      The generator used to traverse the tree.
         predicate,      A function of one argument p returning true if p should be included.
-        failMsg=None,   Message given if nothing found.
+        failMsg=None,   Message given if nothing found. Default is no message.
         flatten=False,  True: Move all node to be parents of the root node.
         redraw=True,    True: redraw the screen.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
@@ -672,7 +672,6 @@ class Commands(object):
         '''
         c = self
         u, undoType = c.undoer, undoType or 'clone-find-predicate'
-        failMsg = failMsg or 'nothing found'
         clones, root, seen = [], None, set(),
         for p in generator():
             if predicate(p) and p.v not in seen:
@@ -696,7 +695,7 @@ class Commands(object):
                 root.expand()
                 c.redraw()
                 c.selectPosition(root)
-        else:
+        elif failMsg:
             g.es_print(failMsg, color='red')
         return root
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot

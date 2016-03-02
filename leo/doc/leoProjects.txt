@@ -1453,6 +1453,7 @@ Here is the entire code for the new commands:
         self.cloneFindByPredicate(
             generator = self.all_unique_positions,
             predicate = isMarked,
+            failMsg = 'nothing found',
             flatten = flatten,
             undoType = 'clone-find-marked',
         )
