@@ -4538,6 +4538,7 @@ contextmenu.py
 leo_to_html.py
 mod_scripting.py
 nav_qt.py
+nodetags.py
 quicksearch.py
 stickynotes.py
 todo.py
