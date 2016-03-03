@@ -9,6 +9,7 @@ Release Leo 5.1.1 Friday, March 11.
 ** upload pyinstaller folder.
 - Add optional icon and attributes keyword args to cloneFBP.
 - How does viewrendered plugin create its window?
+- Make sure all items in "Recent code" are documented.
 
 5 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1

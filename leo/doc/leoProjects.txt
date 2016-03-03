@@ -229,6 +229,25 @@ Done:
 - Prefer matches in @<file> trees.
 - Do cfa-flattened. (Only if enabled by @bool find-def-uses-cfa-flattened).
 - Bring up popup.
+
+Leo now supports find-def and find-var commands.  They find the definitions of classes, defs or vars.
+
+They work as follows:
+
+- Select the word at the cursor, if text is not already selected.
+- Save the find settings in effect before the command started.
+- find-def sets the search pattern to "class word" or "def word" depending on whether word is capitalized.
+- find-var sets the search pattern to "word =".
+- Set word-find to True
+- Start the search at the root position of the outline.
+
+This will find the first definition of the word.  Thereafter, you can use F3 (find-next) to find additional definitions.
+
+When the search fails, Leo restores the Find settings to what they were previously.
+
+A new setting, @bool find-ignore-duplicates (default False), controls whether any search command ignores duplicate matches.  Ctrl-F restarts searches, clearing a list of vnodes that have already been seen.  Any failed search also clears the list of vnodes.
+
+Obviously, this scheme is a bit naive.  The search patterns could be improved.  However, even this simple scheme is surprisingly useful.  Furthermore, these commands have implications that I'll discuss in another thread.
 .. @+node:ekr.20150629080954.1: *6* posts
 https://groups.google.com/d/msg/leo-editor/p3MR1es0Ez0/U4ME-UAuf0AJ
 
@@ -1326,13 +1345,23 @@ To do:
     - Enter shift to outline pane.
     - Some key to shift back to the nav pane.
 - Clone-find-predicate.
+.. @+node:ekr.20160303072415.1: *4* Task oriented docs
+Leo's tutorial, reference and cheat sheet have been thinly disguised encyclopedias. Very dry.  Soporific.
+
+Contrast this with the Code Academy.  The "lectures" deal with solving real problems. Shorter code, more useful. Exciting, maybe.
+
+This would be a good model for a rewritten tutorial.
+
+People have talked about task-oriented documentation in the past, but I haven't understood what they meant until now.
+
+This isn't really about telling stories that "stick".  It's about solving important problems.  Now that's something that has a chance of getting people involved.
 .. @+node:ekr.20160129054828.1: *4* First post: topics
 @language rest
 @wrap
 
 Here is a quick list topics for the code academy.  Most can already be done easy, if you know where to look.  Some may require a few new lines in Leo's core. These topics should also be included in Leo's cheat sheet, or somewhere similar.
 
-uA's
+**uA's**
 
 They are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
 
@@ -1344,7 +1373,7 @@ Quick additions to Leo's core:
 
 A more ambitious addition: Define a gui interface for uA's.
 
-Other topics
+**Other topics**
 
 - Clones: making and deleting them. Clones are cheap to create!
 - How to create new panes in the log window, and how to put cool stuff in them.
@@ -1357,7 +1386,7 @@ We discussed the so-called Easter-Egg interface to create new panes this from th
 
 - How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
 
-New directions
+**New directions**
 
 Putting all this together, we all agreed that being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
 
@@ -1369,25 +1398,25 @@ A recent rev added the p.u property, which you can think of as a synonym for p.v
 
 The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
 
-plugin_name = 'test_plugin'
-d = p.u.get(plugin_name,{})
-d ['n'] = 8
-p.u [plugin_name] = d
+    plugin_name = 'test_plugin'
+    d = p.u.get(plugin_name,{})
+    d ['n'] = 8
+    p.u [plugin_name] = d
 
 p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
 
 It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
 
-for p in c.all_unique_positions():
-    if p.u:
-        print(p.h, sorted(p.u.keys()))
+    for p in c.all_unique_positions():
+        if p.u:
+            print(p.h, sorted(p.u.keys()))
 
 This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
 
 The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
 
-aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
-print('\n'.join([p.h for p in aList]))
+    aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
+    print('\n'.join([p.h for p in aList]))
 
 Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
 
@@ -1408,17 +1437,16 @@ For example, running this script will insert three icons. Running the script aga
 
 @language python
 
-
-table = (
-    'edittrash.png',
-    'connect_no.png',
-    'error.png',
-)
-for icon in table:
-    fn = g.os_path_finalize_join(g.app.loadDir,
-        '..', 'Icons', 'Tango', '16x16', 'status', icon)
-    if g.os_path_exists(fn):
-        c.editCommands.insertIconFromFile(path=fn)
+    table = (
+        'edittrash.png',
+        'connect_no.png',
+        'error.png',
+    )
+    for icon in table:
+        fn = g.os_path_finalize_join(g.app.loadDir,
+            '..', 'Icons', 'Tango', '16x16', 'status', icon)
+        if g.os_path_exists(fn):
+            c.editCommands.insertIconFromFile(path=fn)
         
 @language rest
 @wrap
@@ -1426,7 +1454,6 @@ for icon in table:
 With a minor change to Leo's core, it is now easy to delete the icons of the node at position p:
 
     c.editCommands.deleteNodeIcons(p=p)
-
 .. @+node:ekr.20160129103813.1: *4* git
 If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
 
@@ -1533,6 +1560,929 @@ Here is c.findNodeByPredicate. **Important**: Rev c8a3581c9b corrects a serious 
             c.redraw()
         else:
             g.es_print('not found:', undoType)
+.. @+node:ekr.20160303072516.1: *3* To be documented
+.. @+node:ekr.20160303072543.1: *4* Add to FAQ: Leo Dark on Linux
+Zoom.Quiet: Leo Dark on Linux
+https://groups.google.com/d/msg/leo-editor/B3_1e9k69oQ/cLKXFq_fXw8J
+
+I've played a bit with my theme since I wanted a dark one in order to save my eyes. Here is a screenshot:
+https://lh3.googleusercontent.com/-kb-RnBVq8zU/VIlThQ9MGuI/AAAAAAAAAD8/j-AAOKiHvFI/s1600/leo-dark-ubuntu.png
+
+It's pretty straightforward to get it :
+ - install this nice theme : http://gnome-look.org/content/show.php/HackStation?content=167255
+
+ - then just override Leo's qt style sheet by adding an empty @data qt-gui-plugin-style-sheet to your @settings
+
+ - I struggled a bit to finally find out that the only settings that are not handled by qt are the log pane text colors, so add those settings :
+-  @color log_text_foreground_color = #93a1a1
+@color log_error_color = #dc322f
+@color log_warning_color = #268bd2
+
+Finally, I've made a pack of transparent icons to be used more generically :
+@string color_theme = transparent
+.. @+node:ekr.20160303073053.1: *4* Leo in virtualenv
+https://groups.google.com/d/msg/leo-editor/LePOMe_ckeg/_UasKCKP6NMJ
+
+Some time ago there were a discussion about Leo in virtualenv.
+
+Now I could test it in Python3, PyQt5 on Kubuntu:
+
+Here are the steps (I worked in a folder with write permission '/leo'):
+
+1. Install PyQt5 in the system:
+
+sudo aptitude install python3-pyqt5
+
+2. Create the virtual environment with the '--system-site-packages' switch and without pip (I've found this the only way, which worked):
+
+pyvenv-3.4 --system-site-packages --without-pip py3-pyqt5
+
+3. Install setuptools and pip into the created environment:
+
+wget --no-check-certificate https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O ez_setup.py
+
+py3-pyqt5/bin/python ez_setup.py --insecure
+
+wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.0.8.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
+
+tar xzvf pip-6.0.8.tar.gz
+
+cd pip-6.0.8
+
+../py3-pyqt5/bin/python setup.py install
+
+cd ..
+
+Now you can install what you want in the created environment, without affecting the system.
+
+py3-pyqt5/bin/pip install Sphinx
+
+4. From the leo-editor source folder launch Leo with the new interpreter:
+
+In my case:
+
+/leo/py3-pyqt5/bin/python launchLeo.py
+.. @+node:ekr.20160303073516.1: *4* Rev 419a82d changes handling of orphan bits
+April 15, 2015
+
+Rev 419a82d changes several aspects of how Leo handles the so-called orphan bit in vnodes.  These are major changes, but I believe they will be for the best.
+
+The orphan bit indicates that there was a problem writing an @<file> node.  It will be set, for example, when an @file node contains children but has no @others directive.  Leo simply cannot write the external file in that case.
+
+However, Leo went overboard with the error logic. Here are the recent changes:
+
+1. Leo no longer writes the orphan bit ('O' bit in vnode attr) in .leo files. This kind of persistent error bit seems unwise.
+
+2. Leo clears the bit and issues a warning when reading a vnode with the 'O' attr.
+
+Previously, Leo would refuse to update the outline from the external file if the orphan bit was set! 
+
+This change could have unforeseen consequences, but I suspect nobody will ever notice.  The foreseen consequence is that Leo will keep the outline and external files in synch more often.
+.. @+node:ekr.20160303073917.1: *4* ENB: Instant history of a code checking breakthrough
+June 7, 2015: The code is now in leoCheck.py.
+
+There has been an amazing breakthrough in code analysis.  Not sure where it will lead, or how much more work I shall do on this project.
+
+This is an Engineering notebook post.  You can safely ignore it.
+
+This is an "instant" history of work completed in the last few days.  I am writing this now, before the details blurred. I'm pretty sure I have remembered the general timing of events correctly.
+
+On Wednesday, June3, I posted a "farewell" message on the static type checking group.  But, that just got me thinking about code analysis again :-) Sigh.  This post discusses some intuitions.
+
+On Thursday, June 4, I reviewed my old code analysis code.  I know it was Thursday because I was reviewed all of its problems while driving to a swim lesson.  In short, the code was clumsy and inflexible.
+
+Sometime later, perhaps that night, I started revising one of my old tests. I stumbled across two major simplifications:
+
+1. I revised the testing framework so that there would only ever be one "test".
+
+For backup, a copy of the testing framework, @@button show-data, is in the attic (leoNotes.txt).  Originally, all the code was in a Test class defined as a child of the @button node.  The code soon moved into the new leoCheck.py file.
+
+2. As a prototype, I decided to use regular expressions to "parse" the source code.
+
+I had become aware of how fast regular expressions can be by studying Python's tokenizer code in Lib/tokenize.py.  That's probably what had me choose re's for the prototype.
+
+Using regex's turned out to be a stupendous bit of good luck! My focus shifted from all the technical details of traversing parse trees to what I actually wanted to see, namely the relationships between definitions of functions/methods and all the calls to and returns from those routines.
+
+The prototype code created globals dictionaries of classes, defs, calls to defs and return statements.  The show_results method created reports, organized by def name.
+
+The result was amazing!  In just a few hours work I had a better picture of Leo's code than I had been able to produce in months of work with the old stc project.  Here is just one example:
+
+printGc
+    2 definitions...
+        leoGlobals.py: def printGc(tag=None):
+           leoTest.py: def printGc(message=None):
+
+    1 call...
+        leoTest.py::runGc: printGc(message=message)
+
+    2 returns...
+        leoGlobals.py: return None
+           leoTest.py: return delta
+
+The present code doesn't always find all calls to a function, partly because calls to F can have a prefix, like g.F.
+
+Calls to library functions do not show up in such reports.  Instead, they are listed separately.  For example, here is the entry for the currentItem Qt method:
+
+currentItem 4 calls...
+          LeoQtTree::getCurrentItem: w.currentItem()
+      LeoQListWidget::get_selection: self.currentItem()
+    LeoQListWidget::select_callback: self.currentItem()
+       LeoQListWidget::tab_callback: self.currentItem()
+
+And here is the decode function from the standard library:
+
+decode 4 calls...
+    ZimImportController::parseZimIndex: urllib.unquote(result[2]).decode('utf-8')
+              leoGlobals.py::toUnicode: s.decode(encoding,'strict')
+              leoGlobals.py::toUnicode: s.decode(encoding,'replace')
+    ZimImportController::parseZimIndex: result[1].decode('utf-8')
+
+
+By Friday afternoon I was in a state of shock. I kept shaking my head, telling Rebecca how I couldn't believe how lucky I was to have stumbled upon using regex's.  I kept saying that I could never have created these reports had I been focused on parse trees.
+
+Getting real
+
+The simple regex's I used do not handle strings or comments properly.  My first thought was that perhaps the tokenizing beautifier could "parse" the code easily. Friday evening I played around with this approach, but I quickly realized it was going nowhere.
+
+Here is the checking log for 72658e8, Friday, June 05, 2015 10:24:06 PM:
+
+QQQ
+Added an alternative tokenizing implementation, but...Wow: the prototype using simple line-oriented regex's and string find is MUCH simpler and faster than using tokenizing code.
+QQQ
+
+Early (1 a.m.) Saturday morning, thoughts about translating the regex-based prototype to an parse-tree based code did not allow me to sleep.  Using the prototype as a guide path, it took about 6 hours to create the present code.
+
+Yes, in theory, I could have written the Ast traversers without the prototype, but in practice I would never have thought to do things this way.  I have found a cool new pattern by pure luck.
+
+Here is the Ast Visitor for FunctionDef nodes in the ShowDataTraverser class:
+
+# FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def do_FunctionDef(self, node):
+    # Format.
+    args = self.formatter.format(node.args) if node.args else ''
+    s = 'def %s(%s):' % (node.name, args)
+    if self.trace: g.trace(s)
+    # Enter the new context.
+    context_tuple = self.fn, 'def', s
+    self.context_stack.append(context_tuple)
+    # Update controller data.
+    def_tuple = self.context_stack[: -1], s
+    aList = self.controller.defs_d.get(node.name, [])
+    aList.append(def_tuple)
+    self.controller.defs_d[node.name] = aList
+    # Visit.
+    for z in node.decorator_list:
+        self.visit(z)
+    self.visit(node.args)
+    for z in node.body:
+        self.visit(z)
+    # Leave the context.
+    self.context_stack.pop()
+
+This is the simplest possible code! Instead of dealing with Ast nodes, this code using only strings.  s describes the function. The context stack contains strings describing enclosing def and class nodes.
+
+Instead of injecting data into Ast nodes, the code creates entries in global dictionaries in the "controller" object, in this case, self.controller.defs_d.
+
+Speed
+
+The ShowDataTraverser class is a subclass of the AstFullTraverser class in leoAst.py.  All visitors must explicitly visit subnodes.  As a result, the visit method collapses:
+
+def visit(self, node):
+    '''
+    Visit a *single* ast node.
+    Visitors are responsible for visiting children!
+    '''
+    method = getattr(self, 'do_' + node.__class__.__name__)
+    method(node)
+
+Clearly, this is the fastest possible way to traverse parse trees.
+
+Traversing parse trees is significantly faster than using tokens, and is almost as fast as using improper regex's:
+
+Parse trees: 3.8 sec to generate all reports.
+Tokens: 3.3 sec just for tokenizing.
+Regex: 2.2 sec to generate all reports.
+
+Here are the figures for the latest run over all of Leo's core files:
+
+files: 69 lines: 86,312 chars: 3,534,400 classes: 210
+defs: 3,994 calls: 6,682 undefined calls: 2,090 returns: 2,179
+run done:  3.8 sec.
+
+The statistic for undefined calls is probably inaccurate.
+
+Further work
+
+The present project has already demonstrated, for the first time, that my intuitions about code are reasonable.
+
+The reports gather all data about a routine in one place.  In most cases, the names of def args correspond in an obvious way to the names of call args. Imo, this what allows us programmers to have confidence in our code.  We certainly do not do type analysis!
+
+That is, the names of functions and ivars often indicates their types types.  Yes, the names can be misleading, which is why pylint is useful ;-)
+
+Using only strings can create problems.  One idea is to use the Ast nodes (or their id's) as dictionary keys.  Easy: do_FunctionDef will just set node_tuple to def_tuple = node, self.context_stack[: -1], s
+
+It would be possible to add information about assignments to vars and ivars merely by adding Ast visitors for assignments.  That way might lead to full type checking.  Not sure I'm going to do that.
+
+There are a number of bugs in the reports.  I'll look into them. Furthermore, it's tempting to reorganize dictionaries in new ways.
+
+Summary
+
+It is almost infinitely easier to deal with Python dictionaries than to deal with Ast trees!
+
+The prototype created a new pattern.  Node visitors have no smarts.  They simply create entries in global dictionaries.  Later code can analyze the dictionaries.
+
+Enough for now.  I think I've described the big picture well enough.
+
+Edward
+
+P. S. The prototype code is no longer in leoCheck.py.  It's in the attic, in the node:
+
+    A great prototype: scan (inaccurate) & helpers
+.. @+node:ekr.20160303074234.1: *4* Find now shows status
+June 22, 2015
+
+After a find command completes (successfully or not), the status areas shows:
+
+- Whether the find command completed successfully.
+- The find options in effect for the search.
+
+Previously, the status line was only updated for unsuccessful searches, and it did not contain the find options in effect.  The new status line is much more helpful than the old.
+
+.. @+node:ekr.20160303074307.1: *4* Improved @wrap
+June 22, 2015
+
+Leo now immediately wraps the body pane when @wrap is in effect.
+
+Previously, the user had to reselect the node when typing "@wrap".  Now, the colorizer ensures that wrapping is on, so wrapping happens immediately.
+.. @+node:ekr.20160303093954.1: *4* A real-world example of cff
+@language python
+
+tc = c.theTagController
+people, teams = None, None
+for p in c.rootPosition().self_and_siblings():
+    if p.h.lower() == 'people':
+        people = p.copy()
+    if p.h.lower() == 'teams':
+        teams = p.copy()
+tasks = c.lastTopLevel().insertAfter()
+tasks.h = 'Tasks'
+table = (
+    (people, 'People'),
+    (teams, 'Team'),
+)
+for group, h in table:
+    if not group: continue
+    root = tasks.insertAsLastChild()
+    root.h = '%s Tasks' % h
+    for child in group.children():
+
+        def isOpenTask(p):
+            tags = tc.get_tags(p)
+            return 'open' in tags and 'todo' in tags and child.isAncestorOf(p)
+
+        # Requires Rev dcd63426e22 or later.
+        # Prevents flash due to extra redraws.
+        p = c.cloneFindByPredicate(
+            generator = c.all_unique_positions,
+            predicate = isOpenTask,
+            flatten = True,
+            redraw = False, # Prevents flash.
+            undoType = 'cfa-todo')
+        if p:
+            p.h = child.h
+            p.moveToLastChildOf(root)
+c.selectPosition(tasks)
+tasks.expand()
+# optional:
+# c.hoist()
+c.redraw()
+.. @+node:ekr.20160303114324.1: *4* Controlling Leo remotely
+Terry Brown July 29, 2015
+
+Controlling Leo remotely
+https://groups.google.com/d/msg/leo-editor/wWWUgfDhPi4/VmRRRa_xDAAJ
+
+Prompted by the IRC discussion today, I've added remote code execution
+abilities to mod_http.py  Relevant part of the doc.s pasted below.
+
+This is a plus for a couple of reasons - previously you had to use
+the leoremote plug-in which used sockets and was really python only,
+this new approach just uses HTTP GET requests which can be generated by
+almost anything (language, link in a doc., browser bookmark, etc.).
+Also leoremote doesn't work in Python 3.x.
+
+This code to load a file into Leo from the command line:
+https://github.com/leo-editor/snippets/blob/master/utils/led.py
+
+Can be replaced with this version:
+https://github.com/leo-editor/snippets/blob/master/utils/led.sh
+
+Executing code remotely
+-----------------------
+
+.. warning::
+
+    Allowing remote code execution is a **HUGE SECURITY HOLE**, you need to
+    be sure that the url from which you access Leo (typically
+    http://localhost:8130/) is accessible only by people and software you trust.
+
+    Remote execution is turned off by default, you need to manually / locally
+    change the @setting ``@bool http_allow_remote_exec = False`` to ``True``
+    to enable it.
+
+Commands to be executed are submitted via HTTP GET requests, which can
+be generated in almost any language and also triggered from shortcuts,
+links in other documents or applications, etc. etc.
+
+The basic form is::
+
+    http://localhost:8130/_/exec/?cmd=<python code for Leo to execute>
+
+The query parameters are:
+
+``cmd`` (required)
+    A valid python snippet for Leo to execute.  Executed by
+    the ``vs-eval`` command in the ``valuespace`` plug-in.  Can be
+    specified multiple times, each is executed in order.  May contain
+    newlines, see examples.
+``c`` (optional)
+    Which currently loaded outline to use, can be an integer, starting
+    from zero, or the full path+filename, or just the base filename.
+    Defaults to 0 (zero), i.e. the "first" open outline.
+``enc`` (optional)
+    Encoding for response, 'str', 'repr', or 'json'.  Used to render
+    the returned value.
+``mime_type`` (optional)
+    Defaults to ``text/plain``.  Could be useful to use ``text/html`` etc.
+
+A special variant url is::
+
+    http://localhost:8130/_/exec/commanders/
+
+which returns a list of open outlines.
+
+Examples
+========
+
+This command::
+
+    curl http://localhost:8130/_/exec/?cmd='c.bringToFront()' >/dev/null
+
+will raise the Leo window, or at least make the window manager signal the
+need to raise it.
+
+::
+
+    curl --get --data-urlencode \
+      cmd='g.handleUrl("file:///home/tbrown/.leo/.contacts.leo#Contacts", c)' \
+      http://localhost:8130/_/exec/ >/dev/null
+
+will cause a running Leo instance to open ``/some/path/contacts.leo`` and select
+the ``Contacts`` node.  A desktop icon link, browser bookmark, or link in a
+spread-sheet or other document could be used the same way.
+
+In the ``bash`` shell language, this code::
+
+    TEXT="$@"
+    curl --silent --show-error --get --data-urlencode cmd="
+        nd = c.rootPosition().insertAfter()
+        nd.h = 'TODO: $TEXT'
+        import time
+        nd.b = '# created %s' % time.asctime()
+        c.selectPosition(nd)
+        c.redraw()
+        'To do item created\n'
+    " http://localhost:8130/_/exec/
+
+could be written in a file called ``td``, and then, assuming that file is
+executable and on the shell's path, entering::
+
+    td remember to vacuum the cat
+
+on the command line would create a node at the top of the first open outline in
+Leo with a headline ``TODO: remember to vacuum the cat`` and a body text ``#
+created Wed Jul 29 16:42:26 2015``. The command ``vs-eval`` returns the value of
+the last expression in a block, so the trailing ``'To do item created\n'`` gives
+better feedback than ``None`` generated by ``c.redraw()``.
+``c.selectPosition(nd)`` is important ant to stop Leo getting confused about
+which node is selected.
+.. @+node:ekr.20160303114520.1: *4* NEW: Edit Settings menu
+Terry Brown August 23, 2015
+https://groups.google.com/d/msg/leo-editor/pM8aVJ1D6ao/Z8lq43t7FAAJ
+
+There's now an "Edit settings" menu under the main Settings menu.
+
+It's not going to make everyone (anyone?) happy, you still have to edit
+the content of a Leo headline to change font size etc.  The new
+functionality is that it finds the appropriate setting and copies it to
+the appropriate outline for you, so knowing what to look for and how to
+manage it is handled.
+
+Sometimes you'll see this:
+
+    The relevant setting, '@bookmarks_base_color', is using the value of
+    a more general setting, '@text-foreground'.  Would you like to edit
+    the more specific setting, '@bookmarks_base_color', or the more
+    general setting, '@text-foreground'?  The more general setting may
+    alter appearance / behavior in more places, which may or may not be
+    what you prefer.
+
+                            Edit specific   Edit general   Cancel
+
+Wordy, but I think easy enough to follow.  I guess everything after the
+last comma could be deleted :-)
+
+If the setting is in leoSettings.leo, you see:
+
+    The setting '@body-font-family' is in the Leo global configuration
+    file 'leoSettings.leo' and should probably be copied to
+    'myLeoSettings.leo' before editing.
+    It may make more sense to copy a group or category of settings.
+
+    Please enter 1, 2, 3, or 4:
+    1. copy the one setting, '@body-font-family'
+    2. copy the setting group, 'Body font' (Recommended)
+    3. copy the setting whole category, 'Fonts'
+    4. edit the setting in 'leoSettings.leo' anyway
+
+Again, wordy, but I think easy enough to understand.
+
+(Having to enter a number to pick an option is clunky, a
+ gui-independent 'pick item from list widget' can be added to Leo, I
+ just didn't want to mix that task into the current task.)
+
+Note "Reload settings" isn't working as effectively as I think it
+should, that may need to be addressed as well.  Unrelated to the new
+code.
+
+So, this isn't a silver bullet for the newbie setting editing woes, but
+it does eliminate a lot of the Leo specific knowledge required (apart
+from "edit a headline").  Also this new approach can be developed
+further based on feedback, just wanted to get what I had so far into
+the main branch for testing etc.
+.. @+node:ekr.20160303114700.1: *4* A note to new users
+John Lunzer, August 30, 2015
+https://groups.google.com/d/msg/leo-editor/WupMUqlclaQ/dtAjRiytFgAJ
+
+A new user recently said to me, "Leo is powerful and flexible -- and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years and has ~1.5 million lines of code (IIRC). This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
+
+I believe with tools of this weight and impact, there will always be an investment in learning them. They're all vast forests of features filled with hidden treasures and in the case of each of them he/she that invests in the tool will be rewarded for their effort. It is, however, the responsibility of the community (led by the developers) to help make that treasure hunt as enjoyable and adventurous as possible, as any good treasure hunt should be. 
+
+
+===============
+Geoff Evans, September 1, 2015
+
+As the 'new' (since 2009) user John mentioned, I totally endorse what he says about how friendly and helpful the Leo community is in dealing with questions.   But I'm also old enough to be fond of written documentation.  This note is one offering towards Edward's desire for outreach to more users and how the documentation could serve that purpose.  I am looking for something that will persuade a non-user to try leo, and persuade a new user that a small effort in learning a bit more often brings a big reward.  Years of editing and reviewing for international scientific journals, plus decades of making my own mistakes, have taught me the value of just-in-time delivery of ideas, and of writing to the interface not the implementation.  So before even the Tutorial (which is still basically about How rather than What and Why) I envisage a section built around people's needs and indicating how they would go about meeting them with Leo.  Something like (trying to use the format in Jacob Peck's scripting example):
+-A Taste of Leo
+  Leo is a system that lets you enter information and keep track
+  of how it's organized.  Leo's main window has two large parts 
+  that contain your information:  an outline pane toward the top
+  left and a body pane [I always toggle the split direction] on
+  the right.  The body pane contains information related to the
+  highlighed headline in the outline pane; headline and body pane
+  together are referred to as a node.
+    -Staples
+      There are many ways to instruct Leo: commands, directives,
+      scripts, buttons, abbreviations ....  This part gives
+      brief examples of the kind of thing each does.
+        -Command
+          Does something immediately.
+          You want to insert a new node into your outline:
+            Alt-X insert-node  [Ctrl-I]
+          Typing 'Alt-X' put you in a minibuffer at the bottom of
+          the main window, where you type the rest of the 
+          command.  This is such a common command that there is a
+          keyboard shortcut for it.  But there are scores of
+          commands, most of which have to be entered the Alt-X
+          way (tab completion can make it less onerous).
+          You want to seach for something in the outline:
+            Alt-X find   [Ctrl-F]
+          is a flexible command that, for example, lets you 
+          search only headlines, and offers search-and-replace.
+        -Directive
+          Doesn't do anything immediately, but sets up ground
+          rules that will be followed in that node and all 
+          children until overridden.
+          You want syntax colouring appropriate the the language
+          you're programming in
+            @language python
+          turns it on.
+          You want to save a subtree in an external file where
+          another program can access it.
+            @file file.name
+          directs that the node and all children will be saved in
+          a separate file called file.name .
+        -Setting
+          Controls how a whole Leo session will look.
+          You always want your body pane to the right of the
+          outline pane, whereas by default Leo will put it below.
+          Edit the file myLeoSetttings.leo (which you access by
+          clicking the Settings tab near the top of the main
+          window -- or the Help tab in older Leo versions such
+          as the picture in the current Leo5.1 documentation) by
+          adding a line
+            @bool split_direction = vertical
+          Settings don't take efffect immediately, but only in
+          the next leo session you open.  [Though when you're
+          experimenting to see how they work, you can put a
+          @settings tree in the outline you're working on,
+          add your lines there, and they take effect when you
+          save and reopen the file in the same Leo session.]
+        -Script
+          I can't give an example of something I want that a 
+          script will do for me.
+    -Treats
+      This is the place to put some representative gems.  I seem
+      to recall Edward suggesting this somewhere in the thread on 
+      Leo's future, though I can't find it now.  But they have to
+      be things that make a new user say: "I hadn't thought of
+      using Leo for that.  Now that I think of it, I can see
+      wanting to.  I'm confident now I can work out how for my
+      own needs."  
+      But the first treat is obvious:
+        -Clone
+          You have a task that belongs in Project A, that you 
+          need to work on next week.  So you enter a node for
+          the task under <Project A>, type Ctrl-` , and you have
+          a copy of the node you can move to under <Do next week>
+          *and* when you modify your description in one place,
+          the same modifications happen in the other.
+Okay, that's enough ignorant comment from me.  People who really know Leo can correct all the mistakes I've made and add more and better treats and examples.  
+One other thought:  there are places where the documentation has "Go here for help" links.  If they were to point to the leo-editor-users group, rather than leo-editor, people might be less inhibited about using them.  It would feel less like interrupting the work of the developers.
+
+And this is where Leo does not falter, in the helpfulness of its community (small though it may be). I will reiterate what Edward has said many times, do not struggle on your own if you are lost, confused, or bewildered. Please ask questions. If the documentation or examples do not meet your needs, please ask questions. In my own experience as a once new user (though there may be the occasional disagreement) you will not be chided, scorned, or belittled but will be met with more even more help than you originally asked for. 
+.. @+node:ekr.20160303115117.1: *4* Why Leo is noteworthy
+https://groups.google.com/d/msg/leo-editor/F-WA_OpHKPA/xPJNpHR8CgAJ
+
+This post discusses what I think matters most about Leo. This post assumes you are an experienced Leo user.  It does not try to duplicate Leo's Tutorial.
+
+This post will be pre-writing for a version that will be posted to Leo's web site. All comments are welcome.
+
+Leo is a superb tool for understanding, studying and organizing any kind of complex data, including computer programs. The first great Aha in Leo's history was that webs (literate programs) are outlines in disguise. Leo's importers (@auto) make it easy to studying other people's programs. Leo's always-present outline structure clarifies overall program structure and makes many kinds of comments unnecessary.
+
+Leo is a superb browser for code and data. Unlike many other folding editors, Leo remembers which nodes were expanded when you last saved an outline. This is surprisingly important. And Leo's clones let you organize any data as you want, even if all folds are collapsed.
+
+Leo is a uniquely powerful scripting environment. This power comes from three sources: Leo's API, Leo's ability to compose scripts from outlines and Leo's underlying data structure, a Directed Acyclic Graph, the basis for Leo's clones.
+
+Leo's API consists primarily of generators, such as c.all_positions(), p.self_and_subtree(), etc. and properties, such as p.b, p.h, p.gnx and p.v.u.  Leo's API makes it trivial to write scripts to access or change any node. AFAIK, these capabilities are unique.  Simulating them in vim or Emacs is possible, but so is simulating Python's capabilities in C...
+
+Afaik, no other scripting environment allows you to compose scripts from outlines.  @file, @clean, @auto, @others and section references and definitions make this possible.  Section references and definitions are modeled on the noweb language, but all of Leo's script composition features are fully integrated into Leo's outline structure.
+
+Leo's outline nodes have headlines (p.h) and body text (p.b) and extensible information (p.v.u).  Headlines are descriptions (meta-data) of the data in p.b and p.v.u.  Scripts can rapidly discover and categorize data using metadata.  Leo's @ convention for headlines (@clean, @file, @auto, @html, etc.) show how extensible this node typing is.
+
+So much for the theory.  The following also are important in practice:
+
+- Native scripting in Python, with full access to all of Leo's sources.
+- Leo's plugin architecture.
+- Leo's rst3 command, vim, xemacs and ILeo (IPython bridge), and leoBridge module.
+- Leo's minibuffer commands, borrowed shamelessly from Emacs.
+- @test and @suite: Leo's outline-oriented unit testing framework.
+- @button: bringing scripts to data.
+- Leo's outline-oriented directives.
+
+The invention/discovery of @clean earlier this year completes Leo is some sense.
+
+Acknowledgements: Working with Leo's community of Leo's developers and users has been a great pleasure for over 20 years. My only regret is that Bernhard Mulder and Bob Fitzwater are no longer with us. Both made essential contributions. Bob Fitzwater was my mentor. He gently pushed me to consider design, not just "bit twiddling".  Bernhard Mulder contributed two of the most important elements of Leo: Leo's traversers (generators) and the original @shadow algorithm.  Neither @clean nor the revised Mulder/Ream algorithm could possibly have happened without him.  I miss both these great thinkers.  Both would have been proud of what they helped create.
+
+A successful software tool is one that was used to do something undreamed of by its author.'
+-- Stephen Johnson
+
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @test, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+
+Edward
+
+P. S. As I write this, I see that @button is nowhere mentioned in Leo's History Chapter.  That's crazy: @button is arguably the most brilliant scripting idea ever created anywhere.  Many thanks to 'e', whoever you are.  I'd like to thank you by name.  @button lead directly to @test.
+.. @+node:ekr.20160303115314.1: *5* Offray Cárdenas
+Offray Cárdenas
+
+This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text. On a sightly off-topic, most of them are school teachers making their master studies on education. Some of them were doctors working on writing complex documents. They're good at what they do, but having not technical expertise on computers (or not the proper permissions on school and office machines to install their software, so they weren't unable to continue using Leo)
+
+-----
+
+> Leo's clones let you organize any data as you want, even if all folds are collapsed.
+
+For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charger. You impose infrastructure.
+
+
+-----
+
+For me the second main insight of Leo (besides emergent always present tree structure on almost any file) was to have a tree that is a programmable structure that can be understood and changed by any node inside that tree. I think that Leo brings structure and self-referentiality to the dumb flat file word. So you can create a tree from one (or several) files, deconstruct and reconstructut it they way you want and automatize the way in behaves and talks with the external world. Previously I had compared Leo with the Smalltalk object in the sense that it makes for files kind of what Smalltalk makes for objects. The more I start to focus on interactive writing and going away of the unix inspired OS world, the more the second insight become important to me. I didn't need to deconstruct/reconstruct or impose structure over flat files but to use outlining for structure thought by (interactive) writing and I need the outline be a fully programable object. That's the essence of most of my Leo experience and what I'm trying to bridge with the Pharo Smalltalk world (with the advantage of a fully introspective, portable and moldable computing and visualization environment)
+
+Thanks for Leo and all the key inspiration it brings. And, as always, thanks to the Leo community for the food for thought.
+.. @+node:ekr.20160303115506.1: *5* Speed's comments
+My only input is what makes Leo so special to me.
+
+After learning just a few things about Leo, and after replacing << section references >> mostly with @others,
+writing code becomes a game rather than a chore.
+
+As soon as an idea becomes complicated, I add a new @others, and break down the complication into chunks until all the complications are now simple.
+
+I'll typically clone that section an the bottom of the outline, then add enough logic at a parent level so that the complication can be tested with control B.
+
+This is my backward implementation of unit testing. This kind of 'unit testing' never has to be refactored when the code is (invariably) improved.
+
+The cloned 'test piece' can be relegated to a testing section, and the new chunks subsequently cloned into whatever structure make real sense for the project.
+
+In practice, this is just fun for me.
+
+Coding without Leo is not not really fun any more. I recently finished a c++ socket server using Microsoft's Visual Studio, in concert with someone who didn't have Leo. Microsoft's tools are great, and the project went off without a hitch,  but the fun was just plain gone.
+
+Anyway, thanks for the great perspective on Leo.
+.. @+node:ekr.20160303115722.1: *4* Make stub files
+For several years now I have been attempting to do something interesting re type checking.  Yesterday, that effort finally bore fruit. This post explains the make-stub-files command (see recent revs), tells why it is important and how it can be improved.
+
+Executive summary
+
+The make-stub-files does for type/design analysis what the c2py command did for converting C to python.  The command eliminates most of the drudgery associated with creating python stub (.pyi) files. This makes it possible to use mypy without changing Leo's source code.
+
+What the command does
+
+The make-stub-files command makes python stub (.pyi) files for @<file> x.py nodes "close" to the selected node.
+
+Stub files are discussed in pep484 (type hints) and also this page in the mypy documentation. Stub files contain function annotations (pep 3107) for the mypy type checker.  Leo can't use annotations because they raise syntax errors in Python 2.x.
+
+The make-stub-files command is very simple. It walks the ast (parse) tree for x.py, writing annotations for all defs and classes to the corresponding x.pyi file in the ~/stubs directory.  This is the default directory for mypy stubs.
+
+The make-stub-files command knows nothing about types!  It only knows about naming conventions.  At present, this knowledge is hard-wired into this Python dictionary:
+
+    {
+        'aList': 'Sequence',
+        'aList2': 'Sequence',
+        'c': 'Commander',
+        'i': 'int',
+        'j': 'int',
+        'k': 'int',
+        'node': 'ast.Ast',
+        'p': 'Position',
+        's': 'str',
+        's2': 'str',
+        'v': 'VNode',
+    }
+
+This is a good start for Leo's own source code. It will be generalized using one or more @data nodes.  We want to be able to specify default conventions that can be overridden on a file-by-file basis.
+
+It's easy for the command to use these conventions for function arguments.  For example, the dict above says to replace:
+
+    def foo(s):
+        return s
+
+by
+
+    def foo(s: str):
+        return s
+
+The command handles function returns is in a pragmatic way.  The tree walker simply associates a list of return expressions with each def.  For example, here is the output at the start of leoAst.pyi:
+
+class AstDumper:
+    def dump(self, node: ast.Ast, level=number) ->
+        str%(name,sep,sep1.join(aList)),
+        str%str.join(str%(sep,self.dump(z,level+number)) for z in node),
+        str%(name,str.join(aList)),
+        repr(node): ...
+    def get_fields(self, node: ast.Ast) -> result: ...
+    def extra_attributes(self, node: ast.Ast) -> aList: ...
+
+Notes:
+
+1. The stub for the dump function is not syntactically correct because there are 4 returns listed. It is up to a human to specify a proper return type.  In this case, all the returns are obviously (to a human) strings, so a human could replace the first stub by:
+
+    def dump(self, node: ast.Ast, level=number) -> str: ...
+
+2. At present, the command makes no substitutions for aList, etc. within return values.  It will do so fairly soon.  So the stub for extra_attributes would become:
+
+  def extra_attributes(self, node: ast.Ast) -> Sequence: ...
+
+3. The present dictionary contains only class names, but type aliases could also be used to make the results clearer. The definitions of these aliases could be added by hand at the start of the stub file, or could be automatically inserted somehow.
+
+4. Not all types are obvious from naming conventions. In that case, the human will have to update the stub using the actual source code of the def as a guide. For example, the type of "result" in get_fields could be just about anything.  Actually, it is a list of strings.
+
+Why this command is important
+
+1. The command eliminates most of the drudgery from creating stub files. Creating a syntactically correct stub file from the output of the command is straightforward.  The command will be made more flexible using @data nodes.
+
+2. The make-stub-files code does no type inference.  This is a giant breakthrough. We can gain the benefits of mypy without doing anything clever.
+
+The make-stub-files command is much simpler than c2py. The StubTraverser class overrides only three (simple!) visitors.  The  base AstFullTraverser class does all the other work. The format_returns method could be improved as discussed above, but even as is the command is extremely useful.
+
+3. Stub files are real data.  Mypy will check the syntax for us. More importantly, mypy will do its type inference on the stub files.  That means that mypy will a) find errors in the stubs and b) actual type errors in Leo. There is now a simple way to use mypy!
+
+4. Stubs express design intentions as well as types.  In most cases, programmers do know the expected types of arguments. Up until now, there has been no official/practical way of expressing this knowledge in Python 2.
+
+5. One could imagine a "reverse" command that would inject function annotations into files from stub files. The command would be about as simple as make-stub-files.
+
+Edward
+
+P.S. The make-stub-files command works as follows:
+
+1. It creates the stub file, x.pyi, if c.p (the selected node) is an @<file> node for x.py.
+2. If not,the command creates sub files for all @<file> nodes in c.p.subtree().
+3. If steps 1 and 2 did not find any @<file> nodes, the command looks at p.parents() for the first @<file> node.
+
+This is typical behavior for Leo's file-oriented commands.
+.. @+node:ekr.20160303130202.1: *4* Rev 645b4ec2f9 fixes a bug in p.__eq__
+Here is the checkin log:
+
+Fixed a bug in p.__eq__, introduced at rev d0dd25b7b (2015-11-14 18:37:06).
+
+p.__eq__ must *not* return NotImplemented when p2 is None.
+
+This bug caused most of the run-x-unit-tests-y commands not to find desired tests.  It surely must have caused other problems.
+
+All unit tests now pass (except for broken Javascript importer tests), including a new test:
+@test p.__eq__.
+.. @+node:ekr.20160303130247.1: *4* Aha: always run unit tests locally using clones
+January 23, 2016
+https://groups.google.com/d/msg/leo-editor/ewa_87LomP0/5wIRxFeqDwAJ
+
+Running a unit test locally, without exiting Leo, saves a lots of time.  It's much faster than having to load unitTest.leo or even a small .leo file.
+
+The question is, how to use the newest code?  imp.reload often doesn't work. But just yesterday I saw a way that usually does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
+
+For instance, here is the @test node I use to develop the new javascript importer:
+
+g.cls()
+p1 = p.copy()
+if c.isChanged():
+    c.save()
+import leo.plugins.importers.basescanner as basescanner
+@others
+scanner = JavaScriptScanner(c.importCommands, atAuto = False)
+h = '@ignore js-test'
+p = g.findNodeAnywhere(c, h)
+if p:
+    while p.firstChild():
+        p.firstChild().doDelete()
+else:
+    p = c.insertHeadline()
+    p.h = h
+c.selectPosition(p)
+fn = r'c:\prog\jQuery-short2.js'
+s = open(fn, 'r').read()
+print('Sources..\n\n%s\n\n' % s)
+scanner.scan(s, p)
+c.selectPosition(p1)
+c.redraw()
+print('done')
+
+To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.
+
+There is another happy consequence of this Aha.  There is no longer any great need ever to run unit tests externally, so I can use the following key bindings:
+
+run-selected-unit-tests-locally     = Alt-4
+run-marked-unit-tests-locally       = Alt-5
+run-all-unit-tests-locally          = Alt-6
+
+This is much easier to remember--I don't have to remember which bindings apply to external tests and which to local. It's easy to remember that Alt-4 runs the fewest tests, Alt-5 runs more tests and Alt-6 runs all the tests.
+
+You could call this an extension of the "stupendous Aha".
+.. @+node:ekr.20160303130514.1: *4* Relations in Leo
+https://groups.google.com/d/msg/leo-editor/HpOT2YWNQZY/R9IZcBIrBAAJ
+My present opinion is that uA's are simply a background implementation detail.
+
+In mathematics, a relation is just a set of tuples. Imo, we should define the following two important terms:
+
+    A Leo predicate is a function/method taking a position
+    argument that returns True or False (or equivalent).
+
+Predicates are typically implied by the conversation.  We say p.parent() == x rather than pedantically giving the actual predicate function.
+
+    A Leo relation (on an outline) is the (unordered) set of positions
+    for which the associated Leo predicate returns True.
+
+Again, we can simply refer to relations by the associated predicate. That is, predicates instantly give rise to relations: the set of positions for which the predicate is True.
+
+It's best to define relations on positions rather than vnodes.  This allows us to define relations such as p.parent() == x. If outline structure is not important, we can define the relation on the underlying vnode:  p.v.u == x, for instance.
+
+These definitions are clearly the most general possible. In particular, we can easily define Leo relations such as "p has a given attribute/uA/icon/whatever" The resulting predicates and relations are unconstrained by outline structure. They would work in multi-trees. They work in general graphs.
+
+I am going to be writing next at length about the "relationships" between Leo predicates, relations, views, attributes, work flow and (perhaps most important) gui.
+
+I would like to see a general user interface that would associate icons with attributes/predicate/relation. That way the user can see all the nodes with a given attribute. Stay tuned.
+.. @+node:ekr.20160303130755.1: *4* cff and cfa
+3. The cff and cfa commands now always search the entire outline. This is a major improvement, imo. 
+
+4. The cff and cfa commands now always collapse the entire outline. This is almost always what I want, and it ensures that the newly-created node will be selected properly, something that was not always true before.
+
+These seemingly small improvements actually fix most of my complaints re clones!
+
+And one more improvement:  These commands ignore @ignore trees and any @<file> tree whose root nodes contains an @all directive. This is a super tweak:  I don't get false matches about nodes in the attic.​
+ 
+
+    These seemingly small improvements actually fix most of my complaints re clones!
+
+
+​And two new commands, the clone-find-marked commands, fix all my complaints about clones. I'll discuss these commands in a new thread so they get the attention they rightly deserve.
+
+.. @+node:ekr.20160303130916.1: *4* Code Academy: find by predicate or attribute
+Writing the cffm and cfam commands was snap using c.cloneFindByPredicate, a powerful new addition to Leo. Here is the entire code for the new commands:
+
+    @cmd('clone-find-all-marked')
+    @cmd('cfam')
+    def cloneFindAllMarked(self, event=None):
+        '''The clone-find-all-marked command.'''
+        self.cloneFindMarkedHelper(flatten=False)
+       
+    @cmd('clone-find-all-flattened-marked')
+    @cmd('cffm')
+    def cloneFindAllFlattenedMarked(self, event=None):
+        '''The clone-find-all-flattened-marked command.'''
+        self.cloneFindMarkedHelper(flatten=True)
+
+    def cloneFindMarkedHelper(self, flatten):
+        '''Helper for clone-find-marked commands.'''
+       
+        def isMarked(p):
+            return p.isMarked()
+           
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
+
+It's hard to imagine anything simpler. Important: the predicate could filter on an attribute or combination of attributes. For example, the predicate could return p has attributes A and B but not attribute C. Instantly we have full database query capabilities. If we then hoist the resulting node we see all and only those nodes satisfying the query.
+
+Here is c.findNodeByPredicate. Important: Rev c8a3581c9b corrects a serious blunder in c.cloneFindByPredicate. Don't use previous versions!
+    
+    def cloneFindByPredicate(self,
+        generator,     # The generator used to traverse the tree.  
+        predicate,     # A function of one argument p, returning True
+                       # if p should be included in the results.
+        flatten=False, # True: Put all matches at the top level.
+        undoType=None, # The undo name, shown in the Edit:Undo menu.
+                       # The default is 'clone-find-predicate'
+    ):
+        '''
+        Traverse the tree given using the generator,
+        cloning all positions
+        for which predicate(p) is True.
+        Undoably move all clones to a new
+        node, created as the last top-level node. Arguments:
+   
+        generator,      The generator used to traverse the tree.
+        predicate,      A function of one argument p returning true if
+                        p should be included.
+        flatten=False,  True: Move all node to be parents of the root node.
+        undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                        The default is 'clone-find-predicate'
+        '''
+        c = self
+        u, undoType = c.undoer, undoType or 'clone-find-predicate'
+        clones, seen = [], set(),
+        for p in generator():
+            if predicate(p) and p.v not in seen:
+                if flatten:
+                    seen.add(p.v)
+                else:
+                    for p2 in p.self_and_subtree():
+                        seen.add(p2.v)
+                clones.append(p.copy())
+        if clones:
+            undoData = u.beforeInsertNode(c.p)
+            root = c.createCloneFindPredicateRoot(flatten, undoType)
+            # This was botched in previous versions.
+            # The result was low-level vnode failures.
+            for p in clones:
+                clone = p.clone()
+                clone.moveToLastChildOf(root)
+            u.afterInsertNode(root, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(root)
+            
+
+            c.setChanged(True)
+            c.redraw()
+        else:
+            g.es_print('not found:', undoType)
+
+Imo, this is the dawn of a new era in Leo's database capabilities.
+
+c.cloneFindByPredicate now supports an optional failMsg keyword arg. This is the warning given if no nodes are found.​
+
+
+Recent revs add the following new position methods:
+
+- p.is_at_all():  True if p is an @<file> node containing an @all directive.
+- p.in_at_all(): True if p is in an @<file> tree whose root contains @all.
+- p.is_at_ignore(): True if p is an @ignore node
+- p.in_at_ignore_tree(): True if p is in an @ignore tree.
+
+These predicates make it easy to create other predicates that skip @ignore trees or @<file> trees containing @all.  cffm and cfam do not skip such trees, on the theory that one would typically unmark nodes first before marking nodes to be cloned.
+
+So here is how to gather only those marked nodes that lie outside any @ignore tree:
+
+    def isMarked(p):
+        return p.isMarked() and not p.in_at_ignore_tree()
+      
+    self.cloneFindByPredicate(
+        generator = self.all_unique_positions,
+        predicate = isMarked,
+        flatten = flatten,
+        undoType = 'gather-marked',
+    )
+
+.. @+node:ekr.20160303131234.1: *4* Added syntax coloring for coffeescript
 .. @-all
 .. @@killbeautify
 .. @@language rest
