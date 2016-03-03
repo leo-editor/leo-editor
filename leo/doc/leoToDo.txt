@@ -4,35 +4,80 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
-Release PyInstaller versions for Windows, Linux, MacOs.
-
 Release Leo 5.1.1 Friday, March 11.
+
+** upload pyinstaller folder.
 
 6 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
 
-- #234: Hard crash on UnicodeDecodeError
-  https://github.com/leo-editor/leo-editor/issues/234
+sudo apt-get install leo
+https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
 
-- #217: Fix vim & xemacs bugs: use git bisect.
-  https://github.com/leo-editor/leo-editor/issues/217
+Release PyInstaller versions for Windows, Linux, MacOs.
   
-Tests and docs:
+Tests:
 - Unit tests are failing on Ubuntu with Python 3.
 - Re-enable and fix javascript unit test.
 - Create unit test for transpose-words.
+Docs:
+- Ctrl-x and Ctrl-C cut/copy the entire line if no text is selected.
 - Add Code Academy section to Cheat Sheet.
 - Document stupendous Aha
 
 @language rest
 @wrap
-.. @+node:ekr.20151231121326.1: *3* #217: vim plugin does not work as described
+.. @+node:ekr.20160302041948.1: *3* #217: vim plugin does not work as described
+@language rest
+@wrap
+
 https://github.com/leo-editor/leo-editor/issues/217
-The plugins seems to be pretty much broken.  Only one temp file seems to be created.
-.. @+node:ekr.20160221121545.1: *3* Discuss improved clone-find commands
-- cff and cfa.
-- Always search the entire file.
-.. @+node:ekr.20160215153627.1: *3* Notes re clones & multi-tree
+
+History of vim.py
+https://github.com/leo-editor/leo-editor/commits/8ec4e29f6b0ade0cf6da1d7ddf45314dfcdb3855/leo/plugins/vim.py
+
+The dubious work was done in April, 2015
+
+https://github.com/leo-editor/leo-editor/commit/74ad2b857890bac7bbcafd1ef9f6ec405a03da42
+
+# 206 each node content is same when open with gvim or gedit
+https://github.com/leo-editor/leo-editor/issues/206
+Aug 21, 2015
+
+Just for posterity, the reported bug was that "open in <external editor>" on non-file node A and then non-file node B showed A's body in both external files. I fixed that. I did not test writing / editing / re-loading the text. And also only evaluating the wrong body behavior just described, it was working before 74ad2b8, generating a traceback from 74ad2b8 to c2465dd, and thereafter doing the wrong body thing I just fixed. So maybe OP will report problems with the editing / re-loading phases now.
+.. @+node:ekr.20160302042509.1: *3* #81:  setup.py confuses newbies
+https://github.com/leo-editor/leo-editor/issues/81
+.. @+node:ekr.20160302183912.1: *3* #203: Leoeditor.com search can't read ctrl characters or punctuation
+https://github.com/leo-editor/leo-editor/issues/203
+
+*Apply index.html patch.
+.. @+node:ekr.20160302183807.1: *4* ** Apply index.html patch
+# Fixes 
+
+diff --git a/leo/doc/html/index.html b/leo/doc/html/index.html
+index c5bc53b..8ce16da 100644
+--- a/leo/doc/html/index.html
++++ b/leo/doc/html/index.html
+@@ -308,13 +308,14 @@
+             </p>
+             <p>
+             <div id="searchbox" style="">
+-              <h3>Quick search</h3>
++              <h3>Search</h3>
+               <form class="search" method="get" action="search.html">
+-                <input type="text" name="q">
+-                <input type="submit" value="Go">
++                <input id='q' type="text" name="q">
++                <input type="submit" value="Quick search">
+                 <input type="hidden" value="yes" name="check_keywords">
+                 <input type="hidden" value="default" name="area">
+               </form>
++              <div><button onclick="window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);">Google search</button></div>
+               <p class="searchtip" style="font-size: 90%">
+                 Enter search terms or a module, class or function name.
+               </p>
+.. @+node:ekr.20160302092949.1: *3* Docs
+.. @+node:ekr.20160215153627.1: *4* Notes re clones & multi-tree
 @language rest
 @wrap
 
@@ -42,7 +87,7 @@ The plugins seems to be pretty much broken.  Only one temp file seems to be crea
     
 
     
-.. @+node:ekr.20160216093010.1: *4* Aha: think function, not scope
+.. @+node:ekr.20160216093010.1: *5* Aha: think function, not scope
 @language rest
 @wrap
 
@@ -54,7 +99,7 @@ Summary:
     - There is no need to limit the scope of searches!  Hurray!
 - Clone-find commands should *always* search the entire outline,
   unless node-only or suboutline-only searches are in effect.
-.. @+node:ekr.20160216044113.1: *5* New commands
+.. @+node:ekr.20160216044113.1: *6* New commands
 - find-primary-parent (Better than Alt-N), find-primary-node.
 - find-in-view
 - find-parent-in-view.
@@ -71,19 +116,19 @@ For Chapters & views:
 - hoist-children
 - Alt-Enter: hoist (create-chapter)
 - Alt-Ctrl-G: dehoist or show-main-chapter.
-.. @+node:ekr.20160216122023.1: *5* Clones are great!
+.. @+node:ekr.20160216122023.1: *6* Clones are great!
 Why confine ourselves to one view at a time?
 - A single outline can (and should!) contain many views.
 
 If we do want to focus on a single view, we can use hoists.
 - Do we want typed hoists?
-.. @+node:ekr.20160216121958.1: *5* Cloning implies a move
+.. @+node:ekr.20160216121958.1: *6* Cloning implies a move
 The clone operation always implies a move.
 - To a particular *spot*.
 - At the last top-level node.
 
 The clone-find-by-attribute/predicate implicitly creates a new view.
-.. @+node:ekr.20160216121413.1: *5* Think function, not interactive find
+.. @+node:ekr.20160216121413.1: *6* Think function, not interactive find
 1. Use *non-interactive* searches to perform those functions.
 - Such functions are fast, even for large outlines.
 - Function seldem (never?) depends on scope.
@@ -97,7 +142,7 @@ The clone-find-by-attribute/predicate implicitly creates a new view.
     
     Example:  Alt-x find up-arrow or down-arrow.
   
-.. @+node:ekr.20160216120900.1: *5* Diebenkorn
+.. @+node:ekr.20160216120900.1: *6* Diebenkorn
 In order of importance:
 
 1. Do search. But in order to find other than what is searched for.
@@ -105,11 +150,11 @@ In order of importance:
 2. Attempt what is not certain. Certainty may or may not come later. It may then be a valuable delusion.
 
 3. The pretty, initial position which falls short of completeness is not to be valued — except as a stimulus for further moves.
-.. @+node:ekr.20160216122924.1: *4* Obsolete ideas
+.. @+node:ekr.20160216122924.1: *5* Obsolete ideas
 Focusing on commands clarifies everything.
-.. @+node:ekr.20160211094257.1: *5* @test includes nodes based on attributes?
+.. @+node:ekr.20160211094257.1: *6* @test includes nodes based on attributes?
 An alternative to clones.
-.. @+node:ekr.20160216050933.1: *5* I love clones, I hate clones
+.. @+node:ekr.20160216050933.1: *6* I love clones, I hate clones
 I used clones intensely in the make-stub-files project.
 
 - For unit testing, I moved clones of all code needed by the @test node to be children of the @test node.  Considered in isolation, this looks like the ultimate unit-testing pattern. There is never any need to execute the unit test externally because all code is up-to-date.
@@ -125,14 +170,14 @@ This morning a new thought arose.  Is it possible to use an improved Nav pane to
 A. I want a way to mark (with an attribute) nodes to be incorporated into unit tests, as if they were cloned as children of @test nodes.  It should be possible!
 
 B. I want a way to mark (with an attribute) nodes that are part of a view.  Richard et. al. may already have done this!  My requirements are probably more stringent than most people's.  I'm excited to think of the possibilities.
-.. @+node:ekr.20160216044718.1: *5* New directive: @include & @include-node
+.. @+node:ekr.20160216044718.1: *6* New directive: @include & @include-node
 Possible, but I would prefer solving the problems with clones.
-.. @+node:ekr.20160216121042.1: *5* The main tree/view
+.. @+node:ekr.20160216121042.1: *6* The main tree/view
 The clone-find commands should always be limited to the **main tree/view**.
 
 By default, this could either be a) the entire outline or b) only @<file> nodes.
 
-.. @+node:ekr.20160216044338.1: *5* Views
+.. @+node:ekr.20160216044338.1: *6* Views
 - Views might unify bookmarks, chapters, nav, clone-find, find-by-predicate.
     
     views <==> bookmarks, chapters, nav, clone-find, find-by-predicate.
@@ -140,7 +185,7 @@ By default, this could either be a) the entire outline or b) only @<file> nodes.
 - Do clones create view or vice versa?
 - Is it all about views?
 - Do @test nodes create views?
-.. @+node:ekr.20160216043537.1: *4* To do: Improve chapters
+.. @+node:ekr.20160216043537.1: *5* To do: Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
     - chapter commands should always search for @chapter nodes.
@@ -151,7 +196,7 @@ By default, this could either be a) the entire outline or b) only @<file> nodes.
 - Actually switching chapters is easy?
 - I suspect the reason has to do with commands, not drawing.
 - However, this may have been done when I was chronically sleep deprived.
-.. @+node:ekr.20160216043726.1: *5* How long does it take to search LeoPy.leo?
+.. @+node:ekr.20160216043726.1: *6* How long does it take to search LeoPy.leo?
 @language python
 
 import time
@@ -163,7 +208,7 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-.. @+node:ekr.20160219115402.1: *3* attribute gui
+.. @+node:ekr.20160219115402.1: *4* attribute gui
 @language rest
 @wrap
 
@@ -176,7 +221,7 @@ An **attribute calculus** would form union & intersections of attributes.
 We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
 
 clone-mark-all could also set define attribues.
-.. @+node:ekr.20160217135810.1: *3* searches & attributes
+.. @+node:ekr.20160217135810.1: *4* searches & attributes
 @language rest
 @wrap
 
@@ -196,7 +241,7 @@ These new commands would be useful after cfa:
 - remove-attribute-from-tree/node
 
 
-.. @+node:ekr.20160219115029.1: *4* Smart search is a bad idea
+.. @+node:ekr.20160219115029.1: *5* Smart search is a bad idea
 Smart search would be an *interactive* search that seached as follows:
 - First: search in the present tree.
 - Second: search all @<file> nodes, except those containing @all
@@ -206,34 +251,7 @@ Smart search would be an *interactive* search that seached as follows:
 
 
     
-.. @+node:ekr.20160201135549.1: *3* unused args & code for clone_find_predicate
-def clone_find_predicate(self,
-    description=None   # A description of the predicate and match.
-    parent=None,       # Create the root node as the last child of parent.
-    sibling=None,      # Create the root node after sibling.
-                       # parent overrides sibling if both exist.
-                       # If neither exist, use sibling=c.lastTopLevel()
-    sort=False,        # True: sort by headlines. bool(sort): use sort as a key function.
-):
-    '''
-    description="all", # A description of the predicate.
-    parent=None       The root node is the last child of parent.
-    sibling=None      Create the new node after sibling.
-    sort=False        If True, sort results using headlines.
-                      If sort is a callable, use sort(result, key=sort)
-    
-    The parent arg overrides the sibling arg if both args exist.
-    Create the root node as last top-level node if neither parent nor sibling exist.
-    '''
-    
-    if sort is True:
-        children = sorted(clones, key=lambda p, p.h)
-    elif sort:
-        children = sorted(clones, key=sort)
-    else:
-        children = clones
-.. @+node:ekr.20160224100702.1: *3* Rant: why doesn't js have a bozo script?
-.. @+node:ekr.20160128201207.1: *3* ==== Code academy posts
+.. @+node:ekr.20160128201207.1: *4* ==== Code academy posts
 @language rest
 @wrap
 
@@ -252,7 +270,7 @@ To do:
     - Enter shift to outline pane.
     - Some key to shift back to the nav pane.
 - Clone-find-predicate.
-.. @+node:ekr.20160129054828.1: *4* First post: topics
+.. @+node:ekr.20160129054828.1: *5* First post: topics
 @language rest
 @wrap
 
@@ -290,7 +308,7 @@ Putting all this together, we all agreed that being able to make uA's visible so
 - See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
 
 - List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
-.. @+node:ekr.20160129103906.1: *4* uA's and the new p.u property
+.. @+node:ekr.20160129103906.1: *5* uA's and the new p.u property
 A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
 
 The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
@@ -324,7 +342,7 @@ Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setti
 These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
 
 As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
-.. @+node:ekr.20160129101736.1: *4* icons
+.. @+node:ekr.20160129101736.1: *5* icons
 @language rest
 @wrap
 
@@ -353,7 +371,7 @@ With a minor change to Leo's core, it is now easy to delete the icons of the nod
 
     c.editCommands.deleteNodeIcons(p=p)
 
-.. @+node:ekr.20160129103813.1: *4* git
+.. @+node:ekr.20160129103813.1: *5* git
 If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
 
     git clone https://github.com/leo-editor/leo-editor.git
@@ -369,7 +387,7 @@ I've been wondering when to say this, but recent developments have forced my han
 Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
 
 I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
-.. @+node:ekr.20160225050421.1: *4* Code Academy: find by predicate or attribute
+.. @+node:ekr.20160225050421.1: *5* Code Academy: find by predicate or attribute
 @language rest
 @wrap
 
@@ -459,22 +477,10 @@ Here is c.findNodeByPredicate. **Important**: Rev c8a3581c9b corrects a serious 
             c.redraw()
         else:
             g.es_print('not found:', undoType)
-.. @+node:ekr.20160225061721.1: *3* Post: Leo 5.1.1 final coming March 4
-@language rest
-@wrap
-
-I recently had an Aha about releases: minor bugs don't matter! Leo's latest code is typically more stable than any previous "final" release, so we can (and should, imo) release "final" releases much more often. Say every two months or so.
-
-Regular releases are important. Some people will only download so-called "final" releases. And they keep Leo in the public eye.
-
-The remaining tasks before Leo 5.1.1 final are:
-
-- Get PyInstaller versions of Leo working on Windows, Linux  & MacOS.
-- Fix problesm with the vim and xemacs plugins.
-- Polish the Code Academy posts.
 .. @+node:ekr.20160301044139.1: ** To do: 5.1.2
+* Most important: get IPython support working again.
+
 - Add optional icon and attributes keyword args to cloneFBP.
-- New plugin: console window in log pane.
 - New apis and commands for icons, attributes & windows.
   Easy to use. Easy documentation.
 - Add p/v.temp_u properties. Revise docs.
@@ -487,6 +493,9 @@ The remaining tasks before Leo 5.1.1 final are:
 .. @+node:ekr.20160227093754.1: ** To do: 5.2
 - Add status line showing type of window. Like Emacs.
 - Rethink IPython: rewrite plugin? Target to Anaconda.
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+    - viewrendered plugins
 - Rethink Windows:
     - Decouple commander from outline?
     - Notifications might simplify viewrendered plugin.
@@ -494,6 +503,9 @@ The remaining tasks before Leo 5.1.1 final are:
     - A good platform for web development and anything
       needing multiple consoles.
 - Rethink running code in separate processes.
+- New plugin: console window, perhaps in viewrendered plugin.
+- Make livecode plugin available by default.
+  Depends on Python's meta package: https://pypi.python.org/pypi/meta
 
 @language rest
 @wrap

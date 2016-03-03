@@ -110,6 +110,25 @@ in the following extremely important ways:
 2. These commands ignore @ignore trees and any @<file> tree whose root nodes contains an @all directive. This is a super tweak: I don't get false matches about nodes in the attic.
 
 3. These commands are significantly than before because they search body text in one step.
+
+​
+​Just to wrap this up, the new commands, cff, cfa, cffm and cfam are are revolution in my work flow. They pass the acid test. Three things make the new commands work:
+
+1. The command names are short enough that they don't need either key bindings or pre-loaded entries in command history. Indeed, I've basically stopped using command history.
+
+2. The commands search the entire outline, except for @ignore trees and @<file> node containing ​@all in the top-level node.
+
+3. The commands put their results in the last top-level node and (usually, there is a little bug lurking somewhere) select that node.
+
+This means that these commands are so convenient that they become temporary. I don't keep them around because it's easy to recreate them.
+
+Because they are so convenient, I almost always use them instead of Ctrl-F. After I create the clone-find node, I then use Ctrl-F (with the existing find pattern) to search the clone-find results.
+
+This is the pattern I have been looking for. I'm not looking for anything better. Notice, it no longer matters how many clones there are.
+
+Edward
+
+
 .. @+node:ekr.20160225045341.1: *5* Added clone-marked commands
 @language rest
 @wrap
