@@ -30,7 +30,7 @@ class PythonQSyntaxHighlighter:
         Ctor for QSyntaxHighlighter class.
         Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
         '''
-        # g.trace('(PythonQSyntaxBrowser)',parent,g.callers())
+        # g.trace('(PythonQSyntaxBrowser)', parent)
         # Ivars corresponding to QSH ivars...
         self.c = c # The commander.
         self.cb = None # The current block: a QTextBlock.
@@ -85,6 +85,11 @@ class PythonQSyntaxHighlighter:
             # QtGui.QTextCursor.MoveOperation operation
         self.inReformatBlocks = True
         try:
+            # 2016/03/03: Use the official Qt way to show invisibles.
+            option = QtGui.QTextOption()
+            if self.colorer.showInvisibles:
+                option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+            self.d.setDefaultTextOption(option)
             cursor.beginEditBlock()
             from_ = cursor.position()
             cursor.movePosition(operation)
@@ -150,6 +155,11 @@ class PythonQSyntaxHighlighter:
         self.d = d = parent.document()
         assert isinstance(d, QtGui.QTextDocument), d
         if d:
+            if self.colorer.showInvisibles:
+                # 2016/03/03: Use the official Qt way to show invisibles.
+                option = QtGui.QTextOption()
+                option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+                d.setDefaultTextOption(option)
             d.contentsChange.connect(self.q_reformatBlocks)
             d.rehighlightPending = True
                 # Set d's pending flag.
@@ -892,8 +902,8 @@ class JEditColorizer:
         c = self.c
         wrapper = self.wrapper
         for name, option_name, default_color in (
-            ("blank", "show_invisibles_space_background_color", "Gray90"),
-            ("tab", "show_invisibles_tab_background_color", "Gray80"),
+            # ("blank", "show_invisibles_space_background_color", "Gray90"),
+            # ("tab", "show_invisibles_tab_background_color", "Gray80"),
             ("elide", None, "yellow"),
         ):
             if self.showInvisibles:
@@ -1293,16 +1303,19 @@ class JEditColorizer:
             return 0
     #@+node:ekr.20110605121601.18601: *5* match_blanks
     def match_blanks(self, s, i):
-        if not self.showInvisibles:
+        if 1: # Use Qt code to show invisibles.
             return 0
-        j = i; n = len(s)
-        while j < n and s[j] == ' ':
-            j += 1
-        if j > i:
-            self.colorRangeWithTag(s, i, j, 'blank')
-            return j - i
-        else:
-            return 0
+        else: # Old code...
+            if not self.showInvisibles:
+                return 0
+            j = i; n = len(s)
+            while j < n and s[j] == ' ':
+                j += 1
+            if j > i:
+                self.colorRangeWithTag(s, i, j, 'blank')
+                return j - i
+            else:
+                return 0
     #@+node:ekr.20110605121601.18602: *5* match_doc_part & restarter
     def match_doc_part(self, s, i):
         '''
@@ -1419,17 +1432,20 @@ class JEditColorizer:
             return j - i
     #@+node:ekr.20110605121601.18607: *5* match_tabs
     def match_tabs(self, s, i):
-        if not self.showInvisibles:
+        if 1: # Use Qt code to show invisibles.
             return 0
-        if self.trace_leo_matches: g.trace()
-        j = i; n = len(s)
-        while j < n and s[j] == '\t':
-            j += 1
-        if j > i:
-            self.colorRangeWithTag(s, i, j, 'tab')
-            return j - i
-        else:
-            return 0
+        else: # Old code...
+            if not self.showInvisibles:
+                return 0
+            if self.trace_leo_matches: g.trace()
+            j = i; n = len(s)
+            while j < n and s[j] == '\t':
+                j += 1
+            if j > i:
+                self.colorRangeWithTag(s, i, j, 'tab')
+                return j - i
+            else:
+                return 0
     #@+node:ekr.20110605121601.18608: *5* match_url_any/f/h  (new)
     # Fix bug 893230: URL coloring does not work for many Internet protocols.
     # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
@@ -2552,7 +2568,7 @@ class LeoQtColorizer:
             g.trace('%2.3f sec len(aList): %s v: %s' % (
                 time.time() - t1, len(aList), c.p.v.h,))
     #@-others
-#@+node:ekr.20110605121601.18565: ** class LeoQtSyntaxHighlighter
+#@+node:ekr.20110605121601.18565: ** class LeoQtSyntaxHighlighter (PythonQSyntaxHighlighter)
 # This is c.frame.body.colorizer.highlighter
 # Careful: we may be running from the bridge.
 if QtGui:
@@ -2576,17 +2592,18 @@ if QtGui:
             # Not all versions of Qt have the crucial currentBlock method.
             self.hasCurrentBlock = hasattr(self, 'currentBlock')
             # Init the base class.
+            self.colorizer = colorizer
+            self.colorer = JEditColorizer(c,
+                colorizer=colorizer,
+                highlighter=self,
+                wrapper=c.frame.body.wrapper)
+            # Create the highligter after the colorizer & colorer.
             if python_qsh:
                 # The c argument is now optional.
                 # If present, it allows an extra safety check in PQSH.idle_handler.
                 PythonQSyntaxHighlighter.__init__(self, parent=widget, c=c)
             else:
                 QtGui.QSyntaxHighlighter.__init__(self, widget)
-            self.colorizer = colorizer
-            self.colorer = JEditColorizer(c,
-                colorizer=colorizer,
-                highlighter=self,
-                wrapper=c.frame.body.wrapper)
         #@+node:ekr.20110605121601.18567: *3* highlightBlock (LeoQtSyntaxHighlighter)
         def highlightBlock(self, s):
             """ Called by QSyntaxHiglighter """

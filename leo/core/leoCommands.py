@@ -1739,9 +1739,11 @@ class Commands(object):
         c = self; frame = c.frame; p = c.p
         colorizer = frame.body.getColorizer()
         colorizer.showInvisibles = val
-         # It is much easier to change the menu name here than in the menu updater.
+        colorizer.highlighter.showInvisibles = val
+        # It is much easier to change the menu name here than in the menu updater.
         menu = frame.menu.getMenu("Edit")
-        index = frame.menu.getMenuLabel(menu, 'Hide Invisibles' if val else 'Show Invisibles')
+        index = frame.menu.getMenuLabel(menu,
+            'Hide Invisibles' if val else 'Show Invisibles')
         if index is None:
             if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
             else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
