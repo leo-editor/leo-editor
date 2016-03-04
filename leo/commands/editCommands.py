@@ -2087,7 +2087,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.seeInsertPoint()
             k.resetLabel()
             k.clearState()
-    #@+node:ekr.20150514063305.229: ** icons...
+    #@+node:ekr.20150514063305.229: ** icons... (leoEditCommands)
     #@+at
     # 
     # To do:

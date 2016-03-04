@@ -653,6 +653,7 @@ class Commands(object):
                        # if p should be included in the results.
         failMsg=None,  # Failure message. Default is no message.
         flatten=False, # True: Put all matches at the top level.
+        iconPath=None, # Full path to icon to attach to all matches.
         redraw=True,   # True: redraw the outline,
         undoType=None, # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
@@ -666,6 +667,7 @@ class Commands(object):
         predicate,      A function of one argument p returning true if p should be included.
         failMsg=None,   Message given if nothing found. Default is no message.
         flatten=False,  True: Move all node to be parents of the root node.
+        iconPath=None,  Full path to icon to attach to all matches.
         redraw=True,    True: redraw the screen.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                         The default is 'clone-find-predicate'
@@ -675,6 +677,7 @@ class Commands(object):
         clones, root, seen = [], None, set(),
         for p in generator():
             if predicate(p) and p.v not in seen:
+                c.setCloneFindByPredicateIcon(iconPath, p)
                 if flatten:
                     seen.add(p.v)
                 else:
@@ -698,6 +701,25 @@ class Commands(object):
         elif failMsg:
             g.es_print(failMsg, color='red')
         return root
+    #@+node:ekr.20160304054950.1: *4* c.setCloneFindByPredicateIcon
+    def setCloneFindByPredicateIcon(self, iconPath, p):
+        '''Attach an icon to p.v.u.'''
+        if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
+            aList = p.v.u.get('icons', [])
+            if iconPath not in aList:
+                aList.append({
+                    'type': 'file',
+                    'file': iconPath,
+                    'on': 'VNode',
+                    # 'relPath': iconPath,
+                    'where': 'beforeHeadline',
+                    'xoffset': 2, 'xpad': 1,
+                    'yoffset': 0, 
+                    
+                })
+                p.v.u ['icons'] = aList
+        else:
+            g.trace('bad icon path', iconPath)
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
     def createCloneFindPredicateRoot(self, flatten, undoType):
         '''Create a root node for clone-find-predicate.'''
