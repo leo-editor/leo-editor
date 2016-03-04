@@ -1377,11 +1377,14 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.LeoQtColorizer(c, self.wrapper.widget)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
-    def setWrap(self, p, force=False):
-        if self.useScintilla or not p:
-            return
+    def setWrap(self, p=None, force=False):
+        if self.useScintilla: return
         c = self.c
+        d = c.frame.body.wrapper.widget.document()
         w = c.frame.body.wrapper.widget
+        if p is None: p = c.p
+        if not p: return
+        assert isinstance(d, QtGui.QTextDocument), d
         option, qt = QtGui.QTextOption, QtCore.Qt
         if force:
             wrap = option.WrapAtWordBoundaryOrAnywhere
@@ -1390,8 +1393,12 @@ class LeoQtBody(leoFrame.LeoBody):
             w.setHorizontalScrollBarPolicy(
                 qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
             wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
-                # was option WordWrap
-        w.setWordWrapMode(wrap)
+        # Set the show-invisibles and wrap bits. This is tricky.
+        option = QtGui.QTextOption()
+        if c.frame.body.colorizer.showInvisibles:
+            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+        option.setWrapMode(wrap)
+        d.setDefaultTextOption(option)
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
@@ -2512,8 +2519,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # It *is* called from Leo's core.
         pass
     #@+node:ekr.20110605121601.18280: *4* setWrap (qtFrame)
-    def setWrap(self, p, force=False):
-        self.c.frame.body.setWrap(p, force)
+    def setWrap(self, p=None, force=False):
+        return self.c.frame.body.setWrap(p, force)
     #@+node:ekr.20110605121601.18281: *4* reconfigurePanes (qtFrame)
     def reconfigurePanes(self):
         f = self; c = f.c

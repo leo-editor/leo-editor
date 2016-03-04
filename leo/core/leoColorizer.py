@@ -85,11 +85,8 @@ class PythonQSyntaxHighlighter:
             # QtGui.QTextCursor.MoveOperation operation
         self.inReformatBlocks = True
         try:
-            # 2016/03/03: Use the official Qt way to show invisibles.
-            option = QtGui.QTextOption()
-            if self.colorer.showInvisibles:
-                option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
-            self.d.setDefaultTextOption(option)
+            c = self.c
+            c.frame.body.setWrap()
             cursor.beginEditBlock()
             from_ = cursor.position()
             cursor.movePosition(operation)
@@ -155,11 +152,6 @@ class PythonQSyntaxHighlighter:
         self.d = d = parent.document()
         assert isinstance(d, QtGui.QTextDocument), d
         if d:
-            if self.colorer.showInvisibles:
-                # 2016/03/03: Use the official Qt way to show invisibles.
-                option = QtGui.QTextOption()
-                option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
-                d.setDefaultTextOption(option)
             d.contentsChange.connect(self.q_reformatBlocks)
             d.rehighlightPending = True
                 # Set d's pending flag.
@@ -2609,6 +2601,8 @@ if QtGui:
             """ Called by QSyntaxHiglighter """
             trace = False and not g.unitTesting
             if self.hasCurrentBlock and not self.colorizer.killColorFlag:
+                # pylint: disable=undefined-variable
+                # unicode.
                 if g.isPython3:
                     s = str(s)
                 else:
