@@ -47,6 +47,21 @@ Aug 21, 2015
 Just for posterity, the reported bug was that "open in <external editor>" on non-file node A and then non-file node B showed A's body in both external files. I fixed that. I did not test writing / editing / re-loading the text. And also only evaluating the wrong body behavior just described, it was working before 74ad2b8, generating a traceback from 74ad2b8 to c2465dd, and thereafter doing the wrong body thing I just fixed. So maybe OP will report problems with the editing / re-loading phases now.
 .. @+node:ekr.20160302042509.1: *3* #81:  setup.py confuses newbies
 https://github.com/leo-editor/leo-editor/issues/81
+.. @+node:ekr.20160304081401.1: *3* Code Academy to-do
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a give uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+- Scripts can handle events.
+
+- Redraw mode that hides siblings.
+- Key bindings in the nav pane.
+    - Arrow keys.
+    - Enter shift to outline pane.
+    - Some key to shift back to the nav pane.
+- Clone-find-predicate.
 .. @+node:ekr.20160301044139.1: ** To do: 5.1.2
 * Most important: get IPython support working again.
 * New apis and commands for icons, attributes & windows.
