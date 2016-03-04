@@ -706,7 +706,10 @@ class Commands(object):
         '''Attach an icon to p.v.u.'''
         if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
             aList = p.v.u.get('icons', [])
-            if iconPath not in aList:
+            for d in aList:
+                if d.get('file') == iconPath:
+                    break
+            else:
                 aList.append({
                     'type': 'file',
                     'file': iconPath,

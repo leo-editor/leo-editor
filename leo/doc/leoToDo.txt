@@ -6,8 +6,6 @@
 .. @+node:ekr.20160225155208.1: ** To do: 5.1.1
 Release Leo 5.1.1 Friday, March 11.
 
-** upload pyinstaller folder.
-- Add optional icon and attributes keyword args to cloneFBP.
 - Make sure all items in "Recent code" are documented.
 
 5 bugs for Leo 5.1.1:
