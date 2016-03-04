@@ -1244,8 +1244,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20160304081437.1"><vh>** To do</vh>
-<v t="ekr.20160304081437.2"><vh>A note to new users</vh></v>
-<v t="ekr.20160304081512.1"><vh>Code academy posts</vh>
+<v t="ekr.20160304081512.1"><vh>** Code academy</vh>
 <v t="ekr.20160304081512.2"><vh>Task oriented docs</vh></v>
 <v t="ekr.20160304081512.3"><vh>First post: topics</vh></v>
 <v t="ekr.20160304081512.4"><vh>uA's and the new p.u property</vh></v>
@@ -1254,6 +1253,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20160304081512.7"><vh>Code Academy: find by predicate or attribute</vh></v>
 <v t="ekr.20160304081512.8"><vh>Code Academy: find by predicate or attribute</vh></v>
 </v>
+<v t="ekr.20160304081437.2"><vh>A note to new users</vh></v>
 <v t="ekr.20160304081437.3"><vh>FAQ: Leo Dark on Linux</vh></v>
 <v t="ekr.20160304081437.4"><vh>FAQ: Leo in virtualenv</vh></v>
 <v t="ekr.20160304081437.5"><vh>Tip: My git work flow</vh></v>
@@ -18588,7 +18588,9 @@ For Windows 10, do the following (it may be a bit different for Windows 8):
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.1"></t>
+<t tx="ekr.20160304081437.1">- Add Code Academy section to Cheat Sheet.
+- Document stupendous Aha
+</t>
 <t tx="ekr.20160304081437.2">John Lunzer, August 30, 2015
 https://groups.google.com/d/msg/leo-editor/WupMUqlclaQ/dtAjRiytFgAJ
 
@@ -18875,10 +18877,7 @@ Coding without Leo is not not really fun any more. I recently finished a c++ soc
 
 Anyway, thanks for the great perspective on Leo.
 </t>
-<t tx="ekr.20160304081512.1">@language rest
-@wrap
-
-</t>
+<t tx="ekr.20160304081512.1"></t>
 <t tx="ekr.20160304081512.2">Leo's tutorial, reference and cheat sheet have been thinly disguised encyclopedias. Very dry.  Soporific.
 
 Contrast this with the Code Academy.  The "lectures" deal with solving real problems. Shorter code, more useful. Exciting, maybe.

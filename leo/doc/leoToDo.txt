@@ -7,6 +7,7 @@
 Release Leo 5.1.1 Friday, March 11.
 
 - Make sure all items in "Recent code" are documented.
+- ctrl-k should cut selected lines
 
 5 bugs for Leo 5.1.1:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
@@ -15,15 +16,10 @@ sudo apt-get install leo
 https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
 
 Release PyInstaller versions for Windows, Linux, MacOs.
-  
-Tests:
+
 - Unit tests are failing on Ubuntu with Python 3.
 - Re-enable and fix javascript unit test.
 - Create unit test for transpose-words.
-Docs:
-- Ctrl-x and Ctrl-C cut/copy the entire line if no text is selected.
-- Add Code Academy section to Cheat Sheet.
-- Document stupendous Aha
 
 @language rest
 @wrap
