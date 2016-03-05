@@ -1444,17 +1444,19 @@ class LeoFind:
                 else:
                     found = self.findNextBatchMatch(p)
                     if found:
-                        # if trace: g.trace('found', p.h)
+                        if trace: g.trace('found', p.h)
                         clones.add(p.copy())
                         count += 1
                     if clone_find_all_flattened:
                         skip.add(p.v)
                         p.moveToThreadNext()
-                    else:
+                    elif found:
                         # Don't look at the node or it's descendants.
                         for p2 in p.self_and_subtree():
                             skip.add(p2.v)
                         p.moveToNodeAfterTree()
+                    else:
+                        p.moveToThreadNext() 
             if clones:
                 undoData = u.beforeInsertNode(c.p)
                 found = self.createCloneFindAllNodes(clones, clone_find_all_flattened)
@@ -1526,12 +1528,14 @@ class LeoFind:
     #@+node:ekr.20160224141710.1: *5* find.findNextBatchMatch
     def findNextBatchMatch(self, p):
         '''Find the next batch match at p.'''
+        trace = False and not g.unitTesting
         table = []
         if self.search_headline:
             table.append(p.h)
         if self.search_body:
             table.append(p.b)
         for s in table:
+            if trace: g.trace('%3s %s' % (len(s), p.h))
             old_backward = self.reverse
             pos, newpos = self.searchHelper(s, 0, len(s), self.find_text)
             self.reverse = old_backward

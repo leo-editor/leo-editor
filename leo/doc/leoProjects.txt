@@ -1,6 +1,61 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20160305051344.1: ** re: #232: print-plugins-info fails
+https://github.com/leo-editor/leo-editor/issues/232
+
+Appears invalid: only happens on 5.1 final.
+
+Traceback (most recent call last):
+File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 5120, in doCommand
+File "c:\leo.repo\leo-editor\leo\core\leoGlobals.py", line 1335, in wrapper
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2773, in fullyExpandLogPane
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2548, in divideLeoSplitter
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2557, in divideLeoSplitter2
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2563, in divideAnySplitter
+RuntimeError: wrapped C/C++ object of type NestedSplitter has been deleted
+.. @+node:ekr.20160305051540.1: *3* Found:printPluginsInfo
+# flattened, word, body
+.. @+node:ekr.20150514063305.92: *4* print plugins info...
+@cmd('print-plugin-handlers')
+def printPluginHandlers(self, event=None):
+    '''Print the handlers for each plugin.'''
+    g.app.pluginsController.printHandlers(self.c)
+
+def printPlugins(self, event=None):
+    '''
+    Print the file name responsible for loading a plugin.
+
+    This is the first .leo file containing an @enabled-plugins node
+    that enables the plugin.
+    '''
+    g.app.pluginsController.printPlugins(self.c)
+
+@cmd('print-plugins-info')
+def printPluginsInfo(self, event=None):
+    '''
+    Print the file name responsible for loading a plugin.
+
+    This is the first .leo file containing an @enabled-plugins node
+    that enables the plugin.
+    '''
+    g.app.pluginsController.printPluginsInfo(self.c)
+.. @+node:ekr.20100908125007.6027: *4* plugins.printPluginsInfo
+def printPluginsInfo(self, c):
+    '''Print the file name responsible for loading a plugin.
+
+    This is the first .leo file containing an @enabled-plugins node
+    that enables the plugin.'''
+    d = self.loadedModulesFilesDict
+    tabName = 'Plugins'
+    c.frame.log.selectTab(tabName)
+    data = []; n = 4
+    for moduleName in d:
+        fileName = d.get(moduleName)
+        n = max(n, len(moduleName))
+        data.append((moduleName, fileName),)
+    lines = ['%*s %s\n' % (-n, s1, s2) for(s1, s2) in data]
+    g.es('', ''.join(lines), tabName=tabName)
 .. @-all
 .. @@killbeautify
 .. @@language rest

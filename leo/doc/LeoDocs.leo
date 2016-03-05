@@ -1300,6 +1300,7 @@
 <v t="ekr.20160305040503.34"><vh>abbrev.replace_abbrev_name</vh></v>
 </v>
 </v>
+<v t="ekr.20160305054512.1"><vh>Fixed #239: cfa fails to find many occurrences...</vh></v>
 <v t="ekr.20160305040503.35"><vh>Fixed @tabwidth bug</vh></v>
 <v t="ekr.20160305040503.36"><vh>Fixed a bug in p.__eq__</vh></v>
 <v t="ekr.20160305040503.37"><vh>Fixed abbreviation bugs and improved abbreviations</vh></v>
@@ -20507,6 +20508,8 @@ Defaults are as shown above.
 </t>
 <t tx="ekr.20160305040809.1"></t>
 <t tx="ekr.20160305041022.1">The result is much better looking than before.</t>
+<t tx="ekr.20160305054512.1">https://github.com/leo-editor/leo-editor/issues/239
+</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
