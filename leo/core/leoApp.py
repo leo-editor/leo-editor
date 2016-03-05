@@ -234,6 +234,8 @@ class ExternalFilesController:
         Called by g.app.destroyWindow.
         """
         # Copy the list: it may change in the loop.
+        trace = False and not g.unitTesting
+        if trace: g.trace(frame.c.shortFileName())
         for d in self.open_with_files[:]:
             c = d.get("c")
             if c.frame == frame:
@@ -241,14 +243,17 @@ class ExternalFilesController:
     #@+node:ekr.20031218072017.2614: *5* efc.destroy_using_dict
     def destroy_using_dict(self, d):
         '''Destroy the temp file specified by d.'''
+        trace = False and not g.unitTesting
+        # Do not use g.trace here.
         path = d.get("path")
         if path and g.os_path_exists(path):
             try:
                 os.remove(path)
-                if not g.unitTesting:
-                    g.pr("deleting temp file: %s" % g.shortFileName(path))
+                if trace:
+                    print("deleting temp file: %s" % g.shortFileName(path))
             except Exception:
-                g.pr("can not delete temp file: %s" % path)
+                if trace:
+                    print("can not delete temp file: %s" % path)
         if d in self.open_with_files:
             self.open_with_files.remove(d)
     #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node
@@ -257,12 +262,14 @@ class ExternalFilesController:
         Find the path corresponding to node p.
         called from vim.py.
         '''
+        trace = False and not g.unitTesting
         path, v = None, p.v
         for d in self.open_with_files:
             p2 = d.get('p')
             if p2 and p2.v == v:
                 path = d.get('path')
                 break
+        if trace: g.trace(p.h, path)
         return path
     #@+node:ekr.20150330033306.1: *4* efc.on_idle
     def on_idle(self, timer):
@@ -506,7 +513,7 @@ class ExternalFilesController:
         else:
             g.trace('reopening:', path)
         return path
-    #@+node:ekr.20150405122428.1: *4* efc.set_time
+    #@+node:ekr.20150405122428.1: *4* efc.get_time
     def get_time(self, path):
         '''
         return timestamp for path
@@ -526,7 +533,10 @@ class ExternalFilesController:
         probably not Leo's fault but an underlying Python issue.
         Hence the need to call realpath() here.
         '''
-        self._time_d[g.os_path_realpath(path)] = new_time or self.get_mtime(path)
+        trace = False and not g.unitTesting
+        t = new_time or self.get_mtime(path)
+        if trace: g.trace(t, path)
+        self._time_d[g.os_path_realpath(path)] = t 
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
         '''
@@ -535,7 +545,9 @@ class ExternalFilesController:
 
         Called by g.app.finishQuit.
         '''
-        # Dont call g.es! The log stream no longer exists.
+        trace = False and not g.unitTesting
+        if trace: print('efc.shut_down')
+        # Dont call g.es or g.trace! The log stream no longer exists.
         for d in self.open_with_files[:]:
             self.destroy_using_dict(d)
         self.open_with_files = []
@@ -586,7 +598,11 @@ class ExternalFilesController:
     #@+node:ekr.20150427144330.1: *3* efc.check
     #@+node:ekr.20150404045115.1: *4* efc.check_commander & helper
     def check_commander(self, c):
-        '''Check all external files corresponding to @<file> nodes in c.'''
+        '''
+        Check all external files corresponding to @<file> nodes in c for
+        changes.
+        '''
+        trace = False and not g.unitTesting
         if not self.is_enabled(c) or g.unitTesting:
             return
         # g.trace('checking',c.shortFileName())
@@ -616,6 +632,7 @@ class ExternalFilesController:
     #@+node:ekr.20150407124259.1: *4* efc.check_open_with_file & helper
     def check_open_with_file(self, d):
         '''Update the open-with node given by d.'''
+        trace = False and not g.unitTesting
         path = d.get("path")
         if path and os.path.exists(path):
             time = self.get_mtime(path)
@@ -668,6 +685,7 @@ class ExternalFilesController:
     #@+node:ekr.20150407141601.1: *4* efc.forget_path
     def forget_path(self, path):
         '''Remove path from the open_with_files list.'''
+        trace = False and not g.unitTesting
         # g.trace('before',[g.shortFileName(d.get('path')) for d in self.open_with_files])
         self.open_with_files = [
             d for d in self.open_with_files
@@ -676,7 +694,7 @@ class ExternalFilesController:
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext(self, c, p, ext):
         '''Return the file extension to be used in the temp file.'''
-        trace = False and not g.app.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace(ext)
         if ext:
             for ch in ("'", '"'):
@@ -704,10 +722,12 @@ class ExternalFilesController:
     #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path
     def temp_file_path(self, c, p, ext):
         '''Return the path to the temp file for p and ext.'''
+        trace = False and not g.unitTesting
         if c.config.getBool('open_with_clean_filenames'):
             path = self.clean_file_name(c, p, ext)
         else:
             path = self.legacy_file_name(c, p, ext)
+        if trace: g.trace(p.h, path)
         return path
     #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
     def clean_file_name(self, c, p, ext):
@@ -786,7 +806,9 @@ class ExternalFilesController:
     #@+node:ekr.20150407204201.1: *4* efc.get_mtime
     def get_mtime(self, path):
         '''Return the modification time for the path.'''
-        return g.os_path_getmtime(path)
+        mtime = g.os_path_getmtime(path)
+        # g.trace(path, mtime)
+        return mtime
     #@+node:ekr.20150403045207.1: *4* efc.has_changed
     def has_changed(self, c, path):
         '''Return True if p's external file has changed outside of Leo.'''
@@ -844,11 +866,13 @@ class ExternalFilesController:
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):
         '''return cached @bool check_for_changed_external_file setting.'''
+        trace = False and not g.unitTesting
         d = self.enabled_d
         val = d.get(c)
         if val is None:
             val = c.config.getBool('check_for_changed_external_files', default=False)
             d[c] = val
+        if trace: g.trace(val, c.shortFileName())
         return val
     #@+node:ekr.20150404083049.1: *4* efc.join
     def join(self, s1, s2):
