@@ -721,7 +721,7 @@ class Commands(object):
                     
                 })
                 p.v.u ['icons'] = aList
-        else:
+        elif iconPath:
             g.trace('bad icon path', iconPath)
     #@+node:ekr.20160201075438.1: *4* c.createCloneFindPredicateRoot
     def createCloneFindPredicateRoot(self, flatten, undoType):
