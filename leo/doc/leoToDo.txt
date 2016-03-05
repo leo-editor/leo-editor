@@ -6,8 +6,8 @@
 .. @+node:ekr.20160225155208.1: ** To do: 5.2
 - ctrl-k should cut selected lines
 
-9 bugs for Leo 5.2:
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.1.1
+8 bugs for Leo 5.2:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.2
 
 sudo apt-get install leo
 https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
