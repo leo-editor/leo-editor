@@ -34,6 +34,9 @@ The dubious work was done in April, 2015
 
 https://github.com/leo-editor/leo-editor/commit/74ad2b857890bac7bbcafd1ef9f6ec405a03da42
 
+See also:
+https://github.com/leo-editor/leo-editor/issues/165
+
 # 206 each node content is same when open with gvim or gedit
 https://github.com/leo-editor/leo-editor/issues/206
 Aug 21, 2015
