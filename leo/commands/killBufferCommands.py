@@ -142,11 +142,16 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
-    #@+node:ekr.20150514063305.419: ** kill
-    def kill(self, event, frm, to, undoType=None):
+    #@+node:ekr.20150514063305.419: ** kill (helper)
+    def kill(self, event, frm, to, force=False, undoType=None):
         '''A helper method for all kill commands.'''
         w = self.editWidget(event)
         if not w: return
+        # 2016/03/05: all kill commands kill selected text, if it exists.
+        if not force:
+            i, j = w.getSelectionRange()
+            if i != j:
+                frm, to = i, j
         s = w.get(frm, to)
         if undoType:
             self.beginCommand(w, undoType=undoType)
@@ -157,7 +162,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if undoType:
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.420: ** killToEndOfLine (New in Leo 4.11)
+    #@+node:ekr.20150514063305.420: ** killToEndOfLine
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event):
         '''Kill from the cursor to end of the line.'''

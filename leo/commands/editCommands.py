@@ -4148,7 +4148,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.backwardParagraphHelper(event, extend=True)
             i, j = w.getSelectionRange()
             if i > 0: i = min(i + 1, j)
-            c.killBufferCommands.kill(event, i, j, undoType=None)
+            c.killBufferCommands.kill(event, i, j,
+                                      force=True, # Use i, j without change.
+                                      undoType=None)
             w.setSelectionRange(i, i, insert=i)
         finally:
             self.endCommand(changed=True, setLabel=True)
@@ -4201,7 +4203,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         try:
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
-            c.killBufferCommands.kill(event, i, j, undoType=None)
+            c.killBufferCommands.kill(event, i, j,
+                                      force=True, # Use i, j without change.
+                                      undoType=None)
             w.setSelectionRange(i, i, insert=i)
         finally:
             self.endCommand(changed=True, setLabel=True)
