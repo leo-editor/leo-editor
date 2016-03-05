@@ -1264,6 +1264,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20160305040503.1"><vh>5.2 Documentation</vh>
+<v t="ekr.20160305040809.1"><vh>** document declutter nodes</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs: fixed &amp; investigated</vh>
 <v t="ekr.20160305040503.3"><vh>Fixed #131: Insert time in headline now inserts time in body</vh></v>
 <v t="ekr.20160305040503.4"><vh>Fixed #136: Viewrendered2 chokes on displaying @html nodes</vh></v>
@@ -1340,6 +1341,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20160305040503.69"><vh>flatten-outline-to-node</vh></v>
 <v t="ekr.20160305040503.70"><vh>help-for-keystroke</vh></v>
+<v t="ekr.20160305041022.1"><vh>show-invisibles uses Qt characters</vh></v>
 <v t="ekr.20160305040503.71"><vh>vim-open-file command</vh></v>
 </v>
 <v t="ekr.20160305040503.72"><vh>Directives: new</vh>
@@ -20000,7 +20002,7 @@ The bug was a typo in plugins/importers/basescanner.py.
 
 Also improved reporting in the RecursiveImportController class.
 </t>
-<t tx="ekr.20160305040503.50">Extremely useful.
+<t tx="ekr.20160305040503.50">Traverses the tree given using the generator, cloning all positions for which predicate(p) is True. Undoably moves all clones to a new node, created as the last top-level node.
 </t>
 <t tx="ekr.20160305040503.51">April 15, 2015
 
@@ -20504,6 +20506,8 @@ Defaults are as shown above.
 </t>
 <t tx="ekr.20160305040503.99">The fix was to create a dummy root position in abbrev.init_env.
 </t>
+<t tx="ekr.20160305040809.1"></t>
+<t tx="ekr.20160305041022.1">The result is much better looking than before.</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

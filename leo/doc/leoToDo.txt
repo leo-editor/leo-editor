@@ -4,7 +4,6 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160225155208.1: ** To do: 5.2
-- Make sure all items in "Recent code" are documented.
 - ctrl-k should cut selected lines
 
 9 bugs for Leo 5.2:
