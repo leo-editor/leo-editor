@@ -4,12 +4,12 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160225155208.1: ** To do: 5.2
-- ctrl-k should cut selected lines
-
 2 bugs for Leo 5.2:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.2
 
 Release PyInstaller versions for Windows, Linux, MacOs.
+
+Follow up on apt-get install leo
 
 @language rest
 @wrap

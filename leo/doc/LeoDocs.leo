@@ -1341,6 +1341,7 @@
 </v>
 <v t="ekr.20160305040503.69"><vh>flatten-outline-to-node</vh></v>
 <v t="ekr.20160305040503.70"><vh>help-for-keystroke</vh></v>
+<v t="ekr.20160305072334.1"><vh>kill</vh></v>
 <v t="ekr.20160305041022.1"><vh>show-invisibles uses Qt characters</vh></v>
 <v t="ekr.20160305040503.71"><vh>vim-open-file command</vh></v>
 </v>
@@ -20509,6 +20510,8 @@ Defaults are as shown above.
 <t tx="ekr.20160305040809.1"></t>
 <t tx="ekr.20160305041022.1">The result is much better looking than before.</t>
 <t tx="ekr.20160305054512.1">https://github.com/leo-editor/leo-editor/issues/239
+</t>
+<t tx="ekr.20160305072334.1">All kill commands except the kill-paragraph and backward-kill-paragraph commands cuts selected *text* if it exists.
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
