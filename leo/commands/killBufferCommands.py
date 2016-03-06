@@ -149,8 +149,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if not w: return
         # 2016/03/05: all kill commands kill selected text, if it exists.
         if not force:
+            # Delete the selection range if it spans a line.
             i, j = w.getSelectionRange()
-            if i != j:
+            s = w.get(i, j)
+            if s.find('\n') > -1: 
                 frm, to = i, j
         s = w.get(frm, to)
         if undoType:
