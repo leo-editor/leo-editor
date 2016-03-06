@@ -27,6 +27,9 @@ class ExternalFile:
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
         
     __str__ = __repr__
+    
+    #@+others
+    #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController:
     '''
@@ -174,10 +177,8 @@ class ExternalFilesController:
         '''Update the body text of f.p to the contents of f.path.'''
         trace = False and not g.unitTesting
         assert isinstance(f, ExternalFile)
-        if trace: self.dump_d(d, 'update_node')
+        if trace: g.trace(repr(f))
         c, p = f.c, f.p.copy()
-        # path = f.path
-        # encoding = d.get('encoding', None)
         old_body = f.body
         body = p.b
         body = g.toEncodedString(body, f.encoding, reportErrors=True)
@@ -191,17 +192,17 @@ class ExternalFilesController:
             assert result in ('cancel', 'file', 'outline'), result
             if result == 'file':
                 g.blue('updated %s' % p.h)
-                d['body'] = s
+                f.body = s
                 p.b = g.toUnicode(s, encoding=f.encoding)
                 self.finish_open_with_update(c, p)
             elif result == 'outline':
                 g.blue('retaining %s' % p.h)
-                d['body'] = body
+                f.body = body
             else:
                 g.blue('ignoring conflict in %s' % p.h)
         elif update:
             g.blue('updated %s' % p.h)
-            d['body'] = s
+            f.body = s
             p.b = g.toUnicode(s, encoding=f.encoding)
             self.finish_open_with_update(c, p)
     #@+node:ekr.20150407211506.1: *7* efc.finish_open_with_update
