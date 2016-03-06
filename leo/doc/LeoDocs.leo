@@ -171,7 +171,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -8968,43 +8968,15 @@ Usage:
   be under 'tomboy' node anymore) and new notes added.
 
 </t>
-<t tx="ekr.20101113063552.9444">Enables two-way communication with VIM.
+<t tx="ekr.20101113063552.9444">Enables two-way communication with gvim (recommended) or vim. with the following commands:
 
-It's recommended that you have gvim installed--the basic console vim is not recommended.
+``vim-open-file``
+    Opens the nearest ancestor @file or @clean node in vim. Leo will update
+    the file in the outline when you save the file in vim.
 
-When properly installed, this plugin does the following:
-
-- By default, the plugin opens nodes on icondclick2 events.
-  (double click in the icon box)
-
-- The setting::
-
-    @string vim_trigger_event = icondclick2
-
-  controls when nodes are opened in vim.  The default, shown above,
-  opens a node in vim on double clicks in Leo's icon box.
-  A typical alternative would be::
-
-      @string vim_trigger_event = iconclick2
-
-  to open nodes on single clicks in the icon box.
-  You could also set:
-
-      @string vim_trigger_event = select2
-
-  to open a node in vim whenever the selected node changes for any reason.
-
-- Leo will put Vim cursor at same location as Leo cursor in file if 'vim_plugin_positions_cursor' set to True.
-
-- Leo will put node in a Vim tab card if 'vim_plugin_uses_tab_feature' set to True.
-
-- Leo will update the node in the outline when you save the file in VIM.
-
-To install this plugin do the following:
-
-1. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo. Alternatively, you can ensure that gvim.exe is on your PATH.
-
-1. If you are using Python 2.4 or above, that's all you need to do. Jim Sizelove's new code will start vim automatically using Python's subprocess module. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
+``vim-open-node``
+    Opens the selected node in vim. Leo will update the node in the outline
+    when you save the file in vim.
 </t>
 <t tx="ekr.20101113063552.9445">Allows you to edit nodes in emacs/xemacs.
 
@@ -20513,7 +20485,7 @@ Defaults are as shown above.
 </t>
 <t tx="ekr.20160305072334.1">All kill commands except the kill-paragraph and backward-kill-paragraph commands cuts selected *text* if it exists.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
