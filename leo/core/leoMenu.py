@@ -1197,17 +1197,19 @@ class LeoMenu:
     #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helpers (LeoMenu)
     def createOpenWithMenuFromTable(self, table):
         '''
-        table is a lists of dicts d, used by the kind handler,
-        ExternalFilesController.open_temp_file.
-
-        - 'args':     command-line args.
-        - 'ext':      The default file extension to be used. May be overridden.
-        - 'kind':     The method used to open the external file.  One of:
-                      ("os.startfile","os.spawnl","os.spawnv","subprocess.Popen")
-                      This argument may also be a callable.
-        - 'shortcut': the keystroke that created the command.
-        - 'name':     the menu label, for example, Idle, Scite, etc.
-    '''
+        Table is a list of dictionaries, created from @openwith settings nodes.
+        
+        This menu code uses these keys:
+        
+            'name':     menu label.
+            'shortcut': optional menu shortcut.
+        
+        efc.open_temp_file uses these keys:
+       
+            'args':     the command-line arguments to be used to open the file.
+            'ext':      the file extension.
+            'kind':     the method used to open the file, such as subprocess.Popen.
+        '''
         # trace = False and not g.unitTesting
         c, k = self.c, self.c.k
         if not table: return
@@ -1245,11 +1247,18 @@ class LeoMenu:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable & callback (LeoMenu)
     def createOpenWithMenuItemsFromTable(self, menu, table):
-        '''Create an entry in the Open with Menu from the table.
+        '''
+        Create an entry in the Open with Menu from the table, a list of dictionaries.
 
-        Each entry should be a sequence with 2 or 3 elements.'''
+        Each dictionary d has the following keys:
+       
+        'args':     the command-line arguments used to open the file.
+        'ext':      not used here: used by efc.open_temp_file.
+        'kind':     not used here: used by efc.open_temp_file.
+        'name':     menu label.
+        'shortcut': optional menu shortcut.
+        '''
         trace = False and not g.unitTesting
-        # if trace: g.trace(g.callers())
         c = self.c
         if g.app.unitTesting: return
         for d in table:
