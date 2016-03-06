@@ -110,7 +110,7 @@ datas = [
         ('launchLeo-unified.spec', ''),
         ('leo_to_html.xsl', ''),
         ('pylint-leo.py', ''),
-        ('setup.py', ''),
+        # ('setup.py', ''),
     # leo.commands...
         ext('.py', 'leo/commands'),
     # leo.core...
