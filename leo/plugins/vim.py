@@ -292,10 +292,10 @@ class VimCommander:
     #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
     def open_file(self, root):
         '''Open the the file in vim using c.openWith.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         # Common arguments.
-        g.trace(self.entire_file, root.h)
+        # g.trace(self.entire_file, root.h)
         cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"

@@ -151,12 +151,12 @@ class ExternalFilesController:
                 p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
                 seen.add(p.v)
-                self.idle_check_node(c, p)
+                self.idle_check_at_file_node(c, p)
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20150403044823.1: *5* efc.idle_check_node
-    def idle_check_node(self, c, p):
+    #@+node:ekr.20150403044823.1: *5* efc.idle_check_at_file_node
+    def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
@@ -164,6 +164,7 @@ class ExternalFilesController:
             if ok:
                 c.redraw_now(p=p)
                 c.refreshFromDisk(p)
+                c.redraw()
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
@@ -184,8 +185,7 @@ class ExternalFilesController:
         if trace: g.trace(repr(ef))
         c, p = ef.c, ef.p.copy()
         old_body = ef.body
-        body = p.b
-        body = g.toEncodedString(body, ef.encoding, reportErrors=True)
+        body = g.toEncodedString(p.b, ef.encoding, reportErrors=True)
         s = g.readFileIntoEncodedString(ef.path)
         s = g.toEncodedString(s, ef.encoding, reportErrors=True)
         conflict = body not in (old_body, s)
@@ -336,7 +336,7 @@ class ExternalFilesController:
         for ef in self.files:
             if path == ef.path and p.v == ef.p.v:
                 if trace: g.trace('found!', path)
-                return self.reopen_open_with_node(c, ef)
+                return self.reopen_open_with_node(c, d, ef)
                     # May be None
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
@@ -396,7 +396,7 @@ class ExternalFilesController:
         self.files.append(f)
         return path
     #@+node:ekr.20031218072017.2827: *6* efc.reopen_open_with_node
-    def reopen_open_with_node(self, c, d):
+    def reopen_open_with_node(self, c, d, ef):
         '''
         Test for changes in both p and the temp file:
 
@@ -407,27 +407,20 @@ class ExternalFilesController:
         Return the file name.
         '''
         trace = False and not g.unitTesting
-        p = d.get('p')
-        ext = d.get('ext')
-        ext = self.get_ext(c, p, ext)
-        path = d.get('path')
-        # Get the old & new body text and modification times.
-        encoding = d.get('encoding')
-        old_body = d.get('body')
-        old_body = g.toEncodedString(old_body, encoding, reportErrors=True)
-        new_body = d.get('body') if 'body' in d else p.b
-        old_time = d.get('time')
+        p = ef.p
+        old_body = g.toEncodedString(ef.body, ef.encoding, reportErrors=True)
+        new_body = p.b
+        old_time = ef.time
         try:
-            new_time = self.get_mtime(path)
+            new_time = self.get_mtime(ef.path)
         except Exception:
             new_time = None
         body_changed = old_body != new_body
         time_changed = old_time != new_time
         if body_changed and time_changed:
-            # g.error('Conflict in temp file for',p.h)
             result = self.ask_conflict(c, p.h)
-            d['time'] = new_time
-            d['body'] = new_body
+            ef.time = new_time
+            ef.body = new_body
             if result is None or result.lower() == 'cancel':
                 return None
             rewrite = result.lower() == 'yes'
@@ -437,7 +430,7 @@ class ExternalFilesController:
             # May be overridden by the mod_tempfname plugin.
             path = self.create_temp_file(c, d, p)
         else:
-            g.trace('reopening:', path)
+            g.trace('reopening:', ef.path)
         return path
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
@@ -525,6 +518,17 @@ class ExternalFilesController:
             g.pr('}')
         else:
             g.pr('%s...{}' % (tag) if tag else '{}')
+    #@+node:ekr.20160306182859.1: *4* efc.find_ef_for_node (not used)
+    def find_ef_for_node(self, p):
+        '''Find the ExternalFile instance corresponding to node p.'''
+        trace = False and not g.unitTesting
+        for ef in self.files:
+            if ef.p and ef.p.v == p.v:
+                break
+        else:
+            ef = None
+        if trace: g.trace(p.h, ef)
+        return ef
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext(self, c, p, ext):
         '''Return the file extension to be used in the temp file.'''
