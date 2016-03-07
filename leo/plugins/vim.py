@@ -246,7 +246,7 @@ class VimCommander:
                 return p
             else:
                 p.moveToParent()
-        self.error('no parent @clean or @auto node: %s' % p0.h)
+        self.error('no parent @auto or @clean node: %s' % p0.h)
         return None
     #@+node:ekr.20150326180515.1: *3* vim.find_path_for_node
     def find_path_for_node(self, p):
@@ -292,9 +292,10 @@ class VimCommander:
     #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
     def open_file(self, root):
         '''Open the the file in vim using c.openWith.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         # Common arguments.
+        g.trace(self.entire_file, root.h)
         cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"

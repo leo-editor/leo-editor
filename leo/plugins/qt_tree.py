@@ -136,6 +136,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     def traceItem(self, item):
         if item:
+            # A QTreeWidgetItem.
             return 'item %s: %s' % (id(item), self.getItemText(item))
         else:
             return '<no item>'
@@ -736,7 +737,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def onItemDoubleClicked(self, item, col):
         '''Handle a double click in a BaseNativeTree widget item.'''
         trace = False and not g.unitTesting
-        verbose = False
         if self.busy(): return
         c = self.c
         if trace: g.trace(col, self.traceItem(item))
