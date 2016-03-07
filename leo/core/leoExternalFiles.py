@@ -27,9 +27,6 @@ class ExternalFile:
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
         
     __str__ = __repr__
-    
-    #@+others
-    #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController:
     '''
@@ -38,7 +35,14 @@ class ExternalFilesController:
     - temp files created by open-with commands.
     - external files corresponding to @file nodes.
     
-    Raises a dialog when a file changes outside of Leo.
+    This class raises a dialog when a file changes outside of Leo.
+    
+    **Convention**:
+    
+    - d is always a dict created by the @open-with logic.
+      It would be difficult and pointless to change d.
+    
+    - ef is always an ExternalFiles instance.
     '''
     #@+others
     #@+node:ekr.20150404083533.1: *3* efc.ctor
@@ -78,25 +82,25 @@ class ExternalFilesController:
         """
         trace = False and not g.unitTesting
         if trace: g.trace(frame.c.shortFileName())
-        files = [f for f in self.files if f.c.frame == frame]
-        paths = [f.path for f in files]
-        for f in files:
-            self.destroy_external_file(f)
+        files = [ef for ef in self.files if ef.c.frame == frame]
+        paths = [ef.path for ef in files]
+        for ef in files:
+            self.destroy_external_file(ef)
         self.files = [z for z in self.files if z.path not in paths]
 
     #@+node:ekr.20031218072017.2614: *5* efc.destroy_external_file
-    def destroy_external_file(self, f):
+    def destroy_external_file(self, ef):
         '''Destroy the file corresponding to the given ExternalFile instance.'''
         trace = False and not g.unitTesting
         # Do not use g.trace here.
-        if f.path and g.os_path_exists(f.path):
+        if ef.path and g.os_path_exists(ef.path):
             try:
-                os.remove(f.path)
+                os.remove(ef.path)
                 if trace:
-                    print("deleting temp file: %s" % g.shortFileName(f.path))
+                    print("deleting temp file: %s" % g.shortFileName(ef.path))
             except Exception:
                 if trace:
-                    print("can not delete temp file: %s" % f.path)
+                    print("can not delete temp file: %s" % ef.path)
     #@+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
     def find_path_for_node(self, p):
         '''
@@ -104,15 +108,15 @@ class ExternalFilesController:
         called from vim.py.
         '''
         trace = False and not g.unitTesting
-        for f in self.files:
-            if f.p and f.p.v == p.v:
-                path = f.path
+        for ef in self.files:
+            if ef.p and ef.p.v == p.v:
+                path = ef.path
                 break
         else:
             path = None
         if trace: g.trace(p.h, path)
         return path
-    #@+node:ekr.20150330033306.1: *4* efc.on_idle & helpes
+    #@+node:ekr.20150330033306.1: *4* efc.on_idle & helpers
     def on_idle(self, timer):
         '''Check for changed files in all commanders.'''
         trace = False and not g.unitTesting
@@ -121,8 +125,8 @@ class ExternalFilesController:
             t1 = time.time()
         if g.app and not g.app.killed:
             # First, check the open-with files.
-            for f in self.files:
-                self.idle_check_open_with_file(f)
+            for ef in self.files:
+                self.idle_check_open_with_file(ef)
             # Next, check, all @<file> nodes in all commanders.
             for c in g.app.commanders():
                 self.idle_check_commander(c)
@@ -164,46 +168,46 @@ class ExternalFilesController:
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
-    def idle_check_open_with_file(self, f):
+    def idle_check_open_with_file(self, ef):
         '''Update the open-with node given by d.'''
         trace = False and not g.unitTesting
-        if f.path and os.path.exists(f.path):
-            time = self.get_mtime(f.path)
-            if time and time != f.time:
-                f.time = time # inhibit endless dialog loop.
-                self.update_open_with_node(f)
+        if ef.path and os.path.exists(ef.path):
+            time = self.get_mtime(ef.path)
+            if time and time != ef.time:
+                ef.time = time # inhibit endless dialog loop.
+                self.update_open_with_node(ef)
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node & helper
-    def update_open_with_node(self, f):
-        '''Update the body text of f.p to the contents of f.path.'''
+    def update_open_with_node(self, ef):
+        '''Update the body text of ef.p to the contents of ef.path.'''
         trace = False and not g.unitTesting
-        assert isinstance(f, ExternalFile)
-        if trace: g.trace(repr(f))
-        c, p = f.c, f.p.copy()
-        old_body = f.body
+        assert isinstance(ef, ExternalFile)
+        if trace: g.trace(repr(ef))
+        c, p = ef.c, ef.p.copy()
+        old_body = ef.body
         body = p.b
-        body = g.toEncodedString(body, f.encoding, reportErrors=True)
-        s = g.readFileIntoEncodedString(f.path)
-        s = g.toEncodedString(s, f.encoding, reportErrors=True)
+        body = g.toEncodedString(body, ef.encoding, reportErrors=True)
+        s = g.readFileIntoEncodedString(ef.path)
+        s = g.toEncodedString(s, ef.encoding, reportErrors=True)
         conflict = body not in (old_body, s)
         update = s != body
         if conflict:
             # Ask the user how to resolve the conflict.
-            result = self.ask_conflict(c, f.path)
+            result = self.ask_conflict(c, ef.path)
             assert result in ('cancel', 'file', 'outline'), result
             if result == 'file':
                 g.blue('updated %s' % p.h)
-                f.body = s
-                p.b = g.toUnicode(s, encoding=f.encoding)
+                ef.body = s
+                p.b = g.toUnicode(s, encoding=ef.encoding)
                 self.finish_open_with_update(c, p)
             elif result == 'outline':
                 g.blue('retaining %s' % p.h)
-                f.body = body
+                ef.body = body
             else:
                 g.blue('ignoring conflict in %s' % p.h)
         elif update:
             g.blue('updated %s' % p.h)
-            f.body = s
-            p.b = g.toUnicode(s, encoding=f.encoding)
+            ef.body = s
+            p.b = g.toUnicode(s, encoding=ef.encoding)
             self.finish_open_with_update(c, p)
     #@+node:ekr.20150407211506.1: *7* efc.finish_open_with_update
     def finish_open_with_update(self, c, p):
@@ -302,8 +306,8 @@ class ExternalFilesController:
                         g.es_exception()
             elif g.isCallable(kind):
                 # Invoke openWith like this:
-                # c.openWith(data=[f,None,None])
-                # f will be called with one arg, the filename
+                # c.openWith(data=[func,None,None])
+                # func will be called with one arg, the filename
                 if trace: g.trace('%s(%s)' % (kind, fn))
                 command = '%s(%s)' % (kind, fn)
                 if not testing: kind(fn)
@@ -328,11 +332,11 @@ class ExternalFilesController:
         if not path:
             # Check the mod_tempfname plugin.
             return g.error('c.temp_file_path failed')
-        # Set f and path if a temp file already refers to p.v
-        for f in self.files:
-            if path == f.path and p.v == f.p.v:
+        # Return a path if a temp file already refers to p.v
+        for ef in self.files:
+            if path == ef.path and p.v == ef.p.v:
                 if trace: g.trace('found!', path)
-                return self.reopen_open_with_node(c, f)
+                return self.reopen_open_with_node(c, ef)
                     # May be None
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
@@ -381,7 +385,7 @@ class ExternalFilesController:
                 g.es_exception()
                 return None
         # Add or update the external file entry.
-        f = ExternalFile(body=body,
+        ef = ExternalFile(body=body,
                          c=c,
                          encoding=encoding,
                          ext=ext,
@@ -446,8 +450,8 @@ class ExternalFilesController:
         trace = False and not g.unitTesting
         if trace: print('efc.shut_down')
         # Dont call g.es or g.trace! The log stream no longer exists.
-        for f in self.files[:]:
-            self.destroy_external_file(f)
+        for ef in self.files[:]:
+            self.destroy_external_file(ef)
         self.files = []
     #@+node:ekr.20150427144312.1: *3* efc.ask...
     #@+node:ekr.20150405223300.1: *4* efc.ask_conflict
