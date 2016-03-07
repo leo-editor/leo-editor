@@ -589,6 +589,8 @@ class Position(object):
 
     def isAtOthersNode(self): return self.v.isAtOthersNode()
 
+    def isAtRstFileNode(self): return self.v.isAtRstFileNode()
+
     def isAtSilentFileNode(self): return self.v.isAtSilentFileNode()
 
     def isAtShadowFileNode(self): return self.v.isAtShadowFileNode()
@@ -1987,6 +1989,10 @@ class VNodeBase(object):
     def atNoSentinelsFileNodeName(self):
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
+        
+    def atRstFileNodeName(self):
+        names = ("@rst",)
+        return self.findAtFileName(names)
 
     def atShadowFileNodeName(self):
         names = ("@shadow",)
@@ -2030,6 +2036,9 @@ class VNodeBase(object):
 
     def isAtFileNode(self):
         return bool(self.atFileNodeName())
+        
+    def isAtRstFileNode(self):
+        return bool(self.atRstFileNodeName())
 
     def isAtNoSentinelsFileNode(self):
         return bool(self.atNoSentinelsFileNodeName())
