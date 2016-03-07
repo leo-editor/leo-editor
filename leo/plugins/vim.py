@@ -295,12 +295,12 @@ class VimCommander:
         trace = False and not g.unitTesting
         c = self.c
         # Common arguments.
-        # g.trace(self.entire_file, root.h)
+        if trace: g.trace(self.entire_file, root.h)
         cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"
         if self.entire_file:
-            # Open the entire file.
+            # vim-open-file.
             assert root.isAnyAtFileNode(), root
             args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
             dir_ = g.setDefaultDirectory(c, root)
@@ -314,14 +314,15 @@ class VimCommander:
                 g.es_print(command)
                 g.es_exception()
         else:
-            root.v._vim_old_body = body = root.v.b
+            # vim-open-node
+            root.v._vim_old_body = root.v.b
+                # Not used in existing code, but it may be used elsewhere.
             args = [self.vim_exe, "--servername", "LEO", remote_arg, cursor_arg]
             if trace: g.trace('c.openWith(%s)' % args)
             d = {'args': args,
                  'ext': None,
                  'kind': 'subprocess.Popen',
                  'p': root.copy(),
-                 'p.b': body,
             }
             c.openWith(d=d)
     #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry: called from ctor)

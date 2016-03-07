@@ -12,16 +12,13 @@ import tempfile
 class ExternalFile:
     '''A class holding all data about an external file.'''
     
-    def __init__(self, body, c, encoding, ext, p, path, time):
+    def __init__(self, c, ext, p, path, time):
         '''Ctor for ExternalFile class.'''
-        self.body = body
         self.c = c
-        self.encoding = encoding
         self.ext = ext
         self.p = p.copy()
         self.path = path
         self.time = time
-        # self.v = p.v
         
     def __repr__(self):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
@@ -57,11 +54,12 @@ class ExternalFilesController:
             # List of ExternalFile instances created by self.open_with.
         self.has_changed_d = {}
             # Keys are commanders. Values are bools.
+            # Used only to limit traces.
         self._time_d = {}
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
             # get_time(path), see set_time() for notes.
-    #@+node:ekr.20150405105938.1: *3* efc.entries & helpers
+    #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite (called from c.checkTimeStamp)
     def check_overwrite(self, c, path):
         '''
@@ -71,7 +69,7 @@ class ExternalFilesController:
         since Leo read it or if the user agrees to overwrite it.
         '''
         if self.has_changed(c, path):
-            return self.ask_overwrite(c, path)
+            return self.ask(c, path)
         else:
             return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame & helper
@@ -160,8 +158,7 @@ class ExternalFilesController:
         '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
-            ok = self.ask_update(c, path)
-            if ok:
+            if self.ask(c, path, p=p):
                 c.redraw_now(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
@@ -170,53 +167,31 @@ class ExternalFilesController:
             self.checksum_d[path] = self.checksum(path)
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, ef):
-        '''Update the open-with node given by d.'''
+        '''Update the open-with node given by ef.'''
         trace = False and not g.unitTesting
+        assert isinstance(ef, ExternalFile), ef
         if ef.path and os.path.exists(ef.path):
             time = self.get_mtime(ef.path)
             if time and time != ef.time:
                 ef.time = time # inhibit endless dialog loop.
                 self.update_open_with_node(ef)
-    #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node & helper
+    #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
     def update_open_with_node(self, ef):
         '''Update the body text of ef.p to the contents of ef.path.'''
         trace = False and not g.unitTesting
-        assert isinstance(ef, ExternalFile)
+        assert isinstance(ef, ExternalFile), ef
         if trace: g.trace(repr(ef))
         c, p = ef.c, ef.p.copy()
-        old_body = ef.body
-        body = g.toEncodedString(p.b, ef.encoding, reportErrors=True)
-        s = g.readFileIntoEncodedString(ef.path)
-        s = g.toEncodedString(s, ef.encoding, reportErrors=True)
-        conflict = body not in (old_body, s)
-        update = s != body
-        if conflict:
-            # Ask the user how to resolve the conflict.
-            result = self.ask_conflict(c, ef.path)
-            assert result in ('cancel', 'file', 'outline'), result
-            if result == 'file':
-                g.blue('updated %s' % p.h)
-                ef.body = s
-                p.b = g.toUnicode(s, encoding=ef.encoding)
-                self.finish_open_with_update(c, p)
-            elif result == 'outline':
-                g.blue('retaining %s' % p.h)
-                ef.body = body
-            else:
-                g.blue('ignoring conflict in %s' % p.h)
-        elif update:
+        # Ask the user how to resolve the conflict.
+        if self.ask(c, ef.path, p=p):
             g.blue('updated %s' % p.h)
-            ef.body = s
-            p.b = g.toUnicode(s, encoding=ef.encoding)
-            self.finish_open_with_update(c, p)
-    #@+node:ekr.20150407211506.1: *7* efc.finish_open_with_update
-    def finish_open_with_update(self, c, p):
-        '''Complete updating p.b from s.'''
-        if c.config.getBool('open_with_goto_node_on_update'):
-            c.selectPosition(p)
-        if c.config.getBool('open_with_save_on_update'):
-            c.save()
-    #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers (called from c.openWith)
+            s, e = g.readFileIntoString(ef.path)
+            p.b = s
+            if c.config.getBool('open_with_goto_node_on_update'):
+                c.selectPosition(p)
+            if c.config.getBool('open_with_save_on_update'):
+                c.save()
+    #@+node:ekr.20150404082344.1: *4* efc.open_with & helper (called from c.openWith)
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.
@@ -228,98 +203,33 @@ class ExternalFilesController:
         'kind':     the method used to open the file, such as subprocess.Popen.
         'name':     menu label (used only by the menu code).
         'shortcut': menu shortcut (used only by the menu code).
+        
+        d may also have the following entry, created by c.openWith:
+            
+        'p':        the nearest @<file> node.
         '''
         trace = False and not g.unitTesting
         if trace: self.dump_d(d, 'open_with')
         try:
             ext = d.get('ext')
-            p = d.get('p') or c.p
-            if not g.doHook('openwith1', c=c, p=p, v=p.v, d=d):
-                d['ext'] = self.get_ext(c, p, ext)
-                fn = self.open_with_helper(c, d, p)
-                if fn:
+            if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
+                root = d.get('p')
+                if root:
+                    # Called from open-with menu.
+                    dir_ = g.setDefaultDirectory(c, root)
+                    fn = c.os_path_finalize_join(dir_, root.anyAtFileNodeName())
                     self.open_temp_file(c, d, fn)
-            g.doHook('openwith2', c=c, p=p, v=p.v, d=d)
+                else:
+                    p = c.p
+                    d['ext'] = self.get_ext(c, p, ext)
+                    fn = self.open_with_helper(c, d, p)
+                    if fn:
+                        self.open_temp_file(c, d, fn)
+            g.doHook('openwith2', c=c, p=c.p, v=c.p.v, d=d)
         except Exception:
             g.es('unexpected exception in c.openWith')
             g.es_exception()
-    #@+node:ekr.20031218072017.2829: *5* efc.open_temp_file
-    def open_temp_file(self, c, d, fn, testing=False):
-        '''
-        Open the closed mkstemp file fn in an external editor.
-        
-        d is a dictionary created from an @openwith settings node.
-
-        'args':     the command-line arguments to be used to open the file.
-        'ext':      the file extension.
-        'kind':     the method used to open the file, such as subprocess.Popen.
-        'name':     menu label (used only by the menu code).
-        'shortcut': menu shortcut (used only by the menu code).
-        '''
-        trace = False and not g.unitTesting
-        testing = testing or g.unitTesting
-        arg_tuple = d.get('args', [])
-        arg = ' '.join(arg_tuple)
-        kind = d.get('kind')
-        try:
-            # All of these must be supported because they
-            # could exist in @open-with nodes.
-            command = '<no command>'
-            if kind == 'os.startfile':
-                command = 'os.startfile(%s)' % self.join(arg, fn)
-                if trace: g.trace(command)
-                # pylint: disable=no-member
-                # trust the user not to use this option on Linux.
-                if not testing: os.startfile(self.join(arg, fn))
-            elif kind == 'exec':
-                g.es_print('open-with exec no longer valid.')
-                # command = 'exec(%s)' % self.join(arg,fn)
-                # if trace: g.trace(command)
-                # if not testing:
-                    # exec(self.join(arg,fn),{},{})
-            elif kind == 'os.spawnl':
-                filename = g.os_path_basename(arg)
-                command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
-                if trace: g.trace(command)
-                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
-            elif kind == 'os.spawnv':
-                filename = os.path.basename(arg_tuple[0])
-                vtuple = arg_tuple[1:]
-                vtuple.insert(0, filename)
-                    # add the name of the program as the first argument.
-                    # Change suggested by Jim Sizelove.
-                vtuple.append(fn)
-                command = 'os.spawnv(%s)' % (vtuple)
-                if trace: g.trace(command)
-                if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
-            elif kind == 'subprocess.Popen':
-                use_shell = True
-                c_arg = self.join(arg, fn)
-                command = 'subprocess.Popen(%s)' % c_arg
-                if trace: g.trace(command)
-                if not testing:
-                    try:
-                        subprocess.Popen(c_arg, shell=use_shell)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
-            elif g.isCallable(kind):
-                # Invoke openWith like this:
-                # c.openWith(data=[func,None,None])
-                # func will be called with one arg, the filename
-                if trace: g.trace('%s(%s)' % (kind, fn))
-                command = '%s(%s)' % (kind, fn)
-                if not testing: kind(fn)
-            else:
-                command = 'bad command:' + str(kind)
-                if not testing: g.trace(command)
-            return command # for unit testing.
-        except Exception:
-            g.es('exception executing open-with command:', command)
-            g.es_exception()
-            return 'oops: %s' % command
-    #@+node:ekr.20100203050306.5797: *5* efc.open_with_helper & helpers
+    #@+node:ekr.20100203050306.5797: *5* efc.open_with_helper
     def open_with_helper(self, c, d, p):
         '''
         Reopen a temp file for p if it exists in self.files.
@@ -334,15 +244,57 @@ class ExternalFilesController:
             return g.error('c.temp_file_path failed')
         # Return a path if a temp file already refers to p.v
         for ef in self.files:
-            if path == ef.path and p.v == ef.p.v:
+            if path and path == ef.path and p.v == ef.p.v:
                 if trace: g.trace('found!', path)
-                return self.reopen_open_with_node(c, d, ef)
-                    # May be None
+                return ef.path
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
         return self.create_temp_file(c, d, p)
             # May be None.
-    #@+node:ekr.20100203050306.5937: *6* efc.create_temp_file
+    #@+node:ekr.20150404092538.1: *4* efc.shut_down
+    def shut_down(self):
+        '''
+        Destroy all temporary open-with files.
+        This may fail if the files are still open.
+
+        Called by g.app.finishQuit.
+        '''
+        trace = False and not g.unitTesting
+        if trace: print('efc.shut_down')
+        # Dont call g.es or g.trace! The log stream no longer exists.
+        for ef in self.files[:]:
+            self.destroy_external_file(ef)
+        self.files = []
+    #@+node:ekr.20150405110219.1: *3* efc.utilities
+    # pylint: disable=no-value-for-parameter
+    #@+node:ekr.20150405200212.1: *4* efc.ask
+    def ask(self, c, path, p=None):
+        '''
+        Ask user whether to overwrite an @<file> tree.
+        Return True if the user agrees.
+        '''
+        if p is None:
+            for ef in self.files:
+                if ef.path == path:
+                    where = ef.p.h
+                    break
+            else:
+                where = 'the outline node'
+        else:
+            where = p.h
+        s = '\n'.join([
+            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
+            'Overwrite %s?' % (where),
+        ])
+        result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the Leo outline?', s)
+        return bool(result and result.lower() == 'yes')
+            # Careful: may be unit testing.
+    #@+node:ekr.20150404052819.1: *4* efc.checksum
+    def checksum(self, path):
+        '''Return the checksum of the file at the given path.'''
+        import hashlib
+        return hashlib.md5(open(path, 'rb').read()).hexdigest()
+    #@+node:ekr.20100203050306.5937: *4* efc.create_temp_file
     def create_temp_file(self, c, d, p):
         '''
         Create the temp file used by open-with if necessary.
@@ -358,7 +310,6 @@ class ExternalFilesController:
         '''
         trace = False and not g.unitTesting
         assert isinstance(d, dict), d
-        body = d.get('body') if d and 'body' in d else c.p.b
         ext = d.get('ext')
         path = self.temp_file_path(c, p, ext)
         exists = g.os_path_exists(path)
@@ -366,18 +317,17 @@ class ExternalFilesController:
             kind = 'recreating:' if exists else 'creating: '
             g.trace(kind, path)
         # Compute encoding and s.
-        d = c.scanAllDirectives(p)
-        encoding = d.get('encoding', None)
+        d2 = c.scanAllDirectives(p)
+        encoding = d2.get('encoding', None)
         if encoding is None:
             encoding = c.config.default_derived_file_encoding
-        if not g.isPython3:
-            body = g.toEncodedString(body, encoding, reportErrors=True)
+        s = g.toEncodedString(p.b, encoding, reportErrors=True)
         # Write the file *only* if it doesn't exist.
         # No need to read the file: recomputing s above suffices.
         if not exists:
             try:
-                f = open(path, 'w')
-                f.write(body)
+                f = open(path, 'wb')
+                f.write(s)
                 f.flush()
                 f.close()
             except IOError:
@@ -385,118 +335,10 @@ class ExternalFilesController:
                 g.es_exception()
                 return None
         # Add or update the external file entry.
-        ef = ExternalFile(body=body,
-                         c=c,
-                         encoding=encoding,
-                         ext=ext,
-                         p=p,
-                         path=path,
-                         time = self.get_mtime(path))
+        time = self.get_mtime(path)
         self.files = [z for z in self.files if z.path != path]
-        self.files.append(f)
+        self.files.append(ExternalFile(c, ext, p, path, time))
         return path
-    #@+node:ekr.20031218072017.2827: *6* efc.reopen_open_with_node
-    def reopen_open_with_node(self, c, d, ef):
-        '''
-        Test for changes in both p and the temp file:
-
-        - If only p's body text has changed, we recreate the temp file.
-        - If only the temp file has changed, do nothing here.
-        - If both have changed we must prompt the user to see which code to use.
-
-        Return the file name.
-        '''
-        trace = False and not g.unitTesting
-        p = ef.p
-        old_body = g.toEncodedString(ef.body, ef.encoding, reportErrors=True)
-        new_body = p.b
-        old_time = ef.time
-        try:
-            new_time = self.get_mtime(ef.path)
-        except Exception:
-            new_time = None
-        body_changed = old_body != new_body
-        time_changed = old_time != new_time
-        if body_changed and time_changed:
-            result = self.ask_conflict(c, p.h)
-            ef.time = new_time
-            ef.body = new_body
-            if result is None or result.lower() == 'cancel':
-                return None
-            rewrite = result.lower() == 'yes'
-        else:
-            rewrite = body_changed
-        if rewrite:
-            # May be overridden by the mod_tempfname plugin.
-            path = self.create_temp_file(c, d, p)
-        else:
-            g.trace('reopening:', ef.path)
-        return path
-    #@+node:ekr.20150404092538.1: *4* efc.shut_down
-    def shut_down(self):
-        '''
-        Destroy all temporary open-with files.
-        This may fail if the files are still open.
-
-        Called by g.app.finishQuit.
-        '''
-        trace = False and not g.unitTesting
-        if trace: print('efc.shut_down')
-        # Dont call g.es or g.trace! The log stream no longer exists.
-        for ef in self.files[:]:
-            self.destroy_external_file(ef)
-        self.files = []
-    #@+node:ekr.20150427144312.1: *3* efc.ask...
-    #@+node:ekr.20150405223300.1: *4* efc.ask_conflict
-    def ask_conflict(self, c, path):
-        '''Ask the user how to resolve an open-with update conflict.'''
-        s = '\n'.join([
-            'Conflicting changes in outline and temp file.',
-            'What data do you want to use?',
-            '',
-            'Outline: use the data in the outline.',
-            'File: use the data in the temp file.',
-            'Cancel: do nothing.',
-        ])
-        result = g.app.gui.runAskYesNoCancelDialog(c, "Conflict!", s,
-            yesMessage='Outline',
-            noMessage='File',
-            defaultButton='Cancel')
-        if result == 'yes': return 'outline'
-        elif result == 'no': return 'file'
-        else: return 'cancel'
-    #@+node:ekr.20150405200212.1: *4* efc.ask_overwrite
-    def ask_overwrite(self, c, path):
-        '''
-        Ask user whether to overwrite an @<file> tree.
-        Return True if the user agrees.
-        '''
-        s = '\n'.join([
-            '%s has been modified outside Leo.' % (g.splitLongFileName(path)),
-            'Overwrite this file?'
-        ])
-        result = g.app.gui.runAskYesNoCancelDialog(c, 'Overwrite modified file?', s)
-        return result.lower() == 'yes'
-    #@+node:ekr.20150405200752.1: *4* efc.ask_update
-    def ask_update(self, c, path):
-        '''
-        Ask user whether to update an @<file> tree.
-        Update the file if the user agrees.
-        Return True if the user agrees.
-        '''
-        s = '\n'.join([
-            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
-            'Update the outline from the external file?'
-        ])
-        result = g.app.gui.runAskYesNoCancelDialog(c, 'Update Outline?', s)
-        return result.lower() == 'yes'
-    #@+node:ekr.20150405110219.1: *3* efc.utilities
-    # pylint: disable=no-value-for-parameter
-    #@+node:ekr.20150404052819.1: *4* efc.checksum
-    def checksum(self, path):
-        '''Return the checksum of the file at the given path.'''
-        import hashlib
-        return hashlib.md5(open(path, 'rb').read()).hexdigest()
     #@+node:ekr.20150427145447.1: *4* efc.dump_d
     def dump_d(self, d, tag):
         '''Print dictionary d.  Similar to g.printDict.'''
@@ -518,17 +360,6 @@ class ExternalFilesController:
             g.pr('}')
         else:
             g.pr('%s...{}' % (tag) if tag else '{}')
-    #@+node:ekr.20160306182859.1: *4* efc.find_ef_for_node (not used)
-    def find_ef_for_node(self, p):
-        '''Find the ExternalFile instance corresponding to node p.'''
-        trace = False and not g.unitTesting
-        for ef in self.files:
-            if ef.p and ef.p.v == p.v:
-                break
-        else:
-            ef = None
-        if trace: g.trace(p.h, ef)
-        return ef
     #@+node:ekr.20031218072017.2824: *4* efc.get_ext
     def get_ext(self, c, p, ext):
         '''Return the file extension to be used in the temp file.'''
@@ -638,6 +469,81 @@ class ExternalFilesController:
     def join(self, s1, s2):
         '''Return s1 + ' ' + s2'''
         return '%s %s' % (s1, s2)
+    #@+node:ekr.20031218072017.2829: *4* efc.open_temp_file
+    def open_temp_file(self, c, d, fn, testing=False):
+        '''
+        Open a temp file corresponding to fn in an external editor.
+        
+        d is a dictionary created from an @openwith settings node.
+
+        'args':     the command-line arguments to be used to open the file.
+        'ext':      the file extension.
+        'kind':     the method used to open the file, such as subprocess.Popen.
+        'name':     menu label (used only by the menu code).
+        'shortcut': menu shortcut (used only by the menu code).
+        '''
+        trace = False and not g.unitTesting
+        testing = testing or g.unitTesting
+        arg_tuple = d.get('args', [])
+        arg = ' '.join(arg_tuple)
+        kind = d.get('kind')
+        try:
+            # All of these must be supported because they
+            # could exist in @open-with nodes.
+            command = '<no command>'
+            if kind == 'os.startfile':
+                command = 'os.startfile(%s)' % self.join(arg, fn)
+                if trace: g.trace(command)
+                # pylint: disable=no-member
+                # trust the user not to use this option on Linux.
+                if not testing: os.startfile(self.join(arg, fn))
+            elif kind == 'exec':
+                g.es_print('open-with exec no longer valid.')
+                # command = 'exec(%s)' % self.join(arg,fn)
+                # if trace: g.trace(command)
+                # if not testing:
+                    # exec(self.join(arg,fn),{},{})
+            elif kind == 'os.spawnl':
+                filename = g.os_path_basename(arg)
+                command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
+                if trace: g.trace(command)
+                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
+            elif kind == 'os.spawnv':
+                filename = os.path.basename(arg_tuple[0])
+                vtuple = arg_tuple[1:]
+                vtuple.insert(0, filename)
+                    # add the name of the program as the first argument.
+                    # Change suggested by Jim Sizelove.
+                vtuple.append(fn)
+                command = 'os.spawnv(%s)' % (vtuple)
+                if trace: g.trace(command)
+                if not testing:
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
+            elif kind == 'subprocess.Popen':
+                c_arg = self.join(arg, fn)
+                command = 'subprocess.Popen(%s)' % c_arg
+                if trace: g.trace(command)
+                if not testing:
+                    try:
+                        subprocess.Popen(c_arg, shell=True)
+                    except OSError:
+                        g.es_print('c_arg', repr(c_arg))
+                        g.es_exception()
+            elif g.isCallable(kind):
+                # Invoke openWith like this:
+                # c.openWith(data=[func,None,None])
+                # func will be called with one arg, the filename
+                if trace: g.trace('%s(%s)' % (kind, fn))
+                command = '%s(%s)' % (kind, fn)
+                if not testing: kind(fn)
+            else:
+                command = 'bad command:' + str(kind)
+                if not testing: g.trace(command)
+            return command # for unit testing.
+        except Exception:
+            g.es('exception executing open-with command:', command)
+            g.es_exception()
+            return 'oops: %s' % command
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
     def set_time(self, path, new_time=None):
         '''

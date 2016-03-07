@@ -42,32 +42,6 @@ raise IOError("Could not find %r in %r" % (filename, path))
 OSError: Could not find 'kernel-86433.json' in ['.', '/Users/lo/.ipython/profile_default/security']
 .. @+node:ekr.20160305055112.1: *4* Discussion: IPython Kernel Connection File Location
 https://groups.google.com/forum/#!searchin/leo-editor/jupyter/leo-editor/fZ5nzs7f0iM/ARaTA0iICAAJ
-.. @+node:ekr.20160302041948.1: *3* #217: vim plugin does not work as described
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/217
-
-Git history of vim.py
-https://github.com/leo-editor/leo-editor/commits/8ec4e29f6b0ade0cf6da1d7ddf45314dfcdb3855/leo/plugins/vim.py
-
-.. @+node:ekr.20160305151031.1: *4* Report
-Using Leo 5.1-final, build 20151028094354 under Linux, gvim 7.4.769
-
-> Leo will update the node in the outline when you save the file in VIM.
-
-*** File is not updated, nor when Vim is closed. Must be refreshed in Leo.
-.. @+node:ekr.20160305150844.1: *4* #165: vim-open-file command
-#165: vim-open-file command (closed April 30, 2015)
-https://github.com/leo-editor/leo-editor/issues/165
-
-Dubious work was done in April, 2015 (for #165) ?
-https://github.com/leo-editor/leo-editor/commit/74ad2b857890bac7bbcafd1ef9f6ec405a03da42
-.. @+node:ekr.20160305150743.1: *4* #206: each node content is same when open with gvim or gedit
-# 206: each node content is same when open with gvim or gedit (closed Aug. 21, 2015)
-https://github.com/leo-editor/leo-editor/issues/206
-
-Terry: the reported bug was that "open in <external editor>" on non-file node A and then non-file node B showed A's body in both external files. I fixed that. I did not test writing / editing / re-loading the text. And also only evaluating the wrong body behavior just described, it was working before 74ad2b8, generating a traceback from 74ad2b8 to c2465dd, and thereafter doing the wrong body thing I just fixed. So maybe OP will report problems with the editing / re-loading phases now.
 .. @+node:ekr.20160305055206.1: *3* Follow up on apt-get install leo
 sudo apt-get install leo
 https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ

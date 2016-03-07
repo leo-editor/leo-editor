@@ -5121,11 +5121,11 @@ class StubConfig(g.nullObject):
 x = StubConfig()
 assert not x.getBool(c,'mySetting')
 assert not x.enabledPluginsFileName
-#@+node:ekr.20100203103015.5353: *4* @test efc.ask_conflict
+#@+node:ekr.20100203103015.5353: *4* @test efc.ask
 # Not a perfect test, but stil significant.
 efc = g.app.externalFilesController
-result = efc.ask_conflict(c,p.h)
-assert result in (None,'cancel'),'fail 2: %s' % result
+result = efc.ask(c,p.h)
+assert result in (True, False),result
 #@+node:ekr.20100203103015.5355: *4* @test efc.get_ext
 @language python
 

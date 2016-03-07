@@ -919,7 +919,16 @@ class Commands(object):
         See ExternalFilesController.open_with for details about d.
         '''
         c = self
+        
         if g.app.externalFilesController:
+            if d:
+                # Select an ancestor @<file> node if possible.
+                p = c.p
+                while p:
+                    if p.isAnyAtFileNode():
+                        d ['p'] = p
+                        break
+                    p.moveToParent()
             g.app.externalFilesController.open_with(c, d)
     #@+node:ekr.20140717074441.17772: *5* c.refreshFromDisk
     @cmd('refresh-from-disk')
