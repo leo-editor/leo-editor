@@ -80,7 +80,16 @@ class InternalIPKernel(object):
             self.namespace['app_counter'] = 0
             # Example: a variable that will be seen by the user in the shell, and
             # that the GUI modifies (the 'Counter++' button increments it)
-    #@+node:ekr.20160308090432.1: *3* put_log
+    #@+node:ekr.20160308090432.1: *3* put_error_log & put_log
+    def put_error_log(self, s, raw=False):
+        '''Put an error message s to the IPython kernel log.'''
+        if not raw:
+            s = 'leoIpython.py: %s' % s
+        if self.kernelApp:
+            self.kernelApp.log.warning(s)
+        else:
+            print(s)
+                
     def put_log(self, s, raw=False):
         '''Put s to the IPython kernel log.'''
         if g.app.debug:
@@ -143,11 +152,11 @@ class InternalIPKernel(object):
                     self.put_log('new_qt_console: no console!')
             except OSError as e:
                 # Print statements do not work here.
-                self.put_log('new_qt_console: failed to connect to console')
-                self.put_log(e, raw=True)
+                self.put_error_log('new_qt_console: failed to connect to console')
+                self.put_error_log(e, raw=True)
             except Exception as e:
-                self.put_log('new_qt_console: unexpected exception')
-                self.put_log(e)
+                self.put_error_log('new_qt_console: unexpected exception')
+                self.put_error_log(e)
         return console
     #@+node:ekr.20130930062914.15997: *3* count
     def count(self, event=None):
