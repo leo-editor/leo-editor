@@ -40,6 +40,18 @@ https://github.com/leo-editor/leo-editor/commit/74ad2b857890bac7bbcafd1ef9f6ec40
 https://github.com/leo-editor/leo-editor/issues/206
 
 Terry: the reported bug was that "open in <external editor>" on non-file node A and then non-file node B showed A's body in both external files. I fixed that. I did not test writing / editing / re-loading the text. And also only evaluating the wrong body behavior just described, it was working before 74ad2b8, generating a traceback from 74ad2b8 to c2465dd, and thereafter doing the wrong body thing I just fixed. So maybe OP will report problems with the editing / re-loading phases now.
+.. @+node:ekr.20160305054958.1: ** Fixed #213: leo --ipython fails to connect with python3.5 and jupyter
+https://github.com/leo-editor/leo-editor/issues/213
+
+The fix was so simple: just use default arguments to connect_qtconsole.
+
+The preliminaries were at least as important as the fix itself:
+
+1. Modernized the imports, removing support for legacy imports. Imo, it would be unwise to support ancient code now.
+
+2. Added logging methods. This makes it possible to understand and debug the code in leoIPython.py. Furthermore...
+
+3. Leo's --debug option enables more verbose IPython logging. This is a feature that reveals the workings of the Jupyter kernel.
 .. @-all
 .. @@killbeautify
 .. @@language rest

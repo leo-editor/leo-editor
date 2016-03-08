@@ -19871,5 +19871,25 @@ def find_ef_for_node(self, p):
         ef = None
     if trace: g.trace(p.h, ef)
     return ef
+.. @+node:ekr.20160308131146.1: *3* InternalIPKernel.connection_path (not needed)
+# connection_file = self.connection_path(self.kernelApp.connection_file)
+
+def connection_path(self, fn):
+    '''
+    Return the path to the runtime folder:
+
+    Windows:    %APPDATA%/jupyter/runtime
+                C:/Users/edreamleo/AppData/Roaming/jupyter/runtime
+
+    Ubuntu:     $XDG_RUNTIME_DIR/jupyter
+                /run/user/1000/jupyter
+    '''
+    if sys.platform.lower().startswith('win'):
+        # Testing.
+        s = r'C:/Users/edreamleo/AppData/Roaming/jupyter/runtime'
+    else:
+        s = '/run/user/1000/jupyter'
+    return g.os_path_finalize_join(s, fn)
+
 .. @-all
 .. @-leo

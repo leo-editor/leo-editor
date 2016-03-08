@@ -4,9 +4,9 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160225155208.1: ** To do: 5.2
-Better names for PyInstaller stuff
+Better names for PyInstaller files & folders.
 
-2 bugs for Leo 5.2:
+All bugs fixed:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.2
 
 Release PyInstaller versions for Windows, Linux, MacOs.
@@ -15,33 +15,6 @@ Follow up on apt-get install leo
 
 @language rest
 @wrap
-.. @+node:ekr.20160305054958.1: *3* #214: leo --ipython fails to connect with python3.5 and jupyter
-https://github.com/leo-editor/leo-editor/issues/213
-.. @+node:ekr.20160305055034.1: *4* Report 1
-Error message after Leo tries connecting to ipython:
-
-To connect another client to this kernel, use:
---existing kernel-86433.json
-Traceback (most recent call last):
-
-File "/Users/lo/Applications/leo-editor/leo/plugins/qt_gui.py", line 923, in runWithIpythonKernel
-ipk.new_qt_console(event=None)
-
-File "/Users/lo/Applications/leo-editor/leo/core/leoIPython.py", line 120, in new_qt_console
-profile=self.ipkernel.profile)
-
-File "/usr/local/lib/python3.5/site-packages/ipykernel/connect.py", line 162, in connect_qtconsole
-cf = find_connection_file(connection_file, profile=profile)
-
-File "/usr/local/lib/python3.5/site-packages/ipykernel/connect.py", line 85, in find_connection_file
-return jupyter_client.find_connection_file(filename, path=['.', security_dir])
-
-File "/usr/local/lib/python3.5/site-packages/jupyter_client/connect.py", line 185, in find_connection_file
-raise IOError("Could not find %r in %r" % (filename, path))
-
-OSError: Could not find 'kernel-86433.json' in ['.', '/Users/lo/.ipython/profile_default/security']
-.. @+node:ekr.20160305055112.1: *4* Discussion: IPython Kernel Connection File Location
-https://groups.google.com/forum/#!searchin/leo-editor/jupyter/leo-editor/fZ5nzs7f0iM/ARaTA0iICAAJ
 .. @+node:ekr.20160305055206.1: *3* Follow up on apt-get install leo
 sudo apt-get install leo
 https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
