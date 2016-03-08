@@ -24,42 +24,24 @@ Leo commanders.
 import sys
 import leo.core.leoGlobals as g
 # Switches...
-import_trace = False and not g.unitTesting
+import_trace = True and not g.unitTesting
 
-def ok(s):
+def import_fail(s):
     if import_trace:
-        print('===== imported: %s' % s)
-
-def fail(s):
-    if import_trace:
-        print('===== import FAILED: %s' % s)
-    else:
-        print('===== leoIpython.py: can not import %s' % s)
-
-connect_qtconsole = None
-IPKernelApp = None
-
-if import_trace:
-    print('===== START leoIPython.py traces ====')
+        print('leoIpython.py: can not import %s' % s)
 
 try:
     from IPython.lib.kernel import connect_qtconsole
-    ok('connect_qtconsole')
 except ImportError:
-    fail('connect_qtconsole')
-
+    connect_qtconsole = None
+    import_fail('connect_qtconsole')
 try:
     # https://github.com/ipython/ipykernel/tree/master/ipykernel
-    import ipykernel
-    from ipykernel import kernelapp
     from ipykernel.kernelapp import IPKernelApp
-    ok('IPKernelApp')
 except ImportError:
-    fail('IPKernelApp')
-  
-if import_trace:
-    print('===== END leoIPython.py traces ====')
-    
+    IPKernelApp = None
+    import_fail('IPKernelApp')
+
 g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
@@ -132,7 +114,9 @@ class InternalIPKernel(object):
         ipk = g.app.ipk
         console = None
         if ipk:
-            print('========== ipkernel.connection_file', self.ipkernel.connection_file)
+            if g.app.debug:
+                print('========== ipkernel.connection_file',
+                    self.ipkernel.connection_file)
             if not ipk.namespace.get('_leo'):
                 ipk.namespace['_leo'] = LeoNameSpace()
             # from IPython.lib.kernel import connect_qtconsole
