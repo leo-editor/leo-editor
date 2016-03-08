@@ -930,12 +930,10 @@ class LeoQtGui(leoGui.LeoGui):
             import leo.core.leoIPython as leoIPython
             g.app.ipk = ipk = leoIPython.InternalIPKernel()
             ipk.new_qt_console(event=None)
-                # ipk.ipkernel is an IPKernelApp.
         except Exception:
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
-            # self.runMainLoop()
 
         @g.command("ipython-new")
         def qtshell_f(event):

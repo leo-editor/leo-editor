@@ -52,14 +52,7 @@ class InternalIPKernel(object):
     Called from LeoQtGui.runWithIpythonKernel()
     '''
     #@+others
-    #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
-    def cleanup_consoles(self, event=None):
-        for c in self.consoles:
-            c.kill()
-    #@+node:ekr.20130930062914.15997: *3* count
-    def count(self, event=None):
-        self.namespace['app_counter'] += 1
-    #@+node:ekr.20130930062914.15994: *3* ctor
+    #@+node:ekr.20130930062914.15994: *3*  ctor
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
         # g.trace('(InternalIPKernel)', g.callers())
@@ -87,33 +80,41 @@ class InternalIPKernel(object):
             self.namespace['app_counter'] = 0
             # Example: a variable that will be seen by the user in the shell, and
             # that the GUI modifies (the 'Counter++' button increments it)
-    #@+node:ekr.20130930062914.15996: *3* new_qt_console (to do: ensure connection)
+    #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
+    def cleanup_consoles(self, event=None):
+        for c in self.consoles:
+            c.kill()
+    #@+node:ekr.20130930062914.15997: *3* count
+    def count(self, event=None):
+        self.namespace['app_counter'] += 1
+    #@+node:ekr.20130930062914.15996: *3* new_qt_console
     def new_qt_console(self, event=None):
         '''Start a new qtconsole connected to our kernel.'''
         trace = False or g.app.debug
             # For now, always trace when using Python 2.
-        ipk = g.app.ipk
         console = None
-        if ipk:
-            if not ipk.namespace.get('_leo'):
-                ipk.namespace['_leo'] = LeoNameSpace()
-            try:
-                if trace and not g.isPython3:
-                    self.put_log('new_qt_console: connecting...')
-                console = connect_qtconsole(
-                    self.kernelApp.connection_file,
-                    profile=self.kernelApp.profile)
-                if console:
-                    self.consoles.append(console)
-                else:
-                    self.put_log('new_qt_console: no console!')
-            except OSError as e:
-                # Print statements do not work here.
-                self.put_warning('new_qt_console: failed to connect to console')
-                self.put_warning(e, raw=True)
-            except Exception as e:
-                self.put_warning('new_qt_console: unexpected exception')
-                self.put_warning(e)
+        if not self.namespace.get('_leo'):
+            self.namespace['_leo'] = LeoNameSpace()
+        try:
+            if trace:
+                self.put_log('new_qt_console: connecting...')
+                self.put_log(self.kernelApp.connection_file, raw=True)
+            # Fix #213: leo --ipython fails to connect with python3.5 and jupyter
+            # https://github.com/leo-editor/leo-editor/issues/213
+            # The connection file has the form kernel-nnn.json.
+            # Using the defaults lets connect_qtconsole find the .json file.
+            console = connect_qtconsole()
+            if console:
+                self.consoles.append(console)
+            else:
+                self.put_warning('new_qt_console: no console!')
+        except OSError as e:
+            # Print statements do not work here.
+            self.put_warning('new_qt_console: failed to connect to console')
+            self.put_warning(e, raw=True)
+        except Exception as e:
+            self.put_warning('new_qt_console: unexpected exception')
+            self.put_warning(e)
         return console
     #@+node:ekr.20130930062914.15995: *3* print_namespace
     def print_namespace(self, event=None):
@@ -158,7 +159,10 @@ class InternalIPKernel(object):
         if kernelApp:
             # pylab is needed for Qt event loop integration.
             args = ['python', '--pylab=%s' % (gui)]
-            if trace or g.app.debug: args.append('--debug')
+            if trace or g.app.debug:
+                args.append('--log-level=20')
+                    # Higher is *quieter*
+                # args.append('--debug')
                 # Produces a verbose IPython log.
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
