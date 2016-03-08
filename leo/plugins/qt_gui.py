@@ -948,7 +948,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.exec_helper(event)
         # blocks forever, equivalent of QApplication.exec_()
 
-        ipk.ipkernel.start()
+        ipk.kernelApp.start()
     #@+node:ekr.20130930062914.16010: *5* LeoQtGui.exec_helper
     def exec_helper(self, event):
         '''
