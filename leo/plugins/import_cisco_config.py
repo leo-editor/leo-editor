@@ -27,7 +27,6 @@ All created sections are alphabetically ordered.
 
 '''
 #@-<< docstring >>
-
 import leo.core.leoGlobals as g
 
 #@+others
@@ -106,7 +105,6 @@ def importCiscoConfig(c):
                 linelist[i].startswith('no %s' % customLine)):
                 #@+<< process custom line >>
                 #@+node:edream.110203113231.674: *3* << process custom line >>
-                # if not blocks.has_key(customLine):
                 if customLine not in blocks:
                     blocks[customLine] = []
                     out.append(g.angleBrackets(customLine))
@@ -129,8 +127,6 @@ def importCiscoConfig(c):
                 if space == -1:
                     space = len(linelist[i])
                 key = linelist[i][:space]
-
-                # if not blocks.has_key(key):
                 if key in blocks:
                     blocks[key] = []
                     out.append(g.angleBrackets(key))
@@ -177,10 +173,9 @@ def importCiscoConfig(c):
         # extract the key from the headline. Uhm... :)
         key = child.h.split('<<'
             )[1].split('>>')[0].strip()
-
-        # if blocks.has_key(key):
         if key in blocks:
-            if type(blocks[key][0]) == type(''):
+            # if type(blocks[key][0]) == type(''):
+            if g.isString(blocks[key][0]):
                 # it's a string, no sub-children, so just print the text
                 c.setBodyString(child,'\n'.join(blocks[key]))
             else:

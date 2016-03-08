@@ -113,7 +113,6 @@ def addMenu (tag,keywords):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
-    # if not c or haveseen.has_key(c):
     if not c or c in haveseen:
         return
     haveseen [c] = None

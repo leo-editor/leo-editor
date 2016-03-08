@@ -550,7 +550,7 @@ class PutToOPML:
             d = p.u
             for uak in list(d.keys()):
                 uav = d.get(uak)
-                if self.opml_expand_ua_dictionary and type(uav) == type({}):
+                if self.opml_expand_ua_dictionary and isinstance(uav, dict):
                     # for uakc, uavc in uav.iteritems():
                     for uakc in list(uav.keys()):
                         uavc = uav.get(uakc)

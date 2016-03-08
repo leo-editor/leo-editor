@@ -999,7 +999,6 @@ class rstClass:
         trace = False and not g.unitTesting
         ivar = self.munge(name)
         if trace:
-            # if not self.optionsDict.has_key(ivar):
             if ivar not in self.optionsDict:
                 g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
             elif self.optionsDict.get(ivar) != val:

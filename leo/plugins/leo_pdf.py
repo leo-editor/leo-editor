@@ -243,9 +243,7 @@ __docformat__ = 'reStructuredText'
 import sys
 sys.path.append(r'c:\reportlab_1_20')
 
-if 1: # This dependency could easily be removed.
-    # Used only for tracing and error reporting.
-    import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 try:
     import docutils
 except ImportError:
@@ -664,7 +662,7 @@ if docutils:
                 # We can modify the intermediate file by hand to test proposed code generation.
                 try:
                     filename = 'intermediateFile.txt'
-                    s = file(filename).read()
+                    s = open(filename).read()
                     # g.trace('creating .pdf file from %s...' % filename)
                     visitor = dummyPDFTranslator(self,self.document,s)
                 except IOError:
@@ -718,11 +716,11 @@ if docutils:
 
             """Encode special characters in `text` & return."""
 
-            if type(text) is types.UnicodeType:
+            # if type(text) is types.UnicodeType:
+            if g.isUnicode(text):
                 # text = text.replace(g.u('\u2020'),g.u(' '))
                 # text = text.replace(g.u('\xa0'), g.u(' '))
                 text = text.encode('utf-8')
-
             return text
 
         #@+node:ekr.20090704103932.5192: *3* visit/depart_document
@@ -918,9 +916,8 @@ if docutils:
         #@+node:ekr.20090704103932.5207: *5* visit_reference
         def visit_reference (self,node):
 
-            markup = [] ; caller = 'visit_reference'
-
-            # if node.has_key('refuri'):
+            markup = []
+            caller = 'visit_reference'
             if 'refuri' in node:
                 href = node ['refuri']
                 self.body.append(
@@ -942,7 +939,6 @@ if docutils:
                 self.body.append(
                     self.starttag(node,'link','',destination=href,caller=caller))
                 markup.append('</link>')
-
             self.push(kind='a',markup=markup)
         #@+node:ekr.20090704103932.5208: *5* depart_reference
         def depart_reference(self, node):
@@ -955,16 +951,11 @@ if docutils:
         def visit_target (self,node):
 
             if not (
-                # node.has_key('refuri') or
-                # node.has_key('refid') or
-                # node.has_key('refname')
                 'refuri' in node or 'refid' in node or 'refname' in node
             ):
                 href = ''
-                # if node.has_key('id'):
                 if 'id' in node:
                     href = node ['id']
-                # elif node.has_key('name'):
                 elif 'name' in node:
                     href = node ['name']
                 self.body.append("%s%s" % (
@@ -1031,13 +1022,10 @@ if docutils:
             for (name,value) in attributes.items():
                 atts [name.lower()] = value
             for att in ('class',): # append to node attribute
-                # if node.has_key(att):
                 if att in node:
-                    # if atts.has_key(att):
                     if att in atts:
                         atts [att] = node [att] + ' ' + atts [att]
             for att in ('id',): # node attribute overrides
-                # if node.has_key(att):
                 if att in node:
                     atts [att] = node [att]
 
@@ -1069,20 +1057,11 @@ if docutils:
 
             if not reportlab:
                 return
-
-            if type(text) in (types.ListType,types.TupleType):
+            if isinstance(text, (list, tuple)):
                 text = ''.join(text)
-
-            #### text = self.encode(text)
-
-            # This escapes too much.
-            # text = self.escape(text)
-
             if not style.strip():
                 style = 'Normal'
-
             style = self.styleSheet.get(style)
-
             try:
                 s = reportlab.platypus.para.Paragraph (
                     text, ### self.encode(text),
@@ -1096,8 +1075,6 @@ if docutils:
                 g.es_print_exception(full=False)
                 g.es_exception(full=False)
                 print(repr(text))
-
-                # self.dumpContext()
         #@+node:ekr.20090704103932.5217: *4* dumpContext
         def dumpContext (self):
 
@@ -1172,11 +1149,8 @@ if docutils:
             g.pr('\ndone', '-' * 25)
         #@+node:ekr.20090704103932.5220: *4* encode (PDFTranslator) (No longer used)
         def encode(self, text):
-
             """Encode special characters in `text` & return."""
-            if type(text) is types.UnicodeType:
-                ###text = text.replace(g.u('\u2020'),g.u(' '))
-                ###text = text.replace(g.u('\xa0'), g.u(' '))
+            if g.isUnicode(text):
                 text = text.encode('utf-8')
             return text
         #@+node:ekr.20111107181638.9742: *4* escape (PDFTranslator)
@@ -1814,7 +1788,6 @@ if docutils:
         #@+node:ekr.20090704103932.5300: *4* visit_raw
         def visit_raw(self, node):
 
-            # if node.has_key('format') and node['format'] == 'html':
             if 'format' in node and node['format'] == 'html':
                 self.body.append(node.astext())
 

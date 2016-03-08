@@ -497,7 +497,7 @@ class QuickSearchController:
     def addParentMatches(self, parent_list):
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
-            if type(parent_key) == str:
+            if g.isString(parent_key):
                 it = QtWidgets.QListWidgetItem(parent_key, self.lw)
             else:
                 it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)

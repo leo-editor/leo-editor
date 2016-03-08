@@ -587,24 +587,19 @@ class todoController:
         return (
             hasattr(node,"unknownAttributes") and
             udict in node.unknownAttributes and
-            type(node.unknownAttributes.get(udict)) == type({}) # EKR
+            isinstance(node.unknownAttributes.get(udict), dict)
         )
     #@+node:tbrown.20090119215428.22: *4* getat
     def getat(self, node, attrib):
         "new attribute getter"
-
-        if (not hasattr(node,'unknownAttributes') or
-            "annotate" not in node.unknownAttributes or
-            type(node.unknownAttributes["annotate"]) != type({}) or
-            attrib not in node.unknownAttributes["annotate"]
+        if (hasattr(node,'unknownAttributes') and
+            "annotate" in node.unknownAttributes and
+            isinstance(node.unknownAttributes["annotate"], dict) and
+            attrib in node.unknownAttributes["annotate"]
         ):
-            if attrib == "priority":
-                return 9999
-            else:
-                return ""
-
-        x = node.unknownAttributes["annotate"][attrib]
-        return x
+            return node.unknownAttributes["annotate"][attrib]
+        else:
+            return 9999 if attrib == "priority" else ''
     #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
@@ -640,30 +635,24 @@ class todoController:
         isDefault = self.testDefault(attrib, val)
 
         if (not hasattr(node,'unknownAttributes') or
-            "annotate" not in node.unknownAttributes or
-            type(node.unknownAttributes["annotate"]) != type({})):
+            not "annotate" in node.unknownAttributes or
+            not isinstance(node.unknownAttributes["annotate"], dict)
+        ):
             # dictionary doesn't exist
-
             if isDefault:
                 return  # don't create dict. for default value
-
             if not hasattr(node,'unknownAttributes'):  # node has no unknownAttributes
                 node.unknownAttributes = {}
                 node.unknownAttributes["annotate"] = {}
-            else:  # our private dictionary isn't present
-                if ("annotate" not in node.unknownAttributes or
-                    type(node.unknownAttributes["annotate"]) != type({})):
-                    node.unknownAttributes["annotate"] = {}
-
+            elif(not "annotate" in node.unknownAttributes or
+                 not isinstance(node.unknownAttributes["annotate"], dict)
+            ):
+                node.unknownAttributes["annotate"] = {}
             # node.unknownAttributes["annotate"]['created'] = datetime.datetime.now()
-
             node.unknownAttributes["annotate"][attrib] = val
-
             return
 
         # dictionary exists
-
-
         if (attrib not in node.unknownAttributes["annotate"] or
             node.unknownAttributes["annotate"][attrib] != val):
             self.c.setChanged(True)
@@ -678,8 +667,8 @@ class todoController:
         if (dictOk or
             hasattr(node,'unknownAttributes') and
             "annotate" in node.unknownAttributes and
-            type(node.unknownAttributes["annotate"]) == type({})):
-
+            isinstance(node.unknownAttributes["annotate"], dict)
+        ):
             isDefault = True
             for ky, vl in node.unknownAttributes["annotate"].items():
 
