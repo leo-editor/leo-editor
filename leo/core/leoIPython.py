@@ -52,6 +52,13 @@ class InternalIPKernel(object):
     Called from LeoQtGui.runWithIpythonKernel()
     '''
     #@+others
+    #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
+    def cleanup_consoles(self, event=None):
+        for c in self.consoles:
+            c.kill()
+    #@+node:ekr.20130930062914.15997: *3* count
+    def count(self, event=None):
+        self.namespace['app_counter'] += 1
     #@+node:ekr.20130930062914.15994: *3* ctor
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
@@ -80,18 +87,47 @@ class InternalIPKernel(object):
             self.namespace['app_counter'] = 0
             # Example: a variable that will be seen by the user in the shell, and
             # that the GUI modifies (the 'Counter++' button increments it)
-    #@+node:ekr.20160308090432.1: *3* put_error_log & put_log
-    def put_error_log(self, s, raw=False):
-        '''Put an error message s to the IPython kernel log.'''
-        if not raw:
-            s = 'leoIpython.py: %s' % s
-        if self.kernelApp:
-            self.kernelApp.log.warning(s)
-        else:
-            print(s)
-                
+    #@+node:ekr.20130930062914.15996: *3* new_qt_console (to do: ensure connection)
+    def new_qt_console(self, event=None):
+        '''Start a new qtconsole connected to our kernel.'''
+        trace = False or g.app.debug
+            # For now, always trace when using Python 2.
+        ipk = g.app.ipk
+        console = None
+        if ipk:
+            if not ipk.namespace.get('_leo'):
+                ipk.namespace['_leo'] = LeoNameSpace()
+            try:
+                if trace and not g.isPython3:
+                    self.put_log('new_qt_console: connecting...')
+                console = connect_qtconsole(
+                    self.kernelApp.connection_file,
+                    profile=self.kernelApp.profile)
+                if console:
+                    self.consoles.append(console)
+                else:
+                    self.put_log('new_qt_console: no console!')
+            except OSError as e:
+                # Print statements do not work here.
+                self.put_warning('new_qt_console: failed to connect to console')
+                self.put_warning(e, raw=True)
+            except Exception as e:
+                self.put_warning('new_qt_console: unexpected exception')
+                self.put_warning(e)
+        return console
+    #@+node:ekr.20130930062914.15995: *3* print_namespace
+    def print_namespace(self, event=None):
+        print("\n***Variables in User namespace***")
+        for k, v in self.namespace.iteritems():
+            if k not in self._init_keys and not k.startswith('_'):
+                print('%s -> %r' % (k, v))
+        sys.stdout.flush()
+    #@+node:ekr.20160308090432.1: *3* put_log
     def put_log(self, s, raw=False):
-        '''Put s to the IPython kernel log.'''
+        '''
+        Put a message to the IPython kernel log.
+        This will be seen only if Leo's --debug option is in effect.
+        '''
         if g.app.debug:
             if not raw:
                 s = 'leoIpython.py: %s' % s
@@ -99,6 +135,18 @@ class InternalIPKernel(object):
                 self.kernelApp.log.info(s)
             else:
                 print(s)
+    #@+node:ekr.20160308101536.1: *3* put_warning
+    def put_warning(self, s, raw=False):
+        '''
+        Put an warning message to the IPython kernel log.
+        This will be seen, regardless of Leo's --debug option.
+        '''
+        if not raw:
+            s = 'leoIpython.py: %s' % s
+        if self.kernelApp:
+            self.kernelApp.log.warning(s)
+        else:
+            print(s)
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
@@ -123,48 +171,6 @@ class InternalIPKernel(object):
         else:
             g.trace('IPKernelApp.instance failed!')
         return kernelApp
-    #@+node:ekr.20130930062914.15995: *3* print_namespace
-    def print_namespace(self, event=None):
-        print("\n***Variables in User namespace***")
-        for k, v in self.namespace.iteritems():
-            if k not in self._init_keys and not k.startswith('_'):
-                print('%s -> %r' % (k, v))
-        sys.stdout.flush()
-    #@+node:ekr.20130930062914.15996: *3* new_qt_console (to do: ensure connection)
-    def new_qt_console(self, event=None):
-        '''Start a new qtconsole connected to our kernel.'''
-        trace = False or g.app.debug
-            # For now, always trace when using Python 2.
-        ipk = g.app.ipk
-        console = None
-        if ipk:
-            if not ipk.namespace.get('_leo'):
-                ipk.namespace['_leo'] = LeoNameSpace()
-            try:
-                if trace and not g.isPython3:
-                    self.put_log('new_qt_console: connecting...')
-                console = connect_qtconsole(
-                    self.kernelApp.connection_file,
-                    profile=self.kernelApp.profile)
-                if console:
-                    self.consoles.append(console)
-                else:
-                    self.put_log('new_qt_console: no console!')
-            except OSError as e:
-                # Print statements do not work here.
-                self.put_error_log('new_qt_console: failed to connect to console')
-                self.put_error_log(e, raw=True)
-            except Exception as e:
-                self.put_error_log('new_qt_console: unexpected exception')
-                self.put_error_log(e)
-        return console
-    #@+node:ekr.20130930062914.15997: *3* count
-    def count(self, event=None):
-        self.namespace['app_counter'] += 1
-    #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
-    def cleanup_consoles(self, event=None):
-        for c in self.consoles:
-            c.kill()
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
