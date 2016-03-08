@@ -28,10 +28,10 @@ import_trace = True and not g.unitTesting
 
 def import_fail(s):
     if import_trace:
-        print('leoIpython.py: can not import %s' % s)
+        print('===== leoIpython.py: can not import %s' % s)
 
 try:
-    from IPython.lib.kernel import connect_qtconsole
+    from ipykernel.connect import connect_qtconsole
 except ImportError:
     connect_qtconsole = None
     import_fail('connect_qtconsole')
@@ -56,29 +56,49 @@ class InternalIPKernel(object):
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
         # g.trace('(InternalIPKernel)', g.callers())
-        # Start IPython kernel with GUI event loop and pylab support
-        self.ipkernel = self.pylab_kernel(backend)
-        # To create and track active qt consoles
+        # Part 1: create the ivars.
         self.consoles = []
-        # This application will also act on the shell user namespace
-        self.namespace = self.ipkernel.shell.user_ns
-        # Keys present at startup so we don't print the entire pylab/numpy
-        # namespace when the user clicks the 'namespace' button
+            # List of Qt consoles.
+        self.kernelApp = None
+            # The IPKernelApp instance, a subclass of
+            # BaseIPythonApplication, InteractiveShellApp, ConnectionFileMixin
+        self.namespace = None
+            # Inited below.
+        self._init_keys = None
+            # Keys present at startup so we don't print the entire pylab/numpy
+            # namespace when the user clicks the 'namespace' button
+        # Part 2: Init the kernel and init the ivars.
+        kernelApp = self.pylab_kernel(backend)
+        assert kernelApp == self.kernelApp
+            # Sets self.kernelApp.
+            # Start IPython kernel with GUI event loop and pylab support
+        self.namespace = kernelApp.shell.user_ns
+            # Import the shell namespace.
         self._init_keys = set(self.namespace.keys())
-        # Example: a variable that will be seen by the user in the shell, and
-        # that the GUI modifies (the 'Counter++' button increments it):
-        self.namespace['app_counter'] = 0
-        #self.namespace['ipkernel'] = self.ipkernel  # dbg
+        if g.app.debug:
+            self.namespace['kernelApp'] = kernelApp
+            self.namespace['app_counter'] = 0
+            # Example: a variable that will be seen by the user in the shell, and
+            # that the GUI modifies (the 'Counter++' button increments it)
+    #@+node:ekr.20160308090432.1: *3* put_log
+    def put_log(self, s, raw=False):
+        '''Put s to the IPython kernel log.'''
+        if g.app.debug:
+            if not raw:
+                s = 'leoIpython.py: %s' % s
+            if self.kernelApp:
+                self.kernelApp.log.info(s)
+            else:
+                print(s)
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
         trace = False
             # Forces Leo's --debug option.
-        tag = 'leoIPython.py:pylab_kernel'
-        kernel = IPKernelApp.instance()
+        self.kernelApp = kernelApp = IPKernelApp.instance()
             # IPKernalApp is a singleton class.
             # Return the singleton instance, creating it if necessary.
-        if kernel:
+        if kernelApp:
             # pylab is needed for Qt event loop integration.
             args = ['python', '--pylab=%s' % (gui)]
             if trace or g.app.debug: args.append('--debug')
@@ -86,21 +106,14 @@ class InternalIPKernel(object):
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
             try:
-                kernel.initialize(args)
-                # kernel objects: (Leo --ipython arg)
-                    # kernel.session: zmq.session.Session
-                    # kernel.shell: ZMQInteractiveShell
-                    # kernel.shell.comm_manager: comm.manager.CommManager.
-                    # kernel.shell.event = events.EventManager
-                    # kernel.shell.run_cell (method)
-                    # kernel.shell.hooks
+                kernelApp.initialize(args)
             except Exception:
                 sys.stdout = sys.__stdout__
-                print('%s: kernel.initialize failed!' % tag)
+                print('kernelApp.initialize failed!')
                 raise
         else:
-            print('%s IPKernelApp.instance failed' % (tag))
-        return kernel
+            g.trace('IPKernelApp.instance failed!')
+        return kernelApp
     #@+node:ekr.20130930062914.15995: *3* print_namespace
     def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
@@ -108,23 +121,33 @@ class InternalIPKernel(object):
             if k not in self._init_keys and not k.startswith('_'):
                 print('%s -> %r' % (k, v))
         sys.stdout.flush()
-    #@+node:ekr.20130930062914.15996: *3* new_qt_console
+    #@+node:ekr.20130930062914.15996: *3* new_qt_console (to do: ensure connection)
     def new_qt_console(self, event=None):
-        """start a new qtconsole connected to our kernel"""
+        '''Start a new qtconsole connected to our kernel.'''
+        trace = False or g.app.debug
+            # For now, always trace when using Python 2.
         ipk = g.app.ipk
         console = None
         if ipk:
-            if g.app.debug:
-                print('========== ipkernel.connection_file',
-                    self.ipkernel.connection_file)
             if not ipk.namespace.get('_leo'):
                 ipk.namespace['_leo'] = LeoNameSpace()
-            # from IPython.lib.kernel import connect_qtconsole
-            console = connect_qtconsole(
-                self.ipkernel.connection_file,
-                profile=self.ipkernel.profile)
-            if console:
-                self.consoles.append(console)
+            try:
+                if trace and not g.isPython3:
+                    self.put_log('new_qt_console: connecting...')
+                console = connect_qtconsole(
+                    self.kernelApp.connection_file,
+                    profile=self.kernelApp.profile)
+                if console:
+                    self.consoles.append(console)
+                else:
+                    self.put_log('new_qt_console: no console!')
+            except OSError as e:
+                # Print statements do not work here.
+                self.put_log('new_qt_console: failed to connect to console')
+                self.put_log(e, raw=True)
+            except Exception as e:
+                self.put_log('new_qt_console: unexpected exception')
+                self.put_log(e)
         return console
     #@+node:ekr.20130930062914.15997: *3* count
     def count(self, event=None):
