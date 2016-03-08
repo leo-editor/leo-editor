@@ -23,37 +23,57 @@ Leo commanders.
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 import sys
 import leo.core.leoGlobals as g
+# Switches...
 import_trace = False and not g.unitTesting
-# pylint: disable=no-name-in-module
+
+def ok(s):
+    if import_trace:
+        print('===== imported: %s' % s)
+
+def fail(s):
+    if import_trace:
+        print('===== import FAILED: %s' % s)
+    else:
+        print('===== leoIpython.py: can not import %s' % s)
+
+connect_qtconsole = None
+IPKernelApp = None
+
+if import_trace:
+    print('===== START leoIPython.py traces ====')
+
 try:
     from IPython.lib.kernel import connect_qtconsole
-    if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
+    ok('connect_qtconsole')
 except ImportError:
-    connect_qtconsole = None
-    print('leoIPython.py: can not import connect_qtconsole')
+    fail('connect_qtconsole')
+
 try:
-    # First, try the IPython 0.x import.
-    from IPython.zmq.ipkernel import IPKernelApp
-    if import_trace: print('ok: from IPython.zmq.ipkernel import IPKernelApp')
+    # https://github.com/ipython/ipykernel/tree/master/ipykernel
+    import ipykernel
+    from ipykernel import kernelapp
+    from ipykernel.kernelapp import IPKernelApp
+    ok('IPKernelApp')
 except ImportError:
-    # Next, try the IPython 1.x import.
-    try:
-        from IPython.kernel.zmq.kernelapp import IPKernelApp
-        if import_trace: print('ok: from IPython.kernel.zmq.ipkernel import IPKernelApp')
-    except ImportError:
-        IPKernelApp = None
-        print('leoIPython.py: can not import IPKernelApp')
+    fail('IPKernelApp')
+  
+if import_trace:
+    print('===== END leoIPython.py traces ====')
+    
 g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
 class InternalIPKernel(object):
+    '''
+    An interface class between Leo's core and IPython.
+    Called from LeoQtGui.runWithIpythonKernel()
+    '''
     #@+others
     #@+node:ekr.20130930062914.15994: *3* ctor
-    # Was init_ipkernel
-
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
+        # g.trace('(InternalIPKernel)', g.callers())
         # Start IPython kernel with GUI event loop and pylab support
         self.ipkernel = self.pylab_kernel(backend)
         # To create and track active qt consoles
@@ -70,8 +90,8 @@ class InternalIPKernel(object):
     #@+node:ekr.20130930062914.15992: *3* pylab_kernel
     def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
-        log_debug = False
-            # Produces a verbose IPython message log.
+        trace = False
+            # Forces Leo's --debug option.
         tag = 'leoIPython.py:pylab_kernel'
         kernel = IPKernelApp.instance()
             # IPKernalApp is a singleton class.
@@ -79,11 +99,11 @@ class InternalIPKernel(object):
         if kernel:
             # pylab is needed for Qt event loop integration.
             args = ['python', '--pylab=%s' % (gui)]
-            if log_debug: args.append('--debug')
+            if trace or g.app.debug: args.append('--debug')
+                # Produces a verbose IPython log.
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
             try:
-                # g.pdb()
                 kernel.initialize(args)
                 # kernel objects: (Leo --ipython arg)
                     # kernel.session: zmq.session.Session
@@ -112,6 +132,7 @@ class InternalIPKernel(object):
         ipk = g.app.ipk
         console = None
         if ipk:
+            print('========== ipkernel.connection_file', self.ipkernel.connection_file)
             if not ipk.namespace.get('_leo'):
                 ipk.namespace['_leo'] = LeoNameSpace()
             # from IPython.lib.kernel import connect_qtconsole
