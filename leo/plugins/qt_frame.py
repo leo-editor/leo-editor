@@ -1347,6 +1347,9 @@ class LeoQtBody(leoFrame.LeoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
         if trace: g.trace('(qtBody)', self.widget)
+    #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
+    def getName(self):
+        return 'body-widget'
     #@+node:ekr.20140901062324.18562: *5* LeoQtBody.set_config
     def set_config(self):
         '''Set configuration ivars.'''
@@ -1356,6 +1359,15 @@ class LeoQtBody(leoFrame.LeoBody):
             'unselected_body_bg_color')
         self.unselectedForegroundColor = c.config.getColor(
             'unselected_body_fg_color')
+    #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
+    def set_invisibles(self, c):
+        '''Set the show-invisibles bit in the document.'''
+        # g.trace(c.shortFileName())
+        d = c.frame.body.wrapper.widget.document()
+        option = QtGui.QTextOption()
+        if c.frame.body.colorizer.showInvisibles:
+            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+        d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget
     def set_widget(self):
         '''Set the actual gui widget.'''
@@ -1378,13 +1390,11 @@ class LeoQtBody(leoFrame.LeoBody):
             self.colorizer = leoColorizer.LeoQtColorizer(c, self.wrapper.widget)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
-        if self.useScintilla: return
+        '''Set **only** the wrap bits in the body.'''
+        if not p or self.useScintilla:
+            return
         c = self.c
-        d = c.frame.body.wrapper.widget.document()
         w = c.frame.body.wrapper.widget
-        if p is None: p = c.p
-        if not p: return
-        assert isinstance(d, QtGui.QTextDocument), d
         option, qt = QtGui.QTextOption, QtCore.Qt
         if force:
             wrap = option.WrapAtWordBoundaryOrAnywhere
@@ -1393,15 +1403,8 @@ class LeoQtBody(leoFrame.LeoBody):
             w.setHorizontalScrollBarPolicy(
                 qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
             wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
-        # Set the show-invisibles and wrap bits. This is tricky.
-        option = QtGui.QTextOption()
-        if c.frame.body.colorizer.showInvisibles:
-            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
-        option.setWrapMode(wrap)
-        d.setDefaultTextOption(option)
-    #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
-    def getName(self):
-        return 'body-widget'
+                # was option WordWrap
+        w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.addEditor & helper

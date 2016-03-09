@@ -68,7 +68,7 @@ class PythonQSyntaxHighlighter:
             # g.trace('*****',g.callers())
             cursor = QtGui.QTextCursor(self.d)
             self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-    #@+node:ekr.20140825132752.18568: *4* pqsh.rehighlightBlock & helper
+    #@+node:ekr.20140825132752.18568: *4* pqsh.rehighlightBlock (not used)
     def rehighlightBlock(self, block):
         '''Reapplies the highlighting to the given QTextBlock block.'''
         d = self.d
@@ -86,7 +86,6 @@ class PythonQSyntaxHighlighter:
         self.inReformatBlocks = True
         try:
             c = self.c
-            c.frame.body.setWrap()
             cursor.beginEditBlock()
             from_ = cursor.position()
             cursor.movePosition(operation)

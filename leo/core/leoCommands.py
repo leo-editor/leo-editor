@@ -1786,7 +1786,7 @@ class Commands(object):
         c.showInvisiblesHelper(val)
 
     def showInvisiblesHelper(self, val):
-        c = self; frame = c.frame; p = c.p
+        c, frame = self, self.frame
         colorizer = frame.body.getColorizer()
         colorizer.showInvisibles = val
         colorizer.highlighter.showInvisibles = val
@@ -1797,7 +1797,12 @@ class Commands(object):
         if index is None:
             if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
             else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
-        c.frame.body.recolor(p)
+        # 2016/03/09: Set the status bits here.
+        # May fix #240: body won't scroll to end of text
+        # https://github.com/leo-editor/leo-editor/issues/240
+        if hasattr(frame.body, 'set_invisibles'):
+            frame.body.set_invisibles(c)
+        c.frame.body.recolor(c.p)
     #@+node:ekr.20070115135502: *5* c.writeScriptFile
     def writeScriptFile(self, script):
         trace = False and not g.unitTesting

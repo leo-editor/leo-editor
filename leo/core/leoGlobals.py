@@ -24,8 +24,6 @@ trace_startup = False
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
 new_find = True
-# if new_find:
-    # print('\n***** new_find')
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:
