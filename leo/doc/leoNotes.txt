@@ -19891,5 +19891,43 @@ def connection_path(self, fn):
         s = '/run/user/1000/jupyter'
     return g.os_path_finalize_join(s, fn)
 
+.. @+node:ekr.20160309075302.1: *3* LeoQtBody.setWrap (copy, with both kinds of code)
+def setWrap(self, p=None, force=False):
+    if self.useScintilla:
+        return
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    if 1: # original code: it only sets the wrap bits
+        if not p: return
+        option, qt = QtGui.QTextOption, QtCore.Qt
+        if force:
+            wrap = option.WrapAtWordBoundaryOrAnywhere
+        else:
+            wrap = g.scanAllAtWrapDirectives(c, p)
+            w.setHorizontalScrollBarPolicy(
+                qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
+            wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
+                # was option WordWrap
+        w.setWordWrapMode(wrap)
+    else:
+        if p is None: p = c.p
+        if not p: # Can happen during startup.
+            return
+        d = c.frame.body.wrapper.widget.document()
+        assert isinstance(d, QtGui.QTextDocument), d
+        option, qt = QtGui.QTextOption, QtCore.Qt
+        if force:
+            wrap = option.WrapAtWordBoundaryOrAnywhere
+        else:
+            wrap = g.scanAllAtWrapDirectives(c, p)
+            w.setHorizontalScrollBarPolicy(
+                qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
+            wrap = option.WrapAtWordBoundaryOrAnywhere if wrap else option.NoWrap
+        # Set the show-invisibles and wrap bits. This is tricky.
+        option = QtGui.QTextOption()
+        if c.frame.body.colorizer.showInvisibles:
+            option.setFlags(QtGui.QTextOption.ShowTabsAndSpaces)
+        option.setWrapMode(wrap)
+        d.setDefaultTextOption(option)
 .. @-all
 .. @-leo
