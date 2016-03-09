@@ -171,7 +171,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1242,7 +1242,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160304081437.1"><vh>** To do</vh>
 <v t="ekr.20160304081512.1"><vh>** Code academy</vh>
 <v t="ekr.20160304081512.2"><vh>Task oriented docs</vh></v>
 <v t="ekr.20160304081512.3"><vh>First post: topics</vh></v>
@@ -1252,7 +1251,9 @@
 <v t="ekr.20160304081512.7"><vh>Code Academy: find by predicate or attribute</vh></v>
 <v t="ekr.20160304081512.8"><vh>Code Academy: find by predicate or attribute</vh></v>
 </v>
+<v t="ekr.20160309092304.1"><vh>** Add to tips/faq/testimonials</vh>
 <v t="ekr.20160304081437.2"><vh>A note to new users</vh></v>
+<v t="ekr.20160309092522.1"><vh>Document stupendous Aha</vh></v>
 <v t="ekr.20160304081437.3"><vh>FAQ: Leo Dark on Linux</vh></v>
 <v t="ekr.20160304081437.4"><vh>FAQ: Leo in virtualenv</vh></v>
 <v t="ekr.20160304081437.5"><vh>Tip: My git work flow</vh></v>
@@ -1263,7 +1264,6 @@
 </v>
 </v>
 <v t="ekr.20160305040503.1"><vh>5.2 Documentation</vh>
-<v t="ekr.20160305040809.1"><vh>** document declutter nodes</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs: fixed &amp; investigated</vh>
 <v t="ekr.20160305040503.3"><vh>Fixed #131: Insert time in headline now inserts time in body</vh></v>
 <v t="ekr.20160305040503.4"><vh>Fixed #136: Viewrendered2 chokes on displaying @html nodes</vh></v>
@@ -1285,7 +1285,13 @@
 <v t="ekr.20160305040503.20"><vh>checkin log 5</vh></v>
 </v>
 <v t="ekr.20160305040503.21"><vh>Fixed #211: Saving untitled document on window close not working on Qt GUI</vh></v>
+<v t="ekr.20160309092610.7"><vh>Fixed #213: leo --ipython fails to connect with python3.5 and jupyter</vh></v>
 <v t="ekr.20160305040503.22"><vh>Fixed #215: insert-file-name doesn't process ~</vh></v>
+<v t="ekr.20160309092610.3"><vh>Fixed #217: vim plugin does not work as described</vh>
+<v t="ekr.20160309092610.4"><vh>Report</vh></v>
+<v t="ekr.20160309092610.5"><vh>#165: vim-open-file command</vh></v>
+<v t="ekr.20160309092610.6"><vh>#206: each node content is same when open with gvim or gedit</vh></v>
+</v>
 <v t="ekr.20160305040503.23"><vh>Fixed #218: Select Text and Clipboard</vh></v>
 <v t="ekr.20160305040503.24"><vh>Fixed #220: @spot bug</vh></v>
 <v t="ekr.20160305040503.25"><vh>Fixed #224: TypeError: unorderable types...</vh></v>
@@ -1312,6 +1318,7 @@
 <v t="ekr.20160305040503.43"><vh>Investigated #153: Leo acts on some operator input when the Leo window is NOT the top window</vh></v>
 <v t="ekr.20160305040503.44"><vh>Investigated #188: Find/Replace All Suboutline only same as Node only</vh></v>
 <v t="ekr.20160305040503.45"><vh>Investigated #188: Find/Replace All Suboutline only same as Node only</vh></v>
+<v t="ekr.20160309092610.2"><vh>Investigated #232: print-plugins-info fails</vh></v>
 <v t="ekr.20160305040503.46"><vh>Recover from orphan bit in leoPyBad.leo</vh></v>
 </v>
 <v t="ekr.20160305040503.47"><vh>Code</vh>
@@ -1350,6 +1357,7 @@
 <v t="ekr.20160305040503.74"><vh>@wrap now honored immediately</vh></v>
 </v>
 <v t="ekr.20160305040503.75"><vh>Features: new</vh>
+<v t="ekr.20160305040809.1"><vh>** document declutter nodes</vh></v>
 <v t="ekr.20160305040503.76"><vh>Abbreviations now support auto-close quotes</vh></v>
 <v t="ekr.20160305040503.77"><vh>Added new Themes machinery</vh></v>
 <v t="ekr.20160305040503.78"><vh>Added syntax coloring for coffeescript</vh></v>
@@ -18681,9 +18689,6 @@ For Windows 10, do the following (it may be a bit different for Windows 8):
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.1">- Add Code Academy section to Cheat Sheet.
-- Document stupendous Aha
-</t>
 <t tx="ekr.20160304081437.2">John Lunzer, August 30, 2015
 https://groups.google.com/d/msg/leo-editor/WupMUqlclaQ/dtAjRiytFgAJ
 
@@ -18970,7 +18975,7 @@ Coding without Leo is not not really fun any more. I recently finished a c++ soc
 
 Anyway, thanks for the great perspective on Leo.
 </t>
-<t tx="ekr.20160304081512.1"></t>
+<t tx="ekr.20160304081512.1">- Add Code Academy section to Cheat Sheet.</t>
 <t tx="ekr.20160304081512.2">Leo's tutorial, reference and cheat sheet have been thinly disguised encyclopedias. Very dry.  Soporific.
 
 Contrast this with the Code Academy.  The "lectures" deal with solving real problems. Shorter code, more useful. Exciting, maybe.
@@ -19296,7 +19301,8 @@ So here is how to gather only those marked nodes that lie outside any @ignore tr
 <t tx="ekr.20160305040503.1">@language rest
 @wrap
 
-The previous version of Leo, 5.1 final, was released March 20, 2015.</t>
+The previous version of Leo, 5.1 final, was released March 20, 2015.
+</t>
 <t tx="ekr.20160305040503.10">https://github.com/leo-editor/leo-editor/issues/193
 
 The fix was in GoToLineNumber.go: it must test for p.isAtCleanNode()
@@ -20485,7 +20491,60 @@ Defaults are as shown above.
 </t>
 <t tx="ekr.20160305072334.1">All kill commands except the kill-paragraph and backward-kill-paragraph commands cuts selected *text* if it exists.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160309092304.1"></t>
+<t tx="ekr.20160309092522.1"></t>
+<t tx="ekr.20160309092610.2">https://github.com/leo-editor/leo-editor/issues/232
+
+Appears invalid: only happens on 5.1 final.
+
+Traceback (most recent call last):
+File "c:\leo.repo\leo-editor\leo\core\leoCommands.py", line 5120, in doCommand
+File "c:\leo.repo\leo-editor\leo\core\leoGlobals.py", line 1335, in wrapper
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2773, in fullyExpandLogPane
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2548, in divideLeoSplitter
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2557, in divideLeoSplitter2
+File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 2563, in divideAnySplitter
+RuntimeError: wrapped C/C++ object of type NestedSplitter has been deleted
+</t>
+<t tx="ekr.20160309092610.3">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/217
+
+Git history of vim.py
+https://github.com/leo-editor/leo-editor/commits/8ec4e29f6b0ade0cf6da1d7ddf45314dfcdb3855/leo/plugins/vim.py
+
+</t>
+<t tx="ekr.20160309092610.4">Using Leo 5.1-final, build 20151028094354 under Linux, gvim 7.4.769
+
+&gt; Leo will update the node in the outline when you save the file in VIM.
+
+*** File is not updated, nor when Vim is closed. Must be refreshed in Leo.
+</t>
+<t tx="ekr.20160309092610.5">#165: vim-open-file command (closed April 30, 2015)
+https://github.com/leo-editor/leo-editor/issues/165
+
+Dubious work was done in April, 2015 (for #165) ?
+https://github.com/leo-editor/leo-editor/commit/74ad2b857890bac7bbcafd1ef9f6ec405a03da42
+</t>
+<t tx="ekr.20160309092610.6"># 206: each node content is same when open with gvim or gedit (closed Aug. 21, 2015)
+https://github.com/leo-editor/leo-editor/issues/206
+
+Terry: the reported bug was that "open in &lt;external editor&gt;" on non-file node A and then non-file node B showed A's body in both external files. I fixed that. I did not test writing / editing / re-loading the text. And also only evaluating the wrong body behavior just described, it was working before 74ad2b8, generating a traceback from 74ad2b8 to c2465dd, and thereafter doing the wrong body thing I just fixed. So maybe OP will report problems with the editing / re-loading phases now.
+</t>
+<t tx="ekr.20160309092610.7">https://github.com/leo-editor/leo-editor/issues/213
+
+The fix was so simple: just use default arguments to connect_qtconsole.
+
+The preliminaries were at least as important as the fix itself:
+
+1. Modernized the imports, removing support for legacy imports. Imo, it would be unwise to support ancient code now.
+
+2. Added logging methods. This makes it possible to understand and debug the code in leoIPython.py. Furthermore...
+
+3. Leo's --debug option enables more verbose IPython logging. This is a feature that reveals the workings of the Jupyter kernel.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
