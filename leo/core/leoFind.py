@@ -774,6 +774,13 @@ class LeoFind:
     @cmd('find-clone-all')
     @cmd('cfa')
     def minibufferCloneFindAll(self, event=None, preloaded=None):
+        '''
+        clone-find-all, aka find-clone-all and cfa.
+        
+        Create an organizer node whose descendants contain clones of all nodes
+        matching the search string. The list is *not* flattened: clones appear
+        only once in the descendants of the organizer node.
+        '''
         c = self.c; k = self.k; tag = 'clone-find-all'
         state = k.getState(tag)
         if state == 0:
@@ -794,6 +801,14 @@ class LeoFind:
     @cmd('find-clone-all-flattened')
     @cmd('cff')
     def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
+        '''
+        clone-find-all-flattened, aka find-clone-all-flattened, cff.
+        
+        Create an organizer node whose direct children are clones of all nodes
+        matching the search string. The list is flattened: every cloned node
+        appears as a direct child of the organizer node, even if the clone also
+        is a descendant of another cloned node.
+        '''
         c = self.c; k = self.k; tag = 'clone-find-all-flattened'
         state = k.getState(tag)
         if state == 0:
@@ -812,13 +827,16 @@ class LeoFind:
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     @cmd('find-all')
     def minibufferFindAll(self, event=None):
-        '''handle the find-all command.'''
+        '''
+        Create a summary node containing descriptions of all matches of the
+        search string.
+        '''
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, findAllFlag=True)
     #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll
     @cmd('replace-all')
     def minibufferReplaceAll(self, event=None):
-        '''Handle the change-all command.'''
+        '''Replace all instances of the search string with the replacement string.'''
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, changeAllFlag=True)
     #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils

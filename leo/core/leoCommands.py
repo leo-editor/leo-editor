@@ -585,13 +585,26 @@ class Commands(object):
     @cmd('clone-find-all-marked')
     @cmd('cfam')
     def cloneFindAllMarked(self, event=None):
-        '''The clone-find-all-marked command.'''
+        '''
+        clone-find-all-marked, aka cfam.
+
+        Create an organizer node whose descendants contain clones of all marked
+        nodes. The list is *not* flattened: clones appear only once in the
+        descendants of the organizer node.
+        '''
         self.cloneFindMarkedHelper(flatten=False)
 
     @cmd('clone-find-all-flattened-marked')
     @cmd('cffm')
     def cloneFindAllFlattenedMarked(self, event=None):
-        '''The clone-find-all-flattened-marked command.'''
+        '''
+        clone-find-all-flattened-marked, aka cffm.
+        
+        Create an organizer node whose direct children are clones of all marked
+        nodes. The list is flattened: every cloned node appears as a direct
+        child of the organizer node, even if the clone also is a descendant of
+        another cloned node.
+        '''
         self.cloneFindMarkedHelper(flatten=True)
 
     def cloneFindMarkedHelper(self, flatten):
@@ -610,7 +623,10 @@ class Commands(object):
     #@+node:ekr.20140828080010.18532: *3* c.cloneFindParents
     @cmd('clone-find-parents')
     def cloneFindParents(self, event=None):
-        '''Create a "Found: parents of p.h for all parents of p or c.p.'''
+        '''
+        Create an organizer node whose direct children are clones of all
+        parents of the selected node, which must be a clone.
+        '''
         c, u = self, self.undoer
         p = c.p
         if not p: return
