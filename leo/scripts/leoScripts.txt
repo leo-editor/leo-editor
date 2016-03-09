@@ -1933,6 +1933,4719 @@ try:
 finally:
     print('closing ZODB')
     db.close()
+#@+node:ekr.20160308173429.1: ** Docstrings
+#@+node:ekr.20120525155800.10870: *3* Print all docstrings from a module (obsolete)
+import leo.core.leoTest as leoTest
+import types
+
+def isClass(obj):
+    if g.isPython3:
+        return isinstance(obj,type)
+    else:
+        return type(obj) == types.ClassType
+
+specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
+
+def printDoc(x,s):
+    if hasattr(x,"__doc__") and x.__doc__:
+        g.pr("%4d %s" % (len(x.__doc__),s))
+    else:
+        g.pr("%4s %s" % (' ',s))
+
+g.pr('-' * 60)
+g.pr("%4d %s" % (len(leoTest.__doc__),"leoTest"))
+
+if 1:
+    for s in leoTest.__dict__:
+        if s not in specialDictNames:
+            x = getattr(leoTest,s)
+            if type(x) != types.ModuleType:
+                printDoc(x,s)
+                # if type(x) == types.ClassType:
+                if isClass(x):
+                    for s2 in x.__dict__:
+                        x2 = getattr(x,s2)
+                        if s2 not in specialDictNames:
+                            g.pr(' '*4,)
+                            printDoc(x2,s2)
+else:
+    << print names sorted by type >>
+#@+node:ekr.20120525155800.10871: *4* << print names sorted by type >>
+for theType,typeName in (
+    (types.ModuleType,"modules"),
+    (types.ClassType,"classes"),
+    (types.FunctionType,"functions"),
+):
+
+    g.pr("\n%s..." % typeName)
+    for s in leoTest.__dict__:
+
+        if s not in specialDictNames:
+            x = getattr(leoTest,s)
+            if type(x) == theType:
+                printDoc(x,s)
+                if theType == types.ClassType:
+                    g.pr("\tmethods...")
+                    for s2 in x.__dict__:
+                        x2 = getattr(x,s2)
+                        if s2 not in specialDictNames:
+                            g.pr("\t",newline=False)
+                            printDoc(x2,s2)
+#@+node:ekr.20120529083658.11108: *3* Print commands & docstrings
+'''print a summary, sorted by class, of commands & their docstrings.'''
+g.cls()
+full = True
+    # True: print entire docstring. False: print summary.
+d = c.commandsDict
+    # Keys are command names; values are functions
+
+# Group commands by class.
+groups = {}
+for command in sorted(d.keys()):
+    f = d.get(command)
+    key = f.__self__.__class__.__name__ if hasattr(f,'__self__') else f.__name__
+    aList = groups.get(key,[])
+    aList.append((command,f),)
+    groups[key] = aList
+
+# Print groups.
+if full:
+    root = p.insertAsLastChild()
+    root.h = 'Docstrings'
+for group in sorted(groups.keys()):
+    if full:
+        parent = root.insertAsLastChild()
+        parent.h = group
+    else:
+        print('GROUP %s...' % (group))
+    aList = groups.get(group)
+    for command,f in sorted(aList):
+        fname = f.__name__ or ''
+        doc = f.__doc__ or ''
+        if full:
+            lines = g.splitLines(doc)
+            if len(lines) == 1:
+                s = "'''%s'''" % doc
+            else:
+                s = ''.join([z.lstrip() for z in g.splitLines(doc)])
+                s = s.rstrip() + '\n'
+                s = "'''\n%s'''" % s
+            s = '%s\n%s' % (fname,s)
+            child = parent.insertAsLastChild()
+            child.h = command
+            child.b = s
+        else:
+            print('%40s:%4s %s' % (command,len(doc),fname))
+if full:
+    c.redraw()
+print('%s commands' % (len(list(d.keys()))))
+#@+node:ekr.20160308173710.1: *4* Docstrings
+#@+node:ekr.20160308173710.2: *5* NoneType
+#@+node:ekr.20160308173710.3: *6* @button-jedit2py
+AtButtonCallback: ekr.20060824111500.108
+'''Convert jEdit language description file to an equivalent .py file.'''
+#@+node:ekr.20160308173710.4: *5* ScriptingController
+#@+node:ekr.20160308173710.5: *6* script-button
+addScriptButtonCommand
+'''Called when the user presses the 'script-button' button or executes the script-button command.'''
+#@+node:ekr.20160308173710.6: *5* atCommandCallback
+#@+node:ekr.20160308173710.7: *6* @command-do-after
+atCommandCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.8: *6* @command-do-before
+atCommandCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.9: *6* @command-make-test
+atCommandCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.10: *5* at_file_to_at_auto_command
+#@+node:ekr.20160308173710.11: *6* at-file-to-at-auto
+at_file_to_at_auto_command
+'''
+
+'''
+#@+node:ekr.20160308173710.12: *5* beautifyCCode
+#@+node:ekr.20160308173710.13: *6* beautify-c
+beautifyCCode
+'''Beautify all C code in the selected tree.'''
+#@+node:ekr.20160308173710.14: *6* pretty-print-c
+beautifyCCode
+'''Beautify all C code in the selected tree.'''
+#@+node:ekr.20160308173710.15: *5* beautifyPythonTree
+#@+node:ekr.20160308173710.16: *6* beautify-tree
+beautifyPythonTree
+'''Beautify the Python code in the selected outline.'''
+#@+node:ekr.20160308173710.17: *6* pretty-print-tree
+beautifyPythonTree
+'''Beautify the Python code in the selected outline.'''
+#@+node:ekr.20160308173710.18: *5* close_others
+#@+node:ekr.20160308173710.19: *6* close-others
+close_others
+'''Close all windows except the present window.'''
+#@+node:ekr.20160308173710.20: *5* cls
+#@+node:ekr.20160308173710.21: *6* cls
+cls
+'''Clear the screen.'''
+#@+node:ekr.20160308173710.22: *5* cm_external_editor_f
+#@+node:ekr.20160308173710.23: *6* cm-external-editor
+cm_external_editor_f
+'''
+Open node in external editor
+Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
+'''
+#@+node:ekr.20160308173710.24: *5* cmd_CloseEditor
+#@+node:ekr.20160308173710.25: *6* cke-text-close
+cmd_CloseEditor
+'''Close the rich text editor, unhide the regular editor.'''
+#@+node:ekr.20160308173710.26: *5* cmd_OpenEditor
+#@+node:ekr.20160308173710.27: *6* cke-text-open
+cmd_OpenEditor
+'''Open the rich text editor, hide the regular editor.'''
+#@+node:ekr.20160308173710.28: *5* cmd_SwitchEditor
+#@+node:ekr.20160308173710.29: *6* cke-text-switch
+cmd_SwitchEditor
+'''Switch between regular and rich text editor.'''
+#@+node:ekr.20160308173710.30: *5* cmd_ToggleAutosave
+#@+node:ekr.20160308173710.31: *6* cke-text-toggle-autosave
+cmd_ToggleAutosave
+'''
+Toggle autosaving of changes when you leave a node.
+Be careful not to convert plain text (e.g. source code) to rich
+text unintentionally.  As long as you make no edits, the original
+text will not be changed.
+'''
+#@+node:ekr.20160308173710.32: *5* cmd_bookmark
+#@+node:ekr.20160308173710.33: *6* bookmarks-bookmark
+cmd_bookmark
+'''bookmark current node'''
+#@+node:ekr.20160308173710.34: *5* cmd_bookmark_child
+#@+node:ekr.20160308173710.35: *6* bookmarks-bookmark-child
+cmd_bookmark_child
+'''bookmark current node as child of current bookmark'''
+#@+node:ekr.20160308173710.36: *5* cmd_level_decrease
+#@+node:ekr.20160308173710.37: *6* bookmarks-level-decrease
+cmd_level_decrease
+'''decrease levels, number of rows shown, for bookmarks'''
+#@+node:ekr.20160308173710.38: *5* cmd_level_increase
+#@+node:ekr.20160308173710.39: *6* bookmarks-level-increase
+cmd_level_increase
+'''increase levels, number of rows shown, for bookmarks'''
+#@+node:ekr.20160308173710.40: *5* cmd_mark_as_target
+#@+node:ekr.20160308173710.41: *6* bookmarks-mark-as-target
+cmd_mark_as_target
+'''
+Mark current node as Bookmarks list for use by another file,
+bookmarks-use-other-outline should be used after this command
+'''
+#@+node:ekr.20160308173710.42: *5* cmd_open_bookmark
+#@+node:ekr.20160308173710.43: *6* bookmarks-open-bookmark
+cmd_open_bookmark
+'''
+
+'''
+#@+node:ekr.20160308173710.44: *5* cmd_open_node
+#@+node:ekr.20160308173710.45: *6* bookmarks-open-node
+cmd_open_node
+'''
+
+'''
+#@+node:ekr.20160308173710.46: *5* cmd_show
+#@+node:ekr.20160308173710.47: *6* bookmarks-show
+cmd_show
+'''
+
+'''
+#@+node:ekr.20160308173710.48: *5* cmd_switch
+#@+node:ekr.20160308173710.49: *6* bookmarks-switch
+cmd_switch
+'''switch between bookmarks and previous position in outline'''
+#@+node:ekr.20160308173710.50: *5* cmd_use_other_outline
+#@+node:ekr.20160308173710.51: *6* bookmarks-use-other-outline
+cmd_use_other_outline
+'''
+Set bookmarks for this outline from a list (node) in
+a different outline
+'''
+#@+node:ekr.20160308173710.52: *5* commonCommandCallback
+#@+node:ekr.20160308173710.53: *6* @command-align-eq-signs
+commonCommandCallback
+'''
+@command (myLeoSettings.leo) Find the rightmost equal sign,
+and align all equal signs to that.
+'''
+#@+node:ekr.20160308173710.54: *6* @command-c-to-python-clean-docs
+commonCommandCallback
+'''@command (myLeoSettings.leo) Clean up after running the c-to-python command.'''
+#@+node:ekr.20160308173710.55: *6* @command-clean-all-blank-lines
+commonCommandCallback
+'''@command (myLeoSettings.leo) Clean all blank lines in the entire outline.'''
+#@+node:ekr.20160308173710.56: *6* @command-clean-body
+commonCommandCallback
+'''@command (myLeoSettings.leo) Remove cruft from all body text.'''
+#@+node:ekr.20160308173710.57: *6* @command-clean-diff
+commonCommandCallback
+'''
+@command (myLeoSettings.leo) Strip comments and context lines from a diff
+so real changes can be seen more easily.
+'''
+#@+node:ekr.20160308173710.58: *6* @command-clean-spellpyx
+commonCommandCallback
+'''@command (myLeoSettings.leo) Use only '\n' as the line ending in spellpyx.txt.'''
+#@+node:ekr.20160308173710.59: *6* @command-count-pages
+commonCommandCallback
+'''@command (myLeoSettings.leo) Count pages in this .leo file.'''
+#@+node:ekr.20160308173710.60: *6* @command-create-def-list
+commonCommandCallback
+'''@command (myLeoSettings.leo) Converts text selection to def list.'''
+#@+node:ekr.20160308173710.61: *6* @command-flatten-script
+commonCommandCallback
+'''
+@command (myLeoSettings.leo)
+Convert a script to a string as if written with @nosent.
+Writes the script to a node called "flattened p.h".
+'''
+#@+node:ekr.20160308173710.62: *6* @command-join-node-above
+commonCommandCallback
+'''@command (myLeoSettings.leo) Append p.b to p.back().b. and delete node p.'''
+#@+node:ekr.20160308173710.63: *6* @command-join-node-below
+commonCommandCallback
+'''@command (myLeoSettings.leo) Prepend p.b to p.next().b. and delete node p.'''
+#@+node:ekr.20160308173710.64: *6* @command-join-selection-to-node-below
+commonCommandCallback
+'''@command (myLeoSettings.leo) Prepend selected text to p.next().b.'''
+#@+node:ekr.20160308173710.65: *6* @command-print-cmd-docstrings
+commonCommandCallback
+'''@command (myLeoSettings.leo) Print all commands that lack a docstring.'''
+#@+node:ekr.20160308173710.66: *6* @command-promote-bodies
+commonCommandCallback
+'''
+@command (myLeoSettings) Copy the body text of all descendants to the
+parent's body text.
+'''
+#@+node:ekr.20160308173710.67: *6* @command-remove-newlines
+commonCommandCallback
+'''@command (myLeoSettings.leo) Remove extra newlines from the selected node.'''
+#@+node:ekr.20160308173710.68: *6* @command-split-defs
+commonCommandCallback
+'''@command (myLeoSettings.leo) Split p.b into nodes for each *top-level* def.'''
+#@+node:ekr.20160308173710.69: *5* context_menu_open
+#@+node:ekr.20160308173710.70: *6* context-menu-open
+context_menu_open
+'''Provide a command for key binding to open the context menu'''
+#@+node:ekr.20160308173710.71: *5* contract_rendering_pane
+#@+node:ekr.20160308173710.72: *6* vr-contract
+contract_rendering_pane
+'''Contract the rendering pane.'''
+#@+node:ekr.20160308173710.73: *5* ctrlClickAtCursor
+#@+node:ekr.20160308173710.74: *6* ctrl-click-at-cursor
+ctrlClickAtCursor
+'''Simulate a control-click at the cursor.'''
+#@+node:ekr.20160308173710.75: *5* deleteButtonCallback
+#@+node:ekr.20160308173710.76: *6* delete-@button-jedit2py-button
+deleteButtonCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.77: *6* delete-script-button-button
+deleteButtonCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.78: *5* detach_editor_toggle
+#@+node:ekr.20160308173710.79: *6* detach-editor-toggle
+detach_editor_toggle
+''' Detach or undetach body editor '''
+#@+node:ekr.20160308173710.80: *5* detach_editor_toggle_max
+#@+node:ekr.20160308173710.81: *6* detach-editor-toggle-max
+detach_editor_toggle_max
+''' Detach editor, maximize '''
+#@+node:ekr.20160308173710.82: *5* disable_idle_time_events
+#@+node:ekr.20160308173710.83: *6* disable-idle-time-events
+disable_idle_time_events
+'''Disable default idle-time event handling.'''
+#@+node:ekr.20160308173710.84: *5* doall
+#@+node:ekr.20160308173710.85: *6* gui-all-hide
+doall
+'''
+
+'''
+#@+node:ekr.20160308173710.86: *6* gui-all-show
+doall
+'''
+
+'''
+#@+node:ekr.20160308173710.87: *6* gui-all-toggle
+doall
+'''
+
+'''
+#@+node:ekr.20160308173710.88: *5* dovis
+#@+node:ekr.20160308173710.89: *6* gui-iconbar-hide
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.90: *6* gui-iconbar-show
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.91: *6* gui-iconbar-toggle
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.92: *6* gui-menu-hide
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.93: *6* gui-menu-show
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.94: *6* gui-menu-toggle
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.95: *6* gui-minibuffer-hide
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.96: *6* gui-minibuffer-show
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.97: *6* gui-minibuffer-toggle
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.98: *6* gui-statusbar-hide
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.99: *6* gui-statusbar-show
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.100: *6* gui-statusbar-toggle
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.101: *6* gui-tabbar-hide
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.102: *6* gui-tabbar-show
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.103: *6* gui-tabbar-toggle
+dovis
+'''
+
+'''
+#@+node:ekr.20160308173710.104: *5* enable_idle_time_events
+#@+node:ekr.20160308173710.105: *6* enable-idle-time-events
+enable_idle_time_events
+'''Enable default idle-time event handling.'''
+#@+node:ekr.20160308173710.106: *5* enterModeCallback
+#@+node:ekr.20160308173710.107: *6* enter-quick-command-mode
+enterModeCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.108: *5* expand_rendering_pane
+#@+node:ekr.20160308173710.109: *6* vr-expand
+expand_rendering_pane
+'''Expand the rendering pane.'''
+#@+node:ekr.20160308173710.110: *5* f
+#@+node:ekr.20160308173710.111: *6* settings-find-at-button-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.112: *6* settings-find-big-text-warning-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.113: *6* settings-find-body-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.114: *6* settings-find-body-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.115: *6* settings-find-body-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.116: *6* settings-find-body-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.117: *6* settings-find-body-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.118: *6* settings-find-body-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.119: *6* settings-find-body-sel-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.120: *6* settings-find-body-sel-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.121: *6* settings-find-bookmarks_base_border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.122: *6* settings-find-bookmarks_base_color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.123: *6* settings-find-bookmarks_base_decoration
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.124: *6* settings-find-bookmarks_base_family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.125: *6* settings-find-bookmarks_base_margin
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.126: *6* settings-find-bookmarks_base_padding
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.127: *6* settings-find-bookmarks_base_size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.128: *6* settings-find-bookmarks_base_style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.129: *6* settings-find-bookmarks_base_weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.130: *6* settings-find-bookmarks_children_color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.131: *6* settings-find-bookmarks_children_decoration
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.132: *6* settings-find-bookmarks_children_family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.133: *6* settings-find-bookmarks_children_size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.134: *6* settings-find-bookmarks_children_style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.135: *6* settings-find-bookmarks_children_weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.136: *6* settings-find-bookmarks_current_color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.137: *6* settings-find-bookmarks_current_decoration
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.138: *6* settings-find-bookmarks_current_size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.139: *6* settings-find-bookmarks_current_style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.140: *6* settings-find-bookmarks_current_weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.141: *6* settings-find-bookmarks_expanded_color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.142: *6* settings-find-bookmarks_expanded_decoration
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.143: *6* settings-find-bookmarks_expanded_size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.144: *6* settings-find-bookmarks_expanded_style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.145: *6* settings-find-bookmarks_expanded_weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.146: *6* settings-find-bookmarks_font_size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.147: *6* settings-find-checkbox-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.148: *6* settings-find-checkbox-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.149: *6* settings-find-debug-script-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.150: *6* settings-find-dialog-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.151: *6* settings-find-dialog-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.152: *6* settings-find-dialog-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.153: *6* settings-find-dialog-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.154: *6* settings-find-dialog-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.155: *6* settings-find-dialog-margin
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.156: *6* settings-find-edit-label-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.157: *6* settings-find-edit-label-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.158: *6* settings-find-edit-label-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.159: *6* settings-find-edit-label-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.160: *6* settings-find-edit-label-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.161: *6* settings-find-edit-label-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.162: *6* settings-find-edit-label-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.163: *6* settings-find-edit-label-margin
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.164: *6* settings-find-find-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.165: *6* settings-find-find-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.166: *6* settings-find-find-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.167: *6* settings-find-find-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.168: *6* settings-find-find-found-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.169: *6* settings-find-find-found-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.170: *6* settings-find-find-not-found-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.171: *6* settings-find-find-not-found-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.172: *6* settings-find-find-pattern-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.173: *6* settings-find-find-tab-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.174: *6* settings-find-focused-border-focus-color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.175: *6* settings-find-focused-border-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.176: *6* settings-find-focused-border-unfocus-color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.177: *6* settings-find-focused-border-width
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.178: *6* settings-find-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.179: *6* settings-find-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.180: *6* settings-find-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.181: *6* settings-find-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.182: *6* settings-find-frame-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.183: *6* settings-find-generic-button-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.184: *6* settings-find-gutter-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.185: *6* settings-find-gutter-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.186: *6* settings-find-gutter-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.187: *6* settings-find-gutter-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.188: *6* settings-find-gutter-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.189: *6* settings-find-gutter-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.190: *6* settings-find-gutter-w-adjust
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.191: *6* settings-find-gutter-y-adjust
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.192: *6* settings-find-head-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.193: *6* settings-find-head-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.194: *6* settings-find-head-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.195: *6* settings-find-head-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.196: *6* settings-find-head-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.197: *6* settings-find-head-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.198: *6* settings-find-head-sel-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.199: *6* settings-find-head-sel-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.200: *6* settings-find-interact-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.201: *6* settings-find-log-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.202: *6* settings-find-log-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.203: *6* settings-find-log-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.204: *6* settings-find-log-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.205: *6* settings-find-log-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.206: *6* settings-find-log-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.207: *6* settings-find-log-sel-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.208: *6* settings-find-log-sel-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.209: *6* settings-find-medium-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.210: *6* settings-find-minibuffer-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.211: *6* settings-find-minibuffer-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.212: *6* settings-find-minibuffer-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.213: *6* settings-find-minibuffer-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.214: *6* settings-find-minibuffer-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.215: *6* settings-find-minibuffer-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.216: *6* settings-find-minibuffer-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.217: *6* settings-find-minibuffer-margin
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.218: *6* settings-find-minibuffer-sel-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.219: *6* settings-find-minibuffer-sel-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.220: *6* settings-find-quick-move-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.221: *6* settings-find-render-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.222: *6* settings-find-render-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.223: *6* settings-find-run-script-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.224: *6* settings-find-screencast-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.225: *6* settings-find-screencast-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.226: *6* settings-find-screencast-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.227: *6* settings-find-screencast-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.228: *6* settings-find-screencast-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.229: *6* settings-find-script-button-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.230: *6* settings-find-script-button-button-btn-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.231: *6* settings-find-scroll-area-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.232: *6* settings-find-small-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.233: *6* settings-find-splitter-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.234: *6* settings-find-splitter-border-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.235: *6* settings-find-splitter-border-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.236: *6* settings-find-splitter-handle-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.237: *6* settings-find-stacked-widget-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.238: *6* settings-find-stacked-widget-border-color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.239: *6* settings-find-stacked-widget-padding
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.240: *6* settings-find-status-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.241: *6* settings-find-status-border-color
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.242: *6* settings-find-status-border-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.243: *6* settings-find-status-border-width
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.244: *6* settings-find-status-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.245: *6* settings-find-status-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.246: *6* settings-find-status-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.247: *6* settings-find-status-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.248: *6* settings-find-status-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.249: *6* settings-find-tabbed-widget-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.250: *6* settings-find-text-foreground
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.251: *6* settings-find-text-foreground-body
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.252: *6* settings-find-text-foreground-log
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.253: *6* settings-find-text-foreground-tree
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.254: *6* settings-find-tree-bg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.255: *6* settings-find-tree-fg
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.256: *6* settings-find-tree-font-family
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.257: *6* settings-find-tree-font-size
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.258: *6* settings-find-tree-font-style
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.259: *6* settings-find-tree-font-weight
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.260: *6* settings-find-tree-icon-separation
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.261: *6* settings-find-tree-image-closed
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.262: *6* settings-find-tree-image-open
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.263: *6* settings-find-use-gutter
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.264: *6* settings-find-vim-mode-insert-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.265: *6* settings-find-vim-mode-normal-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.266: *6* settings-find-vim-mode-visual-border
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.267: *6* todo-children-todo
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.268: *6* todo-find-todo
+f
+'''
+
+'''
+#@+node:ekr.20160308173710.269: *5* find_popout_f
+#@+node:ekr.20160308173710.270: *6* go-anywhere
+find_popout_f
+'''
+
+'''
+#@+node:ekr.20160308173710.271: *5* find_selected
+#@+node:ekr.20160308173710.272: *6* find-quick-selected
+find_selected
+'''
+
+'''
+#@+node:ekr.20160308173710.273: *5* focus_quicksearch_entry
+#@+node:ekr.20160308173710.274: *6* find-quick
+focus_quicksearch_entry
+'''
+
+'''
+#@+node:ekr.20160308173710.275: *5* focus_to_nav
+#@+node:ekr.20160308173710.276: *6* focus-to-nav
+focus_to_nav
+'''
+
+'''
+#@+node:ekr.20160308173710.277: *5* free_layout_context_menu
+#@+node:ekr.20160308173710.278: *6* free-layout-context-menu
+free_layout_context_menu
+'''
+free_layout_context_menu - open free layout's context menu, using
+the first divider of the top splitter for context, for now.
+'''
+#@+node:ekr.20160308173710.279: *5* free_layout_load
+#@+node:ekr.20160308173710.280: *6* free-layout-load
+free_layout_load
+'''
+free_layout_load - load layout from menu
+'''
+#@+node:ekr.20160308173710.281: *5* free_layout_restore
+#@+node:ekr.20160308173710.282: *6* free-layout-restore
+free_layout_restore
+'''
+free_layout_restore - restore layout outline had when it was loaded
+'''
+#@+node:ekr.20160308173710.283: *5* free_layout_zoom
+#@+node:ekr.20160308173710.284: *6* free-layout-zoom
+free_layout_zoom
+'''
+free_layout_zoom - (un)zoom the current pane.
+'''
+#@+node:ekr.20160308173710.285: *5* global_search_f
+#@+node:ekr.20160308173710.286: *6* global-search
+global_search_f
+'''
+Do global search.
+To restore the original appearance of the window, type help.
+The per-commander @int fts_max_hits setting controls the maximum hits returned.
+'''
+#@+node:ekr.20160308173710.287: *5* headToPrevNode
+#@+node:ekr.20160308173710.288: *6* head-to-prev-node
+headToPrevNode
+'''Move the code following a def to end of previous node.'''
+#@+node:ekr.20160308173710.289: *5* hide_rendering_pane
+#@+node:ekr.20160308173710.290: *6* vr-hide
+hide_rendering_pane
+'''Close the rendering pane.'''
+#@+node:ekr.20160308173710.291: *5* import_zim_command
+#@+node:ekr.20160308173710.292: *6* import-zim-folder
+import_zim_command
+'''
+Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+This command requires the following Leo settings::
+@int rst_level = 0
+@string rst_type
+@string zim_node_name
+@string path_to_zim
+'''
+#@+node:ekr.20160308173710.293: *5* join_leo_irc
+#@+node:ekr.20160308173710.294: *6* join-leo-irc
+join_leo_irc
+'''Open the web page to Leo's irc channel on freenode.net.'''
+#@+node:ekr.20160308173710.295: *5* lock_rendering_pane
+#@+node:ekr.20160308173710.296: *6* vr-lock
+lock_rendering_pane
+'''Lock rendereing pane.'''
+#@+node:ekr.20160308173710.297: *5* menuShortcutPlaceHolder
+#@+node:ekr.20160308173710.298: *6* menu-shortcut
+menuShortcutPlaceHolder
+'''
+This will never be called.
+A placeholder for the print-bindings command.
+'''
+#@+node:ekr.20160308173710.299: *5* nodehistory
+#@+node:ekr.20160308173710.300: *6* history
+nodehistory
+'''
+
+'''
+#@+node:ekr.20160308173710.301: *5* openUrl
+#@+node:ekr.20160308173710.302: *6* open-url
+openUrl
+'''
+Open the url in the headline or body text of the selected node.
+Use the headline if it contains a valid url.
+Otherwise, look *only* at the first line of the body.
+'''
+#@+node:ekr.20160308173710.303: *5* openUrlUnderCursor
+#@+node:ekr.20160308173710.304: *6* open-url-under-cursor
+openUrlUnderCursor
+'''Open the url under the cursor.'''
+#@+node:ekr.20160308173710.305: *5* openWithCallback
+#@+node:ekr.20160308173710.306: *6* open-with-idle
+openWithCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.307: *6* open-with-open office
+openWithCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.308: *6* open-with-scite
+openWithCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.309: *5* open_in_emacs_command
+#@+node:ekr.20160308173710.310: *6* emacs-open-node
+open_in_emacs_command
+'''
+Open current node in (x)emacs
+Provied by xemacs.py plugin
+'''
+#@+node:ekr.20160308173710.311: *5* parse_body_command
+#@+node:ekr.20160308173710.312: *6* parse-body
+parse_body_command
+'''The parse-body command.'''
+#@+node:ekr.20160308173710.313: *5* pause_play_movie
+#@+node:ekr.20160308173710.314: *6* vr-pause-play-movie
+pause_play_movie
+'''Pause or play a movie in the rendering pane.'''
+#@+node:ekr.20160308173710.315: *5* prettyPrintPythonNode
+#@+node:ekr.20160308173710.316: *6* beautify-node
+prettyPrintPythonNode
+'''Beautify a single Python node.'''
+#@+node:ekr.20160308173710.317: *6* pretty-print-node
+prettyPrintPythonNode
+'''Beautify a single Python node.'''
+#@+node:ekr.20160308173710.318: *5* preview
+#@+node:ekr.20160308173710.319: *6* preview
+preview
+'''A synonym for the vr-toggle command.'''
+#@+node:ekr.20160308173710.320: *5* print_style_sheet
+#@+node:ekr.20160308173710.321: *6* print-style-sheet
+print_style_sheet
+'''print-style-sheet command.'''
+#@+node:ekr.20160308173710.322: *5* pylint_command
+#@+node:ekr.20160308173710.323: *6* pylint
+pylint_command
+'''
+Run pylint on all nodes of the selected tree,
+or the first @<file> node in an ancestor.
+'''
+#@+node:ekr.20160308173710.324: *5* registerAllCommandsCallback
+#@+node:ekr.20160308173710.325: *6* align-eq-signs
+registerAllCommandsCallback
+'''
+@command (myLeoSettings.leo) Find the rightmost equal sign,
+and align all equal signs to that.
+'''
+#@+node:ekr.20160308173710.326: *6* c-to-python-clean-docs
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Clean up after running the c-to-python command.'''
+#@+node:ekr.20160308173710.327: *6* clean-all-blank-lines
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Clean all blank lines in the entire outline.'''
+#@+node:ekr.20160308173710.328: *6* clean-body
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Remove cruft from all body text.'''
+#@+node:ekr.20160308173710.329: *6* clean-diff
+registerAllCommandsCallback
+'''
+@command (myLeoSettings.leo) Strip comments and context lines from a diff
+so real changes can be seen more easily.
+'''
+#@+node:ekr.20160308173710.330: *6* clean-spellpyx
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Use only '\n' as the line ending in spellpyx.txt.'''
+#@+node:ekr.20160308173710.331: *6* count-pages
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Count pages in this .leo file.'''
+#@+node:ekr.20160308173710.332: *6* create-def-list
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Converts text selection to def list.'''
+#@+node:ekr.20160308173710.333: *6* do-after
+registerAllCommandsCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.334: *6* do-before
+registerAllCommandsCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.335: *6* flatten-script
+registerAllCommandsCallback
+'''
+@command (myLeoSettings.leo)
+Convert a script to a string as if written with @nosent.
+Writes the script to a node called "flattened p.h".
+'''
+#@+node:ekr.20160308173710.336: *6* jedit2py
+registerAllCommandsCallback
+'''Convert jEdit language description file to an equivalent .py file.'''
+#@+node:ekr.20160308173710.337: *6* join-node-above
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Append p.b to p.back().b. and delete node p.'''
+#@+node:ekr.20160308173710.338: *6* join-node-below
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Prepend p.b to p.next().b. and delete node p.'''
+#@+node:ekr.20160308173710.339: *6* join-selection-to-node-below
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Prepend selected text to p.next().b.'''
+#@+node:ekr.20160308173710.340: *6* make-test
+registerAllCommandsCallback
+'''
+
+'''
+#@+node:ekr.20160308173710.341: *6* print-cmd-docstrings
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Print all commands that lack a docstring.'''
+#@+node:ekr.20160308173710.342: *6* promote-bodies
+registerAllCommandsCallback
+'''
+@command (myLeoSettings) Copy the body text of all descendants to the
+parent's body text.
+'''
+#@+node:ekr.20160308173710.343: *6* remove-newlines
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Remove extra newlines from the selected node.'''
+#@+node:ekr.20160308173710.344: *6* split-defs
+registerAllCommandsCallback
+'''@command (myLeoSettings.leo) Split p.b into nodes for each *top-level* def.'''
+#@+node:ekr.20160308173710.345: *5* session_clear_command
+#@+node:ekr.20160308173710.346: *6* session-clear
+session_clear_command
+'''Close all tabs except the presently selected tab.'''
+#@+node:ekr.20160308173710.347: *5* session_create_command
+#@+node:ekr.20160308173710.348: *6* session-create
+session_create_command
+'''Create a new @session node.'''
+#@+node:ekr.20160308173710.349: *5* session_refresh_command
+#@+node:ekr.20160308173710.350: *6* session-refresh
+session_refresh_command
+'''Refresh the current @session node.'''
+#@+node:ekr.20160308173710.351: *5* session_restore_command
+#@+node:ekr.20160308173710.352: *6* session-restore
+session_restore_command
+'''Open a tab for each item in the @session node & select the indicated node in each.'''
+#@+node:ekr.20160308173710.353: *5* session_snapshot_load_command
+#@+node:ekr.20160308173710.354: *6* session-snapshot-load
+session_snapshot_load_command
+'''Load a snapshot of a session from the leo.session file.'''
+#@+node:ekr.20160308173710.355: *5* session_snapshot_save_command
+#@+node:ekr.20160308173710.356: *6* session-snapshot-save
+session_snapshot_save_command
+'''Save a snapshot of the present session to the leo.session file.'''
+#@+node:ekr.20160308173710.357: *5* settings_find_undefined
+#@+node:ekr.20160308173710.358: *6* settings-find-undefined
+settings_find_undefined
+'''
+
+'''
+#@+node:ekr.20160308173710.359: *5* show_dirty
+#@+node:ekr.20160308173710.360: *6* find-quick-changed
+show_dirty
+'''
+
+'''
+#@+node:ekr.20160308173710.361: *5* show_rendering_pane
+#@+node:ekr.20160308173710.362: *6* vr-show
+show_rendering_pane
+'''Show the rendering pane.'''
+#@+node:ekr.20160308173710.363: *5* show_unittest_failures
+#@+node:ekr.20160308173710.364: *6* find-quick-test-failures
+show_unittest_failures
+'''
+
+'''
+#@+node:ekr.20160308173710.365: *5* showmarks
+#@+node:ekr.20160308173710.366: *6* marked-list
+showmarks
+''' List marked nodes in nav tab '''
+#@+node:ekr.20160308173710.367: *5* style_reload
+#@+node:ekr.20160308173710.368: *6* style-reload
+style_reload
+'''
+reload-styles command.
+Find the appropriate style sheet and re-apply it.
+This replaces execution of the `stylesheet & source` node in settings files.
+'''
+#@+node:ekr.20160308173710.369: *5* style_set_selected
+#@+node:ekr.20160308173710.370: *6* style-set-selected
+style_set_selected
+'''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
+#@+node:ekr.20160308173710.371: *5* tab_cycle_next
+#@+node:ekr.20160308173710.372: *6* tab-cycle-next
+tab_cycle_next
+''' Cycle to next tab '''
+#@+node:ekr.20160308173710.373: *5* tab_cycle_previous
+#@+node:ekr.20160308173710.374: *6* tab-cycle-previous
+tab_cycle_previous
+''' Cycle to next tab '''
+#@+node:ekr.20160308173710.375: *5* tab_detach
+#@+node:ekr.20160308173710.376: *6* tab-detach
+tab_detach
+''' Detach current tab from tab bar '''
+#@+node:ekr.20160308173710.377: *5* tailToNextNode
+#@+node:ekr.20160308173710.378: *6* tail-to-next-node
+tailToNextNode
+'''Move the code following a def to end of previous node.'''
+#@+node:ekr.20160308173710.379: *5* timeline
+#@+node:ekr.20160308173710.380: *6* find-quick-timeline
+timeline
+'''
+
+'''
+#@+node:ekr.20160308173710.381: *5* todo_dec_pri
+#@+node:ekr.20160308173710.382: *6* todo-dec-pri
+todo_dec_pri
+'''
+
+'''
+#@+node:ekr.20160308173710.383: *5* todo_inc_pri
+#@+node:ekr.20160308173710.384: *6* todo-inc-pri
+todo_inc_pri
+'''
+
+'''
+#@+node:ekr.20160308173710.385: *5* toggle_idle_time_events
+#@+node:ekr.20160308173710.386: *6* toggle-idle-time-events
+toggle_idle_time_events
+'''Toggle default idle-time event handling.'''
+#@+node:ekr.20160308173710.387: *5* toggle_rendering_pane
+#@+node:ekr.20160308173710.388: *6* vr-toggle
+toggle_rendering_pane
+'''Toggle the rendering pane.'''
+#@+node:ekr.20160308173710.389: *5* unlock_rendering_pane
+#@+node:ekr.20160308173710.390: *6* vr-unlock
+unlock_rendering_pane
+'''Pause or play a movie in the rendering pane.'''
+#@+node:ekr.20160308173710.391: *5* update_rendering_pane
+#@+node:ekr.20160308173710.392: *6* vr-update
+update_rendering_pane
+'''Update the rendering pane'''
+#@+node:ekr.20160308173710.393: *5* view_pack_command
+#@+node:ekr.20160308173710.394: *6* clean-persistence
+view_pack_command
+'''
+
+'''
+#@+node:ekr.20160308173710.395: *5* viewrendered
+#@+node:ekr.20160308173710.396: *6* vr
+viewrendered
+'''Open render view for commander'''
+#@+node:ekr.20160308173710.397: *5* vim_open_file_command
+#@+node:ekr.20160308173710.398: *6* vim-open-file
+vim_open_file_command
+'''vim.py: Open the entire file in (g)vim.'''
+#@+node:ekr.20160308173710.399: *5* vim_open_node_command
+#@+node:ekr.20160308173710.400: *6* vim-open-node
+vim_open_node_command
+'''vim.py: open the selected node in (g)vim.'''
+#@+node:ekr.20160308173710.401: *5* vs_create_tree
+#@+node:ekr.20160308173710.402: *6* vs-create-tree
+vs_create_tree
+'''Create tree from all variables.'''
+#@+node:ekr.20160308173710.403: *5* vs_dump
+#@+node:ekr.20160308173710.404: *6* vs-dump
+vs_dump
+'''Dump the valuespace for this commander.'''
+#@+node:ekr.20160308173710.405: *5* vs_eval
+#@+node:ekr.20160308173710.406: *6* vs-eval
+vs_eval
+'''
+Execute the selected text, if any.  Select next line of text.
+Tries hard to capture the result of from the last expression in the
+selected text::
+import datetime
+today = datetime.date.today()
+will captue the value of ``today`` even though the last line is a
+statement, not an expression.
+Stores results in ``c.vs['_last']`` for insertion
+into body by ``vs-last`` or ``vs-last-pretty``.
+Removes common indentation (``textwrap.dedent()``) before executing,
+allowing execution of indented code.
+``g``, ``c``, and ``p`` are available to executing code, assignments
+are made in the ``c.vs`` namespace and persist for the life of ``c``.
+'''
+#@+node:ekr.20160308173710.407: *5* vs_last
+#@+node:ekr.20160308173710.408: *6* vs-last
+vs_last
+'''
+Insert the last result from ``vs-eval``.
+Inserted as a string, so ``"1
+2
+3
+4"`` will cover four lines and
+insert no quotes, for ``repr()`` style insertion use ``vs-last-pretty``.
+'''
+#@+node:ekr.20160308173710.409: *5* vs_last_pretty
+#@+node:ekr.20160308173710.410: *6* vs-last-pretty
+vs_last_pretty
+'''
+Insert the last result from ``vs-eval``.
+Formatted by ``pprint.pformat()``, so ``"1
+2
+3
+4"`` will appear as
+'``"1
+2
+3
+4"``', see all ``vs-last``.
+'''
+#@+node:ekr.20160308173710.411: *5* vs_reset
+#@+node:ekr.20160308173710.412: *6* vs-reset
+vs_reset
+'''
+
+'''
+#@+node:ekr.20160308173710.413: *5* vs_update
+#@+node:ekr.20160308173710.414: *6* vs-update
+vs_update
+'''
+
+'''
+#@+node:ekr.20160308173710.415: *5* wrapper: :!
+#@+node:ekr.20160308173710.416: *6* :!
+wrapper: :!
+'''Execute a shell command.'''
+#@+node:ekr.20160308173710.417: *5* wrapper: :%s
+#@+node:ekr.20160308173710.418: *6* :%s
+wrapper: :%s
+'''
+
+'''
+#@+node:ekr.20160308173710.419: *5* wrapper: :e
+#@+node:ekr.20160308173710.420: *6* :e
+wrapper: :e
+'''
+
+'''
+#@+node:ekr.20160308173710.421: *5* wrapper: :e!
+#@+node:ekr.20160308173710.422: *6* :e!
+wrapper: :e!
+'''Revert all changes to a .leo file, prompting if there have been changes.'''
+#@+node:ekr.20160308173710.423: *5* wrapper: :gT
+#@+node:ekr.20160308173710.424: *6* :gT
+wrapper: :gT
+'''Cycle all focus'''
+#@+node:ekr.20160308173710.425: *5* wrapper: :gt
+#@+node:ekr.20160308173710.426: *6* :gt
+wrapper: :gt
+'''Cycle focus'''
+#@+node:ekr.20160308173710.427: *5* wrapper: :print-dot
+#@+node:ekr.20160308173710.428: *6* :print-dot
+wrapper: :print-dot
+'''Print the dot.'''
+#@+node:ekr.20160308173710.429: *5* wrapper: :q
+#@+node:ekr.20160308173710.430: *6* :q
+wrapper: :q
+'''Quit the present Leo outline, prompting for saves.'''
+#@+node:ekr.20160308173710.431: *5* wrapper: :q!
+#@+node:ekr.20160308173710.432: *6* :q!
+wrapper: :q!
+'''Quit immediately.'''
+#@+node:ekr.20160308173710.433: *5* wrapper: :qa
+#@+node:ekr.20160308173710.434: *6* :qa
+wrapper: :qa
+'''Quit only if there are no unsaved changes.'''
+#@+node:ekr.20160308173710.435: *5* wrapper: :r
+#@+node:ekr.20160308173710.436: *6* :r
+wrapper: :r
+'''
+
+'''
+#@+node:ekr.20160308173710.437: *5* wrapper: :s
+#@+node:ekr.20160308173710.438: *6* :s
+wrapper: :s
+'''
+
+'''
+#@+node:ekr.20160308173710.439: *5* wrapper: :tabnew
+#@+node:ekr.20160308173710.440: *6* :tabnew
+wrapper: :tabnew
+'''
+
+'''
+#@+node:ekr.20160308173710.441: *5* wrapper: :toggle-vim-mode
+#@+node:ekr.20160308173710.442: *6* :toggle-vim-mode
+wrapper: :toggle-vim-mode
+'''toggle vim-mode.'''
+#@+node:ekr.20160308173710.443: *5* wrapper: :toggle-vim-trace
+#@+node:ekr.20160308173710.444: *6* :toggle-vim-trace
+wrapper: :toggle-vim-trace
+'''toggle vim tracing.'''
+#@+node:ekr.20160308173710.445: *5* wrapper: :toggle-vim-trainer-mode
+#@+node:ekr.20160308173710.446: *6* :toggle-vim-trainer-mode
+wrapper: :toggle-vim-trainer-mode
+'''toggle vim-trainer mode.'''
+#@+node:ekr.20160308173710.447: *5* wrapper: :w
+#@+node:ekr.20160308173710.448: *6* :w
+wrapper: :w
+'''Save the .leo file.'''
+#@+node:ekr.20160308173710.449: *5* wrapper: :wq
+#@+node:ekr.20160308173710.450: *6* :wq
+wrapper: :wq
+'''Save all open files and exit.'''
+#@+node:ekr.20160308173710.451: *5* wrapper: :xa
+#@+node:ekr.20160308173710.452: *6* :xa
+wrapper: :xa
+'''Save all open files and keep working.'''
+#@+node:ekr.20160308173710.453: *5* wrapper: abbrev-add-global
+#@+node:ekr.20160308173710.454: *6* abbrev-add-global
+wrapper: abbrev-add-global
+'''
+Add an abbreviation:
+The selected text is the abbreviation.
+The minibuffer prompts you for the name of the abbreviation.
+Also sets abbreviations on.
+'''
+#@+node:ekr.20160308173710.455: *5* wrapper: abbrev-inverse-add-global
+#@+node:ekr.20160308173710.456: *6* abbrev-inverse-add-global
+wrapper: abbrev-inverse-add-global
+'''
+Add an inverse abbreviation:
+The selected text is the abbreviation name.
+The minibuffer prompts you for the value of the abbreviation.
+'''
+#@+node:ekr.20160308173710.457: *5* wrapper: abbrev-kill-all
+#@+node:ekr.20160308173710.458: *6* abbrev-kill-all
+wrapper: abbrev-kill-all
+'''Delete all abbreviations.'''
+#@+node:ekr.20160308173710.459: *5* wrapper: abbrev-list
+#@+node:ekr.20160308173710.460: *6* abbrev-list
+wrapper: abbrev-list
+'''List all abbreviations.'''
+#@+node:ekr.20160308173710.461: *5* wrapper: abbrev-read
+#@+node:ekr.20160308173710.462: *6* abbrev-read
+wrapper: abbrev-read
+'''Read abbreviations from a file.'''
+#@+node:ekr.20160308173710.463: *5* wrapper: abbrev-write
+#@+node:ekr.20160308173710.464: *6* abbrev-write
+wrapper: abbrev-write
+'''Write abbreviations to a file.'''
+#@+node:ekr.20160308173710.465: *5* wrapper: abort-edit-headline
+#@+node:ekr.20160308173710.466: *6* abort-edit-headline
+wrapper: abort-edit-headline
+'''End editing of a headline and revert to its previous value.'''
+#@+node:ekr.20160308173710.467: *5* wrapper: about-leo
+#@+node:ekr.20160308173710.468: *6* about-leo
+wrapper: about-leo
+'''Bring up an About Leo Dialog.'''
+#@+node:ekr.20160308173710.469: *5* wrapper: act-on-node
+#@+node:ekr.20160308173710.470: *6* act-on-node
+wrapper: act-on-node
+'''
+Executes node-specific action, typically defined in a plugins as
+follows::
+import leo.core.leoPlugins
+def act_print_upcase(c,p,event):
+if not p.h.startswith('@up'):
+raise leo.core.leoPlugins.TryNext
+p.h = p.h.upper()
+g.act_on_node.add(act_print_upcase)
+This will upcase the headline when it starts with ``@up``.
+'''
+#@+node:ekr.20160308173710.471: *5* wrapper: activate-cmds-menu
+#@+node:ekr.20160308173710.472: *6* activate-cmds-menu
+wrapper: activate-cmds-menu
+'''Activate Leo's Cmnds menu.'''
+#@+node:ekr.20160308173710.473: *5* wrapper: activate-edit-menu
+#@+node:ekr.20160308173710.474: *6* activate-edit-menu
+wrapper: activate-edit-menu
+'''Activate Leo's Edit menu.'''
+#@+node:ekr.20160308173710.475: *5* wrapper: activate-file-menu
+#@+node:ekr.20160308173710.476: *6* activate-file-menu
+wrapper: activate-file-menu
+'''Activate Leo's File menu.'''
+#@+node:ekr.20160308173710.477: *5* wrapper: activate-help-menu
+#@+node:ekr.20160308173710.478: *6* activate-help-menu
+wrapper: activate-help-menu
+'''Activate Leo's Help menu.'''
+#@+node:ekr.20160308173710.479: *5* wrapper: activate-outline-menu
+#@+node:ekr.20160308173710.480: *6* activate-outline-menu
+wrapper: activate-outline-menu
+'''Activate Leo's Outline menu.'''
+#@+node:ekr.20160308173710.481: *5* wrapper: activate-plugins-menu
+#@+node:ekr.20160308173710.482: *6* activate-plugins-menu
+wrapper: activate-plugins-menu
+'''Activate Leo's Plugins menu.'''
+#@+node:ekr.20160308173710.483: *5* wrapper: activate-window-menu
+#@+node:ekr.20160308173710.484: *6* activate-window-menu
+wrapper: activate-window-menu
+'''Activate Leo's Window menu.'''
+#@+node:ekr.20160308173710.485: *5* wrapper: add-comments
+#@+node:ekr.20160308173710.486: *6* add-comments
+wrapper: add-comments
+'''
+Converts all selected lines to comment lines using
+the comment delimiters given by the applicable @language directive.
+Inserts single-line comments if possible; inserts
+block comments for languages like html that lack
+single-line comments.
+@bool indent_added_comments
+If True (the default), inserts opening comment
+delimiters just before the first non-whitespace
+character of each line. Otherwise, inserts opening
+comment delimiters at the start of each line.
+*See also*: delete-comments.
+'''
+#@+node:ekr.20160308173710.487: *5* wrapper: add-editor
+#@+node:ekr.20160308173710.488: *6* add-editor
+wrapper: add-editor
+'''Add another editor to the body pane.'''
+#@+node:ekr.20160308173710.489: *5* wrapper: add-space-to-lines
+#@+node:ekr.20160308173710.490: *6* add-space-to-lines
+wrapper: add-space-to-lines
+'''Add a space to start of all lines, or all selected lines.'''
+#@+node:ekr.20160308173710.491: *5* wrapper: add-tab-to-lines
+#@+node:ekr.20160308173710.492: *6* add-tab-to-lines
+wrapper: add-tab-to-lines
+'''Add a tab to start of all lines, or all selected lines.'''
+#@+node:ekr.20160308173710.493: *5* wrapper: advertised-undo
+#@+node:ekr.20160308173710.494: *6* advertised-undo
+wrapper: advertised-undo
+'''Undo the previous command.'''
+#@+node:ekr.20160308173710.495: *5* wrapper: auto-complete
+#@+node:ekr.20160308173710.496: *6* auto-complete
+wrapper: auto-complete
+'''An event handler for autocompletion.'''
+#@+node:ekr.20160308173710.497: *5* wrapper: auto-complete-force
+#@+node:ekr.20160308173710.498: *6* auto-complete-force
+wrapper: auto-complete-force
+'''Show autocompletion, even if autocompletion is not presently enabled.'''
+#@+node:ekr.20160308173710.499: *5* wrapper: back-char
+#@+node:ekr.20160308173710.500: *6* back-char
+wrapper: back-char
+'''Move the cursor back one character, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.501: *5* wrapper: back-char-extend-selection
+#@+node:ekr.20160308173710.502: *6* back-char-extend-selection
+wrapper: back-char-extend-selection
+'''Extend the selection by moving the cursor back one character.'''
+#@+node:ekr.20160308173710.503: *5* wrapper: back-page
+#@+node:ekr.20160308173710.504: *6* back-page
+wrapper: back-page
+'''
+Move the cursor back one page,
+extending the selection if in extend mode.
+'''
+#@+node:ekr.20160308173710.505: *5* wrapper: back-page-extend-selection
+#@+node:ekr.20160308173710.506: *6* back-page-extend-selection
+wrapper: back-page-extend-selection
+'''Extend the selection by moving the cursor back one page.'''
+#@+node:ekr.20160308173710.507: *5* wrapper: back-paragraph
+#@+node:ekr.20160308173710.508: *6* back-paragraph
+wrapper: back-paragraph
+'''Move the cursor to the previous paragraph.'''
+#@+node:ekr.20160308173710.509: *5* wrapper: back-paragraph-extend-selection
+#@+node:ekr.20160308173710.510: *6* back-paragraph-extend-selection
+wrapper: back-paragraph-extend-selection
+'''Extend the selection by moving the cursor to the previous paragraph.'''
+#@+node:ekr.20160308173710.511: *5* wrapper: back-sentence
+#@+node:ekr.20160308173710.512: *6* back-sentence
+wrapper: back-sentence
+'''Move the cursor to the previous sentence.'''
+#@+node:ekr.20160308173710.513: *5* wrapper: back-sentence-extend-selection
+#@+node:ekr.20160308173710.514: *6* back-sentence-extend-selection
+wrapper: back-sentence-extend-selection
+'''Extend the selection by moving the cursor to the previous sentence.'''
+#@+node:ekr.20160308173710.515: *5* wrapper: back-to-home
+#@+node:ekr.20160308173710.516: *6* back-to-home
+wrapper: back-to-home
+'''
+Smart home:
+Position the point at the first non-blank character on the line,
+or the start of the line if already there.
+'''
+#@+node:ekr.20160308173710.517: *5* wrapper: back-to-home-extend-selection
+#@+node:ekr.20160308173710.518: *6* back-to-home-extend-selection
+wrapper: back-to-home-extend-selection
+'''
+
+'''
+#@+node:ekr.20160308173710.519: *5* wrapper: back-to-indentation
+#@+node:ekr.20160308173710.520: *6* back-to-indentation
+wrapper: back-to-indentation
+'''Position the point at the first non-blank character on the line.'''
+#@+node:ekr.20160308173710.521: *5* wrapper: back-word
+#@+node:ekr.20160308173710.522: *6* back-word
+wrapper: back-word
+'''Move the cursor to the previous word.'''
+#@+node:ekr.20160308173710.523: *5* wrapper: back-word-extend-selection
+#@+node:ekr.20160308173710.524: *6* back-word-extend-selection
+wrapper: back-word-extend-selection
+'''Extend the selection by moving the cursor to the previous word.'''
+#@+node:ekr.20160308173710.525: *5* wrapper: back-word-smart
+#@+node:ekr.20160308173710.526: *6* back-word-smart
+wrapper: back-word-smart
+'''Move the cursor to the beginning of the current or the end of the previous word.'''
+#@+node:ekr.20160308173710.527: *5* wrapper: back-word-smart-extend-selection
+#@+node:ekr.20160308173710.528: *6* back-word-smart-extend-selection
+wrapper: back-word-smart-extend-selection
+'''
+Extend the selection by moving the cursor to the beginning of the current
+or the end of the previous word.
+'''
+#@+node:ekr.20160308173710.529: *5* wrapper: backward-delete-char
+#@+node:ekr.20160308173710.530: *6* backward-delete-char
+wrapper: backward-delete-char
+'''Delete the character to the left of the cursor.'''
+#@+node:ekr.20160308173710.531: *5* wrapper: backward-delete-word
+#@+node:ekr.20160308173710.532: *6* backward-delete-word
+wrapper: backward-delete-word
+'''Delete the word in front of the cursor.'''
+#@+node:ekr.20160308173710.533: *5* wrapper: backward-delete-word-smart
+#@+node:ekr.20160308173710.534: *6* backward-delete-word-smart
+wrapper: backward-delete-word-smart
+'''
+Delete the word in front of the cursor, treating whitespace
+and symbols smartly.
+'''
+#@+node:ekr.20160308173710.535: *5* wrapper: backward-find-character
+#@+node:ekr.20160308173710.536: *6* backward-find-character
+wrapper: backward-find-character
+'''Search backwards for a character.'''
+#@+node:ekr.20160308173710.537: *5* wrapper: backward-find-character-extend-selection
+#@+node:ekr.20160308173710.538: *6* backward-find-character-extend-selection
+wrapper: backward-find-character-extend-selection
+'''Search backward for a character, extending the selection.'''
+#@+node:ekr.20160308173710.539: *5* wrapper: backward-kill-paragraph
+#@+node:ekr.20160308173710.540: *6* backward-kill-paragraph
+wrapper: backward-kill-paragraph
+'''Kill the previous paragraph.'''
+#@+node:ekr.20160308173710.541: *5* wrapper: backward-kill-sentence
+#@+node:ekr.20160308173710.542: *6* backward-kill-sentence
+wrapper: backward-kill-sentence
+'''Kill the previous sentence.'''
+#@+node:ekr.20160308173710.543: *5* wrapper: backward-kill-word
+#@+node:ekr.20160308173710.544: *6* backward-kill-word
+wrapper: backward-kill-word
+'''Kill the previous word.'''
+#@+node:ekr.20160308173710.545: *5* wrapper: beginning-of-buffer
+#@+node:ekr.20160308173710.546: *6* beginning-of-buffer
+wrapper: beginning-of-buffer
+'''Move the cursor to the start of the body text.'''
+#@+node:ekr.20160308173710.547: *5* wrapper: beginning-of-buffer-extend-selection
+#@+node:ekr.20160308173710.548: *6* beginning-of-buffer-extend-selection
+wrapper: beginning-of-buffer-extend-selection
+'''Extend the text selection by moving the cursor to the start of the body text.'''
+#@+node:ekr.20160308173710.549: *5* wrapper: beginning-of-line
+#@+node:ekr.20160308173710.550: *6* beginning-of-line
+wrapper: beginning-of-line
+'''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.551: *5* wrapper: beginning-of-line-extend-selection
+#@+node:ekr.20160308173710.552: *6* beginning-of-line-extend-selection
+wrapper: beginning-of-line-extend-selection
+'''Extend the selection by moving the cursor to the start of the line.'''
+#@+node:ekr.20160308173710.553: *5* wrapper: buffer-append-to
+#@+node:ekr.20160308173710.554: *6* buffer-append-to
+wrapper: buffer-append-to
+'''Add the selected body text to the end of the body text of a named buffer (node).'''
+#@+node:ekr.20160308173710.555: *5* wrapper: buffer-kill
+#@+node:ekr.20160308173710.556: *6* buffer-kill
+wrapper: buffer-kill
+'''Delete a buffer (node) and all its descendants.'''
+#@+node:ekr.20160308173710.557: *5* wrapper: buffer-prepend-to
+#@+node:ekr.20160308173710.558: *6* buffer-prepend-to
+wrapper: buffer-prepend-to
+'''Add the selected body text to the start of the body text of a named buffer (node).'''
+#@+node:ekr.20160308173710.559: *5* wrapper: buffer-switch-to
+#@+node:ekr.20160308173710.560: *6* buffer-switch-to
+wrapper: buffer-switch-to
+'''Select a buffer (node) by its name (headline).'''
+#@+node:ekr.20160308173710.561: *5* wrapper: buffers-list
+#@+node:ekr.20160308173710.562: *6* buffers-list
+wrapper: buffers-list
+'''
+List all buffers (node headlines), in outline order. Nodes with the
+same headline are disambiguated by giving their parent or child index.
+'''
+#@+node:ekr.20160308173710.563: *5* wrapper: buffers-list-alphabetically
+#@+node:ekr.20160308173710.564: *6* buffers-list-alphabetically
+wrapper: buffers-list-alphabetically
+'''
+List all buffers (node headlines), in alphabetical order. Nodes with
+the same headline are disambiguated by giving their parent or child
+index.
+'''
+#@+node:ekr.20160308173710.565: *5* wrapper: c-to-python
+#@+node:ekr.20160308173710.566: *6* c-to-python
+wrapper: c-to-python
+'''
+The c-to-python command converts c or c++ text to python text.
+The conversion is not perfect, but it eliminates a lot of tedious
+text manipulation.
+'''
+#@+node:ekr.20160308173710.567: *5* wrapper: capitalize-word
+#@+node:ekr.20160308173710.568: *6* capitalize-word
+wrapper: capitalize-word
+'''Capitalize the word at the cursor.'''
+#@+node:ekr.20160308173710.569: *5* wrapper: cascade-windows
+#@+node:ekr.20160308173710.570: *6* cascade-windows
+wrapper: cascade-windows
+'''Cascade all Leo windows.'''
+#@+node:ekr.20160308173710.571: *5* wrapper: center-line
+#@+node:ekr.20160308173710.572: *6* center-line
+wrapper: center-line
+'''Centers line within current fill column'''
+#@+node:ekr.20160308173710.573: *5* wrapper: center-region
+#@+node:ekr.20160308173710.574: *6* center-region
+wrapper: center-region
+'''Centers the selected text within the fill column'''
+#@+node:ekr.20160308173710.575: *5* wrapper: cfa
+#@+node:ekr.20160308173710.576: *6* cfa
+wrapper: cfa
+'''
+
+'''
+#@+node:ekr.20160308173710.577: *5* wrapper: cfam
+#@+node:ekr.20160308173710.578: *6* cfam
+wrapper: cfam
+'''The clone-find-all-marked command.'''
+#@+node:ekr.20160308173710.579: *5* wrapper: cff
+#@+node:ekr.20160308173710.580: *6* cff
+wrapper: cff
+'''
+
+'''
+#@+node:ekr.20160308173710.581: *5* wrapper: cffm
+#@+node:ekr.20160308173710.582: *6* cffm
+wrapper: cffm
+'''The clone-find-all-flattened-marked command.'''
+#@+node:ekr.20160308173710.583: *5* wrapper: chapter-clone-node-to
+#@+node:ekr.20160308173710.584: *6* chapter-clone-node-to
+wrapper: chapter-clone-node-to
+'''
+Prompt for a chapter name,
+then clone the selected node to the chapter.
+'''
+#@+node:ekr.20160308173710.585: *5* wrapper: chapter-convert-node-to
+#@+node:ekr.20160308173710.586: *6* chapter-convert-node-to
+wrapper: chapter-convert-node-to
+'''
+convert-node-to-chapter command.
+Make the selected node into a new chapter, 'in place'.
+That is, create the new @chapter node as the next sibling of the node,
+then move the node as the first child of the new @chapter node.
+'''
+#@+node:ekr.20160308173710.587: *5* wrapper: chapter-copy-node-to
+#@+node:ekr.20160308173710.588: *6* chapter-copy-node-to
+wrapper: chapter-copy-node-to
+'''
+Prompt for a chapter name,
+then copy the selected node to the chapter.
+'''
+#@+node:ekr.20160308173710.589: *5* wrapper: chapter-create
+#@+node:ekr.20160308173710.590: *6* chapter-create
+wrapper: chapter-create
+'''
+create-chapter command.
+Create a chapter with a dummy first node.
+'''
+#@+node:ekr.20160308173710.591: *5* wrapper: chapter-create-from-node
+#@+node:ekr.20160308173710.592: *6* chapter-create-from-node
+wrapper: chapter-create-from-node
+'''
+create-chapter-from-node command.
+Create a chapter whose first node is a clone of the presently selected node.
+'''
+#@+node:ekr.20160308173710.593: *5* wrapper: chapter-move-node-to
+#@+node:ekr.20160308173710.594: *6* chapter-move-node-to
+wrapper: chapter-move-node-to
+'''
+Prompt for a chapter name,
+then move the selected node to the chapter.
+'''
+#@+node:ekr.20160308173710.595: *5* wrapper: chapter-remove
+#@+node:ekr.20160308173710.596: *6* chapter-remove
+wrapper: chapter-remove
+'''Prompt for the name of a chapter, then remove it.'''
+#@+node:ekr.20160308173710.597: *5* wrapper: chapter-rename
+#@+node:ekr.20160308173710.598: *6* chapter-rename
+wrapper: chapter-rename
+'''Use the minibuffer to get a new name for the present chapter.'''
+#@+node:ekr.20160308173710.599: *5* wrapper: chapter-select
+#@+node:ekr.20160308173710.600: *6* chapter-select
+wrapper: chapter-select
+'''
+Use the minibuffer to get a chapter name,
+then create the chapter.
+'''
+#@+node:ekr.20160308173710.601: *5* wrapper: check-derived-file
+#@+node:ekr.20160308173710.602: *6* check-derived-file
+wrapper: check-derived-file
+'''Make sure an external file written by Leo may be read properly.'''
+#@+node:ekr.20160308173710.603: *5* wrapper: check-leo-file
+#@+node:ekr.20160308173710.604: *6* check-leo-file
+wrapper: check-leo-file
+'''The check-leo-file command.'''
+#@+node:ekr.20160308173710.605: *5* wrapper: check-outline
+#@+node:ekr.20160308173710.606: *6* check-outline
+wrapper: check-outline
+'''
+Performs a full check of the consistency of a .leo file.
+As of Leo 5.1, Leo performs checks of gnx's and outline structure
+before writes and after reads, pastes and undo/redo.
+'''
+#@+node:ekr.20160308173710.607: *5* wrapper: clean-all-lines
+#@+node:ekr.20160308173710.608: *6* clean-all-lines
+wrapper: clean-all-lines
+'''Clean all lines in the selected tree.'''
+#@+node:ekr.20160308173710.609: *5* wrapper: clean-lines
+#@+node:ekr.20160308173710.610: *6* clean-lines
+wrapper: clean-lines
+'''
+Removes trailing whitespace from all lines, preserving newlines.
+'''
+#@+node:ekr.20160308173710.611: *5* wrapper: clean-recent-files
+#@+node:ekr.20160308173710.612: *6* clean-recent-files
+wrapper: clean-recent-files
+'''Remove items from the recent files list that are no longer valid.'''
+#@+node:ekr.20160308173710.613: *5* wrapper: clear-all-caches
+#@+node:ekr.20160308173710.614: *6* clear-all-caches
+wrapper: clear-all-caches
+'''Clear all of Leo's file caches.'''
+#@+node:ekr.20160308173710.615: *5* wrapper: clear-all-uas
+#@+node:ekr.20160308173710.616: *6* clear-all-uas
+wrapper: clear-all-uas
+'''Clear all uAs in the entire outline.'''
+#@+node:ekr.20160308173710.617: *5* wrapper: clear-cache
+#@+node:ekr.20160308173710.618: *6* clear-cache
+wrapper: clear-cache
+'''Clear the outline's file cache.'''
+#@+node:ekr.20160308173710.619: *5* wrapper: clear-extend-mode
+#@+node:ekr.20160308173710.620: *6* clear-extend-mode
+wrapper: clear-extend-mode
+'''Turn off extend mode: cursor movement commands do not extend the selection.'''
+#@+node:ekr.20160308173710.621: *5* wrapper: clear-kill-ring
+#@+node:ekr.20160308173710.622: *6* clear-kill-ring
+wrapper: clear-kill-ring
+'''Clear the kill ring.'''
+#@+node:ekr.20160308173710.623: *5* wrapper: clear-log
+#@+node:ekr.20160308173710.624: *6* clear-log
+wrapper: clear-log
+'''Clear the log pane.'''
+#@+node:ekr.20160308173710.625: *5* wrapper: clear-node-uas
+#@+node:ekr.20160308173710.626: *6* clear-node-uas
+wrapper: clear-node-uas
+'''Clear the uA's in the selected VNode.'''
+#@+node:ekr.20160308173710.627: *5* wrapper: clear-recent-files
+#@+node:ekr.20160308173710.628: *6* clear-recent-files
+wrapper: clear-recent-files
+'''Clear the recent files list, then add the present file.'''
+#@+node:ekr.20160308173710.629: *5* wrapper: clear-selected-text
+#@+node:ekr.20160308173710.630: *6* clear-selected-text
+wrapper: clear-selected-text
+'''Delete the selected text.'''
+#@+node:ekr.20160308173710.631: *5* wrapper: click-click-box
+#@+node:ekr.20160308173710.632: *6* click-click-box
+wrapper: click-click-box
+'''
+Simulate a click in the click box (+- box) of the presently selected node.
+Call the actual event handlers so as to trigger hooks.
+'''
+#@+node:ekr.20160308173710.633: *5* wrapper: click-headline
+#@+node:ekr.20160308173710.634: *6* click-headline
+wrapper: click-headline
+'''Simulate a click in the headline of the presently selected node.'''
+#@+node:ekr.20160308173710.635: *5* wrapper: click-icon-box
+#@+node:ekr.20160308173710.636: *6* click-icon-box
+wrapper: click-icon-box
+'''Simulate a click in the icon box of the presently selected node.'''
+#@+node:ekr.20160308173710.637: *5* wrapper: clone-find-all
+#@+node:ekr.20160308173710.638: *6* clone-find-all
+wrapper: clone-find-all
+'''
+
+'''
+#@+node:ekr.20160308173710.639: *5* wrapper: clone-find-all-flattened
+#@+node:ekr.20160308173710.640: *6* clone-find-all-flattened
+wrapper: clone-find-all-flattened
+'''
+
+'''
+#@+node:ekr.20160308173710.641: *5* wrapper: clone-find-all-flattened-marked
+#@+node:ekr.20160308173710.642: *6* clone-find-all-flattened-marked
+wrapper: clone-find-all-flattened-marked
+'''The clone-find-all-flattened-marked command.'''
+#@+node:ekr.20160308173710.643: *5* wrapper: clone-find-all-marked
+#@+node:ekr.20160308173710.644: *6* clone-find-all-marked
+wrapper: clone-find-all-marked
+'''The clone-find-all-marked command.'''
+#@+node:ekr.20160308173710.645: *5* wrapper: clone-find-parents
+#@+node:ekr.20160308173710.646: *6* clone-find-parents
+wrapper: clone-find-parents
+'''Create a "Found: parents of p.h for all parents of p or c.p.'''
+#@+node:ekr.20160308173710.647: *5* wrapper: clone-marked-nodes
+#@+node:ekr.20160308173710.648: *6* clone-marked-nodes
+wrapper: clone-marked-nodes
+'''Clone all marked nodes as children of a new node.'''
+#@+node:ekr.20160308173710.649: *5* wrapper: clone-node
+#@+node:ekr.20160308173710.650: *6* clone-node
+wrapper: clone-node
+'''Create a clone of the selected outline.'''
+#@+node:ekr.20160308173710.651: *5* wrapper: clone-node-to-last-node
+#@+node:ekr.20160308173710.652: *6* clone-node-to-last-node
+wrapper: clone-node-to-last-node
+'''
+Clone the selected node and move it to the last node.
+Do *not* change the selected node.
+'''
+#@+node:ekr.20160308173710.653: *5* wrapper: clone-to-at-spot
+#@+node:ekr.20160308173710.654: *6* clone-to-at-spot
+wrapper: clone-to-at-spot
+'''
+Create a clone of the selected node and move it to the last @spot node
+of the outline. Create the @spot node if necessary.
+'''
+#@+node:ekr.20160308173710.655: *5* wrapper: close-window
+#@+node:ekr.20160308173710.656: *6* close-window
+wrapper: close-window
+'''Close the Leo window, prompting to save it if it has been changed.'''
+#@+node:ekr.20160308173710.657: *5* wrapper: code-to-rst
+#@+node:ekr.20160308173710.658: *6* code-to-rst
+wrapper: code-to-rst
+'''
+Format the presently selected node as computer code.
+Settings from scriptSettingsDict override normal settings.
+On exit:
+self.source contains rst sources
+self.stringOutput contains docutils output if docutils called.
+**Important**: This command works as much like the rst3 command as possible.
+Difference arise because there is no @rst node to specify a filename.
+Instead we get the filename from scriptSettingsDict, or use 'code_to_rst.html'
+'''
+#@+node:ekr.20160308173710.659: *5* wrapper: contract-all
+#@+node:ekr.20160308173710.660: *6* contract-all
+wrapper: contract-all
+'''Contract all nodes in the outline.'''
+#@+node:ekr.20160308173710.661: *5* wrapper: contract-all-other-nodes
+#@+node:ekr.20160308173710.662: *6* contract-all-other-nodes
+wrapper: contract-all-other-nodes
+'''
+Contract all nodes except those needed to make the
+presently selected node visible.
+'''
+#@+node:ekr.20160308173710.663: *5* wrapper: contract-body-pane
+#@+node:ekr.20160308173710.664: *6* contract-body-pane
+wrapper: contract-body-pane
+'''Contract the body pane.'''
+#@+node:ekr.20160308173710.665: *5* wrapper: contract-log-pane
+#@+node:ekr.20160308173710.666: *6* contract-log-pane
+wrapper: contract-log-pane
+'''Contract the log pane.'''
+#@+node:ekr.20160308173710.667: *5* wrapper: contract-node
+#@+node:ekr.20160308173710.668: *6* contract-node
+wrapper: contract-node
+'''Contract the presently selected node.'''
+#@+node:ekr.20160308173710.669: *5* wrapper: contract-or-go-left
+#@+node:ekr.20160308173710.670: *6* contract-or-go-left
+wrapper: contract-or-go-left
+'''Simulate the left Arrow Key in folder of Windows Explorer.'''
+#@+node:ekr.20160308173710.671: *5* wrapper: contract-outline-pane
+#@+node:ekr.20160308173710.672: *6* contract-outline-pane
+wrapper: contract-outline-pane
+'''Contract the outline pane.'''
+#@+node:ekr.20160308173710.673: *5* wrapper: contract-pane
+#@+node:ekr.20160308173710.674: *6* contract-pane
+wrapper: contract-pane
+'''Contract the selected pane.'''
+#@+node:ekr.20160308173710.675: *5* wrapper: contract-parent
+#@+node:ekr.20160308173710.676: *6* contract-parent
+wrapper: contract-parent
+'''Contract the parent of the presently selected node.'''
+#@+node:ekr.20160308173710.677: *5* wrapper: convert-all-blanks
+#@+node:ekr.20160308173710.678: *6* convert-all-blanks
+wrapper: convert-all-blanks
+'''Convert all blanks to tabs in the selected outline.'''
+#@+node:ekr.20160308173710.679: *5* wrapper: convert-all-tabs
+#@+node:ekr.20160308173710.680: *6* convert-all-tabs
+wrapper: convert-all-tabs
+'''Convert all tabs to blanks in the selected outline.'''
+#@+node:ekr.20160308173710.681: *5* wrapper: convert-blanks
+#@+node:ekr.20160308173710.682: *6* convert-blanks
+wrapper: convert-blanks
+'''Convert all blanks to tabs in the selected node.'''
+#@+node:ekr.20160308173710.683: *5* wrapper: convert-tabs
+#@+node:ekr.20160308173710.684: *6* convert-tabs
+wrapper: convert-tabs
+'''Convert all tabs to blanks in the selected node.'''
+#@+node:ekr.20160308173710.685: *5* wrapper: copy-node
+#@+node:ekr.20160308173710.686: *6* copy-node
+wrapper: copy-node
+'''Copy the selected outline to the clipboard.'''
+#@+node:ekr.20160308173710.687: *5* wrapper: copy-text
+#@+node:ekr.20160308173710.688: *6* copy-text
+wrapper: copy-text
+'''Copy the selected text from the widget to the clipboard.'''
+#@+node:ekr.20160308173710.689: *5* wrapper: count-region
+#@+node:ekr.20160308173710.690: *6* count-region
+wrapper: count-region
+'''Print the number of lines and characters in the selected text.'''
+#@+node:ekr.20160308173710.691: *5* wrapper: ctrl-click-icon
+#@+node:ekr.20160308173710.692: *6* ctrl-click-icon
+wrapper: ctrl-click-icon
+'''Simulate a ctrl-click in the icon box of the presently selected node.'''
+#@+node:ekr.20160308173710.693: *5* wrapper: cut-node
+#@+node:ekr.20160308173710.694: *6* cut-node
+wrapper: cut-node
+'''Delete the selected outline and send it to the clipboard.'''
+#@+node:ekr.20160308173710.695: *5* wrapper: cut-text
+#@+node:ekr.20160308173710.696: *6* cut-text
+wrapper: cut-text
+'''Invoked from the mini-buffer and from shortcuts.'''
+#@+node:ekr.20160308173710.697: *5* wrapper: cycle-editor-focus
+#@+node:ekr.20160308173710.698: *6* cycle-editor-focus
+wrapper: cycle-editor-focus
+'''Cycle keyboard focus between the body text editors.'''
+#@+node:ekr.20160308173710.699: *5* wrapper: cycle-focus
+#@+node:ekr.20160308173710.700: *6* cycle-focus
+wrapper: cycle-focus
+'''Cycle the keyboard focus between Leo's outline, body and log panes.'''
+#@+node:ekr.20160308173710.701: *5* wrapper: cycle-tab-focus
+#@+node:ekr.20160308173710.702: *6* cycle-tab-focus
+wrapper: cycle-tab-focus
+'''Cycle keyboard focus between the tabs in the log pane.'''
+#@+node:ekr.20160308173710.703: *5* wrapper: dabbrev-completion
+#@+node:ekr.20160308173710.704: *6* dabbrev-completion
+wrapper: dabbrev-completion
+'''
+dabbrev-completion
+Insert the common prefix of all dynamic abbrev's matching the present word.
+This corresponds to C-M-/ in Emacs.
+'''
+#@+node:ekr.20160308173710.705: *5* wrapper: dabbrev-expands
+#@+node:ekr.20160308173710.706: *6* dabbrev-expands
+wrapper: dabbrev-expands
+'''
+dabbrev-expands (M-/ in Emacs).
+Inserts the longest common prefix of the word at the cursor. Displays
+all possible completions if the prefix is the same as the word.
+'''
+#@+node:ekr.20160308173710.707: *5* wrapper: de-hoist
+#@+node:ekr.20160308173710.708: *6* de-hoist
+wrapper: de-hoist
+'''Undo a previous hoist of an outline.'''
+#@+node:ekr.20160308173710.709: *5* wrapper: debug
+#@+node:ekr.20160308173710.710: *6* debug
+wrapper: debug
+'''
+Start an external debugger in another process to debug a script. The
+script is the presently selected text or then entire tree's script.
+'''
+#@+node:ekr.20160308173710.711: *5* wrapper: delete-char
+#@+node:ekr.20160308173710.712: *6* delete-char
+wrapper: delete-char
+'''Delete the character to the right of the cursor.'''
+#@+node:ekr.20160308173710.713: *5* wrapper: delete-comments
+#@+node:ekr.20160308173710.714: *6* delete-comments
+wrapper: delete-comments
+'''
+Removes one level of comment delimiters from all
+selected lines.  The applicable @language directive
+determines the comment delimiters to be removed.
+Removes single-line comments if possible; removes
+block comments for languages like html that lack
+single-line comments.
+*See also*: add-comments.
+'''
+#@+node:ekr.20160308173710.715: *5* wrapper: delete-editor
+#@+node:ekr.20160308173710.716: *6* delete-editor
+wrapper: delete-editor
+'''Delete the presently selected body text editor.'''
+#@+node:ekr.20160308173710.717: *5* wrapper: delete-first-icon
+#@+node:ekr.20160308173710.718: *6* delete-first-icon
+wrapper: delete-first-icon
+'''Delete the first icon in the selected node's icon list.'''
+#@+node:ekr.20160308173710.719: *5* wrapper: delete-indentation
+#@+node:ekr.20160308173710.720: *6* delete-indentation
+wrapper: delete-indentation
+'''Delete indentation in the presently line.'''
+#@+node:ekr.20160308173710.721: *5* wrapper: delete-last-icon
+#@+node:ekr.20160308173710.722: *6* delete-last-icon
+wrapper: delete-last-icon
+'''Delete the first icon in the selected node's icon list.'''
+#@+node:ekr.20160308173710.723: *5* wrapper: delete-marked-nodes
+#@+node:ekr.20160308173710.724: *6* delete-marked-nodes
+wrapper: delete-marked-nodes
+'''Delete all marked nodes.'''
+#@+node:ekr.20160308173710.725: *5* wrapper: delete-node
+#@+node:ekr.20160308173710.726: *6* delete-node
+wrapper: delete-node
+'''Deletes the selected outline.'''
+#@+node:ekr.20160308173710.727: *5* wrapper: delete-node-icons
+#@+node:ekr.20160308173710.728: *6* delete-node-icons
+wrapper: delete-node-icons
+'''Delete all of the selected node's icons.'''
+#@+node:ekr.20160308173710.729: *5* wrapper: delete-spaces
+#@+node:ekr.20160308173710.730: *6* delete-spaces
+wrapper: delete-spaces
+'''Delete all whitespace surrounding the cursor.'''
+#@+node:ekr.20160308173710.731: *5* wrapper: delete-word
+#@+node:ekr.20160308173710.732: *6* delete-word
+wrapper: delete-word
+'''Delete the word at the cursor.'''
+#@+node:ekr.20160308173710.733: *5* wrapper: delete-word-smart
+#@+node:ekr.20160308173710.734: *6* delete-word-smart
+wrapper: delete-word-smart
+'''
+Delete the word at the cursor, treating whitespace
+and symbols smartly.
+'''
+#@+node:ekr.20160308173710.735: *5* wrapper: demote
+#@+node:ekr.20160308173710.736: *6* demote
+wrapper: demote
+'''Make all following siblings children of the selected node.'''
+#@+node:ekr.20160308173710.737: *5* wrapper: digit-argument
+#@+node:ekr.20160308173710.738: *6* digit-argument
+wrapper: digit-argument
+'''Prompt for a digit argument.'''
+#@+node:ekr.20160308173710.739: *5* wrapper: directory-make
+#@+node:ekr.20160308173710.740: *6* directory-make
+wrapper: directory-make
+'''Prompt for the name of a directory and create it.'''
+#@+node:ekr.20160308173710.741: *5* wrapper: directory-remove
+#@+node:ekr.20160308173710.742: *6* directory-remove
+wrapper: directory-remove
+'''Prompt for the name of a directory and delete it.'''
+#@+node:ekr.20160308173710.743: *5* wrapper: disable-autocompleter
+#@+node:ekr.20160308173710.744: *6* disable-autocompleter
+wrapper: disable-autocompleter
+'''Disable the autocompleter.'''
+#@+node:ekr.20160308173710.745: *5* wrapper: disable-calltips
+#@+node:ekr.20160308173710.746: *6* disable-calltips
+wrapper: disable-calltips
+'''Disable calltips.'''
+#@+node:ekr.20160308173710.747: *5* wrapper: do-nothing
+#@+node:ekr.20160308173710.748: *6* do-nothing
+wrapper: do-nothing
+'''A placeholder command, useful for testing bindings.'''
+#@+node:ekr.20160308173710.749: *5* wrapper: double-click-headline
+#@+node:ekr.20160308173710.750: *6* double-click-headline
+wrapper: double-click-headline
+'''Simulate a double click in headline of the presently selected node.'''
+#@+node:ekr.20160308173710.751: *5* wrapper: double-click-icon-box
+#@+node:ekr.20160308173710.752: *6* double-click-icon-box
+wrapper: double-click-icon-box
+'''Simulate a double-click in the icon box of the presently selected node.'''
+#@+node:ekr.20160308173710.753: *5* wrapper: downcase-region
+#@+node:ekr.20160308173710.754: *6* downcase-region
+wrapper: downcase-region
+'''Convert all characters in the selected text to lower case.'''
+#@+node:ekr.20160308173710.755: *5* wrapper: downcase-word
+#@+node:ekr.20160308173710.756: *6* downcase-word
+wrapper: downcase-word
+'''Convert all characters of the word at the cursor to lower case.'''
+#@+node:ekr.20160308173710.757: *5* wrapper: dump-outline
+#@+node:ekr.20160308173710.758: *6* dump-outline
+wrapper: dump-outline
+''' Dump all nodes in the outline.'''
+#@+node:ekr.20160308173710.759: *5* wrapper: edit-headline
+#@+node:ekr.20160308173710.760: *6* edit-headline
+wrapper: edit-headline
+'''Begin editing the headline of the selected node.'''
+#@+node:ekr.20160308173710.761: *5* wrapper: editor-add
+#@+node:ekr.20160308173710.762: *6* editor-add
+wrapper: editor-add
+'''Add another editor to the body pane.'''
+#@+node:ekr.20160308173710.763: *5* wrapper: editor-cycle-focus
+#@+node:ekr.20160308173710.764: *6* editor-cycle-focus
+wrapper: editor-cycle-focus
+'''Cycle keyboard focus between the body text editors.'''
+#@+node:ekr.20160308173710.765: *5* wrapper: editor-delete
+#@+node:ekr.20160308173710.766: *6* editor-delete
+wrapper: editor-delete
+'''Delete the presently selected body text editor.'''
+#@+node:ekr.20160308173710.767: *5* wrapper: enable-autocompleter
+#@+node:ekr.20160308173710.768: *6* enable-autocompleter
+wrapper: enable-autocompleter
+'''Enable the autocompleter.'''
+#@+node:ekr.20160308173710.769: *5* wrapper: enable-calltips
+#@+node:ekr.20160308173710.770: *6* enable-calltips
+wrapper: enable-calltips
+'''Enable calltips.'''
+#@+node:ekr.20160308173710.771: *5* wrapper: end-edit-headline
+#@+node:ekr.20160308173710.772: *6* end-edit-headline
+wrapper: end-edit-headline
+'''End editing of a headline and move focus to the body pane.'''
+#@+node:ekr.20160308173710.773: *5* wrapper: end-of-buffer
+#@+node:ekr.20160308173710.774: *6* end-of-buffer
+wrapper: end-of-buffer
+'''Move the cursor to the end of the body text.'''
+#@+node:ekr.20160308173710.775: *5* wrapper: end-of-buffer-extend-selection
+#@+node:ekr.20160308173710.776: *6* end-of-buffer-extend-selection
+wrapper: end-of-buffer-extend-selection
+'''Extend the text selection by moving the cursor to the end of the body text.'''
+#@+node:ekr.20160308173710.777: *5* wrapper: end-of-line
+#@+node:ekr.20160308173710.778: *6* end-of-line
+wrapper: end-of-line
+'''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.779: *5* wrapper: end-of-line-extend-selection
+#@+node:ekr.20160308173710.780: *6* end-of-line-extend-selection
+wrapper: end-of-line-extend-selection
+'''Extend the selection by moving the cursor to the end of the line.'''
+#@+node:ekr.20160308173710.781: *5* wrapper: equal-sized-panes
+#@+node:ekr.20160308173710.782: *6* equal-sized-panes
+wrapper: equal-sized-panes
+'''Make the outline and body panes have the same size.'''
+#@+node:ekr.20160308173710.783: *5* wrapper: escape
+#@+node:ekr.20160308173710.784: *6* escape
+wrapper: escape
+'''Enter watch escape mode.'''
+#@+node:ekr.20160308173710.785: *5* wrapper: eval-expression
+#@+node:ekr.20160308173710.786: *6* eval-expression
+wrapper: eval-expression
+'''Evaluate a Python Expression entered in the minibuffer.'''
+#@+node:ekr.20160308173710.787: *5* wrapper: exchange-point-mark
+#@+node:ekr.20160308173710.788: *6* exchange-point-mark
+wrapper: exchange-point-mark
+'''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+#@+node:ekr.20160308173710.789: *5* wrapper: execute-script
+#@+node:ekr.20160308173710.790: *6* execute-script
+wrapper: execute-script
+'''
+Execute a *Leo* script.
+Keyword args:
+args=None               Not None: set script_args in the execution environment.
+p=None                  Get the script from p.b, unless script is given.
+script=None             None: use script in p.b or c.p.b
+useSelectedText=True    False: use all the text in p.b or c.p.b.
+define_g=True           True: define g for the script.
+define_name='__main__'  Not None: define the name symbol.
+silent=False            No longer used.
+namespace=None          Not None: execute the script in this namespace.
+raiseFlag=False         True: reraise any exceptions.
+'''
+#@+node:ekr.20160308173710.791: *5* wrapper: exit-leo
+#@+node:ekr.20160308173710.792: *6* exit-leo
+wrapper: exit-leo
+'''Exit Leo, prompting to save unsaved outlines first.'''
+#@+node:ekr.20160308173710.793: *5* wrapper: exit-named-mode
+#@+node:ekr.20160308173710.794: *6* exit-named-mode
+wrapper: exit-named-mode
+'''Exit an input mode.'''
+#@+node:ekr.20160308173710.795: *5* wrapper: expand-all
+#@+node:ekr.20160308173710.796: *6* expand-all
+wrapper: expand-all
+'''
+Expand all headlines.
+Warning: this can take a long time for large outlines.
+'''
+#@+node:ekr.20160308173710.797: *5* wrapper: expand-all-subheads
+#@+node:ekr.20160308173710.798: *6* expand-all-subheads
+wrapper: expand-all-subheads
+'''Expand all children of the presently selected node.'''
+#@+node:ekr.20160308173710.799: *5* wrapper: expand-ancestors-only
+#@+node:ekr.20160308173710.800: *6* expand-ancestors-only
+wrapper: expand-ancestors-only
+'''Contract all nodes in the outline.'''
+#@+node:ekr.20160308173710.801: *5* wrapper: expand-and-go-right
+#@+node:ekr.20160308173710.802: *6* expand-and-go-right
+wrapper: expand-and-go-right
+'''If a node has children, expand it if needed and go to the first child.'''
+#@+node:ekr.20160308173710.803: *5* wrapper: expand-body-pane
+#@+node:ekr.20160308173710.804: *6* expand-body-pane
+wrapper: expand-body-pane
+'''Expand the body pane.'''
+#@+node:ekr.20160308173710.805: *5* wrapper: expand-log-pane
+#@+node:ekr.20160308173710.806: *6* expand-log-pane
+wrapper: expand-log-pane
+'''Expand the log pane.'''
+#@+node:ekr.20160308173710.807: *5* wrapper: expand-next-level
+#@+node:ekr.20160308173710.808: *6* expand-next-level
+wrapper: expand-next-level
+'''
+Increase the expansion level of the outline and
+Expand all nodes at that level or lower.
+'''
+#@+node:ekr.20160308173710.809: *5* wrapper: expand-node
+#@+node:ekr.20160308173710.810: *6* expand-node
+wrapper: expand-node
+'''Expand the presently selected node.'''
+#@+node:ekr.20160308173710.811: *5* wrapper: expand-or-go-right
+#@+node:ekr.20160308173710.812: *6* expand-or-go-right
+wrapper: expand-or-go-right
+'''Simulate the Right Arrow Key in folder of Windows Explorer.'''
+#@+node:ekr.20160308173710.813: *5* wrapper: expand-outline-pane
+#@+node:ekr.20160308173710.814: *6* expand-outline-pane
+wrapper: expand-outline-pane
+'''Expand the outline pane.'''
+#@+node:ekr.20160308173710.815: *5* wrapper: expand-pane
+#@+node:ekr.20160308173710.816: *6* expand-pane
+wrapper: expand-pane
+'''Expand the selected pane.'''
+#@+node:ekr.20160308173710.817: *5* wrapper: expand-prev-level
+#@+node:ekr.20160308173710.818: *6* expand-prev-level
+wrapper: expand-prev-level
+'''
+Decrease the expansion level of the outline and
+Expand all nodes at that level or lower.
+'''
+#@+node:ekr.20160308173710.819: *5* wrapper: expand-to-level-1
+#@+node:ekr.20160308173710.820: *6* expand-to-level-1
+wrapper: expand-to-level-1
+'''Expand the outline to level 1'''
+#@+node:ekr.20160308173710.821: *5* wrapper: expand-to-level-2
+#@+node:ekr.20160308173710.822: *6* expand-to-level-2
+wrapper: expand-to-level-2
+'''Expand the outline to level 2'''
+#@+node:ekr.20160308173710.823: *5* wrapper: expand-to-level-3
+#@+node:ekr.20160308173710.824: *6* expand-to-level-3
+wrapper: expand-to-level-3
+'''Expand the outline to level 3'''
+#@+node:ekr.20160308173710.825: *5* wrapper: expand-to-level-4
+#@+node:ekr.20160308173710.826: *6* expand-to-level-4
+wrapper: expand-to-level-4
+'''Expand the outline to level 4'''
+#@+node:ekr.20160308173710.827: *5* wrapper: expand-to-level-5
+#@+node:ekr.20160308173710.828: *6* expand-to-level-5
+wrapper: expand-to-level-5
+'''Expand the outline to level 5'''
+#@+node:ekr.20160308173710.829: *5* wrapper: expand-to-level-6
+#@+node:ekr.20160308173710.830: *6* expand-to-level-6
+wrapper: expand-to-level-6
+'''Expand the outline to level 6'''
+#@+node:ekr.20160308173710.831: *5* wrapper: expand-to-level-7
+#@+node:ekr.20160308173710.832: *6* expand-to-level-7
+wrapper: expand-to-level-7
+'''Expand the outline to level 7'''
+#@+node:ekr.20160308173710.833: *5* wrapper: expand-to-level-8
+#@+node:ekr.20160308173710.834: *6* expand-to-level-8
+wrapper: expand-to-level-8
+'''Expand the outline to level 8'''
+#@+node:ekr.20160308173710.835: *5* wrapper: expand-to-level-9
+#@+node:ekr.20160308173710.836: *6* expand-to-level-9
+wrapper: expand-to-level-9
+'''Expand the outline to level 9'''
+#@+node:ekr.20160308173710.837: *5* wrapper: export-headlines
+#@+node:ekr.20160308173710.838: *6* export-headlines
+wrapper: export-headlines
+'''Export all headlines to an external file.'''
+#@+node:ekr.20160308173710.839: *5* wrapper: extend-to-line
+#@+node:ekr.20160308173710.840: *6* extend-to-line
+wrapper: extend-to-line
+'''Select the line at the cursor.'''
+#@+node:ekr.20160308173710.841: *5* wrapper: extend-to-paragraph
+#@+node:ekr.20160308173710.842: *6* extend-to-paragraph
+wrapper: extend-to-paragraph
+'''Select the paragraph surrounding the cursor.'''
+#@+node:ekr.20160308173710.843: *5* wrapper: extend-to-sentence
+#@+node:ekr.20160308173710.844: *6* extend-to-sentence
+wrapper: extend-to-sentence
+'''Select the line at the cursor.'''
+#@+node:ekr.20160308173710.845: *5* wrapper: extend-to-word
+#@+node:ekr.20160308173710.846: *6* extend-to-word
+wrapper: extend-to-word
+'''Compute the word at the cursor. Select it if select arg is True.'''
+#@+node:ekr.20160308173710.847: *5* wrapper: extract
+#@+node:ekr.20160308173710.848: *6* extract
+wrapper: extract
+'''
+Create child node from the selected body text.
+1. If the selection starts with a section reference, the section name become
+the child's headline. All following lines become the child's body text.
+The section reference line remains in the original body text.
+2. If the selection looks like a Python class or definition line, the
+class/function/method name becmes child's headline and all selected lines
+become the child's body text.
+3. Otherwise, the first line becomes the child's headline, and all selected
+lines become the child's body text.
+'''
+#@+node:ekr.20160308173710.849: *5* wrapper: extract-names
+#@+node:ekr.20160308173710.850: *6* extract-names
+wrapper: extract-names
+'''
+Create child nodes for every section reference in the selected text.
+The headline of each new child node is the section reference.
+The body of each child node is empty.
+'''
+#@+node:ekr.20160308173710.851: *5* wrapper: file-compare-leo-files
+#@+node:ekr.20160308173710.852: *6* file-compare-leo-files
+wrapper: file-compare-leo-files
+'''Compare two files.'''
+#@+node:ekr.20160308173710.853: *5* wrapper: file-delete
+#@+node:ekr.20160308173710.854: *6* file-delete
+wrapper: file-delete
+'''Prompt for the name of a file and delete it.'''
+#@+node:ekr.20160308173710.855: *5* wrapper: file-diff-files
+#@+node:ekr.20160308173710.856: *6* file-diff-files
+wrapper: file-diff-files
+'''Creates a node and puts the diff between 2 files into it.'''
+#@+node:ekr.20160308173710.857: *5* wrapper: file-insert
+#@+node:ekr.20160308173710.858: *6* file-insert
+wrapper: file-insert
+'''Prompt for the name of a file and put the selected text into it.'''
+#@+node:ekr.20160308173710.859: *5* wrapper: file-open-by-name
+#@+node:ekr.20160308173710.860: *6* file-open-by-name
+wrapper: file-open-by-name
+'''file-open-by-name: Prompt for the name of a Leo outline and open it.'''
+#@+node:ekr.20160308173710.861: *5* wrapper: file-save
+#@+node:ekr.20160308173710.862: *6* file-save
+wrapper: file-save
+'''Prompt for the name of a file and put the body text of the selected node into it..'''
+#@+node:ekr.20160308173710.863: *5* wrapper: fill-paragraph
+#@+node:ekr.20160308173710.864: *6* fill-paragraph
+wrapper: fill-paragraph
+'''Fill the selected paragraph'''
+#@+node:ekr.20160308173710.865: *5* wrapper: fill-region
+#@+node:ekr.20160308173710.866: *6* fill-region
+wrapper: fill-region
+'''Fill all paragraphs in the selected text.'''
+#@+node:ekr.20160308173710.867: *5* wrapper: fill-region-as-paragraph
+#@+node:ekr.20160308173710.868: *6* fill-region-as-paragraph
+wrapper: fill-region-as-paragraph
+'''Fill the selected text.'''
+#@+node:ekr.20160308173710.869: *5* wrapper: find-all
+#@+node:ekr.20160308173710.870: *6* find-all
+wrapper: find-all
+'''handle the find-all command.'''
+#@+node:ekr.20160308173710.871: *5* wrapper: find-character
+#@+node:ekr.20160308173710.872: *6* find-character
+wrapper: find-character
+'''Search for a character.'''
+#@+node:ekr.20160308173710.873: *5* wrapper: find-character-extend-selection
+#@+node:ekr.20160308173710.874: *6* find-character-extend-selection
+wrapper: find-character-extend-selection
+'''Search for a character, extending the selection.'''
+#@+node:ekr.20160308173710.875: *5* wrapper: find-clone-all
+#@+node:ekr.20160308173710.876: *6* find-clone-all
+wrapper: find-clone-all
+'''
+
+'''
+#@+node:ekr.20160308173710.877: *5* wrapper: find-clone-all-flattened
+#@+node:ekr.20160308173710.878: *6* find-clone-all-flattened
+wrapper: find-clone-all-flattened
+'''
+
+'''
+#@+node:ekr.20160308173710.879: *5* wrapper: find-def
+#@+node:ekr.20160308173710.880: *6* find-def
+wrapper: find-def
+'''Find the def or class under the cursor.'''
+#@+node:ekr.20160308173710.881: *5* wrapper: find-next
+#@+node:ekr.20160308173710.882: *6* find-next
+wrapper: find-next
+'''The find-next command.'''
+#@+node:ekr.20160308173710.883: *5* wrapper: find-next-clone
+#@+node:ekr.20160308173710.884: *6* find-next-clone
+wrapper: find-next-clone
+'''Select the next cloned node.'''
+#@+node:ekr.20160308173710.885: *5* wrapper: find-prev
+#@+node:ekr.20160308173710.886: *6* find-prev
+wrapper: find-prev
+'''Handle F2 (find-previous)'''
+#@+node:ekr.20160308173710.887: *5* wrapper: find-tab-hide
+#@+node:ekr.20160308173710.888: *6* find-tab-hide
+wrapper: find-tab-hide
+'''Hide the Find tab.'''
+#@+node:ekr.20160308173710.889: *5* wrapper: find-tab-open
+#@+node:ekr.20160308173710.890: *6* find-tab-open
+wrapper: find-tab-open
+'''Open the Find tab in the log pane.'''
+#@+node:ekr.20160308173710.891: *5* wrapper: find-var
+#@+node:ekr.20160308173710.892: *6* find-var
+wrapper: find-var
+'''Find the var under the cursor.'''
+#@+node:ekr.20160308173710.893: *5* wrapper: find-word
+#@+node:ekr.20160308173710.894: *6* find-word
+wrapper: find-word
+'''Put the cursor at the next word that starts with a character.'''
+#@+node:ekr.20160308173710.895: *5* wrapper: find-word-in-line
+#@+node:ekr.20160308173710.896: *6* find-word-in-line
+wrapper: find-word-in-line
+'''Put the cursor at the next word (on a line) that starts with a character.'''
+#@+node:ekr.20160308173710.897: *5* wrapper: flatten-outline
+#@+node:ekr.20160308173710.898: *6* flatten-outline
+wrapper: flatten-outline
+'''
+Export the selected outline to an external file.
+The outline is represented in MORE format.
+'''
+#@+node:ekr.20160308173710.899: *5* wrapper: flatten-outline-to-node
+#@+node:ekr.20160308173710.900: *6* flatten-outline-to-node
+wrapper: flatten-outline-to-node
+'''
+Append the body text of all descendants of the selected node to the
+body text of the selected node.
+'''
+#@+node:ekr.20160308173710.901: *5* wrapper: flush-lines
+#@+node:ekr.20160308173710.902: *6* flush-lines
+wrapper: flush-lines
+'''
+Delete each line that contains a match for regexp, operating on the
+text after point.
+In Transient Mark mode, if the region is active, the command operates
+on the region instead.
+'''
+#@+node:ekr.20160308173710.903: *5* wrapper: focus-to-body
+#@+node:ekr.20160308173710.904: *6* focus-to-body
+wrapper: focus-to-body
+'''Put the keyboard focus in Leo's body pane.'''
+#@+node:ekr.20160308173710.905: *5* wrapper: focus-to-find
+#@+node:ekr.20160308173710.906: *6* focus-to-find
+wrapper: focus-to-find
+'''
+
+'''
+#@+node:ekr.20160308173710.907: *5* wrapper: focus-to-log
+#@+node:ekr.20160308173710.908: *6* focus-to-log
+wrapper: focus-to-log
+'''Put the keyboard focus in Leo's log pane.'''
+#@+node:ekr.20160308173710.909: *5* wrapper: focus-to-minibuffer
+#@+node:ekr.20160308173710.910: *6* focus-to-minibuffer
+wrapper: focus-to-minibuffer
+'''Put the keyboard focus in Leo's minibuffer.'''
+#@+node:ekr.20160308173710.911: *5* wrapper: focus-to-spell-tab
+#@+node:ekr.20160308173710.912: *6* focus-to-spell-tab
+wrapper: focus-to-spell-tab
+'''Put focus in the spell tab.'''
+#@+node:ekr.20160308173710.913: *5* wrapper: focus-to-tree
+#@+node:ekr.20160308173710.914: *6* focus-to-tree
+wrapper: focus-to-tree
+'''Put the keyboard focus in Leo's outline pane.'''
+#@+node:ekr.20160308173710.915: *5* wrapper: forward-char
+#@+node:ekr.20160308173710.916: *6* forward-char
+wrapper: forward-char
+'''Move the cursor forward one character, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.917: *5* wrapper: forward-char-extend-selection
+#@+node:ekr.20160308173710.918: *6* forward-char-extend-selection
+wrapper: forward-char-extend-selection
+'''Extend the selection by moving the cursor forward one character.'''
+#@+node:ekr.20160308173710.919: *5* wrapper: forward-end-word
+#@+node:ekr.20160308173710.920: *6* forward-end-word
+wrapper: forward-end-word
+'''Move the cursor to the next word.'''
+#@+node:ekr.20160308173710.921: *5* wrapper: forward-end-word-extend-selection
+#@+node:ekr.20160308173710.922: *6* forward-end-word-extend-selection
+wrapper: forward-end-word-extend-selection
+'''Extend the selection by moving the cursor to the next word.'''
+#@+node:ekr.20160308173710.923: *5* wrapper: forward-page
+#@+node:ekr.20160308173710.924: *6* forward-page
+wrapper: forward-page
+'''
+Move the cursor forward one page,
+extending the selection if in extend mode.
+'''
+#@+node:ekr.20160308173710.925: *5* wrapper: forward-page-extend-selection
+#@+node:ekr.20160308173710.926: *6* forward-page-extend-selection
+wrapper: forward-page-extend-selection
+'''Extend the selection by moving the cursor forward one page.'''
+#@+node:ekr.20160308173710.927: *5* wrapper: forward-paragraph
+#@+node:ekr.20160308173710.928: *6* forward-paragraph
+wrapper: forward-paragraph
+'''Move the cursor to the next paragraph.'''
+#@+node:ekr.20160308173710.929: *5* wrapper: forward-paragraph-extend-selection
+#@+node:ekr.20160308173710.930: *6* forward-paragraph-extend-selection
+wrapper: forward-paragraph-extend-selection
+'''Extend the selection by moving the cursor to the next paragraph.'''
+#@+node:ekr.20160308173710.931: *5* wrapper: forward-sentence
+#@+node:ekr.20160308173710.932: *6* forward-sentence
+wrapper: forward-sentence
+'''Move the cursor to the next sentence.'''
+#@+node:ekr.20160308173710.933: *5* wrapper: forward-sentence-extend-selection
+#@+node:ekr.20160308173710.934: *6* forward-sentence-extend-selection
+wrapper: forward-sentence-extend-selection
+'''Extend the selection by moving the cursor to the next sentence.'''
+#@+node:ekr.20160308173710.935: *5* wrapper: forward-word
+#@+node:ekr.20160308173710.936: *6* forward-word
+wrapper: forward-word
+'''Move the cursor to the next word.'''
+#@+node:ekr.20160308173710.937: *5* wrapper: forward-word-extend-selection
+#@+node:ekr.20160308173710.938: *6* forward-word-extend-selection
+wrapper: forward-word-extend-selection
+'''Extend the selection by moving the cursor to the end of the next word.'''
+#@+node:ekr.20160308173710.939: *5* wrapper: forward-word-smart
+#@+node:ekr.20160308173710.940: *6* forward-word-smart
+wrapper: forward-word-smart
+'''Move the cursor to the end of the current or the beginning of the next word.'''
+#@+node:ekr.20160308173710.941: *5* wrapper: forward-word-smart-extend-selection
+#@+node:ekr.20160308173710.942: *6* forward-word-smart-extend-selection
+wrapper: forward-word-smart-extend-selection
+'''
+Extend the selection by moving the cursor to the end of the current
+or the beginning of the next word.
+'''
+#@+node:ekr.20160308173710.943: *5* wrapper: full-command
+#@+node:ekr.20160308173710.944: *6* full-command
+wrapper: full-command
+'''Handle 'full-command' (alt-x) mode.'''
+#@+node:ekr.20160308173710.945: *5* wrapper: fully-expand-body-pane
+#@+node:ekr.20160308173710.946: *6* fully-expand-body-pane
+wrapper: fully-expand-body-pane
+'''Fully expand the body pane.'''
+#@+node:ekr.20160308173710.947: *5* wrapper: fully-expand-log-pane
+#@+node:ekr.20160308173710.948: *6* fully-expand-log-pane
+wrapper: fully-expand-log-pane
+'''Fully expand the log pane.'''
+#@+node:ekr.20160308173710.949: *5* wrapper: fully-expand-outline-pane
+#@+node:ekr.20160308173710.950: *6* fully-expand-outline-pane
+wrapper: fully-expand-outline-pane
+'''Fully expand the outline pane.'''
+#@+node:ekr.20160308173710.951: *5* wrapper: fully-expand-pane
+#@+node:ekr.20160308173710.952: *6* fully-expand-pane
+wrapper: fully-expand-pane
+'''Fully expand the selected pane.'''
+#@+node:ekr.20160308173710.953: *5* wrapper: gc-collect-garbage
+#@+node:ekr.20160308173710.954: *6* gc-collect-garbage
+wrapper: gc-collect-garbage
+'''Run Python's Gargabe Collector.'''
+#@+node:ekr.20160308173710.955: *5* wrapper: gc-dump-all-objects
+#@+node:ekr.20160308173710.956: *6* gc-dump-all-objects
+wrapper: gc-dump-all-objects
+'''Print a summary of all existing Python objects.'''
+#@+node:ekr.20160308173710.957: *5* wrapper: gc-dump-new-objects
+#@+node:ekr.20160308173710.958: *6* gc-dump-new-objects
+wrapper: gc-dump-new-objects
+'''
+Print a summary of all Python objects created
+since the last time Python's Garbage collector was run.
+'''
+#@+node:ekr.20160308173710.959: *5* wrapper: gc-dump-objects-verbose
+#@+node:ekr.20160308173710.960: *6* gc-dump-objects-verbose
+wrapper: gc-dump-objects-verbose
+'''Print a more verbose listing of all existing Python objects.'''
+#@+node:ekr.20160308173710.961: *5* wrapper: gc-print-summary
+#@+node:ekr.20160308173710.962: *6* gc-print-summary
+wrapper: gc-print-summary
+'''Print a brief summary of all Python objects.'''
+#@+node:ekr.20160308173710.963: *5* wrapper: gc-trace-disable
+#@+node:ekr.20160308173710.964: *6* gc-trace-disable
+wrapper: gc-trace-disable
+'''Enable tracing of Python's Garbage Collector.'''
+#@+node:ekr.20160308173710.965: *5* wrapper: gc-trace-enable
+#@+node:ekr.20160308173710.966: *6* gc-trace-enable
+wrapper: gc-trace-enable
+'''Disable tracing of Python's Garbage Collector.'''
+#@+node:ekr.20160308173710.967: *5* wrapper: go-back
+#@+node:ekr.20160308173710.968: *6* go-back
+wrapper: go-back
+'''Select the previously visited node.'''
+#@+node:ekr.20160308173710.969: *5* wrapper: go-forward
+#@+node:ekr.20160308173710.970: *6* go-forward
+wrapper: go-forward
+'''Select the next visited node.'''
+#@+node:ekr.20160308173710.971: *5* wrapper: goto-char
+#@+node:ekr.20160308173710.972: *6* goto-char
+wrapper: goto-char
+'''Put the cursor at the n'th character of the buffer.'''
+#@+node:ekr.20160308173710.973: *5* wrapper: goto-first-node
+#@+node:ekr.20160308173710.974: *6* goto-first-node
+wrapper: goto-first-node
+'''Select the first node of the entire outline.'''
+#@+node:ekr.20160308173710.975: *5* wrapper: goto-first-sibling
+#@+node:ekr.20160308173710.976: *6* goto-first-sibling
+wrapper: goto-first-sibling
+'''Select the first sibling of the selected node.'''
+#@+node:ekr.20160308173710.977: *5* wrapper: goto-first-visible-node
+#@+node:ekr.20160308173710.978: *6* goto-first-visible-node
+wrapper: goto-first-visible-node
+'''Select the first visible node of the selected chapter or hoist.'''
+#@+node:ekr.20160308173710.979: *5* wrapper: goto-global-line
+#@+node:ekr.20160308173710.980: *6* goto-global-line
+wrapper: goto-global-line
+'''
+Put the cursor at the n'th line of a file or script. This is a
+minibuffer interface to Leo's legacy Go To Line number command.
+'''
+#@+node:ekr.20160308173710.981: *5* wrapper: goto-last-node
+#@+node:ekr.20160308173710.982: *6* goto-last-node
+wrapper: goto-last-node
+'''Select the last node in the entire tree.'''
+#@+node:ekr.20160308173710.983: *5* wrapper: goto-last-sibling
+#@+node:ekr.20160308173710.984: *6* goto-last-sibling
+wrapper: goto-last-sibling
+'''Select the last sibling of the selected node.'''
+#@+node:ekr.20160308173710.985: *5* wrapper: goto-last-visible-node
+#@+node:ekr.20160308173710.986: *6* goto-last-visible-node
+wrapper: goto-last-visible-node
+'''Select the last visible node of selected chapter or hoist.'''
+#@+node:ekr.20160308173710.987: *5* wrapper: goto-line
+#@+node:ekr.20160308173710.988: *6* goto-line
+wrapper: goto-line
+'''Put the cursor at the n'th line of the buffer.'''
+#@+node:ekr.20160308173710.989: *5* wrapper: goto-next-changed
+#@+node:ekr.20160308173710.990: *6* goto-next-changed
+wrapper: goto-next-changed
+'''Select the node that is marked as changed.'''
+#@+node:ekr.20160308173710.991: *5* wrapper: goto-next-clone
+#@+node:ekr.20160308173710.992: *6* goto-next-clone
+wrapper: goto-next-clone
+'''
+Select the next node that is a clone of the selected node.
+If the selected node is not a clone, do find-next-clone.
+'''
+#@+node:ekr.20160308173710.993: *5* wrapper: goto-next-history-node
+#@+node:ekr.20160308173710.994: *6* goto-next-history-node
+wrapper: goto-next-history-node
+'''Go to the next node in the history list.'''
+#@+node:ekr.20160308173710.995: *5* wrapper: goto-next-marked
+#@+node:ekr.20160308173710.996: *6* goto-next-marked
+wrapper: goto-next-marked
+'''Select the next marked node.'''
+#@+node:ekr.20160308173710.997: *5* wrapper: goto-next-node
+#@+node:ekr.20160308173710.998: *6* goto-next-node
+wrapper: goto-next-node
+'''Select the node following the selected node in outline order.'''
+#@+node:ekr.20160308173710.999: *5* wrapper: goto-next-sibling
+#@+node:ekr.20160308173710.1000: *6* goto-next-sibling
+wrapper: goto-next-sibling
+'''Select the next sibling of the selected node.'''
+#@+node:ekr.20160308173710.1001: *5* wrapper: goto-next-visible
+#@+node:ekr.20160308173710.1002: *6* goto-next-visible
+wrapper: goto-next-visible
+'''Select the visible node following the presently selected node.'''
+#@+node:ekr.20160308173710.1003: *5* wrapper: goto-parent
+#@+node:ekr.20160308173710.1004: *6* goto-parent
+wrapper: goto-parent
+'''Select the parent of the selected node.'''
+#@+node:ekr.20160308173710.1005: *5* wrapper: goto-prev-history-node
+#@+node:ekr.20160308173710.1006: *6* goto-prev-history-node
+wrapper: goto-prev-history-node
+'''Go to the previous node in the history list.'''
+#@+node:ekr.20160308173710.1007: *5* wrapper: goto-prev-node
+#@+node:ekr.20160308173710.1008: *6* goto-prev-node
+wrapper: goto-prev-node
+'''Select the node preceding the selected node in outline order.'''
+#@+node:ekr.20160308173710.1009: *5* wrapper: goto-prev-sibling
+#@+node:ekr.20160308173710.1010: *6* goto-prev-sibling
+wrapper: goto-prev-sibling
+'''Select the previous sibling of the selected node.'''
+#@+node:ekr.20160308173710.1011: *5* wrapper: goto-prev-visible
+#@+node:ekr.20160308173710.1012: *6* goto-prev-visible
+wrapper: goto-prev-visible
+'''Select the visible node preceding the presently selected node.'''
+#@+node:ekr.20160308173710.1013: *5* wrapper: help
+#@+node:ekr.20160308173710.1014: *6* help
+wrapper: help
+'''Prints and introduction to Leo's help system.'''
+#@+node:ekr.20160308173710.1015: *5* wrapper: help-for-abbreviations
+#@+node:ekr.20160308173710.1016: *6* help-for-abbreviations
+wrapper: help-for-abbreviations
+'''Prints a discussion of abbreviations.'''
+#@+node:ekr.20160308173710.1017: *5* wrapper: help-for-autocompletion
+#@+node:ekr.20160308173710.1018: *6* help-for-autocompletion
+wrapper: help-for-autocompletion
+'''Prints a discussion of autocompletion.'''
+#@+node:ekr.20160308173710.1019: *5* wrapper: help-for-bindings
+#@+node:ekr.20160308173710.1020: *6* help-for-bindings
+wrapper: help-for-bindings
+'''Prints a discussion of keyboard bindings.'''
+#@+node:ekr.20160308173710.1021: *5* wrapper: help-for-command
+#@+node:ekr.20160308173710.1022: *6* help-for-command
+wrapper: help-for-command
+'''Prompts for a command name and prints the help message for that command.'''
+#@+node:ekr.20160308173710.1023: *5* wrapper: help-for-creating-external-files
+#@+node:ekr.20160308173710.1024: *6* help-for-creating-external-files
+wrapper: help-for-creating-external-files
+'''Prints a discussion of creating external files.'''
+#@+node:ekr.20160308173710.1025: *5* wrapper: help-for-debugging-commands
+#@+node:ekr.20160308173710.1026: *6* help-for-debugging-commands
+wrapper: help-for-debugging-commands
+'''Prints a discussion of of Leo's debugging commands.'''
+#@+node:ekr.20160308173710.1027: *5* wrapper: help-for-drag-and-drop
+#@+node:ekr.20160308173710.1028: *6* help-for-drag-and-drop
+wrapper: help-for-drag-and-drop
+'''Prints a discussion of of Leo's debugging commands.'''
+#@+node:ekr.20160308173710.1029: *5* wrapper: help-for-dynamic-abbreviations
+#@+node:ekr.20160308173710.1030: *6* help-for-dynamic-abbreviations
+wrapper: help-for-dynamic-abbreviations
+'''Prints a discussion of abbreviations.'''
+#@+node:ekr.20160308173710.1031: *5* wrapper: help-for-find-commands
+#@+node:ekr.20160308173710.1032: *6* help-for-find-commands
+wrapper: help-for-find-commands
+'''Prints a discussion of of Leo's find commands.'''
+#@+node:ekr.20160308173710.1033: *5* wrapper: help-for-keystroke
+#@+node:ekr.20160308173710.1034: *6* help-for-keystroke
+wrapper: help-for-keystroke
+'''Prompts for any key and prints the bindings for that key.'''
+#@+node:ekr.20160308173710.1035: *5* wrapper: help-for-minibuffer
+#@+node:ekr.20160308173710.1036: *6* help-for-minibuffer
+wrapper: help-for-minibuffer
+'''Print a messages telling you how to get started with Leo.'''
+#@+node:ekr.20160308173710.1037: *5* wrapper: help-for-python
+#@+node:ekr.20160308173710.1038: *6* help-for-python
+wrapper: help-for-python
+'''Prompt for a arg for Python's help function, and put it to the log pane.'''
+#@+node:ekr.20160308173710.1039: *5* wrapper: help-for-regular-expressions
+#@+node:ekr.20160308173710.1040: *6* help-for-regular-expressions
+wrapper: help-for-regular-expressions
+'''Prints a discussion of of Leo's find commands.'''
+#@+node:ekr.20160308173710.1041: *5* wrapper: help-for-scripting
+#@+node:ekr.20160308173710.1042: *6* help-for-scripting
+wrapper: help-for-scripting
+'''Prints a discussion of Leo scripting.'''
+#@+node:ekr.20160308173710.1043: *5* wrapper: hide-body-pane
+#@+node:ekr.20160308173710.1044: *6* hide-body-pane
+wrapper: hide-body-pane
+'''Completely contract the body pane.'''
+#@+node:ekr.20160308173710.1045: *5* wrapper: hide-invisibles
+#@+node:ekr.20160308173710.1046: *6* hide-invisibles
+wrapper: hide-invisibles
+'''Hide invisible (whitespace) characters.'''
+#@+node:ekr.20160308173710.1047: *5* wrapper: hide-log-pane
+#@+node:ekr.20160308173710.1048: *6* hide-log-pane
+wrapper: hide-log-pane
+'''Completely contract the log pane.'''
+#@+node:ekr.20160308173710.1049: *5* wrapper: hide-outline-pane
+#@+node:ekr.20160308173710.1050: *6* hide-outline-pane
+wrapper: hide-outline-pane
+'''Completely contract the outline pane.'''
+#@+node:ekr.20160308173710.1051: *5* wrapper: hide-pane
+#@+node:ekr.20160308173710.1052: *6* hide-pane
+wrapper: hide-pane
+'''Completely contract the selected pane.'''
+#@+node:ekr.20160308173710.1053: *5* wrapper: hoist
+#@+node:ekr.20160308173710.1054: *6* hoist
+wrapper: hoist
+'''Make only the selected outline visible.'''
+#@+node:ekr.20160308173710.1055: *5* wrapper: how-many
+#@+node:ekr.20160308173710.1056: *6* how-many
+wrapper: how-many
+'''
+Print how many occurances of a regular expression are found
+in the body text of the presently selected node.
+'''
+#@+node:ekr.20160308173710.1057: *5* wrapper: iconify-frame
+#@+node:ekr.20160308173710.1058: *6* iconify-frame
+wrapper: iconify-frame
+'''Minimize the present Leo window.'''
+#@+node:ekr.20160308173710.1059: *5* wrapper: import-file
+#@+node:ekr.20160308173710.1060: *6* import-file
+wrapper: import-file
+'''Import one or more files.'''
+#@+node:ekr.20160308173710.1061: *5* wrapper: indent-region
+#@+node:ekr.20160308173710.1062: *6* indent-region
+wrapper: indent-region
+'''
+The indent-region command indents each line of the selected body text,
+or each line of a node if there is no selected text. The @tabwidth directive
+in effect determines amount of indentation. (not yet) A numeric argument
+specifies the column to indent to.
+'''
+#@+node:ekr.20160308173710.1063: *5* wrapper: indent-relative
+#@+node:ekr.20160308173710.1064: *6* indent-relative
+wrapper: indent-relative
+'''
+The indent-relative command indents at the point based on the previous
+line (actually, the last non-empty line.) It inserts whitespace at the
+point, moving point, until it is underneath an indentation point in the
+previous line.
+An indentation point is the end of a sequence of whitespace or the end of
+the line. If the point is farther right than any indentation point in the
+previous line, the whitespace before point is deleted and the first
+indentation point then applicable is used. If no indentation point is
+applicable even then whitespace equivalent to a single tab is inserted.
+'''
+#@+node:ekr.20160308173710.1065: *5* wrapper: indent-rigidly
+#@+node:ekr.20160308173710.1066: *6* indent-rigidly
+wrapper: indent-rigidly
+'''Insert a hard tab at the start of each line of the selected text.'''
+#@+node:ekr.20160308173710.1067: *5* wrapper: indent-to-comment-column
+#@+node:ekr.20160308173710.1068: *6* indent-to-comment-column
+wrapper: indent-to-comment-column
+'''
+Insert whitespace to indent the line containing the insert point to the
+comment column.
+'''
+#@+node:ekr.20160308173710.1069: *5* wrapper: insert-body-time
+#@+node:ekr.20160308173710.1070: *6* insert-body-time
+wrapper: insert-body-time
+'''Insert a time/date stamp at the cursor.'''
+#@+node:ekr.20160308173710.1071: *5* wrapper: insert-child
+#@+node:ekr.20160308173710.1072: *6* insert-child
+wrapper: insert-child
+'''Insert a node after the presently selected node.'''
+#@+node:ekr.20160308173710.1073: *5* wrapper: insert-file-name
+#@+node:ekr.20160308173710.1074: *6* insert-file-name
+wrapper: insert-file-name
+'''
+Prompt for a file name, then insert it at the cursor position.
+This operation is undoable if done in the body pane.
+The initial path is made by concatenating path_for_p() and the selected
+text, if there is any, or any path like text immediately preceding the
+cursor.
+'''
+#@+node:ekr.20160308173710.1075: *5* wrapper: insert-hard-tab
+#@+node:ekr.20160308173710.1076: *6* insert-hard-tab
+wrapper: insert-hard-tab
+'''Insert one hard tab.'''
+#@+node:ekr.20160308173710.1077: *5* wrapper: insert-headline-time
+#@+node:ekr.20160308173710.1078: *6* insert-headline-time
+wrapper: insert-headline-time
+'''Insert a date/time stamp in the headline of the selected node.'''
+#@+node:ekr.20160308173710.1079: *5* wrapper: insert-icon
+#@+node:ekr.20160308173710.1080: *6* insert-icon
+wrapper: insert-icon
+'''Prompt for an icon, and insert it into the node's icon list.'''
+#@+node:ekr.20160308173710.1081: *5* wrapper: insert-newline
+#@+node:ekr.20160308173710.1082: *6* insert-newline
+wrapper: insert-newline
+'''Insert a newline at the cursor.'''
+#@+node:ekr.20160308173710.1083: *5* wrapper: insert-node
+#@+node:ekr.20160308173710.1084: *6* insert-node
+wrapper: insert-node
+'''Insert a node after the presently selected node.'''
+#@+node:ekr.20160308173710.1085: *5* wrapper: insert-node-before
+#@+node:ekr.20160308173710.1086: *6* insert-node-before
+wrapper: insert-node-before
+'''Insert a node before the presently selected node.'''
+#@+node:ekr.20160308173710.1087: *5* wrapper: insert-parentheses
+#@+node:ekr.20160308173710.1088: *6* insert-parentheses
+wrapper: insert-parentheses
+'''Insert () at the cursor.'''
+#@+node:ekr.20160308173710.1089: *5* wrapper: insert-soft-tab
+#@+node:ekr.20160308173710.1090: *6* insert-soft-tab
+wrapper: insert-soft-tab
+'''Insert spaces equivalent to one tab.'''
+#@+node:ekr.20160308173710.1091: *5* wrapper: isearch-backward
+#@+node:ekr.20160308173710.1092: *6* isearch-backward
+wrapper: isearch-backward
+'''
+Begin a backward incremental search.
+- Plain characters extend the search backward.
+- !<isearch-forward>! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern
+completely undoes the effect of the search.
+'''
+#@+node:ekr.20160308173710.1093: *5* wrapper: isearch-backward-regexp
+#@+node:ekr.20160308173710.1094: *6* isearch-backward-regexp
+wrapper: isearch-backward-regexp
+'''
+Begin a backward incremental regexp search.
+- Plain characters extend the search.
+- !<isearch-forward-regexp>! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern
+completely undoes the effect of the search.
+'''
+#@+node:ekr.20160308173710.1095: *5* wrapper: isearch-forward
+#@+node:ekr.20160308173710.1096: *6* isearch-forward
+wrapper: isearch-forward
+'''
+Begin a forward incremental search.
+- Plain characters extend the search.
+- !<isearch-forward>! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern
+completely undoes the effect of the search.
+'''
+#@+node:ekr.20160308173710.1097: *5* wrapper: isearch-forward-regexp
+#@+node:ekr.20160308173710.1098: *6* isearch-forward-regexp
+wrapper: isearch-forward-regexp
+'''
+Begin a forward incremental regexp search.
+- Plain characters extend the search.
+- !<isearch-forward-regexp>! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern
+completely undoes the effect of the search.
+'''
+#@+node:ekr.20160308173710.1099: *5* wrapper: isearch-with-present-options
+#@+node:ekr.20160308173710.1100: *6* isearch-with-present-options
+wrapper: isearch-with-present-options
+'''
+Begin an incremental search using find panel options.
+- Plain characters extend the search.
+- !<isearch-forward-regexp>! repeats the search.
+- Esc or any non-plain key ends the search.
+- Backspace reverses the search.
+- Backspacing to an empty search pattern
+completely undoes the effect of the search.
+'''
+#@+node:ekr.20160308173710.1101: *5* wrapper: keep-lines
+#@+node:ekr.20160308173710.1102: *6* keep-lines
+wrapper: keep-lines
+'''
+Delete each line that does not contain a match for regexp, operating on
+the text after point.
+In Transient Mark mode, if the region is active, the command operates
+on the region instead.
+'''
+#@+node:ekr.20160308173710.1103: *5* wrapper: keyboard-quit
+#@+node:ekr.20160308173710.1104: *6* keyboard-quit
+wrapper: keyboard-quit
+'''
+This method clears the state and the minibuffer label.
+k.endCommand handles all other end-of-command chores.
+'''
+#@+node:ekr.20160308173710.1105: *5* wrapper: kill-line
+#@+node:ekr.20160308173710.1106: *6* kill-line
+wrapper: kill-line
+'''Kill the line containing the cursor.'''
+#@+node:ekr.20160308173710.1107: *5* wrapper: kill-paragraph
+#@+node:ekr.20160308173710.1108: *6* kill-paragraph
+wrapper: kill-paragraph
+'''Kill the present paragraph.'''
+#@+node:ekr.20160308173710.1109: *5* wrapper: kill-region
+#@+node:ekr.20160308173710.1110: *6* kill-region
+wrapper: kill-region
+'''Kill the text selection.'''
+#@+node:ekr.20160308173710.1111: *5* wrapper: kill-region-save
+#@+node:ekr.20160308173710.1112: *6* kill-region-save
+wrapper: kill-region-save
+'''Add the selected text to the kill ring, but do not delete it.'''
+#@+node:ekr.20160308173710.1113: *5* wrapper: kill-sentence
+#@+node:ekr.20160308173710.1114: *6* kill-sentence
+wrapper: kill-sentence
+'''Kill the sentence containing the cursor.'''
+#@+node:ekr.20160308173710.1115: *5* wrapper: kill-to-end-of-line
+#@+node:ekr.20160308173710.1116: *6* kill-to-end-of-line
+wrapper: kill-to-end-of-line
+'''Kill from the cursor to end of the line.'''
+#@+node:ekr.20160308173710.1117: *5* wrapper: kill-word
+#@+node:ekr.20160308173710.1118: *6* kill-word
+wrapper: kill-word
+'''Kill the word containing the cursor.'''
+#@+node:ekr.20160308173710.1119: *5* wrapper: kill-ws
+#@+node:ekr.20160308173710.1120: *6* kill-ws
+wrapper: kill-ws
+'''Kill whitespace.'''
+#@+node:ekr.20160308173710.1121: *5* wrapper: line-number
+#@+node:ekr.20160308173710.1122: *6* line-number
+wrapper: line-number
+'''Print the line and column number and percentage of insert point.'''
+#@+node:ekr.20160308173710.1123: *5* wrapper: macro-call
+#@+node:ekr.20160308173710.1124: *6* macro-call
+wrapper: macro-call
+'''Prompts for a macro name, then executes it.'''
+#@+node:ekr.20160308173710.1125: *5* wrapper: macro-call-last
+#@+node:ekr.20160308173710.1126: *6* macro-call-last
+wrapper: macro-call-last
+'''Call the last recorded keyboard macro.'''
+#@+node:ekr.20160308173710.1127: *5* wrapper: macro-end-recording
+#@+node:ekr.20160308173710.1128: *6* macro-end-recording
+wrapper: macro-end-recording
+'''Stops recording a macro.'''
+#@+node:ekr.20160308173710.1129: *5* wrapper: macro-load-all
+#@+node:ekr.20160308173710.1130: *6* macro-load-all
+wrapper: macro-load-all
+'''Load macros from the @macros node.'''
+#@+node:ekr.20160308173710.1131: *5* wrapper: macro-name-last
+#@+node:ekr.20160308173710.1132: *6* macro-name-last
+wrapper: macro-name-last
+'''Prompts for the name to be given to the last recorded macro.'''
+#@+node:ekr.20160308173710.1133: *5* wrapper: macro-print-all
+#@+node:ekr.20160308173710.1134: *6* macro-print-all
+wrapper: macro-print-all
+'''Prints the name and definition of all named macros.'''
+#@+node:ekr.20160308173710.1135: *5* wrapper: macro-print-last
+#@+node:ekr.20160308173710.1136: *6* macro-print-last
+wrapper: macro-print-last
+'''Print the last (unnamed) macro.'''
+#@+node:ekr.20160308173710.1137: *5* wrapper: macro-save-all
+#@+node:ekr.20160308173710.1138: *6* macro-save-all
+wrapper: macro-save-all
+'''Store macros in the @macros node..'''
+#@+node:ekr.20160308173710.1139: *5* wrapper: macro-start-recording
+#@+node:ekr.20160308173710.1140: *6* macro-start-recording
+wrapper: macro-start-recording
+'''Start recording or continue to record a macro.'''
+#@+node:ekr.20160308173710.1141: *5* wrapper: make-stub-files
+#@+node:ekr.20160308173710.1142: *6* make-stub-files
+wrapper: make-stub-files
+'''
+Make stub files for all nearby @<file> nodes.
+Take configuration settings from @x stub-y nodes.
+'''
+#@+node:ekr.20160308173710.1143: *5* wrapper: mark
+#@+node:ekr.20160308173710.1144: *6* mark
+wrapper: mark
+'''Toggle the mark of the selected node.'''
+#@+node:ekr.20160308173710.1145: *5* wrapper: mark-changed-items
+#@+node:ekr.20160308173710.1146: *6* mark-changed-items
+wrapper: mark-changed-items
+'''Mark all nodes that have been changed.'''
+#@+node:ekr.20160308173710.1147: *5* wrapper: mark-subheads
+#@+node:ekr.20160308173710.1148: *6* mark-subheads
+wrapper: mark-subheads
+'''Mark all children of the selected node as changed.'''
+#@+node:ekr.20160308173710.1149: *5* wrapper: match-brackets
+#@+node:ekr.20160308173710.1150: *6* match-brackets
+wrapper: match-brackets
+'''Select the text between matching brackets.'''
+#@+node:ekr.20160308173710.1151: *5* wrapper: minimize-all
+#@+node:ekr.20160308173710.1152: *6* minimize-all
+wrapper: minimize-all
+'''Minimize all Leo's windows.'''
+#@+node:ekr.20160308173710.1153: *5* wrapper: mode-help
+#@+node:ekr.20160308173710.1154: *6* mode-help
+wrapper: mode-help
+'''
+The mode-help command.
+A possible convention would be to bind <Tab> to this command in most modes,
+by analogy with tab completion.
+'''
+#@+node:ekr.20160308173710.1155: *5* wrapper: move-lines-down
+#@+node:ekr.20160308173710.1156: *6* move-lines-down
+wrapper: move-lines-down
+'''
+Move all lines containing any selected text down one line,
+moving to the next node if the lines are the last lines of the body.
+'''
+#@+node:ekr.20160308173710.1157: *5* wrapper: move-lines-up
+#@+node:ekr.20160308173710.1158: *6* move-lines-up
+wrapper: move-lines-up
+'''
+Move all lines containing any selected text up one line,
+moving to the previous node as needed.
+'''
+#@+node:ekr.20160308173710.1159: *5* wrapper: move-marked-nodes
+#@+node:ekr.20160308173710.1160: *6* move-marked-nodes
+wrapper: move-marked-nodes
+'''Move all marked nodes as children of parent position.'''
+#@+node:ekr.20160308173710.1161: *5* wrapper: move-outline-down
+#@+node:ekr.20160308173710.1162: *6* move-outline-down
+wrapper: move-outline-down
+'''Move the selected node down.'''
+#@+node:ekr.20160308173710.1163: *5* wrapper: move-outline-left
+#@+node:ekr.20160308173710.1164: *6* move-outline-left
+wrapper: move-outline-left
+'''Move the selected node left if possible.'''
+#@+node:ekr.20160308173710.1165: *5* wrapper: move-outline-right
+#@+node:ekr.20160308173710.1166: *6* move-outline-right
+wrapper: move-outline-right
+'''Move the selected node right if possible.'''
+#@+node:ekr.20160308173710.1167: *5* wrapper: move-outline-up
+#@+node:ekr.20160308173710.1168: *6* move-outline-up
+wrapper: move-outline-up
+'''Move the selected node up if possible.'''
+#@+node:ekr.20160308173710.1169: *5* wrapper: move-past-close
+#@+node:ekr.20160308173710.1170: *6* move-past-close
+wrapper: move-past-close
+'''Move the cursor past the closing parenthesis.'''
+#@+node:ekr.20160308173710.1171: *5* wrapper: move-past-close-extend-selection
+#@+node:ekr.20160308173710.1172: *6* move-past-close-extend-selection
+wrapper: move-past-close-extend-selection
+'''Extend the selection by moving the cursor past the closing parenthesis.'''
+#@+node:ekr.20160308173710.1173: *5* wrapper: negative-argument
+#@+node:ekr.20160308173710.1174: *6* negative-argument
+wrapper: negative-argument
+'''Prompt for a negative digit argument.'''
+#@+node:ekr.20160308173710.1175: *5* wrapper: new
+#@+node:ekr.20160308173710.1176: *6* new
+wrapper: new
+'''Create a new Leo window.'''
+#@+node:ekr.20160308173710.1177: *5* wrapper: newline-and-indent
+#@+node:ekr.20160308173710.1178: *6* newline-and-indent
+wrapper: newline-and-indent
+'''Insert a newline and tab at the cursor.'''
+#@+node:ekr.20160308173710.1179: *5* wrapper: next-line
+#@+node:ekr.20160308173710.1180: *6* next-line
+wrapper: next-line
+'''Move the cursor down, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.1181: *5* wrapper: next-line-extend-selection
+#@+node:ekr.20160308173710.1182: *6* next-line-extend-selection
+wrapper: next-line-extend-selection
+'''Extend the selection by moving the cursor down.'''
+#@+node:ekr.20160308173710.1183: *5* wrapper: number-command
+#@+node:ekr.20160308173710.1184: *6* number-command
+wrapper: number-command
+'''Enter a number prefix for commands.'''
+#@+node:ekr.20160308173710.1185: *5* wrapper: number-command-0
+#@+node:ekr.20160308173710.1186: *6* number-command-0
+wrapper: number-command-0
+'''Execute command number 0.'''
+#@+node:ekr.20160308173710.1187: *5* wrapper: number-command-1
+#@+node:ekr.20160308173710.1188: *6* number-command-1
+wrapper: number-command-1
+'''Execute command number 1.'''
+#@+node:ekr.20160308173710.1189: *5* wrapper: number-command-2
+#@+node:ekr.20160308173710.1190: *6* number-command-2
+wrapper: number-command-2
+'''Execute command number 2.'''
+#@+node:ekr.20160308173710.1191: *5* wrapper: number-command-3
+#@+node:ekr.20160308173710.1192: *6* number-command-3
+wrapper: number-command-3
+'''Execute command number 3.'''
+#@+node:ekr.20160308173710.1193: *5* wrapper: number-command-4
+#@+node:ekr.20160308173710.1194: *6* number-command-4
+wrapper: number-command-4
+'''Execute command number 4.'''
+#@+node:ekr.20160308173710.1195: *5* wrapper: number-command-5
+#@+node:ekr.20160308173710.1196: *6* number-command-5
+wrapper: number-command-5
+'''Execute command number 5.'''
+#@+node:ekr.20160308173710.1197: *5* wrapper: number-command-6
+#@+node:ekr.20160308173710.1198: *6* number-command-6
+wrapper: number-command-6
+'''Execute command number 6.'''
+#@+node:ekr.20160308173710.1199: *5* wrapper: number-command-7
+#@+node:ekr.20160308173710.1200: *6* number-command-7
+wrapper: number-command-7
+'''Execute command number 7.'''
+#@+node:ekr.20160308173710.1201: *5* wrapper: number-command-8
+#@+node:ekr.20160308173710.1202: *6* number-command-8
+wrapper: number-command-8
+'''Execute command number 8.'''
+#@+node:ekr.20160308173710.1203: *5* wrapper: number-command-9
+#@+node:ekr.20160308173710.1204: *6* number-command-9
+wrapper: number-command-9
+'''Execute command number 9.'''
+#@+node:ekr.20160308173710.1205: *5* wrapper: open-cheat-sheet-leo
+#@+node:ekr.20160308173710.1206: *6* open-cheat-sheet-leo
+wrapper: open-cheat-sheet-leo
+'''Open leo/doc/cheatSheet.leo'''
+#@+node:ekr.20160308173710.1207: *5* wrapper: open-leoDocs-leo
+#@+node:ekr.20160308173710.1208: *6* open-leoDocs-leo
+wrapper: open-leoDocs-leo
+'''Open LeoDocs.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1209: *5* wrapper: open-leoPlugins-leo
+#@+node:ekr.20160308173710.1210: *6* open-leoPlugins-leo
+wrapper: open-leoPlugins-leo
+'''Open leoPlugins.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1211: *5* wrapper: open-leoPy-leo
+#@+node:ekr.20160308173710.1212: *6* open-leoPy-leo
+wrapper: open-leoPy-leo
+'''Open leoPy.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1213: *5* wrapper: open-leoSettings-leo
+#@+node:ekr.20160308173710.1214: *6* open-leoSettings-leo
+wrapper: open-leoSettings-leo
+'''Open leoSettings.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1215: *5* wrapper: open-local-settings
+#@+node:ekr.20160308173710.1216: *6* open-local-settings
+wrapper: open-local-settings
+'''Select the @settings node, if there is one.'''
+#@+node:ekr.20160308173710.1217: *5* wrapper: open-myLeoSettings-leo
+#@+node:ekr.20160308173710.1218: *6* open-myLeoSettings-leo
+wrapper: open-myLeoSettings-leo
+'''Open myLeoSettings.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1219: *5* wrapper: open-offline-tutorial
+#@+node:ekr.20160308173710.1220: *6* open-offline-tutorial
+wrapper: open-offline-tutorial
+'''Open Leo's offline tutorial.'''
+#@+node:ekr.20160308173710.1221: *5* wrapper: open-online-home
+#@+node:ekr.20160308173710.1222: *6* open-online-home
+wrapper: open-online-home
+'''Open Leo's Home page in a web browser.'''
+#@+node:ekr.20160308173710.1223: *5* wrapper: open-online-toc
+#@+node:ekr.20160308173710.1224: *6* open-online-toc
+wrapper: open-online-toc
+'''Open Leo's tutorials page in a web browser.'''
+#@+node:ekr.20160308173710.1225: *5* wrapper: open-online-tutorials
+#@+node:ekr.20160308173710.1226: *6* open-online-tutorials
+wrapper: open-online-tutorials
+'''Open Leo's tutorials page in a web browser.'''
+#@+node:ekr.20160308173710.1227: *5* wrapper: open-online-videos
+#@+node:ekr.20160308173710.1228: *6* open-online-videos
+wrapper: open-online-videos
+'''Open Leo's videos page in a web browser.'''
+#@+node:ekr.20160308173710.1229: *5* wrapper: open-outline
+#@+node:ekr.20160308173710.1230: *6* open-outline
+wrapper: open-outline
+'''Open a Leo window containing the contents of a .leo file.'''
+#@+node:ekr.20160308173710.1231: *5* wrapper: open-python-window
+#@+node:ekr.20160308173710.1232: *6* open-python-window
+wrapper: open-python-window
+'''Open Python's Idle debugger in a separate process.'''
+#@+node:ekr.20160308173710.1233: *5* wrapper: open-quickstart-leo
+#@+node:ekr.20160308173710.1234: *6* open-quickstart-leo
+wrapper: open-quickstart-leo
+'''Open quickstart.leo in a new Leo window.'''
+#@+node:ekr.20160308173710.1235: *5* wrapper: open-scripts-leo
+#@+node:ekr.20160308173710.1236: *6* open-scripts-leo
+wrapper: open-scripts-leo
+'''Open scripts.leo.'''
+#@+node:ekr.20160308173710.1237: *5* wrapper: open-unittest-leo
+#@+node:ekr.20160308173710.1238: *6* open-unittest-leo
+wrapper: open-unittest-leo
+'''Open unittest.leo.'''
+#@+node:ekr.20160308173710.1239: *5* wrapper: open-users-guide
+#@+node:ekr.20160308173710.1240: *6* open-users-guide
+wrapper: open-users-guide
+'''Open Leo's users guide in a web browser.'''
+#@+node:ekr.20160308173710.1241: *5* wrapper: open-with
+#@+node:ekr.20160308173710.1242: *6* open-with
+wrapper: open-with
+'''
+Handles the items in the Open With... menu.
+See ExternalFilesController.open_with for details about d.
+'''
+#@+node:ekr.20160308173710.1243: *5* wrapper: outline-to-cweb
+#@+node:ekr.20160308173710.1244: *6* outline-to-cweb
+wrapper: outline-to-cweb
+'''
+Export the selected outline to an external file.
+The outline is represented in CWEB format.
+'''
+#@+node:ekr.20160308173710.1245: *5* wrapper: outline-to-noweb
+#@+node:ekr.20160308173710.1246: *6* outline-to-noweb
+wrapper: outline-to-noweb
+'''
+Export the selected outline to an external file.
+The outline is represented in noweb format.
+'''
+#@+node:ekr.20160308173710.1247: *5* wrapper: paste-node
+#@+node:ekr.20160308173710.1248: *6* paste-node
+wrapper: paste-node
+'''
+Paste an outline into the present outline from the clipboard.
+Nodes do *not* retain their original identify.
+'''
+#@+node:ekr.20160308173710.1249: *5* wrapper: paste-retaining-clones
+#@+node:ekr.20160308173710.1250: *6* paste-retaining-clones
+wrapper: paste-retaining-clones
+'''
+Paste an outline into the present outline from the clipboard.
+Nodes *retain* their original identify.
+'''
+#@+node:ekr.20160308173710.1251: *5* wrapper: paste-text
+#@+node:ekr.20160308173710.1252: *6* paste-text
+wrapper: paste-text
+'''
+Paste the clipboard into a widget.
+If middleButton is True, support x-windows middle-mouse-button easter-egg.
+'''
+#@+node:ekr.20160308173710.1253: *5* wrapper: pdb
+#@+node:ekr.20160308173710.1254: *6* pdb
+wrapper: pdb
+'''Fall into pdb.'''
+#@+node:ekr.20160308173710.1255: *5* wrapper: preview-body
+#@+node:ekr.20160308173710.1256: *6* preview-body
+wrapper: preview-body
+'''Preview the body of the selected node.'''
+#@+node:ekr.20160308173710.1257: *5* wrapper: preview-expanded-body
+#@+node:ekr.20160308173710.1258: *6* preview-expanded-body
+wrapper: preview-expanded-body
+'''Preview the selected node's body, expanded'''
+#@+node:ekr.20160308173710.1259: *5* wrapper: preview-expanded-html
+#@+node:ekr.20160308173710.1260: *6* preview-expanded-html
+wrapper: preview-expanded-html
+'''
+Preview all the expanded bodies of the selected node as html. The
+expanded text must be valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1261: *5* wrapper: preview-html
+#@+node:ekr.20160308173710.1262: *6* preview-html
+wrapper: preview-html
+'''
+Preview the body of the selected text as html. The body must be valid
+html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1263: *5* wrapper: preview-marked-bodies
+#@+node:ekr.20160308173710.1264: *6* preview-marked-bodies
+wrapper: preview-marked-bodies
+'''Preview the bodies of the marked nodes.'''
+#@+node:ekr.20160308173710.1265: *5* wrapper: preview-marked-html
+#@+node:ekr.20160308173710.1266: *6* preview-marked-html
+wrapper: preview-marked-html
+'''
+Preview the concatenated bodies of the marked nodes. The concatenated
+bodies must be valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1267: *5* wrapper: preview-marked-nodes
+#@+node:ekr.20160308173710.1268: *6* preview-marked-nodes
+wrapper: preview-marked-nodes
+'''Preview the marked nodes.'''
+#@+node:ekr.20160308173710.1269: *5* wrapper: preview-node
+#@+node:ekr.20160308173710.1270: *6* preview-node
+wrapper: preview-node
+'''Preview the selected node.'''
+#@+node:ekr.20160308173710.1271: *5* wrapper: preview-tree-bodies
+#@+node:ekr.20160308173710.1272: *6* preview-tree-bodies
+wrapper: preview-tree-bodies
+'''Preview the bodies in the selected tree.'''
+#@+node:ekr.20160308173710.1273: *5* wrapper: preview-tree-html
+#@+node:ekr.20160308173710.1274: *6* preview-tree-html
+wrapper: preview-tree-html
+'''
+Preview all the bodies of the selected node as html. The concatenated
+bodies must valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1275: *5* wrapper: preview-tree-nodes
+#@+node:ekr.20160308173710.1276: *6* preview-tree-nodes
+wrapper: preview-tree-nodes
+'''Preview the entire tree.'''
+#@+node:ekr.20160308173710.1277: *5* wrapper: previous-line
+#@+node:ekr.20160308173710.1278: *6* previous-line
+wrapper: previous-line
+'''Move the cursor up, extending the selection if in extend mode.'''
+#@+node:ekr.20160308173710.1279: *5* wrapper: previous-line-extend-selection
+#@+node:ekr.20160308173710.1280: *6* previous-line-extend-selection
+wrapper: previous-line-extend-selection
+'''Extend the selection by moving the cursor up.'''
+#@+node:ekr.20160308173710.1281: *5* wrapper: print-all-uas
+#@+node:ekr.20160308173710.1282: *6* print-all-uas
+wrapper: print-all-uas
+'''Print all uA's in the outline.'''
+#@+node:ekr.20160308173710.1283: *5* wrapper: print-bindings
+#@+node:ekr.20160308173710.1284: *6* print-bindings
+wrapper: print-bindings
+'''Print all the bindings presently in effect.'''
+#@+node:ekr.20160308173710.1285: *5* wrapper: print-body
+#@+node:ekr.20160308173710.1286: *6* print-body
+wrapper: print-body
+'''Print the selected node's body'''
+#@+node:ekr.20160308173710.1287: *5* wrapper: print-buttons
+#@+node:ekr.20160308173710.1288: *6* print-buttons
+wrapper: print-buttons
+'''Print all @button and @command commands, their bindings and their source.'''
+#@+node:ekr.20160308173710.1289: *5* wrapper: print-commands
+#@+node:ekr.20160308173710.1290: *6* print-commands
+wrapper: print-commands
+'''Print all the known commands and their bindings, if any.'''
+#@+node:ekr.20160308173710.1291: *5* wrapper: print-expanded-body
+#@+node:ekr.20160308173710.1292: *6* print-expanded-body
+wrapper: print-expanded-body
+'''Print the selected node's body, expanded'''
+#@+node:ekr.20160308173710.1293: *5* wrapper: print-expanded-html
+#@+node:ekr.20160308173710.1294: *6* print-expanded-html
+wrapper: print-expanded-html
+'''
+Preview all the expanded bodies of the selected node as html. The
+expanded text must be valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1295: *5* wrapper: print-focus
+#@+node:ekr.20160308173710.1296: *6* print-focus
+wrapper: print-focus
+'''
+Print information about the requested focus.
+Doesn't work if the focus isn't in a pane with bindings!
+'''
+#@+node:ekr.20160308173710.1297: *5* wrapper: print-html
+#@+node:ekr.20160308173710.1298: *6* print-html
+wrapper: print-html
+'''
+Print the body of the selected text as html. The body must be valid
+html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1299: *5* wrapper: print-marked-bodies
+#@+node:ekr.20160308173710.1300: *6* print-marked-bodies
+wrapper: print-marked-bodies
+'''Print the body text of marked nodes.'''
+#@+node:ekr.20160308173710.1301: *5* wrapper: print-marked-html
+#@+node:ekr.20160308173710.1302: *6* print-marked-html
+wrapper: print-marked-html
+'''
+Print the concatenated bodies of the marked nodes. The concatenated
+bodies must be valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1303: *5* wrapper: print-marked-nodes
+#@+node:ekr.20160308173710.1304: *6* print-marked-nodes
+wrapper: print-marked-nodes
+'''Print all the marked nodes'''
+#@+node:ekr.20160308173710.1305: *5* wrapper: print-node
+#@+node:ekr.20160308173710.1306: *6* print-node
+wrapper: print-node
+'''Print the selected node '''
+#@+node:ekr.20160308173710.1307: *5* wrapper: print-node-uas
+#@+node:ekr.20160308173710.1308: *6* print-node-uas
+wrapper: print-node-uas
+'''Print the uA's in the selected node.'''
+#@+node:ekr.20160308173710.1309: *5* wrapper: print-plugin-handlers
+#@+node:ekr.20160308173710.1310: *6* print-plugin-handlers
+wrapper: print-plugin-handlers
+'''Print the handlers for each plugin.'''
+#@+node:ekr.20160308173710.1311: *5* wrapper: print-plugins-info
+#@+node:ekr.20160308173710.1312: *6* print-plugins-info
+wrapper: print-plugins-info
+'''
+Print the file name responsible for loading a plugin.
+This is the first .leo file containing an @enabled-plugins node
+that enables the plugin.
+'''
+#@+node:ekr.20160308173710.1313: *5* wrapper: print-settings
+#@+node:ekr.20160308173710.1314: *6* print-settings
+wrapper: print-settings
+'''
+Prints the value of every setting, except key bindings and commands and
+open-with tables. The following shows where the active setting came
+from:
+-     leoSettings.leo,
+- [D] default settings.
+- [F] indicates the file being loaded,
+- [M] myLeoSettings.leo,
+'''
+#@+node:ekr.20160308173710.1315: *5* wrapper: print-tree-bodies
+#@+node:ekr.20160308173710.1316: *6* print-tree-bodies
+wrapper: print-tree-bodies
+'''Print all the bodies in the selected tree.'''
+#@+node:ekr.20160308173710.1317: *5* wrapper: print-tree-html
+#@+node:ekr.20160308173710.1318: *6* print-tree-html
+wrapper: print-tree-html
+'''
+Print all the bodies of the selected node as html. The concatenated
+bodies must valid html, including <html> and <body> elements.
+'''
+#@+node:ekr.20160308173710.1319: *5* wrapper: print-tree-nodes
+#@+node:ekr.20160308173710.1320: *6* print-tree-nodes
+wrapper: print-tree-nodes
+'''Print all the nodes of the selected tree.'''
+#@+node:ekr.20160308173710.1321: *5* wrapper: promote
+#@+node:ekr.20160308173710.1322: *6* promote
+wrapper: promote
+'''Make all children of the selected nodes siblings of the selected node.'''
+#@+node:ekr.20160308173710.1323: *5* wrapper: re-search-backward
+#@+node:ekr.20160308173710.1324: *6* re-search-backward
+wrapper: re-search-backward
+'''
+
+'''
+#@+node:ekr.20160308173710.1325: *5* wrapper: re-search-forward
+#@+node:ekr.20160308173710.1326: *6* re-search-forward
+wrapper: re-search-forward
+'''
+
+'''
+#@+node:ekr.20160308173710.1327: *5* wrapper: read-at-auto-nodes
+#@+node:ekr.20160308173710.1328: *6* read-at-auto-nodes
+wrapper: read-at-auto-nodes
+'''Read all @auto nodes in the presently selected outline.'''
+#@+node:ekr.20160308173710.1329: *5* wrapper: read-at-file-nodes
+#@+node:ekr.20160308173710.1330: *6* read-at-file-nodes
+wrapper: read-at-file-nodes
+'''Read all @file nodes in the presently selected outline.'''
+#@+node:ekr.20160308173710.1331: *5* wrapper: read-at-shadow-nodes
+#@+node:ekr.20160308173710.1332: *6* read-at-shadow-nodes
+wrapper: read-at-shadow-nodes
+'''Read all @shadow nodes in the presently selected outline.'''
+#@+node:ekr.20160308173710.1333: *5* wrapper: read-file-into-node
+#@+node:ekr.20160308173710.1334: *6* read-file-into-node
+wrapper: read-file-into-node
+'''Read a file into a single node.'''
+#@+node:ekr.20160308173710.1335: *5* wrapper: read-outline-only
+#@+node:ekr.20160308173710.1336: *6* read-outline-only
+wrapper: read-outline-only
+'''Open a Leo outline from a .leo file, but do not read any derived files.'''
+#@+node:ekr.20160308173710.1337: *5* wrapper: rectangle-clear
+#@+node:ekr.20160308173710.1338: *6* rectangle-clear
+wrapper: rectangle-clear
+'''Clear the rectangle defined by the start and end of selected text.'''
+#@+node:ekr.20160308173710.1339: *5* wrapper: rectangle-close
+#@+node:ekr.20160308173710.1340: *6* rectangle-close
+wrapper: rectangle-close
+'''Delete the rectangle if it contains nothing but whitespace..'''
+#@+node:ekr.20160308173710.1341: *5* wrapper: rectangle-copy-to-register
+#@+node:ekr.20160308173710.1342: *6* rectangle-copy-to-register
+wrapper: rectangle-copy-to-register
+'''
+
+'''
+#@+node:ekr.20160308173710.1343: *5* wrapper: rectangle-delete
+#@+node:ekr.20160308173710.1344: *6* rectangle-delete
+wrapper: rectangle-delete
+'''Delete the rectangle defined by the start and end of selected text.'''
+#@+node:ekr.20160308173710.1345: *5* wrapper: rectangle-kill
+#@+node:ekr.20160308173710.1346: *6* rectangle-kill
+wrapper: rectangle-kill
+'''Kill the rectangle defined by the start and end of selected text.'''
+#@+node:ekr.20160308173710.1347: *5* wrapper: rectangle-open
+#@+node:ekr.20160308173710.1348: *6* rectangle-open
+wrapper: rectangle-open
+'''
+Insert blanks in the rectangle defined by the start and end of selected
+text. This pushes the previous contents of the rectangle rightward.
+'''
+#@+node:ekr.20160308173710.1349: *5* wrapper: rectangle-string
+#@+node:ekr.20160308173710.1350: *6* rectangle-string
+wrapper: rectangle-string
+'''
+Prompt for a string, then replace the contents of a rectangle
+with a string on each line.
+'''
+#@+node:ekr.20160308173710.1351: *5* wrapper: rectangle-yank
+#@+node:ekr.20160308173710.1352: *6* rectangle-yank
+wrapper: rectangle-yank
+'''Yank into the rectangle defined by the start and end of selected text.'''
+#@+node:ekr.20160308173710.1353: *5* wrapper: redo
+#@+node:ekr.20160308173710.1354: *6* redo
+wrapper: redo
+'''Redo the operation undone by the last undo.'''
+#@+node:ekr.20160308173710.1355: *5* wrapper: reformat-paragraph
+#@+node:ekr.20160308173710.1356: *6* reformat-paragraph
+wrapper: reformat-paragraph
+'''
+Reformat a text paragraph
+Wraps the concatenated text to present page width setting. Leading tabs are
+sized to present tab width setting. First and second line of original text is
+used to determine leading whitespace in reformatted text. Hanging indentation
+is honored.
+Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+selected by position of current insertion cursor.
+'''
+#@+node:ekr.20160308173710.1357: *5* wrapper: refresh-from-disk
+#@+node:ekr.20160308173710.1358: *6* refresh-from-disk
+wrapper: refresh-from-disk
+'''Refresh an @<file> node from disk.'''
+#@+node:ekr.20160308173710.1359: *5* wrapper: register-append-to
+#@+node:ekr.20160308173710.1360: *6* register-append-to
+wrapper: register-append-to
+'''Prompt for a register name and append the selected text to the register's contents.'''
+#@+node:ekr.20160308173710.1361: *5* wrapper: register-copy-rectangle-to
+#@+node:ekr.20160308173710.1362: *6* register-copy-rectangle-to
+wrapper: register-copy-rectangle-to
+'''
+Prompt for a register name and append the rectangle defined by selected
+text to the register's contents.
+'''
+#@+node:ekr.20160308173710.1363: *5* wrapper: register-copy-to
+#@+node:ekr.20160308173710.1364: *6* register-copy-to
+wrapper: register-copy-to
+'''Prompt for a register name and append the selected text to the register's contents.'''
+#@+node:ekr.20160308173710.1365: *5* wrapper: register-increment
+#@+node:ekr.20160308173710.1366: *6* register-increment
+wrapper: register-increment
+'''Prompt for a register name and increment its value if it has a numeric value.'''
+#@+node:ekr.20160308173710.1367: *5* wrapper: register-insert
+#@+node:ekr.20160308173710.1368: *6* register-insert
+wrapper: register-insert
+'''Prompt for a register name and and insert the value of another register into its contents.'''
+#@+node:ekr.20160308173710.1369: *5* wrapper: register-jump-to
+#@+node:ekr.20160308173710.1370: *6* register-jump-to
+wrapper: register-jump-to
+'''Prompt for a register name and set the insert point to the value in its register.'''
+#@+node:ekr.20160308173710.1371: *5* wrapper: register-point-to
+#@+node:ekr.20160308173710.1372: *6* register-point-to
+wrapper: register-point-to
+'''Prompt for a register name and put a value indicating the insert point in the register.'''
+#@+node:ekr.20160308173710.1373: *5* wrapper: register-prepend-to
+#@+node:ekr.20160308173710.1374: *6* register-prepend-to
+wrapper: register-prepend-to
+'''Prompt for a register name and prepend the selected text to the register's contents.'''
+#@+node:ekr.20160308173710.1375: *5* wrapper: register-view
+#@+node:ekr.20160308173710.1376: *6* register-view
+wrapper: register-view
+'''Prompt for a register name and print its contents.'''
+#@+node:ekr.20160308173710.1377: *5* wrapper: remove-blank-lines
+#@+node:ekr.20160308173710.1378: *6* remove-blank-lines
+wrapper: remove-blank-lines
+'''
+Remove lines containing nothing but whitespace.
+Select all lines if there is no existing selection.
+'''
+#@+node:ekr.20160308173710.1379: *5* wrapper: remove-sentinels
+#@+node:ekr.20160308173710.1380: *6* remove-sentinels
+wrapper: remove-sentinels
+'''Import one or more files, removing any sentinels.'''
+#@+node:ekr.20160308173710.1381: *5* wrapper: remove-space-from-lines
+#@+node:ekr.20160308173710.1382: *6* remove-space-from-lines
+wrapper: remove-space-from-lines
+'''Remove a space from start of all lines, or all selected lines.'''
+#@+node:ekr.20160308173710.1383: *5* wrapper: remove-tab-from-lines
+#@+node:ekr.20160308173710.1384: *6* remove-tab-from-lines
+wrapper: remove-tab-from-lines
+'''Remove a tab from start of all lines, or all selected lines.'''
+#@+node:ekr.20160308173710.1385: *5* wrapper: repeat-complex-command
+#@+node:ekr.20160308173710.1386: *6* repeat-complex-command
+wrapper: repeat-complex-command
+'''Repeat the previously executed minibuffer command.'''
+#@+node:ekr.20160308173710.1387: *5* wrapper: replace
+#@+node:ekr.20160308173710.1388: *6* replace
+wrapper: replace
+'''
+
+'''
+#@+node:ekr.20160308173710.1389: *5* wrapper: replace-all
+#@+node:ekr.20160308173710.1390: *6* replace-all
+wrapper: replace-all
+'''Handle the change-all command.'''
+#@+node:ekr.20160308173710.1391: *5* wrapper: replace-current-character
+#@+node:ekr.20160308173710.1392: *6* replace-current-character
+wrapper: replace-current-character
+'''Replace the current character with the next character typed.'''
+#@+node:ekr.20160308173710.1393: *5* wrapper: replace-then-find
+#@+node:ekr.20160308173710.1394: *6* replace-then-find
+wrapper: replace-then-find
+'''Handle the replace-then-find command.'''
+#@+node:ekr.20160308173710.1395: *5* wrapper: resize-to-screen
+#@+node:ekr.20160308173710.1396: *6* resize-to-screen
+wrapper: resize-to-screen
+'''Resize the Leo window so it fill the entire screen.'''
+#@+node:ekr.20160308173710.1397: *5* wrapper: reverse-region
+#@+node:ekr.20160308173710.1398: *6* reverse-region
+wrapper: reverse-region
+'''Reverse the order of lines in the selected text.'''
+#@+node:ekr.20160308173710.1399: *5* wrapper: reverse-sort-lines
+#@+node:ekr.20160308173710.1400: *6* reverse-sort-lines
+wrapper: reverse-sort-lines
+'''Sort the selected lines in reverse order.'''
+#@+node:ekr.20160308173710.1401: *5* wrapper: reverse-sort-lines-ignoring-case
+#@+node:ekr.20160308173710.1402: *6* reverse-sort-lines-ignoring-case
+wrapper: reverse-sort-lines-ignoring-case
+'''Sort the selected lines in reverse order, ignoring case.'''
+#@+node:ekr.20160308173710.1403: *5* wrapper: revert
+#@+node:ekr.20160308173710.1404: *6* revert
+wrapper: revert
+'''Revert the contents of a Leo outline to last saved contents.'''
+#@+node:ekr.20160308173710.1405: *5* wrapper: right-click-headline
+#@+node:ekr.20160308173710.1406: *6* right-click-headline
+wrapper: right-click-headline
+'''Simulate a right click in the headline of the presently selected node.'''
+#@+node:ekr.20160308173710.1407: *5* wrapper: right-click-icon
+#@+node:ekr.20160308173710.1408: *6* right-click-icon
+wrapper: right-click-icon
+'''Simulate a right click in the icon box of the presently selected node.'''
+#@+node:ekr.20160308173710.1409: *5* wrapper: rst3
+#@+node:ekr.20160308173710.1410: *6* rst3
+wrapper: rst3
+'''Write all @rst nodes.'''
+#@+node:ekr.20160308173710.1411: *5* wrapper: run-all-unit-tests-externally
+#@+node:ekr.20160308173710.1412: *6* run-all-unit-tests-externally
+wrapper: run-all-unit-tests-externally
+'''
+Run all unit tests contained in the entire outline.
+Tests are run in an external process, so tests *cannot* change the outline.
+'''
+#@+node:ekr.20160308173710.1413: *5* wrapper: run-all-unit-tests-locally
+#@+node:ekr.20160308173710.1414: *6* run-all-unit-tests-locally
+wrapper: run-all-unit-tests-locally
+'''
+Run all unit tests contained in the presently selected outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''
+#@+node:ekr.20160308173710.1415: *5* wrapper: run-marked-unit-tests-externally
+#@+node:ekr.20160308173710.1416: *6* run-marked-unit-tests-externally
+wrapper: run-marked-unit-tests-externally
+'''
+Run all marked unit tests in the outline.
+Tests are run in an external process, so tests *cannot* change the outline.
+'''
+#@+node:ekr.20160308173710.1417: *5* wrapper: run-marked-unit-tests-locally
+#@+node:ekr.20160308173710.1418: *6* run-marked-unit-tests-locally
+wrapper: run-marked-unit-tests-locally
+'''
+Run marked unit tests in the outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''
+#@+node:ekr.20160308173710.1419: *5* wrapper: run-selected-unit-tests-externally
+#@+node:ekr.20160308173710.1420: *6* run-selected-unit-tests-externally
+wrapper: run-selected-unit-tests-externally
+'''
+Run all unit tests contained in the presently selected outline
+Tests are run in an external process, so tests *cannot* change the outline.
+'''
+#@+node:ekr.20160308173710.1421: *5* wrapper: run-selected-unit-tests-locally
+#@+node:ekr.20160308173710.1422: *6* run-selected-unit-tests-locally
+wrapper: run-selected-unit-tests-locally
+'''
+Run all unit tests contained in the presently selected outline.
+Tests are run in the outline's process, so tests *can* change the outline.
+'''
+#@+node:ekr.20160308173710.1423: *5* wrapper: save-all
+#@+node:ekr.20160308173710.1424: *6* save-all
+wrapper: save-all
+'''Save all open tabs windows/tabs.'''
+#@+node:ekr.20160308173710.1425: *5* wrapper: save-buffers-kill-leo
+#@+node:ekr.20160308173710.1426: *6* save-buffers-kill-leo
+wrapper: save-buffers-kill-leo
+'''Quit Leo, prompting to save any unsaved files first.'''
+#@+node:ekr.20160308173710.1427: *5* wrapper: save-file
+#@+node:ekr.20160308173710.1428: *6* save-file
+wrapper: save-file
+'''Save a Leo outline to a file.'''
+#@+node:ekr.20160308173710.1429: *5* wrapper: save-file-as
+#@+node:ekr.20160308173710.1430: *6* save-file-as
+wrapper: save-file-as
+'''Save a Leo outline to a file with a new filename.'''
+#@+node:ekr.20160308173710.1431: *5* wrapper: save-file-as-unzipped
+#@+node:ekr.20160308173710.1432: *6* save-file-as-unzipped
+wrapper: save-file-as-unzipped
+'''
+Save a Leo outline to a file with a new filename,
+ensuring that the file is not compressed.
+'''
+#@+node:ekr.20160308173711.1: *5* wrapper: save-file-as-zipped
+#@+node:ekr.20160308173711.2: *6* save-file-as-zipped
+wrapper: save-file-as-zipped
+'''
+Save a Leo outline to a file with a new filename,
+ensuring that the file is compressed.
+'''
+#@+node:ekr.20160308173711.3: *5* wrapper: save-file-to
+#@+node:ekr.20160308173711.4: *6* save-file-to
+wrapper: save-file-to
+'''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
+#@+node:ekr.20160308173711.5: *5* wrapper: scroll-down-half-page
+#@+node:ekr.20160308173711.6: *6* scroll-down-half-page
+wrapper: scroll-down-half-page
+'''Scroll the presently selected pane down one lline.'''
+#@+node:ekr.20160308173711.7: *5* wrapper: scroll-down-line
+#@+node:ekr.20160308173711.8: *6* scroll-down-line
+wrapper: scroll-down-line
+'''Scroll the presently selected pane down one lline.'''
+#@+node:ekr.20160308173711.9: *5* wrapper: scroll-down-page
+#@+node:ekr.20160308173711.10: *6* scroll-down-page
+wrapper: scroll-down-page
+'''Scroll the presently selected pane down one page.'''
+#@+node:ekr.20160308173711.11: *5* wrapper: scroll-outline-down-line
+#@+node:ekr.20160308173711.12: *6* scroll-outline-down-line
+wrapper: scroll-outline-down-line
+'''Scroll the outline pane down one line.'''
+#@+node:ekr.20160308173711.13: *5* wrapper: scroll-outline-down-page
+#@+node:ekr.20160308173711.14: *6* scroll-outline-down-page
+wrapper: scroll-outline-down-page
+'''Scroll the outline pane down one page.'''
+#@+node:ekr.20160308173711.15: *5* wrapper: scroll-outline-left
+#@+node:ekr.20160308173711.16: *6* scroll-outline-left
+wrapper: scroll-outline-left
+'''Scroll the outline left.'''
+#@+node:ekr.20160308173711.17: *5* wrapper: scroll-outline-right
+#@+node:ekr.20160308173711.18: *6* scroll-outline-right
+wrapper: scroll-outline-right
+'''Scroll the outline left.'''
+#@+node:ekr.20160308173711.19: *5* wrapper: scroll-outline-up-line
+#@+node:ekr.20160308173711.20: *6* scroll-outline-up-line
+wrapper: scroll-outline-up-line
+'''Scroll the outline pane up one line.'''
+#@+node:ekr.20160308173711.21: *5* wrapper: scroll-outline-up-page
+#@+node:ekr.20160308173711.22: *6* scroll-outline-up-page
+wrapper: scroll-outline-up-page
+'''Scroll the outline pane up one page.'''
+#@+node:ekr.20160308173711.23: *5* wrapper: scroll-up-half-page
+#@+node:ekr.20160308173711.24: *6* scroll-up-half-page
+wrapper: scroll-up-half-page
+'''Scroll the presently selected pane down one lline.'''
+#@+node:ekr.20160308173711.25: *5* wrapper: scroll-up-line
+#@+node:ekr.20160308173711.26: *6* scroll-up-line
+wrapper: scroll-up-line
+'''Scroll the presently selected pane up one page.'''
+#@+node:ekr.20160308173711.27: *5* wrapper: scroll-up-page
+#@+node:ekr.20160308173711.28: *6* scroll-up-page
+wrapper: scroll-up-page
+'''Scroll the presently selected pane up one page.'''
+#@+node:ekr.20160308173711.29: *5* wrapper: search-backward
+#@+node:ekr.20160308173711.30: *6* search-backward
+wrapper: search-backward
+'''
+
+'''
+#@+node:ekr.20160308173711.31: *5* wrapper: search-forward
+#@+node:ekr.20160308173711.32: *6* search-forward
+wrapper: search-forward
+'''
+
+'''
+#@+node:ekr.20160308173711.33: *5* wrapper: select-all
+#@+node:ekr.20160308173711.34: *6* select-all
+wrapper: select-all
+'''Select all text.'''
+#@+node:ekr.20160308173711.35: *5* wrapper: select-to-matching-bracket
+#@+node:ekr.20160308173711.36: *6* select-to-matching-bracket
+wrapper: select-to-matching-bracket
+'''Select the text between matching brackets.'''
+#@+node:ekr.20160308173711.37: *5* wrapper: self-insert-command
+#@+node:ekr.20160308173711.38: *6* self-insert-command
+wrapper: self-insert-command
+'''
+Insert a character in the body pane.
+This is the default binding for all keys in the body pane.
+It handles undo, bodykey events, tabs, back-spaces and bracket matching.
+'''
+#@+node:ekr.20160308173711.39: *5* wrapper: set-colors
+#@+node:ekr.20160308173711.40: *6* set-colors
+wrapper: set-colors
+'''Open the color dialog.'''
+#@+node:ekr.20160308173711.41: *5* wrapper: set-command-state
+#@+node:ekr.20160308173711.42: *6* set-command-state
+wrapper: set-command-state
+'''Enter the 'command' editing state.'''
+#@+node:ekr.20160308173711.43: *5* wrapper: set-comment-column
+#@+node:ekr.20160308173711.44: *6* set-comment-column
+wrapper: set-comment-column
+'''Set the comment column for the indent-to-comment-column command.'''
+#@+node:ekr.20160308173711.45: *5* wrapper: set-extend-mode
+#@+node:ekr.20160308173711.46: *6* set-extend-mode
+wrapper: set-extend-mode
+'''Turn on extend mode: cursor movement commands do extend the selection.'''
+#@+node:ekr.20160308173711.47: *5* wrapper: set-fill-column
+#@+node:ekr.20160308173711.48: *6* set-fill-column
+wrapper: set-fill-column
+'''Set the fill column used by the center-line and center-region commands.'''
+#@+node:ekr.20160308173711.49: *5* wrapper: set-fill-prefix
+#@+node:ekr.20160308173711.50: *6* set-fill-prefix
+wrapper: set-fill-prefix
+'''Make the selected text the fill prefix.'''
+#@+node:ekr.20160308173711.51: *5* wrapper: set-find-everywhere
+#@+node:ekr.20160308173711.52: *6* set-find-everywhere
+wrapper: set-find-everywhere
+'''Set the 'Entire Outline' radio button in the Find tab.'''
+#@+node:ekr.20160308173711.53: *5* wrapper: set-find-node-only
+#@+node:ekr.20160308173711.54: *6* set-find-node-only
+wrapper: set-find-node-only
+'''Set the 'Node Only' radio button in the Find tab.'''
+#@+node:ekr.20160308173711.55: *5* wrapper: set-find-suboutline-only
+#@+node:ekr.20160308173711.56: *6* set-find-suboutline-only
+wrapper: set-find-suboutline-only
+'''Set the 'Suboutline Only' radio button in the Find tab.'''
+#@+node:ekr.20160308173711.57: *5* wrapper: set-font
+#@+node:ekr.20160308173711.58: *6* set-font
+wrapper: set-font
+'''Open the font dialog.'''
+#@+node:ekr.20160308173711.59: *5* wrapper: set-insert-state
+#@+node:ekr.20160308173711.60: *6* set-insert-state
+wrapper: set-insert-state
+'''Enter the 'insert' editing state.'''
+#@+node:ekr.20160308173711.61: *5* wrapper: set-overwrite-state
+#@+node:ekr.20160308173711.62: *6* set-overwrite-state
+wrapper: set-overwrite-state
+'''Enter the 'overwrite' editing state.'''
+#@+node:ekr.20160308173711.63: *5* wrapper: set-replace-string
+#@+node:ekr.20160308173711.64: *6* set-replace-string
+wrapper: set-replace-string
+'''A state handler to get the replacement string.'''
+#@+node:ekr.20160308173711.65: *5* wrapper: set-search-string
+#@+node:ekr.20160308173711.66: *6* set-search-string
+wrapper: set-search-string
+'''Open the search pane and get the search string.'''
+#@+node:ekr.20160308173711.67: *5* wrapper: set-silent-mode
+#@+node:ekr.20160308173711.68: *6* set-silent-mode
+wrapper: set-silent-mode
+'''
+Set the mode to be run silently, without the minibuffer.
+The only use for this command is to put the following in an @mode node::
+--> set-silent-mode
+'''
+#@+node:ekr.20160308173711.69: *5* wrapper: set-ua
+#@+node:ekr.20160308173711.70: *6* set-ua
+wrapper: set-ua
+'''Prompt for the name and value of a uA, then set the uA in the present node.'''
+#@+node:ekr.20160308173711.71: *5* wrapper: settings
+#@+node:ekr.20160308173711.72: *6* settings
+wrapper: settings
+'''Handle the preferences command.'''
+#@+node:ekr.20160308173711.73: *5* wrapper: shell-command
+#@+node:ekr.20160308173711.74: *6* shell-command
+wrapper: shell-command
+'''Execute a shell command.'''
+#@+node:ekr.20160308173711.75: *5* wrapper: shell-command-on-region
+#@+node:ekr.20160308173711.76: *6* shell-command-on-region
+wrapper: shell-command-on-region
+'''Execute a command taken from the selected text in a separate process.'''
+#@+node:ekr.20160308173711.77: *5* wrapper: show-calltips
+#@+node:ekr.20160308173711.78: *6* show-calltips
+wrapper: show-calltips
+'''Show the calltips at the cursor.'''
+#@+node:ekr.20160308173711.79: *5* wrapper: show-calltips-force
+#@+node:ekr.20160308173711.80: *6* show-calltips-force
+wrapper: show-calltips-force
+'''Show the calltips at the cursor, even if calltips are not presently enabled.'''
+#@+node:ekr.20160308173711.81: *5* wrapper: show-colors
+#@+node:ekr.20160308173711.82: *6* show-colors
+wrapper: show-colors
+'''Open a tab in the log pane showing various color pickers.'''
+#@+node:ekr.20160308173711.83: *5* wrapper: show-find-options
+#@+node:ekr.20160308173711.84: *6* show-find-options
+wrapper: show-find-options
+'''
+Show the present find options in the status line.
+This is useful for commands like search-forward that do not show the Find Panel.
+'''
+#@+node:ekr.20160308173711.85: *5* wrapper: show-fonts
+#@+node:ekr.20160308173711.86: *6* show-fonts
+wrapper: show-fonts
+'''Open a tab in the log pane showing a font picker.'''
+#@+node:ekr.20160308173711.87: *5* wrapper: show-invisibles
+#@+node:ekr.20160308173711.88: *6* show-invisibles
+wrapper: show-invisibles
+'''Show invisible (whitespace) characters.'''
+#@+node:ekr.20160308173711.89: *5* wrapper: simulate-begin-drag
+#@+node:ekr.20160308173711.90: *6* simulate-begin-drag
+wrapper: simulate-begin-drag
+'''Simulate the start of a drag in the presently selected node.'''
+#@+node:ekr.20160308173711.91: *5* wrapper: simulate-end-drag
+#@+node:ekr.20160308173711.92: *6* simulate-end-drag
+wrapper: simulate-end-drag
+'''Simulate the end of a drag in the presently selected node.'''
+#@+node:ekr.20160308173711.93: *5* wrapper: sort-children
+#@+node:ekr.20160308173711.94: *6* sort-children
+wrapper: sort-children
+'''Sort the children of a node.'''
+#@+node:ekr.20160308173711.95: *5* wrapper: sort-columns
+#@+node:ekr.20160308173711.96: *6* sort-columns
+wrapper: sort-columns
+'''
+Sort lines of selected text using only lines in the given columns to do
+the comparison.
+'''
+#@+node:ekr.20160308173711.97: *5* wrapper: sort-fields
+#@+node:ekr.20160308173711.98: *6* sort-fields
+wrapper: sort-fields
+'''
+Divide the selected text into lines and sort by comparing the contents
+of one field in each line. Fields are defined as separated by
+whitespace, so the first run of consecutive non-whitespace characters
+in a line constitutes field 1, the second such run constitutes field 2,
+etc.
+You specify which field to sort by with a numeric argument: 1 to sort
+by field 1, etc. A negative argument means sort in descending order.
+Thus, minus 2 means sort by field 2 in reverse-alphabetical order.
+'''
+#@+node:ekr.20160308173711.99: *5* wrapper: sort-lines
+#@+node:ekr.20160308173711.100: *6* sort-lines
+wrapper: sort-lines
+'''Sort the selected lines.'''
+#@+node:ekr.20160308173711.101: *5* wrapper: sort-lines-ignoring-case
+#@+node:ekr.20160308173711.102: *6* sort-lines-ignoring-case
+wrapper: sort-lines-ignoring-case
+'''Sort the selected lines, ignoring case.'''
+#@+node:ekr.20160308173711.103: *5* wrapper: sort-recent-files
+#@+node:ekr.20160308173711.104: *6* sort-recent-files
+wrapper: sort-recent-files
+'''Sort the recent files list.'''
+#@+node:ekr.20160308173711.105: *5* wrapper: sort-siblings
+#@+node:ekr.20160308173711.106: *6* sort-siblings
+wrapper: sort-siblings
+'''Sort the siblings of a node.'''
+#@+node:ekr.20160308173711.107: *5* wrapper: spell-as-you-type-next
+#@+node:ekr.20160308173711.108: *6* spell-as-you-type-next
+wrapper: spell-as-you-type-next
+'''as_you_type_next - cycle word behind cursor to next suggestion.'''
+#@+node:ekr.20160308173711.109: *5* wrapper: spell-as-you-type-toggle
+#@+node:ekr.20160308173711.110: *6* spell-as-you-type-toggle
+wrapper: spell-as-you-type-toggle
+'''as_you_type_toggle - toggle spell as you type.'''
+#@+node:ekr.20160308173711.111: *5* wrapper: spell-as-you-type-undo
+#@+node:ekr.20160308173711.112: *6* spell-as-you-type-undo
+wrapper: spell-as-you-type-undo
+'''
+as_you_type_undo - replace word behind cursor with word
+user typed before it started cycling suggestions.
+'''
+#@+node:ekr.20160308173711.113: *5* wrapper: spell-as-you-type-wrap
+#@+node:ekr.20160308173711.114: *6* spell-as-you-type-wrap
+wrapper: spell-as-you-type-wrap
+'''as_you_type_wrap - toggle wrap as you type.'''
+#@+node:ekr.20160308173711.115: *5* wrapper: spell-change
+#@+node:ekr.20160308173711.116: *6* spell-change
+wrapper: spell-change
+'''Simulate pressing the 'Change' button in the Spell tab.'''
+#@+node:ekr.20160308173711.117: *5* wrapper: spell-change-then-find
+#@+node:ekr.20160308173711.118: *6* spell-change-then-find
+wrapper: spell-change-then-find
+'''Simulate pressing the 'Change, Find' button in the Spell tab.'''
+#@+node:ekr.20160308173711.119: *5* wrapper: spell-find
+#@+node:ekr.20160308173711.120: *6* spell-find
+wrapper: spell-find
+'''
+Simulate pressing the 'Find' button in the Spell tab.
+Just open the Spell tab if it has never been opened.
+For minibuffer commands, we must also force the Spell tab to be visible.
+'''
+#@+node:ekr.20160308173711.121: *5* wrapper: spell-ignore
+#@+node:ekr.20160308173711.122: *6* spell-ignore
+wrapper: spell-ignore
+'''Simulate pressing the 'Ignore' button in the Spell tab.'''
+#@+node:ekr.20160308173711.123: *5* wrapper: spell-tab-hide
+#@+node:ekr.20160308173711.124: *6* spell-tab-hide
+wrapper: spell-tab-hide
+'''Hide the Spell tab.'''
+#@+node:ekr.20160308173711.125: *5* wrapper: spell-tab-open
+#@+node:ekr.20160308173711.126: *6* spell-tab-open
+wrapper: spell-tab-open
+'''Open the Spell Checker tab in the log pane.'''
+#@+node:ekr.20160308173711.127: *5* wrapper: split-line
+#@+node:ekr.20160308173711.128: *6* split-line
+wrapper: split-line
+'''Split a line at the cursor position.'''
+#@+node:ekr.20160308173711.129: *5* wrapper: start-search
+#@+node:ekr.20160308173711.130: *6* start-search
+wrapper: start-search
+'''
+
+'''
+#@+node:ekr.20160308173711.131: *5* wrapper: suspend
+#@+node:ekr.20160308173711.132: *6* suspend
+wrapper: suspend
+'''Minimize the present Leo window.'''
+#@+node:ekr.20160308173711.133: *5* wrapper: tabify
+#@+node:ekr.20160308173711.134: *6* tabify
+wrapper: tabify
+'''Convert 4 spaces to tabs in the selected text.'''
+#@+node:ekr.20160308173711.135: *5* wrapper: tangle
+#@+node:ekr.20160308173711.136: *6* tangle
+wrapper: tangle
+'''
+Tangle all @root nodes in the selected outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.137: *5* wrapper: tangle-all
+#@+node:ekr.20160308173711.138: *6* tangle-all
+wrapper: tangle-all
+'''
+Tangle all @root nodes in the entire outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.139: *5* wrapper: tangle-marked
+#@+node:ekr.20160308173711.140: *6* tangle-marked
+wrapper: tangle-marked
+'''
+Tangle all marked @root nodes in the entire outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.141: *5* wrapper: toggle-abbrev-mode
+#@+node:ekr.20160308173711.142: *6* toggle-abbrev-mode
+wrapper: toggle-abbrev-mode
+'''Toggle abbreviation mode.'''
+#@+node:ekr.20160308173711.143: *5* wrapper: toggle-active-pane
+#@+node:ekr.20160308173711.144: *6* toggle-active-pane
+wrapper: toggle-active-pane
+'''Toggle the focus between the outline and body panes.'''
+#@+node:ekr.20160308173711.145: *5* wrapper: toggle-angle-brackets
+#@+node:ekr.20160308173711.146: *6* toggle-angle-brackets
+wrapper: toggle-angle-brackets
+'''Add or remove double angle brackets from the headline of the selected node.'''
+#@+node:ekr.20160308173711.147: *5* wrapper: toggle-autocompleter
+#@+node:ekr.20160308173711.148: *6* toggle-autocompleter
+wrapper: toggle-autocompleter
+'''Toggle whether the autocompleter is enabled.'''
+#@+node:ekr.20160308173711.149: *5* wrapper: toggle-calltips
+#@+node:ekr.20160308173711.150: *6* toggle-calltips
+wrapper: toggle-calltips
+'''Toggle whether calltips are enabled.'''
+#@+node:ekr.20160308173711.151: *5* wrapper: toggle-case-region
+#@+node:ekr.20160308173711.152: *6* toggle-case-region
+wrapper: toggle-case-region
+'''Toggle the case of all characters in the selected text.'''
+#@+node:ekr.20160308173711.153: *5* wrapper: toggle-extend-mode
+#@+node:ekr.20160308173711.154: *6* toggle-extend-mode
+wrapper: toggle-extend-mode
+'''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
+#@+node:ekr.20160308173711.155: *5* wrapper: toggle-find-collapses-nodes
+#@+node:ekr.20160308173711.156: *6* toggle-find-collapses-nodes
+wrapper: toggle-find-collapses-nodes
+'''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
+#@+node:ekr.20160308173711.157: *5* wrapper: toggle-find-ignore-case-option
+#@+node:ekr.20160308173711.158: *6* toggle-find-ignore-case-option
+wrapper: toggle-find-ignore-case-option
+'''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.159: *5* wrapper: toggle-find-in-body-option
+#@+node:ekr.20160308173711.160: *6* toggle-find-in-body-option
+wrapper: toggle-find-in-body-option
+'''Set the 'Search Body' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.161: *5* wrapper: toggle-find-in-headline-option
+#@+node:ekr.20160308173711.162: *6* toggle-find-in-headline-option
+wrapper: toggle-find-in-headline-option
+'''Toggle the 'Search Headline' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.163: *5* wrapper: toggle-find-mark-changes-option
+#@+node:ekr.20160308173711.164: *6* toggle-find-mark-changes-option
+wrapper: toggle-find-mark-changes-option
+'''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.165: *5* wrapper: toggle-find-mark-finds-option
+#@+node:ekr.20160308173711.166: *6* toggle-find-mark-finds-option
+wrapper: toggle-find-mark-finds-option
+'''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.167: *5* wrapper: toggle-find-regex-option
+#@+node:ekr.20160308173711.168: *6* toggle-find-regex-option
+wrapper: toggle-find-regex-option
+'''Toggle the 'Regexp' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.169: *5* wrapper: toggle-find-word-option
+#@+node:ekr.20160308173711.170: *6* toggle-find-word-option
+wrapper: toggle-find-word-option
+'''Toggle the 'Whole Word' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.171: *5* wrapper: toggle-find-wrap-around-option
+#@+node:ekr.20160308173711.172: *6* toggle-find-wrap-around-option
+wrapper: toggle-find-wrap-around-option
+'''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+#@+node:ekr.20160308173711.173: *5* wrapper: toggle-input-state
+#@+node:ekr.20160308173711.174: *6* toggle-input-state
+wrapper: toggle-input-state
+'''The toggle-input-state command.'''
+#@+node:ekr.20160308173711.175: *5* wrapper: toggle-invisibles
+#@+node:ekr.20160308173711.176: *6* toggle-invisibles
+wrapper: toggle-invisibles
+'''Toggle showing of invisible (whitespace) characters.'''
+#@+node:ekr.20160308173711.177: *5* wrapper: toggle-sparse-move
+#@+node:ekr.20160308173711.178: *6* toggle-sparse-move
+wrapper: toggle-sparse-move
+'''Toggle whether moves collapse the outline.'''
+#@+node:ekr.20160308173711.179: *5* wrapper: toggle-split-direction
+#@+node:ekr.20160308173711.180: *6* toggle-split-direction
+wrapper: toggle-split-direction
+'''Toggle the split direction in the present Leo window.'''
+#@+node:ekr.20160308173711.181: *5* wrapper: transpose-chars
+#@+node:ekr.20160308173711.182: *6* transpose-chars
+wrapper: transpose-chars
+'''Swap the characters at the cursor.'''
+#@+node:ekr.20160308173711.183: *5* wrapper: transpose-lines
+#@+node:ekr.20160308173711.184: *6* transpose-lines
+wrapper: transpose-lines
+'''Transpose the line containing the cursor with the preceding line.'''
+#@+node:ekr.20160308173711.185: *5* wrapper: transpose-words
+#@+node:ekr.20160308173711.186: *6* transpose-words
+wrapper: transpose-words
+'''Transpose the word at the cursor with the preceding or following word.'''
+#@+node:ekr.20160308173711.187: *5* wrapper: typescript-to-py
+#@+node:ekr.20160308173711.188: *6* typescript-to-py
+wrapper: typescript-to-py
+'''
+The typescript-to-python command converts typescript text to python
+text. The conversion is not perfect, but it eliminates a lot of tedious
+text manipulation.
+'''
+#@+node:ekr.20160308173711.189: *5* wrapper: undo
+#@+node:ekr.20160308173711.190: *6* undo
+wrapper: undo
+'''Undo the operation described by the undo parameters.'''
+#@+node:ekr.20160308173711.191: *5* wrapper: unformat-paragraph
+#@+node:ekr.20160308173711.192: *6* unformat-paragraph
+wrapper: unformat-paragraph
+'''
+Unformat a text paragraph. Removes all extra whitespace in a paragraph.
+Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+selected by position of current insertion cursor.
+'''
+#@+node:ekr.20160308173711.193: *5* wrapper: unindent-region
+#@+node:ekr.20160308173711.194: *6* unindent-region
+wrapper: unindent-region
+'''Remove one tab's worth of indentation from all presently selected lines.'''
+#@+node:ekr.20160308173711.195: *5* wrapper: universal-argument
+#@+node:ekr.20160308173711.196: *6* universal-argument
+wrapper: universal-argument
+'''Prompt for a universal argument.'''
+#@+node:ekr.20160308173711.197: *5* wrapper: unmark-all
+#@+node:ekr.20160308173711.198: *6* unmark-all
+wrapper: unmark-all
+'''Unmark all nodes in the entire outline.'''
+#@+node:ekr.20160308173711.199: *5* wrapper: untabify
+#@+node:ekr.20160308173711.200: *6* untabify
+wrapper: untabify
+'''Convert tabs to 4 spaces in the selected text.'''
+#@+node:ekr.20160308173711.201: *5* wrapper: untangle
+#@+node:ekr.20160308173711.202: *6* untangle
+wrapper: untangle
+'''
+Untangle all @root nodes in the selected outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.203: *5* wrapper: untangle-all
+#@+node:ekr.20160308173711.204: *6* untangle-all
+wrapper: untangle-all
+'''
+Untangle all @root nodes in the entire outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.205: *5* wrapper: untangle-marked
+#@+node:ekr.20160308173711.206: *6* untangle-marked
+wrapper: untangle-marked
+'''
+Untangle all marked @root nodes in the entire outline.
+**Important**: @root and all tangle and untangle commands are
+deprecated. They are documented nowhere but in these docstrings.
+'''
+#@+node:ekr.20160308173711.207: *5* wrapper: upcase-region
+#@+node:ekr.20160308173711.208: *6* upcase-region
+wrapper: upcase-region
+'''Convert all characters in the selected text to UPPER CASE.'''
+#@+node:ekr.20160308173711.209: *5* wrapper: upcase-word
+#@+node:ekr.20160308173711.210: *6* upcase-word
+wrapper: upcase-word
+'''Convert all characters of the word at the cursor to UPPER CASE.'''
+#@+node:ekr.20160308173711.211: *5* wrapper: view-lossage
+#@+node:ekr.20160308173711.212: *6* view-lossage
+wrapper: view-lossage
+'''Put the Emacs-lossage in the minibuffer label.'''
+#@+node:ekr.20160308173711.213: *5* wrapper: weave
+#@+node:ekr.20160308173711.214: *6* weave
+wrapper: weave
+'''Simulate a literate-programming weave operation by writing the outline to a text file.'''
+#@+node:ekr.20160308173711.215: *5* wrapper: what-line
+#@+node:ekr.20160308173711.216: *6* what-line
+wrapper: what-line
+'''Print the line number of the line containing the cursor.'''
+#@+node:ekr.20160308173711.217: *5* wrapper: word-search-backward
+#@+node:ekr.20160308173711.218: *6* word-search-backward
+wrapper: word-search-backward
+'''
+
+'''
+#@+node:ekr.20160308173711.219: *5* wrapper: word-search-forward
+#@+node:ekr.20160308173711.220: *6* word-search-forward
+wrapper: word-search-forward
+'''
+
+'''
+#@+node:ekr.20160308173711.221: *5* wrapper: write-at-auto-nodes
+#@+node:ekr.20160308173711.222: *6* write-at-auto-nodes
+wrapper: write-at-auto-nodes
+'''Write all @auto nodes in the selected outline.'''
+#@+node:ekr.20160308173711.223: *5* wrapper: write-at-file-nodes
+#@+node:ekr.20160308173711.224: *6* write-at-file-nodes
+wrapper: write-at-file-nodes
+'''Write all @file nodes in the selected outline.'''
+#@+node:ekr.20160308173711.225: *5* wrapper: write-at-shadow-nodes
+#@+node:ekr.20160308173711.226: *6* write-at-shadow-nodes
+wrapper: write-at-shadow-nodes
+'''Write all @shadow nodes in the selected outline.'''
+#@+node:ekr.20160308173711.227: *5* wrapper: write-dirty-at-auto-nodes
+#@+node:ekr.20160308173711.228: *6* write-dirty-at-auto-nodes
+wrapper: write-dirty-at-auto-nodes
+'''Write all dirty @auto nodes in the selected outline.'''
+#@+node:ekr.20160308173711.229: *5* wrapper: write-dirty-at-file-nodes
+#@+node:ekr.20160308173711.230: *6* write-dirty-at-file-nodes
+wrapper: write-dirty-at-file-nodes
+'''Write all changed @file Nodes.'''
+#@+node:ekr.20160308173711.231: *5* wrapper: write-dirty-at-shadow-nodes
+#@+node:ekr.20160308173711.232: *6* write-dirty-at-shadow-nodes
+wrapper: write-dirty-at-shadow-nodes
+'''Write all dirty @shadow nodes in the selected outline.'''
+#@+node:ekr.20160308173711.233: *5* wrapper: write-file-from-node
+#@+node:ekr.20160308173711.234: *6* write-file-from-node
+wrapper: write-file-from-node
+'''
+If node starts with @read-file-into-node, use the full path name in the headline.
+Otherwise, prompt for a file name.
+'''
+#@+node:ekr.20160308173711.235: *5* wrapper: write-missing-at-file-nodes
+#@+node:ekr.20160308173711.236: *6* write-missing-at-file-nodes
+wrapper: write-missing-at-file-nodes
+'''Write all @file nodes for which the corresponding external file does not exist.'''
+#@+node:ekr.20160308173711.237: *5* wrapper: write-outline-only
+#@+node:ekr.20160308173711.238: *6* write-outline-only
+wrapper: write-outline-only
+'''Write the entire outline without writing any derived files.'''
+#@+node:ekr.20160308173711.239: *5* wrapper: yank
+#@+node:ekr.20160308173711.240: *6* yank
+wrapper: yank
+'''
+yank: insert the first entry of the kill ring.
+yank-pop: insert the next entry of the kill ring.
+'''
+#@+node:ekr.20160308173711.241: *5* wrapper: yank-pop
+#@+node:ekr.20160308173711.242: *6* yank-pop
+wrapper: yank-pop
+'''Insert the next entry of the kill ring.'''
+#@+node:ekr.20160308173711.243: *5* wrapper: zap-to-character
+#@+node:ekr.20160308173711.244: *6* zap-to-character
+wrapper: zap-to-character
+'''Kill characters from the insertion point to a given character.'''
+#@+node:ekr.20160308173711.245: *5* zoom_in
+#@+node:ekr.20160308173711.246: *6* zoom-in
+zoom_in
+'''
+increase body font size by one
+requires that @font-size-body is being used in stylesheet
+'''
+#@+node:ekr.20160308173711.247: *5* zoom_out
+#@+node:ekr.20160308173711.248: *6* zoom-out
+zoom_out
+'''
+decrease body font size by one
+requires that @font-size-body is being used in stylesheet
+'''
+#@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
+'''print all commands that lack docstrings.'''
+g.cls()
+d = c.commandsDict
+    # Keys are command names; values are functions
+
+ignore = ['minibufferCallback','enterModeCallback',]
+
+aList = [ d.get(z).__name__ for z in d
+    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())
+        and not d.get(z).__name__ in ignore]
+
+# g.cls()
+print()
+for z in sorted(set(aList)):
+    print(z)
+    
+print('done')
 #@+node:ekr.20150416062014.1: ** Executing foreign and external scripts
 # This includes executing body text in other languages than Python.
 #@+node:ekr.20080221113205: *3* @@button print g.es stats
@@ -3620,63 +8333,6 @@ if i != j:
 else:
     w.insert(i,s1+'\n\t\t\n'+s2)
 u.afterChangeNodeContents(p,'add-begin/endUpdate',b)
-#@+node:ekr.20120525155800.10870: *3* Print all docstrings from a module (obsolete)
-import leo.core.leoTest as leoTest
-import types
-
-def isClass(obj):
-    if g.isPython3:
-        return isinstance(obj,type)
-    else:
-        return type(obj) == types.ClassType
-
-specialDictNames = ('__builtins__','__doc__','__name__','__file__','__module__')
-
-def printDoc(x,s):
-    if hasattr(x,"__doc__") and x.__doc__:
-        g.pr("%4d %s" % (len(x.__doc__),s))
-    else:
-        g.pr("%4s %s" % (' ',s))
-
-g.pr('-' * 60)
-g.pr("%4d %s" % (len(leoTest.__doc__),"leoTest"))
-
-if 1:
-    for s in leoTest.__dict__:
-        if s not in specialDictNames:
-            x = getattr(leoTest,s)
-            if type(x) != types.ModuleType:
-                printDoc(x,s)
-                # if type(x) == types.ClassType:
-                if isClass(x):
-                    for s2 in x.__dict__:
-                        x2 = getattr(x,s2)
-                        if s2 not in specialDictNames:
-                            g.pr(' '*4,)
-                            printDoc(x2,s2)
-else:
-    << print names sorted by type >>
-#@+node:ekr.20120525155800.10871: *4* << print names sorted by type >>
-for theType,typeName in (
-    (types.ModuleType,"modules"),
-    (types.ClassType,"classes"),
-    (types.FunctionType,"functions"),
-):
-
-    g.pr("\n%s..." % typeName)
-    for s in leoTest.__dict__:
-
-        if s not in specialDictNames:
-            x = getattr(leoTest,s)
-            if type(x) == theType:
-                printDoc(x,s)
-                if theType == types.ClassType:
-                    g.pr("\tmethods...")
-                    for s2 in x.__dict__:
-                        x2 = getattr(x,s2)
-                        if s2 not in specialDictNames:
-                            g.pr("\t",newline=False)
-                            printDoc(x2,s2)
 #@+node:ekr.20050704172623: *3* Print all headlines, properly indented
 for p in c.all_positions():
     print p.level()*' ',p.h
@@ -3685,54 +8341,6 @@ for p in c.all_positions():
     h = p.h
     if hasattr(p.v,'unknownAttributes'):
         print('v',h,p.v.unknownAttributes)
-#@+node:ekr.20120529083658.11108: *3* Print commands & docstrings
-'''print a summary, sorted by class, of commands & their docstrings.'''
-g.cls()
-full = True
-    # True: print entire docstring. False: print summary.
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-# Group commands by class.
-groups = {}
-for command in sorted(d.keys()):
-    f = d.get(command)
-    key = f.__self__.__class__.__name__ if hasattr(f,'__self__') else f.__name__
-    aList = groups.get(key,[])
-    aList.append((command,f),)
-    groups[key] = aList
-
-# Print groups.
-if full:
-    root = p.insertAsLastChild()
-    root.h = 'Docstrings'
-for group in sorted(groups.keys()):
-    if full:
-        parent = root.insertAsLastChild()
-        parent.h = group
-    else:
-        print('GROUP %s...' % (group))
-    aList = groups.get(group)
-    for command,f in sorted(aList):
-        fname = f.__name__ or ''
-        doc = f.__doc__ or ''
-        if full:
-            lines = g.splitLines(doc)
-            if len(lines) == 1:
-                s = "'''%s'''" % doc
-            else:
-                s = ''.join([z.lstrip() for z in g.splitLines(doc)])
-                s = s.rstrip() + '\n'
-                s = "'''\n%s'''" % s
-            s = '%s\n%s' % (fname,s)
-            child = parent.insertAsLastChild()
-            child.h = command
-            child.b = s
-        else:
-            print('%40s:%4s %s' % (command,len(doc),fname))
-if full:
-    c.redraw()
-print('%s commands' % (len(list(d.keys()))))
 #@+node:EKR.20040517074600.13: *3* Print default font
 font = g.app.config.defaultFont
 
@@ -3870,24 +8478,6 @@ for p in c.all_positions():
 
 g.es('delta',delta)
 g.es('d',d)
-#@+node:ekr.20120525155800.10867: *3* Print missing docstrings (obsolete)
-'''print all commands that lack docstrings.'''
-
-d = c.commandsDict
-    # Keys are command names; values are functions
-
-ignore = ['minibufferCallback','enterModeCallback',]
-
-aList = [ d.get(z).__name__ for z in d
-    if (not d.get(z).__doc__ or not d.get(z).__doc__.strip())
-        and not d.get(z).__name__ in ignore]
-
-# g.cls()
-print()
-for z in sorted(aList):
-    print(z)
-    
-print('done')
 #@+node:EKR.20040613162717: *3* Print newline stats
 path = g.os_path_join(g.app.loadDir,"leo.py")
 
