@@ -13,10 +13,9 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 -Release PyInstaller versions for Windows, Linux, MacOs.
     - Better names for PyInstaller files & folders.
 - Fix Unit Tests
-- Complete 5.2 Release notes.
 
 After B1:
-- Add new sections to Code Academy
+- Handle Code Academy stuff.
 .. @+node:ekr.20160305055239.1: *3* Fix unit tests
 - Unit tests are failing on Ubuntu with Python 3.
 - Re-enable and fix javascript unit test.
@@ -30,6 +29,159 @@ After B1:
 - Create new panes.
 - Scripts can handle events.
 
+.. @+node:ekr.20160311064526.1: *3* Code academy
+Add Code Academy section to Cheat Sheet.
+.. @+node:ekr.20160311064526.2: *4* CA: possible topics
+@language rest
+@wrap
+
+- Clones: making and deleting them.
+  Clones are cheap to create!
+
+- How to create new panes anywhere,
+  and how to put cool stuff in them.
+
+- How to hoist outlines programmatically.
+
+- How to write a plugin so it can respond to events.
+.. @+node:ekr.20160311064526.3: *4* CA: uA's
+uA's are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
+
+Everyone needs to know how to get, set and search uA's.  You can get and set uA's with v.u. Just a few lines of code will search the entire outline for all nodes/positions having a given uA
+
+A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
+
+The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
+
+    plugin_name = 'test_plugin'
+    d = p.u.get(plugin_name,{})
+    d ['n'] = 8
+    p.u [plugin_name] = d
+
+p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
+
+It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
+
+    for p in c.all_unique_positions():
+        if p.u:
+            print(p.h, sorted(p.u.keys()))
+
+This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
+
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
+
+    aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
+    print('\n'.join([p.h for p in aList]))
+
+Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
+
+Important: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
+
+Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setting temp uA's will be as easy as getting and setting uA's. I'll do this today.
+
+These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
+
+As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
+.. @+node:ekr.20160311064526.4: *4* CA: icons
+@language rest
+@wrap
+
+This script will insert three icons in the current outline node. Running the script again will insert three more.
+
+@language python
+
+    table = (
+        'edittrash.png',
+        'connect_no.png',
+        'error.png',
+    )
+    for icon in table:
+        fn = g.os_path_finalize_join(g.app.loadDir,
+            '..', 'Icons', 'Tango', '16x16', 'status', icon)
+        if g.os_path_exists(fn):
+            c.editCommands.insertIconFromFile(path=fn)
+        
+@language rest
+@wrap
+        
+This deletes all icons of the node at position p:
+
+    c.editCommands.deleteNodeIcons(p=p)
+.. @+node:ekr.20160311064526.5: *4* CA: using git
+If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
+
+    git clone https://github.com/leo-editor/leo-editor.git
+
+Once you have done that, you can get the latest sources with:
+
+    git pull
+
+Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
+
+I've been wondering when to say this, but recent developments have forced my hand.  Today, as the result of our Code Academy discussion, I have added the p.u property and a keyword arg to c.editCommands.deleteNodeIcons.  If you don't use git you will quickly get out of the loop.
+
+Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
+
+I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
+.. @+node:ekr.20160311064526.6: *4* CA: finding nodes with c.cloneFindByPredicate
+@language rest
+@wrap
+
+c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring:
+
+    Traverse the tree given using the generator, cloning all positions for
+    which predicate(p) is True. Undoably move all clones to a new node, created
+    as the last top-level node. Returns the newly-created node. Arguments:
+
+    generator,      The generator used to traverse the tree.
+    predicate,      A function of one argument p returning true if p should be included.
+    failMsg=None,   Message given if nothing found. Default is no message.
+    flatten=False,  True: Move all node to be parents of the root node.
+    iconPath=None,  Full path to icon to attach to all matches.
+    redraw=True,    True: redraw the screen.
+    undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                    The default is 'clone-find-predicate'
+                    
+For example, clone-find-all-marked command is essentially:
+    
+@language python
+
+    @cmd('clone-find-all-marked')
+    def cloneFindMarked(self, flatten):
+        
+        def isMarked(p):
+            return p.isMarked()
+            
+        self.cloneFindByPredicate(
+            generator = self.all_unique_positions,
+            predicate = isMarked,
+            failMsg = 'nothing found',
+            flatten = flatten,
+            undoType = 'clone-find-marked',
+        )
+        
+@language rest
+
+The predicate could filter on an attribute or *combination* of attributes. For example, the predicate could return p has attributes A and B but *not* attribute C. This instantly gives Leo full database query capabilities. If we then hoist the resulting node we see *all and only* those nodes satisfying the query.
+
+These following position methods make it easy to skip @ignore trees or @<file> trees containing @all. 
+        
+- p.is_at_all():         True if p is an @<file> node containing an @all directive.
+- p.in_at_all():         True if p is in an @<file> tree whose root contains @all.
+- p.is_at_ignore():      True if p is an @ignore node
+- p.in_at_ignore_tree(): True if p is in an @ignore tree.
+
+For example, here is how to gather only those marked nodes that lie outside any @ignore tree:
+
+    def isMarked(p):
+        return p.isMarked() and not p.in_at_ignore_tree()
+      
+    c.cloneFindByPredicate(
+        generator = self.all_unique_positions,
+        predicate = isMarked,
+        flatten = flatten,
+        undoType = 'gather-marked',
+    )
 .. @+node:ekr.20160227093754.1: ** To do: 5.3
 * New apis and commands for icons, attributes & windows.
     - Easy to use. Easy documentation.
@@ -167,6 +319,184 @@ The so-called Easter-Egg interface creates new panes from the gui.
 A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+.. @+node:ekr.20160305033136.1: *3* Found:['"]icons[i"]
+.. @+node:ekr.20151010090634.1: *3* re: bug 212 (open) Yet Another Encoding Problem
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/212
+
+This problem is mysterious to me. My simplest test case yaep01.leo does NOT show the problem. But my very slightly more complicated test case yaep02.leo shows the problem.
+
+Ctrl-C, Ctrl-V -- Changes all the non-ASCII characters in the body or headline pasted to.
+
+Shift-Ctrl-C, Shift-Ctrl-V -- Copying a node changes all the non-ASCII characters in the headline and body of the pasted to node.
+
+@language python
+.. @+node:ekr.20151010090736.1: *4* report
+@language rest
+@wrap
+yaep01.leo:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+    <global_window_position top="50" left="50" height="500" width="700"/>
+    <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bob.20151002154132.1"><vh>fʁɑ̃.swaːz aʁ.di</vh></v>
+</vnodes>
+<tnodes>
+<t tx="bob.20151002154132.1">fʁɑ̃.swaːz aʁ.di</t>
+</tnodes>
+</leo_file>
+
+yaep02.leo:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+    <global_window_position top="50" left="50" height="500" width="700"/>
+    <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bob.20151002155632.1"><vh>Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</vh></v>
+</vnodes>
+<tnodes>
+<t tx="bob.20151002155632.1">Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</t>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20151010090641.1: *4* bug212-b.leo traceback
+
+C:\Users\edreamleo\Desktop>python3 c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
+
+C:\Users\edreamleo\Desktop>c:\python34\python.exe c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
+leoID=ekr (in c:\Users\edreamleo\.leo)
+reading settings in C:\leo.repo\leo-editor\leo\config\leoSettings.leo
+reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
+reading settings in C:\Users\edreamleo\Desktop\bug212-b.leo
+error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
+Traceback (most recent call last):
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+
+  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
+    self.feed(buffer)
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+
+  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
+    raise exception
+
+xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
+
+error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
+Traceback (most recent call last):
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+
+  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
+    self.feed(buffer)
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+
+  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
+    raise exception
+
+xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
+
+
+** isPython3: True
+Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
+Git repo info: branch = master, commit = b5e6da9f5feb
+Python 3.4.0, PyQt version 5.3.0
+Windows 7 AMD64 (build 6.1.7601) SP1
+.. @+node:ekr.20160302132356.1: *3* re: unify abbreviations
+@language rest
+@wrap
+
+> Kent: ​I think it would be great if the abbrev-read and abbrev-write
+files could look like the defs in a @data node.
+
+1. Search for 'abbrev-read'. Mark abbrev.readAbbreviations & helper and abbrev.writeAbbreviation.  Do cffm. Now all the relevant abbrev code is in one place.
+
+2. Oh yes, abbrev.expandAbbrev & helpers do the abbreviations specified by @data nodes. Do cffm word search for abbrevs.  abbrev.addAbbrevHelper enters entry into self.abbrevs.
+
+
+@language python
+.. @+node:ekr.20160302131125.1: *4* clone-find-marked (flattened)
+abbrev.expandAbbrev
+readAbbreviations
+writeAbbreviations
+.. @+node:ekr.20160302131622.1: *4* Found:abbrevs
+# flattened, word, ignore-case, head, body
+.. @+node:ekr.20160227134532.1: *3* Shell in Python
+# http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
+
+# The following program will a system and display output immediately on screen:
+
+#!/usr/bin/python
+import subprocess
+import sys
+cmd = 'ls' # "/usr/sbin/netstat -p tcp -f inet"
+
+p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+if 0:
+    while True:
+        out = p.stderr.read(1)
+        out = g.toUnicode(out)
+        if out == '' and p.poll() != None:
+            break
+        if out != '':
+            # sys.stdout.write(out)
+            # sys.stdout.flush()
+            g.es(out)
+.. @+node:ekr.20160129081036.1: *3* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
 .. @+node:ekr.20151231095651.1: ** Bugs (important)
 @language rest
 @wrap

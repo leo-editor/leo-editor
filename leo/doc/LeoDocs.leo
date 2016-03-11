@@ -171,7 +171,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1165,13 +1165,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160304081512.1"><vh>** Code academy</vh>
-<v t="ekr.20160304081512.3"><vh>CA: possible topics</vh></v>
-<v t="ekr.20160304081512.4"><vh>CA: uA's</vh></v>
-<v t="ekr.20160304081512.5"><vh>CA: icons</vh></v>
-<v t="ekr.20160304081512.6"><vh>CA: using git</vh></v>
-<v t="ekr.20160304081512.7"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
-</v>
 <v t="ekr.20160309092304.1"><vh>** Add to tips/faq/testimonials</vh>
 <v t="ekr.20160304081437.2"><vh>A note to new users</vh></v>
 <v t="ekr.20160309092522.1"><vh>Document stupendous Aha</vh></v>
@@ -1185,7 +1178,6 @@
 </v>
 </v>
 <v t="ekr.20160310062634.1"></v>
-<v t="ekr.20160305040809.1"><vh>** document declutter nodes</vh></v>
 <v t="ekr.20160310055341.1"><vh>Leo 5.2 b1 release notes</vh>
 <v t="ekr.20160310062924.1"><vh> Highlights</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs</vh>
@@ -1256,7 +1248,7 @@
 <v t="ekr.20160305040503.74"><vh>@wrap now honored immediately</vh></v>
 </v>
 <v t="ekr.20160305040503.75"><vh>Features</vh>
-<v t="ekr.20160305040809.1"></v>
+<v t="ekr.20160305040809.1"><vh>Decluttering</vh></v>
 <v t="ekr.20160305040503.76"><vh>Abbreviations now support auto-close quotes</vh></v>
 <v t="ekr.20160305040503.77"><vh>Added new Themes machinery</vh></v>
 <v t="ekr.20160305040503.79"><vh>Allow wildcard expansion of filenames on the command-line</vh></v>
@@ -18293,158 +18285,6 @@ Coding without Leo is not not really fun any more. I recently finished a c++ soc
 
 Anyway, thanks for the great perspective on Leo.
 </t>
-<t tx="ekr.20160304081512.1">- Add Code Academy section to Cheat Sheet.</t>
-<t tx="ekr.20160304081512.3">@language rest
-@wrap
-
-- Clones: making and deleting them.
-  Clones are cheap to create!
-
-- How to create new panes anywhere,
-  and how to put cool stuff in them.
-
-- How to hoist outlines programmatically.
-
-- How to write a plugin so it can respond to events.
-</t>
-<t tx="ekr.20160304081512.4">uA's are crucial to flexible data management. uA's can associate arbitrary data with any vnode or position, as describe here.
-
-Everyone needs to know how to get, set and search uA's.  You can get and set uA's with v.u. Just a few lines of code will search the entire outline for all nodes/positions having a given uA
-
-A recent rev added the p.u property, which you can think of as a synonym for p.v.unknownAttributes on both sides of an assignment.
-
-The example in Leo's documentation for access uA's is way too complicated. In fact, the following suffices to set the 'n' attribute for test_plugin:
-
-    plugin_name = 'test_plugin'
-    d = p.u.get(plugin_name,{})
-    d ['n'] = 8
-    p.u [plugin_name] = d
-
-p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. The last line is all that is needed to update the outer dictionary!
-
-It is very easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
-
-    for p in c.all_unique_positions():
-        if p.u:
-            print(p.h, sorted(p.u.keys()))
-
-This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
-
-The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'lineYOffset' key.
-
-    aList = [p.copy() for p in c.all_unique_positions() if 'lineYOffset' in p.u]
-    print('\n'.join([p.h for p in aList]))
-
-Yes, the lineYOffset key is wonky and unhelpful, but it can't be changed now.  Hmm, maybe the code could support an an alternative clearer key, say str_core_icon.  Furthermore, the str_core_* keys should probably be reserved for Leo's core.
-
-Important: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
-
-Imo, Leo should have p.temp_u and v.temp_u properties, so that getting and setting temp uA's will be as easy as getting and setting uA's. I'll do this today.
-
-These Code Academy threads are having an immediate impact.  Focusing on simple, practical tasks has revealed rough spots in both Leo's code and Leo's docs.
-
-As always with the Code Academy, questions and comments are strongly encouraged. Make sure you understand the code examples in this post. They are the foundation for programming in Leo.
-</t>
-<t tx="ekr.20160304081512.5">@language rest
-@wrap
-
-This script will insert three icons in the current outline node. Running the script again will insert three more.
-
-@language python
-
-    table = (
-        'edittrash.png',
-        'connect_no.png',
-        'error.png',
-    )
-    for icon in table:
-        fn = g.os_path_finalize_join(g.app.loadDir,
-            '..', 'Icons', 'Tango', '16x16', 'status', icon)
-        if g.os_path_exists(fn):
-            c.editCommands.insertIconFromFile(path=fn)
-        
-@language rest
-@wrap
-        
-This deletes all icons of the node at position p:
-
-    c.editCommands.deleteNodeIcons(p=p)
-</t>
-<t tx="ekr.20160304081512.6">If you are going to do interesting work on Leo and its plugins, you should be using Leo’s latest sources from GitHub using git. Once git is installed, getting the latest version of Leo is easy:
-
-    git clone https://github.com/leo-editor/leo-editor.git
-
-Once you have done that, you can get the latest sources with:
-
-    git pull
-
-Git is great in tracking history and reverting unwanted changes. And it has many other benefits.
-
-I've been wondering when to say this, but recent developments have forced my hand.  Today, as the result of our Code Academy discussion, I have added the p.u property and a keyword arg to c.editCommands.deleteNodeIcons.  If you don't use git you will quickly get out of the loop.
-
-Although git is unique behind the scenes, using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
-
-I'll be happy to answer any git-related questions here.  Again, I strongly encourage all would-be Leo programmers to use Leo's git repo.
-</t>
-<t tx="ekr.20160304081512.7">@language rest
-@wrap
-
-c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring:
-
-    Traverse the tree given using the generator, cloning all positions for
-    which predicate(p) is True. Undoably move all clones to a new node, created
-    as the last top-level node. Returns the newly-created node. Arguments:
-
-    generator,      The generator used to traverse the tree.
-    predicate,      A function of one argument p returning true if p should be included.
-    failMsg=None,   Message given if nothing found. Default is no message.
-    flatten=False,  True: Move all node to be parents of the root node.
-    iconPath=None,  Full path to icon to attach to all matches.
-    redraw=True,    True: redraw the screen.
-    undo_type=None, The undo/redo name shown in the Edit:Undo menu.
-                    The default is 'clone-find-predicate'
-                    
-For example, clone-find-all-marked command is essentially:
-    
-@language python
-
-    @cmd('clone-find-all-marked')
-    def cloneFindMarked(self, flatten):
-        
-        def isMarked(p):
-            return p.isMarked()
-            
-        self.cloneFindByPredicate(
-            generator = self.all_unique_positions,
-            predicate = isMarked,
-            failMsg = 'nothing found',
-            flatten = flatten,
-            undoType = 'clone-find-marked',
-        )
-        
-@language rest
-
-The predicate could filter on an attribute or *combination* of attributes. For example, the predicate could return p has attributes A and B but *not* attribute C. This instantly gives Leo full database query capabilities. If we then hoist the resulting node we see *all and only* those nodes satisfying the query.
-
-These following position methods make it easy to skip @ignore trees or @&lt;file&gt; trees containing @all. 
-        
-- p.is_at_all():         True if p is an @&lt;file&gt; node containing an @all directive.
-- p.in_at_all():         True if p is in an @&lt;file&gt; tree whose root contains @all.
-- p.is_at_ignore():      True if p is an @ignore node
-- p.in_at_ignore_tree(): True if p is in an @ignore tree.
-
-For example, here is how to gather only those marked nodes that lie outside any @ignore tree:
-
-    def isMarked(p):
-        return p.isMarked() and not p.in_at_ignore_tree()
-      
-    c.cloneFindByPredicate(
-        generator = self.all_unique_positions,
-        predicate = isMarked,
-        flatten = flatten,
-        undoType = 'gather-marked',
-    )
-</t>
 <t tx="ekr.20160305040503.10">https://github.com/leo-editor/leo-editor/issues/193
 
 The fix was in GoToLineNumber.go: it must test for p.isAtCleanNode()
@@ -19131,7 +18971,15 @@ Defaults are as shown above.
 </t>
 <t tx="ekr.20160305040503.99">The fix was to create a dummy root position in abbrev.init_env.
 </t>
-<t tx="ekr.20160305040809.1"></t>
+<t tx="ekr.20160305040809.1">To enable, add the following to myLeoSettings.leo:
+
+    @bool tree-declutter = True
+
+    @data tree-declutter-patterns
+    
+LeoSettings.leo contains an example @data tree-declutter-patterns.
+This node contains documentation about how to use the patterns.
+</t>
 <t tx="ekr.20160305041022.1">The result is much better looking than before.</t>
 <t tx="ekr.20160305054512.1">https://github.com/leo-editor/leo-editor/issues/239
 </t>
@@ -19214,6 +19062,7 @@ The preliminaries were at least as important as the fix itself:
   cfam (clone-find-all-marked)
   cffm (clone-find-all-flattened-marked)
 - decorators create all Leo commands
+- decluttering: replacing @file, @clean, etc. by icons.
 - find-def and find-var
 - help-for-keystroke
 - Optional line numbers in the left gutter
@@ -19290,7 +19139,7 @@ The preliminaries were at least as important as the fix itself:
     Themes
     Wildcard file names on Leo's command line
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
