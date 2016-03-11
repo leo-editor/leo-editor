@@ -21,8 +21,8 @@ var/
 *.egg
 
 # PyInstaller folders.
-leo-editor/build/
-leo-editor/dist/
+/build/
+/dist/
 
 ./MANIFEST
 #./setup.cfg
