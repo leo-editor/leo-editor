@@ -475,6 +475,9 @@ LeoDocs.leo:
 - Spell check entire file.
 - Select the readme node.
 
+LeoReleaseNotes.leo:
+- Update release notes from LeoDocs.leo
+
 Update release notes and web documentation:
 - Make sure copyright dates are correct.
 - Update version numbers in html/conf.py

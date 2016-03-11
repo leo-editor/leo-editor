@@ -8,9 +8,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 lib/
@@ -21,6 +19,10 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# PyInstaller folders.
+leo-editor/build/
+leo-editor/dist/
 
 ./MANIFEST
 #./setup.cfg
