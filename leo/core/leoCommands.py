@@ -1524,10 +1524,18 @@ class Commands(object):
         c, root, u = self, self.p, self.undoer
         if not root.hasChildren():
             return
+        language = g.getLanguageAtPosition(c, root)
+        if language:
+            single,start,end = g.set_delims_from_language(language)
+        else:
+            single,start,end = '#', None, None
         bunch = u.beforeChangeNodeContents(root)
         aList = []
         for p in root.subtree():
-            # aList.append('\n' + p.h + '\n')
+            if single:
+                aList.append('\n\n===== %s %s\n\n' % (single, p.h))
+            else:
+                aList.append('\n\n===== %s %s %s\n\n' % (start, p.h, end))
             if p.b.strip():
                 lines = g.splitLines(p.b)
                 aList.extend(lines)
