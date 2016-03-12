@@ -1248,7 +1248,7 @@
 <v t="ekr.20160305040503.74"><vh>@wrap now honored immediately</vh></v>
 </v>
 <v t="ekr.20160305040503.75"><vh>Features</vh>
-<v t="ekr.20160305040809.1"><vh>Decluttering</vh></v>
+<v t="ekr.20160305040809.1"><vh>Decluttered headlines</vh></v>
 <v t="ekr.20160305040503.76"><vh>Abbreviations now support auto-close quotes</vh></v>
 <v t="ekr.20160305040503.77"><vh>Added new Themes machinery</vh></v>
 <v t="ekr.20160305040503.79"><vh>Allow wildcard expansion of filenames on the command-line</vh></v>
@@ -19005,12 +19005,13 @@ The preliminaries were at least as important as the fix itself:
 
 3. Leo's --debug option enables more verbose IPython logging. This is a feature that reveals the workings of the Jupyter kernel.
 </t>
-<t tx="ekr.20160310055341.1">March 12, 2016
+<t tx="ekr.20160310055341.1">March 15, 2016
 
 [Leo](http://leoeditor.com/) 5.2 b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 
+- Easy install with PyInstaller packaging
 - c.cloneFindByPredicate
 - clone-find-marked commands
 - decorators create all Leo commands
@@ -19043,8 +19044,9 @@ The preliminaries were at least as important as the fix itself:
 <t tx="ekr.20160310062634.1"></t>
 <t tx="ekr.20160310062651.1">::
 
-    Leo 5.2 beta 1 release March 12, 2016
+    Leo 5.2 beta 1 release March 15, 2016
 
+    Easy install with PyInstaller packaging
     c.cloneFindByPredicate
     clone-find-marked commands:
         cfam (clone-find-all-marked)
@@ -19062,14 +19064,15 @@ The preliminaries were at least as important as the fix itself:
   cfam (clone-find-all-marked)
   cffm (clone-find-all-flattened-marked)
 - decorators create all Leo commands
-- decluttering: replacing @file, @clean, etc. by icons.
+- declutter headlines: icons replace @file, @clean, etc.
 - find-def and find-var
 - help-for-keystroke
 - Optional line numbers in the left gutter
 - show-invisibles uses Qt characters
 - The --ipyhon command-line option works with latest IPython versions
     Themes
-    Wildcard file names on Leo's command line</t>
+    Wildcard file names on Leo's command line
+</t>
 <t tx="ekr.20160310063235.1">::
     
     cfa, cff, cfam, cfam
