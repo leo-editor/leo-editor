@@ -17,7 +17,7 @@ import glob, os, sys
 
 # os.system('cls')
 
-generate_folder = False
+generate_folder = True
     # True: generate Leo/leo folder as well as Leo/Leo.exe.
     # False:  generate only Leo/Leo.exe.
     #        Data files are unpacked to a known location.
