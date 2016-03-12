@@ -198,7 +198,7 @@ if generate_folder:
     exe = EXE(pyz,
         a.scripts,
         exclude_binaries=True,
-        name='leo',
+        name='LeoApp', # 'leo' doesn't work on Linux.
         debug=False,
         strip=None,
         upx=True,
@@ -209,7 +209,7 @@ else:
         a.binaries,
         a.zipfiles,
         a.datas,
-        name='leo',
+        name='LeoApp', # 'leo' doesn't work on Linux.
         debug=False,
         strip=None,
         upx=True,
