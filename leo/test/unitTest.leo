@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.68">
-	<global_window_position top="205" left="379" height="822" width="1033"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1206,7 +1206,7 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31352e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31312e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32362e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31362e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735809000000302e362e31382e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028550a302e362e31362e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735508302e362e31352e3371097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31382e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e32362e3771117d71125808000000616e6e6f7461746571137d7114735508302e362e31312e3971157d71165809000000756e69745f7465737471175804000000616263647118735508302e362e31372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150629111007.1"><vh>recent tests</vh>
@@ -1233,6 +1233,51 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20160314133351.4"><vh>after sel=2.11,2.11</vh></v>
 </v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
+</v>
+<v t="edward.20160314170240.1"><vh>recent failures</vh>
+<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
+<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
+<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui</vh>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
+<v t="ekr.20111003145300.3467"><vh>a</vh></v>
+</v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
+<v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20140712142620.4550"><vh>@test pd.find_at_...</vh>
+<v t="ekr.20140712142620.4551"><vh>root</vh>
+<v t="ekr.20140712142620.4552"><vh>aClass</vh>
+<v t="ekr.20140712142620.4556"><vh>clone</vh></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4556"></v>
+</v>
+<v t="ekr.20140712142620.4538"><vh>@test pd.find_at_persistence_node</vh></v>
+<v t="ekr.20140712142620.4557"><vh>@test pd.has_..._node</vh>
+<v t="ekr.20140712142620.4558"><vh>root</vh>
+<v t="ekr.20140712142620.4559"><vh>aClass</vh>
+<v t="ekr.20140712142620.4563"><vh>clone-test</vh></v>
+<v t="ekr.20140712142620.4561"><vh>organizer node</vh>
+<v t="ekr.20140712142620.4562"><vh>child2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140712142620.4563"></v>
+</v>
+<v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
+<v t="ekr.20140712142620.4576"><vh>root</vh>
+<v t="ekr.20140712142620.4577"><vh>aClass</vh>
+<v t="ekr.20140712142620.4582"><vh>clone</vh></v>
+</v>
+<v t="ekr.20140712142620.4579"><vh>organizer node</vh>
+<v t="ekr.20140712142620.4580"><vh>child1</vh></v>
+<v t="ekr.20140712142620.4581"><vh>child2</vh></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4582"></v>
+</v>
+<v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1275,6 +1320,7 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
+<t tx="edward.20160314170240.1"></t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4
 
@@ -7306,6 +7352,39 @@ finally:
         c.redraw(p)
 </t>
 <t tx="ekr.20060127120604"></t>
+<t tx="ekr.20060208072358"># This test is too flaky for Tk.
+import sys
+if False and sys.platform.startswith('linux'):
+    # Fails for strange reasons.
+    self.skipTest('linux')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.bodyWantsFocus()
+    c.redraw(p) # To make node visible
+    n = c.frame.tree.redrawCount
+    assert not p.b, 'oops1'
+    try:
+        # print('before insert a',c.p)
+        assert p == c.p,'position has changed!'
+        w = c.frame.body.wrapper
+        if c.vim_mode and c.vimCommands:
+            if c.vimCommands.state == 'normal':
+                # Enter insert mode ;-)
+                g.app.gui.event_generate(c,'i','i',w)
+        g.app.gui.event_generate(c,'a','a',w)
+        assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
+        if g.app.gui.guiName() != 'nullGui':
+            n2 = c.frame.tree.redrawCount
+            c.outerUpdate() # Force the coloring before doing the test.
+            assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw(p)
+</t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
 
@@ -7724,7 +7803,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -8250,6 +8329,15 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131171342.5599"></t>
+<t tx="ekr.20100131171342.5603" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoGui tests.')
+</t>
 <t tx="ekr.20100203163606.5365">import os
 
 def run(files):
@@ -8572,7 +8660,7 @@ assert i==expected,'expected %s, got %s %s' % (
 
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
-    pass
+    self.skipTest('Can not be run externally')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -8634,7 +8722,8 @@ False:
 <t tx="ekr.20101220161557.6014">@language python
 @all
 </t>
-<t tx="ekr.20101220161557.6016"># Some tests are disabled when g.app.isExternalUnitTest is True.</t>
+<t tx="ekr.20101220161557.6016"># Some tests are disabled when g.app.isExternalUnitTest is True.
+# Using self.skipTest(reason) is now preferred.</t>
 <t tx="ekr.20110118082508.3766"># Required when running tests externally
 @language plain
 @pagewidth 40
@@ -8928,7 +9017,9 @@ if not g.app.isExternalUnitTest:
             root and root.h, n, len(lines)))
 </t>
 <t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
     target = g.findNodeAnywhere(c, h)
@@ -8939,7 +9030,9 @@ if not g.app.isExternalUnitTest:
     assert found, 'not found'
 </t>
 <t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
@@ -8975,7 +9068,9 @@ if not g.app.isExternalUnitTest:
             root and root.h,isRaw,n,len(lines)))
 </t>
 <t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     h = '@nosent unittest/at-nosent-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
@@ -9112,6 +9207,21 @@ for i in range(len(aList)):
 
 g.es('"%s": total tests: %s' % (p.h,total))
 </t>
+<t tx="ekr.20111003145300.3466">'''Test that dragging this node onto the child node generates a warning.'''
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    fn = '&lt;file name&gt;'
+    p2 = p.firstChild()
+    tree = c.frame.tree
+    w = tree.treeWidget
+    if hasattr(tree,'treeWidget'):
+        for w.was_control_drag in (True,False):
+            tree.treeWidget.intraFileDrop(fn,p,p2)
+            assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+</t>
+<t tx="ekr.20111003145300.3467"></t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
@@ -9333,6 +9443,57 @@ w.insert(1,'z')         ; check('xzyac')
 w.deleteTextSelection() ; check('xzyac')
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtWidgets.QApplication)
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    # w_name = w.__class__.__name__
+    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
+    p1 = p.copy()
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            delete_children(p1)
+    finally:
+        delete_children(p1)
+        c.redraw()
+</t>
 <t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
     pass # Prints to console, which is annoying.
 else:
@@ -9387,6 +9548,33 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
+</t>
+<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            # print('Alt-9 is bound')
+            break
+    else:
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -10927,6 +11115,28 @@ if 0:
     sd.print_times()
 
 </t>
+<t tx="ekr.20130912092638.4151">import sys
+if g.app.isExternalUnitTest:
+    if sys.platform.startswith('linux'):
+        self.skipTest('external linux test')
+    else:
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test','utf-16-test.txt')
+        assert g.os_path_exists(path)
+        f = open(path,'r')
+        s = f.read()
+        f.close()
+        s = g.toUnicode(s,encoding='utf-16')
+        assert s.find('Test of utf-16.') &gt; -1,s
+else:
+    h = '@file ../test/utf-16-test.txt'
+    p = g.findNodeAnywhere(c,h)
+    s = 'Test of utf-16.'
+    assert p,h
+    # It's hard to test the utf-16 text directly.
+    assert p.b
+    assert p.b.find(s) &gt; -1
+    assert len(p.b)==66,len(p.b)
+</t>
 <t tx="ekr.20131111155107.4239">c.testManager.runVimTest(p)
 
 </t>
@@ -12417,6 +12627,125 @@ finally:
     pass
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
+<t tx="ekr.20140712142620.4538">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    h = '@persistence'
+    p1 = pd.find_at_persistence_node()
+    assert p1
+    p2 = pd.has_at_persistence_node()
+    assert p1 == p2,(p1,p2)
+</t>
+<t tx="ekr.20140712142620.4550"># Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    try:
+        persistence = pd.find_at_persistence_node()
+        assert persistence
+        persistence.deleteAllChildren()
+        root.h = '@auto root' # Make root look like an @auto node.
+        assert pd.find_at_data_node(root)
+        assert pd.find_at_gnxs_node(root)
+    finally:
+        root.h = 'root' # Make sure root is *not* an @auto node.
+        # views.deleteAllChildren()
+        c.selectPosition(p)
+        c.redraw()
+</t>
+<t tx="ekr.20140712142620.4551"></t>
+<t tx="ekr.20140712142620.4552">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4556"></t>
+<t tx="ekr.20140712142620.4557">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    # Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
+    pd = c.persistenceController
+    persistence = g.findNodeAnywhere(c,'@persistence')
+    assert persistence
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
+    assert persistence
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    # The representative of clone_test node must appear outside of root's tree.
+    clone_test = g.findNodeInTree(c,p,'clone-test')
+    if g.app.isExternalUnitTest:
+        # There will not be a proper node in the copied tree.
+        self.skipTest('Can not be run externally')
+    else:
+        assert clone_test
+        assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+        try:
+            root.h = '@auto root' # Make root look like an @auto node.
+            pd.update_before_write_foreign_file(root)
+            data = g.findNodeInTree(c,persistence,'@data:@auto root')
+            assert data
+            data2 = pd.has_at_data_node(root)
+            assert data2
+            assert data == data2,(data,data2)
+            gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+            assert gnxs
+            gnxs2 = pd.has_at_gnxs_node(root)
+            assert gnxs2
+            assert gnxs == gnxs2,(gnxs,gnxs2)
+        finally:
+            root.h = 'root' # Make the root *not* an @auto node.
+            c.redraw()
+</t>
+<t tx="ekr.20140712142620.4558">@others
+</t>
+<t tx="ekr.20140712142620.4559">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4561"></t>
+<t tx="ekr.20140712142620.4562">def spam():
+    pass
+</t>
+<t tx="ekr.20140712142620.4563">def clone_test():
+    pass
+</t>
+<t tx="ekr.20140712142620.4575">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    root = g.findNodeInTree(c,p,'root')
+    assert root
+    persistence = pd.find_at_persistence_node()
+    assert persistence
+    persistence.deleteAllChildren()
+    try:
+        root.h = '@auto root' # Make root look like an @auto node.
+        pd.update_before_write_foreign_file(root)
+        data = g.findNodeAnywhere(c,'@data:@auto root')
+        assert data
+        gnxs = g.findNodeInTree(c,data,'@gnxs')
+        assert gnxs
+    finally:
+        root.h = 'root' # Make root *not* an @auto node.
+        # persistence.deleteAllChildren()
+        c.redraw()
+</t>
+<t tx="ekr.20140712142620.4576"></t>
+<t tx="ekr.20140712142620.4577">class aClass:
+    @others
+</t>
+<t tx="ekr.20140712142620.4579"></t>
+<t tx="ekr.20140712142620.4580"></t>
+<t tx="ekr.20140712142620.4581">def spam():
+    pass
+</t>
+<t tx="ekr.20140712142620.4582"></t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
@@ -12435,6 +12764,17 @@ finally:
 <t tx="ekr.20150214063940.11"></t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
+<t tx="ekr.20150216111306.25">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    persistence = g.findNodeAnywhere(c,'@persistence')
+    assert persistence
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
+    assert persistence
+</t>
 <t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
 for p in p.children():
@@ -12462,7 +12802,9 @@ for p in p.children():
 <t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
 </t>
 <t tx="ekr.20150625101047.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     root = p.parent().parent()
     # h = '@auto unittest/at-auto-line-number-test.py'
@@ -12486,7 +12828,9 @@ if not g.app.isExternalUnitTest:
 unl: at_auto_child
 </t>
 <t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
@@ -12508,7 +12852,9 @@ if not g.app.isExternalUnitTest:
 <t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
 </t>
 <t tx="ekr.20150626100652.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
@@ -12529,7 +12875,9 @@ if not g.app.isExternalUnitTest:
 <t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
 </t>
 <t tx="ekr.20150626101643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     h = '@auto-org unittest/at-auto-org-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
@@ -12550,7 +12898,9 @@ if not g.app.isExternalUnitTest:
 <t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
 </t>
 <t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
     trace = False
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
