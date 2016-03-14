@@ -76,7 +76,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d710528580a000000707269736574646174657106580a000000323031352d30352d3237710758080000007072696f7269747971084d0f277575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d71052858080000007072696f7269747971064d0f27580a000000707269736574646174657107580a000000323031352d30352d323771087575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -116,7 +116,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3371017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6174696d657105580d000000313332303433343235372e3336710658090000007374725f6d74696d657107580d000000313332303432323639302e35347108755805000000302e332e3471097d710a2858090000007374725f6374696d65710b580c000000313331393633383634382e30710c58090000007374725f6174696d65710d580c000000313331393634353330362e32710e58090000007374725f6d74696d65710f580d000000313331393634313038352e30387110755805000000302e332e3071117d71122858090000007374725f6374696d657113580c000000313331393439313330362e30711458090000007374725f6174696d657115580d000000313331393534393339302e3839711658090000007374725f6d74696d657117580d000000313331393439323330312e35327118755805000000302e332e3571197d711a2858090000007374725f6374696d65711b580c000000313331393633383634382e30711c58090000007374725f6174696d65711d580d000000313331393634313435352e3937711e58090000007374725f6d74696d65711f580c000000313331393634313131372e397120755805000000302e332e3171217d71222858090000007374725f6374696d657123580c000000313331393436303438332e30712458090000007374725f6174696d657125580c000000313332303432323637302e39712658090000007374725f6d74696d657127580d000000313331393436373033382e32357128755805000000302e332e3271297d712a2858090000007374725f6374696d65712b580c000000313331393436303438332e30712c58090000007374725f6174696d65712d580d000000313331393436373035302e3438712e58090000007374725f6d74696d65712f580d000000313331393436373035302e3438713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3571017d71022858090000007374725f6d74696d657103580c000000313331393634313131372e39710458090000007374725f6174696d657105580d000000313331393634313435352e3937710658090000007374725f6374696d657107580c000000313331393633383634382e307108755805000000302e332e3071097d710a2858090000007374725f6d74696d65710b580d000000313331393439323330312e3532710c58090000007374725f6174696d65710d580d000000313331393534393339302e3839710e58090000007374725f6374696d65710f580c000000313331393439313330362e307110755805000000302e332e3371117d71122858090000007374725f6d74696d657113580d000000313332303432323639302e3534711458090000007374725f6174696d657115580d000000313332303433343235372e3336711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3171197d711a2858090000007374725f6d74696d65711b580d000000313331393436373033382e3235711c58090000007374725f6174696d65711d580c000000313332303432323637302e39711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3471217d71222858090000007374725f6d74696d657123580d000000313331393634313038352e3038712458090000007374725f6174696d657125580c000000313331393634353330362e32712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3271297d712a2858090000007374725f6d74696d65712b580d000000313331393436373035302e3438712c58090000007374725f6174696d65712d580d000000313331393436373035302e3438712e58090000007374725f6374696d65712f580c000000313331393436303438332e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -170,7 +170,7 @@
 </v>
 </v>
 <v t="ekr.20160226082945.1"><vh>PyInstaller</vh>
-<v t="ekr.20160124165611.1"><vh>@clean ../../launchLeo-unified.spec</vh></v>
+<v t="ekr.20160124165611.1"><vh>@file ../../launchLeo-unified.spec</vh></v>
 </v>
 <v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
 <v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
@@ -463,7 +463,7 @@
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358010000007971044b0058050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b0058010000007971024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -1901,234 +1901,6 @@ prefix_lines:
 [Def Name Patterns]
 
 [General Patterns]
-</t>
-<t tx="ekr.20160124165611.1">@language unknown_language
-# -*- mode: python -*-
-'''
-launchLeo-unified.spec
-
-a pyinstaller .spec file that creates a stand-alone version of Leo.
-This is a single .exe file or a folder, depending on generate_folder.
-
-&gt;pyinstaller2 launchLeo-unified.spec
-&gt;pyinstaller3 launchLeo-unified.spec
-'''
-# Notes:
-# 1. Delete dist and build folders before running this script.
-# 2. Requires setuptools 19.2 (19.4 is broken)
-#    https://github.com/pyinstaller/pyinstaller/issues/1781
-
-import glob, os, sys
-
-# os.system('cls')
-
-generate_folder = True
-    # True: generate Leo/leo folder as well as Leo/Leo.exe.
-    # False:  generate only Leo/Leo.exe.
-    #        Data files are unpacked to a known location.
-
-# Same code as in runLeo.py.
-path = os.getcwd()
-if path not in sys.path:
-    print('launchLeo-unified.spec: appending %s to sys.path' % path)
-    sys.path.append(path)
-
-import leo.core.leoGlobals as g
-import leo.core.leoApp as leoApp
-
-LM = leoApp.LoadManager()
-loadDir = LM.computeLoadDir()
-
-def get_modules(name):
-    '''return a list of module names (separated by dots) in the leo/x directory.'''
-    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
-    n = len(abs_dir) + 1
-    aList = glob.glob(abs_dir + '/*.py')
-    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
-
-# Utilities for creating entries in the "datas" lists...
-def all(name):
-    '''Return a tuple that causes all files in name to be included.'''
-    return ('%s/*.*' % (name), name)
-
-icons = all
-
-def ext(kind, name):
-    '''Return a tuple that causes all files with the given extension in name to be included.'''
-    if kind.startswith('.'):
-        kind = kind[1:]
-    return ('%s/*.%s' % (name, kind), name)
-
-# Define all modules in leo.plugins &amp; leo.modes
-hidden_imports = []
-for name in ('external', 'modes', 'plugins',
-             'plugins/importers', 'plugins/writers',
-):
-    hidden_imports.extend(get_modules(name))
-    
-hidden_imports = [z.replace('/','.') for z in hidden_imports]
-
-exclude_modules = ['_tkinter',]
-    
-if 0:
-    print('hidden imports...')
-    for z in sorted(hidden_imports):
-        print(z)
-    sys.exit()
-
-block_cipher = None
-
-datas = [
-    # Required for startup...
-        ('leo/core/commit_timestamp.json', 'leo/core'),
-        ext('.ui', 'leo/plugins'),
-    # Required for plugins...
-        # Data requifed for startup.
-        all('leo/plugins/GraphCanvas'),
-        # These are also hidden imports...
-        ext('.py', 'leo/plugins'),
-        ext('.py', 'leo/plugins/importers'),
-        ext('.py', 'leo/plugins/writers'),
-    # leo/config...
-        ext('.leo', 'leo/config'),
-    # leo/modes...
-        ext('.py', 'leo/modes'),
-        ext('.xml', 'leo/modes'),
-    # All icons...
-        icons('leo/Icons'),
-        icons('leo/Icons/cleo'),
-        icons('leo/Icons/cleo/small'),
-        icons('leo/Icons/file_icons'),
-        icons('leo/Icons/nodes-dark/plusminus'),
-        icons('leo/Icons/nodes-dark/triangles'),
-        icons('leo/Icons/recorder'),
-        icons('leo/themes/generic/Icons'),
-        icons('leo/themes/leo_dark_0/Icons'),
-        icons('leo/themes/leo_dark_0/Icons/cleo'),
-        icons('leo/themes/leo_dark_0/Icons/cleo/small'),
-        icons('leo/themes/leo_dark_0/Icons/file_icons'),
-        icons('leo/themes/leo_dark_0/Icons/Tango/16x16/apps'),
-    # The following files *are* useful in one-file operation.
-    # sys._MEIPASS points to the temp folder.
-    # On windows: ~\AppData\Local\Temp\_MEInnnn
-    # leo-editor: loaded by LeoPy.leo...
-        ('launchLeo-unified.spec', ''),
-        ('leo_to_html.xsl', ''),
-        ('pylint-leo.py', ''),
-        # ('setup.py', ''),
-    # leo.commands...
-        ext('.py', 'leo/commands'),
-    # leo.core...
-    # Only include reference files.
-        # ext('.leo', 'leo/core'),
-        ('leo/core/LeoPyRef.leo', 'leo/core'),
-        ext('.py', 'leo/core'),
-        ext('.txt', 'leo/core'),
-    # leo.dist...
-        all('leo/dist'),
-    # leo/doc &amp; leo/doc/html
-        ext('.css', 'leo/doc'),
-        ext('.js', 'leo/doc'),
-        ext('.html', 'leo/doc'),
-        ext('.leo', 'leo/doc'),
-        ext('.py', 'leo/doc'),
-        ext('.txt', 'leo/doc'),
-        all('leo/doc/html'),
-    # ext('.jif','leo/doc/html'),
-    # ext('.py','leo/doc/html'),
-    # ext('.txt','leo/doc/html'),
-    # User-selectable icons.
-        icons('leo/Icons/Tango/16x16/actions'),
-        icons('leo/Icons/Tango/16x16/animations'),
-        icons('leo/Icons/Tango/16x16/apps'),
-        icons('leo/Icons/Tango/16x16/categories'),
-        icons('leo/Icons/Tango/16x16/devices'),
-        icons('leo/Icons/Tango/16x16/emblems'),
-        icons('leo/Icons/Tango/16x16/emotes'),
-        icons('leo/Icons/Tango/16x16/mimetypes'),
-        icons('leo/Icons/Tango/16x16/places'),
-        icons('leo/Icons/Tango/16x16/status'),
-    # leo/extensions...
-        ext('.py', 'leo/extensions'),
-        all('leo/extensions/hooks'),
-    # leo/external...
-        ext('.leo', 'leo/external'),
-        ext('.py', 'leo/external'),
-        ext('.txt', 'leo/external'),
-        ext('.css', 'leo/external/ckeditor'),
-        ext('.js', 'leo/external/ckeditor'),
-        ext('.json', 'leo/external/ckeditor'),
-        ext('.md', 'leo/external/ckeditor'),
-    # leo/plugins...
-    # Only include reference files.
-        # ext('.leo', 'leo/plugins'),
-        ('leo/plugins/leoPluginsRef.leo', 'leo/plugins'),
-        ('leo/plugins/leoGuiPluginsRef.leo', 'leo/plugins'),
-        ext('.txt', 'leo/plugins'),
-        ext('.py', 'leo/plugins/examples'),
-        ext('.py', 'leo/plugins/test'),
-    # leo/scripts...
-        ext('.bat', 'leo/scripts'),
-        ext('.leo', 'leo/scripts'),
-        ext('.txt', 'leo/scripts'),
-        ext('.py', 'leo/scripts'),
-    # Everything required for unit tests...
-    # execute-script requires the leo/test folder itself.
-        ext('.leo', 'leo/test'),
-        ext('.py', 'leo/test'),
-        ext('.txt', 'leo/test'),
-        all('leo/test/unittest'),
-        all('leo/test/unittest/input'),
-        all('leo/test/unittest/output'),
-        all('leo/test/unittest/perfectImport'),
-    # leo/www...
-        all('leo/www'),
-]
-
-a = Analysis(['launchLeo.py'],
-    pathex=[],
-    binaries=None,
-    datas=datas,
-    hiddenimports=hidden_imports,
-    hookspath=None,
-    runtime_hooks=None,
-    excludes=exclude_modules,
-    win_no_prefer_redirects=None,
-    win_private_assemblies=None,
-    cipher=block_cipher)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-if generate_folder:
-    exe = EXE(pyz,
-        a.scripts,
-        exclude_binaries=True,
-        name='LeoApp', # 'leo' doesn't work on Linux.
-        debug=False,
-        strip=None,
-        upx=True,
-        console=True )
-else:
-    exe = EXE(pyz,
-        a.scripts,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        name='LeoApp', # 'leo' doesn't work on Linux.
-        debug=False,
-        strip=None,
-        upx=True,
-        console=True)
-
-if generate_folder:
-    coll = COLLECT(
-        exe,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        strip=None,
-        upx=False,
-        name='Leo')
 </t>
 <t tx="ekr.20160226082945.1"></t>
 <t tx="ekr.20160229131014.1">gnx: ekr.20160127035721.2
