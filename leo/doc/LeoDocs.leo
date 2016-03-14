@@ -170,7 +170,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -220,6 +220,10 @@
 <v t="ekr.20131025044901.17144"><vh>Steve Litt</vh></v>
 <v t="ekr.20141210095600.11"><vh>Dave Williams</vh></v>
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
+</v>
+<v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
+<v t="ekr.20160304081437.8"><vh>Offray Cárdenas</vh></v>
+<v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh>
@@ -307,7 +311,9 @@
 <v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
 <v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
 <v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
+<v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
 <v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
+<v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
@@ -319,10 +325,13 @@
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
+<v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
+<v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
+<v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
 <v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
 <v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
 <v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
@@ -1164,19 +1173,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160309092304.1"><vh>** Add to tips/faq/testimonials</vh>
-<v t="ekr.20160304081437.2"><vh>A note to new users</vh></v>
-<v t="ekr.20160309092522.1"><vh>Document stupendous Aha</vh></v>
-<v t="ekr.20160304081437.3"><vh>FAQ: Leo Dark on Linux</vh></v>
-<v t="ekr.20160304081437.4"><vh>FAQ: Leo in virtualenv</vh></v>
-<v t="ekr.20160304081437.5"><vh>Tip: My git work flow</vh></v>
-<v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
-<v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
-<v t="ekr.20160304081437.8"><vh>Offray Cárdenas</vh></v>
-<v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
-</v>
-</v>
-<v t="ekr.20160310062634.1"></v>
 <v t="ekr.20160310055341.1"><vh>Leo 5.2 b1 release notes</vh>
 <v t="ekr.20160310062924.1"><vh> Highlights</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs</vh>
@@ -1282,7 +1278,6 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20160314091317.1"><vh>Old readme_quick_install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -6011,7 +6006,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2015 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2016 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -10144,8 +10139,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 4.8 release candidate 1
-| latest_release_date = {{release date and age|2010|11|15}}
+| latest_release_version = 5.2 b1
+| latest_release_date = {{release date and age|2016|03|15}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
 | license = [[Python (programming language)|Python]] License
@@ -16044,6 +16039,8 @@ History of Leo
 
 This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronicle of every change made to Leo.
 
+One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existsed by Leo 4.3.
+
 .. contents::
     :depth: 3
 </t>
@@ -17999,96 +17996,6 @@ For Windows 10, do the following (it may be a bit different for Windows 8):
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.2">John Lunzer, August 30, 2015
-https://groups.google.com/d/msg/leo-editor/WupMUqlclaQ/dtAjRiytFgAJ
-
-A new user recently said to me, "Leo is powerful and flexible -- and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years and has ~1.5 million lines of code (IIRC). This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
-
-I believe with tools of this weight and impact, there will always be an investment in learning them. They're all vast forests of features filled with hidden treasures and in the case of each of them he/she that invests in the tool will be rewarded for their effort. It is, however, the responsibility of the community (led by the developers) to help make that treasure hunt as enjoyable and adventurous as possible, as any good treasure hunt should be. 
-
-
-===============
-Geoff Evans, September 1, 2015
-
-As the 'new' (since 2009) user John mentioned, I totally endorse what he says about how friendly and helpful the Leo community is in dealing with questions.   But I'm also old enough to be fond of written documentation.  This note is one offering towards Edward's desire for outreach to more users and how the documentation could serve that purpose.  I am looking for something that will persuade a non-user to try leo, and persuade a new user that a small effort in learning a bit more often brings a big reward.  Years of editing and reviewing for international scientific journals, plus decades of making my own mistakes, have taught me the value of just-in-time delivery of ideas, and of writing to the interface not the implementation.  So before even the Tutorial (which is still basically about How rather than What and Why) I envisage a section built around people's needs and indicating how they would go about meeting them with Leo.  Something like (trying to use the format in Jacob Peck's scripting example):
--A Taste of Leo
-  Leo is a system that lets you enter information and keep track
-  of how it's organized.  Leo's main window has two large parts 
-  that contain your information:  an outline pane toward the top
-  left and a body pane [I always toggle the split direction] on
-  the right.  The body pane contains information related to the
-  highlighted headline in the outline pane; headline and body pane
-  together are referred to as a node.
-    -Staples
-      There are many ways to instruct Leo: commands, directives,
-      scripts, buttons, abbreviations ....  This part gives
-      brief examples of the kind of thing each does.
-        -Command
-          Does something immediately.
-          You want to insert a new node into your outline:
-            Alt-X insert-node  [Ctrl-I]
-          Typing 'Alt-X' put you in a minibuffer at the bottom of
-          the main window, where you type the rest of the 
-          command.  This is such a common command that there is a
-          keyboard shortcut for it.  But there are scores of
-          commands, most of which have to be entered the Alt-X
-          way (tab completion can make it less onerous).
-          You want to search for something in the outline:
-            Alt-X find   [Ctrl-F]
-          is a flexible command that, for example, lets you 
-          search only headlines, and offers search-and-replace.
-        -Directive
-          Doesn't do anything immediately, but sets up ground
-          rules that will be followed in that node and all 
-          children until overridden.
-          You want syntax coloring appropriate the the language
-          you're programming in
-            @language python
-          turns it on.
-          You want to save a subtree in an external file where
-          another program can access it.
-            @file file.name
-          directs that the node and all children will be saved in
-          a separate file called file.name .
-        -Setting
-          Controls how a whole Leo session will look.
-          You always want your body pane to the right of the
-          outline pane, whereas by default Leo will put it below.
-          Edit the file myLeoSetttings.leo (which you access by
-          clicking the Settings tab near the top of the main
-          window -- or the Help tab in older Leo versions such
-          as the picture in the current Leo5.1 documentation) by
-          adding a line
-            @bool split_direction = vertical
-          Settings don't take effect immediately, but only in
-          the next leo session you open.  [Though when you're
-          experimenting to see how they work, you can put a
-          @settings tree in the outline you're working on,
-          add your lines there, and they take effect when you
-          save and reopen the file in the same Leo session.]
-        -Script
-          I can't give an example of something I want that a 
-          script will do for me.
-    -Treats
-      This is the place to put some representative gems.  I seem
-      to recall Edward suggesting this somewhere in the thread on 
-      Leo's future, though I can't find it now.  But they have to
-      be things that make a new user say: "I hadn't thought of
-      using Leo for that.  Now that I think of it, I can see
-      wanting to.  I'm confident now I can work out how for my
-      own needs."  
-      But the first treat is obvious:
-        -Clone
-          You have a task that belongs in Project A, that you 
-          need to work on next week.  So you enter a node for
-          the task under &lt;Project A&gt;, type Ctrl-` , and you have
-          a copy of the node you can move to under &lt;Do next week&gt;
-          *and* when you modify your description in one place,
-          the same modifications happen in the other.
-Okay, that's enough ignorant comment from me.  People who really know Leo can correct all the mistakes I've made and add more and better treats and examples.  
-One other thought:  there are places where the documentation has "Go here for help" links.  If they were to point to the leo-editor-users group, rather than leo-editor, people might be less inhibited about using them.  It would feel less like interrupting the work of the developers.
-
-And this is where Leo does not falter, in the helpfulness of its community (small though it may be). I will reiterate what Edward has said many times, do not struggle on your own if you are lost, confused, or bewildered. Please ask questions. If the documentation or examples do not meet your needs, please ask questions. In my own experience as a once new user (though there may be the occasional disagreement) you will not be chided, scorned, or belittled but will be met with more even more help than you originally asked for. </t>
 <t tx="ekr.20160304081437.3">Zoom.Quiet: Leo Dark on Linux
 https://groups.google.com/d/msg/leo-editor/B3_1e9k69oQ/cLKXFq_fXw8J
 
@@ -18165,59 +18072,42 @@ I use gitk on both platforms to review commits.
 
 And that's about it. I use "git help" and "git help command" as needed.
 </t>
-<t tx="ekr.20160304081437.6">January 23, 2016
-https://groups.google.com/d/msg/leo-editor/ewa_87LomP0/5wIRxFeqDwAJ
+<t tx="ekr.20160304081437.6">Running a unit test locally, without exiting Leo, saves a lots of time.  It's much faster than having to load unitTest.leo or even a small .leo file.
 
-Running a unit test locally, without exiting Leo, saves a lots of time.  It's much faster than having to load unitTest.leo or even a small .leo file.
-
-The question is, how to use the newest code?  imp.reload often doesn't work. But just yesterday I saw a way that usually does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
+The question is, how to use the newest code?  imp.reload often doesn't work. But there is a trick that does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
 
 For instance, here is the @test node I use to develop the new javascript importer:
 
-g.cls()
-p1 = p.copy()
-if c.isChanged():
-    c.save()
-import leo.plugins.importers.basescanner as basescanner
-@others
-scanner = JavaScriptScanner(c.importCommands, atAuto = False)
-h = '@ignore js-test'
-p = g.findNodeAnywhere(c, h)
-if p:
-    while p.firstChild():
-        p.firstChild().doDelete()
-else:
-    p = c.insertHeadline()
-    p.h = h
-c.selectPosition(p)
-fn = r'c:\prog\jQuery-short2.js'
-s = open(fn, 'r').read()
-print('Sources..\n\n%s\n\n' % s)
-scanner.scan(s, p)
-c.selectPosition(p1)
-c.redraw()
-print('done')
+    g.cls()
+    p1 = p.copy()
+    if c.isChanged():
+        c.save()
+    import leo.plugins.importers.basescanner as basescanner
+    @others
+    scanner = JavaScriptScanner(c.importCommands, atAuto = False)
+    h = '@ignore js-test'
+    p = g.findNodeAnywhere(c, h)
+    if p:
+        while p.firstChild():
+            p.firstChild().doDelete()
+    else:
+        p = c.insertHeadline()
+        p.h = h
+    c.selectPosition(p)
+    fn = r'c:\prog\jQuery-short2.js'
+    s = open(fn, 'r').read()
+    print('Sources..\n\n%s\n\n' % s)
+    scanner.scan(s, p)
+    c.selectPosition(p1)
+    c.redraw()
+    print('done')
 
 To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.
 
-There is another happy consequence of this Aha.  There is no longer any great need ever to run unit tests externally, so I can use the following key bindings:
-
-run-selected-unit-tests-locally     = Alt-4
-run-marked-unit-tests-locally       = Alt-5
-run-all-unit-tests-locally          = Alt-6
-
-This is much easier to remember--I don't have to remember which bindings apply to external tests and which to local. It's easy to remember that Alt-4 runs the fewest tests, Alt-5 runs more tests and Alt-6 runs all the tests.
-
 You could call this an extension of the "stupendous Aha".</t>
-<t tx="ekr.20160304081437.7">https://groups.google.com/d/msg/leo-editor/F-WA_OpHKPA/xPJNpHR8CgAJ
+<t tx="ekr.20160304081437.7">Leo is a superb tool for understanding, studying and organizing any kind of complex data, including computer programs. The first great Aha in Leo's history was that webs (literate programs) are outlines in disguise. Leo's importers (@auto) make it easy to studying other people's programs. Leo's always-present outline structure clarifies overall program structure and makes many kinds of comments unnecessary.
 
-This post discusses what I think matters most about Leo. This post assumes you are an experienced Leo user.  It does not try to duplicate Leo's Tutorial.
-
-This post will be pre-writing for a version that will be posted to Leo's web site. All comments are welcome.
-
-Leo is a superb tool for understanding, studying and organizing any kind of complex data, including computer programs. The first great Aha in Leo's history was that webs (literate programs) are outlines in disguise. Leo's importers (@auto) make it easy to studying other people's programs. Leo's always-present outline structure clarifies overall program structure and makes many kinds of comments unnecessary.
-
-Leo is a superb browser for code and data. Unlike many other folding editors, Leo remembers which nodes were expanded when you last saved an outline. This is surprisingly important. And Leo's clones let you organize any data as you want, even if all folds are collapsed.
+Leo is also a superb browser for code and data. Unlike many other folding editors, Leo remembers which nodes were expanded when you last saved an outline. This is surprisingly important. And Leo's clones let you organize any data as you want, even if all folds are collapsed.
 
 Leo is a uniquely powerful scripting environment. This power comes from three sources: Leo's API, Leo's ability to compose scripts from outlines and Leo's underlying data structure, a Directed Acyclic Graph, the basis for Leo's clones.
 
@@ -18241,35 +18131,27 @@ The invention/discovery of @clean earlier this year completes Leo is some sense.
 
 Acknowledgements: Working with Leo's community of Leo's developers and users has been a great pleasure for over 20 years. My only regret is that Bernhard Mulder and Bob Fitzwater are no longer with us. Both made essential contributions. Bob Fitzwater was my mentor. He gently pushed me to consider design, not just "bit twiddling".  Bernhard Mulder contributed two of the most important elements of Leo: Leo's traversers (generators) and the original @shadow algorithm.  Neither @clean nor the revised Mulder/Ream algorithm could possibly have happened without him.  I miss both these great thinkers.  Both would have been proud of what they helped create.
 
-A successful software tool is one that was used to do something undreamed of by its author.'
--- Stephen Johnson
+A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
 Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @test, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
 
-Edward
-
-P. S. As I write this, I see that @button is nowhere mentioned in Leo's History Chapter.  That's crazy: @button is arguably the most brilliant scripting idea ever created anywhere.  Many thanks to 'e', whoever you are.  I'd like to thank you by name.  @button lead directly to @test.</t>
+Edward K. Ream
+</t>
 <t tx="ekr.20160304081437.8">Offray Cárdenas
 
-This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text. On a sightly off-topic, most of them are school teachers making their master studies on education. Some of them were doctors working on writing complex documents. They're good at what they do, but having not technical expertise on computers (or not the proper permissions on school and office machines to install their software, so they weren't unable to continue using Leo)
-
------
+This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
 
 &gt; Leo's clones let you organize any data as you want, even if all folds are collapsed.
 
-For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charger. You impose infrastructure.
+For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charger. You impose infrastructure...
 
-
------
-
-For me the second main insight of Leo (besides emergent always present tree structure on almost any file) was to have a tree that is a programmable structure that can be understood and changed by any node inside that tree. I think that Leo brings structure and self-referentiality to the dumb flat file word. So you can create a tree from one (or several) files, deconstruct and reconstruct it they way you want and automatize the way in behaves and talks with the external world. Previously I had compared Leo with the Smalltalk object in the sense that it makes for files kind of what Smalltalk makes for objects. The more I start to focus on interactive writing and going away of the unix inspired OS world, the more the second insight become important to me. I didn't need to deconstruct/reconstruct or impose structure over flat files but to use outlining for structure thought by (interactive) writing and I need the outline be a fully programmable object. That's the essence of most of my Leo experience and what I'm trying to bridge with the Pharo Smalltalk world (with the advantage of a fully introspective, portable and moldable computing and visualization environment)
+For me the second main insight of Leo (besides emergent always present tree structure on almost any file) was to have a tree that is a programmable structure that can be understood and changed by any node inside that tree. I think that Leo brings structure and self-referentiality to the dumb flat file word. So you can create a tree from one (or several) files, deconstruct and reconstruct it they way you want and automatize the way in behaves and talks with the external world...The more I start to focus on interactive writing and going away of the unix inspired OS world, the more the second insight become important to me. I didn't need to deconstruct/reconstruct or impose structure over flat files but to use outlining for structure thought by (interactive) writing and I need the outline be a fully programmable object. That's the essence of most of my Leo experience...
 
 Thanks for Leo and all the key inspiration it brings. And, as always, thanks to the Leo community for the food for thought.
 </t>
 <t tx="ekr.20160304081437.9">My only input is what makes Leo so special to me.
 
-After learning just a few things about Leo, and after replacing &lt;&lt; section references &gt;&gt; mostly with @others,
-writing code becomes a game rather than a chore.
+After learning just a few things about Leo, and after replacing section references mostly with @others, writing code becomes a game rather than a chore.
 
 As soon as an idea becomes complicated, I add a new @others, and break down the complication into chunks until all the complications are now simple.
 
@@ -18281,7 +18163,7 @@ The cloned 'test piece' can be relegated to a testing section, and the new chunk
 
 In practice, this is just fun for me.
 
-Coding without Leo is not not really fun any more. I recently finished a c++ socket server using Microsoft's Visual Studio, in concert with someone who didn't have Leo. Microsoft's tools are great, and the project went off without a hitch,  but the fun was just plain gone.
+Coding without Leo is not really fun any more. I recently finished a c++ socket server using Microsoft's Visual Studio, in concert with someone who didn't have Leo. Microsoft's tools are great, and the project went off without a hitch, but the fun was just plain gone.
 
 Anyway, thanks for the great perspective on Leo.
 </t>
@@ -18584,9 +18466,7 @@ Also improved reporting in the RecursiveImportController class.
 </t>
 <t tx="ekr.20160305040503.50">Traverses the tree given using the generator, cloning all positions for which predicate(p) is True. Undoably moves all clones to a new node, created as the last top-level node.
 </t>
-<t tx="ekr.20160305040503.51">April 15, 2015
-
-Rev 419a82d changes several aspects of how Leo handles the so-called orphan bit in vnodes.  These are major changes, but I believe they will be for the best.
+<t tx="ekr.20160305040503.51">Rev 419a82d changes several aspects of how Leo handles the so-called orphan bit in vnodes.  These are major changes, but I believe they will be for the best.
 
 The orphan bit indicates that there was a problem writing an @&lt;file&gt; node.  It will be set, for example, when an @file node contains children but has no @others directive.  Leo simply cannot write the external file in that case.
 
@@ -18985,8 +18865,19 @@ This node contains documentation about how to use the patterns.
 </t>
 <t tx="ekr.20160305072334.1">All kill commands except the kill-paragraph and backward-kill-paragraph commands cuts selected *text* if it exists.
 </t>
-<t tx="ekr.20160309092304.1"></t>
-<t tx="ekr.20160309092522.1"></t>
+<t tx="ekr.20160309092522.1">The name "Stupendous Aha" is a bit ironical.  From one point of view it may seem obvious. Nevertheless, it was a true Aha for me.
+
+Unit tests permanent check of the correctness of a piece of code. Test Driven Development expands this view. But unit tests are much more important.  In fact, unit tests are *general-purpose helper scripts* that can be run at any time.
+
+1. Unit tests codify and make explicit desired or expected behavior.
+
+2. Unit tests are a way of "maintaining attention" on a problem.  Unit
+tests don't forget, and they are permanent.
+
+3. Unit tests *do whatever we want*, and they do it automatically.
+
+In short, unit tests are a *master tool* for any programmer or designer.
+</t>
 <t tx="ekr.20160309092610.2">https://github.com/leo-editor/leo-editor/issues/232
 
 Appears invalid: only happens on 5.1 final.
@@ -19005,7 +18896,7 @@ The preliminaries were at least as important as the fix itself:
 
 3. Leo's --debug option enables more verbose IPython logging. This is a feature that reveals the workings of the Jupyter kernel.
 </t>
-<t tx="ekr.20160310055341.1">March 15, 2016
+<t tx="ekr.20160310055341.1">Leo 5.2-b1, March 15, 2016
 
 [Leo](http://leoeditor.com/) 5.2 b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
@@ -19142,24 +19033,7 @@ The preliminaries were at least as important as the fix itself:
     Themes
     Wildcard file names on Leo's command line
 </t>
-<t tx="ekr.20160314091317.1">Method 2. (Single-file, Easiest):
-
-Download leo.exe and execute it *anywhere* by double-clicking on it.
-
-There are two disadvantages to using the single-file method:
-
-1. Before Leo starts, PyInstaller unpacks all libraries and data files to a temp folder:
-       ~\AppData\Local\Temp\_MEInnn.
-   As a result, starting leo.exe is slower than usual.
-
-2. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
-   but these files exist *only* in the temp folder. They will be *destroyed*
-   when you exit leo.exe. If you want to do real work with Leo you must
-   create .leo files in a permanent folder on your machine.
-   
-Both the folder-based and single-file version were created by PyInstaller: http://pythonhosted.org/PyInstaller.
-</t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
