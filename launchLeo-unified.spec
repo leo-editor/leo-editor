@@ -14,11 +14,16 @@ This is a single .exe file or a folder, depending on generate_folder.
 # Requires setuptools 19.2 (19.4 is broken)
 #    https://github.com/pyinstaller/pyinstaller/issues/1781
 
-generate_folder = True # True is recommended.
+generate_folder = True
+    # True is *highly* recommended.
 
 #@+<< imports >>
 #@+node:edward.20160313203026.1: ** << imports >> launchLeo-unified.spec
-import glob, os, sys
+import glob
+import os
+import sys
+
+is_mac = sys.platform.startswith('darwin')
 
 # Same code as in runLeo.py.
 path = os.getcwd()
@@ -28,10 +33,11 @@ if path not in sys.path:
 
 import leo.core.leoGlobals as g
 import leo.core.leoApp as leoApp
-#@-<< imports >>
-is_mac = sys.platform.startswith('darwin')
+
 LM = leoApp.LoadManager()
 loadDir = LM.computeLoadDir()
+#@-<< imports >>
+
 #@+others
 #@+node:edward.20160313203148.2: ** all, ext, icons
 # Utilities for creating entries in the "datas" lists...
@@ -42,14 +48,18 @@ def all(name):
 icons = all
 
 def ext(kind, name):
-    '''Return a tuple that causes all files with the given extension in name to be included.'''
+    '''
+    Return a tuple that causes all files with the given extension in name
+    to be included.
+    '''
     if kind.startswith('.'):
         kind = kind[1:]
     return ('%s/*.%s' % (name, kind), name)
 #@+node:edward.20160313203912.1: ** define_added_binaries
 def define_added_binaries():
-
-    if is_mac:
+    '''Return the added binaries needed for MacOS.'''
+    if is_mac and False:
+        # This doesn't work, and produces huge folders.
         lib_root = os.path.expanduser(
             '~/anaconda2/pkgs/qt-4.8.7-1/lib')
         assert os.path.exists(lib_root), lib_root
@@ -69,10 +79,10 @@ def define_added_binaries():
                 excludes=[]
             )
         )
-    else:
-        return []
+    return []
 #@+node:edward.20160313203338.1: ** define_datas
 def define_datas():
+    '''Return all needed data files.'''
     return [
     # Required for startup...
         ('leo/core/commit_timestamp.json', 'leo/core'),
@@ -181,7 +191,7 @@ def define_datas():
     ]
 #@+node:edward.20160313203420.1: ** define_hidden_imports
 def define_hidden_imports():
-    # Define all modules in leo.plugins & leo.modes
+    '''Define all modules in leo.plugins & leo.modes.'''
     hidden_imports = []
     for name in ('external', 'modes', 'plugins',
                  'plugins/importers', 'plugins/writers',
@@ -197,14 +207,17 @@ def define_hidden_imports():
     return hidden_imports
 #@+node:edward.20160313203148.1: ** get_modules
 def get_modules(name):
-    '''return a list of module names (separated by dots) in the leo/x directory.'''
+    '''
+    Return a list of module names (separated by dots) in the leo/x directory.
+    This could be replaced by PyInstaller.utils.hooks.collect_submodules.
+    '''
     abs_dir = g.os_path_finalize_join(loadDir, '..', name)
     n = len(abs_dir) + 1
     aList = glob.glob(abs_dir + '/*.py')
     return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
 #@+node:edward.20160313203251.1: ** main
 def main():
-
+    '''Main line of launchLeo-unified.spec.'''
     added_binaries = define_added_binaries()
     datas = define_datas()
     hidden_imports = define_hidden_imports()
@@ -223,6 +236,7 @@ def main():
     pyz = PYZ(a.pure, a.zipped_data, cipher=None)
     if generate_folder:
         if is_mac:
+            # Does not work at present.
             exe = EXE(pyz,
                 a.scripts,
                 a.binaries + added_binaries,
