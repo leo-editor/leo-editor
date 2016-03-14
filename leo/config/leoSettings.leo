@@ -4048,7 +4048,6 @@ replace-string
 search-again
 search-backward
 search-forward
-search-with-present-options
 set-replace-string
 
 Setting find options:
@@ -4125,7 +4124,6 @@ find-character-extend-selection             = None ### = Alt-Shift-P
 
 # To start finds and changes...
 start-search                        = Ctrl-f
-search-with-present-options         = None # Ctrl-f
 set-replace-string                  = None # Ctrl-Shift-r
 find-tab-hide                       = None
 find-tab-open                       = None
@@ -4135,7 +4133,6 @@ isearch-backward                    = Alt-R
 isearch-backward-regexp             = None
 isearch-forward                     = Alt-I # Alt-S conflicts with &amp;Search and &amp;Settings menus.
 isearch-forward-regexp              = None
-# isearch-with-present-options      = Alt-i
 # query-replace                       = None
 # query-replace-regex                 = None
 search-backward                     = None
@@ -4958,7 +4955,6 @@ focus-to-tree               = o
 # unused                    = p
 enter-quick-command-mode    = q
 # unused                    = r
-search-with-present-options = s
 # toggle-from-minibuffer    = t
 # unused                    = u
 toggle-extend-mode          = v
@@ -7344,8 +7340,6 @@ outline-to-noweb                = None
 paste-node                      = Shift-Ctrl-V
 paste-retaining-clones          = None
 paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
-pretty-print-all-python-code    = None
-pretty-print-python-code        = None
 previous-line                   = Ctrl-p
 previous-line-extend-selection  = None
 print-bindings                  = None
@@ -7786,7 +7780,6 @@ isearch-backward                    = None
 isearch-backward-regexp             = None
 isearch-forward                     = None
 isearch-forward-regexp              = None
-isearch-with-present-options        = None
 keep-lines                          = None
 keyboard-quit                       = None
 kill-line                           = None
@@ -7852,8 +7845,6 @@ outline-to-noweb                    = None
 paste-node                          = None
 paste-retaining-clones              = None
 paste-text                          = None
-pretty-print-all-python-code        = None
-pretty-print-python-code            = None
 previous-line                       = None
 previous-line-extend-selection      = None
 print-bindings                      = None
@@ -7925,7 +7916,6 @@ scroll-up-line                      = None
 scroll-up-page                      = None
 search-backward                     = None
 search-forward                      = None
-search-with-present-options         = None
 select-all                          = None
 set-colors                          = None
 set-comment-column                  = None
