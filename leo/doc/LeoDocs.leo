@@ -7084,7 +7084,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
     A node may contain multiple @language directives.
 
-    The valid language names are: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlis, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.
+    The valid language names include the following: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlist, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.
 
     **Note**: Shell files have comments that start with #.
 
@@ -16039,7 +16039,7 @@ History of Leo
 
 This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronicle of every change made to Leo.
 
-One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existsed by Leo 4.3.
+One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
 
 .. contents::
     :depth: 3
@@ -17996,24 +17996,25 @@ For Windows 10, do the following (it may be a bit different for Windows 8):
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.3">Zoom.Quiet: Leo Dark on Linux
-https://groups.google.com/d/msg/leo-editor/B3_1e9k69oQ/cLKXFq_fXw8J
+<t tx="ekr.20160304081437.3">https://groups.google.com/d/msg/leo-editor/B3_1e9k69oQ/cLKXFq_fXw8J
 
-I've played a bit with my theme since I wanted a dark one in order to save my eyes. Here is a screenshot:
-https://lh3.googleusercontent.com/-kb-RnBVq8zU/VIlThQ9MGuI/AAAAAAAAAD8/j-AAOKiHvFI/s1600/leo-dark-ubuntu.png
+I've played a bit with my theme since I wanted a dark one in order to save my eyes. Here is a screenshot: https://lh3.googleusercontent.com/-kb-RnBVq8zU/VIlThQ9MGuI/AAAAAAAAAD8/j-AAOKiHvFI/s1600/leo-dark-ubuntu.png
 
-It's pretty straightforward to get it :
- - install this nice theme : http://gnome-look.org/content/show.php/HackStation?content=167255
+It's pretty straightforward to get it:
 
- - then just override Leo's qt style sheet by adding an empty @data qt-gui-plugin-style-sheet to your @settings
+- Install this nice theme: http://gnome-look.org/content/show.php/HackStation?content=167255
 
- - I struggled a bit to finally find out that the only settings that are not handled by qt are the log pane text colors, so add those settings :
--  @color log_text_foreground_color = #93a1a1
-@color log_error_color = #dc322f
-@color log_warning_color = #268bd2
+- Override Leo's qt style sheet by adding an empty @data qt-gui-plugin-style-sheet to your @settings
 
-Finally, I've made a pack of transparent icons to be used more generically :
-@string color_theme = transparent</t>
+- The only settings that are not handled by qt are the log pane text colors, so add them::
+
+    @color log_text_foreground_color = #93a1a1
+    @color log_error_color = #dc322f
+    @color log_warning_color = #268bd2
+
+Finally, I've made a pack of transparent icons to be used more generically:
+
+    @string color_theme = transparent</t>
 <t tx="ekr.20160304081437.4">https://groups.google.com/d/msg/leo-editor/LePOMe_ckeg/_UasKCKP6NMJ
 
 Some time ago there were a discussion about Leo in virtualenv.
@@ -18076,7 +18077,7 @@ And that's about it. I use "git help" and "git help command" as needed.
 
 The question is, how to use the newest code?  imp.reload often doesn't work. But there is a trick that does work.  Clone the code under development and put it under an @test node.  The script in the @test node uses @others to gain access to the code, not an import.
 
-For instance, here is the @test node I use to develop the new javascript importer:
+For instance, here is the @test node I use to develop the new javascript importer::
 
     g.cls()
     p1 = p.copy()
