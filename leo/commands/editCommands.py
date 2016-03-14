@@ -4788,50 +4788,35 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.345: *3* transposeWords
     @cmd('transpose-words')
     def transposeWords(self, event):
-        '''Transpose the word at the cursor with the preceding or following word.'''
+        '''
+        Transpose the word before the cursor with the word after the cursor
+        Punctuation between words does not move. For example, ‘FOO, BAR’
+        transposes into ‘BAR, FOO’.
+        '''
         trace = False and not g.unitTesting
         w = self.editWidget(event)
-        if not w:
-            return
+        if not w: return
         self.beginCommand(w, undoType='transpose-words')
         s = w.getAllText()
         i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1: j1]
-        if trace: g.trace(i1, j1, s1)
         if i1 > j1: i1, j1 = j1, i1
-        # First, search backward.
-        k = i1 - 1
-        while k >= 0 and s[k].isspace():
-            k -= 1
-        changed = k > 0
+        if trace: g.trace('word1', s[i1:j1])
+        # Search for the next word.
+        k = j1 + 1
+        while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
+            k += 1
+        changed = k < len(s)
         if changed:
-            ws = s[k + 1: i1]
-            if trace: g.trace(repr(ws))
+            ws = s[j1: k]
+            if trace: g.trace('ws', repr(ws))
             w.setInsertPoint(k + 1)
             i2, j2 = self.extendToWord(event, select=False)
             s2 = s[i2: j2]
-            if trace: g.trace(i2, j2, repr(s2))
-            s3 = s[: i2] + s1 + ws + s2 + s[j1:]
+            if trace: g.trace('word2', s2)
+            s3 = s[: i1] + s2 + ws + s1 + s[j2:]
             w.setAllText(s3)
-            if trace: g.trace(s3)
             w.setSelectionRange(j1, j1, insert=j1)
-        else:
-            # Next search forward.
-            k = j1 + 1
-            while k < len(s) and s[k].isspace():
-                k += 1
-            changed = k < len(s)
-            if changed:
-                ws = s[j1: k]
-                if trace: g.trace(repr(ws))
-                w.setInsertPoint(k + 1)
-                i2, j2 = self.extendToWord(event, select=False)
-                s2 = s[i2: j2]
-                if trace: g.trace(i2, j2, repr(s2))
-                s3 = s[: i1] + s2 + ws + s1 + s[j2:]
-                w.setAllText(s3)
-                if trace: g.trace(s3)
-                w.setSelectionRange(j1, j1, insert=j1)
         self.endCommand(changed=changed, setLabel=True)
     #@+node:ekr.20150514063305.346: *3* swapCharacters & transeposeCharacters
     @cmd('transpose-chars')

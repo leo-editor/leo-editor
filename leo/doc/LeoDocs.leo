@@ -171,7 +171,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1283,6 +1283,7 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
+<v t="ekr.20160314091317.1"><vh>Old readme_quick_install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19141,6 +19142,23 @@ The preliminaries were at least as important as the fix itself:
     Optional line numbers in the left gutter
     Themes
     Wildcard file names on Leo's command line
+</t>
+<t tx="ekr.20160314091317.1">Method 2. (Single-file, Easiest):
+
+Download leo.exe and execute it *anywhere* by double-clicking on it.
+
+There are two disadvantages to using the single-file method:
+
+1. Before Leo starts, PyInstaller unpacks all libraries and data files to a temp folder:
+       ~\AppData\Local\Temp\_MEInnn.
+   As a result, starting leo.exe is slower than usual.
+
+2. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
+   but these files exist *only* in the temp folder. They will be *destroyed*
+   when you exit leo.exe. If you want to do real work with Leo you must
+   create .leo files in a permanent folder on your machine.
+   
+Both the folder-based and single-file version were created by PyInstaller: http://pythonhosted.org/PyInstaller.
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

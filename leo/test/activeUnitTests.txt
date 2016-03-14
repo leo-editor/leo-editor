@@ -8701,6 +8701,20 @@ first line
         line b
 line c
 last line
+#@+node:ekr.20160314133351.1: *5* @test transpose-words
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20160314133351.2: *6* work
+first line
+before foo += bar2 after
+last line
+#@+node:ekr.20160314133351.3: *6* before sel=2.9,2.9
+first line
+before bar2 += foo after
+last line
+#@+node:ekr.20160314133351.4: *6* after sel=2.11,2.11
+first line
+before foo += bar2 after
+last line
 #@+node:ekr.20121016134831.3906: *5* @test typescript-to-python
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
@@ -12491,7 +12505,7 @@ String.prototype.toJSONString = function()
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4777: *6* @@@test Javascript-2
+#@+node:ekr.20090529141856.4777: *6* @@test JSON
 s = '''\
 
 // Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
