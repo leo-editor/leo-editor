@@ -242,7 +242,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         j = w.getInsertPoint()
         i, prefixes = j - 1, []
-        while i >= 0 and s[i] not in ' \t\n':
+        while len(s) > i >= 0 and s[i] not in ' \t\n':
             prefixes.append(s[i: j])
             i -= 1
         prefixes = list(reversed(prefixes))
