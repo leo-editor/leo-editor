@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20160124165611.1: * @file ../../launchLeo-unified.spec
+#@@language python
 # -*- mode: python -*-
 '''
 launchLeo-unified.spec
@@ -8,19 +11,14 @@ This is a single .exe file or a folder, depending on generate_folder.
 >pyinstaller2 launchLeo-unified.spec
 >pyinstaller3 launchLeo-unified.spec
 '''
-# Notes:
-# 1. Delete dist and build folders before running this script.
-# 2. Requires setuptools 19.2 (19.4 is broken)
+# Requires setuptools 19.2 (19.4 is broken)
 #    https://github.com/pyinstaller/pyinstaller/issues/1781
 
+generate_folder = True # True is recommended.
+
+#@+<< imports >>
+#@+node:edward.20160313203026.1: ** << imports >> launchLeo-unified.spec
 import glob, os, sys
-
-# os.system('cls')
-
-generate_folder = True
-    # True: generate Leo/leo folder as well as Leo/Leo.exe.
-    # False:  generate only Leo/Leo.exe.
-    #        Data files are unpacked to a known location.
 
 # Same code as in runLeo.py.
 path = os.getcwd()
@@ -30,17 +28,12 @@ if path not in sys.path:
 
 import leo.core.leoGlobals as g
 import leo.core.leoApp as leoApp
-
+#@-<< imports >>
+is_mac = sys.platform.startswith('darwin')
 LM = leoApp.LoadManager()
 loadDir = LM.computeLoadDir()
-
-def get_modules(name):
-    '''return a list of module names (separated by dots) in the leo/x directory.'''
-    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
-    n = len(abs_dir) + 1
-    aList = glob.glob(abs_dir + '/*.py')
-    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
-
+#@+others
+#@+node:edward.20160313203148.2: ** all, ext, icons
 # Utilities for creating entries in the "datas" lists...
 def all(name):
     '''Return a tuple that causes all files in name to be included.'''
@@ -53,27 +46,34 @@ def ext(kind, name):
     if kind.startswith('.'):
         kind = kind[1:]
     return ('%s/*.%s' % (name, kind), name)
+#@+node:edward.20160313203912.1: ** define_added_binaries
+def define_added_binaries():
 
-# Define all modules in leo.plugins & leo.modes
-hidden_imports = []
-for name in ('external', 'modes', 'plugins',
-             'plugins/importers', 'plugins/writers',
-):
-    hidden_imports.extend(get_modules(name))
-    
-hidden_imports = [z.replace('/','.') for z in hidden_imports]
-
-exclude_modules = ['_tkinter',]
-    
-if 0:
-    print('hidden imports...')
-    for z in sorted(hidden_imports):
-        print(z)
-    sys.exit()
-
-block_cipher = None
-
-datas = [
+    if is_mac:
+        lib_root = os.path.expanduser(
+            '~/anaconda2/pkgs/qt-4.8.7-1/lib')
+        assert os.path.exists(lib_root), lib_root
+        qt_root = os.path.expanduser(
+            '~/anaconda2/lib/python2.7/site-packages/PyQt4')
+        assert os.path.exists(qt_root), qt_root
+        return (
+            prefix = 'PyQt4' # None means top-level folder.
+            Tree(
+                lib_root,
+                prefix=prefix,
+                excludes=['pkgconfig','*.a',],
+            ) +
+            Tree(
+                qt_root,
+                prefix=prefix,
+                excludes=[]
+            )
+        )
+    else:
+        return []
+#@+node:edward.20160313203338.1: ** define_datas
+def define_datas():
+    return [
     # Required for startup...
         ('leo/core/commit_timestamp.json', 'leo/core'),
         ext('.ui', 'leo/plugins'),
@@ -178,49 +178,89 @@ datas = [
         all('leo/test/unittest/perfectImport'),
     # leo/www...
         all('leo/www'),
-]
+    ]
+#@+node:edward.20160313203420.1: ** define_hidden_imports
+def define_hidden_imports():
+    # Define all modules in leo.plugins & leo.modes
+    hidden_imports = []
+    for name in ('external', 'modes', 'plugins',
+                 'plugins/importers', 'plugins/writers',
+    ):
+        hidden_imports.extend(get_modules(name))
+        
+    hidden_imports = [z.replace('/','.') for z in hidden_imports]
+    if 0:
+        print('hidden imports...')
+        for z in sorted(hidden_imports):
+            print(z)
+        sys.exit()
+    return hidden_imports
+#@+node:edward.20160313203148.1: ** get_modules
+def get_modules(name):
+    '''return a list of module names (separated by dots) in the leo/x directory.'''
+    abs_dir = g.os_path_finalize_join(loadDir, '..', name)
+    n = len(abs_dir) + 1
+    aList = glob.glob(abs_dir + '/*.py')
+    return ['leo.%s.%s' % (name, z[n:][: -3]) for z in aList]
+#@+node:edward.20160313203251.1: ** main
+def main():
 
-a = Analysis(['launchLeo.py'],
-    pathex=[],
-    binaries=None,
-    datas=datas,
-    hiddenimports=hidden_imports,
-    hookspath=None,
-    runtime_hooks=None,
-    excludes=exclude_modules,
-    win_no_prefer_redirects=None,
-    win_private_assemblies=None,
-    cipher=block_cipher)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-if generate_folder:
-    exe = EXE(pyz,
-        a.scripts,
-        exclude_binaries=True,
-        name='LeoApp', # 'leo' doesn't work on Linux.
-        debug=False,
-        strip=None,
-        upx=True,
-        console=True )
-else:
-    exe = EXE(pyz,
-        a.scripts,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        name='LeoApp', # 'leo' doesn't work on Linux.
-        debug=False,
-        strip=None,
-        upx=True,
-        console=True)
-
-if generate_folder:
-    coll = COLLECT(
-        exe,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        strip=None,
-        upx=False,
-        name='Leo')
+    added_binaries = define_added_binaries()
+    datas = define_datas()
+    hidden_imports = define_hidden_imports()
+    exclude_modules = ['_tkinter',]
+    a = Analysis(['launchLeo.py'],
+        pathex=[],
+        binaries=None,
+        datas=datas,
+        hiddenimports=hidden_imports,
+        hookspath=None,
+        runtime_hooks=None,
+        excludes=exclude_modules,
+        win_no_prefer_redirects=None,
+        win_private_assemblies=None,
+        cipher=None)
+    pyz = PYZ(a.pure, a.zipped_data, cipher=None)
+    if generate_folder:
+        if is_mac:
+            exe = EXE(pyz,
+                a.scripts,
+                a.binaries + added_binaries,
+                exclude_binaries=False,
+                name='LeoApp', # 'leo' doesn't work on Linux.
+                debug=False,
+                strip=None,
+                upx=True,
+                console=True )
+        else:
+            exe = EXE(pyz,
+                a.scripts,
+                exclude_binaries=True,
+                name='LeoApp', # 'leo' doesn't work on Linux.
+                debug=False,
+                strip=None,
+                upx=True,
+                console=True )
+    else:
+        exe = EXE(pyz,
+            a.scripts,
+            a.binaries + added_binaries,
+            a.zipfiles,
+            a.datas,
+            name='LeoApp', # 'leo' doesn't work on Linux.
+            debug=False,
+            strip=None,
+            upx=True,
+            console=True)
+    if generate_folder:
+        coll = COLLECT(
+            exe,
+            a.binaries + added_binaries,
+            a.zipfiles,
+            a.datas,
+            strip=None,
+            upx=False,
+            name='LeoAppFolder')
+#@-others
+main()
+#@-leo
