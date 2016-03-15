@@ -27,6 +27,7 @@
 </v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
+<v t="ekr.20160315105606.1"><vh>Previous announcements</vh>
 <v t="ekr.20160314155303.1"><vh>Leo 4.x</vh>
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
@@ -35,6 +36,7 @@
 </v>
 <v t="ekr.20141105082156.2"><vh>Leo 5.0 final</vh></v>
 <v t="ekr.20150415145711.1"><vh>Leo 5.1 final (markdown)</vh></v>
+</v>
 <v t="ekr.20160314155002.1"><vh>Leo 5.2 b1 (markdown)</vh>
 <v t="ekr.20160314155002.2"><vh> Highlights</vh></v>
 <v t="ekr.20160314155002.3"><vh>Bugs</vh>
@@ -326,15 +328,12 @@ Categories:
 @language rest
 @wrap
 
-Notes:
+Markdown is all that is needed:
 
-1. SourceForge accepts markdown.
-2. It looks like neither Google Groups nor my blog accepts markdown.
-3. Once I've posted on leo-editor, I can copy/paste into
-    A. My blog.
-    B. Email to 
-4. I can get HTML from the HTML tab on my blog.
-
+1. **SourceForge accepts markdown and generates html**.
+2. Create leo-editor &amp; google groups announcements by
+   copy/paste from resulting SourceForge announcement.
+3. Get actual html using the HTML tab in my blog.
 </t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
 4.4.4       setup: 856  zip: 539  2007-11-02
@@ -649,15 +648,19 @@ Announcements
   http://en.wikipedia.org/wiki/Leo_%28editor%29
   Edit with the 'Edit this page' *tab* (not a link)
 - Update version number on web site.
-- Announce to leo-editor.
-- Announce to SourceForge:  http://sourceforge.net/projects/leo/
-  **Markdown accepted**.
-- Announce to Python-announce-list using email:
-  mailto:python-announce-list@python.org
+
+1. Announce to SourceForge:  http://sourceforge.net/projects/leo/
+   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
+   **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
+2. Announce to leo-editor.
+   **Paste source-forge announcement**.
+3. Announce to Python-announce-list using email: mailto:python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 - Register Leo at http://www.python.org/pypi?:action=submit_form
-- My blog: **Copy/paste leo-editor post**.
+- My blog: http://edreamleo.blogspot.com/
+  **Paste source-forge or leo-editor announcement**.
   **To get HTML, just use html tab**.
 - Twitter (point to my blog)
 </t>
@@ -2697,5 +2700,6 @@ Includes descendant settings if os.environ('HOSTNAME') != name
 @string gutter-font-weight = @font-weight
 </t>
 <t tx="ekr.20160314155303.1"></t>
+<t tx="ekr.20160315105606.1"></t>
 </tnodes>
 </leo_file>
