@@ -1,6 +1,12 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20160314172721.1: ** Suppress enchant complaint
+These apparently are due to blank lines in spellpyx.txt.
+
+** (python.exe:5484): CRITICAL **: enchant_is_title_case: assertion `word && *word' failed
+
+** (python.exe:5484): CRITICAL **: enchant_is_all_caps: assertion `word && *word' failed
 .. @-all
 .. @@killbeautify
 .. @@language rest
