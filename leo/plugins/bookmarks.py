@@ -371,9 +371,10 @@ class FlowLayout(QtWidgets.QLayout):
         super(FlowLayout, self).__init__(parent)
         if parent is not None:
             self.setMargin(margin)
+        else:
+            self.setMargin(0)
         self.setSpacing(spacing)
         self.itemList = []
-
     #@+node:ekr.20140917180536.17898: *3* __del__
     def __del__(self):
         item = self.takeAt(0)
@@ -446,6 +447,20 @@ class FlowLayout(QtWidgets.QLayout):
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
         return y + lineHeight - rect.y()
+    #@+node:tbnorth.20160315104244.1: *3* margin
+    def margin(self):
+        """margin - return margin
+        """
+
+        return self._margin
+    #@+node:tbnorth.20160315104324.1: *3* setMargin
+    def setMargin(self, margin):
+        """setMargin - set margin
+
+        :param int margin: margin to set
+        """
+
+        self._margin = margin
     #@-others
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
