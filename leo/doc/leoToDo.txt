@@ -10,8 +10,13 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 @language rest
 @wrap
 
-- Finish Code Academy work.
-.. @+node:ekr.20160304081401.1: *3* Code Academy to-do
+.. @+node:ekr.20160311064526.1: *3* Code academy to-do
+@language rest
+@wrap
+
+Add Code Academy section to Cheat Sheet.
+
+New posts:
 - Using g.trace and g.pdb: example: splitter.open_window
 - Find all nodes with a given uA.
 - Create log pane.
@@ -20,8 +25,6 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 - Create new panes.
 - Scripts can handle events.
 
-.. @+node:ekr.20160311064526.1: *3* Code academy
-Add Code Academy section to Cheat Sheet.
 .. @+node:ekr.20160311064526.2: *4* CA: possible topics
 @language rest
 @wrap
@@ -173,9 +176,37 @@ For example, here is how to gather only those marked nodes that lie outside any 
         flatten = flatten,
         undoType = 'gather-marked',
     )
-.. @+node:ekr.20160227093754.1: ** To do: 5.3
-Fix bugs targeted to 5.3: https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+.. @+node:ekr.20160314172721.1: *3* Suppress enchant complaint if possible
+@language rest
+@wrap
 
+** (python.exe:5484): CRITICAL **: enchant_is_title_case: assertion `word && *word' failed
+
+** (python.exe:5484): CRITICAL **: enchant_is_all_caps: assertion `word && *word' failed
+.. @+node:ekr.20160227093754.1: ** To do: 5.3
+
+Big picture:
+
+- Bugs targeted to 5.3:
+  https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+- Plugins:
+  - Merge vr & vr2.
+  - Avoid mouse in nodetags & other alternatives to clones.
+- Scripting:
+  - New apis and commands for icons, attributes & windows.
+  - Add p/v.temp_u properties. Revise docs.
+- Coffeescript
+  - Add coffeescript importer.
+- Rethink windows:
+  - Add status line showing type of window. Like Emacs.
+
+@language rest
+@wrap
+.. @+node:ekr.20160315114019.1: *3* Detailed to-do: 5.3
+* Improve speed of spell-check commands.
+  - Can they be interrupted?
+  - Use list(set(words)) to check each word only once.
+    - The do plain search for possibly-misspelled words in each body.
 * New apis and commands for icons, attributes & windows.
     - Easy to use. Easy documentation.
 - Add p/v.temp_u properties. Revise docs.
