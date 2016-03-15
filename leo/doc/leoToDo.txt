@@ -174,6 +174,8 @@ For example, here is how to gather only those marked nodes that lie outside any 
         undoType = 'gather-marked',
     )
 .. @+node:ekr.20160227093754.1: ** To do: 5.3
+Fix bugs targeted to 5.3: https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+
 * New apis and commands for icons, attributes & windows.
     - Easy to use. Easy documentation.
 - Add p/v.temp_u properties. Revise docs.
