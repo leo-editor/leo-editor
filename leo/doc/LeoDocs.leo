@@ -170,7 +170,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -13954,15 +13954,15 @@ Then run::
 </t>
 <t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.1.
+into a folder in your home directory, say ~/leo-5.2.
 
 You now have several choices.
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.1 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.2 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.1
+    cd ~/leo-5.2
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -14227,7 +14227,7 @@ One final word of advice. When editing your video, settle for "good enough". Per
 .. index::
     pair: @clean; Tutorial
 
-Leo (5.1 and above) creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
+Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
 
     @clean spam.py
     @clean ../foo.c
@@ -15570,11 +15570,7 @@ look something like::
         '''A docstring.'''
         @others
 </t>
-<t tx="ekr.20150221052529.5">Leo 5.1 introduced the ability to update @clean trees from changes made to
-the corresponding external file. This is one of the most important
-developments in Leo's history. Previously, Leo could perform such updates
-only if the external file contained **sentinel lines**, comment lines
-corresponding to Leo markup that indicated outline structure.
+<t tx="ekr.20150221052529.5">Leo 5.1 introduced the ability to update @clean trees from changes made to the corresponding external file. This is one of the most important developments in Leo's history. Previously, Leo could perform such updates only if the external file contained **sentinel lines**, comment lines corresponding to Leo markup that indicated outline structure.
 
 .. index::
     pair: Mulder/Ream update algorithm; Tutorial
@@ -19034,7 +19030,7 @@ The preliminaries were at least as important as the fix itself:
     Themes
     Wildcard file names on Leo's command line
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
