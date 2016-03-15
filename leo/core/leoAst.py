@@ -1241,19 +1241,19 @@ class HTMLReportTraverser(AstFullTraverser):
     # pylint: disable=no-self-argument
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
-    def __init__(rt):
+    def __init__(rt, debug=False):
         '''Ctor for the NewHTMLReportTraverser class.'''
         rt.visitor = rt
         AstFullTraverser.__init__(rt)
             # Init the base class.
         rt.code_list = []
-        rt.debug = True
+        rt.debug = debug
         rt.div_stack = []
             # A check to ensure matching div/end_div.
         rt.indent = 0
         debug_css = 'report-traverser-debug.css'
         plain_css = 'report-traverser.css'
-        rt.css_fn = debug_css if rt.debug else plain_css
+        rt.css_fn = debug_css if debug else plain_css
         rt.html_footer = '\n</body>\n</html>\n'
         rt.html_header = rt.define_html_header()
     #@+node:ekr.20150722204300.3: *4* define_html_header
@@ -1520,7 +1520,7 @@ class HTMLReportTraverser(AstFullTraverser):
             classes)
     #@+node:ekr.20160315161259.1: *3* rt.main
     def main(rt, fn, node):
-        '''Return a report for the given python module as a string.'''
+        '''Return a report for the given ast node as a string.'''
         rt.gen(rt.html_header % {
                 'css-fn': rt.css_fn,
                 'title': 'Module: %s' % fn
@@ -1547,49 +1547,59 @@ class HTMLReportTraverser(AstFullTraverser):
             if sep:
                 rt.clean(sep)
     #@+node:ekr.20150722204300.46: *3* rt.visitors
-    #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helper
+    #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helpers
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
     def do_arguments(rt, node):
 
-        assert isinstance(node, ast.AST), node
+        assert isinstance(node, ast.arguments), node
         first_default = len(node.args) - len(node.defaults)
-        result = []
         first = True
-        for n, node2 in enumerate(node.args):
-            if not first: result.append(', ')
-            if isinstance(node2, tuple):
-                result.append(rt.tuple_parameter(node.args, node2)) ### Huh?
+        for n, arg in enumerate(node.args):
+            # g.trace(arg.__class__.__name__)
+            if not first:
+                rt.gen(', ')
+            if isinstance(arg, (list,tuple)):
+                rt.tuple_parameter(arg)
             else:
-                result.append(rt.visit(node2)) ### rt.assname(param,node)
+                rt.visit(arg)
             if n >= first_default:
-                node3 = node.defaults[n - first_default]
-                result.append("=")
-                result.append(rt.visit(node3))
+                default = node.defaults[n - first_default]
+                rt.gen("=")
+                rt.visit(default)
             first = False
         if node.vararg:
-            result.append('*' if first else ', *')
-            result.append(rt.name(node.vararg))
+            rt.gen('*' if first else ', *')
+            rt.gen(rt.name(node.vararg))
             first = False
         if node.kwarg:
-            result.append('**' if first else ', **')
-            result.append(rt.name(node.kwarg))
-        return result
+            rt.gen('**' if first else ', **')
+            rt.gen(rt.name(node.kwarg))
+    #@+node:ekr.20160315182225.1: *5* rt.arg
+    # Python 3:
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(rt, node):
+        
+        rt.gen(node.arg)
+        # if hasattr(node, expr):
+            # pass
     #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
-    def tuple_parameter(rt, parameters, node):
-        result = []
-        result.append("(")
+    def tuple_parameter(rt, node):
+        
+        assert isinstance(node, (list, tuple)), node
+        rt.gen("(")
         first = True
         for param in parameters:
-            if not first: result.append(', ')
+            g.trace(param.__class__.__name__)
+            if not first:
+                rt.gen(', ')
             if isinstance(param, tuple):
-                result.append(rt.tuple_parameter(param, node))
+                rt.tuple_parameter(param)
             else:
-                pass ### result.append(rt.assname(param,node))
+                rt.visit(param)
             first = False
-        result.append(")")
-        # return join_list(result)
-        return ', '.join(result)
+        rt.gen(")")
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
 
@@ -1819,14 +1829,11 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div('function', extra='id="%s"' % node.name)
         rt.div(None)
         rt.keyword("def")
-        ### rt.summary_link(node.cx.full_name(), node.name, node.name, classes='')
         rt.op('(')
         rt.visit(node.args)
         rt.op(')')
         rt.colon()
-        ### rt.parameters(node.name,node)
         rt.end_div(None)
-        #
         rt.div('body')
         rt.doc(node)
         rt.visit_list(node.body)
