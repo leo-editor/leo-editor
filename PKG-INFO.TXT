@@ -9,14 +9,27 @@ License: MIT
 Description:
     Leo is a PIM, IDE and outliner written in 100% pure Python. Leo features
     a multi-window outlining editor, support for many programming languages,
-    powerful outline commands and many other things, including unlimite undo.
-    Leo requires Python 2.6 or above, including Python 3.0 or above.
+    powerful outline commands and many other things, including unlimited undo::
     
-        Docs:      http://leoeditor.com/leo_toc.html
-        Tutorials: http://leoeditor.com/tutorial.html
-        Videos:    http://leoeditor.com/screencasts.html
-        Forum:     http://groups.google.com/group/leo-editor
-        Download:  http://sourceforge.net/projects/leo/files/
-        Github:    https://github.com/leo-editor/leo-editor
-        Quotes:    http://leoeditor.com/testimonials.html
-Platform: Windows, Linux, MacOS.
+        Docs        http://leoeditor.com/leo_toc.html
+        Tutorials   http://leoeditor.com/tutorial.html
+        Videos      http://leoeditor.com/screencasts.html
+        Forum       http://groups.google.com/group/leo-editor
+        Download    http://sourceforge.net/projects/leo/files/
+        Github      https://github.com/leo-editor/leo-editor
+        Quotes      http://leoeditor.com/testimonials.html
+        
+    Leo requires Python 2.6 or above, including Python 3.0 or above.
+
+Download URL: http://sourceforge.net/projects/leo/files/
+Keywords: Outliner, IDE, PIM
+Platform: Windows, Linux, MacOS
+Categories:
+    Development Status :: 6 - Mature
+    License :: OSI Approved :: MIT License
+    Operating System :: MacOS
+    Operating System :: Microsoft :: Windows
+    Operating System :: POSIX :: Linux
+    Programming Language :: Python
+    Topic :: Software Development
+    Topic :: Text Processing

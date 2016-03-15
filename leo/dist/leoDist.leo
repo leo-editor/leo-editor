@@ -140,7 +140,6 @@
 <v t="ekr.20160314155002.95"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20150417161654.1"><vh>@html Leo 5.1 final (html)</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -267,17 +266,30 @@ License: MIT
 Description:
     Leo is a PIM, IDE and outliner written in 100% pure Python. Leo features
     a multi-window outlining editor, support for many programming languages,
-    powerful outline commands and many other things, including unlimite undo.
-    Leo requires Python 2.6 or above, including Python 3.0 or above.
+    powerful outline commands and many other things, including unlimited undo::
     
-        Docs:      http://leoeditor.com/leo_toc.html
-        Tutorials: http://leoeditor.com/tutorial.html
-        Videos:    http://leoeditor.com/screencasts.html
-        Forum:     http://groups.google.com/group/leo-editor
-        Download:  http://sourceforge.net/projects/leo/files/
-        Github:    https://github.com/leo-editor/leo-editor
-        Quotes:    http://leoeditor.com/testimonials.html
-Platform: Windows, Linux, MacOS.
+        Docs        http://leoeditor.com/leo_toc.html
+        Tutorials   http://leoeditor.com/tutorial.html
+        Videos      http://leoeditor.com/screencasts.html
+        Forum       http://groups.google.com/group/leo-editor
+        Download    http://sourceforge.net/projects/leo/files/
+        Github      https://github.com/leo-editor/leo-editor
+        Quotes      http://leoeditor.com/testimonials.html
+        
+    Leo requires Python 2.6 or above, including Python 3.0 or above.
+
+Download URL: http://sourceforge.net/projects/leo/files/
+Keywords: Outliner, IDE, PIM
+Platform: Windows, Linux, MacOS
+Categories:
+    Development Status :: 6 - Mature
+    License :: OSI Approved :: MIT License
+    Operating System :: MacOS
+    Operating System :: Microsoft :: Windows
+    Operating System :: POSIX :: Linux
+    Programming Language :: Python
+    Topic :: Software Development
+    Topic :: Text Processing
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.2-b1, March 15, 2016
 
@@ -313,6 +325,15 @@ Platform: Windows, Linux, MacOS.
 <t tx="EKR.20040519091259">@pagewidth 70
 @language rest
 @wrap
+
+Notes:
+
+1. SourceForge accepts markdown.
+2. It looks like neither Google Groups nor my blog accepts markdown.
+3. Once I've posted on leo-editor, I can copy/paste into
+    A. My blog.
+    B. Email to 
+4. I can get HTML from the HTML tab on my blog.
 
 </t>
 <t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
@@ -585,7 +606,7 @@ Update release notes and web documentation:
 - Regenerate all .html files.
 - Copy files to web.
 
-leoVersion.py
+leoVersion.py:
 - Update version constant.
 
 LeoPyRef.leo and LeoPluginsRef.leo:
@@ -610,7 +631,7 @@ Run make-leo.
 Create the executable installer:
 - Double-click leo.nsi.
 
-Test files in installed folder.
+Test files in installed folder:
 - Run all unit tests in the installed folder, with the installed Leo.
 - Make sure the following open without errors:
     - leoPlugins.leo
@@ -630,11 +651,14 @@ Announcements
 - Update version number on web site.
 - Announce to leo-editor.
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
-  Click News tab.
-- Announce to comp.lang.python:
-  https://groups.google.com/forum/#!forum/comp.lang.python
+  **Markdown accepted**.
+- Announce to Python-announce-list using email:
+  mailto:python-announce-list@python.org
+  - Check it by visiting the archive:
+  https://mail.python.org/pipermail/python-announce-list/
 - Register Leo at http://www.python.org/pypi?:action=submit_form
-- My blog
+- My blog: **Copy/paste leo-editor post**.
+  **To get HTML, just use html tab**.
 - Twitter (point to my blog)
 </t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
@@ -1866,70 +1890,6 @@ for h in table:
     else:
         g.es_print('not found',h,color='red')
 print('done: %s nodes, %s clones' % (nodes,clones))
-</t>
-<t tx="ekr.20150417161654.1">@language html
-
-&lt;p&gt;
-&lt;a href="http://leoeditor.com/"&gt;Leo&lt;/a&gt; 5.1 final is now available at
-&lt;a href="http://sourceforge.net/projects/leo/files/Leo/"&gt;SourceForge.&lt;/a&gt;
-Leo is Open Software, using the
-&lt;a href="http://leoeditor.com/license.html"&gt;MIT License&lt;/a&gt;.
-&lt;/p&gt;
-
-&lt;p&gt;
-Leo 5.1-final is recommended for anyone using Leo 5.1 b1 or Leo 5.0-final.
-&lt;/p&gt;
-
-&lt;h3&gt;The highlights of Leo 5.1&lt;/h3&gt;
-
-&lt;p&gt;
-This release features &lt;b&gt;@clean&lt;/b&gt;, one of the most important developments in Leo's history.
-@clean nodes create external files without sentinel comments,
-yet &lt;b&gt;Leo can update @clean trees from changes made to the corresponding external files&lt;/b&gt;.
-Steve Zatz explains &lt;a href="http://leoeditor.com/testimonials.html#steve-zatz-explains-why-clean-changes-everything"&gt;why @clean changes everything&lt;/a&gt;.
-&lt;/p&gt;
-
-&lt;h3&gt;More highlights&lt;/h3&gt;
-
-&lt;p&gt;
-&lt;ul&gt;
-&lt;li&gt;@clean trees preserve clone links and user attributes (uA's).&lt;/li&gt;
-&lt;li&gt;Reading @clean trees is faster than reading @auto or @shadow trees.&lt;/li&gt;
-&lt;li&gt;A new &lt;a href="http://leoeditor.com/load-leo.html"&gt;web page&lt;/a&gt; displays .leo files in the browser.&lt;/li&gt;
-&lt;li&gt;Added &lt;b&gt;command history&lt;/b&gt; to Leo's minibuffer.&lt;/li&gt;
-&lt;li&gt;A new IdleTime class greatly simplifies idle-time handling.&lt;/li&gt;
-&lt;li&gt;Leo now honors @language inside @doc parts.&lt;/li&gt;
-&lt;li&gt;@data nodes can be composed of their descendant nodes.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/p&gt;
-
-&lt;h3&gt;Links&lt;/h3&gt;
-
-&lt;p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-The &lt;a href="http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm"&gt; Mulder/Ream algorithm&lt;/a&gt;
-updates @clean trees&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com"&gt;Leo's home page&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/leo_toc.html"&gt;Documentation&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/tutorial.html"&gt;Tutorials&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/screencasts.html"&gt;Video tutorials&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Forum&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://sourceforge.net/projects/leo/files/"&gt;Download&lt;/a&gt;
-&lt;li&gt;&lt;a href="https://github.com/leo-editor/leo-editor"&gt;Leo on Github&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/load-leo.html"&gt;A web page that displays .leo files&lt;/a&gt;
-&lt;li&gt;&lt;a href="http://leoeditor.com/leoLinks.html"&gt;More links&lt;/a&gt;
-&lt;/ul&gt;
-&lt;/p&gt;
-
-&lt;p&gt;
-Edward K. Ream: &lt;a href="mailto:edreamleo@gmail.com"&gt;email&lt;/a&gt;.
-&lt;/p&gt;
-
-&lt;p&gt;&lt;a HREF=href="http://leoeditor.com/"&gt;Leo 5.1&lt;/a&gt;
-is a PIM, a Python scripting IDE and outliner. (16-Apr-15)
-&lt;/p&gt;
 </t>
 <t tx="ekr.20150425135153.1">@language ruby
 @tabwidth -2
