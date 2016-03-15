@@ -18913,16 +18913,16 @@ The preliminaries were at least as important as the fix itself:
 
 **Links**
 
-[Leo's home page](http://leoeditor.com)
-[Documentation](http://leoeditor.com/leo_toc.html)
-[Tutorials](http://leoeditor.com/tutorial.html)
-[Video tutorials](http://leoeditor.com/screencasts.html)
-[Forum](http://groups.google.com/group/leo-editor)
-[Download](http://sourceforge.net/projects/leo/files/)
-[Leo on Github](https://github.com/leo-editor/leo-editor)
-[What people are saying about Leo](http://leoeditor.com/testimonials.html)
-[A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-[More links](http://leoeditor.com/leoLinks.html)
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="ekr.20160310060817.1">::
 

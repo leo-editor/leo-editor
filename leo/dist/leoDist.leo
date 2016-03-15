@@ -295,7 +295,8 @@ Categories:
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.2-b1, March 15, 2016
 
-[Leo](http://leoeditor.com/) 5.2-b1 is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.2-b1 is now available [at SourceForge.](
+http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 
@@ -313,16 +314,16 @@ Categories:
 
 **Links**
 
-[Leo's home page](http://leoeditor.com)
-[Documentation](http://leoeditor.com/leo_toc.html)
-[Tutorials](http://leoeditor.com/tutorial.html)
-[Video tutorials](http://leoeditor.com/screencasts.html)
-[Forum](http://groups.google.com/group/leo-editor)
-[Download](http://sourceforge.net/projects/leo/files/)
-[Leo on Github](https://github.com/leo-editor/leo-editor)
-[What people are saying about Leo](http://leoeditor.com/testimonials.html)
-[A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-[More links](http://leoeditor.com/leoLinks.html)
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 @language rest
@@ -330,12 +331,14 @@ Categories:
 
 Markdown is all that is needed:
 
-1. **SourceForge accepts markdown and generates html**.
+1. SourceForge (and github) accepts markdown and generates html.
 2. Create leo-editor &amp; google groups announcements by
    copy/paste from resulting SourceForge announcement.
 3. Get actual html using the HTML tab in my blog.
 </t>
-<t tx="EKR.20040519091259.1">4.4.5       setup: 547  zip: 379  2007-12-11
+<t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
+5.0:        setup: 552      zip: 1,617
+4.4.5       setup: 547   zip: 379  2007-12-11
 4.4.4       setup: 856  zip: 539  2007-11-02
 4.4.3.1     setup: 1092 zip: 743  2007-7-03
 4.4.3       setup: 363  zip: 282  2007-6-26
