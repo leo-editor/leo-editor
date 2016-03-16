@@ -197,6 +197,7 @@ class Commands(object):
         self.db = {} # May be set to a PickleShare instance later.
         self.chapterCommands = None
         self.controlCommands = None
+        self.convertCommands = None
         self.debugCommands = None
         self.editFileCommands = None
         self.gotoCommands = None
@@ -253,6 +254,7 @@ class Commands(object):
         import leo.commands.abbrevCommands as abbrevCommands
         import leo.commands.bufferCommands as bufferCommands
         import leo.commands.controlCommands as controlCommands
+        import leo.commands.convertCommands as convertCommands
         import leo.commands.debugCommands as debugCommands
         import leo.commands.editCommands as editCommands
         import leo.commands.editFileCommands as editFileCommands
@@ -295,6 +297,7 @@ class Commands(object):
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
         self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
+        self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
         self.editCommands       = editCommands.EditCommandsClass(c)
         self.editFileCommands   = editFileCommands.EditFileCommandsClass(c)

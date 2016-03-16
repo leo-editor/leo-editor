@@ -5943,7 +5943,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20111104171708.3847: *5* @test c-to-python
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
-c2p = c.editCommands.C_To_Python(c)
+c2p = c.convertCommands.C_To_Python(c)
 fn = 'c tokenize test'
 p2 = g.findNodeInTree(c,p,fn)
 assert p2,'not found: %s' % (fn)
@@ -8755,7 +8755,7 @@ last line
 #@+node:ekr.20121016134831.3906: *5* @test typescript-to-python
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
-ts2p = c.editCommands.TS_To_Python(c)
+ts2p = c.convertCommands.TS_To_Python(c)
 fn = 'typescript tokenize test'
 p2 = g.findNodeInTree(c,p,fn)
 assert p2,'not found: %s' % (fn)

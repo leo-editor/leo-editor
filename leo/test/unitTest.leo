@@ -1206,7 +1206,7 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32362e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31382e333971097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31352e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31312e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31362e342e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32362e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735809000000302e362e31382e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150629111007.1"><vh>recent tests</vh>
@@ -1278,6 +1278,12 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140712142620.4582"></v>
 </v>
 <v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
+<v t="ekr.20111104171708.3847"><vh>@test c-to-python</vh>
+<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
+</v>
+<v t="ekr.20121016134831.3906"><vh>@test typescript-to-python</vh>
+<v t="ekr.20121016134831.3907"><vh>typescript tokenize test</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -9232,6 +9238,268 @@ table
 nodeA
 nodeB
 </t>
+<t tx="ekr.20111104171708.3847">import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+c2p = c.convertCommands.C_To_Python(c)
+fn = 'c tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+c2p.convertCodeList(aList)
+s = ''.join(aList)
+</t>
+<t tx="ekr.20111104171708.3848">@language c
+
+static exit_values_ty indent_main_loop(void)
+{
+    codes_ty         hd_type         = code_eof;
+    char           * t_ptr           = NULL;
+    codes_ty         type_code       = start_token;
+    exit_values_ty   file_exit_value = total_success;
+    int              dec_ind         = 0; /* current indentation for declarations */
+
+    BOOLEAN          scase           = false; /* true when we've just see a "case";
+                                               * determines what to do with the
+                                               * following colon */
+    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
+                                               * a newline was passed over */
+    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
+                                               * while(...), etc. */
+    BOOLEAN          force_nl        = false;
+
+    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
+     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
+     * set to 2 in the middle of the main token reading loop and is decremented
+     * at the beginning of the loop, so it will reach zero when the second token
+     * after the ')' is read.
+     */
+
+    BOOLEAN          last_token_ends_sp = false;
+
+    BOOLEAN          last_else = false; /* true if last keyword was an else */
+
+    for (;;)
+    {
+        /* this is the main loop.  it will go until
+         * we reach eof */
+
+        BOOLEAN is_procname_definition;
+        bb_code_ty can_break;
+
+        if (type_code != newline)
+        {
+            can_break = parser_state_tos-&gt;can_break;
+        }
+
+        parser_state_tos-&gt;last_saw_nl = false;
+        parser_state_tos-&gt;can_break = bb_none;
+
+        type_code = lexi ();    /* lexi reads one token.  "token" points to
+                                 * the actual characters. lexi returns a code
+                                 * indicating the type of token */
+
+        /* If the last time around we output an identifier or
+         * a paren, then consider breaking the line here if it's
+         * too long.
+         *
+         * A similar check is performed at the end of the loop, after
+         * we've put the token on the line. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp;
+            (buf_break != NULL) &amp;&amp;
+            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                (type_code != newline) &amp;&amp;
+                (type_code != form_feed) &amp;&amp;
+                (type_code != rparen) &amp;&amp;
+                (type_code != struct_delim)) ||
+              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
+                (type_code != comma) &amp;&amp;
+                (type_code != rparen) ) ) &amp;&amp;
+            (output_line_length () &gt; settings.max_col))
+        {
+            break_line = 1;
+        }
+
+        if (last_token_ends_sp &gt; 0)
+        {
+            last_token_ends_sp--;
+        }
+
+        is_procname_definition =
+                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
+                  parser_state_tos-&gt;in_parameter_declaration) ||
+                 (parser_state_tos-&gt;classname[0] != '\0'));
+
+        /* The following code moves everything following an if (), while (),
+         * else, etc. up to the start of the following stmt to a buffer. This
+         * allows proper handling of both kinds of brace placement.
+         */
+
+        flushed_nl = false;
+
+        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
+        {
+            /* Hit EOF unexpectedly in comment. */
+            return indent_punt;
+        }
+        
+        if (type_code == code_eof)
+        {
+            /* we got eof */
+            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
+            {
+                dump_line(true, &amp;paren_target);
+            }
+
+            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
+            {
+                ERROR (_("Unexpected end of file"), 0, 0);
+                file_exit_value = indent_error;
+            }
+
+            if (settings.verbose)
+            {
+                printf (_("There were %d non-blank output lines and %d comments\n"),
+                        (int) out_lines, (int) com_lines);
+                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
+                {
+                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
+                            (1.0 * com_lines) / code_lines);
+                }
+            }
+            flush_output ();
+
+            return file_exit_value;                                              /* RETURN */
+        }
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            if (force_nl &amp;&amp;
+                (type_code != semicolon) &amp;&amp;
+                ( (type_code != lbrace) ||
+                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
+                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
+                  (parser_state_tos-&gt;last_token == rbrace)))
+            {
+                if (settings.verbose &amp;&amp; !flushed_nl)
+                {
+                    WARNING (_("Line broken 2"), 0, 0);
+                }
+
+                flushed_nl = false;
+                dump_line(true, &amp;paren_target);
+                parser_state_tos-&gt;want_blank = false;
+                force_nl = false;
+            }
+
+            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
+                                                 * an extra level of
+                                                 * indentation. this is
+                                                 * turned off by a ; or } */
+            if (s_com != e_com)
+            {
+                /* the code has an embedded comment in the
+                 * line. Move it from the com buffer to the
+                 * code buffer.
+                 *
+                 * Do not add a space before the comment if it is the first
+                 * thing on the line.
+                 */
+
+                if (e_code != s_code)
+                {
+                    set_buf_break (bb_embedded_comment_start, paren_target);
+                    *e_code++ = ' ';
+                    embedded_comment_on_line = 2;
+                }
+                else
+                {
+                    embedded_comment_on_line = 1;
+                }
+
+                for (t_ptr = s_com; *t_ptr; ++t_ptr)
+                {
+                    check_code_size();
+                    *e_code++ = *t_ptr;
+                }
+
+                set_buf_break (bb_embedded_comment_end, paren_target);
+                *e_code++ = ' ';
+                *e_code = '\0'; /* null terminate code sect */
+                parser_state_tos-&gt;want_blank = false;
+                e_com = s_com;
+            }
+        }
+        else if ((type_code != comment) &amp;&amp;
+                 (type_code != cplus_comment) &amp;&amp;
+                 !(settings.break_function_decl_args &amp;&amp;
+                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
+                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
+                    !settings.leave_comma))
+        {
+            /* preserve force_nl thru a comment but
+             * cancel forced newline after newline, form feed, etc.
+             * however, don't cancel if last thing seen was comma-newline
+             * and -bc flag is on. */
+
+            force_nl = false;
+        }
+
+        /* Main switch on type of token scanned */
+
+        check_code_size();
+        
+        /* now, decide what to do with the token */
+
+        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
+                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
+                         can_break, &amp;last_else, is_procname_definition);
+        
+        *e_code = '\0';         /* make sure code section is null terminated */
+
+        if ((type_code != comment) &amp;&amp;
+            (type_code != cplus_comment) &amp;&amp;
+            (type_code != newline) &amp;&amp;
+            (type_code != preesc) &amp;&amp;
+            (type_code != form_feed))
+        {
+            parser_state_tos-&gt;last_token = type_code;
+        }
+
+        /* Now that we've put the token on the line (in most cases),
+         * consider breaking the line because it's too long.
+         *
+         * Don't consider the cases of `unary_op', newlines,
+         * declaration types (int, etc.), if, while, for,
+         * identifiers (handled at the beginning of the loop),
+         * periods, or preprocessor commands. */
+
+        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
+        {
+            if ( ( (type_code == binary_op) ||
+                   (type_code == postop) ||
+                   (type_code == question) ||
+                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
+                   (type_code == semicolon) ||
+                   (type_code == sp_nparen) ||
+                   (type_code == sp_else) ||
+                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
+                   (type_code == struct_delim) ||
+                   (type_code == comma)) &amp;&amp;
+                 (output_line_length () &gt; settings.max_col))
+            {
+                break_line = 1;
+            }
+        }
+    }                           /* end of main infinite loop */
+}
+</t>
 <t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
 
 import glob
@@ -9653,6 +9921,74 @@ if not g.app.isExternalUnitTest:
 # End
 </t>
 <t tx="ekr.20120228174052.3929"># node 1 text A.
+</t>
+<t tx="ekr.20121016134831.3906">import leo.core.leoBeautify as leoBeautify
+cpp = leoBeautify.CPrettyPrinter(c)
+ts2p = c.convertCommands.TS_To_Python(c)
+fn = 'typescript tokenize test'
+p2 = g.findNodeInTree(c,p,fn)
+assert p2,'not found: %s' % (fn)
+aList = cpp.tokenize(p2.b)
+ts2p.convertCodeList(aList)
+s = ''.join(aList)
+</t>
+<t tx="ekr.20121016134831.3907">@language javascript
+
+public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
+    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
+    if editRange === None:
+        throw Error("editRange should be valid")
+    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
+    if scope1 === None:
+        return None
+    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
+    # Heuristic: if the range to reparse is too big,bail out.
+    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
+    if newScopeLength &gt;= newSourceText.getLength()/ 2:
+        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
+        return None
+    # Capture parsing errors so that they are part of "updateResult"
+    var parseErrors: TypeScript.ErrorEntry:[] = []
+    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
+        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
+    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
+    if quickParseResult.endLexState != TypeScript.LexState.Start:
+        self.logger.log("  Bailing out because scope contains unterminated comment")
+        return None
+    var scriptFragment = quickParseResult.Script
+    if scriptFragment.vars.members.length !== 0:
+        self.logger.log("  Bailing out because new source text defines variables")
+        return None
+    #if(scriptFragment.scopes.members.length !== 1)
+    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
+    #    return null;
+    #
+    # This detects adding close curlies,since they have the side effect of having the parser
+    # parse more members in the scope range.
+    if scriptFragment.bod.members.length !== 1:
+        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
+        return None
+    var oldScope = scope1.scopeStartAST
+    var newScope = scriptFragment.bod.members[0]
+    if oldScope.nodeType != newScope.nodeType:
+        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
+        return None
+    if not (&lt;any&gt;oldScope).leftCurlyCount or not (&lt;any&gt;oldScope).rightCurlyCount:
+        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
+        return None
+    if(&lt;any&gt;oldScope).leftCurlyCount !==(&lt;any&gt;newScope).leftCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
+        return None
+    if(&lt;any&gt;oldScope).rightCurlyCount !==(&lt;any&gt;newScope).rightCurlyCount:
+        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
+        return None
+    if newScope.minChar !== 0:
+        self.logger.log("  Bailing out because new function declaration does not start at position 0")
+        return None
+    if newScope.limChar !== newScopeLength:
+        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
+        return None
+    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
 </t>
 <t tx="ekr.20130503061511.4137">import leo.core.leoImport as leoImport
 ic = c.importCommands
