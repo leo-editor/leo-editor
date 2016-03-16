@@ -450,6 +450,10 @@
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
+<v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
+<v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
+<v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
+</v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -11131,6 +11135,10 @@ parser: optparse.OptionParser
 node: Node
 s[0-3]*: str
 strict: bool</t>
+<t tx="ekr.20160316111054.1"></t>
+<t tx="ekr.20160316112407.2">True: allow stub files to be overwritten
+</t>
+<t tx="ekr.20160316112407.8">The directory to which stub files are written.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

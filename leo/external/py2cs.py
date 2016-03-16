@@ -1082,7 +1082,7 @@ class MakeCoffeeScriptController(object):
         fn = os.path.normpath(fn)
         return fn
 
-    def make_coffeescript_file(self, fn):
+    def make_coffeescript_file(self, fn, s=None):
         '''
         Make a stub file in the output directory for all source files mentioned
         in the [Source Files] section of the configuration file.
@@ -1102,10 +1102,10 @@ class MakeCoffeeScriptController(object):
             print('file exists: %s' % out_fn)
         elif not dir_ or os.path.exists(dir_):
             t1 = time.clock()
-            s = open(fn).read()
+            if s is None:
+                s = open(fn).read()
             readlines = g.ReadLinesClass(s).next
             tokens = list(tokenize.generate_tokens(readlines))
-            # s = CoffeeScriptTokenizer(controller=self).format(tokens)
             node = ast.parse(s, filename=fn, mode='exec')
             s = CoffeeScriptTraverser(controller=self).format(node, s, tokens)
             f = open(out_fn, 'w')

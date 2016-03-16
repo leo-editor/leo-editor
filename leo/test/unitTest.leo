@@ -1206,84 +1206,8 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32362e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31362e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735809000000302e362e31382e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31352e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31312e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31382e333971057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31352e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32362e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31372e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31362e342e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20150629111007.1"><vh>recent tests</vh>
-<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
-<v t="ekr.20100205235740.5392" a="M"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
-<v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
-<v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
-<v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
-</v>
-<v t="ekr.20150625101047.1"><vh>@test file_file_line: @auto</vh></v>
-<v t="ekr.20110610122533.3395"><vh>@test file_file_line: @file</vh></v>
-<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20150626101643.1"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20150626100652.1"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20150626093653.1"><vh>@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent</vh></v>
-<v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
-<v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
-</v>
-<v t="ekr.20160314133351.1"><vh>@test transpose-words</vh>
-<v t="ekr.20160314133351.2"><vh>work</vh></v>
-<v t="ekr.20160314133351.3"><vh>before sel=2.9,2.9</vh></v>
-<v t="ekr.20160314133351.4"><vh>after sel=2.11,2.11</vh></v>
-</v>
-<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
-</v>
-<v t="edward.20160314170240.1"><vh>recent failures</vh>
-<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
-<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
-<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui</vh>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
-<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
-<v t="ekr.20111003145300.3467"><vh>a</vh></v>
-</v>
-<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
-<v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20140712142620.4550"><vh>@test pd.find_at_...</vh>
-<v t="ekr.20140712142620.4551"><vh>root</vh>
-<v t="ekr.20140712142620.4552"><vh>aClass</vh>
-<v t="ekr.20140712142620.4556"><vh>clone</vh></v>
-</v>
-</v>
-<v t="ekr.20140712142620.4556"></v>
-</v>
-<v t="ekr.20140712142620.4538"><vh>@test pd.find_at_persistence_node</vh></v>
-<v t="ekr.20140712142620.4557"><vh>@test pd.has_..._node</vh>
-<v t="ekr.20140712142620.4558"><vh>root</vh>
-<v t="ekr.20140712142620.4559"><vh>aClass</vh>
-<v t="ekr.20140712142620.4563"><vh>clone-test</vh></v>
-<v t="ekr.20140712142620.4561"><vh>organizer node</vh>
-<v t="ekr.20140712142620.4562"><vh>child2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20140712142620.4563"></v>
-</v>
-<v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
-<v t="ekr.20140712142620.4576"><vh>root</vh>
-<v t="ekr.20140712142620.4577"><vh>aClass</vh>
-<v t="ekr.20140712142620.4582"><vh>clone</vh></v>
-</v>
-<v t="ekr.20140712142620.4579"><vh>organizer node</vh>
-<v t="ekr.20140712142620.4580"><vh>child1</vh></v>
-<v t="ekr.20140712142620.4581"><vh>child2</vh></v>
-</v>
-</v>
-<v t="ekr.20140712142620.4582"></v>
-</v>
-<v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
-<v t="ekr.20111104171708.3847"><vh>@test c-to-python</vh>
-<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
-</v>
-<v t="ekr.20121016134831.3906"><vh>@test typescript-to-python</vh>
-<v t="ekr.20121016134831.3907"><vh>typescript tokenize test</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1326,7 +1250,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="edward.20160314170240.1"></t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4
 
@@ -7358,39 +7281,6 @@ finally:
         c.redraw(p)
 </t>
 <t tx="ekr.20060127120604"></t>
-<t tx="ekr.20060208072358"># This test is too flaky for Tk.
-import sys
-if False and sys.platform.startswith('linux'):
-    # Fails for strange reasons.
-    self.skipTest('linux')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.bodyWantsFocus()
-    c.redraw(p) # To make node visible
-    n = c.frame.tree.redrawCount
-    assert not p.b, 'oops1'
-    try:
-        # print('before insert a',c.p)
-        assert p == c.p,'position has changed!'
-        w = c.frame.body.wrapper
-        if c.vim_mode and c.vimCommands:
-            if c.vimCommands.state == 'normal':
-                # Enter insert mode ;-)
-                g.app.gui.event_generate(c,'i','i',w)
-        g.app.gui.event_generate(c,'a','a',w)
-        assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
-        if g.app.gui.guiName() != 'nullGui':
-            n2 = c.frame.tree.redrawCount
-            c.outerUpdate() # Force the coloring before doing the test.
-            assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
-</t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
 
@@ -7980,39 +7870,6 @@ pass
 <t tx="ekr.20081121164135.1">path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 c.testManager.runLeoTest(path)
 </t>
-<t tx="ekr.20090529141856.4777">s = '''\
-
-// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
-String.prototype.toJSONString = function()
-{
-	var m = {
-		'\\b': '\\\\b',
-		'\\f': '\\\\f',
-		'\\n': '\\\\n',
-		'\\r': '\\\\r',
-		'\\t': '\\\\t',
-		'"' : '\\\\"',
-		'\\\\': '\\\\\\\\'
-		};
-	var replaceFn = function(a,b) {
-		var c = m[b];
-		if(c)
-			return c;
-		c = b.charCodeAt();
-		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-		};
-    if(/["\\\\\\x00-\\x1f]/.test(this))
-		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-	return '"' + this + '"';
-};
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
@@ -8335,15 +8192,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5599"></t>
-<t tx="ekr.20100131171342.5603" annotate="7d71002e"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-# print('\nEnd of leoGui tests.')
-</t>
 <t tx="ekr.20100203163606.5365">import os
 
 def run(files):
@@ -8481,34 +8329,6 @@ for obj,ivar,command in table:
     finally:
         setattr(obj,ivar,val1)
 </t>
-<t tx="ekr.20100205235740.5392">import glob
-trace = False
-failed,n = [],0
-skip_tuples = (
-    ('extensions','asciidoc.py'),
-)
-if g.isPython3:
-    skip_list = [g.os_path_finalize_join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
-else:
-    skip_list = []
-for theDir in ('core','external','extensions','plugins','scripts','test'):
-    if trace: print(theDir)
-    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-    assert g.os_path_exists(path),path
-    aList = glob.glob(g.os_path_join(path,'*.py'))
-    for z in aList:
-        if z in skip_list:
-            pass # print('%s: skipped: %s' % (p.h,z))
-        else:
-            n += 1
-            fn = g.shortFileName(z)
-            # if trace: print('%8s %s' % (theDir,fn))
-            s,e = g.readFileIntoString(z)
-            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-                failed.append(z)
-if trace: print('tested %s files' % n)
-assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
-</t>
 <t tx="ekr.20100208095817.5387"># Disabled this test because it's best to open this file without caching.
 
 import leo.core.leoCache as leoCache
@@ -8518,19 +8338,6 @@ cacher = leoCache.cacher(c)
 assert cacher.test()
 </t>
 <t tx="ekr.20100208230953.5383"></t>
-<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c, p, 'syntax-error')
-assert child, 'no child'
-try:
-    c.goToScriptLineNumber(1, child)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-</t>
-<t tx="ekr.20100212072149.5342">@language python
-def spam:
-    pass
-</t>
 <t tx="ekr.20100223094723.5375"></t>
 <t tx="ekr.20100223094723.5376">import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -8972,7 +8779,6 @@ Last paragraph.
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110610122533.3369"></t>
 <t tx="ekr.20110610122533.3388"></t>
 <t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -9022,41 +8828,6 @@ if not g.app.isExternalUnitTest:
         print('root:%s, n:%s, len(lines): %s' % (
             root and root.h, n, len(lines)))
 </t>
-<t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    gnx = target.v.fileIndex
-    assert gnx
-    found = c.gotoCommands.find_gnx(root, gnx, h)
-    assert found, 'not found'
-</t>
-<t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
-</t>
 <t tx="ekr.20110610122533.3397"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
 
@@ -9073,28 +8844,6 @@ if not g.app.isExternalUnitTest:
         print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
             root and root.h,isRaw,n,len(lines)))
 </t>
-<t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@nosent unittest/at-nosent-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtNoSentFileNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 3, n
-            break
-</t>
 <t tx="ekr.20110610122533.3401"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
     root = p.parent().parent()
@@ -9106,15 +8855,6 @@ if not g.app.isExternalUnitTest:
     p, found = c.gotoCommands.find_root(child)
     assert p == target, 'p' #p and p.h
     assert found, 'not found'
-</t>
-<t tx="ekr.20110610122533.3404">c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
-c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
-
-</t>
-<t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode'] = False
 </t>
 <t tx="ekr.20110610122533.3406"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -9213,21 +8953,6 @@ for i in range(len(aList)):
 
 g.es('"%s": total tests: %s' % (p.h,total))
 </t>
-<t tx="ekr.20111003145300.3466">'''Test that dragging this node onto the child node generates a warning.'''
-import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    fn = '&lt;file name&gt;'
-    p2 = p.firstChild()
-    tree = c.frame.tree
-    w = tree.treeWidget
-    if hasattr(tree,'treeWidget'):
-        for w.was_control_drag in (True,False):
-            tree.treeWidget.intraFileDrop(fn,p,p2)
-            assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
-</t>
-<t tx="ekr.20111003145300.3467"></t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
 html
@@ -9237,309 +8962,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111104171708.3847">import leo.core.leoBeautify as leoBeautify
-cpp = leoBeautify.CPrettyPrinter(c)
-c2p = c.convertCommands.C_To_Python(c)
-fn = 'c tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-aList = cpp.tokenize(p2.b)
-c2p.convertCodeList(aList)
-s = ''.join(aList)
-</t>
-<t tx="ekr.20111104171708.3848">@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos-&gt;can_break;
-        }
-
-        parser_state_tos-&gt;last_saw_nl = false;
-        parser_state_tos-&gt;can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col &gt; 0) &amp;&amp;
-            (buf_break != NULL) &amp;&amp;
-            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
-                (type_code != comma) &amp;&amp;
-                (type_code != semicolon) &amp;&amp;
-                (type_code != newline) &amp;&amp;
-                (type_code != form_feed) &amp;&amp;
-                (type_code != rparen) &amp;&amp;
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
-                (type_code != comma) &amp;&amp;
-                (type_code != rparen) ) ) &amp;&amp;
-            (output_line_length () &gt; settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp &gt; 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
-                  parser_state_tos-&gt;in_parameter_declaration) ||
-                 (parser_state_tos-&gt;classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &amp;paren_target);
-            }
-
-            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &amp;&amp;
-            (type_code != cplus_comment) &amp;&amp;
-            (type_code != newline) &amp;&amp;
-            (type_code != preesc) &amp;&amp;
-            (type_code != form_feed))
-        {
-            if (force_nl &amp;&amp;
-                (type_code != semicolon) &amp;&amp;
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
-                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos-&gt;last_token == rbrace)))
-            {
-                if (settings.verbose &amp;&amp; !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &amp;paren_target);
-                parser_state_tos-&gt;want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos-&gt;want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &amp;&amp;
-                 (type_code != cplus_comment) &amp;&amp;
-                 !(settings.break_function_decl_args &amp;&amp;
-                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
-                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
-                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
-                         can_break, &amp;last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &amp;&amp;
-            (type_code != cplus_comment) &amp;&amp;
-            (type_code != newline) &amp;&amp;
-            (type_code != preesc) &amp;&amp;
-            (type_code != form_feed))
-        {
-            parser_state_tos-&gt;last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &amp;&amp;
-                 (output_line_length () &gt; settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
-</t>
-<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
-
-import glob
-import inspect
-
-# Get a list of all plugins.
-plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-plugins = g.os_path_abspath(plugins)
-files = glob.glob(plugins)
-files = [g.os_path_abspath(z) for z in files]
-files = [z for z in files if not z.endswith('__init__.py')]
-files.sort()
-
-exclude = [
-    # These are not real plugins...
-    'baseNativeTree.py','leocursor.py',
-    'qtGui.py',
-    'qt_big_text.py',
-    'qt_commands.py',
-    'qt_events.py',
-    'qt_frame.py',
-    'qt_idle_time.py',
-    'qt_main.py',
-    'qt_quickheadlines.py',
-    'qt_quicksearch_sub.py',
-    'qt_text.py',
-    'qt_tree.py',
-    'qt_quicksearch.py',
-    'swing_gui.py',
-]
-
-for fn in files:
-    if not g.shortFileName(fn) in exclude:
-        f = open(fn,'r')
-        s = f.read()
-        f.close()
-        ok1 = s.find('def init():') &gt; -1
-        ok2 = s.find('def init ():') &gt; -1
-        assert ok1 or ok2,'fail: %s' % (fn)
-    
 </t>
 <t tx="ekr.20111107113442.3849"></t>
 <t tx="ekr.20111108170253.3968">@first # -*- coding: utf-8 -*-
@@ -9711,57 +9133,6 @@ w.insert(1,'z')         ; check('xzyac')
 w.deleteTextSelection() ; check('xzyac')
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
-import leo.plugins.qt_events as qt_events
-import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    def setup(p):
-        delete_children(p)
-        p2 = p.insertAsLastChild()
-        c.selectPosition(p2)
-        p2.h = 'first-child'
-    
-    def delete_children(p):
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    
-    app = g.app.gui.qtApp
-    assert issubclass(app.__class__,QtWidgets.QApplication)
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    # w_name = w.__class__.__name__
-    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
-    p1 = p.copy()
-    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
-    try:
-        ev = QtCore.QEvent
-        table = (
-            ev.KeyPress,
-            # ev.KeyRelease, # Ignored except in QLineEdit's.
-            # ev.ShortcutOverride, # Ignored everywhere.
-        )
-        for theType in table:
-            # Create the event.
-            setup(p1)
-            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
-            # Pass it to eventFilter.
-            filter_obj.eventFilter(w,e)
-            # Check the results.
-            c.redraw()
-            n = p1.numberOfChildren()
-            assert n==2,'%s children' % (n)
-            delete_children(p1)
-    finally:
-        delete_children(p1)
-        c.redraw()
-</t>
 <t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
     pass # Prints to console, which is annoying.
 else:
@@ -9816,33 +9187,6 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
-</t>
-<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
-import leo.plugins.qt_events as qt_events
-import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget
-    assert g.isTextWrapper(wrapper),wrapper
-    assert g.isTextWidget(w),w
-    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
-    g.app.unitTestDict[p.h] = filter_obj
-        # keep a pointer to the filter.
-    for z in c.k.bindingsDict.keys():
-        if z.s == 'Alt+Key-9':
-            # print('Alt-9 is bound')
-            break
-    else:
-        # Create an Alt-9 key event.
-        ev = QtCore.QEvent
-        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
-        filter_obj.eventFilter(w,e)
-        # Assert that handleUnboundChar actually ignored it.
-        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -9921,74 +9265,6 @@ if not g.app.isExternalUnitTest:
 # End
 </t>
 <t tx="ekr.20120228174052.3929"># node 1 text A.
-</t>
-<t tx="ekr.20121016134831.3906">import leo.core.leoBeautify as leoBeautify
-cpp = leoBeautify.CPrettyPrinter(c)
-ts2p = c.convertCommands.TS_To_Python(c)
-fn = 'typescript tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-aList = cpp.tokenize(p2.b)
-ts2p.convertCodeList(aList)
-s = ''.join(aList)
-</t>
-<t tx="ekr.20121016134831.3907">@language javascript
-
-public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
-    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
-    if editRange === None:
-        throw Error("editRange should be valid")
-    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
-    if scope1 === None:
-        return None
-    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
-    # Heuristic: if the range to reparse is too big,bail out.
-    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
-    if newScopeLength &gt;= newSourceText.getLength()/ 2:
-        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
-        return None
-    # Capture parsing errors so that they are part of "updateResult"
-    var parseErrors: TypeScript.ErrorEntry:[] = []
-    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
-        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
-    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
-    if quickParseResult.endLexState != TypeScript.LexState.Start:
-        self.logger.log("  Bailing out because scope contains unterminated comment")
-        return None
-    var scriptFragment = quickParseResult.Script
-    if scriptFragment.vars.members.length !== 0:
-        self.logger.log("  Bailing out because new source text defines variables")
-        return None
-    #if(scriptFragment.scopes.members.length !== 1)
-    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
-    #    return null;
-    #
-    # This detects adding close curlies,since they have the side effect of having the parser
-    # parse more members in the scope range.
-    if scriptFragment.bod.members.length !== 1:
-        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
-        return None
-    var oldScope = scope1.scopeStartAST
-    var newScope = scriptFragment.bod.members[0]
-    if oldScope.nodeType != newScope.nodeType:
-        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
-        return None
-    if not (&lt;any&gt;oldScope).leftCurlyCount or not (&lt;any&gt;oldScope).rightCurlyCount:
-        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
-        return None
-    if(&lt;any&gt;oldScope).leftCurlyCount !==(&lt;any&gt;newScope).leftCurlyCount:
-        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
-        return None
-    if(&lt;any&gt;oldScope).rightCurlyCount !==(&lt;any&gt;newScope).rightCurlyCount:
-        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
-        return None
-    if newScope.minChar !== 0:
-        self.logger.log("  Bailing out because new function declaration does not start at position 0")
-        return None
-    if newScope.limChar !== newScopeLength:
-        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
-        return None
-    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
 </t>
 <t tx="ekr.20130503061511.4137">import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -11450,28 +10726,6 @@ if 0:
 if 0:
     sd.print_times()
 
-</t>
-<t tx="ekr.20130912092638.4151">import sys
-if g.app.isExternalUnitTest:
-    if sys.platform.startswith('linux'):
-        self.skipTest('external linux test')
-    else:
-        path = g.os_path_finalize_join(g.app.loadDir,'..','test','utf-16-test.txt')
-        assert g.os_path_exists(path)
-        f = open(path,'r')
-        s = f.read()
-        f.close()
-        s = g.toUnicode(s,encoding='utf-16')
-        assert s.find('Test of utf-16.') &gt; -1,s
-else:
-    h = '@file ../test/utf-16-test.txt'
-    p = g.findNodeAnywhere(c,h)
-    s = 'Test of utf-16.'
-    assert p,h
-    # It's hard to test the utf-16 text directly.
-    assert p.b
-    assert p.b.find(s) &gt; -1
-    assert len(p.b)==66,len(p.b)
 </t>
 <t tx="ekr.20131111155107.4239">c.testManager.runVimTest(p)
 
@@ -12963,125 +12217,6 @@ finally:
     pass
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
-<t tx="ekr.20140712142620.4538">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    pd = c.persistenceController
-    h = '@persistence'
-    p1 = pd.find_at_persistence_node()
-    assert p1
-    p2 = pd.has_at_persistence_node()
-    assert p1 == p2,(p1,p2)
-</t>
-<t tx="ekr.20140712142620.4550"># Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
-import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    pd = c.persistenceController
-    root = g.findNodeInTree(c,p,'root')
-    assert root
-    try:
-        persistence = pd.find_at_persistence_node()
-        assert persistence
-        persistence.deleteAllChildren()
-        root.h = '@auto root' # Make root look like an @auto node.
-        assert pd.find_at_data_node(root)
-        assert pd.find_at_gnxs_node(root)
-    finally:
-        root.h = 'root' # Make sure root is *not* an @auto node.
-        # views.deleteAllChildren()
-        c.selectPosition(p)
-        c.redraw()
-</t>
-<t tx="ekr.20140712142620.4551"></t>
-<t tx="ekr.20140712142620.4552">class aClass:
-    @others
-</t>
-<t tx="ekr.20140712142620.4556"></t>
-<t tx="ekr.20140712142620.4557">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    # Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
-    pd = c.persistenceController
-    persistence = g.findNodeAnywhere(c,'@persistence')
-    assert persistence
-    assert pd.has_at_persistence_node()
-    persistence.deleteAllChildren()
-    assert persistence
-    root = g.findNodeInTree(c,p,'root')
-    assert root
-    # The representative of clone_test node must appear outside of root's tree.
-    clone_test = g.findNodeInTree(c,p,'clone-test')
-    if g.app.isExternalUnitTest:
-        # There will not be a proper node in the copied tree.
-        self.skipTest('Can not be run externally')
-    else:
-        assert clone_test
-        assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
-        try:
-            root.h = '@auto root' # Make root look like an @auto node.
-            pd.update_before_write_foreign_file(root)
-            data = g.findNodeInTree(c,persistence,'@data:@auto root')
-            assert data
-            data2 = pd.has_at_data_node(root)
-            assert data2
-            assert data == data2,(data,data2)
-            gnxs = g.findNodeInTree(c,persistence,'@gnxs')
-            assert gnxs
-            gnxs2 = pd.has_at_gnxs_node(root)
-            assert gnxs2
-            assert gnxs == gnxs2,(gnxs,gnxs2)
-        finally:
-            root.h = 'root' # Make the root *not* an @auto node.
-            c.redraw()
-</t>
-<t tx="ekr.20140712142620.4558">@others
-</t>
-<t tx="ekr.20140712142620.4559">class aClass:
-    @others
-</t>
-<t tx="ekr.20140712142620.4561"></t>
-<t tx="ekr.20140712142620.4562">def spam():
-    pass
-</t>
-<t tx="ekr.20140712142620.4563">def clone_test():
-    pass
-</t>
-<t tx="ekr.20140712142620.4575">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    pd = c.persistenceController
-    root = g.findNodeInTree(c,p,'root')
-    assert root
-    persistence = pd.find_at_persistence_node()
-    assert persistence
-    persistence.deleteAllChildren()
-    try:
-        root.h = '@auto root' # Make root look like an @auto node.
-        pd.update_before_write_foreign_file(root)
-        data = g.findNodeAnywhere(c,'@data:@auto root')
-        assert data
-        gnxs = g.findNodeInTree(c,data,'@gnxs')
-        assert gnxs
-    finally:
-        root.h = 'root' # Make root *not* an @auto node.
-        # persistence.deleteAllChildren()
-        c.redraw()
-</t>
-<t tx="ekr.20140712142620.4576"></t>
-<t tx="ekr.20140712142620.4577">class aClass:
-    @others
-</t>
-<t tx="ekr.20140712142620.4579"></t>
-<t tx="ekr.20140712142620.4580"></t>
-<t tx="ekr.20140712142620.4581">def spam():
-    pass
-</t>
-<t tx="ekr.20140712142620.4582"></t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
@@ -13100,17 +12235,6 @@ else:
 <t tx="ekr.20150214063940.11"></t>
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
-<t tx="ekr.20150216111306.25">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('linux test')
-else:
-    pd = c.persistenceController
-    persistence = g.findNodeAnywhere(c,'@persistence')
-    assert persistence
-    assert pd.has_at_persistence_node()
-    persistence.deleteAllChildren()
-    assert persistence
-</t>
 <t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
 for p in p.children():
@@ -13137,126 +12261,17 @@ for p in p.children():
 </t>
 <t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
 </t>
-<t tx="ekr.20150625101047.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto ../test/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 13, n
-            if trace: print('not found: %s' % n)
-            break
-</t>
 <t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
 unl: at_auto_child
 </t>
-<t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtAutoRstNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 9, n
-            break
-</t>
 <t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
-</t>
-<t tx="ekr.20150626100652.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
 </t>
 <t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
 </t>
-<t tx="ekr.20150626101643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
-</t>
 <t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
-</t>
-<t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
-            break
 </t>
 <t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
-<t tx="ekr.20150629111007.1"></t>
 <t tx="ekr.20160226053222.13">gnx: ekr.20160226053105.4
 unl: class child1
 gnx: ekr.20160226053105.5
@@ -13289,20 +12304,6 @@ unl: section 2
 unl: section 1
 gnx: ekr.20160226053106.2
 unl: section 2
-</t>
-<t tx="ekr.20160314133351.1">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20160314133351.2">first line
-before foo += bar2 after
-last line
-</t>
-<t tx="ekr.20160314133351.3">first line
-before bar2 += foo after
-last line
-</t>
-<t tx="ekr.20160314133351.4">first line
-before foo += bar2 after
-last line
 </t>
 </tnodes>
 </leo_file>
