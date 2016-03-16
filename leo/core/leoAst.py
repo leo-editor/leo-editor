@@ -1251,8 +1251,6 @@ class HTMLReportTraverser:
         rt.div_stack = []
             # A check to ensure matching div/end_div.
         rt.last_doc = None
-        # rt.parent = None
-        # rt.parents = []
         # Formatting stuff.
         debug_css = 'report-traverser-debug.css'
         plain_css = 'report-traverser.css'
@@ -1277,7 +1275,8 @@ class HTMLReportTraverser:
     def blank(rt):
         '''Insert a single blank.'''
         rt.clean(' ')
-        rt.gen(' ')
+        if rt.code_list[-1] not in ' \n':
+            rt.gen(' ')
     #@+node:ekr.20150723100208.1: *4* rt.clean
     def clean(rt, s):
         '''Remove s from the code list.'''
@@ -1337,7 +1336,9 @@ class HTMLReportTraverser:
     #@+node:ekr.20150723100417.1: *4* rt.newline
     def newline(rt):
 
+        rt.clean(' ')
         rt.clean('\n')
+        rt.clean(' ')
         rt.gen('\n')
     #@+node:ekr.20150722204300.26: *4* rt.op
     def op(rt, op_name, leading=False, trailing=True):
@@ -1461,7 +1462,7 @@ class HTMLReportTraverser:
     #@+node:ekr.20150723095033.1: *4* rt.end_div
     def end_div(rt, class_name):
 
-        rt.newline()
+        # rt.newline()
         rt.gen('</div>')
         # rt.newline()
         class_name2 = rt.div_stack.pop()
@@ -1560,10 +1561,7 @@ class HTMLReportTraverser:
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(rt, method_name)
-        # rt.parent = rt.parents[-1]
-        # rt.parents.append(node)
         method(node)
-        # rt.parents.pop()
     #@+node:ekr.20150722204300.45: *3* rt.visit_list
     def visit_list(rt, aList, sep=None):
         # pylint: disable=arguments-differ
