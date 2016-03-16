@@ -1227,15 +1227,14 @@ class AstPatternFormatter(AstFormatter):
         '''This represents a string constant.'''
         return 'Str' # return repr(node.s)
     #@-others
-#@+node:ekr.20150722204300.1: ** class HTMLReportTraverser (AstFullTraverser)
-class HTMLReportTraverser(AstFullTraverser):
+#@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
+class HTMLReportTraverser:
     '''
     Create html reports from an AST tree.
 
     Adapted from micropython, by Paul Boddie. See the copyright notices.
 
     This version writes all html to a global code list.
-    All newlines are inserted explicitly.
     '''
     # To do: revise report-traverser-debug.css.
     # pylint: disable=no-self-argument
@@ -1244,7 +1243,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def __init__(rt, debug=False):
         '''Ctor for the NewHTMLReportTraverser class.'''
         rt.visitor = rt
-        AstFullTraverser.__init__(rt)
+        # AstFullTraverser.__init__(rt)
             # Init the base class.
         rt.code_list = []
         rt.debug = debug
@@ -1272,6 +1271,7 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150723094359.1: *3* rt.code generators
     #@+node:ekr.20150723100236.1: *4* rt.blank
     def blank(rt):
+        
         rt.gen(' ')
     #@+node:ekr.20150723100208.1: *4* rt.clean
     def clean(rt, s):
@@ -1289,6 +1289,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def doc(rt, node, classes=None):
         doc = ast.get_docstring(node)
         if doc:
+            # g.trace('========== docstring', doc)
             rt.docstring(doc, classes)
     #@+node:ekr.20150722204300.22: *5* rt.docstring
     def docstring(rt, s, classes=None):
@@ -1303,7 +1304,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def gen(rt, s):
         '''Append s to the global code list.'''
         rt.code_list.append(s)
-    #@+node:ekr.20150722204300.23: *4* rt.keyword (not a visitor!)
+    #@+node:ekr.20150722204300.23: *4* rt.keyword (code generator)
     def keyword(rt, keyword_name, leading=False, trailing=True):
 
         if leading:
@@ -1316,10 +1317,10 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150722204300.24: *4* rt.name
     def name(rt, name):
 
-        rt.span('name')
+        # rt.span('name')
         rt.gen(name)
-        rt.end_span('name')
-    #@+node:ekr.20150723100417.1: *4* rt.newline (Improve)
+        # rt.end_span('name')
+    #@+node:ekr.20150723100417.1: *4* rt.newline
     def newline(rt):
 
         rt.gen('\n')
@@ -1328,17 +1329,17 @@ class HTMLReportTraverser(AstFullTraverser):
 
         if leading:
             rt.blank()
-        rt.span('operation')
-        rt.span('operator')
+        # rt.span('operation')
+        # rt.span('operator')
         rt.gen(rt.text(op_name))
-        rt.end_span('operator')
+        # rt.end_span('operator')
         if trailing:
             rt.blank()
-        rt.end_span('operation')
+        # rt.end_span('operation')
     #@+node:ekr.20150723105951.1: *4* rt.op_name
     #@@nobeautify
 
-    def op_name (self,node,strict=True):
+    def op_name (rt, node,strict=True):
         '''Return the print name of an operator node.'''
         d = {
             # Binary operators.
@@ -1381,9 +1382,14 @@ class HTMLReportTraverser(AstFullTraverser):
             'UAdd':     '+',
             'USub':     '-',
         }
-        name = d.get(self.kind(node),'<%s>' % node.__class__.__name__)
-        if strict: assert name,self.kind(node)
+        kind = node.__class__.__name__
+        name = d.get(kind, '<%s>' % (kind))
+        if strict: assert name, kind
         return name
+    #@+node:ekr.20160315184954.1: *4* rt.string (code generator)
+    def string(rt, s):
+
+        rt.gen(repr(s.strip().strip()))
     #@+node:ekr.20150722204300.27: *4* rt.simple_statement
     def simple_statement(rt, name):
 
@@ -1528,78 +1534,26 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.visit(node)
         rt.gen(rt.html_footer)
         return ''.join(rt.code_list)
-    #@+node:ekr.20150722204300.43: *3* rt.traversers
-    #@+node:ekr.20150722204300.44: *4* rt.visit
+    #@+node:ekr.20150722204300.44: *3* rt.visit
     def visit(rt, node):
         """Walk a tree of AST nodes."""
         assert isinstance(node, ast.AST), node.__class__.__name__
         method_name = 'do_' + node.__class__.__name__
         method = getattr(rt, method_name)
         method(node)
-    #@+node:ekr.20150722204300.45: *4* rt.visit_list
+    #@+node:ekr.20150722204300.45: *3* rt.visit_list
     def visit_list(rt, aList, sep=None):
         # pylint: disable=arguments-differ
+        first = True
         if aList:
             for z in aList:
-                rt.visit(z)
-                if sep:
+                if sep and not first:
+                    # The caller is responsible for whitespace.
                     rt.gen(sep)
-            if sep:
-                rt.clean(sep)
+                rt.visit(z)
+                first = False
+                
     #@+node:ekr.20150722204300.46: *3* rt.visitors
-    #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helpers
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
-
-    def do_arguments(rt, node):
-
-        assert isinstance(node, ast.arguments), node
-        first_default = len(node.args) - len(node.defaults)
-        first = True
-        for n, arg in enumerate(node.args):
-            # g.trace(arg.__class__.__name__)
-            if not first:
-                rt.gen(', ')
-            if isinstance(arg, (list,tuple)):
-                rt.tuple_parameter(arg)
-            else:
-                rt.visit(arg)
-            if n >= first_default:
-                default = node.defaults[n - first_default]
-                rt.gen("=")
-                rt.visit(default)
-            first = False
-        if node.vararg:
-            rt.gen('*' if first else ', *')
-            rt.gen(rt.name(node.vararg))
-            first = False
-        if node.kwarg:
-            rt.gen('**' if first else ', **')
-            rt.gen(rt.name(node.kwarg))
-    #@+node:ekr.20160315182225.1: *5* rt.arg
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
-
-    def do_arg(rt, node):
-        
-        rt.gen(node.arg)
-        # if hasattr(node, expr):
-            # pass
-    #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
-    def tuple_parameter(rt, node):
-        
-        assert isinstance(node, (list, tuple)), node
-        rt.gen("(")
-        first = True
-        for param in parameters:
-            g.trace(param.__class__.__name__)
-            if not first:
-                rt.gen(', ')
-            if isinstance(param, tuple):
-                rt.tuple_parameter(param)
-            else:
-                rt.visit(param)
-            first = False
-        rt.gen(")")
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
 
@@ -1627,7 +1581,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def do_Attribute(rt, node):
 
         rt.visit(node.value)
-        rt.op('.')
+        rt.gen('.')
         rt.gen(node.attr)
     #@+node:ekr.20150722204300.52: *4* rt.AugAssign
     #  AugAssign(expr target, operator op, expr value)
@@ -1668,24 +1622,30 @@ class HTMLReportTraverser(AstFullTraverser):
 
     def do_Call(rt, node):
 
-        rt.span("callfunc")
+        # rt.span("callfunc")
         rt.visit(node.func)
-        rt.span("call")
-        rt.op('(')
+        # rt.span("call")
+        first = True
+        rt.gen('(')
         rt.visit_list(node.args, sep=',')
         if node.keywords:
             rt.visit_list(node.keywords, sep=',')
+            first = False
         if getattr(node, 'starargs', None):
+            if not first:
+                rt.comma()
             rt.op('*')
             rt.visit(node.starargs)
-            rt.comma()
+            first = False
         if getattr(node, 'kwargs', None):
+            if not first:
+                rt.comma()
             rt.op('**')
             rt.visit(node.kwargs)
-        rt.clean(',')
-        rt.op(')')
-        rt.end_span('call')
-        rt.end_span('callfunc')
+            first = False
+        rt.gen(')')
+        # rt.end_span('call')
+        # rt.end_span('callfunc')
     #@+node:ekr.20150722204300.57: *5* rt.do_keyword
     # keyword = (identifier arg, expr value)
     # keyword arguments supplied to call
@@ -1708,8 +1668,6 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.span(None) # Always a string.
         rt.gen(node.name) # Always a string.
         rt.end_span(None)
-        ### cls = node.cx
-        ### rt.object_name_def(rt.module,cls,"class-name")
         if node.bases:
             rt.op('(')
             rt.visit_list(node.bases, sep=',')
@@ -1735,13 +1693,13 @@ class HTMLReportTraverser(AstFullTraverser):
     #@+node:ekr.20150722204300.60: *4* rt.comprehension
     def do_comprehension(rt, node):
 
-        rt.keyword("in", leading=True)
-        rt.span('collection')
+        rt.keyword("in", leading=True, trailing=True)
+        # rt.span('collection')
         rt.visit(node.iter)
         if node.ifs:
-            rt.keyword('if', leading=True)
+            rt.keyword('if', leading=True, trailing=True)
             rt.span_list("conditional", node.ifs, sep=' ')
-        rt.end_span('collection')
+        # rt.end_span('collection')
     #@+node:ekr.20150722204300.61: *4* rt.Continue
     def do_Continue(rt, node):
 
@@ -1760,14 +1718,68 @@ class HTMLReportTraverser(AstFullTraverser):
         assert len(node.keys) == len(node.values)
         rt.span('dict')
         rt.op('{')
+        first = True
         for i in range(len(node.keys)):
+            if not first:
+                 rt.comma()
             rt.visit(node.keys[i])
             rt.colon()
             rt.visit(node.values[i])
-            rt.comma()
-        rt.clean(',')
+            first = False
         rt.op('}')
         rt.end_span('dict')
+    #@+node:ekr.20150722204300.47: *4* rt.do_arguments & helpers
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def do_arguments(rt, node):
+
+        assert isinstance(node, ast.arguments), node
+        first_default = len(node.args) - len(node.defaults)
+        first = True
+        for n, arg in enumerate(node.args):
+            if not first:
+                rt.gen(', ')
+            if isinstance(arg, (list,tuple)):
+                rt.tuple_parameter(arg)
+            else:
+                rt.visit(arg)
+            if n >= first_default:
+                default = node.defaults[n - first_default]
+                rt.gen("=")
+                rt.visit(default)
+            first = False
+        if getattr(node, 'vararg', None):
+            rt.gen('*' if first else ', *')
+            rt.gen(rt.name(node.vararg))
+            first = False
+        if getattr(node, 'kwarg', None):
+            rt.gen('**' if first else ', **')
+            rt.gen(rt.name(node.kwarg))
+    #@+node:ekr.20160315182225.1: *5* rt.arg
+    # Python 3:
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(rt, node):
+        
+        rt.gen(node.arg)
+        # if hasattr(node, expr):
+            # pass
+    #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
+    def tuple_parameter(rt, node):
+        
+        assert isinstance(node, (list, tuple)), node
+        rt.gen("(")
+        first = True
+        for param in node:
+            # g.trace(param.__class__.__name__)
+            if not first:
+                rt.gen(', ')
+            if isinstance(param, tuple):
+                rt.tuple_parameter(param)
+            else:
+                rt.visit(param)
+            first = False
+        rt.gen(")")
     #@+node:ekr.20150722204300.64: *4* rt.Ellipsis
     def do_Ellipsis(rt, node):
 
@@ -1829,9 +1841,9 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div('function', extra='id="%s"' % node.name)
         rt.div(None)
         rt.keyword("def")
-        rt.op('(')
+        rt.gen('(')
         rt.visit(node.args)
-        rt.op(')')
+        rt.gen(')')
         rt.colon()
         rt.end_div(None)
         rt.div('body')
@@ -1856,21 +1868,23 @@ class HTMLReportTraverser(AstFullTraverser):
         '''Return a list of the the full file names in the import statement.'''
         result = []
         for ast2 in node.names:
-            if rt.kind(ast2) == 'alias':
+            if isinstance(ast2, ast.alias):
                 data = ast2.name, ast2.asname
                 result.append(data)
             else:
-                g.trace('unsupported kind in Import.names list', rt.kind(ast2))
+                g.trace('unsupported node in Import.names list', ast.__class__.__name__)
         return result
     #@+node:ekr.20150722204300.72: *4* rt.Global
     def do_Global(rt, node):
 
         rt.div('global')
         rt.keyword("global")
+        first = True
         for z in node.names:
+            if not first:
+                rt.comma()
             rt.gen(z)
-            rt.comma()
-        rt.clean(',')
+            first = False
         rt.end_div('global')
     #@+node:ekr.20150722204300.73: *4* rt.If
     def do_If(rt, node):
@@ -1885,7 +1899,7 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.colon()
         rt.end_div(None)
         rt.div_body(node.body)
-        if elif_node and rt.kind(elif_node) == 'If':
+        if isinstance(elif_node, ast.If):
             rt.visit(elif_node)
         elif node.orelse:
             rt.div_keyword_colon(None, 'else')
@@ -1923,14 +1937,20 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.keyword("from")
         rt.gen(rt.module_link(node.module))
         rt.keyword("import", leading=True)
+        first = True
         for name, alias in rt.get_import_names(node):
+            if not first:
+                rt.comma()
             rt.name(name)
             if alias:
                 rt.keyword("as", leading=True)
                 rt.name(alias)
-            rt.comma()
-        rt.clean(',')
+            first = False
         rt.end_div('from')
+    #@+node:ekr.20160315190818.1: *4* rt.Index
+    def do_Index(rt, node):
+
+        rt.visit(node.value)
     #@+node:ekr.20150722204300.77: *4* rt.Lambda
     def do_Lambda(rt, node):
 
@@ -1945,30 +1965,32 @@ class HTMLReportTraverser(AstFullTraverser):
 
     def do_List(rt, node):
 
-        rt.span('list')
-        rt.op('[')
+        # rt.span('list')
+        rt.gen('[')
+        first = True
         if node.elts:
             for z in node.elts:
+                if not first:
+                    rt.comma()
                 rt.visit(z)
-                rt.comma()
-            rt.clean(',')
-        rt.op(']')
-        rt.end_span('list')
+                first = False
+        rt.gen(']')
+        # rt.end_span('list')
     #@+node:ekr.20150722204300.79: *4* rt.ListComp
     def do_ListComp(rt, node):
 
-        rt.span('listcomp')
-        rt.op('[')
+        # rt.span('listcomp')
+        rt.gen('[')
         if node.elt:
             rt.visit(node.elt)
-        rt.keyword('for', leading=True)
+        rt.keyword('for', leading=True, trailing=True)
         if node.elt:
             rt.span_node('item', node.elt)
-        rt.span('ifgenerators')
+        # rt.span('ifgenerators')
         rt.visit_list(node.generators)
-        rt.op("]")
-        rt.end_span('ifgenerators')
-        rt.end_span('listcomp')
+        rt.gen(']')
+        # rt.end_span('ifgenerators')
+        # rt.end_span('listcomp')
     #@+node:ekr.20150722204300.80: *4* rt.Module
     def do_Module(rt, node):
 
@@ -1976,11 +1998,8 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.visit_list(node.body)
     #@+node:ekr.20150722204300.81: *4* rt.Name
     def do_Name(rt, node):
-
-        rt.span('name')
-        rt.gen(node.id)
-        # rt.stc_popup_attrs(node)
-        rt.end_span('name')
+        
+        rt.name(node.id)
     #@+node:ekr.20160315165109.1: *4* rt.NameConstant
     def do_NameConstant(self, node): # Python 3 only.
 
@@ -2003,18 +2022,20 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.div('print')
         rt.keyword("print")
         rt.op('(')
+       
         if node.dest:
             rt.op('>>\n')
             rt.visit(node.dest)
             rt.comma()
             rt.newline()
+            first = True
             if node.values:
                 for z in node.values:
+                    if not first:
+                        rt.comma()
                     rt.visit(z)
-                    rt.comma()
                     rt.newline()
-                rt.clean('\n')
-                rt.clean(',')
+                    first = False
         rt.op(')')
         rt.end_div('print')
     #@+node:ekr.20150722204300.85: *4* rt.Raise
@@ -2052,9 +2073,7 @@ class HTMLReportTraverser(AstFullTraverser):
     def do_Str(rt, node):
         '''This represents a string constant.'''
         assert g.isString(node.s)
-        rt.span('str')
-        rt.gen(rt.text(repr(node.s))) ### repr??
-        rt.end_span('str')
+        rt.string(node.s)
     #@+node:ekr.20150722204300.89: *4* rt.Subscript
     def do_Subscript(rt, node):
 
@@ -2064,6 +2083,19 @@ class HTMLReportTraverser(AstFullTraverser):
         rt.visit(node.slice)
         rt.op(']')
         rt.end_span("subscript")
+    #@+node:ekr.20160315190913.1: *4* rt.Try (Python 3 only)
+    # Python 3 only: Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+    def do_Try(self, node):
+
+        for z in node.body:
+            self.visit(z)
+        for z in node.handlers:
+            self.visit(z)
+        for z in node.orelse:
+            self.visit(z)
+        for z in node.finalbody:
+            self.visit(z)
     #@+node:ekr.20150722204300.90: *4* rt.TryExcept
     def do_TryExcept(rt, node):
 
@@ -2089,14 +2121,16 @@ class HTMLReportTraverser(AstFullTraverser):
 
     def do_Tuple(rt, node):
 
-        rt.span('tuple', wrap=True)
-        rt.op('(')
+        # rt.span('tuple', wrap=True)
+        rt.gen('(')
+        first = True
         for z in node.elts or []:
+            if not first:
+                rt.comma()
             rt.visit(z)
-            rt.comma()
-        rt.clean(',')
-        rt.op(')')
-        rt.end_span('tuple')
+            first = False
+        rt.gen(')')
+        # rt.end_span('tuple')
     #@+node:ekr.20150722204300.93: *4* rt.UnaryOp
     def do_UnaryOp(rt, node):
 

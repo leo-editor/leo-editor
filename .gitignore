@@ -94,6 +94,7 @@ leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
 leo/test/testzip.zip
+leo/test/*.html
 
 leo/test/unittest/createdFile.txt
 leo/test/unittest/input/testLeoAtFile.py.txt
