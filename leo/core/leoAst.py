@@ -1236,6 +1236,9 @@ class HTMLReportTraverser:
     Inspired by Paul Boddie.
 
     This version writes all html to a global code list.
+    
+    At present, this code does not show comments.
+    The TokenSync class is probably the best way to do this.
     '''
     # To do: revise report-traverser-debug.css.
     # pylint: disable=no-self-argument
@@ -1243,15 +1246,17 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.2: *3* rt.__init__
     def __init__(rt, debug=False):
         '''Ctor for the NewHTMLReportTraverser class.'''
-        rt.visitor = rt
-        # AstFullTraverser.__init__(rt)
-            # Init the base class.
         rt.code_list = []
         rt.debug = debug
         rt.div_stack = []
             # A check to ensure matching div/end_div.
         rt.last_doc = None
-        # Formatting stuff.
+        # List of divs & spans to generate...
+        rt.enable_list = [
+            'body', 'class', 'doc', 'function',
+            'keyword', 'name', 'statement'
+        ]
+        # Formatting stuff...
         debug_css = 'report-traverser-debug.css'
         plain_css = 'report-traverser.css'
         rt.css_fn = debug_css if debug else plain_css
@@ -1329,7 +1334,9 @@ class HTMLReportTraverser:
         rt.blank()
     #@+node:ekr.20150722204300.24: *4* rt.name
     def name(rt, name):
-
+        
+        # Div would put each name on a separate line.
+        # span messes up whitespace, for now.
         # rt.span('name')
         rt.gen(name)
         # rt.end_span('name')
@@ -1405,7 +1412,9 @@ class HTMLReportTraverser:
     #@+node:ekr.20160315184954.1: *4* rt.string (code generator)
     def string(rt, s):
 
-        rt.gen(saxutils.escape(repr(s.strip().strip())))
+        s = repr(s.strip().strip())
+        s = saxutils.escape(s)
+        rt.gen(s)
     #@+node:ekr.20150722204300.27: *4* rt.simple_statement
     def simple_statement(rt, name):
 
@@ -1426,21 +1435,25 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.19: *4* rt.comment
     def comment(rt, comment):
 
-        return '%s\n' % rt.span("# %s" % (comment))
+        rt.span('comment')
+        rt.gen('# ' + comment)
+        rt.end_span('comment')
+        rt.newline()
     #@+node:ekr.20150722204300.20: *4* rt.div
     def div(rt, class_name, extra=None, wrap=False):
         '''Generate the start of a div element.'''
-        if class_name:
-            full_class_name = class_name if wrap else class_name + ' nowrap'
-        rt.newline()
-        if class_name and extra:
-            rt.gen("<div class='%s' %s>" % (full_class_name, extra))
-        elif class_name:
+        if class_name in rt.enable_list:
+            if class_name:
+                full_class_name = class_name if wrap else class_name + ' nowrap'
             rt.newline()
-            rt.gen("<div class='%s'>" % (full_class_name))
-        else:
-            assert not extra
-            rt.gen("<div>")
+            if class_name and extra:
+                rt.gen("<div class='%s' %s>" % (full_class_name, extra))
+            elif class_name:
+                rt.newline()
+                rt.gen("<div class='%s'>" % (full_class_name))
+            else:
+                assert not extra
+                rt.gen("<div>")
         rt.div_stack.append(class_name)
 
     #@+node:ekr.20150722222149.1: *4* rt.div_body
@@ -1462,16 +1475,18 @@ class HTMLReportTraverser:
     #@+node:ekr.20150723095033.1: *4* rt.end_div
     def end_div(rt, class_name):
 
-        # rt.newline()
-        rt.gen('</div>')
-        # rt.newline()
+        if class_name in rt.enable_list:
+            # rt.newline()
+            rt.gen('</div>')
+            # rt.newline()
         class_name2 = rt.div_stack.pop()
         assert class_name2 == class_name, (class_name2, class_name)
     #@+node:ekr.20150723095004.1: *4* rt.end_span
     def end_span(rt, class_name):
 
-        rt.gen('</span>')
-        rt.newline()
+        if class_name in rt.enable_list:
+            rt.gen('</span>')
+            rt.newline()
         class_name2 = rt.div_stack.pop()
         assert class_name2 == class_name, (class_name2, class_name)
     #@+node:ekr.20150722221408.1: *4* rt.keyword_colon
@@ -1516,13 +1531,14 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.28: *4* rt.span
     def span(rt, class_name, wrap=False):
 
-        rt.newline()
-        if class_name:
-            full_class_name = class_name if wrap else class_name + ' nowrap'
-            rt.gen("<span class='%s'>" % (full_class_name))
-        else:
-            rt.gen('<span>')
-        # rt.newline()
+        if class_name in rt.enable_list:
+            rt.newline()
+            if class_name:
+                full_class_name = class_name if wrap else class_name + ' nowrap'
+                rt.gen("<span class='%s'>" % (full_class_name))
+            else:
+                rt.gen('<span>')
+            # rt.newline()
         rt.div_stack.append(class_name)
     #@+node:ekr.20150722224734.1: *4* rt.span_list & span_node
     def span_list(rt, class_name, aList, sep=None):
@@ -1577,22 +1593,22 @@ class HTMLReportTraverser:
 
     def do_Assert(rt, node):
 
-        rt.div('assert')
+        rt.div('statement')
         rt.keyword("assert")
         rt.visit(node.test)
         if node.msg:
             rt.comma()
             rt.visit(node.msg)
-        rt.end_div('assert')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.50: *4* rt.Assign
     def do_Assign(rt, node):
 
-        rt.div('assign')
+        rt.div('statement')
         for z in node.targets:
             rt.visit(z)
             rt.op('=', leading=True, trailing=True)
         rt.visit(node.value)
-        rt.end_div('assign')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.51: *4* rt.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -1607,11 +1623,11 @@ class HTMLReportTraverser:
     def do_AugAssign(rt, node):
 
         op_name = rt.op_name(node.op)
-        rt.div('augassign')
+        rt.div('statement')
         rt.visit(node.target)
         rt.op(op_name, leading=True)
         rt.visit(node.value)
-        rt.end_div('augassign')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.53: *4* rt.BinOp
     def do_BinOp(rt, node):
 
@@ -1677,23 +1693,19 @@ class HTMLReportTraverser:
 
     def do_ClassDef(rt, node):
 
-        rt.div('classdef')
-        rt.div(None)
+        rt.div('class')
         rt.keyword("class")
-        # rt.span(None)
         rt.gen(node.name) # Always a string.
-        # rt.end_span(None)
         if node.bases:
             rt.gen('(')
             rt.visit_list(node.bases, sep=', ')
             rt.gen(')')
         rt.colon()
-        rt.end_div(None)
         rt.div('body')
         rt.doc(node)
         rt.visit_list(node.body)
         rt.end_div('body')
-        rt.end_div('classdef')
+        rt.end_div('class')
     #@+node:ekr.20150722204300.59: *4* rt.Compare
     def do_Compare(rt, node):
 
@@ -1720,6 +1732,7 @@ class HTMLReportTraverser:
             for z in node.ifs:
                 rt.visit(z)
                 rt.blank()
+            rt.clean(' ')
         # rt.end_span('collection')
     #@+node:ekr.20150722204300.61: *4* rt.Continue
     def do_Continue(rt, node):
@@ -1728,11 +1741,11 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.62: *4* rt.Delete
     def do_Delete(rt, node):
 
-        rt.div('del')
+        rt.div('statement')
         rt.keyword('del')
         if node.targets:
             rt.visit_list(node.targets, sep=',')
-        rt.end_div('del')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.63: *4* rt.Dict
     def do_Dict(rt, node):
 
@@ -1801,7 +1814,6 @@ class HTMLReportTraverser:
     def do_ExceptHandler(rt, node):
 
         rt.div('excepthandler')
-        rt.div(None)
         rt.keyword("except")
         if not node.type:
             rt.clean(' ')
@@ -1811,14 +1823,14 @@ class HTMLReportTraverser:
             rt.keyword('as')
             rt.visit(node.name)
         rt.colon()
-        rt.end_div(None)
         rt.div_body(node.body)
         rt.end_div('excepthandler')
     #@+node:ekr.20150722204300.66: *4* rt.Exec
     # Python 2.x only.
 
     def do_Exec(rt, node):
-        rt.div('exec')
+
+        rt.div('statement')
         rt.keyword('exec')
         rt.visit(node.body)
         if node.globals:
@@ -1827,7 +1839,7 @@ class HTMLReportTraverser:
         if node.locals:
             rt.comma()
             rt.visit(node.locals)
-        rt.end_div('exec')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.67: *4* rt.Expr
     def do_Expr(rt, node):
 
@@ -1837,32 +1849,28 @@ class HTMLReportTraverser:
 
     def do_For(rt, node):
 
-        rt.div('if')
-        rt.div(None)
+        rt.div('statement')
         rt.keyword("for")
         rt.visit(node.target)
         rt.keyword("in")
         rt.visit(node.iter)
         rt.colon()
-        rt.end_div(None)
         rt.div_body(node.body)
         if node.orelse:
             rt.keyword('else')
             rt.colon()
             rt.div_body(node.orelse)
-        rt.end_div('if')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
     def do_FunctionDef(rt, node):
 
         rt.div('function', extra='id="%s"' % node.name)
-        rt.div(None)
         rt.keyword("def")
         rt.name(node.name)
         rt.gen('(')
         rt.visit(node.args)
         rt.gen(')')
         rt.colon()
-        rt.end_div(None)
         rt.div('body')
         rt.doc(node)
         rt.visit_list(node.body)
@@ -1896,33 +1904,32 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.72: *4* rt.Global
     def do_Global(rt, node):
 
-        rt.div('global')
+        rt.div('statement')
         rt.keyword("global")
         for z in node.names:
             rt.gen(z)
             rt.comma()
         rt.clean_comma()
-        rt.end_div('global')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.73: *4* rt.If
     # If(expr test, stmt* body, stmt* orelse)
 
     def do_If(rt, node, elif_flag=False):
 
-        rt.div('if')
+        rt.div('statement')
         rt.keyword('elif' if elif_flag else 'if')
         rt.visit(node.test)
         rt.colon()
         rt.div_body(node.body)
         if node.orelse:
             node1 = node.orelse[0]
-            if isinstance(node1, ast.If):
+            if isinstance(node1, ast.If) and len(node.orelse) == 1:
                 rt.do_If(node1, elif_flag=True)
             else:
                 rt.keyword('else')
                 rt.colon()
                 rt.div_body(node.orelse)
-        rt.end_div('if')
-        
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.74: *4* rt.IfExp (TernaryOp)
     # IfExp(expr test, expr body, expr orelse)
 
@@ -1938,20 +1945,18 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.75: *4* rt.Import
     def do_Import(rt, node):
 
-        rt.div('import')
+        rt.div('statement')
         rt.keyword("import")
         for name, alias in rt.get_import_names(node):
+            rt.name(name) # rt.gen(rt.module_link(name))
             if alias:
-                rt.gen(rt.module_link(name))
                 rt.keyword("as")
                 rt.name(alias)
-            else:
-                rt.gen(rt.module_link(name))
-        rt.end_div('import')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.76: *4* rt.ImportFrom
     def do_ImportFrom(rt, node):
 
-        rt.div('from')
+        rt.div('statement')
         rt.keyword("from")
         rt.gen(rt.module_link(node.module))
         rt.keyword("import")
@@ -1962,7 +1967,7 @@ class HTMLReportTraverser:
                 rt.name(alias)
             rt.comma()
         rt.clean_comma()
-        rt.end_div('from')
+        rt.end_div('statement')
     #@+node:ekr.20160315190818.1: *4* rt.Index
     def do_Index(rt, node):
 
@@ -2031,7 +2036,7 @@ class HTMLReportTraverser:
 
     def do_Print(rt, node):
 
-        rt.div('print')
+        rt.div('statement')
         rt.keyword("print")
         rt.gen('(')
         if node.dest:
@@ -2047,21 +2052,21 @@ class HTMLReportTraverser:
         rt.clean('\n')
         rt.clean_comma()
         rt.gen(')')
-        rt.end_div('print')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.85: *4* rt.Raise
     def do_Raise(rt, node):
 
-        rt.div('raise')
+        rt.div('statement')
         rt.keyword("raise")
-        rt.end_div('raise')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.86: *4* rt.Return
     def do_Return(rt, node):
 
-        rt.div('return')
+        rt.div('statement')
         rt.keyword("return")
         if node.value:
             rt.visit(node.value)
-        rt.end_div('return')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.87: *4* rt.Slice
     def do_Slice(rt, node):
 
@@ -2102,18 +2107,23 @@ class HTMLReportTraverser:
 
     def do_Try(rt, node):
 
-        for z in node.body:
-            rt.visit(z)
+        rt.div('statement')
+        rt.keyword('try')
+        rt.colon()
+        rt.div_list('body', node.body)
         for z in node.handlers:
             rt.visit(z)
         for z in node.orelse:
             rt.visit(z)
-        for z in node.finalbody:
-            rt.visit(z)
+        if node.finalbody:
+            rt.keyword('finally')
+            rt.colon()
+            rt.div_list('body', node.finalbody)
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.90: *4* rt.TryExcept
     def do_TryExcept(rt, node):
 
-        rt.div('tryexcept')
+        rt.div('statement')
         rt.keyword('try')
         rt.colon()
         rt.div_list('body', node.body)
@@ -2122,18 +2132,18 @@ class HTMLReportTraverser:
             rt.colon()
             rt.div_body(node.orelse)
         rt.div_body(node.handlers)
-        rt.end_div('tryexcept')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.91: *4* rt.TryFinally
     def do_TryFinally(rt, node):
 
-        rt.div('tryfinally')
+        rt.div('statement')
         rt.keyword('try')
         rt.colon()
         rt.div_body(node.body)
         rt.keyword('finally')
         rt.colon()
         rt.div_body(node.final.body)
-        rt.end_div('tryfinally')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.92: *4* rt.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
@@ -2159,7 +2169,7 @@ class HTMLReportTraverser:
     #@+node:ekr.20150722204300.94: *4* rt.While
     def do_While(rt, node):
 
-        rt.div('while')
+        rt.div('statement')
         rt.div(None)
         rt.keyword("while")
         rt.visit(node.test)
@@ -2170,7 +2180,7 @@ class HTMLReportTraverser:
             rt.keyword('else')
             rt.colon()
             rt.div_body(node.orelse)
-        rt.end_div('while')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.95: *4* rt.With
     # With(expr context_expr, expr? optional_vars, stmt* body)
 
@@ -2178,8 +2188,8 @@ class HTMLReportTraverser:
 
         context_expr = getattr(node, 'context_expr', None)
         optional_vars = getattr(node, 'optional_vars', None)
-        rt.div('with')
-        rt.div(None)
+        rt.div('statement')
+        # rt.div(None)
         rt.keyword('with')
         if context_expr:
             rt.visit(context_expr)
@@ -2187,16 +2197,16 @@ class HTMLReportTraverser:
             rt.keyword('as')
             rt.visit_list(optional_vars)
         rt.colon()
-        rt.end_div(None)
+        # rt.end_div(None)
         rt.div_body(node.body)
-        rt.end_div('with')
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.96: *4* rt.Yield
     def do_Yield(rt, node):
 
-        rt.div('yield')
+        rt.div('statement')
         rt.keyword('yield')
         rt.visit(node.value)
-        rt.end_div('yield')
+        rt.end_div('statement')
     #@-others
 #@+node:ekr.20160225102931.1: ** class TokenSync
 class TokenSync(object):
