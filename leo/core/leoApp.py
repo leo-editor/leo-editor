@@ -188,6 +188,8 @@ def pylint_command(event):
         # define class PylintCommand.
     c = event.get('c')
     if c:
+        if c.isChanged():
+            c.save()
         PylintCommand(c).run()
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp:
