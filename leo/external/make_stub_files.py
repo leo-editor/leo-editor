@@ -1104,7 +1104,7 @@ class Pattern(object):
 class ReduceTypes:
     '''
     A helper class for the top-level reduce_types function.
-    
+
     This class reduces a list of type hints to a string containing the
     reduction of all types in the list.
     '''
