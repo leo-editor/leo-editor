@@ -789,6 +789,13 @@ class AstFormatter:
         else:
             return self.indent('yield\n')
 
+    # YieldFrom(expr value)
+
+    def do_YieldFrom(self, node):
+        
+        return self.indent('yield from %s\n' % (
+            self.visit(node.value)))
+
     # Utils...
 
     def kind(self, node):
