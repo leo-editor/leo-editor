@@ -462,7 +462,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.
         '''
-        C_To_Python(self.c).go()
+        self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
 
     #@+node:ekr.20150514063305.160: *4* class C_To_Python (To_Python)
@@ -1646,7 +1646,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@-others
         #@-others
         c = self.c
-        Python_To_CoffeeScript(c).go()
+        self.Python_To_CoffeeScript(c).go()
         c.bodyWantsFocus()
     #@-others
 #@-others
