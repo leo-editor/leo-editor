@@ -957,7 +957,7 @@ class LeoQtGui(leoGui.LeoGui):
         c = event and event.get('c')
         ipk = g.app.ipk
         ns = ipk.namespace # The actual IPython namespace.
-        ipkernel = ipk.ipkernel # IPKernelApp
+        ipkernel = ipk.kernelApp # IPKernelApp
         shell = ipkernel.shell # ZMQInteractiveShell
         if 0:
             g.trace('*******', shell.showtraceback)
