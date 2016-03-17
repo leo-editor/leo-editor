@@ -973,6 +973,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.def_patterns = self.scan_patterns('stub-def-name-patterns')
                 self.general_patterns = self.scan_patterns('stub-general-patterns')
                 self.prefix_lines = self.scan('stub-prefix-lines')
+                self.regex_patterns = self.scan_patterns('stub-regex-patterns')
                 # Complete the dicts.
                 x.make_patterns_dict()
                 self.patterns_dict = x.patterns_dict
@@ -998,7 +999,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
-                if not aList:
+                if aList is None:
                     g.trace('warning: no @data %s node' % kind)
                 for s in aList or []:
                     name, value = s.split(':',1)

@@ -469,6 +469,7 @@
 <v t="ekr.20160130145944.1"><vh>@data stub-general-patterns</vh></v>
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
 <v t="ekr.20160127051811.1"><vh>@data stub-return-patterns</vh></v>
+<v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command</vh>
@@ -11139,6 +11140,8 @@ strict: bool</t>
 <t tx="ekr.20160316112407.2">True: allow stub files to be overwritten
 </t>
 <t tx="ekr.20160316112407.8">The directory to which stub files are written.</t>
+<t tx="ekr.20160317062151.1"># Regular expression patterns.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
