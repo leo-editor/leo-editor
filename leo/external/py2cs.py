@@ -8,6 +8,8 @@ For full details, see README.md.
 Released under the MIT License.
 
 Written by Edward K. Ream.
+
+Hosted at: https://github.com/edreamleo/python-to-coffeescript
 '''
 # All parts of this script are distributed under the following copyright. This is intended to be the same as the MIT license, namely that this script is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 # 
@@ -329,7 +331,13 @@ class CoffeeScriptTraverser(object):
         return val + node.attr
 
     def do_Bytes(self, node): # Python 3.x only.
-        return str(node.s)
+        if hasattr(node, 'lineno'):
+            # Do *not* handle leading lines here.
+            # leading = self.leading_string(node)
+            return self.sync_string(node)
+        else:
+            g.trace('==== no lineno', node.s)
+            return node.s
 
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -696,6 +704,16 @@ class CoffeeScriptTraverser(object):
         s = 'pass # from %s import %s' % (node.module, ','.join(names))
         return head + self.indent(s) + tail
 
+    # Nonlocal(identifier* names)
+
+    def do_Nonlocal(self, node):
+        
+        # https://www.python.org/dev/peps/pep-3104/
+        head = self.leading_string(node)
+        tail = self.trailing_comment(node)
+        names = ', '.join(node.names)
+        return head + self.indent('nonlocal') + names + tail
+
     def do_Pass(self, node):
         
         head = self.leading_string(node)
@@ -740,10 +758,18 @@ class CoffeeScriptTraverser(object):
             s = 'return'
         return head + self.indent(s) + tail
 
+    # Starred(expr value, expr_context ctx)
+
+    def do_Starred(self, node):
+
+        # https://www.python.org/dev/peps/pep-3132/
+        return '*' + self.visit(node.value)
+
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node): # Python 3
 
+        # https://www.python.org/dev/peps/pep-0341/
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = 'try' + tail
@@ -756,14 +782,14 @@ class CoffeeScriptTraverser(object):
             for z in node.handlers:
                 result.append(self.visit(z))
         if node.orelse:
-            tail = self.trailing_comment(node.orelse)
+            tail = self.tail_after_body(node.body, node.orelse, result)
             result.append(self.indent('else:' + tail))
             for z in node.orelse:
                 self.level += 1
                 result.append(self.visit(z))
                 self.level -= 1
         if node.finalbody:
-            tail = self.trailing_comment(node.finalbody)
+            tail = self.tail_after_body(node.body, node.finalbody, result)
             s = 'finally:' + tail
             result.append(self.indent(s))
             for z in node.finalbody:
@@ -861,6 +887,16 @@ class CoffeeScriptTraverser(object):
             s = 'yield %s' % self.visit(node.value)
         else:
             s ='yield'
+        return head + self.indent(s) + tail
+
+    # YieldFrom(expr value)
+
+    def do_YieldFrom(self, node):
+        
+        # https://www.python.org/dev/peps/pep-0380/
+        head = self.leading_string(node)
+        tail = self.trailing_comment(node)
+        s = 'yield from %s' % self.visit(node.value)
         return head + self.indent(s) + tail
 
 
@@ -1393,10 +1429,11 @@ class TokenSync(object):
 
     def check_strings(self):
         '''Check that all strings have been consumed.'''
-        # g.trace(len(self.string_tokens))
         for i, aList in enumerate(self.string_tokens):
             if aList:
-                g.trace('warning: line %s. unused strings: %s' % (i, aList))
+                g.trace('warning: line %s. unused strings' % i)
+                for z in aList:
+                    print(self.dump_token(z))
 
     def dump_token(self, token, verbose=False):
         '''Dump the token. It is either a string or a 5-tuple.'''
@@ -1544,7 +1581,7 @@ class TokenSync(object):
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
         else:
-            g.trace('no lineno', node.__class__.__name__, g.callers())
+            # g.trace('no lineno', node.__class__.__name__, g.callers())
             return '\n'
 
     def trailing_comment_at_lineno(self, lineno):
