@@ -542,6 +542,12 @@ class AstFormatter:
         return self.indent('from %s import %s\n' % (
             node.module,
             ','.join(names)))
+    #@+node:ekr.20160317050557.2: *4* f.Nonlocal (Python 3)
+    # Nonlocal(identifier* names)
+
+    def do_Nonlocal(self, node):
+        
+        return self.indent('nonlocal %s\n' % ', '.join(node.names))
     #@+node:ekr.20141012064706.18457: *4* f.Pass
     def do_Pass(self, node):
         return self.indent('pass\n')
@@ -577,10 +583,43 @@ class AstFormatter:
                 self.visit(node.value)))
         else:
             return self.indent('return\n')
+    #@+node:ekr.20160317050557.3: *4* f.Starred (Python 3)
+    # Starred(expr value, expr_context ctx)
+
+    def do_Starred(self, node):
+
+        return '*' + self.visit(node.value)
     #@+node:ekr.20141012064706.18461: *4* f.Suite
     # def do_Suite(self,node):
         # for z in node.body:
             # s = self.visit(z)
+    #@+node:ekr.20160317050557.4: *4* f.Try (Python 3)
+    # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+    def do_Try(self, node): # Python 3
+
+        result = []
+        self.append(self.indent('try:\n'))
+        for z in node.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+        if node.handlers:
+            for z in node.handlers:
+                result.append(self.visit(z))
+        if node.orelse:
+            result.append(self.indent('else:\n'))
+            for z in node.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        if node.finalbody:
+            result.append(self.indent('finally:\n'))
+            for z in node.finalbody:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        return ''.join(result)
     #@+node:ekr.20141012064706.18462: *4* f.TryExcept
     def do_TryExcept(self, node):
         result = []
@@ -657,6 +696,13 @@ class AstFormatter:
                 self.visit(node.value)))
         else:
             return self.indent('yield\n')
+    #@+node:ekr.20160317050557.5: *4* f.YieldFrom (Python 3)
+    # YieldFrom(expr value)
+
+    def do_YieldFrom(self, node):
+        
+        return self.indent('yield from %s\n' % (
+            self.visit(node.value)))
     #@+node:ekr.20141012064706.18467: *3* f.Utils
     #@+node:ekr.20141012064706.18468: *4* f.kind
     def kind(self, node):
@@ -1094,6 +1140,12 @@ class AstFullTraverser:
         # for z in node.names:
             # self.visit(z)
         pass
+    #@+node:ekr.20160317051434.2: *4* ft.Nonlocal (Python 3)
+    # Nonlocal(identifier* names)
+
+    def do_Nonlocal(self, node):
+        
+        pass
     #@+node:ekr.20141012064706.18518: *4* ft.Pass
     def do_Pass(self, node):
         pass
@@ -1122,7 +1174,13 @@ class AstFullTraverser:
     def do_Return(self, node):
         if node.value:
             self.visit(node.value)
-    #@+node:ekr.20141012064706.18522: *4* ft.Try (Python 3 only)
+    #@+node:ekr.20160317051434.3: *4* ft.Starred (Python 3)
+    # Starred(expr value, expr_context ctx)
+
+    def do_Starred(self, node):
+
+        self.visit(node.value)
+    #@+node:ekr.20141012064706.18522: *4* ft.Try (Python 3)
     # Python 3 only: Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node):
@@ -1176,6 +1234,12 @@ class AstFullTraverser:
     def do_Yield(self, node):
         if node.value:
             self.visit(node.value)
+    #@+node:ekr.20160317051434.5: *4* ft.YieldFrom (Python 3)
+    # YieldFrom(expr value)
+
+    def do_YieldFrom(self, node):
+
+        self.visit(node.value)
     #@+node:ekr.20141012064706.18528: *3* ft.visit
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
@@ -2023,6 +2087,15 @@ class HTMLReportTraverser:
     def do_NameConstant(rt, node): # Python 3 only.
 
         rt.name(repr(node.value))
+    #@+node:ekr.20160317051849.2: *4* rt.Nonlocal (Python 3)
+    # Nonlocal(identifier* names)
+
+    def do_Nonlocal(rt, node):
+        
+        rt.div('statement')
+        rt.keyword('nonlocal')
+        rt.gen(', '.join(node.names))
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.82: *4* rt.Num
     def do_Num(rt, node):
 
@@ -2080,6 +2153,13 @@ class HTMLReportTraverser:
             rt.colon()
             rt.visit(node.step)
         # rt.end_span("slice")
+    #@+node:ekr.20160317051849.3: *4* rt.Starred (Python 3)
+    # Starred(expr value, expr_context ctx)
+
+    def do_Starred(rt, node):
+
+        rt.gen('*')
+        rt.visit(node.value)
     #@+node:ekr.20150722204300.88: *4* rt.Str
     def do_Str(rt, node):
         '''This represents a string constant.'''
@@ -2102,8 +2182,8 @@ class HTMLReportTraverser:
         rt.visit(node.slice)
         rt.gen(']')
         # rt.end_span("subscript")
-    #@+node:ekr.20160315190913.1: *4* rt.Try (Python 3 only)
-    # Python 3 only: Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+    #@+node:ekr.20160315190913.1: *4* rt.Try (Python 3)
+    # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(rt, node):
 
@@ -2205,6 +2285,15 @@ class HTMLReportTraverser:
 
         rt.div('statement')
         rt.keyword('yield')
+        rt.visit(node.value)
+        rt.end_div('statement')
+    #@+node:ekr.20160317051849.5: *4* rt.YieldFrom (Python 3)
+    # YieldFrom(expr value)
+
+    def do_YieldFrom(rt, node):
+        
+        rt.div('statement')
+        rt.keyword('yield from')
         rt.visit(node.value)
         rt.end_div('statement')
     #@-others
