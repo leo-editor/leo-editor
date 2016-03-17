@@ -28,6 +28,7 @@ try:
 except ImportError:
     import io # Python 3
 
+isPython3 = sys.version_info >= (3, 0, 0)
 
 def is_known_type(s):
     '''
@@ -137,12 +138,29 @@ class AstFormatter:
 
     # Contexts...
 
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2:            ClassDef(identifier name, expr* bases,
+    #                        stmt* body, expr* decorator_list)
+    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
+    #                        keyword* keywords, expr? starargs, expr? kwargs
+    #                        stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node):
         result = []
         name = node.name # Only a plain string is valid.
         bases = [self.visit(z) for z in node.bases] if node.bases else []
+        if hasattr(node, 'keywords'): # Python 3
+            for z in node.keywords:
+                arg, value = z
+                bases.append('%s=%s' % (self.visit(arg), self.visit(value)))
+        if hasattr(node, 'starargs'): # Python 3
+            junk, value = node.starargs
+            bases.append('*%s', self.visit(value))
+        if hasattr(node, 'kwargs'): # Python 3
+            junk, value = node.kwargs
+            bases.append('*%s', self.visit(value))
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
@@ -153,7 +171,8 @@ class AstFormatter:
             self.level -= 1
         return ''.join(result)
 
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns)
 
     def do_FunctionDef(self, node):
         '''Format a FunctionDef node.'''
@@ -163,7 +182,11 @@ class AstFormatter:
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        result.append(self.indent('def %s(%s):\n' % (name, args)))
+        if hasattr(node, 'returns'): # Python 3.
+            returns = self.visit(node.returns)
+            result.append(self.indent('def %s(%s): -> %s\n' % (name, args, returns)))
+        else:
+            result.append(self.indent('def %s(%s):\n' % (name, args)))
         for z in node.body:
             self.level += 1
             result.append(self.visit(z))
@@ -217,7 +240,10 @@ class AstFormatter:
 
     # Operands...
 
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # 2: arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # 3: arguments = (arg*  args, arg? vararg,
+    #                arg* kwonlyargs, expr* kw_defaults,
+    #                arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
         '''Format the arguments node.'''
@@ -233,19 +259,36 @@ class AstFormatter:
                 args2.append(args[i])
             else:
                 args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-        # Now add the vararg and kwarg args.
-        name = getattr(node, 'vararg', None)
-        if name: args2.append('*' + name)
-        name = getattr(node, 'kwarg', None)
-        if name: args2.append('**' + name)
+        if isPython3:
+            args  = [self.visit(z) for z in node.kwonlyargs]
+            defaults = [self.visit(z) for z in node.kw_defaults]
+            n_plain = len(args) - len(defaults)
+            for i in range(len(args)):
+                if i < n_plain:
+                    args2.append(args[i])
+                else:
+                    args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+            # Add the vararg and kwarg expressions.
+            vararg = getattr(node, 'vararg', None)
+            if vararg: args2.append('*' + self.visit(vararg))
+            kwarg = getattr(node, 'kwarg', None)
+            if kwarg: args2.append('**' + self.visit(kwarg))
+        else:
+            # Add the vararg and kwarg names.
+            name = getattr(node, 'vararg', None)
+            if name: args2.append('*' + name)
+            name = getattr(node, 'kwarg', None)
+            if name: args2.append('**' + name)
         return ','.join(args2)
 
     # Python 3:
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
-        return node.arg
-
+        if getattr(node, 'annotation', None):
+            return '%s: %s' % (node.arg, self.visit(node.annotation))
+        else:
+            return node.arg
     # Attribute(expr value, identifier attr, expr_context ctx)
 
     def do_Attribute(self, node):
@@ -1613,6 +1656,7 @@ class StandAloneMakeStubFile:
         s = '\n'.join(aList)+'\n'
         if trace: g.trace(s)
         file_object = io.StringIO(s)
+        # pylint: disable=deprecated-method
         self.parser.readfp(file_object)
 
     def is_section_name(self, s):

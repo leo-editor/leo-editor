@@ -143,12 +143,30 @@ class AstFormatter:
             return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
     #@+node:ekr.20141012064706.18405: *4* f.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2:            ClassDef(identifier name, expr* bases,
+    #                        stmt* body, expr* decorator_list)
+    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
+    #                        keyword* keywords, expr? starargs, expr? kwargs
+    #                        stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node):
+
         result = []
         name = node.name # Only a plain string is valid.
         bases = [self.visit(z) for z in node.bases] if node.bases else []
+        if hasattr(node, 'keywords'): # Python 3
+            for z in node.keywords:
+                arg, value = z
+                bases.append('%s=%s' % (self.visit(arg), self.visit(value)))
+        if hasattr(node, 'starargs'): # Python 3
+            junk, value = node.starargs
+            bases.append('*%s', self.visit(value))
+        if hasattr(node, 'kwargs'): # Python 3
+            junk, value = node.kwargs
+            bases.append('*%s', self.visit(value))
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
@@ -159,7 +177,8 @@ class AstFormatter:
             self.level -= 1
         return ''.join(result)
     #@+node:ekr.20141012064706.18406: *4* f.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns)
 
     def do_FunctionDef(self, node):
         '''Format a FunctionDef node.'''
@@ -169,7 +188,11 @@ class AstFormatter:
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        result.append(self.indent('def %s(%s):\n' % (name, args)))
+        if hasattr(node, 'returns'): # Python 3.
+            returns = self.visit(node.returns)
+            result.append(self.indent('def %s(%s): -> %s\n' % (name, args, returns)))
+        else:
+            result.append(self.indent('def %s(%s):\n' % (name, args)))
         for z in node.body:
             self.level += 1
             result.append(self.visit(z))
@@ -221,7 +244,11 @@ class AstFormatter:
         return 'Store'
     #@+node:ekr.20141012064706.18415: *3* f.Operands
     #@+node:ekr.20141012064706.18416: *4* f.arguments
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # 2: arguments = (expr* args, identifier? vararg, identifier?
+    #                arg? kwarg, expr* defaults)
+    # 3: arguments = (arg*  args, arg? vararg,
+    #                arg* kwonlyargs, expr* kw_defaults,
+    #                arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
         '''Format the arguments node.'''
@@ -229,7 +256,6 @@ class AstFormatter:
         assert kind == 'arguments', kind
         args = [self.visit(z) for z in node.args]
         defaults = [self.visit(z) for z in node.defaults]
-        # Assign default values to the last args.
         args2 = []
         n_plain = len(args) - len(defaults)
         for i in range(len(args)):
@@ -237,18 +263,33 @@ class AstFormatter:
                 args2.append(args[i])
             else:
                 args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-        # Now add the vararg and kwarg args.
-        name = getattr(node, 'vararg', None)
-        if name: args2.append('*' + name)
-        name = getattr(node, 'kwarg', None)
-        if name: args2.append('**' + name)
+        if g.isPython3:
+            args  = [self.visit(z) for z in node.kwonlyargs]
+            defaults = [self.visit(z) for z in node.kw_defaults]
+            n_plain = len(args) - len(defaults)
+            for i in range(len(args)):
+                if i < n_plain:
+                    args2.append(args[i])
+                else:
+                    args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+            # Add the vararg and kwarg expressions.
+            vararg = getattr(node, 'vararg', None)
+            if vararg: args2.append('*' + self.visit(vararg))
+            kwarg = getattr(node, 'kwarg', None)
+            if kwarg: args2.append('**' + self.visit(kwarg))
+        else:
+            # Add the vararg and kwarg names.
+            name = getattr(node, 'vararg', None)
+            if name: args2.append('*' + name)
+            name = getattr(node, 'kwarg', None)
+            if name: args2.append('**' + name)
         return ','.join(args2)
     #@+node:ekr.20141012064706.18417: *4* f.arg (Python3 only)
     # Python 3:
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
-        if node.annotation:
+        if getattr(node, 'annotation', None):
             return self.visit(node.annotation)
         else:
             return ''
@@ -777,13 +818,30 @@ class AstFullTraverser:
     #@+others
     #@+node:ekr.20141012064706.18472: *3* ft.contexts
     #@+node:ekr.20141012064706.18473: *4* ft.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2:            ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
+    #                        keyword* keywords, expr? starargs, expr? kwargs
+    #                        stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node):
         old_context = self.context
         self.context = node
         for z in node.bases:
             self.visit(z)
+        if hasattr(node, 'keywords'): # Python 3
+            for z in node.keywords:
+                arg, value = z
+                self.visit(arg)
+                self.visit(value)
+        if hasattr(node, 'starargs'): # Python 3
+            junk, value = node.starargs
+            self.visit(value)
+        if hasattr(node, 'kwargs'): # Python 3
+            junk, value = node.kwargs
+            self.visit(value)
         for z in node.body:
             self.visit(z)
         for z in node.decorator_list:
@@ -793,6 +851,7 @@ class AstFullTraverser:
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef(self, node):
+
         old_context = self.context
         self.context = node
         # Visit the tree in token order.
@@ -800,6 +859,8 @@ class AstFullTraverser:
             self.visit(z)
         assert g.isString(node.name)
         self.visit(node.args)
+        if hasattr(node, 'returns'): # Python 3.
+            self.visit(node.returns)
         for z in node.body:
             self.visit(z)
         self.context = old_context
@@ -843,18 +904,32 @@ class AstFullTraverser:
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # 2: arguments = (expr* args, identifier? vararg, 
+    #                 identifier? kwarg, expr* defaults)
+    # 3: arguments = (arg*  args, arg? vararg,
+    #                arg* kwonlyargs, expr* kw_defaults,
+    #                arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
+
         for z in node.args:
             self.visit(z)
+        if g.isPython3 and hasattr(node, 'vararg'): # An identifier in Python 2.
+            self.visit(node.vararg)
+        if hasattr(node, 'kwonlyargs'): # Python 3.
+            self.visit(node.kwonlyargs)
+        if hasattr(node, 'kw_defaults'): # Python 3.
+            self.visit(node.kw_defaults)
+        if g.isPython3 and hasattr(node, 'kwarg'): # An identifier in Python 2.
+            self.visit(node.kwarg)
         for z in node.defaults:
             self.visit(z)
+
     # Python 3:
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
-        if node.annotation:
+        if getattr(node, 'annotation', None):
             self.visit(node.annotation)
     #@+node:ekr.20141012064706.18483: *4* ft.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
@@ -1850,15 +1925,16 @@ class HTMLReportTraverser:
             rt.gen(rt.name(node.kwarg))
             rt.comma()
         rt.clean_comma()
-    #@+node:ekr.20160315182225.1: *5* rt.arg
+    #@+node:ekr.20160315182225.1: *5* rt.arg (Python 3 only)
     # Python 3:
     # arg = (identifier arg, expr? annotation)
 
     def do_arg(rt, node):
         
         rt.gen(node.arg)
-        # if hasattr(node, expr):
-            # pass
+        if getattr(node, 'annotation', None):
+            rt.gen_colon()
+            rt.visit(node.anotation)
     #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
     def tuple_parameter(rt, node):
         
