@@ -285,8 +285,7 @@ class AstFormatter:
             if name: args2.append('**' + name)
         return ','.join(args2)
     #@+node:ekr.20141012064706.18417: *4* f.arg (Python3 only)
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
+    # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
         if getattr(node, 'annotation', None):
@@ -907,8 +906,8 @@ class AstFullTraverser:
     # 2: arguments = (expr* args, identifier? vararg, 
     #                 identifier? kwarg, expr* defaults)
     # 3: arguments = (arg*  args, arg? vararg,
-    #                arg* kwonlyargs, expr* kw_defaults,
-    #                arg? kwarg, expr* defaults)
+    #                 arg* kwonlyargs, expr* kw_defaults,
+    #                 arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
 
@@ -925,8 +924,7 @@ class AstFullTraverser:
         for z in node.defaults:
             self.visit(z)
 
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
+    # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
         if getattr(node, 'annotation', None):
@@ -1926,8 +1924,7 @@ class HTMLReportTraverser:
             rt.comma()
         rt.clean_comma()
     #@+node:ekr.20160315182225.1: *5* rt.arg (Python 3 only)
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
+    # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(rt, node):
         

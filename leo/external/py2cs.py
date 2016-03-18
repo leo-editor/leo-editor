@@ -206,7 +206,11 @@ class CoffeeScriptTraverser(object):
     # CoffeeScriptTraverser contexts...
     #
 
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2: ClassDef(identifier name, expr* bases,
+    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
 
     def do_ClassDef(self, node):
 
@@ -238,7 +242,8 @@ class CoffeeScriptTraverser(object):
         return ''.join(result)
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
 
     def do_FunctionDef(self, node):
         '''Format a FunctionDef node.'''
@@ -298,7 +303,11 @@ class CoffeeScriptTraverser(object):
     # CoffeeScriptTraverser operands...
     #
 
-    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+    # 2: arguments = (expr* args, identifier? vararg,
+    #                 identifier? kwarg, expr* defaults)
+    # 3: arguments = (arg*  args, arg? vararg,
+    #                arg* kwonlyargs, expr* kw_defaults,
+    #                arg? kwarg, expr* defaults)
 
     def do_arguments(self, node):
         '''Format the arguments node.'''
@@ -336,8 +345,7 @@ class CoffeeScriptTraverser(object):
             if name: args2.append('**' + name)
         return ','.join(args2)
 
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
+    # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
         return node.arg
@@ -729,7 +737,7 @@ class CoffeeScriptTraverser(object):
         s = 'pass # from %s import %s' % (node.module, ','.join(names))
         return head + self.indent(s) + tail
 
-    # Nonlocal(identifier* names)
+    # 3: Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
         
@@ -790,7 +798,7 @@ class CoffeeScriptTraverser(object):
         # https://www.python.org/dev/peps/pep-3132/
         return '*' + self.visit(node.value)
 
-    # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+    # 3: Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node): # Python 3
 
@@ -914,7 +922,7 @@ class CoffeeScriptTraverser(object):
             s ='yield'
         return head + self.indent(s) + tail
 
-    # YieldFrom(expr value)
+    # 3: YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
         
@@ -1039,7 +1047,7 @@ class LeoGlobals(object):
     def isString(self, s):
         '''Return True if s is any string, but not bytes.'''
         # pylint: disable=no-member
-        if g.isPython3:
+        if isPython3:
             return isinstance(s, str)
         else:
             return isinstance(s, types.StringTypes)
@@ -1047,7 +1055,7 @@ class LeoGlobals(object):
     def isUnicode(self, s):
         '''Return True if s is a unicode string.'''
         # pylint: disable=no-member
-        if g.isPython3:
+        if isPython3:
             return isinstance(s, str)
         else:
             return isinstance(s, types.UnicodeType)

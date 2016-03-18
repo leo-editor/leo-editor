@@ -138,14 +138,11 @@ class AstFormatter:
 
     # Contexts...
 
-    # 2:            ClassDef(identifier name, expr* bases,
-    #                        stmt* body, expr* decorator_list)
-    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
-    #                        keyword* keywords, expr? starargs, expr? kwargs
-    #                        stmt* body, expr* decorator_list)
-    #
-    # keyword arguments supplied to call (NULL identifier for **kwargs)
-    # keyword = (identifier? arg, expr value)
+    # 2: ClassDef(identifier name, expr* bases,
+    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
 
     def do_ClassDef(self, node):
         result = []
@@ -172,7 +169,8 @@ class AstFormatter:
         return ''.join(result)
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
 
     def do_FunctionDef(self, node):
         '''Format a FunctionDef node.'''
@@ -281,8 +279,7 @@ class AstFormatter:
             if name: args2.append('**' + name)
         return ','.join(args2)
 
-    # Python 3:
-    # arg = (identifier arg, expr? annotation)
+    # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
         if getattr(node, 'annotation', None):
