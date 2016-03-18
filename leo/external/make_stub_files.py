@@ -132,8 +132,8 @@ class AstFormatter:
             method_name = 'do_' + node.__class__.__name__
             method = getattr(self, method_name)
             s = method(node)
-            # pylint: disable=unidiomatic-typecheck
-            assert type(s) == type('abc'), (node, type(s))
+            # assert type(s) == type('abc'), (node, type(s))
+            assert g.isString(s), type(s)
             return s
 
     # Contexts...
@@ -904,6 +904,22 @@ class LeoGlobals:
         '''Clear the screen.'''
         if sys.platform.lower().startswith('win'):
             os.system('cls')
+
+    def isString(self, s):
+        '''Return True if s is any string, but not bytes.'''
+        # pylint: disable=no-member
+        if isPython3:
+            return isinstance(s, str)
+        else:
+            return isinstance(s, types.StringTypes)
+
+    def isUnicode(self, s):
+        '''Return True if s is a unicode string.'''
+        # pylint: disable=no-member
+        if isPython3:
+            return isinstance(s, str)
+        else:
+            return isinstance(s, types.UnicodeType)
 
     def pdb(self):
         try:

@@ -973,13 +973,15 @@ except SyntaxError:
 import glob
 trace = False
 failed,n = [],0
-skip_tuples = (
+skip_tuples3 = (
     ('extensions','asciidoc.py'),
 )
-if g.isPython3:
-    skip_list = [g.os_path_finalize_join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
-else:
-    skip_list = []
+skip_tuples2 = (
+    ('test', 'python3_test.py'),
+)
+join = g.os_path_finalize_join
+skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
+skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
 for theDir in ('core','external','extensions','plugins','scripts','test'):
     if trace: print(theDir)
     path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
@@ -1341,30 +1343,33 @@ for ext in ext_d:
     assert lang in lang_d,'fail 3: %s' % lang
 #@+node:ekr.20160318094003.1: *3* leoAst
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
-import leo.core.leoAst as leoAst
-import leo.external.make_stub_files as msf
-import leo.external.py2cs as py2cs
-import ast, tokenize
-# g.cls()
-if c.isChanged(): c.save()
-path = g.os_path_finalize_join(g.app.loadDir,
-    '..', 'test', 'python3_test.py')
-assert g.os_path_exists(path), path
-fn = g.shortFileName(path)
-source = open(path, 'r').read()
-node = ast.parse(source, filename=fn, mode='exec')
-src = open(path, 'r').read()
-readlines = g.ReadLinesClass(src).next
-tokens = list(tokenize.generate_tokens(readlines))
-leoAst.AstFullTraverser().visit(node)
-s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-assert s
-s = leoAst.AstFormatter().format(node)
-assert s
-s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
-assert s
-controller = msf.StandAloneMakeStubFile()
-msf.StubTraverser(controller).visit(node)
+if not g.isPython3:
+    self.skipTest('python 3 test')
+else:
+    import leo.core.leoAst as leoAst
+    import leo.external.make_stub_files as msf
+    import leo.external.py2cs as py2cs
+    import ast, tokenize
+    # g.cls()
+    if c.isChanged(): c.save()
+    path = g.os_path_finalize_join(g.app.loadDir,
+        '..', 'test', 'python3_test.py')
+    assert g.os_path_exists(path), path
+    fn = g.shortFileName(path)
+    source = open(path, 'r').read()
+    node = ast.parse(source, filename=fn, mode='exec')
+    src = open(path, 'r').read()
+    readlines = g.ReadLinesClass(src).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    leoAst.AstFullTraverser().visit(node)
+    s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
+    assert s
+    s = leoAst.AstFormatter().format(node)
+    assert s
+    s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+    assert s
+    controller = msf.StandAloneMakeStubFile()
+    msf.StubTraverser(controller).visit(node)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)
