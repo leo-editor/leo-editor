@@ -23,6 +23,7 @@ import os
 import re
 import sys
 import time
+import types
 try:
     import StringIO as io # Python 2
 except ImportError:
