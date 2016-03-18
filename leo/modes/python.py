@@ -243,6 +243,7 @@ python_main_keywords_dict = {
 	"list": "keyword2",
 	"locals": "keyword2",
 	"long": "keyword2",
+	"nonlocal": "keyword1",
 	"map": "keyword2",
 	"max": "keyword2",
 	"min": "keyword2",
@@ -412,11 +413,11 @@ else:
 # Rules dict for python_main ruleset.
 rulesDict1 = {
 	"!": [python_rule6,],
-	"\"": [python_rule1,python_rule3,],
+	"\"": [python_rule1, python_rule3,],
 	"#": [python_rule0,],
 	"%": [python_rule15,],
 	"&": [python_rule16,],
-	"'": [python_rule2,python_rule4,],
+	"'": [python_rule2, python_rule4,],
 	"(": [python_rule20,],
 	"*": [python_rule12,],
 	"+": [python_rule9,],
