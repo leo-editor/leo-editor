@@ -138,26 +138,27 @@ class AstFormatter:
 
     # Contexts...
 
+
     # 2: ClassDef(identifier name, expr* bases,
     #             stmt* body, expr* decorator_list)
     # 3: ClassDef(identifier name, expr* bases,
     #             keyword* keywords, expr? starargs, expr? kwargs
     #             stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(self, node):
         result = []
         name = node.name # Only a plain string is valid.
         bases = [self.visit(z) for z in node.bases] if node.bases else []
-        if hasattr(node, 'keywords'): # Python 3
-            for z in node.keywords:
-                arg, value = z
-                bases.append('%s=%s' % (self.visit(arg), self.visit(value)))
-        if hasattr(node, 'starargs'): # Python 3
-            junk, value = node.starargs
-            bases.append('*%s', self.visit(value))
-        if hasattr(node, 'kwargs'): # Python 3
-            junk, value = node.kwargs
-            bases.append('*%s', self.visit(value))
+        if getattr(node, 'keywords', None): # Python 3
+            for keyword in node.keywords:
+                bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
+        if getattr(node, 'starargs', None): # Python 3
+            bases.append('*%s', self.visit(node.starargs))
+        if getattr(node, 'kwargs', None): # Python 3
+            bases.append('*%s', self.visit(node.kwargs))
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
@@ -167,6 +168,7 @@ class AstFormatter:
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
+
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
@@ -180,7 +182,7 @@ class AstFormatter:
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        if hasattr(node, 'returns'): # Python 3.
+        if getattr(node, 'returns', None): # Python 3.
             returns = self.visit(node.returns)
             result.append(self.indent('def %s(%s): -> %s\n' % (name, args, returns)))
         else:
@@ -703,18 +705,34 @@ class AstFormatter:
                 self.level -= 1
         return ''.join(result)
 
+
+    # 2:  With(expr context_expr, expr? optional_vars, 
+    #          stmt* body)
+    # 3:  With(withitem* items,
+    #          stmt* body)
+    # withitem = (expr context_expr, expr? optional_vars)
+
     def do_With(self, node):
         result = []
         result.append(self.indent('with '))
-        if hasattr(node, 'context_expression'):
-            result.append(self.visit(node.context_expresssion))
         vars_list = []
-        if hasattr(node, 'optional_vars'):
+        if getattr(node, 'context_expression', None):
+            result.append(self.visit(node.context_expresssion))
+        if getattr(node, 'optional_vars', None):
             try:
                 for z in node.optional_vars:
                     vars_list.append(self.visit(z))
             except TypeError: # Not iterable.
                 vars_list.append(self.visit(node.optional_vars))
+        if getattr(node, 'items', None): # Python 3.
+            for item in node.items:
+                result.append(self.visit(item.context_expr))
+                if getattr(item, 'optional_vars', None):
+                    try:
+                        for z in item.optional_vars:
+                            vars_list.append(self.visit(z))
+                    except TypeError: # Not iterable.
+                        vars_list.append(self.visit(item.optional_vars))
         result.append(','.join(vars_list))
         result.append(':\n')
         for z in node.body:
@@ -2423,7 +2441,14 @@ class StubTraverser (ast.NodeVisitor):
         if level == -1:
             return '\n'.join(aList) + '\n'
 
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2: ClassDef(identifier name, expr* bases,
+    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def visit_ClassDef(self, node):
         
@@ -2437,6 +2462,14 @@ class StubTraverser (ast.NodeVisitor):
         if self.trace_matches or self.trace_reduce:
             print('\nclass %s\n' % node.name)
         # Format...
+        bases = [self.visit(z) for z in node.bases] if node.bases else []
+        if getattr(node, 'keywords', None): # Python 3
+            for keyword in node.keywords:
+                bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
+        if getattr(node, 'starargs', None): # Python 3
+            bases.append('*%s', self.visit(node.starargs))
+        if getattr(node, 'kwargs', None): # Python 3
+            bases.append('*%s', self.visit(node.kwargs))
         if not node.name.startswith('_'):
             if node.bases:
                 s = '(%s)' % ', '.join([self.format(z) for z in node.bases])
@@ -2452,7 +2485,10 @@ class StubTraverser (ast.NodeVisitor):
         self.level -= 1
         self.parent_stub = old_stub
 
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
+
 
     def visit_FunctionDef(self, node):
 

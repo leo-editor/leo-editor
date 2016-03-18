@@ -1278,7 +1278,6 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20131001045038.18980"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:

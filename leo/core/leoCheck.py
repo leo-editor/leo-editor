@@ -202,7 +202,9 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         # Stats.
         old_cx.classes_list.append(new_cx)
     #@+node:ekr.20160108105958.19: *5* p1.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #    expr? returns)
 
     def do_FunctionDef (self,node):
 

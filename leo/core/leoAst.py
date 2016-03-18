@@ -143,11 +143,11 @@ class AstFormatter:
             return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
     #@+node:ekr.20141012064706.18405: *4* f.ClassDef
-    # 2:            ClassDef(identifier name, expr* bases,
-    #                        stmt* body, expr* decorator_list)
-    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
-    #                        keyword* keywords, expr? starargs, expr? kwargs
-    #                        stmt* body, expr* decorator_list)
+    # 2: ClassDef(identifier name, expr* bases,
+    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
     #
     # keyword arguments supplied to call (NULL identifier for **kwargs)
     # keyword = (identifier? arg, expr value)
@@ -157,16 +157,13 @@ class AstFormatter:
         result = []
         name = node.name # Only a plain string is valid.
         bases = [self.visit(z) for z in node.bases] if node.bases else []
-        if hasattr(node, 'keywords'): # Python 3
-            for z in node.keywords:
-                arg, value = z
-                bases.append('%s=%s' % (self.visit(arg), self.visit(value)))
-        if hasattr(node, 'starargs'): # Python 3
-            junk, value = node.starargs
-            bases.append('*%s', self.visit(value))
-        if hasattr(node, 'kwargs'): # Python 3
-            junk, value = node.kwargs
-            bases.append('*%s', self.visit(value))
+        if getattr(node, 'keywords', None): # Python 3
+            for keyword in node.keywords:
+                bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
+        if getattr(node, 'starargs', None): # Python 3
+            bases.append('*%s', self.visit(node.starargs))
+        if getattr(node, 'kwargs', None): # Python 3
+            bases.append('*%s', self.visit(node.kwargs))
         if bases:
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
@@ -178,7 +175,8 @@ class AstFormatter:
         return ''.join(result)
     #@+node:ekr.20141012064706.18406: *4* f.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
-    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list, expr? returns)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
 
     def do_FunctionDef(self, node):
         '''Format a FunctionDef node.'''
@@ -188,7 +186,7 @@ class AstFormatter:
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        if hasattr(node, 'returns'): # Python 3.
+        if getattr(node, 'returns', None): # Python 3.
             returns = self.visit(node.returns)
             result.append(self.indent('def %s(%s): -> %s\n' % (name, args, returns)))
         else:
@@ -709,18 +707,33 @@ class AstFormatter:
                 self.level -= 1
         return ''.join(result)
     #@+node:ekr.20141012064706.18465: *4* f.With
+    # 2:  With(expr context_expr, expr? optional_vars, 
+    #          stmt* body)
+    # 3:  With(withitem* items,
+    #          stmt* body)
+    # withitem = (expr context_expr, expr? optional_vars)
+
     def do_With(self, node):
         result = []
         result.append(self.indent('with '))
-        if hasattr(node, 'context_expression'):
+        if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
         vars_list = []
-        if hasattr(node, 'optional_vars'):
+        if getattr(node, 'optional_vars', None):
             try:
                 for z in node.optional_vars:
                     vars_list.append(self.visit(z))
             except TypeError: # Not iterable.
                 vars_list.append(self.visit(node.optional_vars))
+        if getattr(node, 'items', None): # Python 3.
+            for item in node.items:
+                result.append(self.visit(item.context_expr))
+                if getattr(item, 'optional_vars', None):
+                    try:
+                        for z in item.optional_vars:
+                            vars_list.append(self.visit(z))
+                    except TypeError: # Not iterable.
+                        vars_list.append(self.visit(item.optional_vars))
         result.append(','.join(vars_list))
         result.append(':\n')
         for z in node.body:
@@ -817,10 +830,10 @@ class AstFullTraverser:
     #@+others
     #@+node:ekr.20141012064706.18472: *3* ft.contexts
     #@+node:ekr.20141012064706.18473: *4* ft.ClassDef
-    # 2:            ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
-    # 3: Pep 3115:  ClassDef(identifier name, expr* bases,
-    #                        keyword* keywords, expr? starargs, expr? kwargs
-    #                        stmt* body, expr* decorator_list)
+    # 2: ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
     #
     # keyword arguments supplied to call (NULL identifier for **kwargs)
     # keyword = (identifier? arg, expr value)
@@ -830,24 +843,22 @@ class AstFullTraverser:
         self.context = node
         for z in node.bases:
             self.visit(z)
-        if hasattr(node, 'keywords'): # Python 3
-            for z in node.keywords:
-                arg, value = z
-                self.visit(arg)
-                self.visit(value)
-        if hasattr(node, 'starargs'): # Python 3
-            junk, value = node.starargs
-            self.visit(value)
-        if hasattr(node, 'kwargs'): # Python 3
-            junk, value = node.kwargs
-            self.visit(value)
+        if getattr(node, 'keywords', None): # Python 3
+            for keyword in node.keywords:
+                self.visit(keyword.value)
+        if getattr(node, 'starargs', None): # Python 3
+            self.visit(node.starargs)
+        if getattr(node, 'kwargs', None): # Python 3
+            self.visit(node.kwargs)
         for z in node.body:
             self.visit(z)
         for z in node.decorator_list:
             self.visit(z)
         self.context = old_context
     #@+node:ekr.20141012064706.18474: *4* ft.FunctionDef
-    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
 
     def do_FunctionDef(self, node):
 
@@ -858,7 +869,7 @@ class AstFullTraverser:
             self.visit(z)
         assert g.isString(node.name)
         self.visit(node.args)
-        if hasattr(node, 'returns'): # Python 3.
+        if getattr(node, 'returns', None): # Python 3.
             self.visit(node.returns)
         for z in node.body:
             self.visit(z)
@@ -913,14 +924,16 @@ class AstFullTraverser:
 
         for z in node.args:
             self.visit(z)
-        if g.isPython3 and hasattr(node, 'vararg'): # An identifier in Python 2.
-            self.visit(node.vararg)
-        if hasattr(node, 'kwonlyargs'): # Python 3.
-            self.visit(node.kwonlyargs)
-        if hasattr(node, 'kw_defaults'): # Python 3.
-            self.visit(node.kw_defaults)
-        if g.isPython3 and hasattr(node, 'kwarg'): # An identifier in Python 2.
-            self.visit(node.kwarg)
+        if g.isPython3 and getattr(node, 'vararg', None):
+            # An identifier in Python 2.
+            self.visit_list(node.vararg)
+        if getattr(node, 'kwonlyargs', None): # Python 3.
+            self.visit_list(node.kwonlyargs)
+        if getattr(node, 'kw_defaults', None): # Python 3.
+            self.visit_list(node.kw_defaults)
+        if g.isPython3 and getattr(node, 'kwarg', None):
+            # An identifier in Python 2.
+            self.visit_list(node.kwarg)
         for z in node.defaults:
             self.visit(z)
 
@@ -1293,12 +1306,26 @@ class AstFullTraverser:
         for z in node.orelse:
             self.visit(z)
     #@+node:ekr.20141012064706.18526: *4* ft.With
-    # With(expr context_expr, expr? optional_vars, stmt* body)
+    # 2:  With(expr context_expr, expr? optional_vars, 
+    #          stmt* body)
+    # 3:  With(withitem* items,
+    #          stmt* body)
+    # withitem = (expr context_expr, expr? optional_vars)
 
     def do_With(self, node):
-        self.visit(node.context_expr)
-        if node.optional_vars:
+        if getattr(node, 'context_expr', None):
+            self.visit(node.context_expr)
+        if getattr(node, 'optional_vars', None):
             self.visit(node.optional_vars)
+        if getattr(node, 'items', None): # Python 3.
+            for item in node.items:
+                self.visit(item.context_expr)
+                if getattr(item, 'optional_vars', None):
+                    try:
+                        for z in item.optional_vars:
+                            self.visit(z)
+                    except TypeError: # Not iterable.
+                        self.visit(item.optional_vars)
         for z in node.body:
             self.visit(z)
     #@+node:ekr.20141012064706.18527: *4* ft.Yield
@@ -1826,16 +1853,32 @@ class HTMLReportTraverser:
         rt.visit(node.value)
         rt.end_span('keyword-arg')
     #@+node:ekr.20150722204300.58: *4* rt.ClassDef
-    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    # 2: ClassDef(identifier name, expr* bases,
+    #             stmt* body, expr* decorator_list)
+    # 3: ClassDef(identifier name, expr* bases,
+    #             keyword* keywords, expr? starargs, expr? kwargs
+    #             stmt* body, expr* decorator_list)
+    #
+    # keyword arguments supplied to call (NULL identifier for **kwargs)
+    # keyword = (identifier? arg, expr value)
 
     def do_ClassDef(rt, node):
 
+        has_bases = (node.bases or hasattr(node, 'keywords') or
+            hasattr(node, 'starargs') or hasattr(node, 'kwargs'))
         rt.div('class')
         rt.keyword("class")
         rt.gen(node.name) # Always a string.
-        if node.bases:
+        if has_bases:
             rt.gen('(')
             rt.visit_list(node.bases, sep=', ')
+            if getattr(node, 'keywords', None): # Python 3
+                for keyword in node.keywords:
+                    rt.gen('%s=%s' % (keyword.arg, rt.visit(keyword.value)))
+            if getattr(node, 'starargs', None): # Python 3
+                rt.gen('*%s' % rt.visit(node.starargs))
+            if getattr(node, 'kwargs', None): # Python 3
+                rt.gen('*%s' % rt.visit(node.kwargs))
             rt.gen(')')
         rt.colon()
         rt.div('body')
@@ -1930,8 +1973,8 @@ class HTMLReportTraverser:
         
         rt.gen(node.arg)
         if getattr(node, 'annotation', None):
-            rt.gen_colon()
-            rt.visit(node.anotation)
+            rt.colon()
+            rt.visit(node.annotation)
     #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
     def tuple_parameter(rt, node):
         
@@ -1999,6 +2042,10 @@ class HTMLReportTraverser:
             rt.div_body(node.orelse)
         rt.end_div('statement')
     #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
+    # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+    # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+    #                expr? returns)
+
     def do_FunctionDef(rt, node):
 
         rt.div('function', extra='id="%s"' % node.name)
@@ -2007,6 +2054,11 @@ class HTMLReportTraverser:
         rt.gen('(')
         rt.visit(node.args)
         rt.gen(')')
+        if getattr(node, 'returns', None):
+            rt.blank()
+            rt.gen('->')
+            rt.blank()
+            rt.visit(node.returns)
         rt.colon()
         rt.div('body')
         rt.doc(node)
@@ -2335,22 +2387,31 @@ class HTMLReportTraverser:
             rt.div_body(node.orelse)
         rt.end_div('statement')
     #@+node:ekr.20150722204300.95: *4* rt.With
-    # With(expr context_expr, expr? optional_vars, stmt* body)
+    # 2:  With(expr context_expr, expr? optional_vars, 
+    #          stmt* body)
+    # 3:  With(withitem* items,
+    #          stmt* body)
+    # withitem = (expr context_expr, expr? optional_vars)
 
     def do_With(rt, node):
 
         context_expr = getattr(node, 'context_expr', None)
         optional_vars = getattr(node, 'optional_vars', None)
+        items = getattr(node, 'items', None)
         rt.div('statement')
-        # rt.div(None)
         rt.keyword('with')
         if context_expr:
             rt.visit(context_expr)
         if optional_vars:
             rt.keyword('as')
             rt.visit_list(optional_vars)
+        if items:
+            for item in items:
+                rt.visit(item.context_expr)
+                if getattr(item, 'optional_vars', None):
+                    rt.keyword('as')
+                    rt.visit(item.optional_vars)
         rt.colon()
-        # rt.end_div(None)
         rt.div_body(node.body)
         rt.end_div('statement')
     #@+node:ekr.20150722204300.96: *4* rt.Yield
