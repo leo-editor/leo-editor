@@ -12,7 +12,7 @@ Description: Leo is::
         A browser that remembers where you were the last time.
         A uniquely powerful scripting environment.
         A superb tool for studying other people's code.
-        A fully-featured IDE.
+        A fully-featured IDE, with many emacs-like commands.
         A uniquely-extensible Personal Information Manager.
         Written in 100% pure Python.
    
@@ -27,7 +27,6 @@ Description: Leo is::
         Scripts have full access to all of Leo's sources.
         A plugin architecture makes it easy to extend Leo.
         Plugins for IPython, vim and xemacs
-        Hundreds of minibuffer commands, just like Emacs.
         Many other unique commands that act on outline structure.
         Example: the rst3 command converts outlines to reStructuredText.
         @test and @suite scripts create unit tests automatically.
