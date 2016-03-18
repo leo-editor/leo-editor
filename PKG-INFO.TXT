@@ -6,10 +6,36 @@ Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Description:
-    Leo is a PIM, IDE and outliner written in 100% pure Python. Leo features
-    a multi-window outlining editor, support for many programming languages,
-    powerful outline commands and many other things, including unlimited undo::
+Description: Leo is::
+    
+        An outliner. Everything in Leo is an outline.
+        A browser that remembers where you were the last time.
+        A uniquely powerful scripting environment.
+        A superb tool for studying other people's code.
+        A fully-featured IDE.
+        A uniquely-extensible Personal Information Manager.
+        Written in 100% pure Python.
+   
+    Leo's *unique* features::
+    
+        Always-present, persistent, outline structure.
+        Leo's outline is a Directed Acyclic Graph.
+        Clones create mutliple views of an outline.
+        A simple, powerful, outline-oriented Python API.
+        Scripts and programs can be composed from outlines.
+        Importers convert flat text into outlines.
+        Scripts have full access to all of Leo's sources.
+        A plugin architecture makes it easy to extend Leo.
+        Plugins for IPython, vim and xemacs
+        Hundreds of minibuffer commands, just like Emacs.
+        Many other unique commands that act on outline structure.
+        Example: the rst3 command converts outlines to reStructuredText.
+        @test and @suite scripts create unit tests automatically.
+        @button scripts apply scripts to data.
+        Outline-oriented directives.
+
+    Simulating these features in vim or Emacs is possible,
+    but, heh, so is simulating Python in assembly language.::
     
         Docs        http://leoeditor.com/leo_toc.html
         Tutorials   http://leoeditor.com/tutorial.html
