@@ -981,6 +981,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Copy the ivars.
                 x.def_patterns = self.def_patterns
                 x.general_patterns = self.general_patterns
+                x.regex_patterns = self.regex_patterns
                 x.prefix_lines = self.prefix_lines
             #@+node:ekr.20160213070235.3: *6* msf.scan
             def scan(self, kind):

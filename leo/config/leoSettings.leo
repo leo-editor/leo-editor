@@ -464,11 +464,14 @@
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
-<v t="ekr.20160112110352.1"><vh>@data stub-arg-patterns</vh></v>
+<v t="ekr.20160318061607.3"><vh>@bool stub-trace-matches = False</vh></v>
+<v t="ekr.20160318061607.4"><vh>@bool stub-trace-patterns = False</vh></v>
+<v t="ekr.20160318061607.6"><vh>@bool stub-trace-reduce = False</vh></v>
+<v t="ekr.20160318061607.5"><vh>@bool stub-trace-visitors = False</vh></v>
+<v t="ekr.20160318061607.7"><vh>@bool stub-update = False</vh></v>
 <v t="ekr.20160127043520.1"><vh>@data stub-def-name-patterns</vh></v>
 <v t="ekr.20160130145944.1"><vh>@data stub-general-patterns</vh></v>
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
-<v t="ekr.20160127051811.1"><vh>@data stub-return-patterns</vh></v>
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
@@ -11072,29 +11075,10 @@ QFrame#gutter {
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
 <t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
-<t tx="ekr.20160112110352.1"># Patterns to be applied to argument lists.
-
-aList: Sequence
-aList1: Sequence
-aList2: Sequence
-c: C
-c1: C
-c2: C
-i: int
-j: int
-k: int
-node: ast.Ast
-p: P
-p1: P
-p2: P
-s: str
-s2: str
-v: V
-v1: V
-v2: V</t>
 <t tx="ekr.20160112111247.1"># Lines to be inserted at the start of each stub file.
 
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
+
 # At present, I don't understand how to tell mypy about ast.Node
 # import ast
 # Node = ast.Node
@@ -11116,32 +11100,55 @@ StubTraverser.match_balanced: int</t>
 <t tx="ekr.20160127051243.1">The directory to which stub files are written.</t>
 <t tx="ekr.20160127051552.1">True: allow stub files to be overwritten
 </t>
-<t tx="ekr.20160127051811.1"># Patterns to be applied to return expressions.
-
-repr(*): str
-str.join(*): str
-str.replace(*): str
-str%(*): str
-str%str: str
-
-.*__name__: str
-</t>
 <t tx="ekr.20160130145944.1"># Patterns to be applied to argument lists and return expressions.
 
 aList: Sequence
 controller: StandAloneMakeStubFile
 fn: str
 i[0-3]*: int
-parser: optparse.OptionParser
 node: Node
+parser: optparse.OptionParser
+repr(*): str
 s[0-3]*: str
-strict: bool</t>
+str%(*): str
+str%str: str
+str.join(*): str
+str.replace(*): str
+
+# Leo patterns:
+
+aList: Sequence
+aList1: Sequence
+aList2: Sequence
+c: C
+c1: C
+c2: C
+i: int
+j: int
+k: int
+node: ast.Ast
+p: P
+p1: P
+p2: P
+s: str
+s2: str
+strict: bool
+v: V
+v1: V
+v2: V</t>
 <t tx="ekr.20160316111054.1"></t>
 <t tx="ekr.20160316112407.2">True: allow stub files to be overwritten
 </t>
 <t tx="ekr.20160316112407.8">The directory to which stub files are written.</t>
 <t tx="ekr.20160317062151.1"># Regular expression patterns.
+
+.*__name__: str
 </t>
+<t tx="ekr.20160318061607.3"></t>
+<t tx="ekr.20160318061607.4"></t>
+<t tx="ekr.20160318061607.5"></t>
+<t tx="ekr.20160318061607.6"></t>
+<t tx="ekr.20160318061607.7"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
