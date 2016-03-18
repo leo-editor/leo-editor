@@ -170,7 +170,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -354,6 +354,7 @@
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
 <v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
+<v t="ekr.20160318142213.1"><vh>I am having trouble installing Leo on MacOS. What should I do?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
@@ -1173,7 +1174,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160310055341.1"><vh>Leo 5.2 b1 release notes</vh>
+<v t="ekr.20160310055341.1"><vh>Leo 5.2-final release notes</vh>
 <v t="ekr.20160310062924.1"><vh> Highlights</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs</vh>
 <v t="ekr.20160305040503.3"><vh>Fixed #131: Insert time in headline now inserts time in body</vh></v>
@@ -5961,20 +5962,16 @@ In addition, Leo's -c command-line option can specify any .leo file anywhere.
 </t>
 <t tx="ekr.20090130144433.1">All questions are welcome at http://groups.google.com/group/leo-editor
 </t>
-<t tx="ekr.20090130144433.2">You can discuss possible bugs at http://groups.google.com/group/leo-editor
+<t tx="ekr.20090130144433.2">Please consider *asking for help* at http://groups.google.com/group/leo-editor before filing bug reports.
 
 Please report bugs at http://bugs.launchpad.net/leo-editor
 
 When reporting a bug, please include *all* of the following:
 
 - The version of Leo used.
-
 - The version of Python used.
-
 - The platform or platforms used: Linux, Windows, MacOS.
-
 - A clear description of the problem.
-
 - Information sufficient to recreate the problem.
 
 It's polite to make the bug report self contained, so that six weeks later somebody will be able to understand the report as it stands.
@@ -18894,9 +18891,9 @@ The preliminaries were at least as important as the fix itself:
 
 3. Leo's --debug option enables more verbose IPython logging. This is a feature that reveals the workings of the Jupyter kernel.
 </t>
-<t tx="ekr.20160310055341.1">Leo 5.2-b1, March 15, 2016
+<t tx="ekr.20160310055341.1">Leo 5.2-final, March 18, 2016
 
-[Leo](http://leoeditor.com/) 5.2 b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.2 final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 
@@ -19032,7 +19029,30 @@ The preliminaries were at least as important as the fix itself:
     Themes
     Wildcard file names on Leo's command line
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160318142213.1">Installing PyQt on MacOS using::
+
+    brew install qt sip pyqt
+    
+may not always work.  In that case, you will see something like this when running Leo::
+
+    Traceback (most recent call last):
+    File "launchLeo.py", line 8, in
+    leo.core.runLeo.run()
+    [Snip]
+    File "/Users/your-name/git/leo-editor/leo/plugins/qt_text.py",
+    line 434, in class LeoLineTextWidget(QtWidgets.QFrame):
+    AttributeError: 'NoneType' object has no attribute 'QFrame'
+    
+You can verify that PyQt has not been installed by setting the trace switch to True in leoQt.py. This will trace the import commands related to Qt and tell you exactly what is happening.
+
+One Leo user gives this advice:
+
+For anyone with similar problem the homebrew instruction for adding PyQT to the import path are wrong. Instead edit ~/.bash_profile and add this line::
+    
+    export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
+    
+After this leo editor will open with using the default python installation provided by MacOS.</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

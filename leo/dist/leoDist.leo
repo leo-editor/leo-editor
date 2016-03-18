@@ -37,7 +37,7 @@
 <v t="ekr.20141105082156.2"><vh>Leo 5.0 final</vh></v>
 <v t="ekr.20150415145711.1"><vh>Leo 5.1 final (markdown)</vh></v>
 </v>
-<v t="ekr.20160314155002.1"><vh>Leo 5.2 b1 (markdown)</vh>
+<v t="ekr.20160314155002.1"><vh>Leo 5.2-final (markdown)</vh>
 <v t="ekr.20160314155002.2"><vh> Highlights</vh></v>
 <v t="ekr.20160314155002.3"><vh>Bugs</vh>
 <v t="ekr.20160314155002.4"><vh>Fixed #131: Insert time in headline now inserts time in body</vh></v>
@@ -259,7 +259,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.2-b1
+Version: 5.2-final
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -279,7 +279,7 @@ Description: Leo is::
     
         Always-present, persistent, outline structure.
         Leo's outline is a Directed Acyclic Graph.
-        Clones create mutliple views of an outline.
+        Clones create multiple views of an outline.
         A simple, powerful, outline-oriented Python API.
         Scripts and programs can be composed from outlines.
         Importers convert flat text into outlines.
@@ -318,9 +318,9 @@ Categories:
     Topic :: Software Development
     Topic :: Text Processing
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.2-b1, March 15, 2016
+<t tx="EKR.20040519090846.9">Leo 5.2-final, March 18, 2016
 
-[Leo](http://leoeditor.com/) 5.2-b1 is now available [at SourceForge.](
+[Leo](http://leoeditor.com/) 5.2-final is now available [at SourceForge.](
 http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
@@ -735,7 +735,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.2-b1' ##version
+version = '5.2-final' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1044,7 +1044,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.2-b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.2-final/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1964,9 +1964,9 @@ Notes:
    when you exit leo.exe. If you want to do real work with Leo you must
    create .leo files in a permanent folder on your machine.
 </t>
-<t tx="ekr.20160314155002.1">Leo 5.2-b1, March 15, 2016
+<t tx="ekr.20160314155002.1">Leo 5.2-final, March 18, 2016
 
-[Leo](http://leoeditor.com/) 5.2 b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.2-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 

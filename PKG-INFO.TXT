@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 5.2-b1
+Version: 5.2-final
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -20,7 +20,7 @@ Description: Leo is::
     
         Always-present, persistent, outline structure.
         Leo's outline is a Directed Acyclic Graph.
-        Clones create mutliple views of an outline.
+        Clones create multiple views of an outline.
         A simple, powerful, outline-oriented Python API.
         Scripts and programs can be composed from outlines.
         Importers convert flat text into outlines.
