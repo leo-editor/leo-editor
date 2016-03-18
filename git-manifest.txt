@@ -1034,6 +1034,7 @@ leo/commands/abbrevCommands.py
 leo/commands/baseCommands.py
 leo/commands/bufferCommands.py
 leo/commands/controlCommands.py
+leo/commands/convertCommands.py
 leo/commands/debugCommands.py
 leo/commands/editCommands.py
 leo/commands/editFileCommands.py
@@ -1109,6 +1110,8 @@ leo/dist/LeoPackage.pmsp
 leo/dist/leo-install.py
 leo/dist/leoDist.leo
 leo/dist/nsi-boilerplate.txt
+leo/dist/nsi-install-files.txt
+leo/dist/nsi-uninstall-files.txt
 leo/dist/setup.cfg
 leo/dist/setup.py
 leo/doc/CheatSheet.leo
@@ -1621,6 +1624,8 @@ leo/external/lproto.py
 leo/external/make_stub_files.cfg
 leo/external/make_stub_files.py
 leo/external/obsolete/ipy_leo.py
+leo/external/py2cs.py
+leo/external/py2cs_theory.md
 leo/external/readme-about-leo-external-folder.txt
 leo/external/rope/.gitignore
 leo/external/rope/.travis.yml
@@ -2158,7 +2163,9 @@ leo/test/default.css
 leo/test/goto-line-number-test.py
 leo/test/inactiveTests.txt
 leo/test/pylint-leo-rc-ref.txt
+leo/test/python3_test.py
 leo/test/qtui_generate.py
+leo/test/report_test.py
 leo/test/stc_unit_tests.py
 leo/test/test.leo
 leo/test/unitTest.leo
