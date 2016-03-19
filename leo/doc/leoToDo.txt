@@ -200,6 +200,8 @@ https://github.com/leo-editor/leo-editor/issues/221
 
 See debuggotogloballine.leo
 .. @+node:ekr.20160318113217.1: *4* jEdit2py barfs on non-ascii characters
+# For example, names in docstrings.
+# Only when using Python 2.
 .. @+node:ekr.20160318132903.1: *3* Docs 5.3
 @language rest
 @wrap

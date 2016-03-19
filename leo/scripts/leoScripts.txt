@@ -9150,6 +9150,38 @@ for root, dirs, files in os.walk(path):
             fn = g.os_path_join(root,fn)
             fix(fn)
 print('done')
+#@+node:ekr.20160302141032.1: *3* Commands that support Microsoft outlook format
+# support Windows 'outlook:' protocol in URLs
+# By Brian Theado and Jon N.
+
+https://groups.google.com/forum/#!searchin/leo-editor/ability$20to$20support$20Windows$20$27outlook$3A$27$20protocol$20in$20URLs$3F/leo-editor/vIaqh0DXbek/Y1AINopXDAAJ
+#@+node:ekr.20160302141032.2: *4* @@command insert-outlook-email-link
+'''
+Copies outlook link of current selected email into the body at the current
+insertion point.
+'''
+
+import win32com.client
+
+ol = win32com.client.Dispatch("Outlook.Application")
+m = ol.ActiveExplorer().Selection.Item(1)
+u = "outlook:%s <MESSAGE: %s>" % (m.EntryID, m.Subject)
+
+w = c.frame.body.wrapper
+i = w.getInsertPoint()
+w.insert(i, u)
+
+@language python
+
+
+
+#@+node:ekr.20160302141032.3: *4* @@command open-selected-outlook-link
+'''Launches the outlook url (the url text must be selected).'''
+import os
+w = c.frame.body.wrapper
+r = w.getSelectionRange()
+url = w.get(r[0], r[1])
+os.startfile(url, 'open')
 #@+node:ekr.20150416061628.1: ** Text processing
 #@+node:ekr.20150416171133.1: *3* @ignore text-processing buttons
 #@+node:ekr.20041228135008: *4* @button display c.p.b in the browser
@@ -10420,24 +10452,20 @@ def put_code_token (self,token):
 opt_print_summary = False # True: print summary in doEndElement.
 opt_print_elements = False
 @others
-g.cls()
-# print('-'*40)
-for path1 in files:
-    if path1 in errors:
-        print('skipping %s' % path1)
-    else:
-        path2 = path1[:-3] + 'py'
-        try:
-            convert (c,path1,path2)
-        except Exception:
-            print('Exception creating', path2)
-            g.es_exception()
-g.es_print('done')
+main()
 #@+node:ekr.20060824111500.109: *4* << imports >>
 import glob
 import string
 import xml.sax
 import xml.sax.saxutils
+
+# if g.isPython3:
+    # import io # Python 3.x
+    # StringIO = io.StringIO
+    # BytesIO = io.BytesIO
+# else:
+    # import cStringIO # Python 2.x
+    # StringIO = cStringIO.StringIO
 #@+node:ekr.20060824111500.110: *4* << to do >>
 @nocolor
 @
@@ -10464,7 +10492,7 @@ errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print(s)
 if 1: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('coffeescript',)]
+    files = [r'%s\%s.xml' % (theDir,s) for s in ('test',)]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
@@ -10473,6 +10501,27 @@ else: # translate two representative files.
     files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in ('python','php')]
 # for s in files: print(s)
 #@+node:ekr.20060824111500.113: *4* top-level
+#@+node:ekr.20160319080102.1: *5* cleanSaxInputString
+def cleanSaxInputString(s):
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+    # pylint: disable=no-member
+    # Class 'str' has no 'maketrans' member
+    if g.isPython3:
+        flatten = bytes(flatten, 'utf-8')
+        pad = bytes(pad, 'utf-8')
+        transtable = bytes.maketrans(flatten, pad)
+    else:
+        transtable = string.maketrans(flatten, pad)
+    return s.translate(transtable)
+# for i in range(32): print i,repr(chr(i))
 #@+node:ekr.20060824111500.114: *5* convert
 def convert (c,inputFileName,outputFileName):
 
@@ -10499,7 +10548,11 @@ def parse_jEdit_file(inputFileName,language):
         inputFileName = inputFileName + '.xml'
     path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
     path = g.os_path_normpath(path)
-    try: f = open(path)
+    if not g.os_path_exists(path):
+        g.es_print('not found:', path)
+        return
+    try:
+        f = open(path,'r')
     except IOError:
         g.trace('can not open %s'%path)
         return None
@@ -10507,12 +10560,15 @@ def parse_jEdit_file(inputFileName,language):
         try:
             mode = None
             parser = xml.sax.make_parser()
-            # Do not include external general entities.
-            # The actual feature name is "http://xml.org/sax/features/external-general-entities"
+                # Do not include external general entities.
+                # The actual feature name is
+                # "http://xml.org/sax/features/external-general-entities"
             parser.setFeature(xml.sax.handler.feature_external_ges,0)
             handler = contentHandler(c,inputFileName,language)
             parser.setContentHandler(handler)
             parser.parse(f)
+                # Works with Python 3.
+                # Fails with Python 2 when the file contains non-ascii characters.
             mode = handler.getMode()
         except:
             g.es('unexpected exception parsing %s' % (inputFileName),color='red')
@@ -10527,6 +10583,23 @@ def munge(s):
 
     valid = string.ascii_letters + string.digits + '_'
     return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+#@+node:ekr.20160319081141.1: *5* main
+def main():
+    
+    if not g.isPython3:
+        g.es_print('Python 3 is now required for this script.')
+        return
+    for path1 in files:
+        if path1 in errors:
+            print('skipping %s' % path1)
+        else:
+            path2 = path1[:-3] + 'py'
+            try:
+                convert (c,path1,path2)
+            except Exception:
+                print('Exception creating', path2)
+                g.es_exception()
+    g.es_print('done')
 #@+node:ekr.20060824111500.117: *4* class modeClass
 class modeClass:
 
@@ -10609,14 +10682,11 @@ def fullDelegate (self,delegate):
         return ''
 #@+node:ekr.20060824111500.121: *6* escapeString & quoteString
 def escapeString (self,s):
-
     '''Return string s enclosed in double quotes.'''
-
-    if type(s) == type([]):
+    if not s: s = ''
+    if isinstance(s, (list, tuple)):
         s = ''.join(s)
-        
     s = g.toUnicode(s)
-
     # Order is important: escape backspaces first.
     return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
 
