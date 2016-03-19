@@ -66,8 +66,8 @@ def define_added_binaries():
         qt_root = os.path.expanduser(
             '~/anaconda2/lib/python2.7/site-packages/PyQt4')
         assert os.path.exists(qt_root), qt_root
+        prefix = 'PyQt4' # None means top-level folder.
         return (
-            prefix = 'PyQt4' # None means top-level folder.
             Tree(
                 lib_root,
                 prefix=prefix,
