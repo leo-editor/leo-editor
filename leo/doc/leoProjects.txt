@@ -6,6 +6,10 @@
 The old way made it almost impossible to delete stylesheet element.
 
 The change was to fc.putStyleSheetLine.
+.. @+node:ekr.20160318113217.1: *3* jEdit2py now runs only on Python 3
+Names in docstrings cause trouble in Python 2.
+
+Rather than trying to figure out workarounds, @button jEdit2Py now refuses to run on Python 2.
 .. @-all
 .. @@killbeautify
 .. @@language rest
