@@ -1,7 +1,6 @@
 Leo 5.2-final, March 18, 2016
 
-[Leo](http://leoeditor.com/) 5.2-final is now available [at SourceForge.](
-http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.2-final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 

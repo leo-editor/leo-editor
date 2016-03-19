@@ -320,8 +320,7 @@ Categories:
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.2-final, March 18, 2016
 
-[Leo](http://leoeditor.com/) 5.2-final is now available [at SourceForge.](
-http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.2-final is now available [at SourceForge.](http://sourceforge.net/projects/leo/files/Leo/) Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.2**
 
@@ -690,7 +689,8 @@ Announcements
    **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
 2. Announce to leo-editor.
    **Paste source-forge announcement**.
-3. Announce to Python-announce-list using email: mailto:python-announce-list@python.org
+3. Announce to Python-announce-list using email:
+   mailto:python-announce-list@python.org
    **Paste source-forge or leo-editor announcement**.
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
@@ -1682,6 +1682,9 @@ than later.
 <t tx="ekr.20150326055410.1">@language rest
 
 1. Search for ##version
+
+    **Note**: The final version in PKG-INFO.TXT must be called 5.x, not 5.x-final.
+    See Pep 440: https://www.python.org/dev/peps/pep-0440/
 
 2. Search for copyright
 
