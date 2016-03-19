@@ -7,12 +7,6 @@
 apt-get install leo
 https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
 .. @+node:ekr.20160227093754.1: ** To do: 5.3
-
-
-
-- Rethink windows:
-  - Add status line showing type of window. Like Emacs.
-
 @language rest
 @wrap
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
@@ -33,8 +27,6 @@ https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 
 If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
-.. @+node:ekr.20151231100930.1: *4* #132: Section Reference causes clone on Leo-Editor file open
-https://github.com/leo-editor/leo-editor/issues/132
 .. @+node:ekr.20150609082812.1: *4* #132: Won't fix??: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
@@ -203,41 +195,14 @@ Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
 Git repo info: branch = master, commit = b5e6da9f5feb
 Python 3.4.0, PyQt version 5.3.0
 Windows 7 AMD64 (build 6.1.7601) SP1
-.. @+node:ekr.20151231095140.1: *4* #213: leo --ipython fails to connect with python3.5 and jupyter
-https://github.com/leo-editor/leo-editor/issues/213
-leo --ipython fails to connect with python3.5 and jupyter
-
-Error message after Leo tries connecting to ipython:
-
-To connect another client to this kernel, use:
---existing kernel-86433.json
-Traceback (most recent call last):
-
-File "/Users/lo/Applications/leo-editor/leo/plugins/qt_gui.py", line 923, in runWithIpythonKernel
-ipk.new_qt_console(event=None)
-
-File "/Users/lo/Applications/leo-editor/leo/core/leoIPython.py", line 120, in new_qt_console
-profile=self.ipkernel.profile)
-
-File "/usr/local/lib/python3.5/site-packages/ipykernel/connect.py", line 162, in connect_qtconsole
-cf = find_connection_file(connection_file, profile=profile)
-
-File "/usr/local/lib/python3.5/site-packages/ipykernel/connect.py", line 85, in find_connection_file
-return jupyter_client.find_connection_file(filename, path=['.', security_dir])
-
-File "/usr/local/lib/python3.5/site-packages/jupyter_client/connect.py", line 185, in find_connection_file
-raise IOError("Could not find %r in %r" % (filename, path))
-
-OSError: Could not find 'kernel-86433.json' in ['.', '/Users/lo/.ipython/profile_default/security']
 .. @+node:ekr.20151227084623.1: *4* #221: goto-global-line navigating to wrong line reported by PyLint
 https://github.com/leo-editor/leo-editor/issues/221
 
 See debuggotogloballine.leo
-.. @+node:ekr.20151227084244.1: *4* #226: Unclear what leo-install.py is for
-https://github.com/leo-editor/leo-editor/issues/226
-.. @+node:ekr.20160226051038.1: *4* Complete new javascript importer (#127)
 .. @+node:ekr.20160318113217.1: *4* jEdit2py barfs on non-ascii characters
 .. @+node:ekr.20160318132903.1: *3* Docs 5.3
+@language rest
+@wrap
 .. @+node:ekr.20131121211048.16378: *4* * More screenshots!
 Different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20160315141751.1: *4* Code Academy: possible topics
@@ -299,17 +264,15 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160318113006.1: *4* Better API's
-New apis and commands for icons, attributes & windows.
-Easy to use. Easy documentation.
+.. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
+Must be easy to use.
 
 - Add p/v.temp_u properties. Revise docs.
 
 - Use Terry's window code to create all panes:
     - New console window plugin.
     - viewrendered plugins
-    
-- Rethink running code in separate processes.
+
 .. @+node:ekr.20160305033136.1: *5* Found:['"]icons[i"]
 .. @+node:ekr.20160129081036.1: *5* simplifying uA access
 d = p.u.get(plugin_name, {})
@@ -620,6 +583,7 @@ It would be great to be able to jump between Leo's nodes and IPython's cells, ea
 IPEP 1611 (Ipython Enhancement Proposal, completed) allows for Leo-like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
 
 Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
 * Add ipynb/Jupyter importer/exporter.
 - Add coffeescript importer.
