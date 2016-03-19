@@ -672,7 +672,8 @@ Test files in installed folder:
     - leoPy.leo
     - LeoDocs.leo
 
-Create a git tag **last**.
+Create a git tag **last**:
+- Do *not* use -f option!
 
 Scan all folders &amp; files before uploading.
 
