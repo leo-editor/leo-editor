@@ -237,6 +237,65 @@ See debuggotogloballine.leo
 https://github.com/leo-editor/leo-editor/issues/226
 .. @+node:ekr.20160226051038.1: *4* Complete new javascript importer (#127)
 .. @+node:ekr.20160318113217.1: *4* jEdit2py barfs on non-ascii characters
+.. @+node:ekr.20160318132903.1: *3* Docs 5.3
+.. @+node:ekr.20131121211048.16378: *4* * More screenshots!
+Different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20160315141751.1: *4* Code Academy: possible topics
+@language rest
+@wrap
+
+- Redraw mode that hides siblings.
+
+- Clones: making and deleting them.
+  Clones are cheap to create!
+
+- How to create new panes anywhere,
+  and how to put cool stuff in them.
+
+- How to hoist outlines programmatically.
+
+- How to write a plugin so it can respond to events.
+
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a given uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+- Scripts can handle events.
+
+
+.. @+node:ekr.20160309105419.1: *5* Chapters & hoists
+How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
+.. @+node:ekr.20160309105156.1: *5* uA's & views
+Quick additions to Leo's core:
+- Define the p.u property, so code can do p.u instead of p.v.u.
+- Possibly make the api for uA's more convenient.
+
+A better attribute gui would help *everyone*.
+- We need to be *associate icons with attributes*.
+- This can be used for chapters, bookmarks, my-view-a/b/c, etc.
+
+An **attribute calculus** would form union & intersections of attributes.
+
+We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
+
+clone-mark-all could also set define attribues.
+
+A more ambitious addition: Define a gui interface for uA's.
+
+Being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
+
+- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
+
+- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
+.. @+node:ekr.20160309105326.1: *5* API for windows
+The so-called Easter-Egg interface creates new panes from the gui.
+
+A summary of how to do this programmatically is needed.
+
+Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+.. @+node:ekr.20150801060026.1: *4* leotutor.leo
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
@@ -258,6 +317,11 @@ d['duration'] = 5
 p.u[plugin_name] = d
 .. @+node:ekr.20080802070659.11: *5* Make node attributes visible, and supported by Leo's core
 .. @+node:ekr.20160318113249.1: *4* Commands
+.. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
+- Can they be interrupted?
+- Use list(set(words)) to check each word only once.
+- The do plain search for possibly-misspelled words in each body.
+
 .. @+node:ekr.20160303040846.1: *5* Add command to correct blank lines in @clean files
 @language python
 
@@ -327,13 +391,14 @@ Search for:
 LeoQtGui.Dialogs & panels
 LeoQtGui.runSaveFileDialog
 LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20150311123850.7: *5* Improve --diff
+.. @+node:ekr.20160319060429.1: *5* Later
+.. @+node:ekr.20150311123850.7: *6* Improve --diff
 The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150516123519.1: *6* re: semantic diff
+.. @+node:ekr.20150516123519.1: *7* re: semantic diff
 # This is the missing piece of the puzzle.
 
 # Can coverage tool help?
-.. @+node:ekr.20150516161000.1: *7* @@button dump-ast
+.. @+node:ekr.20150516161000.1: *8* @@button dump-ast
 import ast
 import hashlib
 node = ast.parse(p.b,filename=p.h,mode='exec')
@@ -344,7 +409,7 @@ s = ast.dump(node,annotate_fields=False)
 print(hashlib.sha1(s).hexdigest())
 if 0:
     return 'xy'
-.. @+node:ekr.20150518162738.1: *7* @command proto-diff
+.. @+node:ekr.20150518162738.1: *8* @command proto-diff
 g.cls()
 import ast
 import difflib
@@ -370,7 +435,7 @@ for pair in table:
                # (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
             print ("===== %s\n%s\n%s" % (
                 tag,a[i1:i2],b[j1:j2]))
-.. @+node:ekr.20150518162908.1: *8* << define table >>
+.. @+node:ekr.20150518162908.1: *9* << define table >>
 # A list of 2-tuples
 
 table = (
@@ -399,24 +464,19 @@ def eggs():
 ),
 
 )
-.. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
-- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
-.. @+node:ekr.20051110155735.1: *5* Improve spell checking
+.. @+node:ekr.20051110155735.1: *6* Improve spell checking
 - Per-pane key bindings. (arrows, etc.)
 - Try default fonts for spell buttons.
 - Select the first entry.
 _ Spell checker should check headlines.
-.. @+node:ekr.20140104063158.16448: *5* Reload-abbreviations and reload-key-bindings commands
+.. @+node:ekr.20140104063158.16448: *6* Reload-abbreviations and reload-key-bindings commands
 reload-abbreviations and reload-key-bindings commands.
 
 - Cached settings are not necessary:
   1000 calls to getBool would take 0.007 sec.
 
 - Remove all caching from Leo settings.
-.. @+node:ekr.20140312052111.16811: *6* Notes
+.. @+node:ekr.20140312052111.16811: *7* Notes
 https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
 
     I've put adding new reload-abbreviations and reload-key-bindings
@@ -451,35 +511,35 @@ Several subcommanders create tables on startup using config settings. c.abbrevCo
 These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
 
 Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
-.. @+node:ekr.20140630071432.16748: *6* Related methods
+.. @+node:ekr.20140630071432.16748: *7* Related methods
 lm.doPrePluginsInit
 lm.computeLocalSettings.
 g.GeneralSetting
 LM.Settings suboutline.
 abbrevCommandsClass
     init_abbrev
-.. @+node:ekr.20140104063158.17235: *6* Found: \w*\.\w*\s*=\s*c.config.get
+.. @+node:ekr.20140104063158.17235: *7* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
-.. @+node:ekr.20150419103045.1: *5* Replay undo stack as a screencast
+.. @+node:ekr.20150419103045.1: *6* Replay undo stack as a screencast
 I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
 
 The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
 
 Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
-.. @+node:ekr.20120520113447.9874: *5* Select node from traceback (partially done)
+.. @+node:ekr.20120520113447.9874: *6* Select node from traceback (partially done)
 http://sourceforge.net/forum/message.php?msg_id=3593116
 By: ktenney
 
 When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
 
 Done: When running scripts, Leo now automatically selects lines that generate exceptions.
-.. @+node:ekr.20150211104036.477: *5* Smart paste & yank
+.. @+node:ekr.20150211104036.477: *6* Smart paste & yank
 And perhaps other problems with yank.
 
 How does emacs work.  Settings needed?
 
 Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *6* Terry's post
+.. @+node:ekr.20150211104036.478: *7* Terry's post
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
 
 I don't think you need to view source or copy text that looks like HTML.
@@ -504,7 +564,7 @@ text posting into a regular node - somewhere in the pipeline the
 content actually delivered is selected based on the capabilities of the
 receiving end of the pipeline - not sure of the details, but remember
 clipboards can paste images and other things that aren't plain text.
-.. @+node:ekr.20150211104036.479: *6* Matt's links
+.. @+node:ekr.20150211104036.479: *7* Matt's links
 https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
 
 > Is it possible to have Leo analyse what type of text is being pasted and thus
@@ -514,7 +574,7 @@ It looks possible,
 `win32clipboard.EnumClipboardFormat`
 "enumerate the data formats that are currently available on the clipboard. "
 http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20160302132356.1: *5* Unify abbreviations
+.. @+node:ekr.20160302132356.1: *6* Unify abbreviations
 @language rest
 @wrap
 
@@ -527,78 +587,22 @@ files could look like the defs in a @data node.
 
 
 @language python
-.. @+node:ekr.20160302131125.1: *6* clone-find-marked (flattened)
+.. @+node:ekr.20160302131125.1: *7* clone-find-marked (flattened)
 abbrev.expandAbbrev
 readAbbreviations
 writeAbbreviations
-.. @+node:ekr.20160302131622.1: *6* Found:abbrevs
+.. @+node:ekr.20160302131622.1: *7* Found:abbrevs
 # flattened, word, ignore-case, head, body
-.. @+node:ekr.20160318132903.1: *4* Docs
-.. @+node:ekr.20131121211048.16378: *5* * More screenshots!
-Different font sizes, coloring schemes, plugins, etc.
-.. @+node:ekr.20160315141751.1: *5* Code Academy: possible topics
-@language rest
-@wrap
-
-- Redraw mode that hides siblings.
-
-- Clones: making and deleting them.
-  Clones are cheap to create!
-
-- How to create new panes anywhere,
-  and how to put cool stuff in them.
-
-- How to hoist outlines programmatically.
-
-- How to write a plugin so it can respond to events.
-
-- Using g.trace and g.pdb: example: splitter.open_window
-- Find all nodes with a given uA.
-- Create log pane.
-    - Put Qt stuff in it.
-- Key bindings.
-- Create new panes.
-- Scripts can handle events.
-
-
-.. @+node:ekr.20160309105419.1: *6* Chapters & hoists
-How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
-.. @+node:ekr.20160309105156.1: *6* uA's & views
-Quick additions to Leo's core:
-- Define the p.u property, so code can do p.u instead of p.v.u.
-- Possibly make the api for uA's more convenient.
-
-A better attribute gui would help *everyone*.
-- We need to be *associate icons with attributes*.
-- This can be used for chapters, bookmarks, my-view-a/b/c, etc.
-
-An **attribute calculus** would form union & intersections of attributes.
-
-We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
-
-clone-mark-all could also set define attribues.
-
-A more ambitious addition: Define a gui interface for uA's.
-
-Being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
-
-- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
-
-- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
-.. @+node:ekr.20160309105326.1: *6* API for windows
-The so-called Easter-Egg interface creates new panes from the gui.
-
-A summary of how to do this programmatically is needed.
-
-Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
-.. @+node:ekr.20150801060026.1: *5* leotutor.leo
-.. @+node:ekr.20150412043739.1: *4* Emulate IPython's display framework
+.. @+node:ekr.20160319060938.1: *4* Ipython integration
+.. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
+https://github.com/leo-editor/leo-editor/issues/156
+.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
 Render to tex, pdf, rst, etc.
 
 c.display(x) displays object x. Support plotting objects x.
 
 Create IPython-like demo.
-.. @+node:ekr.20111010122531.15568: *5* @render-rest, @render-html trees
+.. @+node:ekr.20111010122531.15568: *6* @render-rest, @render-html trees
 Imagine LeoDocs completely rendered at all times.
 
 @render-rest or @render-html would cause the body pane to become the rendering pane for all nodes in the @render tree. These could be overridden with @no-render.
@@ -606,13 +610,22 @@ Imagine LeoDocs completely rendered at all times.
 Having *both* the original text *and* the rendered text be visible is often heavy: the user usually does not want to know about the sources: the rendering is good enough.
 
 show/hide-body pane would be good commands to have, but those commands increase the burden on the user.
+.. @+node:ekr.20130806072439.21299: *5* Leo and IPython
+From: Kent Tenney <ktenney@gmail.com>
+
+It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
+
+===== From: Alia K <alia_khouri@yahoo.com>
+
+IPEP 1611 (Ipython Enhancement Proposal, completed) allows for Leo-like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
+
+Leo + Ipython notebook integration is a killer app indeed.
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
 * Add ipynb/Jupyter importer/exporter.
 - Add coffeescript importer.
-- Maybe: javascript importer.
+- Finish javascript importer, or at least fix #127: Bracket matching is buggy
 - Maybe: Read/write files in json format
-.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
-Generate type declarations from a given set of naming conventions.
+- Maybe: py2cython: like make_stub_files.
 .. @+node:ekr.20150418052852.1: *5* import/export to Jypyter(.ipynb) files
 Or .leo.ipynb files.
 .. @+node:ekr.20150717143430.1: *6* re: .ipynb json format
@@ -755,7 +768,6 @@ Raw cells provide a place in which you can write output directly. Raw cells are 
 Heading cells
 
 You can provide a conceptual structure for your computational document as a whole using different levels of headings; there are 6 levels available, from level 1 (top level) down to level 6 (paragraph). These can be used later for constructing tables of contents, etc. As with Markdown cells, a heading cell is replaced by a rich text rendering of the heading when the cell is executed.
-.. @+node:ekr.20121005105428.12866: *5* Ipython notebook stuff
 .. @+node:ekr.20121005105428.10112: *6* ipynb example
 {
   "metadata": {
@@ -2740,49 +2752,8 @@ def rejoin_lines(nb):
                     if isinstance(item, list):
                         cell[key] = _join_lines(item)
     return nb
-.. @+node:ekr.20121008100945.10295: *6* Installation notes for ipython 0.13
-- Downloaded and ran ipython-0.13.py2-win32.exe
-- Uninstalled several older IPython's using the Windows Control Panel
-
-Linux
-=====
-
-- Installed pip: sudo apt-get install python-pip
-- distribute was already installed in python2.7
-- Installed curl: sudo apt-get install curl.
-- Upgraded ipython: easy_install ipython[zmq,qtconsole,notebook,test] ipython==0.13
-- Tested Ipython: iptest  Works!!!  not available:  oct2py rpy2
-- removed home/.ipython/ipythonrc this removed the warnings on startup.
-
-Windows:
-========
-
-- Download c:\apps\distribute_setup.py.
-- python26 distribute_setup.py
-- Removed all former versions of Enthought and ActiveState Python and IPython.
-.. @+node:ekr.20130806072439.21299: *5* Leo and IPython
-From: Kent Tenney <ktenney@gmail.com>
-
-The ipython integration is great, any chance of connecting the the web notebook?
-
-# ipython notebook
-
-then, from the ipython dashboard in browser, click to open a notebook
-
-the console reports:
-[IPKernelApp] To connect another client to this kernel, use:
-[IPKernelApp] --existing kernel-a25b19a2-55d6-43a2-aa05-dfeffb55136b.json
-
-could <ctl-x> push-to-ipython send the contents of current Leo node
-to the current cell in the ipython notebook?
-
-It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
-
-===== From: Alia K <alia_khouri@yahoo.com>
-
-Incidentally look at this recent IPEP (Ipython Enhancement Proposal) which allows for leo like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
-
-Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
+Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20160318113258.1: *4* Plugins
 .. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
