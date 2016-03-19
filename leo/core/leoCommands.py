@@ -4631,7 +4631,7 @@ class Commands(object):
     def openLeoPy(self, event=None):
         '''Open leoPy.leo in a new Leo window.'''
         c = self
-        names = ('leoPy.leo', 'leoPyRef.leo',) # Used in error message.
+        names = ('leoPy.leo', 'LeoPyRef.leo',) # Used in error message.
         for name in names:
             fileName = g.os_path_finalize_join(g.app.loadDir, "..", "core", name)
             # Only call g.openWithFileName if the file exists.
@@ -4747,7 +4747,7 @@ class Commands(object):
     def openUnittest(self, event=None):
         '''Open unittest.leo.'''
         c = self
-        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unittest.leo')
+        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
