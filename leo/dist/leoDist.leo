@@ -650,6 +650,14 @@ LeoDist.leo:
 - Check readme.txt spelling.
 - Check 'PKG-INFO.TXT'
 
+Run pyinstaller:
+- Delete leo-editor/dist and leo-editor/build folders first.
+- Run pyinstaller launchLeo-unified.spec.
+- Test it, then rerun it (so .pyo files are not part of the package)
+- Compress the folder:
+    - Windows: Leo_&lt;version&gt;_Win.zip.
+    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
+
 Run make-leo.
 - Commit all files before running make-leo.
 - Run make-leo button in leoDist.leo.

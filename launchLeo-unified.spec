@@ -182,6 +182,7 @@ def define_datas():
         ext('.leo', 'leo/test'),
         ext('.py', 'leo/test'),
         ext('.txt', 'leo/test'),
+        ext('.css', 'leo/test'),
         all('leo/test/unittest'),
         all('leo/test/unittest/input'),
         all('leo/test/unittest/output'),
