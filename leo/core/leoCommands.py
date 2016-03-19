@@ -4556,7 +4556,7 @@ class Commands(object):
         '''Open LeoDocs.leo in a new Leo window.'''
         c = self
         name = "LeoDocs.leo"
-        fileName = g.os_path_join(g.app.loadDir, "..", "doc", name)
+        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
@@ -4577,7 +4577,7 @@ class Commands(object):
     def leoQuickStart(self, event=None):
         '''Open quickstart.leo in a new Leo window.'''
         c = self; name = "quickstart.leo"
-        fileName = g.os_path_join(g.app.loadDir, "..", "doc", name)
+        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
@@ -4620,7 +4620,7 @@ class Commands(object):
         c = self
         names = ('leoPlugins.leo', 'leoPluginsRef.leo',) # Used in error message.
         for name in names:
-            fileName = g.os_path_join(g.app.loadDir, "..", "plugins", name)
+            fileName = g.os_path_finalize_join(g.app.loadDir, "..", "plugins", name)
             # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
             if g.os_path_exists(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
@@ -4633,7 +4633,7 @@ class Commands(object):
         c = self
         names = ('leoPy.leo', 'leoPyRef.leo',) # Used in error message.
         for name in names:
-            fileName = g.os_path_join(g.app.loadDir, "..", "core", name)
+            fileName = g.os_path_finalize_join(g.app.loadDir, "..", "core", name)
             # Only call g.openWithFileName if the file exists.
             if g.os_path_exists(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
@@ -4644,7 +4644,7 @@ class Commands(object):
     def openLeoScripts(self, event=None):
         '''Open scripts.leo.'''
         c = self
-        fileName = g.os_path_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
+        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
         # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
@@ -4747,7 +4747,7 @@ class Commands(object):
     def openUnittest(self, event=None):
         '''Open unittest.leo.'''
         c = self
-        fileName = g.os_path_join(g.app.loadDir, '..', 'test', 'unittest.leo')
+        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unittest.leo')
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
