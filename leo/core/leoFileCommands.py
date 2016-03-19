@@ -1582,20 +1582,17 @@ class FileCommands:
         '''
         Put the xml stylesheet line.
 
-        Old: The xml stylesheet element in the .leo file took precedence over
-             the @string stylesheet setting. This made it impossible to change
-             the stylesheet!
-
-        New: The @string stylesheet x setting takes precedence.
+        Leo 5.3:
+        - Use only the stylesheet setting, ignoreing c.frame.stylesheet.
+        - Write no stylesheet element if there is no setting.
+        
+        The old way made it almost impossible to delete stylesheet element.
         '''
         trace = False and not g.unitTesting
         c = self.c
-        sheet1 = (c.config.getString('stylesheet') or '').strip()
-        sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
-        if trace:
-            g.trace(c.shortFileName(), 'sheet1', repr(sheet1))
-            g.trace(c.shortFileName(), 'sheet2', repr(sheet2))
-        sheet = sheet1 or sheet2
+        sheet = (c.config.getString('stylesheet') or '').strip()
+        # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
+        # sheet = sheet or sheet2
         if sheet:
             s = '<?xml-stylesheet %s ?>' % sheet
             if trace: g.trace(c.shortFileName(), s)
