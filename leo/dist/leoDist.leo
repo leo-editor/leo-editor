@@ -1321,16 +1321,15 @@ Installing Leo on Linux
 
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.0.
+into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
 
-You now have two choices:
+To gain access to Leo, you have two choices:
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.0 to your path.
+A. Add  ~/leo-5.2 to your path.
+B. Create alias for Leo.
 
-2. You can install leo into /usr/local/lib and /usr/local/bin as follows::
-
-    cd ~/leo-5.0
-    sudo python setup.py install
+I prefer using aliases because they allow me to start Leo using Python 2 or 3,
+or other distributesion, like Anaconda 2 or 3.
 
 See `Running Leo`_ for how to run Leo after installing it.
 </t>
