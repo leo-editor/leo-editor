@@ -170,7 +170,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1175,7 +1175,6 @@
 </v>
 </v>
 <v t="ekr.20160310055341.1"><vh>Leo 5.2-final release notes</vh>
-<v t="ekr.20160310062924.1"><vh> Highlights</vh></v>
 <v t="ekr.20160305040503.2"><vh>Bugs</vh>
 <v t="ekr.20160305040503.3"><vh>Fixed #131: Insert time in headline now inserts time in body</vh></v>
 <v t="ekr.20160305040503.4"><vh>Fixed #136: Viewrendered2 chokes on displaying @html nodes</vh></v>
@@ -18946,20 +18945,6 @@ The preliminaries were at least as important as the fix itself:
     --ipyhon command-line option works with latest IPython versions
     Themes
     Wildcard file names on Leo's command line</t>
-<t tx="ekr.20160310062924.1">- c.cloneFindByPredicate
-- clone-find-marked commands:
-  cfam (clone-find-all-marked)
-  cffm (clone-find-all-flattened-marked)
-- decorators create all Leo commands
-- declutter headlines: icons replace @file, @clean, etc.
-- find-def and find-var
-- help-for-keystroke
-- Optional line numbers in the left gutter
-- show-invisibles uses Qt characters
-- The --ipyhon command-line option works with latest IPython versions
-    Themes
-    Wildcard file names on Leo's command line
-</t>
 <t tx="ekr.20160310063235.1">::
     
     cfa, cff, cfam, cfam
@@ -19052,7 +19037,7 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

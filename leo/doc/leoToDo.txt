@@ -263,21 +263,14 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
-Must be easy to use.
+.. @+node:ekr.20160319151013.1: *4* Multi-threaded trees
+https://groups.google.com/d/msg/leo-editor/E0HtQiBRfOg/IOcZMv9vAgAJ
 
-- Add p/v.temp_u properties. Revise docs.
+It is astoundingly easy to create this multi-dag in Leo.
 
-- Use Terry's window code to create all panes:
-    - New console window plugin.
-    - viewrendered plugins
+Each vnode has a parents list and a children list.  All we have to do is replace these two lists by dictionaries whose keys are attributes and whose values are the parents or children lists for those attributes.  Finally, we add Python properties shield the dictionary lookup from the rest of Leo.  We are talking about maybe 50 lines of code!
 
-.. @+node:ekr.20160305033136.1: *5* Found:['"]icons[i"]
-.. @+node:ekr.20160129081036.1: *5* simplifying uA access
-d = p.u.get(plugin_name, {})
-d['duration'] = 5
-p.u[plugin_name] = d
-.. @+node:ekr.20080802070659.11: *5* Make node attributes visible, and supported by Leo's core
+As far as the rest of Leo is concerned, vnodes still have parents and children lists.  The switcheroo happens totally invisibly, when the user wants to see another view.  The attribute changes and that changes what the vnode dictionary/properties "deliver" to the rest of Leo.
 .. @+node:ekr.20160318113249.1: *4* Commands
 .. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
 - Can they be interrupted?
@@ -555,6 +548,67 @@ readAbbreviations
 writeAbbreviations
 .. @+node:ekr.20160302131622.1: *7* Found:abbrevs
 # flattened, word, ignore-case, head, body
+.. @+node:ekr.20160319150951.1: *4* Gui
+.. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
+Must be easy to use.
+
+- Add p/v.temp_u properties. Revise docs.
+
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+    - viewrendered plugins
+
+.. @+node:ekr.20160305033136.1: *6* Found:['"]icons[i"]
+.. @+node:ekr.20160129081036.1: *6* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
+.. @+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20160318113605.1: *5* Rethink windows
+- Decouple commander from outline?
+- Notifications might simplify viewrendered plugin.
+- Notifications might simplify multiple body panes.
+- A good platform for web development and anything
+  needing multiple consoles.
+- Add status line showing type of window. Like Emacs.
+.. @+node:ekr.20130806072439.21241: *6* Free range body editors
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
+
+- a flag to indicate whether the tree pane should select the body editor's node when the body editor is focused.  To see an example of editing bodies without the tree selecting the node you're editing, see the stickynotes plugin
+
+- a flag to indicate whether the body editor should track the node currently selected in the tree
+
+- it needs to not care about what it's contained in, GUI wise.  I don't know how much work's involved in this.
+
+I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
+
+If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
+.. @+node:ekr.20110929074744.15499: *6* Allow more panes to be part of the free_layout "action" buttons
+.. @+node:ekr.20160227134532.1: *5* Shell in Python
+# http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
+
+Add shell window, perhaps in viewrendered plugin.
+
+# The following program will a system and display output immediately on screen:
+
+#!/usr/bin/python
+import subprocess
+import sys
+cmd = 'ls' # "/usr/sbin/netstat -p tcp -f inet"
+
+p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+if 0:
+    while True:
+        out = p.stderr.read(1)
+        out = g.toUnicode(out)
+        if out == '' and p.poll() != None:
+            break
+        if out != '':
+            # sys.stdout.write(out)
+            # sys.stdout.flush()
+            g.es(out)
 .. @+node:ekr.20160319060938.1: *4* Ipython integration
 .. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
 https://github.com/leo-editor/leo-editor/issues/156
@@ -1663,7 +1717,7 @@ You can provide a conceptual structure for your computational document as a whol
     }
   ]
 }
-.. @+node:ekr.20121005105428.10095: *6* << ipynb example >>
+.. @+node:ekr.20121005105428.10095: *6* ipynb example 2
 # s = '["foo", {"bar":["baz", null, 1.0, 2]}]'
 
 s = '''
@@ -2778,51 +2832,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
 I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
-.. @+node:ekr.20160318113605.1: *4* Rethink windows
-- Decouple commander from outline?
-- Notifications might simplify viewrendered plugin.
-- Notifications might simplify multiple body panes.
-- A good platform for web development and anything
-  needing multiple consoles.
-- Add status line showing type of window. Like Emacs.
-.. @+node:ekr.20130806072439.21241: *5* Free range body editors
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
-
-- a flag to indicate whether the tree pane should select the body editor's node when the body editor is focused.  To see an example of editing bodies without the tree selecting the node you're editing, see the stickynotes plugin
-
-- a flag to indicate whether the body editor should track the node currently selected in the tree
-
-- it needs to not care about what it's contained in, GUI wise.  I don't know how much work's involved in this.
-
-I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
-
-If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
-.. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
-.. @+node:ekr.20160227134532.1: *4* Shell in Python
-# http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
-
-Add shell window, perhaps in viewrendered plugin.
-
-# The following program will a system and display output immediately on screen:
-
-#!/usr/bin/python
-import subprocess
-import sys
-cmd = 'ls' # "/usr/sbin/netstat -p tcp -f inet"
-
-p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
-if 0:
-    while True:
-        out = p.stderr.read(1)
-        out = g.toUnicode(out)
-        if out == '' and p.poll() != None:
-            break
-        if out != '':
-            # sys.stdout.write(out)
-            # sys.stdout.flush()
-            g.es(out)
 .. @+node:ekr.20150410043749.1: ** Maybe
 @language rest
 @wrap
@@ -3882,28 +3891,6 @@ yview: 0
 .. @+node:ekr.20140824043305.18303: *4* Not in any bug tracker
 .. @+node:ekr.20141017110114.18267: *5* @data qt-scintilla-styles only works in leoSetting.leo
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20130806072439.20371: *5* @wrap now suppresses horizontal scrolling
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The title pretty much says it all.  This is a significant improvement, and 
-makes Leo suitable for authoring text.  It should have been done ages ago. 
-Please let me know immediately if this new behavior causes problems for you.
-
-There is one glitch.  If you add @wrap, the directive won't be in effect 
-until you leave the node and revisit it.
-
-===== redla <radim.halir@gmail.com>
-
-There is one problem which is (IMHO) caused by this change: I have @wrap 
-active and see my "plain" text wrapped properly. But if there is any "long 
-enough" URL on the page (i.e. longer than the screen width), this is not 
-wrapped (as there is no space in the string) nor I can see the end of it 
-(as there is no horizontal scrollbar either) ;-(
-
-===== EKR
-
-The workaround is to disable @wrap in order to see the url, but this is
-clumsy.
 .. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
@@ -4647,17 +4634,6 @@ That is, make sure it works when called from within itself.
 http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 
 http://www.voom.net/pyqt-qtest-example
-.. @+node:ekr.20130806072439.21298: *4* Treat leo tree as a flat memory structure
-Ville
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CLiiydTt8rUCFaY6MQodYAsAAA&path=%2F103097156557482112329%2Fposts%2FVp5ansTdLwq&dt=1362942818945&ub=63
-
-How could we  treat leo tree as flat, contiguous memory structure (something that's easy to memcpy, pass as shared memory or flush to disk in one write)?
-
-Some ideas could be: 
-
-- Use Redis to store tree
-- Keep the "clean" body texts in contiguous block (most bodies will always be clean), append dirty (modified) body texts after it
-- Keeping the outline structure in memory block is quite easy, since there is not a lot of data. You could have just a list of [parent, child] id's or whatever
 .. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
 .. @+node:ekr.20130806072439.21428: *4* Use github code to allow various markup types
@@ -4704,7 +4680,7 @@ have no idea where these things are in the source):
 2. How to get a "full file" without saving it, i.e., fill in the << 
 references >>, @others, and @all directives.
 
-.. @+node:ekr.20101119030344.5838: *4* Won't do: turn all commands into @g.command nodes
+.. @+node:ekr.20101119030344.5838: *4* Done: turn all commands into @g.command nodes
 @language python
 @color
 '''Add @g.command(command_name) before all commands.'''
@@ -4913,8 +4889,6 @@ The good of this:
 
 It makes using path simpler, you dont have to type out the directory path yourself, just use the tkFileDialog to select it and have Leo insert the string. For long directories this saves a lot of typing.
 
-.. @+node:ekr.20150312080344.4: *4* Improve speed of spelling
-Workaround: Spell-check just desired clone (at bottom of file).
 .. @+node:ekr.20050127110221: *4* jsonic about output
 @language rest
 @wrap
@@ -6958,6 +6932,17 @@ What do you think?
 That sounds like an excellent solution. Particularly the last bit -- if you could turn section-comments on and off as required, it would become very convenient to use Leo to produce source that is intended to also be read by non Leo users.
 .. @+node:ekr.20080919085541.3: *4* Use sqlite data base as an alternative representation for .leo files
 http://groups.google.com/group/leo-editor/browse_thread/thread/dff0c165e2211691
+.. @+node:ekr.20130806072439.21298: *4* Treat leo tree as a flat memory structure
+Ville
+https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CLiiydTt8rUCFaY6MQodYAsAAA&path=%2F103097156557482112329%2Fposts%2FVp5ansTdLwq&dt=1362942818945&ub=63
+
+How could we  treat leo tree as flat, contiguous memory structure (something that's easy to memcpy, pass as shared memory or flush to disk in one write)?
+
+Some ideas could be: 
+
+- Use Redis to store tree
+- Keep the "clean" body texts in contiguous block (most bodies will always be clean), append dirty (modified) body texts after it
+- Keeping the outline structure in memory block is quite easy, since there is not a lot of data. You could have just a list of [parent, child] id's or whatever
 .. @+node:ekr.20141017110114.18265: *4* Won't do: Use uuid's in gnx's
 https://groups.google.com/d/msg/leo-editor/p_b2LLBAqps/aTQoyGBec68J
 
