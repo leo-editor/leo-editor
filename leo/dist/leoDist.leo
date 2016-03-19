@@ -330,7 +330,7 @@ Categories:
 - decorators create all Leo commands
 - find-def and find-var
 - help-for-keystroke
---ipyhon command-line option works with latest IPython versions
+- The --ipyhon command-line option works with latest IPython versions
 - Optional line numbers in the body pane
 - show-invisibles uses Qt characters
 - Themes
@@ -674,6 +674,7 @@ Test files in installed folder:
 
 Create a git tag **last**:
 - Do *not* use -f option!
+- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
 
 Scan all folders &amp; files before uploading.
 
@@ -1988,7 +1989,7 @@ Notes:
 - decorators create all Leo commands
 - find-def and find-var
 - help-for-keystroke
---ipyhon command-line option works with latest IPython versions
+- The --ipyhon command-line option works with latest IPython versions
 - Optional line numbers in the body pane
 - show-invisibles uses Qt characters
 - Themes
@@ -2081,8 +2082,8 @@ The preliminaries were at least as important as the fix itself:
 - Optional line numbers in the left gutter
 - show-invisibles uses Qt characters
 - The --ipyhon command-line option works with latest IPython versions
-    Themes
-    Wildcard file names on Leo's command line
+- Themes
+- Wildcard file names on Leo's command line
 </t>
 <t tx="ekr.20160314155002.20">https://github.com/leo-editor/leo-editor/issues/217
 </t>

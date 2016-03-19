@@ -10,7 +10,7 @@ Leo 5.2-final, March 18, 2016
 - decorators create all Leo commands
 - find-def and find-var
 - help-for-keystroke
---ipyhon command-line option works with latest IPython versions
+- The --ipyhon command-line option works with latest IPython versions
 - Optional line numbers in the body pane
 - show-invisibles uses Qt characters
 - Themes
