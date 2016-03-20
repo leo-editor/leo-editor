@@ -259,51 +259,55 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.2-final
+Version: 5.2
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Description: Leo is::
-    
-        An outliner. Everything in Leo is an outline.
-        A browser that remembers where you were the last time.
-        A uniquely powerful scripting environment.
-        A superb tool for studying other people's code.
-        A fully-featured IDE, with many emacs-like commands.
-        A uniquely-extensible Personal Information Manager.
-        Written in 100% pure Python.
-   
-    Leo's *unique* features::
-    
-        Always-present, persistent, outline structure.
-        Leo's outline is a Directed Acyclic Graph.
-        Clones create multiple views of an outline.
-        A simple, powerful, outline-oriented Python API.
-        Scripts and programs can be composed from outlines.
-        Importers convert flat text into outlines.
-        Scripts have full access to all of Leo's sources.
-        A plugin architecture makes it easy to extend Leo.
-        Plugins for IPython, vim and xemacs
-        Many other unique commands that act on outline structure.
-        Example: the rst3 command converts outlines to reStructuredText.
-        @test and @suite scripts create unit tests automatically.
-        @button scripts apply scripts to data.
-        Outline-oriented directives.
+Description: **Leo is**:
 
-    Simulating these features in vim or Emacs is possible,
-    but, heh, so is simulating Python in assembly language.::
+- An outliner. Everything in Leo is an outline.
+- A Personal Information Manager.
+- A browser with a memory.
+- A powerful scripting environment.
+- A tool for studying other people's code.
+- A fully-featured IDE, with emacs-like commands.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, vim and xemacs.
+- Written in 100% pure Python
+- Compatible with Python 2.6 and above or Python 3.0 and above.
+
+**Leo's unique features**:
     
-        Docs        http://leoeditor.com/leo_toc.html
-        Tutorials   http://leoeditor.com/tutorial.html
-        Videos      http://leoeditor.com/screencasts.html
-        Forum       http://groups.google.com/group/leo-editor
-        Download    http://sourceforge.net/projects/leo/files/
-        Github      https://github.com/leo-editor/leo-editor
-        Quotes      http://leoeditor.com/testimonials.html
-        
-    Leo requires Python 2.6 or above, including Python 3.0 or above.
+- Always-present, persistent, outline structure.
+- Leo's underlying data is a Directed Acyclic Graph.
+- Clones create multiple views of an outline.
+- A simple, powerful, outline-oriented Python API.
+- Scripts and programs can be composed from outlines.
+- Importers convert flat text into outlines.
+- Scripts have full access to all of Leo's sources.
+- Commands that act on outline structure.
+  Example: the rst3 command converts outlines to reStructuredText.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+- Outline-oriented directives.
+
+Simulating these features in vim or Emacs is possible, just as
+it is possible to simulate Python in assembly language...
+
+**Links**
+
+- Leo's home page:  http://leoeditor.com
+- Documentation:    http://leoeditor.com/leo_toc.html
+- Tutorials:        http://leoeditor.com/tutorial.html
+- Video tutorials:  http://leoeditor.com/screencasts.html
+- Forum:            http://groups.google.com/group/leo-editor
+- Download:         http://sourceforge.net/projects/leo/files/
+- Github sources:   https://github.com/leo-editor/leo-editor
+- What people are saying about Leo:     http://leoeditor.com/testimonials.html
+- A web page that displays .leo files:  http://leoeditor.com/load-leo.html
+- More links:       http://leoeditor.com/leoLinks.html
 
 Download URL: http://sourceforge.net/projects/leo/files/
 Keywords: Outliner, IDE, PIM

@@ -170,7 +170,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -18894,6 +18894,37 @@ The preliminaries were at least as important as the fix itself:
 
 [Leo](http://leoeditor.com/) 5.2 final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
+Leo is:
+
+- An outliner. Everything in Leo is an outline.
+- A Personal Information Manager.
+- A browser with a memory.
+- A powerful scripting environment.
+- A tool for studying other people's code.
+- A fully-featured IDE, with emacs-like commands.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, vim and xemacs.
+- Written in 100% pure Python
+- Compatible with Python 2.6 and above or Python 3.0 and above.
+
+**Leo's unique features**:
+    
+- Always-present, persistent, outline structure.
+- Leo's underlying data is a Directed Acyclic Graph.
+- Clones create multiple views of an outline.
+- A simple, powerful, outline-oriented Python API.
+- Scripts and programs can be composed from outlines.
+- Importers convert flat text into outlines.
+- Scripts have full access to all of Leo's sources.
+- Commands that act on outline structure.
+  Example: the rst3 command converts outlines to reStructuredText.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+- Outline-oriented directives.
+
+Simulating these features in vim or Emacs is possible, just as
+it is possible to simulate Python in assembly language...
+
 **The highlights of Leo 5.2**
 
 - Easy install with PyInstaller packaging
@@ -19037,7 +19068,7 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

@@ -610,6 +610,24 @@ if 0:
             # sys.stdout.flush()
             g.es(out)
 .. @+node:ekr.20160319060938.1: *4* Ipython integration
+http://jupyter.org/qtconsole/stable/#embedding-the-qtconsole-in-a-qt-application
+discusses embedding the qt console in a qt app.
+
+Ideally, we would like to show the output of matplotlib.pyplot.plot in Leo's viewrendered window.
+
+There is lots of work to do:
+
+1. At present, running the same matplotlib script in Leo twice does not update the qt plot. In contrast, the IPython console does update the plot.
+
+2. Nothing gets plotted if --ipython is not in effect. I'll be tracing through the plot function to see where the output gets created (or swallowed).
+
+Hmm.  It may be best always to rely on the --ipython option.  It creates the Jupyter server. Leo surely should be using that unchanged.  It's a major piece of work.  Otoh, matplotlib doesn't require IPython, so maybe some plots could run independently of IPython.
+
+3. It would be cool to provide all the goodies in the Qt Console window (saving to file, etc) from Leo's viewrendered pane.  It's got to be possible.
+
+Note: we will want output to go to the viewrendered pane. That way the user could manage thousands of IPython scripts in the same .leo file.  I'll soon be creating matplotlib_examples.leo, with all the matplotlib scripts organized using @others, etc.  Do you see?
+
+Edward
 .. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
 https://github.com/leo-editor/leo-editor/issues/156
 .. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
@@ -2771,6 +2789,8 @@ def rejoin_lines(nb):
     return nb
 .. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
 Generate type declarations from a given set of naming conventions.
+.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
+Use external code.
 .. @+node:ekr.20160318113258.1: *4* Plugins
 .. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
