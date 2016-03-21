@@ -1700,14 +1700,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.do_cell_type('cell_type', cell_type)
                 for key in sorted(cell):
                     val = cell.get(key)
-                    if key == 'source':
-                        self.do_source(key, val)
+                    if key == 'cell_type':
+                        pass # Done above
+                    elif key == 'metadata':
+                        self.do_metadata(key, val)
                     elif key == 'outputs':
                         self.do_outputs(key, val)
-                    elif key == 'cell_type':
-                        pass # Done above
+                    elif key == 'source':
+                        self.do_source(key, val)
                     else:
-                        self.put(key,val)
+                        self.do_general(key, val)
                 if self.dump:
                     print('')
             #@+node:ekr.20160321053212.1: *5* do_cell_type
@@ -1736,7 +1738,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.parent:
                         p = self.parent.insertAsLastChild()
                         p.h = key2
-                        p.b = self.toString(val2)
+                        p.b = self.toString(key2, val2)
                     if g.isString(val2):
                         lines = g.splitLines(val2)
                         if self.brief:
@@ -1749,6 +1751,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.put(key2, len(val2 or ''))
                 self.indent -= 8
                 self.put(key, '}')
+            #@+node:ekr.20160321062745.1: *5* do_general
+            def do_general(self, key, val):
+                
+                if self.parent:
+                    p = self.parent.insertAsLastChild()
+                    p.h = key
+                    p.b = self.toString(key, val)
+                self.put(key,val)
             #@+node:ekr.20160320192424.1: *5* do_metadata
             def do_metadata(self, key, val):
                 
@@ -1794,7 +1804,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         elif self.parent:
                             p = self.parent.insertAsLastChild()
                             p.h = key2
-                            p.b = self.toString(val2)
+                            p.b = self.toString(key2, val2)
                             self.put(key2, val2)
                         else:
                             self.put(key2, val2)
@@ -1880,9 +1890,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if self.dump:
                     print('%s%18s: %s' % (' '*self.indent, key, val))
             #@+node:ekr.20160321060950.1: *5* toString
-            def toString(self, val):
+            def toString(self, key, val):
                 
-                return val if g.isString(val) else repr(val)
+                if not g.isString(val):
+                    val = repr(val)
+                if key.endswith('html'):
+                    s = '@language html'
+                elif key.endswith('xml'):
+                    s = '@language xml'
+                else:
+                    s = None
+                return s + '\n\n' + val if s else val
             #@-others
         #@-others
         c = self.c
