@@ -661,96 +661,17 @@ Leo + Ipython notebook integration is a killer app indeed.
 - Finish javascript importer, or at least fix #127: Bracket matching is buggy
 - Maybe: Read/write files in json format
 - Maybe: py2cython: like make_stub_files.
-.. @+node:ekr.20150418052852.1: *5* import/export to Jypyter(.ipynb) files
-Or .leo.ipynb files.
-.. @+node:ekr.20150717143430.1: *6* .ipynb json format
+.. @+node:ekr.20150418052852.1: *5* import/export to .ipynb files
 @language rest
 @wrap
-
-Notebook JSON file format
-
-Notebook documents are JSON files with an .ipynb extension, formatted as legibly as possible with minimal extra indentation and cell content broken across lines to make them reasonably friendly to use in version-control workflows. You should be very careful if you ever manually edit this JSON data, as it is extremely easy to corrupt its internal structure and make the file impossible to load. In general, you should consider the notebook as a file meant only to be edited by the IPython Notebook app itself, not for hand-editing.
-
-Note
-
-Binary data such as figures are also saved directly in the JSON file. This provides convenient single-file portability, but means that the files can be large; a diff of binary data is also not very meaningful. Since the binary blobs are encoded in a single line, they affect only one line of the diff output, but they are typically very long lines. You can use the Cell | All Output | Clear menu option to remove all output from a notebook prior to committing it to version control, if this is a concern.
-
-The notebook server can also generate a pure Python version of your notebook, using the File | Download as menu option. The resulting .py file will contain all the code cells from your notebook verbatim, and all Markdown cells prepended with a comment marker. The separation between code and Markdown cells is indicated with special comments and there is a header indicating the format version. All output is removed when exporting to Python.
-
-As an example, consider a simple notebook called simple.ipynb which contains one Markdown cell, with the content The simplest notebook., one code input cell with the content print "Hello, IPython!", and the corresponding output.
-
-The contents of the notebook document simple.ipynb is the following JSON container:
-
-{
- "metadata": {
-  "name": "simple"
- },
- "nbformat": 3,
- "nbformat_minor": 0,
- "worksheets": [
-  {
-   "cells": [
-    {
-     "cell_type": "markdown",
-     "metadata": {},
-     "source": "The simplest notebook."
-    },
-    {
-     "cell_type": "code",
-     "collapsed": false,
-     "input": "print \"Hello, IPython\"",
-     "language": "python",
-     "metadata": {},
-     "outputs": [
-      {
-       "output_type": "stream",
-       "stream": "stdout",
-       "text": "Hello, IPython\n"
-      }
-     ],
-     "prompt_number": 1
-    }
-   ],
-   "metadata": {}
-  }
- ]
-}
-
-The corresponding Python script is:
-
-# -*- coding: utf-8 -*-
-# <nbformat>3.0</nbformat>
-
-# <markdowncell>
-
-# The simplest notebook.
-
-# <codecell>
-
-print "Hello, IPython"
-
-Note that indeed the output of the code cell, which is present in the JSON container, has been removed in the .py script.
-.. @+node:ekr.20150717142923.1: *6* ipynb format
-@language rest
-@wrap
-
-**Structure of a notebook document**
-
-The notebook consists of a sequence of cells. A cell is a multi-line text input field, and its contents can be executed by using Shift-Enter, or by clicking either the “Play” button the toolbar, or Cell | Run in the menu bar. The execution behavior of a cell is determined the cell’s type.
 
 There are four types of cells: code cells, markdown cells, raw cells and heading cells.
 
-Every cell starts off being a code cell, but its type can be changed by using a dropdown on the toolbar (which will be “Code”, initially), or via keyboard shortcuts.
-
 **Code cells**
 
-A code cell allows you to edit and write new code, with full syntax highlighting and tab completion. By default, the language associated to a code cell is Python, but other languages, such as Julia and R, can be handled using cell magic commands.
-
-When a code cell is executed, code that it contains is sent to the kernel associated with the notebook. The results that are returned from this computation are then displayed in the notebook as the cell’s output. The output is not limited to text, with many other possible forms of output are also possible, including matplotlib figures and HTML tables (as used, for example, in the pandas data analysis package). This is known as IPython’s rich display capability.
+The results that are returned from this computation are then displayed in the notebook as the cell’s output. The output is not limited to text. This is known as IPython’s rich display capability.
 
 **Markdown cells**
-
-You can document the computational process in a literate way, alternating descriptive text with code, using rich text. In IPython this is accomplished by marking up text with the Markdown language. The corresponding cells are called Markdown cells. The Markdown language provides a simple way to perform this text markup, that is, to specify which parts of the text should be emphasized (italics), bold, form lists, etc.
 
 When a Markdown cell is executed, the Markdown code is converted into the corresponding formatted rich text. Markdown allows arbitrary HTML code for formatting.
 
@@ -760,8 +681,9 @@ Standard mathematics environments defined by LaTeX and AMS-LaTeX (the amsmath pa
 
 **Raw cells**
 
-Raw cells provide a place in which you can write output directly. Raw cells are not evaluated by the notebook. When passed through nbconvert, raw cells arrive in the destination format unmodified. For example, this allows you to type full LaTeX into a raw cell, which will only be rendered by LaTeX after conversion by nbconvert.
-Heading cells
+Raw cells are not evaluated by the notebook. When passed through nbconvert, raw cells arrive in the destination format unmodified. 
+
+**Heading cells**
 
 You can provide a conceptual structure for your computational document as a whole using different levels of headings; there are 6 levels available, from level 1 (top level) down to level 6 (paragraph). These can be used later for constructing tables of contents, etc. As with Markdown cells, a heading cell is replaced by a rich text rendering of the heading when the cell is executed.
 .. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
