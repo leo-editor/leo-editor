@@ -1649,6 +1649,179 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         self.Python_To_CoffeeScript(c).go()
         c.bodyWantsFocus()
+    #@+node:ekr.20160321042444.1: *3* ccc.ipython-to-leo
+    @cmd('import-jupyter-notebook')
+    def importJupyterNotebook(self, event):
+        '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
+        #@+others
+        #@+node:ekr.20160320183705.1: *4* class Import_IPYNB
+        class Import_IPYNB:
+            '''A class to import .ipynb files.'''
+            
+            def __init__(self, c):
+                '''Ctor for Import_IPYNB class.'''
+                self.brief = True
+                    # True: don't show source & data lines.
+                self.c = c
+                    # Commander of present outline.
+                self.dump = False
+                    # True: do show data.
+                self.gen = True
+                    # True: generate Leo outline from cells.
+                self.root = None
+                    # The root of the to-be-created outline.
+
+            #@+others
+            #@+node:ekr.20160320184226.1: *5* do_cell
+            def do_cell(self, cell, n):
+                
+                if self.dump:
+                    print('cell %s:' % n)
+                for key in sorted(cell):
+                    val = cell.get(key)
+                    if key == 'source':
+                        self.do_source(key, val)
+                    elif key == 'outputs':
+                        self.do_outputs(key, val)
+                    else:
+                        self.put(key,val)
+                if self.dump:
+                    print('')
+            #@+node:ekr.20160320185816.1: *5* do_data
+            def do_data(self, key, val):
+                
+                self.put(key, '{')
+                self.indent += 8
+                for key2 in val:
+                    val2 = val.get(key2)
+                    if g.isString(val2):
+                        lines = g.splitLines(val2)
+                        if self.brief:
+                            self.put(key2, len(lines))
+                        else:
+                            self.put(key2)
+                            for s in lines:
+                                print(s.rstrip())
+                    else:
+                        self.put(key2, len(val2 or ''))
+                self.indent -= 8
+                self.put(key, '}')
+            #@+node:ekr.20160320192424.1: *5* do_metadata
+            def do_metadata(self, key, val):
+                
+                self.put(key, '{')
+                self.indent += 8
+                for key2 in val:
+                    val2 = val.get(key2)
+                    try:
+                        self.put(key2, '{')
+                        self.indent += 8
+                        for key3 in val2:
+                            val3 = val2.get(key3)
+                            self.put(key3, val3)
+                        self.indent -= 8
+                        self.put(key2, '}')
+                    except TypeError:
+                        self.put(key2, val2)
+                self.indent -= 8
+                self.put(key, '}')
+            #@+node:ekr.20160320185354.1: *5* do_outputs
+            def do_outputs(self, key, val):
+                
+                # Val is a list of dicts.
+                for d in val:
+                    self.put(key, '{')
+                    self.indent += 8
+                    for key2 in d.keys():
+                        val2 = d.get(key2)
+                        if key2 == 'data':
+                            self.do_data(key2, val2)
+                        else:
+                            self.put(key2, val2)
+                    self.indent -= 8
+                    self.put(key, '}')
+            #@+node:ekr.20160320192858.1: *5* do_prefix
+            def do_prefix(self, d):
+                
+                if self.dump:
+                    print('non-cell data:')
+                for key in sorted(d):
+                    if key != 'cells':
+                        val = d.get(key)
+                        if key == 'metadata':
+                            self.do_metadata(key, val)
+                        else:
+                            self.put(key, val)
+                if self.dump:
+                    print('')
+            #@+node:ekr.20160320184422.1: *5* do_source
+            def do_source(self, key, val):
+
+                lines = g.splitLines(val)
+                if self.brief:
+                    self.put(key, len(lines))
+                else:
+                    self.put(key)
+                    for s in lines:
+                        print(s.rstrip())
+            #@+node:ekr.20160321044209.1: *5* get_file_name
+            def get_file_name(self):
+                '''Open a dialog to get a Jupyter (.ipynb) file.'''
+                c = self.c
+                fn = g.app.gui.runOpenFileDialog(
+                    c,
+                    title="Open Jupyter File",
+                    filetypes=[
+                        ("All files", "*"),
+                        ("Jypyter files", "*.ipynb"),
+                    ],
+                    defaultextension=".ipynb",
+                )
+                c.bringToFront()
+                return fn
+            #@+node:ekr.20160320183944.1: *5* import_file
+            def import_file(self, fn, root, brief=True, dump=False):
+                '''Import the given .ipynb file.'''
+                self.brief = brief
+                self.c = c
+                self.dump = dump
+                self.fn = fn
+                self.indent = 0
+                self.root = root.copy()
+                d = self.parse(fn)
+                self.do_prefix(d)
+                cells = d.get('cells', [])
+                for n, cell in enumerate(cells):
+                    self.do_cell(cell, n)
+            #@+node:ekr.20160320140531.1: *5* parse
+            def parse(self, fn):
+                
+                if g.os_path_exists(fn):
+                    with open(fn) as f:
+                        payload_source = f.name
+                        payload = f.read()
+                    nb = reads(payload, as_version=4)
+                        # Require IPython 4.
+                    return nb
+                else:
+                    g.es_print('not found', fn)
+                    return nb
+            #@+node:ekr.20160320184721.1: *5* put
+            def put(self, key, val=''):
+
+                if self.dump:
+                    print('%s%18s: %s' % (' '*self.indent, key, val))
+            #@-others
+        #@-others
+        c = self.c
+        x = self.Import_IPYNB(c)
+        fn = x.get_file_name()
+        if fn:
+            p = c.lastTopLevel()
+            root = p.insertAfter()
+            root.h = fn
+            x.import_file(fn, root)
+        c.bodyWantsFocus()
     #@-others
 #@-others
 #@-leo
