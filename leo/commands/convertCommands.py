@@ -1676,6 +1676,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # True: don't show source & data lines.
                 self.c = c
                     # Commander of present outline.
+                self.cell_p = None
+                    # Position of present cell.
                 self.dump = False
                     # True: do show data.
                 self.gen = True
@@ -1693,6 +1695,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if self.gen:
                     self.parent = self.root.insertAsLastChild()
                     self.parent.h = cell_name
+                    self.cell_p = self.parent
                 else:
                     self.parent = None
                 cell_type = cell.get('cell_type')
@@ -1762,13 +1765,25 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160320192424.1: *5* do_metadata
             def do_metadata(self, key, val):
                 
+                if not val:
+                    return
+                if self.parent:
+                    old_parent = self.parent
+                    self.parent = old_parent.insertAsLastChild()
+                    self.parent.h = 'metadata'
+                else:
+                    old_parent = None
+                    parent = None
                 self.put(key, '{')
                 self.indent += 8
                 for key2 in val:
                     val2 = val.get(key2)
-                    if self.parent and key2 == 'collapsed' and val == 'false':
-                        g.trace('expand', self.parent.h)
-                        self.parent.expand()
+                    if self.parent:
+                        if key2 == 'collapsed' and val2 in (False, 'false'):
+                            self.cell_p.expand()
+                        p = self.parent.insertAsLastChild()
+                        p.h = key2
+                        p.b = self.toString(key2, val2)
                     try:
                         self.put(key2, '{')
                         self.indent += 8
@@ -1781,6 +1796,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.put(key2, val2)
                 self.indent -= 8
                 self.put(key, '}')
+                if old_parent:
+                    self.parent = old_parent
+
             #@+node:ekr.20160320185354.1: *5* do_outputs
             def do_outputs(self, key, val):
                 
@@ -1871,6 +1889,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 cells = d.get('cells', [])
                 for n, cell in enumerate(cells):
                     self.do_cell(cell, n)
+                # self.root.expand()
             #@+node:ekr.20160320140531.1: *5* parse
             def parse(self, fn):
                 
