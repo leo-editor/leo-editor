@@ -1670,8 +1670,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '''Ctor for Import_IPYNB class.'''
                 self.c = c
                     # Commander of present outline.
-                self.cell_p = None
-                    # Position of present cell.
                 self.parent = None
                     # The parent for the next created node.
                 self.root = None
@@ -1687,11 +1685,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.do_general(key, val)
             #@+node:ekr.20160320184226.1: *5* do_cell
             def do_cell(self, cell, n):
-                
-                cell_name = 'cell %s' % (n + 1)
+
+                # Careful: don't use self.new_node here.
                 self.parent = self.root.insertAsLastChild()
-                self.parent.h = cell_name
-                self.cell_p = self.parent
+                self.parent.h = 'cell %s' % (n + 1)
                 # cell_type is not needed.
                 for key in sorted(cell):
                     if key != 'cell_type':
@@ -1714,10 +1711,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     old_parent = self.parent
                     self.parent = self.new_node('# %s' % key)
                     for key2 in d:
-                        val2 = d.get(key2)
-                        if key2 == 'collapsed' and val2 in (False, 'false'):
-                            self.cell_p.expand()
-                        self.do_any(key2, val2)
+                        if key != 'collapsed':
+                            # It's cute, but not useful, to handle collapsed.
+                            val2 = d.get(key2)
+                            self.do_any(key2, val2)
                     self.parent = old_parent
             #@+node:ekr.20160321062745.1: *5* do_general (sets source)
             def do_general(self, key, val):
