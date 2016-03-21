@@ -1649,15 +1649,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         self.Python_To_CoffeeScript(c).go()
         c.bodyWantsFocus()
-    #@+node:ekr.20160321042444.1: *3* ccc.ipython-to-leo
+    #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
     @cmd('import-jupyter-notebook')
     def importJupyterNotebook(self, event):
         '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
+        try:
+            from nbformat import reads, NBFormatError
+        except ImportError:
+            g.es_print('import-jupyter-notebook requires nbformat package')
+            return
         #@+others
         #@+node:ekr.20160320183705.1: *4* class Import_IPYNB
         class Import_IPYNB:
             '''A class to import .ipynb files.'''
+            # To do: generate outline from cells.
+            # http://nbformat.readthedocs.org/en/latest/api.html
             
+            # It might be possible to use a jinja2 template:
+            # https://github.com/jupyter/nbconvert
+
+            #@+others
+            #@+node:ekr.20160321051844.1: *5* ctor
             def __init__(self, c):
                 '''Ctor for Import_IPYNB class.'''
                 self.brief = True
@@ -1668,32 +1680,63 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # True: do show data.
                 self.gen = True
                     # True: generate Leo outline from cells.
+                self.parent = None
+                    # The parent for the next created node.
                 self.root = None
                     # The root of the to-be-created outline.
-
-            #@+others
             #@+node:ekr.20160320184226.1: *5* do_cell
             def do_cell(self, cell, n):
                 
+                cell_name = 'cell %s' % (n + 1)
                 if self.dump:
-                    print('cell %s:' % n)
+                    print(cell_name)
+                if self.gen:
+                    self.parent = self.root.insertAsLastChild()
+                    self.parent.h = cell_name
+                else:
+                    self.parent = None
+                cell_type = cell.get('cell_type')
+                if cell_type:
+                    self.do_cell_type('cell_type', cell_type)
                 for key in sorted(cell):
                     val = cell.get(key)
                     if key == 'source':
                         self.do_source(key, val)
                     elif key == 'outputs':
                         self.do_outputs(key, val)
+                    elif key == 'cell_type':
+                        pass # Done above
                     else:
                         self.put(key,val)
                 if self.dump:
                     print('')
+            #@+node:ekr.20160321053212.1: *5* do_cell_type
+            def do_cell_type(self, key, val):
+                
+                self.put(key, val)
+                if not self.parent:
+                    return
+                if val == 'code':
+                    s = '@language python'
+                elif val == 'markdown':
+                    s = '@language rest\n@wrap'
+                elif val == 'raw':
+                    s = '@killcolor'
+                if s:
+                    self.parent.b = s + '\n\n' + self.parent.b
             #@+node:ekr.20160320185816.1: *5* do_data
             def do_data(self, key, val):
                 
+                if not val:
+                    return
                 self.put(key, '{')
                 self.indent += 8
                 for key2 in val:
                     val2 = val.get(key2)
+                    if self.parent:
+                        p = self.parent.insertAsLastChild()
+                        p.h = key2
+                        p.b = self.toString(val2)
                     if g.isString(val2):
                         lines = g.splitLines(val2)
                         if self.brief:
@@ -1713,6 +1756,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.indent += 8
                 for key2 in val:
                     val2 = val.get(key2)
+                    if self.parent and key2 == 'collapsed' and val == 'false':
+                        g.trace('expand', self.parent.h)
+                        self.parent.expand()
                     try:
                         self.put(key2, '{')
                         self.indent += 8
@@ -1729,6 +1775,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def do_outputs(self, key, val):
                 
                 # Val is a list of dicts.
+                if not val:
+                    return
+                if self.parent:
+                    old_parent = self.parent
+                    self.parent = old_parent.insertAsLastChild()
+                    self.parent.h = 'outputs'
+                else:
+                    old_parent = None
+                    parent = None
                 for d in val:
                     self.put(key, '{')
                     self.indent += 8
@@ -1736,10 +1791,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         val2 = d.get(key2)
                         if key2 == 'data':
                             self.do_data(key2, val2)
+                        elif self.parent:
+                            p = self.parent.insertAsLastChild()
+                            p.h = key2
+                            p.b = self.toString(val2)
+                            self.put(key2, val2)
                         else:
                             self.put(key2, val2)
                     self.indent -= 8
                     self.put(key, '}')
+                if old_parent:
+                    self.parent = old_parent
             #@+node:ekr.20160320192858.1: *5* do_prefix
             def do_prefix(self, d):
                 
@@ -1757,6 +1819,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160320184422.1: *5* do_source
             def do_source(self, key, val):
 
+                if not val:
+                    return
+                if self.parent:
+                    self.parent.b = self.parent.b + val.rstrip() + '\n'
                 lines = g.splitLines(val)
                 if self.brief:
                     self.put(key, len(lines))
@@ -1780,13 +1846,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c.bringToFront()
                 return fn
             #@+node:ekr.20160320183944.1: *5* import_file
-            def import_file(self, fn, root, brief=True, dump=False):
+            def import_file(self, fn, root, brief=True, dump=False, gen=True):
                 '''Import the given .ipynb file.'''
                 self.brief = brief
                 self.c = c
                 self.dump = dump
                 self.fn = fn
+                self.gen = gen
                 self.indent = 0
+                self.parent = None
                 self.root = root.copy()
                 d = self.parse(fn)
                 self.do_prefix(d)
@@ -1811,16 +1879,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
                 if self.dump:
                     print('%s%18s: %s' % (' '*self.indent, key, val))
+            #@+node:ekr.20160321060950.1: *5* toString
+            def toString(self, val):
+                
+                return val if g.isString(val) else repr(val)
             #@-others
         #@-others
         c = self.c
-        x = self.Import_IPYNB(c)
+        x = Import_IPYNB(c)
         fn = x.get_file_name()
         if fn:
             p = c.lastTopLevel()
             root = p.insertAfter()
             root.h = fn
             x.import_file(fn, root)
+            c.redraw(root)
         c.bodyWantsFocus()
     #@-others
 #@-others
