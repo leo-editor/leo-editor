@@ -1865,25 +1865,41 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.root = None
                     # The root of the outline.
             #@+node:ekr.20160321072504.1: *5* export_outline (entry point)
-            def export_outline(self, root):
+            def export_outline(self, root, fn=None):
                 '''Import the given .ipynb file.'''
                 trace = True # and not g.unitTesting
                 self.root = root
                 self.indent = 0
                 self.lines = []
-                self.put('{')
-                self.put_prefix()
-                self.indent += 2
-                self.put('"cells": [')
-                self.indent += 2
-                self.put_cell(root)
-                self.indent -= 2
-                self.put(']')
-                self.indent -= 2
-                self.put('}')
-                if trace:
-                    print('\n'.join(self.lines[:100]))
-                # To do: write the file.
+                if not fn:
+                    fn = self.get_file_name()
+                if fn:
+                    self.put_outline()
+                    s = '\n'.join(self.lines)
+                    try:
+                        f = open(fn, 'w')
+                        f.write(s)
+                        f.close()
+                        print('wrote: %s' % fn)
+                    except IOError:
+                        print('can not open: %s' % fn)
+                    # print('\n'.join(self.lines[:100]))
+                    # To do: write the file.
+            #@+node:ekr.20160322062914.1: *5* get_file_name (export)
+            def get_file_name(self):
+                '''Open a dialog to write a Jupyter (.ipynb) file.'''
+                c = self.c
+                fn = g.app.gui.runOpenFileDialog(
+                    c,
+                    title="Export To Jupyter File",
+                    filetypes=[
+                        ("All files", "*"),
+                        ("Jypyter files", "*.ipynb"),
+                    ],
+                    defaultextension=".ipynb",
+                )
+                c.bringToFront()
+                return fn
             #@+node:ekr.20160321140725.1: *5* is_cell
             def is_cell(self, p):
                 
@@ -1986,6 +2002,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.put('"%s\\n",' % clean(s))
                     self.indent -= 2
                     self.put('],')
+            #@+node:ekr.20160322063045.1: *5* put_outline
+            def put_outline(self):
+                
+                self.put('{')
+                self.put_prefix()
+                self.indent += 2
+                self.put('"cells": [')
+                self.indent += 2
+                self.put_cell(self.root)
+                self.indent -= 2
+                self.put(']')
+                self.indent -= 2
+                self.put('}')
             #@+node:ekr.20160322061416.1: *5* put_prefix
             def put_prefix(self):
                 
