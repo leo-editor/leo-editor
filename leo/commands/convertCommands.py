@@ -1958,7 +1958,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def put(self, s):
 
                 # End every line with a comma, unless s ends with '[' or '{'.
-                # Clean_outline will remove as needed.
+                # Clean_outline will remove commas as needed.
                 if s.endswith('[') or s.endswith('{') or s.endswith(','):
                     pass
                 else:
@@ -1968,11 +1968,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 
             def put_key_string(self, key, s):
                 
-                try:
-                    n = int(s)
-                    self.put('"%s": %s' % (key, n))
-                except Exception:
-                    self.put('"%s": "%s"' % (key, self.clean(s)))
+                self.put('"%s": "%s"' % (key, self.clean(s)))
 
             def put_key_val(self, key, val):
 
