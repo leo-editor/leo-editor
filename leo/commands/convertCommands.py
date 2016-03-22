@@ -1704,10 +1704,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.cell.expand()
                 if True: # Always put the dict, even if it is empty.
                     old_parent = self.parent
-                    self.parent = self.new_node('# {%s}' % key)
+                    self.parent = self.new_node('# dict:%s' % key)
                     old_in_dict = self.in_data
                     self.in_data = key == 'data'
-                    for key2 in keys:
+                    for key2 in sorted(keys):
                         val2 = d.get(key2)
                         self.do_any(key2, val2)
                     self.in_data = old_in_dict
@@ -1715,8 +1715,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160322104653.1: *6* do_other
             def do_other(self, key, val):
                 
-                p = self.new_node('# ' + key)
-                if val in (None, 'None'):
+                name = 'null' if val is None else val.__class__.__name__
+                p = self.new_node('# %s:%s' % (name, key))
+                if val is None:
                     p.b = '' # Exporter will translate to 'null'
                 else:
                     p.b = repr(val)
@@ -1725,7 +1726,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 
                 assert g.isString(val)
                 if self.in_data or len(g.splitLines(val.strip())) > 1:
-                    key = '[%s]' % key
+                    key = 'list:' + key
+                else:
+                    key = 'str:' + key
                 p = self.new_node('# ' + key)
                 p.b = val
             #@+node:ekr.20160321132453.1: *6* do_list
@@ -1733,7 +1736,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
                 assert isinstance(aList, (list, tuple)), aList.__class__.__name__
                 old_parent = self.parent
-                self.parent = self.new_node('# [%s]' % key)
+                self.parent = self.new_node('# list:%s' % key)
                 for z in aList:
                     if self.is_dict(z):
                         for key in sorted(z):
@@ -1760,7 +1763,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.parent.h = 'cell %s' % (n + 1)
                 for key in sorted(cell):
                     val = cell.get(key)
-                    self.do_any(key,val)
+                    self.do_any(key, val)
             #@+node:ekr.20160320192858.1: *5* do_prefix
             def do_prefix(self, d):
                 '''
@@ -1776,25 +1779,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             val = d.get(key)
                             self.do_any(key, val)
 
-            #@+node:ekr.20160322053732.1: *5* error
-            def error(self, s):
-                
-                g.es_print('error: %s' % (s), color='red')
-            #@+node:ekr.20160321044209.1: *5* get_file_name
-            def get_file_name(self):
-                '''Open a dialog to get a Jupyter (.ipynb) file.'''
-                c = self.c
-                fn = g.app.gui.runOpenFileDialog(
-                    c,
-                    title="Open Jupyter File",
-                    filetypes=[
-                        ("All files", "*"),
-                        ("Jypyter files", "*.ipynb"),
-                    ],
-                    defaultextension=".ipynb",
-                )
-                c.bringToFront()
-                return fn
             #@+node:ekr.20160320183944.1: *5* import_file (entry point)
             def import_file(self, fn, root):
                 '''
@@ -1818,26 +1802,47 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.do_cell(cell, n)
                 c.selectPosition(self.root)
                 c.redraw()
-            #@+node:ekr.20160321131938.1: *5* is_dict
+            #@+node:ekr.20160322144620.1: *5* Utils
+            #@+node:ekr.20160322053732.1: *6* error
+            def error(self, s):
+                
+                g.es_print('error: %s' % (s), color='red')
+            #@+node:ekr.20160321044209.1: *6* get_file_name
+            def get_file_name(self):
+                '''Open a dialog to get a Jupyter (.ipynb) file.'''
+                c = self.c
+                fn = g.app.gui.runOpenFileDialog(
+                    c,
+                    title="Open Jupyter File",
+                    filetypes=[
+                        ("All files", "*"),
+                        ("Jypyter files", "*.ipynb"),
+                    ],
+                    defaultextension=".ipynb",
+                )
+                c.bringToFront()
+                return fn
+            #@+node:ekr.20160321131938.1: *6* is_dict
             def is_dict(self, obj):
                 
                 return isinstance(obj, (dict, nbformat.NotebookNode))
-            #@+node:ekr.20160321154510.1: *5* new_node
+            #@+node:ekr.20160321154510.1: *6* new_node
             def new_node(self, h):
                 
                 parent = self.parent or self.root
                 p = parent.insertAsLastChild()
                 p.h = h
                 return p
-            #@+node:ekr.20160320140531.1: *5* parse
+            #@+node:ekr.20160320140531.1: *6* parse
             def parse(self, fn):
                 
                 if g.os_path_exists(fn):
                     with open(fn) as f:
                         payload_source = f.name
                         payload = f.read()
-                    nb = nbformat.reads(payload, as_version=nbformat.NO_CONVERT)
-                        #, as_version=4: Require IPython 4.
+                    nb = nbformat.reads(payload, as_version=4)
+                        # nbformat.NO_CONVERT: no conversion
+                        # as_version=4: Require IPython 4.
                     return nb
                 else:
                     g.es_print('not found', fn)
@@ -1888,23 +1893,22 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def clean_outline(self):
                 '''Remove commas before } and ]'''
                 # JSON sure is picky.
-                result = []
+                n, result = len(self.lines), []
                 for i, s in enumerate(self.lines):
-                    nl = '\n' if s.endswith('\n') else ''
-                    s = s.rstrip()
-                    s2 = self.lines[i+1].strip() if i+1 < len(self.lines) else ''
-                    if s and s2 and s.endswith(',') and s2[0] in "}]":
-                        val = s[:-1]+nl
+                    assert not s.endswith('\n')
+                    if s.endswith(','):
+                        if i == n-1:
+                            val = s[:-1]
+                        else:
+                            s2 = self.lines[i+1].strip()
+                            if s2.startswith(']') or s2.startswith('}'):
+                                val = s[:-1]
+                            else:
+                                val = s
                     else:
-                        val = s+nl
+                        val = s
                     result.append(val)
-                    # if i < 50:
-                        # g.trace(i, 's  ', repr(s))
-                        # g.trace(i, 's2 ', repr(s2))
-                        # g.trace(i, 'val', repr(val))
                 return result
-
-                        
             #@+node:ekr.20160321072504.1: *5* export_outline (entry point)
             def export_outline(self, root, fn=None):
                 '''Import the given .ipynb file.'''
@@ -1952,8 +1956,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 g.es_trace('===== %s %s' % (s, p.h), color='red')
             #@+node:ekr.20160321074510.1: *5* put, put_key_string & put_key_val
             def put(self, s):
-                
-                # if s.startswith('"cell_type'): g.trace(g.callers())
+
+                # End every line with a comma, unless s ends with '[' or '{'.
+                # Clean_outline will remove as needed.
+                if s.endswith('[') or s.endswith('{') or s.endswith(','):
+                    pass
+                else:
+                    s = s + ','
                 line = '%s%s' % (' '*self.indent, s)
                 self.lines.append(line)
                 
@@ -1961,9 +1970,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 
                 try:
                     n = int(s)
-                    self.put('"%s": %s,' % (key, n))
+                    self.put('"%s": %s' % (key, n))
                 except Exception:
-                    self.put('"%s": "%s",' % (key, self.clean(s)))
+                    self.put('"%s": "%s"' % (key, self.clean(s)))
 
             def put_key_val(self, key, val):
 
@@ -1978,53 +1987,58 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if key == '{prefix}':
                     return # put prefix handles this.
                 has_children = any([not self.is_cell(z) for z in p.children()])
-                if key.startswith('[') and key.endswith(']'):
-                    key = key[1:-1]
+                i = key.find(':')
+                if i > -1:
+                    kind = key[:i+1]
+                    key = key[i+1:]
+                else:
+                    kind = '???'
+                if kind == 'list:':
                     if has_children:
                         # Lists are always lists of dicts.
                         self.put_key_val(key, '[')
-                        self.indent += 2
+                        self.indent += 1
                         self.put('{')
-                        self.indent += 2
+                        self.indent += 1
                         for child in p.children():
                             self.put_any_non_cell_data(child)
-                        self.indent -= 2
-                        self.put('},')
-                        self.indent -= 2
-                        self.put('],')
+                        self.indent -= 1
+                        self.put('}')
+                        self.indent -= 1
+                        self.put(']')
                     elif p.b.strip():
                         self.put_list(key, p.b)
                     else:
                         self.put_key_val(key, '[],')
-                elif key.startswith('{') and key.endswith('}'):
-                    key = key[1:-1]
+                elif kind == 'dict:':
                     if p.b.strip():
                         self.oops(p, 'ignoring body text')
                     if has_children:
                         self.put_key_val(key, '{')
-                        self.indent += 2
+                        self.indent += 1
                         if has_children:
                             for child in p.children():
                                 self.put_any_non_cell_data(child)
-                        self.indent -= 2
-                        self.put('},')
+                        self.indent -= 1
+                        self.put('}')
                     else:
                         # Assume there is a reason for the empty dict.
-                        self.put_key_val(key, '{},')
-                elif p.b.strip():
+                        self.put_key_val(key, '{}')
+                elif kind == 'str:':
                     self.put_key_string(key, p.b)
+                elif kind == 'null:':
+                    self.put_key_val(key, 'null')
                 else:
-                    # Unusual case.
-                    # self.oops(p, 'missing body text')
-                    self.put_key_val(key, 'null,')
+                    # Unusual case: int, etc.
+                    self.put_key_val(key, p.b)
             #@+node:ekr.20160321073531.1: *5* put_cell
             def put_cell(self, p):
 
                 self.put('{')
-                self.indent += 2
+                self.indent += 1
                 self.put_cell_data(p)
-                self.indent -= 2
-                self.put('},')
+                self.indent -= 1
+                self.put('}')
                 for child in p.children():
                     if self.is_cell(child):
                         self.put_cell(child)
@@ -2061,25 +2075,25 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 
                 if s.strip():
                     self.put('"%s": [' % key)
-                    self.indent += 2
+                    self.indent += 1
                     for s in g.splitLines(s):
                         self.put('"%s\\n",' % self.clean(s))
-                    self.indent -= 2
-                    self.put('],')
+                    self.indent -= 1
+                    self.put(']')
             #@+node:ekr.20160322063045.1: *5* put_outline
             def put_outline(self):
                 
                 self.put('{')
-                self.indent += 2
+                self.indent += 1
                 self.put('"cells": [')
-                self.indent += 2
+                self.indent += 1
                 ### Put the root???
                 for child in self.root.children():
                     if self.is_cell(child):
                         self.put_cell(child)
-                self.indent -= 2
-                self.put('],')
-                self.indent -= 2
+                self.indent -= 1
+                self.put(']')
+                self.indent -= 1
                 self.put_prefix()
                 self.put('}')
             #@+node:ekr.20160322061416.1: *5* put_prefix
@@ -2088,10 +2102,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c = self.c
                 p = g.findNodeInTree(c, self.root, '# {prefix}')
                 if p:
-                    self.indent += 2
+                    self.indent += 1
                     for child in p.children():
                         self.put_any_non_cell_data(child)
-                    self.indent -= 2
+                    self.indent -= 1
             #@-others
         #@-others
         c = self.c
