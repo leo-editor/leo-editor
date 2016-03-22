@@ -1670,85 +1670,69 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '''Ctor for Import_IPYNB class.'''
                 self.c = c
                     # Commander of present outline.
+                self.cell = None
+                    # The present cell node.
                 self.parent = None
                     # The parent for the next created node.
                 self.root = None
                     # The root of the to-be-created outline.
-            #@+node:ekr.20160321161756.1: *5* do_any
+            #@+node:ekr.20160321161756.1: *5* do_any & helpers
             def do_any(self, key, val):
                 
-                if self.is_dict(val):
+                if key == 'cell_type':
+                    pass # Not needed.
+                elif key == 'source':
+                    self.parent.b = val
+                elif self.is_dict(val):
                     self.do_dict(key, val)
                 elif isinstance(val, (list, tuple)):
                     self.do_list(key, val)
                 else:
                     self.do_general(key, val)
-            #@+node:ekr.20160320184226.1: *5* do_cell
-            def do_cell(self, cell, n):
-
-                # Careful: don't use self.new_node here.
-                self.parent = self.root.insertAsLastChild()
-                self.parent.h = 'cell %s' % (n + 1)
-                # cell_type is not needed.
-                for key in sorted(cell):
-                    if key != 'cell_type':
-                        val = cell.get(key)
-                        self.do_any(key, val)
-            #@+node:ekr.20160320185816.1: *5* do_data
-            def do_data(self, key, val):
-                
-                if not val:
-                    return
-                for key2 in val:
-                    val2 = val.get(key2)
-                    p = self.new_node('# ' + key2)
-                    p.b = self.toString(key2, val2)
-            #@+node:ekr.20160321131740.1: *5* do_dict
+            #@+node:ekr.20160321131740.1: *6* do_dict
             def do_dict(self, key, d):
                 
                 assert self.is_dict(d), d.__class__.__name__
-                if d:
+                keys = list(d.keys())
+                if 'collapsed' in keys:
+                    keys.remove('collapsed')
+                    if d.get('collapsed') in (False, 'false'):
+                        self.cell.expand()
+                if keys:
                     old_parent = self.parent
-                    self.parent = self.new_node('# %s' % key)
-                    for key2 in d:
-                        if key != 'collapsed':
-                            # It's cute, but not useful, to handle collapsed.
-                            val2 = d.get(key2)
-                            self.do_any(key2, val2)
+                    self.parent = self.new_node('# {%s}' % key)
+                    for key2 in keys:
+                        val2 = d.get(key2)
+                        self.do_any(key2, val2)
                     self.parent = old_parent
-            #@+node:ekr.20160321062745.1: *5* do_general (sets source)
+            #@+node:ekr.20160321062745.1: *6* do_general (sets source)
             def do_general(self, key, val):
 
                 p = self.new_node('# ' + key)
                 p.b = self.toString(key, val)
-            #@+node:ekr.20160321132453.1: *5* do_list
+            #@+node:ekr.20160321132453.1: *6* do_list
             def do_list(self, key, aList):
-                
-                assert isinstance(aList, (list, tuple)), aList.__class__.__name__
-                if aList:
-                    if key == 'outputs':
-                        self.do_outputs(key, aList)
-                    else:
-                        g.trace('===== unknown key', key)
-                        p = self.new_node('# ' + key)
-                        p.b = ''
-                        for obj in aList:
-                            p.b += repr(obj).rstrip() + '\n'
-            #@+node:ekr.20160320185354.1: *5* do_outputs
-            def do_outputs(self, key, aList):
 
-                if aList:
-                    old_parent = self.parent
-                    self.parent = self.new_node('# outputs')
-                    for d in aList: # A list of dicts.
-                        for key2 in d.keys():
-                            val2 = d.get(key2)
-                            if key2 == 'data':
-                                self.do_data(key2, val2)
-                            else:
-                                p = self.new_node('# ' + key2)
-                                p.b = self.toString(key2, val2)
-                    self.parent = old_parent
+                assert isinstance(aList, (list, tuple)), aList.__class__.__name__
+                old_parent = self.parent
+                self.parent = self.new_node('# [%s]' % key)
+                for z in aList:
+                    if self.is_dict(z):
+                        for key in sorted(z):
+                            val = z.get(key)
+                            self.do_any(key, val)
+                    else:
+                        self.error('unexpected item in list: %r' % z)
+                self.parent = old_parent
+            #@+node:ekr.20160320184226.1: *5* do_cell
+            def do_cell(self, cell, n):
+
+                # Careful: don't use self.new_node here.
+                self.parent = self.cell = self.root.insertAsLastChild()
+                self.parent.h = 'cell %s' % (n + 1)
+                for key in sorted(cell):
+                    val = cell.get(key)
+                    self.do_any(key,val)
             #@+node:ekr.20160320192858.1: *5* do_prefix
             def do_prefix(self, d):
                 '''
@@ -1758,12 +1742,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 nbformat_minor (int)
                 '''
                 if d:
-                    self.parent = self.new_node('# prefix')
+                    self.parent = self.new_node('# {prefix}')
                     for key in sorted(d):
                         if key != 'cells':
                             val = d.get(key)
                             self.do_any(key, val)
 
+            #@+node:ekr.20160322053732.1: *5* error
+            def error(self, s):
+                
+                g.es_print('error: %s' % (s), color='red')
             #@+node:ekr.20160321044209.1: *5* get_file_name
             def get_file_name(self):
                 '''Open a dialog to get a Jupyter (.ipynb) file.'''
@@ -1870,28 +1858,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '''Ctor for Import_IPYNB class.'''
                 self.c = c
                     # Commander of present outline.
-                # self.excludes = [
-                    # 'cell_type', 'collapsed', 'data', 'execution_count',
-                    # 'metadata', 'outputs', 'source',
-                    # 'image/svg+xml', 'text/html', 'text/plain',
-                # ]
                 self.indent = 0
                     # The indentation level of generated lines.
                 self.lines = []
                     # The lines of the output.
-                self.nest = False
-                    # True if cells can nest.
-                self.p = None
-                    # Position of node being generated
                 self.root = None
-                    # The root of the to-be-created outline.
+                    # The root of the outline.
             #@+node:ekr.20160321072504.1: *5* export_outline (entry point)
             def export_outline(self, root):
                 '''Import the given .ipynb file.'''
                 trace = True # and not g.unitTesting
+                self.root = root
                 self.indent = 0
                 self.lines = []
                 self.put('{')
+                self.put_prefix()
                 self.indent += 2
                 self.put('"cells": [')
                 self.indent += 2
@@ -1901,17 +1882,59 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.indent -= 2
                 self.put('}')
                 if trace:
-                    print('\n'.join(self.lines))
+                    print('\n'.join(self.lines[:100]))
                 # To do: write the file.
             #@+node:ekr.20160321140725.1: *5* is_cell
             def is_cell(self, p):
                 
                 return not p.h.startswith('#')
-            #@+node:ekr.20160321074510.1: *5* put
+            #@+node:ekr.20160321074510.1: *5* put & put_key_val
             def put(self, s):
                 
                 line = '%s%s' % (' '*self.indent, s)
                 self.lines.append(line)
+
+            def put_key_val(self, key, val):
+
+                self.put('"%s": %s' % (key, val))
+            #@+node:ekr.20160322040710.1: *5* put_any_non_cell_data
+            def put_any_non_cell_data(self, p):
+                
+                if self.is_cell(p):
+                    return # put_cell handles this.
+                assert p.h.startswith('#'), p.h
+                key = p.h[1:].strip()
+                has_children = any([not self.is_cell(z) for z in p.children()])
+                if key.startswith('[') and key.endswith(']'):
+                    key = key[1:-1]
+                    if has_children:
+                        self.put_key_val(key, '[')
+                        self.indent += 2
+                        for child in p.children():
+                            self.put_any_non_cell_data(child)
+                        self.indent -= 2
+                        self.put(']')
+                    else:
+                        # Assume there is a reason for the empty list.
+                        self.put_key_val(key, '[]')
+                elif key.startswith('{') and key.endswith('}'):
+                    key = key[1:-1]
+                    if has_children:
+                        self.put_key_val(key, '{')
+                        self.indent += 2
+                        for child in p.children():
+                            self.put_any_non_cell_data(child)
+                        self.indent -= 2
+                        self.put('}')
+                    else:
+                        # Assume there is a reason for the empty dict.
+                        self.put_key_val(key, '{}')
+                elif p.b.strip():
+                    self.put_list(key, p.b)
+                else:
+                    # Unusual case.
+                    g.trace('===============', repr(key))
+                    self.put_key_val(key, 'None')
             #@+node:ekr.20160321073531.1: *5* put_cell
             def put_cell(self, p):
 
@@ -1928,28 +1951,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
                 if self.is_cell(p):
                     self.put_cell_type(p)
-                    # self.put('"leo_headline": %s' % p.h)
                     self.put_key_val('leo_headline', p.h)
                 for child in p.children():
-                    if not self.is_cell(child):
-                        self.indent += 2
-                        h = child.h[1:].strip()
-                        if h.startswith('metadata'):
-                            self.put_metadata(child)
-                        elif h.startswith('outputs'):
-                            self.put_outputs(child)
-                        else:
-                            self.put_key_val(h, child.b)
-
-                        self.indent -= 2
+                    self.put_any_non_cell_data(child)
                 if self.is_cell(p):
-                    self.put_source(p)
-            #@+node:ekr.20160321080900.1: *5* put_cell_children
-            def put_cell_children(self, p):
-                
-                for child in p.children():
-                    if not child.h.startswith('#'):
-                        self.put_cell(child)
+                    self.put_list('source', p.b)
             #@+node:ekr.20160321135341.1: *5* put_cell_type (to do: header types)
             def put_cell_type(self, p):
 
@@ -1967,46 +1973,29 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     s2 = 'code' # New default.
                 if s2:
                     self.put('"cell_type": %s,' % s2)
-            #@+node:ekr.20160321142517.1: *5* put_key_val
-            def put_key_val(self, key, val):
+            #@+node:ekr.20160321142040.1: *5* put_list
+            def put_list(self, key, s):
                 
-                self.put('"%s": %s' % (key, val))
-            #@+node:ekr.20160321142040.1: *5* put_list_helper
-            def put_list_helper(self, key, s):
+                def clean(s):
+                    return s.replace('"', '\"').rstrip()
                 
                 if s.strip():
-                    lines = g.splitLines(s)
                     self.put('"%s": [' % key)
                     self.indent += 2
-                    for s in lines:
-                        s = s.replace('"', '\"').rstrip()
-                        self.put('"%s\\n",' % s)
+                    for s in g.splitLines(s):
+                        self.put('"%s\\n",' % clean(s))
                     self.indent -= 2
                     self.put('],')
-            #@+node:ekr.20160321141639.1: *5* put_metadata
-            def put_metadata(self, p):
+            #@+node:ekr.20160322061416.1: *5* put_prefix
+            def put_prefix(self):
                 
-                assert p.h.startswith('#'), p.h
-                h = p.h[1:].strip()
-                assert h.startswith('metadata')
-                for child in p.children():
-                    if self.is_cell(child):
-                        g.trace('ignoring', child.h)
-                    else:
-                        key = child.h[1:].strip()
-                        val = child.b
-                        self.put_key_val(key, val)
-            #@+node:ekr.20160321141823.1: *5* put_outputs
-            def put_outputs(self, p):
-                
-                assert p.h.startswith('#'), p.h
-                h = p.h[1:].strip()
-                assert h.startswith('outputs')
-                self.put_list_helper('outputs', p.b)
-            #@+node:ekr.20160321140041.1: *5* put_source
-            def put_source(self, p):
-                
-                self.put_list_helper('source', p.b)
+                c = self.c
+                p = g.findNodeInTree(c, self.root, '# {prefix}')
+                if p:
+                    self.indent += 2
+                    for child in p.children():
+                        self.put_any_non_cell_data(child)
+                    self.indent -= 2
             #@-others
         #@-others
         c = self.c
