@@ -5,6 +5,7 @@
 '''Leo's file-conversion commands.'''
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+import re
 import sys
 
 def cmd(name):
@@ -2040,7 +2041,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if type_ != 'markdown':
                         self.put_execution_count(p)
                         self.put_outputs(p)
-                    self.put_source(p)
+                    self.put_source(p, type_)
                 else:
                     for child in p.children():
                         self.put_any_non_cell_data(child)
@@ -2103,9 +2104,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     self.put_key_val('outputs', '[]')
             #@+node:ekr.20160323140748.1: *6* put_source
-            def put_source(self, p):
+            def put_source(self, p, type_):
                 '''Put the 'source' key for p.'''
                 s = ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
+                # Auto add headlines.
+                if type_ == 'markdown' and not re.search('^<[hH][123456]>', p.b):
+                    n = min(6, self.level(p))
+                    heading = '<h%(level)s>%(headline)s</h%(level)s>\n\n' % {
+                        'level': n,
+                        'headline': p.h,
+                    }
+                    s = heading + s
                     # Not completely accurate, but good for now.
                 self.put_list('source', s or '# no code!')
             #@+node:ekr.20160323070611.1: *5* put_indent & put_dedent
@@ -2245,6 +2254,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def is_cell(self, p):
                 '''Return True if p is a cell node.'''
                 return not p.h.startswith('#')
+            #@+node:ekr.20160323144924.1: *6* level
+            def level(self, p):
+                '''Return the level of p relative to self.root (one-based)'''
+                return 1 + p.level() - self.root.level()
             #@+node:ekr.20160322092429.1: *6* oops
             def oops(self, p, s):
                 '''Give an error message.'''
