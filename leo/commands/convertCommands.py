@@ -5,6 +5,7 @@
 '''Leo's file-conversion commands.'''
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+import sys
 
 def cmd(name):
     '''Command decorator for the ConvertCommandsClass class.'''
@@ -1815,7 +1816,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         if key != 'cells':
                             val = d.get(key)
                             self.do_any(key, val)
-
             #@+node:ekr.20160320183944.1: *5* import_file (entry point)
             def import_file(self, fn, root):
                 '''
@@ -2141,6 +2141,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     for child in p.children():
                         self.put_any_non_cell_data(child)
                     self.indent -= 1
+                else:
+                    prefix = self.default_metadata()
+                    self.indent += 1
+                    for s in g.splitLines(prefix):
+                        self.put(s.rstrip())
+                    self.indent -= 1
             #@+node:ekr.20160323080255.1: *5* Utils
             #@+node:ekr.20160322071826.1: *6* clean
             def clean(self, s):
@@ -2166,6 +2172,37 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         val = s
                     result.append(val)
                 return result
+            #@+node:ekr.20160323134348.1: *6* default_metadata
+            def default_metadata(self):
+                '''Return the top-level metadata to use if there is no {prefix} node.'''
+                s = '''\
+            "metadata": {
+             "kernelspec": {
+              "display_name": "Python %(version)s",
+              "language": "python",
+              "name": "python%(version)s"
+             },
+             "language_info": {
+              "codemirror_mode": {
+               "name": "ipython",
+               "version": %(version)s
+              },
+              "file_extension": ".py",
+              "mimetype": "text/x-python",
+              "name": "python",
+              "nbconvert_exporter": "python",
+              "pygments_lexer": "ipython3",
+              "version": "%(long_version)s"
+             }
+            },
+            "nbformat": 4,
+            "nbformat_minor": 0'''
+                n1, n2 = sys.version_info[0], sys.version_info[1]
+                s = s % {
+                   'version': n1,
+                   'long_version': '%s.%s' % (n1, n2),
+                }
+                return g.adjustTripleString(s, 1)
             #@+node:ekr.20160323070240.1: *6* find_key
             def find_key(self, key, p):
                 '''Return the non-cell node in p's direct children with the given key.'''
