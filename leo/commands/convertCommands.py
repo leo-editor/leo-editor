@@ -1708,6 +1708,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         if d.get('collapsed') in (False, 'false'):
                             self.cell.expand()
                         keys.remove('collapsed')
+                    if 'leo_headline' in keys:
+                        h = d.get('leo_headline')
+                        if h:
+                            self.cell.h = h
+                        keys.remove('leo_headline')
                 # g.trace(key, is_cell, keys)
                 if is_cell and key == 'metadata' and not keys:
                     return # experimental
@@ -2079,6 +2084,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.put_any_non_cell_data(child, exclude='collapsed')
                 if type_ == 'code':
                     self.put_key_val('collapsed', 'true' if p.isExpanded() else 'false')
+                self.put_key_string('leo_headline', p.h)
+                    # Remember the headline.
                 self.put_dedent('}')
             #@+node:ekr.20160323082525.1: *6* put_outputs
             def put_outputs(self, p):
