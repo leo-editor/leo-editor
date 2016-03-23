@@ -1866,12 +1866,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '''Ctor for Import_IPYNB class.'''
                 self.c = c
                     # Commander of present outline.
+                self.required_cell_keys = ('cell_type', 'metatdata', 'outputs', 'source')
+                    # Keys that exist for the present cell.
                 self.indent = 0
                     # The indentation level of generated lines.
                 self.lines = []
                     # The lines of the output.
-                self.required_cell_data = ['cell_type', 'metadata', 'source']
-                    # Required data for cells.
                 self.root = None
                     # The root of the outline.
             #@+node:ekr.20160321072504.1: *5* export_outline (entry point)
@@ -1918,7 +1918,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if indent:
                     self.indent += 1
             #@+node:ekr.20160322040710.1: *5* put_any_non_cell_data
-            def put_any_non_cell_data(self, p):
+            def put_any_non_cell_data(self, p, exclude=None):
                 
                 if self.is_cell(p):
                     return # put_cell handles this.
@@ -1926,13 +1926,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 key = p.h[1:].strip()
                 if key == '{prefix}':
                     return # put prefix handles this.
-                has_children = any([not self.is_cell(z) for z in p.children()])
+                has_children = self.has_data_children(p)
                 i = key.find(':')
                 if i > -1:
                     kind = key[:i+1]
                     key = key[i+1:]
                 else:
                     kind = '???'
+                    key = '???'
+                if key == exclude:
+                    return # The caller will generate this key.
                 if kind == 'list:':
                     if has_children:
                         # Lists are always lists of dicts.
@@ -1974,30 +1977,76 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 for child in p.children():
                     if self.is_cell(child):
                         self.put_cell(child)
-            #@+node:ekr.20160321074345.1: *5* put_cell_data
+            #@+node:ekr.20160321074345.1: *5* put_cell_data & helpers
             def put_cell_data(self, p):
                 '''Put all the hidden data for cell p.'''
-                for child in p.children():
-                    self.put_any_non_cell_data(child)
                 if self.is_cell(p):
-                    self.put_list('source', p.b)
-            #@+node:ekr.20160321135341.1: *5* put_cell_type (used if no cell_type node)
-            def put_cell_type(self, p):
-                '''Return the cell_type inferred from p.b.'''
-                s = p.b.strip()
-                if s.find('@language python') > -1:
-                    s2 = 'code'
-                elif (
-                    s.find('@language rest') > -1 or
-                    s.find('@language markdown') > -1
-                ):
-                    s2 = 'markdown'
-                elif s:
-                    s2 = 'code'
+                    type_ = self.put_cell_type(p)
+                    self.put_metadata(p, type_)
+
+                    if type_ != 'markdown':
+                        self.put_execution_count(p)
+                        self.put_outputs(p)
+                    self.put_list('source', p.b or '# no code!')
                 else:
-                    s2 = 'code' # New default.
-                if s2:
-                    self.put_key_string('cell_type', s2)
+                    for child in p.children():
+                        self.put_any_non_cell_data(child)
+            #@+node:ekr.20160321135341.1: *6* put_cell_type
+            def put_cell_type(self, p):
+                '''Put the 'cell_type' dict for cell p.'''
+                assert self.is_cell(p), p.h
+                p_key = self.find_key('cell_type', p)
+                if p_key:
+                    type_ = p_key.b.strip()
+                else:
+                    s = p.b.strip()
+                    if (
+                        s.find('@language rest') > -1 or
+                        s.find('@language markdown') > -1
+                    ):
+                        type_ = 'markdown'
+                    else:
+                        type_ = 'code'
+                self.put_key_string('cell_type', type_)
+                return type_
+            #@+node:ekr.20160323095357.1: *6* put_execution_count
+            def put_execution_count(self, p):
+                '''Put the 'execution_count' for cell p.'''
+                assert self.is_cell(p), p.h
+                p_key = self.find_key('execution_count', p)
+                if p_key and p_key.b.strip():
+                    count = p_key.b.strip()
+                else:
+                    count = 'null'
+                self.put_key_val('execution_count', count)
+            #@+node:ekr.20160323082439.1: *6* put_metadata
+            def put_metadata(self, p, type_):
+                '''Put the 'metadata' dict for cell p.'''
+                assert self.is_cell(p), p.h
+                self.put_key_val('metadata', '{', indent=True)
+                p_key = self.find_key('metadata', p)
+                if p_key:
+                    # Put the existing keys, but not collapsed.
+                    for child in p_key.children():
+                        self.put_any_non_cell_data(child, exclude='collapsed')
+                if type_ == 'code':
+                    self.put_key_val('collapsed', 'true' if p.isExpanded() else 'false')
+                self.put_dedent('}')
+            #@+node:ekr.20160323082525.1: *6* put_outputs
+            def put_outputs(self, p):
+                '''Return the 'outputs' list for p.'''
+                assert self.is_cell(p), p.h
+                p_key = self.find_key('outputs', p)
+                if p_key and self.has_data_children(p_key):
+                    # Similar to put_any_non_cell_data.
+                    self.put_key_val('outputs', '[', indent=True)
+                    self.put_indent('{')
+                    for child in p_key.children():
+                        self.put_any_non_cell_data(child)
+                    self.put_dedent('}')
+                    self.put_dedent(']')
+                else:
+                    self.put_key_val('outputs', '[]')
             #@+node:ekr.20160323070611.1: *5* put_indent & put_dedent
             def put_dedent(self, key=None):
                 '''Increase indentation level and put the key.'''
@@ -2018,12 +2067,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     for s in g.splitLines(s):
                         self.put('"%s\\n",' % self.clean(s))
                     self.put_dedent(']')
+                else:
+                    self.put_key_val(key, '[]')
+                        ### Bug fix?
             #@+node:ekr.20160322063045.1: *5* put_outline
             def put_outline(self):
                 '''Put all cells in the outline.'''
                 self.put_indent('{')
                 self.put_indent('"cells": [')
-                ### Put the root???
                 for child in self.root.children():
                     if self.is_cell(child):
                         self.put_cell(child)
@@ -2067,12 +2118,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     result.append(val)
                 return result
             #@+node:ekr.20160323070240.1: *6* find_key
-            def find_key(self, p, key):
+            def find_key(self, key, p):
                 '''Return the non-cell node in p's direct children with the given key.'''
                 for child in p.children():
                     if child.h.endswith(key):
                         return child
                 return None
+            #@+node:ekr.20160323094152.1: *6* has_data_children
+            def has_data_children(self, p):
+                '''Return True if p has any non-cell direct children.'''
+                return p.hasChildren() and any([not self.is_cell(z) for z in p.children()])
             #@+node:ekr.20160322062914.1: *6* get_file_name (export)
             def get_file_name(self):
                 '''Open a dialog to write a Jupyter (.ipynb) file.'''
