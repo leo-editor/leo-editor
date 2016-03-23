@@ -662,30 +662,6 @@ Leo + Ipython notebook integration is a killer app indeed.
 - Maybe: Read/write files in json format
 - Maybe: py2cython: like make_stub_files.
 .. @+node:ekr.20150418052852.1: *5* import/export to .ipynb files
-@language rest
-@wrap
-
-There are four types of cells: code cells, markdown cells, raw cells and heading cells.
-
-**Code cells**
-
-The results that are returned from this computation are then displayed in the notebook as the cell’s output. The output is not limited to text. This is known as IPython’s rich display capability.
-
-**Markdown cells**
-
-When a Markdown cell is executed, the Markdown code is converted into the corresponding formatted rich text. Markdown allows arbitrary HTML code for formatting.
-
-Within Markdown cells, you can also include mathematics in a straightforward way, using standard LaTeX notation: $...$ for inline mathematics and $$...$$ for displayed mathematics. When the Markdown cell is executed, the LaTeX portions are automatically rendered in the HTML output as equations with high quality typography. This is made possible by MathJax, which supports a large subset of LaTeX functionality
-
-Standard mathematics environments defined by LaTeX and AMS-LaTeX (the amsmath package) also work, such as \begin{equation}...\end{equation}, and \begin{align}...\end{align}. New LaTeX macros may be defined using standard methods, such as \newcommand, by placing them anywhere between math delimiters in a Markdown cell. These definitions are then available throughout the rest of the IPython session.
-
-**Raw cells**
-
-Raw cells are not evaluated by the notebook. When passed through nbconvert, raw cells arrive in the destination format unmodified. 
-
-**Heading cells**
-
-You can provide a conceptual structure for your computational document as a whole using different levels of headings; there are 6 levels available, from level 1 (top level) down to level 6 (paragraph). These can be used later for constructing tables of contents, etc. As with Markdown cells, a heading cell is replaced by a rich text rendering of the heading when the cell is executed.
 .. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
 Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
