@@ -2032,11 +2032,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if self.is_cell(p):
                     type_ = self.put_cell_type(p)
                     self.put_metadata(p, type_)
-
                     if type_ != 'markdown':
                         self.put_execution_count(p)
                         self.put_outputs(p)
-                    self.put_list('source', p.b or '# no code!')
+                    self.put_source(p)
                 else:
                     for child in p.children():
                         self.put_any_non_cell_data(child)
@@ -2096,6 +2095,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.put_dedent(']')
                 else:
                     self.put_key_val('outputs', '[]')
+            #@+node:ekr.20160323140748.1: *6* put_source
+            def put_source(self, p):
+                '''Put the 'source' key for p.'''
+                s = ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
+                    # Not completely accurate, but good for now.
+                self.put_list('source', s or '# no code!')
             #@+node:ekr.20160323070611.1: *5* put_indent & put_dedent
             def put_dedent(self, key=None):
                 '''Increase indentation level and put the key.'''
