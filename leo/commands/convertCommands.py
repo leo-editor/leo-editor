@@ -2053,11 +2053,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if p_key:
                     type_ = p_key.b.strip()
                 else:
-                    s = p.b.strip()
-                    if (
-                        s.find('@language rest') > -1 or
-                        s.find('@language markdown') > -1
-                    ):
+                    colorizer = self.c.frame.body.colorizer
+                    language = colorizer.scanColorDirectives(p)
+                    if language in ('rest', 'markdown', 'md'):
                         type_ = 'markdown'
                     else:
                         type_ = 'code'
