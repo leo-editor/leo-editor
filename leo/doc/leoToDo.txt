@@ -263,14 +263,6 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160319151013.1: *4* Multi-threaded trees
-https://groups.google.com/d/msg/leo-editor/E0HtQiBRfOg/IOcZMv9vAgAJ
-
-It is astoundingly easy to create this multi-dag in Leo.
-
-Each vnode has a parents list and a children list.  All we have to do is replace these two lists by dictionaries whose keys are attributes and whose values are the parents or children lists for those attributes.  Finally, we add Python properties shield the dictionary lookup from the rest of Leo.  We are talking about maybe 50 lines of code!
-
-As far as the rest of Leo is concerned, vnodes still have parents and children lists.  The switcheroo happens totally invisibly, when the user wants to see another view.  The attribute changes and that changes what the vnode dictionary/properties "deliver" to the rest of Leo.
 .. @+node:ekr.20160318113249.1: *4* Commands
 .. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
 - Can they be interrupted?
@@ -549,6 +541,9 @@ writeAbbreviations
 .. @+node:ekr.20160302131622.1: *7* Found:abbrevs
 # flattened, word, ignore-case, head, body
 .. @+node:ekr.20160319150951.1: *4* Gui
+.. @+node:ekr.20160324130402.1: *5* QtWebKit window
+from leo.core.leoQt import QtWebKit, QtWebKitWidgets
+g.trace(QtWebKitWidgets)
 .. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -4211,6 +4206,16 @@ g.es(len(list(dir(g))))
 .. @+node:ekr.20071001052501: *4* Versioning for nodes
 One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
 .. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
+.. @+node:ekr.20160319151013.1: *4* not likely: Multi-threaded trees
+https://groups.google.com/d/msg/leo-editor/E0HtQiBRfOg/IOcZMv9vAgAJ
+
+I don't think this feature is worth doing.
+
+It is astoundingly easy to create this multi-dag in Leo.
+
+Each vnode has a parents list and a children list.  All we have to do is replace these two lists by dictionaries whose keys are attributes and whose values are the parents or children lists for those attributes.  Finally, we add Python properties shield the dictionary lookup from the rest of Leo.  We are talking about maybe 50 lines of code!
+
+As far as the rest of Leo is concerned, vnodes still have parents and children lists.  The switcheroo happens totally invisibly, when the user wants to see another view.  The attribute changes and that changes what the vnode dictionary/properties "deliver" to the rest of Leo.
 .. @+node:ekr.20090131200406.15: *3* File & file format
 .. @+node:ekr.20061002093442: *4* Add opml support to new, open, save commands
 .. @+node:ekr.20111019104425.15895: *4* LeoFS (Kent)
