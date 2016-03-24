@@ -1942,15 +1942,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.put_outline()
                     self.lines = self.clean_outline()
                     s = '\n'.join(self.lines)
+                    if g.isUnicode(s):
+                        s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
                     try:
-                        f = open(fn, 'w')
+                        f = open(fn, 'wb')
                         f.write(s)
                         f.close()
                         g.es_print('wrote: %s' % fn)
                     except IOError:
                         g.es_print('can not open: %s' % fn)
-                    # print('\n'.join(self.lines[:100]))
-                    # To do: write the file.
             #@+node:ekr.20160321074510.1: *5* put, put_key_string & put_key_val
             def put(self, s):
 
@@ -2155,21 +2155,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160322061416.1: *5* put_prefix
             def put_prefix(self):
                 '''Put the data contained in the prefix node, or defaults.'''
-                c = self.c
-                p = g.findNodeInTree(c, self.root, '# {prefix}')
+                p = self.find_key('# {prefix}', self.root)
+                self.indent += 1
                 if p:
-                    self.indent += 1
                     for child in p.children():
                         self.put_any_non_cell_data(child)
-                    self.indent -= 1
                 else:
                     prefix = self.default_metadata()
-                    self.indent += 1
                     for s in g.splitLines(prefix):
                         self.put(s.rstrip())
-                    self.indent -= 1
+                self.indent -= 1
             #@+node:ekr.20160323080255.1: *5* Utils
-            #@+node:ekr.20160322071826.1: *6* clean
+            #@+node:ekr.20160322071826.1: *6* clean (TO DO)
             def clean(self, s):
                 '''Perform json escapes on s.'''
                 return s.replace('\\','\\\\').replace('"', '\\"').rstrip()
@@ -2239,14 +2236,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def get_file_name(self):
                 '''Open a dialog to write a Jupyter (.ipynb) file.'''
                 c = self.c
-                fn = g.app.gui.runOpenFileDialog(
+                fn = g.app.gui.runSaveFileDialog(
                     c,
-                    title="Export To Jupyter File",
-                    filetypes=[
-                        ("All files", "*"),
-                        ("Jypyter files", "*.ipynb"),
-                    ],
                     defaultextension=".ipynb",
+                    filetypes=[
+                        ("Jypyter files", "*.ipynb"),
+                        ("All files", "*"),
+                    ],
+                    initialfile='',
+                    title="Export To Jupyter File",
                 )
                 c.bringToFront()
                 return fn
@@ -2257,7 +2255,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160323144924.1: *6* level
             def level(self, p):
                 '''Return the level of p relative to self.root (one-based)'''
-                return 1 + p.level() - self.root.level()
+                return p.level() - self.root.level()
+
             #@+node:ekr.20160322092429.1: *6* oops
             def oops(self, p, s):
                 '''Give an error message.'''
