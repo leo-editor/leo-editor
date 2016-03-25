@@ -10,6 +10,61 @@ The change was to fc.putStyleSheetLine.
 Names in docstrings cause trouble in Python 2.
 
 Rather than trying to figure out workarounds, @button jEdit2Py now refuses to run on Python 2.
+.. @+node:ekr.20160324180039.1: ** Features
+.. @+node:ekr.20160324174900.1: *3* Viewrendered already supports markdown
+@language rest
+@wrap
+
+Leo already supports @language md:
+
+markdown rendering must be specified by putting it in a ``@md`` node,
+unless ``@string view-rendered-default-kind`` is set to ``md``,
+
+Use github code to allow various markup types
+
+From: tfer <tfetherston@aol.com>
+
+Having played with Jacob Peck's markdown fork, I now get what leo is doing to provide a preview of text using a markup type. It is converting that markup, (rst: built-in, markdown: proposed).  What is being done is to run the text through a xxx2html converter and then using a Qt window widget that renders the generated html.
+
+There have been requests to extend the built in rst functionality to other markup types, (Peck has an experimental one for markdown). Rather than added them piecemeal, **we could incorporate the code github uses** to allow people to use their preferred markup language for their projects readme file. Although a number of the converters are written in ruby, some are python and one is even pearl. It is an extensible scheme. The license for the library is basically, "keep the copyright notice and have at it", so it shouldn't cause any problem.
+
+The code is here: https://github.com/github/markup
+
+The current "see the selected node's body text" in the view-render-pane should work, the only thing lacking is a way to preview an entire file. How about adding an option to preview it in the context menu for a right click on an @file node?
+
+===== From: Jacob Peck <gatesphere@gmail.com>
+
+That was actually my first thought when approaching the markdown implementation.  The major problem here is that the wrapper program, and several of the assorted converters are in ruby.  The only python one is rest2html, which we already have (via docutils).  I don't think adding ruby and perl as dependencies for one small feature of Leo would be wise...  that seems to me to be the very definition of bloatware.
+
+That being said, github-markup supports the following formats, which are supported by python libs::
+
+    markdown (markdown)
+    rst (docutils)
+    textile (textile)
+    org mode (pyorgmode)
+    creole (python-creole)
+    mediawiki (mw2html)
+    asciidoc (asciidoc)
+
+The following do not have a python equivalent (to my knowledge)::
+
+    rdoc (ruby documentation)
+    perlpod (perl documentation)
+    
+I could certainly keep hacking on viewrendered to support the first list, if interest is high.
+
+> The current "see the selected node's body text" in the 
+> view-render-pane should work, the only thing lacking is a way to 
+> preview an entire file.  How about adding an option to preview it in 
+> the context menu for a right click on an @file node?
+I could look into this suggestion too, if someone would point me in the 
+right direction with respect to 2 things (I'm really new to Leo, so I 
+have no idea where these things are in the source):
+
+1. How to add a context menu item for a node
+2. How to get a "full file" without saving it, i.e., fill in the << 
+references >>, @others, and @all directives.
+
 .. @-all
 .. @@killbeautify
 .. @@language rest

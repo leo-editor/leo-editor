@@ -9,6 +9,106 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160227093754.1: ** To do: 5.3
 @language rest
 @wrap
+.. @+node:ekr.20160325051602.1: *3* First: 5.3
+.. @+node:ekr.20160216043537.1: *4* Improve chapters
+* @chapter should be allowed *anywhere*.
+    - It takes 0.07 sec to search all of Leo.
+    - chapter commands should always search for @chapter nodes.
+    - There is no need for @chapters.
+
+- Replace ChapterController by ChapterCommands class.
+- Why do we have all the chapters code?
+- Actually switching chapters is easy?
+- I suspect the reason has to do with commands, not drawing.
+- However, this may have been done when I was chronically sleep deprived.
+.. @+node:ekr.20160216043726.1: *5* How long does it take to search LeoPy.leo?
+@language python
+
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
+
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
+
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+
+open dialogs should probably @path directory or curdir
+save dialog should probably use the directory of the saved file.
+
+Search for:
+
+LeoQtGui.Dialogs & panels
+LeoQtGui.runSaveFileDialog
+LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
+- Can they be interrupted?
+- Use list(set(words)) to check each word only once.
+- The do plain search for possibly-misspelled words in each body.
+
+.. @+node:ekr.20160319060938.1: *4* Ipython integration
+http://jupyter.org/qtconsole/stable/#embedding-the-qtconsole-in-a-qt-application
+discusses embedding the qt console in a qt app.
+
+Ideally, we would like to show the output of matplotlib.pyplot.plot in Leo's viewrendered window.
+
+There is lots of work to do:
+
+1. At present, running the same matplotlib script in Leo twice does not update the qt plot. In contrast, the IPython console does update the plot.
+
+2. Nothing gets plotted if --ipython is not in effect. I'll be tracing through the plot function to see where the output gets created (or swallowed).
+
+Hmm.  It may be best always to rely on the --ipython option.  It creates the Jupyter server. Leo surely should be using that unchanged.  It's a major piece of work.  Otoh, matplotlib doesn't require IPython, so maybe some plots could run independently of IPython.
+
+3. It would be cool to provide all the goodies in the Qt Console window (saving to file, etc) from Leo's viewrendered pane.  It's got to be possible.
+
+Note: we will want output to go to the viewrendered pane. That way the user could manage thousands of IPython scripts in the same .leo file.  I'll soon be creating matplotlib_examples.leo, with all the matplotlib scripts organized using @others, etc.  Do you see?
+
+Edward
+.. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
+https://github.com/leo-editor/leo-editor/issues/156
+.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
+Render to tex, pdf, rst, etc.
+
+c.display(x) displays object x. Support plotting objects x.
+
+Create IPython-like demo.
+.. @+node:ekr.20111010122531.15568: *6* @render-rest, @render-html trees
+Imagine LeoDocs completely rendered at all times.
+
+@render-rest or @render-html would cause the body pane to become the rendering pane for all nodes in the @render tree. These could be overridden with @no-render.
+
+Having *both* the original text *and* the rendered text be visible is often heavy: the user usually does not want to know about the sources: the rendering is good enough.
+
+show/hide-body pane would be good commands to have, but those commands increase the burden on the user.
+.. @+node:ekr.20130806072439.21299: *5* Leo and IPython
+From: Kent Tenney <ktenney@gmail.com>
+
+It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
+
+===== From: Alia K <alia_khouri@yahoo.com>
+
+IPEP 1611 (Ipython Enhancement Proposal, completed) allows for Leo-like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
+
+Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
+.. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
+# Depends on Python's meta package: https://pypi.python.org/pypi/meta
+# which *is* part of the Anaconda distro.
+
+import meta ; print(meta)
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
 @language rest
 @wrap
@@ -264,11 +364,6 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 @language rest
 @wrap
 .. @+node:ekr.20160318113249.1: *4* Commands
-.. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
-- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
 .. @+node:ekr.20160303040846.1: *5* Add command to correct blank lines in @clean files
 @language python
 
@@ -318,26 +413,17 @@ for p in c.all_positions():
 
     except Exception as exc:
         g.es_exception()
-.. @+node:ekr.20150316141655.14: *5* Better default for open/save file dialogs
-File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
+.. @+node:ekr.20160324173130.1: *5* execute javascript in Leo?
+@language python
 
-Suppose my focus node is under a @path directive, say @path E:
-\Documents\Some Folder\
+# http://stackoverflow.com/questions/10136319/executing-javascript-from-python
+# PyV8: https://github.com/emmetio/pyv8-binaries
+# PyExecJS: https://pypi.python.org/pypi/PyExecJS
+import execjs # PyExecJS.
+print(execjs.eval("'red yellow blue'.split(' ')"))
+print(execjs.get().name)
+    # Runtime environment: Node.js (V8)
 
-Is there a setting that would cause the 'File>Open' or 'File>Import
-File' commands to begin the search dialog in the directory, E:
-\Documents\Some Folder\ instead of the last directory used?
-
-
-open dialogs should probably @path directory or curdir
-save dialog should probably use the directory of the saved file.
-
-Search for:
-
-LeoQtGui.Dialogs & panels
-LeoQtGui.runSaveFileDialog
-LeoQtGui.runOpenFileDialog
 .. @+node:ekr.20160319060429.1: *5* Later
 .. @+node:ekr.20150311123850.7: *6* Improve --diff
 The --diff option is not very useful as a git diff.
@@ -541,9 +627,6 @@ writeAbbreviations
 .. @+node:ekr.20160302131622.1: *7* Found:abbrevs
 # flattened, word, ignore-case, head, body
 .. @+node:ekr.20160319150951.1: *4* Gui
-.. @+node:ekr.20160324130402.1: *5* QtWebKit window
-from leo.core.leoQt import QtWebKit, QtWebKitWidgets
-g.trace(QtWebKitWidgets)
 .. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -604,52 +687,6 @@ if 0:
             # sys.stdout.write(out)
             # sys.stdout.flush()
             g.es(out)
-.. @+node:ekr.20160319060938.1: *4* Ipython integration
-http://jupyter.org/qtconsole/stable/#embedding-the-qtconsole-in-a-qt-application
-discusses embedding the qt console in a qt app.
-
-Ideally, we would like to show the output of matplotlib.pyplot.plot in Leo's viewrendered window.
-
-There is lots of work to do:
-
-1. At present, running the same matplotlib script in Leo twice does not update the qt plot. In contrast, the IPython console does update the plot.
-
-2. Nothing gets plotted if --ipython is not in effect. I'll be tracing through the plot function to see where the output gets created (or swallowed).
-
-Hmm.  It may be best always to rely on the --ipython option.  It creates the Jupyter server. Leo surely should be using that unchanged.  It's a major piece of work.  Otoh, matplotlib doesn't require IPython, so maybe some plots could run independently of IPython.
-
-3. It would be cool to provide all the goodies in the Qt Console window (saving to file, etc) from Leo's viewrendered pane.  It's got to be possible.
-
-Note: we will want output to go to the viewrendered pane. That way the user could manage thousands of IPython scripts in the same .leo file.  I'll soon be creating matplotlib_examples.leo, with all the matplotlib scripts organized using @others, etc.  Do you see?
-
-Edward
-.. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
-https://github.com/leo-editor/leo-editor/issues/156
-.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
-Render to tex, pdf, rst, etc.
-
-c.display(x) displays object x. Support plotting objects x.
-
-Create IPython-like demo.
-.. @+node:ekr.20111010122531.15568: *6* @render-rest, @render-html trees
-Imagine LeoDocs completely rendered at all times.
-
-@render-rest or @render-html would cause the body pane to become the rendering pane for all nodes in the @render tree. These could be overridden with @no-render.
-
-Having *both* the original text *and* the rendered text be visible is often heavy: the user usually does not want to know about the sources: the rendering is good enough.
-
-show/hide-body pane would be good commands to have, but those commands increase the burden on the user.
-.. @+node:ekr.20130806072439.21299: *5* Leo and IPython
-From: Kent Tenney <ktenney@gmail.com>
-
-It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
-
-===== From: Alia K <alia_khouri@yahoo.com>
-
-IPEP 1611 (Ipython Enhancement Proposal, completed) allows for Leo-like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
-
-Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
 * Add ipynb/Jupyter importer/exporter.
 - Add coffeescript importer.
@@ -664,29 +701,6 @@ Use external code.
 .. @+node:ekr.20160318113258.1: *4* Plugins
 .. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
-.. @+node:ekr.20160216043537.1: *5* Improve chapters
-* @chapter should be allowed *anywhere*.
-    - It takes 0.07 sec to search all of Leo.
-    - chapter commands should always search for @chapter nodes.
-    - There is no need for @chapters.
-
-- Replace ChapterController by ChapterCommands class.
-- Why do we have all the chapters code?
-- Actually switching chapters is easy?
-- I suspect the reason has to do with commands, not drawing.
-- However, this may have been done when I was chronically sleep deprived.
-.. @+node:ekr.20160216043726.1: *6* How long does it take to search LeoPy.leo?
-@language python
-
-import time
-t1 = time.clock()
-n = 0
-for p in c.all_unique_positions():
-    n += 1
-    if p.h.startswith('@chapter '):
-        pass
-t2 = time.clock()
-g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 .. @+node:ekr.20160310055038.1: *5* Improve quicksearch (Nav pane)
 - Key bindings in the nav pane.
     - Arrow keys.
@@ -694,8 +708,6 @@ g.es('%s nodes, %5.3f sec' % (n, t2-t1))
     - Some key to shift back to the nav pane.
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
-.. @+node:ekr.20160318113645.1: *5* Livecode plugin enabled by default
-Depends on Python's meta package: https://pypi.python.org/pypi/meta
 .. @+node:ekr.20160318113451.1: *5* Merge vr & vr2
 .. @+node:ekr.20150418061229.1: *6* Add QWebView & OpenGl support to viewrendered.py
 How much of this does vr2 do?
@@ -2526,50 +2538,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 http://www.voom.net/pyqt-qtest-example
 .. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
 This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20130806072439.21428: *4* Use github code to allow various markup types
-From: tfer <tfetherston@aol.com>
-
-Having played with Jacob Peck's markdown fork, I now get what leo is doing to provide a preview of text using a markup type. It is converting that markup, (rst: built-in, markdown: proposed).  What is being done is to run the text through a xxx2html converter and then using a Qt window widget that renders the generated html.
-
-There have been requests to extend the built in rst functionality to other markup types, (Peck has an experimental one for markdown). Rather than added them piecemeal, **we could incorporate the code github uses** to allow people to use their preferred markup language for their projects readme file. Although a number of the converters are written in ruby, some are python and one is even pearl. It is an extensible scheme. The license for the library is basically, "keep the copyright notice and have at it", so it shouldn't cause any problem.
-
-The code is here: https://github.com/github/markup
-
-The current "see the selected node's body text" in the view-render-pane should work, the only thing lacking is a way to preview an entire file. How about adding an option to preview it in the context menu for a right click on an @file node?
-
-===== From: Jacob Peck <gatesphere@gmail.com>
-
-That was actually my first thought when approaching the markdown implementation.  The major problem here is that the wrapper program, and several of the assorted converters are in ruby.  The only python one is rest2html, which we already have (via docutils).  I don't think adding ruby and perl as dependencies for one small feature of Leo would be wise...  that seems to me to be the very definition of bloatware.
-
-That being said, github-markup supports the following formats, which are supported by python libs::
-
-    markdown (markdown)
-    rst (docutils)
-    textile (textile)
-    org mode (pyorgmode)
-    creole (python-creole)
-    mediawiki (mw2html)
-    asciidoc (asciidoc)
-
-The following do not have a python equivalent (to my knowledge)::
-
-    rdoc (ruby documentation)
-    perlpod (perl documentation)
-    
-I could certainly keep hacking on viewrendered to support the first list, if interest is high.
-
-> The current "see the selected node's body text" in the 
-> view-render-pane should work, the only thing lacking is a way to 
-> preview an entire file.  How about adding an option to preview it in 
-> the context menu for a right click on an @file node?
-I could look into this suggestion too, if someone would point me in the 
-right direction with respect to 2 things (I'm really new to Leo, so I 
-have no idea where these things are in the source):
-
-1. How to add a context menu item for a node
-2. How to get a "full file" without saving it, i.e., fill in the << 
-references >>, @others, and @all directives.
-
 .. @+node:ekr.20101119030344.5838: *4* Done: turn all commands into @g.command nodes
 @language python
 @color
