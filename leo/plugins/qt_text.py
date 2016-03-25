@@ -1296,7 +1296,7 @@ class QTextEditWrapper(QTextMixin):
         if name in ('body', 'log'):
             # Monkey patch the event handler.
             #@+others
-            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (callback)
+            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (callback) QTextEditWrapper
             def mouseReleaseEvent(*args, **keys):
                 '''
                 Override QLineEdit.mouseReleaseEvent.

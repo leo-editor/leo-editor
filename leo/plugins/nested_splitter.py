@@ -663,7 +663,7 @@ if QtWidgets:
                 for i in range(self.count()):
                     if isinstance(self.widget(i), NestedSplitter):
                         self.widget(i).equalize_sizes(recurse=True)
-        #@+node:ekr.20110605121601.17975: *3* insert
+        #@+node:ekr.20110605121601.17975: *3* insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
             trace = False and g and not g.unitTesting
