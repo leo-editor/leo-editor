@@ -4330,7 +4330,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
     def __init__(self, parent=None):
         QtWidgets.QTabBar.__init__(self, parent)
         self.setMovable(True)
-    #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent
+    #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
     def mouseReleaseEvent(self, event):
         ## middle click close on tabs -- JMP 20140505
         ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528

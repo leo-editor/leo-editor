@@ -643,7 +643,6 @@ if QtWidgets:
             # Special inits for text widgets...
             if w.__class__ == pc.text_class:
                 text_name = 'body-text-renderer'
-                # pc.w = w = widget_class()
                 w.setObjectName(text_name)
                 pc.setBackgroundColor(pc.background_color, text_name, w)
                 w.setReadOnly(True)
@@ -981,44 +980,21 @@ if QtWidgets:
         #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
         def ensure_text_widget(self):
             '''Swap a text widget into the rendering pane if necessary.'''
-            pc = self
+            c, pc = self.c, self
             if pc.must_change_widget(pc.text_class):
+                # Instantiate a new QTextBrowser.
+                # Allow non-ctrl clicks to open url's.
                 w = pc.text_class()
 
-                def mouseReleaseHelper(w, event):
-                    # Fix bug 1158269: viewrendered pane goes blank when url clicked.
-                    # No need to call the base mouseReleaseEvent method.
-                    event2 = {'c': self.c, 'w': w.leo_wrapper}
-                    g.openUrlOnClick(event2)
-                    # if QtCore.Qt.ControlModifier & event.modifiers():
-                        # event2 = {'c':self.c,'w':w.leo_wrapper}
-                        # g.openUrlOnClick(event2)
-                    # else:
-                        # This call caused the text to disappear.
-                        # QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
-                    ### This *is* needed to clear ctrl modifier!
-                    ### The text disappears because the wrong body text is selected.
-                    ### QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
-                # Monkey patch a click handler.
-                # 2012/04/10: Use the same pattern for mouseReleaseEvents
-                # that is used in Leo's core:
+                def handleClick(url, w=w):
+                    event = g.Bunch(c=c, w=w)
+                    g.openUrlOnClick(event, url=url)
 
-                def mouseReleaseEvent(*args, **keys):
-                    if len(args) == 1:
-                        event = args[0]
-                    elif len(args) == 2:
-                        event = args[1]
-                    else:
-                        g.trace('can not happen', args)
-                        return
-                    mouseReleaseHelper(w, event)
-
-                w.mouseReleaseEvent = mouseReleaseEvent
+                w.anchorClicked.connect(handleClick)
+                w.setOpenLinks(False)
                 pc.embed_widget(w) # Creates w.wrapper
                 assert(w == pc.w)
-                return pc.w
-            else:
-                return pc.w
+            return pc.w
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''

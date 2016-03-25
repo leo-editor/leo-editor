@@ -6589,37 +6589,50 @@ def openUrl(p):
                 g.handleUrl(url, c=c, p=p)
             g.doHook("@url2", c=c, p=p, v=p)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event):
+def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
-    c = event.get('c')
+    trace = False and not g.unitTesting
+    if trace: g.trace(event, url)
+    c = getattr(event, 'c', None)
     if not c: return None
-    w = event.get('w') or c.frame.body.wrapper
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    i, j = w.getSelectionRange()
-    if i != j: return None # So find doesn't open the url.
-    row, col = g.convertPythonIndexToRowCol(s, ins)
-    i, j = g.getLine(s, ins)
-    line = s[i: j]
-    for match in g.url_regex.finditer(line):
-        if match.start() <= col < match.end(): # Don't open if we click after the url.
-            url = match.group()
-            if g.isValidUrl(url):
-                p = c.p
-                if not g.doHook("@url1", c=c, p=p, v=p, url=url):
-                    g.handleUrl(url, c=c, p=p)
-                g.doHook("@url2", c=c, p=p, v=p)
-                return url
-    # Call find-def is there is a word under the cursor.
-    # lqtb.onMouseUp creates a dummy event that is only a dict.
-    # Create a g.Bunch event so that event.c and event.widget are defined.
-    event = g.Bunch(c=event.get('c'), widget=w)
-    if not w.hasSelection():
-        c.editCommands.extendToWord(event, select=True)
-    word = w.getSelectedText().strip()
-    if word:
-        c.findCommands.findDef(event)
-    return None
+    w = getattr(event, 'w', c.frame.body.wrapper)
+    if not w: return None
+    setattr(event, 'widget', w)
+    # Part 1: get the url.
+    if url is None:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i, j = w.getSelectionRange()
+        if i != j: return None # So find doesn't open the url.
+        row, col = g.convertPythonIndexToRowCol(s, ins)
+        i, j = g.getLine(s, ins)
+        line = s[i: j]
+        if trace: g.trace('line', line.rstrip())
+        # Find the url on the line.
+        for match in g.url_regex.finditer(line):
+            # Don't open if we click after the url.
+            if match.start() <= col < match.end():
+                url = match.group()
+                if g.isValidUrl(url):
+                    break
+    elif not g.isString(url):
+        url = url.toString()
+    if url and g.isValidUrl(url):
+        # Part 2: handle the url
+        p = c.p
+        if not g.doHook("@url1", c=c, p=p, v=p, url=url):
+            g.handleUrl(url, c=c, p=p)
+        g.doHook("@url2", c=c, p=p, v=p)
+        return url
+    else:
+        # Part 3: call find-def.
+        if not w.hasSelection():
+            c.editCommands.extendToWord(event, select=True)
+        word = w.getSelectedText().strip()
+        if trace: g.trace(word)
+        if word:
+            c.findCommands.findDef(event)
+        return None
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')

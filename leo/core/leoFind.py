@@ -331,6 +331,7 @@ class LeoFind:
         if not word:
             return
         # For the command, always start in the root position.
+        old_p = c.p
         p = c.rootPosition()
         # Required.
         c.selectPosition(p, enableRedrawFlag=True)
@@ -352,12 +353,17 @@ class LeoFind:
         if found:
             self.find_seen.add(c.p.v)
         else:
-            c.bodyWantsFocusNow()
+            c.selectPosition(old_p)
+            # g.trace(old_p and old_p.h)
+            self.restoreAfterFindDef() # 2016/03/24
             i, j = save_sel
             w.setSelectionRange(i, j)
+            c.redraw()
+            c.bodyWantsFocusNow()
     #@+node:ekr.20150629084611.1: *6* initFindDef
     def initFindDef(self, event):
         '''Init the find-def command. Return the word to find or None.'''
+        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # First get the word.
@@ -367,10 +373,10 @@ class LeoFind:
             c.editCommands.extendToWord(event, select=True)
         word = w.getSelectedText().strip()
         if not word:
-            g.es_print('find-def: nothing under cursor', color='red')
+            if trace: g.es_print('find-def: nothing under cursor', color='red')
             return None
         if keyword.iskeyword(word):
-            g.es_print('python keyword:', word, color='red')
+            if trace: g.es_print('python keyword:', word, color='red')
             return None
         # Return word, stripped of preceding class or def.
         for tag in ('class ', 'def '):

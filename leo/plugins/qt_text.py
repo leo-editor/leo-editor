@@ -736,7 +736,7 @@ if QtWidgets:
             if trace: g.trace(tag, kind)
             return kind
         #@+node:ekr.20110605121601.18020: *3* lqtb.event handlers
-        #@+node:ekr.20110605121601.18021: *4* lqtb.mousePress/ReleaseEvent (never called!)
+        #@+node:ekr.20110605121601.18021: *4* lqtb.mousePress/ReleaseEvent
         # def mousePressEvent (self,event):
             # QtWidgets.QTextBrowser.mousePressEvent(self,event)
 
@@ -756,6 +756,7 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18022: *4* lqtb.onMouseUp
         def onMouseUp(self, event=None):
             # Open the url on a control-click.
+            g.trace('(LeoQTextBrowser)', event)
             if QtCore.Qt.ControlModifier & event.modifiers():
                 event = {'c': self.leo_c}
                 g.openUrlOnClick(event)
@@ -974,25 +975,16 @@ class QMinibufferWrapper(QLineEditWrapper):
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110605121601.18132: *3* << define mouseReleaseEvent >> (QMinibufferWrapper)
-        def mouseReleaseEvent(*args, **keys):
+        def mouseReleaseEvent(event, self=self):
             '''Override QLineEdit.mouseReleaseEvent.
 
             Simulate alt-x if we are not in an input state.
             '''
-            # g.trace('(QMinibufferWrapper)',args,keys)
-            # Important: c and w must be unbound here.
-            k = c.k
-            # Call the base class method.
-            if len(args) == 1:
-                event = args[0]
-                QtWidgets.QLineEdit.mouseReleaseEvent(w, event)
-            elif len(args) == 2:
-                event = args[1]
-                QtWidgets.QLineEdit.mouseReleaseEvent(*args)
-            else:
-                g.trace('can not happen')
-                return
-            # g.trace('state',k.state.kind,k.state.n)
+            trace = False and not g.unitTesting
+            if trace: g.trace('(QMinibufferWrapper)', event)
+            assert isinstance(self, QMinibufferWrapper), self
+            assert isinstance(self.widget, QtGui.QLineEdit), self.widget
+            c, k = self.c, self.c.k
             if not k.state.kind:
                 # c.widgetWantsFocusNow(w) # Doesn't work.
                 event2 = g.app.gui.create_key_event(c,
@@ -1296,35 +1288,28 @@ class QTextEditWrapper(QTextMixin):
         if name in ('body', 'log'):
             # Monkey patch the event handler.
             #@+others
-            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (callback) QTextEditWrapper
-            def mouseReleaseEvent(*args, **keys):
+            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (monkey-patch) QTextEditWrapper
+            def mouseReleaseEvent(event, self=self):
                 '''
-                Override QLineEdit.mouseReleaseEvent.
-                Simulate alt-x if we are not in an input state.
+                Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
                 '''
-                c, vc = self.c, self.c.vimCommands
                 trace = False and not g.unitTesting
-                if trace: g.trace('(QTextEditWrapper)', self.c.shortFileName())
-                # Call the base class method.
-                if len(args) == 1:
-                    event = args[0]
-                    QtWidgets.QTextBrowser.mouseReleaseEvent(self.widget, event)
-                elif len(args) == 2:
-                    event = args[1]
-                    QtWidgets.QTextBrowser.mouseReleaseEvent(self.widget, *args)
-                else:
-                    g.trace('can not happen')
-                    return
+                assert isinstance(self, QTextEditWrapper), self
+                assert isinstance(self.widget, QtGui.QTextEdit), self.widget
+                c = self.c
+                setattr(event, 'c', c)
                 # Open the url on a control-click.
                 if QtCore.Qt.ControlModifier & event.modifiers():
-                    event = {'c': c}
+                    if trace: g.trace('(QTextEditWrapper) control-click', event)
                     g.openUrlOnClick(event)
-                if name == 'body':
-                    c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
-                    if trace: g.trace(c.p.v.insertSpot)
-                g.doHook("bodyclick2", c=c, p=c.p, v=c.p)
-                # Do *not* change the focus! This would rip focus away from tab panes.
-                c.k.keyboardQuit(setFocus=False)
+                else:
+                    if trace: g.trace('(QTextEditWrapper) click', event)
+                    if name == 'body':
+                        c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
+                        if trace: g.trace('body: insertSpot:', c.p.v.insertSpot)
+                    g.doHook("bodyclick2", c=c, p=c.p, v=c.p)
+                    # Do *not* change the focus! This would rip focus away from tab panes.
+                    c.k.keyboardQuit(setFocus=False)
             #@-others
             self.widget.mouseReleaseEvent = mouseReleaseEvent
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
