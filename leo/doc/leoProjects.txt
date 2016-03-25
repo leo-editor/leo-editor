@@ -65,6 +65,7 @@ have no idea where these things are in the source):
 2. How to get a "full file" without saving it, i.e., fill in the << 
 references >>, @others, and @all directives.
 
+.. @+node:ekr.20160325060507.1: *3* Improved how viewrenered plugin handles md & rst
 .. @-all
 .. @@killbeautify
 .. @@language rest
