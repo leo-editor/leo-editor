@@ -216,7 +216,7 @@ if docutils:
 else:
     got_docutils = False
 if trace:
-    print('===== viewrendered.py: got_docutils: %s' % got_docutils)
+    print('viewrendered.py: got_docutils: %s' % got_docutils)
 ## markdown support, non-vital
 try:
     from markdown import markdown
@@ -225,7 +225,7 @@ except ImportError:
     got_markdown = False
 import os
 if trace:
-    print('===== viewrendered.py: got_markdown: %s' % got_markdown)
+    print('viewrendered.py: got_markdown: %s' % got_markdown)
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheet >>
@@ -469,7 +469,7 @@ if QtWidgets:
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20110317080650.14380: *3* ctor & helpers
+        #@+node:ekr.20110317080650.14380: *3* ctor & helper
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             self.c = c
@@ -510,18 +510,25 @@ if QtWidgets:
         #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
         def create_dispatch_dict(self):
             pc = self
-            pc.dispatch_dict = {
+            d = {
                 'big': pc.update_rst,
                 'html': pc.update_html,
                 'graphics-script': pc.update_graphics_script,
                 'image': pc.update_image,
-                'md': pc.update_md,
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
-                'rst': pc.update_rst,
                 'svg': pc.update_svg,
                 'url': pc.update_url,
+                # 'xml': pc.update_xml,
             }
+            if got_markdown:
+                for key in ('markdown', 'md'):
+                    d [key] = pc.update_md
+            if got_docutils:
+                for key in ('rest', 'rst'):
+                    d [key] = pc.update_rst
+            pc.dispatch_dict = d
+            return d
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -587,10 +594,12 @@ if QtWidgets:
 
         def update(self, tag, keywords):
             '''Update the vr pane.'''
+            verbose = False
             pc = self
             c, p = pc.c, pc.c.p
             if pc.must_update(keywords):
-                if trace: g.trace('===== updating', keywords)
+                if trace:
+                    if verbose: g.trace('===== updating', keywords)
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
@@ -602,7 +611,7 @@ if QtWidgets:
                 kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
                 f = pc.dispatch_dict.get(kind)
                 if f:
-                    if trace: g.trace(f.__name__)
+                    if trace and verbose: g.trace(p.h, f.__name__)
                 else:
                     g.trace('no handler for kind: %s' % kind)
                     f = pc.update_rst
@@ -665,19 +674,19 @@ if QtWidgets:
                 return False
             if keywords.get('force'):
                 pc.active = True
-                if trace: g.trace('force: activating')
+                if trace: g.trace('force: activating', p.h)
                 return True
             if c != keywords.get('c') or not pc.active:
-                if trace: g.trace('not active')
+                if trace: g.trace('not active', p.h)
                 return False
             if pc.locked:
-                if trace: g.trace('locked')
+                if trace: g.trace('locked', p.h)
                 return False
             if pc.gnx != p.v.gnx:
-                if trace: g.trace('changed node')
+                if trace: g.trace('changed node', p.h)
                 return True
             if len(p.b) != pc.length:
-                if trace: g.trace('text changed')
+                if trace: g.trace('text changed', p.h)
                 return True
             # This will be called at idle time.
             # if trace: g.trace('no change')
@@ -761,7 +770,7 @@ if QtWidgets:
             pc = self; c = pc.c; p = c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
-            if trace: g.trace('isHtml', isHtml)
+            if trace: g.trace('isHtml:', isHtml, p.h)
             # Do this regardless of whether we show the widget or not.
             w = pc.ensure_text_widget()
             assert pc.w
@@ -785,10 +794,9 @@ if QtWidgets:
                     mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
                     mdext = [x.strip() for x in mdext.split(',')]
                     s = markdown(s, mdext)
-                    s = g.toUnicode(s) # 2011/03/15
+                    s = g.toUnicode(s)
                     show = True
                 except SystemMessage as sm:
-                    # g.trace(sm,sm.args)
                     msg = sm.args[0]
                     if 'SEVERE' in msg or 'FATAL' in msg:
                         s = 'MD error:\n%s\n\n%s' % (msg, s)
@@ -802,7 +810,13 @@ if QtWidgets:
                 else:
                     # Save the scrollbars
                     d[p.v] = pos = sb.sliderPosition()
-            if pc.default_kind in ('big', 'rst', 'html', 'md'):
+            # 2016/03/25: honor @language md.
+            colorizer = c.frame.body.colorizer
+            language = colorizer.scanColorDirectives(p)
+            if (
+                language in ('markdown', 'md') or
+                pc.default_kind in ('big', 'rst', 'html', 'md')
+            ):
                 w.setHtml(s)
                 if pc.default_kind == 'big':
                     w.zoomIn(4) # Doesn't work.
@@ -905,7 +919,14 @@ if QtWidgets:
                 else:
                     # Save the scrollbars
                     d[p.v] = pos = sb.sliderPosition()
-            if pc.default_kind in ('big', 'rst', 'html', 'md'):
+            # 2016/03/25: honor @language rest.
+            colorizer = c.frame.body.colorizer
+            language = colorizer.scanColorDirectives(p)
+            if (
+                language in ('rst', 'rest') or
+                # pc.default_kind in ('big', 'rst', 'html', 'md')
+                pc.default_kind in ('markdown', 'md')
+            ):
                 w.setHtml(s)
                 if pc.default_kind == 'big':
                     w.zoomIn(4) # Doesn't work.
@@ -975,6 +996,9 @@ if QtWidgets:
                     # else:
                         # This call caused the text to disappear.
                         # QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
+                    ### This *is* needed to clear ctrl modifier!
+                    ### The text disappears because the wrong body text is selected.
+                    ### QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
                 # Monkey patch a click handler.
                 # 2012/04/10: Use the same pattern for mouseReleaseEvents
                 # that is used in Leo's core:
@@ -998,14 +1022,24 @@ if QtWidgets:
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            pc = self; h = p.h
+            c, h, pc = self.c, p.h, self
             if h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
                 word = h[1: i].lower().strip()
                 if word in pc.dispatch_dict:
                     return word
-            # To do: look at ancestors, or uA's.
-            return pc.default_kind # The default.
+            # 2016/03/25: Honor @language
+            colorizer = c.frame.body.colorizer
+            language = colorizer.scanColorDirectives(p)
+            if got_markdown and language in ('md', 'markdown'):
+                return language
+            elif got_docutils and language in ('rest', 'rst'):
+                return language
+            elif language == 'html':
+                return 'html'
+            else:
+                # To do: look at ancestors, or uA's.
+                return pc.default_kind # The default.
         #@+node:ekr.20110320233639.5776: *5* vr.get_fn
         def get_fn(self, s, tag):
             pc = self
