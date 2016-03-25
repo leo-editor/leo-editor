@@ -10,6 +10,556 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 @language rest
 @wrap
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
+.. @+node:ekr.20160325060233.1: *4* ** Fix ctrl-click bug
+.. @+node:ekr.20160324180055.1: *5* ctrl-click should open url if possible
+Ctrl-click should *not* be bound *only* to find-def
+.. @+node:ekr.20110605121601.18135: *6* g.openUrlOnClick (open-url-under-cursor)
+def openUrlOnClick(event):
+    '''Open the URL under the cursor.  Return it for unit testing.'''
+    trace = False and not g.unitTesting
+    c = event.get('c')
+    if not c: return None
+    w = event.get('w') or c.frame.body.wrapper
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i, j = w.getSelectionRange()
+    if i != j: return None # So find doesn't open the url.
+    row, col = g.convertPythonIndexToRowCol(s, ins)
+    i, j = g.getLine(s, ins)
+    line = s[i: j]
+    if trace: g.trace(line, g.callers())
+    for match in g.url_regex.finditer(line):
+        if match.start() <= col < match.end(): # Don't open if we click after the url.
+            url = match.group()
+            if trace: g.trace(g.isValidUrl(url), url)
+            if g.isValidUrl(url):
+                p = c.p
+                if not g.doHook("@url1", c=c, p=p, v=p, url=url):
+                    g.handleUrl(url, c=c, p=p)
+                g.doHook("@url2", c=c, p=p, v=p)
+                return url
+    # Call find-def is there is a word under the cursor.
+    # lqtb.onMouseUp creates a dummy event that is only a dict.
+    # Create a g.Bunch event so that event.c and event.widget are defined.
+    event = g.Bunch(c=event.get('c'), widget=w)
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if trace: g.trace(word)
+    if word:
+        c.findCommands.findDef(event)
+    return None
+.. @+node:ekr.20150629084204.1: *6* find.findDef, findVar & helpers
+@cmd('find-def')
+def findDef(self, event=None):
+    '''Find the def or class under the cursor.'''
+    self.findDefHelper(event, defFlag=True)
+
+@cmd('find-var')
+def findVar(self, event=None):
+    '''Find the var under the cursor.'''
+    self.findDefHelper(event, defFlag=False)
+.. @+node:ekr.20150629125733.1: *7* findDefHelper & helpers
+def findDefHelper(self, event, defFlag):
+    '''Find the definition of the class, def or var under the cursor.'''
+    c, find, ftm = self.c, self, self.ftm
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    word = self.initFindDef(event)
+    if not word:
+        return
+    # For the command, always start in the root position.
+    old_p = c.p
+    p = c.rootPosition()
+    # Required.
+    c.selectPosition(p, enableRedrawFlag=True)
+    c.bodyWantsFocusNow()
+    # Set up the search.
+    if defFlag:
+        prefix = 'class' if word[0].isupper() else 'def'
+        find_pattern = prefix + ' ' + word
+    else:
+        find_pattern = word + ' ='
+    find.find_text = find_pattern
+    ftm.setFindText(find_pattern)
+    # Save previous settings.
+    find.saveBeforeFindDef(p)
+    find.setFindDefOptions(p)
+    save_sel = w.getSelectionRange()
+    self.find_seen = set()
+    found = find.findNext(initFlag=False)
+    if found:
+        self.find_seen.add(c.p.v)
+    else:
+        c.selectPosition(old_p)
+        # g.trace(old_p and old_p.h)
+        self.restoreAfterFindDef() # 2016/03/24
+        i, j = save_sel
+        w.setSelectionRange(i, j)
+        c.redraw()
+        c.bodyWantsFocusNow()
+.. @+node:ekr.20150629084611.1: *8* initFindDef
+def initFindDef(self, event):
+    '''Init the find-def command. Return the word to find or None.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    w = c.frame.body.wrapper
+    # First get the word.
+    c.bodyWantsFocusNow()
+    w = c.frame.body.wrapper
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if not word:
+        if trace: g.es_print('find-def: nothing under cursor', color='red')
+        return None
+    if keyword.iskeyword(word):
+        if trace: g.es_print('python keyword:', word, color='red')
+        return None
+    # Return word, stripped of preceding class or def.
+    for tag in ('class ', 'def '):
+        found = word.startswith(tag) and len(word) > len(tag)
+        if found:
+            return word[len(tag):].strip()
+    return word
+.. @+node:ekr.20150629095633.1: *8* find.saveBeforeFindDef
+def saveBeforeFindDef(self, p):
+    '''Save the find settings in effect before a find-def command.'''
+    if not self.find_def_data:
+        self.find_def_data = \
+        self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
+        self.search_body, self.search_headline, self.whole_word
+.. @+node:ekr.20150629100600.1: *8* find.setFindDefOptions
+def setFindDefOptions(self, p):
+    '''Set the find options needed for the find-def command.'''
+    self.ignore_case = False
+    self.p = p.copy()
+    self.pattern_match = False
+    self.reverse = False
+    self.search_body = True
+    self.search_headline = False
+    self.whole_word = True
+.. @+node:ekr.20150629095511.1: *8* find.restoreAfterFindDef
+def restoreAfterFindDef(self):
+    '''Restore find settings in effect before a find-def command.'''
+    # g.trace('find_def_data',self.find_def_data)
+    if self.find_def_data:
+        # pylint: disable=unpacking-non-sequence
+        self.ignore_case, p, self.pattern_match, self.reverse, self.search_body, \
+        self.search_headline, self.whole_word = self.find_def_data
+        self.p = p
+    self.find_def_data = None
+.. @+node:ekr.20160324182932.1: *5* Found:def mouseReleaseEvent
+# flattened, word, ignore-case, head, body
+.. @+node:ekr.20110605121601.18021: *6* lqtb.mousePress/ReleaseEvent (never called!)
+# def mousePressEvent (self,event):
+    # QtWidgets.QTextBrowser.mousePressEvent(self,event)
+
+def mouseReleaseEvent(self, *args, **keys):
+    '''Handle a mouse release event in a LeoQTextBrowser.'''
+    g.trace('LeoQTextBrowser', args, keys)
+    if len(args) == 1:
+        event = args[0]
+        self.onMouseUp(event)
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self, event)
+    elif len(args) == 2:
+        event = args[1]
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self, *args)
+    else:
+        g.trace('can not happen')
+        return
+.. @+node:peckj.20140516114832.10109: *6* mouseReleaseEvent
+def mouseReleaseEvent(self, event):
+    ## middle click close on tabs -- JMP 20140505
+    ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
+    ## Using this blogpost as a guide:
+    ## http://www.mikeyd.com.au/2011/03/12/adding-the-ability-to-close-a-tab-with-mouses-middle-button-to-qts-qtabwidget/
+    if event.button() == QtCore.Qt.MidButton:
+        self.tabCloseRequested.emit(self.tabAt(event.pos()))
+    QtWidgets.QTabBar.mouseReleaseEvent(self, event)
+.. @+node:ekr.20140901062324.18565: *6* mouseReleaseEvent (callback) QTextEditWrapper
+def mouseReleaseEvent(*args, **keys):
+    '''
+    Override QLineEdit.mouseReleaseEvent.
+    Simulate alt-x if we are not in an input state.
+    '''
+    c, vc = self.c, self.c.vimCommands
+    trace = False and not g.unitTesting
+    if trace: g.trace('(QTextEditWrapper)', self.c.shortFileName())
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self.widget, event)
+    elif len(args) == 2:
+        event = args[1]
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self.widget, *args)
+    else:
+        g.trace('can not happen')
+        return
+    # Open the url on a control-click.
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c': c}
+        g.openUrlOnClick(event)
+    if name == 'body':
+        c.p.v.insertSpot = c.frame.body.wrapper.getInsertPoint()
+        if trace: g.trace(c.p.v.insertSpot)
+    g.doHook("bodyclick2", c=c, p=c.p, v=c.p)
+    # Do *not* change the focus! This would rip focus away from tab panes.
+    c.k.keyboardQuit(setFocus=False)
+.. @+node:ekr.20110605121601.18132: *6* << define mouseReleaseEvent >> (QMinibufferWrapper)
+def mouseReleaseEvent(*args, **keys):
+    '''Override QLineEdit.mouseReleaseEvent.
+
+    Simulate alt-x if we are not in an input state.
+    '''
+    # g.trace('(QMinibufferWrapper)',args,keys)
+    # Important: c and w must be unbound here.
+    k = c.k
+    # Call the base class method.
+    if len(args) == 1:
+        event = args[0]
+        QtWidgets.QLineEdit.mouseReleaseEvent(w, event)
+    elif len(args) == 2:
+        event = args[1]
+        QtWidgets.QLineEdit.mouseReleaseEvent(*args)
+    else:
+        g.trace('can not happen')
+        return
+    # g.trace('state',k.state.kind,k.state.n)
+    if not k.state.kind:
+        # c.widgetWantsFocusNow(w) # Doesn't work.
+        event2 = g.app.gui.create_key_event(c,
+            char='', stroke='', w=c.frame.body.wrapper)
+        k.fullCommand(event2)
+        # c.outerUpdate() # Doesn't work.
+.. @+node:ekr.20150418052852.1: *4* ** Complete import/export to .ipynb files
+Import:
+- Auto-import on load .leo file.
+- Create headlines for nodes starting with <h1> ... <h6>
+    - Automatically demote nodes depending on header.
+- Split nodes containing <h1> ... <h6> within the node.
+
+Export:
+***** Remember the last file operation ****
+- Do *all* json escapes in clean.
+**** How to use sphynx?
+    - https://github.com/spatialaudio/nbsphinx/
+    - http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
+- open-jupyter command (where should it run the kernel?)
+- Open Jupyter automatically after export.
+- Automatic export on save.
+
+@language rest
+@wrap
+.. @+node:ekr.20160325055702.1: *5* Notes
+Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
+Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
+
+From: Kent Tenney:
+
+It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
+
+From: Alia K:
+
+Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20160323155904.1: *5* old-import-neural-networks.ipynb
+.. @+node:ekr.20160323155904.2: *6* # {prefix}
+.. @+node:ekr.20160323155904.3: *7* # dict:metadata
+.. @+node:ekr.20160323155904.4: *8* # dict:kernelspec
+.. @+node:ekr.20160323155904.5: *9* # str:display_name
+Python 3
+.. @+node:ekr.20160323155904.6: *9* # str:language
+python
+.. @+node:ekr.20160323155904.7: *9* # str:name
+python3
+.. @+node:ekr.20160323155904.8: *8* # dict:language_info
+.. @+node:ekr.20160323155904.9: *9* # dict:codemirror_mode
+.. @+node:ekr.20160323155904.10: *10* # str:name
+ipython
+.. @+node:ekr.20160323155904.11: *10* # int:version
+3
+.. @+node:ekr.20160323155904.12: *9* # str:file_extension
+.py
+.. @+node:ekr.20160323155904.13: *9* # str:mimetype
+text/x-python
+.. @+node:ekr.20160323155904.14: *9* # str:name
+python
+.. @+node:ekr.20160323155904.15: *9* # str:nbconvert_exporter
+python
+.. @+node:ekr.20160323155904.16: *9* # str:pygments_lexer
+ipython3
+.. @+node:ekr.20160323155904.17: *9* # str:version
+3.5.1
+.. @+node:ekr.20160323155904.18: *7* # int:nbformat
+4
+.. @+node:ekr.20160323155904.19: *7* # int:nbformat_minor
+0
+.. @+node:ekr.20160323155904.20: *6* cell 1
+@language rest
+
+<h1>Neural Networks </h1>
+
+Neural networks are one approach to machine learning that attempts to deal with the problem of large data dimensionality. The neural network approach uses a fixed number of basis functions - in contrast
+to methods such as support vector machines that attempt to adapt the number of basis functions - that are themselves parameterized by the model parameters. This is a significant departure from 
+linear regression and logistic regression methods where the models consisted of linear combinations of fixed basis functions, $\phi(\mathbf{x})$, that dependend only on the input vector, $\mathbf{x}$. In neural networks, the basis functions can now depend on both the model parameters and the input vector and thus take the form $\phi(\mathbf{x} | \mathbf{w})$. 
+
+Here we will cover only **feed-forward** neural networks. One can envision a neural network as a series of layers where each layer has some number of nodes and each node is a function. Each layer represents a single linear regression model. The nodes are connected to each other through inputs accepted from and outputs passed to other nodes. A *feed-forward* network is one in which these connections do not form any directed cycles. See [here](http://en.wikipedia.org/wiki/Feedforward_neural_network) for more detail.
+
+![alt text](files/images/Feed_forward_neural_net.gif "A feed forward network.")
+
+As a matter of convention, we will refer the model as a $N$ layer model where $N$ is the number of layers for which adaptive parameters, $\mathbf{w}$, must be determined. Thus for a model consisting of an input layer, one hidden layer, and an output layer, we consider $N$ to be 2 since parameters are determined only for the hidden and output layers.
+.. @+node:ekr.20160323155904.21: *6* cell 2
+@language rest
+
+<h2>Feed-forward Network Functions</h2>
+We will consider a basic two layer nueral network model, i.e a model that maps inputs to a hidden layer and then to an output layer. We will make **the following assumptions**
+
+1. The final output will be a vector $Y$ with $K$ elements, $y_k$, where $y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})$ is the probability that node $k$ is in class $C_1$ and $p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})$
+2. The activation function at a given layer is an arbitrary nonlinear function of a linear combination of the inputs and parameters for that layer
+3. The network is fully connected, i.e. every node at the input layer is connected to every node in the hidden layer and every node in the hidden layer is connected to every node in the output layer
+4. A bias parameter is included at the hidden and output layers
+
+Working from the input layer toward the output layer, we can build this model as follows:
+
+<h3>Input Layer</h3>
+Assume we have an input vector $\mathbf{x} \in \Re^D$. Then the input layer consists of $D+1$ nodes where the value of the $i^{th}$ node for $i=0\ldots D$, is 0 if $i=0$ and $x_i$, i.e. the $i^{th}$ value of $\mathbf{x}$, otherwise.
+
+<h3>Hidden Layer</h3>
+At the hidden layer we construct $M$ nodes where the value of $M$ depends on the specifics of the particular modelling problem. For each node, we define a *unit activation*, $a_m$, for $m=1\ldots M$ as <br/>
+$a_m = \sum_{i=0}^D w_{ji}^{(1)}x_i$ <br/>
+where the $(1)$ superscript indicates this weight is for the hidden layer. The output from each node, $z_m$, is then given by the value of a *fixed nonlinear function*, $h$, known as the *activation function*, acting on the unit activation<br/>
+$z_m = h(a_m) = h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right)$<br/>
+Notice that $h$ is the same function for all nodes.
+<h3>Output Layer</h3>
+The process at the output layer is essentially the same as at the hidden layer. We construct $K$ nodes, where again the value of $K$ depends on the specific modeling problem. For each node, we again define a *unit activation*, $a_k$, for $k=1 \ldots K$ by<br/>
+$a_k = \sum_{m=0}^M w_{km}^{(2)} z_m$ <br/>
+We again apply a nonlinear activation function, say $y$, to produce the output<br/>
+$y_k = y(a_k)$
+
+Thus, the entire model can be summarized as a $K$ dimensional output vector $Y \in \Re^K$ where each element $y_k$ by<br/>
+$y_k(\mathbf{x},\mathbf{w}) = y \left( \sum_{m=0}^M w_{km}^{(2)} h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right) \right)$
+
+<h3>Generalizations</h3>
+There are a wide variety of generalizations possible for this model. Some of the more important ones for practical applications include
+
+* Addition of hidden layers
+* Inclusion of *skip-layer* connections, e.g. a connection from an input node directly to an output node
+* Sparse network, i.e. not a fully connected network
+.. @+node:ekr.20160323155904.22: *6* cell 3
+@language rest
+
+<h2>Network Training</h2>
+Here we will consider how to determine the network model parameters. We will use a *maximum likelihood* approach. The likelihood function for the network is dependent on the type of problem the network models. Of particular importance is the number and type of values generated at the output layer. We consider several cases below.
+<h3>Regression Single Gaussian Target</h3>
+*Assume* that our target variable, *t*, is Gaussian distributed with an $\mathbf{x}$ dependent mean, $\mu(\mathbf{x})$ and constant variance $\sigma^2 = 1/\beta$. Our network model is designed to estimate the unknown function for the mean, i.e. $y(\mathbf{x},\mathbf{w}) \approx \mu(\mathbf{x})$ so that the distribution for the target value, *t*, is modeled by<br/><br/>
+$p(t|\mathbf{x},\mathbf{w}) = ND(t|y(\mathbf{x},\mathbf{w}), \beta^{-1})$<br/><br/>
+where $ND(\mu,\sigma^2)$ is the normal distribution with mean $\mu$ and variance $\sigma^2$. *Assume* the output layer activation function is the identity, i.e. the output is simply the the unit activations, and that we have $N$ i.i.d. observations $\mathbf{X}=\\{\mathbf{x}_1, \ldots, \mathbf{x}_2 \\}$ and target values $\mathbf{t} = \\{t_1, \ldots, t_2\\}$, the likelihood function is<br/><br/>
+$p(\mathbf{t}|\mathbf{X},\mathbf{w}, \beta) = \prod_{n=1}^N p(t_n|\mathbf{x}_n, \mathbf{w}, \beta)$<br/><br/>
+The **total error function** is defined as the negative logarithm of the likelihood function given by<br/>
+
+$\frac {\beta}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2 - \frac{N}{2} \ln(\beta) + \frac{N}{2} \ln (2\pi)$
+
+The parameter estimates, $\mathbf{w}^{(ML)}$ (ML indicates maximum likelihood) are found by maximizing the equivalent sum-of-squares error function
+
+$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2$
+
+Note, due to the nonlinearity of the network model, $E(\mathbf{w})$ is not necessisarily convex, and thus may have *local minima* and hence it is not possible to know that the global minimum has been obtained.  The model parameter, $\beta$ is found by first finding $\mathbf{w}_{ML}$ and then solving
+
+$\frac{1}{\beta_{ML}} = \frac{1}{N}\sum_{n=1}^N \\{ y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n \\}^2$
+.. @+node:ekr.20160323155904.23: *6* cell 4
+@language rest
+
+<h3>Regression Multiple Gaussian Targets</h3>
+Now *assume* that we have $K$ Gaussian distributed target variables, $\[t_1, \ldots, t_K\]$, each with a mean that is independently conditional on $\mathbf{x}$, i.e. the mean of $t_k$ is defined by some function $\mu_k(\mathbf{x})$. Also assume that all $K$ variables share the same variance, $\sigma^2=1/\beta$. Assuming the network output layer has $K$ nodes where $y_k(\mathbf{x},\mathbf{w}) \approx \mu_k(\mathbf{x})$ and letting $\mathbf{y}(\mathbf{x},\mathbf{w}) = \[y_1(\mathbf{x},\mathbf{w}), \ldots, y_K(\mathbf{x},\mathbf{w})\]$, and that we again have $N$ training target values $\mathbf{t}$ ($\mathbf{t}$ is a $K \times N$ matrix of the training values), the conditional distribution of the target training values is given by
+
+$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = ND(\mathbf{t} | \mathbf{y}(\mathbf{x},\mathbf{w}), \beta^{-1} \mathbf{I})$
+
+The parameter estimates, $\mathbf{w}^{(ML)}$ are again found by minimizing the sum-of-squares error function, $E(\mathbf{w})$, and the estimate for $\beta$ is found from
+
+$\frac{1}{\beta_{ML}} = \frac{1}{NK}\sum_{n=1}^N ||y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n ||^2$
+.. @+node:ekr.20160323155904.24: *6* cell 5
+@language rest
+
+<h3>Binary Classification Single Target</h3>
+Now *assume* we have a single target variable, $t\in \\{0,1\\}$, such that $t=1$ denotes class $C_1$ and $t=0$ denotes class $C_2$. *Assume* that the network has a single output node whos activation function is the logistic sigmoid
+
+$y=1/(1+\exp(-a))$
+
+where $a$ is the output of the hidden layer. We can interpret the network output, $y(\mathbf{x},\mathbf{w})$ as the conditional probability $p(C_1|\mathbf{x})$ with $p(C_2|\mathbf{x})=1-y(\mathbf{x},\mathbf{w})$ so that the coniditional probability takes a Bernoulli distribution
+
+$p(t|\mathbf{x},\mathbf{w}) = y(\mathbf{x},\mathbf{w})^t\[1 - y(\mathbf{x},\mathbf{w}) \]^{1-t}$
+
+Given a training set with $N$ observations the error function is given by
+
+$E(\mathbf{w}) = - \sum_{n=1}^N \\{t_n \ln (y_n) + (1 - t_n) \ln (1-y_n) \\}$
+
+where $y_n = y(\mathbf{x_n},\mathbf{w})$. This model *assumes* all training inputs are correctly labeled. 
+.. @+node:ekr.20160323155904.25: *6* cell 6
+@language rest
+
+<h3>Binary Classification $K$ Seperate Targets</h3>
+Assume we have $K$ seperate binary classification target variables (i.e. there are K classification sets each with two classes. The K sets are independent and the input will be assigned to one class from each set). This can be modeled with network having $K$ nodes in the output layer where the activation function of each node is the logistic sigmoid. *Assume* the class labels are independent, i.e. $p(x_i \in C_1| x_j \in C_1) = p(x_i \in C_1)$ $\forall \\{i,j\\}$ (this is often an invalid assumption in practice), and that we have some training set, $\mathbf{t}$, then the coniditional probability of a single output vector $\mathbf{t}$ is
+
+$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = \prod_{k=1}^K y_k(\mathbf{x},\mathbf{w})^{t_k} \[ 1 - y_k(\mathbf{x},\mathbf{w})\]^{1-t_k}$
+
+Given a training input with $N$ values (note that the training set is an $K \times N$ matrix) the error function is 
+
+$E(\mathbf{w} = - \sum_{n=1}^N \sum_{k=1}^K \[ t_{nk} \ln (y_{nk}) + (1-t_{nk}) \ln (1-y_{nk}) \]$
+
+where $y_{nk} = y_k(\mathbf{x}_n, \mathbf{w}). 
+.. @+node:ekr.20160323155904.26: *6* cell 7
+@language rest
+
+<h3>Multi-class Classification</h3>
+Assume we have a $K$ **mutually exclusive** classes (i.e. the input can only be in one of the $K$ classes). This network is also modelled with $K$ output nodes where each output node represents the probability that the input is in class $k$, $y_k(\mathbf{x},\mathbf{w}) = p(t_k = 1 | \mathbf{x})$. The error function is given by 
+
+$E(\mathbf{w}) = - \sum_{n=1}^N \sum_{k=1}^K t_{nk} \ln y_k(\mathbf{x},\mathbf{w})$
+
+where the output activation function $y_k$ is the *softmax function*
+
+$y_k(\mathbf{x},\mathbf{w}) = \frac{\exp(a_k(\mathbf{x},\mathbf{w})}{\sum_j \exp(a_j(\mathbf{x},\mathbf{w}))}$
+.. @+node:ekr.20160323155904.27: *6* cell 8
+@language rest
+
+<h2>Error Backpropagation</h2>
+Most training algorithms involve a two step procedure for minimizing the model parameter dependent error function
+
+1. Evaluate the derivatives of the error function with respect to the parameters
+2. Use the derivatives to iterate the values of the parameters
+
+In this section, we consider **error backpropagation** which provides an efficient way to evaluate a feed-forward neural network's error function. *Note* that this only satisfies step 1 above. It is still necessary to choose an optimization technique in order to use the derivative information provided by error backpropagation to update the parameter estimates as indicated by step 2. 
+
+The results presented here are applicable to 
+
+1. An **arbitary** feed-forward network toplogy
+2. **Arbitrary** differentiable nonlinear activation functions
+
+The one *assumption* that is made is that the error function can be expressed as a *sum of terms*, one for each training data point, $t_n$ for $n \in \\{1\ldots N\\}$, so that
+
+$E(\mathbf{w}) = \sum_{n=1}^N E_n(\mathbf{w},t_n)$
+
+For such error functions, the derivative of the error function with respect to $\mathbf{w}) takes the form
+
+$\bigtriangledown E(\mathbf{w}) = \sum_{n=1}^N \bigtriangledown E_n(\mathbf{w},t_n)$
+
+Thus we need only consider the evaluation of $\bigtriangledown E_n(\mathbf{w},t_n)$ which may be used directly for sequential optimization techniques or summed over the training set for batch techniques (see next section). The error backpropagation method can be summarized as follows
+
+1. Given an input vector, $\mathbf{x}_n$, forward propagate through the network using 
+    1. $a_j = \sum_i w_{ji}z_i$
+    2. $z_j = h(a_j)$
+2. Evaluate $\delta_k \equiv \frac{\partial E_n} {\partial a_k}$ for the ouptput layer as
+    1. $\delta_k = y_k - t_k$
+3. Backpropagate the $\delta$'s to obtain $\delta_j$ for each hidden unit in the network using
+    1. $\delta_j = h'(a_j) \sum_k w_{kj}\delta_k$
+4. Evaluate the derivatives using 
+    1. $\frac{\partial E_n} {\partial w_{ji}} = \delta_j z_i$
+.. @+node:ekr.20160323155904.28: *6* cell 9
+@language rest
+
+<h2>Parameter Optimization</h2>
+Given the neural network error function derivative estimate provided by *error backpropagation*, one can use a variety of numerical optimization techniques to find appropriate parameter estimates. The simplest technique is the method of *steepest descent* where the new parameter estimate $\mathbf{w}^{(\tau+1)}$ is given by
+
+$\mathbf{w}^{(\tau+1)} = \mathbf{w}^{(\tau)} - \eta \bigtriangledown E(\mathbf{w}^{(\tau)})$
+
+where $\eta>0$ is the *learning rate*. Other **more advanced** optimization algorithms inlcude *conjugate gradients* and *quasi-Newton* methods.
+.. @+node:ekr.20160323155905.1: *6* cell 10
+@language rest
+
+<h2>Example: Exlusive or</h2>
+As a first example, let's consider the classical [Exlusive Or (XOR) problem](http://en.wikipedia.org/wiki/Exclusive_or). We will consider the XOR problem involving two inputs $x_1$ and $x_2$ where $x_i \in \\{0,1\\}$. This problem states that the output should be 1 if exactly one of the inputs is 1 and 0 otherwise. Thus this problem has a very simple known input output relationship
+
+<table>
+    <tr>
+        <th>$x_1$</th><th>$x_2$</th><th>Output</th>
+    </tr>
+    <tr><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td>1</td><td>0</td><td>1</td></tr>
+    <tr><td>0</td><td>1</td><td>1</td></tr>
+    <tr><td>1</td><td>1</td><td>0</td></tr>
+</table>
+
+While this may be a trivial example, it illustrates all of the features of an arbitary feed-forward network while remaining simple enough to understand everything that is happening in the network. The XOR network is typically presented as having 2 input nodes, 2 hidden layer nodes, and one output nodes, for example see [here](http://www.heatonresearch.com/online/introduction-neural-networks-java-edition-2/chapter-1/page4.html). Such an arrangement however requires that the nodes in the hidden layer use a thresholding scheme whereby the output of the node is 0 or 1 depending on the sum of the input being greater than some fixed threshold value. However, such a network would violoate our model assumptions for training the network. Specifically, we could not use error backpropagation because the node activation functions would be step functions which are not differentiable. To overcome this, we will the *hyperbolic tangent*, *tanh*, as the hidden layer activation function and add a third node to the hidden layer representing a bias term. Our output layer will have a single node. We will interpret the out values as being 0 (or false) for output values less than 0 and 1 (or true) for output values greater than 0. The figure below provides a graphical representation of the network. Note, the parameters $w$ and $a$ are distinct for each layer, e.g. $w_{11}$ on the edge between $x_1$ and $h(a_1)$ is not the same $w_{11}$ on the edge from $h(a_1)$ to $\sigma(a_1)$.
+
+<img height="250" src="files/images/XOR2.png"/>
+
+"The feedforward neural network for the 2 input Exclusive Or problem"
+.. @+node:ekr.20160323155905.2: *6* cell 11
+@language python
+
+import networkx as nx
+import sys
+from math import tanh
+sys.path.append('pysrc')
+import neural_networks as nn
+from functools import partial
+
+DG = nx.DiGraph()
+DG.add_nodes_from(['X1','X2','H0','H1','H2','O1'])
+
+#set the activation functions
+DG.node['H0']['af']=1.0
+for node in ['H1','H2','O1']:
+    DG.node[node]['af']=tanh
+    
+#set the derivatives of the activation functions for all nodes except the output, this is done below
+def zero(x):
+    return 0
+for node in ['X1','X2','H0']: #the inputs and bias terms have zero derivatives
+    DG.node[node]['daf'] = zero
+def dtanh(x):
+    return 1.0 - tanh(x) * tanh(x)
+for node in ['H1','H2']:
+    DG.node[node]['daf']=dtanh
+    
+#create the edges
+for source in ['X1','X2']:
+    for target in ['H1','H2']:
+        DG.add_weighted_edges_from([(source,target,1.0)])
+for source in ['H0','H1','H2']:
+    DG.add_weighted_edges_from([(source, 'O1', 1.0)])
+    
+#set the input values
+DG.node['X1']['af']=0
+DG.node['X2']['af']=1
+
+#given these inputs, the correct output should be 1
+#we'll use a partial function so we can assign the correct 'daf' value
+#dynamically when we iteratively train the network
+def dout(x, t):
+    if x<0:
+        xx = 0
+    else:
+        xx = 1
+    return xx - t
+DG.node['O1']['daf']=partial(dout, t=1)
+
+nn.forward_prop(DG)
+
+nn.error_back_prop(DG)
+
+for node in ['X1','X2','H0','H1','H2','O1']:
+    print "node {0} has output {1} and error {2}".format(node, DG.node[node]['o'], DG.node[node]['e'])
+.. @+node:ekr.20160323155905.3: *7* # int:execution_count
+5
+.. @+node:ekr.20160323155905.4: *7* # list:outputs
+.. @+node:ekr.20160323155905.5: *8* # str:name
+stdout
+.. @+node:ekr.20160323155905.6: *8* # str:output_type
+stream
+.. @+node:ekr.20160323155905.7: *8* # list:text
+@nocolor-node
+
+node X1 has output 0 and error 0.0
+node X2 has output 1 and error 0.0
+node H0 has output 1.0 and error 0.0
+node H1 has output 0.761594155956 and error 0.0
+node H2 has output 0.761594155956 and error 0.0
+node O1 has output 0.987217029728 and error 0.0
+.. @+node:ekr.20160323155905.8: *6* cell 12
+@language python
+
+.. @+node:ekr.20160325060017.1: *4* Bug: @wrap doesn't work at end of body text
 .. @+node:ekr.20160216043537.1: *4* Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
@@ -58,57 +608,62 @@ LeoQtGui.runOpenFileDialog
 - Use list(set(words)) to check each word only once.
 - The do plain search for possibly-misspelled words in each body.
 
-.. @+node:ekr.20160319060938.1: *4* Ipython integration
-http://jupyter.org/qtconsole/stable/#embedding-the-qtconsole-in-a-qt-application
-discusses embedding the qt console in a qt app.
-
-Ideally, we would like to show the output of matplotlib.pyplot.plot in Leo's viewrendered window.
-
-There is lots of work to do:
-
-1. At present, running the same matplotlib script in Leo twice does not update the qt plot. In contrast, the IPython console does update the plot.
-
-2. Nothing gets plotted if --ipython is not in effect. I'll be tracing through the plot function to see where the output gets created (or swallowed).
-
-Hmm.  It may be best always to rely on the --ipython option.  It creates the Jupyter server. Leo surely should be using that unchanged.  It's a major piece of work.  Otoh, matplotlib doesn't require IPython, so maybe some plots could run independently of IPython.
-
-3. It would be cool to provide all the goodies in the Qt Console window (saving to file, etc) from Leo's viewrendered pane.  It's got to be possible.
-
-Note: we will want output to go to the viewrendered pane. That way the user could manage thousands of IPython scripts in the same .leo file.  I'll soon be creating matplotlib_examples.leo, with all the matplotlib scripts organized using @others, etc.  Do you see?
-
-Edward
-.. @+node:ekr.20151231100535.1: *5* #156: ILeo errors not piped to Log and Do not show in Ipython console
+.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
 https://github.com/leo-editor/leo-editor/issues/156
-.. @+node:ekr.20150412043739.1: *5* Emulate IPython's display framework
-Render to tex, pdf, rst, etc.
-
-c.display(x) displays object x. Support plotting objects x.
-
-Create IPython-like demo.
-.. @+node:ekr.20111010122531.15568: *6* @render-rest, @render-html trees
-Imagine LeoDocs completely rendered at all times.
-
-@render-rest or @render-html would cause the body pane to become the rendering pane for all nodes in the @render tree. These could be overridden with @no-render.
-
-Having *both* the original text *and* the rendered text be visible is often heavy: the user usually does not want to know about the sources: the rendering is good enough.
-
-show/hide-body pane would be good commands to have, but those commands increase the burden on the user.
-.. @+node:ekr.20130806072439.21299: *5* Leo and IPython
-From: Kent Tenney <ktenney@gmail.com>
-
-It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
-
-===== From: Alia K <alia_khouri@yahoo.com>
-
-IPEP 1611 (Ipython Enhancement Proposal, completed) allows for Leo-like cell-level directives (which in Ipython are called magic commands): https://github.com/ipython/ipython/issues/1611
-
-Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
 .. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
 # Depends on Python's meta package: https://pypi.python.org/pypi/meta
 # which *is* part of the Anaconda distro.
 
 import meta ; print(meta)
+.. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
+@language python
+
+# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
+
+print('\n\n\n\n')
+print('Now:\n')
+
+for p in c.all_positions():
+    try:
+        # Corrects empty lines around @language python\n@tabwidth -4
+        if p.h.startswith('@clean') and p.h.endswith('py'):
+            # Corrects empty lines after @first
+            if p.h == '@clean manage.py':
+                splited = p.b.partition('"""\nMain starter script for Django\n"""')
+                p.b = ''.join((splited[0].rstrip(), '\n', splited[1], splited[2]))
+
+            try:
+                if '@language python\n@tabwidth -4' in p.b:
+                    splited = p.b.partition('@language python\n@tabwidth -4')
+                    p.b = ''.join((splited[0].rstrip(), '\n', splited[1], '\n', splited[2].lstrip()))
+                    print(p.h)
+
+            except Exception as exc:
+                g.es_exception()
+
+        # Corrects empty lines between main blocks
+        else:
+            parent = p.parent().h
+            if parent.startswith('@clean'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+            # Corrects empty lines between methods
+            elif parent.startswith('class'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+
+    except Exception as exc:
+        g.es_exception()
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
 @language rest
 @wrap
@@ -363,270 +918,7 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160318113249.1: *4* Commands
-.. @+node:ekr.20160303040846.1: *5* Add command to correct blank lines in @clean files
-@language python
-
-# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
-
-print('\n\n\n\n')
-print('Now:\n')
-
-for p in c.all_positions():
-    try:
-        # Corrects empty lines around @language python\n@tabwidth -4
-        if p.h.startswith('@clean') and p.h.endswith('py'):
-            # Corrects empty lines after @first
-            if p.h == '@clean manage.py':
-                splited = p.b.partition('"""\nMain starter script for Django\n"""')
-                p.b = ''.join((splited[0].rstrip(), '\n', splited[1], splited[2]))
-
-            try:
-                if '@language python\n@tabwidth -4' in p.b:
-                    splited = p.b.partition('@language python\n@tabwidth -4')
-                    p.b = ''.join((splited[0].rstrip(), '\n', splited[1], '\n', splited[2].lstrip()))
-                    print(p.h)
-
-            except Exception as exc:
-                g.es_exception()
-
-        # Corrects empty lines between main blocks
-        else:
-            parent = p.parent().h
-            if parent.startswith('@clean'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-            # Corrects empty lines between methods
-            elif parent.startswith('class'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-
-    except Exception as exc:
-        g.es_exception()
-.. @+node:ekr.20160324173130.1: *5* execute javascript in Leo?
-@language python
-
-# http://stackoverflow.com/questions/10136319/executing-javascript-from-python
-# PyV8: https://github.com/emmetio/pyv8-binaries
-# PyExecJS: https://pypi.python.org/pypi/PyExecJS
-import execjs # PyExecJS.
-print(execjs.eval("'red yellow blue'.split(' ')"))
-print(execjs.get().name)
-    # Runtime environment: Node.js (V8)
-
-.. @+node:ekr.20160319060429.1: *5* Later
-.. @+node:ekr.20150311123850.7: *6* Improve --diff
-The --diff option is not very useful as a git diff.
-.. @+node:ekr.20150516123519.1: *7* re: semantic diff
-# This is the missing piece of the puzzle.
-
-# Can coverage tool help?
-.. @+node:ekr.20150516161000.1: *8* @@button dump-ast
-import ast
-import hashlib
-node = ast.parse(p.b,filename=p.h,mode='exec')
-s = ast.dump(node,annotate_fields=False)
-# Comments, whitespace and blank lines do not affect the hash.
-# The contents of strings & docstrings do affect the hash.
-# The order of statements does affect the hash.
-print(hashlib.sha1(s).hexdigest())
-if 0:
-    return 'xy'
-.. @+node:ekr.20150518162738.1: *8* @command proto-diff
-g.cls()
-import ast
-import difflib
-import leo.core.leoAst as leoAst
-f = leoAst.AstFormatter()
-<< define table >>
-for pair in table:
-    print('*'*40)
-    s1,s2 = pair
-    t1 = ast.parse(s1,filename='s1',mode='exec')
-    t2 = ast.parse(s2,filename='s2',mode='exec')
-    if 1:
-        a,b = f.format(t1),f.format(t2)
-    else:
-        a = ast.dump(t1,annotate_fields=False)
-        b = ast.dump(t2,annotate_fields=False)
-    if 1:
-        print(a) ; print('-'*20) ; print(b) ; print('')
-    sm = difflib.SequenceMatcher(None,a,b)
-    for tag, i1, i2, j1, j2 in sm.get_opcodes():
-        if tag in ('insert','replace',):
-            # print ("%7s a[%d:%d] (%s) b[%d:%d] (%s)" %
-               # (tag, i1, i2, a[i1:i2], j1, j2, b[j1:j2]))
-            print ("===== %s\n%s\n%s" % (
-                tag,a[i1:i2],b[j1:j2]))
-.. @+node:ekr.20150518162908.1: *9* << define table >>
-# A list of 2-tuples
-
-table = (
-# Tuple 1:Add docstring.
-('''
-def spam():
-    pass
-''',
-'''
-def spam():
-    """Docstring for spam."""
-    pass
-'''
-),
-# Tuple 2: Change docstring.
-('''
-def eggs():
-    """Old docstring."""
-    pass
-''',
-'''
-def eggs():
-    """New docstring."""
-    pass
-'''
-),
-
-)
-.. @+node:ekr.20051110155735.1: *6* Improve spell checking
-- Per-pane key bindings. (arrows, etc.)
-- Try default fonts for spell buttons.
-- Select the first entry.
-_ Spell checker should check headlines.
-.. @+node:ekr.20140104063158.16448: *6* Reload-abbreviations and reload-key-bindings commands
-reload-abbreviations and reload-key-bindings commands.
-
-- Cached settings are not necessary:
-  1000 calls to getBool would take 0.007 sec.
-
-- Remove all caching from Leo settings.
-.. @+node:ekr.20140312052111.16811: *7* Notes
-https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
-
-    I've put adding new reload-abbreviations and reload-key-bindings
-    commands on the list of things to do asap. These are non-trivial
-    commands, but they should have been ​done ​ years ago. I'll see what I
-    can do in the next day or so.
-
-​Updating the configuration tables in leoConfig.py is straightforward, a​s it turns out. Naturally, there are complications, all involved cached settings, in one forma or another.
-
-1. The easy cases: use properties.
-
-There are about 60 or 70 places in the code where config settings are stored in an ivar. Usually for readability, not for speed.
-
-The solution (tested) is simple: rather than do:
-
-    self.setting_ivar = c.config.getX('a-setting-name')
-
-Leo could define a property:
-
-    @property
-    def setting_ivar(self):
-        return c.config.getX('a-setting-name')
-
-No other changes required. The existing code will test self.setting_ivar exactly as before, but now any recent changes to the setting will have effect.
-
-I'll make these changes using a script.
-
-2. The harder cases: use a reload_setting method in the affected classes.
-
-Several subcommanders create tables on startup using config settings. c.abbrevCommands is one such subcommander.
-
-These classes should have a reload_settings method, called whenever settings are dynamically reloaded.
-
-Key bindings are the hardest case: the tables for key bindings are mind-bogglingly complex. k.reload_settings would be a piece of work, but in theory it should be possible.
-.. @+node:ekr.20140630071432.16748: *7* Related methods
-lm.doPrePluginsInit
-lm.computeLocalSettings.
-g.GeneralSetting
-LM.Settings suboutline.
-abbrevCommandsClass
-    init_abbrev
-.. @+node:ekr.20140104063158.17235: *7* Found: \w*\.\w*\s*=\s*c.config.get
-# About 65-70 matches.
-.. @+node:ekr.20150419103045.1: *6* Replay undo stack as a screencast
-I got the idea from thinking about making a video called, "watch over Edward's shoulder as he fixes a bug".
-
-The command would "rewind" the undo stack to the beginning, and then show the screen after each operation, with, say, a 2-second pause between "slides"
-
-Imo, we need more "workflow" videos, and see what I actually do would be the raw material for such videos.
-.. @+node:ekr.20120520113447.9874: *6* Select node from traceback (partially done)
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
-
-When I have a traceback in the log pane, I'd love to be able to select an item and cause the file to appear in a node. It would be cool to have 'Next' and 'Prev' capability while in this mode, effortlessly traversing views of the source of the stack items.
-
-Done: When running scripts, Leo now automatically selects lines that generate exceptions.
-.. @+node:ekr.20150211104036.477: *6* Smart paste & yank
-And perhaps other problems with yank.
-
-How does emacs work.  Settings needed?
-
-Multipe yanks are not catenated.
-.. @+node:ekr.20150211104036.478: *7* Terry's post
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/SqXLGyj4V7kJ
-
-I don't think you need to view source or copy text that looks like HTML.
-
-For me, the most effective way to reproduce a web page from a browser
-in a Leo richtext node is to select-all (ctrl-a) copy (ctrl-c) on the
-*rendered* browser content, i.e. the web page as you usually look at it.
-
-That gave better results, fidelity of reproduction wise, than viewing
-the source and copying that.  Partly because the source includes the
-outer elements that the richtext editor probably doesn't want to see,
-remember the richtext editor is itself a complete HTML page with its
-own HTML and HEAD elements.
-
-> There is no way that Leo, or any other program, can magically recover
-> the missing data.
-
-Actually I think modern clipboard operations are based on magic ;-)
-When you copy the rendered HTML in the browser and paste into Leo you
-get WYSIWYG reproduction pasting into a richtext node and just plain
-text posting into a regular node - somewhere in the pipeline the
-content actually delivered is selected based on the capabilities of the
-receiving end of the pipeline - not sure of the details, but remember
-clipboards can paste images and other things that aren't plain text.
-.. @+node:ekr.20150211104036.479: *7* Matt's links
-https://groups.google.com/d/msg/leo-editor/TZGd_gAmQwk/LEC1ezHsOG4J
-
-> Is it possible to have Leo analyse what type of text is being pasted and thus
-define automatically the type of node (rich/plain)?
-
-It looks possible,
-`win32clipboard.EnumClipboardFormat`
-"enumerate the data formats that are currently available on the clipboard. "
-http://docs.activestate.com/activepython/2.4/pywin32/win32clipboard.html.
-.. @+node:ekr.20160302132356.1: *6* Unify abbreviations
-@language rest
-@wrap
-
-> Kent: ​I think it would be great if the abbrev-read and abbrev-write
-files could look like the defs in a @data node.
-
-1. Search for 'abbrev-read'. Mark abbrev.readAbbreviations & helper and abbrev.writeAbbreviation.  Do cffm. Now all the relevant abbrev code is in one place.
-
-2. Oh yes, abbrev.expandAbbrev & helpers do the abbreviations specified by @data nodes. Do cffm word search for abbrevs.  abbrev.addAbbrevHelper enters entry into self.abbrevs.
-
-
-@language python
-.. @+node:ekr.20160302131125.1: *7* clone-find-marked (flattened)
-abbrev.expandAbbrev
-readAbbreviations
-writeAbbreviations
-.. @+node:ekr.20160302131622.1: *7* Found:abbrevs
-# flattened, word, ignore-case, head, body
-.. @+node:ekr.20160319150951.1: *4* Gui
+.. @+node:ekr.20160325055507.1: *4* Code
 .. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -642,6 +934,7 @@ d = p.u.get(plugin_name, {})
 d['duration'] = 5
 p.u[plugin_name] = d
 .. @+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
 .. @+node:ekr.20160318113605.1: *5* Rethink windows
 - Decouple commander from outline?
 - Notifications might simplify viewrendered plugin.
@@ -664,7 +957,18 @@ I'll try and contribute to things moving in this direction when I have time, jus
 
 If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
 .. @+node:ekr.20110929074744.15499: *6* Allow more panes to be part of the free_layout "action" buttons
-.. @+node:ekr.20160227134532.1: *5* Shell in Python
+.. @+node:ekr.20160318113142.1: *4* Importers/exporters
+* Add ipynb/Jupyter importer/exporter.
+- Add coffeescript importer.
+- Finish javascript importer, or at least fix #127: Bracket matching is buggy
+- Maybe: Read/write files in json format
+- Maybe: py2cython: like make_stub_files.
+.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
+Generate type declarations from a given set of naming conventions.
+.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
+Use external code.
+.. @+node:ekr.20160318113258.1: *4* Plugins
+.. @+node:ekr.20160227134532.1: *5* Command shell in Python
 # http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
 
 Add shell window, perhaps in viewrendered plugin.
@@ -687,18 +991,6 @@ if 0:
             # sys.stdout.write(out)
             # sys.stdout.flush()
             g.es(out)
-.. @+node:ekr.20160318113142.1: *4* Importers/exporters
-* Add ipynb/Jupyter importer/exporter.
-- Add coffeescript importer.
-- Finish javascript importer, or at least fix #127: Bracket matching is buggy
-- Maybe: Read/write files in json format
-- Maybe: py2cython: like make_stub_files.
-.. @+node:ekr.20150418052852.1: *5* import/export to .ipynb files
-.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
-Generate type declarations from a given set of naming conventions.
-.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
-Use external code.
-.. @+node:ekr.20160318113258.1: *4* Plugins
 .. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
 .. @+node:ekr.20160310055038.1: *5* Improve quicksearch (Nav pane)
