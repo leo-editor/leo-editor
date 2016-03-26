@@ -1129,32 +1129,31 @@ def main():
     holder.show()
     app.exec_()
 #@+node:ekr.20160326041856.1: ** register_class (EKR: Not used yet)
-def register_class(a_class, c, factory, ns_do_context=None):
+def register_class(c, factory, name, id_=None, ns_do_context=None):
     '''
     A top-level function that registers a factory for use by the
     NestedSplitter action menu.
     
-    a_class:        The class (not an instance) being registered.
     c:              The Commander of the class being registered.
     factory:        A function f(c) returning a new instance of a_class.
-    ns_do_context:  An optional predicate pred(id_)
-                    if id_ == a_class.__class__.__name__,
-                    pred(id_) should "do something" and return True.
-                    Otherwise, pred(id_) should return False.
+    name:           The name used in actin menus.
+    id_:            Optional id for the InternalProvider class. Default=name.
+    ns_do_context:  Optional predicate pred(id_).
+                    pred(id_) should do nothing unless id_ == self.id_.
     '''
     #@+others
     #@+node:ekr.20160326044507.1: *3* class InternalProvider
     class InternalProvider:
             
-        def __init__ (self, a_class, c, factory, ns_do_context):
+        def __init__ (self, c, factory, name, id_, ns_do_context):
             '''
             Ctor for InternalProvider class created by top-level
             register_provider function in nested_splitter.py.
             '''
-            self.a_class = a_class
             self.c = c
-            self.id_ = a_class.__class__.__name__,
+            self.id_ = id_ if id_ else name
             self.factory = factory
+            self.name = name
             if ns_do_context:
                 setattr(self, 'ns_do_context', ns_do_context)
 
@@ -1173,7 +1172,7 @@ def register_class(a_class, c, factory, ns_do_context=None):
             if self.do_context:
                 return self.do_context()
             else:
-                return (self.id_, self.id_)
+                return (self.name, self.id_)
         #@+node:ekr.20160326044829.3: *4* ns_provide
         def ns_provide(self, id_):
             '''Return the widget to replace the Action button, or None'''
@@ -1186,16 +1185,17 @@ def register_class(a_class, c, factory, ns_do_context=None):
         #@+node:ekr.20160326044829.1: *4* ns_provides
         def ns_provides(self):
             '''Return a list of (Name, id_) strings.'''
-            return [(self.id_, self.id_),]
+            return [(self.name, self.id_),]
         #@-others
     #@-others
     splitter = c and c.free_layout.get_top_splitter()
     if splitter:
         splitter.register_provider(
             InternalProvider(
-                a_class,
                 c,
                 factory,
+                name,
+                id_,
                 ns_do_context))
 #@-others
 #@@language python
