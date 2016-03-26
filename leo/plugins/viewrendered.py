@@ -487,6 +487,7 @@ if QtWidgets:
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
             self.html_class = QtWebKitWidgets.QWebView
+                # In VR2, this is a WebViewPlus.
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
@@ -723,7 +724,11 @@ if QtWidgets:
             '''Update html in the vr pane.'''
             pc = self
             if pc.must_change_widget(pc.html_class):
-                w = pc.html_class()
+                try:
+                    w = pc.html_class()
+                except TypeError:
+                    # html_class supplied by VR2
+                    w = pc.html_class(pc=pc)
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
