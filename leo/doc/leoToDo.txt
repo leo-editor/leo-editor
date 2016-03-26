@@ -647,6 +647,67 @@ See debuggotogloballine.leo
 @wrap
 .. @+node:ekr.20131121211048.16378: *4* * More screenshots!
 Different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20160325161612.1: *4* FAQ?  Gathering scripts
+@language rest
+@wrap
+
+The frequently asked-for feature if for clones that don't share children.  It's been amusing to think of multi-colored threaded trees, split nodes, and what have you.
+
+The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
+
+Imo, this one special case *in no way* justifies changes to Leo's vnodes or positions.  Instead, the simplest and the most general thing that could possibly work is to gather desired data using a script.
+
+1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
+
+2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
+
+For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
+
+That's all there is to it.
+
+Edward
+.. @+node:ekr.20160325154019.1: *4* FAQ? pylint command/script
+​@language rest
+@wrap
+
+On Fri, Mar 25, 2016 at 6:59 AM, john lunzer <lunzer@gmail.com> wrote:
+
+​> ​My biggest wishlist item is what I would "Livelint" which constantly runs and reruns pylint (or similar) in the background​.​
+​
+This basically already exists.  On Windows, I have this pylint.bat file:
+
+python2 c:\leo.repo\leo-editor\pylint-leo.py ^
+rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
+
+In other words, the top-level leo-editor folder contains:
+
+- pylint-leo.py
+- pylint-leo-rc.txt
+
+c:\leo.repo\leo-editor>c:\Anaconda2\python.exe c:\leo.repo\leo-editor\pylint-leo.py rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt -h
+Usage: pylint-leo.py [options]
+
+Options:
+  -h, --help   show this help message and exit
+  -a           all
+  -c           core
+  -e           external
+  -f FILENAME  filename, relative to leo folder
+  -g           gui plugins
+  -m           modes
+  -p           plugins
+  -s           silent
+  -u           user commands
+  -v           report pylint version
+
+
+My typical usage is pylint -a -s
+
+Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
+
+Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
+
+Edward
 .. @+node:ekr.20160315141751.1: *4* Code Academy: possible topics
 @language rest
 @wrap
