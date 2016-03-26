@@ -735,31 +735,6 @@ if QtWidgets:
             else: kind = 'unknown: %s' % repr(button)
             if trace: g.trace(tag, kind)
             return kind
-        #@+node:ekr.20110605121601.18020: *3* lqtb.event handlers
-        #@+node:ekr.20110605121601.18021: *4* lqtb.mousePress/ReleaseEvent
-        # def mousePressEvent (self,event):
-            # QtWidgets.QTextBrowser.mousePressEvent(self,event)
-
-        def mouseReleaseEvent(self, *args, **keys):
-            '''Handle a mouse release event in a LeoQTextBrowser.'''
-            g.trace('LeoQTextBrowser', args, keys)
-            if len(args) == 1:
-                event = args[0]
-                self.onMouseUp(event)
-                QtWidgets.QTextBrowser.mouseReleaseEvent(self, event)
-            elif len(args) == 2:
-                event = args[1]
-                QtWidgets.QTextBrowser.mouseReleaseEvent(self, *args)
-            else:
-                g.trace('can not happen')
-                return
-        #@+node:ekr.20110605121601.18022: *4* lqtb.onMouseUp
-        def onMouseUp(self, event=None):
-            # Open the url on a control-click.
-            g.trace('(LeoQTextBrowser)', event)
-            if QtCore.Qt.ControlModifier & event.modifiers():
-                event = {'c': self.leo_c}
-                g.openUrlOnClick(event)
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             '''Get the horizontal scrollbar position.'''
