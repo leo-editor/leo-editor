@@ -1128,16 +1128,16 @@ def main():
     holder.layout().addWidget(splitter)
     holder.show()
     app.exec_()
-#@+node:ekr.20160326041856.1: ** register_class (EKR: Not used yet)
-def register_class(c, factory, name, id_=None, ns_do_context=None):
+#@+node:ekr.20160326041856.1: ** register_factor (EKR: Not used yet)
+def register_factory(c, factory, menu_name, id_=None, ns_do_context=None):
     '''
-    A top-level function that registers a factory for use by the
-    NestedSplitter action menu.
+    Register a factory and menu name for the NestedSplitter action menu.
     
     c:              The Commander of the class being registered.
     factory:        A function f(c) returning a new instance of a_class.
-    name:           The name used in actin menus.
-    id_:            Optional id for the InternalProvider class. Default=name.
+    menu_name:      The name used in action menus.
+    id_:            Optional id for the InternalProvider class.
+                    Default to menu_name.
     ns_do_context:  Optional predicate pred(id_).
                     pred(id_) should do nothing unless id_ == self.id_.
     '''
@@ -1145,15 +1145,15 @@ def register_class(c, factory, name, id_=None, ns_do_context=None):
     #@+node:ekr.20160326044507.1: *3* class InternalProvider
     class InternalProvider:
             
-        def __init__ (self, c, factory, name, id_, ns_do_context):
+        def __init__ (self, c, factory, menu_name, id_, ns_do_context):
             '''
             Ctor for InternalProvider class created by top-level
             register_provider function in nested_splitter.py.
             '''
             self.c = c
-            self.id_ = id_ if id_ else name
+            self.id_ = id_ if id_ else menu_name
             self.factory = factory
-            self.name = name
+            self.menu_name = menu_name
             if ns_do_context:
                 setattr(self, 'ns_do_context', ns_do_context)
 
@@ -1163,16 +1163,16 @@ def register_class(c, factory, name, id_=None, ns_do_context=None):
             '''
             Return a list of tuples or dicts.
             
-            Tuples are (Name, id_), both strings.
+            Tuples are (menu_name, id_), both strings.
               
             Dicts:
                 - keys are titles of submenus.
-                - values are a list of (Name, id_) tuples.
+                - values are a list of (menu_name, id_) tuples.
             '''
             if self.do_context:
                 return self.do_context()
             else:
-                return (self.name, self.id_)
+                return (self.menu_name, self.id_)
         #@+node:ekr.20160326044829.3: *4* ns_provide
         def ns_provide(self, id_):
             '''Return the widget to replace the Action button, or None'''
@@ -1184,8 +1184,8 @@ def register_class(c, factory, name, id_=None, ns_do_context=None):
             return self.id_
         #@+node:ekr.20160326044829.1: *4* ns_provides
         def ns_provides(self):
-            '''Return a list of (Name, id_) strings.'''
-            return [(self.name, self.id_),]
+            '''Return a list of (menu_name, id_) strings.'''
+            return [(self.menu_name, self.id_),]
         #@-others
     #@-others
     splitter = c and c.free_layout.get_top_splitter()
@@ -1194,7 +1194,7 @@ def register_class(c, factory, name, id_=None, ns_do_context=None):
             InternalProvider(
                 c,
                 factory,
-                name,
+                menu_name,
                 id_,
                 ns_do_context))
 #@-others
