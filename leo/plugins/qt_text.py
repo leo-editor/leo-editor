@@ -1271,6 +1271,8 @@ class QTextEditWrapper(QTextMixin):
                 trace = False and not g.unitTesting
                 assert isinstance(self, QTextEditWrapper), self
                 assert isinstance(self.widget, QtGui.QTextEdit), self.widget
+                QtGui.QTextEdit.mouseReleaseEvent(self.widget, event)
+                    # Call the base class.
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
