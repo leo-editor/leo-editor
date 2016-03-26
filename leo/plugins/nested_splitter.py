@@ -1129,14 +1129,14 @@ def main():
     holder.show()
     app.exec_()
 #@+node:ekr.20160326041856.1: ** register_class (EKR: Not used yet)
-def register_class(a_class, c, provider, ns_do_context=None):
+def register_class(a_class, c, factory, ns_do_context=None):
     '''
-    A top-level function that registers a provider for use by the
+    A top-level function that registers a factory for use by the
     NestedSplitter action menu.
     
     a_class:        The class (not an instance) being registered.
     c:              The Commander of the class being registered.
-    provider:       A function f(c) returning a new instance of a_class.
+    factory:        A function f(c) returning a new instance of a_class.
     ns_do_context:  An optional predicate pred(id_)
                     if id_ == a_class.__class__.__name__,
                     pred(id_) should "do something" and return True.
@@ -1146,7 +1146,7 @@ def register_class(a_class, c, provider, ns_do_context=None):
     #@+node:ekr.20160326044507.1: *3* class InternalProvider
     class InternalProvider:
             
-        def __init__ (self, a_class, c, provider, ns_do_context):
+        def __init__ (self, a_class, c, factory, ns_do_context):
             '''
             Ctor for InternalProvider class created by top-level
             register_provider function in nested_splitter.py.
@@ -1154,7 +1154,7 @@ def register_class(a_class, c, provider, ns_do_context=None):
             self.a_class = a_class
             self.c = c
             self.id_ = a_class.__class__.__name__,
-            self.provider = provider
+            self.factory = factory
             if ns_do_context:
                 setattr(self, 'ns_do_context', ns_do_context)
 
@@ -1177,13 +1177,12 @@ def register_class(a_class, c, provider, ns_do_context=None):
         #@+node:ekr.20160326044829.3: *4* ns_provide
         def ns_provide(self, id_):
             '''Return the widget to replace the Action button, or None'''
-            return self.provider(self.c) if id_ == self.id_ else None
+            return self.factory(self.c) if id_ == self.id_ else None
            
         #@+node:ekr.20160326044829.2: *4* ns_provider_id
         def ns_provider_id(self):
-            '''Return a string identifying the provider.'''
+            '''Return a string identifying the factory.'''
             return self.id_
-            
         #@+node:ekr.20160326044829.1: *4* ns_provides
         def ns_provides(self):
             '''Return a list of (Name, id_) strings.'''
@@ -1196,7 +1195,7 @@ def register_class(a_class, c, provider, ns_do_context=None):
             InternalProvider(
                 a_class,
                 c,
-                provider,
+                factory,
                 ns_do_context))
 #@-others
 #@@language python
