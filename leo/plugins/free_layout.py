@@ -124,7 +124,7 @@ class FreeLayoutController:
         # to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
         # self.init()
-    #@+node:ekr.20110318080425.14393: *3* create_renderer
+    #@+node:ekr.20110318080425.14393: *3* create_renderer (FreeLayoutController)
     def XXcreate_renderer(self, w):
         """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
         pc = self; c = pc.c
@@ -188,7 +188,7 @@ class FreeLayoutController:
         splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
-    #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
+    #@+node:tbrown.20110621120042.22914: *3* get_top_splitter (FreeLayoutController)
     def get_top_splitter(self):
         # Careful: we could be unit testing.
         f = self.c.frame
@@ -252,7 +252,7 @@ class FreeLayoutController:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
-    #@+node:tbrown.20110627201141.11745: *3* ns_provides
+    #@+node:tbrown.20110627201141.11745: *3* ns_provides (FreeLayoutController)
     def ns_provides(self):
         ans = []
         # list of things in tab widget
@@ -269,7 +269,7 @@ class FreeLayoutController:
         ans.append(('Body', '_leo_pane:bodyFrame'))
         ans.append(('Tab pane', '_leo_pane:logFrame'))
         return ans
-    #@+node:tbrown.20110628083641.11724: *3* ns_provide
+    #@+node:tbrown.20110628083641.11724: *3* ns_provide (FreeLayoutController)
     def ns_provide(self, id_):
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
@@ -291,7 +291,7 @@ class FreeLayoutController:
                 w.setMinimumSize(20, 20)
             return w
         return None
-    #@+node:tbrown.20110628083641.11730: *3* ns_context
+    #@+node:tbrown.20110628083641.11730: *3* ns_context (FreeLayoutController)
     def ns_context(self):
         ans = [
             ('Embed layout', '_fl_embed_layout'),
@@ -306,7 +306,7 @@ class FreeLayoutController:
         ans.append(('Restore default layout', '_fl_restore_default:'))
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
-    #@+node:tbrown.20110628083641.11732: *3* ns_do_context
+    #@+node:tbrown.20110628083641.11732: *3* ns_do_context (FreeLayoutController)
     def ns_do_context(self, id_, splitter, index):
         if id_.startswith('_fl_embed_layout'):
             self.embed()
@@ -361,7 +361,7 @@ class FreeLayoutController:
             self.loadLayouts("reload", {'c': self.c}, reloading=True)
             return True
         return False
-    #@+node:tbrown.20120119080604.22982: *3* embed
+    #@+node:tbrown.20120119080604.22982: *3* embed (FreeLayoutController)
     def embed(self):
         """called from ns_do_context - embed layout in outline's
         @settings, an alternative to the Load/Save named layout system

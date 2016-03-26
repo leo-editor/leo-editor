@@ -1128,6 +1128,76 @@ def main():
     holder.layout().addWidget(splitter)
     holder.show()
     app.exec_()
+#@+node:ekr.20160326041856.1: ** register_provider (EKR: Not used yet)
+def register_provider(a_class, c, provider, ns_do_context=None):
+    '''
+    A top-level function that registers a provider for use by the
+    NestedSplitter action menu.
+    
+    a_class:        The class (not an instance) being registered.
+    c:              The Commander of the class being registered.
+    provider:       A function f(c) returning a new instance of a_class.
+    ns_do_context:  An optional predicate pred(id_)
+                    if id_ == a_class.__class__.__name__,
+                    pred(id_) should "do something" and return True.
+                    Otherwise, pred(id_) should return False.
+    '''
+    #@+others
+    #@+node:ekr.20160326044507.1: *3* class InternalProvider
+    class InternalProvider:
+            
+        def __init__ (self, a_class, c, provider, ns_do_context):
+            '''
+            Ctor for InternalProvider class created by top-level
+            register_provider function in nested_splitter.py.
+            '''
+            self.a_class = a_class
+            self.c = c
+            self.id_ = a_class.__class__.__name__,
+            self.provider = provider
+            if ns_do_context:
+                setattr(self, 'ns_do_context', ns_do_context)
+
+        #@+others
+        #@+node:ekr.20160326044740.1: *4* ns_context
+        def ns_context(self):
+            '''
+            Return a list of tuples or dicts.
+            
+            Tuples are (Name, id_), both strings.
+              
+            Dicts:
+                - keys are titles of submenus.
+                - values are a list of (Name, id_) tuples.
+            '''
+            if self.do_context:
+                return self.do_context()
+            else:
+                return (self.id_, self.id_)
+        #@+node:ekr.20160326044829.3: *4* ns_provide
+        def ns_provide(self, id_):
+            '''Return the widget to replace the Action button, or None'''
+            return self.provider(self.c) if id_ == self.id_ else None
+           
+        #@+node:ekr.20160326044829.2: *4* ns_provider_id
+        def ns_provider_id(self):
+            '''Return a string identifying the provider.'''
+            return self.id_
+            
+        #@+node:ekr.20160326044829.1: *4* ns_provides
+        def ns_provides(self):
+            '''Return a list of (Name, id_) strings.'''
+            return [(self.id_, self.id_),]
+        #@-others
+    #@-others
+    splitter = c and c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.register_provider(
+            InternalProvider(
+                a_class,
+                c,
+                provider,
+                ns_do_context))
 #@-others
 #@@language python
 #@@tabwidth -4
