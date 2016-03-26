@@ -714,8 +714,6 @@ Must be easy to use.
 
 - Use Terry's window code to create all panes:
     - New console window plugin.
-    - viewrendered plugins
-
 .. @+node:ekr.20160305033136.1: *6* Found:['"]icons[i"]
 .. @+node:ekr.20160129081036.1: *6* simplifying uA access
 d = p.u.get(plugin_name, {})
@@ -725,7 +723,6 @@ p.u[plugin_name] = d
 .. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
 .. @+node:ekr.20160318113605.1: *5* Rethink windows
 - Decouple commander from outline?
-- Notifications might simplify viewrendered plugin.
 - Notifications might simplify multiple body panes.
 - A good platform for web development and anything
   needing multiple consoles.
