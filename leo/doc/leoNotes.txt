@@ -17256,5 +17256,30 @@ def stc_popup_attrs(rt, node, all=False):
 .. @+node:ekr.20150722204300.29: *5* rt.url (not used)
 # def url(rt, url):
     # return rt.attr(url).replace("#", "%23").replace("-", "%2d")
+.. @+node:ekr.20110605121601.18020: *3* lqtb.event handlers (not used)
+.. @+node:ekr.20110605121601.18021: *4* lqtb.mousePress/ReleaseEvent
+# def mousePressEvent (self,event):
+    # QtWidgets.QTextBrowser.mousePressEvent(self,event)
+
+def mouseReleaseEvent(self, *args, **keys):
+    '''Handle a mouse release event in a LeoQTextBrowser.'''
+    g.trace('LeoQTextBrowser', args, keys)
+    if len(args) == 1:
+        event = args[0]
+        self.onMouseUp(event)
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self, event)
+    elif len(args) == 2:
+        event = args[1]
+        QtWidgets.QTextBrowser.mouseReleaseEvent(self, *args)
+    else:
+        g.trace('can not happen')
+        return
+.. @+node:ekr.20110605121601.18022: *4* lqtb.onMouseUp
+def onMouseUp(self, event=None):
+    # Open the url on a control-click.
+    g.trace('(LeoQTextBrowser)', event)
+    if QtCore.Qt.ControlModifier & event.modifiers():
+        event = {'c': self.leo_c}
+        g.openUrlOnClick(event)
 .. @-all
 .. @-leo
