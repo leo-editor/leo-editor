@@ -1128,8 +1128,8 @@ def main():
     holder.layout().addWidget(splitter)
     holder.show()
     app.exec_()
-#@+node:ekr.20160326041856.1: ** register_provider (EKR: Not used yet)
-def register_provider(a_class, c, provider, ns_do_context=None):
+#@+node:ekr.20160326041856.1: ** register_class (EKR: Not used yet)
+def register_class(a_class, c, provider, ns_do_context=None):
     '''
     A top-level function that registers a provider for use by the
     NestedSplitter action menu.
