@@ -10,6 +10,7 @@ Important: This module imports no other Leo module.
 # pylint: disable=eval-used
 # pylint: disable=global-variable-not-assigned
 # pylint: disable=import-self
+# pylint: disable=deprecated-method
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+<< global switches >>
@@ -4570,7 +4571,9 @@ def isCallable(obj):
 #@+node:ekr.20160229070429.1: *5* g.isInt
 def isInt(obj):
     '''Return True if obj is an int or a long.'''
+    # 'long' does not exist in Python 3.
     # pylint: disable=no-member
+    # pylint: disable=undefined-variable
     if g.isPython3:
         return isinstance(obj, int)
     else:
