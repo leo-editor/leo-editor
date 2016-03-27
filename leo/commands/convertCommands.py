@@ -1908,15 +1908,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160326214638.1: *6* move_node
             def move_node(self, n, p, stack):
                 '''Move node to level n'''
+                # Cut back the stack so that p will be at level n (if possible).
                 if stack:
                     stack = stack[:n]
                     if len(stack) == n:
                         prev = stack.pop()
                         p.moveAfter(prev)
                     else:
+                        # p will be under-indented if len(stack) < n-1
+                        # This depends on user markup, so it can't be helped.
                         parent = stack[-1]
                         n2 = parent.numberOfChildren()
                         p.moveToNthChildOf(parent, n2)
+                # Push p *after* moving p.
                 stack.append(p.copy())
                 # g.trace('   n', n, 'stack', len(stack), p.h)
                 return stack
