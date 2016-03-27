@@ -1814,32 +1814,46 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if val == (None, None):
                         g.trace('malformed header:', m.group(0))
                 return val
-            #@+node:ekr.20160326082322.1: *7* do_markdown_cell
+            #@+node:ekr.20160326082322.1: *7* do_markdown_cell (import)
             def do_markdown_cell(self, p, s):
                 '''Split the markdown cell p if it contains one or more html headers.'''
                 trace = False and not g.unitTesting
+                SPLIT = False
+                    # Perhaps this should be a user option, 
+                    # but splitting adds signifincant whitespace.
+                    # The user can always split nodes manually if desired.
                 i0, last, parent = 0, p.copy(), p.copy()
                 if not s.strip():
                     return
                 lines = g.splitLines(s)
-                for i, s in enumerate(lines):
-                    m = self.re_header.search(s)
-                    n, name = self.check_header(m)
-                    if n is None: continue
-                    h = '<h%s> %s </h%s>' % (n, name.strip(), n)
-                    prefix = ''.join(lines[i0: i])
-                    suffix = ''.join(lines[i:])
-                    if trace: g.trace('%2s %2s %s' % (i-i0, len(lines)-i, h))
-                    if prefix.strip():
-                        p2 = last.insertAfter()
-                        p2.h = h
-                        p2.b = suffix
-                        last.b = '@language md\n\n' + prefix
-                        last = p2
-                        i0 = i
-                    else:
-                        last.h = h
-                        last.b = '@language md\n\n' + suffix
+                if SPLIT:
+                    for i, s in enumerate(lines):
+                        m = self.re_header.search(s)
+                        n, name = self.check_header(m)
+                        if n is None: continue
+                        h = '<h%s> %s </h%s>' % (n, name.strip(), n)
+                        prefix = ''.join(lines[i0: i])
+                        suffix = ''.join(lines[i+1:]) # i+1: skip the heading.
+                        if trace: g.trace('%2s %2s %s' % (i-i0, len(lines)-i, h))
+                        if prefix.strip():
+                            p2 = last.insertAfter()
+                            p2.h = h
+                            p2.b = suffix
+                            last.b = '@language md\n\n' + prefix
+                            last = p2
+                            i0 = i
+                        else:
+                            last.h = h
+                            last.b = '@language md\n\n' + suffix
+                else:
+                    for i, s in enumerate(lines):
+                        m = self.re_header.search(s)
+                        n, name = self.check_header(m)
+                        if n is not None:
+                            h = '<h%s> %s </h%s>' % (n, name.strip(), n)
+                            p.h = h
+                            break
+                    p.b = '@language md\n\n' + ''.join(lines)
             #@+node:ekr.20160320184226.1: *5* do_cell
             def do_cell(self, cell, n):
 
@@ -1905,6 +1919,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # g.trace('n', n, 'stack', len(stack), p.h)
                     stack = self.move_node(n, p, stack)
                     p.moveToNodeAfterTree()
+                    # g.trace('=====', p and p.h)
             #@+node:ekr.20160326214638.1: *6* move_node
             def move_node(self, n, p, stack):
                 '''Move node to level n'''
@@ -2204,14 +2219,33 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
             def put_source(self, p, type_):
                 '''Put the 'source' key for p.'''
-                s = ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
+                lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
+                # skip blank lines.
+                i = 0
+                while i < len(lines) and not lines[i].strip():
+                    i += 1
+                lines = lines[i:]
+                # skip trailing lines:
+                i = len(lines)-1
+                while i > 0 and not lines[i].strip():
+                    i -= 1
+                lines = lines[:i+1]
+                has_header = any([self.header_re.search(z) for z in lines])
+                if lines and lines[-1].endswith('\n'):
+                    s_last = lines.pop()
+                    lines.append(s_last.rstrip())
+                s = ''.join(lines)
                 # Auto add headlines.
-                if type_ == 'markdown' and not self.header_re.search(p.b):
-                    n = min(6, self.level(p))
-                    heading = '<h%(level)s>%(headline)s</h%(level)s>\n\n' % {
-                        'level': n,
-                        'headline': p.h,
-                    }
+                if type_ == 'markdown' and not has_header:
+                    if 1: # Just put the headline.
+                        heading = p.h.strip()+'\n'
+                    else:
+                        # Not needed now that the import code sets headlines.
+                        n = min(6, self.level(p))
+                        heading = '<h%(level)s>%(headline)s</h%(level)s>\n' % {
+                            'level': n,
+                            'headline': p.h,
+                        }
                     s = heading + s
                     # Not completely accurate, but good for now.
                 self.put_list('source', s or '# no code!')
@@ -2232,12 +2266,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 '''Put a json list.'''
                 if s.strip():
                     self.put_indent('"%s": [' % key)
-                    for s in g.splitLines(s):
-                        self.put('"%s\\n",' % self.clean(s))
+                    lines = g.splitLines(s)
+                    for i, s in enumerate(lines):
+                        if i == len(lines)-1:
+                            self.put('"%s",' % self.clean(s.rstrip()))
+                        else:
+                            self.put('"%s\\n",' % self.clean(s.rstrip()))
                     self.put_dedent(']')
                 else:
                     self.put_key_val(key, '[]')
-                        ### Bug fix?
+
             #@+node:ekr.20160322063045.1: *5* put_outline
             def put_outline(self):
                 '''Put all cells in the outline.'''
@@ -2264,10 +2302,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         self.put(s.rstrip())
                 self.indent -= 1
             #@+node:ekr.20160323080255.1: *5* Utils
-            #@+node:ekr.20160322071826.1: *6* clean (TO DO)
+            #@+node:ekr.20160322071826.1: *6* clean
             def clean(self, s):
                 '''Perform json escapes on s.'''
-                return s.replace('\\','\\\\').replace('"', '\\"').rstrip()
+                table = (
+                    ('\\','\\\\'), # Must be first.
+                    ('\b', '\\b'),
+                    ('\f', '\\f'),
+                    ('\n', '\\n'),
+                    ('\r', ''),
+                    ('\t', '\\t'),
+                    ('"', '\\"'),
+                )
+                for ch1, ch2 in table:
+                    s = s.replace(ch1, ch2)
+                return s
             #@+node:ekr.20160322073018.1: *6* clean_outline
             def clean_outline(self):
                 '''Remove commas before } and ]'''
