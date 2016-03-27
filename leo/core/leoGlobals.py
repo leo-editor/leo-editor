@@ -2378,10 +2378,18 @@ def compute_directives_re():
         # 2014/05/21: Per Reinhard Engel reinhard.engel.de@googlemail.com.
         # Sort by length, longest first.
         # pylint: disable=unnecessary-lambda
+        def key(a):
+            return len(a)
         aList = sorted(
             [z for z in globalDirectiveList if z != 'others'],
-            key=lambda a: len(a))
-        return "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+            # key=lambda a: len(a))
+            key=key)
+        if 1:
+            aList = "|".join(aList)
+            return "^@(%s)(?=( |\t|\n)+)|^@(%s)$" % (aList, aList)
+        else:
+            # 2016/03/27: This fails at the end of body text!
+            return "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
     else:
         aList = ['^@%s' % z for z in globalDirectiveList
                     if z != 'others']

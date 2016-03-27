@@ -10,27 +10,17 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 @language rest
 @wrap
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
-.. @+node:ekr.20160325152353.1: *4* ** Announce make_stub_files & python_to_coffeescript
+@language rest
+@wrap
+.. @+node:ekr.20160325152353.1: *4* Announce make_stub_files & python_to_coffeescript
 .. @+node:ekr.20150418052852.1: *4* ** Complete import/export to .ipynb files
-Import:
-- Auto-import on load .leo file.
-- Create headlines for nodes starting with <h1> ... <h6>
-    - Automatically demote nodes depending on header.
-- Split nodes containing <h1> ... <h6> within the node.
-
-Export:
-***** Remember the last file operation ****
 - Do *all* json escapes in clean.
-**** How to use sphynx?
-    - https://github.com/spatialaudio/nbsphinx/
-    - http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
-- open-jupyter command (where should it run the kernel?)
-- Open Jupyter automatically after export.
+- Auto-import on load .leo file.
 - Automatic export on save.
 
 @language rest
 @wrap
-.. @+node:ekr.20160325055702.1: *5* Notes
+
 Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
 Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
 
@@ -41,551 +31,42 @@ It would be great to be able to jump between Leo's nodes and IPython's cells, ea
 From: Alia K:
 
 Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20160323155904.1: *5* OLD1 import-neural-networks.ipynb
-.. @+node:ekr.20160323155904.2: *6* # {prefix}
-.. @+node:ekr.20160323155904.3: *7* # dict:metadata
-.. @+node:ekr.20160323155904.4: *8* # dict:kernelspec
-.. @+node:ekr.20160323155904.5: *9* # str:display_name
-Python 3
-.. @+node:ekr.20160323155904.6: *9* # str:language
-python
-.. @+node:ekr.20160323155904.7: *9* # str:name
-python3
-.. @+node:ekr.20160323155904.8: *8* # dict:language_info
-.. @+node:ekr.20160323155904.9: *9* # dict:codemirror_mode
-.. @+node:ekr.20160323155904.10: *10* # str:name
-ipython
-.. @+node:ekr.20160323155904.11: *10* # int:version
-3
-.. @+node:ekr.20160323155904.12: *9* # str:file_extension
-.py
-.. @+node:ekr.20160323155904.13: *9* # str:mimetype
-text/x-python
-.. @+node:ekr.20160323155904.14: *9* # str:name
-python
-.. @+node:ekr.20160323155904.15: *9* # str:nbconvert_exporter
-python
-.. @+node:ekr.20160323155904.16: *9* # str:pygments_lexer
-ipython3
-.. @+node:ekr.20160323155904.17: *9* # str:version
-3.5.1
-.. @+node:ekr.20160323155904.18: *7* # int:nbformat
-4
-.. @+node:ekr.20160323155904.19: *7* # int:nbformat_minor
-0
-.. @+node:ekr.20160323155904.20: *6* cell 1
-@language rest
-
-<h1>Neural Networks </h1>
-
-Neural networks are one approach to machine learning that attempts to deal with the problem of large data dimensionality. The neural network approach uses a fixed number of basis functions - in contrast
-to methods such as support vector machines that attempt to adapt the number of basis functions - that are themselves parameterized by the model parameters. This is a significant departure from 
-linear regression and logistic regression methods where the models consisted of linear combinations of fixed basis functions, $\phi(\mathbf{x})$, that dependend only on the input vector, $\mathbf{x}$. In neural networks, the basis functions can now depend on both the model parameters and the input vector and thus take the form $\phi(\mathbf{x} | \mathbf{w})$. 
-
-Here we will cover only **feed-forward** neural networks. One can envision a neural network as a series of layers where each layer has some number of nodes and each node is a function. Each layer represents a single linear regression model. The nodes are connected to each other through inputs accepted from and outputs passed to other nodes. A *feed-forward* network is one in which these connections do not form any directed cycles. See [here](http://en.wikipedia.org/wiki/Feedforward_neural_network) for more detail.
-
-![alt text](files/images/Feed_forward_neural_net.gif "A feed forward network.")
-
-As a matter of convention, we will refer the model as a $N$ layer model where $N$ is the number of layers for which adaptive parameters, $\mathbf{w}$, must be determined. Thus for a model consisting of an input layer, one hidden layer, and an output layer, we consider $N$ to be 2 since parameters are determined only for the hidden and output layers.
-.. @+node:ekr.20160323155904.21: *6* cell 2
-@language rest
-
-<h2>Feed-forward Network Functions</h2>
-We will consider a basic two layer nueral network model, i.e a model that maps inputs to a hidden layer and then to an output layer. We will make **the following assumptions**
-
-1. The final output will be a vector $Y$ with $K$ elements, $y_k$, where $y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})$ is the probability that node $k$ is in class $C_1$ and $p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})$
-2. The activation function at a given layer is an arbitrary nonlinear function of a linear combination of the inputs and parameters for that layer
-3. The network is fully connected, i.e. every node at the input layer is connected to every node in the hidden layer and every node in the hidden layer is connected to every node in the output layer
-4. A bias parameter is included at the hidden and output layers
-
-Working from the input layer toward the output layer, we can build this model as follows:
-
-<h3>Input Layer</h3>
-Assume we have an input vector $\mathbf{x} \in \Re^D$. Then the input layer consists of $D+1$ nodes where the value of the $i^{th}$ node for $i=0\ldots D$, is 0 if $i=0$ and $x_i$, i.e. the $i^{th}$ value of $\mathbf{x}$, otherwise.
-
-<h3>Hidden Layer</h3>
-At the hidden layer we construct $M$ nodes where the value of $M$ depends on the specifics of the particular modelling problem. For each node, we define a *unit activation*, $a_m$, for $m=1\ldots M$ as <br/>
-$a_m = \sum_{i=0}^D w_{ji}^{(1)}x_i$ <br/>
-where the $(1)$ superscript indicates this weight is for the hidden layer. The output from each node, $z_m$, is then given by the value of a *fixed nonlinear function*, $h$, known as the *activation function*, acting on the unit activation<br/>
-$z_m = h(a_m) = h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right)$<br/>
-Notice that $h$ is the same function for all nodes.
-<h3>Output Layer</h3>
-The process at the output layer is essentially the same as at the hidden layer. We construct $K$ nodes, where again the value of $K$ depends on the specific modeling problem. For each node, we again define a *unit activation*, $a_k$, for $k=1 \ldots K$ by<br/>
-$a_k = \sum_{m=0}^M w_{km}^{(2)} z_m$ <br/>
-We again apply a nonlinear activation function, say $y$, to produce the output<br/>
-$y_k = y(a_k)$
-
-Thus, the entire model can be summarized as a $K$ dimensional output vector $Y \in \Re^K$ where each element $y_k$ by<br/>
-$y_k(\mathbf{x},\mathbf{w}) = y \left( \sum_{m=0}^M w_{km}^{(2)} h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right) \right)$
-
-<h3>Generalizations</h3>
-There are a wide variety of generalizations possible for this model. Some of the more important ones for practical applications include
-
-* Addition of hidden layers
-* Inclusion of *skip-layer* connections, e.g. a connection from an input node directly to an output node
-* Sparse network, i.e. not a fully connected network
-.. @+node:ekr.20160323155904.22: *6* cell 3
-@language rest
-
-<h2>Network Training</h2>
-Here we will consider how to determine the network model parameters. We will use a *maximum likelihood* approach. The likelihood function for the network is dependent on the type of problem the network models. Of particular importance is the number and type of values generated at the output layer. We consider several cases below.
-<h3>Regression Single Gaussian Target</h3>
-*Assume* that our target variable, *t*, is Gaussian distributed with an $\mathbf{x}$ dependent mean, $\mu(\mathbf{x})$ and constant variance $\sigma^2 = 1/\beta$. Our network model is designed to estimate the unknown function for the mean, i.e. $y(\mathbf{x},\mathbf{w}) \approx \mu(\mathbf{x})$ so that the distribution for the target value, *t*, is modeled by<br/><br/>
-$p(t|\mathbf{x},\mathbf{w}) = ND(t|y(\mathbf{x},\mathbf{w}), \beta^{-1})$<br/><br/>
-where $ND(\mu,\sigma^2)$ is the normal distribution with mean $\mu$ and variance $\sigma^2$. *Assume* the output layer activation function is the identity, i.e. the output is simply the the unit activations, and that we have $N$ i.i.d. observations $\mathbf{X}=\\{\mathbf{x}_1, \ldots, \mathbf{x}_2 \\}$ and target values $\mathbf{t} = \\{t_1, \ldots, t_2\\}$, the likelihood function is<br/><br/>
-$p(\mathbf{t}|\mathbf{X},\mathbf{w}, \beta) = \prod_{n=1}^N p(t_n|\mathbf{x}_n, \mathbf{w}, \beta)$<br/><br/>
-The **total error function** is defined as the negative logarithm of the likelihood function given by<br/>
-
-$\frac {\beta}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2 - \frac{N}{2} \ln(\beta) + \frac{N}{2} \ln (2\pi)$
-
-The parameter estimates, $\mathbf{w}^{(ML)}$ (ML indicates maximum likelihood) are found by maximizing the equivalent sum-of-squares error function
-
-$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2$
-
-Note, due to the nonlinearity of the network model, $E(\mathbf{w})$ is not necessisarily convex, and thus may have *local minima* and hence it is not possible to know that the global minimum has been obtained.  The model parameter, $\beta$ is found by first finding $\mathbf{w}_{ML}$ and then solving
-
-$\frac{1}{\beta_{ML}} = \frac{1}{N}\sum_{n=1}^N \\{ y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n \\}^2$
-.. @+node:ekr.20160323155904.23: *6* cell 4
-@language rest
-
-<h3>Regression Multiple Gaussian Targets</h3>
-Now *assume* that we have $K$ Gaussian distributed target variables, $\[t_1, \ldots, t_K\]$, each with a mean that is independently conditional on $\mathbf{x}$, i.e. the mean of $t_k$ is defined by some function $\mu_k(\mathbf{x})$. Also assume that all $K$ variables share the same variance, $\sigma^2=1/\beta$. Assuming the network output layer has $K$ nodes where $y_k(\mathbf{x},\mathbf{w}) \approx \mu_k(\mathbf{x})$ and letting $\mathbf{y}(\mathbf{x},\mathbf{w}) = \[y_1(\mathbf{x},\mathbf{w}), \ldots, y_K(\mathbf{x},\mathbf{w})\]$, and that we again have $N$ training target values $\mathbf{t}$ ($\mathbf{t}$ is a $K \times N$ matrix of the training values), the conditional distribution of the target training values is given by
-
-$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = ND(\mathbf{t} | \mathbf{y}(\mathbf{x},\mathbf{w}), \beta^{-1} \mathbf{I})$
-
-The parameter estimates, $\mathbf{w}^{(ML)}$ are again found by minimizing the sum-of-squares error function, $E(\mathbf{w})$, and the estimate for $\beta$ is found from
-
-$\frac{1}{\beta_{ML}} = \frac{1}{NK}\sum_{n=1}^N ||y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n ||^2$
-.. @+node:ekr.20160323155904.24: *6* cell 5
-@language rest
-
-<h3>Binary Classification Single Target</h3>
-Now *assume* we have a single target variable, $t\in \\{0,1\\}$, such that $t=1$ denotes class $C_1$ and $t=0$ denotes class $C_2$. *Assume* that the network has a single output node whos activation function is the logistic sigmoid
-
-$y=1/(1+\exp(-a))$
-
-where $a$ is the output of the hidden layer. We can interpret the network output, $y(\mathbf{x},\mathbf{w})$ as the conditional probability $p(C_1|\mathbf{x})$ with $p(C_2|\mathbf{x})=1-y(\mathbf{x},\mathbf{w})$ so that the coniditional probability takes a Bernoulli distribution
-
-$p(t|\mathbf{x},\mathbf{w}) = y(\mathbf{x},\mathbf{w})^t\[1 - y(\mathbf{x},\mathbf{w}) \]^{1-t}$
-
-Given a training set with $N$ observations the error function is given by
-
-$E(\mathbf{w}) = - \sum_{n=1}^N \\{t_n \ln (y_n) + (1 - t_n) \ln (1-y_n) \\}$
-
-where $y_n = y(\mathbf{x_n},\mathbf{w})$. This model *assumes* all training inputs are correctly labeled. 
-.. @+node:ekr.20160323155904.25: *6* cell 6
-@language rest
-
-<h3>Binary Classification $K$ Seperate Targets</h3>
-Assume we have $K$ seperate binary classification target variables (i.e. there are K classification sets each with two classes. The K sets are independent and the input will be assigned to one class from each set). This can be modeled with network having $K$ nodes in the output layer where the activation function of each node is the logistic sigmoid. *Assume* the class labels are independent, i.e. $p(x_i \in C_1| x_j \in C_1) = p(x_i \in C_1)$ $\forall \\{i,j\\}$ (this is often an invalid assumption in practice), and that we have some training set, $\mathbf{t}$, then the coniditional probability of a single output vector $\mathbf{t}$ is
-
-$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = \prod_{k=1}^K y_k(\mathbf{x},\mathbf{w})^{t_k} \[ 1 - y_k(\mathbf{x},\mathbf{w})\]^{1-t_k}$
-
-Given a training input with $N$ values (note that the training set is an $K \times N$ matrix) the error function is 
-
-$E(\mathbf{w} = - \sum_{n=1}^N \sum_{k=1}^K \[ t_{nk} \ln (y_{nk}) + (1-t_{nk}) \ln (1-y_{nk}) \]$
-
-where $y_{nk} = y_k(\mathbf{x}_n, \mathbf{w}). 
-.. @+node:ekr.20160323155904.26: *6* cell 7
-@language rest
-
-<h3>Multi-class Classification</h3>
-Assume we have a $K$ **mutually exclusive** classes (i.e. the input can only be in one of the $K$ classes). This network is also modelled with $K$ output nodes where each output node represents the probability that the input is in class $k$, $y_k(\mathbf{x},\mathbf{w}) = p(t_k = 1 | \mathbf{x})$. The error function is given by 
-
-$E(\mathbf{w}) = - \sum_{n=1}^N \sum_{k=1}^K t_{nk} \ln y_k(\mathbf{x},\mathbf{w})$
-
-where the output activation function $y_k$ is the *softmax function*
-
-$y_k(\mathbf{x},\mathbf{w}) = \frac{\exp(a_k(\mathbf{x},\mathbf{w})}{\sum_j \exp(a_j(\mathbf{x},\mathbf{w}))}$
-.. @+node:ekr.20160323155904.27: *6* cell 8
-@language rest
-
-<h2>Error Backpropagation</h2>
-Most training algorithms involve a two step procedure for minimizing the model parameter dependent error function
-
-1. Evaluate the derivatives of the error function with respect to the parameters
-2. Use the derivatives to iterate the values of the parameters
-
-In this section, we consider **error backpropagation** which provides an efficient way to evaluate a feed-forward neural network's error function. *Note* that this only satisfies step 1 above. It is still necessary to choose an optimization technique in order to use the derivative information provided by error backpropagation to update the parameter estimates as indicated by step 2. 
-
-The results presented here are applicable to 
-
-1. An **arbitary** feed-forward network toplogy
-2. **Arbitrary** differentiable nonlinear activation functions
-
-The one *assumption* that is made is that the error function can be expressed as a *sum of terms*, one for each training data point, $t_n$ for $n \in \\{1\ldots N\\}$, so that
-
-$E(\mathbf{w}) = \sum_{n=1}^N E_n(\mathbf{w},t_n)$
-
-For such error functions, the derivative of the error function with respect to $\mathbf{w}) takes the form
-
-$\bigtriangledown E(\mathbf{w}) = \sum_{n=1}^N \bigtriangledown E_n(\mathbf{w},t_n)$
-
-Thus we need only consider the evaluation of $\bigtriangledown E_n(\mathbf{w},t_n)$ which may be used directly for sequential optimization techniques or summed over the training set for batch techniques (see next section). The error backpropagation method can be summarized as follows
-
-1. Given an input vector, $\mathbf{x}_n$, forward propagate through the network using 
-    1. $a_j = \sum_i w_{ji}z_i$
-    2. $z_j = h(a_j)$
-2. Evaluate $\delta_k \equiv \frac{\partial E_n} {\partial a_k}$ for the ouptput layer as
-    1. $\delta_k = y_k - t_k$
-3. Backpropagate the $\delta$'s to obtain $\delta_j$ for each hidden unit in the network using
-    1. $\delta_j = h'(a_j) \sum_k w_{kj}\delta_k$
-4. Evaluate the derivatives using 
-    1. $\frac{\partial E_n} {\partial w_{ji}} = \delta_j z_i$
-.. @+node:ekr.20160323155904.28: *6* cell 9
-@language rest
-
-<h2>Parameter Optimization</h2>
-Given the neural network error function derivative estimate provided by *error backpropagation*, one can use a variety of numerical optimization techniques to find appropriate parameter estimates. The simplest technique is the method of *steepest descent* where the new parameter estimate $\mathbf{w}^{(\tau+1)}$ is given by
-
-$\mathbf{w}^{(\tau+1)} = \mathbf{w}^{(\tau)} - \eta \bigtriangledown E(\mathbf{w}^{(\tau)})$
-
-where $\eta>0$ is the *learning rate*. Other **more advanced** optimization algorithms inlcude *conjugate gradients* and *quasi-Newton* methods.
-.. @+node:ekr.20160323155905.1: *6* cell 10
-@language rest
-
-<h2>Example: Exlusive or</h2>
-As a first example, let's consider the classical [Exlusive Or (XOR) problem](http://en.wikipedia.org/wiki/Exclusive_or). We will consider the XOR problem involving two inputs $x_1$ and $x_2$ where $x_i \in \\{0,1\\}$. This problem states that the output should be 1 if exactly one of the inputs is 1 and 0 otherwise. Thus this problem has a very simple known input output relationship
-
-<table>
-    <tr>
-        <th>$x_1$</th><th>$x_2$</th><th>Output</th>
-    </tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>1</td><td>0</td><td>1</td></tr>
-    <tr><td>0</td><td>1</td><td>1</td></tr>
-    <tr><td>1</td><td>1</td><td>0</td></tr>
-</table>
-
-While this may be a trivial example, it illustrates all of the features of an arbitary feed-forward network while remaining simple enough to understand everything that is happening in the network. The XOR network is typically presented as having 2 input nodes, 2 hidden layer nodes, and one output nodes, for example see [here](http://www.heatonresearch.com/online/introduction-neural-networks-java-edition-2/chapter-1/page4.html). Such an arrangement however requires that the nodes in the hidden layer use a thresholding scheme whereby the output of the node is 0 or 1 depending on the sum of the input being greater than some fixed threshold value. However, such a network would violoate our model assumptions for training the network. Specifically, we could not use error backpropagation because the node activation functions would be step functions which are not differentiable. To overcome this, we will the *hyperbolic tangent*, *tanh*, as the hidden layer activation function and add a third node to the hidden layer representing a bias term. Our output layer will have a single node. We will interpret the out values as being 0 (or false) for output values less than 0 and 1 (or true) for output values greater than 0. The figure below provides a graphical representation of the network. Note, the parameters $w$ and $a$ are distinct for each layer, e.g. $w_{11}$ on the edge between $x_1$ and $h(a_1)$ is not the same $w_{11}$ on the edge from $h(a_1)$ to $\sigma(a_1)$.
-
-<img height="250" src="files/images/XOR2.png"/>
-
-"The feedforward neural network for the 2 input Exclusive Or problem"
-.. @+node:ekr.20160323155905.2: *6* cell 11
-@language python
-
-import networkx as nx
-import sys
-from math import tanh
-sys.path.append('pysrc')
-import neural_networks as nn
-from functools import partial
-
-DG = nx.DiGraph()
-DG.add_nodes_from(['X1','X2','H0','H1','H2','O1'])
-
-#set the activation functions
-DG.node['H0']['af']=1.0
-for node in ['H1','H2','O1']:
-    DG.node[node]['af']=tanh
-    
-#set the derivatives of the activation functions for all nodes except the output, this is done below
-def zero(x):
-    return 0
-for node in ['X1','X2','H0']: #the inputs and bias terms have zero derivatives
-    DG.node[node]['daf'] = zero
-def dtanh(x):
-    return 1.0 - tanh(x) * tanh(x)
-for node in ['H1','H2']:
-    DG.node[node]['daf']=dtanh
-    
-#create the edges
-for source in ['X1','X2']:
-    for target in ['H1','H2']:
-        DG.add_weighted_edges_from([(source,target,1.0)])
-for source in ['H0','H1','H2']:
-    DG.add_weighted_edges_from([(source, 'O1', 1.0)])
-    
-#set the input values
-DG.node['X1']['af']=0
-DG.node['X2']['af']=1
-
-#given these inputs, the correct output should be 1
-#we'll use a partial function so we can assign the correct 'daf' value
-#dynamically when we iteratively train the network
-def dout(x, t):
-    if x<0:
-        xx = 0
-    else:
-        xx = 1
-    return xx - t
-DG.node['O1']['daf']=partial(dout, t=1)
-
-nn.forward_prop(DG)
-
-nn.error_back_prop(DG)
-
-for node in ['X1','X2','H0','H1','H2','O1']:
-    print "node {0} has output {1} and error {2}".format(node, DG.node[node]['o'], DG.node[node]['e'])
-.. @+node:ekr.20160323155905.3: *7* # int:execution_count
-5
-.. @+node:ekr.20160323155905.4: *7* # list:outputs
-.. @+node:ekr.20160323155905.5: *8* # str:name
-stdout
-.. @+node:ekr.20160323155905.6: *8* # str:output_type
-stream
-.. @+node:ekr.20160323155905.7: *8* # list:text
-@nocolor-node
-
-node X1 has output 0 and error 0.0
-node X2 has output 1 and error 0.0
-node H0 has output 1.0 and error 0.0
-node H1 has output 0.761594155956 and error 0.0
-node H2 has output 0.761594155956 and error 0.0
-node O1 has output 0.987217029728 and error 0.0
-.. @+node:ekr.20160323155905.8: *6* cell 12
-@language python
-
-.. @+node:ekr.20160323143008.1: *5* OLD2 import-neural-networks.ipynb
-.. @+node:ekr.20160323143008.2: *6* # {prefix}
-.. @+node:ekr.20160323143008.3: *7* # dict:metadata
-.. @+node:ekr.20160323143008.4: *8* # dict:kernelspec
-.. @+node:ekr.20160323143008.5: *9* # str:display_name
-Python 3
-.. @+node:ekr.20160323143008.6: *9* # str:language
-python
-.. @+node:ekr.20160323143008.7: *9* # str:name
-python3
-.. @+node:ekr.20160323143008.8: *8* # dict:language_info
-.. @+node:ekr.20160323143008.9: *9* # dict:codemirror_mode
-.. @+node:ekr.20160323143008.10: *10* # str:name
-ipython
-.. @+node:ekr.20160323143008.11: *10* # int:version
-3
-.. @+node:ekr.20160323143008.12: *9* # str:file_extension
-.py
-.. @+node:ekr.20160323143008.13: *9* # str:mimetype
-text/x-python
-.. @+node:ekr.20160323143008.14: *9* # str:name
-python
-.. @+node:ekr.20160323143008.15: *9* # str:nbconvert_exporter
-python
-.. @+node:ekr.20160323143008.16: *9* # str:pygments_lexer
-ipython3
-.. @+node:ekr.20160323143008.17: *9* # str:version
-3.5
-.. @+node:ekr.20160323143008.18: *7* # int:nbformat
-4
-.. @+node:ekr.20160323143008.19: *7* # int:nbformat_minor
-0
-.. @+node:ekr.20160323143008.20: *6* Neural Networks
-@language rest
-@wrap
-
-Neural networks are one approach to machine learning that attempts to deal with the problem of large data dimensionality. The neural network approach uses a fixed number of basis functions - in contrast to methods such as support vector machines that attempt to adapt the number of basis functions - that are themselves parameterized by the model parameters. This is a significant departure from linear regression and logistic regression methods where the models consisted of linear combinations of fixed basis functions, $\phi(\mathbf{x})$, that dependend only on the input vector, $\mathbf{x}$. In neural networks, the basis functions can now depend on both the model parameters and the input vector and thus take the form $\phi(\mathbf{x} | \mathbf{w})$.
-
-Here we will cover only **feed-forward** neural networks. One can envision a neural network as a series of layers where each layer has some number of nodes and each node is a function. Each layer represents a single linear regression model. The nodes are connected to each other through inputs accepted from and outputs passed to other nodes. A *feed-forward* network is one in which these connections do not form any directed cycles. See [here](http://en.wikipedia.org/wiki/Feedforward_neural_network) for more detail.
-
-![alt text](files/images/Feed_forward_neural_net.gif "A feed forward network.")
-
-As a matter of convention, we will refer the model as a $N$ layer model where $N$ is the number of layers for which adaptive parameters, $\mathbf{w}$, must be determined. Thus for a model consisting of an input layer, one hidden layer, and an output layer, we consider $N$ to be 2 since parameters are determined only for the hidden and output layers.
-.. @+node:ekr.20160323143008.21: *7* Feed-forward Network Functions
-@language rest
-
-We will consider a basic two layer nueral network model, i.e a model that maps inputs to a hidden layer and then to an output layer. We will make **the following assumptions**
-
-1. The final output will be a vector $Y$ with $K$ elements, $y_k$, where $y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})$ is the probability that node $k$ is in class $C_1$ and $p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})$
-2. The activation function at a given layer is an arbitrary nonlinear function of a linear combination of the inputs and parameters for that layer
-3. The network is fully connected, i.e. every node at the input layer is connected to every node in the hidden layer and every node in the hidden layer is connected to every node in the output layer
-4. A bias parameter is included at the hidden and output layers
-
-Working from the input layer toward the output layer, we can build this model as follows:
-
-.. @+node:ekr.20160323145517.1: *8* Input layer
-Assume we have an input vector $\mathbf{x} \in \Re^D$. Then the input layer consists of $D+1$ nodes where the value of the $i^{th}$ node for $i=0\ldots D$, is 0 if $i=0$ and $x_i$, i.e. the $i^{th}$ value of $\mathbf{x}$, otherwise.
-
-.. @+node:ekr.20160323145540.1: *8* Hidden layer
-At the hidden layer we construct $M$ nodes where the value of $M$ depends on the specifics of the particular modelling problem. For each node, we define a *unit activation*, $a_m$, for $m=1\ldots M$ as <br/>
-$a_m = \sum_{i=0}^D w_{ji}^{(1)}x_i$ <br/>
-where the $(1)$ superscript indicates this weight is for the hidden layer. The output from each node, $z_m$, is then given by the value of a *fixed nonlinear function*, $h$, known as the *activation function*, acting on the unit activation<br/>
-$z_m = h(a_m) = h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right)$<br/>
-Notice that $h$ is the same function for all nodes.
-.. @+node:ekr.20160323145724.1: *8* Output layer
-The process at the output layer is essentially the same as at the hidden layer. We construct $K$ nodes, where again the value of $K$ depends on the specific modeling problem. For each node, we again define a *unit activation*, $a_k$, for $k=1 \ldots K$ by<br/>
-$a_k = \sum_{m=0}^M w_{km}^{(2)} z_m$ <br/>
-We again apply a nonlinear activation function, say $y$, to produce the output<br/>
-$y_k = y(a_k)$
-
-Thus, the entire model can be summarized as a $K$ dimensional output vector $Y \in \Re^K$ where each element $y_k$ by<br/>
-$y_k(\mathbf{x},\mathbf{w}) = y \left( \sum_{m=0}^M w_{km}^{(2)} h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right) \right)$
-.. @+node:ekr.20160323145600.1: *8* Generalizations
-There are a wide variety of generalizations possible for this model. Some of the more important ones for practical applications include
-
-* Addition of hidden layers
-* Inclusion of *skip-layer* connections, e.g. a connection from an input node directly to an output node
-* Sparse network, i.e. not a fully connected network
-.. @+node:ekr.20160323143008.22: *7* Network Training
-@language rest
-
-Here we will consider how to determine the network model parameters. We will use a *maximum likelihood* approach. The likelihood function for the network is dependent on the type of problem the network models. Of particular importance is the number and type of values generated at the output layer. We consider several cases below.
-<h3>Regression Single Gaussian Target</h3>
-*Assume* that our target variable, *t*, is Gaussian distributed with an $\mathbf{x}$ dependent mean, $\mu(\mathbf{x})$ and constant variance $\sigma^2 = 1/\beta$. Our network model is designed to estimate the unknown function for the mean, i.e. $y(\mathbf{x},\mathbf{w}) \approx \mu(\mathbf{x})$ so that the distribution for the target value, *t*, is modeled by<br/><br/>
-$p(t|\mathbf{x},\mathbf{w}) = ND(t|y(\mathbf{x},\mathbf{w}), \beta^{-1})$<br/><br/>
-where $ND(\mu,\sigma^2)$ is the normal distribution with mean $\mu$ and variance $\sigma^2$. *Assume* the output layer activation function is the identity, i.e. the output is simply the the unit activations, and that we have $N$ i.i.d. observations $\mathbf{X}=\\{\mathbf{x}_1, \ldots, \mathbf{x}_2 \\}$ and target values $\mathbf{t} = \\{t_1, \ldots, t_2\\}$, the likelihood function is<br/><br/>
-$p(\mathbf{t}|\mathbf{X},\mathbf{w}, \beta) = \prod_{n=1}^N p(t_n|\mathbf{x}_n, \mathbf{w}, \beta)$<br/><br/>
-The **total error function** is defined as the negative logarithm of the likelihood function given by<br/>
-
-$\frac {\beta}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2 - \frac{N}{2} \ln(\beta) + \frac{N}{2} \ln (2\pi)$
-
-The parameter estimates, $\mathbf{w}^{(ML)}$ (ML indicates maximum likelihood) are found by maximizing the equivalent sum-of-squares error function
-
-$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \\{y(\mathbf{x}_n,\mathbf{w}) - t_n \\}^2$
-
-Note, due to the nonlinearity of the network model, $E(\mathbf{w})$ is not necessisarily convex, and thus may have *local minima* and hence it is not possible to know that the global minimum has been obtained.  The model parameter, $\beta$ is found by first finding $\mathbf{w}_{ML}$ and then solving
-
-$\frac{1}{\beta_{ML}} = \frac{1}{N}\sum_{n=1}^N \\{ y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n \\}^2$
-.. @+node:ekr.20160323143008.23: *8* Regression Multiple Gaussian Targets
-@language rest
-
-Now *assume* that we have $K$ Gaussian distributed target variables, $\[t_1, \ldots, t_K\]$, each with a mean that is independently conditional on $\mathbf{x}$, i.e. the mean of $t_k$ is defined by some function $\mu_k(\mathbf{x})$. Also assume that all $K$ variables share the same variance, $\sigma^2=1/\beta$. Assuming the network output layer has $K$ nodes where $y_k(\mathbf{x},\mathbf{w}) \approx \mu_k(\mathbf{x})$ and letting $\mathbf{y}(\mathbf{x},\mathbf{w}) = \[y_1(\mathbf{x},\mathbf{w}), \ldots, y_K(\mathbf{x},\mathbf{w})\]$, and that we again have $N$ training target values $\mathbf{t}$ ($\mathbf{t}$ is a $K \times N$ matrix of the training values), the conditional distribution of the target training values is given by
-
-$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = ND(\mathbf{t} | \mathbf{y}(\mathbf{x},\mathbf{w}), \beta^{-1} \mathbf{I})$
-
-The parameter estimates, $\mathbf{w}^{(ML)}$ are again found by minimizing the sum-of-squares error function, $E(\mathbf{w})$, and the estimate for $\beta$ is found from
-
-$\frac{1}{\beta_{ML}} = \frac{1}{NK}\sum_{n=1}^N ||y(\mathbf{x}_n,\mathbf{w}^{(ML)}) - t_n ||^2$
-.. @+node:ekr.20160323143008.25: *8* Binary Classification $K$ Seperate Targets
-@language rest
-
-Assume we have $K$ seperate binary classification target variables (i.e. there are K classification sets each with two classes. The K sets are independent and the input will be assigned to one class from each set). This can be modeled with network having $K$ nodes in the output layer where the activation function of each node is the logistic sigmoid. *Assume* the class labels are independent, i.e. $p(x_i \in C_1| x_j \in C_1) = p(x_i \in C_1)$ $\forall \\{i,j\\}$ (this is often an invalid assumption in practice), and that we have some training set, $\mathbf{t}$, then the coniditional probability of a single output vector $\mathbf{t}$ is
-
-$p(\mathbf{t}|\mathbf{x},\mathbf{w}) = \prod_{k=1}^K y_k(\mathbf{x},\mathbf{w})^{t_k} \[ 1 - y_k(\mathbf{x},\mathbf{w})\]^{1-t_k}$
-
-Given a training input with $N$ values (note that the training set is an $K \times N$ matrix) the error function is
-
-$E(\mathbf{w} = - \sum_{n=1}^N \sum_{k=1}^K \[ t_{nk} \ln (y_{nk}) + (1-t_{nk}) \ln (1-y_{nk}) \]$
-
-where $y_{nk} = y_k(\mathbf{x}_n, \mathbf{w}).
-.. @+node:ekr.20160323143008.26: *8* Multi-class Classification
-@language rest
-
-Assume we have a $K$ **mutually exclusive** classes (i.e. the input can only be in one of the $K$ classes). This network is also modelled with $K$ output nodes where each output node represents the probability that the input is in class $k$, $y_k(\mathbf{x},\mathbf{w}) = p(t_k = 1 | \mathbf{x})$. The error function is given by
-
-$E(\mathbf{w}) = - \sum_{n=1}^N \sum_{k=1}^K t_{nk} \ln y_k(\mathbf{x},\mathbf{w})$
-
-where the output activation function $y_k$ is the *softmax function*
-
-$y_k(\mathbf{x},\mathbf{w}) = \frac{\exp(a_k(\mathbf{x},\mathbf{w})}{\sum_j \exp(a_j(\mathbf{x},\mathbf{w}))}$
-.. @+node:ekr.20160323143008.27: *7* Error Backpropagation
-@language rest
-
-Most training algorithms involve a two step procedure for minimizing the model parameter dependent error function
-
-1. Evaluate the derivatives of the error function with respect to the parameters
-2. Use the derivatives to iterate the values of the parameters
-
-In this section, we consider **error backpropagation** which provides an efficient way to evaluate a feed-forward neural network's error function. *Note* that this only satisfies step 1 above. It is still necessary to choose an optimization technique in order to use the derivative information provided by error backpropagation to update the parameter estimates as indicated by step 2.
-
-The results presented here are applicable to
-
-1. An **arbitary** feed-forward network toplogy
-2. **Arbitrary** differentiable nonlinear activation functions
-
-The one *assumption* that is made is that the error function can be expressed as a *sum of terms*, one for each training data point, $t_n$ for $n \in \\{1\ldots N\\}$, so that
-
-$E(\mathbf{w}) = \sum_{n=1}^N E_n(\mathbf{w},t_n)$
-
-For such error functions, the derivative of the error function with respect to $\mathbf{w}) takes the form
-
-$\bigtriangledown E(\mathbf{w}) = \sum_{n=1}^N \bigtriangledown E_n(\mathbf{w},t_n)$
-
-Thus we need only consider the evaluation of $\bigtriangledown E_n(\mathbf{w},t_n)$ which may be used directly for sequential optimization techniques or summed over the training set for batch techniques (see next section). The error backpropagation method can be summarized as follows
-
-1. Given an input vector, $\mathbf{x}_n$, forward propagate through the network using
-    1. $a_j = \sum_i w_{ji}z_i$
-    2. $z_j = h(a_j)$
-2. Evaluate $\delta_k \equiv \frac{\partial E_n} {\partial a_k}$ for the ouptput layer as
-    1. $\delta_k = y_k - t_k$
-3. Backpropagate the $\delta$'s to obtain $\delta_j$ for each hidden unit in the network using
-    1. $\delta_j = h'(a_j) \sum_k w_{kj}\delta_k$
-4. Evaluate the derivatives using
-    1. $\frac{\partial E_n} {\partial w_{ji}} = \delta_j z_i$
-.. @+node:ekr.20160323143008.28: *7* Parameter Optimization
-@language rest
-
-Given the neural network error function derivative estimate provided by *error backpropagation*, one can use a variety of numerical optimization techniques to find appropriate parameter estimates. The simplest technique is the method of *steepest descent* where the new parameter estimate $\mathbf{w}^{(\tau+1)}$ is given by
-
-$\mathbf{w}^{(\tau+1)} = \mathbf{w}^{(\tau)} - \eta \bigtriangledown E(\mathbf{w}^{(\tau)})$
-
-where $\eta>0$ is the *learning rate*. Other **more advanced** optimization algorithms inlcude *conjugate gradients* and *quasi-Newton* methods.
-.. @+node:ekr.20160323143008.29: *7* Example: Exlusive Or
-@language rest
-
-As a first example, let's consider the classical [Exlusive Or (XOR) problem](http://en.wikipedia.org/wiki/Exclusive_or). We will consider the XOR problem involving two inputs $x_1$ and $x_2$ where $x_i \in \\{0,1\\}$. This problem states that the output should be 1 if exactly one of the inputs is 1 and 0 otherwise. Thus this problem has a very simple known input output relationship
-
-<table>
-    <tr>
-        <th>$x_1$</th><th>$x_2$</th><th>Output</th>
-    </tr>
-    <tr><td>0</td><td>0</td><td>0</td></tr>
-    <tr><td>1</td><td>0</td><td>1</td></tr>
-    <tr><td>0</td><td>1</td><td>1</td></tr>
-    <tr><td>1</td><td>1</td><td>0</td></tr>
-</table>
-
-While this may be a trivial example, it illustrates all of the features of an arbitary feed-forward network while remaining simple enough to understand everything that is happening in the network. The XOR network is typically presented as having 2 input nodes, 2 hidden layer nodes, and one output nodes, for example see [here](http://www.heatonresearch.com/online/introduction-neural-networks-java-edition-2/chapter-1/page4.html). Such an arrangement however requires that the nodes in the hidden layer use a thresholding scheme whereby the output of the node is 0 or 1 depending on the sum of the input being greater than some fixed threshold value. However, such a network would violoate our model assumptions for training the network. Specifically, we could not use error backpropagation because the node activation functions would be step functions which are not differentiable. To overcome this, we will the *hyperbolic tangent*, *tanh*, as the hidden layer activation function and add a third node to the hidden layer representing a bias term. Our output layer will have a single node. We will interpret the out values as being 0 (or false) for output values less than 0 and 1 (or true) for output values greater than 0. The figure below provides a graphical representation of the network. Note, the parameters $w$ and $a$ are distinct for each layer, e.g. $w_{11}$ on the edge between $x_1$ and $h(a_1)$ is not the same $w_{11}$ on the edge from $h(a_1)$ to $\sigma(a_1)$.
-
-<img height="250" src="files/images/XOR2.png"/>
-
-"The feedforward neural network for the 2 input Exclusive Or problem"
-.. @+node:ekr.20160323143008.30: *8* Example
-@language python
-
-import networkx as nx
-import sys
-from math import tanh
-sys.path.append('pysrc')
-import neural_networks as nn
-from functools import partial
-
-DG = nx.DiGraph()
-DG.add_nodes_from(['X1','X2','H0','H1','H2','O1'])
-
-#set the activation functions
-DG.node['H0']['af']=1.0
-for node in ['H1','H2','O1']:
-    DG.node[node]['af']=tanh
-
-#set the derivatives of the activation functions for all nodes except the output, this is done below
-def zero(x):
-    return 0
-for node in ['X1','X2','H0']: #the inputs and bias terms have zero derivatives
-    DG.node[node]['daf'] = zero
-def dtanh(x):
-    return 1.0 - tanh(x) * tanh(x)
-for node in ['H1','H2']:
-    DG.node[node]['daf']=dtanh
-
-#create the edges
-for source in ['X1','X2']:
-    for target in ['H1','H2']:
-        DG.add_weighted_edges_from([(source,target,1.0)])
-for source in ['H0','H1','H2']:
-    DG.add_weighted_edges_from([(source, 'O1', 1.0)])
-
-#set the input values
-DG.node['X1']['af']=0
-DG.node['X2']['af']=1
-
-#given these inputs, the correct output should be 1
-#we'll use a partial function so we can assign the correct 'daf' value
-#dynamically when we iteratively train the network
-def dout(x, t):
-    if x<0:
-        xx = 0
-    else:
-        xx = 1
-    return xx - t
-DG.node['O1']['daf']=partial(dout, t=1)
-
-nn.forward_prop(DG)
-
-nn.error_back_prop(DG)
-
-for node in ['X1','X2','H0','H1','H2','O1']:
-    print "node {0} has output {1} and error {2}".format(node, DG.node[node]['o'], DG.node[node]['e'])
-.. @+node:ekr.20160325060017.1: *4* ** Bug: @wrap doesn't work at end of body text
+.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
+
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
+
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+
+open dialogs should probably @path directory or curdir
+save dialog should probably use the directory of the saved file.
+
+Search for:
+
+LeoQtGui.Dialogs & panels
+LeoQtGui.runSaveFileDialog
+LeoQtGui.runOpenFileDialog
+.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
+https://github.com/leo-editor/leo-editor/issues/156
+.. @+node:ekr.20160325152544.1: *3* Next: 5.3
+.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
+- Can they be interrupted?
+- Use list(set(words)) to check each word only once.
+- The do plain search for possibly-misspelled words in each body.
+
+.. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
+# Depends on Python's meta package: https://pypi.python.org/pypi/meta
+# which *is* part of the Anaconda distro.
+
+import meta ; print(meta)
+.. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
+- jedi is available in the
+- Can we use live code inside Leo?
 .. @+node:ekr.20160216043537.1: *4* Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
@@ -609,44 +90,6 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-.. @+node:ekr.20150316141655.14: *4* Better default for open/save file dialogs
-File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
-
-Suppose my focus node is under a @path directive, say @path E:
-\Documents\Some Folder\
-
-Is there a setting that would cause the 'File>Open' or 'File>Import
-File' commands to begin the search dialog in the directory, E:
-\Documents\Some Folder\ instead of the last directory used?
-
-
-open dialogs should probably @path directory or curdir
-save dialog should probably use the directory of the saved file.
-
-Search for:
-
-LeoQtGui.Dialogs & panels
-LeoQtGui.runSaveFileDialog
-LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
-- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
-.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
-https://github.com/leo-editor/leo-editor/issues/156
-.. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
-# Depends on Python's meta package: https://pypi.python.org/pypi/meta
-# which *is* part of the Anaconda distro.
-
-import meta ; print(meta)
-.. @+node:ekr.20160325152429.1: *4* ** Can we use live code inside Leo?
-Kinda like the @test framework:
-    
-- @test node
-    - Code under test.
-.. @+node:ekr.20160325152544.1: *3* Next: 5.3
 .. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
 @language python
 
@@ -1015,53 +458,12 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160325055507.1: *4* Code
-.. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
-Must be easy to use.
-
-- Add p/v.temp_u properties. Revise docs.
-
-- Use Terry's window code to create all panes:
-    - New console window plugin.
-.. @+node:ekr.20160305033136.1: *6* Found:['"]icons[i"]
-.. @+node:ekr.20160129081036.1: *6* simplifying uA access
-d = p.u.get(plugin_name, {})
-d['duration'] = 5
-p.u[plugin_name] = d
-.. @+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
-.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
-.. @+node:ekr.20160318113605.1: *5* Rethink windows
-- Decouple commander from outline?
-- Notifications might simplify multiple body panes.
-- A good platform for web development and anything
-  needing multiple consoles.
-- Add status line showing type of window. Like Emacs.
-.. @+node:ekr.20130806072439.21241: *6* Free range body editors
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
-
-- a flag to indicate whether the tree pane should select the body editor's node when the body editor is focused.  To see an example of editing bodies without the tree selecting the node you're editing, see the stickynotes plugin
-
-- a flag to indicate whether the body editor should track the node currently selected in the tree
-
-- it needs to not care about what it's contained in, GUI wise.  I don't know how much work's involved in this.
-
-I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
-
-If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
-.. @+node:ekr.20110929074744.15499: *6* Allow more panes to be part of the free_layout "action" buttons
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
-* Add ipynb/Jupyter importer/exporter.
 - Add coffeescript importer.
 - Finish javascript importer, or at least fix #127: Bracket matching is buggy
-- Maybe: Read/write files in json format
-- Maybe: py2cython: like make_stub_files.
-.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
-Generate type declarations from a given set of naming conventions.
-.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
-Use external code.
 .. @+node:ekr.20160318113258.1: *4* Plugins
+.. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
+We want the alternatives to clones to be mouse free.
 .. @+node:ekr.20160227134532.1: *5* Command shell in Python
 # http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
 
@@ -1085,8 +487,6 @@ if 0:
             # sys.stdout.write(out)
             # sys.stdout.flush()
             g.es(out)
-.. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
-We want the alternatives to clones to be mouse free.
 .. @+node:ekr.20160310055038.1: *5* Improve quicksearch (Nav pane)
 - Key bindings in the nav pane.
     - Arrow keys.
@@ -1120,6 +520,55 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
 I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
+.. @+node:ekr.20160327112045.1: *4* Maybe
+.. @+node:ekr.20160325055507.1: *5* Maybe: Code
+.. @+node:ekr.20160318113006.1: *6* API's for icons, attributes & windows
+Must be easy to use.
+
+- Add p/v.temp_u properties. Revise docs.
+
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+.. @+node:ekr.20160305033136.1: *7* Found:['"]icons[i"]
+.. @+node:ekr.20160129081036.1: *7* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
+.. @+node:ekr.20080802070659.11: *7* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20160319062116.1: *6* Rethink running code in separate processes
+.. @+node:ekr.20160318113605.1: *6* Rethink windows
+- Decouple commander from outline?
+- Notifications might simplify multiple body panes.
+- A good platform for web development and anything
+  needing multiple consoles.
+- Add status line showing type of window. Like Emacs.
+.. @+node:ekr.20130806072439.21241: *7* Free range body editors
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
+
+- a flag to indicate whether the tree pane should select the body editor's node when the body editor is focused.  To see an example of editing bodies without the tree selecting the node you're editing, see the stickynotes plugin
+
+- a flag to indicate whether the body editor should track the node currently selected in the tree
+
+- it needs to not care about what it's contained in, GUI wise.  I don't know how much work's involved in this.
+
+I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
+
+If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
+.. @+node:ekr.20110929074744.15499: *7* Allow more panes to be part of the free_layout "action" buttons
+.. @+node:ekr.20160327111638.1: *5* Maybe: other Jupyter stuff
+- open-jupyter command (where should it run the kernel?)
+- Open Jupyter automatically after export.
+
+How to use sphynx with markdown:
+- https://github.com/spatialaudio/nbsphinx/
+- http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
+.. @+node:ekr.20160327112237.1: *5* Read/write files in json format
+.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
+Use external code.
+.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
+Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20150410043749.1: ** Maybe
 @language rest
 @wrap

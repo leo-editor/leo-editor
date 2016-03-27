@@ -11023,6 +11023,20 @@ for ext, expected in table:
     result = g.comment_delims_from_extension(ext)
     assert result==expected,'ext %s expected %s, got %s' % (
         ext,expected,result)
+#@+node:ekr.20160327132053.1: *4* @test g.compute_directives_re
+# Mimic the code in g.get_directives_dict
+import re
+pat = g.compute_directives_re()
+pat = re.compile(pat, re.MULTILINE)
+table = (
+    '@wrap', # The failure case.
+    '@wrap ',
+    '@wrap\n',
+    '@wrap\t',
+)
+for s in table:
+    m = pat.search(s)
+    assert m, repr(s)
 #@+node:ekr.20071113145804.26: *4* @test g.convertPythonIndexToRowCol
 s1 = 'abc\n\np\nxy'
 table1 = (
@@ -11452,7 +11466,7 @@ s = c.scanAtPathDirectives(aList)
 end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)
-#@+node:ekr.20080917151620.23: *5* @thin ../test/unittest/at-path-test1.py
+#@+node:ekr.20120228145505.4834: *5* @thin ../test/unittest/at-path-test1.py
 @language python
 # unittest/at-path-test1.py 
 #@+node:ekr.20080917151620.27: *4* @test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py
@@ -11464,7 +11478,7 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.28: *5* @path ../test
 #@+node:ekr.20080917151620.29: *6* @path unittest
-#@+node:ekr.20080917151620.30: *7* @thin at-path-test3.py
+#@+node:ekr.20120228145505.4838: *7* @thin at-path-test3.py
 @language python
 # unittest/at-path-test3.py 
 #@+node:ekr.20080917151620.24: *4* @test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py
@@ -11475,7 +11489,7 @@ end = g.os_path_normpath(r'leo/test/unittest')
 
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.25: *5* @path ../test/unittest
-#@+node:ekr.20080917151620.26: *6* @thin at-path-test2.py
+#@+node:ekr.20120228145505.4841: *6* @thin at-path-test2.py
 @language python
 # unittest/at-path-test2.py
 #@+node:ekr.20080917151620.31: *4* @test g.scanAtTabwidthDirectives +6

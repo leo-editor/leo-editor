@@ -17281,5 +17281,72 @@ def onMouseUp(self, event=None):
     if QtCore.Qt.ControlModifier & event.modifiers():
         event = {'c': self.leo_c}
         g.openUrlOnClick(event)
+.. @+node:ekr.20160326041856.1: *3* nested_splitter.register_factor (NOT USED)
+def register_factory(c, factory, menu_name, id_=None, ns_do_context=None):
+    '''
+    Register a factory and menu name for the NestedSplitter action menu.
+    
+    c:              The Commander of the class being registered.
+    factory:        A function f(c) returning a new instance of a_class.
+    menu_name:      The name used in action menus.
+    id_:            Optional id for the InternalProvider class.
+                    Default to menu_name.
+    ns_do_context:  Optional predicate pred(id_).
+                    pred(id_) should do nothing unless id_ == self.id_.
+    '''
+    @others
+    splitter = c and c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.register_provider(
+            InternalProvider(
+                c,
+                factory,
+                menu_name,
+                id_,
+                ns_do_context))
+.. @+node:ekr.20160326044507.1: *4* class InternalProvider
+class InternalProvider:
+        
+    def __init__ (self, c, factory, menu_name, id_, ns_do_context):
+        '''
+        Ctor for InternalProvider class created by top-level
+        register_provider function in nested_splitter.py.
+        '''
+        self.c = c
+        self.id_ = id_ if id_ else menu_name
+        self.factory = factory
+        self.menu_name = menu_name
+        if ns_do_context:
+            setattr(self, 'ns_do_context', ns_do_context)
+
+    @others
+.. @+node:ekr.20160326044740.1: *5* ns_context
+def ns_context(self):
+    '''
+    Return a list of tuples or dicts.
+    
+    Tuples are (menu_name, id_), both strings.
+      
+    Dicts:
+        - keys are titles of submenus.
+        - values are a list of (menu_name, id_) tuples.
+    '''
+    if self.do_context:
+        return self.do_context()
+    else:
+        return (self.menu_name, self.id_)
+.. @+node:ekr.20160326044829.3: *5* ns_provide
+def ns_provide(self, id_):
+    '''Return the widget to replace the Action button, or None'''
+    return self.factory(self.c) if id_ == self.id_ else None
+   
+.. @+node:ekr.20160326044829.2: *5* ns_provider_id
+def ns_provider_id(self):
+    '''Return a string identifying the factory.'''
+    return self.id_
+.. @+node:ekr.20160326044829.1: *5* ns_provides
+def ns_provides(self):
+    '''Return a list of (menu_name, id_) strings.'''
+    return [(self.menu_name, self.id_),]
 .. @-all
 .. @-leo
