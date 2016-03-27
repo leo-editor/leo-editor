@@ -937,13 +937,13 @@ class LeoFrame(object):
             return
         # Set the clipboard text.
         i, j = w.getSelectionRange()
-        if i != j:
-            s = w.get(i, j)
-            g.app.gui.replaceClipboardWith(s)
-        else:
+        if i == j:
             ins = w.getInsertPoint()
             i, j = g.getLine(w.getAllText(), ins)
-            s = w.get(i,j)
+        # 2016/03/27: Fix a recent buglet.
+        # Don't clear the clipboard if we hit ctrl-c by mistake.
+        s = w.get(i,j)
+        if s:
             g.app.gui.replaceClipboardWith(s)
 
     OnCopyFromMenu = copyText
