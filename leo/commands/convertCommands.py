@@ -1673,6 +1673,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # Commander of present outline.
                 self.cell = None
                     # The present cell node.
+                self.cell_n = None
+                    # The number of the top-level node being scanned.
                 self.code_language = None
                     # The language in effect for code cells.
                 self.cell_type = None
@@ -1681,6 +1683,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # True if in range of any dict.
                 self.parent = None
                     # The parent for the next created node.
+                self.re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+                    # A regex matching html headers.
                 self.root = None
                     # The root of the to-be-created outline.
             #@+node:ekr.20160321161756.1: *5* do_any & helpers
@@ -1779,35 +1783,78 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     else:
                         self.error('unexpected item in list: %r' % z)
                 self.parent = old_parent
-            #@+node:ekr.20160323104332.1: *6* do_source
+            #@+node:ekr.20160323104332.1: *6* do_source & helpers
             def do_source(self, key, val):
                 '''Set the cell's body text, or create a 'source' node.'''
                 assert key == 'source', (key, val)
                 is_cell = self.parent == self.cell
                 if is_cell:
-                    # Don't create a new node: just set the cell's body text.
+                    # Set the body's text, splitting markdown nodes as needed.
                     if self.cell_type == 'markdown':
-                        s = '@language rest'
+                        self.do_markdown_cell(self.cell, val)
                     elif self.cell_type == 'raw':
-                        s = '@nocolor'
+                        self.cell.b = '@nocolor\n\n' + val
                     else:
-                        s = '@language %s' % (self.code_language or 'python')
-                    self.cell.b = s + '\n\n' + val
+                        self.cell.b = '@language %s\n\n' + val
                 else:
                     # Do create a new node.
                     p = self.new_node('# list:%s' % key)
                     p.b = val
+            #@+node:ekr.20160326124507.1: *7* check_header
+            def check_header(self, m):
+                '''Return (n, name) or (None, None) on error.'''
+                val = (None, None)
+                if m:
+                    n1, name, n2 = m.group(1), m.group(2), m.group(3)
+                    try:
+                        if int(n1) == int(n2):
+                            val = int(n1), name
+                    except Exception:
+                        pass
+                    if val == (None, None):
+                        g.trace('malformed header:', m.group(0))
+                return val
+            #@+node:ekr.20160326082322.1: *7* do_markdown_cell
+            def do_markdown_cell(self, p, s):
+                '''Split the markdown cell p if it contains one or more html headers.'''
+                trace = False and not g.unitTesting
+                i0, last, parent = 0, p.copy(), p.copy()
+                if not s.strip():
+                    return
+                lines = g.splitLines(s)
+                for i, s in enumerate(lines):
+                    m = self.re_header.search(s)
+                    n, name = self.check_header(m)
+                    if n is None: continue
+                    h = '<h%s> %s </h%s>' % (n, name.strip(), n)
+                    prefix = ''.join(lines[i0: i])
+                    suffix = ''.join(lines[i:])
+                    if trace: g.trace('%2s %2s %s' % (i-i0, len(lines)-i, h))
+                    if prefix.strip():
+                        p2 = last.insertAfter()
+                        p2.h = h
+                        p2.b = suffix
+                        last.b = '@language md\n\n' + prefix
+                        last = p2
+                        i0 = i
+                    else:
+                        last.h = h
+                        last.b = '@language md\n\n' + suffix
             #@+node:ekr.20160320184226.1: *5* do_cell
             def do_cell(self, cell, n):
 
-                # Careful: don't use self.new_node here.
-                self.parent = self.cell = self.root.insertAsLastChild()
-                self.parent.h = 'cell %s' % (n + 1)
-                # Pre-compute the cell_type and cell_code_language.
-                self.cell_type = cell.get('cell_type')
-                for key in sorted(cell):
-                    val = cell.get(key)
-                    self.do_any(key, val)
+                self.cell_n = n
+                if self.is_empty_code(cell):
+                    g.trace('skipping empty cell', n)
+                else:
+                    # Careful: don't use self.new_node here.
+                    self.parent = self.cell = self.root.insertAsLastChild()
+                    self.parent.h = 'cell %s' % (n + 1)
+                    # Pre-compute the cell_type.
+                    self.cell_type = cell.get('cell_type')
+                    for key in sorted(cell):
+                        val = cell.get(key)
+                        self.do_any(key, val)
             #@+node:ekr.20160320192858.1: *5* do_prefix
             def do_prefix(self, d):
                 '''
@@ -1837,8 +1884,42 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 cells = d.get('cells', [])
                 for n, cell in enumerate(cells):
                     self.do_cell(cell, n)
+                self.indent_cells()
                 c.selectPosition(self.root)
                 c.redraw()
+            #@+node:ekr.20160326133626.1: *5* indent_cells & helpers
+            def indent_cells(self):
+                '''
+                Indent md nodes in self.root.children().
+                <h1> nodes and non-md nodes stay where they are,
+                <h2> nodes become children of <h1> nodes, etc.
+                '''
+                # Careful: links change during this loop.
+                p = self.root.firstChild()
+                stack = []
+                while p and p != self.root:
+                    m = self.re_header.search(p.h)
+                    n, name = self.check_header(m)
+                    if n is None: n = 1
+                    assert p.level() == 1, (p.level(), p.h)
+                    # g.trace('n', n, 'stack', len(stack), p.h)
+                    stack = self.move_node(n, p, stack)
+                    p.moveToNodeAfterTree()
+            #@+node:ekr.20160326214638.1: *6* move_node
+            def move_node(self, n, p, stack):
+                '''Move node to level n'''
+                if stack:
+                    stack = stack[:n]
+                    if len(stack) == n:
+                        prev = stack.pop()
+                        p.moveAfter(prev)
+                    else:
+                        parent = stack[-1]
+                        n2 = parent.numberOfChildren()
+                        p.moveToNthChildOf(parent, n2)
+                stack.append(p.copy())
+                # g.trace('   n', n, 'stack', len(stack), p.h)
+                return stack
             #@+node:ekr.20160322144620.1: *5* Utils
             #@+node:ekr.20160322053732.1: *6* error
             def error(self, s):
@@ -1873,6 +1954,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def is_dict(self, obj):
                 
                 return isinstance(obj, (dict, nbformat.NotebookNode))
+            #@+node:ekr.20160326100052.1: *6* is_empty_code
+            def is_empty_code(self, cell):
+                '''Return True if cell is an empty code cell.'''
+                if cell.get('cell_type') == 'code':
+                    source = cell.get('source','')
+                    metadata = cell.get('metadata')
+                    keys = sorted(metadata.keys())
+                    if 'collapsed' in metadata:
+                        keys.remove('collapsed')
+                    outputs = cell.get('outputs')
+                    # g.trace(len(source), self.parent.h, sorted(cell))
+                    return not source and not keys and not outputs
+                return False
             #@+node:ekr.20160321154510.1: *6* new_node
             def new_node(self, h):
                 
@@ -2102,11 +2196,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     self.put_key_val('outputs', '[]')
             #@+node:ekr.20160323140748.1: *6* put_source
+            header_re = re.compile(r'^<[hH][123456]>')
+
             def put_source(self, p, type_):
                 '''Put the 'source' key for p.'''
                 s = ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
                 # Auto add headlines.
-                if type_ == 'markdown' and not re.search('^<[hH][123456]>', p.b):
+                if type_ == 'markdown' and not self.header_re.search(p.b):
                     n = min(6, self.level(p))
                     heading = '<h%(level)s>%(headline)s</h%(level)s>\n\n' % {
                         'level': n,
