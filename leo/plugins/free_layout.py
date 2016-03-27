@@ -35,7 +35,7 @@ if QtWidgets:
 import json
 #@-<< imports >>
 #@+others
-#@+node:tbrown.20110203111907.5521: ** init (free_layout.py)
+#@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init():
     if 1:
         return g.app.gui.guiName() == "qt"
@@ -427,6 +427,14 @@ def free_layout_zoom(event):
     """
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
+#@+node:ekr.20160327060009.1: ** free_layout:register_provider (experimental)
+def register_provider(c, a_class):
+    '''Register the given Provider class with the top splitter.'''
+    # Careful: c.free_layout may not exist during unit testing.
+    if c and hasattr(c, 'free_layout'):
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(a_class)
 #@-others
 #@@language python
 #@@tabwidth -4
