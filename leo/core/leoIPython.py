@@ -203,13 +203,13 @@ class InternalIPKernel(object):
         '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
         # self.namespace.get('sys') would not be helpful.
         if result.error_before_exec:
-            g.pr('Error before IPython exec:')
-            g.pr(result.error_before_exec)
+            g.es_print('Error before IPython exec:',color='red')
+            g.es_print(result.error_before_exec)
         if result.error_in_exec:
-            g.pr('Error in IPython exec:')
-            g.pr(result.error_in_exec)
+            g.es_print('Error in IPython exec:',color='red')
+            g.es_print(result.error_in_exec)
         if result.result:
-            g.pr('Result: %s' % result)
+            g.es_print('Result: %s' % result.result)
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
