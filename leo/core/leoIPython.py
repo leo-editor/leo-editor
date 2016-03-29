@@ -31,6 +31,11 @@ def import_fail(s):
         print('===== leoIpython.py: can not import %s' % s)
 
 try:
+    from IPython.core.interactiveshell import ExecutionResult
+except ImportError:
+    ExecutionResult = None
+    import_fail('IPython.core.interactiveshell.ExecutionResult')
+try:
     from ipykernel.connect import connect_qtconsole
 except ImportError:
     connect_qtconsole = None
@@ -52,7 +57,7 @@ class InternalIPKernel(object):
     Called from LeoQtGui.runWithIpythonKernel()
     '''
     #@+others
-    #@+node:ekr.20130930062914.15994: *3*  ctor
+    #@+node:ekr.20130930062914.15994: *3* ileo.__init__
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
         # g.trace('(InternalIPKernel)', g.callers())
@@ -80,14 +85,14 @@ class InternalIPKernel(object):
             self.namespace['app_counter'] = 0
             # Example: a variable that will be seen by the user in the shell, and
             # that the GUI modifies (the 'Counter++' button increments it)
-    #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
+    #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
     def cleanup_consoles(self, event=None):
         for c in self.consoles:
             c.kill()
-    #@+node:ekr.20130930062914.15997: *3* count
+    #@+node:ekr.20130930062914.15997: *3* ileo.count
     def count(self, event=None):
         self.namespace['app_counter'] += 1
-    #@+node:ekr.20130930062914.15996: *3* new_qt_console
+    #@+node:ekr.20130930062914.15996: *3* ileo.new_qt_console
     def new_qt_console(self, event=None):
         '''Start a new qtconsole connected to our kernel.'''
         trace = False or g.app.debug
@@ -116,14 +121,14 @@ class InternalIPKernel(object):
             self.put_warning('new_qt_console: unexpected exception')
             self.put_warning(e)
         return console
-    #@+node:ekr.20130930062914.15995: *3* print_namespace
+    #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
     def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.iteritems():
             if k not in self._init_keys and not k.startswith('_'):
                 print('%s -> %r' % (k, v))
         sys.stdout.flush()
-    #@+node:ekr.20160308090432.1: *3* put_log
+    #@+node:ekr.20160308090432.1: *3* ileo.put_log
     def put_log(self, s, raw=False):
         '''
         Put a message to the IPython kernel log.
@@ -136,7 +141,7 @@ class InternalIPKernel(object):
                 self.kernelApp.log.info(s)
             else:
                 print(s)
-    #@+node:ekr.20160308101536.1: *3* put_warning
+    #@+node:ekr.20160308101536.1: *3* ileo.put_warning
     def put_warning(self, s, raw=False):
         '''
         Put an warning message to the IPython kernel log.
@@ -148,7 +153,7 @@ class InternalIPKernel(object):
             self.kernelApp.log.warning(s)
         else:
             print(s)
-    #@+node:ekr.20130930062914.15992: *3* pylab_kernel
+    #@+node:ekr.20130930062914.15992: *3* ileo.pylab_kernel
     def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
         trace = False
@@ -175,6 +180,36 @@ class InternalIPKernel(object):
         else:
             g.trace('IPKernelApp.instance failed!')
         return kernelApp
+    #@+node:ekr.20160329053849.1: *3* ileo.run_script
+    def run_script(self, file_name, script):
+        '''
+        Helper for the ipython-exec command.
+        Run the script in the qt console.
+        '''
+        # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
+        # https://github.com/ipython/ipython/blob/master/IPython/core/interactiveshell.py
+        shell = self.kernelApp.shell # ZMQInteractiveShell
+        code = compile(script, file_name, 'exec')
+        if ExecutionResult:
+            result = ExecutionResult()
+            shell.run_code(code, result=result)
+            if result:
+                self.show_result(result)
+        else:
+            # Won't show errors.
+            shell.run_code(code)
+    #@+node:ekr.20160328145029.1: *3* ileo.show_result
+    def show_result(self, result):
+        '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
+        # self.namespace.get('sys') would not be helpful.
+        if result.error_before_exec:
+            g.pr('Error before IPython exec:')
+            g.pr(result.error_before_exec)
+        if result.error_in_exec:
+            g.pr('Error in IPython exec:')
+            g.pr(result.error_in_exec)
+        if result.result:
+            g.pr('Result: %s' % result)
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
