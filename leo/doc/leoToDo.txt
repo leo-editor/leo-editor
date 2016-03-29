@@ -33,11 +33,6 @@ Search for:
 LeoQtGui.Dialogs & panels
 LeoQtGui.runSaveFileDialog
 LeoQtGui.runOpenFileDialog
-.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/156
 .. @+node:ekr.20150418052852.1: *4* ** Complete import/export to .ipynb files
 - Auto-import on load .leo file.
 - Automatic export on save.
@@ -55,6 +50,41 @@ It would be great to be able to jump between Leo's nodes and IPython's cells, ea
 From: Alia K:
 
 Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20160318113451.1: *4* Merge vr & vr2
+.. @+node:ekr.20150418061229.1: *5* Add QWebView & OpenGl support to viewrendered.py
+How much of this does vr2 do?
+
+OpenGL
+http://doc.qt.io/qt-5/qopenglwidget.html
+
+QWebView
+http://doc.qt.io/qt-5/qwebview.html
+
+http://doc.qt.io/qt-4.8/graphicsview.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+Ville
+
+Create one QWebView window. zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+.. @+node:ekr.20110621085435.6532: *5* equal-sized-panes resizes vr pane
+http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
+
+I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
+
+I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
+.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/156
+
+Rev bdce2b05 and previous succeeds in showing errors to Leo's log and the console window from which Leo was launched.
+
+Still unfinished: print a waning to IPython Qt Console.
 .. @+node:ekr.20160325152544.1: *3* Next: 5.3
 .. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
 - Can they be interrupted?
@@ -171,6 +201,10 @@ https://github.com/leo-editor/leo-editor/issues/132
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/156
+
+Rev bdce2b05 and previous succeeds in showing errors to Leo's log and the console window from which Leo was launched.
+
+Still unfinished: print a waning to IPython Qt Console.
 .. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
 
@@ -499,32 +533,6 @@ if 0:
     - Some key to shift back to the nav pane.
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
-.. @+node:ekr.20160318113451.1: *5* Merge vr & vr2
-.. @+node:ekr.20150418061229.1: *6* Add QWebView & OpenGl support to viewrendered.py
-How much of this does vr2 do?
-
-OpenGL
-http://doc.qt.io/qt-5/qopenglwidget.html
-
-QWebView
-http://doc.qt.io/qt-5/qwebview.html
-
-http://doc.qt.io/qt-4.8/graphicsview.html
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-Ville
-
-Create one QWebView window. zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20110621085435.6532: *6* equal-sized-panes resizes vr pane
-http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
-
-I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
-
-I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
 .. @+node:ekr.20160327112045.1: *4* Maybe
 .. @+node:ekr.20160325055507.1: *5* Maybe: Code
 .. @+node:ekr.20160318113006.1: *6* API's for icons, attributes & windows
