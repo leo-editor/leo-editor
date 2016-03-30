@@ -413,7 +413,7 @@ if encOK:
         if str(txt).startswith('v0:'):
             txt = QString(txt[3:])
         else:
-            txt = unicode(txt)
+            txt = g.toUnicode(txt)
 
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
