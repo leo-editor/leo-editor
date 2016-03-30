@@ -4694,6 +4694,7 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
 if isPython3: # g.not defined yet.
 
     def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
         return s
 
     def ue(s, encoding):
@@ -4702,6 +4703,7 @@ if isPython3: # g.not defined yet.
 else:
 
     def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
         # pylint: disable=undefined-variable
         return unicode(s)
 
