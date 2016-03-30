@@ -1131,14 +1131,17 @@ class LeoGlobals(object):
     if isPython3:
 
         def u(self, s):
+            '''Return s, converted to unicode from Qt widgets.'''
             return s
 
         def ue(self, s, encoding):
+            '''Return s, converted to unicode from an encoded string.'''
             return s if g.isUnicode(s) else str(s, encoding)
 
     else:
 
         def u(self, s):
+            '''Return s, converted to unicode from Qt widgets.'''
             # pylint: disable = undefined-variable
             return unicode(s)
 

@@ -68,7 +68,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
 I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
 
 I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
-.. @+node:ekr.20150418052852.1: *4* ** Complete import/export to .ipynb files
+.. @+node:ekr.20150418052852.1: *4* Complete import/export to .ipynb files
 - Auto-import on load .leo file.
 - Automatic export on save.
 
