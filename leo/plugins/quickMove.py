@@ -346,7 +346,7 @@ class quickMove(object):
         # pylint: disable=unexpected-special-method-signature
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
-    #@+node:ekr.20070117113133.2: *3* addButton (quickMove)
+    #@+node:ekr.20070117113133.2: *3* addButton (quickMove.py)
     def addButton (self, which, type_="move", v=None, parent=None):
         '''Add a button that creates a target for future moves.'''
         c = self.c
@@ -379,7 +379,7 @@ class quickMove(object):
             b = None
             mb.has_parent = True
             t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
-            if not unicode(pb.text()).endswith(unicode(t)):
+            if not g.u(pb.text()).endswith(g.u(t)):
                 pb.setText(pb.text()+t)
         else:
             b = sc.createIconButton(

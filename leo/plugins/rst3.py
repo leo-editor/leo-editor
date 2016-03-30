@@ -1812,7 +1812,6 @@ class rstClass:
             for line in html:
                 try:
                     parser.feed(line)
-                # bwm: changed to unicode(line)
                 except Exception:
                     line = ''.join([ch for ch in line if ord(ch) <= 127])
                     # filter out non-ascii characters.

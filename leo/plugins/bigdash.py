@@ -415,7 +415,7 @@ class LeoFts:
 
         schema = self.schema()
         self.ix = ix = create_in(self.idx_dir, schema)
-    #@+node:ekr.20140920041848.17943: *3* index_nodes
+    #@+node:ekr.20140920041848.17943: *3* index_nodes (bigdash.py)
     def index_nodes(self,c):
         writer = self.ix.writer()
         doc = c.mFileName
@@ -425,7 +425,11 @@ class LeoFts:
                 par = p.parent().get_UNL()
             else:
                 par = c.mFileName
-            writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par, doc=doc)
+            writer.add_document(
+                h=p.h, b=p.b,
+                gnx=g.toUnicode(p.gnx),
+                parent=par,
+                doc=doc)
         writer.commit()
         self.gnxcache.clear()
     #@+node:ekr.20140920041848.17944: *3* drop_document
