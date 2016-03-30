@@ -1629,6 +1629,9 @@ class Undoer:
         if cc: cc.selectChapterByName('main')
         c.selectPosition(u.newP)
         c.deleteOutline()
+            # Bug fix: 2016/03/30.
+            # This always selects the proper new position.
+            # c.selectPosition(u.p)
         if u.pasteAsClone:
             for bunch in u.beforeTree:
                 v = bunch.v
@@ -1638,7 +1641,6 @@ class Undoer:
                 else:
                     v.setBodyString(bunch.body)
                     v.setHeadString(bunch.head)
-        c.selectPosition(u.p)
     #@+node:ekr.20050526124906: *4* u.undoMark
     def undoMark(self):
         u = self; c = u.c
