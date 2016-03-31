@@ -2868,22 +2868,21 @@ def ensure_extension(name, ext):
 #@+node:ekr.20150403150655.1: *3* g.fullPath
 def fullPath(c, p, simulate=False):
     '''
-    Return the full path (including fileName) in effect at p.
-    Neither the path nor the fileName will be created if it does not exist.
+    Return the full path (including fileName) in effect at p. Neither the
+    path nor the fileName will be created if it does not exist.
     '''
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    fn = p.h if simulate else p.anyAtFileNodeName()
-        # Use p.h for unit tests.
-    if fn:
-        # Fix bug 102: call commander method, not the global function.
-        path = c.os_path_finalize_join(path, fn)
-    else:
-        g.trace('can not happen: not an @<file> node', g.callers())
-        for p2 in p.self_and_parents():
-            g.trace('  %s' % p2.h)
-        path = ''
-    return path
+    trace = False and not g.unitTesting
+    # 2016/03/30: search p and p's parents.
+    for p in p.self_and_parents():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.h if simulate else p.anyAtFileNodeName()
+            # Use p.h for unit tests.
+        if fn:
+            # Fix #102: call commander method, not the global function.
+            if c and c.p == p: g.trace('found', p.h)
+            return c.os_path_finalize_join(path, fn)
+    return ''
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 
@@ -2925,6 +2924,30 @@ def guessExternalEditor(c=None):
 Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"'''         )
         return None
+#@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
+def init_dialog_folder(c, p, use_at_path=True):
+    '''Return the most convenient folder to open or save a file.'''
+    trace = False and not g.unitTesting
+    if c and p and use_at_path:
+        path = g.fullPath(c, p)
+        if path:
+            dir_ = g.os_path_dirname(path)
+            if dir_ and g.os_path_exists(dir_):
+                if trace: g.trace('@path', dir_)
+                return dir_
+        else:
+            if trace: g.trace('no @path', p.h)
+    table = (
+        ('c.last_dir', c and c.last_dir),
+        ('os.curdir', g.os_path_abspath(os.curdir)),
+    )
+    for kind, dir_ in table:
+        if dir_ and g.os_path_exists(dir_):
+            if trace: g.trace('found', kind, dir_)
+            return dir_
+        elif trace:
+            g.trace('skipped', kind, dir_)
+    return ''
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
 def is_binary_file(f):
     if g.isPython3:

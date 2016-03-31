@@ -434,13 +434,14 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog
     def runOpenFileDialog(self, c, title, filetypes, defaultextension='', multiple=False, startpath=None):
         """Create and run an Qt open file dialog ."""
+        trace = False and not g.unitTesting
         if g.unitTesting:
             return ''
         else:
             if startpath is None:
                 startpath = os.curdir
             parent = None
-            filter = self.makeFilter(filetypes)
+            filter_ = self.makeFilter(filetypes)
             d = QtWidgets.QFileDialog()
             self.attachLeoIcon(d)
             if multiple:
@@ -449,14 +450,27 @@ class LeoQtGui(leoGui.LeoGui):
                 c.in_qt_dialog = False
                 if isQt5: # this is a *Py*Qt change rather than a Qt change
                     lst, selected_filter = lst
-                return [g.u(s) for s in lst]
+                files = [g.u(s) for s in lst]
+                if files:
+                    c.last_dir = g.os_path_dirname(files[-1])
+                    if trace: g.trace('c.last_dir', c.last_dir)
+                return files
             else:
                 c.in_qt_dialog = True
-                s = d.getOpenFileName(parent, title, startpath, filter)
+                s = d.getOpenFileName(
+                    parent,
+                    title,
+                    # startpath,
+                    g.init_dialog_folder(c, c.p, use_at_path=True),
+                    filter_)
                 c.in_qt_dialog = False
                 if isQt5:
                     s, selected_filter = s
-                return g.u(s)
+                s = g.u(s)
+                if s:
+                    c.last_dir = g.os_path_dirname(s)
+                    if trace: g.trace('c.last_dir', c.last_dir)
+                return s
     #@+node:ekr.20110605121601.18501: *4* LeoQtGui.runPropertiesDialog
     def runPropertiesDialog(self,
         title='Properties', data=None, callback=None, buttons=None):
@@ -469,6 +483,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18502: *4* LeoQtGui.runSaveFileDialog
     def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
+        trace = False and not g.unitTesting
         if filetypes is None:
             filetypes = []
         if g.unitTesting:
@@ -479,11 +494,20 @@ class LeoQtGui(leoGui.LeoGui):
             d = QtWidgets.QFileDialog()
             self.attachLeoIcon(d)
             c.in_qt_dialog = True
-            obj = d.getSaveFileName(parent, title, os.curdir, filter_)
+            obj = d.getSaveFileName(
+                parent,
+                title,
+                # os.curdir,
+                g.init_dialog_folder(c, c.p, use_at_path=True),
+                filter_)
             c.in_qt_dialog = False
             # Very bizarre: PyQt5 version can return a tuple!
             s = obj[0] if isinstance(obj, (list, tuple)) else obj
-            return g.u(s)
+            s = g.u(s or '')
+            if s:
+                c.last_dir = g.os_path_dirname(s)
+                if trace: g.trace('c.last_dir', c.last_dir)
+            return s
     #@+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog
     def runScrolledMessageDialog(self,
         short_title='',

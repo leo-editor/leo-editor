@@ -158,6 +158,8 @@ class Commands(object):
             # List of nodes for error dialog.
         self.import_error_nodes = []
             #
+        self.last_dir = None
+            # The last used directory.
         self.mFileName = fileName or ''
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''
