@@ -12,45 +12,11 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/156
-
-Rev bdce2b05 and previous succeeds in showing errors to Leo's log and the console window from which Leo was launched.
-
-Still unfinished: print a waning to IPython Qt Console.
 .. @+node:ekr.20160318113451.1: *4* Merge vr & vr2
 @language rest
 @wrap
 
 Imo, the new plugin should be called VR2, and the old plugin deprecated, but that will happen only after further testing. I'll definitely keep in mind that multiple VR panes should be possible, and make sure the locking option works.
-.. @+node:ekr.20150418061229.1: *5* Add QWebView & OpenGl support to viewrendered.py
-How much of this does vr2 do?
-
-OpenGL
-http://doc.qt.io/qt-5/qopenglwidget.html
-
-QWebView
-http://doc.qt.io/qt-5/qwebview.html
-
-http://doc.qt.io/qt-4.8/graphicsview.html
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
-Ville
-
-Create one QWebView window. zoom it in to have large fonts.
-
-Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
-
-Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
-.. @+node:ekr.20110621085435.6532: *5* equal-sized-panes resizes vr pane
-http://groups.google.com/group/leo-editor/browse_thread/thread/583bc0a31a6c7979
-
-I noticed that when the renderpane is active it is not affected by the Window>Equal Sized Panes command. Only the Outline and Body Panes are affected - just as described in http://webpages.charter.net/edreamleo/outlines.html#resizing-panes. However from the user perspective the current behaviour appears as though the command is only partially successful. Since there are specific commands to contract/expand the log pane, shouldn't the log and render panes also be affected by the Window>Equal Sized Panes command?
-
-I suppose so.  I would prefer to wait for Terry to finish his pane-generalization code before dealing with this.
 .. @+node:ekr.20150418052852.1: *4* Complete import/export to .ipynb files
 - Auto-import on load .leo file.
 - Automatic export on save.
@@ -192,15 +158,6 @@ If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-ope
 .. @+node:ekr.20150609082812.1: *4* #132: Won't fix??: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
-.. @+node:ekr.20151231100535.1: *4* #156: ILeo errors not piped to Log and Do not show in Ipython console
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/156
-
-Rev bdce2b05 and previous succeeds in showing errors to Leo's log and the console window from which Leo was launched.
-
-Still unfinished: print a waning to IPython Qt Console.
 .. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
 
