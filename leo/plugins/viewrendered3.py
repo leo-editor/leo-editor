@@ -1135,6 +1135,7 @@ if QtWidgets:
         #@-others
 #@+node:ekr.20160331124013.1: ** from VR2 (Reference)
 if 0:
+    # pylint: disable=function-redefined
     #@+others
     #@+node:ekr.20160331124028.5: *3* Top-level
     #@+node:ekr.20160331124028.6: *4* decorate_window
