@@ -958,7 +958,7 @@ class QMinibufferWrapper(QLineEditWrapper):
             trace = False and not g.unitTesting
             if trace: g.trace('(QMinibufferWrapper)', event)
             assert isinstance(self, QMinibufferWrapper), self
-            assert isinstance(self.widget, QtGui.QLineEdit), self.widget
+            assert isinstance(self.widget, QtWidgets.QLineEdit), self.widget
             c, k = self.c, self.c.k
             if not k.state.kind:
                 # c.widgetWantsFocusNow(w) # Doesn't work.
@@ -1270,8 +1270,8 @@ class QTextEditWrapper(QTextMixin):
                 '''
                 trace = False and not g.unitTesting
                 assert isinstance(self, QTextEditWrapper), self
-                assert isinstance(self.widget, QtGui.QTextEdit), self.widget
-                QtGui.QTextEdit.mouseReleaseEvent(self.widget, event)
+                assert isinstance(self.widget, QtWidgets.QTextEdit), self.widget
+                QtWidgets.QTextEdit.mouseReleaseEvent(self.widget, event)
                     # Call the base class.
                 c = self.c
                 setattr(event, 'c', c)
