@@ -2880,7 +2880,7 @@ def fullPath(c, p, simulate=False):
             # Use p.h for unit tests.
         if fn:
             # Fix #102: call commander method, not the global function.
-            if c and c.p == p: g.trace('found', p.h)
+            if trace and c and c.p == p: g.trace('found', p.h)
             return c.os_path_finalize_join(path, fn)
     return ''
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
