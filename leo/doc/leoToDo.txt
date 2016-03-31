@@ -16,7 +16,13 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 @language rest
 @wrap
 
-Imo, the new plugin should be called VR2, and the old plugin deprecated, but that will happen only after further testing. I'll definitely keep in mind that multiple VR panes should be possible, and make sure the locking option works.
+The new plugin will be called VR3, replacing both VR and VR2.
+
+**Notes**:
+
+1. Multiple VR panes should be possible.
+2. Make sure the locking option works.
+
 .. @+node:ekr.20150418052852.1: *4* Complete import/export to .ipynb files
 - Auto-import on load .leo file.
 - Automatic export on save.
@@ -574,6 +580,11 @@ Encourage them to write in with their unique uses, and publicize them. I bet peo
 .. @+node:ekr.20120226183512.10195: *3* Bugs (maybe)
 @language rest
 @wrap
+.. @+node:ekr.20160331131318.1: *4* #250: equal-sized-panes resizes vr pane
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/250
 .. @+node:ekr.20130806072439.20650: *4* #106: brew install leo
 @language rest
 @wrap
