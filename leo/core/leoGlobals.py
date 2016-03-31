@@ -120,7 +120,7 @@ import binascii
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
 globalDirectiveList = [
-    # *** Longer prefixes must appear before shorter.
+    # Order does not matter.
     'all',
     'beautify',
     'colorcache', 'code', 'color', 'comment', 'c',
@@ -2312,7 +2312,8 @@ def findReference(c, name, root):
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
-g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
+g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=',
+                          re.MULTILINE)
 
 def get_directives_dict(p, root=None):
     """
@@ -2323,8 +2324,9 @@ def get_directives_dict(p, root=None):
     """
     trace = False and not g.unitTesting
     verbose = False
-    if trace: g.trace('*' * 20, p.h)
+    if trace and verbose: g.trace('*' * 20, p.h)
     if root: root_node = root[0]
+    c = p and p.v and p.v.context
     d = {}
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()
@@ -2333,32 +2335,29 @@ def get_directives_dict(p, root=None):
     for kind, s in (('head', p.h), ('body', p.b)):
         anIter = directives_pat.finditer(s)
         for m in anIter:
-            word = m.group(0)[1:] # Omit the @
-            i = m.start(0)
-            if word.strip() not in d:
-                j = i + 1 + len(word)
-                k = g.skip_line(s, j)
-                val = s[j: k].strip()
-                if j < len(s) and s[j] not in (' ', '\t', '\n'):
-                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1])
-                    # if trace:g.trace(word,repr(val),s[i:i+20])
-                    pass # Not a valid directive: just ignore it.
-                else:
-                    directive_word = word.strip()
-                    if directive_word == 'language':
-                        d[directive_word] = val
-                    else:
-                        if directive_word in ('root-doc', 'root-code'):
-                            d['root'] = val # in addition to optioned version
-                        d[directive_word] = val
-                    # g.trace(kind,directive_word,val)
-                    if trace: g.trace(word.strip(), kind, repr(val))
-                    # A special case for @path in the body text of @<file> nodes.
-                    # Don't give an actual warning: just set some flags.
-                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
-                        g.app.atPathInBodyWarning = p.h
-                        d['@path_in_body'] = p.h
-                        if trace: g.trace('@path in body', p.h)
+            word = m.group(1).strip()
+            i = m.start(1)
+            if word in d: continue
+            j = i + len(word)
+            if j < len(s) and s[j] not in ' \t\n':
+                continue
+                    # Not a valid directive: just ignore it.
+                    # A unit test tests that @path:any is invalid.
+            k = g.skip_line(s, j)
+            val = s[j: k].strip()
+            if trace and c and p == c.p:
+                g.trace('%20s %s' % (word, val))
+            if word in ('root-doc', 'root-code'):
+                d['root'] = val # in addition to optioned version
+            d[word] = val
+            # Warn about @path in the body text of @<file> nodes.
+            if (kind == 'body' and
+                word == 'path' and
+                p.isAnyAtFileNode()
+            ):
+                g.app.atPathInBodyWarning = p.h
+                d['@path_in_body'] = p.h
+                if trace: g.trace('@path in body', p.h)
     if root:
         anIter = g_noweb_root.finditer(p.b)
         for m in anIter:
@@ -2371,35 +2370,17 @@ def get_directives_dict(p, root=None):
     if trace and verbose:
         g.trace('%4d' % (len(p.h) + len(p.b)))
     return d
-#@+node:ekr.20090214075058.10: *4* compute_directives_re
+#@+node:ekr.20090214075058.10: *4* g.compute_directives_re
 def compute_directives_re():
-    '''Return an re pattern which will match all Leo directives.'''
+    '''
+    Return an re pattern which word matches all Leo directives.
+    Only g.get_directives_dict uses this pattern.
+    '''
     global globalDirectiveList
-    if 1:
-        # 2014/05/21: Per Reinhard Engel reinhard.engel.de@googlemail.com.
-        # Sort by length, longest first.
-        # pylint: disable=unnecessary-lambda
-        def key(a):
-            return len(a)
-        aList = sorted(
-            [z for z in globalDirectiveList if z != 'others'],
-            # key=lambda a: len(a))
-            key=key)
-        if 1:
-            aList = "|".join(aList)
-            return "^@(%s)(?=( |\t|\n)+)|^@(%s)$" % (aList, aList)
-        else:
-            # 2016/03/27: This fails at the end of body text!
-            return "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
-    else:
-        aList = ['^@%s' % z for z in globalDirectiveList
-                    if z != 'others']
-        if 0: # 2010/02/01
-            # The code never uses this, and this regex is broken
-            # because it can confuse g.get_directives_dict.
-            # @others can have leading whitespace.
-            aList.append(r'^\s@others\s')
-        return '|'.join(aList)
+    # EKR: 2016/03/30: Use a pattern that guarantees word matches.
+    aList = [r'\b%s\b' % (z) for z in globalDirectiveList
+                if z != 'others']
+    return "^@(%s)" % "|".join(aList)
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.

@@ -12,6 +12,10 @@ Names in docstrings cause trouble in Python 2.
 Rather than trying to figure out workarounds, @button jEdit2Py now refuses to run on Python 2.
 .. @+node:ekr.20160329094733.1: *3* Fixed bug: Undo paste-node selected the wrong node
 The fix was in u.undoInsertNode
+.. @+node:ekr.20160330200607.1: ** Code
+.. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
+.. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re
+# flattened, ignore-case, head, body
 .. @+node:ekr.20160324180039.1: ** Features
 .. @+node:ekr.20160324174900.1: *3* Viewrendered already supports markdown
 @language rest

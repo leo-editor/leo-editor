@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="103" left="314" height="957" width="1231"/>
+	<global_window_position top="108" left="527" height="957" width="1231"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1206,9 +1206,15 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"
 expanded="ekr.20100131171342.5471,ekr.20111221062755.3909,ekr.20100131171342.5472,ekr.20100205223124.5377,ekr.20050208051418,ekr.20071113194858,ekr.20100131171342.5506,ekr.20160318094003.1,"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20160330182418.1"><vh>Recent failures</vh>
+<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
+<v t="ekr.20160327132053.1"><vh>@test g.compute_directives_re</vh></v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7716,6 +7722,19 @@ else:
 
 
 </t>
+<t tx="ekr.20071113090055.5"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+# print(d)
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -7867,6 +7886,31 @@ pass
 </t>
 <t tx="ekr.20080907123324.3">def child():
     pass
+</t>
+<t tx="ekr.20080917151620.9">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+
+d = c.scanAllDirectives(p)
+# print(g.dictToString(d))
+
+table = (
+    ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
 </t>
 <t tx="ekr.20081121164135.1">path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 c.testManager.runLeoTest(path)
@@ -8192,6 +8236,27 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131180007.5434">@language python
+@comment a b c
+    # @comment must follow @language.
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+@path: anError # @path ends with ':'.
+
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+# assert d.get('_p') == p # Never used, and a bad idea.
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+assert not d.get('path'),d.get('path')
+# assert d.get('path').endswith('xyzzy')
 </t>
 <t tx="ekr.20100203163606.5365">import os
 
@@ -12306,5 +12371,20 @@ unl: section 1
 gnx: ekr.20160226053106.2
 unl: section 2
 </t>
+<t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
+import re
+pat = g.compute_directives_re()
+pat = re.compile(pat, re.MULTILINE)
+table = (
+    '@wrap', # The failure case.
+    '@wrap ',
+    '@wrap\n',
+    '@wrap\t',
+)
+for s in table:
+    m = pat.search(s)
+    assert m, repr(s)
+</t>
+<t tx="ekr.20160330182418.1"></t>
 </tnodes>
 </leo_file>
