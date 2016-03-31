@@ -109,6 +109,7 @@ class InternalIPKernel(object):
             # The connection file has the form kernel-nnn.json.
             # Using the defaults lets connect_qtconsole find the .json file.
             console = connect_qtconsole()
+            if trace: g.trace(console)
             if console:
                 self.consoles.append(console)
             else:
@@ -130,17 +131,18 @@ class InternalIPKernel(object):
         sys.stdout.flush()
     #@+node:ekr.20160308090432.1: *3* ileo.put_log
     def put_log(self, s, raw=False):
-        '''
-        Put a message to the IPython kernel log.
-        This will be seen only if Leo's --debug option is in effect.
-        '''
-        if g.app.debug:
-            if not raw:
-                s = 'leoIpython.py: %s' % s
-            if self.kernelApp:
-                self.kernelApp.log.info(s)
-            else:
-                print(s)
+        '''Put a message to the IPython kernel log.'''
+        if not raw:
+            s = '[leoIpython.py] %s' % s
+        if self.kernelApp:
+            self.kernelApp.log.info(s)
+        else:
+            self.put_stdout(s)
+    #@+node:ekr.20160331084025.1: *3* ileo.put_stdout
+    def put_stdout(self, s):
+        '''Put s to sys.__stdout__.'''
+        sys.__stdout__.write(s.rstrip()+'\n')
+        sys.__stdout__.flush()
     #@+node:ekr.20160308101536.1: *3* ileo.put_warning
     def put_warning(self, s, raw=False):
         '''
@@ -148,15 +150,15 @@ class InternalIPKernel(object):
         This will be seen, regardless of Leo's --debug option.
         '''
         if not raw:
-            s = 'leoIpython.py: %s' % s
+            s = '[leoIpython.py] %s' % s
         if self.kernelApp:
             self.kernelApp.log.warning(s)
         else:
-            print(s)
+            self.put_stdout(s)
     #@+node:ekr.20130930062914.15992: *3* ileo.pylab_kernel
     def pylab_kernel(self, gui):
         '''Launch an IPython kernel with pylab support for the gui.'''
-        trace = False
+        trace = False and not g.unitTesting
             # Forces Leo's --debug option.
         self.kernelApp = kernelApp = IPKernelApp.instance()
             # IPKernalApp is a singleton class.
@@ -172,6 +174,7 @@ class InternalIPKernel(object):
                 #'--log-level=10'
                 # '--pdb', # User-level debugging
             try:
+                # self.pdb('==== Ileo.pdb ========')
                 kernelApp.initialize(args)
             except Exception:
                 sys.stdout = sys.__stdout__
@@ -202,14 +205,34 @@ class InternalIPKernel(object):
     def show_result(self, result):
         '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
         # self.namespace.get('sys') would not be helpful.
+
+        def put(s):
+            if isinstance(s, Exception):
+                s = s.__class__.__name__
+            # sys.stderr writes to Qt console.
+            # g.es_print writes to console window, if any.
+            g.es_print(s)
+            sys.stderr.write(s.rstrip()+'\n')
+            sys.stderr.flush()
+
         if result.error_before_exec:
-            g.es_print('Error before IPython exec:',color='red')
-            g.es_print(result.error_before_exec)
+            put('Error before IPython exec')
+            put(result.error_before_exec)
         if result.error_in_exec:
-            g.es_print('Error in IPython exec:',color='red')
-            g.es_print(result.error_in_exec)
+            put('Error in IPython exec')
+            put(result.error_in_exec)
         if result.result:
-            g.es_print('Result: %s' % result.result)
+            put('Result: %s' % result.result)
+    #@+node:ekr.20160331083020.1: *3* ileo.pdb
+    def pdb(self, message=''):
+        """Fall into pdb."""
+        import pdb
+            # Required: we have just defined pdb as a function!
+        pdb = pdb.Pdb(stdout=sys.__stdout__)
+        if message:
+            self.put_stdout(message)
+        pdb.set_trace()
+            # This works, but there are no IPython sources.
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
