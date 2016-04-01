@@ -6548,16 +6548,25 @@ class Commands(object):
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
         pc = g.app.pluginsController
-        if pc.isLoaded('viewrendered2.py'):
-            vr = pc.loadOnePlugin('viewrendered2.py')
+        table = (
+            'viewrendered3.py',
+            'viewrendered2.py',
+            'viewrendered.py',
+        )
+        for name in table:
+            if pc.isLoaded(name):
+                vr = pc.loadOnePlugin(name)
+                break
         else:
-            vr = pc.loadOnePlugin('viewrendered.py')
+            vr = pc.loadOnePlugin('viewrendered3.py')
+                # The new default.
         if g.unitTesting:
             assert vr # For unit testing.
         if vr:
             kw = {
                 'c': c,
                 'flags': 'rst',
+                'kind': 'rst',
                 'label': '',
                 'msg': s,
                 'name': 'Apropos',

@@ -352,6 +352,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
+    if trace: g.trace(tag, len(s), 'flags', flags)
     vr.update(
         tag='show-scrolled-message',
         keywords={
@@ -659,27 +660,34 @@ if QtWidgets:
             pc = self
             c, p = pc.c, pc.c.p
             if pc.must_update(keywords):
-                if trace and verbose: g.trace('===== updating', keywords)
+                if trace:
+                    if verbose: g.trace('===== updating', keywords)
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
-                pc.length = len(p.b) # not s
-                # Remove Leo directives.
+                pc.length = len(p.b)
+                    # Not len(s): this length of the previous p.b.
                 s = keywords.get('s') if 's' in keywords else p.b
-                s = pc.remove_directives(s)
+                if keywords.get('show-scrolled-message'):
+                    s = pc.remove_directives(s)
+                    pc.update_rst(s, keywords, force_rst=True)
+                    return
                 # Dispatch based on the computed kind.
                 if VR3:
                     kind = keywords.get('kind', None) # vr2
                 else:
                     kind = keywords.get('flags', None) # vr
+                if trace: g.trace('kind1', kind)
                 if not kind:
                     kind = pc.get_kind(p)
+                if trace: g.trace('kind:', kind)
                 f = pc.dispatch_dict.get(kind)
                 if f:
                     if trace and verbose: g.trace(p.h, f.__name__)
                 else:
-                    g.trace('no handler for kind: %s' % kind)
-                    f = pc.update_rst
+                    if trace: g.trace('no handler for kind: %s' % kind)
+                    f = pc.update_url
+                        # Has cool inference logic.
                 f(s, keywords)
             else:
                 # Save the scroll position.
@@ -777,6 +785,7 @@ if QtWidgets:
             force = keywords.get('force')
             if pc.gs and not force:
                 return
+            s = pc.remove_directives(s)
             if not pc.gs:
                 splitter = c.free_layout.get_top_splitter()
                 # Careful: we may be unit testing.
@@ -803,6 +812,7 @@ if QtWidgets:
             '''Update html in the vr pane.'''
             pc = self
             if trace: g.trace(len(s))
+            s = pc.remove_directives(s)
             if pc.must_change_widget(pc.html_class):
                 if VR3:
                     w = pc.html_class(pc=pc)
@@ -820,6 +830,7 @@ if QtWidgets:
             pc = self
             if not s.strip():
                 return
+            s = pc.remove_directives(s)
             lines = g.splitLines(s) or []
             fn = lines and lines[0].strip()
             if not fn:
@@ -862,9 +873,11 @@ if QtWidgets:
                 else:
                     if trace: g.trace('use existing widget')
                     w = pc.w
+                s = pc.remove_directives(s)
                 w.render_md(s, keywords)
             else:
                 c, p = pc.c, pc.c.p
+                s = pc.remove_directives(s)
                 s = s.strip().strip('"""').strip("'''").strip()
                 isHtml = s.startswith('<') and not s.startswith('<<')
                 if trace and verbose: g.trace('isHtml:', isHtml, p.h)
@@ -931,6 +944,7 @@ if QtWidgets:
                 # 'PyQt4.phonon' has no 'MediaSource' member
             pc = self
             ok, path = False, None
+            s = pc.remove_directives(s)
             lines = g.splitLines(s)
             if lines:
                 s = lines[0].strip()
@@ -974,6 +988,7 @@ if QtWidgets:
             '''Update a networkx graphic in the vr pane.'''
             pc = self
             w = pc.ensure_text_widget()
+            s = pc.remove_directives(s)
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
         #@+node:ekr.20160331123847.46: *4* vr3.update_rst *** VR3
@@ -990,12 +1005,13 @@ if QtWidgets:
                     assert(w == pc.w)
                 else:
                     w = pc.w
+                s = pc.remove_directives(s)
                 w.render_rst(s, keywords)
             else:
                 c, p = pc.c, pc.c.p
+                s1 = s
                 s = s.strip().strip('"""').strip("'''").strip()
                 isHtml = s.startswith('<') and not s.startswith('<<')
-                if trace: g.trace('isHtml:', isHtml, len(s))
                 # Do this regardless of whether we show the widget or not.
                 w = pc.ensure_text_widget()
                 assert pc.w
@@ -1004,6 +1020,16 @@ if QtWidgets:
                 if not s:
                     w.setPlainText('')
                     return
+                # 2016/03/25: honor @language rest.
+                colorizer = c.frame.body.colorizer
+                language = colorizer.scanColorDirectives(p)
+                if not isHtml and not force_rst and language not in ('rest', 'rst'):
+                    if trace: g.trace('setPlain: isHtml=%s, language=%s' % (
+                        isHtml, language))
+                    w.setPlainText(s1)
+                    return
+                # After this point, HTML *will* be generated.
+                s = pc.remove_directives(s1)
                 if not got_docutils:
                     isHtml = True
                     s = '<pre>\n%s</pre>' % s
@@ -1039,19 +1065,11 @@ if QtWidgets:
                     else:
                         # Save the scrollbars
                         d[p.v] = pos = sb.sliderPosition()
-                # 2016/03/25: honor @language rest.
-                colorizer = c.frame.body.colorizer
-                language = colorizer.scanColorDirectives(p)
-                if (
-                    force_rst or
-                    language in ('rst', 'rest') or
-                    pc.default_kind in ('markdown', 'md')
-                ):
-                    w.setHtml(s)
-                    if pc.default_kind == 'big':
-                        w.zoomIn(4) # Doesn't work.
-                else:
-                    w.setPlainText(s)
+                if trace: g.trace('setHtml: language=%s, default=%s, force_rst=%s' % (
+                    language, pc.default_kind, force_rst))
+                w.setHtml(s)
+                if pc.default_kind == 'big':
+                    w.zoomIn(4) # Doesn't work.
                 if sb and pos:
                     # Restore the scrollbars
                     sb.setSliderPosition(pos)
@@ -1067,6 +1085,7 @@ if QtWidgets:
                 assert(w == pc.w)
             else:
                 w = pc.w
+            s = pc.remove_directives(s)
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
                 s = g.adjustTripleString(s, pc.c.tab_width).strip() # Sensitive to leading blank lines.
@@ -1089,6 +1108,7 @@ if QtWidgets:
             '''
             pc = self
             p = self.c.p
+            # At this point, Leo directives have *not* been removed.
             kind = self.get_kind(p, handle_headline=False, use_default=False)
                 # Return None if no @language directive is in effect.
             if trace: g.trace('kind', kind)
@@ -1104,12 +1124,22 @@ if QtWidgets:
                 f = pc.dispatch_dict.get(kind)
                 if f:
                     f(s, keywords)
-                else:
-                    if trace: g.trace('bad default kind:', kind, 'using md')
+                elif s.strip().startswith('`'):
+                    self.update_rst(s, keywords, force_rst=True)
+                elif s.strip().startswith('['):
                     self.update_md(s, keywords)
-            else:
-                # The last fallback
+                elif VR3:
+                    if trace: g.trace('unknown kind:', kind, 'using md')
+                    self.update_md(s, keywords)
+                else:
+                    if trace: g.trace('unknown kind:', kind, 'using rst')
+                    self.update_rst(s, keywords)
+            elif VR3:
+                if trace: g.trace('no kind:', kind, 'using md')
                 self.update_md(s, keywords)
+            else:
+                if trace: g.trace('no kind:', kind, 'using rst')
+                self.update_rst(s, keywords)
         #@+node:ekr.20160331123847.49: *3* vr3.utils
         #@+node:ekr.20160331123847.50: *4* vr3.ensure_text_widget ** VR3
         def ensure_text_widget(self):
@@ -1149,12 +1179,20 @@ if QtWidgets:
             # 2016/03/25: Honor @language
             colorizer = c.frame.body.colorizer
             language = colorizer.scanColorDirectives(p)
-            if got_markdown and language in ('md', 'markdown'):
+            if language in ('md', 'markdown'):
+                if VR3:
+                    return 'md'
+                        # Always handle markdown
+                else:
+                    return 'md' if got_markdown else 'rst'
+                        # legacy code: fall back to rst.
+            elif language:
                 return language
-            elif got_docutils and language in ('rest', 'rst'):
-                return language
-            elif language == 'html':
-                return 'html'
+            ###
+            # elif got_docutils and language in ('rest', 'rst'):
+                # return language
+            # elif language == 'html':
+                # return 'html'
             elif use_default:
                 # To do: look at ancestors, or uA's.
                 return pc.default_kind # The default.

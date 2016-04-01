@@ -92,7 +92,10 @@ def addPluginMenuItem(p, c):
                 p.about()
 
         table = ((plugin_name, None, callback),)
-        c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table, dynamicMenu=True)
+        c.frame.menu.createMenuEntries(
+            PluginDatabase.getMenu(p),
+            table,
+            dynamicMenu=True)
     elif p.hasconfig or p.othercmds:
         #@+<< Get menu location >>
         #@+node:pap.20050305153147: *4* << Get menu location >>
@@ -111,18 +114,9 @@ def addPluginMenuItem(p, c):
             d = p.othercmds
             for cmd in list(d.keys()):
                 fn = d.get(cmd)
-                if 1:
-                    items.append((cmd, None, fn),)
-                        # No need for a callback.
-                else: ### To be deleted.
-                    # New in 4.4: this callback gets called with an event arg.
-
-                    def cmd_callback(event, c=c, fn=fn):
-                        fn(c)
-
-                    items.append((cmd, None, cmd_callback),)
-            items.sort()
-            table.extend(items)
+                items.append((cmd, None, fn),)
+                    # No need for a callback.
+            table.extend(sorted(items))
         if trace: g.trace(table)
         c.frame.menu.createMenuEntries(m, table, dynamicMenu=True)
     else:
@@ -281,21 +275,7 @@ class PlugIn:
     def about(self, event=None):
         """Put information about this plugin in a scrolledMessage dialog."""
         c = self.c
-        if self.doc:
-            msg = self.doc.strip() + '\n'
-        else:
-            msg = ''
-        # 2011/10/20: runScrolledMessageDialog looks for a scrolledmessage hook.
-        # Don't do it here.
-        # g.app.gui.runScrolledMessageDialog(
-            # c=c,
-            # flags='rst',
-            # label="Version: " + self.version,
-            # msg=msg,
-            # name='leo_system',
-            # short_title = self.name,
-            # title="About Plugin ( " + self.name + " )",
-        # )
+        msg = self.doc.strip() + '\n' if self.doc else ''
         c.putHelpFor(msg, short_title=self.name)
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
