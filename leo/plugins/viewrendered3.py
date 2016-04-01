@@ -236,6 +236,9 @@ trace = True
     # This global trace is convenient.
 #@+<< vr3 imports >>
 #@+node:ekr.20160331123847.4: ** << vr3 imports >>
+trace_imports = False
+    # Good for debugging only.
+
 # Standard library...
 import os
 import sys
@@ -268,14 +271,14 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-if trace:
+if trace_imports:
     print('viewrendered3.py: got_docutils: %s' % got_docutils)
 try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-if trace:
+if trace_imports:
     print('viewrendered3.py: got_markdown: %s' % got_markdown)
 try:
     import pygments
@@ -522,7 +525,7 @@ if QtWidgets:
     class ViewRenderedController3(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20160331123847.28: *3*  vr3.ctor & helper ** VR3
+        #@+node:ekr.20160331123847.28: *3* vr3.Birth ** VR3
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             # Create the widget.
@@ -582,7 +585,7 @@ if QtWidgets:
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
                 'svg': pc.update_svg,
-                'url': pc.update_rst, # Handle url's like rST.
+                'url': pc.update_url, # Handle url's like rest or md.
                 # 'xml': pc.update_xml,
             }
             if got_markdown:
@@ -593,11 +596,12 @@ if QtWidgets:
                     d [key] = pc.update_rst
             pc.dispatch_dict = d
             return d
-        #@+node:ekr.20160331123847.30: *3* vr3.closeEvent
+        #@+node:ekr.20160401044123.1: *3* vr3.command helpers
+        #@+node:ekr.20160331123847.30: *4* vr3.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
             self.deactivate()
-        #@+node:ekr.20160331123847.31: *3* vr3.contract & expand
+        #@+node:ekr.20160331123847.31: *4* vr3.contract & expand
         def contract(self):
             self.change_size(-100)
 
@@ -617,7 +621,7 @@ if QtWidgets:
                     else:
                         sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
                 splitter.setSizes(sizes)
-        #@+node:ekr.20160331123847.32: *3* vr3.activate
+        #@+node:ekr.20160331123847.32: *4* vr3.activate
         def activate(self):
             '''Activate the vr-window.'''
             pc = self
@@ -627,7 +631,7 @@ if QtWidgets:
                 pc.active = True
                 g.registerHandler('select2', pc.update)
                 g.registerHandler('idle', pc.update)
-        #@+node:ekr.20160331123847.33: *3* vr3.deactivate
+        #@+node:ekr.20160331123847.33: *4* vr3.deactivate
         def deactivate(self):
             '''Deactivate the vr window.'''
             pc = self
@@ -636,7 +640,7 @@ if QtWidgets:
             g.unregisterHandler('select2', pc.update)
             g.unregisterHandler('idle', pc.update)
             pc.active = False
-        #@+node:ekr.20160331123847.34: *3* vr3.lock/unlock
+        #@+node:ekr.20160331123847.34: *4* vr3.lock/unlock
         def lock(self):
             '''Lock the vr pane.'''
             g.note('rendering pane locked')
@@ -646,13 +650,8 @@ if QtWidgets:
             '''Unlock the vr pane.'''
             g.note('rendering pane unlocked')
             self.locked = False
-        #@+node:ekr.20160331123847.35: *3* vr3.underline
-        def underline(self, s):
-            '''Generate rST underlining for s.'''
-            ch = '#'
-            n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-            return '%s\n%s\n\n' % (s, ch * n)
-        #@+node:ekr.20160331123847.36: *3* vr3.update
+        #@+node:ekr.20160331150055.1: *3* vr3.update and helpers
+        #@+node:ekr.20160331123847.36: *4* vr3.update
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
@@ -710,7 +709,6 @@ if QtWidgets:
                 #                    print 'saved1 scroll pos', pos
                 # Will be called at idle time.
                 # if trace: g.trace('no update')
-        #@+node:ekr.20160331150055.1: *3* vr3.update helpers
         #@+node:ekr.20160331123847.37: *4* vr3.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
@@ -748,8 +746,10 @@ if QtWidgets:
         #@+node:ekr.20160331123847.39: *4* vr3.must_update
         def must_update(self, keywords):
             '''Return True if we must update the rendering pane.'''
-            pc = self
-            c, p = pc.c, pc.c.p
+            c, p, pc = self.c, self.c.p, self
+            trace = False and not g.unitTesting
+                # Don't trace this by default.
+            verbose = False
             if g.unitTesting:
                 return False
             if keywords.get('force'):
@@ -760,10 +760,10 @@ if QtWidgets:
                 if trace: g.trace('not active', p.h)
                 return False
             if pc.locked:
-                if trace: g.trace('locked', p.h)
+                if trace and verbose: g.trace('locked', p.h)
                 return False
             if pc.gnx != p.v.gnx:
-                if trace: g.trace('changed node', p.h)
+                if trace and verbose: g.trace('changed node', p.h)
                 return True
             if len(p.b) != pc.length:
                 if trace: g.trace('text changed', p.h)
@@ -968,6 +968,7 @@ if QtWidgets:
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
+            verbose = False
             if VR3:
                 # Do this regardless of whether we show the widget or not.
                 if pc.must_change_widget(pc.html_class):
@@ -982,7 +983,7 @@ if QtWidgets:
                 p = c.p
                 s = s.strip().strip('"""').strip("'''").strip()
                 isHtml = s.startswith('<') and not s.startswith('<<')
-                if trace: g.trace('isHtml', isHtml, p.h)
+                if trace and verbose: g.trace('isHtml', isHtml, p.h)
                 # Do this regardless of whether we show the widget or not.
                 w = pc.ensure_text_widget()
                 assert pc.w
@@ -1065,7 +1066,19 @@ if QtWidgets:
                     pc.show()
                     w.load(path)
                     w.show()
-        #@+node:ekr.20160331123847.49: *3* vr3.utils for update helpers...
+        #@+node:ekr.20160401040150.1: *4* vr3.update_url
+        def update_url(self, s, keywords):
+            '''Handle @url nodes like rest or md.'''
+            pc = self
+            p = self.c.p
+            kind = self.get_kind(p, handle_headline=False)
+            g.trace('kind', kind)
+                # Handles default kind setting & @language directives.
+            if kind in ('rst', 'rest'):
+                self.update_rst(s, keywords)
+            else:
+                self.update_md(s, keywords)
+        #@+node:ekr.20160331123847.49: *3* vr3.utils
         #@+node:ekr.20160331123847.50: *4* vr3.ensure_text_widget ** VR3
         def ensure_text_widget(self):
             '''Swap a text widget into the rendering pane if necessary.'''
@@ -1093,10 +1106,10 @@ if QtWidgets:
             assert(w == pc.w)
             return pc.w
         #@+node:ekr.20160331123847.51: *4* vr3.get_kind
-        def get_kind(self, p):
+        def get_kind(self, p, handle_headline=True):
             '''Return the proper rendering kind for node p.'''
             c, h, pc = self.c, p.h, self
-            if h.startswith('@'):
+            if handle_headline and h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
                 word = h[1: i].lower().strip()
                 if word in pc.dispatch_dict:
@@ -1153,6 +1166,12 @@ if QtWidgets:
                         continue
                 result.append(s)
             return ''.join(result)
+        #@+node:ekr.20160331123847.35: *4* vr3.underline
+        def underline(self, s):
+            '''Generate rST underlining for s.'''
+            ch = '#'
+            n = max(4, len(g.toEncodedString(s, reportErrors=False)))
+            return '%s\n%s\n\n' % (s, ch * n)
         #@-others
 #@+node:ekr.20160331123847.23: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
