@@ -379,7 +379,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160331191740.1: ** diff-marked-nodes
     @cmd('diff-marked-nodes')
     def diffMarkedNodes(self, event):
-        '''Create a node showing the diffs of two marked nodes.'''
+        '''
+        Create a node showing the diffs of two marked nodes.
+        Clones of the marked nodes become the created node's children.
+        '''
         c = self.c
         aList = [z.copy() for z in c.all_unique_positions() if z.isMarked()]
         if len(aList) == 2:
@@ -387,10 +390,16 @@ class EditCommandsClass(BaseEditCommandsClass):
             lines1 = g.splitLines(p1.b.rstrip()+'\n')
             lines2 = g.splitLines(p2.b.rstrip()+'\n')
             diffLines = difflib.Differ().compare(lines1, lines2)
+            s = ''.join(list(diffLines))
             p = c.lastTopLevel().insertAfter()
-            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 10), g.truncate(p2.h, 10))
-            s = ''.join([z for z in diffLines])
+            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
             p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, s)
+            for p2 in aList:
+                p3 = p2.clone()
+                p3.moveToLastChildOf(p)
+            p.expand()
+            c.unmarkAll()
+            c.selectPosition(p)
             c.redraw()
         else:
             g.es_print('%s nodes marked instead of 2' % len(aList))
