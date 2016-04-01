@@ -16172,5 +16172,11 @@ def onMouseUp(self, event=None):
     if QtCore.Qt.ControlModifier & event.modifiers():
         event = {'c': self.leo_c}
         g.openUrlOnClick(event)
+.. @+node:ekr.20100701112151.5959: *3* getDiff
+def getDiff(self, s1, s2):
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+    diffLines = difflib.Differ().compare(lines1, lines2)
+    return diffLines
 .. @-all
 .. @-leo

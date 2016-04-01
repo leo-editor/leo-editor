@@ -750,14 +750,6 @@ class FileCommands:
             n2.setHeadString('new:' + h2)
             n2.setBodyString(b2)
         return root
-    #@+node:ekr.20100701112151.5959: *6* getDiff
-    def getDiff(self, s1, s2):
-        # pylint: disable=no-value-for-parameter
-        # No value passed for parameter 'b' in function call
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        diffLines = difflib.Differ.compare(lines1, lines2)
-        return diffLines
     #@+node:ekr.20100124110832.6212: *5* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
         fc = self; c = fc.c
