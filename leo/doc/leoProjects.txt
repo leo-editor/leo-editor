@@ -14,6 +14,24 @@ Rather than trying to figure out workarounds, @button jEdit2Py now refuses to ru
 The fix was in u.undoInsertNode
 .. @+node:ekr.20151231100535.1: *3* Fixed #156: ILeo errors not piped to Log and Do not show in Ipython console
 https://github.com/leo-editor/leo-editor/issues/156
+.. @+node:ekr.20160401162035.1: *3* Investigated #248:  Empty lines in @file/@clean trees
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/248
+
+Everything works for me as expected, with my settings, on your test file.
+
+As with @shadow, there may be glitches when updating the outline from changes made externally. These changes will "take" when you save the .leo file. As I have just verified, Leo's "Recovered Node" logic shows where all such external changes happen. You must then verify that the "boundary lines" are where they should be, moving them as needed.
+
+I see no @clean-related settings, and I see no special cases for @clean in the read/write code:
+
+at.readOneAtCleanNode # @shadow-like logic
+at.write
+at.writeAllHelper
+at.writeOpen file
+
+In short, everything appears to be working as expected. There was a proposal to adjust empty lines automatically when reading an @clean file, but that's a separate, low-priority, issue, apparently not in the bug tracker.
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re
