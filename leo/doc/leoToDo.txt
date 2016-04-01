@@ -16,7 +16,7 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 # Depends on Python's meta package: https://pypi.python.org/pypi/meta
 # which *is* part of the Anaconda distro.
 
-import meta ; print(meta)
+import meta ; g.es(meta)
 .. @+node:ekr.20160216043537.1: *4* Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
