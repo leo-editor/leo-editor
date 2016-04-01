@@ -781,10 +781,9 @@ The body text of an @data history-list *setting node* preloads commands into the
 
     run-pylint
     beautify-tree
-    cff-code
+    cff
     sort-lines
     # show-data
-    # test-ptb
     check-clones
     expand-log-pane
     contract-log-pane</t>
