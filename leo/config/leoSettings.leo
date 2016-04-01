@@ -4541,6 +4541,7 @@ plugins_menu.py
 contextmenu.py
     # This is required by the vim.py and xemacs.py plugins.
 leo_to_html.py
+livecode.py
 mod_scripting.py
 nav_qt.py
 nodetags.py

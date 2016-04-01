@@ -8,13 +8,16 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtWidgets
 import ast
 from collections import namedtuple
-from meta import asttools
+try:
+    from meta import asttools
+except ImportError:
+    asttools = None
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    if g.unitTesting:
+    if g.unitTesting or not asttools:
         return False
     else:
         g.registerHandler('after-create-leo-frame', onCreate)
