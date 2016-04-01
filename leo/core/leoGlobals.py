@@ -5817,6 +5817,10 @@ if 0: # Testing:
     )
     for s in aList:
         print(pep8_class_name(s))
+#@+node:ekr.20160331194701.1: *3* g.truncate
+def truncate(s, n):
+    '''Return s truncated to n characters.'''
+    return s if len(s) <= n else s[:n-3] + '...'
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows():
     return app and app.windowList

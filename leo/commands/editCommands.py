@@ -5,10 +5,11 @@
 '''Leo's general editing commands.'''
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: ** << imports >> (editCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+import difflib
 import os
 import re
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -375,6 +376,24 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, line2)
         w.setInsertPoint(i + c1)
         self.endCommand(changed=True, setLabel=True)
+    #@+node:ekr.20160331191740.1: ** diff (EditCommandsClass)
+    @cmd('diff-marked-nodes')
+    def diffMarkedNodes(self, event):
+        '''Create a node showing the diffs of all marked nodes.'''
+        c = self.c
+        aList = [z.copy() for z in c.all_unique_positions() if z.isMarked()]
+        if len(aList) == 2:
+            p1, p2 = aList[0], aList[1]
+            lines1 = g.splitLines(p1.b.rstrip()+'\n')
+            lines2 = g.splitLines(p2.b.rstrip()+'\n')
+            diffLines = difflib.Differ().compare(lines1, lines2)
+            p = c.lastTopLevel().insertAfter()
+            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 10), g.truncate(p2.h, 10))
+            s = ''.join([z for z in diffLines])
+            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, s)
+            c.redraw()
+        else:
+            g.es_print('%s nodes marked instead of 2' % len(aList))
     #@+node:ekr.20150514063305.210: ** esc methods for Python evaluation
     #@+node:ekr.20150514063305.211: *3* watchEscape
     @cmd('escape')
