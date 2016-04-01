@@ -12,42 +12,8 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160318113451.1: *4* Merge vr & vr2
-@language rest
-@wrap
-
-The new plugin will be called VR3, replacing both VR and VR2.
-
-**Notes**:
-
-1. Multiple VR panes should be possible.
-2. Make sure the locking option works.
-
-.. @+node:ekr.20150418052852.1: *4* Complete import/export to .ipynb files
-- Auto-import on load .leo file.
-- Automatic export on save.
-
-@language rest
-@wrap
-
-Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
-Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
-
-From: Kent Tenney:
-
-It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
-
-From: Alia K:
-
-Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20160327111638.1: *5* Other Jupyter stuff
-- open-jupyter command (where should it run the kernel?)
-- Open Jupyter automatically after export.
-
-How to use sphynx with markdown:
-- https://github.com/spatialaudio/nbsphinx/
-- http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
-.. @+node:ekr.20160325152544.1: *3* Next: 5.3
+.. @+node:ekr.20160401162035.1: *4* Fix #248:  Empty lines in @file/@clean trees
+https://github.com/leo-editor/leo-editor/issues/248
 .. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
 # Depends on Python's meta package: https://pypi.python.org/pypi/meta
 # which *is* part of the Anaconda distro.
@@ -76,6 +42,30 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20150418052852.1: *4* Complete import/export to .ipynb files
+- Auto-import on load .leo file.
+- Automatic export on save.
+
+@language rest
+@wrap
+
+Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
+Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
+
+From: Kent Tenney:
+
+It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
+
+From: Alia K:
+
+Leo + Ipython notebook integration is a killer app indeed.
+.. @+node:ekr.20160327111638.1: *5* Other Jupyter stuff
+- open-jupyter command (where should it run the kernel?)
+- Open Jupyter automatically after export.
+
+How to use sphynx with markdown:
+- https://github.com/spatialaudio/nbsphinx/
+- http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
 .. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
 @language python
 
@@ -130,19 +120,8 @@ for p in c.all_positions():
 - Use list(set(words)) to check each word only once.
 - The do plain search for possibly-misspelled words in each body.
 
-.. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
-- jedi is available in the
-- Can we use live code inside Leo?
-
-Terry: valuespace remarks
-https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/Cl1Wy3whAgAJ
-
-Terry: autocomplete code looks at objects in c.vs namespace
-https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/2ag8PH3oAAAJ
-.. @+node:ekr.20160325152551.1: *4* Add new, simple, rst/md commands
-- Use # to prevent headlines from being included.
-- Use some, but not all, rst3 settings.
-- Try markdown first.
+.. @+node:ekr.20160401034138.1: *4* Better search for unl's
+Improve g.recursiveUNLSearch?
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
 @language rest
 @wrap
@@ -456,6 +435,19 @@ Note: it's possible to save the layout so that Leo will restore it when Leo star
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
+.. @+node:ekr.20160325152551.1: *4* Add new, simple, rst/md commands
+- Use # to prevent headlines from being included.
+- Use some, but not all, rst3 settings.
+- Try markdown first.
+.. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
+- jedi is available in the
+- Can we use live code inside Leo?
+
+Terry: valuespace remarks
+https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/Cl1Wy3whAgAJ
+
+Terry: autocomplete code looks at objects in c.vs namespace
+https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/2ag8PH3oAAAJ
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
 - Add coffeescript importer.
 - Finish javascript importer, or at least fix #127: Bracket matching is buggy
@@ -492,29 +484,29 @@ if 0:
     - Some key to shift back to the nav pane.
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
-.. @+node:ekr.20160327112045.1: *4* Maybe
-.. @+node:ekr.20160325055507.1: *5* Maybe: Code
-.. @+node:ekr.20160318113006.1: *6* API's for icons, attributes & windows
+.. @+node:ekr.20160327112045.1: *3* Maybe: 5.3
+.. @+node:ekr.20160325055507.1: *4* Maybe: Code
+.. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
 Must be easy to use.
 
 - Add p/v.temp_u properties. Revise docs.
 
 - Use Terry's window code to create all panes:
     - New console window plugin.
-.. @+node:ekr.20160305033136.1: *7* Found:['"]icons[i"]
-.. @+node:ekr.20160129081036.1: *7* simplifying uA access
+.. @+node:ekr.20160305033136.1: *6* Found:['"]icons[i"]
+.. @+node:ekr.20160129081036.1: *6* simplifying uA access
 d = p.u.get(plugin_name, {})
 d['duration'] = 5
 p.u[plugin_name] = d
-.. @+node:ekr.20080802070659.11: *7* Make node attributes visible, and supported by Leo's core
-.. @+node:ekr.20160319062116.1: *6* Rethink running code in separate processes
-.. @+node:ekr.20160318113605.1: *6* Rethink windows
+.. @+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20160319062116.1: *5* Rethink running code in separate processes
+.. @+node:ekr.20160318113605.1: *5* Rethink windows
 - Decouple commander from outline?
 - Notifications might simplify multiple body panes.
 - A good platform for web development and anything
   needing multiple consoles.
 - Add status line showing type of window. Like Emacs.
-.. @+node:ekr.20130806072439.21241: *7* Free range body editors
+.. @+node:ekr.20130806072439.21241: *6* Free range body editors
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
@@ -528,11 +520,11 @@ I suspect that if body editors could be made just slightly more flexible it woul
 I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
 
 If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
-.. @+node:ekr.20110929074744.15499: *7* Allow more panes to be part of the free_layout "action" buttons
-.. @+node:ekr.20160327112237.1: *5* Read/write files in json format
-.. @+node:ekr.20160320072517.1: *5* javascript-to-coffeescript command
+.. @+node:ekr.20110929074744.15499: *6* Allow more panes to be part of the free_layout "action" buttons
+.. @+node:ekr.20160327112237.1: *4* Read/write files in json format
+.. @+node:ekr.20160320072517.1: *4* javascript-to-coffeescript command
 Use external code.
-.. @+node:ekr.20150707052758.1: *5* py2cython: Like make_stub_files
+.. @+node:ekr.20150707052758.1: *4* py2cython: Like make_stub_files
 Generate type declarations from a given set of naming conventions.
 .. @+node:ekr.20150410043749.1: ** Maybe
 @language rest

@@ -109,6 +109,18 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 Added c.last_dir and g.init_dialog_folder and related logic.
 
 Also, g.fullPath now looks at parent nodes, a possibly dubioius idea.
+.. @+node:ekr.20160318113451.1: *3* Merged viewrendered plugins into viewrendered3.py
+Eventually, VR3 will replace both VR and VR2.
+
+The viewrendered3.py plugin now appears to work properly in "legacy" mode, that is, with VR3 = False.  VR3 in legacy mode is already clearly superior to the VR plugin.
+
+leo/test/test.leo contains extensive tests of any viewrendered plugin.  See the last top-level tree: viewrendered examples.  Moving from child to child, you will see some problems.  Remember to enable viewrendered3.py first!
+
+The VR3 switch shows all the places in the code where there is a difference between the code viewrendered2.py and the code in viewrendered.py.
+
+Summary
+
+VR is already obsolete, and I hope VR2 will quickly become obsolete as well.
 .. @-all
 .. @@killbeautify
 .. @@language rest
