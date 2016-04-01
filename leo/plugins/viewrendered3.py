@@ -582,7 +582,7 @@ if QtWidgets:
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
                 'svg': pc.update_svg,
-                'url': pc.update_url,
+                'url': pc.update_rst, # Handle url's like rST.
                 # 'xml': pc.update_xml,
             }
             if got_markdown:
@@ -674,7 +674,7 @@ if QtWidgets:
                     kind = keywords.get('kind', None) # vr2
                 else:
                     kind = keywords.get('flags', None) # vr
-                if not kind: ###
+                if not kind:
                     kind = pc.get_kind(p)
                 f = pc.dispatch_dict.get(kind)
                 if f:
@@ -1065,22 +1065,6 @@ if QtWidgets:
                     pc.show()
                     w.load(path)
                     w.show()
-        #@+node:ekr.20160331123847.48: *4* vr3.update_url 
-        def update_url(self, s, keywords):
-            pc = self
-            w = pc.ensure_text_widget()
-            pc.show()
-            if 1:
-                w.setPlainText('')
-            else:
-                url = pc.get_url(s, '@url')
-                if url:
-                    w.setPlainText('@url %s' % url)
-                else:
-                    w.setPlainText('@url: no url given')
-            # w.setReadOnly(False)
-            # w.setHtml(s)
-            # w.setReadOnly(True)
         #@+node:ekr.20160331123847.49: *3* vr3.utils for update helpers...
         #@+node:ekr.20160331123847.50: *4* vr3.ensure_text_widget ** VR3
         def ensure_text_widget(self):
@@ -1153,12 +1137,6 @@ if QtWidgets:
                     fn = g.os_path_finalize(fn)
             ok = g.os_path_exists(fn)
             return ok, fn
-        #@+node:ekr.20160331123847.53: *4* vr3.get_url
-        def get_url(self, s, tag):
-            p = self.c.p
-            url = s or p.h[len(tag):]
-            url = url.strip()
-            return url
         #@+node:ekr.20160331123847.54: *4* vr3.must_change_widget
         def must_change_widget(self, widget_class):
             pc = self
