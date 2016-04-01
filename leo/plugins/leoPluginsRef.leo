@@ -49,6 +49,7 @@
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
+<v t="ekr.20160331123847.1"><vh>@file viewrendered3.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
@@ -188,10 +189,8 @@
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 <v t="ekr.20131004162848.11444"><vh>@file rss.py</vh></v>
-<v t="peckj.20140811080604.9496"
-expanded="peckj.20140218144401.6172,"><vh>@file sftp.py</vh></v>
-<v t="ville.20110125222411.10536"
-expanded="ville.20110125222411.10546,"><vh>@file leomail.py</vh></v>
+<v t="peckj.20140811080604.9496"><vh>@file sftp.py</vh></v>
+<v t="ville.20110125222411.10536"><vh>@file leomail.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
@@ -242,6 +241,48 @@ expanded="ville.20110125222411.10546,"><vh>@file leomail.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 </v>
 </v>
+<v t="ekr.20160325140307.1"><vh>** Clean up ifQt5</vh></v>
+<v t="ekr.20160331124135.1"><vh>** Clean up Provider</vh>
+<v t="ekr.20160326041335.1"><vh>Found:class .*Provider</vh>
+<v t="tbrown.20110712121053.19746"><vh>class BookMarkDisplayProvider</vh>
+<v t="tbrown.20110712121053.19747"><vh>__init__</vh></v>
+<v t="tbrown.20110712121053.19748"><vh>ns_provides</vh></v>
+<v t="tbrown.20110712121053.19749"><vh>ns_provide</vh></v>
+</v>
+<v t="tbrown.20130813134319.5694"><vh>class CKEPaneProvider</vh></v>
+<v t="tbrown.20140806084727.30203"><vh>class LiveCodeDisplayProvider</vh>
+<v t="tbrown.20140806084727.30204"><vh>__init__</vh></v>
+<v t="tbrown.20140806084727.30205"><vh>ns_provides</vh></v>
+<v t="tbrown.20140806084727.30206"><vh>ns_provide</vh></v>
+</v>
+<v t="tbrown.20110629084915.35149"><vh>class ViewRenderedProvider</vh>
+<v t="tbrown.20110629084915.35154"><vh>__init__</vh></v>
+<v t="tbrown.20110629084915.35150"><vh>ns_provides</vh></v>
+<v t="tbrown.20110629084915.35151"><vh>ns_provide</vh></v>
+</v>
+<v t="ekr.20140226074510.4207"><vh>class ViewRenderedProvider</vh>
+<v t="ekr.20140226074510.4208"><vh>__init__</vh></v>
+<v t="ekr.20140226074510.4209"><vh>ns_provides</vh></v>
+<v t="ekr.20140226074510.4210"><vh>ns_provide</vh></v>
+</v>
+</v>
+<v t="ekr.20160326060559.1"><vh>Found:.(.*)Provider</vh>
+<v t="tbrown.20130813134319.14339"><vh>onCreate</vh></v>
+<v t="tbrown.20110712121053.19751"><vh>onCreate</vh></v>
+<v t="ekr.20110317024548.14376"><vh>onCreate</vh></v>
+<v t="ekr.20140226074510.4193"><vh>onCreate</vh></v>
+<v t="tbrown.20140806084727.30179"><vh>onCreate</vh></v>
+</v>
+</v>
+<v t="ekr.20140226125539.16818"><vh>viewrendered3 notes</vh>
+<v t="ekr.20140226125539.16819"><vh>Intro post</vh></v>
+<v t="ekr.20160325193645.1"><vh>docstring differences</vh></v>
+<v t="ekr.20160331131256.2"><vh>Add QWebView &amp; OpenGl support to viewrendered.py</vh></v>
+<v t="ekr.20160331162149.1"><vh>posts</vh>
+<v t="ekr.20160331154806.1"><vh>singleton post</vh></v>
+</v>
+</v>
+<v t="ekr.20160331123847.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>
@@ -265,7 +306,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d71002858010000007871014b0058010000007971024b0058050000006c696e6b7371035d7104580400000074797065710558080000006e6f6465526563747106752e">@language python
+<t tx="edream.110203113231.618" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358010000007971044b0058050000006c696e6b7371055d7106752e">@language python
 @tabwidth -4
 @pagewidth 80
 </t>
@@ -459,9 +500,209 @@ To activate the rst3 plugin, do the following:
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
 </t>
 <t tx="ekr.20101110150056.9457"></t>
+<t tx="ekr.20110317024548.14376">def onCreate(tag, keys):
+    c = keys.get('c')
+    if c:
+        ViewRenderedProvider(c)
+    return
+</t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20121126102050.10134"></t>
 <t tx="ekr.20130927050813.13031"></t>
+<t tx="ekr.20140226074510.4193">def onCreate(tag, keys):
+    c = keys.get('c')
+    if c:
+        ViewRenderedProvider(c)
+    return
+</t>
+<t tx="ekr.20140226074510.4207">class ViewRenderedProvider:
+    @others
+</t>
+<t tx="ekr.20140226074510.4208">def __init__(self, c):
+    self.c = c
+    # Careful: we may be unit testing.
+    if hasattr(c, 'free_layout'):
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(self)
+</t>
+<t tx="ekr.20140226074510.4209">def ns_provides(self):
+    return [('Viewrendered2', '_leo_viewrendered')]
+</t>
+<t tx="ekr.20140226074510.4210">def ns_provide(self, id_):
+    global controllers
+    if id_ == '_leo_viewrendered':
+        c = self.c
+        vr = controllers.get(c.hash()) or ViewRenderedController(c)
+        # return ViewRenderedController(self.c)
+        return vr
+</t>
+<t tx="ekr.20140226125539.16818">@language rest
+@
+
+Posts:
+- https://groups.google.com/forum/#!topic/leo-editor/BDzmytlSegw viewrendered2 plugin
+- https://groups.google.com/forum/#!topic/leo-editor/l7jzwNxGN_U Working on the VR2 plugin
+- http://mail.google.com/mail/u/0/#search/label%3Aleo+viewrendered2/14478384d1662417
+    Re: viewrendered2 plugin - Manual and support files
+
+- Every render exports leo.html in the local directory.
+
+- You can simply cut and paste from the VR2 pane to your word processor etc.
+
+- You can also use the export button to push it to your browser, from which
+  you can save in (typically many formats).
+
+- Google "restructuredtext screen shots"
+
+</t>
+<t tx="ekr.20140226125539.16819">@nocolor-node
+@
+
+https://groups.google.com/forum/#!topic/leo-editor/BDzmytlSegw
+
+Why a better viewrendered plugin?
+---------------------------------
+
+I like to use reStructuredText (reST) for all of my note-taking, idea
+development, project and task management and automation of desktop
+activities (e.g. initiating a backup). You could say it is the control
+centre of my daily activities, including calculating and showing dashboards
+of where I am and where I'm going.
+
+This means I need a tool which seamlessly shows me the full-fidelity
+browser-rendered version of what I am writing and be able to print my notes
+for meetings, cut and paste nicely formatted output to my office e-mails
+and documents, as well as show some of the material as a slideshow.
+
+The existing *viewrendered* plugin couldn't seem to do what I needed. I
+created the viewrendered2 (VR2) plugin that rendered, on demand, to my
+normal web browser. This worked well, but I really thought live rendering
+like "viewrendered" would be better, and for that I needed close control
+over scroll positions etc. that I couldn't get with an external browser. So
+the plugin became much more complex as I merged it with the existing
+viewrendered plugin, but was ultimately more powerful and useful to me.
+
+Objectives
+----------
+
+* Show a "full" html representation of any reST node or tree, without an
+  @rst root node, including more features than the existing viewrendered plugin:
+
+  - proper html layout
+  - math (mathjax, etc.)
+  - clickable URLs
+  - clickable hyperlinks within the page (e.g. TOC)
+  - good quality zoom
+  - cut and paste html with ctl-C
+  - s5 slideshows
+  - javascript
+  - svg images
+  - configurable css
+
+* Allow showing of node tree rather than just the current node.  This can give
+  a better overview perspective of the tree contents.
+
+* Be able to lock the rendering on the root node of a tree, to view the effect
+  editing a sub-node within the larger html document.
+
+* Provide proper rendering of any combination of node types in a tree, so long as
+  they have been properly designated by @language directives (i.e. reST, text,
+  code, css, ...).
+
+* Allow viewing (and printing) of an entire source file from an @file type root node.
+
+* Be able to *export* any of these renderings to a full web-browser to take advantage
+  of the large rendering window (especially for slideshows, as well as printing, saving output.
+
+* Be able to integrate automatically executed code nodes intermingled with
+  reST nodes to provide an automatic calculation-based "Notebook" or "Report"
+  type output.
+
+* Don't increase the dependencies of Leo.
+
+Implementation
+----------------------
+
+VR2 is implemented mostly as an ~600 line expansion of the update_rst
+method in the viewrendered.py plugin. The text-oriented class used for
+rendering in VR1 has been replaced by the QWebView class which provides the
+full rendering functionality of a real web-browser. To make this flexible,
+a toolbar has been attached to the top with a few controls.
+
+Because I wanted to retain compatibility with VR1, I created the
+viewrendered2.py plugin, but retained all the class naming which occurred
+within VR1. This means that it remains compatible with the existing
+mechanisms (like free_layout) of showing and creating panes for VR1. I
+tried this with an expectation that it would fail, but it appears to work
+without any unintended side-effects.
+
+Tooltips have been added where Qt allows, with the philosophy that a user
+shouldn't need a manual to use this pane.
+
+VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
+
+Issues / Limitations
+----------------------------
+
+I use VR2 every few minutes every working day. However, VR2 is likely to
+still have a lot of rough edges and, in particular, bugs that show up with
+different work flows or css folder layouts etc. In fact, VR2 is still a
+work in progress and therefore still being fiddled with, so bugs creep in
+regularly.
+
+But overall, my perception of its deficiencies are:
+
+* Does not handle reST headings within the node bodies well (sometimes very slow
+  render, blocking Leo).
+
+  - VR2 attempts to reconcile reST headings that originate from explicit
+    headings within the nodes against reST headings that are automatically
+    generated by the node hierarchy.  In many cases, this is impossible,
+    resulting in many errors which drastically slows down rendering.
+  - Recommend not using headings within the nodes themselves, leaving the node
+    hierarchy to do this automatically.
+
+* If the node triggers one of the special viewrendered node header types  (@md,
+  @image, @movie, @html) VR2 simply defaults to the old handlers for those
+  types.  This means it jumps back to whatever pane type VR1 uses, so the
+  features of VR2 disappear.  I suspect that VR2 could incorporate these types
+  into the new version and retain these new features.  I should look at that.
+
+* Doesn't integrate with rst3 plugin, especially honouring @others etc.
+  There are some conflicts in objectives, so this may never be fully resolved.
+  It would probably make sense for rst3 settings to get used for VR2 as well,
+  along with additional VR2 specific settings.  Currently, VR2 has its own
+  @settings-style settings.  The rst3 code is not used.
+
+* For slideshow purposes, a patch to docutils s5_writer is required to be able
+  to handle an arbitrary hierarchy of nodes (forces all headings to start a new
+  slide).  Otherwise, only the 2nd level nodes (from the root) force a new slide.
+
+* The integration of VR2 code into the existing viewrendered plugin code is
+  rudimentary.  I took the shortcut of not trying to understand this code well
+  and confining my integration to the rst rendering only.  Better integration
+  would be a good future step.
+
+With the plugin being able to execute javascript etc. there may be some form
+of security issue, but I can't see it myself (given that Leo can execute
+arbitrary python code anyway).  Any thoughts?
+
+Future?
+-----------
+* Expand the export button if pandoc is installed, adding optional
+  output formats such as docx, odt, plus additional slideshow formats.
+* Use new reST functionality to replace other media viewrendered methods
+  for images, svg, movies, etc.
+* Integrate better with rst3?
+
+Conclusion
+----------------
+* I've attached the source as well as a bunch of screenshots.  Feel free to try out the source by putting viewrendered2 into your @enabled-plugins instead of the usual viewrendered.  I'd be interested in whether it works or not - expect bugs to show up!
+* I'm looking for feedback on whether this appears useful to others and not just me.  If so, it should probably be polished a bit more before being used widely.  Perhaps greater understanding of the existing viewrendered plugin operation would help me here.
+
+Feedback is welcome.
+</t>
 <t tx="ekr.20140723122936.17925"># These plugins now contain the importer code for all kinds of @auto nodes.
 # Each plugin must define a top-level importer_dict dictionary describing the plugin.
 </t>
@@ -475,7 +716,208 @@ beautify-tree
 cfa-code
 </t>
 <t tx="ekr.20160122104400.1"></t>
+<t tx="ekr.20160325140307.1"></t>
+<t tx="ekr.20160325193645.1">@nocolor-node
+
+The following settings are new in the viewrendered2.py plugin:
+
+These settings directly override the corresponding docutils settings:
+
+- ``@string vr-stylesheet-path``
+- ``@int vr-halt-level = 6``
+- ``@string vr-math-output = mathjax``
+- ``@bool vr-smart-quotes = True``
+- ``@bool vr-embed_stylesheet = True``
+- ``@bool vr-xml-declaration', False``
+
+The following settings override viewrendered2.py internal settings:
+
+- ``@bool vr-verbose = False``
+- ``@bool vr-tree_mode = False``
+- ``@bool vr-auto_update = True``
+- ``@bool vr-lock_node = False``
+- ``@bool vr-slideshow = False``
+- ``@bool vr-visible_code = True``
+- ``@bool vr-execute_code = False``
+- ``@bool vr-rest_code_output = False``</t>
+<t tx="ekr.20160326041335.1"># flattened, ignore-case, regex, head, body</t>
+<t tx="ekr.20160326060559.1"># flattened, ignore-case, regex, head, body</t>
+<t tx="ekr.20160331124135.1"></t>
+<t tx="ekr.20160331131256.2">@language rest
+@wrap
+
+QWebView
+http://doc.qt.io/qt-5/qwebview.html
+
+http://doc.qt.io/qt-4.8/graphicsview.html
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ea2d3f7d2c68106#
+Ville
+
+Create one QWebView window. zoom it in to have large fonts.
+
+Create @button that converts current node containing restructuredtext to html, and pushes that html to QWebView.
+
+Voila', instant presentation tool. The webview window would be on projector, and leo would be in your private computer. You can easily edit the text, or find new interesting slides to present in privacy of your own screen.
+</t>
+<t tx="ekr.20160331154806.1">Another Engineering Notebook post.
+
+While merging VR and VR2, it has become clear that the present approach to having multiple VR panes has no chance of working.
+
+Indeed, there is a global controllers dict, but the keys are Commanders.  This means that there can not be more than one VR pane per Commander. Yes, we could imagine that values in the controllers dict would be lists of VR controllers, but that hardly helps. 
+
+Instead, we must have a way of associating VR controllers with panes. Then, when an event is received, we must get the pane (not just the controller).
+
+At present, most commands contain code such as this:
+
+vr = c.frame.top.findChild(
+    QtWidgets.QWidget, vr3_pane_name)
+
+I think now you can see the problem.  This searches the entire outline for a match. Instead, we must associate vr (a VR controller) with the presently active Leo pane. It had better be a VR pane ;-)  It's not rocket science, but the global controllers dict must go (or be rethought), and all the code that uses it must be revised.
+
+EKR</t>
+<t tx="ekr.20160331162149.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
+</t>
+<t tx="tbrown.20110629084915.35149">class ViewRenderedProvider:
+    @others
+</t>
+<t tx="tbrown.20110629084915.35150">def ns_provides(self):
+    return [('Viewrendered', '_leo_viewrendered')]
+</t>
+<t tx="tbrown.20110629084915.35151">def ns_provide(self, id_):
+    global controllers
+    if id_ == '_leo_viewrendered':
+        c = self.c
+        vr = controllers.get(c.hash()) or ViewRenderedController(c)
+        # return ViewRenderedController(self.c)
+        return vr
+</t>
+<t tx="tbrown.20110629084915.35154">def __init__(self, c):
+    self.c = c
+    # Careful: we may be unit testing.
+    if hasattr(c, 'free_layout'):
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(self)
+</t>
+<t tx="tbrown.20110712121053.19746">class BookMarkDisplayProvider:
+    @others
+</t>
+<t tx="tbrown.20110712121053.19747">def __init__(self, c):
+    self.c = c
+
+    # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
+        # Second hasattr temporary until free_layout merges with trunk
+
+    splitter = c.free_layout.get_top_splitter()
+    # Careful: we could be unit testing.
+    if splitter:
+        splitter.register_provider(self)
+</t>
+<t tx="tbrown.20110712121053.19748">def ns_provides(self):
+    return[('Bookmarks', '_leo_bookmarks_show')]
+</t>
+<t tx="tbrown.20110712121053.19749">def ns_provide(self, id_):
+    if id_.startswith('_leo_bookmarks_show'):
+
+        c = self.c
+        v = None
+
+        if ':' in id_:
+            gnx = id_.split(':')[1]
+            if not gnx and '_leo_bookmarks_show' in c.db:
+                gnx = c.db['_leo_bookmarks_show']
+            # first try old style local gnx lookup
+            for i in c.all_nodes():
+                if str(i.gnx) == gnx:
+                    v = i
+                    break
+            else:  # use UNL lookup
+                if '#' in gnx:
+                    file_, UNL = gnx.split('#', 1)
+                    other_c = g.openWithFileName(file_, old_c=c)
+                else:
+                    file_, UNL = None, gnx
+                    other_c = c
+                if other_c != c:
+                    # don't use c.bringToFront(), it breaks --minimize
+                    if hasattr(g.app.gui,'frameFactory'):
+                        factory = g.app.gui.frameFactory
+                        if factory and hasattr(factory,'setTabForCommander'):
+                            factory.setTabForCommander(c)
+
+                    g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
+
+                ok, depth, other_p = g.recursiveUNLFind(UNL.split('--&gt;'), other_c)
+                if ok:
+                    v = other_p.v
+                else:
+                    g.es("Couldn't find '%s'"%gnx)
+
+        if v is None:
+            v = c.p.v
+
+        bmd = BookMarkDisplay(self.c, v=v)
+        return bmd.w
+</t>
+<t tx="tbrown.20110712121053.19751">def onCreate(tag, keys):
+
+    c = keys.get('c')
+
+    BookMarkDisplayProvider(c)
+</t>
+<t tx="tbrown.20130813134319.14339">def onCreate (tag,key):
+
+    c = key.get('c')
+
+    CKEPaneProvider(c)
+</t>
+<t tx="tbrown.20130813134319.5694">class CKEPaneProvider:
+    ns_id = '_add_cke_pane'
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[('Rich text CKE editor', self.ns_id)]
+    def ns_provide(self, id_):
+        if id_ == self.ns_id:
+            w = CKEEditor(c=self.c)
+            return w
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return self.ns_id
+</t>
+<t tx="tbrown.20140806084727.30179">def onCreate(tag, keys):
+
+    c = keys.get('c')
+
+    LiveCodeDisplayProvider(c)
+</t>
+<t tx="tbrown.20140806084727.30203">class LiveCodeDisplayProvider:
+    @others
+</t>
+<t tx="tbrown.20140806084727.30204">def __init__(self, c):
+    self.c = c
+
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.register_provider(self)
+</t>
+<t tx="tbrown.20140806084727.30205">def ns_provides(self):
+    return[('Live Code', '_leo_livecode_show')]
+</t>
+<t tx="tbrown.20140806084727.30206">def ns_provide(self, id_):
+    if id_.startswith('_leo_livecode_show'):
+        c = self.c
+        if not hasattr(c, '_livecode'):
+            c._livecode = LiveCodeDisplay(self.c)
+        return c._livecode.w
 </t>
 </tnodes>
 </leo_file>
