@@ -522,46 +522,56 @@ if QtWidgets:
     class ViewRenderedController3(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20160331123847.28: *3* ctor & helper
+        #@+node:ekr.20160331123847.28: *3*  vr3.ctor & helper ** VR3
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
-            self.c = c
             # Create the widget.
             QtWidgets.QWidget.__init__(self, parent)
             self.setObjectName(vr3_pane_name)
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
-            # Set the ivars.
+            # Define the classes.
+            self.graphics_class = QtWidgets.QGraphicsWidget
+            if VR3:
+                self.html_class = WebViewPlus
+            else:
+                self.html_class = QtWebKitWidgets.QWebView
+            self.svg_class = QtSvg.QSvgWidget
+            self.text_class = QtWidgets.QTextBrowser
+            # Define ivars.
             self.active = False
             self.badColors = []
+            self.c = c
             self.delete_callback = None
             self.gnx = None
-            self.graphics_class = QtWidgets.QGraphicsWidget
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
-            self.html_class = QtWebKitWidgets.QWebView
-                # In VR2, this is a WebViewPlus.
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
+            self.node_changed = True
             self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
             self.sizes = [] # Saved splitter sizes.
             self.splitter_index = None # The index of the rendering pane in the splitter.
-            self.svg_class = QtSvg.QSvgWidget
-            self.text_class = QtWidgets.QTextBrowser
             self.title = None
             self.vp = None # The present video player.
             self.w = None # The present widget in the rendering pane.
             # User-options:
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-            # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
-            self.node_changed = True
             # Init.
             self.create_dispatch_dict()
             self.activate()
-        #@+node:ekr.20160331123847.29: *4* create_dispatch_dict
+            # Additional elements for WebView additions for reST.
+            self.execcode = False
+            self.output = 'html'
+            self.reflevel = 0
+            self.restoutput = False
+            self.showcode = True
+            self.tree = True
+            self.verbose = False
+        #@+node:ekr.20160331123847.29: *4* vr3.create_dispatch_dict
         def create_dispatch_dict(self):
             pc = self
             d = {
@@ -583,11 +593,11 @@ if QtWidgets:
                     d [key] = pc.update_rst
             pc.dispatch_dict = d
             return d
-        #@+node:ekr.20160331123847.30: *3* vr.closeEvent
+        #@+node:ekr.20160331123847.30: *3* vr3.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
             self.deactivate()
-        #@+node:ekr.20160331123847.31: *3* vr.contract & expand
+        #@+node:ekr.20160331123847.31: *3* vr3.contract & expand
         def contract(self):
             self.change_size(-100)
 
@@ -607,7 +617,7 @@ if QtWidgets:
                     else:
                         sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
                 splitter.setSizes(sizes)
-        #@+node:ekr.20160331123847.32: *3* vr.activate
+        #@+node:ekr.20160331123847.32: *3* vr3.activate
         def activate(self):
             '''Activate the vr-window.'''
             pc = self
@@ -617,7 +627,7 @@ if QtWidgets:
                 pc.active = True
                 g.registerHandler('select2', pc.update)
                 g.registerHandler('idle', pc.update)
-        #@+node:ekr.20160331123847.33: *3* vr.deactivate
+        #@+node:ekr.20160331123847.33: *3* vr3.deactivate
         def deactivate(self):
             '''Deactivate the vr window.'''
             pc = self
@@ -626,7 +636,7 @@ if QtWidgets:
             g.unregisterHandler('select2', pc.update)
             g.unregisterHandler('idle', pc.update)
             pc.active = False
-        #@+node:ekr.20160331123847.34: *3* vr.lock/unlock
+        #@+node:ekr.20160331123847.34: *3* vr3.lock/unlock
         def lock(self):
             '''Lock the vr pane.'''
             g.note('rendering pane locked')
@@ -636,13 +646,13 @@ if QtWidgets:
             '''Unlock the vr pane.'''
             g.note('rendering pane unlocked')
             self.locked = False
-        #@+node:ekr.20160331123847.35: *3* vr.underline
+        #@+node:ekr.20160331123847.35: *3* vr3.underline
         def underline(self, s):
             '''Generate rST underlining for s.'''
             ch = '#'
             n = max(4, len(g.toEncodedString(s, reportErrors=False)))
             return '%s\n%s\n\n' % (s, ch * n)
-        #@+node:ekr.20160331123847.36: *3* vr.update
+        #@+node:ekr.20160331123847.36: *3* vr3.update
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
@@ -700,8 +710,8 @@ if QtWidgets:
                 #                    print 'saved1 scroll pos', pos
                 # Will be called at idle time.
                 # if trace: g.trace('no update')
-        #@+node:ekr.20160331150055.1: *3* vr.update helpers
-        #@+node:ekr.20160331123847.37: *4* vr.embed_widget & helper
+        #@+node:ekr.20160331150055.1: *3* vr3.update helpers
+        #@+node:ekr.20160331123847.37: *4* vr3.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
             pc = self; c = pc.c
@@ -723,7 +733,7 @@ if QtWidgets:
                 w.leo_wrapper = wrapper
                 c.k.completeAllBindingsForWidget(wrapper)
                 w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
-        #@+node:ekr.20160331123847.38: *5* vr.setBackgroundColor
+        #@+node:ekr.20160331123847.38: *5* vr3.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             '''Set the background color of the vr pane.'''
             pc = self
@@ -735,7 +745,7 @@ if QtWidgets:
             elif colorName not in pc.badColors:
                 pc.badColors.append(colorName)
                 g.warning('invalid body background color: %s' % (colorName))
-        #@+node:ekr.20160331123847.39: *4* vr.must_update
+        #@+node:ekr.20160331123847.39: *4* vr3.must_update
         def must_update(self, keywords):
             '''Return True if we must update the rendering pane.'''
             pc = self
@@ -761,7 +771,7 @@ if QtWidgets:
             # This will be called at idle time.
             # if trace: g.trace('no change')
             return False
-        #@+node:ekr.20160331123847.40: *4* vr.update_graphics_script
+        #@+node:ekr.20160331123847.40: *4* vr3.update_graphics_script
         def update_graphics_script(self, s, keywords):
             '''Update the graphics script in the vr pane.'''
             pc = self; c = pc.c
@@ -789,7 +799,7 @@ if QtWidgets:
             c.executeScript(
                 script=s,
                 namespace={'gs': pc.gs, 'gv': pc.gv})
-        #@+node:ekr.20160331123847.41: *4* vr.update_html ** VR3
+        #@+node:ekr.20160331123847.41: *4* vr3.update_html ** VR3
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
@@ -804,7 +814,7 @@ if QtWidgets:
                 w = pc.w
             pc.show()
             w.setHtml(s)
-        #@+node:ekr.20160331123847.42: *4* vr.update_image
+        #@+node:ekr.20160331123847.42: *4* vr3.update_image
         def update_image(self, s, keywords):
             '''Update an image in the vr pane.'''
             pc = self
@@ -837,7 +847,7 @@ if QtWidgets:
             w.setReadOnly(False)
             w.setHtml(template)
             w.setReadOnly(True)
-        #@+node:ekr.20160331123847.43: *4* vr.update_md ** VR3
+        #@+node:ekr.20160331123847.43: *4* vr3.update_md ** VR3
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
             if VR3:
@@ -909,7 +919,7 @@ if QtWidgets:
                 if sb and pos:
                     # Restore the scrollbars
                     sb.setSliderPosition(pos)
-        #@+node:ekr.20160331123847.44: *4* vr.update_movie
+        #@+node:ekr.20160331123847.44: *4* vr3.update_movie
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
             # pylint: disable=maybe-no-member
@@ -947,14 +957,14 @@ if QtWidgets:
             vp = pc.vp
             vp.load(phonon.MediaSource(path))
             vp.play()
-        #@+node:ekr.20160331123847.45: *4* vr.update_networkx
+        #@+node:ekr.20160331123847.45: *4* vr3.update_networkx
         def update_networkx(self, s, keywords):
             '''Update a networkx graphic in the vr pane.'''
             pc = self
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
-        #@+node:ekr.20160331123847.46: *4* vr.update_rst *** VR3
+        #@+node:ekr.20160331123847.46: *4* vr3.update_rst *** VR3
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
@@ -1029,7 +1039,7 @@ if QtWidgets:
                 if sb and pos:
                     # Restore the scrollbars
                     sb.setSliderPosition(pos)
-        #@+node:ekr.20160331123847.47: *4* vr.update_svg
+        #@+node:ekr.20160331123847.47: *4* vr3.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
@@ -1055,7 +1065,7 @@ if QtWidgets:
                     pc.show()
                     w.load(path)
                     w.show()
-        #@+node:ekr.20160331123847.48: *4* vr.update_url 
+        #@+node:ekr.20160331123847.48: *4* vr3.update_url 
         def update_url(self, s, keywords):
             pc = self
             w = pc.ensure_text_widget()
@@ -1071,8 +1081,8 @@ if QtWidgets:
             # w.setReadOnly(False)
             # w.setHtml(s)
             # w.setReadOnly(True)
-        #@+node:ekr.20160331123847.49: *3* vr.utils for update helpers...
-        #@+node:ekr.20160331123847.50: *4* vr.ensure_text_widget ** VR3
+        #@+node:ekr.20160331123847.49: *3* vr3.utils for update helpers...
+        #@+node:ekr.20160331123847.50: *4* vr3.ensure_text_widget ** VR3
         def ensure_text_widget(self):
             '''Swap a text widget into the rendering pane if necessary.'''
             c, pc = self.c, self
@@ -1098,7 +1108,7 @@ if QtWidgets:
             pc.embed_widget(w) # Creates w.wrapper
             assert(w == pc.w)
             return pc.w
-        #@+node:ekr.20160331123847.51: *4* vr.get_kind
+        #@+node:ekr.20160331123847.51: *4* vr3.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
             c, h, pc = self.c, p.h, self
@@ -1119,7 +1129,7 @@ if QtWidgets:
             else:
                 # To do: look at ancestors, or uA's.
                 return pc.default_kind # The default.
-        #@+node:ekr.20160331123847.52: *4* vr.get_fn
+        #@+node:ekr.20160331123847.52: *4* vr3.get_fn
         def get_fn(self, s, tag):
             pc = self
             c = pc.c
@@ -1143,17 +1153,17 @@ if QtWidgets:
                     fn = g.os_path_finalize(fn)
             ok = g.os_path_exists(fn)
             return ok, fn
-        #@+node:ekr.20160331123847.53: *4* vr.get_url
+        #@+node:ekr.20160331123847.53: *4* vr3.get_url
         def get_url(self, s, tag):
             p = self.c.p
             url = s or p.h[len(tag):]
             url = url.strip()
             return url
-        #@+node:ekr.20160331123847.54: *4* vr.must_change_widget
+        #@+node:ekr.20160331123847.54: *4* vr3.must_change_widget
         def must_change_widget(self, widget_class):
             pc = self
             return not pc.w or pc.w.__class__ != widget_class
-        #@+node:ekr.20160331123847.55: *4* vr.remove_directives
+        #@+node:ekr.20160331123847.55: *4* vr3.remove_directives
         def remove_directives(self, s):
             lines = g.splitLines(s)
             result = []
@@ -2039,71 +2049,6 @@ class WebViewPlus(QtWidgets.QWidget):
         f.close()
         webbrowser.open(pathname, new=0, autoraise=True)
     #@-others
-#@+node:ekr.20160331124028.67: ** REF class ViewRenderedController2
-if 0:
-    #@+others
-    #@+node:ekr.20160331124028.68: *3* vr2.ctor & helpers
-    def __init__(self, c, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.setObjectName(vr3_pane_name)
-        self.setLayout(QtWidgets.QVBoxLayout())
-        self.layout().setContentsMargins(0, 0, 0, 0)
-        self.active = False
-        self.c = c
-        self.badColors = []
-        self.delete_callback = None
-        self.gnx = None
-        self.inited = False
-        self.gs = None # For @graphics-script: a QGraphicsScene
-        self.gv = None # For @graphics-script: a QGraphicsView
-        #self.kind = 'rst' # in self.dispatch_dict.keys()
-        self.length = 0 # The length of previous p.b.
-        self.locked = False
-        self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
-        self.sizes = [] # Saved splitter sizes.
-        self.splitter_index = None # The index of the rendering pane in the splitter.
-        self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit
-        self.html_class = WebViewPlus #QtWebKitWidgets.QWebView
-        self.graphics_class = QtWidgets.QGraphicsWidget
-        self.vp = None # The present video player.
-        self.w = None # The present widget in the rendering pane.
-        self.title = None
-        # User-options:
-        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-        self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-        # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
-        self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
-        self.node_changed = True
-        # Init.
-        self.create_dispatch_dict()
-        self.activate()
-        #---------------PMM additional elements for WebView additions for reST
-        self.reflevel = 0
-        # Special-mode rendering settings
-        self.verbose = False
-        self.output = 'html'
-        self.tree = True
-        self.showcode = True
-        self.execcode = False
-        self.restoutput = False
-    #@+node:ekr.20160331124028.69: *4* vr2.create_dispatch_dict
-    def create_dispatch_dict(self):
-        pc = self
-        pc.dispatch_dict = {
-            'big': pc.update_rst,
-            'html': pc.update_html,
-            'graphics-script': pc.update_graphics_script,
-            'image': pc.update_image,
-            'md': pc.update_md,
-            'movie': pc.update_movie,
-            'networkx': pc.update_networkx,
-            'rst': pc.update_rst,
-            'svg': pc.update_svg,
-            'url': pc.update_url,
-        }
-    #@-others
-    # class ViewRenderedController2(QtWidgets.QWidget):
 #@-others
 #@@language python
 #@@tabwidth -4
