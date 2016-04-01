@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test ?>
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
@@ -27,6 +26,7 @@
 <v t="ekr.20131019184243.16687"><vh>Moving outline nodes</vh></v>
 <v t="ekr.20131019184243.16688"><vh>Moving the cursor</vh></v>
 </v>
+<v t="ekr.20160401160027.1"><vh>Executing minibuffer commands</vh></v>
 <v t="ekr.20131019184243.16689"><vh>Frequently used commands</vh></v>
 <v t="ekr.20131019184243.16690"><vh>Leo directives</vh></v>
 <v t="ekr.20131019184243.16691"><vh>Settings</vh></v>
@@ -65,7 +65,9 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683"></t>
+<t tx="ekr.20131019184243.16683">@language rest
+@wrap
+</t>
 <t tx="ekr.20131019184243.16685"></t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 
@@ -763,5 +765,28 @@ For example, here is how to gather only those marked nodes that lie outside any 
         undoType = 'gather-marked',
     )
 </t>
+<t tx="ekr.20160401160027.1">Alt-X puts focus in the minibuffer. Ctrl-G escapes from the minibuffer.
+
+Once there, you can use tab completion to reduce typing. For example, &lt;Alt-X&gt;open&lt;tab&gt; shows all commands that start with open.
+
+Hit &lt;Enter&gt; to run a complete command.
+
+Ctrl-P (repeat-complex-command) repeat the last command entered from the minibuffer.
+
+Leo maintains a **command history list** of all minibuffer commands you have entered.
+
+When focus is in the minibuffer, UpArrow shows the previous minibuffer command, and DnArrow show the commands before that.
+
+The body text of an @data history-list *setting node* preloads commands into the command history list, ignoring lines starting with '#'. For example::
+
+    run-pylint
+    beautify-tree
+    cff-code
+    sort-lines
+    # show-data
+    # test-ptb
+    check-clones
+    expand-log-pane
+    contract-log-pane</t>
 </tnodes>
 </leo_file>
