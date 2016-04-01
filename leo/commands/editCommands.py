@@ -380,8 +380,18 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('diff-marked-nodes')
     def diffMarkedNodes(self, event):
         '''
-        Create a node showing the diffs of two marked nodes.
-        Clones of the marked nodes become the created node's children.
+        This command does nothing unless exactly two nodes, say p1 and p2, are marked.
+        
+        When two nodes *are* marked, this command does the following:
+            
+        1. Creates a **diff node** as the last top-level node. The body of the
+           diff ndoe shows the diffs between the two marked nodes, that is,
+           difflib.Differ().compare(p1.b, p2.b)
+        
+        2. Move *clones* of p1 and p2 to be children of the diff node,
+           and unmarks all nodes. This is usually what is wanted.
+        
+        To rerun the command, just mark two nodes again.
         '''
         c = self.c
         aList = [z.copy() for z in c.all_unique_positions() if z.isMarked()]
