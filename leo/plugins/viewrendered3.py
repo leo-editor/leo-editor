@@ -232,8 +232,9 @@ plugins.
 #@-<< vr3 docstring >>
 '''
 #pylint: disable=no-member
-trace = True
-    # This global trace is convenient.
+trace = False
+verbose = False
+    # These global switches are convenient.
 #@+<< vr3 imports >>
 #@+node:ekr.20160331123847.4: ** << vr3 imports >>
 trace_imports = False
@@ -308,8 +309,6 @@ QPlainTextEdit {
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 # Global constants.
-SINGLE = True
-    # True: only a singleton instance per Commander.
 VR3 = False
     # True: use the VR2 code. False: use the VR code.
 vr3_ns_id = '_leo_viewrendered3'
@@ -318,8 +317,9 @@ vr3_pane_name = 'viewrendered_pane'
     # Must match for all controllers
 #@+others
 #@+node:ekr.20160331123847.6: ** Top-level
-#@+node:ekr.20160331123847.7: *3* decorate_window
+#@+node:ekr.20160331123847.7: *3* decorate_window (not used)
 def decorate_window(w):
+    '''Decorate the VR window with the Leo icon.'''
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
@@ -382,7 +382,7 @@ def viewrendered(event):
         vr.show()
     else:
         controllers[c.hash()] = vr = ViewRenderedController3(c)
-        if trace: g.trace('** new controller: %s' % (vr))
+        if trace and verbose: g.trace('new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = vr3_ns_id # for free_layout load/save
             splitter = c.free_layout.get_top_splitter()
@@ -525,7 +525,7 @@ if QtWidgets:
     class ViewRenderedController3(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20160331123847.28: *3* vr3.Birth ** VR3
+        #@+node:ekr.20160331123847.28: *3* vr3.ctor & helper ** VR3
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             # Create the widget.
@@ -656,7 +656,6 @@ if QtWidgets:
 
         def update(self, tag, keywords):
             '''Update the vr pane.'''
-            verbose = False
             pc = self
             c, p = pc.c, pc.c.p
             if pc.must_update(keywords):
@@ -749,7 +748,7 @@ if QtWidgets:
             c, p, pc = self.c, self.c.p, self
             trace = False and not g.unitTesting
                 # Don't trace this by default.
-            verbose = False
+            verbose = True
             if g.unitTesting:
                 return False
             if keywords.get('force'):
@@ -803,6 +802,7 @@ if QtWidgets:
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
+            if trace: g.trace(len(s))
             if pc.must_change_widget(pc.html_class):
                 if VR3:
                     w = pc.html_class(pc=pc)
@@ -850,21 +850,24 @@ if QtWidgets:
         #@+node:ekr.20160331123847.43: *4* vr3.update_md ** VR3
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
+            pc = self
+            if trace: g.trace(len(s))
             if VR3:
                 # Do this regardless of whether we show the widget or not.
-                pc = self
                 if pc.must_change_widget(pc.html_class):
+                    if trace: g.trace('new widget')
                     w = pc.html_class(pc)
                     pc.embed_widget(w)
                     assert(w == pc.w)
                 else:
+                    if trace: g.trace('use existing widget')
                     w = pc.w
                 w.render_md(s, keywords)
             else:
-                pc = self; c = pc.c; p = c.p
+                c, p = pc.c, pc.c.p
                 s = s.strip().strip('"""').strip("'''").strip()
                 isHtml = s.startswith('<') and not s.startswith('<<')
-                if trace: g.trace('isHtml:', isHtml, p.h)
+                if trace and verbose: g.trace('isHtml:', isHtml, p.h)
                 # Do this regardless of whether we show the widget or not.
                 w = pc.ensure_text_widget()
                 assert pc.w
@@ -927,7 +930,16 @@ if QtWidgets:
                 # 'PyQt4.phonon' has no 'VideoCategory' member
                 # 'PyQt4.phonon' has no 'MediaSource' member
             pc = self
-            ok, path = pc.get_fn(s, '@movie')
+            ok, path = False, None
+            lines = g.splitLines(s)
+            if lines:
+                s = lines[0].strip()
+                if g.isValidUrl(s):
+                    if trace: g.trace('move url', s)
+                    path = s
+                    ok = True
+            if not ok:
+                ok, path = pc.get_fn(s, '@movie')
             if not ok:
                 w = pc.ensure_text_widget()
                 w.setPlainText('Movie\n\nfile not found: %s' % (path))
@@ -965,10 +977,11 @@ if QtWidgets:
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
         #@+node:ekr.20160331123847.46: *4* vr3.update_rst *** VR3
-        def update_rst(self, s, keywords):
+        def update_rst(self, s, keywords, force_rst=False):
             '''Update rst in the vr pane.'''
             pc = self
-            verbose = False
+            verbose = True
+            if trace: g.trace(len(s))
             if VR3:
                 # Do this regardless of whether we show the widget or not.
                 if pc.must_change_widget(pc.html_class):
@@ -979,16 +992,18 @@ if QtWidgets:
                     w = pc.w
                 w.render_rst(s, keywords)
             else:
-                c = pc.c
-                p = c.p
+                c, p = pc.c, pc.c.p
                 s = s.strip().strip('"""').strip("'''").strip()
                 isHtml = s.startswith('<') and not s.startswith('<<')
-                if trace and verbose: g.trace('isHtml', isHtml, p.h)
+                if trace: g.trace('isHtml:', isHtml, len(s))
                 # Do this regardless of whether we show the widget or not.
                 w = pc.ensure_text_widget()
                 assert pc.w
-                if s:
-                    pc.show()
+                # Always do this to clear the VR pane.
+                pc.show()
+                if not s:
+                    w.setPlainText('')
+                    return
                 if not got_docutils:
                     isHtml = True
                     s = '<pre>\n%s</pre>' % s
@@ -1006,7 +1021,7 @@ if QtWidgets:
                             pc.title = None
                         # Call docutils to get the string.
                         s = publish_string(s, writer_name='html')
-                        if trace: g.trace('after docutils', len(s))
+                        if trace: g.trace('after docutils:', len(s))
                         s = g.toUnicode(s) # 2011/03/15
                         show = True
                     except SystemMessage as sm:
@@ -1028,8 +1043,8 @@ if QtWidgets:
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanColorDirectives(p)
                 if (
+                    force_rst or
                     language in ('rst', 'rest') or
-                    # pc.default_kind in ('big', 'rst', 'html', 'md')
                     pc.default_kind in ('markdown', 'md')
                 ):
                     w.setHtml(s)
@@ -1068,15 +1083,32 @@ if QtWidgets:
                     w.show()
         #@+node:ekr.20160401040150.1: *4* vr3.update_url
         def update_url(self, s, keywords):
-            '''Handle @url nodes like rest or md.'''
+            '''
+            Handle @url nodes like rest or md, depending first on color directives,
+            and second, on the first non-blank character of s.
+            '''
             pc = self
             p = self.c.p
-            kind = self.get_kind(p, handle_headline=False)
-            g.trace('kind', kind)
-                # Handles default kind setting & @language directives.
+            kind = self.get_kind(p, handle_headline=False, use_default=False)
+                # Return None if no @language directive is in effect.
+            if trace: g.trace('kind', kind)
             if kind in ('rst', 'rest'):
                 self.update_rst(s, keywords)
+            elif kind in ('md', 'markdown'):
+                self.update_md(s, keywords)
+            elif not kind and s.strip().startswith('`'):
+                self.update_rst(s, keywords, force_rst=True)
+            elif not kind and s.strip().startswith('['):
+                self.update_md(s, keywords)
+            elif kind:
+                f = pc.dispatch_dict.get(kind)
+                if f:
+                    f(s, keywords)
+                else:
+                    if trace: g.trace('bad default kind:', kind, 'using md')
+                    self.update_md(s, keywords)
             else:
+                # The last fallback
                 self.update_md(s, keywords)
         #@+node:ekr.20160331123847.49: *3* vr3.utils
         #@+node:ekr.20160331123847.50: *4* vr3.ensure_text_widget ** VR3
@@ -1106,9 +1138,9 @@ if QtWidgets:
             assert(w == pc.w)
             return pc.w
         #@+node:ekr.20160331123847.51: *4* vr3.get_kind
-        def get_kind(self, p, handle_headline=True):
+        def get_kind(self, p, handle_headline=True, use_default=True):
             '''Return the proper rendering kind for node p.'''
-            c, h, pc = self.c, p.h, self
+            c, h, pc = self.c, self.c.p.h, self
             if handle_headline and h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
                 word = h[1: i].lower().strip()
@@ -1123,9 +1155,11 @@ if QtWidgets:
                 return language
             elif language == 'html':
                 return 'html'
-            else:
+            elif use_default:
                 # To do: look at ancestors, or uA's.
                 return pc.default_kind # The default.
+            else:
+                return None # For update_url
         #@+node:ekr.20160331123847.52: *4* vr3.get_fn
         def get_fn(self, s, tag):
             pc = self
@@ -1187,10 +1221,14 @@ class ViewRenderedProvider3:
         global controllers
         if id_ == vr3_ns_id:
             c = self.c
-            if SINGLE:
-                return controllers.get(c.hash()) or ViewRenderedController3(c)
-            else:
-                return ViewRenderedController3(c)
+            # SINGLE: return *the* singleton controller.
+            vr = controllers.get(c.hash())
+            if not vr:
+                vr = ViewRenderedController3(c)
+                controllers [c.hash()] = vr
+            return vr
+        else:
+            return None
 #@+node:ekr.20160331124028.22: ** class WebViewPlus (QWidget)
 class WebViewPlus(QtWidgets.QWidget):
     #@+others
@@ -1203,6 +1241,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.html = '' # For communication with export().
         self.last_node = c.p
         self.pc = pc
+        self.plock = None # A copy of a position
         self.plockmode = None
         self.pr = None
         self.rendering = False
@@ -1336,7 +1375,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(0.8))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
-        if isQt5:
+        if isQt5: ###
             pass # not ready yet.
         else:
             view.settings().setAttribute(QtWebKitWidgets.QWebSettings.PluginsEnabled, True)
@@ -1403,12 +1442,21 @@ class WebViewPlus(QtWidgets.QWidget):
     def get_mode(self):
         if self.lock_mode_action.isChecked():
             return self.plockmode
-        default = self.pc.default_kind
-        h = self.c.p.h
-        if h.startswith('@rst'): return 'rst'
-        elif h.startswith('@md'): return 'md'
-        elif h.startswith('@html'): return 'html'
-        return default
+        else:
+            kind = self.pc.get_kind(self.c.p)
+            if kind in ('rest', 'rst'):
+                return 'rst'
+            elif kind in ('markdown', 'md'):
+                return 'md'
+            else:
+                return kind
+            # EKR
+            # default = self.pc.default_kind
+            # h = self.c.p.h
+            # if h.startswith('@rst'): return 'rst'
+            # elif h.startswith('@md'): return 'md'
+            # elif h.startswith('@html'): return 'html'
+            # return default
     #@+node:ekr.20160331124028.28: *4* wvp.tooltip_text
     def tooltip_text(self, s):
         '''Return the reformatted tooltip text corresponding to the triple string s.'''
@@ -1513,10 +1561,10 @@ class WebViewPlus(QtWidgets.QWidget):
         d = self.pc.scrollbar_pos_dict
         mf = self.view.page().mainFrame()
         # Set the scrollbar.
-        if self.pr is not None:
-            spos = d.get(self.pr.v, mf.scrollBarValue(QtCore.Qt.Vertical))
-        else:
+        if self.pr is None:
             spos = 0
+        else:
+            spos = d.get(self.pr.v, mf.scrollBarValue(QtCore.Qt.Vertical))
         mf.setScrollBarValue(QtCore.Qt.Vertical, spos)
         #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
     #@+node:ekr.20160331124028.36: *4* wvp.setHtml (EKR)
@@ -1543,7 +1591,6 @@ class WebViewPlus(QtWidgets.QWidget):
             # if already rendering, don't execute
             self.timer.start() # Don't forget to do this last render request
         else:
-            g.trace()
             try:
                 self.rendering = True
                 self.render_helper()
@@ -1589,7 +1636,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Which node should be rendered?
         if self.lock_mode:
             # use locked node for position to be rendered.
-            self.pr = self.plock
+            self.pr = self.plock or c.p # EKR: added or c.p.
         else:
             # use new current node, whether changed or not.
             self.pr = c.p # use current node
@@ -1833,7 +1880,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.pbar.setValue(100)
             self.app.processEvents()
             self.pbar_action.setVisible(False)
-    #@+node:ekr.20160331124028.53: *5* wvp.md_to_html & helper
+    #@+node:ekr.20160331124028.53: *4* wvp.md_to_html & helper
     def md_to_html(self, p):
         '''Convert p.b to html using markdown.'''
         c, pc = self.c, self.pc
@@ -1849,7 +1896,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Which node should be rendered?
         if self.lock_mode:
             # use locked node for position to be rendered.
-            self.pr = self.plock
+            self.pr = self.plock or c.p # EKR: added or c.p.
         else:
             # use new current node, whether changed or not.
             self.pr = c.p # use current node
@@ -1877,7 +1924,7 @@ class WebViewPlus(QtWidgets.QWidget):
         except Exception as e:
             print(e)
             return 'Markdown error... %s' % e
-    #@+node:ekr.20160331124028.54: *6* wvp.md_process_nodes & helpers
+    #@+node:ekr.20160331124028.54: *4* wvp.md_process_nodes & helpers
     def md_process_nodes(self, p, tree=True):
         """
         Process the markdown for a node, defaulting to node's entire tree.
@@ -1908,7 +1955,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if self.verbose:
             self.md_write_md(root, s)
         return s
-    #@+node:ekr.20160331124028.55: *7* wvp.md_code_directive
+    #@+node:ekr.20160331124028.55: *5* wvp.md_code_directive
     def md_code_directive(self, lang):
         '''Return a markdown block or code directive.'''
         if pygments:
@@ -1916,7 +1963,7 @@ class WebViewPlus(QtWidgets.QWidget):
             return d
         else:
             return '\n'
-    #@+node:ekr.20160331124028.56: *7* wvp.md_process_one_node
+    #@+node:ekr.20160331124028.56: *5* wvp.md_process_one_node
     def md_process_one_node(self, p, result, environment):
         '''Handle one node.'''
         c = self.c
@@ -1937,7 +1984,7 @@ class WebViewPlus(QtWidgets.QWidget):
             if err:
                 err = self.md_format_output(err, prefix='**Error**:')
                 result.append(err)
-    #@+node:ekr.20160331124028.57: *7* wvp.md_exec_code
+    #@+node:ekr.20160331124028.57: *5* wvp.md_exec_code
     def md_exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
         trace = True and not g.unitTesting
@@ -1959,7 +2006,7 @@ class WebViewPlus(QtWidgets.QWidget):
         sys.stdout = saveout # was sys.__stdout__
         sys.stderr = saveerr # restore stderr
         return bufferout.getvalue(), buffererr.getvalue()
-    #@+node:ekr.20160331124028.58: *7* wvp.md_format_output
+    #@+node:ekr.20160331124028.58: *5* wvp.md_format_output
     def md_format_output(self, s, prefix='```'):
         """Formats the multi-line string 's' into a md literal block."""
         out = '\n\n' + prefix + '\n\n'
@@ -1967,7 +2014,7 @@ class WebViewPlus(QtWidgets.QWidget):
         for line in lines:
             out += '    ' + line
         return out + '\n```\n'
-    #@+node:ekr.20160331124028.59: *7* wvp.md_process_directives
+    #@+node:ekr.20160331124028.59: *5* wvp.md_process_directives
     def md_process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
         trace = False and not g.unitTesting
@@ -2008,7 +2055,7 @@ class WebViewPlus(QtWidgets.QWidget):
         result = ''.join(result)
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
-    #@+node:ekr.20160331124028.60: *7* wvp.md_underline2
+    #@+node:ekr.20160331124028.60: *5* wvp.md_underline2
     def md_underline2(self, p):
         """
         Use the given string and convert it to a markdown headline for display
@@ -2018,7 +2065,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ch = '#' * l
         ch += ' ' + p.h
         return ch
-    #@+node:ekr.20160331124028.61: *7* wvp.md_write_md
+    #@+node:ekr.20160331124028.61: *5* wvp.md_write_md
     def md_write_md(self, root, s):
         '''Write s, the final assembled md text, to leo.md.'''
         c = self.c

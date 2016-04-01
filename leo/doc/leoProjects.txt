@@ -18,6 +18,31 @@ https://github.com/leo-editor/leo-editor/issues/156
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re
 # flattened, ignore-case, head, body
+.. @+node:ekr.20160401053703.1: ** Docs
+.. @+node:ekr.20160401053707.1: *3* A Leonine pattern to organize docstrings
+Here is a cool pattern for organizing long docstrings:
+
+1. Start your file with:
+
+'''
+<< docstring >>
+'''
+
+2. The << docstring >> section can just contain:
+
+    @language rest # or md
+    @wrap
+    @others
+
+This allows the "interior" of the docstring to be colored using rST (or markdown).
+
+3. The children of the << docstring >> node form the actual docstring. No section names are required!
+
+**Summary**
+
+This pattern allows us to organize large docstrings in a natural, Leonine way.
+
+The only drawback is that the actual external file contains sentinel lines separating the parts of the docstring.  In practice, it's no big deal, especially if each child starts with a blank line.
 .. @+node:ekr.20160324180039.1: ** Features
 .. @+node:ekr.20160324174900.1: *3* Viewrendered already supports markdown
 @language rest

@@ -15,7 +15,7 @@
 <v t="ekr.20150619071508.1"><vh>@bool use_find_dialog = False</vh></v>
 <v t="ekr.20140808094008.3549"><vh>@bool vim_mode = False</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = False</vh></v>
@@ -337,7 +337,6 @@
 </v>
 </v>
 <v t="ekr.20071025193940"></v>
-<v t="ekr.20120923110028.3130"><vh>Notes</vh>
 <v t="ekr.20090309064612.3"><vh>New features</vh>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
@@ -364,6 +363,22 @@
 <v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
 </v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
+<v t="ekr.20131106150237.3641"><vh>@button display css</vh>
+<v t="ekr.20131106150237.3642"><vh>&lt;&lt; define css &gt;&gt;</vh></v>
+<v t="ekr.20131106192510.3643"><vh>css utils</vh></v>
+<v t="ekr.20131106150237.3643"><vh>escapeHtml</vh></v>
+<v t="ekr.20131106150237.3644"><vh>headlineToHtml</vh></v>
+</v>
+<v t="ekr.20131106150237.3648" a="M"><vh>test</vh>
+<v t="ekr.20131106150237.3651"><vh>child</vh>
+<v t="ekr.20131106150237.3652"><vh>grandchild</vh></v>
+</v>
+<v t="ekr.20131106150237.3651"></v>
+</v>
+<v t="ekr.20131106150237.3648" a="M"></v>
+<v t="ekr.20131106145203.3636"><vh>@html display</vh></v>
+</v>
 <v t="ekr.20101110190130.2451"><vh>example leoremote client</vh></v>
 <v t="ekr.20100108090658.1958"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
@@ -375,12 +390,12 @@
 <v t="ekr.20100108102217.1967"><vh>setKeyAndMods</vh></v>
 <v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
 </v>
-<v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
 <v t="ekr.20080531131542.4"><vh>printItem</vh></v>
 </v>
+<v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
 <v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
 <v t="ekr.20080806145258.24"><vh>@@file server.py</vh></v>
@@ -451,7 +466,6 @@
 </v>
 <v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
 <v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
-<v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
@@ -682,21 +696,6 @@
 <v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
 <v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt; (scrolling test)</vh></v>
 <v t="ekr.20121005071615.3175"><vh>test g.importFromPath</vh></v>
-</v>
-<v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
-<v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
-<v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
-<v t="ekr.20101014040509.2311"><vh>@movie Horse movie</vh></v>
-<v t="ekr.20101014040509.2312"><vh>@movie Gayane Ballet</vh></v>
-<v t="ekr.20110320203616.2493"><vh>@html Leo's home page</vh></v>
-<v t="ekr.20110320203616.2497"><vh>@networkx my network</vh></v>
-<v t="ekr.20110321010339.2496"><vh>@svg bubbles.svg</vh></v>
-<v t="ekr.20110322101711.2507"><vh>@svg bubbles sources</vh></v>
-<v t="ekr.20101014040509.2310"><vh>@image splash screen</vh></v>
-<v t="ekr.20101014040509.2313"><vh>@url weather</vh></v>
-<v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
-<v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
-</v>
 </v>
 <v t="ekr.20131128115544.3332"><vh>recent</vh>
 <v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
@@ -1098,21 +1097,28 @@
 <v t="ekr.20121011100948.4582"></v>
 <v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
 </v>
-<v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
-<v t="ekr.20131106150237.3641"><vh>@button display css</vh>
-<v t="ekr.20131106150237.3642"><vh>&lt;&lt; define css &gt;&gt;</vh></v>
-<v t="ekr.20131106192510.3643"><vh>css utils</vh></v>
-<v t="ekr.20131106150237.3643"><vh>escapeHtml</vh></v>
-<v t="ekr.20131106150237.3644"><vh>headlineToHtml</vh></v>
-</v>
-<v t="ekr.20131106150237.3648" a="M"><vh>test</vh>
-<v t="ekr.20131106150237.3651"><vh>child</vh>
-<v t="ekr.20131106150237.3652"><vh>grandchild</vh></v>
-</v>
-<v t="ekr.20131106150237.3651"></v>
-</v>
-<v t="ekr.20131106150237.3648" a="M"></v>
-<v t="ekr.20131106145203.3636"><vh>@html display</vh></v>
+<v t="ekr.20160401061847.1"><vh>viewrendered examples</vh>
+<v t="ekr.20160401061847.2"><vh>@graphics-script</vh></v>
+<v t="ekr.20160401061847.3"><vh>@html display Leo tree (cool)</vh></v>
+<v t="ekr.20160401061847.4"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20160401061847.5"><vh>@image LeoSplash</vh></v>
+<v t="ekr.20160401061847.6"><vh>@image splash screen</vh></v>
+<v t="ekr.20160401063704.1"><vh>@movie Gayane Ballet (Local file)</vh></v>
+<v t="ekr.20160401061847.8"><vh>@movie Gayane Ballet (Url)</vh></v>
+<v t="ekr.20160401061847.7"><vh>@movie Sample video (Local file)</vh></v>
+<v t="ekr.20160401062424.1"><vh>@movie Sample video (Url)</vh></v>
+<v t="ekr.20160401061847.9"><vh>@networkx my network</vh></v>
+<v t="ekr.20160401061847.10" a="M"><vh>@svg bubbles sources</vh></v>
+<v t="ekr.20160401061847.11"><vh>@svg bubbles.svg</vh></v>
+<v t="ekr.20160401061847.12"><vh>@url Leo's home page (md default)</vh></v>
+<v t="ekr.20160401065134.1"><vh>@url Leo's home page (md)</vh></v>
+<v t="ekr.20160401061847.13"><vh>@url Leo's home page (rST default)</vh></v>
+<v t="ekr.20160401065154.1"><vh>@url Leo's home page (rST default)</vh></v>
+<v t="ekr.20160401061847.15"><vh>@url weather (md default)</vh></v>
+<v t="ekr.20160401065735.1"><vh>@url weather (rst default)</vh></v>
+<v t="ekr.20160401061847.16"><vh>docstring test</vh></v>
+<v t="ekr.20160401061847.17" a="M"><vh>markdown test (including url)</vh></v>
+<v t="ekr.20160401061847.18" a="M"><vh>rst test (including url)</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1414,7 +1420,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,0,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -3031,37 +3037,6 @@ print [p2.gnx, p3.gnx]
 children = p.children_iter()
 print [p.gnx for p in children]
 
-c.redraw()</t>
-<t tx="ekr.20090507082535.1906">import email,getpass,imaplib,os
-
-username = 'edreamleo@gmail.com'
-passfile = os.path.expanduser('~/gmailpass.txt')
-M = imaplib.IMAP4_SSL('imap.gmail.com',993)
-try:
-    f = open(passfile)
-    password = f.read()
-    M.login(username,password)
-except IOError:
-    g.es_print('file not found: %s' % (passfile),color='red')
-    # M.login(username, getpass.getpass())
-
-M.select()
-typ, data = M.search(None, 'ALL')
-for num in data[0].split():
-    typ, data = M.fetch(num,'(RFC822)')
-    s = data[0][1]
-    m = email.message_from_string(s)
-    # for z in m.keys(): print z
-    payload = m.get_payload()
-    p2 = p.insertAsLastChild()
-    date,from_s,subject = m['date'],m['from'],m['subject']
-    p2.setHeadString(subject)
-    body = '@nocolor\n\nDate: %s\nFrom: %s\nSubject: %s\n\n%s' % (
-        date,from_s,subject,payload)
-    p2.setBodyString(body)
-print 'done'
-M.close()
-M.logout()
 c.redraw()</t>
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
@@ -7392,14 +7367,6 @@ False:
     Suppress "E" attribute bits in &lt;v&gt; elements.
     Only the ancestors of the presently selected node will
     be expanded when Leo opens an outline.</t>
-<t tx="ekr.20101014040509.2310">../Icons/SplashScreen.ico
-
-</t>
-<t tx="ekr.20101014040509.2311">C:\Users\Public\Videos\Sample Videos\Wildlife.wmv
-</t>
-<t tx="ekr.20101014040509.2312">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
-<t tx="ekr.20101014040509.2313">http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand</t>
-<t tx="ekr.20101014040509.2314">http://mail.google.com/mail/#inbox</t>
 <t tx="ekr.20101014040509.2316">import PyQt4.phonon as phonon
 phonon = phonon.Phonon
 
@@ -7545,503 +7512,16 @@ c.k.simulateCommand('stickynote')
 aList = list(c.k.bindingsDict.keys())
 aList.sort()
 for z in aList: print(z)</t>
-<t tx="ekr.20110320203616.2489"></t>
-<t tx="ekr.20110320203616.2491">@language rest
-
-#####
-Title
-#####
-
-This is **bold** and *italics*
-
-Section
-=======
-
-- Bullet list
-- Another item
-- Third item.</t>
-<t tx="ekr.20110320203616.2492">''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
-
-Commands
-========
-
-viewrendered.py creates the following (``Alt-X``) commands:
-
-``viewrendered``
-    opens a new window where the current body text is rendered as HTML
-    (if it starts with '&lt;'), or otherwise reStructuredText.
-``viewrendered-big``
-    as above, but zoomed in, useful for presentations
-``viewrendered-html``
-    displays the html source generated from reStructuredText, useful for
-    debugging
-
-``viewrendered`` sets the process current directory (os.chdir()) to the path
-to the node being rendered, to allow relative paths to work in
-``.. image::`` directives.
-
-reStructuredText errors and warnings may be shown.  For example, both::
-
-    Heading
-    -------
-
-    `This` is **really** a line of text.
-
-and::
-
-    &lt;h1&gt;Heading&lt;h1&gt;
-
-    &lt;tt&gt;This&lt;/tt&gt; is &lt;b&gt;really&lt;/b&gt; a line of text.
-
-will look something like:
-
-**Heading**
-
-`This` is **really** a line of text.
-
-Settings
-========
-
-@string view-rendered-default-kind = rst
-----------------------------------------
-
-The default kind of rendering.  One of (big,rst,html)
-    
-@bool view-rendered-auto-create = False
----------------------------------------
-
-When True, the plugin will create a rendering pane automatically.
-
-'''
-</t>
-<t tx="ekr.20110320203616.2493">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-&lt;!--@+leo-ver=5-thin--&gt;
-&lt;!--@+node:ekr.20100808060203.4273: * @thin html/front.html--&gt;
-&lt;!--@@first--&gt;
-&lt;!--@@first--&gt;
-
-&lt;!--@@language html--&gt;
-&lt;!--@@tabwidth -2--&gt;
-
-&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head&gt;
-    &lt;!--@+&lt;&lt; head &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4274: ** &lt;&lt; head &gt;&gt;--&gt;
-    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-
-    &lt;title&gt;Leo's Home Page&lt;/title&gt;
-    &lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
-    &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
-    &lt;!--
-    &lt;script type="text/javascript"&gt;
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '4.7-final',
-        COLLAPSE_MODINDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
-      };
-    &lt;/script&gt;
-    --&gt;
-    &lt;!-- &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;--&gt;
-    &lt;!-- &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;--&gt;
-    &lt;link rel="top" title="Leo v4.7-final documentation" href="index.html" /&gt;
-    &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
-    &lt;!-- &lt;link rel="prev" title="Chapter 5: Using LeoÃ¢â‚¬â„¢s Commands" href="commands.html" /&gt;--&gt; 
-    &lt;!--@-&lt;&lt; head &gt;&gt;--&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;!--@+&lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4276: ** &lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;div class="related"&gt;
-      &lt;h3&gt;Navigation&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li class="right" style="margin-right: 10px"&gt;
-          &lt;a href="genindex.html" title="General Index"
-             accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
-             accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
-        &lt;!--
-        &lt;li class="right" &gt;
-          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
-             accesskey="P"&gt;previous&lt;/a&gt; |&lt;/li&gt;
-        --&gt;
-        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt;
-
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;div class="document"&gt;
-      &lt;div class="documentwrapper"&gt;
-        &lt;div class="bodywrapper"&gt;
-          &lt;div class="body"&gt;
-            &lt;!--@+&lt;&lt; div outer section &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20100808060203.4286: ** &lt;&lt; div outer section &gt;&gt;--&gt;
-            &lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
-
-                &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
-
-                Leo is...
-
-                &lt;!--@+&lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;!--@+node:ekr.20100808060203.4288: *3* &lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;li&gt;
-                    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
-                    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
-                    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
-                &lt;li&gt;
-                    A &lt;i&gt;programmer's editor&lt;/i&gt; that fully integrates outline structure with programming.
-                    &lt;!--
-                    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
-                    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
-                    --&gt;
-                &lt;li&gt;
-                    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
-                    Leo's core is 100% pure Python.&lt;/li&gt;
-                &lt;li&gt;
-                    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;br&gt;
-                    Leo requires either the
-                    &lt;a HREF="http://docs.python.org/library/tkinter.html"&gt;Tkinter&lt;/a&gt; or
-                    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
-                    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
-                &lt;li&gt;
-                    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-                    distributed under the
-                    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
-                &lt;!--@-&lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;!-- div body toc --&gt;
-                &lt;!-- &lt; &lt; inner sections &gt; &gt; --&gt;
-
-                &lt;p&gt;Leo has an active community of helpful users and developers.&lt;br&gt;
-                Please use the &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
-                group to ask questions and make suggestions.&lt;/p&gt;
-
-                &lt;p&gt;Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;/p&gt;
-
-            &lt;/div&gt;
-            &lt;!--@-&lt;&lt; div outer section &gt;&gt;--&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;!--@+&lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;!--@+node:ekr.20100808060203.4282: ** &lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;div class="sphinxsidebar"&gt;
-          &lt;div class="sphinxsidebarwrapper"&gt;
-              &lt;!--@+&lt;&lt; sidebar contents &gt;&gt;--&gt;
-              &lt;!--@+node:ekr.20100808060203.4283: *3* &lt;&lt; sidebar contents &gt;&gt;--&gt;
-              &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
-                &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;&lt;/p&gt;
-
-              &lt;a class="reference external" href="intro.html"&gt;
-                Read this tutorial first&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;
-                Another tutorial&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http:screen-shots.html"&gt;
-                Screen shots of Leo&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="testimonials.html"&gt;
-                Quotes from Leo&amp;#8217;s Users&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external"
-                href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-                Download Leo&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
-                leo-editor: Google Groups&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://launchpad.net/leo-editor"&gt;
-                leo-editor: Launchpad&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://leo.zwiki.org"&gt;
-                Leo&amp;#8217;s Wiki&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://www.mind-mapping.org/"&gt;
-                Mind Mapping&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="leoLinks.html"&gt;
-                More links...&lt;/a&gt;&lt;br&gt;
-
-              &lt;!-- &lt;a class="reference external"  href="install.html"&gt;Installing Leo&lt;/a&gt;&lt;br&gt;--&gt; 
-              &lt;!-- &lt;a class="reference external"  href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- &lt;a class="reference external"  href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- &lt;a class="reference external"  href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!--Leo&amp;#8217;s &lt;a class="reference external" href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- 
-              &lt;h5&gt;Edward K. Ream&lt;/h5&gt;
-              &lt;a class="reference external" href="ekr.html"&gt;Home&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;br&gt;
-              --&gt; 
-              &lt;!--@-&lt;&lt; sidebar contents &gt;&gt;--&gt;
-          &lt;!-- &lt; &lt; sidebar links &gt; &gt; --&gt;
-          &lt;!-- &lt; &lt; searchbox &gt; &gt; --&gt;
-          &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;!--@-&lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;div class="clearer"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;!--@+&lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4277: ** &lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;div class="related"&gt;
-      &lt;h3&gt;Navigation&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li class="right" style="margin-right: 10px"&gt;
-          &lt;a href="genindex.html" title="General Index"
-             &gt;index&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
-             &gt;contents&lt;/a&gt; |&lt;/li&gt;
-        &lt;!--
-        &lt;li class="right" &gt;
-          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
-             &gt;previous&lt;/a&gt; |&lt;/li&gt;
-        --&gt;
-        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;!--@+&lt;&lt; div footer &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4278: ** &lt;&lt; div footer &gt;&gt;--&gt;
-    &lt;div class="footer"&gt;
-      &amp;copy; Copyright 2010, Edward K. Ream.
-      Last updated on Aug 08, 2010.
-      Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt; 0.6.3.
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div footer &gt;&gt;--&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;!--@-leo--&gt;
-</t>
-<t tx="ekr.20110320203616.2497"></t>
 <t tx="ekr.20110320205650.2495"></t>
-<t tx="ekr.20110321010339.2496">../Icons/bubbles.svg
-</t>
 <t tx="ekr.20110321012354.2495">c.executeMinibufferCommand('pause-play-movie')</t>
 <t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
 <t tx="ekr.20110321073942.2490">c.executeMinibufferCommand('lock-unlock-rendering-pane')
-</t>
-<t tx="ekr.20110321213439.2493" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
-gs.addText('\n%s\n%s' % (gv,gs))
-
-if 0:
-    for i in range(50):
-        gs.addText('\n' * i +'More')
 </t>
 <t tx="ekr.20110321213439.2495">c.executeMinibufferCommand('update-rendering-pane')
 </t>
 <t tx="ekr.20110321213552.2497"># This should be done only for selected files.</t>
 <t tx="ekr.20110321213552.2499"></t>
 <t tx="ekr.20110321213552.2500"></t>
-<t tx="ekr.20110322101711.2507">@nocolor-node
-&lt;?xml version="1.0" standalone="no"?&gt;
-&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
-&lt;svg width="20cm" height="15cm" viewBox="0 0 800 600"
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlik/"
-     baseProfile="tiny" version="1.2"&gt;
-   &lt;title&gt;Spheres&lt;/title&gt;
-   &lt;desc&gt;Semi-transparent bubbles on a colored background.&lt;/desc&gt;
-     &lt;defs&gt;
-       &lt;!-- Create radial gradients for each bubble. --&gt;
-       &lt;radialGradient id="blueBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#cdcdff" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#cdaacd" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="redBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#ffcdcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbb99" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="greenBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#cdffcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#99aaaa" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="yellowBubble" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
-         &lt;stop offset="25%" stop-color="#ffffcd" stop-opacity=".65" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbbaa" stop-opacity=".75" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="background" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="400" fx="250" fy="250"&gt;
-         &lt;stop offset="0%" stop-color="#ffffee" /&gt;
-         &lt;stop offset="100%" stop-color="#ccccaa" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;linearGradient id="surface" gradientUnits="userSpaceOnUse"
-                       x1="-100" y1="200" x2="400" y2="200"&gt;
-         &lt;stop offset="0%" stop-color="#ffffcc" /&gt;
-         &lt;stop offset="100%" stop-color="#bbbb88" /&gt;
-       &lt;/linearGradient&gt;
-
-       &lt;!-- Create radial gradients for each circle to make them look like
-            spheres. --&gt;
-       &lt;radialGradient id="blueSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="blue" /&gt;
-         &lt;stop offset="100%" stop-color="#222244" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="redSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="red" /&gt;
-         &lt;stop offset="100%" stop-color="#442222" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="greenSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="green" /&gt;
-         &lt;stop offset="100%" stop-color="#113311" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="yellowSphere" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
-         &lt;stop offset="0%" stop-color="white" /&gt;
-         &lt;stop offset="75%" stop-color="yellow" /&gt;
-         &lt;stop offset="100%" stop-color="#444422" /&gt;
-       &lt;/radialGradient&gt;
-       &lt;radialGradient id="shadowGrad" gradientUnits="userSpaceOnUse"
-                       cx="0" cy="0" r="100" fx="-50" fy="50"&gt;
-         &lt;stop offset="0%" stop-color="black" stop-opacity="1.0" /&gt;
-         &lt;stop offset="100%" stop-color="black" stop-opacity="0.0" /&gt;
-       &lt;/radialGradient&gt;
-
-       &lt;!-- Define a shadow for each sphere. --&gt;
-       &lt;circle id="shadow" fill="url(#shadowGrad)" cx="0" cy="0" r="100" /&gt;
-       &lt;g id="bubble"&gt;
-         &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
-         &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
-         &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
-                               L -11,22 L -1,12 Z" /&gt;
-         &lt;circle cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/defs&gt;
-   &lt;g&gt;
-     &lt;rect fill="url(#background)" x="0" y="0" width="800" height="600" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(200,700)"&gt;
-     &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(315,700)"&gt;
-     &lt;g transform="scale(0.5,0.5)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(80,700)"&gt;
-     &lt;g transform="scale(0.65,0.65)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="5s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(255,700)"&gt;
-     &lt;g transform="scale(0.3,0.3)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="2s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(565,700)"&gt;
-     &lt;g transform="scale(0.4,0.4)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="4s" dur="8s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(715,700)"&gt;
-     &lt;g transform="scale(0.6,0.6)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="4s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(645,700)"&gt;
-     &lt;g transform="scale(0.375,0.375)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="0s" dur="11s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(555,700)"&gt;
-     &lt;g transform="scale(0.9,0.9)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="7.5s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(360,700)"&gt;
-     &lt;g transform="scale(0.5,0.5)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="3s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(215,700)"&gt;
-     &lt;g transform="scale(0.45,0.45)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="5.5s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(420,700)"&gt;
-     &lt;g transform="scale(0.75,0.75)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="1s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-   &lt;g transform="translate(815,700)"&gt;
-     &lt;g transform="scale(0.6,0.6)"&gt;
-       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
-     &lt;/g&gt;
-     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
-         values="0,0; 0,-800" begin="2s" dur="9.5s" fill="freeze" repeatCount="indefinite" /&gt;
-   &lt;/g&gt;
-
-   &lt;g transform="translate(225,375)" &gt;
-     &lt;g transform="scale(1.0,0.5)" &gt;
-       &lt;path d="M 0 0 L 350 0 L 450 450 L -100 450 z"
-             fill="url(#surface)" stroke="none" /&gt;
-     &lt;/g&gt;
-   &lt;/g&gt;
-     &lt;g transform="translate(200,0)" &gt;
-     &lt;g transform="translate(200,490) scale(2.0,1.0) rotate(45)" &gt;
-       &lt;rect fill="#a6ce39" x="-69" y="-69" width="138" height="138" /&gt;
-       &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
-       &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
-       &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
-                             L -11,22 L -1,12 Z" /&gt;
-       &lt;animateTransform attributeName="transform"  type="rotate" additive="sum" values="0; 360"
-                  begin="0s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(200,375)"&gt;
-       &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-       &lt;circle fill="url(#blueSphere)" cx="0" cy="0" r="100" /&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(315,440)"&gt;
-       &lt;g transform="scale(0.5,0.5)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#redSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(80,475)"&gt;
-       &lt;g transform="scale(0.65,0.65)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#greenSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-     &lt;g transform="translate(255,525)"&gt;
-       &lt;g transform="scale(0.3,0.3)"&gt;
-         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
-         &lt;circle fill="url(#yellowSphere)" cx="0" cy="0" r="100" /&gt;
-       &lt;/g&gt;
-     &lt;/g&gt;
-   &lt;/g&gt;
-&lt;/svg&gt;</t>
 <t tx="ekr.20110325142419.2337"># This has been superceded by Autocompleter test node in this file.
 
 from PyQt4 import QtGui, QtCore
@@ -10152,7 +9632,6 @@ m.body(
 )</t>
 <t tx="ekr.20120923105702.3128">c.screencast_controller.start(
     g.findNodeAnywhere(c,'@screencast Tutorial'))</t>
-<t tx="ekr.20120923110028.3130"></t>
 <t tx="ekr.20120923110028.3131"></t>
 <t tx="ekr.20120923110028.3132">p2 = g.findNodeAnywhere(c,'Example Tree')
 p3 = g.findNodeInTree(c,p2,'newHeadline')
@@ -12456,6 +11935,563 @@ if 0:
 &lt;style&gt;
 ul.leo-tree-example  {
     background-color: #ffffec;
+    zoom: 150%;
+}
+ul.leo-tree-example li {
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li {
+    background-image:
+url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li.selected {
+    background-color: lightgrey;
+}
+li.leaf {
+    list-style-type: none;
+}
+li.plus {
+  list-style-image: url('http://leoeditor.com/plusnode.gif')
+}
+li.minus {
+  list-style-image: url('http://leoeditor.com/minusnode.gif')
+}
+li.leaf {
+  background-image: url('http://leoeditor.com/box00.GIF')
+}
+li.body {
+  background-image: url('http://leoeditor.com/box01.GIF')
+}
+li.mark {
+  background-image: url('http://leoeditor.com/box02.GIF')
+}
+li.mark-body {
+  background-image: url('http://leoeditor.com/box03.GIF')
+}
+li.clone {
+  background-image: url('http://leoeditor.com/box04.GIF')
+}
+li.clone-body {
+  background-image: url('http://leoeditor.com/box05.GIF')
+}
+li.clone-mark {
+  background-image: url('http://leoeditor.com/box06.GIF')
+}
+li.clone-mark-body {
+  background-image: url('http://leoeditor.com/box07.GIF')
+}
+li.dirty {
+  background-image: url('http://leoeditor.com/box08.GIF')
+}
+li.dirty-body {
+  background-image: url('http://leoeditor.com/box09.GIF')
+}
+li.dirty-mark {
+  background-image: url('http://leoeditor.com/box10.GIF')
+}
+li.dirty-mark-body {
+  background-image: url('http://leoeditor.com/box11.GIF')
+}
+li.dirty-clone {
+  background-image: url('http://leoeditor.com/box12.GIF')
+}
+li.dirty-clone-body {
+  background-image: url('http://leoeditor.com/box13.GIF')
+}
+li.dirty-clone-mark {
+  background-image: url('http://leoeditor.com/box14.GIF')
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;ul class="leo-tree-example"&gt;
+&lt;li class='plus'&gt;
+display xml as Leo outlines using css
+&lt;/li&gt;
+&lt;ul&gt;
+  &lt;li class='plus body'&gt;
+  @button display css
+  &lt;/li&gt;
+  &lt;ul&gt;
+    &lt;li class='leaf dirty-body'&gt;
+    &amp;lt;&amp;lt; define css &amp;gt;&amp;gt;
+    &lt;/li&gt;
+    &lt;li class='leaf body'&gt;
+    css utils
+    &lt;/li&gt;
+    &lt;li class='leaf body'&gt;
+    escapeHtml
+    &lt;/li&gt;
+    &lt;li class='leaf body'&gt;
+    headlineToHtml
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;li class='minus clone-mark'&gt;
+  test
+  &lt;/li&gt;
+  &lt;li class='minus clone-mark'&gt;
+  test
+  &lt;/li&gt;
+  &lt;li class='leaf dirty-body'&gt;
+  @html display
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</t>
+<t tx="ekr.20131106150237.3641"># Displays both the css and the html to the log pane.
+# The viewrendered plugin doesn't display result properly:
+# https://bugs.launchpad.net/leo-editor/+bug/782009
+
+@language python
+@others
+&lt;&lt; define css &gt;&gt;
+tag = '@html display'
+p2 = g.findNodeAnywhere(c,tag)
+if p2:
+    html = [
+        '&lt;!DOCTYPE html&gt;',
+        '&lt;html&gt;',
+        '&lt;head&gt;','&lt;style&gt;',
+            base_css,plus_minus_css,boxes_css,
+        '&lt;/style&gt;','&lt;/head&gt;',
+        '&lt;body&gt;','&lt;ul class="leo-tree-example"&gt;',
+    ]
+    html.extend(headlineToHtml(p))
+    html.extend(['&lt;/ul&gt;','&lt;/body&gt;','&lt;/html&gt;',])
+    p2.b = '\n'.join(html)
+    c.selectPosition(p2)
+    c.redraw()
+else:
+    g.es('not found: %s' % tag)
+</t>
+<t tx="ekr.20131106150237.3642">base_css = \
+r'''ul.leo-tree-example  {
+    background-color: #ffffec;
+    zoom: 150%;
+}
+ul.leo-tree-example li {
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li {
+    background-image:
+url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li.selected {
+    background-color: lightgrey;
+}
+li.leaf {
+    list-style-type: none;
+}'''
+
+table = (
+    ('plus','plusnode.gif'),
+    ('minus','minusnode.gif'),
+)
+plus_minus_css = '\n'.join([
+    'li.%s {\n  list-style-image: url(%s)\n}' % (kind,icon(image))
+        for kind,image in table])
+
+boxes_css = '\n'.join([css(n) for n in range(15)])
+</t>
+<t tx="ekr.20131106150237.3643">def escapeHtml(s):
+    return s.replace('&amp;', '&amp;amp;').replace('&lt;', '&amp;lt;').replace('&gt;', '&amp;gt;')
+</t>
+<t tx="ekr.20131106150237.3644">def headlineToHtml(p,level=0):
+    '''
+        Returns html representation (unordered list)
+        of the visible portions of the subtree rooted
+        at position p. CSS classes corresponding to the
+        expansion state and icon box are included in
+        each list item. Combined with the proper CSS, the
+        result can be made to look similar to leo's tree
+        pane.
+    '''
+    pad = '  '*level
+    if p.isExpanded(): box = 'plus'
+    elif p.hasChildren(): box = 'minus'
+    else: box = 'leaf'
+    bits = []
+    table = (
+        (p.isDirty(),'dirty'),
+        (p.isCloned(),'clone'),
+        (p.isMarked(),'mark'),
+        (bool(p.b),'body'),
+    )
+    for bit,kind in table:
+        if bit: bits.append(kind)
+    bits = '-'.join(bits)
+    theClass = '%s %s' % (box,bits) if bits else box
+    html = ["%s&lt;li class='%s'&gt;" % (pad,theClass)]
+    html.append('%s%s' % (pad,escapeHtml(p.h)))
+    html.append("%s&lt;/li&gt;" % pad)
+    if p.isExpanded() and p.hasChildren():
+        html.append("%s&lt;ul&gt;" % pad)
+        for child in p.children():
+            html.extend(headlineToHtml(child,level=level+1))
+        html.append("%s&lt;/ul&gt;" % pad)
+    return html</t>
+<t tx="ekr.20131106150237.3648"></t>
+<t tx="ekr.20131106150237.3651">This is a child. 
+</t>
+<t tx="ekr.20131106150237.3652">grandchild</t>
+<t tx="ekr.20131106192510.3643">def box(n):
+    return icon('box%02d.GIF' % n)
+
+def css(n):
+    return 'li.%s {\n  background-image: url(%s)\n}' % (selector(n),box(n))
+    
+def icon(s):
+    url = 'http://leoeditor.com/%s' % s # not https
+    return "'%s'" % url
+
+def selector(n):
+    table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
+    return '-'.join([s for (n2,s) in table if n &amp; n2]) or 'leaf'
+</t>
+<t tx="ekr.20131128115544.3332"></t>
+<t tx="ekr.20131128115544.3333"></t>
+<t tx="ekr.20140808094008.3549">import meta
+print(meta)</t>
+<t tx="ekr.20150618075639.1"></t>
+<t tx="ekr.20150619071508.1"></t>
+<t tx="ekr.20160401061847.1"></t>
+<t tx="ekr.20160401061847.10">@nocolor-node
+&lt;?xml version="1.0" standalone="no"?&gt;
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
+&lt;svg width="20cm" height="15cm" viewBox="0 0 800 600"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlik/"
+     baseProfile="tiny" version="1.2"&gt;
+   &lt;title&gt;Spheres&lt;/title&gt;
+   &lt;desc&gt;Semi-transparent bubbles on a colored background.&lt;/desc&gt;
+     &lt;defs&gt;
+       &lt;!-- Create radial gradients for each bubble. --&gt;
+       &lt;radialGradient id="blueBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#cdcdff" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#cdaacd" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="redBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#ffcdcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbb99" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="greenBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#cdffcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#99aaaa" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="yellowBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#ffffcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbbaa" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="background" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="400" fx="250" fy="250"&gt;
+         &lt;stop offset="0%" stop-color="#ffffee" /&gt;
+         &lt;stop offset="100%" stop-color="#ccccaa" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;linearGradient id="surface" gradientUnits="userSpaceOnUse"
+                       x1="-100" y1="200" x2="400" y2="200"&gt;
+         &lt;stop offset="0%" stop-color="#ffffcc" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbb88" /&gt;
+       &lt;/linearGradient&gt;
+
+       &lt;!-- Create radial gradients for each circle to make them look like
+            spheres. --&gt;
+       &lt;radialGradient id="blueSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="blue" /&gt;
+         &lt;stop offset="100%" stop-color="#222244" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="redSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="red" /&gt;
+         &lt;stop offset="100%" stop-color="#442222" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="greenSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="green" /&gt;
+         &lt;stop offset="100%" stop-color="#113311" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="yellowSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="yellow" /&gt;
+         &lt;stop offset="100%" stop-color="#444422" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="shadowGrad" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="50"&gt;
+         &lt;stop offset="0%" stop-color="black" stop-opacity="1.0" /&gt;
+         &lt;stop offset="100%" stop-color="black" stop-opacity="0.0" /&gt;
+       &lt;/radialGradient&gt;
+
+       &lt;!-- Define a shadow for each sphere. --&gt;
+       &lt;circle id="shadow" fill="url(#shadowGrad)" cx="0" cy="0" r="100" /&gt;
+       &lt;g id="bubble"&gt;
+         &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
+         &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
+         &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
+                               L -11,22 L -1,12 Z" /&gt;
+         &lt;circle cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/defs&gt;
+   &lt;g&gt;
+     &lt;rect fill="url(#background)" x="0" y="0" width="800" height="600" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(200,700)"&gt;
+     &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(315,700)"&gt;
+     &lt;g transform="scale(0.5,0.5)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(80,700)"&gt;
+     &lt;g transform="scale(0.65,0.65)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="5s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(255,700)"&gt;
+     &lt;g transform="scale(0.3,0.3)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="2s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(565,700)"&gt;
+     &lt;g transform="scale(0.4,0.4)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="4s" dur="8s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(715,700)"&gt;
+     &lt;g transform="scale(0.6,0.6)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="4s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(645,700)"&gt;
+     &lt;g transform="scale(0.375,0.375)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="0s" dur="11s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(555,700)"&gt;
+     &lt;g transform="scale(0.9,0.9)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="7.5s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(360,700)"&gt;
+     &lt;g transform="scale(0.5,0.5)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(215,700)"&gt;
+     &lt;g transform="scale(0.45,0.45)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="5.5s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(420,700)"&gt;
+     &lt;g transform="scale(0.75,0.75)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(815,700)"&gt;
+     &lt;g transform="scale(0.6,0.6)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="2s" dur="9.5s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(225,375)" &gt;
+     &lt;g transform="scale(1.0,0.5)" &gt;
+       &lt;path d="M 0 0 L 350 0 L 450 450 L -100 450 z"
+             fill="url(#surface)" stroke="none" /&gt;
+     &lt;/g&gt;
+   &lt;/g&gt;
+     &lt;g transform="translate(200,0)" &gt;
+     &lt;g transform="translate(200,490) scale(2.0,1.0) rotate(45)" &gt;
+       &lt;rect fill="#a6ce39" x="-69" y="-69" width="138" height="138" /&gt;
+       &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
+       &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
+       &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
+                             L -11,22 L -1,12 Z" /&gt;
+       &lt;animateTransform attributeName="transform"  type="rotate" additive="sum" values="0; 360"
+                  begin="0s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(200,375)"&gt;
+       &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+       &lt;circle fill="url(#blueSphere)" cx="0" cy="0" r="100" /&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(315,440)"&gt;
+       &lt;g transform="scale(0.5,0.5)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#redSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(80,475)"&gt;
+       &lt;g transform="scale(0.65,0.65)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#greenSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(255,525)"&gt;
+       &lt;g transform="scale(0.3,0.3)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#yellowSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+   &lt;/g&gt;
+&lt;/svg&gt;</t>
+<t tx="ekr.20160401061847.11">c:\leo.repo\leo-editor\leo\Icons\bubbles.svg
+</t>
+<t tx="ekr.20160401061847.12">[Leo's home page](http://leoeditor.com/)
+</t>
+<t tx="ekr.20160401061847.13">`Leo's home page &lt;http://leoeditor.com/&gt;`_
+
+</t>
+<t tx="ekr.20160401061847.15">[weather.com](http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand)
+</t>
+<t tx="ekr.20160401061847.16">@language rest
+@wrap
+
+''' Creates a window for *live* rendering of rst, html, etc.  (Qt only).
+
+Commands
+========
+
+viewrendered.py creates the following (``Alt-X``) commands:
+
+``viewrendered``
+    opens a new window where the current body text is rendered as HTML
+    (if it starts with '&lt;'), or otherwise reStructuredText.
+``viewrendered-big``
+    as above, but zoomed in, useful for presentations
+``viewrendered-html``
+    displays the html source generated from reStructuredText, useful for
+    debugging
+
+``viewrendered`` sets the process current directory (os.chdir()) to the path
+to the node being rendered, to allow relative paths to work in
+``.. image::`` directives.
+
+reStructuredText errors and warnings may be shown.  For example, both::
+
+    Heading
+    -------
+
+    `This` is **really** a line of text.
+
+and::
+
+    &lt;h1&gt;Heading&lt;h1&gt;
+
+    &lt;tt&gt;This&lt;/tt&gt; is &lt;b&gt;really&lt;/b&gt; a line of text.
+
+will look something like:
+
+**Heading**
+
+`This` is **really** a line of text.
+
+Settings
+========
+
+@string view-rendered-default-kind = rst
+----------------------------------------
+
+The default kind of rendering.  One of (big,rst,html)
+    
+@bool view-rendered-auto-create = False
+---------------------------------------
+
+When True, the plugin will create a rendering pane automatically.
+
+'''
+</t>
+<t tx="ekr.20160401061847.17">@language md
+
+# Title
+
+This is **bold** and *italics*.
+
+More info at [Leo's home page](&lt;http://leoeditor.com/).
+
+### Section
+
+- Bullet list
+- Another item
+- Third item.
+</t>
+<t tx="ekr.20160401061847.18">@language rest
+
+#####
+Title
+#####
+
+This is **bold** and *italics*.
+
+More info at `Leo's home page &lt;http://leoeditor.com/&gt;`_.
+
+Section
+=======
+
+- Bullet list
+- Another item
+- Third item.</t>
+<t tx="ekr.20160401061847.2" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
+gs.addText('\n%s\n%s' % (gv,gs))
+
+if 0:
+    for i in range(50):
+        gs.addText('\n' * i +'More')
+</t>
+<t tx="ekr.20160401061847.3">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+ul.leo-tree-example  {
+    background-color: #ffffec;
+    zoom: 150%; # blurs icons a bit.
 }
 ul.leo-tree-example li {
     background-repeat: no-repeat;
@@ -12554,125 +12590,226 @@ test
 &lt;/ul&gt;
 &lt;/body&gt;
 &lt;/html&gt;</t>
-<t tx="ekr.20131106150237.3641"># Displays both the css and the html to the log pane.
-# The viewrendered plugin doesn't display result properly:
-# https://bugs.launchpad.net/leo-editor/+bug/782009
+<t tx="ekr.20160401061847.4">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!--@+leo-ver=5-thin--&gt;
+&lt;!--@+node:ekr.20100808060203.4273: * @thin html/front.html--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
 
-@language python
-@others
-&lt;&lt; define css &gt;&gt;
-tag = '@html display'
-p2 = g.findNodeAnywhere(c,tag)
-if p2:
-    html = [
-        '&lt;!DOCTYPE html&gt;',
-        '&lt;html&gt;',
-        '&lt;head&gt;','&lt;style&gt;',
-            base_css,plus_minus_css,boxes_css,
-        '&lt;/style&gt;','&lt;/head&gt;',
-        '&lt;body&gt;','&lt;ul class="leo-tree-example"&gt;',
-    ]
-    html.extend(headlineToHtml(p))
-    html.extend(['&lt;/ul&gt;','&lt;/body&gt;','&lt;/html&gt;',])
-    p2.b = '\n'.join(html)
-    c.selectPosition(p2)
-    c.redraw()
-else:
-    g.es('not found: %s' % tag)
-</t>
-<t tx="ekr.20131106150237.3642">base_css = \
-r'''ul.leo-tree-example  {
-    background-color: #ffffec;
-}
-ul.leo-tree-example li {
-    background-repeat: no-repeat;
-    background-position: 0px 5px;
-    padding-left: 27px;
-}
-li {
-    background-image:
-url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
-    background-repeat: no-repeat;
-    background-position: 0px 5px;
-    padding-left: 27px;
-}
-li.selected {
-    background-color: lightgrey;
-}
-li.leaf {
-    list-style-type: none;
-}'''
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -2--&gt;
 
-table = (
-    ('plus','plusnode.gif'),
-    ('minus','minusnode.gif'),
-)
-plus_minus_css = '\n'.join([
-    'li.%s {\n  list-style-image: url(%s)\n}' % (kind,icon(image))
-        for kind,image in table])
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;!--@+&lt;&lt; head &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4274: ** &lt;&lt; head &gt;&gt;--&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
-boxes_css = '\n'.join([css(n) for n in range(15)])
-</t>
-<t tx="ekr.20131106150237.3643">def escapeHtml(s):
-    return s.replace('&amp;', '&amp;amp;').replace('&lt;', '&amp;lt;').replace('&gt;', '&amp;gt;')
-</t>
-<t tx="ekr.20131106150237.3644">def headlineToHtml(p,level=0):
-    '''
-        Returns html representation (unordered list)
-        of the visible portions of the subtree rooted
-        at position p. CSS classes corresponding to the
-        expansion state and icon box are included in
-        each list item. Combined with the proper CSS, the
-        result can be made to look similar to leo's tree
-        pane.
-    '''
-    pad = '  '*level
-    if p.isExpanded(): box = 'plus'
-    elif p.hasChildren(): box = 'minus'
-    else: box = 'leaf'
-    bits = []
-    table = (
-        (p.isDirty(),'dirty'),
-        (p.isCloned(),'clone'),
-        (p.isMarked(),'mark'),
-        (bool(p.b),'body'),
-    )
-    for bit,kind in table:
-        if bit: bits.append(kind)
-    bits = '-'.join(bits)
-    theClass = '%s %s' % (box,bits) if bits else box
-    html = ["%s&lt;li class='%s'&gt;" % (pad,theClass)]
-    html.append('%s%s' % (pad,escapeHtml(p.h)))
-    html.append("%s&lt;/li&gt;" % pad)
-    if p.isExpanded() and p.hasChildren():
-        html.append("%s&lt;ul&gt;" % pad)
-        for child in p.children():
-            html.extend(headlineToHtml(child,level=level+1))
-        html.append("%s&lt;/ul&gt;" % pad)
-    return html</t>
-<t tx="ekr.20131106150237.3648"></t>
-<t tx="ekr.20131106150237.3651">This is a child. 
-</t>
-<t tx="ekr.20131106150237.3652">grandchild</t>
-<t tx="ekr.20131106192510.3643">def box(n):
-    return icon('box%02d.GIF' % n)
+    &lt;title&gt;Leo's Home Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
+    &lt;link rel="stylesheet" href="_static/silver_city.css" type="text/css" /&gt;
+    &lt;!--
+    &lt;script type="text/javascript"&gt;
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.7-final',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    &lt;/script&gt;
+    --&gt;
+    &lt;!-- &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;--&gt;
+    &lt;!-- &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;--&gt;
+    &lt;link rel="top" title="Leo v4.7-final documentation" href="index.html" /&gt;
+    &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
+    &lt;!-- &lt;link rel="prev" title="Chapter 5: Using LeoÃ¢â‚¬â„¢s Commands" href="commands.html" /&gt;--&gt; 
+    &lt;!--@-&lt;&lt; head &gt;&gt;--&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!--@+&lt;&lt; div top nav &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4276: ** &lt;&lt; div top nav &gt;&gt;--&gt;
+    &lt;div class="related"&gt;
+      &lt;h3&gt;Navigation&lt;/h3&gt;
+      &lt;ul&gt;
+        &lt;li class="right" style="margin-right: 10px"&gt;
+          &lt;a href="genindex.html" title="General Index"
+             accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+        &lt;li class="right" &gt;
+          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
+             accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+        &lt;!--
+        &lt;li class="right" &gt;
+          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
+             accesskey="P"&gt;previous&lt;/a&gt; |&lt;/li&gt;
+        --&gt;
+        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt;
 
-def css(n):
-    return 'li.%s {\n  background-image: url(%s)\n}' % (selector(n),box(n))
-    
-def icon(s):
-    url = 'http://leoeditor.com/%s' % s # not https
-    return "'%s'" % url
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;!--@-&lt;&lt; div top nav &gt;&gt;--&gt;
+    &lt;div class="document"&gt;
+      &lt;div class="documentwrapper"&gt;
+        &lt;div class="bodywrapper"&gt;
+          &lt;div class="body"&gt;
+            &lt;!--@+&lt;&lt; div outer section &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20100808060203.4286: ** &lt;&lt; div outer section &gt;&gt;--&gt;
+            &lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
 
-def selector(n):
-    table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
-    return '-'.join([s for (n2,s) in table if n &amp; n2]) or 'leaf'
+                &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+
+                Leo is...
+
+                &lt;!--@+&lt;&lt; what is Leo list &gt;&gt;--&gt;
+                &lt;!--@+node:ekr.20100808060203.4288: *3* &lt;&lt; what is Leo list &gt;&gt;--&gt;
+                &lt;li&gt;
+                    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
+                    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
+                    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
+                &lt;li&gt;
+                    A &lt;i&gt;programmer's editor&lt;/i&gt; that fully integrates outline structure with programming.
+                    &lt;!--
+                    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
+                    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
+                    --&gt;
+                &lt;li&gt;
+                    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
+                    Leo's core is 100% pure Python.&lt;/li&gt;
+                &lt;li&gt;
+                    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;br&gt;
+                    Leo requires either the
+                    &lt;a HREF="http://docs.python.org/library/tkinter.html"&gt;Tkinter&lt;/a&gt; or
+                    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
+                    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+                    distributed under the
+                    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
+                &lt;!--@-&lt;&lt; what is Leo list &gt;&gt;--&gt;
+                &lt;!-- div body toc --&gt;
+                &lt;!-- &lt; &lt; inner sections &gt; &gt; --&gt;
+
+                &lt;p&gt;Leo has an active community of helpful users and developers.&lt;br&gt;
+                Please use the &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+                group to ask questions and make suggestions.&lt;/p&gt;
+
+                &lt;p&gt;Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;/p&gt;
+
+            &lt;/div&gt;
+            &lt;!--@-&lt;&lt; div outer section &gt;&gt;--&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!--@+&lt;&lt; sidebar &gt;&gt;--&gt;
+      &lt;!--@+node:ekr.20100808060203.4282: ** &lt;&lt; sidebar &gt;&gt;--&gt;
+      &lt;div class="sphinxsidebar"&gt;
+          &lt;div class="sphinxsidebarwrapper"&gt;
+              &lt;!--@+&lt;&lt; sidebar contents &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20100808060203.4283: *3* &lt;&lt; sidebar contents &gt;&gt;--&gt;
+              &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+                &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;&lt;/p&gt;
+
+              &lt;a class="reference external" href="intro.html"&gt;
+                Read this tutorial first&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;
+                Another tutorial&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http:screen-shots.html"&gt;
+                Screen shots of Leo&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="testimonials.html"&gt;
+                Quotes from Leo&amp;#8217;s Users&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external"
+                href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+                Download Leo&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+                leo-editor: Google Groups&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http://launchpad.net/leo-editor"&gt;
+                leo-editor: Launchpad&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http://leo.zwiki.org"&gt;
+                Leo&amp;#8217;s Wiki&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="http://www.mind-mapping.org/"&gt;
+                Mind Mapping&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="leoLinks.html"&gt;
+                More links...&lt;/a&gt;&lt;br&gt;
+
+              &lt;!-- &lt;a class="reference external"  href="install.html"&gt;Installing Leo&lt;/a&gt;&lt;br&gt;--&gt; 
+              &lt;!-- &lt;a class="reference external"  href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;br&gt;--&gt;
+              &lt;!-- &lt;a class="reference external"  href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;br&gt;--&gt;
+              &lt;!-- &lt;a class="reference external"  href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;--&gt;
+              &lt;!--Leo&amp;#8217;s &lt;a class="reference external" href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;br&gt;--&gt;
+              &lt;!-- 
+              &lt;h5&gt;Edward K. Ream&lt;/h5&gt;
+              &lt;a class="reference external" href="ekr.html"&gt;Home&lt;/a&gt;&lt;br&gt;
+              &lt;a class="reference external" href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;br&gt;
+              --&gt; 
+              &lt;!--@-&lt;&lt; sidebar contents &gt;&gt;--&gt;
+          &lt;!-- &lt; &lt; sidebar links &gt; &gt; --&gt;
+          &lt;!-- &lt; &lt; searchbox &gt; &gt; --&gt;
+          &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!--@-&lt;&lt; sidebar &gt;&gt;--&gt;
+      &lt;div class="clearer"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--@+&lt;&lt; div bottom nav &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4277: ** &lt;&lt; div bottom nav &gt;&gt;--&gt;
+    &lt;div class="related"&gt;
+      &lt;h3&gt;Navigation&lt;/h3&gt;
+      &lt;ul&gt;
+        &lt;li class="right" style="margin-right: 10px"&gt;
+          &lt;a href="genindex.html" title="General Index"
+             &gt;index&lt;/a&gt;&lt;/li&gt;
+        &lt;li class="right" &gt;
+          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
+             &gt;contents&lt;/a&gt; |&lt;/li&gt;
+        &lt;!--
+        &lt;li class="right" &gt;
+          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
+             &gt;previous&lt;/a&gt; |&lt;/li&gt;
+        --&gt;
+        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;!--@-&lt;&lt; div bottom nav &gt;&gt;--&gt;
+    &lt;!--@+&lt;&lt; div footer &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4278: ** &lt;&lt; div footer &gt;&gt;--&gt;
+    &lt;div class="footer"&gt;
+      &amp;copy; Copyright 2010, Edward K. Ream.
+      Last updated on Aug 08, 2010.
+      Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt; 0.6.3.
+    &lt;/div&gt;
+    &lt;!--@-&lt;&lt; div footer &gt;&gt;--&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+&lt;!--@-leo--&gt;
 </t>
-<t tx="ekr.20131128115544.3332"></t>
-<t tx="ekr.20131128115544.3333"></t>
-<t tx="ekr.20140808094008.3549">import meta
-print(meta)</t>
-<t tx="ekr.20150618075639.1"></t>
-<t tx="ekr.20150619071508.1"></t>
+<t tx="ekr.20160401061847.5">C:\leo.repo\leo-editor\leo\Icons\Leosplash.GIF
+
+This is a comment</t>
+<t tx="ekr.20160401061847.6">c:\leo.repo\leo-editor\leo\Icons\SplashScreen.ico
+
+</t>
+<t tx="ekr.20160401061847.7">C:\Users\edreamleo\SampleVideo_1280x720_1mb.mp4
+</t>
+<t tx="ekr.20160401061847.8">https://www.youtube.com/watch?v=EB3IokHelRk
+
+# Doesn't play, probably because of https.</t>
+<t tx="ekr.20160401061847.9"></t>
+<t tx="ekr.20160401062424.1">http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4
+
+# This *does* play.</t>
+<t tx="ekr.20160401063704.1">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
+<t tx="ekr.20160401065134.1">@language md
+@wrap
+
+[Leo's home page](http://leoeditor.com/)
+</t>
+<t tx="ekr.20160401065154.1">@language rest
+@wrap
+
+`Leo's home page &lt;http://leoeditor.com/&gt;`_
+
+</t>
+<t tx="ekr.20160401065735.1">`weather.com &lt;http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand&gt;`_
+</t>
 </tnodes>
 </leo_file>
