@@ -547,7 +547,7 @@ class ChapterController:
             if p.h.startswith('@chapter '):
                 return True
         return False
-    #@+node:ekr.20070325094401: *4* cc.findChaptersNode (To be deleted)
+    #@+node:ekr.20070325094401: *4* cc.findChaptersNode
     def findChaptersNode(self):
         '''Return the position of the @chapters node.'''
         cc = self; c = cc.c

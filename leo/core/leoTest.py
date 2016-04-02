@@ -276,7 +276,7 @@ class EditBodyTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.76: *3* tearDown
     def tearDown(self):
         c = self.c; tempNode = self.tempNode
-        c.selectVnode(tempNode)
+        c.selectPosition(tempNode)
         if not self.failFlag:
             tempNode.setBodyString("")
             # Delete all children of temp node.

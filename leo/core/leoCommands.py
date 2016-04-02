@@ -6696,6 +6696,7 @@ class Commands(object):
         if redraw_flag and enableRedrawFlag:
             c.redraw()
 
+    # Compatibility, but confusing.
     selectVnode = selectPosition
     #@+node:ekr.20060923202156: *3* c.onCanvasKey
     def onCanvasKey(self, event):

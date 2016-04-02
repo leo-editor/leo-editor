@@ -651,6 +651,7 @@ class FileCommands:
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
+        recoveryNode = None
         try:
             c.loading = True # disable c.changed
             if not silent:
@@ -665,8 +666,13 @@ class FileCommands:
                     # Redraw before reading the @file nodes so the screen isn't blank.
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
-                    fc.readExternalFiles(fileName)
+                    recoveryNode = fc.readExternalFiles(fileName)
         finally:
+            if g.app.debug: g.trace('=====',
+                recoveryNode and recoveryNode.h,
+                c.p and c.p.h)
+            c.selectPosition(recoveryNode or c.p or c.lastTopLevel())
+                # lastTopLevel is a better fallback, imo.
             c.checkOutline()
                 # Must be called *after* ni.end_holding.
             c.loading = False
@@ -687,7 +693,13 @@ class FileCommands:
         c, fc = self.c, self
         try:
             ok = True
-            v = fc.readSaxFile(theFile, fileName, silent, inClipboard=False, reassignIndices=False)
+            v = fc.readSaxFile(
+                theFile,
+                fileName,
+                silent,
+                inClipboard=False,
+                reassignIndices=False,
+            )
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
                 fc.rootVnode = v
@@ -767,7 +779,7 @@ class FileCommands:
         # the @thin nodes!
         fc.restoreDescendentAttributes()
         fc.setPositionsFromVnodes()
-        c.selectVnode(recoveryNode or c.p) # load body pane
+        return recoveryNode
     #@+node:ekr.20031218072017.1554: *5* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles(self, fileName):
         # os.access may not exist on all platforms.
