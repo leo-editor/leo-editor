@@ -31,17 +31,13 @@ def import_fail(s):
         print('===== leoIpython.py: can not import %s' % s)
 
 try:
-    from IPython.core.interactiveshell import ExecutionResult
-except ImportError:
-    ExecutionResult = None
-    import_fail('IPython.core.interactiveshell.ExecutionResult')
-try:
     from ipykernel.connect import connect_qtconsole
 except ImportError:
     connect_qtconsole = None
     import_fail('connect_qtconsole')
 try:
     # https://github.com/ipython/ipykernel/tree/master/ipykernel
+    # from IPython.core.interactiveshell import ExecutionResult
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
     IPKernelApp = None
@@ -122,6 +118,16 @@ class InternalIPKernel(object):
             self.put_warning('new_qt_console: unexpected exception')
             self.put_warning(e)
         return console
+    #@+node:ekr.20160331083020.1: *3* ileo.pdb
+    def pdb(self, message=''):
+        """Fall into pdb."""
+        import pdb
+            # Required: we have just defined pdb as a function!
+        pdb = pdb.Pdb(stdout=sys.__stdout__)
+        if message:
+            self.put_stdout(message)
+        pdb.set_trace()
+            # This works, but there are no IPython sources.
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
     def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
@@ -192,47 +198,22 @@ class InternalIPKernel(object):
         # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
         # https://github.com/ipython/ipython/blob/master/IPython/core/interactiveshell.py
         shell = self.kernelApp.shell # ZMQInteractiveShell
+        old_show = getattr(shell, '_showtraceback', None)
         code = compile(script, file_name, 'exec')
-        if ExecutionResult:
-            result = ExecutionResult()
-            shell.run_code(code, result=result)
-            if result:
-                self.show_result(result)
-        else:
-            # Won't show errors.
-            shell.run_code(code)
-    #@+node:ekr.20160328145029.1: *3* ileo.show_result
-    def show_result(self, result):
-        '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
-        # self.namespace.get('sys') would not be helpful.
-
-        def put(s):
-            if isinstance(s, Exception):
-                s = s.__class__.__name__
-            # sys.stderr writes to Qt console.
-            # g.es_print writes to console window, if any.
-            g.es_print(s)
-            sys.stderr.write(s.rstrip()+'\n')
+        # g.trace(old_show.__name__)
+        #@+<< define show_traceback >>
+        #@+node:ekr.20160402124159.1: *4* << define show_traceback >>
+        def show_traceback(etype, evalue, stb, shell=shell):
+            '''Monkey-patched replacement for ZMQInteractiveShell._showtraceback.'''
+            # stb is an internal representation of the traceback...
+            # was: print(self.InteractiveTB.stb2text(stb), file=io.stdout)
+            print(shell.InteractiveTB.stb2text(stb), file=sys.stderr)
             sys.stderr.flush()
-
-        if result.error_before_exec:
-            put('Error before IPython exec')
-            put(result.error_before_exec)
-        if result.error_in_exec:
-            put('Error in IPython exec')
-            put(result.error_in_exec)
-        if result.result:
-            put('Result: %s' % result.result)
-    #@+node:ekr.20160331083020.1: *3* ileo.pdb
-    def pdb(self, message=''):
-        """Fall into pdb."""
-        import pdb
-            # Required: we have just defined pdb as a function!
-        pdb = pdb.Pdb(stdout=sys.__stdout__)
-        if message:
-            self.put_stdout(message)
-        pdb.set_trace()
-            # This works, but there are no IPython sources.
+        #@-<< define show_traceback >>
+        shell._showtraceback = show_traceback
+        shell.run_code(code)
+        if old_show:
+            shell._showtraceback = old_show
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
