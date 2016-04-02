@@ -2,8 +2,8 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 import leo.core.leoGlobals as g
-NEW = False
-    # True: no @chapters node.
+NEW = True
+    # True: no @chapters node needed.
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
 class ChapterController:
@@ -457,6 +457,9 @@ class ChapterController:
             g.trace('old: %s, new: %s' % (
                 cc.selectedChapter and cc.selectedChapter.name,
                 chapter and chapter.name))
+        if NEW and not cc.selectedChapter and chapter.name == 'main':
+            if trace: g.trace('NEW: already selected')
+            return
         if chapter == cc.selectedChapter:
             if trace: g.trace('already selected')
             return
@@ -592,7 +595,7 @@ class ChapterController:
 
     def note(self, s, killUnitTest=False):
         if g.unitTesting:
-            if 1: # To trace cause of failed unit test.
+            if 0: # To trace cause of failed unit test.
                 g.trace('=====',s, g.callers())
             if killUnitTest:
                 assert False, s
@@ -623,16 +626,19 @@ class ChapterController:
 
         Note: this code calls c.redraw() if the chapter changes.
         '''
-        trace = False and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         c, cc = self.c, self
         # New in Leo 4.11
         if cc.selectChapterLockout:
             return
         selChapter = cc.getSelectedChapter()
         if trace: g.trace('***', p.h,
-            chapter.name if chapter else None,
-            selChapter.name if selChapter else None,
-            g.callers())
+            chapter.name if chapter else 'main',
+            selChapter.name if selChapter else 'main',
+            g.callers(2))
+        if NEW and not chapter and not selChapter:
+            if trace: g.trace('*** selecting main chapter')
+            return 
         if not p:
             if trace: g.trace('no p')
             return
@@ -645,6 +651,7 @@ class ChapterController:
             return
         # First, try the presently selected chapter.
         firstName = theChapter.name
+        # g.trace('===== firstName', firstName)
         if firstName == 'main':
             if trace: g.trace('no search: main chapter:', p.h)
             return

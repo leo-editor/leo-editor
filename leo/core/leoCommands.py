@@ -6674,7 +6674,7 @@ class Commands(object):
             cc.selectChapterForPosition(p)
                 # Important: selectChapterForPosition calls c.redraw
                 # if the chapter changes.
-            if trace: g.trace(p and p.h)
+            if trace: g.trace(p and p.h, g.callers())
         # 2012/03/08: De-hoist as necessary to make p visible.
         redraw_flag = False
         if c.hoistStack:
