@@ -143,6 +143,25 @@ VR is already obsolete, and I hope VR2 will quickly become obsolete as well.
 Depends on Python's meta package: https://pypi.python.org/pypi/meta
 Only enabled if that package is available.
 It *is* part of the Anaconda distros.
+.. @+node:ekr.20160216043537.1: *3* Improved chapters
+@chapter is now allowed anywhere. No need for @chapters.
+
+The 'main' chapter is simply a synonym for the entire outline.
+
+At present, the NEW switch in leoChapters.leo enables the new code.
+
+.. @+node:ekr.20160216043726.1: *4* How long does it take to search LeoPy.leo?
+@language python
+# 7559 nodes: 0.075 sec.
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 .. @-all
 .. @@killbeautify
 .. @@language rest
