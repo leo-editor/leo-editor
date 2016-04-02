@@ -19,6 +19,7 @@ The startup code injects a single object, _leo, into the IPython namespace.
 This object, a LeoNameSpace instance, simplifies dealing with multiple open
 Leo commanders.
 '''
+from __future__ import print_function
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 import sys
