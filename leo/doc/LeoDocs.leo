@@ -11,7 +11,6 @@
 <vnodes>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
@@ -170,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1277,6 +1276,11 @@
 <v t="ekr.20160305040503.78"><vh>@language coffeescript</vh></v>
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
+</v>
+<v t="ekr.20160402100225.1"><vh>Found:@chapters</vh>
+<v t="ekr.20100804133903.7250"></v>
+<v t="ekr.20100804133903.7262"></v>
+<v t="ekr.20150318110552.55"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5148,7 +5152,6 @@ The type may be one of the following:
 Complex nodes specify settings in their body text.
 See the following sections for details.
 </t>
-<t tx="ekr.20070325123558"></t>
 <t tx="ekr.20070513113903"></t>
 <t tx="ekr.20070610174018">This section contains settings for this file.
 
@@ -6368,12 +6371,10 @@ or download Leo's sources directly.
 
 .. index::
     pair: @chapter; Glossary
-    pair: @chapters; Glossary
 
-\@chapter and @chapters
+\@chapter
 
-    An @chapter tree represents a chapter. All @chapter nodes should be
-    contained in an @chapters node.
+    An @chapter tree represents a chapter.
 
 .. index::
     pair: @color; Glossary
@@ -7004,13 +7005,10 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 .. index::
     pair: @chapter; Reference
-.. index::
-    pair: @chapters; Reference
 
 \@chapter and @chapters
 
-    An @chapter tree represents a chapter. All @chapter nodes should be
-    contained in an @chapters node.
+    An @chapter tree represents a chapter.
 
     These directives are too complex to describe here. For full details, see
     `Using Chapters`_.
@@ -13968,7 +13966,7 @@ See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core:
 
-- @chapters, @chapter
+- @chapter
 - @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
 - @settings
 - @test, @testsetup, @testclass
@@ -16789,7 +16787,8 @@ Holding down Alt before releasing the node will force insertion as a child of th
 ``file-diff-files``
     Creates a node and puts the diff between 2 files into it. 
 </t>
-<t tx="ekr.20150318110552.55">Chapters are sub-outlines rooted in an @chapter node. @chapter nodes should be children of an @chapters node. Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter is much like a de-hoist command.
+<t tx="ekr.20150318110552.55">Chapters are sub-outlines rooted in an @chapter node.
+Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter is much like a de-hoist command.
 
 ``chapter-clone-node-to``
     Moves a clone of the selected node to another chapter.
@@ -16814,8 +16813,8 @@ Associated settings:
 
 ``@bool use_chapters``
     True: chapters are enabled.
-``@bool use_chapter_tabs``
-    True: chapters pop-up menu appears in the icon area.
+..  ``@bool use_chapter_tabs``
+..    True: chapters pop-up menu appears in the icon area.
 </t>
 <t tx="ekr.20150318110552.56">::
 
@@ -19068,6 +19067,7 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
+<t tx="ekr.20160402100225.1"># flattened, ignore-case, head, body</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

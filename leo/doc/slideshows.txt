@@ -1201,7 +1201,6 @@ will look something like this::
 
     Startup
      @file doc-startup.txt
-      @chapters
       Buttons
        Disabled buttons
        ... and hundreds of other nodes.

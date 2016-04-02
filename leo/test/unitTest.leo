@@ -1205,9 +1205,10 @@
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c711073580a000000302e362e31372e342e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
-marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20101220161557.6016" a="E"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c710473580a000000302e362e31372e342e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
+marks="ekr.20100205235740.5392,"
+expanded="ekr.20100131171342.5471,ekr.20111221062755.3909,ekr.20100131171342.5472,ekr.20100205223124.5377,ekr.20050208051418,ekr.20071113194858,ekr.20100131171342.5506,ekr.20160318094003.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
@@ -1225,6 +1226,7 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
+<v t="ekr.20100205235740.5392" a="M"><vh>@test syntax of all files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7715,7 +7717,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6,0,6,2,0"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -8444,6 +8446,36 @@ for obj,ivar,command in table:
         # print('pass',command)
     finally:
         setattr(obj,ivar,val1)
+</t>
+<t tx="ekr.20100205235740.5392">import glob
+trace = False
+failed,n = [],0
+skip_tuples3 = (
+    ('extensions','asciidoc.py'),
+)
+skip_tuples2 = (
+    ('test', 'python3_test.py'),
+)
+join = g.os_path_finalize_join
+skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
+skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+for theDir in ('core','external','extensions','plugins','scripts','test'):
+    if trace: print(theDir)
+    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+    assert g.os_path_exists(path),path
+    aList = glob.glob(g.os_path_join(path,'*.py'))
+    for z in aList:
+        if z in skip_list:
+            pass # print('%s: skipped: %s' % (p.h,z))
+        else:
+            n += 1
+            fn = g.shortFileName(z)
+            # if trace: print('%8s %s' % (theDir,fn))
+            s,e = g.readFileIntoString(z)
+            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+                failed.append(z)
+if trace: print('tested %s files' % n)
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
 </t>
 <t tx="ekr.20100208095817.5387"># Disabled this test because it's best to open this file without caching.
 

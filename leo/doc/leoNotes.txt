@@ -16195,5 +16195,25 @@ def printChaptersTree(self, tag=''):
         g.pr('@chapters tree...', '(in main tree: %s)' % inTree)
         for p in chaptersNode.self_and_subtree():
             g.pr('.' * p.level(), p.v)
+.. @+node:ekr.20160328145029.1: *3* ileo.show_result (no longer used)
+def show_result(self, result):
+    '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
+    # sys.stderr writes to Qt console.
+    # g.es_print writes to console window, if any.
+    
+    ############ All we had to do was sys.stdout.flush() ###########
+    
+    def put(s):
+        # g.trace(s.__class__.__name__, isinstance(s, Exception))
+        sys.stderr.write(repr(s).rstrip()+'\n')
+            # This seems to be the best that can be done.
+        sys.stderr.flush()
+
+    if result.error_before_exec:
+        put(result.error_before_exec)
+    elif result.error_in_exec:
+        put(result.error_in_exec)
+    elif result.result:
+        put('Result: %s' % result.result)
 .. @-all
 .. @-leo

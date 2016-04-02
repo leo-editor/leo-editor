@@ -37,7 +37,10 @@ class ChapterController:
     # This must be called late in the init process, after the first redraw.
 
     def finishCreate(self):
-        '''Find or make the @chapters and @chapter trash nodes.'''
+        '''
+        OLD: Find or make the @chapters and @chapter trash nodes.
+        NEW: Just create the box in the icon area.
+        '''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(cc)')
         cc, c = self, self.c
@@ -141,7 +144,7 @@ class ChapterController:
         cc, c, k, p, tag = self, self.c, self.c.k, self.c.p, 'convert-node-to-chapter'
         state = k.getState(tag)
         if p.h.startswith('@chapter'):
-            cc.note('can not create a new chapter from from an @chapter or @chapters node.')
+            cc.note('can not create a new chapter from from an @chapter node.')
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
@@ -253,7 +256,7 @@ class ChapterController:
         cc, c, k, p, tag = self, self.c, self.c.k, self.c.p, 'create-chapter-from-node'
         state = k.getState(tag)
         if p.h.startswith('@chapter'):
-            cc.note('can not create a new chapter from from an @chapter or @chapters node.')
+            cc.note('can not create a new chapter from from an @chapter node.')
             return
         if state == 0:
             names = list(cc.chaptersDict.keys())
@@ -481,20 +484,24 @@ class ChapterController:
         # New in Leo 4.6 b2: *do* call c.redraw.
         c.redraw()
     #@+node:ekr.20070511081405: *3* cc.Creating/deleting/finding chapter nodes
-    #@+node:ekr.20070325101652: *4* cc.createChaptersNode
+    #@+node:ekr.20070325101652: *4* cc.createChaptersNode (to be deleted)
     def createChaptersNode(self):
-        cc = self; c = cc.c
-        root = c.rootPosition()
-        # Use a position method to avoid undo logic.
-        p = root.insertAsLastChild()
-        p.initHeadString('@chapters')
-        p.moveToRoot(oldRoot=root)
-        assert(p.v.fileIndex)
-        c.setChanged(True)
-        if hasattr(c.frame.iconBar, 'createChaptersIcon'):
-            if not cc.tt:
-                cc.tt = c.frame.iconBar.createChaptersIcon()
-        return p
+        
+        if NEW:
+            return None
+        else:
+            cc = self; c = cc.c
+            root = c.rootPosition()
+            # Use a position method to avoid undo logic.
+            p = root.insertAsLastChild()
+            p.initHeadString('@chapters')
+            p.moveToRoot(oldRoot=root)
+            assert(p.v.fileIndex)
+            c.setChanged(True)
+            if hasattr(c.frame.iconBar, 'createChaptersIcon'):
+                if not cc.tt:
+                    cc.tt = c.frame.iconBar.createChaptersIcon()
+            return p
     #@+node:ekr.20070325063303.2: *4* cc.createChapterNode
     def createChapterNode(self, chapterName, p=None):
         '''Create an @chapter node for the named chapter.
