@@ -2583,8 +2583,13 @@ else:
     self.skipTest('Can not be run locally')
 #@+node:ekr.20110608181936.3368: *4* @test chapter-move/clone/copy-node-to
 # cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+NEW = getattr(leoChapters, 'NEW', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if NEW:
+    self.skipTest('NEW Chapters code requires new tests.')
+        # We would have to move from a chapter other than main.
+elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode,'fail 0'
     chapterNode = (
@@ -2609,7 +2614,8 @@ if cc and not g.app.isExternalUnitTest:
             assert p2,'fail 1'
             c.selectPosition(p2) # All helpers work on c.p.
             f('aaa')
-            assert g.findNodeInTree(c,chapterNode,h),'fail 2'
+            assert g.findNodeInTree(c,chapterNode,h),(
+                'fail 2', chapterNode.h, h, f.__name__)
         assert not g.findNodeInTree(c,p,'node a')
         assert g.findNodeInTree(c,p,'node b')
         assert g.findNodeInTree(c,p,'node c')
@@ -2618,16 +2624,18 @@ if cc and not g.app.isExternalUnitTest:
             while p.hasChildren():
                 p.firstChild().doDelete(newNode=None)
             for h,f in table:
-                # if not g.findNodeInTree(c,p,h):
-                    # p2 = p.insertAsLastChild()
-                    # p2.h = h
-                    # p2.b = '# %s' % h
                 p3 = g.findNodeInTree(c,chapterNode,h)
                 if p3: p3.doDelete()
         cc.selectChapterByName('main',collapse=True)
         c.redraw()
 else:
     self.skipTest('Can not be run locally')
+#@+node:ekr.20160402043006.1: *5* node a
+# node a
+#@+node:ekr.20160402043006.2: *5* node b
+# node b
+#@+node:ekr.20160402043006.3: *5* node c
+# node c
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 # cc will be None when unit tests run dynamically.
 cc = c.chapterController

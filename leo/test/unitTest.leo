@@ -1206,7 +1206,7 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e342e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1214,6 +1214,16 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20160327132053.1"><vh>@test g.compute_directives_re</vh></v>
 <v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
+</v>
+<v t="ekr.20110608135658.3377" a="E"><vh>leoChapters</vh>
+<v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
+<v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
+<v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
+<v t="ekr.20160402043006.1"><vh>node a</vh></v>
+<v t="ekr.20160402043006.2"><vh>node b</vh></v>
+<v t="ekr.20160402043006.3"><vh>node c</vh></v>
+</v>
+<v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7705,7 +7715,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8,2"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -7793,6 +7803,47 @@ finally:
 Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080405085247.1"></t>
+<t tx="ekr.20080503132221.1"># cc will be None when unit tests run dynamically.
+cc = c.chapterController
+if cc and not g.app.isExternalUnitTest:
+    root = p.copy()
+    # Init the children
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
+    child = p.insertAsNthChild(0)
+    # c.setHeadString(child,'child') # Force the headline to update.
+    child.h = 'child'
+    child.b = '# child'
+    # Kill the chapter so the test will not fail if run twice.
+    chapter = cc.chaptersDict.get('new-chapter')
+    if chapter:
+        cc.removeChapterByName('new-chapter')
+    try:
+        c.selectPosition(child)
+        c.chapterController.createChapterByName(
+            'new-chapter',child,'Create Chapter From Node')
+        if 0:
+            c.undoer.undo()
+            c.undoer.redo()
+            c.undoer.undo()
+            c.undoer.redo()
+            c.undoer.undo() # Don't pollute future unit tests.
+        else:
+            c.redraw_now() # Required.
+            chapterNode = cc.findChapterNode('new-chapter')
+            assert chapterNode,'fail 1: %s' % (undoType)
+            chapterNode.doDelete()
+            c.redraw_now()
+    finally:
+        cc.selectChapterByName('main',collapse=True)
+        if 1: # Do this so the activeUnitTests.txt does not change.
+            while root.hasChildren():
+                root.firstChild().doDelete(newNode=None)
+        c.redraw_now()
+else:
+    self.skipTest('Can not be run locally')
+
+</t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080806084924.2">@others
 </t>
@@ -8843,6 +8894,91 @@ Last paragraph.
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
+</t>
+<t tx="ekr.20110608135658.3377"></t>
+<t tx="ekr.20110608162543.3363"># cc will be None when unit tests run dynamically.
+cc = c.chapterController
+if cc and not g.app.isExternalUnitTest:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+    cc.selectChapterByName('aaa',chaptersNode)
+    cc.removeChapterByName('aaa')
+    c.undoer.undo()
+    assert cc.findChapterNode('aaa')
+    cc.selectChapterByName('main',collapse=True)
+else:
+    self.skipTest('Can not be run locally')
+</t>
+<t tx="ekr.20110608162543.3365"># cc will be None when unit tests run dynamically.
+cc = c.chapterController
+if cc and not g.app.isExternalUnitTest:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+    try:
+        cc.selectChapterByName('aaa',chaptersNode)
+        cc.renameChapterByName('bbb')
+        cc.selectChapterByName('bbb',chaptersNode)
+        cc.renameChapterByName('aaa')
+        assert cc.findChapterNode('aaa'),'after undo'
+    finally:
+        cc.selectChapterByName('main',collapse=True)
+else:
+    self.skipTest('Can not be run locally')
+</t>
+<t tx="ekr.20110608181936.3368"># cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+NEW = getattr(leoChapters, 'NEW', True)
+cc = c.chapterController
+if NEW:
+    self.skipTest('NEW Chapters code requires new tests.')
+        # We would have to move from a chapter other than main.
+elif cc and not g.app.isExternalUnitTest:
+    chaptersNode = cc.findChaptersNode()
+    assert chaptersNode,'fail 0'
+    chapterNode = (
+        cc.findChapterNode('aaa') or
+        cc.createChapterByName('aaa',p=None))
+    table = (
+        ('node a',cc.moveNodeToChapterHelper),
+        ('node b',cc.copyNodeToChapterHelper),
+        ('node c',cc.cloneNodeToChapterHelper),
+    )
+    # Initialze 
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode=None)
+    for h,unused_f in table:
+        p2 = p.insertAsLastChild()
+        p2.h = h
+        p2.b = '# %s' % h
+    try:
+        cc.selectChapterByName('aaa')
+        for h,f in table:
+            p2 = g.findNodeInTree(c,p,h)
+            assert p2,'fail 1'
+            c.selectPosition(p2) # All helpers work on c.p.
+            f('aaa')
+            assert g.findNodeInTree(c,chapterNode,h),(
+                'fail 2', chapterNode.h, h, f.__name__)
+        assert not g.findNodeInTree(c,p,'node a')
+        assert g.findNodeInTree(c,p,'node b')
+        assert g.findNodeInTree(c,p,'node c')
+    finally:
+        if 1: # Restore the tree so activeUnitTests.txt does not change.
+            while p.hasChildren():
+                p.firstChild().doDelete(newNode=None)
+            for h,f in table:
+                p3 = g.findNodeInTree(c,chapterNode,h)
+                if p3: p3.doDelete()
+        cc.selectChapterByName('main',collapse=True)
+        c.redraw()
+else:
+    self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20110610122533.3388"></t>
 <t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
@@ -12385,5 +12521,11 @@ for s in table:
     assert m, repr(s)
 </t>
 <t tx="ekr.20160330182418.1"></t>
+<t tx="ekr.20160402043006.1"># node a
+</t>
+<t tx="ekr.20160402043006.2"># node b
+</t>
+<t tx="ekr.20160402043006.3"># node c
+</t>
 </tnodes>
 </leo_file>

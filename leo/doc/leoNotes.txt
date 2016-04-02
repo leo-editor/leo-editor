@@ -16178,5 +16178,22 @@ def getDiff(self, s1, s2):
     lines2 = g.splitLines(s2)
     diffLines = difflib.Differ().compare(lines1, lines2)
     return diffLines
+.. @+node:ekr.20070510064813: *3* cc.printChaptersTree (not used)
+def printChaptersTree(self, tag=''):
+    cc = self; c = cc.c
+    chaptersNode = cc.findChaptersNode()
+    inTree = False
+    for p in c.rootPosition().self_and_siblings():
+        for p2 in p.self_and_subtree():
+            if p2 == chaptersNode:
+                inTree = True; break
+        if inTree:
+            break
+    g.trace('-' * 40)
+    full = True
+    if chaptersNode and full:
+        g.pr('@chapters tree...', '(in main tree: %s)' % inTree)
+        for p in chaptersNode.self_and_subtree():
+            g.pr('.' * p.level(), p.v)
 .. @-all
 .. @-leo

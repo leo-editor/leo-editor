@@ -12,11 +12,6 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160318113645.1: *4* Enable livecode plugin by default
-# Depends on Python's meta package: https://pypi.python.org/pypi/meta
-# which *is* part of the Anaconda distro.
-
-import meta ; g.es(meta)
 .. @+node:ekr.20160216043537.1: *4* Improve chapters
 * @chapter should be allowed *anywhere*.
     - It takes 0.07 sec to search all of Leo.
@@ -30,7 +25,7 @@ import meta ; g.es(meta)
 - However, this may have been done when I was chronically sleep deprived.
 .. @+node:ekr.20160216043726.1: *5* How long does it take to search LeoPy.leo?
 @language python
-
+# 7559 nodes: 0.075 sec.
 import time
 t1 = time.clock()
 n = 0

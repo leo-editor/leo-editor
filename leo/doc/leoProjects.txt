@@ -139,6 +139,10 @@ The VR3 switch shows all the places in the code where there is a difference betw
 Summary
 
 VR is already obsolete, and I hope VR2 will quickly become obsolete as well.
+.. @+node:ekr.20160318113645.1: *3* Enabled livecode plugin by default
+Depends on Python's meta package: https://pypi.python.org/pypi/meta
+Only enabled if that package is available.
+It *is* part of the Anaconda distros.
 .. @-all
 .. @@killbeautify
 .. @@language rest
