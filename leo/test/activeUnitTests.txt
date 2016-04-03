@@ -1350,8 +1350,6 @@ else:
     import leo.external.make_stub_files as msf
     import leo.external.py2cs as py2cs
     import ast, tokenize
-    # g.cls()
-    if c.isChanged(): c.save()
     path = g.os_path_finalize_join(g.app.loadDir,
         '..', 'test', 'python3_test.py')
     assert g.os_path_exists(path), path
@@ -22281,7 +22279,8 @@ if hasattr(tree,'redrawCount'):
 c.selectPosition(p)
 c.contractParent()
 c.selectPosition(p.parent())
-### c.save() # Only good way to save the present expansion/selection state.
+if 0: # Do not do this! It would changed unitTest.leo!
+    c.save() # Only good way to save the present expansion/selection state.
 g.app.unitTestDict['restoreSelectedNode']=False
 c.bodyWantsFocus()
 
@@ -22293,6 +22292,10 @@ g.es('all unit tests done',color='blue')
     # print(p.h)
     # c.k.simulateCommand(':q!')
     
+if 0:
+    # These won't do any good if a unit test foolishly saves the outline!
+    c.k.simulateCommand('contract-all')
+    c.setChanged(False)
 c.k.simulateCommand(':q!')
 #@-all
 #@-leo
