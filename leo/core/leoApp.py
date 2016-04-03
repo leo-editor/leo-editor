@@ -2394,7 +2394,12 @@ class LoadManager:
                 files.append(arg)
         result = []
         for z in files:
-            result.extend(glob.glob(lm.completeFileName(z)))
+            # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
+            aList = glob.glob(lm.completeFileName(z))
+            if aList:
+                result.extend(aList)
+            else:
+                result.append(z)
         return result
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
