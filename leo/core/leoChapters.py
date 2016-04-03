@@ -2,7 +2,7 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 import leo.core.leoGlobals as g
-NEW = True
+new_code = True
     # True: no @chapters node needed.
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
@@ -44,7 +44,7 @@ class ChapterController:
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(cc)')
         cc, c = self, self.c
-        if NEW:
+        if new_code:
             cc.createIcon()
         else:
             # The old scheme: @chapters node enables icon.
@@ -58,7 +58,7 @@ class ChapterController:
             # if h.startswith(tag) and not h.startswith('@chapters'):
             if g.match_word(h, 0, tag):
                 tabName = h[len(tag):].strip()
-                names = [] if NEW else ['main',]
+                names = [] if new_code else ['main',]
                 if tabName and tabName not in names:
                     if cc.chaptersDict.get(tabName):
                         self.error('duplicate chapter name: %s' % tabName)
@@ -117,7 +117,7 @@ class ChapterController:
         # Do the move.
         undoData2 = u.beforeMoveNode(clone)
         if toChapter.name == 'main':
-            if NEW:
+            if new_code:
                 return cc.note('can not clone to main chapter')
             else:
                 clone.moveAfter(toChapter.p)
@@ -185,7 +185,7 @@ class ChapterController:
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
             return cc.note('no such chapter: %s' % toChapterName)
-        if NEW:
+        if new_code:
             if toChapter.name == 'main':
                 return cc.note('can not copy to main chapter.')
         toRoot = toChapter.findRootNode()
@@ -460,11 +460,11 @@ class ChapterController:
             g.trace('old: %s, new: %s' % (
                 cc.selectedChapter and cc.selectedChapter.name,
                 chapter and chapter.name))
-        if NEW and not cc.selectedChapter and chapter.name == 'main':
-            if trace: g.trace('NEW: already selected')
+        if new_code and not cc.selectedChapter and chapter.name == 'main':
+            if trace: g.trace('already selected1')
             return
         if chapter == cc.selectedChapter:
-            if trace: g.trace('already selected')
+            if trace: g.trace('already selected2')
             return
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
@@ -487,7 +487,7 @@ class ChapterController:
     #@+node:ekr.20070325101652: *4* cc.createChaptersNode (to be deleted)
     def createChaptersNode(self):
         
-        if NEW:
+        if new_code:
             return None
         else:
             cc = self; c = cc.c
@@ -507,7 +507,7 @@ class ChapterController:
         '''Create an @chapter node for the named chapter.
         Use a clone p for the first child, or create a first child if p is None.'''
         cc = self; c = cc.c
-        if NEW:
+        if new_code:
             if chapterName == 'main':
                 return None
             else:
@@ -586,7 +586,7 @@ class ChapterController:
         '''Return the position of the @chapter node with the given name.'''
         cc = self; c = cc.c
         if chapterName == 'main':
-            if NEW:
+            if new_code:
                 return None
             else:
                 return c.rootPosition()
@@ -643,7 +643,7 @@ class ChapterController:
             chapter.name if chapter else 'main',
             selChapter.name if selChapter else 'main',
             g.callers(2))
-        if NEW and not chapter and not selChapter:
+        if new_code and not chapter and not selChapter:
             if trace: g.trace('*** selecting main chapter')
             return 
         if not p:
@@ -683,7 +683,7 @@ class ChapterController:
         cc, result = self, []
         sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         tag = '@chapter '
-        if NEW:
+        if new_code:
             c = cc.c
             seen = set()
             for p in c.all_positions():
@@ -818,7 +818,7 @@ class Chapter:
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         if self.name == 'main':
-            if NEW:
+            if new_code:
                 self.p = None 
             else:
                 self.p = c.p or c.rootPosition()
@@ -844,7 +844,7 @@ class Chapter:
     def findRootNode(self):
         '''Return the @chapter node for this chapter.'''
         if self.name == 'main':
-            if NEW:
+            if new_code:
                 return None
             else:
                 return self.c.rootPosition()
@@ -875,7 +875,7 @@ class Chapter:
         root = self.findRootNode()
         if not root:
             return
-                # NEW: root is None for the 'main' chapter.
+                # root is None for the 'main' chapter.
                 # Might also happen during unit testing or startup.
         if self.p and not c.positionExists(self.p):
             self.p = root.copy()
@@ -900,7 +900,7 @@ class Chapter:
                 p = p.firstChild()
             else:
                 if trace: g.trace('can not happen: no child of @chapter node')
-        if NEW:
+        if new_code:
             if name == 'main':
                 g.error('can not happen: main chapter has root node')
             else:
