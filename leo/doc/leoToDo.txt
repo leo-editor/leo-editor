@@ -15,10 +15,6 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 
 6 bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
-.. @+node:ekr.20151227084623.1: *4* #221: goto-global-line navigating to wrong line reported by PyLint
-https://github.com/leo-editor/leo-editor/issues/221
-
-See debuggotogloballine.leo
 .. @+node:ekr.20150418052852.1: *4* Complete Jupyter work
 @language rest
 @wrap
