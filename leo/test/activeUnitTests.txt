@@ -2546,8 +2546,12 @@ else:
 #@+node:ekr.20110608135658.3377: *3* leoChapters
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create/remove commands no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     chapterNode = (
@@ -2562,8 +2566,12 @@ else:
     self.skipTest('Can not be run locally')
 #@+node:ekr.20110608162543.3365: *4* @test chapter-rename & undo
 # cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create/remove commands no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     chapterNode = (
@@ -2582,11 +2590,10 @@ else:
 #@+node:ekr.20110608181936.3368: *4* @test chapter-move/clone/copy-node-to
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
-NEW = getattr(leoChapters, 'NEW', True)
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if NEW:
-    self.skipTest('NEW Chapters code requires new tests.')
-        # We would have to move from a chapter other than main.
+if new_code:
+    self.skipTest('move/clone/copy commands no longer exist.')
 elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode,'fail 0'
@@ -2636,8 +2643,12 @@ else:
 # node c
 #@+node:ekr.20080503132221.1: *4* @test chapter-create-from-node
 # cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create-from-node no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     root = p.copy()
     # Init the children
     while p.hasChildren():

@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e342e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1231,16 +1231,6 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
 <v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
 <v t="ekr.20100205235740.5392" a="M"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
-<v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
-<v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
-<v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
-<v t="ekr.20160402043006.1"><vh>node a</vh></v>
-<v t="ekr.20160402043006.2"><vh>node b</vh></v>
-<v t="ekr.20160402043006.3"><vh>node c</vh></v>
-</v>
-<v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
-</v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
 <v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
 <v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
@@ -1259,6 +1249,16 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
 </v>
+</v>
+<v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
+<v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
+<v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
+<v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
+<v t="ekr.20160402043006.1"><vh>node a</vh></v>
+<v t="ekr.20160402043006.2"><vh>node b</vh></v>
+<v t="ekr.20160402043006.3"><vh>node c</vh></v>
+</v>
+<v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7839,8 +7839,12 @@ Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080503132221.1"># cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create-from-node no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     root = p.copy()
     # Init the children
     while p.hasChildren():
@@ -8976,8 +8980,12 @@ Last paragraph.
 </t>
 <t tx="ekr.20110608135658.3377"></t>
 <t tx="ekr.20110608162543.3363"># cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create/remove commands no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     chapterNode = (
@@ -8992,8 +9000,12 @@ else:
     self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20110608162543.3365"># cc will be None when unit tests run dynamically.
+import leo.core.leoChapters as leoChapters
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if cc and not g.app.isExternalUnitTest:
+if new_code:
+    self.skipTest('create/remove commands no longer exist.')
+elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
     chapterNode = (
@@ -9012,11 +9024,10 @@ else:
 </t>
 <t tx="ekr.20110608181936.3368"># cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
-NEW = getattr(leoChapters, 'NEW', True)
+new_code = getattr(leoChapters, 'new_code', True)
 cc = c.chapterController
-if NEW:
-    self.skipTest('NEW Chapters code requires new tests.')
-        # We would have to move from a chapter other than main.
+if new_code:
+    self.skipTest('move/clone/copy commands no longer exist.')
 elif cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode,'fail 0'
