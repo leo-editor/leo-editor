@@ -57,19 +57,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20160226053222.13"><vh>@gnxs</vh></v>
+<v t="ekr.20160403123854.15"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20160226053224.12"><vh>@gnxs</vh></v>
+<v t="ekr.20160403123856.15"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20160226053224.1"><vh>@gnxs</vh></v>
+<v t="ekr.20160403123856.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20160226053223.16"><vh>@gnxs</vh></v>
+<v t="ekr.20160403123855.16"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20160226053223.9"><vh>@gnxs</vh></v>
+<v t="ekr.20160403123855.9"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -1192,6 +1192,7 @@
 <v t="ekr.20111021115306.3697"><vh>@file ../test/unittest/tex-error.tex</vh></v>
 <v t="ekr.20130912092638.4150"><vh>@file ../test/utf-16-test.txt</vh></v>
 <v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
+<v t="ekr.20160403123754.1"><vh>@file unittest/at-file-line-number-test.c</vh></v>
 <v t="ekr.20090704085350.5034"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
@@ -1206,7 +1207,7 @@
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735809000000302e362e31392e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -12504,39 +12505,6 @@ unl: at_auto_child
 </t>
 <t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
-<t tx="ekr.20160226053222.13">gnx: ekr.20160226053105.4
-unl: class child1
-gnx: ekr.20160226053105.5
-unl: class child1--&gt;child1_method1
-gnx: ekr.20160226053105.6
-unl: class child1--&gt;child1_method2
-gnx: ekr.20160226053105.7
-unl: class child2
-gnx: ekr.20160226053105.8
-unl: class child2--&gt;child2_method1
-gnx: ekr.20160226053105.9
-unl: class child2--&gt;child2_method2
-</t>
-<t tx="ekr.20160226053223.16">gnx: ekr.20160226053105.16
-unl: section 1
-gnx: ekr.20160226053105.17
-unl: section 2
-</t>
-<t tx="ekr.20160226053223.9">gnx: ekr.20160226053105.14
-unl: section 1
-gnx: ekr.20160226053105.15
-unl: section 2
-</t>
-<t tx="ekr.20160226053224.1">gnx: ekr.20160226053105.18
-unl: section 1
-gnx: ekr.20160226053105.19
-unl: section 2
-</t>
-<t tx="ekr.20160226053224.12">gnx: ekr.20160226053106.1
-unl: section 1
-gnx: ekr.20160226053106.2
-unl: section 2
-</t>
 <t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
 import re
 pat = g.compute_directives_re()
@@ -12557,6 +12525,39 @@ for s in table:
 <t tx="ekr.20160402043006.2"># node b
 </t>
 <t tx="ekr.20160402043006.3"># node c
+</t>
+<t tx="ekr.20160403123854.15">gnx: ekr.20160403123613.3
+unl: class child1
+gnx: ekr.20160403123613.4
+unl: class child1--&gt;child1_method1
+gnx: ekr.20160403123613.5
+unl: class child1--&gt;child1_method2
+gnx: ekr.20160403123613.6
+unl: class child2
+gnx: ekr.20160403123613.7
+unl: class child2--&gt;child2_method1
+gnx: ekr.20160403123613.8
+unl: class child2--&gt;child2_method2
+</t>
+<t tx="ekr.20160403123855.16">gnx: ekr.20160403123613.15
+unl: section 1
+gnx: ekr.20160403123613.16
+unl: section 2
+</t>
+<t tx="ekr.20160403123855.9">gnx: ekr.20160403123613.13
+unl: section 1
+gnx: ekr.20160403123613.14
+unl: section 2
+</t>
+<t tx="ekr.20160403123856.15">gnx: ekr.20160403123613.19
+unl: section 1
+gnx: ekr.20160403123613.20
+unl: section 2
+</t>
+<t tx="ekr.20160403123856.4">gnx: ekr.20160403123613.17
+unl: section 1
+gnx: ekr.20160403123613.18
+unl: section 2
 </t>
 </tnodes>
 </leo_file>

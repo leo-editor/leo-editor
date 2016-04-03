@@ -7699,7 +7699,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20110610122533.3395: *6* @test file_file_line: @file
+#@+node:ekr.20110610122533.3395: *6* @test file_file_line: @file-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7707,6 +7707,28 @@ else:
     trace = False
     root = p.parent().parent()
     h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20160403123650.1: *6* @test file_file_line: @file-c
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.c'
     target = g.findNodeAnywhere(c, h)
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)

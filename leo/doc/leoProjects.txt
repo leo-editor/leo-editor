@@ -51,6 +51,11 @@ As noted in the checkin log for this bug, I can not recommend the stickynote plu
 https://github.com/leo-editor/leo-editor/issues/242
 
 The fix was to rstw.write in plugins/writers/leo_rst.py
+.. @+node:ekr.20160403043151.1: *3* Fixed #247: @language c breaks goto-global-line
+https://github.com/leo-editor/leo-editor/issues/247
+
+The fix was to get_external_file_with_sentinels:
+it must not force Python sentinels.
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re

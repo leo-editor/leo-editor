@@ -251,7 +251,15 @@ class GoToCommands:
                 forceSentinels=True)
             return ok and at.stringOutput or ''
         else:
-            return g.getScript(c, root, useSelectedText=False)
+            return g.getScript(
+                c,
+                root,
+                useSelectedText=False,
+                forcePythonSentinels=False,
+                    # Fix #247: @language c breaks goto-global-line.
+                    # self.get_delims returns language-specific delims,
+                    # so this code must do so too.
+                useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''
