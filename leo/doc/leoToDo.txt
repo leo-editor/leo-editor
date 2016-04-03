@@ -15,8 +15,6 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 
 10 items assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
-.. @+node:ekr.20160403043302.1: *4* #242: @auto-rst open/save error
-https://github.com/leo-editor/leo-editor/issues/242
 .. @+node:ekr.20160403043151.1: *4* #247: @language c breaks goto-global-line
 https://github.com/leo-editor/leo-editor/issues/247
 

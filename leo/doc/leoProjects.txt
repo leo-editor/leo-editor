@@ -47,6 +47,10 @@ Date:   Tue Mar 1 13:50:12 2016 -0600
 https://github.com/leo-editor/leo-editor/issues/249
 
 As noted in the checkin log for this bug, I can not recommend the stickynote plugin as it is, even with the bug fixed.
+.. @+node:ekr.20160403043302.1: *3* Fixed #242: @auto-rst open/save error
+https://github.com/leo-editor/leo-editor/issues/242
+
+The fix was to rstw.write in plugins/writers/leo_rst.py
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re
