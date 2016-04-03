@@ -32,6 +32,7 @@ class GoToCommands:
             s = self.get_external_file_with_sentinels(root)
             lines = g.splitLines(s)
             if trace:
+                g.trace('sentinels', sentinels)
                 aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
                 g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
             # Step 2: scan the lines for line n.
@@ -78,8 +79,10 @@ class GoToCommands:
     def scan_nonsentinel_lines(self, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
-        offset within the node of the n'th (zero-based) line.  Only lines
-        that appear in the outline increment count.
+        offset within the node of the n'th (zero-based) line.
+        
+        Only non-sentinel lines increment the global line count, but
+        @+node sentinels reset the offset within the node.
 
         Return gnx, h, offset:
         gnx:    the gnx of the #@+node
@@ -90,27 +93,30 @@ class GoToCommands:
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', delim1, delim2, n)
+        if trace: g.trace('===== Entry', delim1, delim2, n)
         for s in lines:
-            if trace: g.trace(s.rstrip())
-            if self.is_sentinel(delim1, delim2, s):
+            is_sentinel = self.is_sentinel(delim1, delim2, s)
+            if trace: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
+            if is_sentinel:
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     offset = 0
                         # The node delim does not appear in the outline.
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('node', gnx, h)
+                    if trace: g.trace('@+node', gnx, h)
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
+                    # Increment the offset, but not the count.
                     offset += 1
                 elif s2.startswith('@-others') or s2.startswith('@-<<'):
                     gnx, h, offset = stack.pop()
-                    # These do *not* appear in the outline.
+                    # Increment the offset, but not the count.
+                    offset += 1
                 else:
-                    # Ignore all other sentinels, including @verbatim.
-                    pass
+                    # All other sentinels increment the offset.
+                    offset += 1
             else:
-                # All other lines, including Leo directives, do appear in the outline.
+                # Non-sentinel lines do appear in the outline.
                 count += 1
                 offset += 1
             if trace: g.trace(count, offset, h, '\n')
@@ -167,16 +173,15 @@ class GoToCommands:
         '''Select the last line of the last node of root's tree.'''
         c = self.c
         w = c.frame.body.wrapper
-        s = w.getAllText()
-        p = root.lastNode()
-        c.redraw(p)
+        c.selectPosition(root)
+        c.redraw_now()
         if not g.unitTesting:
             if len(lines) < n:
                 g.warning('only', len(lines), 'lines')
             else:
                 g.warning('line', n, 'not found')
         # Put the cursor on the last line of body text.
-        w.setInsertPoint(len(s))
+        w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
         w.seeInsertPoint()
     #@+node:ekr.20100216141722.5626: *4* goto.find_gnx

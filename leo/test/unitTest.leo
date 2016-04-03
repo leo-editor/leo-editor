@@ -57,19 +57,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20160403143757.25"><vh>@gnxs</vh></v>
+<v t="ekr.20160403165232.24"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20160403143758.11"><vh>@gnxs</vh></v>
+<v t="ekr.20160403165233.11"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20160403143757.10"><vh>@gnxs</vh></v>
+<v t="ekr.20160403165232.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20160403143757.3"><vh>@gnxs</vh></v>
+<v t="ekr.20160403165232.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20160403143756.9"><vh>@gnxs</vh></v>
+<v t="ekr.20160403165231.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -1196,17 +1196,20 @@
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh></v>
 <v t="ekr.20150626093745.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
 <v t="ekr.20160403143048.1"><vh>@clean unittest/at-clean-line-number-test.c</vh>
-<v t="ekr.20160403143048.2"><vh>at-file-child</vh></v>
+<v t="ekr.20160403143048.2"><vh>spam</vh></v>
+<v t="ekr.20160403150121.1"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20160403143130.1"><vh>@clean unittest/at-clean-line-number-test.py</vh>
-<v t="ekr.20160403143130.2"><vh>at-file-child</vh></v>
+<v t="ekr.20160403150216.1"><vh>spam</vh></v>
+<v t="ekr.20160403150222.1"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20160403123754.1"><vh>@file unittest/at-file-line-number-test.c</vh></v>
 <v t="ekr.20080904102243.2"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20111021115306.3697"><vh>@file unittest/tex-error.tex</vh></v>
 <v t="ekr.20130912092638.4150"><vh>@file unittest/utf-16-test.txt</vh></v>
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+<v t="ekr.20080907123324.3"><vh>spam</vh></v>
+<v t="ekr.20160403152507.1"><vh>eggs</vh></v>
 </v>
 <v t="ekr.20090704085350.5034"><vh>@nosent unittest/at-nosent-test.py</vh>
 <v t="ekr.20090704085350.5035"><vh>spam</vh></v>
@@ -1219,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e342e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657331711958030000002d7e2e711a580b000000756e6465726c696e657332711b58010000003d711c7573752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e342e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1238,7 +1241,6 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
-</v>
 <v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
 <v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
 <v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
@@ -1253,9 +1255,10 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20160403143655.1"><vh>@test find_file_line: @clean-python</vh></v>
 <v t="ekr.20160403123650.1"><vh>@test find_file_line: @file-c</vh></v>
 <v t="ekr.20110610122533.3395"><vh>@test find_file_line: @file-python</vh></v>
-<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent</vh></v>
+<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent-python</vh></v>
 <v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -7964,9 +7967,10 @@ pass
 <t tx="ekr.20080907122804.1">@others</t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
+# before @others: line 1
 @others
-</t>
-<t tx="ekr.20080907123324.3">def child():
+# last line: line 6</t>
+<t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
 <t tx="ekr.20080917151620.9">@language python
@@ -9175,7 +9179,7 @@ else:
             if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
         else:
             if trace: print('not found: %s' % n)
-            assert n == 3, n
+            assert n == 7, n
             break
 </t>
 <t tx="ekr.20110610122533.3401"># Not valid for external tests: uses @&lt;file&gt; node.
@@ -12768,17 +12772,19 @@ else:
 </t>
 <t tx="ekr.20160403143048.1">@language c
 @tabwidth -4
+// before @others // line 1
 @others
+// last line: line 6
 </t>
-<t tx="ekr.20160403143048.2">def child():
+<t tx="ekr.20160403143048.2">@nocolor-node
+def spam(): // line 2
     pass
 </t>
 <t tx="ekr.20160403143130.1">@language python
 @tabwidth -4
+# Before @others: line 1
 @others
-</t>
-<t tx="ekr.20160403143130.2">def child():
-    pass
+# Last line: line 6
 </t>
 <t tx="ekr.20160403143348.1">gnx: ekr.20111214104615.3942
 </t>
@@ -12802,17 +12808,35 @@ else:
     target = g.findNodeAnywhere(c, h)
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    stripped_lines = [z for z in lines if not z.startswith('//@')]
     if trace:
         g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 3, n
-            if trace: print('not found: %s' % n)
-            break
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '// before @others // line 1'),
+        (2, 8,  'def spam(): // line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): // line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '// last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
 </t>
 <t tx="ekr.20160403143655.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
@@ -12824,49 +12848,79 @@ else:
     target = g.findNodeAnywhere(c, h)
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    stripped_lines = [z for z in lines if not z.startswith('#@')]
     if trace:
-        # g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 3, n
-            if trace: print('not found: %s' % n)
-            break
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+        # print('')
+        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '# Before @others: line 1'),
+        (2, 8,  'def spam(): # line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): # line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '# Last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
 </t>
-<t tx="ekr.20160403143756.9">gnx: ekr.20160403142841.13
+<t tx="ekr.20160403150121.1">def eggs(): // line 4
+    pass</t>
+<t tx="ekr.20160403150216.1">@nocolor-node
+def spam(): # line 2
+    pass
+</t>
+<t tx="ekr.20160403150222.1">def eggs(): # line 4
+    pass
+</t>
+<t tx="ekr.20160403152507.1">def eggs(): # line 4
+    pass</t>
+<t tx="ekr.20160403165231.9">gnx: ekr.20160403164217.4
 unl: section 1
-gnx: ekr.20160403142841.14
+gnx: ekr.20160403164217.5
 unl: section 2
 </t>
-<t tx="ekr.20160403143757.10">gnx: ekr.20160403142841.17
+<t tx="ekr.20160403165232.2">gnx: ekr.20160403164217.15
 unl: section 1
-gnx: ekr.20160403142841.18
+gnx: ekr.20160403164217.16
 unl: section 2
 </t>
-<t tx="ekr.20160403143757.25">gnx: ekr.20160403142841.3
+<t tx="ekr.20160403165232.24">gnx: ekr.20160403164217.9
 unl: class child1
-gnx: ekr.20160403142841.4
+gnx: ekr.20160403164217.10
 unl: class child1--&gt;child1_method1
-gnx: ekr.20160403142841.5
+gnx: ekr.20160403164217.11
 unl: class child1--&gt;child1_method2
-gnx: ekr.20160403142841.6
+gnx: ekr.20160403164217.12
 unl: class child2
-gnx: ekr.20160403142841.7
+gnx: ekr.20160403164217.13
 unl: class child2--&gt;child2_method1
-gnx: ekr.20160403142841.8
+gnx: ekr.20160403164217.14
 unl: class child2--&gt;child2_method2
 </t>
-<t tx="ekr.20160403143757.3">gnx: ekr.20160403142841.15
+<t tx="ekr.20160403165232.9">gnx: ekr.20160403164217.17
 unl: section 1
-gnx: ekr.20160403142841.16
+gnx: ekr.20160403164217.18
 unl: section 2
 </t>
-<t tx="ekr.20160403143758.11">gnx: ekr.20160403142841.19
+<t tx="ekr.20160403165233.11">gnx: ekr.20160403164217.19
 unl: section 1
-gnx: ekr.20160403142841.20
+gnx: ekr.20160403164217.20
 unl: section 2
 </t>
 </tnodes>
