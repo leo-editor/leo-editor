@@ -12,6 +12,42 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
 @language rest
 @wrap
+.. @+node:ekr.20160403042851.1: *4* #245: Specifying a new Leo-Editor file on the command line no longer works
+https://github.com/leo-editor/leo-editor/issues/245
+
+Instead of creating the new file, Leo-Editor opens the "workbook." This bug exists on the latest Leo-Editor. The first bad commit was:
+
+c02f8bc5464bf5c7832870b44375a557f3e4e26e is the first bad commit
+commit c02f8bc5464bf5c7832870b44375a557f3e4e26e
+Author: Edward K. Ream <edreamleo@gmail.com>
+Date:   Tue Mar 1 13:50:12 2016 -0600
+
+    Allow wildcard expansion on the command line.  Like *.leo(!)
+.. @+node:ekr.20160403043032.1: *4* #249: Leo and Stickynote plugin do not request to save
+https://github.com/leo-editor/leo-editor/issues/249
+
+When I edit a node using a Stickynote popout window and close the popout window, the node body text updates as expected. But when I close the leo tab there is no request to save the file.
+
+Also when I directly close the visually updated leo file tab, there is no recognition that the file is edited and no confirmation request to save the file.
+
+EKR: A call to p.setDirty() should do the trick.
+.. @+node:ekr.20160403043151.1: *4* #247: @language c breaks goto-global-line
+https://github.com/leo-editor/leo-editor/issues/247
+
+When I add "@language c" declaration into top node of @file or @clean tree , Goto global line stops working.
+
+It sometimes refuses to work even without it, but I haven't figured how else to trigger it.
+
+"@language python" works. This is both in v5.2 and latest master.
+
+In 5.1-final it worked (obv. only with @file) but line numbers were off by 1.
+.. @+node:ekr.20160403043302.1: *4* #242: @auto-rst open/save error
+https://github.com/leo-editor/leo-editor/issues/242
+.. @+node:ekr.20151227084623.1: *4* #221: goto-global-line navigating to wrong line reported by PyLint
+https://github.com/leo-editor/leo-editor/issues/221
+
+See debuggotogloballine.leo
+.. @+node:ekr.20160403043354.1: *3* Next: 5.3
 .. @+node:ekr.20150418052852.1: *4* Complete Jupyter work
 @language rest
 @wrap
@@ -95,11 +131,33 @@ for p in c.all_positions():
 
     except Exception as exc:
         g.es_exception()
+.. @+node:ekr.20160403041855.1: *4* Complete chapters work
+Proposal: remove/improve all chapter commands
+https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
+
+1. Remove most @chapters commands.
+
+2. Improve chapter-select command:
+   - Alt-x hook to create chapter-select-* commands.
+   - Allow key bindings to chapter-select-* commands.
+   
+3. What happens, exactly, to the hoist stack when we switch chapters???
+
+4. Last: remove NEW switch.
+.. @+node:ekr.20160401034138.1: *4* Better search for unl's?
+Improve g.recursiveUNLSearch?
+
+I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
+.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
+- Can they be interrupted?
+- Use list(set(words)) to check each word only once.
+- The do plain search for possibly-misspelled words in each body.
+
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
 @language rest
 @wrap
 
-Assigned to 5.3:
+12 assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
 
 Maybe:
@@ -266,10 +324,6 @@ Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
 Git repo info: branch = master, commit = b5e6da9f5feb
 Python 3.4.0, PyQt version 5.3.0
 Windows 7 AMD64 (build 6.1.7601) SP1
-.. @+node:ekr.20151227084623.1: *4* #221: goto-global-line navigating to wrong line reported by PyLint
-https://github.com/leo-editor/leo-editor/issues/221
-
-See debuggotogloballine.leo
 .. @+node:ekr.20160318132903.1: *3* Docs 5.3
 @language rest
 @wrap
@@ -455,19 +509,6 @@ Edward
 .. @+node:ekr.20160318112838.1: *3* Features: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160401034138.1: *4* Better search for unl's?
-Improve g.recursiveUNLSearch?
-
-I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
-.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
-- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
-.. @+node:ekr.20160325152551.1: *4* Add new, simple, rst/md commands
-- Use # to prevent headlines from being included.
-- Use some, but not all, rst3 settings.
-- Try markdown first.
 .. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
 - jedi is available in the
 - Can we use live code inside Leo?
@@ -480,10 +521,13 @@ https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/2ag8PH3oAAAJ
 .. @+node:ekr.20160318113142.1: *4* Importers/exporters
 - Add coffeescript importer.
 - Finish javascript importer, or at least fix #127: Bracket matching is buggy
-.. @+node:ekr.20160318113258.1: *4* Plugins
-.. @+node:ekr.20160318113505.1: *5* Avoid mouse in nodetags & other plugins
+.. @+node:ekr.20160325152551.1: *4* Add new, simple, rst/md commands
+- Use # to prevent headlines from being included.
+- Use some, but not all, rst3 settings.
+- Try markdown first.
+.. @+node:ekr.20160318113505.1: *4* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
-.. @+node:ekr.20160227134532.1: *5* Command shell in Python
+.. @+node:ekr.20160227134532.1: *4* Command shell in Python
 # http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
 
 Add shell window, perhaps in viewrendered plugin.
@@ -506,7 +550,7 @@ if 0:
             # sys.stdout.write(out)
             # sys.stdout.flush()
             g.es(out)
-.. @+node:ekr.20160310055038.1: *5* Improve quicksearch (Nav pane)
+.. @+node:ekr.20160310055038.1: *4* Improve quicksearch (Nav pane)
 - Key bindings in the nav pane.
     - Arrow keys.
     - Enter shift to outline pane.
