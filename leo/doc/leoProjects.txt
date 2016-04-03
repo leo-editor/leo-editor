@@ -32,6 +32,17 @@ at.writeAllHelper
 at.writeOpen file
 
 In short, everything appears to be working as expected. There was a proposal to adjust empty lines automatically when reading an @clean file, but that's a separate, low-priority, issue, apparently not in the bug tracker.
+.. @+node:ekr.20160403042851.1: *3* Fixed #245: Specifying a new Leo-Editor file on the command line no longer works
+https://github.com/leo-editor/leo-editor/issues/245
+
+Instead of creating the new file, Leo-Editor opens the "workbook." This bug exists on the latest Leo-Editor. The first bad commit was:
+
+c02f8bc5464bf5c7832870b44375a557f3e4e26e is the first bad commit
+commit c02f8bc5464bf5c7832870b44375a557f3e4e26e
+Author: Edward K. Ream <edreamleo@gmail.com>
+Date:   Tue Mar 1 13:50:12 2016 -0600
+
+    Allow wildcard expansion on the command line.  Like *.leo(!)
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re

@@ -12,17 +12,6 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 .. @+node:ekr.20160325051602.1: *3* First: 5.3
 @language rest
 @wrap
-.. @+node:ekr.20160403042851.1: *4* #245: Specifying a new Leo-Editor file on the command line no longer works
-https://github.com/leo-editor/leo-editor/issues/245
-
-Instead of creating the new file, Leo-Editor opens the "workbook." This bug exists on the latest Leo-Editor. The first bad commit was:
-
-c02f8bc5464bf5c7832870b44375a557f3e4e26e is the first bad commit
-commit c02f8bc5464bf5c7832870b44375a557f3e4e26e
-Author: Edward K. Ream <edreamleo@gmail.com>
-Date:   Tue Mar 1 13:50:12 2016 -0600
-
-    Allow wildcard expansion on the command line.  Like *.leo(!)
 .. @+node:ekr.20160403043032.1: *4* #249: Leo and Stickynote plugin do not request to save
 https://github.com/leo-editor/leo-editor/issues/249
 
