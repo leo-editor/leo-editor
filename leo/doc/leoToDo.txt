@@ -13,7 +13,7 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 @language rest
 @wrap
 
-10 items assigned to 5.3
+6 bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
 .. @+node:ekr.20151227084623.1: *4* #221: goto-global-line navigating to wrong line reported by PyLint
 https://github.com/leo-editor/leo-editor/issues/221
@@ -127,11 +127,13 @@ I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial
 @language rest
 @wrap
 
-10 items assigned to 5.3
+6 bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
 
-Maybe:
-#132: Section Reference causes clone on Leo-Editor file open
+.. @+node:ekr.20160403124912.1: *4* #241: QMimeData object error
+https://github.com/leo-editor/leo-editor/issues/241
+
+This might be a QT5 issue.
 .. @+node:ekr.20150609101355.1: *4* #129: Font setting overridden by new workbook
 @language rest
 @wrap
