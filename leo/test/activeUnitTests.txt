@@ -1875,7 +1875,7 @@ if g.app.isExternalUnitTest:
     if sys.platform.startswith('linux'):
         self.skipTest('external linux test')
     else:
-        path = g.os_path_finalize_join(g.app.loadDir,'..','test','utf-16-test.txt')
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test','unittest','utf-16-test.txt')
         assert g.os_path_exists(path)
         f = open(path,'r')
         s = f.read()
@@ -1883,7 +1883,7 @@ if g.app.isExternalUnitTest:
         s = g.toUnicode(s,encoding='utf-16')
         assert s.find('Test of utf-16.') > -1,s
 else:
-    h = '@file ../test/utf-16-test.txt'
+    h = '@file unittest/utf-16-test.txt'
     p = g.findNodeAnywhere(c,h)
     s = 'Test of utf-16.'
     assert p,h
@@ -1956,7 +1956,7 @@ We don't want to copy such nodes to dynamicUnitTest.leo
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
-    h = '@asis ../test/unittest/at-asis-test.py'
+    h = '@asis unittest/at-asis-test.py'
     p = g.findNodeAnywhere(c,h)
     assert p
     
@@ -1974,7 +1974,7 @@ if not g.app.isExternalUnitTest:
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
-    h = '@auto ../test/unittest/at-auto-test.py'
+    h = '@auto unittest/at-auto-test.py'
     p = g.findNodeAnywhere(c,h)
     assert p
     
@@ -2013,7 +2013,7 @@ if not g.app.isExternalUnitTest:
     
     # html uses block comments.  This is an important test.
     
-    h = '@thin ../test/unittest/at-thin-html-test.html'
+    h = '@thin unittest/at-thin-html-test.html'
     p = g.findNodeAnywhere(c,h)
     assert p
     
@@ -2029,7 +2029,7 @@ if not g.app.isExternalUnitTest:
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
 
-    h = '@thin ../test/unittest/at-thin-test.py'
+    h = '@thin unittest/at-thin-test.py'
     p = g.findNodeAnywhere(c,h)
     assert p
     
@@ -2047,7 +2047,7 @@ if not g.app.isExternalUnitTest:
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
     
-    p = g.findNodeAnywhere(c,"@file ../test/unittest/tex-error.tex")
+    p = g.findNodeAnywhere(c,"@file unittest/tex-error.tex")
     assert(p)
     
     s1 = r"""\begin{document}
@@ -7676,73 +7676,6 @@ finally:
 @language python
 def spam:
     pass
-#@+node:ekr.20150625101047.1: *6* @test file_file_line: @auto
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto ../test/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 13, n
-            if trace: print('not found: %s' % n)
-            break
-#@+node:ekr.20110610122533.3395: *6* @test file_file_line: @file-python
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
-#@+node:ekr.20160403123650.1: *6* @test file_file_line: @file-c
-# Not valid for external tests: uses @<file> node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
 #@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7806,6 +7739,29 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 5, n
             break
+#@+node:ekr.20150625101047.1: *6* @test find_file_line: @auto-py
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    # h = '@auto unittest/at-auto-line-number-test.py'
+    h = '@auto unittest/at-auto-unit-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(25):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 13, n
+            if trace: print('not found: %s' % n)
+            break
 #@+node:ekr.20150626093653.1: *6* @test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7827,6 +7783,94 @@ else:
         else:
             if trace: print('not found: %s' % n)
             assert n == 9, n
+            break
+#@+node:ekr.20160403143643.1: *6* @test find_file_line: @clean-c
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 3, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20160403143655.1: *6* @test find_file_line: @clean-python
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        # g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 3, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20160403123650.1: *6* @test find_file_line: @file-c
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n)
+            break
+#@+node:ekr.20110610122533.3395: *6* @test find_file_line: @file-python
+# Not valid for external tests: uses @<file> node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@file unittest/at-file-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        if found:
+            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            assert n == 10, n
+            if trace: print('not found: %s' % n)
             break
 #@+node:ekr.20110610122533.3399: *6* @test find_file_line: @nosent
 # Not valid for external tests: uses @<file> node.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20070627082044.808: * @thin ../test/unittest/errorTest.py
+#@+node:ekr.20070627082044.808: * @thin unittest/errorTest.py
 # A file that contains functions with errors in them.
 # This is used to test error reporting in scripts
 

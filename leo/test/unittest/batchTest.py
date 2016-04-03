@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20070627082044.811: * @thin ../test/unittest/batchTest.py
+#@+node:ekr.20070627082044.811: * @thin unittest/batchTest.py
 # A file to be executed in batch mode as part of unit testing.
 # This file is defined in unitTest.leo
 
