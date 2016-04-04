@@ -15,6 +15,10 @@ https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/le
 
 6 bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+.. @+node:ekr.20150331053736.1: *4* Ask Stack Overflow
+- Waiting for answer to solarized question:
+    http://qt-project.org/forums/viewthread/30838/
+    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
 .. @+node:ekr.20150418052852.1: *4* Complete Jupyter work
 @language rest
 @wrap
@@ -91,6 +95,70 @@ for p in c.all_positions():
 
     except Exception as exc:
         g.es_exception()
+.. @+node:ekr.20141030042423.13: *4* Fixed?? Wishlist bug 93: Leo should keep the external editor's temp file up to date
+https://github.com/leo-editor/leo-editor/issues/93
+Index of top Launchpad wishlist items
+
+https://bugs.launchpad.net/leo-editor/+bug/1259755
+Leo should keep the external editor's temp file up to date
+.. @+node:ekr.20131123071505.16462: *4* Crash in undoer A long time ago!
+redoGroup oops: expecting bunch.items.  bunch.kind = typing
+redoGroup Bunch...
+dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
+kind: typing
+leading: 10
+newMiddleLines: [u'        self.setup_command() ### ']
+newNewlines: 1
+newSel: (276, 276)
+newText: None
+oldMiddleLines: [u'        self.setup_command()']
+oldNewlines: 1
+oldSel: (271, 271)
+oldText: None
+p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
+redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+trailing: 9
+undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+undoType: Typing
+yview: 0
+.. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
+@language rest
+
+From the thread: "Associate .Leo files to open with Leo when double click"
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+From: <fidelperez@gmail.com>
+
+1. Include a small file within the Quickstart guide which would associate
+   files automatically. (Or maybe asking for imput, which can be done
+   through a Leo node and this way the user learns about its
+   functionality).
+
+2. More buttons or scripts in quick start guide, preferably before the
+   "programming" section, so when a new user opens it, he has had the
+   opportunity to do Ctrl+B on several scripts (for instance, showing in
+   the log the name of all the nodes within the selected one, having some
+   subnodes with numbers and doing math on them and showing the result on
+   the log pane, and as much "silly" but visual functions as possible so
+   the user, by going pressing ctrl+b on each, gets a bigger chance to
+   understand what is Leo. In my oppinion some users will just stop in the
+   quickguide if they are not presented with such a thing before going to
+   docs.leo etc.
+
+3. The description of the plugins is not as accessible as it should be. A
+   script for activating them easier, been a week using Leo and still cant
+   quite activate, find the descriptions or use them freely... And if each
+   plugin or script had an example of use that would be priceless, for
+   instance, including them all in quickstart (both scripts, plugins
+   branchs) and then the new user could just go through all clicking on the
+   examples and just seeing Leo work and show its potential. I know some of
+   those are done but as I said, after a week or so I still am very
+   confused...
+
+4. Quickstart should be open by default (instead of current Leo workbook)
+   at least until the user changes some config and prevents that from
+   happening. Is there any "load previous tabs" functionality? (IE open the
+   Leo files which where open when it was closed the last time)
 .. @+node:ekr.20160403043354.1: *3* Next: 5.3
 .. @+node:ekr.20151231095352.1: *4* #205: @ or @doc does't work perfectly in @clean
 @language rest
@@ -114,6 +182,28 @@ without @('@ bbb' -> 'bbb'), it will be transfer into comment in file(in '# xxxx
 https://github.com/leo-editor/leo-editor/issues/127
 
 Javascript and perl need more work.
+.. @+node:ekr.20130805080841.21380: *5* #1222947: javascript import bug (Hard)
+@language javascript
+
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Bug 
+https://bugs.launchpad.net/leo-editor/+bug/1222947
+
+Here is the test file::
+
+    var express = require('express');
+     
+    var app = express.createServer(express.logger());
+     
+    app.get('/', function(request, response) {
+    response.send('Hello World!');
+    });
+     
+    var port = process.env.PORT || 5000;
+    app.listen(port, function() {
+    console.log("Listening on " + port);
+    });
 .. @+node:ekr.20160318113142.1: *4* Add coffeescript importer
 .. @+node:ekr.20160401034138.1: *4* Better search for unl's?
 Improve g.recursiveUNLSearch?
@@ -560,1044 +650,16 @@ If you could have a body editor edit the node indicated by an UNL, it would basi
 Use external code.
 .. @+node:ekr.20150707052758.1: *4* py2cython: Like make_stub_files
 Generate type declarations from a given set of naming conventions.
-.. @+node:ekr.20150410043749.1: ** Maybe
-@language rest
-@wrap
-.. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
-@language rest
-@wrap
-
-Steve Litt
-
-EKR summary: Videos will encourage magazine editors to write about Leo.
-
-**Get more fans who can write and who are listened to**
-
-To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo.
-
-**Leo has an image problem**
-
-Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago. VimOutliner is faster and has the 90% of outlining features that people use 90% of the time.
-
-95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
-
-**Make a 3 minute video**
-
-Leo is a mechanism by which you can specify a computer program as an outline-like thing in an outliner-like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
-
-**Video 1**: will show how to compose an application outline and turn it into a program.
-
-The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
-
-**Video 2**: will show hhow to make a GUI app.
-
-**Video 3**: will show how to write a book in Leo.
-
-Flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
-
-**Publicize these videos**
-
-You're going to get some journalists excited, and those are your reviews.
-
-**Start publicizing different ways people use Leo.**
-
-Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
-.. @+node:ekr.20120226183512.10195: *3* Bugs (maybe)
-@language rest
-@wrap
-.. @+node:ekr.20160331131318.1: *4* #250: equal-sized-panes resizes vr pane
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/250
-.. @+node:ekr.20130806072439.20650: *4* #106: brew install leo
-@language rest
-@wrap
-
-Pull request.
-https://github.com/Homebrew/homebrew/pull/38980#issuecomment-98435744
-
-The homebrew docs say that beta releases are not allowed.
-
-https://github.com/leo-editor/leo-editor/issues/106
-
-Pull request
-https://github.com/Homebrew/homebrew/pull/38980/files#r29035052
-
-Cookbook
-https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md
-
-Cheat sheet
-https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
-
-brew audit --strict Leo
-  # run from homebrew folder
-brew install --verbose --debug Leo
-
-.. @+node:ekr.20150305053156.5: *4* #147: Can't fix: Python 3 clipboard encoding
-@language rest
-@wrap
-https://github.com/leo-editor/leo-editor/issues/147
-
-Text: ÷ Σ
-
-In body text copy / paste (Ctrl-C, Ctrl-V) works as expected in py2, but there is a Σ -> £ translation on paste in py3. The ÷ is ok.
-
-This appears to be a serious bug in older version of pyqt...
-
-@language python
-.. @+node:ekr.20150403035403.1: *4* #156: Project: ILeo errors not piped to Log, etc.
-@language rest
-@wrap
-
-See http://ipython.org/ipython-doc/stable/development/execution.html
-
-https://github.com/leo-editor/leo-editor/issues/156
-Fix bug 156: ILeo errors not piped to Log and Do not show in Ipython console
-
-This one is pretty straight forward. If I run this command via Ctrl + B:
-
-for ind in range(5):
-    print("index:" + ind)
-
-Without ILeo I get:
-
-TypeError: cannot concatenate 'str' and 'int' objects
---------------------
-  line 12: for ind in range(5):
-* line 13:     print("index:" + ind)
-  line 14: #@-leo
-  line 15: 
-
-But when run with ILeo via "ipython-exec" I get no notification of any error. Either in the ipython console or the Leo Log.
-
-@language python
-.. @+node:ekr.20150609103758.1: *4* #176: Won't fix: Outline pane does not scroll horizontally with node headline edit
-https://github.com/leo-editor/leo-editor/issues/176
-Outline pane does not scroll horizontally with node headline edit
-.. @+node:ekr.20150626141042.1: *4* #194: Find Next **button** doesn't highlight body text
-https://github.com/leo-editor/leo-editor/issues/194
-
-.. @+node:ekr.20150609102729.1: *4* #52: Minor: Leo can't open files if launching terminal is closed
-https://github.com/leo-editor/leo-editor/issues/25
-.. @+node:ekr.20150609103202.1: *4* #89: Won't fix: Spontaneous clones when using <<sections>>
-https://github.com/leo-editor/leo-editor/issues/89
-Spontaneous clones when using <<sections>>
-.. @+node:ekr.20141017150357.18271: *4* 2 Launchpad bugs assigned to Terry
+.. @+node:ekr.20140824043305.18303: ** Bugs: No due date
+.. @+node:ekr.20141017150357.18271: *3* 2 Launchpad bugs assigned to Terry
 https://bugs.launchpad.net/leo-editor/+bug/1245111
 Can't get the viewrendered pane back next to the editor
 
-
-
 https://bugs.launchpad.net/leo-editor/+bug/1235619 BUG: Deleting multiple
 selection in pyqt if a children of a to-delete node is also to be deleted
-.. @+node:ekr.20130926053913.11562: *4* Bug-tracker: Hard
-.. @+node:ekr.20140824163757.20587: *5* #1022140: scroll problem in the body pane (Hard)
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1022140
-.. @+node:ekr.20130806072439.20497: *6* ** Leo does not display all content of a node ...
-@language rest
-
-From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
-
-even at the latest revision (rev. 5500) Leo does not display all content of 
-larger nodes
-- Larger nodes approximately defined as >= 150 lines ...
-
-That is searching for example for a 'TO-DO' item just return this 
-particular line w/o the
-context  around. - Going up - or - down does not refresh the screen & 
-content ...
-
-I thought I could provide you with an outline, where this problem 
-consistently shows up.
-- However, whenever I trim the personal outline I'm using the problem 
-disappears.
-
-This problem is really annoying - and - I would gladly provide more input, 
-but so far I
-fail. - Any suggestion?
-
-With kind regards,
-
-Viktor
-
-PS: For completeness here's the log from Leo's startup:
-
-<log>
-
-Leo Log Window
-Leo 4.11 devel, build 5500, 2012-10-19 18:35:23
-Python 3.2.2, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-leoID=VR20100603 (in D:\\Users\\Viktor Ransmayr\\.leo)
-load dir: D:\\Branches\\leo-editor\\leo\\core
-global config dir: D:\\Branches\\leo-editor\\leo\\config
-home dir: D:\\Users\\Viktor Ransmayr
-reading settings in D:\\Branches\\leo-editor\\leo\\config\\leoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\.leo\\myLeoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-reading: D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-
-</log>
-.. @+node:ekr.20130806072439.20498: *7* Re: Leo does not display all content of a node ...
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I can confirm that this type of bug is still present in 5500 also.
-
-Yesterday I was noticing this:
-
- - editing a node (A)
- - create new node by accidentally hitting insert
- - delete new node immediately while still in headline edit mode using
-   cut-node 
- - node A is displayed incorrectly, a line is missing, selecting the
-   body restores the missing line
-
-vs. the above but selecting the body of the inserted node, then
-deleting it, in which case A is displayed correctly without selecting
-its body.
-
-Today (the outline's changed) it's not doing that, but I still
-notice the difference between inserting and immediately deleting a node
-(scroll position in A restored incorrectly), vs. inserting a node,
-selecting its body, and then deleting it (scroll position in A restored
-correctly).
-
-So, there's some execution path difference between A being selected
-after an inserted node is deleted immediately (still in headline edit
-mode) vs. after selection of its body.
-
-Not a very helpful report, but maybe the difference between deletion of
-the node immediately and after selecting its body guides you to a
-particular piece of code.
-.. @+node:ekr.20130806072439.20499: *7* Re: Leo does not display all content of a node ...
-From: resi147 <scalet@yebu.de>
-
-I also have the same problem, using the official 4.10 final.
-I.e. a couple of lines are missing in the node (the linecounter
-increments and decrements but the cursor does not move).
-
-Not sure what report could be useful.
-I also feel like it occurs on larger body nodes.
-.. @+node:ekr.20130806072439.20501: *7* Re: Leo does not display all content of a node ...
-From: lewis <lewisneal@operamail.com>
-
-Same issue for me has been occurring on a large node. Interestingly, I can
-only reproduce the display error when 'Leo Log Window' is at bottom left
-position which is my ''initial_split_orientation' setting (horizontal: body
-pane to the right). I can use Window>Toggle Split Direction to correct the
-initial display error.
-
-For me, the display error always becomes evident at line 95. My line
-numbers 95,96 are visible then skips to 118. Lines 97 thru 117 are not
-displayed. It appears to be graphics performance time lag; if I return to
-the file after having switched to another leo tab the previously invisible
-lines are visible.
-
-Leo Log Window
-Leo 4.11 devel, build 5647, 2013-04-02 08:03:37
-Python 3.3.1, qt version 4.8.4
-Windows 6, 1, 7601, 2, Service Pack 1
-.. @+node:ekr.20130806072439.20531: *7* Response to Leo does not display... Styling in Leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-(This is a response to the invisible line glitch, but not directly
-related, so a new thread)
-
-Remember this:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee869a0a70f2d765
-
-Some time ago I was working on styling Leo from a single top level
-stylesheet using a mechanism similar to CSS classes, so instead of:
-    
-    # widget is active
-    w.setStyle("QTextEdit { color: red; font-weight: bold; }")
-    
-    ...
-    
-    # widget is inactive
-    w.setStyle("QTextEdit { color: black; font-weight: normal; }")
-    
-you'd have
-
-    # widget is active
-    w.setAttribute('active', True)
-    
-    ...
-    
-    # widget is inactive
-    w.setAttribute('active', False)
-
-and in the single global style sheet
-
-    QTextEdit[active="true"] { color: red; font-weight: bold; }
-    QTextEdit[active="false"] { color: red; font-weight: bold; }
-
-This isn't a perfect example because if active == focused then you
-could probably just use the pseudo-state :focus and let Qt do all the
-work, and also Leo would .setStyle() a string defined in @settings, not
-something hard coded.
-
-Qt styles are different from CSS in that CSS has a single attribute,
-`class`, which can contain a space separated list of tags, whereas Qt
-has arbitrary attributes like the `active` I just made up above.
-.. @+node:ekr.20130805080841.21380: *5* #1222947: javascript import bug (Hard)
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
-.. @+node:ekr.20130916105324.19894: *5* Bug 1226353: @shadow does not retain outline structure properly (Hard)
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1226353
-
-===== EKR
-
-The most important problem is compatibility.  As I have just verified,
-@shadow will work even if the private file does not exist,
-but all outline structure will be lost.  Therefore, it may be best
-not to try to read old (ver-4thin) files at all.
-
-@shadow does not reload the following simple file correctly!
-
-+ @shadow
-   @others
-  + child 1
-    child 1.1
-
-shadow files (the private files containing the sentinels) use the *old*
-(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
-sentinels.
-
-The old sentinels don't have an explicit notion of nesting level; the new
-sentinels do, so it would seem that the way to fix this problem is to use
-new sentinels. However, this would be a major change to the inner workings
-of the @shadow logic.
-.. @+node:ekr.20130908104426.11242: *5* Bug 914221: bound method ViewRenderedController.updated (Hard)
-https://bugs.launchpad.net/leo-editor/+bug/914221
-
-Summary of a *long* discussion: this may be a docutils issue, and does not
-seem easy to fix.
-.. @+node:ekr.20130908104426.11269: *4* Bug-tracker: Wish-list
-There are 42 wishlist items.  Some appear to be duplicates, or closely related.
-.. @+node:ekr.20130806072439.20369: *5* @paragraph(s)
-From: <offray@riseup.net>
-
-I have been using txt2tags + Nested Editor to produce structured docs in 
-a light markup and exporting them to HTML and LaTeX > pdf. The fine 
-tunning on the pdf output is done by editing the LaTeX source in Leo. I 
-like the aesthetic of the source code and the outputs and I have 
-contacted the Nested author in order to get some cross-pollination 
-between it and Leo [1].
-
-[1] 
-https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
-
-Now I think that is time to start hacking Leo for a better support of my 
-work flow and the first thing I would like to have is a "@paragraph" 
-directive that works the same as @rst-no-head but can be used in any 
-part of a (sub)tree, even if is not @rst (sub)tree. This would come 
-handy in chunking and reassembling LaTeX docs without marking up the 
-parts with "<<chunk>>" tags.
-
-===== EKR
-
-Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
-
-===== offray As I have say repeatedly I'm an "end user" 
-of Leo and I have browse the doc about developing in Leo in [2] and I 
-plan to follow it as a tutorial, but any pointer to a more detailed 
-section to pay attention or to the Leo trees to start hacking is welcomed
-
-[2] http://webpages.charter.net/edreamleo/scripting.html
-
-.. @+node:ekr.20130806072439.20374: *5* aha moment when using leo script with @url, and feature request ;-)
-From: HaveF <iamaplayer@gmail.com>
-
-1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
-in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
-leo-file-B.leo.
-
-When I'm working on leo-file-B.leo, I may have ideas to improve the
-@button button-1, but at that time(working on leo-file-B.leo), I may
-forget where the original place of @button button-1 is. Even I store
-the original scripts in the default workbook.leo is a tedious work to
-deal with(open it, locate where the original script is, update it...)
-
-But! After I add the @url at the first line of @button button-1, I can
-decide if the improvements what I made on leo-file-B.leo's @button button-1
-should or shouldn't be merged to the original and upstream @button
-button-1(in leo-file-A.leo) easily by just a click.
-
-And if I work on leo-file-C.leo, I want to use the same script, but I just
-only remember I use the script in the leo-file-B.leo instead of original
-place. With @url I can easily jump to original place, and copy it to
-leo-file-C.leo.
-
-Using @url in the leo script, I can make the scripts consistency and
-diversity at same time.
-
-Great! But, Wait, wait!
-
-2. Feature request.  At this time, you can use this idea by comment the @url
-line after jump. If @url isn't comment, the leo-editor will say...
-SyntaxError: invalid syntax at the @url line.
-
-Maybe it is a good idea to omit the @url line in the script when executing
-script?
-
-===== EKR
-
-Yes.  I think this is a good idea.  A similar idea occurred to me when
-looking at @rclick nodes.  At present, the context_menu plugin contains an
-ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
-needed at present when the @button node contains @others: the @rclick node
-can't be part of the script "pulled in" by @others.
-
-It would be much more elegant to ignore @rclick nodes when computing the
-script.  This would require a change to the @others logic, but I think it
-is worthwhile.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I do this kind of thing by keeping buttons in @files...
-
-@file ~/.leo/gen  # general utility buttons
-@file ~/.leo/dml  # tools for editing an XML dialect I use
-@file ~/.leo/sql  # tools for editing SQL / interacting with server
-
-so changes made in one outline are automatically propagated to other
-outlines next time they're reloaded.  You just reference the files
-in each outline where you want those buttons.
-
-> 2. Feature request
-> At this time, you can use this idea by comment the @url line
-> after jump. If @url isn't comment, the leo-editor will say...
-> SyntaxError: invalid syntax
-> at the @url line.
-> 
-> Maybe it is a good idea to omit the @url line in the script when executing
-> script?
-
-This probably would make sense, already the scripting machinery is
-ignoring things like @nocolor or @language cobol or @nowrap etc.
-
-Maybe you could file a wish-list bug item for tracking.
-.. @+node:ekr.20130806072439.20523: *5* RST3 Tables with Nodes as Rows
-From: Craig Johnson <craig@hivemind.net>
-
-I'm trying to use rst tables by using the table markup in the body text, 
-with one node per table row.  However it seems that the nodes are being 
-preceded with a line-feed even-though @rst-no-head is in effect.
- 
-Can anybody help with preventing that line-feed, it breaks the rst table 
-formatting.
-
-===== EKR
-
-Hmm.  My guess is that a new @rst directive would be needed.  The
-workaround would seem to be to put the entire table in a single node, but
-presumably you have your reasons for not wanting to do that.
-
-Feel free to file a wish-list bug.
-
-===== Craig Johnson <craig@hivemind.net>
- 
-I've been creating rst tables using rst markup directly in the body text.  
-For field lists.  As the same field apears in multiple programs, I would 
-like to use Leo's cloning to reproduce a table row in several locations in 
-the tree.  The issue that prevents me from doing this, is that an 
-@rst-no-head headline seems to generate a line-feed preceeding the body 
-text in the derived file which breaks the table parse.
- 
-Maybe a example:
-The Leo tree:
- 
-+Program1
-  +Parameters
-       =================== ========
-       Field Name          Format
-       =================== ========
-    +@rst-no-head Field1
-        prmField1          Integer
- 
-Results in the following markup
-Program1
-^^^^^^^^^
-Parameters
-~~~~~~~~~
-=================== ========
-Field Name          Format
-=================== ========
-
-prmField1           Integer
-That blank line in the markup before the node body text breaks the table.
- 
-===== wgw <wgwinder@gmail.com>
-
-
-No fix (sorry), but can confirm the problem -- it should go in the bug
-list. (I looked at the rst code, and fainted)
-
-I note that your format wouldn't work without closing the table off:
-
-
-Field Name                       Format
- add                                    add
-
-But you are right: @rst-no-head doesn't work properly.
-
-Looks like you can only post process the rst intermediate file and=20
-eliminate that extra line.
-.. @+node:ekr.20141115150149.5: *5* Wishlist bug 62: Syntax @color settings don't dereference
-@language rest
-
-https://github.com/leo-editor/leo-editor/issues/62
-
-Unlike the stylesheet @colors, the syntax @color settings don't
-dereference. For example::
-
-    @color mycomment = #586E76
-    @color comment1_color = @mycomment
-    @color comment2_color = @mycomment
-    @color comment3_color = @mycomment
-    @color comment4_color = @mycomment
-
-Result:
-Errors in the console (see below) and uncolored comments in code (same as normal fg color).
-
-Console output:
-** isPython3: False
-Leo 4.11 final, build 20140922060345, Mon Sep 22 06:03:44 CDT 2014
-Git repo info: branch = master, commit = c93bd17
-Python 2.7.6, PyQt version 4.8.5
-Windows 7 x86 (build 6.1.7601) SP1
-leoID=peckj (in C:\Users\PeckJ.leo)
-reading settings in C:\cygwin\home\PeckJ\repos\leo\leo-editor\leo\config\leoSettings.leo
-reading settings in C:\Users\PeckJ.leo\myLeoSettings.leo
-reading settings in C:\Users\PeckJ.leo\workbook.leo
-setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
-setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
-.. @+node:ekr.20111125072438.10204: *5* Wishlist bug 882243: Clones sometimes not saved: change how @others works
-See https://bugs.launchpad.net/leo-editor/+bug/882243
-
-In Leo, I made this file:
-
-@file test.txt
-@others
-.....test1
-     test: these are clones
-.....test2
-     @others
-
-      what is going on...?
-..........test1 <--- this is cloned
-          test: these are clones
-
-The output file does not have the cloned node:
-
-#@+leo-ver=5-thin
-#@+node:bill.20111025150533.3528: * @thin test.txt
-#@+others
-#@+node:bill.20111025150533.3527: ** test1
-test: these are clones
-#@+node:bill.20111025150533.3529: ** test2
-#@+others
-#@-others
-
-what is going on...?
-#@-others
-#@-leo
-
-I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
-
-Here is the copied node:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2"/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
-<v t="bill.20111025150533.3527"><vh>test1</vh></v>
-<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
-<v t="bill.20111025150533.3527"></v>
-</v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="bill.20111025150533.3527">test: these are clones
-</t>
-<t tx="bill.20111025150533.3528">@others
-</t>
-<t tx="bill.20111025150533.3529">@others
-
-what is going on...?</t>
-</tnodes>
-</leo_file>
-
-Here is the copied leo file:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
- <global_window_position top="50" left="50" height="500" width="700"/>
- <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"
-expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
-</vnodes>
-<tnodes>
-</tnodes>
-</leo_file>
-.. @+node:ekr.20111216105907.10218: *6* My response: this is a wishlist item
-Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
-About bug 882243: clones sometimes not saved
-
-I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
-
-The surprise
-=========
-
-To paraphrase the original bug report, suppose we have the following @file tree:
-
-+ @file test.txt
-@others
-  + node 1 (cloned)
-    node 1 text.
-  + node 2
-     @others
-    + node 1 (cloned)
-       node 1 text.
-
-As usual, lines preceded by "+" denote headlines: all other lines are body text.
-
-The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
-
-History
-=====
-
-I would like to call this a wishlist item because the
-present code quite intentionally writes *any* node
-(including cloned nodes) only once. That is, the write code
-sets a bit when writing a node, and @others ignores any
-nodes with that bit set.
-
-You could call this a bug in the @others write logic, but at
-one time it was done explicitly and on purpose.
-
-I don't remember why this was so, but I do remember it *was*
-so. It may have been an artifact of Leo's old representation
-of clones that used both vnodes and tnodes. tnodes no longer
-exist in the one-node world that we have been living in for
-several years, and it may well be time to revisit the
-original design, but I would rather not do that just now
-because there are several "real" bugs that need attention
-asap.
-
-Workaround
-=========
-
-Because this is an issue involving @others, you might assume
-that a workaround involving sections would be possible. You
-would be correct. The following file works as expected::
-
-+ @file test.txt
-<< node 1 >>
-<< node 2 >>
-  + << node 1>> (cloned)
-     node 1 text.
-  + << node 2 >>
-     << node 1 >>
-    + << node 1 >>(cloned)
-       node 1 text.
-.. @+node:ekr.20141030042423.13: *5* Wishlist bug 93: Leo should keep the external editor's temp file up to date
-https://github.com/leo-editor/leo-editor/issues/93
-Index of top Launchpad wishlist items
-
-https://bugs.launchpad.net/leo-editor/+bug/1259755
-Leo should keep the external editor's temp file up to date
-.. @+node:ekr.20130806072439.20387: *5* wishlist: Autosaving when external file saved
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Just an idea:
-
-After discovering sublime edit, I have started using external editor mode
-more (rclick -> Edit in...). Annoyance there is that once you save in
-external editor, you still have to go to leo and save there, or your
-changes will be lost if you close leo without saving.
-
-This can lead to loss of data if you don't routinely agree to save changes
-when closing Leo. I often don't do this, as I save all the time when I
-type, and don't want to save accidental changes I might have done to the
-leo document; I don't usually have time to review changes when closing a
-document.
-
-Maybe .leo could automatically save the tree if and only if the externally
-edited node is the only dirty one.
-
-===== EKR
-
-I agree there is a problem, but I don't believe hacking Leo's save logic is
-a good idea, for several reasons:
-
-1. There might be several dirty nodes, and you could still lose data
-(strictly following your suggestion) in that case.
-
-2. The write logic for external files is complex, mainly due to file
-caching.  I tolerate that complexity because caching is such a big win.
-But it would not be easy to do @file AI to discover the special case you
-mention.
-
-3. Imo, the proper place to handle this problem is in the vim and xemacs
-plugins.  These plugins are responsible for the interaction with Leo.
-
-Would it work for you if the xemacs and vim plugins automatically saved an
-external file whenever the plugin caused a node in that file to become
-dirty?  This would likely solve the problem you mention, although I
-wouldn't be my life on it.
-
-Your comments, please.
-
-===== Matt Wilkie <maphew@gmail.com>
-
-I've been bit by this several times too.
-
-It's lead to me relying on pyscripter (my usual external editor these days,
-has more useful to me command completion than leo) more and more, when I
-otherwise might just nip out, do a few things and come back.
-
-===== EKR
-
-One thing that must be done in any case is to provide alt-x commands for
-all context-menu entries.  There is something wrong with having to use the
-mouse at all...
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-Coincidentally I added the alt-X command 'context-menu-open' a week or
-so ago, letting you open the context menu with a keyboard binding so
-you can then navigate the menu with the cursor keys.
-
-This is because not all menu entries can have alt-X commands,
-specifically the quickMove plugins commands for moving nodes to
-pre-defined destinations in other outlines, this is basically a list
-selection operation, but being on a sub-sub-menu it's a pain with the
-mouse, and easier with the cursor keys.
-
-This is part of my method for handling todo items for different
-projects, they are imported from email to one outline, and then I file
-them to the relevant project outline's todo node.  Which creates a
-management problem I just found a surprisingly viable solution for I'll
-mention in another post.
-
-===== From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I wouldn't change the save logic, I'd just execute "save" for the full .leo
-document when
-
-- Node has changed in external editor.
-- The node that changed is the only dirty node in the whole leo document.
-
-I don't use xemacs/vim plugin, but rather "edit in" in right click menu
-(contextmenu.py plugin IIRC).
-
-I agree that this is not an elegant proposal, in that it involves a
-potentially surprising (if useful) special case.
-
-I have to think this a bit more. Perhaps some kind of extra warning in the
-UI for this scenario would do the trick as well.
-
-.. @+node:ekr.20130806072439.20394: *6* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio wrote:
-
-> I wouldn't change the save logic, I'd just execute "save" for the full 
->> .leo document when 
->>
->> - Node has changed in external editor.
->> - The node that changed is the only dirty node in the whole leo document.
->>
->> I don't use xemacs/vim plugin, but rather "edit in" in right click menu 
->> (contextmenu.py plugin IIRC).
->>
->
-> Ok.  In that case the contextmenu plugin should handle this. 
->
-
-I believe that c.openWith should be able to deal with this problem.  
-c.openWith creates a temporary external file and updates a node when the 
-user changes that file.  This logic is independent of the editor being 
-used; it works, for example, with Scite, my default external editor.
-
-Clearly, c.openWith (or rather, one of its helpers) is able to update the 
-node and to mark it dirty.  So at the time the node is marked dirty 
-c.openWith has an opportunity to automatically save the file containing the 
-vnode.  c.openWith can issue a colored message to the log pane, but that 
-should be the only "warning" necessary.
-
-My present plan is to write a helper, say c.write_vnode, that will discover 
-the external file (if any) containing the vnode, and immediately write that 
-external file *without* a prompt.  If there is no external file, 
-c.write_vnode could just do an ordinary save of the .leo file and all dirty 
-external files.  Alternatively, c.write_vnode could write only the .leo 
-file (the write-outline-only command) *without* clearing the c.changed bit.
-
-I believe c.write_vnode will solve this problem fairly completely.  What do 
-you think, Amigos?
-
-Edward
-.. @+node:ekr.20130806072439.20395: *6* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 9:17 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
-
->
-> Clearly, c.openWith (or rather, one of its helpers) is able to update the
-> node and to mark it dirty.
->
-
-The "helper" is the idle-time hook,  editnode_on_idle, in contextmenu.py.
-You could call this good news, because our experiments with auto-saving can
-be confined to the contextmenu plugin.  If our experiments end happily we
-can use the same techniques in the vim and xemacs plugins.
-
-I'll wait awhile for your comments before going ahead with the proposed
-changes.
-.. @+node:ekr.20130806072439.20396: *6* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Tue, Dec 11, 2012 at 5:55 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-
-> """
-> My present plan is to write a helper, say c.write_vnode, that will
-> discover the external file (if any) containing the vnode, and immediately
-> write that external file *without* a prompt.  If there is no external file,
-> c.write_vnode could just do an ordinary save of the .leo file and all dirty
-> external files.
-> """
->
-> Maybe a relatively safe solution is to do this:
->
-> 1) My present plan is to write a helper, say c.write_vnode, that will
-> discover the external file (if any) containing the vnode, and immediately
-> write that external file *without* a prompt.
->
-> But not do this:
->
-> 2) If there is no external file, c.write_vnode could just do an ordinary
-> save of the .leo file and all dirty external files.
->
-> This way, if you "want to be safe", you will create an external @file for
-> the content.
->
-> For situation 2), some kind of loud warning is in order, not sure of what
-> kind though. Red g.es?
->
-
-Thanks for this suggestion.  I have a great distrust of all operations
-containing "if" statements in their explanation.  Somehow, we need a
-simpler approach, but I don't know what it is.
-
-.. @+node:ekr.20130806072439.20397: *6* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-
-> I wouldn't change the save logic, I'd just execute "save" for the full
-> .leo document when
->
-> - Node has changed in external editor.
-> - The node that changed is the only dirty node in the whole leo document.
->
-> I don't use xemacs/vim plugin, but rather "edit in" in right click menu
-> (contextmenu.py plugin IIRC).
->
-
-Ok.  In that case the contextmenu plugin should handle this.
-
->
-> I agree that this is not an elegant proposal, in that it involves a
-> potentially surprising (if useful) special case.
->
-> I have to think this a bit more. Perhaps some kind of extra warning in the
-> UI for this scenario would do the trick as well.
->
-
-I agree that if the code is going to do something like this it should issue
-a clear warning that something has happened.  Otoh, such "clear warnings"
-tend to get ignored :-)  Indeed, the problem is that you are *already*
-ignoring such a clear warning!  Adding another warning is not likely to be
-a big help...
-
-Edward
-.. @+node:ekr.20130806211959.17373: *5* wishlist: meld integration
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-I'm slowly trying to grok leo. I love meld, it's simply the best text
-comparison I've ever seen. I wonder if a greater bit of integration between
-meld and leo is possible, and in which ways. Undoubtedly calling it as an
-external process is better than anything.
-.. @+node:ekr.20150412055611.1: *4* Bugs: can't be fixed
-.. @+node:ekr.20050202073944: *5* Can't Fix: Mac bugs
-- Icon buttons are not colored, nor do they have square borders, etc.
-- Can't delete script buttons
-.. @+node:ekr.20110111100539.12257: *6* Fix end-of-line problem (MacOS)
-Apparently, ctrl-e is not passed to Leo at all.
-
-This probably can't be fixed.
-.. @+node:ekr.20110111100539.12258: *7* Report
-http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-.. @+node:ekr.20031218072017.670: *5* Can't Fix: possible webbrowser bug
-(In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field.
-.. @+node:ekr.20130803125244.17077: *5* Cant' fix: web site for Leo google group is out of date
-From: ne1uno <eltronis@gmail.com>
-
-http://groups.google.com/group/leo-editor/about
-
-still has the old home page webpages.charter.net though it also has leoeditor.com/ for discussions.
-
-The google docs state that it is not possible to change the web site for a google group.
-.. @+node:ekr.20110619173515.14896: *5* Wrong modality level on autocompleter
-Just noticed the autocompleter pop-up is modal globally, not just for the Leo windows.  Probably should only block the Leo windows.
-.. @+node:ekr.20150412060129.1: *4* Bugs: won't be fixed
-.. @+node:ekr.20040115165036: *5* Won't fix: bug in xml doc parts
-@language html
-@ignore
-@color
-.. @+node:ekr.20040115165036.3: *6* @@file xmlcommentbug.xml
-@first
-@language HTML
-<HiMom>
-@
-This will produce, in the derived file, an XML comment with another XML comment
-embedded. Or, if you prefer, it will produce an unclosed XML comment followed by
-a well-formed one, followed by a string of text containing a comment-close
-marker.
-
-This text is sitting in the inner comment, according to the first view.
-@c
-
-
-@
-This comment is well-formed, seemingly because its content does not begin on the
-same line as the at-sign.
-@c
-</HiMom>
-.. @+node:ekr.20040115165036.1: *6* Demo XML comment bug
-@ 
-This document demonstrates what appears to be a bug in Leo 4.1 rc3, build 1.62 of December 19, 2003.
-
-It has manifested when Leo is executed under Python 2.3.3, Tk 8.4.3 under Windows 2000.
-
-In brief, derived XML files are not well-formed with respect to comments under some conditions.  Comments can wind up nested, which looks okay to humans but not to XML parsers.
-@c
-.. @+node:ekr.20040115165036.4: *6* xmlcommentbug.xml
-<?xml version='1.0'?>
-<!--@+leo-ver=4-->
-<!--@+node:@file xmlcommentbug.xml-->
-<!--@@first-->
-<!--@@language HTML-->
-<HiMom>
-<!--@+at -->
-<!--
-<!--@nonl-->
-This will produce, in the derived file, an XML comment with another XML 
-comment embedded.  Or, if you prefer, it will produce an unclosed XML comment 
-followed by a well-formed one, followed by a string of text containing a 
-comment-close marker.
-
-This text is sitting in the inner comment, according to the first view.
--->
-<!--@-at-->
-<!--@@c-->
-
-
-<!--@+at-->
-<!--
-This comment is well-formed, seemingly because its content does not begin on 
-the same line as the at-sign.
--->
-<!--@-at-->
-<!--@@c-->
-</HiMom>
-<!--@nonl-->
-<!--@-node:@file xmlcommentbug.xml-->
-<!--@-leo-->
-.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
-redoGroup oops: expecting bunch.items.  bunch.kind = typing
-redoGroup Bunch...
-dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
-kind: typing
-leading: 10
-newMiddleLines: [u'        self.setup_command() ### ']
-newNewlines: 1
-newSel: (276, 276)
-newText: None
-oldMiddleLines: [u'        self.setup_command()']
-oldNewlines: 1
-oldSel: (271, 271)
-oldText: None
-p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
-redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-trailing: 9
-undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-undoType: Typing
-yview: 0
-.. @+node:ekr.20140824043305.18303: *4* Not in any bug tracker
-.. @+node:ekr.20141017110114.18267: *5* @data qt-scintilla-styles only works in leoSetting.leo
+.. @+node:ekr.20141017110114.18267: *3* @data qt-scintilla-styles only works in leoSetting.leo
 - @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
+.. @+node:ekr.20130806072439.20380: *3* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
 When I use auto-rst import rst file, sometimes, the author write extra
@@ -1724,13 +786,13 @@ It says I need a extra "="...
 
 I have attached this file, for someone has interest to reproduce the error.
 
-.. @+node:ekr.20111010162047.15678: *5* Fix bug: Imports to @file should put @first/@last directives in root node
+.. @+node:ekr.20111010162047.15678: *3* Fix bug: Imports to @file should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *6* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *4* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -1738,8 +800,8 @@ def spam():
     pass
     
 # This is the last line.
-.. @+node:ekr.20120219152142.34262: *5* Fix bug: Revert moves the reverted tab to the right
-.. @+node:ekr.20111125072438.10217: *5* Fix bug: shell interprets characters in at-mime headings
+.. @+node:ekr.20120219152142.34262: *3* Fix bug: Revert moves the reverted tab to the right
+.. @+node:ekr.20111125072438.10217: *3* Fix bug: shell interprets characters in at-mime headings
 http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
 
 on linux, parenthesis or angled brackets in @mime headings prevent the file from
@@ -1747,274 +809,15 @@ being opened, probably because they are interpreted specially by the shell, e.g.
 they need to be escaped. Such characters should be escaped before passing the
 filename to the shell.
 
-.. @+node:ekr.20120327163022.9744: *5* Fix bug: The @auto script *must* put @first nodes in root node
+.. @+node:ekr.20120327163022.9744: *3* Fix bug: The @auto script *must* put @first nodes in root node
 Also the import commands.
 
 Especially:
     - Shebang line.
     - Python encoding line.
-.. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
+.. @+node:ekr.20111018104244.15920: *3* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20130807203905.16596: *5* PortableFileAssociator
-From the thread: Cannot open Leo files by double-click in Windows Explorer?
-https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
-
-From: HansBKK <hansbkk@gmail.com>
-
-For those like me who work in "portable" mode, there's a very cool tool
-called "PortableFileAssociator" that allows you to create a set of windows
-file associations, icons etc and enable/disable the whole profile at one
-time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows
-boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20111125072438.10216: *5* Regularize slashes and back-slashes
-http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
-
-If I 'Open' a file, I get the following node header:
-
-@edit E:/Documents/index.html
-
-If I 'Import' the same file, I get the following:
-
-@file E:\Documents\index.html
-
-Just wondering why the difference between
-
-E:/ and E:\
-
-This is probably trivial and of no consequence, but I thought it curious.
-
-Create unit tests illustrating path ops
-.. @+node:ekr.20130503061707.10515: *6* @@test path computations
-@language python
-fj = g.os_path_finalize_join
-f = g.os_path_finalize
-eu = g.os_path_expanduser
-if g.app.isExternalUnitTest:
-    loadDir = fj(g.app.loadDir, '..', 'test')
-else:
-    loadDir = g.app.loadDir
-table = (
-    (fj, '@@file fj-test-1', fj(loadDir, 'rel-path')),
-)
-for func, h, expected in table:
-    p = g.findNodeAnywhere(c, h)
-    assert p, 'not found: "%s"' % (h)
-    assert p.h.startswith('@@')
-    p.h = p.h[1:] # Remove the first @ sign.
-    try:
-        d = c.scanAllDirectives(p)
-        result = d.get('path')
-        assert result == expected, 'expected "%s", got "%s"' % (
-            expected, result)
-    finally:
-        p.h = '@' + p.h
-        c.redraw()
-.. @+node:ekr.20130503061707.10516: *7* @path rel-path
-.. @+node:ekr.20130503061707.10517: *8* @@file fj-test-1
-.. @+node:ekr.20130806072439.20732: *5* Runnable Leo in one .zip file w/ virtual machine
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Summary - it's easy to make a .zip file containing Leo and all it's
-dependencies.
-
-Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
-32 bit machines, I tried the following.
-
-Install Python (installer from python.org) 2.7.2 to 
-
-  C:\Docouments and Settings\someuser\Desktop\leo\python27
-
-Install PyQt (installer from Riverbank) 4.9 into the same folder (it
-goes there by default)
-
-Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
-
-  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
-
-Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
-
-Delete the virtual machine, purging any registry entries etc. created
-by the two installers.
-
-On a fresh machine, searched the registry for 'python' just to be sure,
-found nothing.
-
-Unzip the .zip file, then
-
-  cd C:\Docouments and Settings\someuser\Desktop\leo
-  python27\python.exe leo-editor-latest\launchLeo.py
-
-And Leo opens a blank outline, after asking for an ID, as it's supposed
-to.  Didn't test it beyond that.
-
-So, the .zip file contains all Leo needs to run, and obviously
-runLeo.bat could be added in the top level to actually launch it.
-
-Of course this is for Windows, so I think it's an improvement over
-asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.
-
-===== EKR
-
-Is this a technique that we could use for official Windows releases?
-If so, what exactly would we do?
-
-===== Terry
-
-I guess, perhaps as an all-in-one option with a system integrated
-option for those who want to use system python/qt.  Don't know if it
-violates and licensing on Python / Qt, everything's being distributed
-unaltered, so I wouldn't think so.
-
-So basically you'd give people a large .zip file and tell them to
-extract it to a folder and run the batchfile at the top level.  If they
-can't do that, they might not be ready for Leo :-)  I guess you could
-make it a self-extracting .zip, for that matter.
-
-Also, the daily snapshot could be made this way, seeing once Python and
-Qt are installed in the folder the Leo version can just be copied in.
-
-It's not uncommon for FLOSS to be distributed this way, both Blender
-and Inkscape use this approach, particularly for recent builds.
-
-===== From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which
-they can use for other things beyond Leo. Ending up with multiple instances
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO
-only for the clueless), but then of course that would be a doc that would
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *6* Re: Runnable Leo in one .zip file.
-From: Matt Wilkie <maphew@gmail.com>
-
-Since this topical today, almost a year later, I thought I'd take a run at 
-repeating this using Portable Python (http://www.portablepython.com) as a 
-base. It didn't work, but I think it should. Maybe someone else knows why. 
-
-I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
-time I selected only the Python and PyQt4 packages. Then from a fresh 
-command shell:
-
-{{{
-path=c:\windows;c:\windows\system32
-pushd x:\portapy27\App
-path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
-set pythonhome=%cd%
-set pythonpath=%cd%\Lib
-
-popd
-
-python --version
-Python 2.7.3
-
-python -c "import PyQt4"
-:: no error returned, we're good.
-
-python c:\apps\leo-editor-latest\launchLeo.py
-Leo requires Qt to be installed.
-}}}
-
-oh well.
-.. @+node:ekr.20130806072439.20744: *6* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-> PortableApps version would be FANTASTIC!!
-
-A couple of versions have been posted here already, including Terry's very
-simple sequence in the first message of this thread. Of course, we're only
-talking about Windows, but note that it works equally well either syncing
-with whatever tool (I favor Unison over SSH) or carrying around on an
-arbitrary-path'd external device, including flash drives (but they can be
-slow).
-
-Here's my more robust (hence more complex) version, xx indicating your 
-python version (mine is 27):
-
-Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
-version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
-test thoroughly. Note any new environment variables pointing to your new 
-binary locations.
-
-Now create a corresponding PythonXX folder in your "PortableApps" location 
-(I put it under "CommonFiles" along with GTK and Java) and copy everything 
-from your installed location to the portable one.
-
-You can then use the project-provided tools on the "master" computer to 
-keep your binaries updated, and they will see any local Registry entries 
-and the environment variables they created and operate normally wrt your 
-installed location (e.g. C:\PythonXX).
-
-If you have a local folder sync tool (I use Unison and WinMerge) you can 
-add to/remove from/configure your Python environment from either location, 
-otherwise just keep your installed location as the "master" and just copy 
-the whole stack over each time you do so.
-
-The whole PortableApps tree can then be sync'd/copied to any other 
-desktop(s) you like, either over the wire or via an external device, and 
-the latter can be carried for use in say an Internet cafe or client-site 
-situation.
-
-====================
-
-For use on those other computers, for running in portable mode, I use a
-"portable start menu" (PStart) which allows for its own "autolaunch" batch
-files, where I set some global environment variables to be used by
-app-specific launch batch files, including :
-
-%Path% (I add my batch folder and a general utility/tools folder)
-%HOME% (usually "E:\aasync\Data\H_HOME"
-and a custom one called %h_pa%, which points to the root of my PortableApps 
-parent (usually "D:\aasync\PortableApps")
-
-Then for each environment that requires its own custom settings, I create a 
-launch batch file that builds on that base. In the case of Python apps, 
-here's an example that opens a CMD console window:
-
-@ECHO OFF
-set 
-PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
-set PROMPT=$p_python$g
-E:
-cd \aasync
-CMD.exe
-
-I'm not sure which if any of the environment stuff Leo requires, but I 
-figure it might as well have the same environment as my Python CLI, since 
-I'll be testing shell integration, including iPython. In my leo-win.bat, 
-the last three lines above are replaced with:
-
-D:
-cd \aasync\PortableApps\leo-editor
-start "" "..\CommonFiles\Python27\pythonw.exe" 
-"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
-
-====================
-
-Note this is more than the minimum you need to just run Leo - you could of 
-course simplify it; for example, only set the environment variables Leo 
-requires, or you could just set the master computer' installation routines 
-to use a single location under PortableApps, but I prefer to keep them 
-separate for testing purposes.
-
-I hope you (and others googling this later) find this useful.
-.. @+node:ekr.20130806072439.20485: *5* Whitespace when importing java file using @auto
+.. @+node:ekr.20130806072439.20485: *3* Whitespace when importing java file using @auto
 Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
 From: Eoin <eoinmccarthy@fastmail.fm>
 
@@ -2076,58 +879,116 @@ disable errors (and not add @ignore) for underindented comments for
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20111114085925.9932: *5* Why does the unittest/output folder contain empty files?
-Related nodes:
-ic.exportHeadlines
-TM.makeImportExportSuite
-class ImportExportTestCase
-c.exportHeadlines
-.. @+node:ekr.20130807203905.16594: *5* Wishlist for newbies (Fidel)
+.. @+node:ekr.20160404062404.1: ** Bugs: Won't/Can't fix
+.. @+node:ekr.20050202073944: *3* Can't Fix: Mac bugs
+- Icon buttons are not colored, nor do they have square borders, etc.
+- Can't delete script buttons
+.. @+node:ekr.20110111100539.12257: *4* Fix end-of-line problem (MacOS)
+Apparently, ctrl-e is not passed to Leo at all.
+
+This probably can't be fixed.
+.. @+node:ekr.20110111100539.12258: *5* Report
+http://mail.google.com/mail/#inbox/12c5646c646a90d2
+
+I expect C-e to go to end-of-line, but C-e works as the next line.
+Alt-x and check end-of-line and I get the following result.
+
+I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
+
+Leo 4.8 rc1, build 3715, November 15, 2010
+Python 2.6.1, qt version 4.7.0
+darwin
+
+I remember I could use C-e, but it doesn't work anymore even after I
+reinstall the Leo.
+
+As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
+After having @bool swap_mac_keys = True, I can use C-e.
+
+C-a move the cursor to the start of line, but C-e seems to move the
+cursor the first of the next line, which is the end of last line + 1.
+If the line is the final one, C-e moves the cursor to the end of line
+as there's no next line.
+
+.. @+node:ekr.20031218072017.670: *3* Can't Fix: possible webbrowser bug
+(In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field.
+.. @+node:ekr.20110619173515.14896: *3* Can't Fix: Wrong modality level on autocompleter
+Just noticed the autocompleter pop-up is modal globally, not just for the Leo windows.  Probably should only block the Leo windows.
+.. @+node:ekr.20130916105324.19894: *3* Won't fix: #1226353: @shadow does not retain outline structure properly
 @language rest
 
-From the thread: "Associate .Leo files to open with Leo when double click"
-https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+https://bugs.launchpad.net/leo-editor/+bug/1226353
 
-From: <fidelperez@gmail.com>
+===== EKR
 
-1. Include a small file within the Quickstart guide which would associate
-   files automatically. (Or maybe asking for imput, which can be done
-   through a Leo node and this way the user learns about its
-   functionality).
+The most important problem is compatibility.  As I have just verified,
+@shadow will work even if the private file does not exist,
+but all outline structure will be lost.  Therefore, it may be best
+not to try to read old (ver-4thin) files at all.
 
-2. More buttons or scripts in quick start guide, preferably before the
-   "programming" section, so when a new user opens it, he has had the
-   opportunity to do Ctrl+B on several scripts (for instance, showing in
-   the log the name of all the nodes within the selected one, having some
-   subnodes with numbers and doing math on them and showing the result on
-   the log pane, and as much "silly" but visual functions as possible so
-   the user, by going pressing ctrl+b on each, gets a bigger chance to
-   understand what is Leo. In my oppinion some users will just stop in the
-   quickguide if they are not presented with such a thing before going to
-   docs.leo etc.
+@shadow does not reload the following simple file correctly!
 
-3. The description of the plugins is not as accessible as it should be. A
-   script for activating them easier, been a week using Leo and still cant
-   quite activate, find the descriptions or use them freely... And if each
-   plugin or script had an example of use that would be priceless, for
-   instance, including them all in quickstart (both scripts, plugins
-   branchs) and then the new user could just go through all clicking on the
-   examples and just seeing Leo work and show its potential. I know some of
-   those are done but as I said, after a week or so I still am very
-   confused...
++ @shadow
+   @others
+  + child 1
+    child 1.1
 
-4. Quickstart should be open by default (instead of current Leo workbook)
-   at least until the user changes some config and prevents that from
-   happening. Is there any "load previous tabs" functionality? (IE open the
-   Leo files which where open when it was closed the last time)
-.. @+node:ekr.20150331053736.1: *4* Waiting for answers
-- Waiting for answer re: ubuntu splashscreen
-    http://qt-project.org/forums/viewthread/30837/
-    createSplashScreen
+shadow files (the private files containing the sentinels) use the *old*
+(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
+sentinels.
 
-- Waiting for answer to solarized question:
-    http://qt-project.org/forums/viewthread/30838/
-    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
+The old sentinels don't have an explicit notion of nesting level; the new
+sentinels do, so it would seem that the way to fix this problem is to use
+new sentinels. However, this would be a major change to the inner workings
+of the @shadow logic.
+.. @+node:ekr.20130908104426.11242: *3* Won't fix: #914221: bound method ViewRenderedController.updated
+https://bugs.launchpad.net/leo-editor/+bug/914221
+
+Summary of a *long* discussion: this may be a docutils issue, and does not
+seem easy to fix.
+.. @+node:ekr.20150410043749.1: ** Maybe: no due date
+@language rest
+@wrap
+.. @+node:ekr.20131101080215.16488: *3* Outreach to magazine editors: create videos
+@language rest
+@wrap
+
+Steve Litt
+
+EKR summary: Videos will encourage magazine editors to write about Leo.
+
+**Get more fans who can write and who are listened to**
+
+To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo.
+
+**Leo has an image problem**
+
+Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago. VimOutliner is faster and has the 90% of outlining features that people use 90% of the time.
+
+95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
+
+**Make a 3 minute video**
+
+Leo is a mechanism by which you can specify a computer program as an outline-like thing in an outliner-like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
+
+**Video 1**: will show how to compose an application outline and turn it into a program.
+
+The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
+
+**Video 2**: will show hhow to make a GUI app.
+
+**Video 3**: will show how to write a book in Leo.
+
+Flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
+
+**Publicize these videos**
+
+You're going to get some journalists excited, and those are your reviews.
+
+**Start publicizing different ways people use Leo.**
+
+Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
+.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
 .. @+node:ekr.20160226051341.1: *3* New features (maybe)
 .. @+node:ekr.20141210123805.9: *4* Add support for rope
 .. @+node:ekr.20150602122614.1: *4* Beautifier warns about long lines
@@ -2164,10 +1025,617 @@ http://leoeditor.com/load-leo.html
 - Allow outline/body panes to be resized.
 - Support hightlight.js: https://highlightjs.org/
 .. @+node:ekr.20160318133309.1: *3* Leo in coffeescript
-.. @+node:ekr.20120516140545.9987: ** Wishlist
+.. @+node:ekr.20120516140545.9987: ** Wishlist: no due date
 @language rest
 @wrap
+.. @+node:ekr.20130908104426.11269: *3* Bug-tracker: Wish-list
+Some appear to be duplicates, or closely related.
+.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
+From: <offray@riseup.net>
+
+I have been using txt2tags + Nested Editor to produce structured docs in 
+a light markup and exporting them to HTML and LaTeX > pdf. The fine 
+tunning on the pdf output is done by editing the LaTeX source in Leo. I 
+like the aesthetic of the source code and the outputs and I have 
+contacted the Nested author in order to get some cross-pollination 
+between it and Leo [1].
+
+[1] 
+https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+
+Now I think that is time to start hacking Leo for a better support of my 
+work flow and the first thing I would like to have is a "@paragraph" 
+directive that works the same as @rst-no-head but can be used in any 
+part of a (sub)tree, even if is not @rst (sub)tree. This would come 
+handy in chunking and reassembling LaTeX docs without marking up the 
+parts with "<<chunk>>" tags.
+
+===== EKR
+
+Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
+
+===== offray As I have say repeatedly I'm an "end user" 
+of Leo and I have browse the doc about developing in Leo in [2] and I 
+plan to follow it as a tutorial, but any pointer to a more detailed 
+section to pay attention or to the Leo trees to start hacking is welcomed
+
+[2] http://webpages.charter.net/edreamleo/scripting.html
+
+.. @+node:ekr.20130806072439.20374: *4* aha moment when using leo script with @url, and feature request ;-)
+From: HaveF <iamaplayer@gmail.com>
+
+1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
+in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
+leo-file-B.leo.
+
+When I'm working on leo-file-B.leo, I may have ideas to improve the
+@button button-1, but at that time(working on leo-file-B.leo), I may
+forget where the original place of @button button-1 is. Even I store
+the original scripts in the default workbook.leo is a tedious work to
+deal with(open it, locate where the original script is, update it...)
+
+But! After I add the @url at the first line of @button button-1, I can
+decide if the improvements what I made on leo-file-B.leo's @button button-1
+should or shouldn't be merged to the original and upstream @button
+button-1(in leo-file-A.leo) easily by just a click.
+
+And if I work on leo-file-C.leo, I want to use the same script, but I just
+only remember I use the script in the leo-file-B.leo instead of original
+place. With @url I can easily jump to original place, and copy it to
+leo-file-C.leo.
+
+Using @url in the leo script, I can make the scripts consistency and
+diversity at same time.
+
+Great! But, Wait, wait!
+
+2. Feature request.  At this time, you can use this idea by comment the @url
+line after jump. If @url isn't comment, the leo-editor will say...
+SyntaxError: invalid syntax at the @url line.
+
+Maybe it is a good idea to omit the @url line in the script when executing
+script?
+
+===== EKR
+
+Yes.  I think this is a good idea.  A similar idea occurred to me when
+looking at @rclick nodes.  At present, the context_menu plugin contains an
+ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
+needed at present when the @button node contains @others: the @rclick node
+can't be part of the script "pulled in" by @others.
+
+It would be much more elegant to ignore @rclick nodes when computing the
+script.  This would require a change to the @others logic, but I think it
+is worthwhile.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I do this kind of thing by keeping buttons in @files...
+
+@file ~/.leo/gen  # general utility buttons
+@file ~/.leo/dml  # tools for editing an XML dialect I use
+@file ~/.leo/sql  # tools for editing SQL / interacting with server
+
+so changes made in one outline are automatically propagated to other
+outlines next time they're reloaded.  You just reference the files
+in each outline where you want those buttons.
+
+> 2. Feature request
+> At this time, you can use this idea by comment the @url line
+> after jump. If @url isn't comment, the leo-editor will say...
+> SyntaxError: invalid syntax
+> at the @url line.
+> 
+> Maybe it is a good idea to omit the @url line in the script when executing
+> script?
+
+This probably would make sense, already the scripting machinery is
+ignoring things like @nocolor or @language cobol or @nowrap etc.
+
+Maybe you could file a wish-list bug item for tracking.
+.. @+node:ekr.20130806072439.20523: *4* RST3 Tables with Nodes as Rows
+From: Craig Johnson <craig@hivemind.net>
+
+I'm trying to use rst tables by using the table markup in the body text, 
+with one node per table row.  However it seems that the nodes are being 
+preceded with a line-feed even-though @rst-no-head is in effect.
+ 
+Can anybody help with preventing that line-feed, it breaks the rst table 
+formatting.
+
+===== EKR
+
+Hmm.  My guess is that a new @rst directive would be needed.  The
+workaround would seem to be to put the entire table in a single node, but
+presumably you have your reasons for not wanting to do that.
+
+Feel free to file a wish-list bug.
+
+===== Craig Johnson <craig@hivemind.net>
+ 
+I've been creating rst tables using rst markup directly in the body text.  
+For field lists.  As the same field apears in multiple programs, I would 
+like to use Leo's cloning to reproduce a table row in several locations in 
+the tree.  The issue that prevents me from doing this, is that an 
+@rst-no-head headline seems to generate a line-feed preceeding the body 
+text in the derived file which breaks the table parse.
+ 
+Maybe a example:
+The Leo tree:
+ 
++Program1
+  +Parameters
+       =================== ========
+       Field Name          Format
+       =================== ========
+    +@rst-no-head Field1
+        prmField1          Integer
+ 
+Results in the following markup
+Program1
+^^^^^^^^^
+Parameters
+~~~~~~~~~
+=================== ========
+Field Name          Format
+=================== ========
+
+prmField1           Integer
+That blank line in the markup before the node body text breaks the table.
+ 
+===== wgw <wgwinder@gmail.com>
+
+
+No fix (sorry), but can confirm the problem -- it should go in the bug
+list. (I looked at the rst code, and fainted)
+
+I note that your format wouldn't work without closing the table off:
+
+
+Field Name                       Format
+ add                                    add
+
+But you are right: @rst-no-head doesn't work properly.
+
+Looks like you can only post process the rst intermediate file and=20
+eliminate that extra line.
+.. @+node:ekr.20141115150149.5: *4* Wishlist bug 62: Syntax @color settings don't dereference
+@language rest
+
+https://github.com/leo-editor/leo-editor/issues/62
+
+Unlike the stylesheet @colors, the syntax @color settings don't
+dereference. For example::
+
+    @color mycomment = #586E76
+    @color comment1_color = @mycomment
+    @color comment2_color = @mycomment
+    @color comment3_color = @mycomment
+    @color comment4_color = @mycomment
+
+Result:
+Errors in the console (see below) and uncolored comments in code (same as normal fg color).
+
+Console output:
+** isPython3: False
+Leo 4.11 final, build 20140922060345, Mon Sep 22 06:03:44 CDT 2014
+Git repo info: branch = master, commit = c93bd17
+Python 2.7.6, PyQt version 4.8.5
+Windows 7 x86 (build 6.1.7601) SP1
+leoID=peckj (in C:\Users\PeckJ.leo)
+reading settings in C:\cygwin\home\PeckJ\repos\leo\leo-editor\leo\config\leoSettings.leo
+reading settings in C:\Users\PeckJ.leo\myLeoSettings.leo
+reading settings in C:\Users\PeckJ.leo\workbook.leo
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
+setTag unknown color name @mycomment mainLoop,python_rule0,match_eol_span,colorRangeWithTag
+.. @+node:ekr.20111125072438.10204: *4* Wishlist bug 882243: Clones sometimes not saved: change how @others works
+See https://bugs.launchpad.net/leo-editor/+bug/882243
+
+In Leo, I made this file:
+
+@file test.txt
+@others
+.....test1
+     test: these are clones
+.....test2
+     @others
+
+      what is going on...?
+..........test1 <--- this is cloned
+          test: these are clones
+
+The output file does not have the cloned node:
+
+#@+leo-ver=5-thin
+#@+node:bill.20111025150533.3528: * @thin test.txt
+#@+others
+#@+node:bill.20111025150533.3527: ** test1
+test: these are clones
+#@+node:bill.20111025150533.3529: ** test2
+#@+others
+#@-others
+
+what is going on...?
+#@-others
+#@-leo
+
+I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
+
+Here is the copied node:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2"/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
+<v t="bill.20111025150533.3527"><vh>test1</vh></v>
+<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
+<v t="bill.20111025150533.3527"></v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="bill.20111025150533.3527">test: these are clones
+</t>
+<t tx="bill.20111025150533.3528">@others
+</t>
+<t tx="bill.20111025150533.3529">@others
+
+what is going on...?</t>
+</tnodes>
+</leo_file>
+
+Here is the copied leo file:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+ <global_window_position top="50" left="50" height="500" width="700"/>
+ <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"
+expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
+</vnodes>
+<tnodes>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20111216105907.10218: *5* My response: this is a wishlist item
+Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
+About bug 882243: clones sometimes not saved
+
+I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
+
+The surprise
+=========
+
+To paraphrase the original bug report, suppose we have the following @file tree:
+
++ @file test.txt
+@others
+  + node 1 (cloned)
+    node 1 text.
+  + node 2
+     @others
+    + node 1 (cloned)
+       node 1 text.
+
+As usual, lines preceded by "+" denote headlines: all other lines are body text.
+
+The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
+
+History
+=====
+
+I would like to call this a wishlist item because the
+present code quite intentionally writes *any* node
+(including cloned nodes) only once. That is, the write code
+sets a bit when writing a node, and @others ignores any
+nodes with that bit set.
+
+You could call this a bug in the @others write logic, but at
+one time it was done explicitly and on purpose.
+
+I don't remember why this was so, but I do remember it *was*
+so. It may have been an artifact of Leo's old representation
+of clones that used both vnodes and tnodes. tnodes no longer
+exist in the one-node world that we have been living in for
+several years, and it may well be time to revisit the
+original design, but I would rather not do that just now
+because there are several "real" bugs that need attention
+asap.
+
+Workaround
+=========
+
+Because this is an issue involving @others, you might assume
+that a workaround involving sections would be possible. You
+would be correct. The following file works as expected::
+
++ @file test.txt
+<< node 1 >>
+<< node 2 >>
+  + << node 1>> (cloned)
+     node 1 text.
+  + << node 2 >>
+     << node 1 >>
+    + << node 1 >>(cloned)
+       node 1 text.
+.. @+node:ekr.20130806072439.20387: *4* wishlist: Autosaving when external file saved
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Just an idea:
+
+After discovering sublime edit, I have started using external editor mode
+more (rclick -> Edit in...). Annoyance there is that once you save in
+external editor, you still have to go to leo and save there, or your
+changes will be lost if you close leo without saving.
+
+This can lead to loss of data if you don't routinely agree to save changes
+when closing Leo. I often don't do this, as I save all the time when I
+type, and don't want to save accidental changes I might have done to the
+leo document; I don't usually have time to review changes when closing a
+document.
+
+Maybe .leo could automatically save the tree if and only if the externally
+edited node is the only dirty one.
+
+===== EKR
+
+I agree there is a problem, but I don't believe hacking Leo's save logic is
+a good idea, for several reasons:
+
+1. There might be several dirty nodes, and you could still lose data
+(strictly following your suggestion) in that case.
+
+2. The write logic for external files is complex, mainly due to file
+caching.  I tolerate that complexity because caching is such a big win.
+But it would not be easy to do @file AI to discover the special case you
+mention.
+
+3. Imo, the proper place to handle this problem is in the vim and xemacs
+plugins.  These plugins are responsible for the interaction with Leo.
+
+Would it work for you if the xemacs and vim plugins automatically saved an
+external file whenever the plugin caused a node in that file to become
+dirty?  This would likely solve the problem you mention, although I
+wouldn't be my life on it.
+
+Your comments, please.
+
+===== Matt Wilkie <maphew@gmail.com>
+
+I've been bit by this several times too.
+
+It's lead to me relying on pyscripter (my usual external editor these days,
+has more useful to me command completion than leo) more and more, when I
+otherwise might just nip out, do a few things and come back.
+
+===== EKR
+
+One thing that must be done in any case is to provide alt-x commands for
+all context-menu entries.  There is something wrong with having to use the
+mouse at all...
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+Coincidentally I added the alt-X command 'context-menu-open' a week or
+so ago, letting you open the context menu with a keyboard binding so
+you can then navigate the menu with the cursor keys.
+
+This is because not all menu entries can have alt-X commands,
+specifically the quickMove plugins commands for moving nodes to
+pre-defined destinations in other outlines, this is basically a list
+selection operation, but being on a sub-sub-menu it's a pain with the
+mouse, and easier with the cursor keys.
+
+This is part of my method for handling todo items for different
+projects, they are imported from email to one outline, and then I file
+them to the relevant project outline's todo node.  Which creates a
+management problem I just found a surprisingly viable solution for I'll
+mention in another post.
+
+===== From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I wouldn't change the save logic, I'd just execute "save" for the full .leo
+document when
+
+- Node has changed in external editor.
+- The node that changed is the only dirty node in the whole leo document.
+
+I don't use xemacs/vim plugin, but rather "edit in" in right click menu
+(contextmenu.py plugin IIRC).
+
+I agree that this is not an elegant proposal, in that it involves a
+potentially surprising (if useful) special case.
+
+I have to think this a bit more. Perhaps some kind of extra warning in the
+UI for this scenario would do the trick as well.
+
+.. @+node:ekr.20130806072439.20394: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio wrote:
+
+> I wouldn't change the save logic, I'd just execute "save" for the full 
+>> .leo document when 
+>>
+>> - Node has changed in external editor.
+>> - The node that changed is the only dirty node in the whole leo document.
+>>
+>> I don't use xemacs/vim plugin, but rather "edit in" in right click menu 
+>> (contextmenu.py plugin IIRC).
+>>
+>
+> Ok.  In that case the contextmenu plugin should handle this. 
+>
+
+I believe that c.openWith should be able to deal with this problem.  
+c.openWith creates a temporary external file and updates a node when the 
+user changes that file.  This logic is independent of the editor being 
+used; it works, for example, with Scite, my default external editor.
+
+Clearly, c.openWith (or rather, one of its helpers) is able to update the 
+node and to mark it dirty.  So at the time the node is marked dirty 
+c.openWith has an opportunity to automatically save the file containing the 
+vnode.  c.openWith can issue a colored message to the log pane, but that 
+should be the only "warning" necessary.
+
+My present plan is to write a helper, say c.write_vnode, that will discover 
+the external file (if any) containing the vnode, and immediately write that 
+external file *without* a prompt.  If there is no external file, 
+c.write_vnode could just do an ordinary save of the .leo file and all dirty 
+external files.  Alternatively, c.write_vnode could write only the .leo 
+file (the write-outline-only command) *without* clearing the c.changed bit.
+
+I believe c.write_vnode will solve this problem fairly completely.  What do 
+you think, Amigos?
+
+Edward
+.. @+node:ekr.20130806072439.20395: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 9:17 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
+
+>
+> Clearly, c.openWith (or rather, one of its helpers) is able to update the
+> node and to mark it dirty.
+>
+
+The "helper" is the idle-time hook,  editnode_on_idle, in contextmenu.py.
+You could call this good news, because our experiments with auto-saving can
+be confined to the contextmenu plugin.  If our experiments end happily we
+can use the same techniques in the vim and xemacs plugins.
+
+I'll wait awhile for your comments before going ahead with the proposed
+changes.
+.. @+node:ekr.20130806072439.20396: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Tue, Dec 11, 2012 at 5:55 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+
+> """
+> My present plan is to write a helper, say c.write_vnode, that will
+> discover the external file (if any) containing the vnode, and immediately
+> write that external file *without* a prompt.  If there is no external file,
+> c.write_vnode could just do an ordinary save of the .leo file and all dirty
+> external files.
+> """
+>
+> Maybe a relatively safe solution is to do this:
+>
+> 1) My present plan is to write a helper, say c.write_vnode, that will
+> discover the external file (if any) containing the vnode, and immediately
+> write that external file *without* a prompt.
+>
+> But not do this:
+>
+> 2) If there is no external file, c.write_vnode could just do an ordinary
+> save of the .leo file and all dirty external files.
+>
+> This way, if you "want to be safe", you will create an external @file for
+> the content.
+>
+> For situation 2), some kind of loud warning is in order, not sure of what
+> kind though. Red g.es?
+>
+
+Thanks for this suggestion.  I have a great distrust of all operations
+containing "if" statements in their explanation.  Somehow, we need a
+simpler approach, but I don't know what it is.
+
+.. @+node:ekr.20130806072439.20397: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+
+> I wouldn't change the save logic, I'd just execute "save" for the full
+> .leo document when
+>
+> - Node has changed in external editor.
+> - The node that changed is the only dirty node in the whole leo document.
+>
+> I don't use xemacs/vim plugin, but rather "edit in" in right click menu
+> (contextmenu.py plugin IIRC).
+>
+
+Ok.  In that case the contextmenu plugin should handle this.
+
+>
+> I agree that this is not an elegant proposal, in that it involves a
+> potentially surprising (if useful) special case.
+>
+> I have to think this a bit more. Perhaps some kind of extra warning in the
+> UI for this scenario would do the trick as well.
+>
+
+I agree that if the code is going to do something like this it should issue
+a clear warning that something has happened.  Otoh, such "clear warnings"
+tend to get ignored :-)  Indeed, the problem is that you are *already*
+ignoring such a clear warning!  Adding another warning is not likely to be
+a big help...
+
+Edward
+.. @+node:ekr.20130806211959.17373: *4* wishlist: meld integration
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+I'm slowly trying to grok leo. I love meld, it's simply the best text
+comparison I've ever seen. I wonder if a greater bit of integration between
+meld and leo is possible, and in which ways. Undoubtedly calling it as an
+external process is better than anything.
 .. @+node:ekr.20140704052551.17951: *3* Code
+.. @+node:ekr.20111125072438.10216: *4* Regularize slashes and back-slashes
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it curious.
+
+Create unit tests illustrating path ops
+.. @+node:ekr.20130503061707.10515: *5* @@test path computations
+@language python
+fj = g.os_path_finalize_join
+f = g.os_path_finalize
+eu = g.os_path_expanduser
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir, '..', 'test')
+else:
+    loadDir = g.app.loadDir
+table = (
+    (fj, '@@file fj-test-1', fj(loadDir, 'rel-path')),
+)
+for func, h, expected in table:
+    p = g.findNodeAnywhere(c, h)
+    assert p, 'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected, 'expected "%s", got "%s"' % (
+            expected, result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20130503061707.10516: *6* @path rel-path
+.. @+node:ekr.20130503061707.10517: *7* @@file fj-test-1
 .. @+node:ekr.20130806072439.21341: *4* * Node pipes
 From: Kent Tenney <ktenney@gmail.com>
 
@@ -5188,6 +4656,220 @@ Ctrl-B also runs the script in the body, but not in a persistent namespace, runn
 I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
 .. @+node:ekr.20050509085713: *3* Installer
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
+.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
+From the thread: Cannot open Leo files by double-click in Windows Explorer?
+https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
+
+From: HansBKK <hansbkk@gmail.com>
+
+For those like me who work in "portable" mode, there's a very cool tool
+called "PortableFileAssociator" that allows you to create a set of windows
+file associations, icons etc and enable/disable the whole profile at one
+time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows
+boxes and bored with having to tweak each one separately.
+.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file w/ virtual machine
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+Summary - it's easy to make a .zip file containing Leo and all it's
+dependencies.
+
+Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
+32 bit machines, I tried the following.
+
+Install Python (installer from python.org) 2.7.2 to 
+
+  C:\Docouments and Settings\someuser\Desktop\leo\python27
+
+Install PyQt (installer from Riverbank) 4.9 into the same folder (it
+goes there by default)
+
+Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
+
+  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
+
+Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
+
+Delete the virtual machine, purging any registry entries etc. created
+by the two installers.
+
+On a fresh machine, searched the registry for 'python' just to be sure,
+found nothing.
+
+Unzip the .zip file, then
+
+  cd C:\Docouments and Settings\someuser\Desktop\leo
+  python27\python.exe leo-editor-latest\launchLeo.py
+
+And Leo opens a blank outline, after asking for an ID, as it's supposed
+to.  Didn't test it beyond that.
+
+So, the .zip file contains all Leo needs to run, and obviously
+runLeo.bat could be added in the top level to actually launch it.
+
+Of course this is for Windows, so I think it's an improvement over
+asking people to install Python and PyQt first, but neither of those
+steps was that hard in Windows anyway.
+
+===== EKR
+
+Is this a technique that we could use for official Windows releases?
+If so, what exactly would we do?
+
+===== Terry
+
+I guess, perhaps as an all-in-one option with a system integrated
+option for those who want to use system python/qt.  Don't know if it
+violates and licensing on Python / Qt, everything's being distributed
+unaltered, so I wouldn't think so.
+
+So basically you'd give people a large .zip file and tell them to
+extract it to a folder and run the batchfile at the top level.  If they
+can't do that, they might not be ready for Leo :-)  I guess you could
+make it a self-extracting .zip, for that matter.
+
+Also, the daily snapshot could be made this way, seeing once Python and
+Qt are installed in the folder the Leo version can just be copied in.
+
+It's not uncommon for FLOSS to be distributed this way, both Blender
+and Inkscape use this approach, particularly for recent builds.
+
+===== From: HansBKK <hansbkk@gmail.com>
+
+If something like this **is** done, it should IMO be packaged as an
+alternative to the normal installation procedure.
+
+You would definitely get marketing exposure by getting the specs from
+PortableApps.com and let them host it there as  "Portable Leo", tracking
+the "official" Portable Python (currently 2.7.2) as a dependency, obviously
+including QT etc as well. But it would need to be kept up to date. . .
+
+Most Windows users would be better served by following the normal
+installation procedure and ending up with a
+registry-and-environment-variables-complete install of Python et al which
+they can use for other things beyond Leo. Ending up with multiple instances
+of Python to maintain is likely to cause more problems.
+
+And the normal Windows install just isn't that hard, really! Improving the
+current instructions, by providing a step-by-step "cookbook" with direct
+links to the download packages etc might make it a **little** easier (IMO
+only for the clueless), but then of course that would be a doc that would
+need pretty frequent updates, which if I may be so bold doesn't seem to
+happen too quickly on the doc side.
+.. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
+From: Matt Wilkie <maphew@gmail.com>
+
+Since this topical today, almost a year later, I thought I'd take a run at 
+repeating this using Portable Python (http://www.portablepython.com) as a 
+base. It didn't work, but I think it should. Maybe someone else knows why. 
+
+I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
+time I selected only the Python and PyQt4 packages. Then from a fresh 
+command shell:
+
+{{{
+path=c:\windows;c:\windows\system32
+pushd x:\portapy27\App
+path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
+set pythonhome=%cd%
+set pythonpath=%cd%\Lib
+
+popd
+
+python --version
+Python 2.7.3
+
+python -c "import PyQt4"
+:: no error returned, we're good.
+
+python c:\apps\leo-editor-latest\launchLeo.py
+Leo requires Qt to be installed.
+}}}
+
+oh well.
+.. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
+From: HansBKK <hansbkk@gmail.com>
+
+> PortableApps version would be FANTASTIC!!
+
+A couple of versions have been posted here already, including Terry's very
+simple sequence in the first message of this thread. Of course, we're only
+talking about Windows, but note that it works equally well either syncing
+with whatever tool (I favor Unison over SSH) or carrying around on an
+arbitrary-path'd external device, including flash drives (but they can be
+slow).
+
+Here's my more robust (hence more complex) version, xx indicating your 
+python version (mine is 27):
+
+Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
+version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
+test thoroughly. Note any new environment variables pointing to your new 
+binary locations.
+
+Now create a corresponding PythonXX folder in your "PortableApps" location 
+(I put it under "CommonFiles" along with GTK and Java) and copy everything 
+from your installed location to the portable one.
+
+You can then use the project-provided tools on the "master" computer to 
+keep your binaries updated, and they will see any local Registry entries 
+and the environment variables they created and operate normally wrt your 
+installed location (e.g. C:\PythonXX).
+
+If you have a local folder sync tool (I use Unison and WinMerge) you can 
+add to/remove from/configure your Python environment from either location, 
+otherwise just keep your installed location as the "master" and just copy 
+the whole stack over each time you do so.
+
+The whole PortableApps tree can then be sync'd/copied to any other 
+desktop(s) you like, either over the wire or via an external device, and 
+the latter can be carried for use in say an Internet cafe or client-site 
+situation.
+
+====================
+
+For use on those other computers, for running in portable mode, I use a
+"portable start menu" (PStart) which allows for its own "autolaunch" batch
+files, where I set some global environment variables to be used by
+app-specific launch batch files, including :
+
+%Path% (I add my batch folder and a general utility/tools folder)
+%HOME% (usually "E:\aasync\Data\H_HOME"
+and a custom one called %h_pa%, which points to the root of my PortableApps 
+parent (usually "D:\aasync\PortableApps")
+
+Then for each environment that requires its own custom settings, I create a 
+launch batch file that builds on that base. In the case of Python apps, 
+here's an example that opens a CMD console window:
+
+@ECHO OFF
+set 
+PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
+set PROMPT=$p_python$g
+E:
+cd \aasync
+CMD.exe
+
+I'm not sure which if any of the environment stuff Leo requires, but I 
+figure it might as well have the same environment as my Python CLI, since 
+I'll be testing shell integration, including iPython. In my leo-win.bat, 
+the last three lines above are replaced with:
+
+D:
+cd \aasync\PortableApps\leo-editor
+start "" "..\CommonFiles\Python27\pythonw.exe" 
+"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
+
+====================
+
+Note this is more than the minimum you need to just run Leo - you could of 
+course simplify it; for example, only set the environment variables Leo 
+requires, or you could just set the master computer' installation routines 
+to use a single location under PortableApps, but I prefer to keep them 
+separate for testing purposes.
+
+I hope you (and others googling this later) find this useful.
 .. @+node:ekr.20120515193246.10084: *3* Importers
 .. @+node:ekr.20101004092958.5914: *4* Add treepad scanner (contains code!)
 treepad.py is from the treepad website
