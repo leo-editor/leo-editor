@@ -91,6 +91,7 @@ class LeoQtGui(leoGui.LeoGui):
             s = g.toUnicode(s)
             QtWidgets.QApplication.processEvents()
             # Fix #241: QMimeData object error
+            # g.trace('QString', QString)
             cb.setText(QString(s))
             QtWidgets.QApplication.processEvents()
             if trace: g.trace(len(s), type(s), s[: 25])

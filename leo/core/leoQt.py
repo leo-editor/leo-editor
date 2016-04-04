@@ -20,13 +20,6 @@ import leo.core.leoGlobals as g
 strict = False
 trace = False
 fail = g.in_bridge
-# Always define QString.
-try:
-    # From PyQt4 4.6+ in Python3 QString doesn't exist.
-    # Use Python3 unicode objects (string literals).
-    QString = QtCore.QString
-except (ImportError, NameError):
-    QString = g.u # g.u(s) returns s in Python 3.
 if fail:
     pass
 else:
@@ -43,9 +36,11 @@ else:
                 raise
             else:
                 fail = True
+# Always define QString.
 # Complete the imports.
 if fail:
     isQt5 = False
+    QString = g.u
     Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
     QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
     phonon = uic = None
@@ -87,6 +82,10 @@ if fail:
     pass
 elif isQt5:
     try:
+        QString = QtCore.QString
+    except AttributeError:
+        QString = g.u # Use default
+    try:
         import PyQt5.QtDeclarative as QtDeclarative
     except ImportError:
         QtDeclarative = None
@@ -116,6 +115,10 @@ elif isQt5:
     except ImportError:
         QtWebKitWidgets = None
 else:
+    try:
+        QString = QtCore.QString
+    except AttributeError:
+        QString = g.u
     try:
         import PyQt4.QtDeclarative as QtDeclarative
     except ImportError:
