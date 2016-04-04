@@ -36,7 +36,6 @@ else:
                 raise
             else:
                 fail = True
-# Always define QString.
 # Complete the imports.
 if fail:
     isQt5 = False
@@ -83,7 +82,7 @@ if fail:
 elif isQt5:
     try:
         QString = QtCore.QString
-    except AttributeError:
+    except Exception:
         QString = g.u # Use default
     try:
         import PyQt5.QtDeclarative as QtDeclarative
@@ -117,7 +116,7 @@ elif isQt5:
 else:
     try:
         QString = QtCore.QString
-    except AttributeError:
+    except Exception:
         QString = g.u
     try:
         import PyQt4.QtDeclarative as QtDeclarative
