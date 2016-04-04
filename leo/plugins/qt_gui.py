@@ -439,40 +439,39 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         if g.unitTesting:
             return ''
+        if startpath is None:
+            startpath = os.curdir
+        parent = None
+        filter_ = self.makeFilter(filetypes)
+        dialog = QtWidgets.QFileDialog()
+        self.attachLeoIcon(dialog)
+        if multiple:
+            c.in_qt_dialog = True
+            lst = dialog.getOpenFileNames(parent, title, startpath, filter_)
+            c.in_qt_dialog = False
+            if isQt5: # this is a *Py*Qt change rather than a Qt change
+                lst, selected_filter = lst
+            files = [g.u(s) for s in lst]
+            if files:
+                c.last_dir = g.os_path_dirname(files[-1])
+                if trace: g.trace('c.last_dir', c.last_dir)
+            return files
         else:
-            if startpath is None:
-                startpath = os.curdir
-            parent = None
-            filter_ = self.makeFilter(filetypes)
-            d = QtWidgets.QFileDialog()
-            self.attachLeoIcon(d)
-            if multiple:
-                c.in_qt_dialog = True
-                lst = d.getOpenFileNames(parent, title, startpath, filter)
-                c.in_qt_dialog = False
-                if isQt5: # this is a *Py*Qt change rather than a Qt change
-                    lst, selected_filter = lst
-                files = [g.u(s) for s in lst]
-                if files:
-                    c.last_dir = g.os_path_dirname(files[-1])
-                    if trace: g.trace('c.last_dir', c.last_dir)
-                return files
-            else:
-                c.in_qt_dialog = True
-                s = d.getOpenFileName(
-                    parent,
-                    title,
-                    # startpath,
-                    g.init_dialog_folder(c, c.p, use_at_path=True),
-                    filter_)
-                c.in_qt_dialog = False
-                if isQt5:
-                    s, selected_filter = s
-                s = g.u(s)
-                if s:
-                    c.last_dir = g.os_path_dirname(s)
-                    if trace: g.trace('c.last_dir', c.last_dir)
-                return s
+            c.in_qt_dialog = True
+            s = dialog.getOpenFileName(
+                parent,
+                title,
+                # startpath,
+                g.init_dialog_folder(c, c.p, use_at_path=True),
+                filter_)
+            c.in_qt_dialog = False
+            if isQt5:
+                s, selected_filter = s
+            s = g.u(s)
+            if s:
+                c.last_dir = g.os_path_dirname(s)
+                if trace: g.trace('c.last_dir', c.last_dir)
+            return s
     #@+node:ekr.20110605121601.18501: *4* LeoQtGui.runPropertiesDialog
     def runPropertiesDialog(self,
         title='Properties', data=None, callback=None, buttons=None):
