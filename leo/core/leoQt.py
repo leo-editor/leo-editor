@@ -14,12 +14,19 @@ Callers are expected to use the *PyQt5* spellings of modules:
 
 # Define...
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
-    # QtDeclarative, Qsci, QtSvg, QtWebKit, QtWebKitWidgets
+    # QtDeclarative, Qsci, QString, QtSvg, QtWebKit, QtWebKitWidgets
     # printsupport
 import leo.core.leoGlobals as g
 strict = False
 trace = False
 fail = g.in_bridge
+# Always define QString.
+try:
+    # From PyQt4 4.6+ in Python3 QString doesn't exist.
+    # Use Python3 unicode objects (string literals).
+    QString = QtCore.QString
+except NameError:
+    QString = g.u # g.u(s) returns s in Python 3.
 if fail:
     pass
 else:

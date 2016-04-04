@@ -6,7 +6,7 @@
 import leo.core.leoColor as leoColor
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
-from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
 import leo.plugins.qt_big_text as qt_big_text
@@ -89,6 +89,8 @@ class LeoQtGui(leoGui.LeoGui):
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
             s = g.toUnicode(s)
+            # Fix #241: QMimeData object error
+            s = QString(s)
             QtWidgets.QApplication.processEvents()
             cb.setText(s)
             QtWidgets.QApplication.processEvents()
