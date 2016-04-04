@@ -25,7 +25,7 @@ try:
     # From PyQt4 4.6+ in Python3 QString doesn't exist.
     # Use Python3 unicode objects (string literals).
     QString = QtCore.QString
-except NameError:
+except (ImportError, NameError):
     QString = g.u # g.u(s) returns s in Python 3.
 if fail:
     pass
