@@ -44,28 +44,6 @@ https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
 3. What happens, exactly, to the hoist stack when we switch chapters???
 
 4. Last: remove NEW switch.
-.. @+node:ekr.20160404205617.1: *4* #205: @ or @doc does't work perfectly in @clean
-https://github.com/leo-editor/leo-editor/issues/205
-
-On Mon, Aug 17, 2015 at 8:13 PM, Wesley Jiang <notifications@github.com> wrote:
- i check this doc of leo,
- http://leoeditor.com/directives.html#part-5-all-other-directives
- in @clean <https://github.com/clean> node, the @doc
- <https://github.com/doc> only work like this:
- @ aaa
- @ bbb
- @ ccc
- @c
-
- without @('@ bbb' -> 'bbb'), it will be transfer into comment in file(in
- '# xxxxx' form).
-
- the @doc <https://github.com/doc> does work, but not perfectly, pls fix
- it.
- 
-EKR: ​Hmm.  In my test the @doc section does not get written to the external file, but does appear in the .leo file when reloaded.​
-
-​I'm not sure how easy this will be to fix.
 .. @+node:ekr.20150609082812.1: *4* #132: Section Reference causes clone on Leo-Editor file open
 Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132

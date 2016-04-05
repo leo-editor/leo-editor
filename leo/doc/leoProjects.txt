@@ -61,6 +61,19 @@ https://github.com/leo-editor/leo-editor/issues/221
 
 Also #251: goto-global-line is inaccurate with @clean
 https://github.com/leo-editor/leo-editor/issues/251
+.. @+node:ekr.20160404205617.1: *3* Investigated #205: @ or @doc does't work perfectly in @clean
+https://github.com/leo-editor/leo-editor/issues/205
+.. @+node:ekr.20160405114632.1: *4* Report
+On Mon, Aug 17, 2015 at 8:13 PM, Wesley Jiang <notifications@github.com> wrote:
+
+http://leoeditor.com/directives.html#part-5-all-other-directives
+in @clean node, the @doc directive only work like this:
+ @ aaa
+ @ bbb
+ @ ccc
+ @c
+
+without @ xxx, it writes comments like '# xxxxx'.
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re
