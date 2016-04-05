@@ -272,15 +272,30 @@ class TextEditSearch(QtWidgets.QWidget):
     find the one you need.
     """
 
+    @staticmethod
+    def _call_old_first(oldfunc, newfunc):
+        """Focus in/out methods need to call base class method"""
+        def f(event, oldfunc=oldfunc, newfunc=newfunc):
+            oldfunc(event)
+            newfunc()
+        return f
+
     def __init__(self, *args, **kwargs):
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        self.textedit.focusInEvent = lambda event, owner=self: owner.focusin()
-        self.textedit.focusOutEvent = lambda event, owner=self: owner.focusout()
+        def e(event, owner=self, f=self.textedit.focusInEvent):
+            f(event)
+            owner.focusin()
+        self.textedit.focusInEvent = self._call_old_first(
+            self.textedit.focusInEvent, self.focusin)
+        self.textedit.focusOutEvent = self._call_old_first(
+            self.textedit.focusOutEvent, self.focusout)
         self.searchbox = QtWidgets.QLineEdit()
-        self.searchbox.focusInEvent = lambda event, owner=self: owner.focusin()
-        self.searchbox.focusOutEvent = lambda event, owner=self: owner.focusout()
+        self.searchbox.focusInEvent = self._call_old_first(
+            self.searchbox.focusInEvent, self.focusin)
+        self.searchbox.focusOutEvent = self._call_old_first(
+            self.searchbox.focusOutEvent, self.focusout)
 
         # invoke find when return pressed
         self.searchbox.returnPressed.connect(self.search)
@@ -312,10 +327,10 @@ class TextEditSearch(QtWidgets.QWidget):
 class FocusingPlaintextEdit(TextEditSearch):
 
     def __init__(self, focusin, focusout, closed = None, parent = None):
-        TextEditSearch.__init__(self, parent)
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
+        TextEditSearch.__init__(self, parent)
 
     def focusOutEvent (self, event):
         self.focusout()
