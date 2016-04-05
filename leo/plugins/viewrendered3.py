@@ -1341,15 +1341,15 @@ class WebViewPlus(QtWidgets.QWidget):
         self.pbar.setMaximumWidth(120)
         menu = QtWidgets.QMenu()
 
-        def action(label):
-            action = QtWidgets.QAction(label, self, checkable=True, triggered=self.state_change)
+        def action(label,callback=self.state_change):
+            action = QtWidgets.QAction(label,self,checkable=True,triggered=callback)
             menu.addAction(action)
             return action
 
         self.tree_mode_action = action('Whole tree')
         self.verbose_mode_action = action('Verbose logging')
         self.auto_mode_action = action('Auto-update')
-        self.lock_mode_action = action('Lock to node')
+        self.lock_mode_action = action('Lock to node', self.lock)
         # Add an s5 option
         self.slideshow_mode_action = action('Show as slideshow')
         #self.s5_mode_action = action('s5 slideshow')
@@ -1528,7 +1528,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Lock "action" has been triggered, so state will have changed.
         if self.lock_mode_action.isChecked(): # Just become active
             self.plock = self.pc.c.p.copy() # make a copy of node position
-            self.plockmode = self.get_mode() # make a copy of the current node
+            self.plockmode = self.get_mode() # copy current node's md/rst state
             if self.pr:
                 self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
                 mainFrame().scrollBarValue(QtCore.Qt.Vertical)
@@ -1672,6 +1672,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ps = mf.scrollBarValue(QtCore.Qt.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
+        self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
             # use locked node for position to be rendered.
             self.pr = self.plock or c.p # EKR: added or c.p.
@@ -1904,7 +1905,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Put temporary or output files in location given by path directives
         self.path = d['path']
         if pc.default_kind in ('big', 'rst', 'html', 'md'):
-            # Trial of rendering to file and have QWebView load this without blocking
+            # Rendering to file and have QWebView load this without blocking
             # Write the output file
             pathname = g.os_path_finalize_join(self.path, 'leo.html')
             f = open(pathname, 'wb')
@@ -1932,6 +1933,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ps = mf.scrollBarValue(QtCore.Qt.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
+        self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
             # use locked node for position to be rendered.
             self.pr = self.plock or c.p # EKR: added or c.p.
