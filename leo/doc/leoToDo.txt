@@ -11,6 +11,9 @@
 Bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
 
+All tasks assigned to 5.3
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.3
+
 * Finish open tasks.
 * Fix bugs relating to file format.
 * 30-minute tasks
@@ -68,6 +71,18 @@ Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
 
 Might not do.
+.. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/237
+
+In Windows operating systems, the UNC name format is:
+
+    \\servername\sharename\path\filename
+
+Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
+http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
 .. @+node:ekr.20160405064341.1: *4* 30-minute tasks
 .. @+node:ekr.20150331053736.1: *5* Ask Stack Overflow about solarized
 - Waiting for answer to solarized question:
@@ -107,6 +122,84 @@ yview: 0
 
 But you shouldn't have to do this, imo.  Hmmm.
 .. @+node:ekr.20160403043354.1: *3* Next: 5.3
+.. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
+https://github.com/leo-editor/leo-editor/issues/189
+.. @+node:ekr.20130806072439.20374: *5* Feature request re URL's
+From: HaveF <iamaplayer@gmail.com>
+
+1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
+in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
+leo-file-B.leo.
+
+When I'm working on leo-file-B.leo, I may have ideas to improve the
+@button button-1, but at that time(working on leo-file-B.leo), I may
+forget where the original place of @button button-1 is. Even I store
+the original scripts in the default workbook.leo is a tedious work to
+deal with(open it, locate where the original script is, update it...)
+
+But! After I add the @url at the first line of @button button-1, I can
+decide if the improvements what I made on leo-file-B.leo's @button button-1
+should or shouldn't be merged to the original and upstream @button
+button-1(in leo-file-A.leo) easily by just a click.
+
+And if I work on leo-file-C.leo, I want to use the same script, but I just
+only remember I use the script in the leo-file-B.leo instead of original
+place. With @url I can easily jump to original place, and copy it to
+leo-file-C.leo.
+
+Using @url in the leo script, I can make the scripts consistency and
+diversity at same time.
+
+Great! But, Wait, wait!
+
+2. Feature request.  At this time, you can use this idea by comment the @url
+line after jump. If @url isn't comment, the leo-editor will say...
+SyntaxError: invalid syntax at the @url line.
+
+Maybe it is a good idea to omit the @url line in the script when executing
+script?
+
+===== EKR
+
+Yes.  I think this is a good idea.  A similar idea occurred to me when
+looking at @rclick nodes.  At present, the context_menu plugin contains an
+ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
+needed at present when the @button node contains @others: the @rclick node
+can't be part of the script "pulled in" by @others.
+
+It would be much more elegant to ignore @rclick nodes when computing the
+script.  This would require a change to the @others logic, but I think it
+is worthwhile.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I do this kind of thing by keeping buttons in @files...
+
+@file ~/.leo/gen  # general utility buttons
+@file ~/.leo/dml  # tools for editing an XML dialect I use
+@file ~/.leo/sql  # tools for editing SQL / interacting with server
+
+so changes made in one outline are automatically propagated to other
+outlines next time they're reloaded.  You just reference the files
+in each outline where you want those buttons.
+
+> 2. Feature request
+> At this time, you can use this idea by comment the @url line
+> after jump. If @url isn't comment, the leo-editor will say...
+> SyntaxError: invalid syntax
+> at the @url line.
+> 
+> Maybe it is a good idea to omit the @url line in the script when executing
+> script?
+
+This probably would make sense, already the scripting machinery is
+ignoring things like @nocolor or @language cobol or @nowrap etc.
+
+Maybe you could file a wish-list bug item for tracking.
+.. @+node:ekr.20160401034138.1: *5* Better search for unl's?
+Improve g.recursiveUNLSearch?
+
+I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
 .. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -239,10 +332,6 @@ Here is the test file::
     console.log("Listening on " + port);
     });
 .. @+node:ekr.20160318113142.1: *4* Add coffeescript importer
-.. @+node:ekr.20160401034138.1: *4* Better search for unl's?
-Improve g.recursiveUNLSearch?
-
-I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
 .. @+node:ekr.20160404213305.1: *4* 4 Import problems
 .. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
@@ -452,81 +541,11 @@ There is no easy way to do this at present, but it's probably reasonable to disa
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20130806072439.20374: *4* Feature request re URL's
-From: HaveF <iamaplayer@gmail.com>
-
-1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
-in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
-leo-file-B.leo.
-
-When I'm working on leo-file-B.leo, I may have ideas to improve the
-@button button-1, but at that time(working on leo-file-B.leo), I may
-forget where the original place of @button button-1 is. Even I store
-the original scripts in the default workbook.leo is a tedious work to
-deal with(open it, locate where the original script is, update it...)
-
-But! After I add the @url at the first line of @button button-1, I can
-decide if the improvements what I made on leo-file-B.leo's @button button-1
-should or shouldn't be merged to the original and upstream @button
-button-1(in leo-file-A.leo) easily by just a click.
-
-And if I work on leo-file-C.leo, I want to use the same script, but I just
-only remember I use the script in the leo-file-B.leo instead of original
-place. With @url I can easily jump to original place, and copy it to
-leo-file-C.leo.
-
-Using @url in the leo script, I can make the scripts consistency and
-diversity at same time.
-
-Great! But, Wait, wait!
-
-2. Feature request.  At this time, you can use this idea by comment the @url
-line after jump. If @url isn't comment, the leo-editor will say...
-SyntaxError: invalid syntax at the @url line.
-
-Maybe it is a good idea to omit the @url line in the script when executing
-script?
-
-===== EKR
-
-Yes.  I think this is a good idea.  A similar idea occurred to me when
-looking at @rclick nodes.  At present, the context_menu plugin contains an
-ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
-needed at present when the @button node contains @others: the @rclick node
-can't be part of the script "pulled in" by @others.
-
-It would be much more elegant to ignore @rclick nodes when computing the
-script.  This would require a change to the @others logic, but I think it
-is worthwhile.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I do this kind of thing by keeping buttons in @files...
-
-@file ~/.leo/gen  # general utility buttons
-@file ~/.leo/dml  # tools for editing an XML dialect I use
-@file ~/.leo/sql  # tools for editing SQL / interacting with server
-
-so changes made in one outline are automatically propagated to other
-outlines next time they're reloaded.  You just reference the files
-in each outline where you want those buttons.
-
-> 2. Feature request
-> At this time, you can use this idea by comment the @url line
-> after jump. If @url isn't comment, the leo-editor will say...
-> SyntaxError: invalid syntax
-> at the @url line.
-> 
-> Maybe it is a good idea to omit the @url line in the script when executing
-> script?
-
-This probably would make sense, already the scripting machinery is
-ignoring things like @nocolor or @language cobol or @nowrap etc.
-
-Maybe you could file a wish-list bug item for tracking.
-.. @+node:ekr.20130806072439.20523: *4* @rst-asis: RST3 Tables with Nodes as Rows
+.. @+node:ekr.20130806072439.20523: *4* #255: @rst-no-nl to support rST tables
 @language rest
 @wrap
+
+https://github.com/leo-editor/leo-editor/issues/255
 
 From: Craig Johnson <craig@hivemind.net>
 
@@ -591,7 +610,7 @@ Field Name                       Format
 
 But you are right: @rst-no-head doesn't work properly.
 
-Looks like you can only post process the rst intermediate file and=20
+Looks like you can only post process the rst intermediate file and
 eliminate that extra line.
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
 @language rest
