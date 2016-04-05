@@ -724,9 +724,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('goto-global-line')
     def gotoGlobalLine(self, event):
         '''
-        Put the cursor at the n'th line of a file or script. This is a
-        minibuffer interface to Leo's legacy Go To Line number command.
+        Put the cursor at the line in the *outline* corresponding to the line
+        with the given line number *in the external file*.
+        
+        For external files containing sentinels, there may be *several* lines
+        in the file that correspond to the same line in the outline.
         '''
+        # Improved docstring in response to #253.
+        # https://github.com/leo-editor/leo-editor/issues/253
         c, k = self.c, self.c.k
         tag = 'goto-global-line'
         state = k.getState(tag)
