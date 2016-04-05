@@ -309,7 +309,7 @@ QPlainTextEdit {
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 # Global constants.
-VR3 = False
+VR3 = True
     # True: use the VR2 code. False: use the VR code.
 vr3_ns_id = '_leo_viewrendered3'
     # Must match for all controllers.
@@ -1311,10 +1311,10 @@ class WebViewPlus(QtWidgets.QWidget):
             -  Export button to export to the standard browser
 
             Keyboard shortcuts:
-            <b>Ctl-C</b>  Copy html/text from the pane
+            Ctl-C  Copy html/text from the pane
             Ctl-+  Zoom in
             Ctl--  Zoom out
-            Ctl-=  Zoom to original size"""         ))
+            Ctl-0  Zoom to original size"""         ))
         # Handle reload separately since this is used to re-render everything
         self.reload_action = view.pageAction(QtWebKitWidgets.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render_delegate)
@@ -1334,7 +1334,7 @@ class WebViewPlus(QtWidgets.QWidget):
             Show as slideshow - Show a tree as an s5 slideshow (requires s5 support files).
             Visible code - Show the code designated by '@language' directives
             Execute code - Execute '@language' code blocks and show the output.
-            Code output reST - Assume code execution text output is reStructuredText."""         ))
+            Code output reST/md - Assume code outputs reStructuredText or Markdown."""         ))
         self.toolbar.addWidget(self.toolbutton)
         # Add a progress bar
         self.pbar = QtWidgets.QProgressBar()
