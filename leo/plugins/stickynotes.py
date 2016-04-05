@@ -74,9 +74,7 @@ try:
 except ImportError:
     pass
 
-# from leo.core.leoQt import Qt, QtWidgets # QtCore,
-
-from leo.core.leoQt import isQt5, Qt, QtWidgets # QtCore,
+from leo.core.leoQt import isQt5, Qt, QtWidgets
 
 # pylint: disable=no-name-in-module
 if isQt5:
@@ -207,15 +205,16 @@ if encOK:
         def focusout():
             if not nf.dirty:
                 return
-            v.b = sn_encode(str(nf.toPlainText()))
-            v.setDirty()
-            # Fix #249: Leo and Stickynote plugin do not request to save
-            c.setChanged(True)
+            enc = sn_encode(str(nf.toPlainText()))
+            if v.b != enc:
+                v.b = enc
+                v.setDirty()
+                # Fix #249: Leo and Stickynote plugin do not request to save
+                c.setChanged(True)
             nf.dirty = False
             p = c.p
             if p.v is v:
                 c.selectPosition(c.p)
-            # Fix #249: Leo and Stickynote plugin do not request to save
             c.redraw()
 
         if rekey:
@@ -226,9 +225,7 @@ if encOK:
 
         ### c = event['c']
         ### p = c.p
-        nf = mknote(c,p)
-        nf.focusout = focusout
-        nf.focusin = focusin
+        nf = mknote(c,p, focusin=focusin, focusout=focusout)
         nf.setPlainText(sn_decode(v.b))
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
@@ -284,9 +281,6 @@ class TextEditSearch(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        def e(event, owner=self, f=self.textedit.focusInEvent):
-            f(event)
-            owner.focusin()
         self.textedit.focusInEvent = self._call_old_first(
             self.textedit.focusInEvent, self.focusin)
         self.textedit.focusOutEvent = self._call_old_first(
@@ -425,9 +419,8 @@ def create_subnode(c, heading):
     """  Find node with heading, then add new node as child under this heading
 
     Returns new position.
-
-
     """
+
     h = c.find_h(heading)
     if not h:
         p = c.rootPosition()
@@ -460,30 +453,32 @@ def get_workbook():
         if co.mFileName.endswith('workbook.leo'):
             return co
 #@+node:ville.20100703194946.5587: *3* mknote
-def mknote(c,p, parent=None):
+def mknote(c,p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
     v = p.v
     
-    def focusin():
-        if v is c.p.v:
-            if v.b.encode('utf-8') != nf.toPlainText():
-                # only when needed to avoid scroll jumping
-                nf.setPlainText(g.u(v.b))
-            nf.setWindowTitle(v.h)
-            nf.dirty = False
+    if focusin is None:
+        def focusin():
+            if v is c.p.v:
+                if v.b.encode('utf-8') != nf.toPlainText():
+                    # only when needed to avoid scroll jumping
+                    nf.setPlainText(g.u(v.b))
+                nf.setWindowTitle(v.h)
+                nf.dirty = False
 
-    def focusout():
-        if nf.dirty:
-            v.b = g.u(nf.toPlainText())
-            v.setDirty()
-            # Fix #249: Leo and Stickynote plugin do not request to save
-            c.setChanged(True)
-            nf.dirty = False
-            p = c.p
-            if p.v is v:
-                c.selectPosition(c.p)
-            # Fix #249: Leo and Stickynote plugin do not request to save
-            c.redraw()
+    if focusout is None:
+        def focusout():
+            if nf.dirty:
+                if v.b.encode('utf-8') != nf.toPlainText():
+                    v.b = g.u(nf.toPlainText())
+                    v.setDirty()
+                    # Fix #249: Leo and Stickynote plugin do not request to save
+                    c.setChanged(True)
+                nf.dirty = False
+                p = c.p
+                if p.v is v:
+                    c.selectPosition(c.p)
+                c.redraw()
 
     def closeevent():
         pass
