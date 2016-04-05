@@ -18,6 +18,13 @@ expression search (or any kind of case-sensitive search in the first place), do 
 by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expression
 syntax, as documented in
 
+The search can be confined to several options:
+- All: regular search for all nodes
+- Subtree: current node and it's children
+- File: only search under a node with an @<file> directive
+- Chapter: only search under a node with an @chapter directer
+- Node: only search currently selected node
+
 http://docs.python.org/library/re.html#regular-expression-syntax
 
 Commands
@@ -610,8 +617,15 @@ class QuickSearchController:
                         hitBase = True
                     else:
                         node = node.parent()
-            hNodes = node.self_and_subtree()
-            bNodes = node.self_and_subtree()
+            if hitBase: 
+                # If I hit the base then revert to all positions 
+                # this is basically the "main" chapter
+                hitBase = False #reset
+                hNodes = self.c.all_positions()
+                bNodes = self.c.all_positions()
+            else:
+                hNodes = node.self_and_subtree()
+                bNodes = node.self_and_subtree()
             
         else:
             hNodes = [self.c.p]
@@ -640,8 +654,9 @@ class QuickSearchController:
             hits = numOfHm + lineMatchHits
             self.lw.insertItem(0, "{} hits".format(hits))
         else:
-            self.lw.insertItem(0, "External file directive not found "+
-                               "during search")
+            if combo == "File":
+                self.lw.insertItem(0, "External file directive not found "+
+                                      "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat):
 
