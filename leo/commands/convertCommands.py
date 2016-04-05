@@ -2015,7 +2015,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         if fn:
             p = c.lastTopLevel()
             root = p.insertAfter()
-            root.h = fn
+            root.h = fn ### Not yet. '@auto fn'
             x.import_file(fn, root)
             c.redraw(root)
         c.bodyWantsFocus()
