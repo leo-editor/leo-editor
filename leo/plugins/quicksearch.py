@@ -597,7 +597,22 @@ class QuickSearchController:
                         node = node.parent()
             hNodes = node.self_and_subtree()
             bNodes = node.self_and_subtree()
-
+        elif combo == "Chapter":
+            found = False
+            node = self.c.p
+            while not found and not hitBase:
+                h = node.h
+                if h: h=h.split()[0]
+                if h == "@chapter":
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            hNodes = node.self_and_subtree()
+            bNodes = node.self_and_subtree()
+            
         else:
             hNodes = [self.c.p]
             bNodes = [self.c.p]
