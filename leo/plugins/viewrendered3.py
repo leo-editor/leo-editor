@@ -1311,10 +1311,10 @@ class WebViewPlus(QtWidgets.QWidget):
             -  Export button to export to the standard browser
 
             Keyboard shortcuts:
-            Ctl-C  Copy html/text from the pane
-            Ctl-+  Zoom in
-            Ctl--  Zoom out
-            Ctl-0  Zoom to original size"""         ))
+            Ctl - C\tCopy html/text from the pane
+            Ctl - +\tZoom in
+            Ctl - -\tZoom out
+            Ctl - 0\tZoom to original size"""         ))
         # Handle reload separately since this is used to re-render everything
         self.reload_action = view.pageAction(QtWebKitWidgets.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render_delegate)
@@ -1403,6 +1403,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Layouts
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.setContentsMargins(0, 0, 0, 0) # Remove the default 11px margins
+        vlayout.setSpacing( 0 );  # remove spacing between content widgets
         vlayout.addWidget(self.toolbar)
         vlayout.addWidget(view)
         self.setLayout(vlayout)
@@ -1410,7 +1411,7 @@ class WebViewPlus(QtWidgets.QWidget):
         view.setZoomFactor(1.0) # smallish panes demand small zoom
         self.zoomIn = QtWidgets.QShortcut("Ctrl++", self, activated=lambda: view.setZoomFactor(view.zoomFactor() + .2))
         self.zoomOut = QtWidgets.QShortcut("Ctrl+-", self, activated=lambda: view.setZoomFactor(view.zoomFactor() - .2))
-        self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(0.8))
+        self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(1.0))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
         if isQt5: ###
