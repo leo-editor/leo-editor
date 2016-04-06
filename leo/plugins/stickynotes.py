@@ -455,6 +455,8 @@ def get_workbook():
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c,p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
+    # pylint: disable=function-redefined
+    # focusin and focusout are redefined elsewhere.
     v = p.v
     
     if focusin is None:
