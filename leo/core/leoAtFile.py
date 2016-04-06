@@ -3943,35 +3943,14 @@ class AtFile:
         if not delta:
             junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         at.putLeadInSentinel(s, i, n1, delta)
-        ### Fix #132: Section Reference causes clone...
-        ### https://github.com/leo-editor/leo-editor/issues/132
-        if False: ### To be removed.
-            inBetween = []
-            if at.thinFile: # @+-middle used only in thin files.
-                parent = ref.parent()
-                while parent != p:
-                    inBetween.append(parent)
-                    parent = parent.parent()
+        # Fix #132: Section Reference causes clone...
+        # https://github.com/leo-editor/leo-editor/issues/132
+        # Never put any @+middle or @-middle sentinels.
         at.indent += delta
         at.putSentinel("@+" + name)
-        ### Fix #132: Section Reference causes clone...
-        ### https://github.com/leo-editor/leo-editor/issues/132
-        if False: ### To be removed.
-            if inBetween:
-                # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
-                inBetween.reverse()
-                for p2 in inBetween:
-                    at.putOpenNodeSentinel(p2, middle=True)
         at.putOpenNodeSentinel(ref)
         at.putBody(ref)
         at.putCloseNodeSentinel(ref)
-        ### Fix #132: Section Reference causes clone...
-        ### https://github.com/leo-editor/leo-editor/issues/132
-        if False: ### To be removed.
-            if inBetween:
-                inBetween.reverse()
-                for p2 in inBetween:
-                    at.putCloseNodeSentinel(p2, middle=True)
         at.putSentinel("@-" + name)
         at.indent -= delta
         return delta
@@ -4143,12 +4122,10 @@ class AtFile:
             at.os(s[i: j])
             at.onl_sent()
     #@+node:ekr.20041005105605.191: *4* at.putCloseNodeSentinel
-    def putCloseNodeSentinel(self, p, middle=False):
+    def putCloseNodeSentinel(self, p):
         '''End a node.'''
         at = self
         at.raw = False # Bug fix: 2010/07/04
-        if middle:
-            g.trace('can not happen: generating @-middle')
     #@+node:ekr.20041005105605.192: *4* at.putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
@@ -4162,19 +4139,14 @@ class AtFile:
                 s = s + "-encoding=%s,." % (encoding)
             at.putSentinel(s)
     #@+node:ekr.20041005105605.193: *4* at.putOpenNodeSentinel
-    def putOpenNodeSentinel(self, p, inAtAll=False, middle=False):
+    def putOpenNodeSentinel(self, p, inAtAll=False):
         """Write @+node sentinel for p."""
         at = self
         if not inAtAll and p.isAtFileNode() and p != at.root and not at.toString:
             at.writeError("@file not valid in: " + p.h)
             return
-        # g.trace(at.thinFile,p)
         s = at.nodeSentinelText(p)
-        if middle:
-            g.trace('can not happen: generating @+middle')
-            at.putSentinel("@+middle:" + s)
-        else:
-            at.putSentinel("@+node:" + s)
+        at.putSentinel("@+node:" + s)
         # Leo 4.7 b2: we never write tnodeLists.
     #@+node:ekr.20041005105605.194: *4* at.putSentinel (applies cweb hack) 4.x
     # This method outputs all sentinels.
