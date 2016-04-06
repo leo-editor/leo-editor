@@ -1952,6 +1952,7 @@ class AtFile:
         """Read an @+middle sentinel."""
         at = self
         at.readStartNode(s, i, middle=True)
+        g.warning('Warning: file contains @+middle sentinel')
     #@+node:ekr.20041005105605.89: *6* at.readStartOthers
     def readStartOthers(self, s, i):
         """Read an @+others sentinel."""
@@ -3931,37 +3932,46 @@ class AtFile:
                 self.putRefAt(s, n1, n1, n2, p, delta)
             else: break
         self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20041005105605.177: *6* putRefAt
+    #@+node:ekr.20041005105605.177: *6* putRefAt **** puts @+middle sentinels
     def putRefAt(self, s, i, n1, n2, p, delta):
         """Put a reference at s[n1:n2+2] from p."""
         at, c = self, self.c
         name = s[n1: n2 + 2]
         ref = at.findReference(name, p)
-        if not ref: return
+        if not ref: return None
         # Expand the ref.
         if not delta:
             junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
         at.putLeadInSentinel(s, i, n1, delta)
-        inBetween = []
-        if at.thinFile: # @+-middle used only in thin files.
-            parent = ref.parent()
-            while parent != p:
-                inBetween.append(parent)
-                parent = parent.parent()
+        ### Fix #132: Section Reference causes clone...
+        ### https://github.com/leo-editor/leo-editor/issues/132
+        if False: ### To be removed.
+            inBetween = []
+            if at.thinFile: # @+-middle used only in thin files.
+                parent = ref.parent()
+                while parent != p:
+                    inBetween.append(parent)
+                    parent = parent.parent()
         at.indent += delta
         at.putSentinel("@+" + name)
-        if inBetween:
-            # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
-            inBetween.reverse()
-            for p2 in inBetween:
-                at.putOpenNodeSentinel(p2, middle=True)
+        ### Fix #132: Section Reference causes clone...
+        ### https://github.com/leo-editor/leo-editor/issues/132
+        if False: ### To be removed.
+            if inBetween:
+                # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
+                inBetween.reverse()
+                for p2 in inBetween:
+                    at.putOpenNodeSentinel(p2, middle=True)
         at.putOpenNodeSentinel(ref)
         at.putBody(ref)
         at.putCloseNodeSentinel(ref)
-        if inBetween:
-            inBetween.reverse()
-            for p2 in inBetween:
-                at.putCloseNodeSentinel(p2, middle=True)
+        ### Fix #132: Section Reference causes clone...
+        ### https://github.com/leo-editor/leo-editor/issues/132
+        if False: ### To be removed.
+            if inBetween:
+                inBetween.reverse()
+                for p2 in inBetween:
+                    at.putCloseNodeSentinel(p2, middle=True)
         at.putSentinel("@-" + name)
         at.indent -= delta
         return delta
@@ -4137,6 +4147,8 @@ class AtFile:
         '''End a node.'''
         at = self
         at.raw = False # Bug fix: 2010/07/04
+        if middle:
+            g.trace('can not happen: generating @-middle')
     #@+node:ekr.20041005105605.192: *4* at.putOpenLeoSentinel 4.x
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
@@ -4159,6 +4171,7 @@ class AtFile:
         # g.trace(at.thinFile,p)
         s = at.nodeSentinelText(p)
         if middle:
+            g.trace('can not happen: generating @+middle')
             at.putSentinel("@+middle:" + s)
         else:
             at.putSentinel("@+node:" + s)
