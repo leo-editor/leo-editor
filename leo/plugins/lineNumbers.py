@@ -47,12 +47,13 @@ def init():
         #@+node:ekr.20040419105219.1: ** << override write methods >>
         oldOpenNodeSentinel = leoAtFile.AtFile.putOpenNodeSentinel
 
-        def putLineNumberDirective(self,p,inAtAll=False,middle=False):
+        def putLineNumberDirective(self,p,inAtAll=False):
 
-            oldOpenNodeSentinel(self,p,inAtAll,middle)
+            oldOpenNodeSentinel(self,p,inAtAll)
 
             if self.language in ("perl","perlpod"):
-                line = 'line 1 "node:%s (%s)"' % (self.nodeSentinelText(p),self.shortFileName)
+                line = 'line 1 "node:%s (%s)"' % (
+                    self.nodeSentinelText(p),self.shortFileName)
                 self.putSentinel(line)
 
         g.funcToMethod(putLineNumberDirective,
