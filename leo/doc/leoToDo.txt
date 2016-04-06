@@ -17,6 +17,18 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone
 * Finish open tasks.
 * Fix bugs relating to file format.
 * 30-minute tasks
+.. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/237
+
+In Windows operating systems, the UNC name format is:
+
+    \\servername\sharename\path\filename
+
+Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
+http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
 .. @+node:ekr.20150418052852.1: *4* Complete Jupyter work
 @language rest
 @wrap
@@ -44,23 +56,6 @@ https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
 3. What happens, exactly, to the hoist stack when we switch chapters???
 
 4. Last: remove NEW switch.
-.. @+node:ekr.20150609082812.1: *4* #132: Section Reference causes clone on Leo-Editor file open
-Section Reference causes clone on Leo-Editor file open
-https://github.com/leo-editor/leo-editor/issues/132
-
-Might not do.
-.. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/237
-
-In Windows operating systems, the UNC name format is:
-
-    \\servername\sharename\path\filename
-
-Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
-http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
 .. @+node:ekr.20160405064341.1: *4* 30-minute tasks
 .. @+node:ekr.20150331053736.1: *5* Ask Stack Overflow about solarized
 - Waiting for answer to solarized question:
