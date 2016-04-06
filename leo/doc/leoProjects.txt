@@ -79,6 +79,10 @@ Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
 
 Removed @+middle and @-middle sentinels.
+
+This is a duplicate:
+#89: Spontaneous clones when using <<sections>>
+https://github.com/leo-editor/leo-editor/issues/89
 .. @+node:ekr.20160330200607.1: ** Code
 .. @+node:ekr.20160327144354.1: *3* cleaned up use of regex to discover Leo directives
 .. @+node:ekr.20160327115131.1: *4* Found:compute_directives_re

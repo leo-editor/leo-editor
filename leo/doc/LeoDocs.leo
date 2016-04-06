@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -4621,15 +4621,13 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
     Marks the end of the Leo file.
     Nothing but whitespace should follow this directive.
 
-\@+middle **(Leo 4.0 and later)**
-    Marks the start of intermediate nodes between the node that
+\@+middle **(Created in Leo 4.0, removed in Leo 5.3)** |br|
+\@-middle **(Created in Leo 4.0, removed in Leo 5.3)**
+    Marks the start/end of intermediate nodes between the node that
     references a section and the node that defines the section.
-    Typically no such sentinels are needed:
-    most sections are defined in a direct child of the referencing node.
-
-\@-middle **(Leo 4.0 and later)**
-    Marks the end of intermediate nodes between the node that
-    references a section and the node that defines the section.
+    
+    These sentinels were a **mistake** that created bugs.  See:
+    https://github.com/leo-editor/leo-editor/issues/132
     
 \@nl **(Leo 3.x only)**
     Insert a newline in the outline.
@@ -12322,6 +12320,10 @@ Please study this section carefully if you intend to use Leo for programming. If
 <t tx="ekr.20131008041326.16341">##########
 Appendices
 ##########
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
    
 .. contents::
     :depth: 3
@@ -19068,7 +19070,7 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
 <t tx="ekr.20160402100225.1"># flattened, ignore-case, head, body</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
