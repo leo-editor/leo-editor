@@ -21,6 +21,7 @@ class ChapterController:
         self.selectedChapter = None
         self.selectChapterLockout = False
             # True: cc.selectChapterForPosition does nothing.
+            # Note: Used in qt_frame.py.
         self.tt = None # May be set in finishCreate.
         self.use_tabs = c.config.getBool('use_chapter_tabs')
     #@+node:ekr.20160402024827.1: *4* cc.createIcon
@@ -115,16 +116,23 @@ class ChapterController:
                 chapter and chapter.name))
         if not cc.selectedChapter and chapter.name == 'main':
             if trace: g.trace('already selected1')
+            chapter.p = c.p
             return
         if chapter == cc.selectedChapter:
             if trace: g.trace('already selected2')
             return
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
-        p = chapter.p
-        if p and not c.positionExists(p):
-            if trace: g.trace('*** switching to root node for', chapter.name)
-            chapter.p = chapter.findRootNode()
+        if chapter.p and c.positionExists(chapter.p):
+            p = chapter.p
+        elif chapter.name == 'main':
+            p = chapter.p = c.p
+        else:
+            p = chapter.p = chapter.findRootNode()
+            if not p:
+                if trace: g.trace('no root node!', chapter.name)
+                return
+        if trace: g.trace(chapter.name, 'chapter.p', chapter.p.h)
         chapter.select()
         c.setCurrentPosition(chapter.p)
         cc.selectedChapter = chapter
@@ -410,7 +418,7 @@ class Chapter:
         c, cc, name = self.c, self.cc, self.name
         if trace:
             g.trace('%s exists: %s p: %s' % (
-                name, c.positionExists(self.p), self.p))
+                name, c.positionExists(self.p), self.p and self.p.h))
         cc.selectedChapter = self
         # Remember the root (it may have changed) for dehoist.
         self.root = root = self.findRootNode()
@@ -431,9 +439,10 @@ class Chapter:
         else:
             # This must be done *after* switching roots.
             self.p = p = self.findPositionInChapter(p) or root.copy()
-            if trace: g.trace('recomputed: %s' % (self.p))
+            if trace: g.trace('recomputed: %s' % (self.p.h))
             if selectEditor:
-                c.selectPosition(p)
+                # Careful: c.selectPosition would pop the hoist stack.
+                c.setCurrentPosition(p)
                 w = self.findEditorInChapter(p)
                 c.frame.body.selectEditor(w) # Switches text.
         if name != 'main' and g.match_word(p.h, 0, '@chapter'):
@@ -445,7 +454,8 @@ class Chapter:
             g.error('can not happen: main chapter has root node')
         else:
             c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
-        c.selectPosition(p)
+        # Careful: c.selectPosition would pop the hoist stack.
+        c.setCurrentPosition(p)
         g.doHook('hoist-changed', c=c)
         c.redraw_now(p)
     #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
@@ -502,22 +512,33 @@ class Chapter:
         '''Remember chapter info when a chapter is about to be unselected.'''
         trace = False and not g.unitTesting
         c = self.c
-        if self.name != 'main':
+        # Always try to return to the same position.
+        if trace: g.trace('===== leaving', self.name, c.p.h)
+        self.p = c.p
+        if self.name == 'main':
+            p = c.p
+        else:
             root = None
             while c.hoistStack:
-                try:
-                    bunch = c.hoistStack.pop()
-                    root = bunch.p
-                    if root == self.root:
-                        break
-                except Exception:
-                    g.trace('c.hoistStack underflow', g.callers())
-                    g.es_exception()
+                bunch = c.hoistStack.pop()
+                root = bunch.p
+                if root == self.root:
+                    if trace: g.trace('found', root.h)
                     break
-            if not root:
-                g.trace('error unselecting', self.name, color='red')
-        self.p = c.p
-        if trace: g.trace('*** %s, p: %s' % (self.name, self.p.h))
+            if trace and not root:
+                # Not serious. Can be caused by a user de-hoist.
+                g.trace('error unselecting', self.name)
+            # Re-institute the previous hoist.
+            if c.hoistStack:
+                p = c.hoistStack[-1].p
+                if trace: g.trace('re-hoist', p.h, c.positionExists(p))
+                # Careful: c.selectPosition would pop the hoist stack.
+                c.setCurrentPosition(p)
+            else:
+                if trace: g.trace('empty hoist-stack')
+                p = root or c.p
+        if trace: g.trace(c.hoistStack)
+        c.redraw(p) 
     #@-others
 #@-others
 #@@language python
