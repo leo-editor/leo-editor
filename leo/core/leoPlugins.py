@@ -3,6 +3,11 @@
 '''Classes relating to Leo's plugin architecture.'''
 import leo.core.leoGlobals as g
 import sys
+# Define modules that may be enabled by default
+# but that mignt not load because imports may fail.
+optional_modules = [
+    'leo.plugins.livecode',
+]
 #@+others
 #@+node:ekr.20100908125007.6041: ** Top-level functions
 def init():
@@ -453,6 +458,7 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin
     def loadOnePlugin(self, moduleOrFileName, tag='open0', verbose=False):
         '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
+        global optional_modules
             # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins
             # This trace can be useful during unit testing.
@@ -541,7 +547,8 @@ class LeoPluginsController:
             if trace: report('loaded: %s' % moduleName)
         elif trace or self.warn_on_failure:
             if trace or tag == 'open0':
-                report('can not load enabled plugin: %s' % moduleName)
+                if moduleName not in optional_modules:
+                    report('can not load enabled plugin: %s' % moduleName)
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
     def plugin_signon(self, module_name, verbose=False):
