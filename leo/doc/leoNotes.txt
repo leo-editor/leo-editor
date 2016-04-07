@@ -16656,5 +16656,14 @@ def getChapterNode(self, chapterName, p=None):
             cc.findChapterNode(chapterName) or
             cc.createChapterNode(chapterName, p=p))
         return val
+.. @+node:ekr.20070608165544: *3* c.hoistLevel
+# A hack that doesn't really work
+# def hoistLevel(self):
+    # c = self
+    # cc = c.chapterController
+    # n = len(c.hoistStack)
+    # if n > 0 and cc and cc.inChapter():
+        # n -= 1
+    # return n
 .. @-all
 .. @-leo

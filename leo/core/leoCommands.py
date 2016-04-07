@@ -5691,15 +5691,6 @@ class Commands(object):
             # return c.currentPositionHasNext()
         # else:
             # return True
-    #@+node:ekr.20070608165544: *3* c.hoistLevel
-    # A hack that doesn't really work
-    # def hoistLevel(self):
-        # c = self
-        # cc = c.chapterController
-        # n = len(c.hoistStack)
-        # if n > 0 and cc and cc.inChapter():
-            # n -= 1
-        # return n
     #@+node:ekr.20031218072017.2970: *3* c.canMoveOutlineDown
     def canMoveOutlineDown(self):
         c = self; current = c.p
