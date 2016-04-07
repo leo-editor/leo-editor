@@ -1712,6 +1712,7 @@ class Commands(object):
                 # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
+                # pylint: disable=undefined-variable
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
@@ -2888,23 +2889,27 @@ class Commands(object):
     #@+node:ekr.20031218072017.2028: *5* c.hoist/dehoist/clearAllHoists
     #@+node:ekr.20120308061112.9865: *6* c.deHoist
     @cmd('de-hoist')
+    @cmd('dehoist')
     def dehoist(self, event=None):
         '''Undo a previous hoist of an outline.'''
         c = self
-        p = c.p
-        if p and c.canDehoist():
-            bunch = c.hoistStack.pop()
-            if bunch.expanded: p.expand()
-            else: p.contract()
-            c.redraw()
-            c.frame.clearStatusLine()
-            if c.hoistStack:
-                bunch = c.hoistStack[-1]
-                c.frame.putStatusLine("Hoist: " + bunch.p.h)
-            else:
-                c.frame.putStatusLine("No hoist")
-            c.undoer.afterDehoist(p, 'DeHoist')
-            g.doHook('hoist-changed', c=c)
+        if not c.p or not c.hoistStack:
+            return
+        # Don't de-hoist an @chapter node.
+        if c.chapterController and c.p.h.startswith('@chapter '):
+            if not g.unitTesting:
+                g.es('can not de-hoist an @chapter node.',color='blue')
+            return
+        bunch = c.hoistStack.pop()
+        p = bunch.p
+        if bunch.expanded: p.expand()
+        else: p.contract()
+        c.setCurrentPosition(p)
+        c.redraw()
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine("De-Hoist: " + p.h)
+        c.undoer.afterDehoist(p, 'DeHoist')
+        g.doHook('hoist-changed', c=c)
     #@+node:ekr.20120308061112.9866: *6* c.clearAllHoists
     def clearAllHoists(self):
         '''Undo a previous hoist of an outline.'''
@@ -2918,16 +2923,22 @@ class Commands(object):
         '''Make only the selected outline visible.'''
         c = self
         p = c.p
-        if p and c.canHoist():
-            # Remember the expansion state.
-            bunch = g.Bunch(p=p.copy(), expanded=p.isExpanded())
-            c.hoistStack.append(bunch)
-            p.expand()
-            c.redraw(p)
-            c.frame.clearStatusLine()
-            c.frame.putStatusLine("Hoist: " + p.h)
-            c.undoer.afterHoist(p, 'Hoist')
-            g.doHook('hoist-changed', c=c)
+        if not p:
+            return
+        # Don't hoist an @chapter node.
+        if c.chapterController and p.h.startswith('@chapter '):
+            if not g.unitTesting:
+                g.es('can not hoist an @chapter node.',color='blue')
+            return
+        # Remember the expansion state.
+        bunch = g.Bunch(p=p.copy(), expanded=p.isExpanded())
+        c.hoistStack.append(bunch)
+        p.expand()
+        c.redraw(p)
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine("Hoist: " + p.h)
+        c.undoer.afterHoist(p, 'Hoist')
+        g.doHook('hoist-changed', c=c)
     #@+node:ekr.20031218072017.1759: *5* Insert, Delete & Clone (Commands)
     #@+node:ekr.20031218072017.1760: *6* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *7* c.checkMoveWithParentWithWarning
@@ -3472,7 +3483,8 @@ class Commands(object):
         """ Dump all nodes in the outline."""
         c = self
         seen = {}
-        print; print('=' * 40)
+        print('')
+        print('=' * 40)
         v = c.hiddenRootNode
         v.dump()
         seen[v] = True
@@ -3945,6 +3957,7 @@ class Commands(object):
         c.endEditing()
         u.beforeChangeGroup(current, undoType)
         changed = False
+        p = None # To keep pylint happy.
         for p in c.all_unique_positions():
             if p.isMarked():
                 bunch = u.beforeMark(p, undoType)
@@ -5656,27 +5669,37 @@ class Commands(object):
         return bool(val)
     #@+node:ekr.20040303165342: *3* c.canHoist & canDehoist
     def canDehoist(self):
+        '''
+        Return True if do-hoist should be enabled in a menu.
+        Should not be used in any other context.
+        '''
         c = self
-        return c.hoistLevel() > 0
+        return bool(c.hoistStack())
 
     def canHoist(self):
-        # N.B.  This is called at idle time, so minimizing positions is crucial!
-        c = self
-        if c.hoistStack:
-            bunch = c.hoistStack[-1]
-            return bunch.p and not c.isCurrentPosition(bunch.p)
-        elif c.currentPositionIsRootPosition():
-            return c.currentPositionHasNext()
-        else:
-            return True
+        # This is called at idle time, so minimizing positions is crucial!
+        '''
+        Return True if hoist should be enabled in a menu.
+        Should not be used in any other context.
+        '''
+        return True
+        # c = self
+        # if c.hoistStack:
+            # p = c.hoistStack[-1].p
+            # return p and not c.isCurrentPosition(p)
+        # elif c.currentPositionIsRootPosition():
+            # return c.currentPositionHasNext()
+        # else:
+            # return True
     #@+node:ekr.20070608165544: *3* c.hoistLevel
-    def hoistLevel(self):
-        c = self
-        cc = c.chapterController
-        n = len(c.hoistStack)
-        if n > 0 and cc and cc.inChapter():
-            n -= 1
-        return n
+    # A hack that doesn't really work
+    # def hoistLevel(self):
+        # c = self
+        # cc = c.chapterController
+        # n = len(c.hoistStack)
+        # if n > 0 and cc and cc.inChapter():
+            # n -= 1
+        # return n
     #@+node:ekr.20031218072017.2970: *3* c.canMoveOutlineDown
     def canMoveOutlineDown(self):
         c = self; current = c.p
@@ -6411,7 +6434,7 @@ class Commands(object):
                 if s[0: 2] == "* ":
                     c.frame.setTitle(s[2:])
                     # if trace: g.trace('(c)',s[2:])
-    #@+node:ekr.20040803140033.1: *4* c.setCurrentPosition
+    #@+node:ekr.20040803140033.1: *4* c.setCurrentPosition (** changed **)
     _currentCount = 0
 
     def setCurrentPosition(self, p):
@@ -6419,30 +6442,32 @@ class Commands(object):
         Set the presently selected position. For internal use only.
         Client code should use c.selectPosition instead.
         """
-        trace = False and not g.unitTesting
-        verbose = False
+        trace_no_p = True
+            # A serious error.
+        trace_entry = False and not g.unitTesting
+        trace_invalid = False and not g.unitTesting
         c = self
-        if trace and verbose:
+        if not p:
+            if trace_no_p: g.trace('===== no p', g.callers())
+            return
+        if trace_entry:
             c._currentCount += 1
-            g.trace(c._currentCount, p)
-        if p and not c.positionExists(p): # 2011/02/25:
+            g.trace('-----------', c._currentCount, p and p.h)
+            # g.trace(g.callers(8))
+        if c.positionExists(p):
+            if c._currentPosition and p == c._currentPosition:
+                pass # We have already made a copy.
+            else: # Make a copy _now_
+                c._currentPosition = p.copy()
+        else: # 2011/02/25:
             c._currentPosition = c.rootPosition()
-            if trace: g.trace('Invalid position: %s, root: %s' % (
+            if trace_invalid: g.trace('Invalid position: %s, root: %s' % (
                 repr(p and p.h),
                 repr(c._currentPosition and c._currentPosition.h)),
                 g.callers())
             # Don't kill unit tests for this kind of problem.
-            return
-        if p:
-            # Important: p.equal requires c._currentPosition to be non-None.
-            if c._currentPosition and p == c._currentPosition:
-                pass # We have already made a copy.
-            else: # Must make a copy _now_
-                c._currentPosition = p.copy()
-        else:
-            c._currentPosition = None
-    # For compatibiility with old scripts.
 
+    # For compatibiility with old scripts.
     setCurrentVnode = setCurrentPosition
     #@+node:ekr.20040305223225: *4* c.setHeadString
     def setHeadString(self, p, s):
@@ -6669,7 +6694,12 @@ class Commands(object):
     def selectPosition(self, p, enableRedrawFlag=True):
         """Select a new position."""
         trace = False and not g.unitTesting
+        trace_no_p = True
+            # A serious error.
         c = self; cc = c.chapterController
+        if not p:
+            if trace_no_p: g.trace('===== no p', g.callers())
+            return
         if cc:
             cc.selectChapterForPosition(p)
                 # Important: selectChapterForPosition calls c.redraw
@@ -6679,15 +6709,18 @@ class Commands(object):
         redraw_flag = False
         if c.hoistStack:
             while c.hoistStack:
-                bunch = c.hoistStack[len(c.hoistStack) - 1]
+                bunch = c.hoistStack[-1]
                 if c.positionExists(p, bunch.p):
                     break
                 else:
                     bunch = c.hoistStack.pop()
                     redraw_flag = True
                     if trace: g.trace('unhoist', bunch.p.h)
-        if trace and not c.positionExists(p):
-            g.trace('** does not exist: %s' % (p and p.h))
+        if trace:
+            if c.positionExists(p):
+                g.trace('****', p.h)
+            else:
+                g.trace('**** does not exist: %s' % (p and p.h))
         c.frame.tree.select(p)
         # New in Leo 4.4.2.
         c.setCurrentPosition(p)
