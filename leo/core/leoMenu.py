@@ -19,7 +19,7 @@ class LeoMenu:
 
     def finishCreate(self):
         self.define_enable_dict()
-    #@+node:ekr.20120124042346.12937: *4* define_enable_table
+    #@+node:ekr.20120124042346.12937: *4* LeoMenu.define_enable_table
     #@@nobeautify
 
     def define_enable_dict (self):
