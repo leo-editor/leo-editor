@@ -64,32 +64,7 @@ class ChapterController:
         '''Command decorator for the ChapterController class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'chapterController',])
-    #@+node:ekr.20160403171927.1: *3* cc.Helpers
-    #@+node:ekr.20070325093617: *4* cc.findChapterNode
-    def findChapterNode(self, name):
-        '''Return the position of the first @chapter node with the given name
-        anywhere in the entire outline.
-
-        All @chapter nodes are created as children of the @chapters node,
-        but users may move them anywhere.'''
-        trace = False and not g.unitTesting
-        name = g.toUnicode(name)
-        cc, s = self, '@chapter ' + name
-        for p in cc.c.all_positions():
-            if p.h == s:
-                if trace: g.trace('found', p.h)
-                return p
-        if trace: g.trace('not found: @chapter', name)
-        return None # Not an error.
-    #@+node:ekr.20160402025448.1: *4* cc.findAnyChapterNode (new)
-    def findAnyChapterNode(self):
-        '''Return True if the outline contains any @chapter node.'''
-        cc = self
-        for p in cc.c.all_unique_positions():
-            if p.h.startswith('@chapter '):
-                return True
-        return False
-    #@+node:ekr.20070604165126: *3* cc.selectChapter & helper
+    #@+node:ekr.20070604165126: *3* cc.selectChapter
     @cmd('chapter-select')
     def selectChapter(self, event=None):
         '''Use the minibuffer to get a chapter name,
@@ -97,17 +72,16 @@ class ChapterController:
         cc, k, tag = self, self.c.k, 'select-chapter'
         state = k.getState(tag)
         if state == 0:
-            #names = list(cc.chaptersDict.keys())
             names = cc.setAllChapterNames()
             g.es('Chapters:\n' + '\n'.join(names))
             k.setLabelBlue('Select chapter: ')
-            k.getArg(event, tag, 1, self.selectChapter, tabList=names) # prefix=prefix,
+            k.getArg(event, tag, 1, self.selectChapter, tabList=names)
         else:
             k.clearState()
             k.resetLabel()
             if k.arg:
                 cc.selectChapterByName(k.arg, create=False)
-    #@+node:ekr.20070317130250: *4* cc.selectChapterByName & helper
+    #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
     def selectChapterByName(self, name, collapse=True, create=True):
         '''Select a chapter.  Return True if a redraw is needed.'''
         trace = False and not g.unitTesting
@@ -131,7 +105,7 @@ class ChapterController:
             else:
                 g.trace(g.callers())
                 cc.error('no main chapter!')
-    #@+node:ekr.20090306060344.2: *5* selectChapterByNameHelper
+    #@+node:ekr.20090306060344.2: *4* selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
         trace = False and not g.unitTesting
         cc, c = self, self.c
@@ -178,11 +152,42 @@ class ChapterController:
 
     def warning(self, s):
         g.es_print('Warning: %s' % (s))
-    #@+node:ekr.20070605124356: *4* cc.inChapter
-    def inChapter(self):
+    #@+node:ekr.20160402025448.1: *4* cc.findAnyChapterNode
+    def findAnyChapterNode(self):
+        '''Return True if the outline contains any @chapter node.'''
         cc = self
-        theChapter = cc.getSelectedChapter()
-        return theChapter and theChapter.name != 'main'
+        for p in cc.c.all_unique_positions():
+            if p.h.startswith('@chapter '):
+                return True
+        return False
+    #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
+    def findChapterNameForPosition(self, p):
+        '''Return the name of a chapter containing p or None if p does not exist.'''
+        cc, c = self, self.c
+        if not p or not c.positionExists(p):
+            return None
+        for name in cc.chaptersDict:
+            if name != 'main':
+                theChapter = cc.chaptersDict.get(name)
+                if theChapter.positionIsInChapter(p):
+                    return name
+        return 'main'
+    #@+node:ekr.20070325093617: *4* cc.findChapterNode
+    def findChapterNode(self, name):
+        '''Return the position of the first @chapter node with the given name
+        anywhere in the entire outline.
+
+        All @chapter nodes are created as children of the @chapters node,
+        but users may move them anywhere.'''
+        trace = False and not g.unitTesting
+        name = g.toUnicode(name)
+        cc, s = self, '@chapter ' + name
+        for p in cc.c.all_positions():
+            if p.h == s:
+                if trace: g.trace('found', p.h)
+                return p
+        if trace: g.trace('not found: @chapter', name)
+        return None # Not an error.
     #@+node:ekr.20070318124004: *4* cc.getChapter
     def getChapter(self, name):
         cc = self
@@ -191,6 +196,11 @@ class ChapterController:
     def getSelectedChapter(self):
         cc = self
         return cc.selectedChapter
+    #@+node:ekr.20070605124356: *4* cc.inChapter
+    def inChapter(self):
+        cc = self
+        theChapter = cc.getSelectedChapter()
+        return theChapter and theChapter.name != 'main'
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
     def selectChapterForPosition(self, p, chapter=None):
         '''
@@ -263,18 +273,6 @@ class ChapterController:
         result.sort()
         result.insert(0, sel_name)
         return result
-    #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
-    def findChapterNameForPosition(self, p):
-        '''Return the name of a chapter containing p or None if p does not exist.'''
-        cc, c = self, self.c
-        if not p or not c.positionExists(p):
-            return None
-        for name in cc.chaptersDict:
-            if name != 'main':
-                theChapter = cc.chaptersDict.get(name)
-                if theChapter.positionIsInChapter(p):
-                    return name
-        return 'main'
     #@+node:ekr.20070610100031: *3* cc.Undo
     #@+node:ekr.20070606075125: *4* cc.afterCreateChapter
     def afterCreateChapter(self, bunch, p):
@@ -375,8 +373,7 @@ class Chapter:
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         self.p = None
-        if self.name != 'main':
-            root = self.findRootNode()
+        self.root = self.findRootNode()
         if cc.tt:
             #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
             cc.tt.createTab(name)
@@ -415,7 +412,8 @@ class Chapter:
             g.trace('%s exists: %s p: %s' % (
                 name, c.positionExists(self.p), self.p))
         cc.selectedChapter = self
-        root = self.findRootNode()
+        # Remember the root (it may have changed) for dehoist.
+        self.root = root = self.findRootNode()
         if not root:
             return
                 # root is None for the 'main' chapter.
@@ -504,11 +502,20 @@ class Chapter:
         '''Remember chapter info when a chapter is about to be unselected.'''
         trace = False and not g.unitTesting
         c = self.c
-        if self.name != 'main' and c.hoistStack:
-            try:
-                c.hoistStack.pop()
-            except Exception:
-                g.trace('c.hoistStack underflow', g.callers())
+        if self.name != 'main':
+            root = None
+            while c.hoistStack:
+                try:
+                    bunch = c.hoistStack.pop()
+                    root = bunch.p
+                    if root == self.root:
+                        break
+                except Exception:
+                    g.trace('c.hoistStack underflow', g.callers())
+                    g.es_exception()
+                    break
+            if not root:
+                g.trace('error unselecting', self.name, color='red')
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name, self.p.h))
     #@-others
