@@ -4680,7 +4680,8 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
     # Never call g.trace here!
     try:
         s = s.decode(encoding, 'strict')
-    except UnicodeError:
+    except (UnicodeDecodeError, UnicodeError):
+        # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if trace or reportErrors:
             g.trace(g.callers())
