@@ -168,7 +168,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return g.trace('*** full_redraw: busy!', g.callers())
         if p is None:
             p = c.currentPosition()
-        elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
+        elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
             # Make sure the current position is visible.
             # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
             p = p.firstChild()
@@ -1409,7 +1409,9 @@ class LeoQtTree(leoFrame.LeoTree):
         if not item:
             # This is not necessarily an error.
             # We often attempt to select an item before redrawing it.
-            if trace and verbose: g.trace('** no item for', p)
+            if trace and verbose:
+                g.trace('** no item for', p)
+                g.trace(g.callers())
             return None
         item2 = self.getCurrentItem()
         if item == item2:

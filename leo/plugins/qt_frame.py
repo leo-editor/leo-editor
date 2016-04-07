@@ -4267,6 +4267,7 @@ class LeoQtTreeTab:
                     tt.selectTab(s)
                 finally:
                     tt.cc.selectChapterLockout = False
+                # g.trace(tt.cc.c.hoistStack)
         # A change: the argument could now be an int instead of a string.
 
         w.currentIndexChanged.connect(onIndexChanged)
@@ -4288,14 +4289,16 @@ class LeoQtTreeTab:
     #@+node:ekr.20110605121601.18445: *3* tt.selectTab
     def selectTab(self, tabName):
         '''LeoQtTreeTab.'''
+        trace = False and not g.unitTesting
         tt, c, cc = self, self.c, self.cc
         tabName = g.u(tabName)
         exists = tabName in self.tabNames
-        # g.trace(tabName, type(tabName), exists)
+        if trace: g.trace('================',tabName, type(tabName), exists)
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if not tt.lockout:
             cc.selectChapterByName(tabName)
+            if trace: g.trace('***************', tabName, c.p.h)
             c.redraw()
             c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *3* tt.setTabLabel
