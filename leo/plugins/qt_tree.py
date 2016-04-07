@@ -1079,6 +1079,7 @@ class LeoQtTree(leoFrame.LeoTree):
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
         if trace: g.trace(e, wrapper)
+        self.sizeTreeEditor(self.c, e)
         return e, wrapper
     #@+node:ekr.20110605121601.18421: *3* qtree.createTreeItem
     def createTreeItem(self, p, parent_item):
@@ -1213,6 +1214,16 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, s)
             if self.use_declutter:
                 item._real_text = s
+    #@+node:tbrown.20160406221505.1: *3* qtree.sizeTreeEditor
+    @staticmethod
+    def sizeTreeEditor(c, editor):
+        """Size a QLineEdit in a tree headline so scrolling occurs"""
+        # space available in tree widget
+        space = c.frame.tree.treeWidget.size().width()
+        # left hand edge of editor within tree widget
+        used = editor.geometry().x() + 4  # + 4 for edit cursor
+        # limit width to available space
+        editor.resize(space - used, editor.size().height())
     #@+node:ekr.20110605121601.18433: ** qtree.Scroll bars
     #@+node:ekr.20110605121601.18434: *3* qtree.getSCroll
     def getScroll(self):
@@ -1340,6 +1351,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.error('no item for %s' % p)
         if trace: g.trace('p: %s e: %s' % (p and p.h, e))
         if e:
+            self.sizeTreeEditor(c, e)
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
         return e, wrapper
