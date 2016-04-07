@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.61" body_secondary_ratio="0.62">
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.62">
 	<global_window_position top="108" left="527" height="957" width="1231"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e342e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e333971117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e333971057d710658090000006d795f706c7567696e7107580300000076616c710873580a000000302e362e31372e342e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1249,7 +1249,6 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
 </v>
-</v>
 <v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
 <v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
 <v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
@@ -1259,6 +1258,8 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20160402043006.3"><vh>node c</vh></v>
 </v>
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
+</v>
+<v t="ekr.20120310121839.3949"><vh>@test c.hoist @chapter node</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -9623,6 +9624,34 @@ if not g.app.isExternalUnitTest:
 # End
 </t>
 <t tx="ekr.20120228174052.3929"># node 1 text A.
+</t>
+<t tx="ekr.20120310121839.3949"># Not valid when run externally: the chapter node will not exist.
+if not g.app.isExternalUnitTest:
+
+    p1 = g.findNodeAnywhere(c,'@chapter aaa')
+    assert p1
+    p2 = g.findNodeAnywhere(c,'aaa node 1')
+    assert p2
+    try:
+        # g.es_print('**1**', c.hoistStack)
+        assert not c.hoistStack, ('fail1', c.hoistStack)
+        c.selectPosition(p1)
+        assert c.p == p1, ('fail2', c.p, p1)
+        c.hoist()
+            # New in Leo 5.3: should do nothing
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, ('fail3', c.p, p2)
+        c.dehoist()
+            # New in Leo 5.3: should do nothing:
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
+        assert c.hoistStack == [], ('fail5', c.hoistStack)
+    finally:
+        c.hoistStack = []
+        c.selectPosition(p)
+        c.redraw()
+else:
+    self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20130503061511.4137">import leo.core.leoImport as leoImport
 ic = c.importCommands

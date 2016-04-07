@@ -4985,22 +4985,26 @@ if not g.app.isExternalUnitTest:
     assert p1
     p2 = g.findNodeAnywhere(c,'aaa node 1')
     assert p2
-    
     try:
-        assert not c.hoistStack
+        # g.es_print('**1**', c.hoistStack)
+        assert not c.hoistStack, ('fail1', c.hoistStack)
         c.selectPosition(p1)
-        assert c.p == p1
+        assert c.p == p1, ('fail2', c.p, p1)
         c.hoist()
-        assert c.p == p2
+            # New in Leo 5.3: should do nothing
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, ('fail3', c.p, p2)
         c.dehoist()
-        assert c.p == p2
-        assert not c.hoistStack
+            # New in Leo 5.3: should do nothing:
+        assert c.p == p1, ('fail3', c.p, p1)
+        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
+        assert c.hoistStack == [], ('fail5', c.hoistStack)
     finally:
+        c.hoistStack = []
         c.selectPosition(p)
         c.redraw()
 else:
     self.skipTest('Can not be run locally')
-
 #@+node:ekr.20120311124038.3951: *4* @test c.hoist followed by goto-first-node
 p1 = p.copy()
 try:
