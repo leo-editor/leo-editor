@@ -28,9 +28,10 @@ class ChapterController:
         '''Create chapter-selection Qt ListBox in the icon area.'''
         cc = self
         c = cc.c
-        if hasattr(c.frame.iconBar, 'createChaptersIcon'):
-            if not cc.tt:
-                cc.tt = c.frame.iconBar.createChaptersIcon()
+        if cc.use_tabs:
+            if hasattr(c.frame.iconBar, 'createChaptersIcon'):
+                if not cc.tt:
+                    cc.tt = c.frame.iconBar.createChaptersIcon()
     #@+node:ekr.20070325104904: *4* cc.finishCreate
     # This must be called late in the init process, after the first redraw.
 
