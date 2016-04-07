@@ -2,8 +2,6 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 import leo.core.leoGlobals as g
-new_code = True
-    # True: no @chapters node needed.
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
 class ChapterController:
@@ -37,29 +35,19 @@ class ChapterController:
     # This must be called late in the init process, after the first redraw.
 
     def finishCreate(self):
-        '''
-        OLD: Find or make the @chapters and @chapter trash nodes.
-        NEW: Just create the box in the icon area.
-        '''
+        '''Create the box in the icon area.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(cc)')
         cc, c = self, self.c
-        if new_code:
-            cc.createIcon()
-        else:
-            # The old scheme: @chapters node enables icon.
-            if cc.findChaptersNode():
-                cc.createIcon()
+        cc.createIcon()
         # Create the main chapter
         cc.chaptersDict['main'] = Chapter(c, cc, 'main')
         tag = '@chapter'
         for p in c.all_unique_positions():
             h = p.h
-            # if h.startswith(tag) and not h.startswith('@chapters'):
             if g.match_word(h, 0, tag):
                 tabName = h[len(tag):].strip()
-                names = [] if new_code else ['main',]
-                if tabName and tabName not in names:
+                if tabName:
                     if cc.chaptersDict.get(tabName):
                         self.error('duplicate chapter name: %s' % tabName)
                     else:
@@ -150,7 +138,7 @@ class ChapterController:
             g.trace('old: %s, new: %s' % (
                 cc.selectedChapter and cc.selectedChapter.name,
                 chapter and chapter.name))
-        if new_code and not cc.selectedChapter and chapter.name == 'main':
+        if not cc.selectedChapter and chapter.name == 'main':
             if trace: g.trace('already selected1')
             return
         if chapter == cc.selectedChapter:
@@ -221,7 +209,7 @@ class ChapterController:
             chapter.name if chapter else 'main',
             selChapter.name if selChapter else 'main',
             g.callers(2))
-        if new_code and not chapter and not selChapter:
+        if not chapter and not selChapter:
             if trace: g.trace('*** selecting main chapter')
             return 
         if not p:
@@ -258,27 +246,17 @@ class ChapterController:
         c.redraw_now()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
-        cc, result = self, []
+        c, cc, result = self.c, self, []
         sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         tag = '@chapter '
-        if new_code:
-            c = cc.c
-            seen = set()
-            for p in c.all_positions():
-                if p.h.startswith(tag):
-                    if p.v not in seen:
-                        seen.add(p.v)
-                        name = p.h[len(tag):].strip()
-                        if name and name != sel_name:
-                            result.append(name)
-        else:
-            root = cc.findChaptersNode()
-            if root:
-                for p in root.subtree():
-                    if p.h.startswith(tag):
-                        name = p.h[len(tag):].strip()
-                        if name and name != sel_name:
-                            result.append(name)
+        seen = set()
+        for p in c.all_positions():
+            if p.h.startswith(tag):
+                if p.v not in seen:
+                    seen.add(p.v)
+                    name = p.h[len(tag):].strip()
+                    if name and name != sel_name:
+                        result.append(name)
         if 'main' not in result and sel_name != 'main':
             result.append('main')
         result.sort()
@@ -395,13 +373,8 @@ class Chapter:
         self.name = g.toUnicode(name)
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        if self.name == 'main':
-            if new_code:
-                self.p = None 
-            else:
-                self.p = c.p or c.rootPosition()
-        else:
-            self.p = None # Set later.
+        self.p = None
+        if self.name != 'main':
             root = self.findRootNode()
         if cc.tt:
             #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
@@ -416,10 +389,7 @@ class Chapter:
     def findRootNode(self):
         '''Return the @chapter node for this chapter.'''
         if self.name == 'main':
-            if new_code:
-                return None
-            else:
-                return self.c.rootPosition()
+            return None
         else:
             return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
@@ -472,17 +442,10 @@ class Chapter:
                 p = p.firstChild()
             else:
                 if trace: g.trace('can not happen: no child of @chapter node')
-        if new_code:
-            if name == 'main':
-                g.error('can not happen: main chapter has root node')
-            else:
-                c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
+        if name == 'main':
+            g.error('can not happen: main chapter has root node')
         else:
-            chaptersNode = cc.findChaptersNode()
-            if name == 'main' and chaptersNode:
-                chaptersNode.contract()
-            if name != 'main':
-                c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
+            c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         c.selectPosition(p)
         g.doHook('hoist-changed', c=c)
         c.redraw_now(p)

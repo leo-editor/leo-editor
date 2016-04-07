@@ -30,16 +30,6 @@ Leo + Ipython notebook integration is a killer app indeed.
 .. @+node:ekr.20160403041855.1: *4* Complete chapters work
 Proposal: remove/improve all chapter commands
 https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
-
-1. Remove most @chapters commands.
-
-2. Improve chapter-select command:
-   - Alt-x hook to create chapter-select-* commands.
-   - Allow key bindings to chapter-select-* commands.
-   
-3. What happens, exactly, to the hoist stack when we switch chapters???
-
-4. Last: remove NEW switch.
 .. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
 @language rest
 @wrap
