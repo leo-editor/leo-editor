@@ -267,7 +267,7 @@ class LeoFind:
                 p.moveToThreadBack()
                 c.selectPosition(p)
             self.p = p.copy()
-        self.reverse = not self.reverse
+        self.reverse = True
         try:
             if not self.findNext() and p0 != c.p:
                 # Undo the effect of selecting the previous node.
@@ -275,7 +275,7 @@ class LeoFind:
                 c.selectPosition(p0)
                 c.redraw()
         finally:
-            self.reverse = not self.reverse
+            self.reverse = False
     #@+node:ekr.20031218072017.3065: *4* find.setup_button
     def setup_button(self):
         '''Init a search started by a button in the Find panel.'''
@@ -407,8 +407,9 @@ class LeoFind:
         # g.trace('find_def_data',self.find_def_data)
         if self.find_def_data:
             # pylint: disable=unpacking-non-sequence
-            self.ignore_case, p, self.pattern_match, self.reverse, self.search_body, \
+            self.ignore_case, p, self.pattern_match, junk_reverse, self.search_body, \
             self.search_headline, self.whole_word = self.find_def_data
+            self.reverse = False
             self.p = p
         self.find_def_data = None
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
@@ -422,11 +423,11 @@ class LeoFind:
     def findPrevCommand(self, event=None):
         '''Handle F2 (find-previous)'''
         self.setup_command()
-        self.reverse = not self.reverse
+        self.reverse = True
         try:
             self.findNext()
         finally:
-            self.reverse = not self.reverse
+            self.reverse = False
     #@+node:ekr.20141113094129.6: *4* find.focusToFind
     @cmd('focus-to-find')
     def focusToFind(self, event=None):
@@ -626,7 +627,6 @@ class LeoFind:
         # Save
         oldPattern = self.find_text
         oldRegexp = self.pattern_match
-        oldReverse = self.reverse
         oldWord = self.whole_word
         # Override
         self.pattern_match = self.isearch_regexp
@@ -646,7 +646,7 @@ class LeoFind:
         # Restore.
         self.find_text = oldPattern
         self.pattern_match = oldRegexp
-        self.reverse = oldReverse
+        self.reverse = False
         self.whole_word = oldWord
         # Handle the results of the search.
         if pos is not None: # success.
@@ -1560,9 +1560,8 @@ class LeoFind:
             table.append(p.b)
         for s in table:
             if trace: g.trace('%3s %s' % (len(s), p.h))
-            old_backward = self.reverse
+            self.reverse = False
             pos, newpos = self.searchHelper(s, 0, len(s), self.find_text)
-            self.reverse = old_backward
             if pos != -1: return True
         return False
     #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
