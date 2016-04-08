@@ -352,9 +352,10 @@ class LeoFind:
         found = find.findNext(initFlag=False)
         if found:
             self.find_seen.add(c.p.v)
+            self.restoreAfterFindDef()
+                # 2016/04/08: failing to do this causes massive confusion!
         else:
             c.selectPosition(old_p)
-            # g.trace(old_p and old_p.h)
             self.restoreAfterFindDef() # 2016/03/24
             i, j = save_sel
             w.setSelectionRange(i, j)
@@ -388,9 +389,14 @@ class LeoFind:
     def saveBeforeFindDef(self, p):
         '''Save the find settings in effect before a find-def command.'''
         if not self.find_def_data:
-            self.find_def_data = \
-            self.ignore_case, p.copy(), self.pattern_match, self.reverse, \
-            self.search_body, self.search_headline, self.whole_word
+            self.find_def_data = g.Bunch(
+                ignore_case     = self.ignore_case,
+                p               = p.copy(),
+                pattern_match   = self.pattern_match,
+                search_body     = self.search_body,
+                search_headline = self.search_headline,
+                whole_word      = self.whole_word,
+            )
     #@+node:ekr.20150629100600.1: *6* find.setFindDefOptions
     def setFindDefOptions(self, p):
         '''Set the find options needed for the find-def command.'''
@@ -404,14 +410,17 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find.restoreAfterFindDef
     def restoreAfterFindDef(self):
         '''Restore find settings in effect before a find-def command.'''
-        # g.trace('find_def_data',self.find_def_data)
-        if self.find_def_data:
-            # pylint: disable=unpacking-non-sequence
-            self.ignore_case, p, self.pattern_match, junk_reverse, self.search_body, \
-            self.search_headline, self.whole_word = self.find_def_data
-            self.reverse = False
-            self.p = p
-        self.find_def_data = None
+        g.trace('=====')
+        b = self.find_def_data # A g.Bunch
+        if b:
+            self.ignore_case     = b.ignore_case
+            self.p               = b.p
+            self.pattern_match   = b.pattern_match
+            self.reverse         = False
+            self.search_body     = b.search_body
+            self.search_headline = b.search_headline
+            self.whole_word      = b.whole_word
+            self.find_def_data = None
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
     @cmd('find-next')
     def findNextCommand(self, event=None):
