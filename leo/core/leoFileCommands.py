@@ -1671,7 +1671,7 @@ class FileCommands:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
         attrs = []
         #@+<< Append attribute bits to attrs >>
-        #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >>
+        #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >> (fc.putVnode)
         # These string catenations are benign because they rarely happen.
         attr = ""
         # New in Leo 4.5: support fixed .leo files.
@@ -1707,7 +1707,7 @@ class FileCommands:
                 v.unknownAttributes = d
         #@-<< Append attribute bits to attrs >>
         #@+<< Append unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>>
+        #@+node:ekr.20040324082713: *5* << Append unKnownAttributes to attrs>> (fc.putVnode)
         # v.unknownAttributes are now put in <t> elements.
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # We put the entire tree when using the clipboard, so no need for this.

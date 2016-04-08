@@ -1395,7 +1395,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 if trace: g.trace('*** failed. no item for %s' % p.h)
     #@+node:ekr.20110605121601.17913: *3* qtree.setItemForCurrentPosition
     def setItemForCurrentPosition(self, scroll=True):
-        '''Select the item for c.currentPosition()'''
+        '''Select the item for c.p'''
         trace = False and not g.unitTesting
         verbose = True
         c = self.c; p = c.currentPosition()
