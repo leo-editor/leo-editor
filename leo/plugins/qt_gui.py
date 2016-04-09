@@ -662,7 +662,7 @@ class LeoQtGui(leoGui.LeoGui):
         gui = self
         if w:
             if hasattr(w, 'widget') and w.widget: w = w.widget
-            if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
+            if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
             w.setFocus()
 
     def ensure_commander_visible(self, c1):

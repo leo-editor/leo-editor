@@ -3307,7 +3307,10 @@ class KeyHandlerClass:
         if traceGC: g.printNewObjects('masterKey 2')
         # 2011/02/08: An important simplification.
         if isPlain and k.unboundKeyAction != 'command':
-            if self.isAutoCompleteChar(stroke):
+            if w_name.startswith('canvas'):
+                # 2016/04/09: experimental.
+                if trace: g.trace('plain key in tree')
+            elif self.isAutoCompleteChar(stroke):
                 if trace: g.trace('autocomplete key', stroke)
             else:
                 if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
@@ -3321,6 +3324,10 @@ class KeyHandlerClass:
             if trace: g.trace('   bound', stroke, si.func.__name__)
             k.masterCommand(event=event,
                 commandName=si.commandName, func=si.func, stroke=si.stroke)
+        elif w_name.startswith('canvas'):
+            # 2016/04/09: experimental.
+            if trace: g.trace('unbound plain key in tree: search')
+            k.searchTree(char)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
             if trace: g.trace(' unbound', stroke)
@@ -3571,6 +3578,48 @@ class KeyHandlerClass:
                         if si.commandName == 'auto-complete':
                             return True
         return False
+    #@+node:ekr.20160409035115.1: *5* k.searchTree
+    def searchTree(self, char):
+        '''Search all visible nodes for a headline starting with stroke.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(char)
+        if not char: return
+        c = self.c
+
+        def match(p):
+            '''Return True if p contains char.'''
+            s = p.h.lower() if char.islower() else p.h
+            return s.find(char) > -1
+            
+        # Start at c.p, then retry everywhere.
+        for p in (c.p, c.rootPosition()):
+            p = p.copy()
+            if p == c.p and match(p):
+                 p.moveToVisNext(c)
+            while p:
+                if trace: g.trace(p.h)
+                if match(p):
+                    c.selectPosition(p)
+                    c.redraw()
+                    return
+                else:
+                    p.moveToVisNext(c)
+                
+        # Too confusing for the user.
+        # re_pat = re.compile(r'^@(\w)+[ \t](.+)')
+
+        # def match(p, pattern):
+            # s = p.h.lower()
+            # if pattern:
+                # m = pattern.search(s)
+                # found = (s.startswith(char) or
+                    # m and m.group(2).lower().startswith(char))
+            # else:
+                # found = s.find(char) > -1
+            # if found:
+                # c.selectPosition(p)
+                # c.redraw()
+            # return found
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
@@ -4073,6 +4122,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke):
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
+        trace = False and not g.unitTesting
         k = self
         if not stroke:
             return False
@@ -4093,7 +4143,7 @@ class KeyHandlerClass:
             # A hack: allow Return to be bound to command.
             shortcut in ('Tab', '\t')
         )
-        # g.trace(isPlain,repr(shortcut))
+        if trace: g.trace(isPlain,repr(shortcut))
         return isPlain and not self.isFKey(shortcut)
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
     def prettyPrintKey(self, stroke, brief=False):

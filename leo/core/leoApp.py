@@ -1230,7 +1230,10 @@ class LeoApp:
         if master: # 2011/11/21: selecting the new tab ensures focus is set.
             # frame.top.leo_master is a TabbedTopLevel.
             master.select(c)
-        c.bodyWantsFocus()
+        if 1: # 2016/04/09
+            c.initialFocusHelper()
+        else:
+            c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ville.20090620122043.6275: *3* app.setGlobalDb
     def setGlobalDb(self):
@@ -2459,9 +2462,12 @@ class LoadManager:
         if not fileName:
             c.redraw()
         # Respect c's focus wishes if posssible.
-        if w != c.frame.body.wrapper and w != c.frame.tree.canvas:
-            c.bodyWantsFocus()
-            c.k.showStateAndMode(w)
+        if 1: # 2016/04/09.
+            c.initialFocusHelper()
+        else:
+            if w != c.frame.body.wrapper and w != c.frame.tree.canvas:
+                c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
         c.outerUpdate()
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
