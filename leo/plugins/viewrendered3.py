@@ -1352,7 +1352,6 @@ class WebViewPlus(QtWidgets.QWidget):
         self.lock_mode_action = action('Lock to node', self.lock)
         # Add an s5 option
         self.slideshow_mode_action = action('Show as slideshow')
-        #self.s5_mode_action = action('s5 slideshow')
         menu.addSeparator() # Separate render mode and code options
         self.visible_code_action = action('Visible code')
         self.execute_code_action = action('Execute code')
@@ -1555,7 +1554,7 @@ class WebViewPlus(QtWidgets.QWidget):
             f.write(html.encode('utf8'))
             f.close()
             self.view.setUrl(QUrl.fromLocalFile(pathname))
-        elif self.auto:
+        elif self.auto and got_docutils:
             self.timer.start()
     #@+node:ekr.20160331124028.33: *4* wvp.render_md
     def render_md(self, s, keywords):
@@ -1638,7 +1637,7 @@ class WebViewPlus(QtWidgets.QWidget):
                 self.rendering = False
     #@+node:ekr.20160331124028.40: *4* wvp.render_helper & helper
     def render_helper(self):
-        '''Rendinging helper: self.rendering is True.'''
+        '''Rendering helper: self.rendering is True.'''
         c, p, pc = self.c, self.c.p, self.pc
         self.getUIconfig()
             # Get the UI config again, in case directly called by control.
@@ -1652,7 +1651,16 @@ class WebViewPlus(QtWidgets.QWidget):
         # Put temporary or output files in location given by path directives
         self.path = d['path']
         if pc.default_kind in ('big', 'rst', 'html', 'md'):
-            self.view.setHtml(html)
+            # Render to file to allow QWebView to load this without blocking
+            # and be able to load any associated css from the local file system.
+            ext = 'html'
+            # Write the output file
+            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
+            f = open(pathname,'wb')
+            f.write(self.html.encode('utf8'))
+            f.close()
+            # render to file, not directly to "QWebView.setHtml"
+            self.view.setUrl(QUrl.fromLocalFile(pathname))
         else:
             self.view.setPlainText(html)
         if not self.auto:
@@ -1744,6 +1752,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: ' + lang + '\n\n'
         else:
+            g.trace('NOT using pygments')
             return '\n\n::\n\n'
     #@+node:ekr.20160331124028.44: *7* wvp.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
@@ -1767,7 +1776,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # Add an empty line so bullet lists display properly.
         if code and self.execcode:
             s, err = self.exec_code(code, environment)
-                # execute code found in a node, append to reST
+                # execute code found in a node, append output to reST
             if not self.restoutput and s.strip():
                 s = self.format_output(s) # if some non-reST to print
             result.append(s) # append, whether plain or reST output
@@ -1789,7 +1798,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # print >> buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
             # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered2 code execution exception')
             g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout # was sys.__stdout__
@@ -1807,8 +1816,10 @@ class WebViewPlus(QtWidgets.QWidget):
     def process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
         trace = False and not g.unitTesting
-        lang = d.get('language') or 'python' # EKR.
-        codeflag = lang != 'rest' # EKR
+        #lang = d.get('language') or 'python' # EKR.
+        lang = d.get('language')
+        #codeflag = lang != 'rest' # EKR
+        codeflag = lang not in ['rest', 'md', 'plain', '']
         lines = g.splitLines(s)
         result = []
         code = ''
@@ -1818,13 +1829,14 @@ class WebViewPlus(QtWidgets.QWidget):
             if s.startswith('@'):
                 i = g.skip_id(s, 1)
                 word = s[1: i]
-                # Add capability to detect mid-node language directives (not really that useful).
+                # Add capability to detect mid-node language directives.
                 # Probably better to just use a code directive.  "execute-script" is not possible.
                 # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
                 # to stop directive being put into the reST output.
                 if word == 'language' and not codeflag: # only if not already code
                     lang = s[i:].strip()
-                    codeflag = lang in ['python',]
+                    # For showing code, any type of code is OK
+                    codeflag = lang not in ['rest', 'md', 'plain', '']
                     if codeflag:
                         if self.verbose:
                             g.es('New code section within node:', lang)
@@ -1838,6 +1850,8 @@ class WebViewPlus(QtWidgets.QWidget):
             if codeflag:
                 if self.showcode:
                     result.append('    ' + s) # 4 space indent on each line
+            # For execution, only Python code is valid.
+            if lang in ['python']:
                 code += s # accumulate code lines for execution
             else:
                 result.append(s)
