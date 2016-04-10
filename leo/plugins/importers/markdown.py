@@ -191,7 +191,7 @@ class MarkdownScanner(basescanner.BaseScanner):
     #@-others
 #@-others
 importer_dict = {
-    '@auto': ['@auto-markdown',],
+    '@auto': ['@auto-md', '@auto-markdown',],
     'class': MarkdownScanner,
     'extensions': ['.md',],
 }
