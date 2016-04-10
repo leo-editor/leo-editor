@@ -54,7 +54,7 @@ class MarkdownWriter(basewriter.BaseWriter):
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-markdown',],
+    '@auto': ['@auto-md','@auto-markdown',],
     'class': MarkdownWriter,
     'extensions': ['.md',],
 }
