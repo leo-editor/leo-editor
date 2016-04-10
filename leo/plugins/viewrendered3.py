@@ -1443,10 +1443,10 @@ class WebViewPlus(QtWidgets.QWidget):
                 else: ds[name] = default
         # Do docutils config (note that the vr_ prefix is omitted)
 
-        getConfig(gc.getString, 'stylesheet_path', '')
+        getConfig(gc.getString, 'stylesheet_path', 'html4css1.css')
         getConfig(gc.getInt, 'halt_level', 6)
-        getConfig(gc.getInt, 'report_level', 5)
-        getConfig(gc.getString, 'math_output', 'mathjax')
+        getConfig(gc.getInt, 'report_level', 2)  # set to 5 to eliminate all error messages
+        getConfig(gc.getString, 'math_output', 'HTML math.css')
         getConfig(gc.getBool, 'smart_quotes', True)
         getConfig(gc.getBool, 'embed_stylesheet', True)
         getConfig(gc.getBool, 'xml_declaration', False)
@@ -1754,6 +1754,10 @@ class WebViewPlus(QtWidgets.QWidget):
         else:
             g.trace('NOT using pygments')
             return '\n\n::\n\n'
+    #@+node:peter.20160410194526.1: *7* wvp.plain_directive
+    def plain_directive(self):
+        '''Return a plain text block.'''
+        return '\n\n::\n\n'
     #@+node:ekr.20160331124028.44: *7* wvp.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
         '''Reference code illustrating the complications of code blocks.'''
@@ -1830,12 +1834,11 @@ class WebViewPlus(QtWidgets.QWidget):
                 i = g.skip_id(s, 1)
                 word = s[1: i]
                 # Add capability to detect mid-node language directives.
-                # Probably better to just use a code directive.  "execute-script" is not possible.
                 # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
                 # to stop directive being put into the reST output.
                 if word == 'language' and not codeflag: # only if not already code
                     lang = s[i:].strip()
-                    # For showing code, any type of code is OK
+                    # For *rendering* code, any type of code is eligible
                     codeflag = lang not in ['rest', 'md', 'plain', '']
                     if codeflag:
                         if self.verbose:
@@ -1850,7 +1853,7 @@ class WebViewPlus(QtWidgets.QWidget):
             if codeflag:
                 if self.showcode:
                     result.append('    ' + s) # 4 space indent on each line
-            # For execution, only Python code is valid.
+            # For *execution* of code, only Python code is valid.
             if lang in ['python']:
                 code += s # accumulate code lines for execution
             else:
