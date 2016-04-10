@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -973,6 +973,7 @@
 <v t="ekr.20131031101712.16486"><vh>Node types</vh></v>
 <v t="ekr.20131016103844.16730"><vh>Notable Plugins</vh></v>
 <v t="ekr.20131015035606.16799"><vh>External files (@&lt;file&gt; nodes)</vh></v>
+<v t="ekr.20160410103017.1"><vh>Sections</vh></v>
 <v t="ekr.20131007143750.16074"><vh>Scripting</vh>
 <v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20131019061259.16687"><vh>Generators</vh></v>
@@ -1287,6 +1288,8 @@
 <v t="ekr.20150318110552.55"></v>
 </v>
 <v t="ekr.20160410040249.1"><vh>Revised @&lt;file&gt; docs</vh>
+<v t="ekr.20160410103906.1"><vh>unused</vh></v>
+<v t="ekr.20160410105944.1"><vh>unused 2</vh></v>
 <v t="ekr.20131015035606.16799"></v>
 <v t="ekr.20100806170836.4392"></v>
 </v>
@@ -7222,71 +7225,69 @@ including Leo's home page.
 
 This section discusses the @&lt;file&gt; directives. These directives create or import external files.
 
-**Important**: In Leo 5.1 and later @file, @clean and @auto are the recommended ways of creating external files.
+\@&lt;file&gt; nodes create external files::
+
+    @asis &lt;filename&gt;        write only, no sentinels, exact line endings
+    @auto &lt;filename&gt;        recommended
+    @clean &lt;filename&gt;       recommended
+    @edit &lt;filename&gt;        @edit node contains entire file
+    @file &lt;filename&gt;        recommended
+    @nosent &lt;filename&gt;      write only, no sentinels
+
+**Note**: @file, @clean and @auto are the recommended ways of creating external files. @asis and @nosent are for special occasions.
 
 **Note**: All these directive must appear in headlines.
 
-The following table compares the various ways of creating external files. Later sections provide more details:
+The following table compares the various ways of creating external files. Later sections provide more details::
 
-+-----------+------------+------------------+-----------------+------+
-|           | Sentinels  | Sections and     | File data stored| Note |
-| Kind      | in external| @others expanded | in .leo file?   |      |
-|           | file?      | on write?        |                 |      |
-+-----------+------------+------------------+-----------------+------+
-| @asis     | no         | no               | yes             |      |
-+-----------+------------+------------------+-----------------+------+
-| @auto     | no         | yes              | no              |   1  |
-+-----------+------------+------------------+-----------------+------+
-| @auto-xx  | no         | yes              | no              |   2  |
-+-----------+------------+------------------+-----------------+------+
-| @clean    | no         | yes              | yes             |      |
-+-----------+------------+------------------+-----------------+------+
-| @edit     | no         | no               | no              |      |
-+-----------+------------+------------------+-----------------+------+
-| @file     | yes        | yes              | no              |      |
-+-----------+------------+------------------+-----------------+------+
-| @nosent   | no         | yes              | yes             |      |
-+-----------+------------+------------------+-----------------+------+
-
-.. _`Emacs org-mode`:      http://en.wikipedia.org/wiki/Org-mode
-.. _`Emacs documentation`: emacs.html#using-org-mode-org-files-in-leo
-.. _`markdown`:            http://en.wikipedia.org/wiki/Markdown
-.. _`reStructuredText`:    http://docutils.sourceforge.net/rst.html
-.. _`vim outline`:         http://www.vim.org/scripts/script.php?script_id=3515
-.. _`vim documentation`:   http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
-
-**Note 1**: @auto nodes read files using importers **specified by the file's extension**.
-
-Importers exist for the following languages::
+                             Sections &amp;   File data in
+    @&lt;file&gt; kind  Sentinels?  @others?    .leo file?    Notes             
+    ------------  ---------- -----------  ------------  -----
+    @asis            no         no           yes
+    @auto            no         yes          no         1, 2
+    @auto-xx         no         yes          no         1, 2
+    @clean           no         yes          yes     
+    @edit            no         no           no    
+    @file            yes        yes          no
+    @nosent          no         yes          yes
     
-        C, C#, Elisp, HTML, INI, Java, Javascript,
-        Pascal, PHP, Python, Typescript, XML
+**Note 1**: @auto nodes read files using language-specific importers.
+By default, the file's extention determines the importer::
 
-**Note 2**: @auto-xx nodes read files using importers **specified by xx**:
+    Extensions                  Importer
+    ----------                  --------
+    .c, .cc, .c++, .cpp,.cxx    C
+    .cs', .c#'                  C Sharp
+    .el                         Elisp
+    .h, .h++                    C
+    .html, .htm                 HTML
+    .ini                        Config file
+    .java                       Java
+    .js                         JavaScript
+    .md                         Markdown
+    .org                        Org Mode
+    .otl                        Vim outline
+    .pas                        Pascal
+    .php                        PHP
+    .py, .pyi, .pyw             Python
+    .rest, .rst                 reStructuredText
+    .ts                         TypeScript
+    .xml                        XML
+    
+**Note 2**: You can also specify importers *explicitly* as follows::
 
-+-----------------------+---------------------------+-------+
-| Directive             | Language                  | Note  |
-+-----------------------+---------------------------+-------+  
-| @auto-ctext           | ctext                     |       |
-+-----------------------+---------------------------+-------+ 
-| @auto-markdown        | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-md              | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-org             | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-org-mode        | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-otl             | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-vim-outline     | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-rst             | `reStructuredText`_       |       |
-+-----------------------+---------------------------+-------+
-
-**Note A**: See Leo's `Emacs documentation`_ for more details.
-
-**Note B**: See Leo's `vim documentation`_ for more details.
+    @auto-xxx           Importer
+    ---------           --------
+    @auto-ctext         ctext
+    @auto-markdown      markdown
+    @auto-md            markdown
+    @auto-org           org-mode
+    @auto-org-mode      org-mode
+    @auto-otl           vimoutline
+    @auto-vim-outline   vimoutline      
+    @auto-rst           reStructuredText
+    
+**Important**: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatcially generate section heading of the appropriate level. Body text of the top-level @auto node is ignored.
 </t>
 <t tx="ekr.20100806170836.4393">.. index::
     pair: @asis; Reference
@@ -7331,40 +7332,59 @@ The @auto directive imports an external file into a tree of nodes.
 .. index::
     pair: Importer; Reference
 
-When reading @auto nodes, Leo creates the @auto tree using **importers**, parsers that create an outline with nodes for each class, method and function in the external file. Some importers create other kinds of nodes as well.
+\@auto nodes read files using language-specific importers.
+By default, the file's extention determines the importer::
 
-+-----------------------+---------------------------+-------+
-| Directive             | Language                  | Notes |
-+-----------------------+---------------------------+-------+
-| @auto                 | given by file's extention | C, D  |
-+-----------------------+---------------------------+-------+  
-| @auto-ctext           | ctext                     |       |
-+-----------------------+---------------------------+-------+ 
-| @auto-markdown        | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-md              | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-org             | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-org-mode        | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-otl             | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-vim-outline     | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-rst             | `reStructuredText`_       |       |
-+-----------------------+---------------------------+-------+
+    Extensions                  Importer
+    ----------                  --------
+    .c, .cc, .c++, .cpp,.cxx    C
+    .cs', .c#'                  C Sharp
+    .el                         Elisp
+    .h, .h++                    C
+    .html, .htm                 HTML
+    .ini                        Config file
+    .java                       Java
+    .js                         JavaScript
+    .md                         Markdown
+    .org                        Org Mode
+    .otl                        Vim outline
+    .pas                        Pascal
+    .php                        PHP
+    .py, .pyi, .pyw             Python
+    .rest, .rst                 reStructuredText
+    .ts                         TypeScript
+    .xml                        XML
+    
+You can also specify importers *explicitly* as follows::
 
-**Note A**: See Leo's `Emacs documentation`_ for more details.
+    @auto-xxx           Importer            Notes
+    ---------           --------            -----
+    @auto-ctext         ctext           
+    @auto-markdown      markdown            1, 2
+    @auto-md            markdown            1, 2
+    @auto-org           org-mode            1, 3
+    @auto-org-mode      org-mode            1, 3
+    @auto-otl           vimoutline          1, 4
+    @auto-vim-outline   vimoutline          1, 4      
+    @auto-rst           reStructuredText    1, 5
+    
+.. _`org-mode`: http://en.wikipedia.org/wiki/Org-mode
+.. _`Emacs`:    http://leoeditor.com/emacs.html#using-org-mode-org-files-in-leo
+.. _`markdown`:  http://en.wikipedia.org/wiki/Markdown
+.. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
+.. _`vim outline`:  http://www.vim.org/scripts/script.php?script_id=3515
+.. _`vim`:          http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
 
-**Note B**: See Leo's `vim documentation`_ for more details.
+**Note 1**: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatcially generate section heading of the appropriate level. Body text of the top-level @auto node is ignored.
 
-**Note C**: Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
+**Note 2**: See the official `Markdown`_ documentation.
 
-.. index::
-    pair: Organizer tag; Reference
+**Note 3**: See Leo's `Emacs`_ documentation and Emacs's `org-mode`_ documentation.
 
-**Note D**: The ``@data import_xml_tags`` setting specifies the **organizer tags** that cause the HTML and XML importers to create outline nodes. By default, the **organizer tags** are html, body, head, and div.</t>
+**Note 4**: See Leo's `vim`_ documentation and Vim's `vim outline`_ documentation.
+
+**Note 5**: See the `reStructuredText`_ documentation.
+</t>
 <t tx="ekr.20100806170836.4398">The @color, @killcolor, @nocolor and @nocolor-node directives control how
 Leo colors text in the body pane.
 
@@ -12366,6 +12386,10 @@ Appendices
 Directives Reference
 ####################
 
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
 .. contents::
     :depth: 4
 </t>
@@ -12966,15 +12990,46 @@ This overrides the following default binding in leoSettings.leo::
     @file &lt;filename&gt;        recommended
     @nosent &lt;filename&gt;      write only, no sentinels
     
-@auto nodes read files using language-specific importers.
-Importers exist for the following languages::
+This table summarizes the differences between @&lt;file&gt; nodes::
+
+                             Sections &amp;   File data in
+    @&lt;file&gt; kind  Sentinels?  @others?    .leo file?    Notes             
+    ------------  ---------- -----------  ------------  -----
+    @asis          no          no          yes
+    @auto          no          yes         no           1, 2
+    @auto-xx       no          yes         no           1, 2
+    @clean         no          yes         yes     
+    @edit          no          no          no    
+    @file          yes         yes         no
+    @nosent        no          yes         yes
     
-    C, C-Sharp, Elisp, HTML, INI, Java, Javascript,
-    Pascal, PHP, Python, Typescript, XML
+\@auto nodes read files using language-specific importers.
+By default, the file's extention determines the importer::
+
+    Extensions                  Importer
+    ----------                  --------
+    .c, .cc, .c++, .cpp,.cxx    C
+    .cs', .c#'                  C Sharp
+    .el                         Elisp
+    .h, .h++                    C
+    .html, .htm                 HTML
+    .ini                        Config file
+    .java                       Java
+    .js                         JavaScript
+    .md                         Markdown
+    .org                        Org Mode
+    .otl                        Vim outline
+    .pas                        Pascal
+    .php                        PHP
+    .py, .pyi, .pyw             Python
+    .rest, .rst                 reStructuredText
+    .ts                         TypeScript
+    .xml                        XML
     
-You specify importers as follows::
-    
-    @auto x.y           The file's extension gives the importer.
+You can also specify importers *explicitly* as follows::
+
+    @auto-xxx           Importer
+    ---------           --------
     @auto-ctext         ctext
     @auto-markdown      markdown
     @auto-md            markdown
@@ -12984,27 +13039,10 @@ You specify importers as follows::
     @auto-vim-outline   vimoutline
     @auto-rst           reStructuredText
     
+**Important**: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatcially generate section headings corresponding to Leo's outline level. Body text of the top-level @auto node is ignored.
+    
 See the `Directives reference`_ for full details.
     
-**Section names** have the form::
-
-    &lt;&lt; any text, except double closing angle brackets &gt;&gt;
-    
-**Section-definition nodes** have headlines starting with a section name.
-
-Leo performs **expansions** for all @&lt;file&gt; nodes except @asis.
-
-Expansion of @all:
-
-- Leo replaces @all by the *unexpanded* body text of *all* nodes.
-
-Expansion of section names and @others:
-
-- Leo replaces section names in body text by the *expanded*
-  text of the corresponding section definition node.
-  
-- Leo replaces @others with the *expanded* text of all nodes
-  that *aren't* section-definition nodes.
 </t>
 <t tx="ekr.20131015035606.16800">When focus is in the outline::
 
@@ -19147,7 +19185,103 @@ File comparison mismatches can arise for several reasons:
 
 An **underindented line** is a line of body text that is indented less then the starting line of the class, method or function in which it appears. Leo outlines can not represent such lines exactly: every line in an external file will have at least the indentation of any unindented line of the corresponding node in the outline. Leo will issue a warning (not an error) for underindented Python comment lines. Such lines can not change the meaning of Python programs.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160410103017.1">**Section names** have the form::
+
+    &lt;&lt; any text, except double closing angle brackets &gt;&gt;
+    
+**Section-definition nodes** have headlines starting with a section name.
+
+Leo performs **expansions** for all @&lt;file&gt; nodes except @asis.
+
+Expansion of @all:
+
+- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+Expansion of section names and @others:
+
+- Leo replaces section names in body text by the *expanded*
+  text of the corresponding section definition node.
+  
+- Leo replaces @others with the *expanded* text of all nodes
+  that *aren't* section-definition nodes.
+</t>
+<t tx="ekr.20160410103906.1">When reading @auto nodes, Leo creates the @auto tree using **importers**, parsers that create an outline with nodes for each class, method and function in the external file. Some importers create other kinds of nodes as well.
+
++-----------------------+---------------------------+-------+
+| Directive             | Language                  | Notes |
++-----------------------+---------------------------+-------+
+| @auto                 | given by file's extention | C, D  |
++-----------------------+---------------------------+-------+  
+| @auto-ctext           | ctext                     |       |
++-----------------------+---------------------------+-------+ 
+| @auto-markdown        | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-md              | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-org             | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-org-mode        | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-otl             | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-vim-outline     | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-rst             | `reStructuredText`_       |       |
++-----------------------+---------------------------+-------+
+
+**Note A**: See Leo's `Emacs documentation`_ for more details.
+
+**Note B**: See Leo's `vim documentation`_ for more details.
+
+**Note C**: Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
+
+.. index::
+    pair: Organizer tag; Reference
+
+**Note D**: The ``@data import_xml_tags`` setting specifies the **organizer tags** that cause the HTML and XML importers to create outline nodes. By default, the **organizer tags** are html, body, head, and div.
+
+
+**Note 3**: @auto-xx nodes read files using importers **specified by xx**:
+
++-----------------------+---------------------------+-------+
+| Directive             | Language                  | Note  |
++-----------------------+---------------------------+-------+  
+| @auto-ctext           | ctext                     |       |
++-----------------------+---------------------------+-------+ 
+| @auto-markdown        | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-md              | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-org             | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-org-mode        | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-otl             | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-vim-outline     | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-rst             | `reStructuredText`_       |       |
++-----------------------+---------------------------+-------+</t>
+<t tx="ekr.20160410105944.1">+-----------+------------+------------------+-----------------+---------+
+|           | Sentinels  | Sections and     | File data stored| Note    |
+| Kind      | in external| @others expanded | in .leo file?   |         |
+|           | file?      | on write?        |                 |         |
++-----------+------------+------------------+-----------------+---------+
+| @asis     | no         | no               | yes             |         |
++-----------+------------+------------------+-----------------+---------+
+| @auto     | no         | yes              | no              | 1, 2    |
++-----------+------------+------------------+-----------------+---------+
+| @auto-xx  | no         | yes              | no              | 1, 2    |
++-----------+------------+------------------+-----------------+---------+
+| @clean    | no         | yes              | yes             |         |
++-----------+------------+------------------+-----------------+---------+
+| @edit     | no         | no               | no              |         |
++-----------+------------+------------------+-----------------+---------+
+| @file     | yes        | yes              | no              |         |
++-----------+------------+------------------+-----------------+---------+
+| @nosent   | no         | yes              | yes             |         |
++-----------+------------+------------------+-----------------+---------+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

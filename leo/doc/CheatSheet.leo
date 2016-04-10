@@ -32,7 +32,10 @@
 <v t="ekr.20131019184243.16691"><vh>Settings</vh></v>
 <v t="ekr.20131031101712.19298"><vh>Node types</vh></v>
 <v t="ekr.20131019184243.16692"><vh>Notable Plugins</vh></v>
-<v t="ekr.20131019184243.16693"><vh>External files (@&lt;file&gt; nodes)</vh></v>
+<v t="ekr.20131019184243.16693"><vh>External files (@&lt;file&gt; nodes)</vh>
+<v t="ekr.20160410111255.1"><vh>Path expressions</vh></v>
+<v t="ekr.20160410111226.1"><vh>Sections</vh></v>
+</v>
 <v t="ekr.20131019184243.16694"><vh>Scripting</vh>
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20131019184243.16696"><vh>Generators</vh></v>
@@ -246,7 +249,7 @@ This overrides the following default binding in leoSettings.leo::
 - valuespace.py: Creates an outline-oriented spreadsheet.
 - viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
 </t>
-<t tx="ekr.20131019184243.16693">\@&lt;file&gt; nodes create external files::
+<t tx="ekr.20131019184243.16693">@&lt;file&gt; nodes create external files:
 
     @asis &lt;filename&gt;        write only, no sentinels, exact line endings
     @auto &lt;filename&gt;        recommended
@@ -254,16 +257,47 @@ This overrides the following default binding in leoSettings.leo::
     @edit &lt;filename&gt;        @edit node contains entire file
     @file &lt;filename&gt;        recommended
     @nosent &lt;filename&gt;      write only, no sentinels
+
+This table summarizes the differences between @&lt;file&gt; nodes:
+
+                             Sections &amp;   File data in
+    @&lt;file&gt; kind  Sentinels?  @others?    .leo file?    Notes             
+    ------------  ---------- -----------  ------------  -----
+    @asis            no         no           yes
+    @auto            no         yes          no         1, 2
+    @auto-xx         no         yes          no         1, 2
+    @clean           no         yes          yes     
+    @edit            no         no           no    
+    @file            yes        yes          no
+    @nosent          no         yes          yes
     
-@auto nodes read files using language-specific importers.
-Importers exist for the following languages::
+**Note 1**: @auto nodes read files using language-specific importers.
+By default, the file's extension determines the importer:
+
+    Extensions                  Importer
+    ----------                  --------
+    .c, .cc, .c++, .cpp,.cxx    C
+    .cs', .c#'                  C Sharp
+    .el                         Elisp
+    .h, .h++                    C
+    .html, .htm                 HTML
+    .ini                        Config file
+    .java                       Java
+    .js                         JavaScript
+    .md                         Markdown
+    .org                        Org Mode
+    .otl                        Vim outline
+    .pas                        Pascal
+    .php                        PHP
+    .py, .pyi, .pyw             Python
+    .rest, .rst                 reStructuredText
+    .ts                         TypeScript
+    .xml                        XML
     
-    C, C-Sharp, Elisp, HTML, INI, Java, Javascript,
-    Pascal, PHP, Python, Typescript, XML
-    
-You specify importers as follows::
-    
-    @auto x.y           The file's extension gives the importer.
+**Note 2**: You can also specify importers *explicitly* as follows:
+
+    @auto-xxx           Importer
+    ---------           --------
     @auto-ctext         ctext
     @auto-markdown      markdown
     @auto-md            markdown
@@ -273,28 +307,9 @@ You specify importers as follows::
     @auto-vim-outline   vimoutline
     @auto-rst           reStructuredText
     
-For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
-    
-**Section names** have the form::
-
-    &lt;&lt; any text, except double closing angle brackets &gt;&gt;
-    
-**Section-definition nodes** have headlines starting with a section name.
-
-Leo performs **expansions** for all @&lt;file&gt; nodes except @asis.
-
-Expansion of @all:
-
-- Leo replaces @all by the *unexpanded* body text of *all* nodes.
-
-Expansion of section names and @others:
-
-- Leo replaces section names in body text by the *expanded*
-  text of the corresponding section definition node.
-  
-- Leo replaces @others with the *expanded* text of all nodes
-  that *aren't* section-definition nodes.
-</t>
+For full details, see Leo's Directives reference:
+http://leoeditor.com/directives.html
+    </t>
 <t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
@@ -351,7 +366,7 @@ Use autocompletion to explore these objects!
     v.u: v.unknownAttributes, a persistent Python dictionary.
     
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
-to associate persistant data with vnodes. For details see:
+to associate persistent data with vnodes. For details see:
 http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 </t>
 <t tx="ekr.20131019184243.16699">**Properties**::
@@ -473,7 +488,7 @@ these when generators are not flexible enough::
 <t tx="ekr.20131030071311.17125">By convention, a Startup node contains settings, scripts, etc.
 that mostly one wants to have hidden.
 </t>
-<t tx="ekr.20131030071311.17126">**Imortant**: to take effect, all settings must be descendants of this
+<t tx="ekr.20131030071311.17126">**Important**: to take effect, all settings must be descendants of this
 @settings node.
 
 **Note**: This file colors text as reStructuredText by default because of
@@ -805,5 +820,31 @@ The body text of an @data history-list *setting node* preloads commands into the
     check-clones
     expand-log-pane
     contract-log-pane</t>
+<t tx="ekr.20160410111226.1">**Section names** have the form::
+
+    &lt;&lt; any text, except double closing angle brackets &gt;&gt;
+    
+**Section-definition nodes** have headlines starting with a section name.
+
+Leo performs **expansions** for all @&lt;file&gt; nodes except @asis.
+
+Expansion of @all:
+
+- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+Expansion of section names and @others:
+
+- Leo replaces section names in body text by the *expanded*
+  text of the corresponding section definition node.
+  
+- Leo replaces @others with the *expanded* text of all nodes
+  that *aren't* section-definition nodes.
+</t>
+<t tx="ekr.20160410111255.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+    
+refers to the file abc.py in (absolute path of) the current directory.
+</t>
 </tnodes>
 </leo_file>
