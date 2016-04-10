@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -750,11 +750,15 @@
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
+<v t="ekr.20160410043905.1"><vh>Path expressions</vh></v>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh>
+<v t="ekr.20160410045234.1"><vh>\@auto sanity checks</vh></v>
+</v>
 <v t="ekr.20100806170836.4399"><vh>\@clean &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
+<v t="ekr.20160410044518.1"><vh>\@nosent &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
@@ -1281,6 +1285,10 @@
 <v t="ekr.20100804133903.7250"></v>
 <v t="ekr.20100804133903.7262"></v>
 <v t="ekr.20150318110552.55"></v>
+</v>
+<v t="ekr.20160410040249.1"><vh>Revised @&lt;file&gt; docs</vh>
+<v t="ekr.20131015035606.16799"></v>
+<v t="ekr.20100806170836.4392"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7207,40 +7215,38 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 <t tx="ekr.20100805171546.4412">This section contains files used to generate Leo's web site,
 including Leo's home page.
 </t>
-<t tx="ekr.20100806170836.4392">.. index::
+<t tx="ekr.20100806170836.4392">.. From directives reference
+
+.. index::
     pair: @&lt;file&gt;; Reference
 
 This section discusses the @&lt;file&gt; directives. These directives create or import external files.
 
-**Important**: In Leo 5.1 and later @file or @clean are the recommended ways of creating external files.
+**Important**: In Leo 5.1 and later @file, @clean and @auto are the recommended ways of creating external files.
 
 **Note**: All these directive must appear in headlines.
 
-The following table compares the various ways of creating external files.
+The following table compares the various ways of creating external files. Later sections provide more details:
 
-+-----------+------------+------------------+-----------------+-------+
-|           | Sentinels  | Sections and     | File data stored| Notes |
-| Kind      | in external| @others expanded | in .leo file?   |       |
-|           | file?      | on write?        |                 |       |
-+-----------+------------+------------------+-----------------+-------+
-| @asis     | no         | no               | yes             |       |
-+-----------+------------+------------------+-----------------+-------+
-| @auto     | no         | yes              | no              |       |
-+-----------+------------+------------------+-----------------+-------+
-| @auto-md  | no         | yes              | no              | 1     |
-+-----------+------------+------------------+-----------------+-------+
-| @auto-org | no         | yes              | no              | 2     |
-+-----------+------------+------------------+-----------------+-------+
-| @auto-otl | no         | yes              | no              | 3     |
-+-----------+------------+------------------+-----------------+-------+
-| @auto-rst | no         | yes              | no              | 4     |
-+-----------+------------+------------------+-----------------+-------+
-| @clean    | no         | yes              | yes             |       |
-+-----------+------------+------------------+-----------------+-------+
-| @edit     | no         | no               | no              |       |
-+-----------+------------+------------------+-----------------+-------+
-| @file     | yes        | yes              | no              |       |
-+-----------+------------+------------------+-----------------+-------+
++-----------+------------+------------------+-----------------+------+
+|           | Sentinels  | Sections and     | File data stored| Note |
+| Kind      | in external| @others expanded | in .leo file?   |      |
+|           | file?      | on write?        |                 |      |
++-----------+------------+------------------+-----------------+------+
+| @asis     | no         | no               | yes             |      |
++-----------+------------+------------------+-----------------+------+
+| @auto     | no         | yes              | no              |   1  |
++-----------+------------+------------------+-----------------+------+
+| @auto-xx  | no         | yes              | no              |   2  |
++-----------+------------+------------------+-----------------+------+
+| @clean    | no         | yes              | yes             |      |
++-----------+------------+------------------+-----------------+------+
+| @edit     | no         | no               | no              |      |
++-----------+------------+------------------+-----------------+------+
+| @file     | yes        | yes              | no              |      |
++-----------+------------+------------------+-----------------+------+
+| @nosent   | no         | yes              | yes             |      |
++-----------+------------+------------------+-----------------+------+
 
 .. _`Emacs org-mode`:      http://en.wikipedia.org/wiki/Org-mode
 .. _`Emacs documentation`: emacs.html#using-org-mode-org-files-in-leo
@@ -7249,21 +7255,38 @@ The following table compares the various ways of creating external files.
 .. _`vim outline`:         http://www.vim.org/scripts/script.php?script_id=3515
 .. _`vim documentation`:   http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
 
-**Note**:
+**Note 1**: @auto nodes read files using importers **specified by the file's extension**.
 
-1. ``@auto-md`` parses `markdown`_.
-
-2. ``@auto-org (aka @auto-org-mode`` parses `Emacs org-mode`_ files. See Leo's `Emacs documentation`_ for more details.
-
-3. ``@auto-otl (aka @auto-vim-outline)`` parses `vim outline`_ files. See Leo's `vim documentation`_ for more details.
-
-4. ``@auto-rst`` parses `reStructuredText`_ files.
-
-**Path expressions**: Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
-
-    @file {{os.path.abspath(os.curdir)}}/abc.py
+Importers exist for the following languages::
     
-refers to the file abc.py in (absolute path of) the current directory.
+        C, C#, Elisp, HTML, INI, Java, Javascript,
+        Pascal, PHP, Python, Typescript, XML
+
+**Note 2**: @auto-xx nodes read files using importers **specified by xx**:
+
++-----------------------+---------------------------+-------+
+| Directive             | Language                  | Note  |
++-----------------------+---------------------------+-------+  
+| @auto-ctext           | ctext                     |       |
++-----------------------+---------------------------+-------+ 
+| @auto-markdown        | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-md              | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-org             | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-org-mode        | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-otl             | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-vim-outline     | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-rst             | `reStructuredText`_       |       |
++-----------------------+---------------------------+-------+
+
+**Note A**: See Leo's `Emacs documentation`_ for more details.
+
+**Note B**: See Leo's `vim documentation`_ for more details.
 </t>
 <t tx="ekr.20100806170836.4393">.. index::
     pair: @asis; Reference
@@ -7303,8 +7326,6 @@ references and @others are not allowed.
 
 The @auto directive imports an external file into a tree of nodes.
 
-**Important**: As of Leo 5.1, @clean is recommended instead of @auto.
-
 @auto trees allow people to use Leo in collaborative environments without using sentinels in external files. Even without sentinels, @auto trees can change when the corresponding external file changes outside of Leo.
 
 .. index::
@@ -7312,35 +7333,38 @@ The @auto directive imports an external file into a tree of nodes.
 
 When reading @auto nodes, Leo creates the @auto tree using **importers**, parsers that create an outline with nodes for each class, method and function in the external file. Some importers create other kinds of nodes as well.
 
-Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. Leo determines the language using the file's extension. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
++-----------------------+---------------------------+-------+
+| Directive             | Language                  | Notes |
++-----------------------+---------------------------+-------+
+| @auto                 | given by file's extention | C, D  |
++-----------------------+---------------------------+-------+  
+| @auto-ctext           | ctext                     |       |
++-----------------------+---------------------------+-------+ 
+| @auto-markdown        | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-md              | `markdown`_               |       |
++-----------------------+---------------------------+-------+
+| @auto-org             | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-org-mode        | `Emacs org-mode`_         | A     |
++-----------------------+---------------------------+-------+
+| @auto-otl             | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-vim-outline     | `vim outline`_            | B     |
++-----------------------+---------------------------+-------+
+| @auto-rst             | `reStructuredText`_       |       |
++-----------------------+---------------------------+-------+
+
+**Note A**: See Leo's `Emacs documentation`_ for more details.
+
+**Note B**: See Leo's `vim documentation`_ for more details.
+
+**Note C**: Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
 
 .. index::
     pair: Organizer tag; Reference
 
-**Note**: the @data import_xml_tags setting specifies the **organizer tags** that cause the HTML and XML importers to create outline nodes. By default, the **organizer tags** are html, body, head, and div.
-
-When writing @auto nodes, Leo writes the external file without sentinels. This allows you to use Leo in collaborative environments without disturbing colleagues.
-
-When importing files into @auto trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces **errors** or **warnings**. Errors indicate a potentially serious problem. Leo inserts an @ignore directive in the @auto tree if any error is found. This prevents the @auto tree from modifying the external file.
-
-.. index::
-    pair: Strict language; Reference
-
-Before importing a file, Leo **regularizes** the leading whitespace of all lines of the original source file. That is, Leo converts blanks to tabs or tabs to blanks depending on the value of the @tabwidth directive in effect for the @auto node. Leo also checks that the indentation of any non-blank line is a multiple of the indentation specified by the @tabwidth directive. **Strict languages** are languages such as Python for which leading whitespace must be preserved exactly as it appears in the original source file. Problems during regularizing whitespace generate errors for strict languages and warnings for non-strict languages.
-
-After importing a file, Leo verifies that writing the @auto node would create the same file as the original file. Such file comparison mismatches generate errors unless the problem involves only leading whitespace for non-strict languages. Whenever a mismatch occurs the first non-matching line is printed.
-
-File comparison mismatches can arise for several reasons:
-
-1. Bugs in the import parsers. Please report any such bugs immediately.
-
-2. Underindented lines in classes, methods or function.
-
-.. index::
-    pair: Underindented line; Reference
-
-An **underindented line** is a line of body text that is indented less then the starting line of the class, method or function in which it appears. Leo outlines can not represent such lines exactly: every line in an external file will have at least the indentation of any unindented line of the corresponding node in the outline. Leo will issue a warning (not an error) for underindented Python comment lines. Such lines can not change the meaning of Python programs.
-</t>
+**Note D**: The ``@data import_xml_tags`` setting specifies the **organizer tags** that cause the HTML and XML importers to create outline nodes. By default, the **organizer tags** are html, body, head, and div.</t>
 <t tx="ekr.20100806170836.4398">The @color, @killcolor, @nocolor and @nocolor-node directives control how
 Leo colors text in the body pane.
 
@@ -12343,7 +12367,7 @@ Directives Reference
 ####################
 
 .. contents::
-    :depth: 2
+    :depth: 4
 </t>
 <t tx="ekr.20131009065148.31760">#########################
 Exploring Leo's Code Base
@@ -12931,14 +12955,34 @@ This overrides the following default binding in leoSettings.leo::
 
     insert-node = Insert
 </t>
-<t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
+<t tx="ekr.20131015035606.16799">.. From cheat sheet
 
-    @asis &lt;filename&gt;
-    @auto &lt;filename&gt;        updates outline using importer
-    @auto-rst &lt;filename&gt;    uses reStructuredText importer
+\@&lt;file&gt; nodes create external files::
+
+    @asis &lt;filename&gt;        write only, no sentinels, exact line endings
+    @auto &lt;filename&gt;        recommended
     @clean &lt;filename&gt;       recommended
-    @edit &lt;filename&gt;
+    @edit &lt;filename&gt;        @edit node contains entire file
     @file &lt;filename&gt;        recommended
+    @nosent &lt;filename&gt;      write only, no sentinels
+    
+@auto nodes read files using language-specific importers.
+Importers exist for the following languages::
+    
+    C, C-Sharp, Elisp, HTML, INI, Java, Javascript,
+    Pascal, PHP, Python, Typescript, XML
+    
+You specify importers as follows::
+    
+    @auto x.y           The file's extension gives the importer.
+    @auto-ctext         ctext
+    @auto-markdown      markdown
+    @auto-md            markdown
+    @auto-org           org-mode
+    @auto-org-mode      org-mode
+    @auto-otl           vimoutline
+    @auto-vim-outline   vimoutline
+    @auto-rst           reStructuredText
     
 See the `Directives reference`_ for full details.
     
@@ -19070,7 +19114,40 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
 <t tx="ekr.20160402100225.1"># flattened, ignore-case, head, body</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160410040249.1"></t>
+<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+    
+refers to the file abc.py in (absolute path of) the current directory.
+</t>
+<t tx="ekr.20160410044518.1">.. index::
+    pair: @nosent; Reference
+
+The @nosent directive creates an external file **without** sentinels. When writing
+@nosent trees, Leo expands section references and @all and @others directives.  Because the external file contains no sentinels, @nosent trees can not be updated from changes made outside of Leo. If you want this capability, use @clean instead.
+</t>
+<t tx="ekr.20160410045234.1">When importing files into @auto trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces **errors** or **warnings**. Errors indicate a potentially serious problem. Leo inserts an @ignore directive in the @auto tree if any error is found. This prevents the @auto tree from modifying the external file.
+
+.. index::
+    pair: Strict language; Reference
+
+Before importing a file, Leo **regularizes** the leading whitespace of all lines of the original source file. That is, Leo converts blanks to tabs or tabs to blanks depending on the value of the @tabwidth directive in effect for the @auto node. Leo also checks that the indentation of any non-blank line is a multiple of the indentation specified by the @tabwidth directive. **Strict languages** are languages such as Python for which leading whitespace must be preserved exactly as it appears in the original source file. Problems during regularizing whitespace generate errors for strict languages and warnings for non-strict languages.
+
+After importing a file, Leo verifies that writing the @auto node would create the same file as the original file. Such file comparison mismatches generate errors unless the problem involves only leading whitespace for non-strict languages. Whenever a mismatch occurs the first non-matching line is printed.
+
+File comparison mismatches can arise for several reasons:
+
+1. Bugs in the import parsers. Please report any such bugs immediately.
+
+2. Underindented lines in classes, methods or function.
+
+.. index::
+    pair: Underindented line; Reference
+
+An **underindented line** is a line of body text that is indented less then the starting line of the class, method or function in which it appears. Leo outlines can not represent such lines exactly: every line in an external file will have at least the indentation of any unindented line of the corresponding node in the outline. Leo will issue a warning (not an error) for underindented Python comment lines. Such lines can not change the meaning of Python programs.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

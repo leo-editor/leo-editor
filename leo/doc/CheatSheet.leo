@@ -248,12 +248,30 @@ This overrides the following default binding in leoSettings.leo::
 </t>
 <t tx="ekr.20131019184243.16693">\@&lt;file&gt; nodes create external files::
 
-    @asis &lt;filename&gt;    
-    @auto &lt;filename&gt;    
-    @edit &lt;filename&gt;
-    @file &lt;filename&gt;
-    @nosent &lt;filename&gt;  
-    @shadow &lt;filename&gt;
+    @asis &lt;filename&gt;        write only, no sentinels, exact line endings
+    @auto &lt;filename&gt;        recommended
+    @clean &lt;filename&gt;       recommended
+    @edit &lt;filename&gt;        @edit node contains entire file
+    @file &lt;filename&gt;        recommended
+    @nosent &lt;filename&gt;      write only, no sentinels
+    
+@auto nodes read files using language-specific importers.
+Importers exist for the following languages::
+    
+    C, C-Sharp, Elisp, HTML, INI, Java, Javascript,
+    Pascal, PHP, Python, Typescript, XML
+    
+You specify importers as follows::
+    
+    @auto x.y           The file's extension gives the importer.
+    @auto-ctext         ctext
+    @auto-markdown      markdown
+    @auto-md            markdown
+    @auto-org           org-mode
+    @auto-org-mode      org-mode
+    @auto-otl           vimoutline
+    @auto-vim-outline   vimoutline
+    @auto-rst           reStructuredText
     
 For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
     
