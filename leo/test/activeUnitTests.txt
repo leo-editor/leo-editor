@@ -13608,8 +13608,7 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>
-g.app.unitTestDict ['expectedErrors'] = 1
-    # The perfect import check will fail at ##Section 1##.
+g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = None
 try:
     c.importCommands.markdownUnitTest(p,s=s,showTree=True)
@@ -13641,7 +13640,7 @@ s = '''\
 #Top
 The top section
 
-##Section 1##
+##Section 1
 section 1, line 1
 section 1, line 2
 

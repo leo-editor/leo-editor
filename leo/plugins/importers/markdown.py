@@ -184,14 +184,17 @@ class MarkdownScanner(basescanner.BaseScanner):
         level, name = 0, None
         if line.startswith('#'):
             # Found a section line.
+            kind = '#'
             level = 0
             while level < len(line) and line[level] == '#':
                 level += 1
             name = line[level:].rstrip() # Retain leading ws.
-            # Allow trailing '#'.
-            while name and name.endswith('#'):
-                name = name[:-1]
-            kind = '#'
+            if 0:
+                # This is almost impossible for perfect import to handle.
+                # It's certainly not worth the trouble.
+                # If the user want's to get rid of trailing hashes, that's their choice.
+                while name and name.endswith('#'):
+                    name = name[:-1]
         else:
             # Look ahead if the next line is an underline.
             # Bug fix: 2016/04/11: don't set j2 here.
