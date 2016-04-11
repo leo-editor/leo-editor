@@ -27,9 +27,6 @@ It would be great to be able to jump between Leo's nodes and IPython's cells, ea
 From: Alia K:
 
 Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20160403041855.1: *4* Complete chapters work
-Proposal: remove/improve all chapter commands
-https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
 .. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
 @language rest
 @wrap

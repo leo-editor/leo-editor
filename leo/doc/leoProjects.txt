@@ -222,6 +222,17 @@ leoPlugins.leo now contains a global list of plugins that might be enabled by de
 optional_modules = [
     'leo.plugins.livecode',
 ]
+.. @+node:ekr.20160403041855.1: *3* Completed chapters work
+Proposal: remove/improve all chapter commands
+https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
+
+Done:
+- Removed most @chapters commands & helpers.
+- Removed new_code switch.
+- Enable/disable Chapters icon based on @bool use_chapter_tabs.
+- Fixed bug in Chapter.unselect: examine the hoist stack.
+- Create chapter-select-<chapter-name> commands.
+- Allow @key convention in @chapter nodes.
 .. @-all
 .. @@killbeautify
 .. @@language rest
