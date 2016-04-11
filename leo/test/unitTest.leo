@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -7760,7 +7760,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8,1"></t>
+<t tx="ekr.20070417092935" str_leo_pos="6"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -12989,21 +12989,22 @@ unl: section 2
 </t>
 <t tx="ekr.20160410152100.1"></t>
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
-g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedErrors'] = 1
+    # The perfect import check will fail at ##Section 1##.
 g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.markdownUnitTest(p,s=s,showTree=True)
-table = (
-    (1, 'Top'),
-    (2, 'Section 1'),
-    (2, 'Section 2'),
-    (3, 'Section 2.1'),
-    (4, 'Section 2.1.1'),
-    (3, 'Section 2.2'),
-    (2, 'Section 3'),
-)
-after = p.nodeAfterTree()
-root = p.firstChild().next()
 try:
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    table = (
+        (1, 'Top'),
+        (2, 'Section 1'),
+        (2, 'Section 2'),
+        (3, 'Section 2.1'),
+        (4, 'Section 2.1.1'),
+        (3, 'Section 2.2'),
+        (2, 'Section 3'),
+    )
+    after = p.nodeAfterTree()
+    root = p.firstChild().next()
     assert root.h.startswith('@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
@@ -13020,19 +13021,19 @@ finally:
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.markdownUnitTest(p,s=s,showTree=True)
-table = (
-    (1, 'Top'),
-    (2, 'Section 1'),
-    (2, 'Section 2'),
-    (3, 'Section 2.1'),
-    (4, 'Section 2.1.1'),
-    (3, 'Section 2.2'),
-    (2, 'Section 3'),
-)
-after = p.nodeAfterTree()
-root = p.firstChild().next()
 try:
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    table = (
+        (1, 'Top'),
+        (2, 'Section 1'),
+        (2, 'Section 2'),
+        (3, 'Section 2.1'),
+        (4, 'Section 2.1.1'),
+        (3, 'Section 2.2'),
+        (2, 'Section 3'),
+    )
+    after = p.nodeAfterTree()
+    root = p.firstChild().next()
     assert root.h.startswith('@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
@@ -13050,7 +13051,7 @@ finally:
 #Top
 The top section
 
-##Section 1
+##Section 1##
 section 1, line 1
 section 1, line 2
 

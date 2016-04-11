@@ -188,6 +188,9 @@ class MarkdownScanner(basescanner.BaseScanner):
             while level < len(line) and line[level] == '#':
                 level += 1
             name = line[level:].rstrip() # Retain leading ws.
+            # Allow trailing '#'.
+            while name and name.endswith('#'):
+                name = name[:-1]
             kind = '#'
         else:
             # Look ahead if the next line is an underline.
