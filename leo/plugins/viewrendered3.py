@@ -181,25 +181,29 @@ The following settings are the same as in the viewrendered.py plugin:
 
 The following settings are new in the viewrendered2.py plugin:
 
-These settings directly override the corresponiding docutils settings:
+These settings directly override the corresponding docutils settings (note the
+underscores in the docutil keywords):
 
-- ``@string vr-stylesheet-path``
-- ``@int vr-halt-level = 6``
-- ``@string vr-math-output = mathjax``
-- ``@bool vr-smart-quotes = True``
+- ``@string vr-stylesheet_path = html4css1.css``
+- ``@int vr-halt_level = 6``
+- ``@string vr-math_output = mathjax``
+- ``@bool vr-smart_quotes = True``
 - ``@bool vr-embed_stylesheet = True``
-- ``@bool vr-xml-declaration', False``
+- ``@bool vr-xml_declaration = False``
+- ``@bool vr-syntax_highlight = long``
+- ``@bool vr-no_compact_lists = False``
+- ``@bool vr-no_compact_field_lists = False``
 
 The following settings override viewrendered2.py internal settings:
 
 - ``@bool vr-verbose = False``
-- ``@bool vr-tree_mode = False``
-- ``@bool vr-auto_update = True``
-- ``@bool vr-lock_node = False``
+- ``@bool vr-tree-mode = False``
+- ``@bool vr-auto-update = True``
+- ``@bool vr-lock-node = False``
 - ``@bool vr-slideshow = False``
-- ``@bool vr-visible_code = True``
-- ``@bool vr-execute_code = False``
-- ``@bool vr-rest_code_output = False``
+- ``@bool vr-visible-code = True``
+- ``@bool vr-execute-code = False``
+- ``@bool vr-rest-code-output = False``
 
 #@+node:ekr.20160331123847.3: *3* vr3 docstring: to do
 
@@ -1431,7 +1435,7 @@ class WebViewPlus(QtWidgets.QWidget):
 
         def getConfig(getfun, name, default, setfun=None, setvar=None):
             """Make a shorthand way to get and store a setting with defaults"""
-            r = getfun('vr_' + name) # keep docutils name but prefix
+            r = getfun('vr-' + name) # keep docutils name but prefix
             if setfun: # settings are held in Qactions
                 if r: setfun(r)
                 else: setfun(default)
@@ -1441,8 +1445,9 @@ class WebViewPlus(QtWidgets.QWidget):
             else: # settings held in dict (for docutils use)
                 if r: ds[name] = r
                 else: ds[name] = default
-        # Do docutils config (note that the vr_ prefix is omitted)
 
+        # Do docutils config (note that the vr- prefix is omitted)
+        # These update the options dictionary passed to docutils.
         getConfig(gc.getString, 'stylesheet_path', 'html4css1.css')
         getConfig(gc.getInt, 'halt_level', 6)
         getConfig(gc.getInt, 'report_level', 2)  # set to 5 to eliminate all error messages
@@ -1455,16 +1460,17 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getBool, 'no_compact_lists', False)
         getConfig(gc.getBool, 'no_compact_field_lists', False)
         # Do VR2 init values
+        # These directly update the state of the VR "Options" menu.
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
-        getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
-        getConfig(gc.getBool, 'auto_update', True, self.auto_mode_action.setChecked)
-        getConfig(gc.getBool, 'lock_node', False, self.lock_mode_action.setChecked)
+        getConfig(gc.getBool, 'tree-mode', False, self.tree_mode_action.setChecked)
+        getConfig(gc.getBool, 'auto-update', True, self.auto_mode_action.setChecked)
+        getConfig(gc.getBool, 'lock-node', False, self.lock_mode_action.setChecked)
         getConfig(gc.getBool, 'slideshow', False, self.slideshow_mode_action.setChecked)
-        getConfig(gc.getBool, 'visible_code', True, self.visible_code_action.setChecked)
-        getConfig(gc.getBool, 'execute_code', False, self.execute_code_action.setChecked)
-        getConfig(gc.getBool, 'rest_code_output', False, self.reST_code_action.setChecked)
+        getConfig(gc.getBool, 'visible-code', True, self.visible_code_action.setChecked)
+        getConfig(gc.getBool, 'execute-code', False, self.execute_code_action.setChecked)
+        getConfig(gc.getBool, 'rest-code-output', False, self.reST_code_action.setChecked)
         # Misc other internal settings
-        # Mark of the Web (for IE) to allow sensible security options
+        # Mark of the Web (for IE) to allow sensible security options - not required with modern browsers?
         #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
         return ds
     #@+node:ekr.20160331124028.26: *4* wvp.init_timer
