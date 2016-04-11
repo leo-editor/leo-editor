@@ -20,10 +20,8 @@ class ChapterController:
         self.initing = True
             # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
             # True: suppress undo when creating chapters.
-        self.re_chapter = re.compile(
-            r'^@chapter\s+(\w+)\s*(@key\s*=\s*(.+)\s*)?')
-            # @chapter (name) (@key=(binding))?
-            # name=group(1), binding=group(3)
+        self.re_chapter = None
+            # Set where used.
         self.selectedChapter = None
         self.selectChapterLockout = False
             # True: cc.selectChapterForPosition does nothing.
@@ -50,6 +48,7 @@ class ChapterController:
         cc.createIcon()
         # Create the main chapter
         cc.chaptersDict['main'] = Chapter(c, cc, 'main')
+        cc.makeCommand('main')
         for p in c.all_unique_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName:
@@ -67,16 +66,19 @@ class ChapterController:
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
     def makeCommand(self, chapterName, binding=None):
         '''Make chapter-select-<chapterName> command.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c, cc = self.c, self
         command = 'chapter-select-%s' % chapterName
-        if trace: g.trace(command, binding)
+        if command in c.commandsDict:
+            if trace: g.trace('already defined', command)
+            return
+        if trace: g.trace('defining', command, binding)
 
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
             if chapter:
                 cc.selectChapterLockout = True
-                cc.selectChapterByNameHelper(chapter,collapse=False)
+                cc.selectChapterByNameHelper(chapter,collapse=True)
                 cc.selectChapterLockout = False
             else:
                 cc.note('no such chapter: %s' % name)
@@ -86,8 +88,7 @@ class ChapterController:
             func=select_chapter_callback,
             pane='all',
             shortcut=binding,
-            # source_c=source_c,
-            verbose=trace)
+            verbose=False)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the ChapterController class.'''
@@ -241,6 +242,11 @@ class ChapterController:
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
     def parseHeadline(self, p):
         '''Return the chapter name and key binding for p.h.'''
+        if not self.re_chapter:
+            self.re_chapter = re.compile(
+                r'^@chapter\s+(\w+)\s*(@key\s*=\s*(.+)\s*)?')
+                # @chapter (name) (@key=(binding))?
+                # name=group(1), binding=group(3)
         m = self.re_chapter.search(p.h)
         if m:
             chapterName = m.group(1)
@@ -314,6 +320,7 @@ class ChapterController:
                     seen.add(p.v)
                     if chapterName != sel_name:
                         result.append(chapterName)
+                    cc.makeCommand(chapterName, binding)
         if 'main' not in result and sel_name != 'main':
             result.append('main')
         result.sort()
