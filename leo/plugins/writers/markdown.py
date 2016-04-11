@@ -48,7 +48,7 @@ class MarkdownWriter(basewriter.BaseWriter):
             self.put('%s%s' % (level * '#', p.h))
         elif kind in '=-':
             self.put(p.h)
-            self.put(kind * len(p.h))
+            self.put(kind * max(4, len(p.h)))
         else:
             g.trace('bad kind', repr(kind))
     #@-others

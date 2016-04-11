@@ -1386,7 +1386,7 @@ class LeoImportCommands:
         d = g.app.unitTestDict
         ok = ((d.get('result') and expectedErrors in (None, 0)) or
             (
-                # checkTrialWrite returns *True* if the following match.
+                # BaseScanner.checkTrialWrite returns *True* if the following match.
                 d.get('actualErrors') == d.get('expectedErrors') and
                 d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
                 (

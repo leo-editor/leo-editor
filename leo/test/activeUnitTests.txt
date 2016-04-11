@@ -13661,8 +13661,7 @@ Section 3, line 1
 '''
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
 << define s >>
-g.app.unitTestDict ['expectedErrors'] = 1
-    # Because of intermixed lines, the write test will fail.
+g.app.unitTestDict ['expectedErrors'] = 0
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.markdownUnitTest(p,s=s,showTree=True)
 table = (

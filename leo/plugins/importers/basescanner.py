@@ -160,7 +160,7 @@ class BaseScanner:
     def checkTrialWrite(self, s1=None, s2=None):
         '''Return True if a trial write produces the original file.'''
         # s1 and s2 are for unit testing.
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_code = True
         trace_time = False and not g.unitTesting
         if trace_time:
@@ -396,7 +396,7 @@ class BaseScanner:
             return n1, n2, False
     #@+node:ekr.20140727075002.18199: *4* BaseScanner.compareTokens
     def compareTokens(self, tokens1, tokens2):
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = True
         i, n1, n2 = 0, len(tokens1), len(tokens2)
         fail_n1, fail_n2 = -1, -1
