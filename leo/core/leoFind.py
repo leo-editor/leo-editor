@@ -410,7 +410,6 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find.restoreAfterFindDef
     def restoreAfterFindDef(self):
         '''Restore find settings in effect before a find-def command.'''
-        g.trace('=====')
         b = self.find_def_data # A g.Bunch
         if b:
             self.ignore_case     = b.ignore_case

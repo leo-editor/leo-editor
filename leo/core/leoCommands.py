@@ -3070,21 +3070,6 @@ class Commands(object):
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
-        # g.trace(bool(p.hasVisBack(c)),p.h,newNode.h)
-        if cc: # Special cases for @chapter and @chapters nodes.
-            chapter = '@chapter '; chapters = '@chapters '
-            h = p.h
-            if h.startswith(chapters):
-                if p.hasChildren():
-                    return cc.note('Can not delete @chapters node with children.')
-            elif h.startswith(chapter):
-                name = h[len(chapter):].strip()
-                if name:
-                    # Bug fix: 2009/3/23: Make sure the chapter exists!
-                    # This might be an @chapter node outside of @chapters tree.
-                    theChapter = cc.chaptersDict.get(name)
-                    if theChapter:
-                        return cc.removeChapterByName(name)
         undoData = u.beforeDeleteNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         p.doDelete(newNode)
