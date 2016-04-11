@@ -112,7 +112,7 @@ class MarkdownScanner(basescanner.BaseScanner):
         if not s: return 0
         ch1 = s[0]
         if not ch1 in '=-':
-            return False
+            return 0 # Bug fix: 2016/04/11.
         for ch in s:
             if ch == '\n':
                 break
@@ -149,8 +149,10 @@ class MarkdownScanner(basescanner.BaseScanner):
         while i < len(s):
             progress = i
             i, j = g.getLine(s, i)
+            if trace: g.trace(s[i:j].rstrip())
             level, name, j = self.startsSection(s, i)
-            if level > 0: break
+            if level > 0:
+                break
             else: i = j
             assert i > progress
         self.codeEnd = i
@@ -167,6 +169,7 @@ class MarkdownScanner(basescanner.BaseScanner):
             name: the section name or None.
             i: the new i.
         '''
+        trace = False and not g.unitTesting
         i2, j2 = g.getLine(s, i)
         line = s[i2: j2]
         if line.startswith('#'):
@@ -187,6 +190,7 @@ class MarkdownScanner(basescanner.BaseScanner):
         if name:
             d = self.underlineDict
             d[name] = kind
+        if trace: g.trace(level, name, line.rstrip())
         return level, name, j2
     #@-others
 #@-others

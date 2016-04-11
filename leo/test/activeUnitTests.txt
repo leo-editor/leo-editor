@@ -12826,24 +12826,6 @@ console.log("Listening on " + port);
 
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20141111092038.11: *5* Markdown tests
-#@+node:ekr.20141111092038.12: *6* @test markdown
-s = '''
-
-Header
-======
-
-After header text
-
-Subheader
----------
-
-After subheader text
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 s = '''
@@ -13623,6 +13605,93 @@ s = '''\
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
+#@+node:ekr.20160410152100.2: *5* @test md-import-test
+s = '''\
+
+#Top
+The top section
+
+##Section 1
+section 1, line 1
+selction 1, line 2
+
+###Section 2.1
+section 2.1, line 1
+
+###Section 2.1
+
+####Section 2.1.1
+section 2.2.1 line 1
+
+##Section 2
+section 2, line 1
+
+##Section 3
+Section 3, line 1
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.markdownUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
+s = '''\
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+-- Not an underline
+selction 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20141111092038.12: *5* @test markdown
+s = '''
+
+# Header
+
+After header text
+
+## Subheader
+
+After subheader text
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\
