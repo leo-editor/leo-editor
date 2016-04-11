@@ -13607,76 +13607,124 @@ g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
+<< define s >>
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+table = (
+    (1, 'Top'),
+    (2, 'Section 1'),
+    (2, 'Section 2'),
+    (3, 'Section 2.1'),
+    (4, 'Section 2.1.1'),
+    (3, 'Section 2.2'),
+    (2, 'Section 3'),
+)
+after = p.nodeAfterTree()
+root = p.firstChild().next()
+try:
+    assert root.h.startswith('@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
+finally:
+    if 1:
+        root.doDelete()
+        c.redraw()
+#@+node:ekr.20160411034540.1: *6* << define s >> (md-import-test)
 s = '''\
-
 #Top
 The top section
 
 ##Section 1
 section 1, line 1
-selction 1, line 2
+section 1, line 2
+
+##Section 2
+section 2, line 1
 
 ###Section 2.1
 section 2.1, line 1
 
-###Section 2.1
-
 ####Section 2.1.1
 section 2.2.1 line 1
 
-##Section 2
-section 2, line 1
+###Section 2.2
 
 ##Section 3
 Section 3, line 1
 
 '''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
+<< define s >>
+g.app.unitTestDict ['expectedErrors'] = 1
+    # Because of intermixed lines, the write test will fail.
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+table = (
+    (1, 'Top'),
+    (2, 'Section 1'),
+    (2, 'Section 2'),
+    (3, 'Section 2.1'),
+    (4, 'Section 2.1.1'),
+    (3, 'Section 2.2'),
+    (2, 'Section 3'),
+)
+after = p.nodeAfterTree()
+root = p.firstChild().next()
+try:
+    assert root.h.startswith('@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
+finally:
+    if 1:
+        root.doDelete()
+        c.redraw()
+#@+node:ekr.20160411044042.1: *6* << define s >> (md-import-test-rst-style)
 s = '''\
-top
+Top
 ====
 
 The top section
 
-section 1
+Section 1
 ---------
 
 section 1, line 1
 -- Not an underline
 selction 1, line 2
 
-section 2
+Section 2
 ---------
 
 section 2, line 1
 
-section 2.1
-~~~~~~~~~~~
+###Section 2.1
 
 section 2.1, line 1
 
-section 2.1.1
-.............
+####Section 2.1.1
 
 section 2.2.1 line 1
 
-section 3
+###Section 2.2
+section 2.2, line 1.
+
+Section 3
 ---------
 
 section 3, line 1
 
-section 3.1.1
-.............
-
-section 3.1.1, line 1
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20141111092038.12: *5* @test markdown
 s = '''
 

@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.42" body_secondary_ratio="0.78">
+<globals body_outline_ratio="0.44" body_secondary_ratio="0.78">
 	<global_window_position top="108" left="527" height="957" width="1231"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1222,9 +1222,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
-marks="ekr.20100205235740.5392,"
-expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20090529141856.4784,ekr.20140724220921.5199,ekr.20140206132559.4567,ekr.20150919074122.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
+marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
@@ -1261,9 +1260,13 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
 <v t="ekr.20120310121839.3949"><vh>@test c.hoist @chapter node</vh></v>
-<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
-<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh></v>
-<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh></v>
+<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
+<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
+</v>
+<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
+<v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
+</v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
 </v>
@@ -7757,7 +7760,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -12985,76 +12988,124 @@ gnx: ekr.20160403164217.20
 unl: section 2
 </t>
 <t tx="ekr.20160410152100.1"></t>
-<t tx="ekr.20160410152100.2">s = '''\
-
+<t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+table = (
+    (1, 'Top'),
+    (2, 'Section 1'),
+    (2, 'Section 2'),
+    (3, 'Section 2.1'),
+    (4, 'Section 2.1.1'),
+    (3, 'Section 2.2'),
+    (2, 'Section 3'),
+)
+after = p.nodeAfterTree()
+root = p.firstChild().next()
+try:
+    assert root.h.startswith('@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
+finally:
+    if 1:
+        root.doDelete()
+        c.redraw()
+</t>
+<t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
+g.app.unitTestDict ['expectedErrors'] = 1
+    # Because of intermixed lines, the write test will fail.
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+table = (
+    (1, 'Top'),
+    (2, 'Section 1'),
+    (2, 'Section 2'),
+    (3, 'Section 2.1'),
+    (4, 'Section 2.1.1'),
+    (3, 'Section 2.2'),
+    (2, 'Section 3'),
+)
+after = p.nodeAfterTree()
+root = p.firstChild().next()
+try:
+    assert root.h.startswith('@auto-m'), root.h
+    p = root.firstChild()
+    for n, h in table:
+        n2 = p.level() - root.level()
+        assert h == p.h, (h, p.h)
+        assert n == n2, (n, n2, p.h)
+        p.moveToThreadNext()
+    assert p == after, p.h
+finally:
+    if 1:
+        root.doDelete()
+        c.redraw()
+</t>
+<t tx="ekr.20160411034540.1">s = '''\
 #Top
 The top section
 
 ##Section 1
 section 1, line 1
-selction 1, line 2
+section 1, line 2
+
+##Section 2
+section 2, line 1
 
 ###Section 2.1
 section 2.1, line 1
 
-###Section 2.1
-
 ####Section 2.1.1
 section 2.2.1 line 1
 
-##Section 2
-section 2, line 1
+###Section 2.2
 
 ##Section 3
 Section 3, line 1
 
 '''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20160411033840.1">s = '''\
-top
+<t tx="ekr.20160411044042.1">s = '''\
+Top
 ====
 
 The top section
 
-section 1
+Section 1
 ---------
 
 section 1, line 1
 -- Not an underline
 selction 1, line 2
 
-section 2
+Section 2
 ---------
 
 section 2, line 1
 
-section 2.1
-~~~~~~~~~~~
+###Section 2.1
 
 section 2.1, line 1
 
-section 2.1.1
-.............
+####Section 2.1.1
 
 section 2.2.1 line 1
 
-section 3
+###Section 2.2
+section 2.2, line 1.
+
+Section 3
 ---------
 
 section 3, line 1
 
-section 3.1.1
-.............
-
-section 3.1.1, line 1
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>

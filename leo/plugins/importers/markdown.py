@@ -109,7 +109,8 @@ class MarkdownScanner(basescanner.BaseScanner):
         Return 2 if s is all '-' characters.
         Return 0 otherwise.
         '''
-        if not s: return 0
+        if not s:
+            return 0
         ch1 = s[0]
         if not ch1 in '=-':
             return 0 # Bug fix: 2016/04/11.
@@ -139,21 +140,28 @@ class MarkdownScanner(basescanner.BaseScanner):
         trace = False and not g.unitTesting
         level, name, i = self.startsSection(s, i)
         if level == 0:
+            if trace:
+                i2, j2 = g.getLine(s, i-1)
+                g.trace('==== False:', s[i2:j2].rstrip())
             return False
         self.lastSectionLevel = self.sectionLevel
         self.sectionLevel = level
-        self.sigStart = g.find_line_start(s, i)
+        self.sigStart = g.find_line_start(s, i-1)
         self.sigEnd = i
         self.sigId = name
+        if trace:
+            i2, j2 = g.getLine(s, i-1)
+            g.trace('====  True:', s[i2:j2].rstrip())
         i += 1
         while i < len(s):
             progress = i
-            i, j = g.getLine(s, i)
-            if trace: g.trace(s[i:j].rstrip())
-            level, name, j = self.startsSection(s, i)
+            i2, j2 = g.getLine(s, i)
+            level, name, j = self.startsSection(s, i2)
+            if trace: g.trace('---- body:', level, name, s[i2:j2].rstrip())
             if level > 0:
                 break
-            else: i = j
+            else:
+                i = j
             assert i > progress
         self.codeEnd = i
         if trace: g.trace('found %s...\n%s' % (
@@ -172,6 +180,8 @@ class MarkdownScanner(basescanner.BaseScanner):
         trace = False and not g.unitTesting
         i2, j2 = g.getLine(s, i)
         line = s[i2: j2]
+        if trace: g.trace('LINE', repr(line))
+        level, name = 0, None
         if line.startswith('#'):
             # Found a section line.
             level = 0
@@ -181,11 +191,16 @@ class MarkdownScanner(basescanner.BaseScanner):
             kind = '#'
         else:
             # Look ahead if the next line is an underline.
-            i2, j2 = g.getLine(s, j2)
-            line2 = s[i2: j2]
-            level = self.isUnderline(line2)
-            name = line.rstrip() if level > 0 else None
-            kind = {0: '#', 1: '=', 2: '-'}.get(level)
+            # Bug fix: 2016/04/11: don't set j2 here.
+            i3, j3 = g.getLine(s, j2+1)
+            line2 = s[i3: j3]
+            if trace: g.trace('TEST', repr(line2))
+            level2 = self.isUnderline(line2)
+            name = line.rstrip() if level2 > 0 else None
+            if name:
+                kind = {0: '#', 1: '=', 2: '-'}.get(level2)
+                level = level2
+                j2 = j3
         # Update the kind dict.
         if name:
             d = self.underlineDict
