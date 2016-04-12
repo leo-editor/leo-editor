@@ -13,18 +13,6 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isor
 
 Bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
-.. @+node:ekr.20150418052852.1: *4* Complete Jupyter work
-@language rest
-@wrap
-
-Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
-Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
-
-Add leo/plugins/importer/ipynb.py & leo/plugins/writers/ipynb.py
-
-Kent: It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
-
-Alia K: Leo + Ipython notebook integration is a killer app indeed.
 .. @+node:ekr.20130806072439.20523: *4* #255: @rst-no-nl to support rST tables
 @language rest
 @wrap
@@ -108,9 +96,6 @@ In Windows operating systems, the UNC name format is:
 
 Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
 http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
-.. @+node:ekr.20160403043354.1: *3* Next: 5.3
-@language rest
-@wrap
 .. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
 @language rest
 
@@ -149,6 +134,538 @@ From: <fidelperez@gmail.com>
    at least until the user changes some config and prevents that from
    happening. Is there any "load previous tabs" functionality? (IE open the
    Leo files which where open when it was closed the last time)
+.. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
+https://github.com/leo-editor/leo-editor/issues/189
+.. @+node:ekr.20130806072439.20374: *5* Feature request re URL's
+From: HaveF <iamaplayer@gmail.com>
+
+1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
+in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
+leo-file-B.leo.
+
+When I'm working on leo-file-B.leo, I may have ideas to improve the
+@button button-1, but at that time(working on leo-file-B.leo), I may
+forget where the original place of @button button-1 is. Even I store
+the original scripts in the default workbook.leo is a tedious work to
+deal with(open it, locate where the original script is, update it...)
+
+But! After I add the @url at the first line of @button button-1, I can
+decide if the improvements what I made on leo-file-B.leo's @button button-1
+should or shouldn't be merged to the original and upstream @button
+button-1(in leo-file-A.leo) easily by just a click.
+
+And if I work on leo-file-C.leo, I want to use the same script, but I just
+only remember I use the script in the leo-file-B.leo instead of original
+place. With @url I can easily jump to original place, and copy it to
+leo-file-C.leo.
+
+Using @url in the leo script, I can make the scripts consistency and
+diversity at same time.
+
+Great! But, Wait, wait!
+
+2. Feature request.  At this time, you can use this idea by comment the @url
+line after jump. If @url isn't comment, the leo-editor will say...
+SyntaxError: invalid syntax at the @url line.
+
+Maybe it is a good idea to omit the @url line in the script when executing
+script?
+
+===== EKR
+
+Yes.  I think this is a good idea.  A similar idea occurred to me when
+looking at @rclick nodes.  At present, the context_menu plugin contains an
+ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
+needed at present when the @button node contains @others: the @rclick node
+can't be part of the script "pulled in" by @others.
+
+It would be much more elegant to ignore @rclick nodes when computing the
+script.  This would require a change to the @others logic, but I think it
+is worthwhile.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I do this kind of thing by keeping buttons in @files...
+
+@file ~/.leo/gen  # general utility buttons
+@file ~/.leo/dml  # tools for editing an XML dialect I use
+@file ~/.leo/sql  # tools for editing SQL / interacting with server
+
+so changes made in one outline are automatically propagated to other
+outlines next time they're reloaded.  You just reference the files
+in each outline where you want those buttons.
+
+> 2. Feature request
+> At this time, you can use this idea by comment the @url line
+> after jump. If @url isn't comment, the leo-editor will say...
+> SyntaxError: invalid syntax
+> at the @url line.
+> 
+> Maybe it is a good idea to omit the @url line in the script when executing
+> script?
+
+This probably would make sense, already the scripting machinery is
+ignoring things like @nocolor or @language cobol or @nowrap etc.
+
+Maybe you could file a wish-list bug item for tracking.
+.. @+node:ekr.20160401034138.1: *5* Better search for unl's?
+Improve g.recursiveUNLSearch?
+
+I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
+.. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
+@language python
+
+# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
+
+print('\n\n\n\n')
+print('Now:\n')
+
+for p in c.all_positions():
+    try:
+        # Corrects empty lines around @language python\n@tabwidth -4
+        if p.h.startswith('@clean') and p.h.endswith('py'):
+            # Corrects empty lines after @first
+            if p.h == '@clean manage.py':
+                splited = p.b.partition('"""\nMain starter script for Django\n"""')
+                p.b = ''.join((splited[0].rstrip(), '\n', splited[1], splited[2]))
+
+            try:
+                if '@language python\n@tabwidth -4' in p.b:
+                    splited = p.b.partition('@language python\n@tabwidth -4')
+                    p.b = ''.join((splited[0].rstrip(), '\n', splited[1], '\n', splited[2].lstrip()))
+                    print(p.h)
+
+            except Exception as exc:
+                g.es_exception()
+
+        # Corrects empty lines between main blocks
+        else:
+            parent = p.parent().h
+            if parent.startswith('@clean'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+            # Corrects empty lines between methods
+            elif parent.startswith('class'):
+                siblings = [pos.gnx for pos in p.self_and_siblings()]
+                # Corrects empty lines between main blocks
+                if p.gnx != siblings[-1]:
+                    p.b = '{}\n\n'.format(p.b.rstrip())
+                # Corrects empty lines at end of file
+                else:
+                    p.b = '{}\n'.format(p.b.rstrip())
+
+    except Exception as exc:
+        g.es_exception()
+.. @+node:ekr.20160318113329.1: *4* Improve speed of spell commands
+- Can they be interrupted?
+- Use list(set(words)) to check each word only once.
+- The do plain search for possibly-misspelled words in each body.
+
+.. @+node:ekr.20160318132903.1: *3* Docs 5.3
+@language rest
+@wrap
+.. @+node:ekr.20160404171945.1: *4* *** Document cffm, cff in Tutorial, cheat sheet, etc
+.. @+node:ekr.20131121211048.16378: *4* * More screenshots!
+Different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20160325161612.1: *4* FAQ?  Gathering scripts
+@language rest
+@wrap
+
+The frequently asked-for feature if for clones that don't share children.  It's been amusing to think of multi-colored threaded trees, split nodes, and what have you.
+
+The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
+
+Imo, this one special case *in no way* justifies changes to Leo's vnodes or positions.  Instead, the simplest and the most general thing that could possibly work is to gather desired data using a script.
+
+1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
+
+2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
+
+For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
+
+That's all there is to it.
+
+Edward
+.. @+node:ekr.20160325154019.1: *4* FAQ? pylint command/script
+​@language rest
+@wrap
+
+On Fri, Mar 25, 2016 at 6:59 AM, john lunzer <lunzer@gmail.com> wrote:
+
+​> ​My biggest wishlist item is what I would "Livelint" which constantly runs and reruns pylint (or similar) in the background​.​
+​
+This basically already exists.  On Windows, I have this pylint.bat file:
+
+python2 c:\leo.repo\leo-editor\pylint-leo.py ^
+rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
+
+In other words, the top-level leo-editor folder contains:
+
+- pylint-leo.py
+- pylint-leo-rc.txt
+
+c:\leo.repo\leo-editor>c:\Anaconda2\python.exe c:\leo.repo\leo-editor\pylint-leo.py rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt -h
+Usage: pylint-leo.py [options]
+
+Options:
+  -h, --help   show this help message and exit
+  -a           all
+  -c           core
+  -e           external
+  -f FILENAME  filename, relative to leo folder
+  -g           gui plugins
+  -m           modes
+  -p           plugins
+  -s           silent
+  -u           user commands
+  -v           report pylint version
+
+
+My typical usage is pylint -a -s
+
+Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
+
+Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
+
+Edward
+.. @+node:ekr.20160315141751.1: *4* Code Academy: possible topics
+@language rest
+@wrap
+
+- Redraw mode that hides siblings.
+
+- Clones: making and deleting them.
+  Clones are cheap to create!
+
+- How to create new panes anywhere,
+  and how to put cool stuff in them.
+
+- How to hoist outlines programmatically.
+
+- How to write a plugin so it can respond to events.
+
+- Using g.trace and g.pdb: example: splitter.open_window
+- Find all nodes with a given uA.
+- Create log pane.
+    - Put Qt stuff in it.
+- Key bindings.
+- Create new panes.
+- Scripts can handle events.
+
+
+.. @+node:ekr.20160309105419.1: *5* Chapters & hoists
+How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
+.. @+node:ekr.20160309105156.1: *5* uA's & views
+Quick additions to Leo's core:
+- Define the p.u property, so code can do p.u instead of p.v.u.
+- Possibly make the api for uA's more convenient.
+
+A better attribute gui would help *everyone*.
+- We need to be *associate icons with attributes*.
+- This can be used for chapters, bookmarks, my-view-a/b/c, etc.
+
+An **attribute calculus** would form union & intersections of attributes.
+
+We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
+
+clone-mark-all could also set define attribues.
+
+A more ambitious addition: Define a gui interface for uA's.
+
+Being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
+
+- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
+
+- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
+.. @+node:ekr.20160309105326.1: *5* API for windows
+The so-called Easter-Egg interface creates new panes from the gui.
+
+A summary of how to do this programmatically is needed.
+
+Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+.. @+node:ekr.20150801060026.1: *4* leotutor.leo
+.. @+node:ekr.20160403033015.1: *4* Removed/improved chapters commands
+@language rest
+@wrap
+
+If you use Leo's chapters, please read the following carefully.  Unless I hear howls of protest, I am going to do the following, after allowing ample time for comments.
+
+At present, Leo's supports the following chapter-related commands:
+
+    chapter-clone-node-to
+    chapter-convert-node-to
+    chapter-copy-node-to
+    chapter-create
+    chapter-create-from-node
+    chapter-move-node-to
+    chapter-remove
+    chapter-rename
+    chapter-select
+
+Imo, only the chapter-select command is needed. It should be improved, as explained in point 3 below. All other commands should be removed:
+
+1. The new chapters code dynamically updates the list of chapter names whenever the list is needed. As a result, the user can do the following commands more easily by creating, renaming, moving, copying or deleting @chapter nodes:
+
+    chapter-convert-node-to
+    chapter-create
+    chapter-create-from-node
+    chapter-rename
+    chapter-remove commands
+
+The old (brain dead) code needed these commands to update internal data structures. The new code updates the structures as needed.
+
+2. Now that @chapter nodes need no longer be children of an @chapters nodes, it is easier for the user to move or clone nodes between chapters using Leo existing clone, copy-node, paste-node and especially the cffm commands.  As a result, these ridiculously clumsy commands should be retired:
+
+    chapter-clone-node-to
+    chapter-copy-node-to
+    chapter-move-node-to
+
+I wonder whether anyone actually has ever used these commands.
+ 
+3. At present, the chapter-select uses a non-standard, clumsy, way of prompting for a chapter name. Instead, the Alt-x code should have a hook that allows the chapters code to add/remove chapter-select commands. So after <alt-x>chap<tab>, the user would see:
+
+    chapter-select-(chapter-name-1)
+    chapter-select-(chapter-name-2)
+
+that is, the list of chapter names, in alphabetical order. As always, tab completion would allow the user to select the desired chapter quickly.
+
+Furthermore, the user should be able to bind keystrokes to these commands, even though they are created dynamically.  This may be a bit tricky to do, but it is the correct thing to do. It maintains the desired illusion of simplicity.
+
+Summary
+
+Imo, only the chapter-select command should remain, and it should be improved as just discussed.
+
+Chapters are almost like hoists, with the following differences:
+
+A. The Chapters box in the icon area.  This is useful to have even with the new chapters-select-* logic in place.
+
+B. Selecting a chapter is not quite the same as same as hoisting an @chapters node: only the children of the @chapters node are shown. I think this is a dubious choice, but it was a requested feature so it's not going to change, although it could become an option.
+
+Your comments, please, Amigos.
+
+Edward
+.. @+node:ekr.20160403043354.1: ** To do: 5.4
+@language rest
+@wrap
+.. @+node:ekr.20151231095651.1: *3* Bugs: 5.4
+@language rest
+@wrap
+
+6 bugs assigned to 5.3
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+
+.. @+node:ekr.20160403124912.1: *4* #241: QMimeData object error
+https://github.com/leo-editor/leo-editor/issues/241
+
+This might be a QT5 issue.
+.. @+node:ekr.20150609101355.1: *4* #129: Font setting overridden by new workbook
+@language rest
+@wrap
+
+Leo reading CheatSheet settings
+https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
+
+https://github.com/leo-editor/leo-editor/issues/129
+Font setting overridden by new workbook
+
+If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
+.. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
+https://github.com/leo-editor/leo-editor/issues/180
+
+Terry:
+I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
+
+What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
+.. @+node:ekr.20151231095917.1: *4* #201: Leo does not work with PyQt5 5.5.0
+https://github.com/leo-editor/leo-editor/issues/201
+.. @+node:ekr.20151231100137.1: *4* #212: Yet Another Encoding Problem
+https://github.com/leo-editor/leo-editor/issues/212
+.. @+node:ekr.20151010090634.1: *5* Notes
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/212
+
+This problem is mysterious to me. My simplest test case yaep01.leo does NOT show the problem. But my very slightly more complicated test case yaep02.leo shows the problem.
+
+Ctrl-C, Ctrl-V -- Changes all the non-ASCII characters in the body or headline pasted to.
+
+Shift-Ctrl-C, Shift-Ctrl-V -- Copying a node changes all the non-ASCII characters in the headline and body of the pasted to node.
+
+@language python
+.. @+node:ekr.20151010090736.1: *6* report
+@language rest
+@wrap
+yaep01.leo:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<?xml-stylesheet ekr_test ?>
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+    <global_window_position top="50" left="50" height="500" width="700"/>
+    <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bob.20151002154132.1"><vh>fʁɑ̃.swaːz aʁ.di</vh></v>
+</vnodes>
+<tnodes>
+<t tx="bob.20151002154132.1">fʁɑ̃.swaːz aʁ.di</t>
+</tnodes>
+</leo_file>
+
+yaep02.leo:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+    <global_window_position top="50" left="50" height="500" width="700"/>
+    <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bob.20151002155632.1"><vh>Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</vh></v>
+</vnodes>
+<tnodes>
+<t tx="bob.20151002155632.1">Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</t>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20151010090641.1: *6* bug212-b.leo traceback
+
+C:\Users\edreamleo\Desktop>python3 c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
+
+C:\Users\edreamleo\Desktop>c:\python34\python.exe c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
+leoID=ekr (in c:\Users\edreamleo\.leo)
+reading settings in C:\leo.repo\leo-editor\leo\config\leoSettings.leo
+reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
+reading settings in C:\Users\edreamleo\Desktop\bug212-b.leo
+error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
+Traceback (most recent call last):
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+
+  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
+    self.feed(buffer)
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+
+  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
+    raise exception
+
+xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
+
+error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
+Traceback (most recent call last):
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
+    self._parser.Parse(data, isFinal)
+
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+
+  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
+    self.feed(buffer)
+
+  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+
+  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
+    raise exception
+
+xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
+
+
+** isPython3: True
+Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
+Git repo info: branch = master, commit = b5e6da9f5feb
+Python 3.4.0, PyQt version 5.3.0
+Windows 7 AMD64 (build 6.1.7601) SP1
+.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+.. @+node:ekr.20120219152142.34262: *4* Fix bug: Revert moves the reverted tab to the right
+And Leo hangs afterwards when closing!
+.. @+node:ekr.20160406111546.1: *3* First: 5.4
+.. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
+Must be easy to use.
+
+- Add p/v.temp_u properties. Revise docs.
+
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+.. @+node:ekr.20160305033136.1: *5* Found:['"]icons[i"]
+.. @+node:ekr.20160129081036.1: *5* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
+.. @+node:ekr.20080802070659.11: *5* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Javascript and perl need more work.
+.. @+node:ekr.20130805080841.21380: *5* #1222947: javascript import bug (Hard)
+@language javascript
+
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Bug 
+https://bugs.launchpad.net/leo-editor/+bug/1222947
+
+Here is the test file::
+
+    var express = require('express');
+     
+    var app = express.createServer(express.logger());
+     
+    app.get('/', function(request, response) {
+    response.send('Hello World!');
+    });
+     
+    var port = process.env.PORT || 5000;
+    app.listen(port, function() {
+    console.log("Listening on " + port);
+    });
+.. @+node:ekr.20160318113142.1: *4* Add coffeescript importer
+# https://pypi.python.org/pypi/CoffeeScript/1.1.2
+import coffeescript
+g.es(coffeescript)
 .. @+node:ekr.20160404213305.1: *4* 4 Import problems
 .. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
@@ -358,536 +875,7 @@ There is no easy way to do this at present, but it's probably reasonable to disa
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20160406111546.1: *4* Later
-.. @+node:ekr.20160303040846.1: *5* Add command to correct blank lines in @clean files
-@language python
-
-# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
-
-print('\n\n\n\n')
-print('Now:\n')
-
-for p in c.all_positions():
-    try:
-        # Corrects empty lines around @language python\n@tabwidth -4
-        if p.h.startswith('@clean') and p.h.endswith('py'):
-            # Corrects empty lines after @first
-            if p.h == '@clean manage.py':
-                splited = p.b.partition('"""\nMain starter script for Django\n"""')
-                p.b = ''.join((splited[0].rstrip(), '\n', splited[1], splited[2]))
-
-            try:
-                if '@language python\n@tabwidth -4' in p.b:
-                    splited = p.b.partition('@language python\n@tabwidth -4')
-                    p.b = ''.join((splited[0].rstrip(), '\n', splited[1], '\n', splited[2].lstrip()))
-                    print(p.h)
-
-            except Exception as exc:
-                g.es_exception()
-
-        # Corrects empty lines between main blocks
-        else:
-            parent = p.parent().h
-            if parent.startswith('@clean'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-            # Corrects empty lines between methods
-            elif parent.startswith('class'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-
-    except Exception as exc:
-        g.es_exception()
-.. @+node:ekr.20160405110731.1: *5* #189: Better support for UNL navigation of Leo's code
-https://github.com/leo-editor/leo-editor/issues/189
-.. @+node:ekr.20130806072439.20374: *6* Feature request re URL's
-From: HaveF <iamaplayer@gmail.com>
-
-1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
-in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
-leo-file-B.leo.
-
-When I'm working on leo-file-B.leo, I may have ideas to improve the
-@button button-1, but at that time(working on leo-file-B.leo), I may
-forget where the original place of @button button-1 is. Even I store
-the original scripts in the default workbook.leo is a tedious work to
-deal with(open it, locate where the original script is, update it...)
-
-But! After I add the @url at the first line of @button button-1, I can
-decide if the improvements what I made on leo-file-B.leo's @button button-1
-should or shouldn't be merged to the original and upstream @button
-button-1(in leo-file-A.leo) easily by just a click.
-
-And if I work on leo-file-C.leo, I want to use the same script, but I just
-only remember I use the script in the leo-file-B.leo instead of original
-place. With @url I can easily jump to original place, and copy it to
-leo-file-C.leo.
-
-Using @url in the leo script, I can make the scripts consistency and
-diversity at same time.
-
-Great! But, Wait, wait!
-
-2. Feature request.  At this time, you can use this idea by comment the @url
-line after jump. If @url isn't comment, the leo-editor will say...
-SyntaxError: invalid syntax at the @url line.
-
-Maybe it is a good idea to omit the @url line in the script when executing
-script?
-
-===== EKR
-
-Yes.  I think this is a good idea.  A similar idea occurred to me when
-looking at @rclick nodes.  At present, the context_menu plugin contains an
-ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
-needed at present when the @button node contains @others: the @rclick node
-can't be part of the script "pulled in" by @others.
-
-It would be much more elegant to ignore @rclick nodes when computing the
-script.  This would require a change to the @others logic, but I think it
-is worthwhile.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I do this kind of thing by keeping buttons in @files...
-
-@file ~/.leo/gen  # general utility buttons
-@file ~/.leo/dml  # tools for editing an XML dialect I use
-@file ~/.leo/sql  # tools for editing SQL / interacting with server
-
-so changes made in one outline are automatically propagated to other
-outlines next time they're reloaded.  You just reference the files
-in each outline where you want those buttons.
-
-> 2. Feature request
-> At this time, you can use this idea by comment the @url line
-> after jump. If @url isn't comment, the leo-editor will say...
-> SyntaxError: invalid syntax
-> at the @url line.
-> 
-> Maybe it is a good idea to omit the @url line in the script when executing
-> script?
-
-This probably would make sense, already the scripting machinery is
-ignoring things like @nocolor or @language cobol or @nowrap etc.
-
-Maybe you could file a wish-list bug item for tracking.
-.. @+node:ekr.20160401034138.1: *6* Better search for unl's?
-Improve g.recursiveUNLSearch?
-
-I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
-.. @+node:ekr.20160318113329.1: *5* Improve speed of spell commands
-- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
-.. @+node:ekr.20160318113006.1: *5* API's for icons, attributes & windows
-Must be easy to use.
-
-- Add p/v.temp_u properties. Revise docs.
-
-- Use Terry's window code to create all panes:
-    - New console window plugin.
-.. @+node:ekr.20160305033136.1: *6* Found:['"]icons[i"]
-.. @+node:ekr.20160129081036.1: *6* simplifying uA access
-d = p.u.get(plugin_name, {})
-d['duration'] = 5
-p.u[plugin_name] = d
-.. @+node:ekr.20080802070659.11: *6* Make node attributes visible, and supported by Leo's core
-.. @+node:ekr.20151231101050.1: *5* #127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Javascript and perl need more work.
-.. @+node:ekr.20130805080841.21380: *6* #1222947: javascript import bug (Hard)
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
-.. @+node:ekr.20160318113142.1: *5* Add coffeescript importer
-# https://pypi.python.org/pypi/CoffeeScript/1.1.2
-import coffeescript
-g.es(coffeescript)
-.. @+node:ekr.20151231095651.1: *3* Bugs: 5.3
-@language rest
-@wrap
-
-6 bugs assigned to 5.3
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
-
-.. @+node:ekr.20160403124912.1: *4* #241: QMimeData object error
-https://github.com/leo-editor/leo-editor/issues/241
-
-This might be a QT5 issue.
-.. @+node:ekr.20150609101355.1: *4* #129: Font setting overridden by new workbook
-@language rest
-@wrap
-
-Leo reading CheatSheet settings
-https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
-
-https://github.com/leo-editor/leo-editor/issues/129
-Font setting overridden by new workbook
-
-If you go into Startup -> @settings, and add @font DejavuSans, close Leo, re-open it, the new font will have taken affect, until you open a new leo workbook. Then it everything goes back to the original Leo font. This is the latest git version.
-.. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
-https://github.com/leo-editor/leo-editor/issues/180
-
-Terry:
-I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
-
-What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
-.. @+node:ekr.20151231095917.1: *4* #201: Leo does not work with PyQt5 5.5.0
-https://github.com/leo-editor/leo-editor/issues/201
-.. @+node:ekr.20151231100137.1: *4* #212: Yet Another Encoding Problem
-https://github.com/leo-editor/leo-editor/issues/212
-.. @+node:ekr.20151010090634.1: *5* Notes
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/212
-
-This problem is mysterious to me. My simplest test case yaep01.leo does NOT show the problem. But my very slightly more complicated test case yaep02.leo shows the problem.
-
-Ctrl-C, Ctrl-V -- Changes all the non-ASCII characters in the body or headline pasted to.
-
-Shift-Ctrl-C, Shift-Ctrl-V -- Copying a node changes all the non-ASCII characters in the headline and body of the pasted to node.
-
-@language python
-.. @+node:ekr.20151010090736.1: *6* report
-@language rest
-@wrap
-yaep01.leo:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test ?>
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-    <global_window_position top="50" left="50" height="500" width="700"/>
-    <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bob.20151002154132.1"><vh>fʁɑ̃.swaːz aʁ.di</vh></v>
-</vnodes>
-<tnodes>
-<t tx="bob.20151002154132.1">fʁɑ̃.swaːz aʁ.di</t>
-</tnodes>
-</leo_file>
-
-yaep02.leo:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-    <global_window_position top="50" left="50" height="500" width="700"/>
-    <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bob.20151002155632.1"><vh>Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</vh></v>
-</vnodes>
-<tnodes>
-<t tx="bob.20151002155632.1">Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</t>
-</tnodes>
-</leo_file>
-.. @+node:ekr.20151010090641.1: *6* bug212-b.leo traceback
-
-C:\Users\edreamleo\Desktop>python3 c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
-
-C:\Users\edreamleo\Desktop>c:\python34\python.exe c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
-leoID=ekr (in c:\Users\edreamleo\.leo)
-reading settings in C:\leo.repo\leo-editor\leo\config\leoSettings.leo
-reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
-reading settings in C:\Users\edreamleo\Desktop\bug212-b.leo
-error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
-Traceback (most recent call last):
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
-    self._parser.Parse(data, isFinal)
-
-xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-
-  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-
-  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-
-xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
-
-error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
-Traceback (most recent call last):
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
-    self._parser.Parse(data, isFinal)
-
-xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-
-  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-
-  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-
-xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
-
-
-** isPython3: True
-Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
-Git repo info: branch = master, commit = b5e6da9f5feb
-Python 3.4.0, PyQt version 5.3.0
-Windows 7 AMD64 (build 6.1.7601) SP1
-.. @+node:ekr.20141017110114.18267: *4* @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
-.. @+node:ekr.20120219152142.34262: *4* Fix bug: Revert moves the reverted tab to the right
-And Leo hangs afterwards when closing!
-.. @+node:ekr.20160318132903.1: *3* Docs 5.3
-@language rest
-@wrap
-.. @+node:ekr.20160404171945.1: *4* *** Document cffm, cff in Tutorial, cheat sheet, etc
-.. @+node:ekr.20131121211048.16378: *4* * More screenshots!
-Different font sizes, coloring schemes, plugins, etc.
-.. @+node:ekr.20160325161612.1: *4* FAQ?  Gathering scripts
-@language rest
-@wrap
-
-The frequently asked-for feature if for clones that don't share children.  It's been amusing to think of multi-colored threaded trees, split nodes, and what have you.
-
-The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
-
-Imo, this one special case *in no way* justifies changes to Leo's vnodes or positions.  Instead, the simplest and the most general thing that could possibly work is to gather desired data using a script.
-
-1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
-
-2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
-
-For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
-
-That's all there is to it.
-
-Edward
-.. @+node:ekr.20160325154019.1: *4* FAQ? pylint command/script
-​@language rest
-@wrap
-
-On Fri, Mar 25, 2016 at 6:59 AM, john lunzer <lunzer@gmail.com> wrote:
-
-​> ​My biggest wishlist item is what I would "Livelint" which constantly runs and reruns pylint (or similar) in the background​.​
-​
-This basically already exists.  On Windows, I have this pylint.bat file:
-
-python2 c:\leo.repo\leo-editor\pylint-leo.py ^
-rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
-
-In other words, the top-level leo-editor folder contains:
-
-- pylint-leo.py
-- pylint-leo-rc.txt
-
-c:\leo.repo\leo-editor>c:\Anaconda2\python.exe c:\leo.repo\leo-editor\pylint-leo.py rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt -h
-Usage: pylint-leo.py [options]
-
-Options:
-  -h, --help   show this help message and exit
-  -a           all
-  -c           core
-  -e           external
-  -f FILENAME  filename, relative to leo folder
-  -g           gui plugins
-  -m           modes
-  -p           plugins
-  -s           silent
-  -u           user commands
-  -v           report pylint version
-
-
-My typical usage is pylint -a -s
-
-Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
-
-Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
-
-Edward
-.. @+node:ekr.20160315141751.1: *4* Code Academy: possible topics
-@language rest
-@wrap
-
-- Redraw mode that hides siblings.
-
-- Clones: making and deleting them.
-  Clones are cheap to create!
-
-- How to create new panes anywhere,
-  and how to put cool stuff in them.
-
-- How to hoist outlines programmatically.
-
-- How to write a plugin so it can respond to events.
-
-- Using g.trace and g.pdb: example: splitter.open_window
-- Find all nodes with a given uA.
-- Create log pane.
-    - Put Qt stuff in it.
-- Key bindings.
-- Create new panes.
-- Scripts can handle events.
-
-
-.. @+node:ekr.20160309105419.1: *5* Chapters & hoists
-How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
-.. @+node:ekr.20160309105156.1: *5* uA's & views
-Quick additions to Leo's core:
-- Define the p.u property, so code can do p.u instead of p.v.u.
-- Possibly make the api for uA's more convenient.
-
-A better attribute gui would help *everyone*.
-- We need to be *associate icons with attributes*.
-- This can be used for chapters, bookmarks, my-view-a/b/c, etc.
-
-An **attribute calculus** would form union & intersections of attributes.
-
-We would like searches to add/clear attributes. The Nav or nodetags plugins could do this. We might also want interactive add/remove attribute commands. These plugins could also hoist the nodes they show, similar to create-chapter-from-nodes command.
-
-clone-mark-all could also set define attribues.
-
-A more ambitious addition: Define a gui interface for uA's.
-
-Being able to make uA's visible somehow would give Leo many of the cool features of the ECCO outliner. We envisage a uA tab in the outline pane that would allow the user to:
-
-- See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
-
-- List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
-.. @+node:ekr.20160309105326.1: *5* API for windows
-The so-called Easter-Egg interface creates new panes from the gui.
-
-A summary of how to do this programmatically is needed.
-
-Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
-.. @+node:ekr.20150801060026.1: *4* leotutor.leo
-.. @+node:ekr.20160403033015.1: *4* Removed/improved chapters commands
-@language rest
-@wrap
-
-If you use Leo's chapters, please read the following carefully.  Unless I hear howls of protest, I am going to do the following, after allowing ample time for comments.
-
-At present, Leo's supports the following chapter-related commands:
-
-    chapter-clone-node-to
-    chapter-convert-node-to
-    chapter-copy-node-to
-    chapter-create
-    chapter-create-from-node
-    chapter-move-node-to
-    chapter-remove
-    chapter-rename
-    chapter-select
-
-Imo, only the chapter-select command is needed. It should be improved, as explained in point 3 below. All other commands should be removed:
-
-1. The new chapters code dynamically updates the list of chapter names whenever the list is needed. As a result, the user can do the following commands more easily by creating, renaming, moving, copying or deleting @chapter nodes:
-
-    chapter-convert-node-to
-    chapter-create
-    chapter-create-from-node
-    chapter-rename
-    chapter-remove commands
-
-The old (brain dead) code needed these commands to update internal data structures. The new code updates the structures as needed.
-
-2. Now that @chapter nodes need no longer be children of an @chapters nodes, it is easier for the user to move or clone nodes between chapters using Leo existing clone, copy-node, paste-node and especially the cffm commands.  As a result, these ridiculously clumsy commands should be retired:
-
-    chapter-clone-node-to
-    chapter-copy-node-to
-    chapter-move-node-to
-
-I wonder whether anyone actually has ever used these commands.
- 
-3. At present, the chapter-select uses a non-standard, clumsy, way of prompting for a chapter name. Instead, the Alt-x code should have a hook that allows the chapters code to add/remove chapter-select commands. So after <alt-x>chap<tab>, the user would see:
-
-    chapter-select-(chapter-name-1)
-    chapter-select-(chapter-name-2)
-
-that is, the list of chapter names, in alphabetical order. As always, tab completion would allow the user to select the desired chapter quickly.
-
-Furthermore, the user should be able to bind keystrokes to these commands, even though they are created dynamically.  This may be a bit tricky to do, but it is the correct thing to do. It maintains the desired illusion of simplicity.
-
-Summary
-
-Imo, only the chapter-select command should remain, and it should be improved as just discussed.
-
-Chapters are almost like hoists, with the following differences:
-
-A. The Chapters box in the icon area.  This is useful to have even with the new chapters-select-* logic in place.
-
-B. Selecting a chapter is not quite the same as same as hoisting an @chapters node: only the children of the @chapters node are shown. I think this is a dubious choice, but it was a requested feature so it's not going to change, although it could become an option.
-
-Your comments, please, Amigos.
-
-Edward
-.. @+node:ekr.20160318112838.1: *3* Features: 5.3
+.. @+node:ekr.20160318112838.1: *3* Next: 5.4
 @language rest
 @wrap
 
