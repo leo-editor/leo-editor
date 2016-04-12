@@ -1762,7 +1762,7 @@ class WebViewPlus(QtWidgets.QWidget):
             return '\n\n::\n\n'
     #@+node:peter.20160410194526.1: *7* wvp.plain_directive
     def plain_directive(self):
-        '''Return a plain text block.'''
+        '''Return an reST plain text block header/directive.'''
         return '\n\n::\n\n'
     #@+node:ekr.20160331124028.44: *7* wvp.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
@@ -1829,12 +1829,22 @@ class WebViewPlus(QtWidgets.QWidget):
         #lang = d.get('language') or 'python' # EKR.
         lang = d.get('language')
         #codeflag = lang != 'rest' # EKR
-        codeflag = lang not in ['rest', 'md', 'plain', '']
+        # function to define flag in one place only
+        def getcodeflag():
+            return lang not in ['rest','md','plain','text','']
+        codeflag = getcodeflag()
+        # function to define flag in one place only
+        def getplainflag():
+            """Needs to be rendered as a literal block, but not if body empty"""
+            return len(s.strip())>0 and lang in ['plain','text','']
+        plainflag = getplainflag()
         lines = g.splitLines(s)
         result = []
         code = ''
         if codeflag and self.showcode:
             result.append(self.code_directive(lang)) # EKR
+        if plainflag:
+            result.append(self.plain_directive())
         for s in lines:
             if s.startswith('@'):
                 i = g.skip_id(s, 1)
@@ -1842,27 +1852,32 @@ class WebViewPlus(QtWidgets.QWidget):
                 # Add capability to detect mid-node language directives.
                 # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
                 # to stop directive being put into the reST output.
-                if word == 'language' and not codeflag: # only if not already code
-                    lang = s[i:].strip()
+                # if word == 'language' and not codeflag and not plainflag: # only if not already code
+                    # lang = s[i:].strip()
+                # Check to see if there is a new language directive and that it has changed
+                if word == 'language' and s[i:].strip() != lang:
+                    lang = s[i:].strip()  # store the new language
                     # For *rendering* code, any type of code is eligible
-                    codeflag = lang not in ['rest', 'md', 'plain', '']
+                    codeflag = getcodeflag()
+                    plainflag = getplainflag()
                     if codeflag:
                         if self.verbose:
                             g.es('New code section within node:', lang)
                         if self.showcode:
                             result.append(self.code_directive(lang)) # EKR
+                    elif plainflag:
+                        result.append(self.plain_directive())
                     else:
                         result.append('\n\n')
                     continue
                 elif word in g.globalDirectiveList:
                     continue
-            if codeflag:
-                if self.showcode:
+            if (codeflag and self.showcode) or plainflag:
                     result.append('    ' + s) # 4 space indent on each line
             # For *execution* of code, only Python code is valid.
             if lang in ['python']:
                 code += s # accumulate code lines for execution
-            else:
+            elif not plainflag:
                 result.append(s)
         result = ''.join(result)
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
