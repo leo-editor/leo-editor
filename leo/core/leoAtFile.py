@@ -4440,7 +4440,7 @@ class AtFile:
         at.outputFile = g.FileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
         return at.outputFile
-    #@+node:ekr.20041005105605.201: *4* os and allies
+    #@+node:ekr.20041005105605.201: *4* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *5* oblank, oblanks & otabs
     def oblank(self):
