@@ -1660,7 +1660,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         except ImportError:
             g.es_print('import-jupyter-notebook requires nbformat package')
             return
-        import leo.plugins.importers.ipynb.Import_IPYNB as Import_IPYNB
+        from leo.plugins.importers.ipynb import Import_IPYNB
         # was @-others
         c = self.c
         x = Import_IPYNB(c)
@@ -1676,7 +1676,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     @cmd('export-jupyter-notebook')
     def exportJupyterNotebook(self, event):
         '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
-        import leo.plugins.writers.ipynb.Export_IPYNB as Export_IPYNB
+        from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c
         Export_IPYNB(c).export_outline(c.p)
     #@-others
