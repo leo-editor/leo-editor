@@ -249,7 +249,9 @@ class ChapterController:
                 # name=group(1), binding=group(3)
         m = self.re_chapter.search(p.h)
         if m:
-            chapterName = m.group(1).strip()
+            chapterName = m.group(1)
+            if chapterName:
+                chapterName = chapterName.strip()
             binding = m.group(3).strip()
         else:
             chapterName = binding = None
