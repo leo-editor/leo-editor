@@ -70,6 +70,11 @@ class Import_IPYNB:
             changed = c.isChanged()
             self.import_file(fn, parent)
             # Similar to BaseScanner.run.
+            parent.b = (
+                '@nocolor-node\n\n' +
+                'Note: This node\'s body text is ignored when writing this file.\n\n' +
+                'The @others directive is not required\n'
+            )
             for p in parent.self_and_subtree():
                 p.clearDirty()
             c.setChanged(changed)
