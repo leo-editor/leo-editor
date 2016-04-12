@@ -110,31 +110,18 @@ class ChapterController:
             k.clearState()
             k.resetLabel()
             if k.arg:
-                cc.selectChapterByName(k.arg, create=False)
+                cc.selectChapterByName(k.arg)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
-    def selectChapterByName(self, name, collapse=True, create=True):
+    def selectChapterByName(self, name, collapse=True):
         '''Select a chapter.  Return True if a redraw is needed.'''
         trace = False and not g.unitTesting
         cc, c = self, self.c
         if g.isInt(name):
             return cc.note('PyQt5 chapaters not supported')
         chapter = cc.chaptersDict.get(name)
-        if chapter:
-            cc.selectChapterByNameHelper(chapter, collapse=collapse)
-        elif create:
-            # There is an @chapter node, but no actual chapter.
-            if trace: g.trace('*** creating', name)
-            cc.createChapterByName(name, p=c.p, undoType='Create Chapter')
-        else:
-            # create is False if called from the minibuffer.
-            # do nothing if the user mis-types.
-            cc.note('no such chapter: %s' % name)
-            chapter = cc.chaptersDict.get('main')
-            if chapter:
-                self.selectChapterByNameHelper(chapter, collapse=collapse)
-            else:
-                g.trace(g.callers())
-                cc.error('no main chapter!')
+        if not chapter:
+            chapter = cc.chaptersDict[name] = Chapter(c, cc, name)
+        cc.selectChapterByNameHelper(chapter, collapse=collapse)
     #@+node:ekr.20090306060344.2: *4* selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
         trace = False and not g.unitTesting
