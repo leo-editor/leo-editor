@@ -244,13 +244,13 @@ class ChapterController:
         '''Return the chapter name and key binding for p.h.'''
         if not self.re_chapter:
             self.re_chapter = re.compile(
-                r'^@chapter\s+(\w+)\s*(@key\s*=\s*(.+)\s*)?')
+                r'^@chapter\s+([^@]+)\s*(@key\s*=\s*(.+)\s*)?')
                 # @chapter (name) (@key=(binding))?
                 # name=group(1), binding=group(3)
         m = self.re_chapter.search(p.h)
         if m:
-            chapterName = m.group(1)
-            binding = m.group(3)
+            chapterName = m.group(1).strip()
+            binding = m.group(3).strip()
         else:
             chapterName = binding = None
         return chapterName, binding
