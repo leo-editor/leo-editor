@@ -60,52 +60,26 @@ class LeoImportCommands:
     #@+node:ekr.20140724064952.18037: *4* ic.createImporterData & helper
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
-        trace = False and not g.unitTesting
         self.classDispatchDict = {}
         self.atAutoDict = {}
-
-        def report(message, kind, folder, name):
-            if trace: g.trace('%7s: %5s %9s %s' % (
-                message, kind, folder, name))
-
-        folder = 'importers'
+        # Allow plugins to be defined in ~/.leo/plugins.
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
         seen = set()
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            path = g.os_path_finalize_join(plugins, folder)
-            if 1: # Old code...
-                pattern = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py')
-                for fn in glob.glob(pattern):
-                    sfn = g.shortFileName(fn)
-                    if sfn != '__init__.py':
-                        try:
-                            module_name = sfn[: -3]
-                            # Important: use importlib to give imported modules their fully qualified names.
-                            m = importlib.import_module('leo.plugins.importers.%s' % module_name)
-                            self.parse_importer_dict(sfn, m)
-                        except Exception:
-                            g.es_exception()
-                            g.warning('can not import leo.plugins.importers.%s' % module_name)
-            else: # New code: has problems.
-                pattern = g.os_path_finalize_join(path, '*.py')
-                for fn in glob.glob(pattern):
-                    sfn = g.shortFileName(fn)
-                    if g.os_path_exists(fn) and sfn != '__init__.py':
-                        moduleName = sfn[: -3]
-                        if moduleName:
-                            data = (folder, sfn)
-                            if data in seen:
-                                report('seen', kind, folder, sfn)
-                            else:
-                                m = g.importFromPath(moduleName, path) # Uses imp.
-                                if m:
-                                    seen.add(data)
-                                    self.parse_importer_dict(sfn, m)
-                                    report('loaded', kind, folder, m.__name__)
-                                else:
-                                    report('error', kind, folder, sfn)
-                    # else: report('skipped',kind,folder,sfn)
+            path = g.os_path_finalize_join(plugins, 'importers')
+            pattern = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if sfn != '__init__.py':
+                    try:
+                        module_name = sfn[: -3]
+                        # Important: use importlib to give imported modules their fully qualified names.
+                        m = importlib.import_module('leo.plugins.importers.%s' % module_name)
+                        self.parse_importer_dict(sfn, m)
+                    except Exception:
+                        g.es_exception()
+                        g.warning('can not import leo.plugins.importers.%s' % module_name)
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
@@ -118,30 +92,32 @@ class LeoImportCommands:
         if importer_d:
             at_auto = importer_d.get('@auto', [])
             scanner_class = importer_d.get('class', None)
+            scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
+            if trace:
+                g.trace('===== %s: %s' % (sfn, scanner_name))
+                if extensions: g.trace(', '.join(extensions))
             if at_auto:
                 # Make entries for each @auto type.
                 d = ic.atAutoDict
                 for s in at_auto:
                     aClass = d.get(s)
                     if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %5s class: %s in %s' % (
-                            sfn, s, aClass.__name__, m.__file__))
+                        g.trace('duplicate %5s class: %s in %s' % (
+                            s, aClass.__name__, m.__file__))
                     else:
                         d[s] = scanner_class
                         ic.atAutoDict[s] = scanner_class
                         g.app.atAutoNames.add(s)
-                        if trace: g.trace(
-                            'found scanner for %20s in %s: %s' % (
-                                s, sfn, scanner_class))
+                        if trace: g.trace(s)
             if extensions:
                 # Make entries for each extension.
                 d = ic.classDispatchDict
                 for ext in extensions:
                     aClass = d.get(ext)
                     if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %s class: %s in %s' % (
-                            sfn, ext, aClass.__name__, m.__file__))
+                        g.trace('duplicate %s class: %s in %s' % (
+                           ext, aClass.__name__, m.__file__))
                     else:
                         d[ext] = scanner_class
         elif sfn not in ('basescanner.py',):
@@ -637,8 +613,9 @@ class LeoImportCommands:
     #@+node:ekr.20140727180847.17985: *6* ic.scanner_for_at_auto
     def scanner_for_at_auto(self, p):
         '''A factory returning a scanner function for p, an @auto node.'''
-        d = self.atAutoDict
         trace = False and not g.unitTesting
+        d = self.atAutoDict
+        if trace: g.trace('\n'.join(sorted(d.keys())))
         for key in d.keys():
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
@@ -651,6 +628,7 @@ class LeoImportCommands:
                         scanner = aClass(importCommands=self, atAuto=atAuto)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
+                        g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
 
@@ -661,7 +639,9 @@ class LeoImportCommands:
     #@+node:ekr.20140130172810.15471: *6* ic.scanner_for_ext
     def scanner_for_ext(self, ext):
         '''A factory returning a scanner function for the given file extension.'''
+        trace = False and not g.unitTesting
         aClass = self.classDispatchDict.get(ext)
+        if trace: g.trace(ext, aClass.__name__)
         if aClass:
 
             def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
@@ -669,6 +649,7 @@ class LeoImportCommands:
                     scanner = aClass(importCommands=self, atAuto=atAuto)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
+                    g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
 
