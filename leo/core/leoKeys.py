@@ -2133,12 +2133,15 @@ class KeyHandlerClass:
 
         '''
         trace = False and not g.unitTesting
+        # trace = trace and shortcut.lower().find('key-1') > -1
+        trace_list = False
         k = self
         if not k.check_bind_key(commandName, pane, shortcut):
             return False
         aList = k.bindingsDict.get(shortcut, [])
         if trace: #  or shortcut == 'Ctrl+q':
-            g.trace('%7s %20s %17s %s' % (pane, shortcut, tag, commandName))
+            # g.trace('%7s %20s %17s %s' % (pane, shortcut, tag, commandName))
+            g.trace(shortcut)
         try:
             if not shortcut:
                 stroke = None
@@ -2159,7 +2162,7 @@ class KeyHandlerClass:
             if shortcut:
                 assert stroke
                 k.bindingsDict[stroke] = aList
-                if trace: g.trace(shortcut, aList)
+                if trace and trace_list: g.trace(shortcut, aList)
             return True
         except Exception: # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2399,7 +2402,7 @@ class KeyHandlerClass:
             g.trace('%0.2fsec' % (t2 - t1))
             g.trace('%0.2fsec' % (t3 - t2))
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
-    def makeMasterGuiBinding(self, stroke, w=None):
+    def makeMasterGuiBinding(self, stroke, w=None, trace=False):
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
         k = self; c = k.c; f = c.frame
         if w:
@@ -2417,6 +2420,7 @@ class KeyHandlerClass:
             if w not in aList:
                 aList.append(w)
                 k.masterGuiBindingsDict[stroke] = aList
+        if trace: g.trace(len(aList), stroke)
     #@+node:ekr.20150402111403.1: *3* k.Command history
     #@+node:ekr.20150402111413.1: *4* k.addToCommandHistory
     def addToCommandHistory(self, commandName):
@@ -3020,13 +3024,15 @@ class KeyHandlerClass:
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = False and not g.unitTesting and commandName == 'run-pylint'
+        trace = False and not g.unitTesting
+        # trace = trace and commandName.startswith('chapter-select-')
         traceCommand = False
-        traceEntry = True
-        traceStroke = False
+        traceEntry = False
+        traceStroke = True
         c, k = self.c, self
         if trace and traceEntry:
-            g.trace(pane, commandName, 'source_c:', source_c)
+            # g.trace(pane, commandName, 'source_c:', source_c)
+            g.trace(pane, commandName, shortcut)
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
@@ -3049,17 +3055,14 @@ class KeyHandlerClass:
                     stroke = si.stroke
                     pane = si.pane # 2015/05/11.
                     break
+        if trace and traceStroke: g.trace(pane, stroke, commandName)
         if stroke:
-            if trace and traceStroke: g.trace('stroke', stroke, 'pane', pane, commandName)
             ok = k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
-            k.makeMasterGuiBinding(stroke) # Must be a stroke.
+            k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
             if trace and traceCommand and ok and not g.app.silentMode:
                 g.blue('', '@command: %s = %s' % (
                     commandName, k.prettyPrintKey(stroke)))
-                if 0:
-                    d = k.masterBindingsDict.get('button', {})
-                    g.print_dict(d)
         elif trace and traceCommand and not g.app.silentMode:
             g.blue('', '@command: %s' % (commandName))
         # Fixup any previous abbreviation to press-x-button commands.
@@ -4200,6 +4203,7 @@ class KeyHandlerClass:
         This method allows Leo to use strokes everywhere.
         '''
         trace = False and not g.unitTesting
+        trace = trace and stroke.lower().find('1') > -1
         k = self
         if not stroke: return ''
         s = stroke.s if g.isStroke(stroke) else stroke
@@ -4241,10 +4245,11 @@ class KeyHandlerClass:
         val = s if len(s) == 1 else ''
         if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
         return val
-    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting
-    def strokeFromSetting(self, setting, addKey=True):
+    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting (changed in Leo 5.3)
+    def strokeFromSetting(self, setting):
         k = self
-        trace = False and not g.unitTesting # and setting.lower().find('ctrl-x') > -1
+        trace = False and not g.unitTesting
+        trace = trace and setting.lower().find('1') > -1
         verbose = False
         if not setting:
             return None
@@ -4299,7 +4304,8 @@ class KeyHandlerClass:
                     else:
                         last = last.lower()
                 # New in Leo 4.4.2: Alt-2 is not a key event!
-                if addKey and last.isdigit():
+                # New in Leo 5.3: 2016/04/12: a major bug fix, with new unit test.
+                if (cmd or ctrl or alt or shift) and last.isdigit():
                     last = 'Key-' + last
         else:
             # Translate from a made-up (or lowercase) name to 'official' Tk binding name.

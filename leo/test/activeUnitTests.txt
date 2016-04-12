@@ -14874,6 +14874,9 @@ if 0: # Test 2
 # print('settingsNameDict',c.k.settingsNameDict)
 
 table = (
+    ('Key-1','1'), # 2016/04/12
+    ('key-1','1'), # 2016/04/12
+    ('1', '1'), # 2016/04/12
     ('a','a'),
     ('A','a'),
     ('Alt-a','Alt+a'),
@@ -15611,13 +15614,13 @@ else:
     aaa1 = g.findNodeAnywhere(c,'@chapter aaa')
     assert aaa1
     try:
-        c.chapterController.selectChapterByName('aaa',collapse=True,create=False)
+        c.chapterController.selectChapterByName('aaa',collapse=True)
         aaa = c.p
         assert aaa.h == 'aaa node 1',repr(aaa)
         p2 = p.moveToVisBack(c)
         assert p2 is None,p2
     finally:
-        c.chapterController.selectChapterByName('main',collapse=True,create=False)
+        c.chapterController.selectChapterByName('main',collapse=True)
 #@+node:ekr.20140218045755.4348: *4* @test p.nosentinels
 @language python
 @tabwidth -4
