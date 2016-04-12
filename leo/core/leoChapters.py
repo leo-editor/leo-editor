@@ -47,8 +47,11 @@ class ChapterController:
         cc, c = self, self.c
         cc.createIcon()
         # Create the main chapter
-        cc.chaptersDict['main'] = Chapter(c, cc, 'main')
-        cc.makeCommand('main')
+        if trace: g.trace('===== ChapterController.finishCreate')
+        # Usually done in cc.setAllChapterNames.
+        if not cc.chaptersDict.get('main'):
+            cc.chaptersDict['main'] = Chapter(c, cc, 'main')
+            cc.makeCommand('main')
         for p in c.all_unique_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName:
@@ -67,12 +70,18 @@ class ChapterController:
     def makeCommand(self, chapterName, binding=None):
         '''Make chapter-select-<chapterName> command.'''
         trace = False and not g.unitTesting
+        trace_redef = True
         c, cc = self.c, self
         command = 'chapter-select-%s' % chapterName
+        inverseBindingsDict = c.k.computeInverseBindingDict()
         if command in c.commandsDict:
-            if trace: g.trace('already defined', command)
+            if trace and trace_redef:
+                g.trace('===== already defined', command)
+                g.trace('inverse', inverseBindingsDict.get(command))
             return
-        if trace: g.trace('defining', command, binding)
+        if trace:
+            g.trace('===== defining', command, binding, g.callers(1))
+            g.trace('inverse', inverseBindingsDict.get(command))
 
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
@@ -82,13 +91,17 @@ class ChapterController:
                 cc.selectChapterLockout = False
             else:
                 cc.note('no such chapter: %s' % name)
-
-        c.k.registerCommand(
-            command,
-            func=select_chapter_callback,
-            pane='all',
-            shortcut=binding,
-            verbose=False)
+                
+        # Always bind the command without a shortcut.
+        # This will create the command bound to any existing settings.
+        bindings = (None, binding) if binding else (None,)
+        for shortcut in bindings:
+            c.k.registerCommand(
+                command,
+                func=select_chapter_callback,
+                pane='all',
+                shortcut=shortcut,
+                verbose=False)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the ChapterController class.'''
@@ -297,9 +310,14 @@ class ChapterController:
         c.redraw_now()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
+        '''Called early and often to discover all chapter names.'''
         c, cc, result = self.c, self, []
         sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         seen = set()
+        # Weirdly necessary.
+        cc.chaptersDict['main'] = Chapter(c, cc, 'main')
+        cc.makeCommand('main')
+            # This binds any existing bindings to chapter-select-main.
         for p in c.all_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName:
@@ -325,7 +343,7 @@ class Chapter:
         self.name = g.toUnicode(name)
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        self.p = None
+        self.p = c.p
         self.root = self.findRootNode()
         if cc.tt:
             #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
