@@ -181,25 +181,29 @@ The following settings are the same as in the viewrendered.py plugin:
 
 The following settings are new in the viewrendered2.py plugin:
 
-These settings directly override the corresponiding docutils settings:
+These settings directly override the corresponding docutils settings (note the
+underscores in the docutil keywords):
 
-- ``@string vr-stylesheet-path``
-- ``@int vr-halt-level = 6``
-- ``@string vr-math-output = mathjax``
-- ``@bool vr-smart-quotes = True``
+- ``@string vr-stylesheet_path = html4css1.css``
+- ``@int vr-halt_level = 6``
+- ``@string vr-math_output = mathjax``
+- ``@bool vr-smart_quotes = True``
 - ``@bool vr-embed_stylesheet = True``
-- ``@bool vr-xml-declaration', False``
+- ``@bool vr-xml_declaration = False``
+- ``@bool vr-syntax_highlight = long``
+- ``@bool vr-no_compact_lists = False``
+- ``@bool vr-no_compact_field_lists = False``
 
 The following settings override viewrendered2.py internal settings:
 
 - ``@bool vr-verbose = False``
-- ``@bool vr-tree_mode = False``
-- ``@bool vr-auto_update = True``
-- ``@bool vr-lock_node = False``
+- ``@bool vr-tree-mode = False``
+- ``@bool vr-auto-update = True``
+- ``@bool vr-lock-node = False``
 - ``@bool vr-slideshow = False``
-- ``@bool vr-visible_code = True``
-- ``@bool vr-execute_code = False``
-- ``@bool vr-rest_code_output = False``
+- ``@bool vr-visible-code = True``
+- ``@bool vr-execute-code = False``
+- ``@bool vr-rest-code-output = False``
 
 #@+node:ekr.20160331123847.3: *3* vr3 docstring: to do
 
@@ -309,7 +313,7 @@ QPlainTextEdit {
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 # Global constants.
-VR3 = False
+VR3 = True
     # True: use the VR2 code. False: use the VR code.
 vr3_ns_id = '_leo_viewrendered3'
     # Must match for all controllers.
@@ -1311,10 +1315,10 @@ class WebViewPlus(QtWidgets.QWidget):
             -  Export button to export to the standard browser
 
             Keyboard shortcuts:
-            <b>Ctl-C</b>  Copy html/text from the pane
-            Ctl-+  Zoom in
-            Ctl--  Zoom out
-            Ctl-=  Zoom to original size"""         ))
+            Ctl - C\tCopy html/text from the pane
+            Ctl - +\tZoom in
+            Ctl - -\tZoom out
+            Ctl - 0\tZoom to original size"""         ))
         # Handle reload separately since this is used to re-render everything
         self.reload_action = view.pageAction(QtWebKitWidgets.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render_delegate)
@@ -1334,25 +1338,24 @@ class WebViewPlus(QtWidgets.QWidget):
             Show as slideshow - Show a tree as an s5 slideshow (requires s5 support files).
             Visible code - Show the code designated by '@language' directives
             Execute code - Execute '@language' code blocks and show the output.
-            Code output reST - Assume code execution text output is reStructuredText."""         ))
+            Code output reST/md - Assume code outputs reStructuredText or Markdown."""         ))
         self.toolbar.addWidget(self.toolbutton)
         # Add a progress bar
         self.pbar = QtWidgets.QProgressBar()
         self.pbar.setMaximumWidth(120)
         menu = QtWidgets.QMenu()
 
-        def action(label):
-            action = QtWidgets.QAction(label, self, checkable=True, triggered=self.state_change)
+        def action(label,callback=self.state_change):
+            action = QtWidgets.QAction(label,self,checkable=True,triggered=callback)
             menu.addAction(action)
             return action
 
         self.tree_mode_action = action('Whole tree')
         self.verbose_mode_action = action('Verbose logging')
         self.auto_mode_action = action('Auto-update')
-        self.lock_mode_action = action('Lock to node')
+        self.lock_mode_action = action('Lock to node', self.lock)
         # Add an s5 option
         self.slideshow_mode_action = action('Show as slideshow')
-        #self.s5_mode_action = action('s5 slideshow')
         menu.addSeparator() # Separate render mode and code options
         self.visible_code_action = action('Visible code')
         self.execute_code_action = action('Execute code')
@@ -1403,6 +1406,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Layouts
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.setContentsMargins(0, 0, 0, 0) # Remove the default 11px margins
+        vlayout.setSpacing( 0 );  # remove spacing between content widgets
         vlayout.addWidget(self.toolbar)
         vlayout.addWidget(view)
         self.setLayout(vlayout)
@@ -1410,7 +1414,7 @@ class WebViewPlus(QtWidgets.QWidget):
         view.setZoomFactor(1.0) # smallish panes demand small zoom
         self.zoomIn = QtWidgets.QShortcut("Ctrl++", self, activated=lambda: view.setZoomFactor(view.zoomFactor() + .2))
         self.zoomOut = QtWidgets.QShortcut("Ctrl+-", self, activated=lambda: view.setZoomFactor(view.zoomFactor() - .2))
-        self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(0.8))
+        self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(1.0))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
         if isQt5: ###
@@ -1431,7 +1435,7 @@ class WebViewPlus(QtWidgets.QWidget):
 
         def getConfig(getfun, name, default, setfun=None, setvar=None):
             """Make a shorthand way to get and store a setting with defaults"""
-            r = getfun('vr_' + name) # keep docutils name but prefix
+            r = getfun('vr-' + name) # keep docutils name but prefix
             if setfun: # settings are held in Qactions
                 if r: setfun(r)
                 else: setfun(default)
@@ -1441,12 +1445,13 @@ class WebViewPlus(QtWidgets.QWidget):
             else: # settings held in dict (for docutils use)
                 if r: ds[name] = r
                 else: ds[name] = default
-        # Do docutils config (note that the vr_ prefix is omitted)
 
-        getConfig(gc.getString, 'stylesheet_path', '')
+        # Do docutils config (note that the vr- prefix is omitted)
+        # These update the options dictionary passed to docutils.
+        getConfig(gc.getString, 'stylesheet_path', 'html4css1.css')
         getConfig(gc.getInt, 'halt_level', 6)
-        getConfig(gc.getInt, 'report_level', 5)
-        getConfig(gc.getString, 'math_output', 'mathjax')
+        getConfig(gc.getInt, 'report_level', 2)  # set to 5 to eliminate all error messages
+        getConfig(gc.getString, 'math_output', 'HTML math.css')
         getConfig(gc.getBool, 'smart_quotes', True)
         getConfig(gc.getBool, 'embed_stylesheet', True)
         getConfig(gc.getBool, 'xml_declaration', False)
@@ -1455,16 +1460,17 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getBool, 'no_compact_lists', False)
         getConfig(gc.getBool, 'no_compact_field_lists', False)
         # Do VR2 init values
+        # These directly update the state of the VR "Options" menu.
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
-        getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
-        getConfig(gc.getBool, 'auto_update', True, self.auto_mode_action.setChecked)
-        getConfig(gc.getBool, 'lock_node', False, self.lock_mode_action.setChecked)
+        getConfig(gc.getBool, 'tree-mode', False, self.tree_mode_action.setChecked)
+        getConfig(gc.getBool, 'auto-update', True, self.auto_mode_action.setChecked)
+        getConfig(gc.getBool, 'lock-node', False, self.lock_mode_action.setChecked)
         getConfig(gc.getBool, 'slideshow', False, self.slideshow_mode_action.setChecked)
-        getConfig(gc.getBool, 'visible_code', True, self.visible_code_action.setChecked)
-        getConfig(gc.getBool, 'execute_code', False, self.execute_code_action.setChecked)
-        getConfig(gc.getBool, 'rest_code_output', False, self.reST_code_action.setChecked)
+        getConfig(gc.getBool, 'visible-code', True, self.visible_code_action.setChecked)
+        getConfig(gc.getBool, 'execute-code', False, self.execute_code_action.setChecked)
+        getConfig(gc.getBool, 'rest-code-output', False, self.reST_code_action.setChecked)
         # Misc other internal settings
-        # Mark of the Web (for IE) to allow sensible security options
+        # Mark of the Web (for IE) to allow sensible security options - not required with modern browsers?
         #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
         return ds
     #@+node:ekr.20160331124028.26: *4* wvp.init_timer
@@ -1528,7 +1534,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Lock "action" has been triggered, so state will have changed.
         if self.lock_mode_action.isChecked(): # Just become active
             self.plock = self.pc.c.p.copy() # make a copy of node position
-            self.plockmode = self.get_mode() # make a copy of the current node
+            self.plockmode = self.get_mode() # copy current node's md/rst state
             if self.pr:
                 self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
                 mainFrame().scrollBarValue(QtCore.Qt.Vertical)
@@ -1554,7 +1560,7 @@ class WebViewPlus(QtWidgets.QWidget):
             f.write(html.encode('utf8'))
             f.close()
             self.view.setUrl(QUrl.fromLocalFile(pathname))
-        elif self.auto:
+        elif self.auto and got_docutils:
             self.timer.start()
     #@+node:ekr.20160331124028.33: *4* wvp.render_md
     def render_md(self, s, keywords):
@@ -1637,7 +1643,7 @@ class WebViewPlus(QtWidgets.QWidget):
                 self.rendering = False
     #@+node:ekr.20160331124028.40: *4* wvp.render_helper & helper
     def render_helper(self):
-        '''Rendinging helper: self.rendering is True.'''
+        '''Rendering helper: self.rendering is True.'''
         c, p, pc = self.c, self.c.p, self.pc
         self.getUIconfig()
             # Get the UI config again, in case directly called by control.
@@ -1651,7 +1657,16 @@ class WebViewPlus(QtWidgets.QWidget):
         # Put temporary or output files in location given by path directives
         self.path = d['path']
         if pc.default_kind in ('big', 'rst', 'html', 'md'):
-            self.view.setHtml(html)
+            # Render to file to allow QWebView to load this without blocking
+            # and be able to load any associated css from the local file system.
+            ext = 'html'
+            # Write the output file
+            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
+            f = open(pathname,'wb')
+            f.write(self.html.encode('utf8'))
+            f.close()
+            # render to file, not directly to "QWebView.setHtml"
+            self.view.setUrl(QUrl.fromLocalFile(pathname))
         else:
             self.view.setPlainText(html)
         if not self.auto:
@@ -1672,6 +1687,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ps = mf.scrollBarValue(QtCore.Qt.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
+        self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
             # use locked node for position to be rendered.
             self.pr = self.plock or c.p # EKR: added or c.p.
@@ -1742,7 +1758,12 @@ class WebViewPlus(QtWidgets.QWidget):
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: ' + lang + '\n\n'
         else:
+            g.trace('NOT using pygments')
             return '\n\n::\n\n'
+    #@+node:peter.20160410194526.1: *7* wvp.plain_directive
+    def plain_directive(self):
+        '''Return an reST plain text block header/directive.'''
+        return '\n\n::\n\n'
     #@+node:ekr.20160331124028.44: *7* wvp.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
         '''Reference code illustrating the complications of code blocks.'''
@@ -1765,7 +1786,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # Add an empty line so bullet lists display properly.
         if code and self.execcode:
             s, err = self.exec_code(code, environment)
-                # execute code found in a node, append to reST
+                # execute code found in a node, append output to reST
             if not self.restoutput and s.strip():
                 s = self.format_output(s) # if some non-reST to print
             result.append(s) # append, whether plain or reST output
@@ -1787,7 +1808,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # print >> buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
             # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered2 code execution exception')
             g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout # was sys.__stdout__
@@ -1805,39 +1826,58 @@ class WebViewPlus(QtWidgets.QWidget):
     def process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
         trace = False and not g.unitTesting
-        lang = d.get('language') or 'python' # EKR.
-        codeflag = lang != 'rest' # EKR
+        #lang = d.get('language') or 'python' # EKR.
+        lang = d.get('language')
+        #codeflag = lang != 'rest' # EKR
+        # function to define flag in one place only
+        def getcodeflag():
+            return lang not in ['rest','md','plain','text',None]
+        codeflag = getcodeflag()
+        # function to define flag in one place only
+        def getplainflag():
+            """Needs to be rendered as a literal block, but not if body empty"""
+            return len(s.strip())>0 and lang in ['plain','text','']
+        plainflag = getplainflag()
         lines = g.splitLines(s)
         result = []
         code = ''
         if codeflag and self.showcode:
             result.append(self.code_directive(lang)) # EKR
+        if plainflag:
+            result.append(self.plain_directive())
         for s in lines:
             if s.startswith('@'):
                 i = g.skip_id(s, 1)
                 word = s[1: i]
-                # Add capability to detect mid-node language directives (not really that useful).
-                # Probably better to just use a code directive.  "execute-script" is not possible.
+                # Add capability to detect mid-node language directives.
                 # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
                 # to stop directive being put into the reST output.
-                if word == 'language' and not codeflag: # only if not already code
-                    lang = s[i:].strip()
-                    codeflag = lang in ['python',]
+                # if word == 'language' and not codeflag and not plainflag: # only if not already code
+                    # lang = s[i:].strip()
+                # Check to see if there is a new language directive and that it has changed
+                if word == 'language' and s[i:].strip() != lang:
+                    lang = s[i:].strip()  # store the new language
+                    # For *rendering* code, any type of code is eligible
+                    codeflag = getcodeflag()
+                    plainflag = getplainflag()
                     if codeflag:
                         if self.verbose:
                             g.es('New code section within node:', lang)
                         if self.showcode:
                             result.append(self.code_directive(lang)) # EKR
+                    elif plainflag:
+                        result.append(self.plain_directive())
                     else:
                         result.append('\n\n')
                     continue
                 elif word in g.globalDirectiveList:
                     continue
-            if codeflag:
-                if self.showcode:
+            if (codeflag and self.showcode) or plainflag:
                     result.append('    ' + s) # 4 space indent on each line
+            # For *execution* of code, only Python code is valid.
+            if lang in ['python']:
                 code += s # accumulate code lines for execution
-            else:
+            elif not plainflag:
                 result.append(s)
         result = ''.join(result)
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
@@ -1904,7 +1944,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Put temporary or output files in location given by path directives
         self.path = d['path']
         if pc.default_kind in ('big', 'rst', 'html', 'md'):
-            # Trial of rendering to file and have QWebView load this without blocking
+            # Rendering to file and have QWebView load this without blocking
             # Write the output file
             pathname = g.os_path_finalize_join(self.path, 'leo.html')
             f = open(pathname, 'wb')
@@ -1932,6 +1972,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ps = mf.scrollBarValue(QtCore.Qt.Vertical)
         pc.scrollbar_pos_dict[self.last_node.v] = ps
         # Which node should be rendered?
+        self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
             # use locked node for position to be rendered.
             self.pr = self.plock or c.p # EKR: added or c.p.
@@ -2038,7 +2079,7 @@ class WebViewPlus(QtWidgets.QWidget):
         except Exception:
             # print >> buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered2 code execution exception')
             g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout # was sys.__stdout__
