@@ -13,6 +13,10 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isor
 
 Bugs assigned to 5.3
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
+.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
+- Make sure it is called.
+- Use rest colorizer as a template.
+- Make @language markdown a synonym for @langauge md.
 .. @+node:ekr.20130806072439.20523: *4* #255: @rst-no-nl to support rST tables
 @language rest
 @wrap

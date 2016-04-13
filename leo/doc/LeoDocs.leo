@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1286,12 +1286,6 @@
 <v t="ekr.20100804133903.7250"></v>
 <v t="ekr.20100804133903.7262"></v>
 <v t="ekr.20150318110552.55"></v>
-</v>
-<v t="ekr.20160410040249.1"><vh>Revised @&lt;file&gt; docs</vh>
-<v t="ekr.20160410103906.1"><vh>unused</vh></v>
-<v t="ekr.20160410105944.1"><vh>unused 2</vh></v>
-<v t="ekr.20131015035606.16799"></v>
-<v t="ekr.20100806170836.4392"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -19152,7 +19146,6 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
 <t tx="ekr.20160402100225.1"># flattened, ignore-case, head, body</t>
-<t tx="ekr.20160410040249.1"></t>
 <t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
@@ -19205,82 +19198,6 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="ekr.20160410103906.1">When reading @auto nodes, Leo creates the @auto tree using **importers**, parsers that create an outline with nodes for each class, method and function in the external file. Some importers create other kinds of nodes as well.
-
-+-----------------------+---------------------------+-------+
-| Directive             | Language                  | Notes |
-+-----------------------+---------------------------+-------+
-| @auto                 | given by file's extention | C, D  |
-+-----------------------+---------------------------+-------+  
-| @auto-ctext           | ctext                     |       |
-+-----------------------+---------------------------+-------+ 
-| @auto-markdown        | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-md              | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-org             | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-org-mode        | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-otl             | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-vim-outline     | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-rst             | `reStructuredText`_       |       |
-+-----------------------+---------------------------+-------+
-
-**Note A**: See Leo's `Emacs documentation`_ for more details.
-
-**Note B**: See Leo's `vim documentation`_ for more details.
-
-**Note C**: Importers presently exist for C, elisp, HTML, .ini files, Java, Javascript, Pascal, PHP, Python and xml. If no parser exists for a language, Leo copies the entire body of the external file into the @auto node.
-
-.. index::
-    pair: Organizer tag; Reference
-
-**Note D**: The ``@data import_xml_tags`` setting specifies the **organizer tags** that cause the HTML and XML importers to create outline nodes. By default, the **organizer tags** are html, body, head, and div.
-
-
-**Note 3**: @auto-xx nodes read files using importers **specified by xx**:
-
-+-----------------------+---------------------------+-------+
-| Directive             | Language                  | Note  |
-+-----------------------+---------------------------+-------+  
-| @auto-ctext           | ctext                     |       |
-+-----------------------+---------------------------+-------+ 
-| @auto-markdown        | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-md              | `markdown`_               |       |
-+-----------------------+---------------------------+-------+
-| @auto-org             | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-org-mode        | `Emacs org-mode`_         | A     |
-+-----------------------+---------------------------+-------+
-| @auto-otl             | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-vim-outline     | `vim outline`_            | B     |
-+-----------------------+---------------------------+-------+
-| @auto-rst             | `reStructuredText`_       |       |
-+-----------------------+---------------------------+-------+</t>
-<t tx="ekr.20160410105944.1">+-----------+------------+------------------+-----------------+---------+
-|           | Sentinels  | Sections and     | File data stored| Note    |
-| Kind      | in external| @others expanded | in .leo file?   |         |
-|           | file?      | on write?        |                 |         |
-+-----------+------------+------------------+-----------------+---------+
-| @asis     | no         | no               | yes             |         |
-+-----------+------------+------------------+-----------------+---------+
-| @auto     | no         | yes              | no              | 1, 2    |
-+-----------+------------+------------------+-----------------+---------+
-| @auto-xx  | no         | yes              | no              | 1, 2    |
-+-----------+------------+------------------+-----------------+---------+
-| @clean    | no         | yes              | yes             |         |
-+-----------+------------+------------------+-----------------+---------+
-| @edit     | no         | no               | no              |         |
-+-----------+------------+------------------+-----------------+---------+
-| @file     | yes        | yes              | no              |         |
-+-----------+------------+------------------+-----------------+---------+
-| @nosent   | no         | yes              | yes             |         |
-+-----------+------------+------------------+-----------------+---------+</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
