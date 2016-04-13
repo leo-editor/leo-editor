@@ -1831,7 +1831,7 @@ class WebViewPlus(QtWidgets.QWidget):
         #codeflag = lang != 'rest' # EKR
         # function to define flag in one place only
         def getcodeflag():
-            return lang not in ['rest','md','plain','text','']
+            return lang not in ['rest','md','plain','text',None]
         codeflag = getcodeflag()
         # function to define flag in one place only
         def getplainflag():
@@ -2079,7 +2079,7 @@ class WebViewPlus(QtWidgets.QWidget):
         except Exception:
             # print >> buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered2 code execution exception')
             g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout # was sys.__stdout__
