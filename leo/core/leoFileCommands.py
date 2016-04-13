@@ -671,8 +671,21 @@ class FileCommands:
             if g.app.debug: g.trace('=====',
                 recoveryNode and recoveryNode.h,
                 c.p and c.p.h)
-            c.selectPosition(recoveryNode or c.p or c.lastTopLevel())
+            p = recoveryNode or c.p or c.lastTopLevel()
                 # lastTopLevel is a better fallback, imo.
+            # New in Leo 5.3. Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
+            
+            def handler(timer, c=c, p=p):
+                c.redraw(p)
+                timer.stop()
+
+            timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
+            if timer:
+                timer.start()
+            else:
+                # Defensive code: 
+                c.selectPosition(p)
             c.checkOutline()
                 # Must be called *after* ni.end_holding.
             c.loading = False
