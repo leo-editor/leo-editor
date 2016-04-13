@@ -17,8 +17,9 @@
 
 # Add <file or directory> to the black list. A base name, not a path.
 # You may set this option multiple times.
-ignore=CVS
-ignore=.git
+ignore=
+    CVS
+    .git
 
 # Pickle collected data for later comparisons.
 persistent=yes

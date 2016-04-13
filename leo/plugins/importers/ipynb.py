@@ -8,7 +8,6 @@ try:
 except ImportError:
     g.es_print('import-jupyter-notebook requires nbformat package')
     nbformat = None
-### import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB:
@@ -57,7 +56,7 @@ class Import_IPYNB:
         self.indent_cells()
         c.selectPosition(self.root)
         c.redraw()
-    #@+node:ekr.20160412103110.1: *4* run: @auto entry
+    #@+node:ekr.20160412103110.1: *4* run: @auto entry & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''
         @auto entry point.
@@ -65,19 +64,26 @@ class Import_IPYNB:
         '''
         c = self.c
         fn = parent.atAutoNodeName()
-        # g.trace(prepass, fn)
-        if c and fn and not prepass:
-            changed = c.isChanged()
-            self.import_file(fn, parent)
-            # Similar to BaseScanner.run.
-            parent.b = (
-                '@nocolor-node\n\n' +
-                'Note: This node\'s body text is ignored when writing this file.\n\n' +
-                'The @others directive is not required\n'
-            )
-            for p in parent.self_and_subtree():
-                p.clearDirty()
-            c.setChanged(changed)
+        if c and fn and not prepass and g.os_path_exists(fn):
+            if nbformat:
+                changed = c.isChanged()
+                self.import_file(fn, parent)
+                # Similar to BaseScanner.run.
+                parent.b = (
+                    '@nocolor-node\n\n' +
+                    'Note: This node\'s body text is ignored when writing this file.\n\n' +
+                    'The @others directive is not required\n'
+                )
+                for p in parent.self_and_subtree():
+                    p.clearDirty()
+                c.setChanged(changed)
+            else:
+                # Fallback: read entire file into parent.b.
+                g.es_print('nbformat not available for', color='red')
+                g.es_print('@auto %s' % g.shortFileName(fn))
+                with open(fn) as f:
+                    s = f.read()
+                parent.b = '@killcolor\n\n' + s.rstrip() + '\n'
         elif not c or not fn:
             g.trace('can not happen', c, fn)
     #@+node:ekr.20160412115123.1: *3* Scanners
@@ -388,10 +394,9 @@ class Import_IPYNB:
             return None
     #@-others
 #@-others
-if nbformat:
-    importer_dict = {
-        '@auto': [], # '@auto-jupyter', '@auto-ipynb',],
-        'class': Import_IPYNB,
-        'extensions': ['.ipynb',],
-    }
+importer_dict = {
+    '@auto': [], # '@auto-jupyter', '@auto-ipynb',],
+    'class': Import_IPYNB,
+    'extensions': ['.ipynb',],
+}
 #@-leo

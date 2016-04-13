@@ -68,18 +68,22 @@ class LeoImportCommands:
         seen = set()
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
             path = g.os_path_finalize_join(plugins, 'importers')
-            pattern = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py')
+            pattern = g.os_path_finalize_join(
+                g.app.loadDir, '..', 'plugins', 'importers', '*.py')
             for fn in glob.glob(pattern):
                 sfn = g.shortFileName(fn)
                 if sfn != '__init__.py':
                     try:
                         module_name = sfn[: -3]
-                        # Important: use importlib to give imported modules their fully qualified names.
-                        m = importlib.import_module('leo.plugins.importers.%s' % module_name)
+                        # Important: use importlib to give imported modules
+                        # their fully qualified names.
+                        m = importlib.import_module(
+                            'leo.plugins.importers.%s' % module_name)
                         self.parse_importer_dict(sfn, m)
                     except Exception:
                         g.es_exception()
-                        g.warning('can not import leo.plugins.importers.%s' % module_name)
+                        g.warning('can not import leo.plugins.importers.%s' % ( 
+                            module_name))
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
@@ -120,7 +124,9 @@ class LeoImportCommands:
                            ext, aClass.__name__, m.__file__))
                     else:
                         d[ext] = scanner_class
-        elif sfn not in ('basescanner.py',):
+        elif sfn not in (
+            'basescanner.py', # doesn't have importer_dict.
+        ):
             g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
