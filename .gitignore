@@ -99,6 +99,7 @@ leo/test/*.html
 leo/test/unittest/createdFile.txt
 leo/test/unittest/input/testLeoAtFile.py.txt
 leo/test/unittest/test_1.py
+leo/test/unittest/output/*.*
 
 leo/core/scriptFile.py
 leoGuiPlugins.leo
