@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -2415,6 +2415,9 @@ Here are the rst3 options that support the http plugin:
 
 ``@rst-no-headlines &lt;ignored-text&gt;``
     Ignore the headline of this node and descendant nodes.
+    
+``@rst-no-nl &lt;ignored text&gt;``
+    Write exactly one newline at the end of this node.
 
 ``@rst-option &lt;option&gt; = &lt;value&gt;``
     Set a single option to the given value. The default value is True.
@@ -4626,7 +4629,8 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
     Marks the end of the Leo file.
     Nothing but whitespace should follow this directive.
 
-\@+middle **(Created in Leo 4.0, removed in Leo 5.3)** |br|
+\@+middle **(Created in Leo 4.0, removed in Leo 5.3)**
+
 \@-middle **(Created in Leo 4.0, removed in Leo 5.3)**
     Marks the start/end of intermediate nodes between the node that
     references a section and the node that defines the section.
@@ -16891,6 +16895,7 @@ Associated settings:
 
 ``@bool use_chapters``
     True: chapters are enabled.
+
 ..  ``@bool use_chapter_tabs``
 ..    True: chapters pop-up menu appears in the icon area.
 </t>
