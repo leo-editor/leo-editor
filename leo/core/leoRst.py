@@ -268,7 +268,7 @@ class RstCommands:
             '@rst-ignore-tree',
             '@rst-no-head',
             '@rst-no-headlines',
-            '@rst-no-nl', # New in Leo 5.3.
+            '@rst-table', # New in Leo 5.3.
             '@rst-option',
             '@rst-options',
         ]
@@ -454,7 +454,7 @@ class RstCommands:
             if word in (
                 '@rst-option', '@rst-options',
                 '@rst-no-head', '@rst-no-headlines',
-                '@rst-no-nl', # New in Leo 5.3.
+                '@rst-table', # New in Leo 5.3.
             ):
                 return
             for prefix in (
@@ -824,8 +824,8 @@ class RstCommands:
                 lines = self.replaceCodeBlockDirectives(lines)
         # Write the lines.
         s = ''.join(lines)
-        if self.getOption(p, 'no_newlines'):
-            # Support @rst-no-nl: Leo 5.3.
+        if self.getOption(p, 'table'):
+            # Support @rst-table: Leo 5.3.
             s = s.rstrip()+'\n'
         else:
             # We no longer add newlines to the start of nodes because
@@ -985,11 +985,11 @@ class RstCommands:
         showHeadlines = self.getOption(p, 'show_headlines')
         showOrganizers = self.getOption(p, 'show_organizer_nodes')
         showThisHeadline = self.getOption(p, 'show_this_headline')
-        no_newlines = self.getOption(p, 'no_newlines') # Leo 5.3.
+        table = self.getOption(p, 'table') # Leo 5.3.
         if (
             p == self.topNode or
             ignore or
-            no_newlines or # Leo 5.3
+            table or # Leo 5.3
             docOnly or # handleDocOnlyMode handles this.
             not showHeadlines and not showThisHeadline or
             # docOnly and not showOrganizers and not thisHeadline or
@@ -1014,7 +1014,7 @@ class RstCommands:
             if word in (
                 '@rst-option', '@rst-options',
                 '@rst-no-head', '@rst-no-headlines',
-                '@rst-no-nl', # new in Leo 5.3.
+                '@rst-table', # new in Leo 5.3.
             ):
                 return
             # Remove all other headline commands from the headline.
@@ -1299,7 +1299,7 @@ class RstCommands:
                 ('@rst-ignore-node', 'ignore_this_node', True),
                 ('@rst-ignore-tree', 'ignore_this_tree', True),
                 ('@rst-no-head', 'ignore_this_headline', True),
-                ('@rst-no-nl', 'no_newlines', True), # Leo 5.3.
+                ('@rst-table', 'table', True), # Leo 5.3.
                 ('@rst-preformat', 'preformat_this_node', True),
             ):
                 if word == option:
