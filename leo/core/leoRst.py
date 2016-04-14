@@ -268,6 +268,7 @@ class RstCommands:
             '@rst-ignore-tree',
             '@rst-no-head',
             '@rst-no-headlines',
+            '@rst-no-nl', # New in Leo 5.3.
             '@rst-option',
             '@rst-options',
         ]
@@ -448,10 +449,19 @@ class RstCommands:
         i = g.skip_id(h, 0, chars='@-')
         word = h[: i].strip()
         if word:
-            # Never generate a section for @rst-option or @rst-options or @rst-no-head.
-            if word in ('@rst-option', '@rst-options', '@rst-no-head', '@rst-no-headlines'):
+            # Never generate a section for these:
+            # @rst-option or @rst-options or @rst-no-head.
+            if word in (
+                '@rst-option', '@rst-options',
+                '@rst-no-head', '@rst-no-headlines',
+                '@rst-no-nl', # New in Leo 5.3.
+            ):
                 return
-            for prefix in ('@rst-ignore-node', '@rst-ignore-tree', '@rst-ignore'):
+            for prefix in (
+                '@rst-ignore-node',
+                '@rst-ignore-tree',
+                '@rst-ignore',
+            ):
                 if word == prefix:
                     h = h[len(word):].strip()
                     break
@@ -472,7 +482,10 @@ class RstCommands:
             p.moveToNodeAfterTree()
         elif self.getOption(p, 'ignore_this_node'):
             p.moveToThreadNext()
-        elif g.match_word(h, 0, '@rst-options') and not self.getOption(p, 'show_options_nodes'):
+        elif (
+            g.match_word(h, 0, '@rst-options') and
+            not self.getOption(p, 'show_options_nodes')
+        ):
             p.moveToThreadNext()
         else:
             self.http_addNodeMarker(p)
@@ -811,9 +824,13 @@ class RstCommands:
                 lines = self.replaceCodeBlockDirectives(lines)
         # Write the lines.
         s = ''.join(lines)
-        # We no longer add newlines to the start of nodes because
-        # we write a blank line after all sections.
-        s = g.ensureTrailingNewlines(s, 2)
+        if self.getOption(p, 'no_newlines'):
+            # Support @rst-no-nl: Leo 5.3.
+            s = s.rstrip()+'\n'
+        else:
+            # We no longer add newlines to the start of nodes because
+            # we write a blank line after all sections.
+            s = g.ensureTrailingNewlines(s, 2)
         self.write(s)
     #@+node:ekr.20110610144305.6749: *7* rst.isSectionDef/Ref
     def isSectionDef(self, p):
@@ -968,9 +985,11 @@ class RstCommands:
         showHeadlines = self.getOption(p, 'show_headlines')
         showOrganizers = self.getOption(p, 'show_organizer_nodes')
         showThisHeadline = self.getOption(p, 'show_this_headline')
+        no_newlines = self.getOption(p, 'no_newlines') # Leo 5.3.
         if (
             p == self.topNode or
             ignore or
+            no_newlines or # Leo 5.3
             docOnly or # handleDocOnlyMode handles this.
             not showHeadlines and not showThisHeadline or
             # docOnly and not showOrganizers and not thisHeadline or
@@ -994,7 +1013,8 @@ class RstCommands:
             # Never generate a section for these...
             if word in (
                 '@rst-option', '@rst-options',
-                '@rst-no-head', '@rst-no-headlines'
+                '@rst-no-head', '@rst-no-headlines',
+                '@rst-no-nl', # new in Leo 5.3.
             ):
                 return
             # Remove all other headline commands from the headline.
@@ -1279,6 +1299,7 @@ class RstCommands:
                 ('@rst-ignore-node', 'ignore_this_node', True),
                 ('@rst-ignore-tree', 'ignore_this_tree', True),
                 ('@rst-no-head', 'ignore_this_headline', True),
+                ('@rst-no-nl', 'no_newlines', True), # Leo 5.3.
                 ('@rst-preformat', 'preformat_this_node', True),
             ):
                 if word == option:
@@ -1808,7 +1829,9 @@ class RstCommands:
                 # Fixes bug 618570:
     #@-others
 #@+node:ekr.20120219194520.10444: ** html parser classes
-#@+node:ekr.20120219194520.10445: *3*  class LinkAnchorParserClass
+# pylint: disable=abstract-method
+# The lack of an 'error' method is not serious.
+#@+node:ekr.20120219194520.10445: *3*  class LinkAnchorParserClass (HTMLParser)
 class LinkAnchorParserClass(HTMLParser.HTMLParser):
     '''
     The base class to recognize anchors and links in HTML documents. A
