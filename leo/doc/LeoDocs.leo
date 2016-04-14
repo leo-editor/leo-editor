@@ -1282,11 +1282,6 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20160414103748.1"><vh>re: @chapter</vh>
-<v t="ekr.20091111112709.6672"></v>
-<v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20050901101608.2"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19189,7 +19184,6 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="ekr.20160414103748.1"></t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
