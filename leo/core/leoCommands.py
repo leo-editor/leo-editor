@@ -5659,7 +5659,7 @@ class Commands(object):
         Should not be used in any other context.
         '''
         c = self
-        return bool(c.hoistStack())
+        return bool(c.hoistStack)
 
     def canHoist(self):
         # This is called at idle time, so minimizing positions is crucial!
