@@ -2416,8 +2416,8 @@ Here are the rst3 options that support the http plugin:
 ``@rst-no-headlines &lt;ignored-text&gt;``
     Ignore the headline of this node and descendant nodes.
     
-``@rst-no-nl &lt;ignored text&gt;``
-    Write exactly one newline at the end of this node.
+``@rst-table &lt;ignored text&gt;``
+    Ignore headlines and write exactly one newline at the end of this node and all descendant nodes. Very useful for creating rST tables.
 
 ``@rst-option &lt;option&gt; = &lt;value&gt;``
     Set a single option to the given value. The default value is True.
