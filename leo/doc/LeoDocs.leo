@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1282,13 +1282,11 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20160402100225.1"><vh>Found:@chapters</vh>
-<v t="ekr.20100804133903.7250"></v>
-<v t="ekr.20100804133903.7262"></v>
-<v t="ekr.20150318110552.55"></v>
-</v>
-<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20160414103748.1"><vh>re: @chapter</vh>
+<v t="ekr.20091111112709.6672"></v>
 <v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20050901101608.2"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7015,11 +7013,9 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @chapter; Reference
 
-\@chapter and @chapters
+\@chapter
 
-    An @chapter tree represents a chapter.
-
-    These directives are too complex to describe here. For full details, see
+    An @chapter tree represents a chapter. For full details, see
     `Using Chapters`_.
 
     These directives must appear in the node's headline.
@@ -16874,27 +16870,13 @@ Holding down Alt before releasing the node will force insertion as a child of th
 ``file-diff-files``
     Creates a node and puts the diff between 2 files into it. 
 </t>
-<t tx="ekr.20150318110552.55">Chapters are sub-outlines rooted in an @chapter node.
-Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter is much like a de-hoist command.
+<t tx="ekr.20150318110552.55">Chapters are sub-outlines rooted in an @chapter node. Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter shows all outline nodes.
 
-``chapter-clone-node-to``
-    Moves a clone of the selected node to another chapter.
-``chapter-convert-node-to``
-    Makes the selected node into a new chapter, 'in place'. That is, it creates the new @chapter node as the next sibling of the node, then moves the node as the first child of the new @chapter node. 
-``chapter-copy-node-to``
-    Moves a copy of the selected node to another chapter.
-``chapter-create``
-    Creates an @chapter node and populates it with a single node.
-``chapter-create-from-node``
-    Creates an @chapter node from a node and its descendants.
-``chapter-move-node-to``
-    Moves the selected node to another chapter.
-``chapter-remove``
-    Deletes the currently selected chapter.
-``chapter-rename``
-    Renames the present chapter.
-``chapter-select``
-    Prompts for a chapter name selects that chapter, hiding all other nodes.
+``chapter-select-main``
+    Selects the main chapter.
+    
+``chapter-select-&lt;chapter-name&gt;``
+    Each @chapter node in the outline creates a corresponding chapter-select command.
 
 Associated settings:
 
@@ -19155,7 +19137,6 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="ekr.20160402100225.1"># flattened, ignore-case, head, body</t>
 <t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
@@ -19208,7 +19189,8 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160414103748.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

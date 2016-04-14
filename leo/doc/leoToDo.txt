@@ -322,66 +322,6 @@ A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
 .. @+node:ekr.20150801060026.1: *4* leotutor.leo
-.. @+node:ekr.20160403033015.1: *4* Removed/improved chapters commands
-@language rest
-@wrap
-
-If you use Leo's chapters, please read the following carefully.  Unless I hear howls of protest, I am going to do the following, after allowing ample time for comments.
-
-At present, Leo's supports the following chapter-related commands:
-
-    chapter-clone-node-to
-    chapter-convert-node-to
-    chapter-copy-node-to
-    chapter-create
-    chapter-create-from-node
-    chapter-move-node-to
-    chapter-remove
-    chapter-rename
-    chapter-select
-
-Imo, only the chapter-select command is needed. It should be improved, as explained in point 3 below. All other commands should be removed:
-
-1. The new chapters code dynamically updates the list of chapter names whenever the list is needed. As a result, the user can do the following commands more easily by creating, renaming, moving, copying or deleting @chapter nodes:
-
-    chapter-convert-node-to
-    chapter-create
-    chapter-create-from-node
-    chapter-rename
-    chapter-remove commands
-
-The old (brain dead) code needed these commands to update internal data structures. The new code updates the structures as needed.
-
-2. Now that @chapter nodes need no longer be children of an @chapters nodes, it is easier for the user to move or clone nodes between chapters using Leo existing clone, copy-node, paste-node and especially the cffm commands.  As a result, these ridiculously clumsy commands should be retired:
-
-    chapter-clone-node-to
-    chapter-copy-node-to
-    chapter-move-node-to
-
-I wonder whether anyone actually has ever used these commands.
- 
-3. At present, the chapter-select uses a non-standard, clumsy, way of prompting for a chapter name. Instead, the Alt-x code should have a hook that allows the chapters code to add/remove chapter-select commands. So after <alt-x>chap<tab>, the user would see:
-
-    chapter-select-(chapter-name-1)
-    chapter-select-(chapter-name-2)
-
-that is, the list of chapter names, in alphabetical order. As always, tab completion would allow the user to select the desired chapter quickly.
-
-Furthermore, the user should be able to bind keystrokes to these commands, even though they are created dynamically.  This may be a bit tricky to do, but it is the correct thing to do. It maintains the desired illusion of simplicity.
-
-Summary
-
-Imo, only the chapter-select command should remain, and it should be improved as just discussed.
-
-Chapters are almost like hoists, with the following differences:
-
-A. The Chapters box in the icon area.  This is useful to have even with the new chapters-select-* logic in place.
-
-B. Selecting a chapter is not quite the same as same as hoisting an @chapters node: only the children of the @chapters node are shown. I think this is a dubious choice, but it was a requested feature so it's not going to change, although it could become an option.
-
-Your comments, please, Amigos.
-
-Edward
 .. @+node:ekr.20160403043354.1: ** To do: 5.4
 @language rest
 @wrap
