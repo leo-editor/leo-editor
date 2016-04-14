@@ -3795,7 +3795,12 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                         setDescendentsDirty=False)
             c.setChanged(True)
             u.afterMoveNode(p1, 'Drag', undoData, dirtyVnodeList)
-            c.redraw_now(p1)
+            if (not as_child or
+                p2.isExpanded() or
+                c.config.getBool("drag-alt-drag-expands") is not False):
+                c.redraw_now(p1)
+            else:
+                c.redraw_now(p2)
         # elif trace: g.trace('** move failed')
     #@+node:ekr.20110605121601.18383: *6* parseText
     def parseText(self, md):
