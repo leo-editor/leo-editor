@@ -2,6 +2,7 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 '''Classes that manage chapters in Leo's core.'''
 import re
+import string
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
@@ -250,11 +251,25 @@ class ChapterController:
         m = self.re_chapter.search(p.h)
         if m:
             chapterName, binding = m.group(1), m.group(3)
-            if chapterName: chapterName = chapterName.strip()
+            if chapterName:
+                chapterName = self.sanitize(chapterName)
             if binding: binding = binding.strip()
         else:
             chapterName = binding = None
         return chapterName, binding
+    #@+node:ekr.20160414183716.1: *4* cc.sanitize
+    def sanitize(self, s):
+        '''Convert s to a safe chapter name.'''
+        # Similar to g.sanitize_filename, but simpler.
+        result = []
+        for ch in s.strip():
+            if ch in string.ascii_letters:
+                result.append(ch)
+            elif ch in ' \t':
+                result.append('-')
+        s = ''.join(result)
+        s = s.replace('--','-')
+        return s[: 128]
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
     def selectChapterForPosition(self, p, chapter=None):
         '''
