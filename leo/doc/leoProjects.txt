@@ -251,55 +251,15 @@ Added support for @auto x.ipynb.
 Kent: It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
 
 Alia K: Leo + Ipython notebook integration is a killer app indeed.
-.. @+node:ekr.20130806072439.20523: *3* Wishlist: #255: @rst-no-nl to support rST tables
+.. @+node:ekr.20130806072439.20523: *3* Wishlist: #255: @rst-table supports rST tables
 @language rest
 @wrap
 
+Wishlit item:
 https://github.com/leo-editor/leo-editor/issues/255
 
-The @rst-no-nl headline applies to its entire subtree, so
-the headlines of the @st-no-nl node itself and all its
-descendants are comments.
-
-The following works:
-
-- @rst x.html
-    - @rst-no-nl my table
-        - start
-        - field 1
-        - field 2
-        - end
-                
-Where the body text of the nodes contain:
-
-- @rst x.html:
-
-####
-Test
-####
-
-- start
-
-Here is a table:
-
-=================== ========
-Field Name          Format
-=================== ========
-
-- field 1
-
-prmField1           Integer
-
-- field 2
-
-------------------- --------
-prmField2           Integer
-
-- end
-
-=================== ========
-
-    
+Announcement:
+https://groups.google.com/d/msg/leo-editor/eYhXWok6jck/4KwtpiRyBgAJ
 .. @-all
 .. @@killbeautify
 .. @@language rest

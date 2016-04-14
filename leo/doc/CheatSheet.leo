@@ -282,6 +282,7 @@ By default, the file's extension determines the importer:
     .h, .h++                    C
     .html, .htm                 HTML
     .ini                        Config file
+    .ipynb                      Jupyter notebook
     .java                       Java
     .js                         JavaScript
     .md                         Markdown
