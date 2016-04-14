@@ -2080,6 +2080,7 @@
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
 <v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
+<v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
 <v t="ekr.20131008181812.17533"><vh>@bool enable_tree_dragging = True</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
@@ -11236,6 +11237,10 @@ Default False.</t>
 <t tx="peckj.20150421103626.1"></t>
 <t tx="peckj.20150421103633.1"></t>
 <t tx="peckj.20150421103639.1"></t>
+<t tx="tbnorth.20160414102131.1">Alt drag onto another node indicates dropped node should
+be added as a child of the receiving node, set this to
+False to not expand the receiving node, keeping a list of
+recipient nodes conveniently compact for additional drops.</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
