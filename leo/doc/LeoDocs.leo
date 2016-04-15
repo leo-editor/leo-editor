@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1282,6 +1282,9 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
+<v t="ekr.20160414191609.1"><vh>** Document cffm, cff in Tutorial, cheat sheet, etc</vh></v>
+<v t="ekr.20160414191631.1"><vh>** FAQ?  Gathering scripts</vh></v>
+<v t="ekr.20160414191645.1"><vh>** FAQ? pylint command/script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19184,7 +19187,63 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160414191609.1"></t>
+<t tx="ekr.20160414191631.1">The frequently asked-for feature if for clones that don't share children.  It's been amusing to think of multi-colored threaded trees, split nodes, and what have you.
+
+The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
+
+Imo, this one special case *in no way* justifies changes to Leo's vnodes or positions.  Instead, the simplest and the most general thing that could possibly work is to gather desired data using a script.
+
+1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
+
+2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
+
+For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
+
+That's all there is to it.
+
+Edward
+</t>
+<t tx="ekr.20160414191645.1">On Fri, Mar 25, 2016 at 6:59 AM, john lunzer &lt;lunzer@gmail.com&gt; wrote:
+
+​&gt; ​My biggest wishlist item is what I would "Livelint" which constantly runs and reruns pylint (or similar) in the background​.​
+​
+This basically already exists.  On Windows, I have this pylint.bat file:
+
+python2 c:\leo.repo\leo-editor\pylint-leo.py ^
+rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
+
+In other words, the top-level leo-editor folder contains:
+
+- pylint-leo.py
+- pylint-leo-rc.txt
+
+c:\leo.repo\leo-editor&gt;c:\Anaconda2\python.exe c:\leo.repo\leo-editor\pylint-leo.py rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt -h
+Usage: pylint-leo.py [options]
+
+Options:
+  -h, --help   show this help message and exit
+  -a           all
+  -c           core
+  -e           external
+  -f FILENAME  filename, relative to leo folder
+  -g           gui plugins
+  -m           modes
+  -p           plugins
+  -s           silent
+  -u           user commands
+  -v           report pylint version
+
+
+My typical usage is pylint -a -s
+
+Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
+
+Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
+
+Edward
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
