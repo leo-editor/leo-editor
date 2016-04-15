@@ -16832,5 +16832,109 @@ def undoRemoveChapter(self):
     name = u.newChapterName
     cc.chaptersDict[name] = Chapter(c, cc, name)
     cc.selectChapterByName(name)
+.. @+node:ekr.20160415032644.1: *3* OLDfind & helpers
+def OLDfind(self, event=None):
+    """Find the next unknown word."""
+    if not self.loaded:
+        return
+    c = self.c
+    w = c.frame.body.wrapper
+    # Reload the work pane from the present node.
+    s = w.getAllText().rstrip()
+    self.workCtrl.delete(0, "end")
+    self.workCtrl.insert("end", s)
+    # Reset the insertion point of the work widget.
+    ins = w.getInsertPoint()
+    self.workCtrl.setInsertPoint(ins)
+    alts, word = self.findNextMisspelledWord()
+    self.currentWord = word # Need to remember this for 'add' and 'ignore'
+    if alts:
+        # Save the selection range.
+        ins = w.getInsertPoint()
+        i, j = w.getSelectionRange()
+        self.tab.fillbox(alts, word)
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+        # Restore the selection range.
+        w.setSelectionRange(i, j, insert=ins)
+        w.see(ins)
+    else:
+        g.es("no more misspellings")
+        self.tab.fillbox([])
+        c.invalidateFocus()
+        c.bodyWantsFocus()
+.. @+node:ekr.20160415032644.2: *4* OLDfindNextMisspelledWord
+def findNextMisspelledWord(self):
+    """Find the next unknown word."""
+    trace = False and not g.unitTesting
+    c, p = self.c, self.c.p
+    w = c.frame.body.wrapper
+    sc = self.spellController
+    alts, word = None, None
+    try:
+        while 1:
+            i, j, p, word = self.findNextWord(p)
+            # g.trace(i,j,p and p.h or '<no p>')
+            if not p or not word:
+                alts = None
+                break
+            alts = sc.processWord(word)
+            if trace: g.trace('alts', alts and len(alts) or 0, i, j, word, p and p.h or 'None')
+            if alts:
+                redraw = not p.isVisible(c)
+                # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+                if c.sparse_spell and not c.p.isAncestorOf(p):
+                    for p2 in c.p.self_and_parents():
+                        p2.contract()
+                        redraw = True
+                for p2 in p.parents():
+                    if not p2.isExpanded():
+                        p2.expand()
+                        redraw = True
+                if redraw:
+                    c.redraw(p)
+                else:
+                    c.selectPosition(p)
+                w.setSelectionRange(i, j, insert=j)
+                break
+    except Exception:
+        g.es_exception()
+    return alts, word
+.. @+node:ekr.20160415032644.3: *4* OLDfindNextWord (spellTab)
+def findNextWord(self, p):
+    """Scan for the next word, leaving the result in the work widget"""
+    trace = False and not g.unitTesting
+    c = self.c; p = p.copy()
+    while 1:
+        s = self.workCtrl.getAllText()
+        i = self.workCtrl.getInsertPoint()
+        while i < len(s) and not g.isWordChar1(s[i]):
+            i += 1
+        # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
+        if i < len(s):
+            # A non-empty word has been found.
+            j = i
+            while j < len(s) and (g.isWordChar(s[j]) or s[j] == "'"):
+                j += 1
+            word = s[i: j]
+            word = word.strip("'")
+            # This trace verifies that all words have been checked.
+            # g.trace(repr(word))
+            for w in (self.workCtrl, c.frame.body.wrapper):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(i, j, insert=j)
+            if trace: g.trace(i, j, word, p.h)
+            return i, j, p, word
+        else:
+            # End of the body text.
+            p.moveToThreadNext()
+            if not p: break
+            self.workCtrl.delete(0, 'end')
+            self.workCtrl.insert(0, p.b)
+            for w in (self.workCtrl, c.frame.body.wrapper):
+                c.widgetWantsFocusNow(w)
+                w.setSelectionRange(0, 0, insert=0)
+            if trace: g.trace(0, 0, '-->', p.h)
+    return None, None, None, None
 .. @-all
 .. @-leo

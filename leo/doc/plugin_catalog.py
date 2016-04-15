@@ -63,7 +63,7 @@ try:
     from docutils.transforms.parts import Contents
     from docutils.utils import SystemMessage
 except Exception:
-    sys.stderr.write('plugin_catelog.py: can not import docutils\n')
+    sys.stderr.write('plugin_catalog.py: can not import docutils\n')
     ok = False
 #@-<< imports >>
 
