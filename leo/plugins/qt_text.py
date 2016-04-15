@@ -514,10 +514,6 @@ if QtWidgets:
                 # Make this window a modal window.
                 # Calling this does not fix the Ubuntu-specific modal behavior.
                 # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
-                if 0:
-                    # embed the window in a splitter.
-                    splitter2 = c.frame.top.splitter_2
-                    splitter2.insertWidget(1, self)
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.

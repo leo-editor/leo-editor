@@ -58,7 +58,7 @@ if 0:
         if c:
             NestedSplitter.enabled = True
             FreeLayoutController(c)
-    #@+node:tbrown.20110714155709.22852: *3* loadLayouts
+    #@+node:tbrown.20110714155709.22852: *3* loadLayouts (free_layout.py)
     def loadLayouts(tag, keys):
         '''Load layouts from the given commander.'''
         c = keys.get('c')
@@ -108,8 +108,9 @@ class FreeLayoutController:
       item we advertised is selected
     """
     #@+others
-    #@+node:ekr.20110318080425.14390: *3*  ctor (FreeLayoutController)
+    #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
+        '''Ctor for FreeLayoutController class.'''
         # g.trace('(FreeLayoutController)',c) # ,g.callers(files=True))
         # if hasattr(c,'free_layout'):
             # return
@@ -124,25 +125,7 @@ class FreeLayoutController:
         # to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
         # self.init()
-    #@+node:ekr.20110318080425.14393: *3* create_renderer (FreeLayoutController)
-    def XXcreate_renderer(self, w):
-        """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
-        pc = self; c = pc.c
-        if not pc.renderer:
-            assert w == c.viewrendered.w, 'widget mismatch'
-                # Called from viewrender, so it must exist.
-            index = 1
-            dw = c.frame.top
-            splitter = dw.splitter_2
-            body = dw.leo_body_frame
-            index = splitter.indexOf(body)
-            new_splitter, new_index = splitter.split(index, side=1, w=w, name='renderer-splitter')
-            pc.renderer = new_splitter # pc is a FreeLayoutController.
-            c.viewrendered.set_renderer(new_splitter, new_index)
-            c.frame.equalSizedPanes()
-            c.bodyWantsFocusNow()
-            # g.trace(splitter)
-    #@+node:tbrown.20110203111907.5522: *3* init (FreeLayoutController)
+    #@+node:tbrown.20110203111907.5522: *3*  flc.init
     def init(self, tag, keys):
         """Attach to an outline and
 
@@ -188,7 +171,48 @@ class FreeLayoutController:
         splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
-    #@+node:tbrown.20110621120042.22914: *3* get_top_splitter (FreeLayoutController)
+    #@+node:ekr.20110318080425.14393: *3* flc.create_renderer
+    def XXcreate_renderer(self, w):
+        """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
+        pc = self; c = pc.c
+        if not pc.renderer:
+            assert w == c.viewrendered.w, 'widget mismatch'
+                # Called from viewrender, so it must exist.
+            index = 1
+            dw = c.frame.top
+            splitter = dw.splitter_2
+            body = dw.leo_body_frame
+            index = splitter.indexOf(body)
+            new_splitter, new_index = splitter.split(index, side=1, w=w, name='renderer-splitter')
+            pc.renderer = new_splitter # pc is a FreeLayoutController.
+            c.viewrendered.set_renderer(new_splitter, new_index)
+            c.frame.equalSizedPanes()
+            c.bodyWantsFocusNow()
+            # g.trace(splitter)
+    #@+node:tbrown.20120119080604.22982: *3* flc.embed (FreeLayoutController)
+    def embed(self):
+        """called from ns_do_context - embed layout in outline's
+        @settings, an alternative to the Load/Save named layout system
+        """
+        # Careful: we could be unit testing.
+        top_splitter = self.get_top_splitter()
+        if not top_splitter: return
+        c = self.c
+        layout = top_splitter.get_saveable_layout()
+        nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+        if not nd:
+            settings = g.findNodeAnywhere(c, "@settings")
+            if not settings:
+                settings = c.rootPosition().insertAfter()
+                settings.h = "@settings"
+            nd = settings.insertAsNthChild(0)
+        nd.h = "@data free-layout-layout"
+        nd.b = json.dumps(layout, indent=4)
+        nd = nd.parent()
+        if not nd or nd.h != "@settings":
+            g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
+        c.redraw()
+    #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
         # Careful: we could be unit testing.
         f = self.c.frame
@@ -196,7 +220,7 @@ class FreeLayoutController:
             return f.top.findChild(NestedSplitter).top()
         else:
             return None
-    #@+node:ekr.20120419095424.9927: *3* loadLayouts (FreeLayoutController) (sets wrap=True)
+    #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
         """loadLayouts - Load the outlines layout
 
@@ -252,46 +276,7 @@ class FreeLayoutController:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
-    #@+node:tbrown.20110627201141.11745: *3* ns_provides (FreeLayoutController)
-    def ns_provides(self):
-        ans = []
-        # list of things in tab widget
-        logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
-        for n in range(logTabWidget.count()):
-            text = str(logTabWidget.tabText(n)) # not QString
-            if text in ('Body', 'Tree'):
-                continue # handled below
-            if text == 'Log':
-                # if Leo can't find Log in tab pane, it creates another
-                continue
-            ans.append((text, '_leo_tab:' + text))
-        ans.append(('Tree', '_leo_pane:outlineFrame'))
-        ans.append(('Body', '_leo_pane:bodyFrame'))
-        ans.append(('Tab pane', '_leo_pane:logFrame'))
-        return ans
-    #@+node:tbrown.20110628083641.11724: *3* ns_provide (FreeLayoutController)
-    def ns_provide(self, id_):
-        if id_.startswith('_leo_tab:'):
-            id_ = id_.split(':', 1)[1]
-            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
-            for n in range(logTabWidget.count()):
-                if logTabWidget.tabText(n) == id_:
-                    w = logTabWidget.widget(n)
-                    w.setHidden(False)
-                    w._is_from_tab = logTabWidget.tabText(n)
-                    w.setMinimumSize(20, 20)
-                    return w
-            # didn't find it, maybe it's already in a splitter
-            return 'USE_EXISTING'
-        if id_.startswith('_leo_pane:'):
-            id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
-            if w:
-                w.setHidden(False) # may be from Tab holder
-                w.setMinimumSize(20, 20)
-            return w
-        return None
-    #@+node:tbrown.20110628083641.11730: *3* ns_context (FreeLayoutController)
+    #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
         ans = [
             ('Embed layout', '_fl_embed_layout'),
@@ -306,7 +291,7 @@ class FreeLayoutController:
         ans.append(('Restore default layout', '_fl_restore_default:'))
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
-    #@+node:tbrown.20110628083641.11732: *3* ns_do_context (FreeLayoutController)
+    #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context (FreeLayoutController)
     def ns_do_context(self, id_, splitter, index):
         if id_.startswith('_fl_embed_layout'):
             self.embed()
@@ -361,29 +346,45 @@ class FreeLayoutController:
             self.loadLayouts("reload", {'c': self.c}, reloading=True)
             return True
         return False
-    #@+node:tbrown.20120119080604.22982: *3* embed (FreeLayoutController)
-    def embed(self):
-        """called from ns_do_context - embed layout in outline's
-        @settings, an alternative to the Load/Save named layout system
-        """
-        # Careful: we could be unit testing.
-        top_splitter = self.get_top_splitter()
-        if not top_splitter: return
-        c = self.c
-        layout = top_splitter.get_saveable_layout()
-        nd = g.findNodeAnywhere(c, "@data free-layout-layout")
-        if not nd:
-            settings = g.findNodeAnywhere(c, "@settings")
-            if not settings:
-                settings = c.rootPosition().insertAfter()
-                settings.h = "@settings"
-            nd = settings.insertAsNthChild(0)
-        nd.h = "@data free-layout-layout"
-        nd.b = json.dumps(layout, indent=4)
-        nd = nd.parent()
-        if not nd or nd.h != "@settings":
-            g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
-        c.redraw()
+    #@+node:tbrown.20110628083641.11724: *3* flc.ns_provide
+    def ns_provide(self, id_):
+        if id_.startswith('_leo_tab:'):
+            id_ = id_.split(':', 1)[1]
+            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+            for n in range(logTabWidget.count()):
+                if logTabWidget.tabText(n) == id_:
+                    w = logTabWidget.widget(n)
+                    w.setHidden(False)
+                    w._is_from_tab = logTabWidget.tabText(n)
+                    w.setMinimumSize(20, 20)
+                    return w
+            # didn't find it, maybe it's already in a splitter
+            return 'USE_EXISTING'
+        if id_.startswith('_leo_pane:'):
+            id_ = id_.split(':', 1)[1]
+            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
+            if w:
+                w.setHidden(False) # may be from Tab holder
+                w.setMinimumSize(20, 20)
+            return w
+        return None
+    #@+node:tbrown.20110627201141.11745: *3* flc.ns_provides
+    def ns_provides(self):
+        ans = []
+        # list of things in tab widget
+        logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            text = str(logTabWidget.tabText(n)) # not QString
+            if text in ('Body', 'Tree'):
+                continue # handled below
+            if text == 'Log':
+                # if Leo can't find Log in tab pane, it creates another
+                continue
+            ans.append((text, '_leo_tab:' + text))
+        ans.append(('Tree', '_leo_pane:outlineFrame'))
+        ans.append(('Body', '_leo_pane:bodyFrame'))
+        ans.append(('Tab pane', '_leo_pane:logFrame'))
+        return ans
     #@-others
 #@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')

@@ -132,7 +132,7 @@ if QtWidgets:
         """Show the context menu on a NestedSplitter splitter-handle to access
         NestedSplitter's special features"""
         #@+others
-        #@+node:ekr.20110605121601.17962: *3* __init__ (NestedSplitterHandle)
+        #@+node:ekr.20110605121601.17962: *3* nsh.__init__ 
         def __init__(self, owner):
             '''Ctor for NestedSplitterHandle class.'''
             # g.trace('NestedSplitterHandle')
@@ -141,12 +141,12 @@ if QtWidgets:
                 # Confusing!
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.customContextMenuRequested.connect(self.splitter_menu)
-        #@+node:ekr.20110605121601.17963: *3* __repr__
+        #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
         def __repr__(self):
             return '(NestedSplitterHandle) at: %s' % (id(self))
 
         __str__ = __repr__
-        #@+node:ekr.20110605121601.17964: *3* add_item
+        #@+node:ekr.20110605121601.17964: *3* nsh.add_item
         def add_item(self, func, menu, name, tooltip=None):
             """helper for splitter_menu menu building"""
             act = QtWidgets.QAction(name, self)
@@ -155,7 +155,7 @@ if QtWidgets:
             if tooltip:
                 act.setToolTip(tooltip)
             menu.addAction(act)
-        #@+node:tbrown.20131130134908.27340: *3* show_tip
+        #@+node:tbrown.20131130134908.27340: *3* nsh.show_tip
         def show_tip(self, action):
             """show_tip - show a tooltip, calculate the box in which
             the pointer must stay for the tip to remain visible
@@ -173,7 +173,7 @@ if QtWidgets:
             y = pos.y()
             rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
             QtWidgets.QToolTip.showText(pos, tip, action.parentWidget(), rect)
-        #@+node:ekr.20110605121601.17965: *3* splitter_menu (NesetedSplitterHandler)
+        #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu
         def splitter_menu(self, pos):
             """build the context menu for NestedSplitter"""
             splitter = self.splitter()
@@ -371,7 +371,7 @@ if QtWidgets:
             # QtConst.Horizontal: QtConst.Vertical
         }
         #@+others
-        #@+node:ekr.20110605121601.17967: *3* __init__ (NestedSplitter)
+        #@+node:ekr.20110605121601.17967: *3* ns.__init__ 
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
             '''Ctor for NestedSplitter class.'''
             QtWidgets.QSplitter.__init__(self, orientation, parent)
@@ -393,7 +393,7 @@ if QtWidgets:
                     # splitter handle context menu
                     root.zoomed = False
             self.root = root
-        #@+node:ekr.20110605121601.17968: *3* __repr__
+        #@+node:ekr.20110605121601.17968: *3* ns.__repr__
         def __repr__(self):
             # parent = self.parent()
             # name = parent and parent.objectName() or '<no parent>'
@@ -401,11 +401,11 @@ if QtWidgets:
             return '(NestedSplitter) %s at %s' % (name, id(self))
 
         __str__ = __repr__
-        #@+node:ekr.20110605121601.17969: *3* overrides of QSplitter methods
-        #@+node:ekr.20110605121601.17970: *4* createHandle
+        #@+node:ekr.20110605121601.17969: *3* ns.overrides of QSplitter methods
+        #@+node:ekr.20110605121601.17970: *4* ns.createHandle
         def createHandle(self, *args, **kargs):
             return NestedSplitterHandle(self)
-        #@+node:tbrown.20110729101912.30820: *4* childEvent
+        #@+node:tbrown.20110729101912.30820: *4* ns.childEvent
         def childEvent(self, event):
             """If a panel client is closed not by us, there may be zero
             splitter handles left, so add an Action button
@@ -447,7 +447,7 @@ if QtWidgets:
                     pos = layout.indexOf(self)
                     layout.takeAt(pos)
                     self.setParent(None)
-        #@+node:ekr.20110605121601.17971: *3* add
+        #@+node:ekr.20110605121601.17971: *3* ns.add
         def add(self, side, w=None):
             """wrap a horizontal splitter in a vertical splitter, or
             visa versa"""
@@ -481,7 +481,7 @@ if QtWidgets:
             else:
                 # fail - parent is not NestedSplitter and has no layout
                 pass
-        #@+node:tbrown.20110621120042.22675: *3* add_adjacent
+        #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
         def add_adjacent(self, what, widget_id, side='right-of'):
             """add a widget relative to another already present widget"""
             trace = False and g and not g.unitTesting
@@ -547,7 +547,7 @@ if QtWidgets:
             if trace:
                 g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
             return True
-        #@+node:ekr.20110605121601.17972: *3* choice_menu
+        #@+node:ekr.20110605121601.17972: *3* ns.choice_menu
         def choice_menu(self, button, pos):
             """build menu on Action button"""
             menu = QtWidgets.QMenu()
@@ -574,11 +574,11 @@ if QtWidgets:
                 act = QtWidgets.QAction("Nothing marked, and no options", self)
                 menu.addAction(act)
             menu.exec_(button.mapToGlobal(pos))
-        #@+node:tbrown.20120418121002.25712: *3* closing
+        #@+node:tbrown.20120418121002.25712: *3* ns.closing
         def closing(self, window):
             """forget a top-level additional layout which was closed"""
             self.windows.remove(window)
-        #@+node:tbrown.20110628083641.11723: *3* place_provided
+        #@+node:tbrown.20110628083641.11723: *3* ns.place_provided
         def place_provided(self, id_, index):
             """replace Action button with provided widget"""
             provided = self.get_provided(id_)
@@ -591,7 +591,7 @@ if QtWidgets:
             if self.top().max_count() < 2:
                 print('Adding Action widget to maintain at least one handle')
                 self.top().insert(0, NestedSplitterChoice(self.top()))
-        #@+node:tbrown.20110628083641.11729: *3* context_cb
+        #@+node:tbrown.20110628083641.11729: *3* ns.context_cb
         def context_cb(self, id_, index):
             """find a provider to provide a context menu service, and do it"""
             for provider in self.root.providers:
@@ -599,7 +599,7 @@ if QtWidgets:
                     provided = provider.ns_do_context(id_, self, index)
                     if provided:
                         break
-        #@+node:ekr.20110605121601.17973: *3* contains
+        #@+node:ekr.20110605121601.17973: *3* ns.contains
         def contains(self, widget):
             """check if widget is a descendent of self"""
             for i in range(self.count()):
@@ -609,7 +609,7 @@ if QtWidgets:
                     if self.widget(i).contains(widget):
                         return True
             return False
-        #@+node:tbrown.20120418121002.25439: *3* find_child
+        #@+node:tbrown.20120418121002.25439: *3* ns.find_child
         def find_child(self, child_class, child_name=None):
             """Like QObject.findChild, except search self.top()
             *AND* each window in self.root.windows
@@ -621,7 +621,7 @@ if QtWidgets:
                     if child:
                         break
             return child
-        #@+node:ekr.20110605121601.17974: *3* handle_context
+        #@+node:ekr.20110605121601.17974: *3* ns.handle_context
         def handle_context(self, index):
             """for a handle, return (widget, neighbour, count)
 
@@ -652,7 +652,7 @@ if QtWidgets:
                 else:
                     count.append(1)
             return widget, neighbour, count
-        #@+node:tbrown.20110621120042.22920: *3* equalize_sizes
+        #@+node:tbrown.20110621120042.22920: *3* ns.equalize_sizes
         def equalize_sizes(self, recurse=False):
             """make all pane sizes equal"""
             if not self.count():
@@ -665,7 +665,7 @@ if QtWidgets:
                 for i in range(self.count()):
                     if isinstance(self.widget(i), NestedSplitter):
                         self.widget(i).equalize_sizes(recurse=True)
-        #@+node:ekr.20110605121601.17975: *3* insert (NestedSplitter)
+        #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
             trace = False and g and not g.unitTesting
@@ -677,19 +677,19 @@ if QtWidgets:
             self.insertWidget(index, w)
             self.equalize_sizes()
             return w
-        #@+node:ekr.20110605121601.17976: *3* invalid_swap
+        #@+node:ekr.20110605121601.17976: *3* ns.invalid_swap
         def invalid_swap(self, w0, w1):
             """check for swap violating hierachy"""
             return (
                 w0 == w1 or
                 isinstance(w0, NestedSplitter) and w0.contains(w1) or
                 isinstance(w1, NestedSplitter) and w1.contains(w0))
-        #@+node:ekr.20110605121601.17977: *3* mark
+        #@+node:ekr.20110605121601.17977: *3* ns.mark
         def mark(self, index, side):
             """mark a widget for later swapping"""
             self.root.marked = (self, index, side - 1,
                 self.widget(index + side - 1))
-        #@+node:ekr.20110605121601.17978: *3* max_count
+        #@+node:ekr.20110605121601.17978: *3* ns.max_count
         def max_count(self):
             """find max widgets in this and child splitters"""
             counts = []
@@ -700,7 +700,7 @@ if QtWidgets:
                     counts.append(self.widget(i).max_count())
             counts.append(count)
             return max(counts)
-        #@+node:tbrown.20120418121002.25438: *3* open_window
+        #@+node:tbrown.20120418121002.25438: *3* ns.open_window
         def open_window(self, action=None):
             """open a top-level window, a TopLevelFreeLayout instance, to hold a
             free-layout in addition to the one in the outline's main window"""
@@ -734,7 +734,7 @@ if QtWidgets:
             sheets = '\n'.join(sheets)
             ns.setStyleSheet(sheets)
             window.show()
-        #@+node:tbrown.20110627201141.11744: *3* register_provider
+        #@+node:tbrown.20110627201141.11744: *3* ns.register_provider
         def register_provider(self, provider):
             """Register something which provides some of the ns_* methods.
 
@@ -774,7 +774,7 @@ if QtWidgets:
                 for i in cull:
                     self.root.providers.remove(i)
             self.root.providers.append(provider)
-        #@+node:ekr.20110605121601.17980: *3* remove & helper
+        #@+node:ekr.20110605121601.17980: *3* ns.remove & helper
         def remove(self, index, side):
             widget = self.widget(index + side - 1)
             # clear marked if it's going to be deleted
@@ -793,7 +793,7 @@ if QtWidgets:
                     widget.setParent(None)
             else:
                 self.close_or_keep(widget)
-        #@+node:ekr.20110605121601.17981: *4* close_or_keep
+        #@+node:ekr.20110605121601.17981: *4* ns.close_or_keep
         def close_or_keep(self, widget, other_top=None):
             """when called from a closing secondary window, self.top() would
             be the top splitter in the closing window, and we need the client
@@ -815,7 +815,7 @@ if QtWidgets:
                 return True
             else:
                 return False
-        #@+node:ekr.20110605121601.17982: *3* replace_widget & replace_widget_at_index
+        #@+node:ekr.20110605121601.17982: *3* ns.replace_widget & replace_widget_at_index
         def replace_widget(self, old, new):
             "Swap the provided widgets in place" ""
             sizes = self.sizes()
@@ -835,7 +835,7 @@ if QtWidgets:
                 self.close_or_keep(old)
                 new.show()
                 self.setSizes(sizes)
-        #@+node:ekr.20110605121601.17983: *3* rotate
+        #@+node:ekr.20110605121601.17983: *3* ns.rotate
         def rotate(self, descending=False):
             """Change orientation - current rotates entire hierachy, doing less
             is visually confusing because you end up with nested splitters with
@@ -847,7 +847,7 @@ if QtWidgets:
                     i.setOrientation(QtCore.Qt.Horizontal)
                 else:
                     i.setOrientation(QtCore.Qt.Vertical)
-        #@+node:ekr.20110605121601.17984: *3* self_and_descendants
+        #@+node:ekr.20110605121601.17984: *3* ns.self_and_descendants
         def self_and_descendants(self):
             """Yield self and all **NestedSplitter** descendants"""
             for i in range(self.count()):
@@ -855,7 +855,7 @@ if QtWidgets:
                     for w in self.widget(i).self_and_descendants():
                         yield w
             yield self
-        #@+node:ekr.20110605121601.17985: *3* split (NestedSplitter)
+        #@+node:ekr.20110605121601.17985: *3* ns.split (NestedSplitter)
         def split(self, index, side, w=None, name=None):
             """replace the adjacent widget with a NestedSplitter containing
             the widget and an Action button"""
@@ -884,11 +884,11 @@ if QtWidgets:
             if trace: g.trace('name: %s index: %s side: %s w: %s' % (
                 name, index, side, w))
             self.setSizes(sizes)
-        #@+node:ekr.20110605121601.17986: *3* swap
+        #@+node:ekr.20110605121601.17986: *3* ns.swap
         def swap(self, index):
             """swap widgets either side of a handle"""
             self.insertWidget(index - 1, self.widget(index))
-        #@+node:ekr.20110605121601.17987: *3* swap_with_marked
+        #@+node:ekr.20110605121601.17987: *3* ns.swap_with_marked
         def swap_with_marked(self, index, side):
             # pylint: disable=unpacking-non-sequence
             osplitter, oidx, oside, ow = self.root.marked
@@ -903,7 +903,7 @@ if QtWidgets:
             self.root.marked = self, self.indexOf(ow), 0, ow
             self.equalize_sizes()
             osplitter.equalize_sizes()
-        #@+node:ekr.20110605121601.17988: *3* top
+        #@+node:ekr.20110605121601.17988: *3* ns.top
         def top(self, local=False):
             """find top (outer) widget, which is not necessarily root"""
             if local:
@@ -913,7 +913,7 @@ if QtWidgets:
             else:
                 top = self.root._main.findChild(NestedSplitter)
             return top
-        #@+node:ekr.20110605121601.17989: *3* get_layout
+        #@+node:ekr.20110605121601.17989: *3* ns.get_layout
         def get_layout(self, _saveable=False):
             """return {'orientation':QOrientation, 'content':[], 'splitter':ns}
 
@@ -944,10 +944,10 @@ if QtWidgets:
                     else:
                         ans['content'].append(w)
             return ans
-        #@+node:tbrown.20110628083641.11733: *3* get_saveable_layout
+        #@+node:tbrown.20110628083641.11733: *3* ns.get_saveable_layout
         def get_saveable_layout(self):
             return self.get_layout(_saveable=True)
-        #@+node:tbrown.20110628083641.21154: *3* load_layout
+        #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
         def load_layout(self, layout, level=0):
             trace = False and g and not g.unitTesting
             if trace: g.trace('level: %s layout: %s' % (level, layout))
@@ -989,7 +989,7 @@ if QtWidgets:
                 print('Wrong pane count at level %d, count:%d, sizes:%d' % (
                     level, self.count(), len(layout['sizes'])))
                 self.equalize_sizes()
-        #@+node:tbrown.20110628083641.21156: *3* prune_empty
+        #@+node:tbrown.20110628083641.21156: *3* ns.prune_empty
         def prune_empty(self):
             for i in range(self.count() - 1, -1, -1):
                 w = self.widget(i)
@@ -997,7 +997,7 @@ if QtWidgets:
                     if w.max_count() == 0:
                         w.setParent(None)
                         # w.deleteLater()
-        #@+node:tbrown.20110628083641.21155: *3* get_provided
+        #@+node:tbrown.20110628083641.21155: *3* ns.get_provided
         def find_by_id(self, id_):
             for s in self.self_and_descendants():
                 for i in range(s.count()):
@@ -1046,7 +1046,7 @@ if QtWidgets:
                     if provided:
                         return provided
             return "Leo unnamed window"
-        #@+node:ekr.20110605121601.17990: *3* layout_to_text
+        #@+node:ekr.20110605121601.17990: *3* ns.layout_to_text
         def layout_to_text(self, layout, _depth=0, _ans=None):
             """convert the output from get_layout to indented human readable text
             for development/debugging"""
@@ -1075,7 +1075,7 @@ if QtWidgets:
                     ))
             if _depth == 1:
                 return '\n'.join(_ans)
-        #@+node:tbrown.20140522153032.32656: *3* zoom_toggle
+        #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
         def zoom_toggle(self):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane
             """

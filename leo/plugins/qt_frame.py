@@ -2547,7 +2547,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
         f.divideLeoSplitter(self.splitVerticalFlag, ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag, ratio2)
-    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter
+    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter (qtFrame)
     # Divides the main or secondary splitter, using the key invariant.
 
     def divideLeoSplitter(self, verticalFlag, frac):
@@ -2566,7 +2566,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     def divideLeoSplitter2(self, frac, verticalFlag):
         self.divideAnySplitter(frac, self.top.leo_ui.splitter)
-    #@+node:ekr.20110605121601.18284: *4* divideAnySplitter
+    #@+node:ekr.20110605121601.18284: *4* divideAnySplitter (qtFrame)
     # This is the general-purpose placer for splitters.
     # It is the only general-purpose splitter code in Leo.
 
