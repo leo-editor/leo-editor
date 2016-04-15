@@ -4175,7 +4175,6 @@ class LeoQtSpellTab:
     #@+node:ekr.20110605121601.18399: *4* fillbox
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
-        # ui = self.c.frame.top.leo_ui
         self.suggestions = alts
         if not word: word = ""
         self.wordLabel.setText("Suggestions for: " + word)

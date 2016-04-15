@@ -373,12 +373,14 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17967: *3* __init__ (NestedSplitter)
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
+            '''Ctor for NestedSplitter class.'''
             QtWidgets.QSplitter.__init__(self, orientation, parent)
                 # This creates a NestedSplitterHandle.
             trace = False and g and not g.unitTesting
                 # The import of g will fail when run from main() function.
-            if trace: g.trace('%s parent: %s orientation: %s' % (
-                self, parent, orientation))
+            if trace:
+                g.trace('%s parent: %s orientation: %s' % (self, parent, orientation))
+                g.trace(g.callers())
             if root is None:
                 root = self.top(local=True)
                 if root == self:
