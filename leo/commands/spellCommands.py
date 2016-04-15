@@ -5,6 +5,7 @@
 '''Leo's spell-checking commands.'''
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
+import re
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 try:
@@ -357,7 +358,14 @@ class SpellTabHandler:
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
+        self.re_word = re.compile(
+            # Don't include underscores in words. It just complicates things.
+            # [^\W\d_] means any unicode char except underscore or digit.
+            r"([^\W\d_]+)(['`][^\W\d_]+)?",
+            flags=re.UNICODE)
         self.outerScrolledFrame = None
+        self.seen = set()
+            # Adding a word to seen will ignore it until restart.
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
             # A text widget for scanning.
             # Must have a parent frame even though it is not packed.
@@ -408,110 +416,85 @@ class SpellTabHandler:
         c.invalidateFocus()
         c.bodyWantsFocus()
         return False
-    #@+node:ekr.20150514063305.505: *4* find & helpers
+    #@+node:ekr.20150514063305.505: *4* find & helper
     def find(self, event=None):
         """Find the next unknown word."""
+        trace = True and not g.unitTesting
+        trace_lookup = False
+        trace_end_body = False
         if not self.loaded:
             return
-        c = self.c
-        w = c.frame.body.wrapper
-        # Reload the work pane from the present node.
-        s = w.getAllText().rstrip()
-        self.workCtrl.delete(0, "end")
-        self.workCtrl.insert("end", s)
-        # Reset the insertion point of the work widget.
-        ins = w.getInsertPoint()
-        self.workCtrl.setInsertPoint(ins)
-        alts, word = self.findNextMisspelledWord()
-        self.currentWord = word # Need to remember this for 'add' and 'ignore'
-        if alts:
-            # Save the selection range.
-            ins = w.getInsertPoint()
-            i, j = w.getSelectionRange()
-            self.tab.fillbox(alts, word)
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-            # Restore the selection range.
-            w.setSelectionRange(i, j, insert=ins)
-            w.see(ins)
-        else:
-            g.es("no more misspellings")
-            self.tab.fillbox([])
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.506: *5* findNextMisspelledWord
-    def findNextMisspelledWord(self):
-        """Find the next unknown word."""
-        trace = False and not g.unitTesting
-        c, p = self.c, self.c.p
-        w = c.frame.body.wrapper
+        c, n, p = self.c, 0, self.c.p
+        if trace: g.trace('entry', p.h)
         sc = self.spellController
-        alts, word = None, None
-        try:
-            while 1:
-                i, j, p, word = self.findNextWord(p)
-                # g.trace(i,j,p and p.h or '<no p>')
-                if not p or not word:
-                    alts = None
-                    break
+        w = c.frame.body.wrapper
+        c.selectPosition(p)
+        s = w.getAllText().rstrip()
+        ins = w.getInsertPoint()
+        # New in Leo 5.3: use regex to find words.
+        last_p = p.copy()
+        while True:
+            for m in self.re_word.finditer(s[ins:]):
+                start, word = m.start(0), m.group(0)
+                if word in self.seen:
+                    continue
+                n += 1
+                # Ignore the word if numbers precede or follow it.
+                # Seems difficult to do this in the regex itself.
+                k1 = ins + start - 1
+                if k1 >= 0 and s[k1].isdigit():
+                    continue
+                k2 = ins + start + len(word)
+                if k2 < len(s) and s[k2].isdigit():
+                    continue
+                if trace and trace_lookup: g.trace('lookup', word)
                 alts = sc.processWord(word)
-                if trace: g.trace('alts', alts and len(alts) or 0, i, j, word, p and p.h or 'None')
                 if alts:
-                    redraw = not p.isVisible(c)
-                    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                    if c.sparse_spell and not c.p.isAncestorOf(p):
-                        for p2 in c.p.self_and_parents():
-                            p2.contract()
-                            redraw = True
-                    for p2 in p.parents():
-                        if not p2.isExpanded():
-                            p2.expand()
-                            redraw = True
-                    if redraw:
-                        c.redraw(p)
-                    else:
-                        c.selectPosition(p)
+                    if trace: g.trace('%s searches' % n)
+                    self.currentWord = word
+                    i = ins + start
+                    j = i + len(word)
+                    self.showMisspelled(p)
+                    self.tab.fillbox(alts, word)
+                    c.invalidateFocus()
+                    c.bodyWantsFocus()
                     w.setSelectionRange(i, j, insert=j)
-                    break
-        except Exception:
-            g.es_exception()
-        return alts, word
-    #@+node:ekr.20150514063305.507: *5* findNextWord (spellTab)
-    def findNextWord(self, p):
-        """Scan for the next word, leaving the result in the work widget"""
-        trace = False and not g.unitTesting
-        c = self.c; p = p.copy()
-        while 1:
-            s = self.workCtrl.getAllText()
-            i = self.workCtrl.getInsertPoint()
-            while i < len(s) and not g.isWordChar1(s[i]):
-                i += 1
-            # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
-            if i < len(s):
-                # A non-empty word has been found.
-                j = i
-                while j < len(s) and (g.isWordChar(s[j]) or s[j] == "'"):
-                    j += 1
-                word = s[i: j]
-                word = word.strip("'")
-                # This trace verifies that all words have been checked.
-                # g.trace(repr(word))
-                for w in (self.workCtrl, c.frame.body.wrapper):
-                    c.widgetWantsFocusNow(w)
-                    w.setSelectionRange(i, j, insert=j)
-                if trace: g.trace(i, j, word, p.h)
-                return i, j, p, word
+                    w.see(j)
+                    return
+                else:
+                    self.seen.add(word)
+            # No more misspellings in p
+            if trace and trace_end_body: g.trace('----- end of text', p.h)
+            p.moveToThreadNext()
+            if p:
+                ins = 0
+                s = p.b
             else:
-                # End of the body text.
-                p.moveToThreadNext()
-                if not p: break
-                self.workCtrl.delete(0, 'end')
-                self.workCtrl.insert(0, p.b)
-                for w in (self.workCtrl, c.frame.body.wrapper):
-                    c.widgetWantsFocusNow(w)
-                    w.setSelectionRange(0, 0, insert=0)
-                if trace: g.trace(0, 0, '-->', p.h)
-        return None, None, None, None
+                if trace: g.trace('%s searches' % n)
+                g.es("no more misspellings")
+                c.selectPosition(last_p)
+                self.tab.fillbox([])
+                c.invalidateFocus()
+                c.bodyWantsFocus()
+                return
+    #@+node:ekr.20160415033936.1: *5* showMisspelled
+    def showMisspelled(self, p):
+        '''Show the position p, contracting the tree as needed.'''
+        c = self.c
+        redraw = not p.isVisible(c)
+        # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+        if c.sparse_spell and not c.p.isAncestorOf(p):
+            for p2 in c.p.self_and_parents():
+                p2.contract()
+                redraw = True
+        for p2 in p.parents():
+            if not p2.isExpanded():
+                p2.expand()
+                redraw = True
+        if redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
     #@+node:ekr.20150514063305.508: *4* hide
     def hide(self, event=None):
         self.c.frame.log.selectTab('Log')
