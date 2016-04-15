@@ -16200,7 +16200,7 @@ def show_result(self, result):
         put('Result: %s' % result.result)
 .. @+node:ekr.20160403172604.1: *3* Unused chapter methods
 .. @+node:ekr.20160411190831.1: *4* OLD cc.selectChapterByName & helper
-def selectChapterByName(self, name, collapse=True, create=True):
+def OLDselectChapterByName(self, name, collapse=True, create=True):
     '''Select a chapter.  Return True if a redraw is needed.'''
     trace = False and not g.unitTesting
     cc, c = self, self.c

@@ -164,7 +164,14 @@ class ChapterController:
                 return
         if trace: g.trace(chapter.name, 'chapter.p', chapter.p.h)
         chapter.select()
-        c.setCurrentPosition(chapter.p)
+        # 2016/04/14: Prevent unbounded recursion by
+        # causing selectChapterForPosition to return immediately.
+        old_lockout = self.selectChapterLockout
+        try:
+            self.selectChapterLockout = True
+            c.setCurrentPosition(chapter.p)
+        finally:
+            self.selectChapterLockout = old_lockout
         cc.selectedChapter = chapter
         # Clean up, but not initially.
         if collapse and chapter.name == 'main':
