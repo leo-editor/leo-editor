@@ -607,7 +607,7 @@ class todoController:
         return attrib == "priority" and val == 9999 or val == ""
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
-        "new attrbiute setter"
+        "new attribute setter"
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
 
@@ -1016,9 +1016,11 @@ class todoController:
     def duekey(self, v, field='due'):
         """key function for sorting by due date/time"""
         # pylint: disable=boolean-datetime
+        priority = self.getat(v, 'priority')
+        done = priority not in self.todo_priorities
         date_ = self.getat(v, field+'date') or datetime.date(3000,1,1)
         time_ = self.getat(v, field+'time') or datetime.time(23, 59, 59)
-        return date_, time_
+        return done, date_, time_, priority
     #@+node:tbrown.20110213153425.16377: *4* dueSort
     @redrawer
     def dueSort(self, p=None, field='due'):
