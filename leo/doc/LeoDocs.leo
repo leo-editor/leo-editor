@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1282,176 +1282,67 @@
 <v t="ekr.20160305040503.103"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-<v t="ekr.20160415031743.1"><vh>To 5.3 release notes</vh>
-<v t="ekr.20160415031743.2"><vh>5.3 Bug fixes</vh>
-<v t="ekr.20160415031743.3"><vh>Create xml stylesheet elements only from settings</vh></v>
-<v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
-<v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
-<v t="ekr.20160415031743.6"><vh>Fixed #156: ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
-<v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
-<v t="ekr.20160415031743.8"><vh>Fixed #245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
-<v t="ekr.20160415031743.9"><vh>Fixed #249: Leo and Stickynote plugin do not request to save</vh></v>
-<v t="ekr.20160415031743.10"><vh>Fixed #242: @auto-rst open/save error</vh></v>
-<v t="ekr.20160415031743.11"><vh>Fixed #247: @language c breaks goto-global-line</vh></v>
-<v t="ekr.20160415031743.12"><vh>Fixed #221: goto-global-line navigating to wrong line reported by PyLint</vh></v>
-<v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh>
-<v t="ekr.20160415031743.14"><vh>Report</vh></v>
-</v>
-<v t="ekr.20160415031743.15"><vh>Fixed #132: Section Reference causes clone on Leo-Editor file open</vh></v>
-<v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
-</v>
-<v t="ekr.20160415031743.17"><vh>Code</vh>
-<v t="ekr.20160415031743.18"><vh>cleaned up use of regex to discover Leo directives</vh>
-<v t="ekr.20160415031743.19"><vh>Found:compute_directives_re</vh></v>
-</v>
-</v>
-<v t="ekr.20160415031743.20"><vh>Docs</vh>
+<v t="ekr.20160415031743.20"><vh>Docs TO DO</vh>
 <v t="ekr.20160414191609.1"><vh>** Document cffm, cff in Tutorial, cheat sheet, etc</vh></v>
 <v t="ekr.20160414191631.1"><vh>** FAQ?  Gathering scripts</vh></v>
 <v t="ekr.20160414191645.1"><vh>** FAQ? pylint command/script</vh></v>
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
 </v>
-<v t="ekr.20160415031743.22"><vh>Features</vh>
-<v t="ekr.20160415031743.23"><vh>Viewrendered already supports markdown</vh></v>
-<v t="ekr.20160415031743.24"><vh>Improved how viewrenered plugin handles md &amp; rst</vh></v>
-<v t="ekr.20160415031743.25"><vh>Better defaults for open/save file dialogs</vh></v>
-<v t="ekr.20160415031743.26"><vh>Merged viewrendered plugins into viewrendered3.py</vh></v>
-<v t="ekr.20160415031743.27"><vh>Enabled livecode plugin by default</vh></v>
-<v t="ekr.20160415031743.28"><vh>Improved chapters</vh>
-<v t="ekr.20160415031743.29"><vh>How long does it take to search LeoPy.leo?</vh></v>
+<v t="ekr.20160415031743.1"><vh>To 5.3 release notes</vh>
+<v t="ekr.20160415031743.2"><vh>Bug fixes</vh>
+<v t="ekr.20160415031743.18"><vh>cleaned up use of regex to discover Leo directives</vh></v>
+<v t="ekr.20160415031743.3"><vh>Create xml stylesheet elements only from settings</vh></v>
+<v t="ekr.20160415031743.15"><vh>Fixed #132: Section Reference causes clone on Leo-Editor file open</vh></v>
+<v t="ekr.20160415031743.6"><vh>Fixed #156: ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
+<v t="ekr.20160415031743.12"><vh>Fixed #221: goto-global-line navigating to wrong line reported by PyLint</vh></v>
+<v t="ekr.20160415031743.10"><vh>Fixed #242: @auto-rst open/save error</vh></v>
+<v t="ekr.20160415031743.8"><vh>Fixed #245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
+<v t="ekr.20160415031743.11"><vh>Fixed #247: @language c breaks goto-global-line</vh></v>
+<v t="ekr.20160415031743.9"><vh>Fixed #249: Leo and Stickynote plugin do not request to save</vh></v>
+<v t="ekr.20160416163605.105"><vh>Fixed #261: exception executing equal-sized-panes</vh></v>
+<v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
+<v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
+<v t="ekr.20160416163605.4"><vh>Fixed shutdown hard crash on Python 3</vh></v>
+<v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh>
+<v t="ekr.20160415031743.14"><vh>Report</vh></v>
 </v>
-<v t="ekr.20160415031743.30"><vh>Leo doesn't warn if leo.plugins.livecode fails to load</vh></v>
-<v t="ekr.20160415031743.31"><vh>Completed chapters work</vh></v>
-<v t="ekr.20160415031743.32"><vh>Completed Jupyter work</vh></v>
-<v t="ekr.20160415031743.33"><vh>Wishlist: #255: @rst-table supports rST tables</vh></v>
-<v t="ekr.20160416163627.1"><vh>Improved Leo's spell tab</vh></v>
-</v>
-<v t="ekr.20160416163605.1"><vh>Recent code</vh>
-<v t="ekr.20160416163605.2"><vh>Completed</vh>
-<v t="ekr.20160416163605.3"><vh>re: improve clone-find commands</vh></v>
-<v t="ekr.20160416163605.4"><vh>re: shutdown hard crash on Python 3</vh></v>
-<v t="ekr.20160416163605.5"><vh>re: improved kill &amp; yank</vh></v>
-<v t="ekr.20160416163605.6"><vh>re: show-invisibles uses Qt code</vh></v>
-<v t="ekr.20160416163605.7"><vh>re: HTMLReportTraverser</vh></v>
-<v t="ekr.20160416163605.8"><vh>re: python-to-coffeescripot</vh></v>
-<v t="ekr.20160416163605.9"><vh>re: new ast nodes</vh></v>
-<v t="ekr.20160416163605.10"><vh>re: Create xml stylesheet elements only from settings</vh></v>
-<v t="ekr.20160416163605.11"><vh>re: directives not recognized at end of body text</vh></v>
-<v t="ekr.20160416163605.12"><vh>re: default open/save directory</vh></v>
-<v t="ekr.20160416163605.13"><vh>re: ctrl-click bug</vh></v>
-<v t="ekr.20160416163605.14"><vh>re: simplify directives regex</vh></v>
-<v t="ekr.20160416163605.15"><vh>re: #156 ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
-<v t="ekr.20160416163605.16"><vh>re: 245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
-<v t="ekr.20160416163605.17"><vh>re: #251: goto-global-line is inaccurate with @clean</vh></v>
-<v t="ekr.20160416163605.18"><vh>re: crasher in runOpenFileDialog</vh></v>
+<v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
+<v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
 <v t="ekr.20160416163605.19"><vh>re: #132: Section Reference causes clone on Leo-Editor file open</vh></v>
-<v t="ekr.20160416163605.20"><vh>re: warnings re: livecode.py</vh></v>
+<v t="ekr.20160416163605.15"><vh>re: #156 ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
 <v t="ekr.20160416163605.21"><vh>re: #241: QMimeData...</vh></v>
-<v t="ekr.20160416163605.32"><vh>re: space doesn't work in tree</vh></v>
-<v t="ekr.20160416163605.33"><vh>re: honor @bool outline_pane_has_initial_focus</vh></v>
-<v t="ekr.20160416163605.34"><vh>re: allow bindings to numbers!</vh></v>
-<v t="ekr.20160416163605.35"><vh>re: Completed Jupyter work</vh></v>
-<v t="ekr.20160416163605.36"><vh>re: last node isn't visible</vh></v>
+<v t="ekr.20160416163605.17"><vh>re: #251: goto-global-line is inaccurate with @clean</vh></v>
 <v t="ekr.20160416163605.37"><vh>re: #255: @rst-table</vh></v>
+<v t="ekr.20160416163605.16"><vh>re: 245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
+<v t="ekr.20160416163605.34"><vh>re: allow bindings to numbers!</vh></v>
 </v>
-<v t="ekr.20160416163605.38"><vh>re: @chapter</vh>
-<v t="ekr.20160416163605.39"><vh>Parsing...</vh>
-<v t="ekr.20160416163605.55"><vh>cc.finishCreate</vh></v>
-<v t="ekr.20160416163605.51"><vh>cc.parseHeadline</vh></v>
-<v t="ekr.20160416163605.42"><vh>cc.findChapterNode</vh></v>
-<v t="ekr.20160416163605.54"><vh>cc.setAllChapterNames</vh></v>
-<v t="ekr.20160416163605.44"><vh> cc.ctor</vh></v>
-</v>
-<v t="ekr.20160416163605.45"><vh>Chapter bindings...</vh>
-<v t="ekr.20160416163605.56"><vh>cc.makeCommand</vh></v>
-<v t="ekr.20160416163605.55"></v>
-<v t="ekr.20160416163605.54"></v>
-<v t="ekr.20160416163605.49"><vh>k.registerCommand</vh></v>
-</v>
-<v t="ekr.20160416163605.50"><vh>Sanitizing chapter names...</vh>
-<v t="ekr.20160416163605.51"></v>
-<v t="ekr.20160416163605.52"><vh>cc.sanitize</vh></v>
-<v t="ekr.20160416163605.53"><vh>Found:makeCommand</vh>
-<v t="ekr.20160416163605.54"></v>
-<v t="ekr.20160416163605.55"></v>
-<v t="ekr.20160416163605.56"></v>
-</v>
-</v>
-<v t="ekr.20160416163605.57"><vh>Unbounded recursion</vh>
-<v t="ekr.20160416163605.58"><vh>Report</vh></v>
-<v t="ekr.20160416163605.59"><vh>chapter.unselect</vh></v>
-<v t="ekr.20160416163605.60"><vh>cc.selectChapterForPosition</vh></v>
-<v t="ekr.20160416163605.61"><vh>cc.selectChapterByName &amp; helper</vh>
-<v t="ekr.20160416163605.62"><vh>selectChapterByNameHelper</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20160416163605.63"><vh>re: #248:  Empty lines in @file/@clean trees</vh>
-<v t="ekr.20160416163605.64"><vh>at.readOneAtCleanNode &amp; helpers</vh>
-<v t="ekr.20160416163605.65"><vh>at.dump_lines</vh></v>
-<v t="ekr.20160416163605.66"><vh>at.read_at_clean_lines</vh></v>
-<v t="ekr.20160416163605.67"><vh>at.write_at_clean_sentinels</vh></v>
-</v>
-<v t="ekr.20160416163605.68"><vh>at.writeAllHelper &amp; helper</vh>
-<v t="ekr.20160416163605.69"><vh>at.autoBeautify</vh></v>
-</v>
-<v t="ekr.20160416163605.70"><vh>at.write &amp; helpers</vh>
-<v t="ekr.20160416163605.71"><vh>at.setTargetFileName</vh></v>
-<v t="ekr.20160416163605.72"><vh>at.setDirtyOrphanBits</vh></v>
-</v>
-<v t="ekr.20160416163605.73"><vh>at.writeOpenFile</vh></v>
-</v>
-<v t="ekr.20160416163605.74"><vh>re: Improve speed of spell commands</vh>
-<v t="ekr.20160416163605.75"><vh>SpellTabHandler.__init__</vh></v>
-<v t="ekr.20160416163605.76"><vh>find &amp; helper</vh>
-<v t="ekr.20160416163605.77"><vh>showMisspelled</vh></v>
-</v>
-<v t="ekr.20160416163605.78"><vh>test</vh></v>
-</v>
-<v t="ekr.20160416163605.79"><vh>re: colorizer for markdown</vh></v>
-<v t="ekr.20160416163605.80"><vh>re: #258: leoBridge does not work with @auto-md subtrees </vh>
-<v t="ekr.20160416163605.81"><vh>bridge.openLeoFile &amp; helpers</vh>
-<v t="ekr.20160416163605.82"><vh>bridge.completeFileName</vh></v>
-<v t="ekr.20160416163605.83"><vh>bridge.createFrame</vh></v>
-</v>
-<v t="ekr.20160416163605.107"><vh>dw.createMainLayout</vh></v>
-<v t="ekr.20160416163605.85"><vh>fc.getLeoFile &amp; helpers</vh>
-<v t="ekr.20160416163605.86"><vh>fc.getLeoFileHelper</vh></v>
-<v t="ekr.20160416163605.87"><vh>fc.handleNodeConflicts &amp; helper</vh></v>
-<v t="ekr.20160416163605.88"><vh>fc.propegateDirtyNodes</vh></v>
-<v t="ekr.20160416163605.89"><vh>fc.readExternalFiles</vh></v>
-<v t="ekr.20160416163605.90"><vh>fc.warnOnReadOnlyFiles</vh></v>
-</v>
-<v t="ekr.20160416163605.91"><vh>fc.openLeoFile</vh></v>
-<v t="ekr.20160416163605.92"><vh>g.openWithFileName</vh></v>
-<v t="ekr.20160416163605.93"><vh>LM.loadLocalFile &amp; helper</vh>
-<v t="ekr.20160416163605.94"><vh>LM.openFileByName &amp; helpers</vh>
-<v t="ekr.20160416163605.95"><vh>LM.createMenu</vh></v>
-<v t="ekr.20160416163605.96"><vh>LM.findOpenFile</vh></v>
-<v t="ekr.20160416163605.97"><vh>LM.finishOpen</vh></v>
-<v t="ekr.20160416163605.98"><vh>LM.initWrapperLeoFile</vh></v>
-<v t="ekr.20160416163605.99"><vh>LM.isLeoFile &amp; LM.isZippedFile</vh></v>
-<v t="ekr.20160416163605.100"><vh>LM.openLeoOrZipFile</vh></v>
-<v t="ekr.20160416163605.101"><vh>LM.openLeoFile</vh></v>
-<v t="ekr.20160416163605.102"><vh>LM.openZipFile</vh></v>
-<v t="ekr.20160416163605.104"><vh>LM.readOpenedLeoFile</vh></v>
-</v>
-</v>
-<v t="ekr.20160416163605.104"></v>
-</v>
-<v t="ekr.20160416163605.105"><vh>re: #261: exception executing equal-sized-panes</vh>
-<v t="ekr.20160416163605.106"><vh>New/changed methods</vh>
-<v t="ekr.20160416163605.107"></v>
-<v t="ekr.20160416163605.108"><vh>flc.get_splitter*</vh></v>
-<v t="ekr.20160416163605.109"><vh>ns.get_splitter_by_name</vh></v>
-<v t="ekr.20160416163605.110"><vh>dw.setSplitDirection</vh></v>
-<v t="ekr.20160416163605.111"><vh>divideLeoSplitter (qtFrame)</vh></v>
-<v t="ekr.20160416163605.112"><vh>divideAnySplitter (qtFrame)</vh></v>
-<v t="ekr.20160416163605.113"><vh>dw.onSplitter1/2Moved &amp; helper</vh>
-<v t="ekr.20160416163605.114"><vh>dw.splitterMovedHelper</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20160415031743.22"><vh>Features</vh>
+<v t="ekr.20160416163605.8"><vh>Added python-to-coffeescript command</vh></v>
+<v t="ekr.20160415031743.33"><vh>Added support for @rst-table</vh></v>
+<v t="ekr.20160415031743.25"><vh>Better defaults for open/save file dialogs</vh></v>
+<v t="ekr.20160415031743.32"><vh>Completed Jupyter work</vh></v>
+<v t="ekr.20160415031743.27"><vh>Enabled livecode plugin by default</vh></v>
+<v t="ekr.20160415031743.28"><vh>Improved chapters</vh></v>
+<v t="ekr.20160416163605.3"><vh>Improved clone-find commands</vh></v>
+<v t="ekr.20160415031743.24"><vh>Improved how viewrenered plugin handles md &amp; rst</vh></v>
+<v t="ekr.20160416163605.5"><vh>Improved kill &amp; yank</vh></v>
+<v t="ekr.20160416163627.1"><vh>Improved Leo's spell tab</vh></v>
+<v t="ekr.20160415031743.30"><vh>Leo doesn't warn if leo.plugins.livecode fails to load</vh></v>
+<v t="ekr.20160415031743.26"><vh>Merged viewrendered plugins into viewrendered3.py</vh></v>
+<v t="ekr.20160416163605.35"><vh>re: Completed Jupyter work</vh></v>
+<v t="ekr.20160416163605.18"><vh>re: crasher in runOpenFileDialog</vh></v>
+<v t="ekr.20160416163605.10"><vh>re: Create xml stylesheet elements only from settings</vh></v>
+<v t="ekr.20160416163605.13"><vh>re: ctrl-click bug</vh></v>
+<v t="ekr.20160416163605.12"><vh>re: default open/save directory</vh></v>
+<v t="ekr.20160416163605.11"><vh>re: directives not recognized at end of body text</vh></v>
+<v t="ekr.20160416163605.33"><vh>re: honor @bool outline_pane_has_initial_focus</vh></v>
+<v t="ekr.20160416163605.36"><vh>re: last node isn't visible</vh></v>
+<v t="ekr.20160416163605.9"><vh>re: new ast nodes</vh></v>
+<v t="ekr.20160416163605.14"><vh>re: simplify directives regex</vh></v>
+<v t="ekr.20160416163605.32"><vh>re: space doesn't work in tree</vh></v>
+<v t="ekr.20160416163605.20"><vh>re: warnings re: livecode.py</vh></v>
+<v t="ekr.20160416163605.6"><vh>Show-invisibles uses Qt code</vh></v>
+<v t="ekr.20160415031743.23"><vh>Viewrendered already supports markdown</vh></v>
 </v>
 </v>
 </vnodes>
@@ -19460,10 +19351,7 @@ At startup only, if the QTreeWidget needs to scroll to show a node near the end 
 
 Fixed at a039305.
 </t>
-<t tx="ekr.20160415031743.17"></t>
 <t tx="ekr.20160415031743.18"></t>
-<t tx="ekr.20160415031743.19"># flattened, ignore-case, head, body
-</t>
 <t tx="ekr.20160415031743.2"></t>
 <t tx="ekr.20160415031743.20"></t>
 <t tx="ekr.20160415031743.21">Here is a cool pattern for organizing long docstrings:
@@ -19491,10 +19379,7 @@ This pattern allows us to organize large docstrings in a natural, Leonine way.
 The only drawback is that the actual external file contains sentinel lines separating the parts of the docstring.  In practice, it's no big deal, especially if each child starts with a blank line.
 </t>
 <t tx="ekr.20160415031743.22"></t>
-<t tx="ekr.20160415031743.23">@language rest
-@wrap
-
-Leo already supports @language md:
+<t tx="ekr.20160415031743.23">Leo already supports @language md:
 
 markdown rendering must be specified by putting it in a ``@md`` node,
 unless ``@string view-rendered-default-kind`` is set to ``md``,
@@ -19546,10 +19431,7 @@ references &gt;&gt;, @others, and @all directives.
 
 </t>
 <t tx="ekr.20160415031743.24"></t>
-<t tx="ekr.20160415031743.25">@language rest
-@wrap
-
-File 'Open' or 'Import File' command to follow @path directive
+<t tx="ekr.20160415031743.25">File 'Open' or 'Import File' command to follow @path directive
 http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 
 Added c.last_dir and g.init_dialog_folder and related logic.
@@ -19578,33 +19460,7 @@ The 'main' chapter is simply a synonym for the entire outline.
 
 At present, the NEW switch in leoChapters.leo enables the new code.
 
-</t>
-<t tx="ekr.20160415031743.29">@language python
-# 7559 nodes: 0.075 sec.
-import time
-t1 = time.clock()
-n = 0
-for p in c.all_unique_positions():
-    n += 1
-    if p.h.startswith('@chapter '):
-        pass
-t2 = time.clock()
-g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-</t>
-<t tx="ekr.20160415031743.3">The old way made it almost impossible to delete stylesheet element.
-
-The change was to fc.putStyleSheetLine.
-</t>
-<t tx="ekr.20160415031743.30">@language rest
-@wrap
-
-leoPlugins.leo now contains a global list of plugins that might be enabled by default but that might fail to load because of missing imports.  At present, that list is just:
-
-optional_modules = [
-    'leo.plugins.livecode',
-]
-</t>
-<t tx="ekr.20160415031743.31">Proposal: remove/improve all chapter commands
+Proposal: remove/improve all chapter commands
 https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
 
 Done:
@@ -19614,11 +19470,20 @@ Done:
 - Fixed bug in Chapter.unselect: examine the hoist stack.
 - Create chapter-select-&lt;chapter-name&gt; commands.
 - Allow @key convention in @chapter nodes.
-</t>
-<t tx="ekr.20160415031743.32">@language rest
-@wrap
 
-Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
+
+</t>
+<t tx="ekr.20160415031743.3">The old way made it almost impossible to delete stylesheet element.
+
+The change was to fc.putStyleSheetLine.
+</t>
+<t tx="ekr.20160415031743.30">leoPlugins.leo now contains a global list of plugins that might be enabled by default but that might fail to load because of missing imports.  At present, that list is just:
+
+optional_modules = [
+    'leo.plugins.livecode',
+]
+</t>
+<t tx="ekr.20160415031743.32">Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
 Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
 
 Added support for @auto x.ipynb.
@@ -19627,10 +19492,7 @@ Kent: It would be great to be able to jump between Leo's nodes and IPython's cel
 
 Alia K: Leo + Ipython notebook integration is a killer app indeed.
 </t>
-<t tx="ekr.20160415031743.33">@language rest
-@wrap
-
-Wishlist item:
+<t tx="ekr.20160415031743.33">Wishlist item:
 https://github.com/leo-editor/leo-editor/issues/255
 
 Announcement:
@@ -19644,10 +19506,7 @@ Rather than trying to figure out workarounds, @button jEdit2Py now refuses to ru
 </t>
 <t tx="ekr.20160415031743.6">https://github.com/leo-editor/leo-editor/issues/156
 </t>
-<t tx="ekr.20160415031743.7">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/248
+<t tx="ekr.20160415031743.7">https://github.com/leo-editor/leo-editor/issues/248
 
 Everything works for me as expected, with my settings, on your test file.
 
@@ -19677,208 +19536,21 @@ Date:   Tue Mar 1 13:50:12 2016 -0600
 
 As noted in the checkin log for this bug, I can not recommend the stickynote plugin as it is, even with the bug fixed.
 </t>
-<t tx="ekr.20160416163605.1"></t>
 <t tx="ekr.20160416163605.10"># The change was to fc.putStyleSheetLine.</t>
-<t tx="ekr.20160416163605.100">def openLeoOrZipFile(self, fn):
-    lm = self
-    zipped = lm.isZippedFile(fn)
-    if lm.isLeoFile(fn) and g.os_path_exists(fn):
-        if zipped:
-            theFile = lm.openZipFile(fn)
-        else:
-            theFile = lm.openLeoFile(fn)
-    else:
-        theFile = None
-    return theFile
-</t>
-<t tx="ekr.20160416163605.101">def openLeoFile(self, fn):
-    # lm = self
-    try:
-        theFile = open(fn, 'rb')
-        return theFile
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.error("can not open:", fn)
-        return None
-</t>
-<t tx="ekr.20160416163605.102">def openZipFile(self, fn):
-    # lm = self
-    try:
-        theFile = zipfile.ZipFile(fn, 'r')
-        if not theFile: return None
-        # Read the file into an StringIO file.
-        aList = theFile.namelist()
-        name = aList and len(aList) == 1 and aList[0]
-        if not name: return None
-        s = theFile.read(name)
-        if g.isPython3: s = g.ue(s, 'utf-8')
-        return StringIO(s)
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.error("can not open:", fn)
-        return None
-</t>
-<t tx="ekr.20160416163605.104">def readOpenedLeoFile(self, c, gui, fn, readAtFileNodesFlag, theFile):
-    # New in Leo 4.10: The open1 event does not allow an override of the init logic.
-    assert theFile
-    # lm = self
-    ok = c.fileCommands.openLeoFile(theFile, fn,
-        readAtFileNodesFlag=readAtFileNodesFlag)
-            # closes file.
-    if ok:
-        if not c.openDirectory:
-            theDir = c.os_path_finalize(g.os_path_dirname(fn))
-            c.openDirectory = c.frame.openDirectory = theDir
-    else:
-        g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
-    return ok
-</t>
 <t tx="ekr.20160416163605.105"># https://github.com/leo-editor/leo-editor/issues/261
 </t>
-<t tx="ekr.20160416163605.106"></t>
-<t tx="ekr.20160416163605.107">def createMainLayout(self, parent):
-    '''Create the layout for Leo's main window.'''
-    # c = self.leo_c
-    vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-    # Splitter two is the "main" splitter, containing splitter.
-    splitter2 = splitter_class(parent)
-    splitter2.setOrientation(QtCore.Qt.Vertical)
-    splitter2.setObjectName("splitter_2")
-    splitter2.splitterMoved.connect(self.onSplitter2Moved)
-    splitter = splitter_class(splitter2)
-    splitter.setOrientation(QtCore.Qt.Horizontal)
-    splitter.setObjectName("splitter")
-        # It's unwise to change this name:
-        # users may have saved layouts that refer to it.
-    splitter.splitterMoved.connect(self.onSplitter1Moved)
-    # Official ivar:
-    self.verticalLayout = vLayout
-    self.setSizePolicy(splitter)
-    self.verticalLayout.addWidget(splitter2)
-    return splitter, splitter2
-</t>
-<t tx="ekr.20160416163605.108">def get_main_splitter(self):
-    '''Return the splitter whose name is "splitter".'''
-    return self.get_splitter_by_name('splitter')
-    
-def get_splitter2(self):
-    '''Return the splitter whose name is "splitter_2".'''
-    return self.get_splitter_by_name('splitter_2')
-
-def get_splitter_by_name(self, name):
-    '''Return the splitter with the given objectName().'''
-    top = self.get_top_splitter()
-    return top and top.get_splitter_by_name(name)
-</t>
-<t tx="ekr.20160416163605.109">def get_splitter_by_name(self, name):
-    '''Return the splitter with the given objectName().'''
-    if self.objectName() == name:
-        return self
-    for i in range(self.count()):
-        w = self.widget(i)
-        # Recursively test w and its descendants.
-        if isinstance(w, NestedSplitter):
-            w2 = w.get_splitter_by_name(name)
-            if w2:
-                return w2
-    return None
-</t>
 <t tx="ekr.20160416163605.11"></t>
-<t tx="ekr.20160416163605.110">def setSplitDirection(self, orientation='vertical'):
-    '''Set the splitter orientation for the Leo main window.'''
-    c = self.leo_c
-    fl = c.free_layout
-    if not fl: return
-    splitter = fl.get_main_splitter()
-    splitter2 = fl.get_splitter2()
-    if splitter and splitter2:
-        vert = orientation and orientation.lower().startswith('v')
-        h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
-        orientation1 = h if vert else v
-        orientation2 = v if vert else h
-        splitter.setOrientation(orientation1)
-        splitter2.setOrientation(orientation2)
-</t>
-<t tx="ekr.20160416163605.111">def divideLeoSplitter(self, verticalFlag, frac):
-    '''Divide the main or secondary splitter, using the key invariant.'''
-    if self.splitVerticalFlag == verticalFlag:
-        self.divideLeoSplitter1(frac, verticalFlag)
-        self.ratio = frac # Ratio of body pane to tree pane.
-    else:
-        self.divideLeoSplitter2(frac, verticalFlag)
-        self.secondary_ratio = frac # Ratio of tree pane to log pane.
-
-def divideLeoSplitter1(self, frac, verticalFlag):
-    '''Divide the main splitter.'''
-    free_layout = self.c and self.c.free_layout
-    w = free_layout.get_splitter2()
-    if w:
-        self.divideAnySplitter(frac, w)
-    # else: g.trace('===== skip', g.callers())
-
-def divideLeoSplitter2(self, frac, verticalFlag):
-    '''Divide the secondary splitter.'''
-    free_layout = self.c and self.c.free_layout
-    w = free_layout.get_main_splitter()
-    if w:
-        self.divideAnySplitter(frac, w)
-    # else: g.trace('===== skip', g.callers())
-</t>
-<t tx="ekr.20160416163605.112"># This is the general-purpose placer for splitters.
-# It is the only general-purpose splitter code in Leo.
-
-def divideAnySplitter(self, frac, splitter):
-    sizes = splitter.sizes()
-    if len(sizes) != 2:
-        g.trace('%s widget(s) in %s' % (len(sizes), id(splitter)))
-        return
-    if frac &gt; 1 or frac &lt; 0:
-        g.trace('split ratio [%s] out of range 0 &lt;= frac &lt;= 1' % frac)
-        return
-    s1, s2 = sizes
-    s = s1 + s2
-    s1 = int(s * frac + 0.5)
-    s2 = s - s1
-    splitter.setSizes([s1, s2])
-</t>
-<t tx="ekr.20160416163605.113">def onSplitter1Moved(self, pos, index):
-    '''Handle a moved event in splitter1.'''
-    c = self.leo_c
-    w = c.free_layout.get_main_splitter()
-    if w:
-         c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
-
-def onSplitter2Moved(self, pos, index):
-    '''Handle a moved event in splitter2.'''
-    c = self.leo_c
-    w = c.free_layout.get_splitter2()
-    if w:
-        c.frame.ratio = self.splitterFrac(w, pos, index)
-</t>
-<t tx="ekr.20160416163605.114">def splitterFrac(self, splitter, pos, index):
-    '''Return the ratio of pos to the total.'''
-    i, j = splitter.getRange(index)
-    return float(pos) / float(j - i)
-</t>
 <t tx="ekr.20160416163605.12">Added c.last_dir logic to LeoQtGui.runOpen/SaveFileDialog.
 Added g.init_dialog_folder.</t>
 <t tx="ekr.20160416163605.13"></t>
 <t tx="ekr.20160416163605.14"># Changed g.get_directives_dict.</t>
-<t tx="ekr.20160416163605.15">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/156
+<t tx="ekr.20160416163605.15">https://github.com/leo-editor/leo-editor/issues/156
 
 This was oh-so-tricky. 
 
 See: site-packages/IPython/core/interactiveshell.py
 
 Created in run_cell and run_code.
-
-
-@language python
 </t>
 <t tx="ekr.20160416163605.16">Specifying a new Leo-Editor file on the command line no longer works
 https://github.com/leo-editor/leo-editor/issues/245
@@ -19890,7 +19562,6 @@ The fix was to LM.computeFilesList.
 <t tx="ekr.20160416163605.19"># https://github.com/leo-editor/leo-editor/issues/132
 
 at.putRefAt never puts @+-middle sentinels.</t>
-<t tx="ekr.20160416163605.2"></t>
 <t tx="ekr.20160416163605.20">Changed plugins.loadOnePlugin.</t>
 <t tx="ekr.20160416163605.21">https://github.com/leo-editor/leo-editor/issues/241
 
@@ -19900,1336 +19571,26 @@ Changed replaceClipboardWith.</t>
 </t>
 <t tx="ekr.20160416163605.33">Call c.initialFocusHelper in several places.</t>
 <t tx="ekr.20160416163605.34">Changed k.strokeFromSetting.</t>
-<t tx="ekr.20160416163605.35">@language rest
-@wrap
-
-Add leo/plugins/importer/ipynb.py &amp; leo/plugins/writers/ipynb.py
+<t tx="ekr.20160416163605.35">Add leo/plugins/importer/ipynb.py &amp; leo/plugins/writers/ipynb.py
 
 - open-jupyter command (where should it run the kernel?)
 
 How to use sphynx with markdown:
 - https://github.com/spatialaudio/nbsphinx/
 - http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
-
-@language python
 </t>
 <t tx="ekr.20160416163605.36">fc.getLeoFile queues the second redraw at idle time!</t>
 <t tx="ekr.20160416163605.37">https://github.com/leo-editor/leo-editor/issues/255
 
 Added @rst-table and related code.
 </t>
-<t tx="ekr.20160416163605.38"></t>
-<t tx="ekr.20160416163605.39"></t>
-<t tx="ekr.20160416163605.4"># Don't use print here.
-# LeoQtGui.destroySelf now calls qtApp.quit, not exit.
-# closeLeoWindow now calls g.app.windowList.remove(frame).
-# (It used to be done in destroyWindow).</t>
-<t tx="ekr.20160416163605.42">def findChapterNode(self, name):
-    '''Return the position of the first @chapter node with the given name
-    anywhere in the entire outline.
-
-    All @chapter nodes are created as children of the @chapters node,
-    but users may move them anywhere.'''
-    trace = False and not g.unitTesting
-    cc = self
-    name = g.toUnicode(name)
-    for p in cc.c.all_positions():
-        chapterName, binding = self.parseHeadline(p)
-        if chapterName == name:
-            if trace: g.trace('found @chapter', name)
-            return p
-    if trace: g.trace('not found: @chapter', name)
-    return None # Not an error.
-</t>
-<t tx="ekr.20160416163605.44">def __init__(self, c):
-    '''Ctor for ChapterController class.'''
-    self.c = c
-    self.chaptersDict = {}
-        # Keys are chapter names, values are chapters.
-        # Important: chapter names never change,
-        # even if their @chapter node changes.
-    self.initing = True
-        # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
-        # True: suppress undo when creating chapters.
-    self.re_chapter = None
-        # Set where used.
-    self.selectedChapter = None
-    self.selectChapterLockout = False
-        # True: cc.selectChapterForPosition does nothing.
-        # Note: Used in qt_frame.py.
-    self.tt = None # May be set in finishCreate.
-    self.use_tabs = c.config.getBool('use_chapter_tabs')
-</t>
-<t tx="ekr.20160416163605.45"></t>
-<t tx="ekr.20160416163605.49">def registerCommand(self, commandName, shortcut, func,
-    pane='all', source_c=None, verbose=False
-):
-    '''
-    Make the function available as a minibuffer command,
-    and optionally attempt to bind a shortcut.
-
-    You can wrap any method in a callback function, so the
-    restriction to functions is not significant.
-
-    If wrap is True then func will be wrapped with c.universalCallback.
-    source_c is the commander in which an @command or @button node is defined.
-    '''
-    trace = False and not g.unitTesting
-    # trace = trace and commandName.startswith('chapter-select-')
-    traceCommand = False
-    traceEntry = False
-    traceStroke = True
-    c, k = self.c, self
-    if trace and traceEntry:
-        # g.trace(pane, commandName, 'source_c:', source_c)
-        g.trace(pane, commandName, shortcut)
-    f = c.commandsDict.get(commandName)
-    if f and f.__name__ != func.__name__:
-        g.trace('redefining', commandName, f, '-&gt;', func)
-    assert not g.isStroke(shortcut)
-    c.commandsDict[commandName] = func
-    if shortcut:
-        if trace and traceStroke: g.trace('shortcut', shortcut)
-        stroke = k.strokeFromSetting(shortcut)
-    elif commandName.lower() == 'shortcut': # Causes problems.
-        stroke = None
-    else:
-        # Try to get a stroke from leoSettings.leo.
-        stroke = None
-        junk, aList = c.config.getShortcut(commandName)
-        for si in aList:
-            assert g.isShortcutInfo(si), si
-            assert g.isStrokeOrNone(si.stroke)
-            if si.stroke and not si.pane.endswith('-mode'):
-                # if trace: g.trace('*** found',si)
-                stroke = si.stroke
-                pane = si.pane # 2015/05/11.
-                break
-    if trace and traceStroke: g.trace(pane, stroke, commandName)
-    if stroke:
-        ok = k.bindKey(pane, stroke, func, commandName, tag='register-command')
-            # Must be a stroke.
-        k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-        if trace and traceCommand and ok and not g.app.silentMode:
-            g.blue('', '@command: %s = %s' % (
-                commandName, k.prettyPrintKey(stroke)))
-    elif trace and traceCommand and not g.app.silentMode:
-        g.blue('', '@command: %s' % (commandName))
-    # Fixup any previous abbreviation to press-x-button commands.
-    if commandName.startswith('press-') and commandName.endswith('-button'):
-        d = c.config.getAbbrevDict()
-            # Keys are full command names, values are abbreviations.
-        if commandName in list(d.values()):
-            for key in d:
-                if d.get(key) == commandName:
-                    c.commandsDict[key] = c.commandsDict.get(commandName)
-                    break
-</t>
+<t tx="ekr.20160416163605.4">LeoQtGui.destroySelf now calls qtApp.quit, not exit.
+closeLeoWindow now calls g.app.windowList.remove(frame).
+(It used to be done in destroyWindow).</t>
 <t tx="ekr.20160416163605.5"></t>
-<t tx="ekr.20160416163605.50"></t>
-<t tx="ekr.20160416163605.51">def parseHeadline(self, p):
-    '''Return the chapter name and key binding for p.h.'''
-    if not self.re_chapter:
-        self.re_chapter = re.compile(
-            r'^@chapter\s+([^@]+)\s*(@key\s*=\s*(.+)\s*)?')
-            # @chapter (all up to @) (@key=(binding))?
-            # name=group(1), binding=group(3)
-    m = self.re_chapter.search(p.h)
-    if m:
-        chapterName, binding = m.group(1), m.group(3)
-        if chapterName:
-            chapterName = self.sanitize(chapterName)
-        if binding: binding = binding.strip()
-    else:
-        chapterName = binding = None
-    return chapterName, binding
-</t>
-<t tx="ekr.20160416163605.52">def sanitize(self, s):
-    '''Convert s to a safe chapter name.'''
-    # Similar to g.sanitize_filename, but simpler.
-    result = []
-    for ch in s.strip():
-        if ch in string.ascii_letters:
-            result.append(ch)
-        elif ch in ' \t':
-            result.append('-')
-    s = ''.join(result)
-    s = s.replace('--','-')
-    return s[: 128]
-</t>
-<t tx="ekr.20160416163605.53"># flattened, word, ignore-case, head, body</t>
-<t tx="ekr.20160416163605.54">def setAllChapterNames(self):
-    '''Called early and often to discover all chapter names.'''
-    c, cc, result = self.c, self, []
-    sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
-    seen = set()
-    # Weirdly necessary.
-    cc.chaptersDict['main'] = Chapter(c, cc, 'main')
-    cc.makeCommand('main')
-        # This binds any existing bindings to chapter-select-main.
-    for p in c.all_positions():
-        chapterName, binding = self.parseHeadline(p)
-        if chapterName:
-            if p.v not in seen:
-                seen.add(p.v)
-                if chapterName != sel_name:
-                    result.append(chapterName)
-                cc.makeCommand(chapterName, binding)
-    if 'main' not in result and sel_name != 'main':
-        result.append('main')
-    result.sort()
-    result.insert(0, sel_name)
-    return result
-</t>
-<t tx="ekr.20160416163605.55"># This must be called late in the init process, after the first redraw.
-
-def finishCreate(self):
-    '''Create the box in the icon area.'''
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: g.es_debug('(cc)')
-    cc, c = self, self.c
-    cc.createIcon()
-    # Create the main chapter
-    if trace: g.trace('===== ChapterController.finishCreate')
-    # Usually done in cc.setAllChapterNames.
-    if not cc.chaptersDict.get('main'):
-        cc.chaptersDict['main'] = Chapter(c, cc, 'main')
-        cc.makeCommand('main')
-    for p in c.all_unique_positions():
-        chapterName, binding = self.parseHeadline(p)
-        if chapterName:
-            if cc.chaptersDict.get(chapterName):
-                self.error('duplicate chapter name: %s' % chapterName)
-            else:
-                cc.chaptersDict[chapterName] = Chapter(c, cc, chapterName)
-                cc.makeCommand(chapterName, binding)
-    # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
-    cc.initing = False
-    # Always select the main chapter.
-    # It can be alarming to open a small chapter in a large .leo file.
-    cc.selectChapterByName('main', collapse=False)
-        # 2010/10/09: an important bug fix!
-</t>
-<t tx="ekr.20160416163605.56">def makeCommand(self, chapterName, binding=None):
-    '''Make chapter-select-&lt;chapterName&gt; command.'''
-    trace = False and not g.unitTesting
-    trace_redef = True
-    c, cc = self.c, self
-    command = 'chapter-select-%s' % chapterName
-    inverseBindingsDict = c.k.computeInverseBindingDict()
-    if command in c.commandsDict:
-        if trace and trace_redef:
-            g.trace('===== already defined', command)
-            g.trace('inverse', inverseBindingsDict.get(command))
-        return
-    if trace:
-        g.trace('===== defining', command, binding, g.callers(1))
-        g.trace('inverse', inverseBindingsDict.get(command))
-
-    def select_chapter_callback(event,cc=cc,name=chapterName):
-        chapter = cc.chaptersDict.get(name)
-        if chapter:
-            cc.selectChapterLockout = True
-            cc.selectChapterByNameHelper(chapter,collapse=True)
-            cc.selectChapterLockout = False
-        else:
-            cc.note('no such chapter: %s' % name)
-            
-    # Always bind the command without a shortcut.
-    # This will create the command bound to any existing settings.
-    bindings = (None, binding) if binding else (None,)
-    for shortcut in bindings:
-        c.k.registerCommand(
-            command,
-            func=select_chapter_callback,
-            pane='all',
-            shortcut=shortcut,
-            verbose=False)
-</t>
-<t tx="ekr.20160416163605.57"></t>
-<t tx="ekr.20160416163605.58">@language rest
-@wrap
-
-exception executing command
-Traceback (most recent call last):
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoCommands.py", line 6680, in selectPosition
-cc.selectChapterForPosition(p)
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoChapters.py", line 305, in selectChapterForPosition
-cc.selectChapterByName(name)
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoChapters.py", line 137, in selectChapterByName
-cc.selectChapterByNameHelper(chapter, collapse=collapse)
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoChapters.py", line 154, in selectChapterByNameHelper
-cc.selectedChapter.unselect()
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoChapters.py", line 505, in unselect
-c.redraw(p)
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoCommands.py", line 5446, in redraw
-c.selectPosition(p2 or p)
-
-File "C:\Users\Lunz8748\Documents\sourcetreeapp\leo-editor\leo\core\leoCommands.py", line 6680, in selectPosition
-cc.selectChapterForPosition(p)
-
-etc.</t>
-<t tx="ekr.20160416163605.59">def unselect(self):
-    '''Remember chapter info when a chapter is about to be unselected.'''
-    trace = False and not g.unitTesting
-    c = self.c
-    # Always try to return to the same position.
-    if trace: g.trace('===== leaving', self.name, c.p.h)
-    self.p = c.p
-    if self.name == 'main':
-        p = c.p
-    else:
-        root = None
-        while c.hoistStack:
-            bunch = c.hoistStack.pop()
-            root = bunch.p
-            if root == self.root:
-                if trace: g.trace('found', root.h)
-                break
-        if trace and not root:
-            # Not serious. Can be caused by a user de-hoist.
-            g.trace('error unselecting', self.name)
-        # Re-institute the previous hoist.
-        if c.hoistStack:
-            p = c.hoistStack[-1].p
-            if trace: g.trace('re-hoist', p.h, c.positionExists(p))
-            # Careful: c.selectPosition would pop the hoist stack.
-            c.setCurrentPosition(p)
-        else:
-            if trace: g.trace('empty hoist-stack')
-            p = root or c.p
-    if trace: g.trace(c.hoistStack)
-    c.redraw(p) 
-</t>
 <t tx="ekr.20160416163605.6"># The qt show-invisibles code initially affected word-wrap.</t>
-<t tx="ekr.20160416163605.60">def selectChapterForPosition(self, p, chapter=None):
-    '''
-    Select a chapter containing position p.
-    New in Leo 4.11: prefer the given chapter if possible.
-    Do nothing if p if p does not exist or is in the presently selected chapter.
-
-    Note: this code calls c.redraw() if the chapter changes.
-    '''
-    trace = (False or g.app.debug) and not g.unitTesting
-    c, cc = self.c, self
-    # New in Leo 4.11
-    if cc.selectChapterLockout:
-        return
-    selChapter = cc.getSelectedChapter()
-    if trace: g.trace('***', p.h,
-        chapter.name if chapter else 'main',
-        selChapter.name if selChapter else 'main',
-        g.callers(2))
-    if not chapter and not selChapter:
-        if trace: g.trace('*** selecting main chapter')
-        return 
-    if not p:
-        if trace: g.trace('no p')
-        return
-    if not c.positionExists(p):
-        if trace: g.trace('does not exist', p.h)
-        return
-    # New in Leo 4.11: prefer the given chapter if possible.
-    theChapter = chapter or selChapter
-    if not theChapter:
-        return
-    # First, try the presently selected chapter.
-    firstName = theChapter.name
-    # g.trace('===== firstName', firstName)
-    if firstName == 'main':
-        if trace: g.trace('no search: main chapter:', p.h)
-        return
-    if theChapter.positionIsInChapter(p):
-        if trace: g.trace('position found in chapter:', theChapter.name, p.h)
-        cc.selectChapterByName(theChapter.name)
-        return
-    for name in cc.chaptersDict:
-        if name not in (firstName, 'main'):
-            theChapter = cc.chaptersDict.get(name)
-            if theChapter.positionIsInChapter(p):
-                if trace: g.trace('select:', theChapter.name)
-                cc.selectChapterByName(name)
-                break
-    else:
-        if trace: g.trace('select main')
-        cc.selectChapterByName('main')
-    # Fix bug 869385: Chapters make the nav_qt.py plugin useless
-    c.redraw_now()
-</t>
-<t tx="ekr.20160416163605.61">def selectChapterByName(self, name, collapse=True):
-    '''Select a chapter.  Return True if a redraw is needed.'''
-    trace = False and not g.unitTesting
-    cc, c = self, self.c
-    if g.isInt(name):
-        return cc.note('PyQt5 chapaters not supported')
-    chapter = cc.chaptersDict.get(name)
-    if not chapter:
-        chapter = cc.chaptersDict[name] = Chapter(c, cc, name)
-    cc.selectChapterByNameHelper(chapter, collapse=collapse)
-</t>
-<t tx="ekr.20160416163605.62">def selectChapterByNameHelper(self, chapter, collapse=True):
-    trace = False and not g.unitTesting
-    cc, c = self, self.c
-    if trace:
-        g.trace('old: %s, new: %s' % (
-            cc.selectedChapter and cc.selectedChapter.name,
-            chapter and chapter.name))
-    if not cc.selectedChapter and chapter.name == 'main':
-        if trace: g.trace('already selected1')
-        chapter.p = c.p
-        return
-    if chapter == cc.selectedChapter:
-        if trace: g.trace('already selected2')
-        return
-    if cc.selectedChapter:
-        cc.selectedChapter.unselect()
-    if chapter.p and c.positionExists(chapter.p):
-        p = chapter.p
-    elif chapter.name == 'main':
-        p = chapter.p = c.p
-    else:
-        p = chapter.p = chapter.findRootNode()
-        if not p:
-            if trace: g.trace('no root node!', chapter.name)
-            return
-    if trace: g.trace(chapter.name, 'chapter.p', chapter.p.h)
-    chapter.select()
-    # 2016/04/14: Prevent unbounded recursion by
-    # causing selectChapterForPosition to return immediately.
-    old_lockout = self.selectChapterLockout
-    try:
-        self.selectChapterLockout = True
-        c.setCurrentPosition(chapter.p)
-    finally:
-        self.selectChapterLockout = old_lockout
-    cc.selectedChapter = chapter
-    # Clean up, but not initially.
-    if collapse and chapter.name == 'main':
-        for p in c.all_positions():
-            # Compare vnodes, not positions.
-            if p.v != c.p.v:
-                p.contract()
-    # New in Leo 4.6 b2: *do* call c.redraw.
-    c.redraw()
-</t>
-<t tx="ekr.20160416163605.63">https://github.com/leo-editor/leo-editor/issues/248
-
-Everything appears to work. We should chat.</t>
-<t tx="ekr.20160416163605.64">def readOneAtCleanNode(self, root):
-    '''Update the @clean/@nosent node at root.'''
-    trace = False and not g.unitTesting
-    at, c, x = self, self.c, self.c.shadowController
-    fileName = g.fullPath(c, root)
-    if not g.os_path_exists(fileName):
-        g.es('not found: %s' % (fileName), color='red')
-        return
-    at.rememberReadPath(fileName, root)
-    # Set at.encoding first.
-    at.initReadIvars(root, fileName)
-        # Must be called before at.scanAllDirectives.
-    at.scanAllDirectives(root)
-        # Sets at.startSentinelComment/endSentinelComment.
-    new_public_lines = at.read_at_clean_lines(fileName)
-    old_private_lines = self.write_at_clean_sentinels(root)
-    marker = x.markerFromFileLines(old_private_lines, fileName)
-    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-    if old_public_lines:
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines, old_private_lines, marker, p=root)
-    else:
-        if trace: g.trace('*** no previous lines.' '')
-        new_private_lines = []
-        root.b = ''.join(new_public_lines)
-        root.clearOrphan()
-        return True
-    if trace:
-        self.dump(new_public_lines, 'new public')
-        self.dump(old_private_lines, 'old private')
-        self.dump(new_private_lines, 'new private')
-    if new_private_lines == old_private_lines:
-        if trace: g.trace('lines match')
-        return True
-    if not g.unitTesting:
-        g.es("updating:", root.h)
-    # The following is like at.read() w/o caching logic.
-    root.clearVisitedInTree()
-    # Init the input stream used by read-open file.
-    # g.trace('\nnew_private_lines...\n',''.join(new_private_lines))
-    at.read_lines = new_private_lines
-    at.read_ptr = 0
-    # Read the file using the @file read logic.
-    # g.trace('***',repr(at.startSentinelComment),repr(at.endSentinelComment))
-    thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
-    root.clearDirty()
-    if at.errors == 0:
-        at.deleteUnvisitedNodes(root)
-        at.deleteTnodeList(root)
-        at.readPostPass(root, thinFile)
-            # Used by mod_labels plugin: May set c dirty.
-        root.clearOrphan()
-    else:
-        root.setOrphan()
-    at.deleteAllTempBodyStrings()
-    return at.errors == 0
-</t>
-<t tx="ekr.20160416163605.65">def dump(self, lines, tag):
-    '''Dump all lines.'''
-    print('***** %s lines...\n' % tag)
-    for s in lines:
-        print(s.rstrip())
-</t>
-<t tx="ekr.20160416163605.66">def read_at_clean_lines(self, fn):
-    '''Return all lines of the @clean/@nosent file at fn.'''
-    at = self
-    s = at.openFileHelper(fn)
-        # Use the standard helper. Better error reporting.
-        # Important: uses 'rb' to open the file.
-    s = g.toUnicode(s, encoding=at.encoding)
-    s = s.replace('\r\n', '\n')
-        # Suppress meaningless "node changed" messages.
-    return g.splitLines(s)
-</t>
-<t tx="ekr.20160416163605.67">def write_at_clean_sentinels(self, root):
-    '''
-    Return all lines of the @clean tree as if it were
-    written as an @file node.
-    '''
-    at = self.c.atFileCommands
-    at.write(root,
-        kind='@nosent',
-        nosentinels=False,
-        perfectImportFlag=False,
-        scriptWrite=False, # Do *not* force python sentinels!
-        thinFile=True,
-        toString=True)
-    s = g.toUnicode(at.stringOutput, encoding=at.encoding)
-    return g.splitLines(s)
-</t>
-<t tx="ekr.20160416163605.68">def writeAllHelper(self, p, root,
-    force, toString, writeAtFileNodesFlag, writtenFiles
-):
-    '''
-    Write one file for the at.writeAll.
-    Do *not* write @auto files unless p == root.
-    This prevents the write-all command from needlessly updating
-    the @persistence data, thereby annoyingly changing the .leo file.
-    '''
-    trace = False and not g.unitTesting
-    at, c = self, self.c
-    at.root = root # 2014/10/21
-    if not force and p.v not in writtenFiles:
-        at.autoBeautify(p)
-    if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
-        pathChanged = False
-    else:
-        oldPath = g.os_path_normcase(at.getPathUa(p))
-        newPath = g.os_path_normcase(g.fullPath(c, p))
-        pathChanged = oldPath and oldPath != newPath
-        # 2010/01/27: suppress this message during save-as and save-to commands.
-        if pathChanged and not c.ignoreChangedPaths:
-            # g.warning('path changed for',p.h)
-            # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
-                # p.h,repr(oldPath),repr(newPath)))
-            ok = self.promptForDangerousWrite(
-                fileName=None,
-                kind=None,
-                message='%s\n%s' % (
-                    g.tr('path changed for %s' % (p.h)),
-                    g.tr('write this file anyway?')))
-            if ok:
-                at.setPathUa(p, newPath) # Remember that we have changed paths.
-            else:
-                return
-    if (p.v.isDirty() or
-        # p.v.isOrphan() or # 2011/06/17.
-        pathChanged or
-        writeAtFileNodesFlag or
-        p.v in writtenFiles
-    ):
-        # Tricky: @ignore not recognised in @asis nodes.
-        if p.isAtAsisFileNode():
-            at.asisWrite(p, toString=toString)
-            writtenFiles.append(p.v)
-        elif p.isAtIgnoreNode():
-            pass # Handled in caller.
-        elif p.isAtAutoNode():
-            at.writeOneAtAutoNode(p, toString=toString, force=force)
-            writtenFiles.append(p.v)
-            # Do *not* clear the dirty bits the entries in @persistence tree here!
-        elif p.isAtCleanNode():
-            at.write(p, kind='@clean', nosentinels=True, toString=toString)
-            writtenFiles.append(p.v)
-        elif p.isAtEditNode():
-            at.writeOneAtEditNode(p, toString=toString)
-            writtenFiles.append(p.v)
-        elif p.isAtNoSentFileNode():
-            at.write(p, kind='@nosent', nosentinels=True, toString=toString)
-            writtenFiles.append(p.v)
-        elif p.isAtShadowFileNode():
-            at.writeOneAtShadowNode(p, toString=toString, force=force or pathChanged)
-            writtenFiles.append(p.v)
-        elif p.isAtThinFileNode():
-            at.write(p, kind='@thin', thinFile=True, toString=toString)
-            writtenFiles.append(p.v)
-        elif p.isAtFileNode():
-            # Write old @file nodes using @thin format.
-            at.write(p, kind='@file', thinFile=True, toString=toString)
-            writtenFiles.append(p.v)
-        if p.v in writtenFiles:
-            # Clear the dirty bits in all descendant nodes.
-            # However, persistence data may still have to be written.
-            # This can not be helped.
-            if trace: g.trace('clearing', p.h)
-            for p2 in p.self_and_subtree():
-                p2.v.clearDirty()
-</t>
-<t tx="ekr.20160416163605.69">def autoBeautify(self, p):
-    '''Auto beautify p's tree if allowed by settings and directives.'''
-    c = self.c
-    try:
-        if not p.isDirty():
-            return
-        if leoBeautify.should_kill_beautify(p):
-            return
-        if c.config.getBool('tidy-autobeautify'):
-            # g.trace(p.h)
-            leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
-    except Exception:
-        g.es('unexpected exception')
-        g.es_exception()
-</t>
-<t tx="ekr.20160416163605.7"></t>
-<t tx="ekr.20160416163605.70">def write(self, root,
-    kind='@unknown', # Should not happen.
-    nosentinels=False,
-    perfectImportFlag=False,
-    scriptWrite=False,
-    thinFile=False,
-    toString=False,
-):
-    """Write a 4.x derived file.
-    root is the position of an @&lt;file&gt; node"""
-    trace = False and not g.unitTesting
-    at = self; c = at.c
-    c.endEditing() # Capture the current headline.
-    at.setTargetFileName(nosentinels, root, thinFile, toString)
-    at.initWriteIvars(root, at.targetFileName,
-        perfectImportFlag=perfectImportFlag,
-        nosentinels=nosentinels,
-        thinFile=thinFile,
-        scriptWrite=scriptWrite,
-        toString=toString,
-    )
-    # "look ahead" computation of eventual fileName.
-    eventualFileName = c.os_path_finalize_join(
-        at.default_directory, at.targetFileName)
-    if trace:
-        g.trace('default_dir',
-            g.os_path_exists(at.default_directory),
-            at.default_directory)
-        g.trace('eventual_fn', eventualFileName)
-    if not scriptWrite and not toString:
-        if at.shouldPromptForDangerousWrite(eventualFileName, root):
-            # Prompt if writing a new @file or @thin node would
-            # overwrite an existing file.
-            ok = self.promptForDangerousWrite(eventualFileName, kind)
-            if ok:
-                at.rememberReadPath(eventualFileName, root)
-            else:
-                g.es("not written:", eventualFileName)
-                at.setDirtyOrphanBits(root)
-                return
-    if not at.openFileForWriting(root, at.targetFileName, toString):
-        # openFileForWriting calls root.setDirty() if there are errors.
-        if trace: g.trace('open failed', eventualFileName)
-        return
-    try:
-        at.writeOpenFile(root, nosentinels=nosentinels, toString=toString)
-        assert root == at.root, 'write'
-        if toString:
-            at.closeWriteFile()
-                # sets at.stringOutput and at.outputContents
-            # Major bug: failure to clear this wipes out headlines!
-            # Minor bug: sometimes this causes slight problems...
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
-            root.v._p_changed = True
-        else:
-            at.closeWriteFile()
-            if at.errors &gt; 0 or root.isOrphan():
-                at.setDirtyOrphanBits(root)
-                g.es("not written:", g.shortFileName(at.targetFileName))
-            else:
-                # Fix bug 889175: Remember the full fileName.
-                at.rememberReadPath(eventualFileName, root)
-                at.replaceTargetFileIfDifferent(root)
-                    # Sets/clears dirty and orphan bits.
-    except Exception:
-        if hasattr(self.root.v, 'tnodeList'):
-            delattr(self.root.v, 'tnodeList')
-        if toString:
-            at.exception("exception preprocessing script")
-            root.v._p_changed = True
-        else:
-            at.writeException() # Sets dirty and orphan bits.
-</t>
-<t tx="ekr.20160416163605.71">def setTargetFileName(self, nosentinels, root, thinFile, toString):
-    '''Set the target file name for at.write.'''
-    at = self
-    if toString:
-        at.targetFileName = "&lt;string-file&gt;"
-    elif nosentinels:
-        at.targetFileName = (
-            root.atNoSentFileNodeName() or
-            root.atCleanNodeName()) # 2015/04/06
-    elif thinFile:
-        at.targetFileName = root.atThinFileNodeName()
-        if not at.targetFileName:
-            # We have an @file node.
-            at.targetFileName = root.atFileNodeName()
-    else:
-        at.targetFileName = root.atFileNodeName()
-</t>
-<t tx="ekr.20160416163605.72">def setDirtyOrphanBits(self, root):
-    '''
-    Setting the orphan and dirty flags tells Leo to write the tree.
-    However, the dirty bits get cleared if we are called from the save command.
-    '''
-    at = self
-    root.setOrphan()
-    root.setDirty()
-    # Delete the temp file.
-    if at.outputFileName:
-        self.remove(at.outputFileName)
-</t>
-<t tx="ekr.20160416163605.73">def writeOpenFile(self, root, nosentinels=False, toString=False, fromString=''):
-    """Do all writes except asis writes."""
-    at = self
-    s = fromString if fromString else root.v.b
-    root.clearAllVisitedInTree()
-    at.putAtFirstLines(s)
-    at.putOpenLeoSentinel("@+leo-ver=5")
-    at.putInitialComment()
-    at.putOpenNodeSentinel(root)
-    at.putBody(root, fromString=fromString)
-    at.putCloseNodeSentinel(root)
-    # The -leo sentinel is required to handle @last.
-    at.putSentinel("@-leo")
-    root.setVisited()
-    at.putAtLastLines(s)
-    if not toString:
-        at.warnAboutOrphandAndIgnoredNodes()
-</t>
-<t tx="ekr.20160416163605.74">- Can they be interrupted?
-- Use list(set(words)) to check each word only once.
-- The do plain search for possibly-misspelled words in each body.
-
-</t>
-<t tx="ekr.20160416163605.75">def __init__(self, c, tabName):
-    """Ctor for SpellTabHandler class."""
-    self.c = c
-    self.body = c.frame.body
-    self.currentWord = None
-    self.re_word = re.compile(
-        # Don't include underscores in words. It just complicates things.
-        # [^\W\d_] means any unicode char except underscore or digit.
-        r"([^\W\d_]+)(['`][^\W\d_]+)?",
-        flags=re.UNICODE)
-    self.outerScrolledFrame = None
-    self.seen = set()
-        # Adding a word to seen will ignore it until restart.
-    self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
-        # A text widget for scanning.
-        # Must have a parent frame even though it is not packed.
-    if enchant:
-        self.spellController = EnchantClass(c)
-        self.tab = g.app.gui.createSpellTab(c, self, tabName)
-        self.loaded = True
-    else:
-        self.spellController = None
-        self.tab = None
-        self.loaded = False
-</t>
-<t tx="ekr.20160416163605.76">def find(self, event=None):
-    """Find the next unknown word."""
-    trace = True and not g.unitTesting
-    trace_lookup = False
-    trace_end_body = False
-    if not self.loaded:
-        return
-    c, n, p = self.c, 0, self.c.p
-    if trace: g.trace('entry', p.h)
-    sc = self.spellController
-    w = c.frame.body.wrapper
-    c.selectPosition(p)
-    s = w.getAllText().rstrip()
-    ins = w.getInsertPoint()
-    # New in Leo 5.3: use regex to find words.
-    last_p = p.copy()
-    while True:
-        for m in self.re_word.finditer(s[ins:]):
-            start, word = m.start(0), m.group(0)
-            if word in self.seen:
-                continue
-            n += 1
-            # Ignore the word if numbers precede or follow it.
-            # Seems difficult to do this in the regex itself.
-            k1 = ins + start - 1
-            if k1 &gt;= 0 and s[k1].isdigit():
-                continue
-            k2 = ins + start + len(word)
-            if k2 &lt; len(s) and s[k2].isdigit():
-                continue
-            if trace and trace_lookup: g.trace('lookup', word)
-            alts = sc.processWord(word)
-            if alts:
-                if trace: g.trace('%s searches' % n)
-                self.currentWord = word
-                i = ins + start
-                j = i + len(word)
-                self.showMisspelled(p)
-                self.tab.fillbox(alts, word)
-                c.invalidateFocus()
-                c.bodyWantsFocus()
-                w.setSelectionRange(i, j, insert=j)
-                w.see(j)
-                return
-            else:
-                self.seen.add(word)
-        # No more misspellings in p
-        if trace and trace_end_body: g.trace('----- end of text', p.h)
-        p.moveToThreadNext()
-        if p:
-            ins = 0
-            s = p.b
-        else:
-            if trace: g.trace('%s searches' % n)
-            g.es("no more misspellings")
-            c.selectPosition(last_p)
-            self.tab.fillbox([])
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-            return
-</t>
-<t tx="ekr.20160416163605.77">def showMisspelled(self, p):
-    '''Show the position p, contracting the tree as needed.'''
-    c = self.c
-    redraw = not p.isVisible(c)
-    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-    if c.sparse_spell and not c.p.isAncestorOf(p):
-        for p2 in c.p.self_and_parents():
-            p2.contract()
-            redraw = True
-    for p2 in p.parents():
-        if not p2.isExpanded():
-            p2.expand()
-            redraw = True
-    if redraw:
-        c.redraw(p)
-    else:
-        c.selectPosition(p)
-</t>
-<t tx="ekr.20160416163605.78">import re
-
-# http://stackoverflow.com/questions/8923949/matching-only-a-unicode-letter-in-python-re
-# 
-pat = re.compile(
-    # r"([a-zA-Z][a-zA-Z0-9]*)(['`][a-zA-Z]+)?",
-    # (?&lt;=0|1|2|3|4|5|6|7|8|9)
-    r"([^\W\d_]+)(['`][^\W\d_]+)?", # (?!d)
-    flags=re.UNICODE)
-
-s = """I've abc_xyz wanted Györgyi f8bc54 this.
-
-one two three four"""
-
-print('-----')
-for m in pat.finditer(s):
-    i, word = m.start(0), m.group(0)
-    if 0:
-        print(len(word), word)
-    else:
-        k1 = i - 1
-        k2 = i + len(word)
-        if k1 &gt;= 0 and s[k1].isdigit():
-            pass # print('skip', word)
-        elif k2 &lt; len(s) and s[k2].isdigit():
-            pass # print('skip', word)
-        else:
-            print(len(word), word)
-</t>
-<t tx="ekr.20160416163605.79">@language rest
-@wrap
-
-- Make sure it is called.
-- Use rest colorizer as a template.
-
-@language python
-</t>
 <t tx="ekr.20160416163605.8"></t>
-<t tx="ekr.20160416163605.80">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/258
-
-When a Leo-Editor file contains one or more @auto-md nodes, leoBridge does NOT see the same Leo-Editor file contents that the user sees by interactively opening the Leo-Editor file.
-
-For all the nodes in a @auto-md subtree, leoBridge sees the node headline "NewHeadline".
-
-===== duplicate symptom.
-
-Some ways of looping over the nodes using leoBridge yield too few nodes.
-
-For example, I have a Leo-Editor file containing exactly one node, a @auto-md node that reads in a .md file that generates 40 nodes. My program that uses leoBridge and c.all_positions_iter() to loop over all positions only sees 14 positions. My program that uses leoBridge and c.all_unique_nodes() to loop over all unique vnodes, correctly sees 41 vnodes.</t>
-<t tx="ekr.20160416163605.81">def openLeoFile(self, fileName):
-    '''Open a .leo file, or create a new Leo frame if no fileName is given.'''
-    g = self.g
-    g.app.silentMode = self.silentMode
-    useLog = False
-    if self.isOpen():
-        fileName = self.completeFileName(fileName)
-        c = self.createFrame(fileName)
-        g.app.nodeIndices.compute_last_index(c)
-            # New in Leo 5.1. An alternate fix for bug #130.
-            # When using a bridge Leo might open a file, modify it,
-            # close it, reopen it and change it all within one second.
-            # In that case, this code must properly compute the next
-            # available gnx by scanning the entire outline.
-        if useLog:
-            g.app.gui.log = log = c.frame.log
-            log.isNull = False
-            log.enabled = True
-        return c
-    else:
-        return None
-</t>
-<t tx="ekr.20160416163605.82">def completeFileName(self, fileName):
-    g = self.g
-    if not (fileName and fileName.strip()): return ''
-    import os
-    fileName = g.os_path_finalize_join(os.getcwd(), fileName)
-    head, ext = g.os_path_splitext(fileName)
-    if not ext: fileName = fileName + ".leo"
-    return fileName
-</t>
-<t tx="ekr.20160416163605.83">def createFrame(self, fileName):
-    '''Create a commander and frame for the given file.
-    Create a new frame if the fileName is empty or non-exisent.'''
-    trace = False
-    g = self.g
-    if fileName.strip():
-        if g.os_path_exists(fileName):
-            if trace:
-                import time; t1 = time.time()
-            # This takes a long time due to imports in c.__init__
-            c = g.openWithFileName(fileName)
-            if trace:
-                t2 = time.time()
-                g.trace('g.openWithFileName: %0.2fsec' % (t2 - t1))
-            if c: return c
-        elif not self.silentMode:
-            print('file not found: %s. creating new window' % (fileName))
-    # Create a new frame. Unlike leo.run, this is not a startup window.
-    c = g.app.newCommander(fileName)
-    frame = c.frame
-    frame.createFirstTreeNode() # 2013/09/27: bug fix.
-    assert c.rootPosition()
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-    # Call the 'new' hook for compatibility with plugins.
-    # 2011/11/07: Do this only if plugins have been loaded.
-    g.doHook("new", old_c=None, c=c, new_c=c)
-    return c
-</t>
-<t tx="ekr.20160416163605.85">def getLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
-    '''
-        Read a .leo file.
-        The caller should follow this with a call to c.redraw().
-    '''
-    fc, c = self, self.c
-    t1 = time.time()
-    c.setChanged(False) # May be set when reading @file nodes.
-    fc.warnOnReadOnlyFiles(fileName)
-    fc.checking = False
-    fc.mFileName = c.mFileName
-    fc.initReadIvars()
-    recoveryNode = None
-    try:
-        c.loading = True # disable c.changed
-        if not silent:
-            g.app.checkForOpenFile(c, fileName)
-        ok = fc.getLeoFileHelper(theFile, fileName, silent)
-            # Read the .leo file and create the outline.
-        if ok:
-            fc.resolveTnodeLists()
-                # Do this before reading external files.
-            c.setFileTimeStamp(fileName)
-            if readAtFileNodesFlag:
-                # Redraw before reading the @file nodes so the screen isn't blank.
-                # This is important for big files like LeoPy.leo.
-                c.redraw()
-                recoveryNode = fc.readExternalFiles(fileName)
-    finally:
-        if g.app.debug: g.trace('=====',
-            recoveryNode and recoveryNode.h,
-            c.p and c.p.h)
-        p = recoveryNode or c.p or c.lastTopLevel()
-            # lastTopLevel is a better fallback, imo.
-        # New in Leo 5.3. Delay the second redraw until idle time.
-        # This causes a slight flash, but corrects a hangnail.
-        
-        def handler(timer, c=c, p=p):
-            c.redraw(p)
-            timer.stop()
-
-        timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
-        if timer:
-            timer.start()
-        else:
-            # Defensive code: 
-            c.selectPosition(p)
-        c.checkOutline()
-            # Must be called *after* ni.end_holding.
-        c.loading = False
-            # reenable c.changed
-        theFile.close()
-            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
-            # Leo holding directory/file handles after file close?
-    if c.changed:
-        fc.propegateDirtyNodes()
-    c.setChanged(c.changed) # Refresh the changed marker.
-    fc.initReadIvars()
-    t2 = time.time()
-    g.es('read outline in %2.2f seconds' % (t2 - t1))
-    return ok, c.frame.ratio
-</t>
-<t tx="ekr.20160416163605.86">def getLeoFileHelper(self, theFile, fileName, silent):
-    '''Read the .leo file and create the outline.'''
-    c, fc = self.c, self
-    try:
-        ok = True
-        v = fc.readSaxFile(
-            theFile,
-            fileName,
-            silent,
-            inClipboard=False,
-            reassignIndices=False,
-        )
-        if v: # v is None for minimal .leo files.
-            c.setRootVnode(v)
-            fc.rootVnode = v
-        else:
-            v = leoNodes.VNode(context=c)
-            v.setHeadString('created root node')
-            p = leoNodes.Position(v)
-            p._linkAsRoot(oldRoot=None)
-            fc.rootVnode = v
-            # c.setRootPosition()
-            c.changed = False
-    except BadLeoFile:
-        junk, message, junk = sys.exc_info()
-        if not silent:
-            g.es_exception()
-            c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
-        ok = False
-    return ok
-</t>
-<t tx="ekr.20160416163605.87">def handleNodeConflicts(self):
-    '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
-    c = self.c
-    if not c.nodeConflictList:
-        return
-    if not c.make_node_conflicts_node:
-        g.es_print('suppressed node conflicts', color='red')
-        return
-    # Find the last top-level node.
-    sib = c.rootPosition()
-    while sib.hasNext():
-        sib.moveToNext()
-    # Create the 'Recovered Nodes' node.
-    root = sib.insertAfter()
-    root.setHeadString('Recovered Nodes')
-    root.expand()
-    # For each conflict, create one child and two grandchildren.
-    for bunch in c.nodeConflictList:
-        tag = bunch.get('tag') or ''
-        gnx = bunch.get('gnx') or ''
-        fn = bunch.get('fileName') or ''
-        b1, h1 = bunch.get('b_old'), bunch.get('h_old')
-        b2, h2 = bunch.get('b_new'), bunch.get('h_new')
-        child = root.insertAsLastChild()
-        h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
-        child.setHeadString(h)
-        # child.setBodyString('%s %s' % (tag,gnx))
-        line1 = '%s %s\nDiff...\n' % (tag, gnx)
-        d = difflib.Differ().compare(g.splitLines(b2), g.splitLines(b1))
-        # d = difflib.unified_diff(g.splitLines(b2),g.splitLines(b1))
-        diffLines = [z for z in d]
-        lines = [line1]
-        lines.extend(diffLines)
-        # There is less need to show trailing newlines because
-        # we don't report changes involving only trailing newlines.
-        child.setBodyString(''.join(lines)) # .replace('\n','\\n\n'))
-        n1 = child.insertAsNthChild(0)
-        n2 = child.insertAsNthChild(1)
-        n1.setHeadString('old:' + h1)
-        n1.setBodyString(b1)
-        n2.setHeadString('new:' + h2)
-        n2.setBodyString(b2)
-    return root
-</t>
-<t tx="ekr.20160416163605.88">def propegateDirtyNodes(self):
-    fc = self; c = fc.c
-    aList = [z.copy() for z in c.all_positions() if z.isDirty()]
-    for p in aList:
-        p.setAllAncestorAtFileNodesDirty()
-</t>
-<t tx="ekr.20160416163605.89">def readExternalFiles(self, fileName):
-    '''Read all external files.'''
-    c, fc = self.c, self
-    c.atFileCommands.readAll(c.rootVnode(), partialFlag=False)
-    recoveryNode = fc.handleNodeConflicts()
-    # Do this after reading external files.
-    # The descendent nodes won't exist unless we have read
-    # the @thin nodes!
-    fc.restoreDescendentAttributes()
-    fc.setPositionsFromVnodes()
-    return recoveryNode
-</t>
 <t tx="ekr.20160416163605.9">Changed ClassDef, do_arg, do_arguments, FunctionDef, With nodes.</t>
-<t tx="ekr.20160416163605.90">def warnOnReadOnlyFiles(self, fileName):
-    # os.access may not exist on all platforms.
-    try:
-        self.read_only = not os.access(fileName, os.W_OK)
-    except AttributeError:
-        self.read_only = False
-    except UnicodeError:
-        self.read_only = False
-    if self.read_only and not g.unitTesting:
-        g.error("read only:", fileName)
-</t>
-<t tx="ekr.20160416163605.91">def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
-    '''Open a Leo file.'''
-    c, frame = self.c, self.c.frame
-    # Set c.openDirectory
-    theDir = g.os_path_dirname(fileName)
-    if theDir:
-        c.openDirectory = c.frame.openDirectory = theDir
-    # Get the file.
-    ok, ratio = self.getLeoFile(
-        theFile, fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag,
-        silent=silent,
-    )
-    if ok:
-        frame.resizePanesToRatio(ratio, frame.secondary_ratio)
-    return ok
-</t>
-<t tx="ekr.20160416163605.92">def openWithFileName(fileName, old_c=None, gui=None):
-    """Create a Leo Frame for the indicated fileName if the file exists.
-
-    returns the commander of the newly-opened outline.
-    """
-    return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
-</t>
-<t tx="ekr.20160416163605.93">def loadLocalFile(self, fn, gui, old_c):
-    '''Completely read a file, creating the corresonding outline.
-
-    1. If fn is an existing .leo file (possibly zipped), read it twice:
-    the first time with a NullGui to discover settings,
-    the second time with the requested gui to create the outline.
-
-    2. If fn is an external file:
-    get settings from the leoSettings.leo and myLeoSetting.leo, then
-    create a "wrapper" outline continain an @file node for the external file.
-
-    3. If fn is empty:
-    get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
-    or open an empty outline.
-    '''
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: g.es_debug(fn)
-    lm = self
-    # Step 0: Return if the file is already open.
-    fn = g.os_path_finalize(fn)
-    if fn:
-        c = lm.findOpenFile(fn)
-        if c:
-            if trace: g.trace('Already open: %s' % (fn))
-            return c
-    # Step 1: get the previous settings.
-    # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
-    # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
-    previousSettings = lm.getPreviousSettings(fn)
-    # Step 2: open the outline in the requested gui.
-    # For .leo files (and zipped .leo file) this opens the file a second time.
-    c = lm.openFileByName(fn, gui, old_c, previousSettings)
-    return c
-</t>
-<t tx="ekr.20160416163605.94">def openFileByName(self, fn, gui, old_c, previousSettings):
-    '''Read the local file whose full path is fn using the given gui.
-    fn may be a Leo file (including .leo or zipped file) or an external file.
-
-    This is not a pre-read: the previousSettings always exist and
-    the commander created here persists until the user closes the outline.
-
-    Reads the entire outline if fn exists and is a .leo file or zipped file.
-    Creates an empty outline if fn is a non-existent Leo file.
-    Creates an wrapper outline if fn is an external file, existing or not.
-    '''
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace: g.es_debug(g.shortFileName(fn))
-    lm = self
-    # Disable the log.
-    g.app.setLog(None)
-    g.app.lockLog()
-    # Create the a commander for the .leo file.
-    # Important.  The settings don't matter for pre-reads!
-    # For second read, the settings for the file are *exactly* previousSettings.
-    c = g.app.newCommander(fileName=fn, gui=gui,
-        previousSettings=previousSettings)
-    assert c
-    # Open the file, if possible.
-    g.doHook('open0')
-    theFile = lm.openLeoOrZipFile(fn)
-    # Enable the log.
-    g.app.unlockLog()
-    c.frame.log.enable(True)
-    # Phase 2: Create the outline.
-    g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
-    if theFile:
-        readAtFileNodesFlag = bool(previousSettings)
-        # The log is not set properly here.
-        ok = lm.readOpenedLeoFile(c, gui, fn, readAtFileNodesFlag, theFile)
-            # Call c.fileCommands.openLeoFile to read the .leo file.
-        if not ok: return None
-    else:
-        # Create a wrapper .leo file if:
-        # a) fn is a .leo file that does not exist or
-        # b) fn is an external file, existing or not.
-        lm.initWrapperLeoFile(c, fn)
-    g.doHook("open2", old_c=None, c=c, new_c=c, fileName=fn)
-    # Phase 3: Complete the initialization.
-    g.app.writeWaitingLog(c)
-    c.setLog()
-    lm.createMenu(c, fn)
-    lm.finishOpen(c)
-    return c
-</t>
-<t tx="ekr.20160416163605.95">def createMenu(self, c, fn=None):
-    # lm = self
-    # Create the menu as late as possible so it can use user commands.
-    if not g.doHook("menu1", c=c, p=c.p, v=c.p):
-        c.frame.menu.createMenuBar(c.frame)
-        g.app.recentFilesManager.updateRecentFiles(fn)
-        g.doHook("menu2", c=c, p=c.p, v=c.p)
-        g.doHook("after-create-leo-frame", c=c)
-        g.doHook("after-create-leo-frame2", c=c)
-        # Fix bug 844953: tell Unity which menu to use.
-        c.enableMenuBar()
-</t>
-<t tx="ekr.20160416163605.96">def findOpenFile(self, fn):
-    # lm = self
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    for frame in g.app.windowList:
-        c = frame.c
-        if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
-            # don't frame.bringToFront(), it breaks --minimize
-            c.setLog()
-            # 2011/11/21: selecting the new tab ensures focus is set.
-            master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
-            if master: # frame.top.leo_master is a TabbedTopLevel.
-                master.select(frame.c)
-            c.outerUpdate()
-            return c
-    return None
-</t>
-<t tx="ekr.20160416163605.97">def finishOpen(self, c):
-    # lm = self
-    k = c.k
-    assert k
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.chapterController: c.chapterController.finishCreate()
-    if k: k.setDefaultInputState()
-    c.initialFocusHelper()
-    if k: k.showStateAndMode()
-    c.frame.initCompleteHint()
-    c.outerUpdate()
-        # Honor focus requests.
-        # This fixes bug 181: Focus remains in previous file
-        # https://github.com/leo-editor/leo-editor/issues/181
-</t>
-<t tx="ekr.20160416163605.98">def initWrapperLeoFile(self, c, fn):
-    '''
-    Create an empty file if the external fn is empty.
-
-    Otherwise, create an @edit or @file node for the external file.
-    '''
-    # lm = self
-    # Use the config params to set the size and location of the window.
-    frame = c.frame
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-        # Resize the _new_ frame.
-    if not g.os_path_exists(fn):
-        p = c.rootPosition()
-        # Create an empty @edit node unless fn is an .leo file.
-        p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
-        c.selectPosition(p)
-    elif c.looksLikeDerivedFile(fn):
-        # 2011/10/10: Create an @file node.
-        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
-            paths=[fn], command=None) # Not undoable.
-        if p and p.hasBack():
-            p.back().doDelete()
-            p = c.rootPosition()
-        if not p: return None
-    else:
-        # Create an @edit node.
-        s, e = g.readFileIntoString(fn)
-        if s is None: return None
-        p = c.rootPosition()
-        if p:
-            p.setHeadString('@edit %s' % fn)
-            p.setBodyString(s)
-            c.selectPosition(p)
-    # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
-    # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
-    c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
-    c.wrappedFileName = fn
-    c.frame.title = c.computeWindowTitle(c.mFileName)
-    c.frame.setTitle(c.frame.title)
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-    frame.c.setChanged(False)
-        # Mark the outline clean.
-        # This makes it easy to open non-Leo files for quick study.
-    return c
-</t>
-<t tx="ekr.20160416163605.99">def isLeoFile(self, fn):
-    return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
-
-def isZippedFile(self, fn):
-    return fn and zipfile.is_zipfile(fn)
-</t>
 <t tx="ekr.20160416163627.1">- Properly spelled words are never looked up more than once in the main dictionary.
 - A regex finds all words quickly. Underscores are not part of words.
 

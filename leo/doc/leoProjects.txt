@@ -1,6 +1,18 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20160416183702.1: ** How long does it take to search LeoPy.leo?
+@language python
+# 7559 nodes: 0.075 sec.
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 .. @-all
 .. @@killbeautify
 .. @@language rest
