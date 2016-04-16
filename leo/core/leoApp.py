@@ -2458,17 +2458,22 @@ class LoadManager:
             return True
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self, c, fileName):
-        w = g.app.gui.get_focus(c)
-        if not fileName:
-            c.redraw()
-        # Respect c's focus wishes if posssible.
-        if 1: # 2016/04/09.
+
+        def handler(timer, c=c, p=c.p):
             c.initialFocusHelper()
+            c.outerUpdate()
+            timer.stop()
+
+        # This must happen after the code in getLeoFile.
+        timer = g.IdleTime(handler, delay=0.1, tag='getLeoFile')
+        if timer:
+            timer.start()
         else:
-            if w != c.frame.body.wrapper and w != c.frame.tree.canvas:
-                c.bodyWantsFocus()
-        c.k.showStateAndMode(w)
-        c.outerUpdate()
+            # Defensive code:
+            c.selectPosition(p)
+            c.initialFocusHelper()
+            c.k.showStateAndMode()
+            c.outerUpdate()
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''
