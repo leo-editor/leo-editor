@@ -1307,7 +1307,7 @@ class WebViewPlus(QtWidgets.QWidget):
         f.close()
         webbrowser.open(pathname, new=0, autoraise=True)
     #@-others
-#@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider
+#@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider (vr2)
 class ViewRenderedProvider:
     #@+others
     #@+node:ekr.20140226074510.4208: *3* __init__
