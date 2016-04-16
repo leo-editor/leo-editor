@@ -382,7 +382,7 @@ def free_layout_zoom(event):
     """
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
-#@+node:ekr.20160327060009.1: *3* free_layout:register_provider (experimental)
+#@+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c, provider_instance):
     '''Register the provider instance with the top splitter.'''
     # Careful: c.free_layout may not exist during unit testing.

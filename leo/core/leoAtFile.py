@@ -3932,7 +3932,7 @@ class AtFile:
                 self.putRefAt(s, n1, n1, n2, p, delta)
             else: break
         self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20041005105605.177: *6* putRefAt **** puts @+middle sentinels
+    #@+node:ekr.20041005105605.177: *6* putRefAt
     def putRefAt(self, s, i, n1, n2, p, delta):
         """Put a reference at s[n1:n2+2] from p."""
         at, c = self, self.c
