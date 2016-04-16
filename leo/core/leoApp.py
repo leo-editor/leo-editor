@@ -2459,18 +2459,19 @@ class LoadManager:
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self, c, fileName):
 
-        def handler(timer, c=c, p=c.p):
+        def init_focus_handler(timer, c=c, p=c.p):
+            '''Idle-time handler for initFocusAndDraw'''
             c.initialFocusHelper()
             c.outerUpdate()
             timer.stop()
 
         # This must happen after the code in getLeoFile.
-        timer = g.IdleTime(handler, delay=0.1, tag='getLeoFile')
+        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
         if timer:
             timer.start()
         else:
-            # Defensive code:
-            c.selectPosition(p)
+            # Default code.
+            c.selectPosition(c.p)
             c.initialFocusHelper()
             c.k.showStateAndMode()
             c.outerUpdate()

@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735809000000302e362e31392e3339710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1260,6 +1260,9 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
 <v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
 </v>
+</v>
+<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
+<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7751,7 +7754,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -8282,6 +8285,48 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5483">import os
+import sys
+
+trace = False
+
+python_interp = sys.executable
+test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
+src_path  = g.os_path_join(g.app.loadDir,"..","..")
+
+leo_file   = g.os_path_join(src_path,"launchLeo.py")
+batch_file = g.os_path_join(test_path,"batchTest.py")
+test_file  = g.os_path_join(test_path,"createdFile.txt")
+
+# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
+
+if 1:
+    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+else:
+    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
+
+@others
+
+if trace:
+    print('@test batch mode: loadDir: %s' % g.app.loadDir)
+
+removeFile(test_file)
+os.system(command)
+
+assert(g.os_path_exists(test_file))
+</t>
+<t tx="ekr.20100131171342.5484">def removeFile(path):
+
+    trace = False
+
+    if os.path.exists(test_file):
+        if trace:
+            print("@test batch mode: removeFile: deleting",test_file)
+        os.remove(test_file)
+    else:
+        if trace:
+            print("@test batch mode: removeFile: not found:",test_file)
 </t>
 <t tx="ekr.20100131171342.5608"># print('settingsNameDict',c.k.settingsNameDict)
 
