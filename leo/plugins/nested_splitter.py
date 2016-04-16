@@ -132,7 +132,7 @@ if QtWidgets:
         """Show the context menu on a NestedSplitter splitter-handle to access
         NestedSplitter's special features"""
         #@+others
-        #@+node:ekr.20110605121601.17962: *3* nsh.__init__ 
+        #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
             '''Ctor for NestedSplitterHandle class.'''
             # g.trace('NestedSplitterHandle')

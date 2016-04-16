@@ -37,51 +37,8 @@ import json
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init():
-    if 1:
-        return g.app.gui.guiName() == "qt"
-    else:
-        # g.trace('free_layout.py')
-        if g.app.gui.guiName() != "qt":
-            return False
-        g.registerHandler('after-create-leo-frame', bindControllers)
-        g.registerHandler('after-create-leo-frame2', loadLayouts)
-        g.plugin_signon(__name__)
-        return True
-#@+node:ekr.20120419095424.9925: ** no longer used
-if 0:
-    # bindControllers is done in FreeLayoutController.__init__
-    # loadLayouts is now a FreeLayoutController method.
-    #@+others
-    #@+node:ekr.20110318080425.14391: *3* bindControllers
-    def bindControllers(tag, keys):
-        c = keys.get('c')
-        if c:
-            NestedSplitter.enabled = True
-            FreeLayoutController(c)
-    #@+node:tbrown.20110714155709.22852: *3* loadLayouts (free_layout.py)
-    def loadLayouts(tag, keys):
-        '''Load layouts from the given commander.'''
-        c = keys.get('c')
-        if c:
-            layout = c.config.getData("free-layout-layout")
-            if layout:
-                layout = json.loads('\n'.join(layout))
-            if '_ns_layout' in c.db:
-                name = c.db['_ns_layout']
-                if layout:
-                    g.es("NOTE: embedded layout in @settings/@data free-layout-layout"
-                         "overrides saved layout " + name)
-                elif g.app and g.app.db:
-                    layout = g.app.db['ns_layouts'][name]
-                else:
-                    # We may be in the Leo bridge.
-                    layout = None
-            if layout:
-                # Careful: we could be unit testing, or in the Leo bridge.
-                splitter = c.free_layout.get_top_splitter()
-                if splitter:
-                    splitter.load_layout(layout)
-    #@-others
+    '''Return True if the free_layout plugin can be loaded.'''
+    return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
@@ -386,7 +343,8 @@ class FreeLayoutController:
         ans.append(('Tab pane', '_leo_pane:logFrame'))
         return ans
     #@-others
-#@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
+#@+node:ekr.20160416065221.1: ** commands: free_layout.py
+#@+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
 def free_layout_context_menu(event):
     """free_layout_context_menu - open free layout's context menu, using
@@ -396,14 +354,14 @@ def free_layout_context_menu(event):
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
     handle.splitter_menu(handle.rect().topLeft())
-#@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
+#@+node:tbrown.20130403081644.25265: *3* @g.command free-layout-restore
 @g.command('free-layout-restore')
 def free_layout_restore(event):
     """free_layout_restore - restore layout outline had when it was loaded
     """
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
-#@+node:tbrown.20131111194858.29876: ** @g.command free-layout-load
+#@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
 def free_layout_load(event):
     """free_layout_load - load layout from menu
@@ -421,14 +379,14 @@ def free_layout_load(event):
     c.db['_ns_layout'] = name
     layout = g.app.db['ns_layouts'][name]
     c.free_layout.get_top_splitter().load_layout(layout)
-#@+node:tbrown.20140522153032.32658: ** @g.command free-layout-zoom
+#@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
 def free_layout_zoom(event):
     """free_layout_zoom - (un)zoom the current pane.
     """
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
-#@+node:ekr.20160327060009.1: ** free_layout:register_provider (experimental)
+#@+node:ekr.20160327060009.1: *3* free_layout:register_provider (experimental)
 def register_provider(c, provider_instance):
     '''Register the provider instance with the top splitter.'''
     # Careful: c.free_layout may not exist during unit testing.

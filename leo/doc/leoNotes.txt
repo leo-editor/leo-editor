@@ -16832,5 +16832,40 @@ def undoRemoveChapter(self):
     name = u.newChapterName
     cc.chaptersDict[name] = Chapter(c, cc, name)
     cc.selectChapterByName(name)
+.. @+node:ekr.20120419095424.9925: *3* free_layout.py: no longer used
+# Top-level methods
+if 0:
+    # bindControllers is done in FreeLayoutController.__init__
+    # loadLayouts is now a FreeLayoutController method.
+    @others
+.. @+node:ekr.20110318080425.14391: *4* bindControllers
+def bindControllers(tag, keys):
+    c = keys.get('c')
+    if c:
+        NestedSplitter.enabled = True
+        FreeLayoutController(c)
+.. @+node:tbrown.20110714155709.22852: *4* loadLayouts (free_layout.py)
+def loadLayouts(tag, keys):
+    '''Load layouts from the given commander.'''
+    c = keys.get('c')
+    if c:
+        layout = c.config.getData("free-layout-layout")
+        if layout:
+            layout = json.loads('\n'.join(layout))
+        if '_ns_layout' in c.db:
+            name = c.db['_ns_layout']
+            if layout:
+                g.es("NOTE: embedded layout in @settings/@data free-layout-layout"
+                     "overrides saved layout " + name)
+            elif g.app and g.app.db:
+                layout = g.app.db['ns_layouts'][name]
+            else:
+                # We may be in the Leo bridge.
+                layout = None
+        if layout:
+            # Careful: we could be unit testing, or in the Leo bridge.
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.load_layout(layout)
 .. @-all
 .. @-leo
