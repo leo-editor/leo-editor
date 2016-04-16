@@ -16867,5 +16867,23 @@ def loadLayouts(tag, keys):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
+.. @+node:ekr.20110318080425.14393: *4* flc.create_renderer
+def XXcreate_renderer(self, w):
+    """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
+    pc = self; c = pc.c
+    if not pc.renderer:
+        assert w == c.viewrendered.w, 'widget mismatch'
+            # Called from viewrender, so it must exist.
+        index = 1
+        dw = c.frame.top
+        splitter = dw.splitter_2
+        body = dw.leo_body_frame
+        index = splitter.indexOf(body)
+        new_splitter, new_index = splitter.split(index, side=1, w=w, name='renderer-splitter')
+        pc.renderer = new_splitter # pc is a FreeLayoutController.
+        c.viewrendered.set_renderer(new_splitter, new_index)
+        c.frame.equalSizedPanes()
+        c.bodyWantsFocusNow()
+        # g.trace(splitter)
 .. @-all
 .. @-leo

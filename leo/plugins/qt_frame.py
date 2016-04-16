@@ -137,19 +137,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_ui = self
         self.setMainWindowOptions()
         self.createCentralWidget()
-        self.createMainLayout(self.centralwidget)
-            # Creates .verticalLayout, .splitter and .splitter_2.
-        # g.trace(self.bigTree)
+        splitter, splitter2 = self.createMainLayout(self.centralwidget)
+            # Creates .verticalLayout
         if self.bigTree:
-            self.createBodyPane(self.splitter)
-            self.createLogPane(self.splitter)
-            treeFrame = self.createOutlinePane(self.splitter_2)
-            self.splitter_2.addWidget(treeFrame)
-            self.splitter_2.addWidget(self.splitter)
+            self.createBodyPane(splitter)
+            self.createLogPane(splitter)
+            treeFrame = self.createOutlinePane(splitter2)
+            splitter2.addWidget(treeFrame)
+            splitter2.addWidget(splitter)
         else:
-            self.createOutlinePane(self.splitter)
-            self.createLogPane(self.splitter)
-            self.createBodyPane(self.splitter_2)
+            self.createOutlinePane(splitter)
+            self.createLogPane(splitter)
+            self.createBodyPane(splitter2)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(dw)
@@ -248,16 +247,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         splitter = splitter_class(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
-            # It's unwise to change this name, as users
-            # may have saved layouts that refer to it.
+            # It's unwise to change this name:
+            # users may have saved layouts that refer to it.
         splitter.splitterMoved.connect(self.onSplitter1Moved)
-        # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
-        # Official ivars
+        # Official ivar:
         self.verticalLayout = vLayout
-        self.splitter = splitter
-        self.splitter_2 = splitter2
-        self.setSizePolicy(self.splitter)
-        self.verticalLayout.addWidget(self.splitter_2)
+        self.setSizePolicy(splitter)
+        self.verticalLayout.addWidget(splitter2)
+        return splitter, splitter2
     #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
     def createMenuBar(self):
         '''Create Leo's menu bar.'''
@@ -895,24 +892,25 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1Moved
+    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1/2Moved & helper
     def onSplitter1Moved(self, pos, index):
         '''Handle a moved event in splitter1.'''
         c = self.leo_c
-        c.frame.secondary_ratio = self.splitterMovedHelper(
-            self.splitter, pos, index)
-    #@+node:ekr.20140913054442.17864: *4* dw.onSplitter2Moved
+        w = c.free_layout.get_main_splitter()
+        if w:
+             c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
+
     def onSplitter2Moved(self, pos, index):
         '''Handle a moved event in splitter2.'''
         c = self.leo_c
-        c.frame.ratio = self.splitterMovedHelper(
-            self.splitter_2, pos, index)
-    #@+node:ekr.20140913054442.17865: *4* dw.splitterMovedHelper
-    def splitterMovedHelper(self, splitter, pos, index):
+        w = c.free_layout.get_splitter2()
+        if w:
+            c.frame.ratio = self.splitterFrac(w, pos, index)
+    #@+node:ekr.20140913054442.17865: *5* dw.splitterMovedHelper
+    def splitterFrac(self, splitter, pos, index):
         '''Return the ratio of pos to the total.'''
         i, j = splitter.getRange(index)
-        ratio = float(pos) / float(j - i)
-        return ratio
+        return float(pos) / float(j - i)
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c):
         '''Select the window or tab for c. self is c.frame.top.'''
@@ -942,12 +940,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
     def setSplitDirection(self, orientation='vertical'):
         '''Set the splitter orientation for the Leo main window.'''
-        vert = orientation and orientation.lower().startswith('v')
-        h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
-        orientation1 = h if vert else v
-        orientation2 = v if vert else h
-        self.splitter.setOrientation(orientation1)
-        self.splitter_2.setOrientation(orientation2)
+        c = self.leo_c
+        fl = c.free_layout
+        if not fl: return
+        splitter = fl.get_main_splitter()
+        splitter2 = fl.get_splitter2()
+        if splitter and splitter2:
+            vert = orientation and orientation.lower().startswith('v')
+            h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
+            orientation1 = h if vert else v
+            orientation2 = v if vert else h
+            splitter.setOrientation(orientation1)
+            splitter2.setOrientation(orientation2)
     #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
     if 0: # Override for debugging only.
 
@@ -2550,24 +2554,30 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.divideLeoSplitter(self.splitVerticalFlag, ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag, ratio2)
     #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter (qtFrame)
-    # Divides the main or secondary splitter, using the key invariant.
-
     def divideLeoSplitter(self, verticalFlag, frac):
-        # g.trace(verticalFlag,frac)
+        '''Divide the main or secondary splitter, using the key invariant.'''
         if self.splitVerticalFlag == verticalFlag:
             self.divideLeoSplitter1(frac, verticalFlag)
             self.ratio = frac # Ratio of body pane to tree pane.
         else:
             self.divideLeoSplitter2(frac, verticalFlag)
             self.secondary_ratio = frac # Ratio of tree pane to log pane.
-    # Divides the main splitter.
 
     def divideLeoSplitter1(self, frac, verticalFlag):
-        self.divideAnySplitter(frac, self.top.splitter_2)
-    # Divides the secondary splitter.
+        '''Divide the main splitter.'''
+        free_layout = self.c and self.c.free_layout
+        w = free_layout.get_splitter2()
+        if w:
+            self.divideAnySplitter(frac, w)
+        # else: g.trace('===== skip', g.callers())
 
     def divideLeoSplitter2(self, frac, verticalFlag):
-        self.divideAnySplitter(frac, self.top.leo_ui.splitter)
+        '''Divide the secondary splitter.'''
+        free_layout = self.c and self.c.free_layout
+        w = free_layout.get_main_splitter()
+        if w:
+            self.divideAnySplitter(frac, w)
+        # else: g.trace('===== skip', g.callers())
     #@+node:ekr.20110605121601.18284: *4* divideAnySplitter (qtFrame)
     # This is the general-purpose placer for splitters.
     # It is the only general-purpose splitter code in Leo.
@@ -2579,6 +2589,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return
         if frac > 1 or frac < 0:
             g.trace('split ratio [%s] out of range 0 <= frac <= 1' % frac)
+            return
         s1, s2 = sizes
         s = s1 + s2
         s1 = int(s * frac + 0.5)

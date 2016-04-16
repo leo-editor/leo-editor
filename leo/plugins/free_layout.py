@@ -128,24 +128,6 @@ class FreeLayoutController:
         splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
-    #@+node:ekr.20110318080425.14393: *3* flc.create_renderer
-    def XXcreate_renderer(self, w):
-        """NO LONGER USED, viewrendered use of free-layout is in viewrendered.py"""
-        pc = self; c = pc.c
-        if not pc.renderer:
-            assert w == c.viewrendered.w, 'widget mismatch'
-                # Called from viewrender, so it must exist.
-            index = 1
-            dw = c.frame.top
-            splitter = dw.splitter_2
-            body = dw.leo_body_frame
-            index = splitter.indexOf(body)
-            new_splitter, new_index = splitter.split(index, side=1, w=w, name='renderer-splitter')
-            pc.renderer = new_splitter # pc is a FreeLayoutController.
-            c.viewrendered.set_renderer(new_splitter, new_index)
-            c.frame.equalSizedPanes()
-            c.bodyWantsFocusNow()
-            # g.trace(splitter)
     #@+node:tbrown.20120119080604.22982: *3* flc.embed (FreeLayoutController)
     def embed(self):
         """called from ns_do_context - embed layout in outline's
@@ -174,16 +156,17 @@ class FreeLayoutController:
         '''Return the splitter whose name is "splitter".'''
         return self.get_splitter_by_name('splitter')
         
-    def get_splitter_2(self):
+    def get_splitter2(self):
         '''Return the splitter whose name is "splitter_2".'''
         return self.get_splitter_by_name('splitter_2')
-        
+
     def get_splitter_by_name(self, name):
         '''Return the splitter with the given objectName().'''
         top = self.get_top_splitter()
-        return top.get_splitter_by_name(name) if top else None
+        return top and top.get_splitter_by_name(name)
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
+        '''Return the top splitter of c.frame.top.'''
         # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
