@@ -248,6 +248,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         splitter = splitter_class(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
+            # It's unwise to change this name, as users
+            # may have saved layouts that refer to it.
         splitter.splitterMoved.connect(self.onSplitter1Moved)
         # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
         # Official ivars
