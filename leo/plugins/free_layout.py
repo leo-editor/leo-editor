@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120419093256.10048: * @file ../plugins/free_layout.py
 #@+<< docstring >>
-#@+node:ekr.20110319161401.14467: ** << docstring >>
+#@+node:ekr.20110319161401.14467: ** << docstring >> (free_layout.py)
 """
 Free layout
 ===========
@@ -169,6 +169,19 @@ class FreeLayoutController:
         if not nd or nd.h != "@settings":
             g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
+    #@+node:ekr.20160416082543.1: *3* flc.get_splitter*
+    def get_main_splitter(self):
+        '''Return the splitter whose name is "splitter".'''
+        return self.get_splitter_by_name('splitter')
+        
+    def get_splitter_2(self):
+        '''Return the splitter whose name is "splitter_2".'''
+        return self.get_splitter_by_name('splitter_2')
+        
+    def get_splitter_by_name(self, name):
+        '''Return the splitter with the given objectName().'''
+        top = self.get_top_splitter()
+        return top.get_splitter_by_name(name) if top else None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
         # Careful: we could be unit testing.

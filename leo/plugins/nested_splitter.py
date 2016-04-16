@@ -947,6 +947,19 @@ if QtWidgets:
         #@+node:tbrown.20110628083641.11733: *3* ns.get_saveable_layout
         def get_saveable_layout(self):
             return self.get_layout(_saveable=True)
+        #@+node:ekr.20160416083415.1: *3* ns.get_splitter_by_name
+        def get_splitter_by_name(self, name):
+            '''Return the splitter with the given objectName().'''
+            if self.objectName() == name:
+                return self
+            for i in range(self.count()):
+                w = self.widget(i)
+                # Recursively test w and its descendants.
+                if isinstance(w, NestedSplitter):
+                    w2 = w.get_splitter_by_name(name)
+                    if w2:
+                        return w2
+            return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
         def load_layout(self, layout, level=0):
             trace = False and g and not g.unitTesting
