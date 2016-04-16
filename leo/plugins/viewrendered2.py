@@ -198,6 +198,7 @@ __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
 #@+node:ekr.20140226074510.4188: ** << imports >> (viewrendered2.py)
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
+import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets, QUrl
 try:
@@ -280,12 +281,12 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
-#@+node:ekr.20140226074510.4193: *3* onCreate
+#@+node:ekr.20140226074510.4193: *3* onCreate (viewrendered2.py)
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:
-        ViewRenderedProvider(c)
-    return
+        provider = ViewRenderedProvider(c)
+        free_layout.register_provider(c, provider)
 #@+node:ekr.20140226074510.4194: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:

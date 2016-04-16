@@ -252,7 +252,7 @@ import sys
 # Leo imports...
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
-import leo.plugins.free_layout as free_layout # New
+import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets, QUrl
@@ -335,7 +335,7 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return ok
-#@+node:ekr.20160331123847.9: *3* onCreate
+#@+node:ekr.20160331123847.9: *3* onCreate (viewrendered3.py)
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:

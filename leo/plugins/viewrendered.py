@@ -194,6 +194,7 @@ trace = False
 #@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
+import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
 # docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
@@ -260,12 +261,12 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return ok
-#@+node:ekr.20110317024548.14376: *3* onCreate
+#@+node:ekr.20110317024548.14376: *3* onCreate (viewrendered.py)
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:
-        ViewRenderedProvider(c)
-    return
+        provider = ViewRenderedProvider(c)
+        free_layout.register_provider(c, provider)
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
