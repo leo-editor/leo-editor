@@ -13,7 +13,8 @@ Different font sizes, coloring schemes, plugins, etc.
 All recent activity
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isort%3Aupdated-desc+
 
-Bugs assigned to 5.3
+5 Bugs assigned to 5.3
+Some can wait until after 5.3-b1
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
 .. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
 @language rest
@@ -76,79 +77,15 @@ in each outline where you want those buttons.
 - Make sure it is called.
 - Use rest colorizer as a template.
 .. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
-.. @+node:ekr.20160417114642.1: *5* Original script
-@language python
-
-# https://github.com/benzolius/leo-scripts/blob/master/correct_empty_lines.py
-
-print('\n\n\n\n')
-print('Now:\n')
-
-for p in c.all_positions():
-    try:
-        # Corrects empty lines around @language python\n@tabwidth -4
-        if p.h.startswith('@clean') and p.h.endswith('py'):
-            # Corrects empty lines after @first
-            if p.h == '@clean manage.py':
-                splited = p.b.partition('"""\nMain starter script for Django\n"""')
-                p.b = ''.join((splited[0].rstrip(), '\n', splited[1], splited[2]))
-            try:
-                if '@language python\n@tabwidth -4' in p.b:
-                    splited = p.b.partition('@language python\n@tabwidth -4')
-                    p.b = ''.join(
-                        (splited[0].rstrip(), '\n',
-                        splited[1], '\n',
-                        splited[2].lstrip()))
-                    print(p.h)
-            except Exception as exc:
-                g.es_exception()
-
-        # Corrects empty lines between main blocks
-        else:
-            parent = p.parent().h
-            if parent.startswith('@clean'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-            # Corrects empty lines between methods
-            elif parent.startswith('class'):
-                siblings = [pos.gnx for pos in p.self_and_siblings()]
-                # Corrects empty lines between main blocks
-                if p.gnx != siblings[-1]:
-                    p.b = '{}\n\n'.format(p.b.rstrip())
-                # Corrects empty lines at end of file
-                else:
-                    p.b = '{}\n'.format(p.b.rstrip())
-
-    except Exception as exc:
-        g.es_exception()
-.. @+node:ekr.20160417114615.1: *5* From make-stub-files @button check-leading-lines
-for p1 in c.all_unique_positions():
-    if p1.h.startswith('@clean') and p1.h.rstrip().endswith('.py'):
-        for p in p1.subtree():
-            if (not p.h.strip().startswith('<<') and
-                p.b.strip() and not p.b.startswith('\n')
-            ):
-                print(repr(p.b[:3]), p.h)
-print('done')
 .. @+node:ekr.20160403043354.1: ** To do: 5.4
 @language rest
 @wrap
+
+Everything assigned to 5.4
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20151231095651.1: *3* Bugs: 5.4
 @language rest
 @wrap
-
-6 bugs assigned to 5.3
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+label%3Abug+milestone%3A5.3
-
-.. @+node:ekr.20160403124912.1: *4* #241: QMimeData object error
-https://github.com/leo-editor/leo-editor/issues/241
-
-This might be a QT5 issue.
 .. @+node:ekr.20150609101355.1: *4* #129: Font setting overridden by new workbook
 @language rest
 @wrap

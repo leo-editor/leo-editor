@@ -18,6 +18,66 @@ def cmd(name):
 class EditFileCommandsClass(BaseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
     #@+others
+    #@+node:ekr.20160417180751.1: ** clean-at-clean commands
+    #@+node:ekr.20160417131017.1: *3* efc.cleanAtCleanFiles
+    @cmd('clean-at-clean-files')
+    def cleanAtCleanFiles(self, event):
+        '''Adjust whitespace in all @clean files.'''
+        c = self.c
+        undoType = 'clean-@clean-files'
+        bunch = c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
+        total = 0
+        for p in c.all_unique_positions():
+            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
+                n = 0
+                for p2 in p.subtree():
+                    bunch2 = c.undoer.beforeChangeNodeContents(p2, oldBody=p2.b)
+                    if self.cleanAtCleanNode(p2, undoType):
+                        n += 1
+                        total += 1
+                        c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
+                g.es_print('%s node%s %s' % (n, g.plural(n), p.h))
+        if total > 0:
+            c.undoer.afterChangeGroup(c.p, undoType)
+        g.es_print('%s total node%s' % (total, g.plural(total)))
+    #@+node:ekr.20160417131341.1: *3* efc.cleanAtCleanNode
+    def cleanAtCleanNode(self, p, undoType):
+        '''Adjust whitespace in p, part of an @clean tree.'''
+        c = self.c
+        s = p.b.strip()
+        if not s or p.h.strip().startswith('<<'):
+            return False
+        ws = '\n\n' if g.match_word(s, 0, 'class') else '\n'
+        s2 = ws + s + ws
+        changed = s2 != p.b
+        if changed:
+            p.b = s2
+            p.setDirty()
+        return changed
+    #@+node:ekr.20160417133509.1: *3* efc.cleanAtCleanTree
+    @cmd('clean-at-clean-tree')
+    def cleanAtCleanTree(self, event):
+        '''Adjust whitepace in the present tree.'''
+        c = self.c
+        # Look for an @clean node.
+        for p in c.p.self_and_parents():
+            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
+                break
+        else:
+            g.es_print('no an @clean node found', p.h, color='blue')
+            return
+        # pylint: disable=undefined-loop-variable
+        # p is certainly defined here.
+        bunch = c.undoer.beforeChangeTree(p)
+        n = 0
+        undoType = 'clean-@clean-tree'
+        for p2 in p.subtree():
+            if self.cleanAtCleanNode(p2, undoType):
+                n += 1
+        if n > 0:
+            c.setChanged(True)
+            c.undoer.afterChangeTree(p, undoType, bunch)
+        g.es_print('%s node%s cleaned' % (n, g.plural(n)))
     #@+node:ekr.20150514063305.356: ** efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-leo-files')
     def compareAnyTwoFiles(self, event):
