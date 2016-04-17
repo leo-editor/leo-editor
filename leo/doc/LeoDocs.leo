@@ -1225,6 +1225,12 @@
 <v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
 <v t="ekr.20160414191645.1"><vh>pylint command/script</vh></v>
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
+<v t="ekr.20160417113739.1"><vh>Docs wishlist for newbies (Fidel)</vh>
+<v t="ekr.20160417113739.2"><vh>Quickstart tells how to associate .leo files</vh></v>
+<v t="ekr.20160417113739.3"><vh>More buttons in quick-start guide</vh></v>
+<v t="ekr.20160417113739.4"><vh>Better descript of plugins</vh></v>
+<v t="ekr.20160417113739.5"><vh>Quickstart opens by default</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -18629,6 +18635,39 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
   (https://pypi.python.org/pypi/meta) package is available.
 
 - The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>
+<t tx="ekr.20160417113739.1">From the thread: "Associate .Leo files to open with Leo when double click"
+https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
+
+
+
+
+
+
+
+
+</t>
+<t tx="ekr.20160417113739.2">Include a small file within the Quickstart guide which would associate files automatically.
+
+(Or maybe asking for imput, which can be done through a Leo node and this way the user learns about its functionality).
+</t>
+<t tx="ekr.20160417113739.3">More buttons or scripts in quick start guide, preferably before the "programming" section, so when a new user opens it, he has had the opportunity to do Ctrl+B on several scripts. For instance:
+
+- showing in the log the name of all the nodes within the selected one,
+- having some subnodes with numbers and doing math on them and showing the result on the log pane
+- As much "silly" but visual functions as possible.
+
+so the user, by going pressing ctrl+b on each, gets a bigger chance to understand what is Leo.
+
+In my oppinion some users will just stop in the quickguide if they are not presented with such a thing before going to docs.leo etc.
+</t>
+<t tx="ekr.20160417113739.4">The description of the plugins is not as accessible as it should be.
+
+A script for activating them easier, been a week using Leo and still cant quite activate, find the descriptions or use them freely.
+
+If each plugin or script had an example of use that would be priceless, for instance, including them all in quickstart (both scripts, plugins branchs) and then the new user could just go through all clicking on the examples and just seeing Leo work and show its potential.
+</t>
+<t tx="ekr.20160417113739.5">Quickstart should be open by default (instead of current Leo workbook) at least until the user changes some config and prevents that from happening.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
