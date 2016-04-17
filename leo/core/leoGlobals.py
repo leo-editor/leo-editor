@@ -5818,6 +5818,14 @@ if 0: # Testing:
     )
     for s in aList:
         print(pep8_class_name(s))
+#@+node:ekr.20160417174224.1: *3* g.plural
+def plural(obj):
+    '''Return "s" or "" depending on n.'''
+    if isinstance(obj, (list, tuple)) or g.isString(obj):
+        n = len(obj)
+    else:
+        n = obj
+    return '' if n == 1 else 's'
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s, n):
     '''Return s truncated to n characters.'''

@@ -876,7 +876,7 @@ class ShowData:
         self.show_undefined_calls(result)
         # Put the result in a new node.
         summary = 'files: %s lines: %s chars: %s classes: %s\ndefs: %s calls: %s undefined calls: %s returns: %s' % (
-            # self.plural(self.files),
+            # g.plural(self.files),
             len(self.files),
             "{:,}".format(self.tot_lines),
             "{:,}".format(self.tot_s),
@@ -895,15 +895,12 @@ class ShowData:
             p2.b = '\n'.join(result)
             c.redraw(p=p2)
         print(summary)
-    #@+node:ekr.20150605163128.1: *4* plural
-    def plural(self, aList):
-        return 's' if len(aList) > 1 else ''
     #@+node:ekr.20150605160218.1: *4* show_calls
     def show_calls(self, name, result):
         aList = self.calls_d.get(name, [])
         if not aList:
             return
-        result.extend(['', '    %s call%s...' % (len(aList), self.plural(aList))])
+        result.extend(['', '    %s call%s...' % (len(aList), g.plural(aList))])
         w = 0
         calls = sorted(set(aList))
         for call_tuple in calls:
@@ -934,7 +931,7 @@ class ShowData:
             if not name_added:
                 name_added = True
                 result.append('\n%s' % name)
-                result.append('    %s definition%s...' % (len(aList), self.plural(aList)))
+                result.append('    %s definition%s...' % (len(aList), g.plural(aList)))
             if context_stack:
                 fn, kind, context_s = context_stack[-1]
                 def_s = s.strip()
@@ -947,7 +944,7 @@ class ShowData:
         aList = self.returns_d.get(name, [])
         if not aList:
             return
-        result.extend(['', '    %s return%s...' % (len(aList), self.plural(aList))])
+        result.extend(['', '    %s return%s...' % (len(aList), g.plural(aList))])
         w, returns = 0, sorted(set(aList))
         for returns_tuple in returns:
             context, s = returns_tuple
@@ -981,7 +978,7 @@ class ShowData:
                 undef.append(call_tuple)
         undef = list(set(undef))
         result.extend(['', '%s undefined call%s...' % (
-            len(undef), self.plural(undef))])
+            len(undef), g.plural(undef))])
         self.n_undefined_calls = len(undef)
         # Merge all the calls for name.
         # There may be several with different s values.
@@ -996,7 +993,7 @@ class ShowData:
         # Print the final results.
         for name in sorted(results_d):
             calls = results_d.get(name)
-            result.extend(['', '%s %s call%s...' % (name, len(calls), self.plural(calls))])
+            result.extend(['', '%s %s call%s...' % (name, len(calls), g.plural(calls))])
             w = 0
             for call_tuple in calls:
                 context2, context1, s = call_tuple
