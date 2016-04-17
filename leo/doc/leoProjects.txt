@@ -13,6 +13,7 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20160303040846.1: ** Added clean-at-clean-files & clean-at-clean-tree commands
 .. @-all
 .. @@killbeautify
 .. @@language rest

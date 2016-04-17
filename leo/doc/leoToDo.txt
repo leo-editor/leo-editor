@@ -76,7 +76,6 @@ in each outline where you want those buttons.
 .. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 - Make sure it is called.
 - Use rest colorizer as a template.
-.. @+node:ekr.20160303040846.1: *4* Add command to correct blank lines in @clean files
 .. @+node:ekr.20160403043354.1: ** To do: 5.4
 @language rest
 @wrap
