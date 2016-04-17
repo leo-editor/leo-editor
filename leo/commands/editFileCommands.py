@@ -57,7 +57,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160417133509.1: *3* efc.cleanAtCleanTree
     @cmd('clean-at-clean-tree')
     def cleanAtCleanTree(self, event):
-        '''Adjust whitepace in the present tree.'''
+        '''
+        Adjust whitepace in the nearest @clean tree,
+        searching c.p and its ancestors.
+        '''
         c = self.c
         # Look for an @clean node.
         for p in c.p.self_and_parents():
