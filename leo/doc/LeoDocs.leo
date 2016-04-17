@@ -1290,60 +1290,39 @@
 </v>
 <v t="ekr.20160415031743.1"><vh>To 5.3 release notes</vh>
 <v t="ekr.20160415031743.2"><vh>Bug fixes</vh>
-<v t="ekr.20160415031743.18"><vh>cleaned up use of regex to discover Leo directives</vh></v>
+<v t="ekr.20160416163605.9"><vh>Added support for Python-3 ast nodes</vh></v>
+<v t="ekr.20160415031743.18"><vh>Cleaned up use of regex to discover Leo directives</vh></v>
 <v t="ekr.20160415031743.3"><vh>Create xml stylesheet elements only from settings</vh></v>
 <v t="ekr.20160415031743.15"><vh>Fixed #132: Section Reference causes clone on Leo-Editor file open</vh></v>
 <v t="ekr.20160415031743.6"><vh>Fixed #156: ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
 <v t="ekr.20160415031743.12"><vh>Fixed #221: goto-global-line navigating to wrong line reported by PyLint</vh></v>
+<v t="ekr.20160416163605.21"><vh>Fixed #241: QMimeData...</vh></v>
 <v t="ekr.20160415031743.10"><vh>Fixed #242: @auto-rst open/save error</vh></v>
 <v t="ekr.20160415031743.8"><vh>Fixed #245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
 <v t="ekr.20160415031743.11"><vh>Fixed #247: @language c breaks goto-global-line</vh></v>
 <v t="ekr.20160415031743.9"><vh>Fixed #249: Leo and Stickynote plugin do not request to save</vh></v>
+<v t="ekr.20160416163605.17"><vh>Fixed #251: goto-global-line is inaccurate with @clean</vh></v>
 <v t="ekr.20160416163605.105"><vh>Fixed #261: exception executing equal-sized-panes</vh></v>
 <v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
 <v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
 <v t="ekr.20160416163605.4"><vh>Fixed shutdown hard crash on Python 3</vh></v>
-<v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh>
-<v t="ekr.20160415031743.14"><vh>Report</vh></v>
-</v>
+<v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh></v>
 <v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
 <v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
-<v t="ekr.20160416163605.19"><vh>re: #132: Section Reference causes clone on Leo-Editor file open</vh></v>
-<v t="ekr.20160416163605.15"><vh>re: #156 ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
-<v t="ekr.20160416163605.21"><vh>re: #241: QMimeData...</vh></v>
-<v t="ekr.20160416163605.17"><vh>re: #251: goto-global-line is inaccurate with @clean</vh></v>
-<v t="ekr.20160416163605.37"><vh>re: #255: @rst-table</vh></v>
-<v t="ekr.20160416163605.16"><vh>re: 245: Specifying a new Leo-Editor file on the command line no longer works</vh></v>
-<v t="ekr.20160416163605.34"><vh>re: allow bindings to numbers!</vh></v>
+<v t="ekr.20160416163605.34"><vh>Leo now allows bindings to numbers!</vh></v>
+<v t="ekr.20160417062046.1"><vh>Leo now allows plain keys to be found in the outline pane</vh></v>
+<v t="ekr.20160416163605.33"><vh>Leo now honors @bool outline_pane_has_initial_focus</vh></v>
+<v t="ekr.20160416163605.36"><vh>The last outline node is now always visible.</vh></v>
 </v>
-<v t="ekr.20160415031743.22"><vh>Features</vh>
-<v t="ekr.20160416163605.8"><vh>Added python-to-coffeescript command</vh></v>
-<v t="ekr.20160415031743.33"><vh>Added support for @rst-table</vh></v>
-<v t="ekr.20160415031743.25"><vh>Better defaults for open/save file dialogs</vh></v>
-<v t="ekr.20160415031743.32"><vh>Completed Jupyter work</vh></v>
-<v t="ekr.20160415031743.27"><vh>Enabled livecode plugin by default</vh></v>
+<v t="ekr.20160417063026.1"><vh>Major features</vh>
 <v t="ekr.20160415031743.28"><vh>Improved chapters</vh></v>
-<v t="ekr.20160416163605.3"><vh>Improved clone-find commands</vh></v>
-<v t="ekr.20160415031743.24"><vh>Improved how viewrenered plugin handles md &amp; rst</vh></v>
-<v t="ekr.20160416163605.5"><vh>Improved kill &amp; yank</vh></v>
 <v t="ekr.20160416163627.1"><vh>Improved Leo's spell tab</vh></v>
-<v t="ekr.20160415031743.30"><vh>Leo doesn't warn if leo.plugins.livecode fails to load</vh></v>
-<v t="ekr.20160415031743.26"><vh>Merged viewrendered plugins into viewrendered3.py</vh></v>
-<v t="ekr.20160416163605.35"><vh>re: Completed Jupyter work</vh></v>
-<v t="ekr.20160416163605.18"><vh>re: crasher in runOpenFileDialog</vh></v>
-<v t="ekr.20160416163605.10"><vh>re: Create xml stylesheet elements only from settings</vh></v>
-<v t="ekr.20160416163605.13"><vh>re: ctrl-click bug</vh></v>
-<v t="ekr.20160416163605.12"><vh>re: default open/save directory</vh></v>
-<v t="ekr.20160416163605.11"><vh>re: directives not recognized at end of body text</vh></v>
-<v t="ekr.20160416163605.33"><vh>re: honor @bool outline_pane_has_initial_focus</vh></v>
-<v t="ekr.20160416163605.36"><vh>re: last node isn't visible</vh></v>
-<v t="ekr.20160416163605.9"><vh>re: new ast nodes</vh></v>
-<v t="ekr.20160416163605.14"><vh>re: simplify directives regex</vh></v>
-<v t="ekr.20160416163605.32"><vh>re: space doesn't work in tree</vh></v>
-<v t="ekr.20160416163605.20"><vh>re: warnings re: livecode.py</vh></v>
-<v t="ekr.20160416163605.6"><vh>Show-invisibles uses Qt code</vh></v>
-<v t="ekr.20160415031743.23"><vh>Viewrendered already supports markdown</vh></v>
+<v t="ekr.20160415031743.32"><vh>Leo now supports Jupyter (.ipynb) files</vh></v>
+<v t="ekr.20160415031743.33"><vh>The rst3 command now supports @rst-table</vh></v>
+<v t="ekr.20160416163605.6"><vh>The show-invisibles command uses Qt characters</vh></v>
 </v>
+<v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
+<v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -19303,11 +19282,62 @@ Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
 
 Edward
 </t>
-<t tx="ekr.20160415031743.1">@all
-@killbeautify
-@language rest
-@wrap
-@pagewidth 60
+<t tx="ekr.20160415031743.1">Leo 5.3-b1 April 22, 2016
+
+[Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+
+**The highlights of Leo 5.2**
+
+- Leo now supports Jupyter (.ipynb) files.
+- Much improved chapter-related operation.
+- Faster spell checking.
+- The rst3 command now make makeing rST tables easier.
+- The show-invisibles command now uses native Qt characters.
+- Dozens of other improvements and bug fixes.
+
+**Leo is**:
+
+- An outliner. Everything in Leo is an outline.
+- A Personal Information Manager.
+- A browser with a memory.
+- A powerful scripting environment.
+- A tool for studying other people's code.
+- A fully-featured IDE, with emacs-like commands.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, vim and xemacs.
+- Written in 100% pure Python
+- Compatible with Python 2.6 and above or Python 3.0 and above.
+
+**Leo's unique features**:
+    
+- Always-present, persistent, outline structure.
+- Leo's underlying data is a Directed Acyclic Graph.
+- Clones create multiple views of an outline.
+- A simple, powerful, outline-oriented Python API.
+- Scripts and programs can be composed from outlines.
+- Importers convert flat text into outlines.
+- Scripts have full access to all of Leo's sources.
+- Commands that act on outline structure.
+  Example: the rst3 command converts outlines to reStructuredText.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+- Outline-oriented directives.
+
+Simulating these features in vim or Emacs is possible, just as
+it is possible to simulate Python in assembly language...
+
+**Links**
+
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="ekr.20160415031743.10">https://github.com/leo-editor/leo-editor/issues/242
 
@@ -19325,17 +19355,6 @@ https://github.com/leo-editor/leo-editor/issues/251
 </t>
 <t tx="ekr.20160415031743.13">https://github.com/leo-editor/leo-editor/issues/205
 </t>
-<t tx="ekr.20160415031743.14">On Mon, Aug 17, 2015 at 8:13 PM, Wesley Jiang &lt;notifications@github.com&gt; wrote:
-
-http://leoeditor.com/directives.html#part-5-all-other-directives
-in @clean node, the @doc directive only work like this:
- @ aaa
- @ bbb
- @ ccc
- @c
-
-without @ xxx, it writes comments like '# xxxxx'.
-</t>
 <t tx="ekr.20160415031743.15">Section Reference causes clone on Leo-Editor file open
 https://github.com/leo-editor/leo-editor/issues/132
 
@@ -19351,7 +19370,9 @@ At startup only, if the QTreeWidget needs to scroll to show a node near the end 
 
 Fixed at a039305.
 </t>
-<t tx="ekr.20160415031743.18"></t>
+<t tx="ekr.20160415031743.18">Directives are now recognized at end of body text.
+
+Changed g.get_directives_dict.</t>
 <t tx="ekr.20160415031743.2"></t>
 <t tx="ekr.20160415031743.20"></t>
 <t tx="ekr.20160415031743.21">Here is a cool pattern for organizing long docstrings:
@@ -19378,82 +19399,6 @@ This pattern allows us to organize large docstrings in a natural, Leonine way.
 
 The only drawback is that the actual external file contains sentinel lines separating the parts of the docstring.  In practice, it's no big deal, especially if each child starts with a blank line.
 </t>
-<t tx="ekr.20160415031743.22"></t>
-<t tx="ekr.20160415031743.23">Leo already supports @language md:
-
-markdown rendering must be specified by putting it in a ``@md`` node,
-unless ``@string view-rendered-default-kind`` is set to ``md``,
-
-Use github code to allow various markup types
-
-From: tfer &lt;tfetherston@aol.com&gt;
-
-Having played with Jacob Peck's markdown fork, I now get what leo is doing to provide a preview of text using a markup type. It is converting that markup, (rst: built-in, markdown: proposed).  What is being done is to run the text through a xxx2html converter and then using a Qt window widget that renders the generated html.
-
-There have been requests to extend the built in rst functionality to other markup types, (Peck has an experimental one for markdown). Rather than added them piecemeal, **we could incorporate the code github uses** to allow people to use their preferred markup language for their projects readme file. Although a number of the converters are written in ruby, some are python and one is even pearl. It is an extensible scheme. The license for the library is basically, "keep the copyright notice and have at it", so it shouldn't cause any problem.
-
-The code is here: https://github.com/github/markup
-
-The current "see the selected node's body text" in the view-render-pane should work, the only thing lacking is a way to preview an entire file. How about adding an option to preview it in the context menu for a right click on an @file node?
-
-===== From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-That was actually my first thought when approaching the markdown implementation.  The major problem here is that the wrapper program, and several of the assorted converters are in ruby.  The only python one is rest2html, which we already have (via docutils).  I don't think adding ruby and perl as dependencies for one small feature of Leo would be wise...  that seems to me to be the very definition of bloatware.
-
-That being said, github-markup supports the following formats, which are supported by python libs::
-
-    markdown (markdown)
-    rst (docutils)
-    textile (textile)
-    org mode (pyorgmode)
-    creole (python-creole)
-    mediawiki (mw2html)
-    asciidoc (asciidoc)
-
-The following do not have a python equivalent (to my knowledge)::
-
-    rdoc (ruby documentation)
-    perlpod (perl documentation)
-    
-I could certainly keep hacking on viewrendered to support the first list, if interest is high.
-
-&gt; The current "see the selected node's body text" in the 
-&gt; view-render-pane should work, the only thing lacking is a way to 
-&gt; preview an entire file.  How about adding an option to preview it in 
-&gt; the context menu for a right click on an @file node?
-I could look into this suggestion too, if someone would point me in the 
-right direction with respect to 2 things (I'm really new to Leo, so I 
-have no idea where these things are in the source):
-
-1. How to add a context menu item for a node
-2. How to get a "full file" without saving it, i.e., fill in the &lt;&lt; 
-references &gt;&gt;, @others, and @all directives.
-
-</t>
-<t tx="ekr.20160415031743.24"></t>
-<t tx="ekr.20160415031743.25">File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
-
-Added c.last_dir and g.init_dialog_folder and related logic.
-
-Also, g.fullPath now looks at parent nodes, a possibly dubious idea.
-</t>
-<t tx="ekr.20160415031743.26">Eventually, VR3 will replace both VR and VR2.
-
-The viewrendered3.py plugin now appears to work properly in "legacy" mode, that is, with VR3 = False.  VR3 in legacy mode is already clearly superior to the VR plugin.
-
-leo/test/test.leo contains extensive tests of any viewrendered plugin.  See the last top-level tree: viewrendered examples.  Moving from child to child, you will see some problems.  Remember to enable viewrendered3.py first!
-
-The VR3 switch shows all the places in the code where there is a difference between the code viewrendered2.py and the code in viewrendered.py.
-
-Summary
-
-VR is already obsolete, and I hope VR2 will quickly become obsolete as well.
-</t>
-<t tx="ekr.20160415031743.27">Depends on Python's meta package: https://pypi.python.org/pypi/meta
-Only enabled if that package is available.
-It *is* part of the Anaconda distros.
-</t>
 <t tx="ekr.20160415031743.28">@chapter is now allowed anywhere. No need for @chapters.
 
 The 'main' chapter is simply a synonym for the entire outline.
@@ -19477,12 +19422,6 @@ Done:
 
 The change was to fc.putStyleSheetLine.
 </t>
-<t tx="ekr.20160415031743.30">leoPlugins.leo now contains a global list of plugins that might be enabled by default but that might fail to load because of missing imports.  At present, that list is just:
-
-optional_modules = [
-    'leo.plugins.livecode',
-]
-</t>
 <t tx="ekr.20160415031743.32">Announcement: https://groups.google.com/d/msg/leo-editor/nzat_RHqRxQ/HLz7fBolAQAJ
 Json schema: site-packages\nbformat\v4\nbformat.v4.schema.json
 
@@ -19491,12 +19430,21 @@ Added support for @auto x.ipynb.
 Kent: It would be great to be able to jump between Leo's nodes and IPython's cells, each offering a different set of cool functionality.
 
 Alia K: Leo + Ipython notebook integration is a killer app indeed.
+
+
+- Added leo/plugins/importer/ipynb.py &amp; leo/plugins/writers/ipynb.py
+
+How to use sphynx with markdown:
+- https://github.com/spatialaudio/nbsphinx/
+- http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
 </t>
 <t tx="ekr.20160415031743.33">Wishlist item:
 https://github.com/leo-editor/leo-editor/issues/255
 
 Announcement:
 https://groups.google.com/d/msg/leo-editor/eYhXWok6jck/4KwtpiRyBgAJ
+
+Added @rst-table and related code.
 </t>
 <t tx="ekr.20160415031743.4">Names in docstrings cause trouble in Python 2.
 
@@ -19505,97 +19453,44 @@ Rather than trying to figure out workarounds, @button jEdit2Py now refuses to ru
 <t tx="ekr.20160415031743.5">The fix was in u.undoInsertNode
 </t>
 <t tx="ekr.20160415031743.6">https://github.com/leo-editor/leo-editor/issues/156
+
 </t>
 <t tx="ekr.20160415031743.7">https://github.com/leo-editor/leo-editor/issues/248
-
-Everything works for me as expected, with my settings, on your test file.
-
-As with @shadow, there may be glitches when updating the outline from changes made externally. These changes will "take" when you save the .leo file. As I have just verified, Leo's "Recovered Node" logic shows where all such external changes happen. You must then verify that the "boundary lines" are where they should be, moving them as needed.
-
-I see no @clean-related settings, and I see no special cases for @clean in the read/write code:
-
-at.readOneAtCleanNode # @shadow-like logic
-at.write
-at.writeAllHelper
-at.writeOpen file
-
-In short, everything appears to be working as expected. There was a proposal to adjust empty lines automatically when reading an @clean file, but that's a separate, low-priority, issue, apparently not in the bug tracker.
 </t>
 <t tx="ekr.20160415031743.8">https://github.com/leo-editor/leo-editor/issues/245
 
-Instead of creating the new file, Leo-Editor opens the "workbook." This bug exists on the latest Leo-Editor. The first bad commit was:
-
-c02f8bc5464bf5c7832870b44375a557f3e4e26e is the first bad commit
-commit c02f8bc5464bf5c7832870b44375a557f3e4e26e
-Author: Edward K. Ream &lt;edreamleo@gmail.com&gt;
-Date:   Tue Mar 1 13:50:12 2016 -0600
-
-    Allow wildcard expansion on the command line.  Like *.leo(!)
+The fix was to LM.computeFilesList.
 </t>
 <t tx="ekr.20160415031743.9">https://github.com/leo-editor/leo-editor/issues/249
 
 As noted in the checkin log for this bug, I can not recommend the stickynote plugin as it is, even with the bug fixed.
 </t>
-<t tx="ekr.20160416163605.10"># The change was to fc.putStyleSheetLine.</t>
 <t tx="ekr.20160416163605.105"># https://github.com/leo-editor/leo-editor/issues/261
 </t>
-<t tx="ekr.20160416163605.11"></t>
-<t tx="ekr.20160416163605.12">Added c.last_dir logic to LeoQtGui.runOpen/SaveFileDialog.
-Added g.init_dialog_folder.</t>
-<t tx="ekr.20160416163605.13"></t>
-<t tx="ekr.20160416163605.14"># Changed g.get_directives_dict.</t>
-<t tx="ekr.20160416163605.15">https://github.com/leo-editor/leo-editor/issues/156
-
-This was oh-so-tricky. 
-
-See: site-packages/IPython/core/interactiveshell.py
-
-Created in run_cell and run_code.
-</t>
-<t tx="ekr.20160416163605.16">Specifying a new Leo-Editor file on the command line no longer works
-https://github.com/leo-editor/leo-editor/issues/245
-
-The fix was to LM.computeFilesList.
-</t>
 <t tx="ekr.20160416163605.17">https://github.com/leo-editor/leo-editor/issues/251</t>
-<t tx="ekr.20160416163605.18"></t>
-<t tx="ekr.20160416163605.19"># https://github.com/leo-editor/leo-editor/issues/132
-
-at.putRefAt never puts @+-middle sentinels.</t>
-<t tx="ekr.20160416163605.20">Changed plugins.loadOnePlugin.</t>
 <t tx="ekr.20160416163605.21">https://github.com/leo-editor/leo-editor/issues/241
 
 Changed replaceClipboardWith.</t>
-<t tx="ekr.20160416163605.3"></t>
-<t tx="ekr.20160416163605.32"># Bound to mark in ekr.leo
-</t>
 <t tx="ekr.20160416163605.33">Call c.initialFocusHelper in several places.</t>
 <t tx="ekr.20160416163605.34">Changed k.strokeFromSetting.</t>
-<t tx="ekr.20160416163605.35">Add leo/plugins/importer/ipynb.py &amp; leo/plugins/writers/ipynb.py
-
-- open-jupyter command (where should it run the kernel?)
-
-How to use sphynx with markdown:
-- https://github.com/spatialaudio/nbsphinx/
-- http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
-</t>
 <t tx="ekr.20160416163605.36">fc.getLeoFile queues the second redraw at idle time!</t>
-<t tx="ekr.20160416163605.37">https://github.com/leo-editor/leo-editor/issues/255
-
-Added @rst-table and related code.
-</t>
 <t tx="ekr.20160416163605.4">LeoQtGui.destroySelf now calls qtApp.quit, not exit.
 closeLeoWindow now calls g.app.windowList.remove(frame).
 (It used to be done in destroyWindow).</t>
-<t tx="ekr.20160416163605.5"></t>
-<t tx="ekr.20160416163605.6"># The qt show-invisibles code initially affected word-wrap.</t>
-<t tx="ekr.20160416163605.8"></t>
+<t tx="ekr.20160416163605.6">The qt show-invisibles code initially affected word-wrap.</t>
 <t tx="ekr.20160416163605.9">Changed ClassDef, do_arg, do_arguments, FunctionDef, With nodes.</t>
 <t tx="ekr.20160416163627.1">- Properly spelled words are never looked up more than once in the main dictionary.
 - A regex finds all words quickly. Underscores are not part of words.
-
-
 </t>
+<t tx="ekr.20160417061710.1">- Added python-to-coffeescript command.
+- Better defaults for open/save file dialogs.
+- Improved clone-find commands.
+- Improved kill &amp; yank commands.</t>
+<t tx="ekr.20160417062046.1"></t>
+<t tx="ekr.20160417062135.1">- The livecode plugin is enabled by default, provided that the [meta](https://pypi.python.org/pypi/meta) package is available.
+
+- The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>
+<t tx="ekr.20160417063026.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
