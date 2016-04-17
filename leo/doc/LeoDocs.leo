@@ -19286,9 +19286,9 @@ Edward
 
 [Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
-**The highlights of Leo 5.2**
+**The highlights of Leo 5.3**
 
-- Leo now supports Jupyter (.ipynb) files.
+- Leo now supports Jupyter Notebook (.ipynb) files.
 - Much improved chapter-related operation.
 - Faster spell checking.
 - The rst3 command now make makeing rST tables easier.
