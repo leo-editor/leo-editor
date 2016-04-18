@@ -1202,6 +1202,7 @@
 <v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
 <v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
 <v t="ekr.20160416163605.4"><vh>Fixed shutdown hard crash on Python 3</vh></v>
+<v t="ekr.20160418093902.1"><vh>Investigated #129: Font setting overridden by new workbook</vh></v>
 <v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh></v>
 <v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
 <v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
@@ -18674,6 +18675,12 @@ A script for activating them easier, been a week using Leo and still cant quite 
 If each plugin or script had an example of use that would be priceless, for instance, including them all in quickstart (both scripts, plugins branchs) and then the new user could just go through all clicking on the examples and just seeing Leo work and show its potential.
 </t>
 <t tx="ekr.20160417113739.5">Quickstart should be open by default (instead of current Leo workbook) at least until the user changes some config and prevents that from happening.
+</t>
+<t tx="ekr.20160418093902.1">Leo reading CheatSheet settings
+https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
+
+https://github.com/leo-editor/leo-editor/issues/129
+Font setting overridden by new workbook
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
