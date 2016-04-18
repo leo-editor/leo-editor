@@ -3,10 +3,9 @@
 .. @@language rest # override the default .txt coloring.
 .. @@wrap
 .. @+all
-.. @+node:ekr.20160405062757.1: ** To do: 5.3
-.. @+node:ekr.20131121211048.16378: *3* More screenshots!
+.. @+node:ekr.20131121211048.16378: ** More screenshots!
 Different font sizes, coloring schemes, plugins, etc.
-.. @+node:ekr.20160325051602.1: *3* First: 5.3
+.. @+node:ekr.20160325051602.1: ** To Do: 5.3
 @language rest
 @wrap
 
@@ -17,9 +16,9 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone
 All recent activity
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isort%3Aupdated-desc+
 
-.. @+node:ekr.20151231100137.1: *4* #212: Yet Another Encoding Problem
+.. @+node:ekr.20151231100137.1: *3* #212: Yet Another Encoding Problem
 https://github.com/leo-editor/leo-editor/issues/212
-.. @+node:ekr.20151010090634.1: *5* Notes
+.. @+node:ekr.20151010090634.1: *4* Notes
 @language rest
 @wrap
 
@@ -32,7 +31,7 @@ Ctrl-C, Ctrl-V -- Changes all the non-ASCII characters in the body or headline p
 Shift-Ctrl-C, Shift-Ctrl-V -- Copying a node changes all the non-ASCII characters in the headline and body of the pasted to node.
 
 @language python
-.. @+node:ekr.20151010090736.1: *6* report
+.. @+node:ekr.20151010090736.1: *5* report
 @language rest
 @wrap
 yaep01.leo:
@@ -75,7 +74,7 @@ yaep02.leo:
 <t tx="bob.20151002155632.1">Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</t>
 </tnodes>
 </leo_file>
-.. @+node:ekr.20151010090641.1: *6* bug212-b.leo traceback
+.. @+node:ekr.20151010090641.1: *5* bug212-b.leo traceback
 
 C:\Users\edreamleo\Desktop>python3 c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
 
@@ -152,9 +151,9 @@ Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
 Git repo info: branch = master, commit = b5e6da9f5feb
 Python 3.4.0, PyQt version 5.3.0
 Windows 7 AMD64 (build 6.1.7601) SP1
-.. @+node:ekr.20160418065539.1: *4* #258: leoBridge does not work with @auto-md
+.. @+node:ekr.20160418065539.1: *3* #258: leoBridge does not work with @auto-md
 https://github.com/leo-editor/leo-editor/issues/258
-.. @+node:ekr.20160405070335.1: *4* #237: Session-snapshot-load doesn't load network drives
+.. @+node:ekr.20160405070335.1: *3* #237: Session-snapshot-load doesn't load network drives
 @language rest
 @wrap
 
@@ -166,21 +165,22 @@ In Windows operating systems, the UNC name format is:
 
 Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
 http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
-.. @+node:ekr.20160418070509.1: *4* 3 Later (After b1)
-.. @+node:ekr.20151231100231.1: *5* #180: goto-prev-history-node bugged with bookmarks
+.. @+node:ekr.20160418070509.1: *3* 4 Later
+Some of these may wait until after 5.3-b1.
+.. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
 
 Terry:
 I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
 
 What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
-.. @+node:ekr.20160405110731.1: *5* #189: Better support for UNL navigation of Leo's code
+.. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
 https://github.com/leo-editor/leo-editor/issues/189
 
 Improve g.recursiveUNLSearch?
 
 I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
-.. @+node:ekr.20130806072439.20374: *6* Ignore URL's in scripts?
+.. @+node:ekr.20130806072439.20374: *5* Ignore URL's in scripts?
 From: HaveF <iamaplayer@gmail.com>
 
 I write a script (say, @button button-1) in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to leo-file-B.leo.
@@ -219,9 +219,15 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
-.. @+node:ekr.20160418065622.1: *5* #252: Wishlist: goto-next clone activate chapter view
+.. @+node:ekr.20160418065622.1: *4* #252: Wishlist: goto-next clone activate chapter view
 https://github.com/leo-editor/leo-editor/issues/252
-.. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown
+.. @+node:ekr.20160418172314.1: *4* #264: Solution to #261 needs improvement
+https://github.com/leo-editor/leo-editor/issues/264
+
+The problem is that if you go from the initial layout to a custom layout and then back to "Default", the copy of the initial layout you saved to easily switch to the initial layout, you get a layout the *looks* like the default, but has no splitter 'splitter_2', the splitters are unnamed.
+
+So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
+.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 - Make sure it is called.
 - Use rest colorizer as a template.
 .. @+node:ekr.20160403043354.1: ** To do: 5.4

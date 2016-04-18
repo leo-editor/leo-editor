@@ -1233,6 +1233,8 @@
 <v t="ekr.20160417113739.5"><vh>Quickstart opens by default</vh></v>
 </v>
 </v>
+<v t="ekr.20160418165705.1"><vh>** document history list</vh></v>
+<v t="ekr.20160418165714.1"><vh>** add @data history-list to leoSettings.leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18682,6 +18684,8 @@ https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
 https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 </t>
+<t tx="ekr.20160418165705.1"></t>
+<t tx="ekr.20160418165714.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
