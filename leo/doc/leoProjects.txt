@@ -14,6 +14,10 @@ for p in c.all_unique_positions():
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 .. @+node:ekr.20160303040846.1: ** Added clean-at-clean-files & clean-at-clean-tree commands
+.. @+node:ekr.20160418071704.1: ** Fixed vim-mode problems
+https://groups.google.com/d/msg/leo-editor/1eNTdxLUXJs/y6xUsxdvBwAJ
+
+The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 .. @-all
 .. @@killbeautify
 .. @@language rest

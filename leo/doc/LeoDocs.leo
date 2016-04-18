@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -18611,7 +18611,13 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 <t tx="ekr.20160416163627.1">- Properly spelled words are never looked up more than once in the main dictionary.
 - A regex finds all words quickly. Underscores are not part of words.
 </t>
-<t tx="ekr.20160417061710.1">- Added python-to-coffeescript command.
+<t tx="ekr.20160417061710.1">- Added clean-at-clean-files and clean-at-clean-tree commands.
+
+  The clean-at-clean-files command cleans all @clean nodes (for .py files only) in the entire outline.  The clean-at-clean-tree does the same, but for only one @clean node.  You can invoke the clean-at-clean-tree from any descendant of the @clean node.
+
+  The new commands add zero, one or two blanks lines to the start of each node in @clean trees for .py files. Root nodes not affected. Zero for section definition nodes, two for nodes that start with 'class' and one otherwise.
+
+- Added python-to-coffeescript command.
 - Better defaults for open/save file dialogs.
 - Improved clone-find commands.
 - Improved kill &amp; yank commands.</t>
@@ -18627,7 +18633,8 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 - The rst3 command supports @rst-table.
 - The show-invisibles command now uses native Qt characters.
 </t>
-<t tx="ekr.20160417112540.32">- Added python-to-coffeescript command.
+<t tx="ekr.20160417112540.32">- Added clean-at-clean-files and clean-at-clean-tre commands.
+- Added python-to-coffeescript command.
 - Better defaults for open/save file dialogs.
 - Improved clone-find commands.
 - Improved kill &amp; yank commands.</t>
@@ -18668,7 +18675,7 @@ If each plugin or script had an example of use that would be priceless, for inst
 </t>
 <t tx="ekr.20160417113739.5">Quickstart should be open by default (instead of current Leo workbook) at least until the user changes some config and prevents that from happening.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
