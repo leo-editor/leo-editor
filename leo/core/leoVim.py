@@ -34,8 +34,9 @@ def show_stroke(stroke):
 class VimEvent:
     '''A class to contain the components of the dot.'''
 
-    def __init__(self, char, stroke, w):
+    def __init__(self, c, char, stroke, w):
         '''ctor for the VimEvent class.'''
+        self.c = c
         self.char = char # For Leo's core.
         self.stroke = stroke
         self.w = w
@@ -728,7 +729,7 @@ class VimCommands:
             # Don't use vc.add_to_dot: it updates vc.command_list.
 
             def add(stroke):
-                event = VimEvent(char=stroke, stroke=stroke, w=vc.w)
+                event = VimEvent(c=vc.c, char=stroke, stroke=stroke, w=vc.w)
                 vc.dot_list.append(event)
 
             if vc.in_dot:
@@ -864,7 +865,7 @@ class VimCommands:
         k = vc.k
         vc.colon_w = vc.w # A scratch ivar, for :gt & gT commands.
         vc.quit()
-        event = VimEvent(char=':', stroke='colon', w=vc.w)
+        event = VimEvent(c=vc.c, char=':', stroke='colon', w=vc.w)
         k.fullCommand(event=event)
         k.extendLabel(':')
     #@+node:ekr.20140806123540.18159: *5* vc.vim_comma (not used)
@@ -2089,13 +2090,13 @@ class VimCommands:
     @cmd(':gt')
     def cycle_focus(vc, event=None):
         '''Cycle focus'''
-        event = VimEvent(char='', stroke='', w=vc.colon_w)
+        event = VimEvent(c=vc.c, char='', stroke='', w=vc.colon_w)
         vc.do('cycle-focus', event=event)
 
     @cmd(':gT')
     def cycle_all_focus(vc, event=None):
         '''Cycle all focus'''
-        event = VimEvent(char='', stroke='', w=vc.colon_w)
+        event = VimEvent(c=vc.c, char='', stroke='', w=vc.colon_w)
         vc.do('cycle-all-focus', event=event)
     #@+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
     @cmd(':e')
@@ -2164,7 +2165,7 @@ class VimCommands:
             command = k.functionTail
             c.controlCommands.executeSubprocess(event, command)
         else:
-            event = VimEvent(char='', stroke='', w=vc.colon_w)
+            event = VimEvent(c=vc.c, char='', stroke='', w=vc.colon_w)
             vc.do('shell-command', event=event)
     #@+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     @cmd(':toggle-vim-mode')
@@ -2339,7 +2340,7 @@ class VimCommands:
             # Never add '.' to the dot list.
             if s and s != 'period':
                 # g.trace(s)
-                event = VimEvent(char=s, stroke=s, w=vc.w)
+                event = VimEvent(c=vc.c, char=s, stroke=s, w=vc.w)
                 vc.command_list.append(event)
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot
     def compute_dot(vc, stroke):
