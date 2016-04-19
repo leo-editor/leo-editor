@@ -3526,10 +3526,16 @@ class Commands(object):
     @cmd('contract-or-go-left')
     def contractNodeOrGoToParent(self, event=None):
         """Simulate the left Arrow Key in folder of Windows Explorer."""
+        trace = False and not g.unitTesting
         c = self; p = c.p
         parent = p.parent()
         redraw = False
-        if p.hasChildren() and p.isExpanded():
+        if trace: g.trace(p.h,
+            'children:', p.hasChildren(),
+            'expanded:', p.isExpanded(),
+            'shouldBeExpanded:', c.shouldBeExpanded(p))
+        # Bug fix: 2016/04/19: test p.v.isExpanded().
+        if p.hasChildren() and (p.v.isExpanded() or p.isExpanded()):
             c.contractNode()
         elif parent and parent.isVisible(c):
             # New in Leo 4.9.1: contract all children first.
@@ -5405,6 +5411,7 @@ class Commands(object):
         '''
         # c = self
         trace = False and not g.unitTesting
+        # trace = trace and p.h.startswith(' Tests of @auto-md')
         redraw_flag = False
         for p in p.parents():
             if not p.v.isExpanded():
@@ -5419,7 +5426,7 @@ class Commands(object):
                 if trace: g.trace('call p.expand', p.h, p._childIndex)
                 p.expand()
                 redraw_flag = True
-        if trace: g.trace(redraw_flag, repr(p and p.h), g.callers())
+        # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
     #@+node:ekr.20080514131122.12: *3* c.recolor & requestRecolor
     def requestRecolor(self):
@@ -6240,22 +6247,31 @@ class Commands(object):
     def shouldBeExpanded(self, p):
         '''Return True if the node at position p should be expanded.'''
         trace = False and not g.unitTesting
+        # if trace: g.trace('=====', p.h)
         c, v = self, p.v
+        if not p.hasChildren():
+            if trace: g.trace('False: no children:', p.h)
+            return False
         # Always clear non-existent positions.
+        if trace: g.trace([z.h for z in v.expandedPositions])
         v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
         if not p.isCloned():
             # Do not call p.isExpanded here! It calls this method.
-            if trace: g.trace('not cloned', p.v.isExpanded(), p.h, p._childIndex)
+            if trace: g.trace(p.v.isExpanded(), p.h, 'not cloned: p.v.isExpanded()')
             return p.v.isExpanded()
         if p.isAncestorOf(c.p):
-            if trace: g.trace('is ancestor of c.p', p.h, p._childIndex)
+            if trace: g.trace('True:', p.h, 'ancestor of c.p', c.p.h, p._childIndex)
             return True
-        if p.hasChildren():
-            for p2 in v.expandedPositions:
-                if p == p2:
-                    if trace: g.trace('in list', len(v.expandedPositions), p.h, p._childIndex)
-                    return True
-        if trace: g.trace('not in list', len(v.expandedPositions), p.h, p._childIndex)
+        if trace:
+            g.trace('===== search v.expandedPositions', p.h,
+                'len', len(v.expandedPositions))
+        for p2 in v.expandedPositions:
+            if p == p2:
+                if trace:
+                    g.trace('True:', p.h, 'in v.expandedPositions')
+                return True
+        if trace:
+            g.trace('False:', p.h)
         return False
     #@+node:ekr.20070609122713: *4* c.visLimit
     def visLimit(self):
