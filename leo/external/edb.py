@@ -785,7 +785,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             self.commands_defining = False
             self.prompt = prompt_back
 
-    #@+node:ekr.20110914171443.7283: *4* do_break
+    #@+node:ekr.20110914171443.7283: *4* do_break (Pdb)
     def do_break(self, arg, temporary = 0):
         """b(reak) [ ([filename:]lineno | function) [, condition] ]
         Without argument, list all breaks.
@@ -1625,7 +1625,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     #@+node:ekr.20110914171443.7327: *3* Other helper functions
     # other helper functions
 
-    #@+node:ekr.20110914171443.7328: *4* lookupmodule
+    #@+node:ekr.20110914171443.7328: *4* lookupmodule (Pdb)
     def lookupmodule(self, filename):
         """Helper function for break/clear parsing -- may be overridden.
 
@@ -1758,7 +1758,7 @@ def test():
 def help():
     import pydoc
     pydoc.pager(__doc__)
-#@+node:ekr.20110914171443.7343: *3* main
+#@+node:ekr.20110914171443.7343: *3* main (Pdb)
 def main():
     import getopt
 

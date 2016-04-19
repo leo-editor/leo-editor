@@ -3,7 +3,7 @@
 #@+node:ekr.20061024060248.1: * @file leoPymacs.py
 #@@first
 #@+<< docstring>>
-#@+node:ekr.20061024060248.2: ** << docstring >>
+#@+node:ekr.20061024060248.2: ** << docstring >> (leoPymacs.py)
 '''A module to allow the Pymacs bridge to access Leo data.
 
 All code in this module must be called *from* Emacs:

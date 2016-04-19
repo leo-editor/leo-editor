@@ -60,6 +60,8 @@ class LeoImportCommands:
     #@+node:ekr.20140724064952.18037: *4* ic.createImporterData & helper
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
+        trace = False and not g.unitTesting
+        trace_exception = False
         self.classDispatchDict = {}
         self.atAutoDict = {}
         # Allow plugins to be defined in ~/.leo/plugins.
@@ -81,7 +83,8 @@ class LeoImportCommands:
                             'leo.plugins.importers.%s' % module_name)
                         self.parse_importer_dict(sfn, m)
                     except Exception:
-                        g.es_exception()
+                        if trace_exception:
+                            g.es_exception()
                         g.warning('can not import leo.plugins.importers.%s' % ( 
                             module_name))
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict

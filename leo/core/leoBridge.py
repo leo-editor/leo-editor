@@ -159,10 +159,16 @@ class BridgeController:
         '''Adjust sys.path to enable imports as usual with Leo.'''
         import sys
         g = self.g
-        #g.trace('loadDir',g.app.loadDir)
+        # g.trace('loadDir',g.app.loadDir)
         leoDirs = ('config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test') # 2008/7/30
         for theDir in leoDirs:
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
+            if path not in sys.path:
+                sys.path.append(path)
+        # Attempt a fix for bug #258: leoBridge does not work with @auto-md subtrees.
+        # https://github.com/leo-editor/leo-editor/issues/258
+        for theDir in ('importers', 'writers'):
+            path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', theDir)
             if path not in sys.path:
                 sys.path.append(path)
     #@+node:ekr.20070227095743: *4* bridge.createGui
