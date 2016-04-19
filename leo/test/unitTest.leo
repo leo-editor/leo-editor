@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.44" body_secondary_ratio="0.78">
-	<global_window_position top="108" left="527" height="957" width="1231"/>
+	<global_window_position top="108" left="527" height="957" width="914"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e333971097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1263,9 +1263,10 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
 <v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
-</v>
 <v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
 <v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
+</v>
+<v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7757,7 +7758,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="7"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -13051,6 +13052,24 @@ Section 3
 section 3, line 1
 
 '''
+</t>
+<t tx="ekr.20160419061017.1">import leo.core.leoGui as leoGui # LeoKeyEvent
+import leo.core.leoVim as leoVim # VimEvent.
+import leo.plugins.qt_frame as qt_frame # EventWrapper
+event = func = next_w = parent = None
+char = shortcut = stroke = w = x = y = None
+x_root = y_root = None
+# The EventWrapper class is buried too deep to test easily.
+# I'll try harder if it ever become a problem ;-)
+    # dw = qt_frame.DynamicWindow(c, parent)
+    # event_wrapper = dw.EventWrapper(c, w, next_w, func)
+key_event = leoGui.LeoKeyEvent(
+    c, char, event, shortcut,
+    w, x, y, x_root, y_root)
+vim_event = leoVim.VimEvent(c, char, stroke, w)
+# assert hasattr(event_wrapper, 'c')
+assert hasattr(key_event, 'c')
+assert hasattr(vim_event, 'c')
 </t>
 </tnodes>
 </leo_file>

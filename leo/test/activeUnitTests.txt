@@ -611,6 +611,24 @@ def removeFile(path):
     else:
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
+#@+node:ekr.20160419061017.1: *3* @test event classes
+import leo.core.leoGui as leoGui # LeoKeyEvent
+import leo.core.leoVim as leoVim # VimEvent.
+import leo.plugins.qt_frame as qt_frame # EventWrapper
+event = func = next_w = parent = None
+char = shortcut = stroke = w = x = y = None
+x_root = y_root = None
+# The EventWrapper class is buried too deep to test easily.
+# I'll try harder if it ever become a problem ;-)
+    # dw = qt_frame.DynamicWindow(c, parent)
+    # event_wrapper = dw.EventWrapper(c, w, next_w, func)
+key_event = leoGui.LeoKeyEvent(
+    c, char, event, shortcut,
+    w, x, y, x_root, y_root)
+vim_event = leoVim.VimEvent(c, char, stroke, w)
+# assert hasattr(event_wrapper, 'c')
+assert hasattr(key_event, 'c')
+assert hasattr(vim_event, 'c')
 #@+node:ekr.20140904060337.4476: *3* @test interfaces using API classes
 if g.in_bridge or g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
