@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e333971097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1263,6 +1263,9 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
 <v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
+</v>
+<v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
+<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7754,7 +7757,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -8327,6 +8330,27 @@ assert(g.os_path_exists(test_file))
     else:
         if trace:
             print("@test batch mode: removeFile: not found:",test_file)
+</t>
+<t tx="ekr.20100131171342.5508"></t>
+<t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
+
+if g.app.isExternalUnitTest:
+    print('running @test leoBridge init logic')
+    # This can not be run locally!
+    b = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,
+        readSettings=True,
+        silent=False,
+        tracePlugins=True,
+        verbose=True)
+    g = b.globals()
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(path)
+    c = b.openLeoFile(path)
+    assert c
+    assert c.rootPosition()
+else:
+    self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20100131171342.5608"># print('settingsNameDict',c.k.settingsNameDict)
 

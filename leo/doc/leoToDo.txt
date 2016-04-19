@@ -9,13 +9,21 @@ Different font sizes, coloring schemes, plugins, etc.
 @language rest
 @wrap
 
-6: Everything assigned to 5.3
+5: Everything assigned to 5.3
 Some can wait until after 5.3-b1
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.3
 
 All recent activity
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isort%3Aupdated-desc+
 
+.. @+node:ekr.20160418172314.1: *3* #264: Solution to #261 needs improvement
+https://github.com/leo-editor/leo-editor/issues/264
+
+The problem is that if you go from the initial layout to a custom layout and then back to "Default", the copy of the initial layout you saved to easily switch to the initial layout, you get a layout the *looks* like the default, but has no splitter 'splitter_2', the splitters are unnamed.
+
+So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
+.. @+node:ekr.20160419052003.1: *3* Bug re @string initial_split_orientation
+@string initial_split_orientation = horizontal no effect.
 .. @+node:ekr.20160418065539.1: *3* #258: leoBridge does not work with @auto-md
 https://github.com/leo-editor/leo-editor/issues/258
 .. @+node:ekr.20160405070335.1: *3* #237: Session-snapshot-load doesn't load network drives
@@ -30,7 +38,7 @@ In Windows operating systems, the UNC name format is:
 
 Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
 http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
-.. @+node:ekr.20160418070509.1: *3* 4 Later
+.. @+node:ekr.20160418070509.1: *3* 3 Later
 Some of these may wait until after 5.3-b1.
 .. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
@@ -86,149 +94,6 @@ outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
 .. @+node:ekr.20160418065622.1: *4* #252: Wishlist: goto-next clone activate chapter view
 https://github.com/leo-editor/leo-editor/issues/252
-.. @+node:ekr.20160418172314.1: *4* #264: Solution to #261 needs improvement
-https://github.com/leo-editor/leo-editor/issues/264
-
-The problem is that if you go from the initial layout to a custom layout and then back to "Default", the copy of the initial layout you saved to easily switch to the initial layout, you get a layout the *looks* like the default, but has no splitter 'splitter_2', the splitters are unnamed.
-
-So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
-.. @+node:ekr.20151231100137.1: *4* #212: Yet Another Encoding Problem
-https://github.com/leo-editor/leo-editor/issues/212
-
-It looks like a PyQt5 bug.
-.. @+node:ekr.20151010090634.1: *5* Notes
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/212
-
-This problem is mysterious to me. My simplest test case yaep01.leo does NOT show the problem. But my very slightly more complicated test case yaep02.leo shows the problem.
-
-Ctrl-C, Ctrl-V -- Changes all the non-ASCII characters in the body or headline pasted to.
-
-Shift-Ctrl-C, Shift-Ctrl-V -- Copying a node changes all the non-ASCII characters in the headline and body of the pasted to node.
-
-@language python
-.. @+node:ekr.20151010090736.1: *6* report
-@language rest
-@wrap
-yaep01.leo:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<?xml-stylesheet ekr_test ?>
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-    <global_window_position top="50" left="50" height="500" width="700"/>
-    <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bob.20151002154132.1"><vh>fʁɑ̃.swaːz aʁ.di</vh></v>
-</vnodes>
-<tnodes>
-<t tx="bob.20151002154132.1">fʁɑ̃.swaːz aʁ.di</t>
-</tnodes>
-</leo_file>
-
-yaep02.leo:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-    <global_window_position top="50" left="50" height="500" width="700"/>
-    <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bob.20151002155632.1"><vh>Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</vh></v>
-</vnodes>
-<tnodes>
-<t tx="bob.20151002155632.1">Françoise Madeleine Hardy (French: [fʁɑ̃.swaːz aʁ.di];</t>
-</tnodes>
-</leo_file>
-.. @+node:ekr.20151010090641.1: *6* bug212-b.leo traceback
-
-C:\Users\edreamleo\Desktop>python3 c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
-
-C:\Users\edreamleo\Desktop>c:\python34\python.exe c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs  "C:\Users\edreamleo\Desktop\bug212-b.leo"
-leoID=ekr (in c:\Users\edreamleo\.leo)
-reading settings in C:\leo.repo\leo-editor\leo\config\leoSettings.leo
-reading settings in c:\Users\edreamleo\.leo\myLeoSettings.leo
-reading settings in C:\Users\edreamleo\Desktop\bug212-b.leo
-error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
-Traceback (most recent call last):
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
-    self._parser.Parse(data, isFinal)
-
-xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-
-  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-
-  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-
-xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
-
-error parsing C:\Users\edreamleo\Desktop\bug212-b.leo
-Traceback (most recent call last):
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 207, in feed
-    self._parser.Parse(data, isFinal)
-
-xml.parsers.expat.ExpatError: not well-formed (invalid token): line 12, column 36
-
-
-During handling of the above exception, another exception occurred:
-
-
-Traceback (most recent call last):
-
-  File "c:\leo.repo\leo-editor\leo\core\leoFileCommands.py", line 1235, in parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-
-  File "c:\python34\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-
-  File "c:\python34\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-
-  File "c:\python34\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-
-xml.sax._exceptions.SAXParseException: <unknown>:12:36: not well-formed (invalid token)
-
-
-** isPython3: True
-Leo 5.1-final, build 20150924110144, Thu Sep 24 11:01:44 CDT 2015
-Git repo info: branch = master, commit = b5e6da9f5feb
-Python 3.4.0, PyQt version 5.3.0
-Windows 7 AMD64 (build 6.1.7601) SP1
 .. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 - Make sure it is called.
 - Use rest colorizer as a template.

@@ -143,8 +143,11 @@ class TagController:
     #@+node:peckj.20140804103733.9259: *4* get_tags
     def get_tags(self, p):
         ''' returns a list of tags applied to p '''
-        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
-        return list(tags)
+        if p:
+            tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
+            return list(tags)
+        else:
+            return []
     #@+node:peckj.20140804103733.9260: *4* add_tag
     def add_tag(self, p, tag):
         ''' adds 'tag' to the taglist of p '''
@@ -266,7 +269,6 @@ class LeoTagWidget(QtWidgets.QWidget):
         label = QtWidgets.QLabel(self)
         label.setText('Tags for current node:')
         hl2.addWidget(label)
-
         tags = self.tc.get_tags(pos)
         # add tags
         for tag in tags:
