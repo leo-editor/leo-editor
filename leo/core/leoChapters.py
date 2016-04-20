@@ -87,9 +87,12 @@ class ChapterController:
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
             if chapter:
-                cc.selectChapterLockout = True
-                cc.selectChapterByNameHelper(chapter,collapse=True)
-                cc.selectChapterLockout = False
+                try:
+                    cc.selectChapterLockout = True
+                    cc.selectChapterByNameHelper(chapter,collapse=True)
+                    c.redraw(chapter.p) # 2016/04/20.
+                finally:
+                    cc.selectChapterLockout = False
             else:
                 cc.note('no such chapter: %s' % name)
                 
@@ -147,7 +150,7 @@ class ChapterController:
             c.redraw(chapter.p) # 2016/04/20.
         finally:
             self.selectChapterLockout = False
-    #@+node:ekr.20090306060344.2: *4* selectChapterByNameHelper
+    #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
         trace = False and not g.unitTesting
         cc, c = self, self.c
