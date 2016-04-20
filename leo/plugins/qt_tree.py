@@ -1203,7 +1203,9 @@ class LeoQtTree(leoFrame.LeoTree):
         # g.trace(self.traceItem(item),g.callers(4))
         hPos, vPos = self.getScroll()
         w.scrollToItem(item, w.PositionAtCenter)
-        self.setHScroll(0)
+        
+        # ZoomQuiet doesn't like this.
+        # self.setHScroll(0)
     #@+node:ekr.20110605121601.18431: *3* qtree.setCurrentItemHelper
     def setCurrentItemHelper(self, item):
         w = self.treeWidget
