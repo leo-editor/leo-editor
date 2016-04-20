@@ -6426,7 +6426,7 @@ class Commands(object):
                 if s[0: 2] == "* ":
                     c.frame.setTitle(s[2:])
                     # if trace: g.trace('(c)',s[2:])
-    #@+node:ekr.20040803140033.1: *4* c.setCurrentPosition (** changed **)
+    #@+node:ekr.20040803140033.1: *4* c.setCurrentPosition
     _currentCount = 0
 
     def setCurrentPosition(self, p):
@@ -6434,15 +6434,16 @@ class Commands(object):
         Set the presently selected position. For internal use only.
         Client code should use c.selectPosition instead.
         """
+        trace = False and not g.unitTesting
         trace_no_p = True
             # A serious error.
-        trace_entry = False and not g.unitTesting
-        trace_invalid = False and not g.unitTesting
+        trace_entry = True
+        trace_invalid = False
         c = self
         if not p:
             if trace_no_p: g.trace('===== no p', g.callers())
             return
-        if trace_entry:
+        if trace and trace_entry:
             c._currentCount += 1
             g.trace('-----------', c._currentCount, p and p.h)
             # g.trace(g.callers(8))
@@ -6692,7 +6693,8 @@ class Commands(object):
         if not p:
             if trace_no_p: g.trace('===== no p', g.callers())
             return
-        if cc:
+        # 2016/04/20: check cc.selectChapterLockout.
+        if cc and not cc.selectChapterLockout:
             cc.selectChapterForPosition(p)
                 # Important: selectChapterForPosition calls c.redraw
                 # if the chapter changes.

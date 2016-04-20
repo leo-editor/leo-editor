@@ -4279,12 +4279,7 @@ class LeoQtTreeTab:
             else: # s is the tab name.
                 s = g.u(s)
             if s and not tt.cc.selectChapterLockout:
-                tt.cc.selectChapterLockout = True
-                try:
-                    tt.selectTab(s)
-                finally:
-                    tt.cc.selectChapterLockout = False
-                # g.trace(tt.cc.c.hoistStack)
+                tt.selectTab(s)
         # A change: the argument could now be an int instead of a string.
 
         w.currentIndexChanged.connect(onIndexChanged)
@@ -4310,12 +4305,17 @@ class LeoQtTreeTab:
         tt, c, cc = self, self.c, self.cc
         tabName = g.u(tabName)
         exists = tabName in self.tabNames
-        if trace: g.trace('================',tabName, type(tabName), exists)
+        if trace:
+            g.trace('=====',tabName, 'exists', exists)
+            # g.trace('main', self.cc.getChapter('main'))
+            # g.trace(g.callers(6))
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
-        if not tt.lockout:
+        if tt.lockout:
+            if trace: g.trace('----- lockout', g.callers())
+        else:
             cc.selectChapterByName(tabName)
-            if trace: g.trace('***************', tabName, c.p.h)
+            if trace: g.trace('----- redraw', tabName, c.p.h)
             c.redraw()
             c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *3* tt.setTabLabel

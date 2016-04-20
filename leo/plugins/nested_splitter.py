@@ -371,7 +371,7 @@ if QtWidgets:
             # QtConst.Horizontal: QtConst.Vertical
         }
         #@+others
-        #@+node:ekr.20110605121601.17967: *3* ns.__init__ 
+        #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
             '''Ctor for NestedSplitter class.'''
             QtWidgets.QSplitter.__init__(self, orientation, parent)
