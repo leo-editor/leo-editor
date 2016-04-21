@@ -408,6 +408,77 @@ createColorPicker
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
 .. @+node:ekr.20160327112237.1: *4* Read/write files in json format
+@language python
+.. @+node:ekr.20160420153409.1: *5* Convert Leo outline to/from json
+'''Write node & links version of json.'''
+
+# from __future__ import print_function
+import json
+
+class JsonController:
+    @others
+
+g.cls()
+jc = JsonController()
+s = jc.to_json(c,p=None)
+d = json.loads(s)
+
+nodes = {}
+print('nodes...')
+for d2 in d.get('nodes'):
+    gnx = d2.get('gnx')
+    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
+    nodes[gnx] = d2
+    
+keys = sorted(list(nodes.keys()))
+
+if 0:
+    print()
+    print('keys',keys)
+
+aList = d.get('top')
+print()
+print('top...')
+for gnx in aList:
+    assert gnx in keys,gnx
+    d2 = nodes.get(gnx)
+    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
+.. @+node:ekr.20160420153409.2: *6* to_json
+def to_json (self,c,p=None):
+    
+    '''Convert p's tree to JSON, or the entire outline if p is None.'''
+    
+    if p:
+        top = [p.v.gnx]
+        nodes = list(set([p.v for p in p.self_and_subtree()]))
+    else:
+        top = [v.gnx for v in c.hiddenRootNode.children]
+        nodes = [v for v in c.all_unique_nodes()]
+
+    nodes = [self.vnode_dict(v) for v in nodes]
+    d = {'top':top,'nodes':nodes}
+    s = json.dumps(d)
+    return s
+.. @+node:ekr.20160420153409.3: *6* vnode_dict
+def vnode_dict (self,v):
+    
+    return {
+        'gnx': v.gnx,
+        'h':v.h, 'b':v.b,
+        # 'ua': v.u,
+        'children': [z.gnx for z in v.children]
+    }
+.. @+node:ekr.20160420153642.1: *5* json stuff
+.. @+node:ekr.20160420153642.2: *6* @json-outline
+# The root node for testing read_json_data.
+.. @+node:ekr.20160420153642.3: *6* @input-tree
+.. @+node:ekr.20160420153642.4: *7* child1
+# child 1 text: test of escapes: "\"
+.. @+node:ekr.20160420153642.5: *8* grandchild11
+# grandchild11 body.
+.. @+node:ekr.20160420153642.6: *8* grandchild12
+.. @+node:ekr.20160420153642.7: *7* child2
+.. @+node:ekr.20160420153642.8: *8* grandchild21
 .. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
 - jedi is available in the
 - Can we use live code inside Leo?

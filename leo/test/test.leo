@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.79" body_secondary_ratio="0.65">
 	<global_window_position top="133" left="703" height="826" width="1010"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -336,33 +336,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940"></v>
-<v t="ekr.20090309064612.3"><vh>New features</vh>
-<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
-<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
-</v>
-<v t="ekr.20090201162523.1"><vh>Macro test</vh>
-<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
-</v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
-<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
-<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
-<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
-<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
-<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
-</v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20160420153653.1"><vh>Examples</vh>
 <v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
 <v t="ekr.20131106150237.3641"><vh>@button display css</vh>
 <v t="ekr.20131106150237.3642"><vh>&lt;&lt; define css &gt;&gt;</vh></v>
@@ -379,7 +353,6 @@
 <v t="ekr.20131106150237.3648" a="M"></v>
 <v t="ekr.20131106145203.3636"><vh>@html display</vh></v>
 </v>
-<v t="ekr.20101110190130.2451"><vh>example leoremote client</vh></v>
 <v t="ekr.20100108090658.1958"><vh>generate key events</vh>
 <v t="ekr.20100108090658.1959"><vh>Reference</vh></v>
 <v t="ekr.20100108111728.2077"><vh>Binding dicts</vh></v>
@@ -390,274 +363,9 @@
 <v t="ekr.20100108102217.1967"><vh>setKeyAndMods</vh></v>
 <v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
 </v>
-<v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
-<v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-<v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
-<v t="ekr.20080531131542.4"><vh>printItem</vh></v>
-</v>
-<v t="ekr.20100521101729.2148"><vh>proto of template</vh></v>
-<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
-<v t="ekr.20080806145258.13"><vh>To do</vh></v>
-<v t="ekr.20080806145258.24"><vh>@@file server.py</vh></v>
-<v t="ekr.20080806145258.25"><vh>@@file hello.html</vh></v>
-<v t="ekr.20080806145258.26"><vh>@@file cgi-bin/edward.py</vh>
-<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
-<v t="ekr.20080806145258.28"><vh>escape</vh></v>
-<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
-<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
-<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
-<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
-<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
-</v>
-<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh></v>
-<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
-</v>
-<v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956"><vh>Data trees</vh>
-<v t="ekr.20070929114617"><vh>@graph-target</vh></v>
-<v t="ekr.20070929072043"><vh>@networkx</vh>
-<v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
-<v t="ekr.20070929072506"><vh>@edges</vh></v>
-</v>
-<v t="ekr.20070929070257"><vh>@graph</vh>
-<v t="ekr.20070929070257.1"><vh>@node child1</vh>
-<v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
-</v>
-<v t="ekr.20070929070257.2"><vh>@node child2</vh>
-<v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
-</v>
-</v>
-<v t="ekr.20070928095102"><vh>root-node</vh>
-<v t="ekr.20070928095102.1"><vh>child1</vh></v>
-<v t="ekr.20070928095102.2"><vh>child2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
-<v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
-<v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
-<v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
-<v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
-</v>
-<v t="ekr.20090728090618.2837"><vh>pydiction-1.0</vh>
-<v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
-<v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
-<v t="ekr.20090728090618.2838"><vh>pydiction.py</vh>
-<v t="ekr.20090728090618.2849"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2839"><vh>&lt;&lt; declarations &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2848"><vh>&lt;&lt; process command line &gt;&gt;</vh></v>
-<v t="ekr.20090728090618.2840"><vh>get_submodules</vh></v>
-<v t="ekr.20090728090618.2841"><vh>write_dictionary</vh></v>
-<v t="ekr.20090728090618.2842"><vh>my_import</vh></v>
-<v t="ekr.20090728090618.2843"><vh>remove_duplicates</vh></v>
-<v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
-<v t="ekr.20090728090618.2845"><vh>main</vh></v>
-</v>
-</v>
-<v t="ekr.20090630141519.1793"><vh>rClick proto script</vh></v>
-<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
-<v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
-<v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-</v>
-<v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
-<v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
-<v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
-</v>
-<v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
-<v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
-</v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20100203174233.2032"><vh>@@test paste-script</vh></v>
-<v t="ekr.20100122125233.2053"><vh>@test zcpspm</vh></v>
-<v t="ekr.20091230121016.1931"><vh>at-auto stuff</vh>
-<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
-<v t="ekr.20091217210235.1866"><vh>@@auto-rst at-auto-rst-test.txt</vh>
-<v t="ekr.20100110172917.1916"><vh>section 1</vh></v>
-<v t="ekr.20100110172917.1917"><vh>section 2</vh></v>
-</v>
-<v t="ekr.20091229092257.1930"><vh>@@auto-rst ../doc/html/intro.html.txt</vh>
-<v t="ekr.20100110172917.1918"><vh>@rst-no-head intro.html declarations</vh></v>
-<v t="ekr.20100110172917.1919"><vh>Chapter 2: The Leo Tutorial</vh>
-<v t="ekr.20100110172917.1920"><vh>Leo's main window</vh></v>
-<v t="ekr.20100110172917.1921"><vh>Outline commands</vh></v>
-<v t="ekr.20100110172917.1922"><vh>External files and @file nodes</vh></v>
-<v t="ekr.20100110172917.1923"><vh>Creating external files from outlines</vh>
-<v t="ekr.20100110172917.1924"><vh>Section references</vh></v>
-<v t="ekr.20100110172917.1925"><vh>The @others directive</vh></v>
-<v t="ekr.20100110172917.1926"><vh>The @all directive</vh></v>
-<v t="ekr.20100110172917.1927"><vh>Choosing between @others and sections</vh></v>
-<v t="ekr.20100110172917.1928"><vh>Organizing programs as outlines</vh></v>
-</v>
-<v t="ekr.20100110172917.1929"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20100110172917.1930"><vh>More about directives</vh></v>
-<v t="ekr.20100110172917.1931"><vh>Scripting, extending and customizing Leo</vh></v>
-<v t="ekr.20100110172917.1932"><vh>Summary</vh></v>
-<v t="ekr.20100110172917.1933"><vh>Further study</vh></v>
-</v>
-</v>
-<v t="ekr.20091229101227.1902"><vh>@@auto-rst quickstart.txt</vh>
-<v t="ekr.20100110172917.1934"><vh>A ReStructuredText Primer</vh>
-<v t="ekr.20100110172917.1935"><vh>Structure</vh></v>
-<v t="ekr.20100110172917.1936"><vh>Text styles</vh></v>
-<v t="ekr.20100110172917.1937"><vh>Lists</vh></v>
-<v t="ekr.20100110172917.1938"><vh>Preformatting (code samples)</vh></v>
-<v t="ekr.20100110172917.1939"><vh>Sections</vh>
-<v t="ekr.20100110172917.1940"><vh>Document Title / Subtitle</vh></v>
-</v>
-<v t="ekr.20100110172917.1941"><vh>Images</vh></v>
-<v t="ekr.20100110172917.1942"><vh>What Next?</vh></v>
-</v>
-</v>
-<v t="ekr.20091230064146.1912"><vh>@@auto xml-tags-test.xml</vh>
-<v t="ekr.20100110172917.1943"><vh>xml</vh></v>
-<v t="ekr.20100110172917.1944"><vh>test.a</vh></v>
-<v t="ekr.20100110172917.1945"><vh>test-b</vh></v>
-</v>
-<v t="ekr.20091230090645.1925"><vh>@@auto layout.html</vh>
-<v t="ekr.20100110172917.1946"><vh>layout declarations</vh></v>
-<v t="ekr.20100110172917.1947"><vh>html</vh>
-<v t="ekr.20100110172917.1948"><vh>py:match</vh>
-<v t="ekr.20100110172917.1949"><vh>head</vh>
-<v t="ekr.20100110172917.1950"><vh>py:if</vh></v>
-</v>
-</v>
-<v t="ekr.20100110172917.1951"><vh>py:match</vh>
-<v t="ekr.20100110172917.1952"><vh>body</vh></v>
-</v>
-<v t="ekr.20100110172917.1953"><vh>py:match</vh></v>
-<v t="ekr.20100110172917.1954"><vh>py:match</vh></v>
-</v>
-</v>
-<v t="ekr.20091230160238.1922"><vh>@@auto-rst cheatsheet.txt</vh>
-<v t="ekr.20100110172917.1955"><vh>The reStructuredText_ Cheat Sheet: Syntax Reminders</vh>
-<v t="ekr.20100110172917.1956"><vh>Section Structure</vh></v>
-<v t="ekr.20100110172917.1957"><vh>Body Elements</vh></v>
-<v t="ekr.20100110172917.1958"><vh>Inline Markup</vh></v>
-<v t="ekr.20100110172917.1959"><vh>Directive Quick Reference</vh></v>
-<v t="ekr.20100110172917.1960"><vh>Interpreted Text Role Quick Reference</vh></v>
-</v>
-</v>
-<v t="ekr.20100110151049.2004"><vh>@@auto-rst unicode-headline-test.txt</vh>
-<v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
-</v>
-</v>
-<v t="ekr.20100205114630.2091"><vh>File tests</vh>
-<v t="ekr.20100203233053.2033"><vh>@@thin at-path-in-body-test.py</vh></v>
-<v t="ekr.20100204062222.2035"><vh>@@@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
-<v t="ekr.20100204082851.2038"><vh>@@auto test-PmwComboBox.py</vh>
-<v t="ekr.20100204085631.2041"><vh>test-PmwComboBox declarations</vh></v>
-<v t="ekr.20100204085631.2042"><vh>class ComboBox</vh>
-<v t="ekr.20100204085631.2043"><vh>__init__</vh></v>
-<v t="ekr.20100204085631.2044"><vh>destroy</vh></v>
-<v t="ekr.20100204085631.2045"><vh>get</vh></v>
-<v t="ekr.20100204085631.2046"><vh>invoke</vh></v>
-<v t="ekr.20100204085631.2047"><vh>selectitem</vh></v>
-<v t="ekr.20100204085631.2048"><vh>size</vh></v>
-<v t="ekr.20100204085631.2049"><vh>bbox</vh></v>
-<v t="ekr.20100204085631.2050"><vh>clear</vh></v>
-<v t="ekr.20100204085631.2051"><vh>_addHistory</vh></v>
-<v t="ekr.20100204085631.2052"><vh>_next</vh></v>
-<v t="ekr.20100204085631.2053"><vh>_previous</vh></v>
-<v t="ekr.20100204085631.2054"><vh>_selectCmd</vh></v>
-<v t="ekr.20100204085631.2055"><vh>_drawArrow</vh></v>
-<v t="ekr.20100204085631.2056"><vh>_postList</vh></v>
-<v t="ekr.20100204085631.2057"><vh>_dropdownBtnRelease</vh></v>
-<v t="ekr.20100204085631.2058"><vh>_unpostOnNextRelease</vh></v>
-<v t="ekr.20100204085631.2059"><vh>_resizeArrow</vh></v>
-<v t="ekr.20100204085631.2060"><vh>_unpostList</vh></v>
-<v t="ekr.20100204085631.2061"><vh>_selectUnpost</vh></v>
-</v>
-</v>
-<v t="ekr.20100204085410.2060"><vh>@@auto test-blank-lines.py</vh>
-<v t="ekr.20100205114630.2089"><vh>test-blank-lines declarations</vh></v>
-<v t="ekr.20100205114630.2090"><vh>class ComboBox</vh></v>
-</v>
-<v t="ekr.20100329100226.2108"><vh>@@auto-rst at-auto-test.txt</vh>
-<v t="ekr.20100329100841.2109"><vh>Level 1</vh>
-<v t="ekr.20100329100841.2110"><vh>Level 2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
-<v t="ekr.20100824124015.2195"><vh>print icons</vh></v>
-<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
-<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
-<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
-<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
-</v>
-<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
-<v t="ekr.20100119095726.2043"><vh>rest colorizing</vh></v>
-<v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
-<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
-<v t="ekr.20090617083033.1814"><vh>Test of copy/paste of unicode</vh>
-<v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
-</v>
-<v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
-<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh></v>
-<v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
-</v>
-<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
-<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
-</v>
-<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
-<v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
-<v t="ekr.20100205074729.2086"><vh>node a</vh></v>
-<v t="ekr.20100205074729.2087"><vh>@@thin clone-battle-test.txt</vh>
-<v t="ekr.20100205074729.2086"></v>
-</v>
-</v>
-<v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
-<v t="ekr.20100911195503.2426"><vh>tests of os.path.relpath</vh></v>
-<v t="ekr.20100526075442.2155"><vh>@@auto-rst c:\prog\graphs.rst</vh>
-<v t="ekr.20100526092131.2157"><vh>DOT</vh>
-<v t="ekr.20100526092131.2158"><vh>Examples from User guide</vh></v>
-<v t="ekr.20100526092131.2159"><vh>Small graph</vh></v>
-<v t="ekr.20100526092131.2160"><vh>Fancy graph</vh></v>
-<v t="ekr.20100526092131.2161"><vh>Graph with polygonal shapes</vh></v>
-<v t="ekr.20100526092131.2162"><vh>Records with nested fields</vh></v>
-<v t="ekr.20100526092131.2163"><vh>HTML-like labels</vh></v>
-<v t="ekr.20100526092131.2164"><vh>Graph with constrained ranks</vh></v>
-</v>
-<v t="ekr.20100526092131.2165"><vh>Server status</vh>
-<v t="ekr.20100526092131.2166"><vh>dhcpd.conf</vh></v>
-</v>
-<v t="ekr.20100526092131.2167"><vh>networkx</vh>
-<v t="ekr.20100526092131.2168"><vh>Tutorial</vh></v>
-<v t="ekr.20100526092131.2169"><vh>Examples</vh>
-<v t="ekr.20100526092131.2170"><vh>File hierarchy to graph</vh></v>
-</v>
-</v>
-<v t="ekr.20100526092131.2171"><vh>pygraphviz</vh></v>
-<v t="ekr.20100526092131.2172"><vh>Diagraming apt components</vh></v>
-</v>
-</v>
-<v t="ekr.20101004104134.2347"><vh>Recent</vh>
-<v t="ekr.20120505111317.2735"><vh>Convert Leo outline to/from json</vh>
-<v t="ekr.20120505111317.2736"><vh>to_json</vh></v>
-<v t="ekr.20120505111317.2737"><vh>vnode_dict</vh></v>
-</v>
-<v t="ekr.20110127090822.2451"><vh>dump k.bindingsDict</vh></v>
-<v t="ekr.20100907114225.2209"><vh>example leoremote client</vh></v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
-<v t="ekr.20110525093203.2470"><vh>json stuff</vh>
-<v t="ekr.20110414094917.2423"><vh>@json-outline</vh></v>
-<v t="ekr.20110414094917.2424"><vh>@input-tree</vh>
-<v t="ekr.20110414094917.2425"><vh>child1</vh>
-<v t="ekr.20110414094917.2427"><vh>grandchild11</vh></v>
-<v t="ekr.20110414094917.2428"><vh>grandchild12</vh></v>
-</v>
-<v t="ekr.20110414094917.2426"><vh>child2</vh>
-<v t="ekr.20110414094917.2429"><vh>grandchild21</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20100729114420.2152"><vh>plain fonts</vh></v>
+<v t="ekr.20101110190130.2451"><vh>leoremote client</vh></v>
+<v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
 <v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
 <v t="ekr.20110325142419.2338"><vh>class DictionaryCompleter(QCompleter)</vh></v>
 <v t="ekr.20110325142419.2339"><vh>class CompletionTextEdit(QTextEdit)</vh>
@@ -671,52 +379,17 @@
 <v t="ekr.20110325144059.2350"><vh>main</vh></v>
 </v>
 <v t="ekr.20110511140347.2445"><vh>QTimer</vh></v>
-<v t="ekr.20120426175039.2682"><vh>Socket test</vh>
-<v t="ekr.20120426175039.2683"><vh>class Server</vh>
-<v t="ekr.20120426175039.2684"><vh>__init__</vh></v>
-<v t="ekr.20120426175039.2685"><vh>handle_accept</vh></v>
-</v>
-<v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
-</v>
-<v t="ekr.20120311074029.2727"><vh>URL's</vh>
-<v t="ekr.20120312075951.2740"><vh>@url file://{{c.openDirectory}}/../doc/LeoDocs.leo</vh></v>
-<v t="ekr.20120311074029.2728"><vh>@url file://C:/prog/test.sh</vh></v>
-<v t="ekr.20120311074029.2729"><vh>@url file://C:/prog</vh></v>
-<v t="ekr.20120311074029.2730"><vh>@url http://writemonkey.com/index.php</vh></v>
-<v t="ekr.20120311074029.2731"><vh>@url file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes</vh></v>
-<v t="ekr.20120311074029.2732"><vh>@url file://../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
-<v t="ekr.20120311074029.2733"><vh>@url #--&gt;Before 4.10 b1</vh></v>
-<v t="ekr.20120311074029.2734"><vh>@url file://~/ekr.leo</vh></v>
-<v t="ekr.20120311074029.2735"><vh>@url file://~/ekr.html</vh></v>
-<v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
-<v t="ekr.20120320072350.2731"><vh>@url ../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
-</v>
-<v t="ekr.20120925105035.3146"><vh>vpos probe</vh></v>
-<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
-<v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt; (scrolling test)</vh></v>
-<v t="ekr.20121005071615.3175"><vh>test g.importFromPath</vh></v>
-</v>
-<v t="ekr.20131128115544.3332"><vh>recent</vh>
+<v t="ekr.20090630141519.1793"><vh>rClick script</vh></v>
 <v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
-<v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
-<v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
-<v t="ekr.20120915122112.2868"><vh>panes</vh>
-<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
-<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
-<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
-<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
-<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
-</v>
-<v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
-<v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
-<v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
-<v t="ekr.20120915122112.2871"><vh>text icon</vh></v>
-<v t="ekr.20120915122112.2869"><vh>marked icon</vh></v>
-<v t="ekr.20120915122112.2870"><vh>clone icon</vh></v>
-<v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
-<v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
-<v t="ekr.20120916063628.2922"><vh>quit</vh></v>
+<v t="ekr.20120918103721.2944"><vh>@ignore-tree Text nodes</vh>
+<v t="ekr.20120918144251.2965"><vh>@text Intro</vh></v>
+<v t="ekr.20120918144251.2964"><vh>@text</vh></v>
+<v t="ekr.20120918143835.2964"><vh>@text</vh></v>
+<v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
+<v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
+<v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
+<v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
 </v>
 <v t="ekr.20120914093811.2825"><vh>@screencast common keys</vh>
 <v t="ekr.20120914093811.2826"><vh>ctrl-i</vh></v>
@@ -735,22 +408,6 @@
 <v t="ekr.20120914174750.2850"><vh>That's all</vh></v>
 <v t="ekr.20120914174750.2851"><vh>clean up and quit</vh></v>
 </v>
-<v t="ekr.20120915162554.2882"><vh>@screencast minibuffer</vh>
-<v t="ekr.20120915162554.2883"><vh>mb intro</vh></v>
-<v t="ekr.20120915164308.2886"><vh>mb typing</vh></v>
-<v t="ekr.20120915170516.2888"><vh>mb tab </vh></v>
-<v t="ekr.20120915173000.2894"><vh>mb no tab</vh></v>
-<v t="ekr.20120917133405.2948"><vh>mb backspace</vh></v>
-<v t="ekr.20120917133405.2950"><vh>mb backspace</vh></v>
-<v t="ekr.20120917133405.2952"><vh>mb backspace</vh></v>
-<v t="ekr.20120917133405.2953"><vh>mb e tab</vh></v>
-<v t="ekr.20120917133405.2955"><vh>mb 6 backspaces</vh></v>
-<v t="ekr.20120916185527.2922"><vh>mb o tab</vh></v>
-<v t="ekr.20120915173000.2895"><vh>mb Return</vh></v>
-<v t="ekr.20120915174321.2898"><vh>mb inserted node</vh></v>
-<v t="ekr.20120915175727.2905"><vh>mb last slide</vh></v>
-<v t="ekr.20120916065229.2914"><vh>mb quit</vh></v>
-</v>
 <v t="ekr.20120915181136.2907"><vh>@screencast Ctrl-F</vh>
 <v t="ekr.20120916063628.2912"><vh>find intro</vh></v>
 <v t="ekr.20120916065229.2916"><vh>Ctrl-F</vh></v>
@@ -759,14 +416,55 @@
 <v t="ekr.20120916063628.2913"><vh>cleanup and quit</vh></v>
 <v t="ekr.20120916184021.2918"><vh>spam</vh></v>
 </v>
-<v t="ekr.20120918103721.2944"><vh>@ignore-tree Text nodes</vh>
-<v t="ekr.20120918144251.2965"><vh>@text Intro</vh></v>
-<v t="ekr.20120918144251.2964"><vh>@text</vh></v>
-<v t="ekr.20120918143835.2964"><vh>@text</vh></v>
-<v t="ekr.20120918113531.2956"><vh>@text Intro</vh></v>
-<v t="ekr.20120918113531.2957"><vh>@text Motivation</vh></v>
-<v t="ekr.20120918111016.2955"><vh>@text How it works</vh></v>
-<v t="ekr.20120918121401.2957"><vh>@text Showing nodes</vh></v>
+<v t="ekr.20120917200834.2928"><vh>@screencast How to make screencasts</vh>
+<v t="ekr.20120918170946.2994"><vh>Intro</vh>
+<v t="ekr.20120918164428.2968"><vh>Nodes</vh></v>
+<v t="ekr.20120918170133.2973"><vh>Scripts</vh></v>
+<v t="ekr.20120918170946.2976"><vh>Most nodes are hiddeen</vh></v>
+<v t="ekr.20120918170133.2974"><vh>Show nodes</vh></v>
+</v>
+<v t="ekr.20120918174346.3024"><vh>The program counter</vh>
+<v t="ekr.20120918170133.2975"><vh>m.p</vh></v>
+<v t="ekr.20120918170946.2979"><vh>m.p 2</vh></v>
+</v>
+<v t="ekr.20120918174346.3026"><vh>Organizing nodes</vh>
+<v t="ekr.20120918174346.3018"><vh>organizing screencasts</vh></v>
+<v t="ekr.20120918174346.3019"><vh>empty nodes</vh></v>
+<v t="ekr.20120918174346.3020"><vh>ignored nodes</vh></v>
+<v t="ekr.20120918174346.3021"><vh>example @ignore-node</vh>
+<v t="ekr.20120918174346.3022"><vh>@ignore-node whatever</vh></v>
+</v>
+<v t="ekr.20120918174346.3027"><vh>ignored trees</vh></v>
+</v>
+<v t="ekr.20120918174346.3025"><vh>m methods</vh>
+<v t="ekr.20120918170946.2989"><vh>m.redraw</vh></v>
+<v t="ekr.20120918170946.2990"><vh>m.redraw 2</vh></v>
+<v t="ekr.20120918170946.2991"><vh>m.redraw 3</vh></v>
+<v t="ekr.20120918174346.3028"><vh>captions</vh>
+<v t="ekr.20120918170946.2981"><vh>m.log</vh></v>
+<v t="ekr.20120918170946.2982"><vh>m.caption</vh></v>
+<v t="ekr.20120918170946.2986"><vh>m.body</vh></v>
+<v t="ekr.20120918170946.2987"><vh>m.body 2</vh></v>
+<v t="ekr.20120918170946.2983"><vh>m.tree</vh></v>
+<v t="ekr.20120918170946.2984"><vh>m.tree 2</vh></v>
+</v>
+<v t="ekr.20120918174346.3029"><vh>images</vh>
+<v t="ekr.20120918170946.2992"><vh>m.image</vh></v>
+<v t="ekr.20120918170946.2993"><vh>m.image 2</vh></v>
+</v>
+<v t="ekr.20120918170946.2997"><vh>key handling</vh>
+<v t="ekr.20120918170946.2998"><vh>m.head_keys</vh></v>
+<v t="ekr.20120918170946.2999"><vh>m.head_keys 2</vh></v>
+<v t="ekr.20120918170946.3000"><vh>restore previous headline</vh></v>
+<v t="ekr.20120918174346.3014"><vh>m.body_keys</vh></v>
+<v t="ekr.20120918174346.3015"><vh>m.body_keys_ 2</vh>
+<v t="ekr.20120918174346.3016"><vh>@ignore-node child</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20120918174346.3023"><vh>more normal examples</vh></v>
+<v t="ekr.20120918115916.2954"><vh>m.quit</vh></v>
+<v t="ekr.20120918103721.2948"><vh>quit</vh></v>
 </v>
 <v t="ekr.20120921072549.3028"><vh>@screencast menus</vh>
 <v t="ekr.20120922191243.3126"><vh>@ignore-node comments</vh></v>
@@ -826,56 +524,40 @@
 <v t="ekr.20120922124750.3062"><vh>helpcommands</vh></v>
 </v>
 </v>
-<v t="ekr.20120917200834.2928"><vh>@screencast How to make screencasts</vh>
-<v t="ekr.20120918170946.2994"><vh>Intro</vh>
-<v t="ekr.20120918164428.2968"><vh>Nodes</vh></v>
-<v t="ekr.20120918170133.2973"><vh>Scripts</vh></v>
-<v t="ekr.20120918170946.2976"><vh>Most nodes are hiddeen</vh></v>
-<v t="ekr.20120918170133.2974"><vh>Show nodes</vh></v>
+<v t="ekr.20120915162554.2882"><vh>@screencast minibuffer</vh>
+<v t="ekr.20120915162554.2883"><vh>mb intro</vh></v>
+<v t="ekr.20120915164308.2886"><vh>mb typing</vh></v>
+<v t="ekr.20120915170516.2888"><vh>mb tab </vh></v>
+<v t="ekr.20120915173000.2894"><vh>mb no tab</vh></v>
+<v t="ekr.20120917133405.2948"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2950"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2952"><vh>mb backspace</vh></v>
+<v t="ekr.20120917133405.2953"><vh>mb e tab</vh></v>
+<v t="ekr.20120917133405.2955"><vh>mb 6 backspaces</vh></v>
+<v t="ekr.20120916185527.2922"><vh>mb o tab</vh></v>
+<v t="ekr.20120915173000.2895"><vh>mb Return</vh></v>
+<v t="ekr.20120915174321.2898"><vh>mb inserted node</vh></v>
+<v t="ekr.20120915175727.2905"><vh>mb last slide</vh></v>
+<v t="ekr.20120916065229.2914"><vh>mb quit</vh></v>
 </v>
-<v t="ekr.20120918174346.3024"><vh>The program counter</vh>
-<v t="ekr.20120918170133.2975"><vh>m.p</vh></v>
-<v t="ekr.20120918170946.2979"><vh>m.p 2</vh></v>
+<v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
+<v t="ekr.20120918123030.2960"><vh>Intro</vh></v>
+<v t="ekr.20120915122112.2868"><vh>panes</vh>
+<v t="ekr.20120914183137.2851"><vh>This is the tree pane</vh></v>
+<v t="ekr.20120914183137.2853"><vh>This is the log pane</vh></v>
+<v t="ekr.20120914183137.2855"><vh>This is the body pane</vh></v>
+<v t="ekr.20120914183137.2856"><vh>The minibuffer</vh></v>
+<v t="ekr.20120914183137.2857"><vh>The icon area</vh></v>
 </v>
-<v t="ekr.20120918174346.3026"><vh>Organizing nodes</vh>
-<v t="ekr.20120918174346.3018"><vh>organizing screencasts</vh></v>
-<v t="ekr.20120918174346.3019"><vh>empty nodes</vh></v>
-<v t="ekr.20120918174346.3020"><vh>ignored nodes</vh></v>
-<v t="ekr.20120918174346.3021"><vh>example @ignore-node</vh>
-<v t="ekr.20120918174346.3022"><vh>@ignore-node whatever</vh></v>
-</v>
-<v t="ekr.20120918174346.3027"><vh>ignored trees</vh></v>
-</v>
-<v t="ekr.20120918174346.3025"><vh>m methods</vh>
-<v t="ekr.20120918170946.2989"><vh>m.redraw</vh></v>
-<v t="ekr.20120918170946.2990"><vh>m.redraw 2</vh></v>
-<v t="ekr.20120918170946.2991"><vh>m.redraw 3</vh></v>
-<v t="ekr.20120918174346.3028"><vh>captions</vh>
-<v t="ekr.20120918170946.2981"><vh>m.log</vh></v>
-<v t="ekr.20120918170946.2982"><vh>m.caption</vh></v>
-<v t="ekr.20120918170946.2986"><vh>m.body</vh></v>
-<v t="ekr.20120918170946.2987"><vh>m.body 2</vh></v>
-<v t="ekr.20120918170946.2983"><vh>m.tree</vh></v>
-<v t="ekr.20120918170946.2984"><vh>m.tree 2</vh></v>
-</v>
-<v t="ekr.20120918174346.3029"><vh>images</vh>
-<v t="ekr.20120918170946.2992"><vh>m.image</vh></v>
-<v t="ekr.20120918170946.2993"><vh>m.image 2</vh></v>
-</v>
-<v t="ekr.20120918170946.2997"><vh>key handling</vh>
-<v t="ekr.20120918170946.2998"><vh>m.head_keys</vh></v>
-<v t="ekr.20120918170946.2999"><vh>m.head_keys 2</vh></v>
-<v t="ekr.20120918170946.3000"><vh>restore previous headline</vh></v>
-<v t="ekr.20120918174346.3014"><vh>m.body_keys</vh></v>
-<v t="ekr.20120918174346.3015"><vh>m.body_keys_ 2</vh>
-<v t="ekr.20120918174346.3016"><vh>@ignore-node child</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20120918174346.3023"><vh>more normal examples</vh></v>
-<v t="ekr.20120918115916.2954"><vh>m.quit</vh></v>
-<v t="ekr.20120918103721.2948"><vh>quit</vh></v>
-</v>
+<v t="ekr.20120915122112.2873"><vh>icon box</vh></v>
+<v t="ekr.20120915114713.2866"><vh>node icon</vh></v>
+<v t="ekr.20120915112650.2864"><vh>dirty icon</vh></v>
+<v t="ekr.20120915122112.2871"><vh>text icon</vh></v>
+<v t="ekr.20120915122112.2869"><vh>marked icon</vh></v>
+<v t="ekr.20120915122112.2870"><vh>clone icon</vh></v>
+<v t="ekr.20120915122112.2872"><vh>full icon</vh></v>
+<v t="ekr.20120915122112.2874"><vh>save command clears dirty bits</vh></v>
+<v t="ekr.20120916063628.2922"><vh>quit</vh></v>
 </v>
 <v t="ekr.20120913105857.2914"><vh>@screencast Tutorial</vh>
 <v t="ekr.20120923110028.3133"><vh>@ignore-tree completed @text nodes</vh>
@@ -976,125 +658,20 @@
 </v>
 </v>
 </v>
-<v t="ekr.20121008164702.3281"><vh>Prototype of ipynb import</vh>
-<v t="ekr.20121008164702.3282"><vh>@button cvt ipynb @key=Alt-7</vh>
-<v t="ekr.20121008164702.3283"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-<v t="ekr.20121008164702.3284"><vh>class IpynbReader</vh>
-<v t="ekr.20121008164702.3285"><vh>ctor</vh></v>
-<v t="ekr.20121008164702.3286"><vh>do_cell</vh></v>
-<v t="ekr.20121008164702.3287"><vh>do_worksheet</vh></v>
-<v t="ekr.20121008164702.3288"><vh>get_node</vh></v>
-<v t="ekr.20121008164702.3289"><vh>parse</vh></v>
 </v>
-</v>
-<v t="ekr.20121008164702.3290"><vh>ipynb tree</vh>
-<v t="ekr.20121008164702.3291"><vh>worksheet 1</vh>
-<v t="ekr.20121008164702.3292"><vh>Part 2: Dataset Basics and Concepts</vh>
-<v t="ekr.20121008164702.3293"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3294"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3295"><vh>code</vh></v>
-<v t="ekr.20121008164702.3296"><vh>code</vh></v>
-<v t="ekr.20121008164702.3297"><vh>code</vh></v>
-<v t="ekr.20121008164702.3298"><vh>code</vh></v>
-<v t="ekr.20121008164702.3299"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3300"><vh>code</vh></v>
-<v t="ekr.20121008164702.3301"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3302"><vh>code</vh></v>
-<v t="ekr.20121008164702.3303"><vh>code</vh></v>
-<v t="ekr.20121008164702.3304"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3305"><vh>Attributes</vh>
-<v t="ekr.20121008164702.3306"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3307"><vh>For Samples</vh>
-<v t="ekr.20121008164702.3308"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3309"><vh>code</vh></v>
-<v t="ekr.20121008164702.3310"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3311"><vh>code</vh></v>
-<v t="ekr.20121008164702.3312"><vh>code</vh></v>
-<v t="ekr.20121008164702.3313"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3314"><vh>code</vh></v>
-<v t="ekr.20121008164702.3315"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3316"><vh>code</vh></v>
-<v t="ekr.20121008164702.3317"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3318"><vh>code</vh></v>
-<v t="ekr.20121008164702.3319"><vh>code</vh></v>
-<v t="ekr.20121008164702.3320"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3321"><vh>code</vh></v>
-<v t="ekr.20121008164702.3322"><vh>code</vh></v>
-</v>
-<v t="ekr.20121008164702.3323"><vh>For Features</vh>
-<v t="ekr.20121008164702.3324"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3325"><vh>code</vh></v>
-<v t="ekr.20121008164702.3326"><vh>code</vh></v>
-</v>
-<v t="ekr.20121008164702.3327"><vh>For The Dataset</vh>
-<v t="ekr.20121008164702.3328"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3329"><vh>code</vh></v>
-</v>
-</v>
-<v t="ekr.20121008164702.3330"><vh>Slicing, resampling, feature selection</vh>
-<v t="ekr.20121008164702.3331"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3332"><vh>code</vh></v>
-<v t="ekr.20121008164702.3333"><vh>code</vh></v>
-<v t="ekr.20121008164702.3334"><vh>code</vh></v>
-<v t="ekr.20121008164702.3335"><vh>code</vh></v>
-<v t="ekr.20121008164702.3336"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3337"><vh>code</vh></v>
-<v t="ekr.20121008164702.3338"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3339"><vh>code</vh></v>
-<v t="ekr.20121008164702.3340"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3341"><vh>code</vh></v>
-<v t="ekr.20121008164702.3342"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3343"><vh>code</vh></v>
-<v t="ekr.20121008164702.3344"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3345"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3346"><vh>code</vh></v>
-<v t="ekr.20121008164702.3347"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3348"><vh>code</vh></v>
-<v t="ekr.20121008164702.3349"><vh>code</vh></v>
-<v t="ekr.20121008164702.3350"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3351"><vh>code</vh></v>
-<v t="ekr.20121008164702.3352"><vh>code</vh></v>
-<v t="ekr.20121008164702.3353"><vh>markdown</vh></v>
-</v>
-<v t="ekr.20121008164702.3354"><vh>Loading fMRI data</vh>
-<v t="ekr.20121008164702.3355"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3356"><vh>code</vh></v>
-<v t="ekr.20121008164702.3357"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3358"><vh>code</vh></v>
-<v t="ekr.20121008164702.3359"><vh>code</vh></v>
-<v t="ekr.20121008164702.3360"><vh>code</vh></v>
-<v t="ekr.20121008164702.3361"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3362"><vh>code</vh></v>
-<v t="ekr.20121008164702.3363"><vh>code</vh></v>
-<v t="ekr.20121008164702.3364"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3365"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3366"><vh>code</vh></v>
-<v t="ekr.20121008164702.3367"><vh>code</vh></v>
-<v t="ekr.20121008164702.3368"><vh>code</vh></v>
-<v t="ekr.20121008164702.3369"><vh>code</vh></v>
-<v t="ekr.20121008164702.3370"><vh>code</vh></v>
-<v t="ekr.20121008164702.3371"><vh>code</vh></v>
-<v t="ekr.20121008164702.3372"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3373"><vh>code</vh></v>
-<v t="ekr.20121008164702.3374"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3375"><vh>code</vh></v>
-<v t="ekr.20121008164702.3376"><vh>markdown</vh></v>
-</v>
-<v t="ekr.20121008164702.3377"><vh>Storage</vh>
-<v t="ekr.20121008164702.3378"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3379"><vh>code</vh></v>
-<v t="ekr.20121008164702.3380"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3381"><vh>code</vh></v>
-<v t="ekr.20121008164702.3382"><vh>markdown</vh></v>
-<v t="ekr.20121008164702.3383"><vh>code</vh></v>
-<v t="ekr.20121008164702.3384"><vh>code</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20121011100948.4582"></v>
-<v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
+<v t="ekr.20100516140428.2135"><vh>sha1 hashes</vh></v>
+<v t="ekr.20120311074029.2727"><vh>URL examples</vh>
+<v t="ekr.20120312075951.2740"><vh>@url file://{{c.openDirectory}}/../doc/LeoDocs.leo</vh></v>
+<v t="ekr.20120311074029.2728"><vh>@url file://C:/prog/test.sh</vh></v>
+<v t="ekr.20120311074029.2729"><vh>@url file://C:/prog</vh></v>
+<v t="ekr.20120311074029.2730"><vh>@url http://writemonkey.com/index.php</vh></v>
+<v t="ekr.20120311074029.2731"><vh>@url file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes</vh></v>
+<v t="ekr.20120311074029.2732"><vh>@url file://../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
+<v t="ekr.20120311074029.2733"><vh>@url #--&gt;Before 4.10 b1</vh></v>
+<v t="ekr.20120311074029.2734"><vh>@url file://~/ekr.leo</vh></v>
+<v t="ekr.20120311074029.2735"><vh>@url file://~/ekr.html</vh></v>
+<v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
+<v t="ekr.20120320072350.2731"><vh>@url ../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 </v>
 <v t="ekr.20160401061847.1"><vh>viewrendered examples</vh>
 <v t="ekr.20160401073951.1"><vh>Python code</vh></v>
@@ -1119,6 +696,162 @@
 <v t="ekr.20160401061847.16"><vh>docstring test</vh></v>
 <v t="ekr.20160401061847.17" a="M"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20160401061847.18" a="M"><vh>rst test (including url)</vh></v>
+</v>
+<v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
+</v>
+<v t="ekr.20100205114630.2091"><vh>Files</vh>
+<v t="ekr.20100204062222.2035"><vh>@@@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
+<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
+<v t="ekr.20091230064146.1912"><vh>@@auto xml-tags-test.xml</vh>
+<v t="ekr.20100110172917.1943"><vh>xml</vh></v>
+<v t="ekr.20100110172917.1944"><vh>test.a</vh></v>
+<v t="ekr.20100110172917.1945"><vh>test-b</vh></v>
+</v>
+<v t="ekr.20100110151049.2004"><vh>@@auto-rst unicode-headline-test.txt</vh>
+<v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
+</v>
+<v t="ekr.20100203233053.2033"><vh>@@file at-path-in-body-test.py</vh></v>
+</v>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20080531131542.1"><vh>Prototype of mxTextTools</vh>
+<v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
+<v t="ekr.20080531131542.4"><vh>printItem</vh></v>
+</v>
+<v t="ekr.20100521101729.2148"><vh>Prototype of template</vh></v>
+<v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20080806145258.13"><vh>To do</vh></v>
+<v t="ekr.20080806145258.24"><vh>@@file server.py</vh></v>
+<v t="ekr.20080806145258.25"><vh>@@file hello.html</vh></v>
+<v t="ekr.20080806145258.26"><vh>@@file cgi-bin/edward.py</vh>
+<v t="ekr.20080806145702.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.27"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20080806145258.28"><vh>escape</vh></v>
+<v t="ekr.20080806145258.29"><vh>print_all</vh></v>
+<v t="ekr.20080806145258.30"><vh>print_body</vh></v>
+<v t="ekr.20080806145258.31"><vh>print_head</vh></v>
+<v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
+<v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
+</v>
+<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh></v>
+<v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
+</v>
+<v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
+<v t="ekr.20070929122956"><vh>Data trees</vh>
+<v t="ekr.20070929114617"><vh>@graph-target</vh></v>
+<v t="ekr.20070929072043"><vh>@networkx</vh>
+<v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
+<v t="ekr.20070929072506"><vh>@edges</vh></v>
+</v>
+<v t="ekr.20070929070257"><vh>@graph</vh>
+<v t="ekr.20070929070257.1"><vh>@node child1</vh>
+<v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
+</v>
+<v t="ekr.20070929070257.2"><vh>@node child2</vh>
+<v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
+</v>
+</v>
+<v t="ekr.20070928095102"><vh>root-node</vh>
+<v t="ekr.20070928095102.1"><vh>child1</vh></v>
+<v t="ekr.20070928095102.2"><vh>child2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
+<v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
+<v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
+<v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
+<v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
+</v>
+<v t="ekr.20090728090618.2837"><vh>pydiction-1.0</vh>
+<v t="ekr.20090728090618.2846"><vh>pydiction.vim</vh></v>
+<v t="ekr.20090728090618.2847"><vh>README.txt</vh></v>
+<v t="ekr.20090728090618.2838"><vh>pydiction.py</vh>
+<v t="ekr.20090728090618.2849"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2839"><vh>&lt;&lt; declarations &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2848"><vh>&lt;&lt; process command line &gt;&gt;</vh></v>
+<v t="ekr.20090728090618.2840"><vh>get_submodules</vh></v>
+<v t="ekr.20090728090618.2841"><vh>write_dictionary</vh></v>
+<v t="ekr.20090728090618.2842"><vh>my_import</vh></v>
+<v t="ekr.20090728090618.2843"><vh>remove_duplicates</vh></v>
+<v t="ekr.20090728090618.2844"><vh>get_yesno</vh></v>
+<v t="ekr.20090728090618.2845"><vh>main</vh></v>
+</v>
+</v>
+<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
+<v t="ekr.20071026102420.2"><vh>Screen capture with Wink</vh>
+<v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
+<v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
+</v>
+</v>
+<v t="ekr.20090309064612.3"><vh>Tests</vh>
+<v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt; (scrolling test)</vh></v>
+<v t="ekr.20100615095815.2189"><vh>activate/deactivate events</vh></v>
+<v t="ekr.20100205074729.2085"><vh>Clone battle test</vh>
+<v t="ekr.20100205074729.2086"><vh>node a</vh></v>
+<v t="ekr.20100205074729.2087"><vh>@@thin clone-battle-test.txt</vh>
+<v t="ekr.20100205074729.2086"></v>
+</v>
+</v>
+<v t="ekr.20100616085524.2191"><vh>config iter</vh></v>
+<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
+</v>
+<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
+<v t="ekr.20100824124015.2195"><vh>print icons</vh></v>
+<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
+<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
+<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
+<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
+</v>
+<v t="ekr.20100103112623.1951"><vh>Insert form-feed</vh></v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
+<v t="ekr.20100330082345.2120"><vh>pseudoplain</vh></v>
+<v t="ekr.20100130095415.2023"><vh>Simulate startup code for non-ascii directories</vh></v>
+<v t="ekr.20120426175039.2682"><vh>Socket test</vh>
+<v t="ekr.20120426175039.2683"><vh>class Server</vh>
+<v t="ekr.20120426175039.2684"><vh>__init__</vh></v>
+<v t="ekr.20120426175039.2685"><vh>handle_accept</vh></v>
+</v>
+<v t="ekr.20120426175039.2686"><vh>class RequestHandler</vh></v>
+</v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
+<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
+<v t="ekr.20121005071615.3175"><vh>test g.importFromPath</vh></v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions (do not deletes)</vh></v>
+<v t="ekr.20100911195503.2426"><vh>tests of os.path.relpath</vh></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
+<v t="ekr.20090617083033.1814"><vh>Test of copy/paste of unicode</vh>
+<v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
+</v>
+<v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
+<v t="ekr.20100127122240.2063"><vh>Terry's unicode problem</vh></v>
+<v t="ekr.20100202115249.2023"><vh>@@thin qttexttest.py</vh></v>
+<v t="ekr.20091230081322.1919"><vh>unicode categories</vh></v>
+</v>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
+<v t="ekr.20100203174233.2032"><vh>@test paste-script</vh></v>
+<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
+</v>
+<v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1420,7 +1153,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="4"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -2023,7 +1756,6 @@ vim.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071105085941"></t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
 shellKind = 'text' # in ('plain','text','canvas')
@@ -2777,8 +2509,6 @@ http://python.net/crew/mhammond/win32/
 
 RunCode("python",p.bodyString())
 </t>
-<t tx="ekr.20080807115344.1">Application.Echo("Hello from Python")
-</t>
 <t tx="ekr.20080807115344.2">class MySite(axsite.AXSite):
     # Our error handler will simply print to the console.
     def OnScriptError(self, activeScriptError):
@@ -2826,7 +2556,6 @@ from win32com.axscript import axscript
 from win32com.axscript.server import axsite
 import pythoncom
 import win32com.server.util</t>
-<t tx="ekr.20080811113441.2"></t>
 <t tx="ekr.20080815073750.1">n = 0
 for p in c.allNodes_iter():
     if p.isAtNoSentFileNode():
@@ -2987,8 +2716,6 @@ print aList3.dump()
 
 # To see the docstring, enable auto-completion and type g.posList?
 # g.posList</t>
-<t tx="ekr.20090201162523.1"># define a macro: ctrl-f ab ctrl-r AB
-pass</t>
 <t tx="ekr.20090201192257.1">b = p.b
 try:
     w = c.frame.body.bodyCtrl
@@ -3909,27 +3636,6 @@ State of the prototype code:
   containing an icon-like script, would create *another* @button node,
   say "@button pat-find pat a" that would (interactively?) find all
   nodes matched by the script in "pat a".  This isn't going to be easy.</t>
-<t tx="ekr.20091217210235.1866">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
-<t tx="ekr.20091229092257.1930">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
-<t tx="ekr.20091229101227.1902">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
 <t tx="ekr.20091230064146.1911"># For xml-tags-test.xml
 xml
 test.a
@@ -3965,31 +3671,19 @@ for i,j in table2:
         if g.isPython3: ch = chr(n)
         else: ch = unichr(n)
         g.es(ch,u.category(ch))</t>
-<t tx="ekr.20091230090645.1925">@language xml
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20091230121016.1931"></t>
-<t tx="ekr.20091230160238.1922">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
 <t tx="ekr.20100103112623.1951"># This script insert a raw form-feed into the Leo outline.
 # Leo's atFile write code should remove this.
 s = p.b
 p.b = s + '\n#\f'
 
 # 
-# </t>
+#</t>
 <t tx="ekr.20100108090658.1958">&lt;&lt; imports&gt;&gt;
 &lt;&lt; constants &gt;&gt;
 
 @others
 
-ec = leoEditCommands.editCommandsClass
+ec = editCommands.EditCommandsClass
 table = (
     (ec,'next-line','Down'),
     (ec,'previous-line','Up'),
@@ -4027,7 +3721,7 @@ Qt::MetaModifier	0x10000000	  A Meta key on the keyboard.
 import PyQt4.QtGui as QtGui
 Qt = QtCore.Qt
 
-import leo.core.leoEditCommands as leoEditCommands</t>
+import leo.commands.editCommands as editCommands</t>
 <t tx="ekr.20100108102030.1963">noMod = Qt.NoModifier
 shift = Qt.ShiftModifier
 ctrl  = Qt.ControlModifier
@@ -4113,9 +3807,7 @@ def adjustBindings (command,callback,f,stroke,theClass):
     k = c.k
     g.funcToMethod(callback,theClass,name=f.__name__)
     if trace: g.trace('=====',command,id(f),f.__name__)
-
-
-    stroke = c.k.shortcutFromSetting(stroke)
+    stroke = c.k.strokeFromSetting(stroke)
     bindStroke = c.k.tkbindingFromStroke(stroke)
 
     # Replace all entries for command in all bindings dicts...
@@ -4219,1016 +3911,6 @@ c.bodyWantsFocusNow()</t>
 .. Warning: this node is ignored when writing this file.
 .. However, @ @rst-options are recognized in this node.
 </t>
-<t tx="ekr.20100110172917.1916"></t>
-<t tx="ekr.20100110172917.1917">section 2
-
-</t>
-<t tx="ekr.20100110172917.1918">.. rst3: filename: html\intro.html
-
-</t>
-<t tx="ekr.20100110172917.1919">Leo is a power tool for people who want to organize, study and work with data,
-especially complex data like computer programs, books, web sites and data bases.
-Superficially, Leo may look like other outlining programs, code folding editors
-or class browsers, but it most certainly is not.
-
-People say Leo is a revolutionary tool, and that Leo is fun to use, even
-additive. There is a unique "Leo way" of managing data; the term **Leonine**
-describes how people treat data in "the world according to Leo". Leo definitely
-takes a bit of work to understand. Leo's users speak of an "Aha" moment, when
-they see how these pieces fit together: outline structure is significant
-everywhere.
-
-Leo is freely available in source or binary form for all major platforms. You
-may download Leo from http://sourceforge.net/projects/leo/files/Leo/ Leo is Open
-Software and may be freely distributed.
-
-`Leo's home page`_ contains additional documentation and links to other
-resources. For another introduction to Leo, open the file quickstart.leo in the
-leo/doc folder.
-
-This tutorial introduces the reader to the basic concepts and features of Leo.
-It helps to have Leo running for hands-on experience, but all examples here are
-self-contained, so the tutorial can be read off-line as well.
-See `Leo's Installation Guide`_. for detailed installation instructions. If you
-have problems installing Leo, please ask for help on `Leo's help forum`_. 
-
-This tutorial does not attempt to be comprehensive and cover every single
-feature of Leo, or even every commonly used feature. Instead, it introduces many
-of Leo's most noteworthy features, and will give you a good idea of Leo's flavor
-and style. After reading it, you will be able to use Leo in basic ways to create
-external files, organize data and run simple scripts. You will then be ready to
-learn more about Leo's many advanced features in `Leo's Users Guide`_.
-
-.. The :ref:`glossary` is also worth going through.
-
-.. contents::
-
-.. Links used in this document...
-
-.. ----- External references.
-
-.. _`LaTeX`:                    http://www.latex-project.org/
-.. _`Leo's help forum`:         http://groups.google.com/group/leo-editor-users
-.. _`Leo's home page`:          http://webpages.charter.net/edreamleo/front.html
-.. _`Literate Programming`:     http://www.literateprogramming.com/
-.. _`MySQL`:                    http://www.mysql.com/
-.. _`noweb`:                    http://www.eecs.harvard.edu/~nr/noweb/
-.. _`Python`:                   http://www.python.org/
-.. _`reStructuredText`:         http://docutils.sourceforge.net/rst.html
-.. _`XML`:                      http://en.wikipedia.org/wiki/XML
-
-.. ----- Relative links....
-
-.. _`external file`:        `external files`_
-.. _glossary:               glossary.html
-.. _`Good style and bad`:   `style`_
-.. _outline:                `Leo's main window`_
-.. _outlines:               `Leo's main window`_
-.. _plugin:                 `extending`_
-.. _plugins:                `extending`_
-.. .. _quickstart:             `Quick start for programmers`_
-.. _scripts:                `scripting`_
-.. _settings:               `config`_
-.. _`Configuring Leo`:      `config`_
-
-.. ----- References to other chapters.
-
-.. _`What people are saying about Leo`:             testimonials.html
-.. _`@@auto trees`:                                  directives.html#auto-trees
-.. _command:                                        commands.html
-.. _commands:                                       commands.html
-.. _directive:                                      directives.html
-.. _directives:                                     directives.html
-.. _`Leo directives`:                               directives.html
-.. _`editing commands`:                             commands.html#the-edit-menu
-.. _front:                                          front.html
-.. _`install Leo`:                                  install.html
-.. _`launch Leo`:                                   install.html#running-leo
-.. _`Leo's Users Guide`:                            leo_TOC.html
-.. _`Leo's Installation Guide`:                     install.html
-.. _`Chapter 4: Writing Programs in Leo`:           directives.html
-.. _`Chapter 5: Using Leo's Commands`:              commands.html
-.. _`Chapter 6: Leo and Literate Programming`:      design.html
-.. _`Chapter 7: Scripting Leo with Python`:         scripting.html
-.. _`Chapter 8: Customizing Leo`:                   customizing.html
-
-.. ----- References to the glossary
-
-.. _`@@auto`:                    glossary.html#auto
-.. _`@file`:                    glossary.html#file
-.. _`@nosent`:                  glossary.html#nosent
-.. _`@others`:                  glossary.html#others
-.. _`@thin`:                    glossary.html#thin
-.. _`@thin trees`:              glossary.html#thin-trees
-.. _`body text`:                glossary.html#body-text
-.. _ancestor:                   glossary.html#ancestor
-.. _children:                   glossary.html#child
-.. _clone:                      glossary.html#clone
-.. _cloned:                     glossary.html#cloned
-.. _cloning:                    glossary.html#clone
-.. _clones:                     glossary.html#clones
-.. _`code part`:                glossary.html#code-part
-.. _`doc part`:                 glossary.html#doc-part
-.. _descendant:                 glossary.html#descendant
-.. _descendants:                glossary.html#descendants
-.. _`doc part`:                 glossary.html#doc-part
-.. _grandchildren:              glossary.html#grandchildren
-.. _headline:                   glossary.html#headline
-.. _headlines:                  glossary.html#headlines
-.. _`organizer node`:           glossary.html#organizer-node
-.. _`organizer nodes`:          glossary.html#organizer-nodes
-.. _`outline order`:            glossary.html#outline-order
-.. _node:                       glossary.html#node
-.. _nodes:                      glossary.html#nodes
-.. _reference:                  glossary.html#reference
-.. _references:                 glossary.html#references
-.. _root:                       glossary.html#root
-.. _`root node`:   	            glossary.html#root
-.. _section:                    glossary.html#section
-.. _sections:                   glossary.html#section
-.. _`section definition`:       glossary.html#section-definition
-.. _`section definitions`:      glossary.html#section-definitions
-.. _`section definition nodes`: glossary.html#section-definition-nodes
-.. _`section name`:             glossary.html#section-name
-.. _`section names`:            glossary.html#section-names
-.. _`section reference`:        glossary.html#section-reference
-.. _`section references`:       glossary.html#section-references
-.. _siblings:                   glossary.html#siblings
-
-.. For reasons unknown, this image must appear in the _images folder on the web site.
-.. |leoMainWindow| image:: screen-shots/leo-qt-main-window.JPG
-
-</t>
-<t tx="ekr.20100110172917.1920">Let's start looking at Leo in detail. We'll start with what you see when you
-first open Leo, Leo's main window. Leo's main window, shown below, represents an
-entire project. As you can see, the main window contains three panes: the
-**outline pane** at the top left, the **log pane** at the top right, and the
-**body pane** at the bottom. The window also contains an **icon area** at the
-very top, a **status area** and a **mini-buffer** at the very bottom.
-
-|leoMainWindow|
-
-The outline pane
-    The outline pane shows your project as an outline. The outline
-    contains all your project's data. An outline consists of **nodes**. The
-    **icon box** is a small icon directly to the left of the headline text. If a
-    node contains children, a smaller icon appears to the left of the icon box.
-    This icon contains a '+' or '-' symbol. Clicking this **expansion box**
-    expands or contracts the node.
-    
-Nodes
-    Nodes have two parts, a **headline** and **body text**. The outline pane
-    shows headlines. Selecting a headline selects the entire node; the node's
-    body text appears in the body pane. Leo uses standard terminology to
-    describe the relationships of nodes in an outline. We speak of **parent**
-    nodes, **child** nodes, **ancestor** nodes and **descendant** nodes.
-
-Body pane
-    The body pane contains the body text of the node selected in the
-    outline pane.
-
-Log pane
-    The log pane contains informational messages from Leo or your scripts.
-
-Icon area Depending on what plugins are enabled, the icon area may contain
-    buttons and other widgets that extend what Leo can do. The scripting plugin
-    makes it easy to add buttons to the icon area.
-
-Status area
-    The status area shows the line and column containing the body text's cursor,
-    and the **UNL** (Uniform Node Location), the path from the top of the outline
-    to the selected node.  This path will change as you change outline nodes.
-
-Mini-buffer
-    You can type command and search strings in the minibuffer. It works much
-    like the Emacs mini-buffer. To enter a command, type &lt;Alt-x&gt; followed by the
-    command name and then &lt;return&gt;. To type a search string, type &lt;ctrl-f&gt;
-    followed by the search string and then &lt;return&gt;. For full details, see
-    `Chapter 5: Using Leo's Commands`_.
-
-</t>
-<t tx="ekr.20100110172917.1921">You can use Leo as fairly typical outliner. Play around with some of the
-commands from the Outline menu:
-
-- Click the expansion box of nodes to show and hide their children.
-
-- The Insert Node command (Ctrl+I) inserts a new headline into the outline.
-
-- The Cut Node command (Ctrl+Shift+X) deletes a headline and all its children,
-  and copies the structure to clipboard - ready to paste with Paste Node command
-  (Ctrl+Shift+V). Use the Copy Node command (Ctrl+Shift+C) to copy node to
-  clipboard without deleting it from outline. Copy-paste command family works
-  across different Leo documents.
-
-- The Move Up (Ctrl+U), Move Down (Ctrl+D), Move Left (Ctrl+L) and Move Right
-  (Ctrl+R) commands move the currently selected node, along with all its
-  descendants.
-
-- The Promote (Ctrl+}) command makes all the children of a headline siblings of
-  the headline. The Demote (Ctrl+{) command makes all following siblings of a
-  headline children of the headline.
-
-- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys.
-  This also moves the focus to tree, so, after pressing Alt + arrow, you can
-  move around by using arrow keys alone. Return the focus to the body control by
-  pressing Enter.
-
-- To edit the headline, use press Ctrl+H. This works regardless of whether body
-  or headline has focus.
-
-- We'll discuss the Clone Node command in the next section.
-
-You enter body text for any node by selecting the node's headline in the outline
-pane and then typing in the body pane. Leo has a full range of `editing
-commands`_ that apply to the body pane.
-
-</t>
-<t tx="ekr.20100110172917.1922">.. _`external files`:
-
-Leo stores outline data on your file system in **.leo files**. The format of
-these files is `XML`_. You don't have to store all your data in .leo files: Leo
-allows you to store parts of your outline data **external files**, that is,
-other files on your file system.
-
-**@file nodes** create external files. \@file nodes have headlines starting with
-\@file followed by a file name. Some examples::
-
-    @file leoNodes.py
-    @file ../../notes.text
-    
-The file name can be an absolute path or a relative path to the file that starts
-at Leo's **load directory**, the directory containing the .leo file.
-
-Leo reads and writes external files automatically when you open or save your Leo
-outline:
-
-- When you open an outline (.leo file) Leo reads all the external files created
-  by the \@file nodes in the outline. If you have changed an external file
-  outside of Leo, Leo will update the corresponding \@file tree to reflect those
-  changes when Leo next opens the outline.
-
-- When you save your outline, Leo writes all **dirty** \@file nodes. An \@file
-  is dirty if the node or any of its descendant nodes has changed.
-  **Important**: When Leo writes an external file, Leo writes all the essential
-  information in the \@file tree to the external file, *not* to the .leo file.
-  The only nodes that gets written to the .leo file are nodes that are not
-  contained in any \@file tree.
-
-</t>
-<t tx="ekr.20100110172917.1923">We come now to one of Leo's most important and unusual features. When Leo writes
-an external file, it does so in a flexible manner, directed by **outline-based
-markup**. This markup tells Leo exactly how to create the external file from an
-\@file node.
-
-The **obvious** way to write an external file would be to write the \@file node
-itself followed by all the descendant nodes in **outline order** (the order in
-which nodes appear in the outline). But Leo does *not* write external files
-exactly this way.
-
-Yes, Leo does indeed start by writing the \@file node itself. But Leo writes the
-\@file node's descendants only only when it sees one of three kinds of Leo
-markup: section references, the \@others directive and the \@all directive.
-We'll discuss these three kinds of markup in the next section.
-
-Section references and the \@others and \@all directives tell Leo to write the
-**expansion** of one or more descendant nodes to the external file. Programmers
-will recognize this process as akin to macro expansion. The following sections
-will explain this process in detail.
-
-</t>
-<t tx="ekr.20100110172917.1924">A **section reference** is a line of body text of the form::
-
-    &lt;&lt; a section name &gt;&gt;
-    
-Here, "a section name" can be any descriptive text not containing "&gt;&gt;". When Leo
-encounters a section reference, Leo searches all the descendants of the node
-containing the reference looking for a node whose headline matches the section
-reference. That is, Leo looks for a descendant node whose headline starts with::
-
-     &lt;&lt; a section name &gt;&gt;
-     
-We call such nodes **named nodes**. Leo doesn't require an exact match. Leo
-ignores whitespace and the case of letters when comparing headlines to section
-reference. Also, Leo ignores anything that may follow the section name in a
-named node. For example, the following headline will match the section reference
-above::
-
-    &lt;&lt; A Section Name &gt;&gt; (to do)
-
-If Leo does find a match, Leo *replaces* the section reference ("&lt;&lt; a section
-name&gt;&gt;") by the *expansion* of the body text of the matched node. That is, Leo
-replaces the section reference by the body text of the matched node, but Leo
-**expands all markup** in the matched node *before* making the replacement. The
-entire expansion of the matched node replaces the original section reference.
-Programmers will recognize this process as recursive macro expansion.
-
-We have just discussed what happens if Leo does find a descendant named node
-that matches the section reference. If no such match is found the section
-reference is said to be **undefined** and Leo does not write any data to the
-external file. This is *not* a serious error: Leo will will save the erroneous
-\@&lt;file&gt; tree in the .leo file instead of the external file. No information is
-lost. By the way, Leo's syntax coloring will indicate undefined section
-reference by underlining the section name.
-
-**Important**: the indentation of section references matters. When expanding a
-section reference, Leo indents every line of the expansion by the leading
-whitespace that occurs before the section reference. Note also that you can't
-write something after a section reference and expect it to end up on the same
-line after expansion--Leo always writes a newline after the expansion.
-
-</t>
-<t tx="ekr.20100110172917.1925">The **@others directive** is the second (and most common) way of including
-descendant nodes in an external files. When Leo encounters the \@others
-directive it replaces the \@others directive by the *expansion* of all
-**unnamed** descendant nodes. As with section references, Leo replaces all
-markup in the descendant nodes, and the entire expansion replaces the \@others
-directive.
-
-In short, section references write *named* nodes; \@others directives write all
-*unnamed* nodes. By the way, no node may contain more than one \@others
-directive because there would be no way to "apportion" descendant nodes to more
-than one \@others directive. However, nodes may contain as many section
-references as you like.
-
-As with section references, the indentation of the \@others directive matters.
-This allows Leo to handle Python source code properly. For exmple, the following
-is a common way of representing a Python class::
-
-    class myClass:
-        '''a docstring'''
-        @others
-        
-When Leo writes this node to an external file, Leo will write the first two
-lines to the external file, with the indentation in effect for the node. Leo
-will then write all descendant nodes to the external files, with *additional*
-indentation equal to the leading whitespace appearing before the \@others
-directive.
-
-</t>
-<t tx="ekr.20100110172917.1926">The \@all directive is the third, simplest (and least common) way of including
-descendant nodes. This directive causes Leo to write all descendant nodes in
-outline order, regardless of whether they are named or not. Furthermore, the
-\@all directive does not expand any markup in descendant nodes. This results in
-Leo writing the external file in the "obvious" way. That is, Leo writes all
-descendant nodes in outline order.
-
-Use the all directive if your external file contains unrelated nodes. For
-example, I use an external file to store programming notes. These notes
-typically contain snippets of programming source code, but there is no real
-relationships between the snippets--the file is simply a grab bag of
-information. The \@all directive is designed for this situation.
-
-</t>
-<t tx="ekr.20100110172917.1927">.. _style:
-
-Newcomers to Leo frequently ask when to use the \@others directive and when to
-use sections. It is good style to use section references only when the order of
-text within a external file matters. For example, Python programmers put
-docstrings and imports at the start of files. So the body text of
-\@file nodes typically look something like this::
-
-    &lt;&lt; docstring &gt;&gt;
-    @language python
-    @tabwidth -4
-    &lt;&lt; imports &gt;&gt;
-    @others
-
-This ensures that the docstring is first in the file, followed by imports,
-followed by everything else. Note that the order in which functions are defined
-in a file, or methods defined within a class, typically does *not* matter. Thus,
-it is good style to define classes like this::
-
-  class myClass:
-        &lt;&lt; class attributes &gt;&gt;
-        @others
-
-It would be bad style to define a class like this::
-
-  class myClass:
-        &lt;&lt; class attributes &gt;&gt;
-        &lt;&lt; method 1 &gt;&gt;
-        &lt;&lt; method 2 &gt;&gt;
-        ...
-
-Not only does this over-specify the order in which methods are defined, but it
-requires lots of extra typing. Not only must you add a line for each method, but
-headlines must contain section names such as &lt;&lt; method 1 &gt;&gt;, &lt;&lt;method 2&gt;&gt;, etc.
-When using \@others it is good style simply to put the name of each method in the
-headline.
-
-</t>
-<t tx="ekr.20100110172917.1928">A few more words about style:
-
-- It is good style to put each class, function or method in its own node. This
-  makes it easy to see the shape of your code.
-
-- It is good style to use organizer nodes to group related functions or methods.
-  An organizer node has no content except maybe for comments. Like this::
-
-    + myClass
-        + birth and death
-            + __init__
-            etc.
-        + getters
-            etc.
-        + setters
-            etc.
-        + misc methods
-            etc.
-
-  (In this notation, '+' denotes a headline.) This organization is far superior
-  to using hideous comments like::
-
-    ###########
-    # Getters #
-    ###########
-
-- It is bad style to use \@others in organizer nodes. There is no need to do so.
-
-- It is bad style to use \@others when order does matter. The reason is that it
-  is very easy to move nodes in a tree by mistake, say by alphabetizing nodes.
-  One wants to make the meaning of a external file immune from such movements.
-
-One last word about style. The world won't end if you happen to use bad style by
-mistake: you just might cause a bit more work for yourself than was strictly
-necessary. Feel free to invent your own style of using Leo. Still, it would be
-wise to "know the rules before you break them."
-
-</t>
-<t tx="ekr.20100110172917.1929">A **clone** is a node that appears in more than one place in a Leo outline.
-Clones are marked with a small red arrow in the icon box. All clones of a node
-are actually *the same node*, so any change to one clone affects all clones. For
-example, inserting, moving or deleting any child of a clone will change all
-other clones on the screen.
-
-Please take a few moments to experiment with clones. Create a node whose
-headline is A. Clone node A using the Clone Node command in Leo's Outline menu.
-Type some text into the body of either clone of A. The same text appears in the
-bodies of all other clones of A. Now insert a node, say B, as a child of any of
-the A nodes. All the A nodes now have a B child. See what happens if you clone
-B. See what happens if you insert, delete or move nodes that are children of A.
-Verify that when you delete the penultimate clone, the last clone becomes a
-regular node again.
-
-Clones are much more than a cute feature. Clones allow multiple views of data to
-exist **within a single outline**. With Leo, there is no such thing as a single,
-"correct" view of data. You can have as many views of data as you like.
-
-To create a new view of the data in your outline, just do the following:
-
-1. Create an *ordinary* node, that will represent the view. We call these nodes
-   **view nodes** merely to indicate they represent a view.
-   
-2. Clone all the nodes from the outline that you want the view to contain. Move
-   these clones so they become children of the view node.
-   
-3. (Optional) You can add regular nodes as children of the view node too.
-   
-For example, when I fix a bug in Leo, I create an ordinary node to represent the
-bug. This **bug node** is my view of all the data in Leo's source code that
-relates to the bug. As I discover code related to the bug, I clone their nodes
-and move them under the bug node. I'll also add ordinary nodes as children of
-the bug node. These nodes contain the original bug report, descriptions of how I
-fixed the bug, test data, or any other notes I might want to keep.
-
-Once I have created the bug node, I concentrate *only* on that node and its
-children. I can examine the bug node and its children without having to jump
-around the outline. Everything I need is in one place. When I get around to
-actually fixing the bug I can do so by changing the clones. Again, I do not have
-to jump around the outline. It doesn't matter how big or complex the entire
-outline is: I am only dealing with the bug node and its children. This extremely
-narrow focus makes it *much* easier to fix bugs.
-
-By the way, I never have to remember to save external files. When I change any
-clone, Leo marks all instances of that clone throughout the entire outline as
-dirty (changed). When I save the Leo outline, Leo automatically writes all the
-external files that contain dirty nodes.
-
-Views have an unlimited number of uses. Use them whenever you want to focus your
-attention on some smaller set of nodes. For example, I often create view nodes
-when studying other people's code. The view node helps me concentrate on just
-the part of the code that interests me at the moment.
-
-</t>
-<t tx="ekr.20100110172917.1930">Leo's **directives** control such things as syntax coloring, line wrapping
-within the body pane and the width of tabs. Leo directives may appear in
-headlines or body text. Leo directives start with '@' in the leftmost column,
-followed by the name of the directive. Here are some of Leo's directives::
-
-    @language python
-    @tabwidth -4
-    @wrap
-    @nowrap
-    @color
-    @nocolor
-    @killcolor
-    
-Directives apply until overridden in a subtree. All of these directives apply to
-the node they are contained in, and also to the entire tree of descendant nodes,
-unless **over-ridden** by a similar directive in a descendant node. For example,
-the directive::
-
-    @language python
-    
-tells Leo to syntax color the node and all descendant nodes as Python code.
-However, some descendant node mignt contain::
-
-    @language rest
-    
-which tells Leo to color that node and all of *its* decendants as
-reStructureText. This principle applies to almost all of Leo's directives: the
-directive is in effect throughout a tree, unless overridden in some subtree.
-
-- **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
-
-  You can mix \@nocolor and \@color directives in a single node, but these
-  directives apply to descendant nodes only if they are **unambiguous**, that
-  is, only if the ancestor node contains exactly one \@color or \@nocolor
-  directive.
-
-- **\@encoding** Sets the Unicode encoding used in external files.
-
-- **\@first** directives orces lines to appear before the first sentinel of a
-  external file.
-
-    This directive may only appear in \@&lt;file&gt; nodes. A common use of \@first
-    directives is to add shebang lines::
-    
-        @first #! /usr/bin/env python
-        
-    or Python encoding specifications::
-    
-        @first # -*- coding: utf-8 -*-
-
-- **\@language** Sets the language used for syntax coloring **and** sets the
-  comment delimiters used in sentinel lines and in doc parts. Some examples::
-
-    @language python
-    @language c
-    @language rest # restructured text
-    @language plain # text, that is, no syntax coloring.
-
-- **\@last** Forces lines to appear after the last sentinel of a external file.
-
-- **\@lineending** Specifies the line ending to be used in external files.
-
-- **\@pagewidth** Sets the page width used to break doc parts into lines.
-
-- **\@path** Sets the path to be prepended to filenames in descendant \@file
-  nodes.
-
-- **\@tabwidth** sets the width of tabs.
-
-  Negative tab widths cause Leo to convert tabs to spaces and are highly
-  recommended for Python programming.
-
-- **\@wrap** and **\@nowrap** enable or disable line wrapping the Leo's body pane.
-
-Leo treats lines starting with \@ as a normal code line unless the \@ starts a
-Leo directive. In particular, Leo will output Python decorators correctly,
-provided the name of the decorator does not conflict with a Leo directive.
-
-</t>
-<t tx="ekr.20100110172917.1931">.. _scripting:
-
-Leo is fully scriptable using the Python language. Leo can execute any body text
-as a Python script. To run the entire body text as a script, simply choose the
-node and execute the Execute Script command (Ctrl+B). If text is selected, the
-Execute Script command will run just the selected text as the script.
-
-The Execute Script command **preprocesses** the script before executing it, in
-exactly the same way that Leo writes external files. Leo expands section
-references and processes \@others directives before executing the script. This
-allows you to use all of Leo's outlining capabilities to organize your scripts.
-
-Your Python scripts can easily access data in an outline. Leo's execute-script
-(Ctrl-B) command predefines three variables, c, g and p, that scripts can use to
-easily access any part of any Leo outline, and Leo's own source code. For
-example, the following script will print all the headlines in an outline::
-
-    for p in c.all_positions():
-        print ' '*p.level(),p.h
-
-The example above is only the beginning of what scripts can do. See `Chapter 7:
-Scripting Leo with Python`_ for a complete discussion of scripting Leo.
-
-.. _extending:
-
-**Plugins** are Python modules that change how Leo works. Leo's user have
-contributed dozens of plugins that have extended Leo's capabilities in many new
-directions. The file leoPlugins.leo contains all plugins that are included in
-Leo distributions.
-
-.. _config:
-
-Plugins and other parts of Leo can get options from **@settings** trees.
-\@settings trees allow plugins to get options without any further support from
-Leo's core code. For a full discussion of \@settings trees, see `Chapter 8:
-Customizing Leo`_.
-
-</t>
-<t tx="ekr.20100110172917.1932">Using Leo quickly becomes second nature:
-
-- You can use Leo like any ordinary outliner, as a filing cabinet, but Leo's
-  clones makes this filing cabinet much more flexible and useful than usual.
-
-- You create external files using \@file trees. Within \@file trees, you use
-  section references and the \@others directive to tell Leo how to write nodes
-  to the external file. Directives such as \@tabwidth and \@language provide other
-  information to Leo. Leo's \@file trees allow you to organize your scripts
-  and programs with Leo's outline structure.
-  
-- You can execute Python scripts from any node in a Leo outline. Leo scripts
-  have full, easy, access to all the information in the outline. Using scripts
-  and plugins, you can easily add new features to Leo.
-
-</t>
-<t tx="ekr.20100110172917.1933">LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
-Leo's source code. It provides hundreds of examples of everything discussed
-here. This file will repay close study. For full details on all aspects of Leo
-see LeoDocs.leo or `Leo's Users Guide`_.
-
-</t>
-<t tx="ekr.20100110172917.1934">:Author: Richard Jones
-:Version: $Revision: 5801 $
-:Copyright: This document has been placed in the public domain.
-
-.. contents::
-
-
-The text below contains links that look like "(quickref__)".  These
-are relative links that point to the `Quick reStructuredText`_ user
-reference.  If these links don't work, please refer to the `master
-quick reference`_ document.
-
-__
-.. _Quick reStructuredText: quickref.html
-.. _master quick reference:
-   http://docutils.sourceforge.net/docs/user/rst/quickref.html
-
-.. Note:: This document is an informal introduction to
-   reStructuredText.  The `What Next?`_ section below has links to
-   further resources, including a formal reference.
-
-</t>
-<t tx="ekr.20100110172917.1935">From the outset, let me say that "Structured Text" is probably a bit
-of a misnomer.  It's more like "Relaxed Text" that uses certain
-consistent patterns.  These patterns are interpreted by a HTML
-converter to produce "Very Structured Text" that can be used by a web
-browser.
-
-The most basic pattern recognised is a **paragraph** (quickref__).
-That's a chunk of text that is separated by blank lines (one is
-enough).  Paragraphs must have the same indentation -- that is, line
-up at their left edge.  Paragraphs that start indented will result in
-indented quote paragraphs. For example::
-
-  This is a paragraph.  It's quite
-  short.
-
-     This paragraph will result in an indented block of
-     text, typically used for quoting other text.
-
-  This is another one.
-
-Results in:
-
-  This is a paragraph.  It's quite
-  short.
-
-     This paragraph will result in an indented block of
-     text, typically used for quoting other text.
-
-  This is another one.
-
-__ quickref.html#paragraphs
-
-</t>
-<t tx="ekr.20100110172917.1936">(quickref__)
-
-__ quickref.html#inline-markup
-
-Inside paragraphs and other bodies of text, you may additionally mark
-text for *italics* with "``*italics*``" or **bold** with
-"``**bold**``".  This is called "inline markup".
-
-If you want something to appear as a fixed-space literal, use
-"````double back-quotes````".  Note that no further fiddling is done
-inside the double back-quotes -- so asterisks "``*``" etc. are left
-alone.
-
-If you find that you want to use one of the "special" characters in
-text, it will generally be OK -- reStructuredText is pretty smart.
-For example, this lone asterisk * is handled just fine, as is the
-asterisk in this equation: 5*6=30.  If you actually
-want text \*surrounded by asterisks* to **not** be italicised, then
-you need to indicate that the asterisk is not special.  You do this by
-placing a backslash just before it, like so "``\*``" (quickref__), or
-by enclosing it in double back-quotes (inline literals), like this::
-
-    ``*``
-
-__ quickref.html#escaping
-
-.. Tip:: Think of inline markup as a form of (parentheses) and use it
-   the same way: immediately before and after the text being marked
-   up.  Inline markup by itself (surrounded by whitespace) or in the
-   middle of a word won't be recognized.  See the `markup spec`__ for
-   full details.
-
-__ ../../ref/rst/restructuredtext.html#inline-markup
-
-</t>
-<t tx="ekr.20100110172917.1937">Lists of items come in three main flavours: **enumerated**,
-**bulleted** and **definitions**.  In all list cases, you may have as
-many paragraphs, sublists, etc. as you want, as long as the left-hand
-side of the paragraph or whatever aligns with the first line of text
-in the list item.
-
-Lists must always start a new paragraph -- that is, they must appear
-after a blank line.
-
-**enumerated** lists (numbers, letters or roman numerals; quickref__)
-  __ quickref.html#enumerated-lists
-
-  Start a line off with a number or letter followed by a period ".",
-  right bracket ")" or surrounded by brackets "( )" -- whatever you're
-  comfortable with.  All of the following forms are recognised::
-
-    1. numbers
-
-    A. upper-case letters
-       and it goes over many lines
-
-       with two paragraphs and all!
-
-    a. lower-case letters
-
-       3. with a sub-list starting at a different number
-       4. make sure the numbers are in the correct sequence though!
-
-    I. upper-case roman numerals
-
-    i. lower-case roman numerals
-
-    (1) numbers again
-
-    1) and again
-
-  Results in (note: the different enumerated list styles are not
-  always supported by every web browser, so you may not get the full
-  effect here):
-
-  1. numbers
-
-  A. upper-case letters
-     and it goes over many lines
-
-     with two paragraphs and all!
-
-  a. lower-case letters
-
-     3. with a sub-list starting at a different number
-     4. make sure the numbers are in the correct sequence though!
-
-  I. upper-case roman numerals
-
-  i. lower-case roman numerals
-
-  (1) numbers again
-
-  1) and again
-
-**bulleted** lists (quickref__)
-  __ quickref.html#bullet-lists
-
-  Just like enumerated lists, start the line off with a bullet point
-  character - either "-", "+" or "*"::
-
-    * a bullet point using "*"
-
-      - a sub-list using "-"
-
-        + yet another sub-list
-
-      - another item
-
-  Results in:
-
-  * a bullet point using "*"
-
-    - a sub-list using "-"
-
-      + yet another sub-list
-
-    - another item
-
-**definition** lists (quickref__)
-  __ quickref.html#definition-lists
-
-  Unlike the other two, the definition lists consist of a term, and
-  the definition of that term.  The format of a definition list is::
-
-    what
-      Definition lists associate a term with a definition.
-
-    *how*
-      The term is a one-line phrase, and the definition is one or more
-      paragraphs or body elements, indented relative to the term.
-      Blank lines are not allowed between term and definition.
-
-  Results in:
-
-  what
-    Definition lists associate a term with a definition.
-
-  *how*
-    The term is a one-line phrase, and the definition is one or more
-    paragraphs or body elements, indented relative to the term.
-    Blank lines are not allowed between term and definition.
-
-</t>
-<t tx="ekr.20100110172917.1938">(quickref__)
-
-__ quickref.html#literal-blocks
-
-To just include a chunk of preformatted, never-to-be-fiddled-with
-text, finish the prior paragraph with "``::``".  The preformatted
-block is finished when the text falls back to the same indentation
-level as a paragraph prior to the preformatted block.  For example::
-
-  An example::
-
-      Whitespace, newlines, blank lines, and all kinds of markup
-        (like *this* or \this) is preserved by literal blocks.
-    Lookie here, I've dropped an indentation level
-    (but not far enough)
-
-  no more example
-
-Results in:
-
-  An example::
-
-      Whitespace, newlines, blank lines, and all kinds of markup
-        (like *this* or \this) is preserved by literal blocks.
-    Lookie here, I've dropped an indentation level
-    (but not far enough)
-
-  no more example
-
-Note that if a paragraph consists only of "``::``", then it's removed
-from the output::
-
-  ::
-
-      This is preformatted text, and the
-      last "::" paragraph is removed
-
-Results in:
-
-::
-
-    This is preformatted text, and the
-    last "::" paragraph is removed
-
-</t>
-<t tx="ekr.20100110172917.1939">(quickref__)
-
-__ quickref.html#section-structure
-
-To break longer text up into sections, you use **section headers**.
-These are a single line of text (one or more words) with adornment: an
-underline alone, or an underline and an overline together, in dashes
-"``-----``", equals "``======``", tildes "``~~~~~~``" or any of the
-non-alphanumeric characters ``= - ` : ' " ~ ^ _ * + # &lt; &gt;`` that you
-feel comfortable with.  An underline-only adornment is distinct from
-an overline-and-underline adornment using the same character.  The
-underline/overline must be at least as long as the title text.  Be
-consistent, since all sections marked with the same adornment style
-are deemed to be at the same level::
-
-  Chapter 1 Title
-  ===============
-
-  Section 1.1 Title
-  -----------------
-
-  Subsection 1.1.1 Title
-  ~~~~~~~~~~~~~~~~~~~~~~
-
-  Section 1.2 Title
-  -----------------
-
-  Chapter 2 Title
-  ===============
-
-This results in the following structure, illustrated by simplified
-pseudo-XML::
-
-    &lt;section&gt;
-        &lt;title&gt;
-            Chapter 1 Title
-        &lt;section&gt;
-            &lt;title&gt;
-                Section 1.1 Title
-            &lt;section&gt;
-                &lt;title&gt;
-                    Subsection 1.1.1 Title
-        &lt;section&gt;
-            &lt;title&gt;
-                Section 1.2 Title
-    &lt;section&gt;
-        &lt;title&gt;
-            Chapter 2 Title
-
-(Pseudo-XML uses indentation for nesting and has no end-tags.  It's
-not possible to show actual processed output, as in the other
-examples, because sections cannot exist inside block quotes.  For a
-concrete example, compare the section structure of this document's
-source text and processed output.)
-
-Note that section headers are available as link targets, just using
-their name.  To link to the Lists_ heading, I write "``Lists_``".  If
-the heading has a space in it like `text styles`_, we need to quote
-the heading "```text styles`_``".
-
-</t>
-<t tx="ekr.20100110172917.1940">The title of the whole document is distinct from section titles and
-may be formatted somewhat differently (e.g. the HTML writer by default
-shows it as a centered heading).
-
-To indicate the document title in reStructuredText, use a unique adornment
-style at the beginning of the document.  To indicate the document subtitle,
-use another unique adornment style immediately after the document title.  For
-example::
-
-    ================
-     Document Title
-    ================
-    ----------
-     Subtitle
-    ----------
-
-    Section Title
-    =============
-
-    ...
-
-Note that "Document Title" and "Section Title" above both use equals
-signs, but are distict and unrelated styles.  The text of
-overline-and-underlined titles (but not underlined-only) may be inset
-for aesthetics.
-
-</t>
-<t tx="ekr.20100110172917.1941">(quickref__)
-
-__ quickref.html#directives
-
-To include an image in your document, you use the the ``image`` directive__.
-For example::
-
-  .. image:: images/biohazard.png
-
-results in:
-
-.. image:: images/biohazard.png
-
-The ``images/biohazard.png`` part indicates the filename of the image
-you wish to appear in the document. There's no restriction placed on
-the image (format, size etc).  If the image is to appear in HTML and
-you wish to supply additional information, you may::
-
-  .. image:: images/biohazard.png
-     :height: 100
-     :width: 200
-     :scale: 50
-     :alt: alternate text
-
-See the full `image directive documentation`__ for more info.
-
-__ ../../ref/rst/directives.html
-__ ../../ref/rst/directives.html#images
-
-</t>
-<t tx="ekr.20100110172917.1942">This primer introduces the most common features of reStructuredText,
-but there are a lot more to explore.  The `Quick reStructuredText`_
-user reference is a good place to go next.  For complete details, the
-`reStructuredText Markup Specification`_ is the place to go [#]_.
-
-Users who have questions or need assistance with Docutils or
-reStructuredText should post a message to the Docutils-users_ mailing
-list.
-
-.. [#] If that relative link doesn't work, try the master document:
-   http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html.
-
-.. _reStructuredText Markup Specification:
-   ../../ref/rst/restructuredtext.html
-.. _Docutils-users: ../mailing-lists.html#docutils-users
-.. _Docutils project web site: http://docutils.sourceforge.net/
-
-</t>
 <t tx="ekr.20100110172917.1943">&lt;xml&gt;
 &lt;/xml&gt;
 </t>
@@ -5239,177 +3921,6 @@ a
 <t tx="ekr.20100110172917.1945">&lt;test-b&gt;
 b
 &lt;/test-b&gt;
-</t>
-<t tx="ekr.20100110172917.1946">&lt;!DOCTYPE xml&gt;
-</t>
-<t tx="ekr.20100110172917.1947">&lt;html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/" py:strip=""&gt;
-  &lt;?python v=value_of; import time?&gt;
-  @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20100110172917.1948">&lt;py:match path="head"&gt;
-  @others
-&lt;/py:match&gt;
-</t>
-<t tx="ekr.20100110172917.1949">&lt;head py:attrs="select('@*')"&gt;
-  @others
-  &lt;script py:for="i in v('jscripts',[])" 
-    type='text/javascript' src="${url('/js/'+i)}"/&gt;
-  &lt;link rel="stylesheet" href="${url('/css/main.css')}" type="text/css"/&gt;
-  &lt;link py:for="i in v('css',[])" 
-    rel="stylesheet" type='text/javascript' href="${url('/css/'+i)}"/&gt;
-  ${select('node()')}
-&lt;/head&gt;
-</t>
-<t tx="ekr.20100110172917.1950">&lt;py:if test="v('jscripts',[])"&gt;
-  &lt;script type='text/javascript' src="${url('/js/jquery.js')}"/&gt;
-  &lt;!--! CSS for JQuery UI --&gt;
-  &lt;link rel="stylesheet" href="${url('/js/themes/flora/flora.all.css')}" type="text/css"/&gt;
-  &lt;script type='text/javascript' src="${url('/js/ui.calendar.js')}"/&gt;
-&lt;/py:if&gt;
-</t>
-<t tx="ekr.20100110172917.1951">&lt;py:match path="body"&gt;
-  @others
-&lt;/py:match&gt;
-</t>
-<t tx="ekr.20100110172917.1952">&lt;body py:attrs="select('@*')"&gt;
-  &lt;div class="sections"&gt;${select('node()')}&lt;/div&gt;
-  &lt;div class="site-footer"&gt;Generated ${time.ctime()}&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20100110172917.1953">&lt;py:match path="xh1"&gt;
-  &lt;div class="h1"&gt;
-    &lt;h1 py:attrs="select('@*')" &gt;${select('node()')}&lt;/h1&gt;
-  &lt;/div&gt;
-&lt;/py:match&gt;
-</t>
-<t tx="ekr.20100110172917.1954">&lt;py:match path="NOTp"&gt;
-  &lt;div py:for="i in range(2)" class="slide" style="border: solid red 3px;"&gt;
-    &lt;p py:attrs="select('@*')"&gt;${i}. ${select('node()')}&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/py:match&gt;
-</t>
-<t tx="ekr.20100110172917.1955">:Info: See &lt;http://docutils.sf.net/rst.html&gt; for introductory docs.
-:Author: David Goodger &lt;goodger@python.org&gt;
-:Date: $Date: 2006-01-23 02:13:55 +0100 (Mon, 23 Jän 2006) $
-:Revision: $Revision: 4321 $
-:Description: This is a "docinfo block", or bibliographic field list
-
-</t>
-<t tx="ekr.20100110172917.1956">Section titles are underlined or overlined &amp; underlined.
-
-</t>
-<t tx="ekr.20100110172917.1957">Grid table:
-
-+--------------------------------+-----------------------------------+
-| Paragraphs are flush-left,     | Literal block, preceded by "::":: |
-| separated by blank lines.      |                                   |
-|                                |     Indented                      |
-|     Block quotes are indented. |                                   |
-+--------------------------------+ or::                              |
-| &gt;&gt;&gt; print 'Doctest block'      |                                   |
-| Doctest block                  | &gt; Quoted                          |
-+--------------------------------+-----------------------------------+
-| | Line blocks preserve line breaks &amp; indents. [new in 0.3.6]       |
-| |     Useful for addresses, verse, and adornment-free lists; long  |
-|       lines can be wrapped with continuation lines.                |
-+--------------------------------------------------------------------+
-
-Simple tables:
-
-================  ============================================================
-List Type         Examples
-================  ============================================================
-Bullet list       * items begin with "-", "+", or "*"
-Enumerated list   1. items use any variation of "1.", "A)", and "(i)"
-                  #. also auto-enumerated
-Definition list   Term is flush-left : optional classifier
-                      Definition is indented, no blank line between
-Field list        :field name: field body
-Option list       -o  at least 2 spaces between option &amp; description
-================  ============================================================
-
-================  ============================================================
-Explicit Markup   Examples (visible in the `text source &lt;cheatsheet.txt&gt;`_)
-================  ============================================================
-Footnote          .. [1] Manually numbered or [#] auto-numbered
-                     (even [#labelled]) or [*] auto-symbol
-Citation          .. [CIT2002] A citation.
-Hyperlink Target  .. _reStructuredText: http://docutils.sf.net/rst.html
-                  .. _indirect target: reStructuredText_
-                  .. _internal target:
-Anonymous Target  __ http://docutils.sf.net/docs/ref/rst/restructuredtext.html
-Directive ("::")  .. image:: images/biohazard.png
-Substitution Def  .. |substitution| replace:: like an inline directive
-Comment           .. is anything else
-Empty Comment     (".." on a line by itself, with blank lines before &amp; after,
-                  used to separate indentation contexts)
-================  ============================================================
-
-</t>
-<t tx="ekr.20100110172917.1958">*emphasis*; **strong emphasis**; `interpreted text`; `interpreted text
-with role`:emphasis:; ``inline literal text``; standalone hyperlink,
-http://docutils.sourceforge.net; named reference, reStructuredText_;
-`anonymous reference`__; footnote reference, [1]_; citation reference,
-[CIT2002]_; |substitution|; _`inline internal target`.
-
-</t>
-<t tx="ekr.20100110172917.1959">See &lt;http://docutils.sf.net/docs/ref/rst/directives.html&gt; for full info.
-
-================  ============================================================
-Directive Name    Description (Docutils version added to, in [brackets])
-================  ============================================================
-attention         Specific admonition; also "caution", "danger",
-                  "error", "hint", "important", "note", "tip", "warning"
-admonition        Generic titled admonition: ``.. admonition:: By The Way``
-image             ``.. image:: picture.png``; many options possible
-figure            Like "image", but with optional caption and legend
-topic             ``.. topic:: Title``; like a mini section
-sidebar           ``.. sidebar:: Title``; like a mini parallel document
-parsed-literal    A literal block with parsed inline markup
-rubric            ``.. rubric:: Informal Heading``
-epigraph          Block quote with class="epigraph"
-highlights        Block quote with class="highlights"
-pull-quote        Block quote with class="pull-quote"
-compound          Compound paragraphs [0.3.6]
-container         Generic block-level container element [0.3.10]
-table             Create a titled table [0.3.1]
-list-table        Create a table from a uniform two-level bullet list [0.3.8]
-csv-table         Create a table from CSV data (requires Python 2.3+) [0.3.4]
-contents          Generate a table of contents
-sectnum           Automatically number sections, subsections, etc.
-header, footer    Create document decorations [0.3.8]
-target-notes      Create an explicit footnote for each external target
-meta              HTML-specific metadata
-include           Read an external reST file as if it were inline
-raw               Non-reST data passed untouched to the Writer
-replace           Replacement text for substitution definitions
-unicode           Unicode character code conversion for substitution defs
-date              Generates today's date; for substitution defs
-class             Set a "class" attribute on the next element
-role              Create a custom interpreted text role [0.3.2]
-default-role      Set the default interpreted text role [0.3.10]
-title             Set the metadata document title [0.3.10]
-================  ============================================================
-
-</t>
-<t tx="ekr.20100110172917.1960">See &lt;http://docutils.sf.net/docs/ref/rst/roles.html&gt; for full info.
-
-================  ============================================================
-Role Name         Description
-================  ============================================================
-emphasis          Equivalent to *emphasis*
-literal           Equivalent to ``literal`` but processes backslash escapes
-PEP               Reference to a numbered Python Enhancement Proposal
-RFC               Reference to a numbered Internet Request For Comments
-raw               For non-reST data; cannot be used directly (see docs) [0.3.6]
-strong            Equivalent to **strong**
-sub               Subscript
-sup               Superscript
-title             Title reference (book, etc.); standard default role
-================  ============================================================
-
 </t>
 <t tx="ekr.20100110172917.1961">Section 1: Ę
 
@@ -5444,9 +3955,6 @@ rest_keyword2_font_size = 14
 rest_keyword2_font_family = Bitstream Charter
 rest_keyword2_font_slant = roman
 rest_keyword2_font_weight = bold</t>
-<t tx="ekr.20100119095726.2043">@language rest
-
-This is **bold** and this is *italic*.</t>
 <t tx="ekr.20100119100926.2046"># Italics
 rest_keyword4_font_size = 14
 rest_keyword4_font_family = Bitstream Charter
@@ -5454,24 +3962,6 @@ rest_keyword4_font_slant = italic
     # roman, italic
 rest_keyword4_font_weight = normal
     # normal, bold</t>
-<t tx="ekr.20100122125233.2053">root = p.copy()
-while p.hasChildren():
-   p.firstChild().doDelete(newNode = None)
-
-print(g.app.gui.guiName())
-
-try:
-   p1 = p.insertAsLastChild()
-   p1.expand()
-   body = 'foo'
-   # p1.setBodyString(body)
-   p1.b = body
-   c.selectPosition(p1)
-   c.copyOutline()
-   c.pasteOutline()
-finally:
-   c.redraw_now()
-</t>
 <t tx="ekr.20100127111116.2059">@nowrap
 
 aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbb cccccccccccccccccccccc ddddddddddddddddddddddd eeeeeeeeeeeeeeeeeee fffffffffffffffffffffff
@@ -5580,15 +4070,17 @@ app.exec_()
 
 root = p.copy()
 while p.hasChildren():
-   p.firstChild().doDelete(newNode = None)
+    p.firstChild().doDelete(newNode = None)
 try:
-   p1 = p.insertAsLastChild()
-   body = 'foo'
-   p1.setBodyString(body)
-   c.selectPosition(p1)
-   c.copyOutline()
-   c.pasteOutline()
+    p1 = p.insertAsLastChild()
+    body = 'foo'
+    p1.setBodyString(body)
+    c.selectPosition(p1)
+    c.copyOutline()
+    c.pasteOutline()
 finally:
+    while p.hasChildren():
+        p.firstChild().doDelete(newNode = None)
    c.redraw_now()</t>
 <t tx="ekr.20100203233053.2033">@language python
 
@@ -5596,455 +4088,10 @@ finally:
 
 # This is a test2</t>
 <t tx="ekr.20100204062222.2035">This crashed Leo in path.py during startup</t>
-<t tx="ekr.20100204082851.2038">@language python
-@tabwidth -4
-@others
-Pmw.forwardmethods(ComboBox, Pmw.ScrolledListBox, '_list')
-Pmw.forwardmethods(ComboBox, Pmw.EntryField, '_entryfield')
-</t>
-<t tx="ekr.20100204085410.2060">@language python
-@tabwidth -4
-@others
-Pmw.forwardmethods(ComboBox, Pmw.ScrolledListBox, '_list')
-Pmw.forwardmethods(ComboBox, Pmw.EntryField, '_entryfield')
-</t>
-<t tx="ekr.20100204085631.2041"># This file illustrates some off-by-n problems in goto-global-line.
-
-# Actually, there may be a bigger problem with the @auto file write logic.
-# Adding /deleteing blank lines here doesn't change the file!!!
-
-
-
-# Based on iwidgets2.2.0/combobox.itk code.
-
-import os
-import string
-import types
-import Tkinter
-import Pmw
-
-</t>
-<t tx="ekr.20100204085631.2042">class ComboBox(Pmw.MegaWidget):
-    @others
-    self._selectCmd()
-
-
-</t>
-<t tx="ekr.20100204085631.2043">def __init__(self, parent = None, **kw):
-
-</t>
-<t tx="ekr.20100204085631.2044"># Define the megawidget options.
-INITOPT = Pmw.INITOPT
-optiondefs = (
-    ('autoclear',          0,          INITOPT),
-    ('buttonaspect',       1.0,        INITOPT),
-    ('dropdown',           1,          INITOPT),
-    ('fliparrow',          0,          INITOPT),
-    ('history',            1,          INITOPT),
-    ('labelmargin',        0,          INITOPT),
-    ('labelpos',           None,       INITOPT),
-    ('listheight',         200,        INITOPT),
-    ('selectioncommand',   None,       None),
-    ('sticky',            'ew',        INITOPT),
-    ('unique',             1,          INITOPT),
-)
-self.defineoptions(kw, optiondefs)
-
-# Initialise the base class (after defining the options).
-Pmw.MegaWidget.__init__(self, parent)
-
-# Create the components.
-interior = self.interior()
-
-self._entryfield = self.createcomponent('entryfield',
-    (('entry', 'entryfield_entry'),), None,
-    Pmw.EntryField, (interior,))
-self._entryfield.grid(column=2, row=2, sticky=self['sticky'])
-interior.grid_columnconfigure(2, weight = 1)
-self._entryWidget = self._entryfield.component('entry')
-
-if self['dropdown']:
-    self._isPosted = 0
-        interior.grid_rowconfigure(2, weight = 1)
-
-    # Create the arrow button.
-    self._arrowBtn = self.createcomponent('arrowbutton',
-        (), None,
-        Tkinter.Canvas, (interior,), borderwidth = 2,
-        relief = 'raised',
-        width = 16, height = 16)
-        if 'n' in self['sticky']:
-            sticky = 'n'
-        else:
-            sticky = ''
-        if 's' in self['sticky']:
-            sticky = sticky + 's'
-    self._arrowBtn.grid(column=3, row=2, sticky = sticky)
-    self._arrowRelief = self._arrowBtn.cget('relief')
-
-    # Create the label.
-    self.createlabel(interior, childCols=2)
-
-    # Create the dropdown window.
-    self._popup = self.createcomponent('popup',
-        (), None,
-        Tkinter.Toplevel, (interior,))
-    self._popup.withdraw()
-    self._popup.overrideredirect(1)
-
-    # Create the scrolled listbox inside the dropdown window.
-    self._list = self.createcomponent('scrolledlist',
-        (('listbox', 'scrolledlist_listbox'),), None,
-        Pmw.ScrolledListBox, (self._popup,),
-        hull_borderwidth = 2,
-        hull_relief = 'raised',
-        hull_height = self['listheight'],
-        usehullsize = 1,
-        listbox_exportselection = 0)
-    self._list.pack(expand=1, fill='both')
-    self.__listbox = self._list.component('listbox')
-
-    # Bind events to the arrow button.
-    self._arrowBtn.bind('&lt;1&gt;', self._postList)
-    self._arrowBtn.bind('&lt;Configure&gt;', self._drawArrow)
-    self._arrowBtn.bind('&lt;3&gt;', self._next)
-    self._arrowBtn.bind('&lt;Shift-3&gt;', self._previous)
-    self._arrowBtn.bind('&lt;Down&gt;', self._next)
-    self._arrowBtn.bind('&lt;Up&gt;', self._previous)
-    self._arrowBtn.bind('&lt;Control-n&gt;', self._next)
-    self._arrowBtn.bind('&lt;Control-p&gt;', self._previous)
-    self._arrowBtn.bind('&lt;Shift-Down&gt;', self._postList)
-    self._arrowBtn.bind('&lt;Shift-Up&gt;', self._postList)
-    self._arrowBtn.bind('&lt;F34&gt;', self._postList)
-    self._arrowBtn.bind('&lt;F28&gt;', self._postList)
-    self._arrowBtn.bind('&lt;space&gt;', self._postList)
-
-    # Bind events to the dropdown window.
-    self._popup.bind('&lt;Escape&gt;', self._unpostList)
-    self._popup.bind('&lt;space&gt;', self._selectUnpost)
-    self._popup.bind('&lt;Return&gt;', self._selectUnpost)
-    self._popup.bind('&lt;ButtonRelease-1&gt;', self._dropdownBtnRelease)
-    self._popup.bind('&lt;ButtonPress-1&gt;', self._unpostOnNextRelease)
-
-    # Bind events to the Tk listbox.
-    self.__listbox.bind('&lt;Enter&gt;', self._unpostOnNextRelease)
-
-    # Bind events to the Tk entry widget.
-    self._entryWidget.bind('&lt;Configure&gt;', self._resizeArrow)
-    self._entryWidget.bind('&lt;Shift-Down&gt;', self._postList)
-    self._entryWidget.bind('&lt;Shift-Up&gt;', self._postList)
-    self._entryWidget.bind('&lt;F34&gt;', self._postList)
-    self._entryWidget.bind('&lt;F28&gt;', self._postList)
-
-        # Need to unpost the popup if the entryfield is unmapped (eg: 
-        # its toplevel window is withdrawn) while the popup list is
-        # displayed.
-        self._entryWidget.bind('&lt;Unmap&gt;', self._unpostList)
-
-else:
-    # Create the scrolled listbox below the entry field.
-    self._list = self.createcomponent('scrolledlist',
-        (('listbox', 'scrolledlist_listbox'),), None,
-        Pmw.ScrolledListBox, (interior,),
-                selectioncommand = self._selectCmd)
-    self._list.grid(column=2, row=3, sticky='nsew')
-    self.__listbox = self._list.component('listbox')
-
-    # The scrolled listbox should expand vertically.
-    interior.grid_rowconfigure(3, weight = 1)
-
-    # Create the label.
-    self.createlabel(interior, childRows=2)
-
-self._entryWidget.bind('&lt;Down&gt;', self._next)
-self._entryWidget.bind('&lt;Up&gt;', self._previous)
-self._entryWidget.bind('&lt;Control-n&gt;', self._next)
-self._entryWidget.bind('&lt;Control-p&gt;', self._previous)
-self.__listbox.bind('&lt;Control-n&gt;', self._next)
-self.__listbox.bind('&lt;Control-p&gt;', self._previous)
-
-if self['history']:
-    self._entryfield.configure(command=self._addHistory)
-
-# Check keywords and initialise options.
-self.initialiseoptions()
-
-def destroy(self):
-</t>
-<t tx="ekr.20100204085631.2045">if self['dropdown'] and self._isPosted:
-        Pmw.popgrab(self._popup)
-    Pmw.MegaWidget.destroy(self)
-
-#======================================================================
-
-# Public methods
-
-def get(self, first = None, last=None):
-</t>
-<t tx="ekr.20100204085631.2046">if first is None:
-    return self._entryWidget.get()
-else:
-    return self._list.get(first, last)
-
-def invoke(self):
-</t>
-<t tx="ekr.20100204085631.2047">if self['dropdown']:
-    self._postList()
-else:
-    return self._selectCmd()
-
-def selectitem(self, index, setentry=1):
-</t>
-<t tx="ekr.20100204085631.2048">if type(index) == types.StringType:
-    text = index
-    items = self._list.get(0, 'end')
-    if text in items:
-    index = list(items).index(text)
-    else:
-        raise IndexError, 'index "%s" not found' % text
-elif setentry:
-    text = self._list.get(0, 'end')[index]
-
-self._list.select_clear(0, 'end')
-self._list.select_set(index, index)
-self._list.activate(index)
-self.see(index)
-if setentry:
-    self._entryfield.setentry(text)
-
-# Need to explicitly forward this to override the stupid
-# (grid_)size method inherited from Tkinter.Frame.Grid.
-def size(self):
-</t>
-<t tx="ekr.20100204085631.2049">return self._list.size()
-
-# Need to explicitly forward this to override the stupid
-# (grid_)bbox method inherited from Tkinter.Frame.Grid.
-def bbox(self, index):
-</t>
-<t tx="ekr.20100204085631.2050">return self._list.bbox(index)
-
-def clear(self):
-</t>
-<t tx="ekr.20100204085631.2051">self._entryfield.clear()
-self._list.clear()
-
-#======================================================================
-
-# Private methods for both dropdown and simple comboboxes.
-
-def _addHistory(self):
-</t>
-<t tx="ekr.20100204085631.2052">input = self._entryWidget.get()
-
-if input != '':
-    index = None
-    if self['unique']:
-    # If item is already in list, select it and return.
-    items = self._list.get(0, 'end')
-    if input in items:
-        index = list(items).index(input)
-
-    if index is None:
-    index = self._list.index('end')
-    self._list.insert('end', input)
-
-    self.selectitem(index)
-    if self['autoclear']:
-    self._entryWidget.delete(0, 'end')
-
-    # Execute the selectioncommand on the new entry.
-    self._selectCmd()
-
-def _next(self, event):
-</t>
-<t tx="ekr.20100204085631.2053">size = self.size()
-if size &lt;= 1:
-    return
-
-cursels = self.curselection()
-
-if len(cursels) == 0:
-    index = 0
-else:
-    index = string.atoi(cursels[0])
-    if index == size - 1:
-    index = 0
-    else:
-    index = index + 1
-
-self.selectitem(index)
-
-def _previous(self, event):
-</t>
-<t tx="ekr.20100204085631.2054">size = self.size()
-if size &lt;= 1:
-    return
-
-cursels = self.curselection()
-
-if len(cursels) == 0:
-    index = size - 1
-else:
-    index = string.atoi(cursels[0])
-    if index == 0:
-    index = size - 1
-    else:
-    index = index - 1
-
-self.selectitem(index)
-
-def _selectCmd(self, event=None):
-
-</t>
-<t tx="ekr.20100204085631.2055">sels = self.getcurselection()
-if len(sels) == 0:
-    item = None
-else:
-    item = sels[0]
-    self._entryfield.setentry(item)
-
-cmd = self['selectioncommand']
-if callable(cmd):
-        if event is None:
-            # Return result of selectioncommand for invoke() method.
-            return cmd(item)
-        else:
-            cmd(item)
-
-#======================================================================
-
-# Private methods for dropdown combobox.
-
-def _drawArrow(self, event=None, sunken=0):
-    arrow = self._arrowBtn
-</t>
-<t tx="ekr.20100204085631.2056">if sunken:
-    self._arrowRelief = arrow.cget('relief')
-    arrow.configure(relief = 'sunken')
-else:
-    arrow.configure(relief = self._arrowRelief)
-
-if self._isPosted and self['fliparrow']:
-        direction = 'up'
-    else:
-        direction = 'down'
-    Pmw.drawarrow(arrow, self['entry_foreground'], direction, 'arrow')
-
-def _postList(self, event = None):
-    self._isPosted = 1
-    self._drawArrow(sunken=1)
-
-    # Make sure that the arrow is displayed sunken.
-    self.update_idletasks()
-
-    x = self._entryfield.winfo_rootx()
-    y = self._entryfield.winfo_rooty() + \
-        self._entryfield.winfo_height()
-    w = self._entryfield.winfo_width() + self._arrowBtn.winfo_width()
-    h =  self.__listbox.winfo_height()
-    sh = self.winfo_screenheight()
-
-    if y + h &gt; sh and y &gt; sh / 2:
-        y = self._entryfield.winfo_rooty() - h
-
-    self._list.configure(hull_width=w)
-
-    Pmw.setgeometryanddeiconify(self._popup, '+%d+%d' % (x, y))
-
-    # Grab the popup, so that all events are delivered to it, and
-    # set focus to the listbox, to make keyboard navigation
-    # easier.
-    Pmw.pushgrab(self._popup, 1, self._unpostList)
-    self.__listbox.focus_set()
-
-    self._drawArrow()
-
-    # Ignore the first release of the mouse button after posting the
-    # dropdown list, unless the mouse enters the dropdown list.
-    self._ignoreRelease = 1
-
-</t>
-<t tx="ekr.20100204085631.2057">def _dropdownBtnRelease(self, event):
-</t>
-<t tx="ekr.20100204085631.2058">if (event.widget == self._list.component('vertscrollbar') or
-    event.widget == self._list.component('horizscrollbar')):
-    return
-
-if self._ignoreRelease:
-    self._unpostOnNextRelease()
-    return
-
-    self._unpostList()
-
-if (event.x &gt;= 0 and event.x &lt; self.__listbox.winfo_width() and
-    event.y &gt;= 0 and event.y &lt; self.__listbox.winfo_height()):
-    self._selectCmd()
-
-def _unpostOnNextRelease(self, event = None):
-</t>
-<t tx="ekr.20100204085631.2059">self._ignoreRelease = 0
-
-def _resizeArrow(self, event):
-</t>
-<t tx="ekr.20100204085631.2060">bw = (string.atoi(self._arrowBtn['borderwidth']) + 
-    string.atoi(self._arrowBtn['highlightthickness']))
-newHeight = self._entryfield.winfo_reqheight() - 2 * bw
-newWidth = int(newHeight * self['buttonaspect'])
-self._arrowBtn.configure(width=newWidth, height=newHeight)
-self._drawArrow()
-
-def _unpostList(self, event=None):
-</t>
-<t tx="ekr.20100204085631.2061">if not self._isPosted:
-        # It is possible to get events on an unposted popup.  For
-        # example, by repeatedly pressing the space key to post
-        # and unpost the popup.  The &lt;space&gt; event may be
-        # delivered to the popup window even though
-        # Pmw.popgrab() has set the focus away from the
-        # popup window.  (Bug in Tk?)
-        return
-
-    # Restore the focus before withdrawing the window, since
-    # otherwise the window manager may take the focus away so we
-    # can't redirect it.  Also, return the grab to the next active
-    # window in the stack, if any.
-    Pmw.popgrab(self._popup)
-self._popup.withdraw()
-
-self._isPosted = 0
-self._drawArrow()
-
-def _selectUnpost(self, event):
-    self._unpostList()
-</t>
 <t tx="ekr.20100205074729.2085"></t>
 <t tx="ekr.20100205074729.2086">line 1: node a changed 2</t>
 <t tx="ekr.20100205074729.2087">@all</t>
-<t tx="ekr.20100205114630.2089"># This file illustrates some off-by-n problems in goto-global-line.
-
-# Actually, there may be a bigger problem with the @auto file write logic.
-# Adding /deleteing blank lines here doesn't change the file!!!
-
-
-# Based on iwidgets2.2.0/combobox.itk code.
-
-import os
-import string
-</t>
-<t tx="ekr.20100205114630.2090">class ComboBox(Pmw.MegaWidget):
-    pass
-</t>
 <t tx="ekr.20100205114630.2091"></t>
-<t tx="ekr.20100329100226.2108">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
-<t tx="ekr.20100329100841.2109">Level 1</t>
-<t tx="ekr.20100329100841.2110">Level 2</t>
 <t tx="ekr.20100330082345.2120">@language pseudoplain
 
 This is a [[test]] of something.</t>
@@ -6085,524 +4132,6 @@ def tabStopNaming (event=None):
       k.setLabelBlue('')
 
 tabStopNaming()</t>
-<t tx="ekr.20100526075442.2155">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
-<t tx="ekr.20100526092131.2157"></t>
-<t tx="ekr.20100526092131.2158"></t>
-<t tx="ekr.20100526092131.2159">::
-
-  digraph G {
-      main -&gt; parse -&gt; execute;
-      main -&gt; init;
-      main -&gt; cleanup;
-      execute -&gt; make_string;
-      execute -&gt; printf
-      init -&gt; make_string;
-      main -&gt; printf;
-      execute -&gt; compare;
-      }
-
-
-.. graphviz::
-
-  digraph G {
-      main -&gt; parse -&gt; execute;
-      main -&gt; init;
-      main -&gt; cleanup;
-      execute -&gt; make_string;
-      execute -&gt; printf
-      init -&gt; make_string;
-      main -&gt; printf;
-      execute -&gt; compare;
-      }
-
-</t>
-<t tx="ekr.20100526092131.2160">::
-
-    digraph G {
-        size ="4,4";
-        main [shape=box];    /* this is a comment */
-        main -&gt; parse [weight=8];
-        parse -&gt; execute;
-        main -&gt; init [style=dotted];
-        main -&gt; cleanup;
-        execute -&gt; { make_string; printf}
-        init -&gt; make_string;
-        edge [color=red];    // so is this
-        main -&gt; printf [style=bold,label="100 times"];
-        make_string [label="make a\nstring"];
-        node [shape=box,style=filled,color=".7 .3 1.0"];
-        execute -&gt; compare;
-    }
-
-.. graphviz::
-
-    digraph G {
-        size ="4,4";
-        main [shape=box];    /* this is a comment */
-        main -&gt; parse [weight=8];
-        parse -&gt; execute;
-        main -&gt; init [style=dotted];
-        main -&gt; cleanup;
-        execute -&gt; { make_string; printf}
-        init -&gt; make_string;
-        edge [color=red];    // so is this
-        main -&gt; printf [style=bold,label="100 times"];
-        make_string [label="make a\nstring"];
-        node [shape=box,style=filled,color=".7 .3 1.0"];
-        execute -&gt; compare;
-    }
-
-</t>
-<t tx="ekr.20100526092131.2161">::
-
-    digraph G {
-        a -&gt; b -&gt; c;
-        b -&gt; d;
-        a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
-        c [shape=polygon,sides=4,skew=.4,label="hello world"]
-        d [shape=invtriangle];
-        e [shape=polygon,sides=4,distortion=.7];
-    }
-    
-.. graphviz::
-
-    digraph G {
-        a -&gt; b -&gt; c;
-        b -&gt; d;
-        a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
-        c [shape=polygon,sides=4,skew=.4,label="hello world"]
-        d [shape=invtriangle];
-        e [shape=polygon,sides=4,distortion=.7];
-    }
-
-</t>
-<t tx="ekr.20100526092131.2162">::
-
-    digraph structs {
-    node [shape=record];
-        struct1 [shape=record,label="&lt;f0&gt; left|&lt;f1&gt; mid\ dle|&lt;f2&gt; right"];
-        struct2 [shape=record,label="&lt;f0&gt; one|&lt;f1&gt; two"];
-        struct3 [shape=record,label="hello\nworld |{ b |{c|&lt;here&gt; d|e}| f}| g | h"];
-        struct1 -&gt; struct2;
-        struct1 -&gt; struct3;
-    }
-
-.. graphviz::
-
-    digraph structs {
-    node [shape=record];
-        struct1 [shape=record,label="&lt;f0&gt; left|&lt;f1&gt; mid\ dle|&lt;f2&gt; right"];
-        struct2 [shape=record,label="&lt;f0&gt; one|&lt;f1&gt; two"];
-        struct3 [shape=record,label="hello\nworld |{ b |{c|&lt;here&gt; d|e}| f}| g | h"];
-        struct1 -&gt; struct2;
-        struct1 -&gt; struct3;
-    }
-
-</t>
-<t tx="ekr.20100526092131.2163">::
-
-    digraph html {
-        abc [shape=none, margin=0, label=&lt;
-    &lt;TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"&gt;
-      &lt;TR&gt;&lt;TD ROWSPAN="3"&gt;&lt;FONT COLOR="red"&gt;hello&lt;/FONT&gt;&lt;BR/&gt;world&lt;/TD&gt;
-          &lt;TD COLSPAN="3"&gt;b&lt;/TD&gt;
-          &lt;TD ROWSPAN="3" BGCOLOR="lightgrey"&gt;g&lt;/TD&gt;
-          &lt;TD ROWSPAN="3"&gt;h&lt;/TD&gt;
-      &lt;/TR&gt;
-      &lt;TR&gt;&lt;TD&gt;c&lt;/TD&gt;
-          &lt;TD PORT="here"&gt;d&lt;/TD&gt;
-          &lt;TD&gt;e&lt;/TD&gt;
-      &lt;/TR&gt;
-      &lt;TR&gt;&lt;TD COLSPAN="3"&gt;f&lt;/TD&gt;
-      &lt;/TR&gt;
-    &lt;/TABLE&gt;&gt;];
-    }
-
-.. graphviz::
-
-    digraph html {
-        abc [shape=none, margin=0, label=&lt;
-    &lt;TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"&gt;
-      &lt;TR&gt;&lt;TD ROWSPAN="3"&gt;&lt;FONT COLOR="red"&gt;hello&lt;/FONT&gt;&lt;BR/&gt;world&lt;/TD&gt;
-          &lt;TD COLSPAN="3"&gt;b&lt;/TD&gt;
-          &lt;TD ROWSPAN="3" BGCOLOR="lightgrey"&gt;g&lt;/TD&gt;
-          &lt;TD ROWSPAN="3"&gt;h&lt;/TD&gt;
-      &lt;/TR&gt;
-      &lt;TR&gt;&lt;TD&gt;c&lt;/TD&gt;
-          &lt;TD PORT="here"&gt;d&lt;/TD&gt;
-          &lt;TD&gt;e&lt;/TD&gt;
-      &lt;/TR&gt;
-      &lt;TR&gt;&lt;TD COLSPAN="3"&gt;f&lt;/TD&gt;
-      &lt;/TR&gt;
-    &lt;/TABLE&gt;&gt;];
-    }
-
-</t>
-<t tx="ekr.20100526092131.2164">::
-
-    digraph asde91 {
-        ranksep=.75; size = "7.5,7.5";
-        {
-            node [shape=plaintext, fontsize=16];
-            /* the time-line graph */
-            past -&gt; 1978 -&gt; 1980 -&gt; 1982 -&gt; 1983 -&gt; 1985 -&gt; 1986 -&gt;
-                     1987 -&gt; 1988 -&gt; 1989 -&gt; 1990 -&gt; "future";
-            /* ancestor programs */
-            "Bourne sh"; "make"; "SCCS"; "yacc"; "cron"; "Reiser cpp";
-            "Cshell"; "emacs"; "build"; "vi"; "&lt;curses&gt;"; "RCS"; "C*";
-        }
-        { rank = same;
-            "Software IS"; "Configuration Mgt"; "Architecture &amp; Libraries";
-            "Process";
-        };
-        node [shape=box];
-        { rank = same; "past"; "SCCS"; "make"; "Bourne sh"; "yacc"; "cron"; }
-        { rank = same; 1978; "Reiser cpp"; "Cshell"; }
-        { rank = same; 1980; "build"; "emacs"; "vi"; }
-        { rank = same; 1982; "RCS"; "&lt;curses&gt;"; "IMX"; "SYNED"; }
-        { rank = same; 1983; "ksh"; "IFS"; "TTU"; }
-        { rank = same; 1985; "nmake"; "Peggy"; }
-        { rank = same; 1986; "C*"; "ncpp"; "ksh-i"; "&lt;curses-i&gt;"; "PG2"; }
-        { rank = same; 1987; "Ansi cpp"; "nmake 2.0"; "3D File System"; "fdelta";
-            "DAG"; "CSAS";}
-        { rank = same; 1988; "CIA"; "SBCS"; "ksh-88"; "PEGASUS/PML"; "PAX";
-            "backtalk"; }
-        { rank = same; 1989; "CIA++"; "APP"; "SHIP"; "DataShare"; "ryacc";
-            "Mosaic"; }
-        { rank = same; 1990; "libft"; "CoShell"; "DIA"; "IFS-i"; "kyacc"; "sfio";
-            "yeast"; "ML-X"; "DOT"; }
-        { rank = same; "future"; "Adv. Software Technology"; }
-        "PEGASUS/PML" -&gt; "ML-X";
-        "SCCS" -&gt; "nmake";
-        "SCCS" -&gt; "3D File System";
-        "SCCS" -&gt; "RCS";
-        "make" -&gt; "nmake";
-        "make" -&gt; "build";
-        .
-        .
-        .
-    }
-
-.. graphviz::
-
-    digraph asde91 {
-        ranksep=.75; size = "7.5,7.5";
-        {
-            node [shape=plaintext, fontsize=16];
-            /* the time-line graph */
-            past -&gt; 1978 -&gt; 1980 -&gt; 1982 -&gt; 1983 -&gt; 1985 -&gt; 1986 -&gt;
-                     1987 -&gt; 1988 -&gt; 1989 -&gt; 1990 -&gt; "future";
-            /* ancestor programs */
-            "Bourne sh"; "make"; "SCCS"; "yacc"; "cron"; "Reiser cpp";
-            "Cshell"; "emacs"; "build"; "vi"; "&lt;curses&gt;"; "RCS"; "C*";
-        }
-        { rank = same;
-            "Software IS"; "Configuration Mgt"; "Architecture &amp; Libraries";
-            "Process";
-        };
-        node [shape=box];
-        { rank = same; "past"; "SCCS"; "make"; "Bourne sh"; "yacc"; "cron"; }
-        { rank = same; 1978; "Reiser cpp"; "Cshell"; }
-        { rank = same; 1980; "build"; "emacs"; "vi"; }
-        { rank = same; 1982; "RCS"; "&lt;curses&gt;"; "IMX"; "SYNED"; }
-        { rank = same; 1983; "ksh"; "IFS"; "TTU"; }
-        { rank = same; 1985; "nmake"; "Peggy"; }
-        { rank = same; 1986; "C*"; "ncpp"; "ksh-i"; "&lt;curses-i&gt;"; "PG2"; }
-        { rank = same; 1987; "Ansi cpp"; "nmake 2.0"; "3D File System"; "fdelta";
-            "DAG"; "CSAS";}
-        { rank = same; 1988; "CIA"; "SBCS"; "ksh-88"; "PEGASUS/PML"; "PAX";
-            "backtalk"; }
-        { rank = same; 1989; "CIA++"; "APP"; "SHIP"; "DataShare"; "ryacc";
-            "Mosaic"; }
-        { rank = same; 1990; "libft"; "CoShell"; "DIA"; "IFS-i"; "kyacc"; "sfio";
-            "yeast"; "ML-X"; "DOT"; }
-        { rank = same; "future"; "Adv. Software Technology"; }
-        "PEGASUS/PML" -&gt; "ML-X";
-        "SCCS" -&gt; "nmake";
-        "SCCS" -&gt; "3D File System";
-        "SCCS" -&gt; "RCS";
-        "make" -&gt; "nmake";
-        "make" -&gt; "build";
-    }
-
-</t>
-<t tx="ekr.20100526092131.2165">Machine
- 
- - physical
- - virtual
- 
-  - id
-  
-   - mac
-   - ip
-   - description
-   - name
-     - hostname
-     - netbios
-     - fqname
-     
-   - storage
-   - ram
-     
-App
-
-Input, Output
-
- - keyboard
- - mouse
- - file
- 
-   - config
-   - log
-   - data
-   
- - stream
-
-</t>
-<t tx="ekr.20100526092131.2166">/etc/dhcp3/dhcpd.conf::
-
-	option ntp-servers 192.168.0.12;
-	option root-path "";
-	option routers 192.168.0.12;
-	option broadcast-address 192.168.0.255;
-	option domain-name-servers 192.168.0.253, 192.168.0.12;
-	use-host-decl-names on;
-	default-lease-time 86400;
-	max-lease-time 86400;
-	#stop
-
-
-	# Courthouse
-	subnet 192.168.0.0 netmask 255.255.255.0 {
-		range dynamic-bootp 192.168.0.151 192.168.0.225;
-		}
-	# Kent's W2k workstation
-	host itstation2 {
-		hardware ethernet 00:16:E6:9C:24:DF;
-		fixed-address 192.168.0.32;
-		}
-	# Office workstation
-	host itstation3 {
-		hardware ethernet 00:24:1d:d1:4d:4b;
-		fixed-address 192.168.0.33;
-		}
-	# lappy wireless
-	host lappy-wireless {
-		hardware ethernet 00:12:F0:E9:55:84;
-		fixed-address 192.168.0.35;
-		}
-	# Plotter/Scanner storage
-	host hpdjcc {
-		hardware ethernet 00:d0:c9:98:92:2a;
-		fixed-address 192.168.0.90;
-		}
-	# DNR License machine in Clerks office
-	host DNRLICENSES {
-		hardware ethernet 00:03:2d:0d:57:e2;
-		fixed-address 192.168.0.40;
-		}
-	# Peg Kurilla laptop
-	host COUNTYADMIN {
-		hardware ethernet 00:19:7d:c9:25:d2;
-		fixed-address 192.168.0.50;
-		}
-	# Netgear WG511v2 PCMCIA card (UWEX)
-	host uwextwin98 {
-		hardware ethernet 00:1b:2f:28:f0:91;
-		fixed-address 192.168.0.51;
-		}
-	# GIS-MAIN Gis workstation
-	host GIS-MAIN {
-		hardware ethernet 00:0a:a6:8d:4f:2f;
-		fixed-address 192.168.0.36;
-		}
-	# Mable in ROD
-	host DEEDS-MABLE {
-		hardware ethernet 00:18:f3:50:5c:e2;
-		fixed-address 192.168.0.55;
-		}
-	# Kathie in Deeds
-	host AUDITMACHINE {
-		hardware ethernet 00:0c:6e:f5:7f:95;
-		fixed-address 192.168.0.56;
-		}
-	# Karen in Deeds
-	host KM-SCANNER {
-		hardware ethernet 00:11:09:b4:fb:5d;
-		fixed-address 192.168.0.57;
-		}
-	# Counter in Deeds
-	host DEEDS-COUNTER {
-		hardware ethernet 00:01:03:c4:d8:96;
-		fixed-address 192.168.0.58;
-		}
-
-	# Lappy wired
-	host lappy {
-		hardware ethernet 00:0a:e4:37:00:80;
-		fixed-address 192.168.0.34;
-		}
-	# laserfiche host
-	host laserfiche {
-		hardware ethernet 00:26:18:fb:98:8e;
-		fixed-address 192.168.0.10;
-		}
-	# laserfiche VM
-	host laserfichexp {
-		hardware ethernet 08:00:27:d3:74:a7;
-		fixed-address 192.168.0.11;
-		}
-	# Tape drive host in Child Support
-	host csa-tape01 {
-		hardware ethernet 00:40:63:d7:ae:e6;
-		fixed-address 192.168.0.17;
-		}
-	# Child Support MX680 Canon all in one
-	host CSA-MX680 {
-		hardware ethernet 00:1e:8f:9c:1e:d8;
-		fixed-address 192.168.0.30;
-		}
-	# Darlene in Child Support
-	host CSA-70 {
-		hardware ethernet 90:e6:ba:88:2f:ca;
-		fixed-address 192.168.0.70;
-		}
-	# Jenny in Child Support
-	host CSA-71 {
-		hardware ethernet e0:cb:4e:32:09:2d;
-		fixed-address 192.168.0.71;
-		}
-	# Bev's desktop workstation (in Lenovo case)
-	host CSA-72 {
-		hardware ethernet e0:cb:4e:24:33:1d;
-		fixed-address 192.168.0.72;
-		}
-	# Patty in Treasurers
-	host TREAS-85 {
-		hardware ethernet 00:50:fc:cf:08:91;
-		fixed-address 192.168.0.85;
-		}
-	# Tracey's computer
-	host TREAS-86 {
-		hardware ethernet 00:40:63:d8:9d:ce;
-		fixed-address 192.168.0.86;
-		}
-	# Jeff Beirl's computer
-	host ADMIN-91 {
-		hardware ethernet 00:17:31:88:55:a1;
-		fixed-address 192.168.0.91;
-		}
-	# Peg Kurilla's laptop
-	host ADMIN-93 {
-		hardware ethernet 00:19:7d:c9:25:d2;
-		fixed-address 192.168.0.93;
-		}
-	# Treasurer counter machine
-	host TREAS-87 {
-		hardware ethernet 00:40:f4:4e:9c:b7;
-		fixed-address 192.168.0.87;
-		}
-	# Sid in CSA
-	host CSA-75 {
-		hardware ethernet 00:26:55:43:9f:b9;
-		fixed-address 192.168.0.76;
-		}
-	# Larry Hildebrandt
-	host ZONE-100 {
-		hardware ethernet 00:24:21:f0:f1:4b;
-		fixed-address 192.168.0.100;
-		}
-	# Patience in CSA
-	host CSA-73 {
-		hardware ethernet 90:e6:ba:3a:47:56;
-		fixed-address 192.168.0.73;
-		}
-	# Griff
-	host CSA-77 {
-		hardware ethernet 00:23:5a:d4:e5:2d;
-		fixed-address 192.168.0.77;
-		}
-	# Traci in CSA
-	host CSA-74 {
-		hardware ethernet 18:a9:05:16:a6:4b;
-		fixed-address 192.168.0.74;
-		}
-	# Joan in CSA
-	host CSA-75 {
-		hardware ethernet 18:a9:05:1f:98:df;
-		fixed-address 192.168.0.75;
-		}
-
-</t>
-<t tx="ekr.20100526092131.2167">&gt;&gt;&gt; import networkx as nx
-
-&gt;&gt;&gt; G=nx.Graph()
-&gt;&gt;&gt; G.add_node("spam")
-&gt;&gt;&gt; G.add_edge(1,2)
-&gt;&gt;&gt; print G.nodes()
-[1, 2, 'spam']
-&gt;&gt;&gt; print G.edges()
-[(1, 2)]
-
-</t>
-<t tx="ekr.20100526092131.2168">.. include:: /home/ktenney/work/fetched/networkx/doc/source/tutorial/tutorial.rst
-
-</t>
-<t tx="ekr.20100526092131.2169"></t>
-<t tx="ekr.20100526092131.2170">.. code-block:: python
-
- import networkx
- import pygraphviz
- import os
- G = networkx.Graph()
- 
- contents = os.listdir('/tmp')
- 
- 
- G.add_nodes_from(contents)
- networkx.write_dot(G, '/tmp/networkx')
- 
-.. graphviz::
- 
-   digraph  {
-	"pulse-LNhuxKcTtQ7o";
-	"manuel-testrunner.py";
-	"orbit-root";
-	".ICE-unix";
-	".esd-1000";
-	".X0-lock";
-	"keyring-IaomNN";
-	"virtual-ktenney.OPfhI7";
-	"orbit-ktenney";
-	"ssh-AHVfka1250";
-	"server-B20D7FC79C7F597315E3E501AEF10E0D866E8E92.xkm";
-	"serverauth.XfwQdCpMON";
-	".X11-unix";
-	"tracker-ktenney";
-	networkx;
-	".exchange-ktenney";
-	"Miro_Download_Daemon_1000.txt";
-	"manuel-testfile.py";
-      }
-
-</t>
-<t tx="ekr.20100526092131.2171"># differences between pygraphviz and networkx
-# http://networkx.lanl.gov/pygraphviz/reference/api_notes.html
-&gt;&gt;&gt; import pygraphviz
-&gt;&gt;&gt; pygraphviz
-
-</t>
-<t tx="ekr.20100526092131.2172">.. code-block:: python
-
-    import networkx
-
-</t>
 <t tx="ekr.20100615095815.2189">import leo.core.leoPlugins as leoPlugins
 
 def on_deactivate(tag,keys):
@@ -6619,9 +4148,6 @@ leoPlugins.registerHandler("activate", on_activate)
 print('window events activated')</t>
 <t tx="ekr.20100616085524.2191">for name,val,c,letter in g.app.config.config_iter(c):
     print('%45s %s %s' % (name,letter,val))</t>
-<t tx="ekr.20100729114420.2152">@language plain
-
-This is a test.</t>
 <t tx="ekr.20100731123441.2155">def searchDir(path,pattern):
     print('\ndir',path)
     paths = glob.glob(g.os_path_join(path,'*'))
@@ -7125,23 +4651,6 @@ def setOption (self,name,val,tag):
             print('v %s icon %s %s' % (id(v),id(icon),fn))
 print('done')
 </t>
-<t tx="ekr.20100907114225.2209">from leo.external import lproto
-import os
-
-addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
-print("will connect to",addr)
-pc  = lproto.LProtoClient(addr)
-pc.send("""
-
-g.es("hello world from remote") 
-c = g.app.commanders()[0]
-
-""")
-
-# note how c persists between calls
-pc.send("""
-c.k.simulateCommand('stickynote')
-""")</t>
 <t tx="ekr.20100910124218.2257"></t>
 <t tx="ekr.20100910124218.2258"></t>
 <t tx="ekr.20100910124218.2259"></t>
@@ -7164,8 +4673,6 @@ table = (
 )
 for start,path in table:
     print(start,path,'--&gt;',os.path.relpath(path,start).replace('\\','/'))</t>
-<t tx="ekr.20101004104134.2347">@language python
-</t>
 <t tx="ekr.20101009105505.2295">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -7313,13 +4820,6 @@ c = g.app.commanders()[0]
 pc.send("""
 c.k.simulateCommand('stickynote')
 """)</t>
-<t tx="ekr.20110127090822.2451">@language python
-
-
-
-aList = list(c.k.bindingsDict.keys())
-aList.sort()
-for z in aList: print(z)</t>
 <t tx="ekr.20110320205650.2495"></t>
 <t tx="ekr.20110321012354.2495">c.executeMinibufferCommand('pause-play-movie')</t>
 <t tx="ekr.20110321012354.2496">c.executeMinibufferCommand('toggle-rendering-pane')</t>
@@ -8157,13 +5657,6 @@ def handle_json_vnode_attributes (self,sax_node,v):
     v = children and children[0] or None
     return v
 </t>
-<t tx="ekr.20110414094917.2423"># The root node for testing read_json_data.</t>
-<t tx="ekr.20110414094917.2424"></t>
-<t tx="ekr.20110414094917.2425"># child 1 text: test of escapes: "\"</t>
-<t tx="ekr.20110414094917.2426"></t>
-<t tx="ekr.20110414094917.2427"># grandchild11 body.</t>
-<t tx="ekr.20110414094917.2428"></t>
-<t tx="ekr.20110414094917.2429"></t>
 <t tx="ekr.20110414094917.2432">def create_t_dict(self,json_node):
     
     tnodes = json_node.get('tnodes',[])
@@ -8219,7 +5712,6 @@ timer.start(0)
 <t tx="ekr.20110521072459.2463"></t>
 <t tx="ekr.20110521072459.2464">builtins, including cython builtins</t>
 <t tx="ekr.20110521072459.2465">cython keywords</t>
-<t tx="ekr.20110525093203.2470"></t>
 <t tx="ekr.20110526180653.2467"></t>
 <t tx="ekr.20110526180653.2468"></t>
 <t tx="ekr.20111020134534.2594"></t>
@@ -8299,65 +5791,6 @@ if not s:
         def __init__(self,conn,addr,server):
             g.es_print('RequestHandler.ctor conn: %s addr: %s server: %s' % (
                 conn,addr,server))
-</t>
-<t tx="ekr.20120505111317.2735">'''Write node &amp; links version of json.'''
-
-# from __future__ import print_function
-import json
-
-class JsonController:
-    @others
-
-g.cls()
-jc = JsonController()
-s = jc.to_json(c,p=None)
-d = json.loads(s)
-
-nodes = {}
-print('nodes...')
-for d2 in d.get('nodes'):
-    gnx = d2.get('gnx')
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-    nodes[gnx] = d2
-    
-keys = sorted(list(nodes.keys()))
-
-if 0:
-    print()
-    print('keys',keys)
-
-aList = d.get('top')
-print()
-print('top...')
-for gnx in aList:
-    assert gnx in keys,gnx
-    d2 = nodes.get(gnx)
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-</t>
-<t tx="ekr.20120505111317.2736">def to_json (self,c,p=None):
-    
-    '''Convert p's tree to JSON, or the entire outline if p is None.'''
-    
-    if p:
-        top = [p.v.gnx]
-        nodes = list(set([p.v for p in p.self_and_subtree()]))
-    else:
-        top = [v.gnx for v in c.hiddenRootNode.children]
-        nodes = [v for v in c.all_unique_nodes()]
-
-    nodes = [self.vnode_dict(v) for v in nodes]
-    d = {'top':top,'nodes':nodes}
-    s = json.dumps(d)
-    return s
-</t>
-<t tx="ekr.20120505111317.2737">def vnode_dict (self,v):
-    
-    return {
-        'gnx': v.gnx,
-        'h':v.h, 'b':v.b,
-        # 'ua': v.u,
-        'children': [z.gnx for z in v.children]
-    }
 </t>
 <t tx="ekr.20120913105857.2914"></t>
 <t tx="ekr.20120913105857.2915">This is a brief tutorial for getting familiar with basic Leo
@@ -9681,8 +7114,8 @@ vpos = vsb.sliderPosition()
 print(vpos)</t>
 <t tx="ekr.20120925105035.3146">def sp(s=''):
     old = g._old_sp
-    pos1 = c.frame.body.bodyCtrl.getYScrollPosition()
-    vsb = c.frame.body.bodyCtrl.widget.verticalScrollBar()
+    pos1 = c.frame.body.wrapper.getYScrollPosition()
+    vsb = c.frame.body.wrapper.widget.verticalScrollBar()
     vmax = vsb.maximum()
     pos2 = vsb.sliderPosition()
     if s or old is None or old != pos1 or old != pos2:
@@ -9691,7 +7124,6 @@ print(vpos)</t>
     if g._force_vscroll is not None:
         vsb.setSliderPosition(g._force_vscroll)
         g._force_vscroll = None
-
 
 g._force_vscroll = None
 g._sp = sp
@@ -9720,1515 +7152,6 @@ for language in ('rest','plain'):
     else:
         mode = None
     print(language,mode)</t>
-<t tx="ekr.20121008164702.3281"></t>
-<t tx="ekr.20121008164702.3282"># Convert a .ipynb file to a Leo outline.
-
-import json
-
-&lt;&lt; define s &gt;&gt;
-
-@others
-
-IpynbReader(c).parse(s)
-
-print('done')
-</t>
-<t tx="ekr.20121008164702.3283">s = r"""
-{
-  "metadata": {
-    "name": "Part 2: Dataset Basics and Concepts"
-  }, 
-  "nbformat": 3, 
-  "nbformat_minor": 0, 
-  "worksheets": [
-    {
-      "cells": [
-        {
-          "cell_type": "heading", 
-          "level": 1, 
-          "metadata": {}, 
-          "source": [
-            "Part 2: Dataset Basics and Concepts"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n*Note*", 
-            "\n\n", 
-            "This tutorial part is also available for download as an ", 
-            "[IPython notebook][IPython notebook]:\n[", 
-            "[ipynb][ipynb]]", 
-            "- - -\n"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "A ", 
-            "[Dataset](http://pymvpa.org/generated/mvpa2.datasets.base.Dataset.html#mvpa2-datasets-base-dataset) is the basic data container in PyMVPA. It\nserves as the primary form of input data storage, but also as container for\nmore complex results returned by some algorithm. In this tutorial part we will\ntake a look at what a dataset consists of, and how it works.\n\n", 
-            "In the simplest case, a dataset only contains ", 
-            "*data* that is a matrix of\nnumerical values."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "from mvpa2.tutorial_suite import *\n", 
-            "data = [[  1,  1, -1],\n        [  2,  0,  0],\n        [  3,  1,  1],\n        [  4,  0, -1]]\n", 
-            "ds = Dataset(data)\n", 
-            "ds.shape"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "len(ds)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.nfeatures"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "In the above example, every row vector in the `data` matrix becomes an\nobservation or a ", 
-            "[sample](http://pymvpa.org/glossary.html#term-sample) in the dataset, and every column vector\nrepresents an individual variable or a ", 
-            "[feature](http://pymvpa.org/glossary.html#term-feature). The concepts of samples\nand features are essential for a dataset, hence we take a further, closer look.\n\n", 
-            "The dataset assumes the first axis of the data to be the samples separating\ndimension. If the dataset is created using a one-dimensional vector it will\ntherefore have as many samples as elements in the vector, and only one feature."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "one_d = [ 0, 1, 2, 3 ]\n", 
-            "one_ds = Dataset(one_d)\n", 
-            "one_ds.shape"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "On the other hand, if a dataset is created from multi-dimensional data, only its\nsecond axis represents the features"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "import numpy as np\n", 
-            "m_ds = Dataset(np.random.random((3, 4, 2, 3)))\n", 
-            "m_ds.shape"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "m_ds.nfeatures"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "In this case we have a dataset with three samples and four features, where each\nfeature is a 2x3 matrix. In case somebody is wondering now, why not simply each\nvalue in the data array is considered as its own feature (yielding 24 features)\n-- stay tuned, as this is going to be of importance later on."
-          ]
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 2, 
-          "metadata": {}, 
-          "source": [
-            "Attributes"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "What we have seen so far does not really warrant the use of a dataset over a\nplain array or a matrix with samples. However, in the MVPA context we often need\nto know more about each samples than just the value of its features.  In the\nprevious tutorial part we have already seen that per-sample ", 
-            "[target](http://pymvpa.org/glossary.html#term-target)\nvalues are required for supervised-learning algorithms, and that a dataset\noften has to be split based on the origin of specific groups of samples.  For\nthis type of auxiliary information a dataset can also contain collections of\nthree types of ", 
-            "[attribute](http://pymvpa.org/glossary.html#term-attribute)s: ", 
-            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute), ", 
-            "[feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute), and\n", 
-            "[dataset attribute](http://pymvpa.org/glossary.html#term-dataset-attribute)."
-          ]
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 3, 
-          "metadata": {}, 
-          "source": [
-            "For Samples"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "In a dataset each ", 
-            "[sample](http://pymvpa.org/glossary.html#term-sample) can have an arbitrary number of additional\nattributes. They are stored as vectors of the same length as the number of samples\nin a collection, and are accessible via the `sa` attribute. A collection is\nderived from a standard Python ", 
-            "`dict`, and hence adding sample attributes\nworks identical to adding elements to a dictionary:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['some_attr'] = [ 0., 1, 1, 3 ]\n", 
-            "ds.sa.keys()"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "However, sample attributes are not directly stored as plain data, but for\nvarious reasons as a so-called ", 
-            "[Collectable](http://pymvpa.org/generated/mvpa2.base.collections.Collectable.html#mvpa2-base-collections-collectable) that in\nturn embeds a NumPy array with the actual attribute:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "type(ds.sa['some_attr'])"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['some_attr'].value"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "This \"complication\" is done to be able to extend attributes with additional\nfunctionality that is often needed and can offer significant speed-up of\nprocessing. For example, sample attributes carry a list of their unique values.\nThis list is only computed once (upon first request) and can subsequently be\naccessed directly without repeated and expensive searches:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['some_attr'].unique"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "However, for most interactive uses of PyMVPA this type of access to attributes'\n`.value` is relatively cumbersome (too much typing), therefore collections offer direct\nattribute access by name:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa.some_attr"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Another purpose of the sample attribute collection is to preserve data\nintegrity, by disallowing improper attributes:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['invalid'] = 4"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['invalid'] = [ 1, 2, 3, 4, 5, 6 ]"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "But other than basic plausibility checks no further constraints on values of\nsamples attributes exist. As long as the length of the attribute vector matches\nthe number of samples in the dataset, and the attributes values can be stored\nin a NumPy array, any value is allowed. For example, it is perfectly possible\nand supported to store literal attributes. It should also be noted that each\nattribute may have its own individual data type, hence it is possible to have\nliteral and numeric attributes in the same dataset."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa['literal'] = ['one', 'two', 'three', 'four']\n", 
-            "sorted(ds.sa.keys())"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "for attr in ds.sa:\n   print \"%s: %s\" % (attr, ds.sa[attr].value.dtype.name)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 3, 
-          "metadata": {}, 
-          "source": [
-            "For Features"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "[Feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute)s are almost identical to ", 
-            "[sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute)s the ", 
-            "*only* difference is that instead of having one attribute value per\nsample, feature attributes have one value per (guess what? ...) ", 
-            "*feature*.\nMoreover, they are stored in a separate collection in the datasets that is\ncalled `fa`:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.nfeatures"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.fa['my_fav'] = [0, 1, 0]\n", 
-            "ds.fa['responsible'] = ['me', 'you', 'nobody']\n", 
-            "sorted(ds.fa.keys())"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 3, 
-          "metadata": {}, 
-          "source": [
-            "For The Dataset"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Finally, there can be also attributes, not per each sample, or each\nfeature, but for the dataset as a whole: so called ", 
-            "[dataset](http://pymvpa.org/glossary.html#term-dataset)s. Assigning such attributes and accessing them later on work in\nexactly the same way as for the other two types of attributes, except that dataset\nattributes are stored in their own collection which is accessible via the\n`a` property of the dataset.  However, in contrast to sample and feature\nattribute no constraints on the type or size are imposed -- anything can be\nstored. Let's store a list with all files in the current directory, just\nbecause we can:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "from glob import glob\n", 
-            "ds.a['pointless'] = glob(\"*\")\n", 
-            "'setup.py' in ds.a.pointless"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 2, 
-          "metadata": {}, 
-          "source": [
-            "Slicing, resampling, feature selection"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "At this point we can already construct a dataset from simple arrays and\nenrich it with an arbitrary number of additional attributes. But just\nhaving a dataset isn't enough. From part one of this tutorial we already\nknow that we need to be able to select subsets of a dataset for further\nprocessing, and we also know that this is possible with PyMVPA's datasets.\nNow it is time to have a closer look into how it works.\n\n", 
-            "Slicing a dataset (i.e. selecting specific subsets) is very similar to\nslicing a NumPy array. It actually works ", 
-            "*almost* identical. A dataset\nsupports Python's ", 
-            "`slice` syntax, but also selection by boolean masks, and\nindices. The following three slicing operations\nresult in equivalent output datasets, by always selecting every other samples\nin the dataset:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds[::2].samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "mask = np.array([True, False, True, False])\n", 
-            "ds[mask].samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds[[0, 2]].samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n*Exercise*", 
-            "\n\n", 
-            "Search the `NumPy documentation`_ for the difference between \"basic slicing\"\nand \"advanced indexing\". Especially the aspect of memory consumption\napplies to dataset slicing as well, and being aware of this fact might\nhelp to write more efficient analysis scripts. Which of the three slicing\napproaches above is the most memory-efficient?  Which of the three slicing\napproaches above might lead to unexpected side-effects if output dataset\ngets modified?"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "# you can use this cell to for this exercise"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n", 
-            "\n\n", 
-            "All three slicing-styles are equally applicable to the selection of feature\nsubsets within a dataset. Remember, features are represented on the second axis\nof a dataset."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds[:, [1,2]].samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "By applying a selection by indices to the second axis, we can easily get\nthe last two features of our example dataset. Please note the ", 
-            "`:` is supplied\nas first axis slicing. This is the Python way to indicate ", 
-            "*take everything\nalong this axis*, hence including all samples.\n\n", 
-            "As you can guess, it is also possible to select subsets of samples and\nfeatures at the same time."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "subds = ds[[0,1], [0,2]]\n", 
-            "subds.samples"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "If you have prior experience with NumPy you might be confused now. What you\nmight have expected is this:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.samples[[0,1], [0,2]]"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "The above code applies the same slicing directly to the NumPy array with\nthe samples, and the result is fundamentally different. For NumPy arrays\nthis style of slicing allows to select specific elements by their indices on\neach axis of an array. For PyMVPA's datasets this mode is not very useful,\ninstead we typically want to select rows and columns, i.e. samples and\nfeatures given by their indices."
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n*Exercise*", 
-            "\n\n", 
-            "Try to select samples [0,1] and features [0,2,3] simultaneously using\ndataset slicing.  Now apply the same slicing to the samples array itself\n(`ds.samples`) -- make sure that the result doesn't surprise you and find\na pure NumPy way to achieve similar selection."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "# you can use this cell to for this exercise"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n", 
-            "\n\n", 
-            "One last interesting thing to look at, in the context of dataset slicing\nare the attributes. What happens to them when a subset of samples and/or\nfeatures is chosen? Our original dataset had both samples and feature attributes:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "print ds.sa.some_attr"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "print ds.fa.responsible"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Now let's look at what they became in the subset-dataset we previously\ncreated:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "print subds.sa.some_attr"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "print subds.fa.responsible"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "We see that both attributes are still there and, moreover, also the\nappropriate subsets have been selected."
-          ]
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 2, 
-          "metadata": {}, 
-          "source": [
-            "Loading fMRI data"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Enough of theoretical foreplay -- let's look at a concrete example of an\nfMRI dataset. PyMVPA has several helper functions to load data from\nspecialized formats, and the one for fMRI data is\n", 
-            "[fmri_dataset()](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset). The example dataset we are going to\nlook at is a single subject from Haxby et al. (2001) that we already\nloaded in part one of this tutorial. For more convenience, and less typing\nwe first specify the path of the directory with the fMRI data."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "path=os.path.join(tutorial_data_path, 'data')"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "In the simplest case, we now let ", 
-            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) do its job, by just\npointing it to the fMRI data file. The data is stored as a NIfTI file that has\nall runs of the experiment concatenated into a single file."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'))\n", 
-            "len(ds)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.nfeatures"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.shape"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "We can notice two things. First, it worked! Second, we get a\ntwo-dimensional dataset with 1452 samples (these are volumes in the NIfTI\nfile), and over 160k features (these are voxels in the volume). The voxels\nare represented as a one-dimensional vector, and it seems that they have\nlost their association with the 3D-voxel-space. However, this is not the\ncase, as we will see in the next chapter.  PyMVPA represents\ndata in this simple format to make it compatible with a vast range of generic\nalgorithms that expect data to be a simple matrix.\n\n", 
-            "We just loaded all data from that NIfTI file, but usually we would be\ninterested in a subset only, i.e. \"brain voxels\".\n", 
-            "[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) is capable of performing data masking. We just need to\nspecify a mask image. Such mask image is generated in pretty much any fMRI\nanalysis pipeline -- may it be a full-brain mask computed during\nskull-stripping, or an activation map from a functional localizer. We are going\nto use the original GLM-based localizer mask of ventral temporal cortex\nfrom Haxby et al. (2001). We already know that it comprises 577 voxels.\nLet's reload the dataset:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'),\n                  mask=os.path.join(path, 'mask_vt.nii.gz'))\n", 
-            "len(ds)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.nfeatures"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "As expected, we get the same number of samples and also only 577 features\n-- voxels corresponding to non-zero elements in the mask image. Now, let's\nexplore this dataset a little further.\n\n", 
-            "Besides samples the dataset offers number of attributes that enhance the\ndata with information that is present in the NIfTI image header in the file. Each sample has\ninformation about its volume ID in the time series and the actual acquisition\ntime (relative to the beginning of the file). Moreover, the original voxel\nindex (sometimes referred to as `ijk`) for each feature is available too.\nFinally, the dataset also contains information about the dimensionality\nof the input volumes, voxel size, and any other NIfTI-specific information\nsince it also includes a dump of the full NIfTI image header."
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "- - -\n*Note*", 
-            "\n\n", 
-            "Previously (0.4.x versions and 0.5 development prior March 03, 2010),\nPyMVPA exposed 4D (and 3D with degenerate 1st dimension) data in `tkji`\n(corresponds to `tzyx` if volumes were axial slices in\nneurologic convention) order of dimensions.  Now it uses more convenient\norder `tijk` (corresponding to `txyz`), which will match the order exposed\nby NiBabel (PyNIfTI and NiftiImage still expose them as `tkji`).", 
-            "- - -\n"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa.time_indices[:5]"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.sa.time_coords[:5]"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.fa.voxel_indices[:5]"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.a.voxel_eldim"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.a.voxel_dim"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "'imghdr' in ds.a"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "In addition to all this information, the dataset also carries a key\nattribute: the ", 
-            "*mapper*. A mapper is an important concept in PyMVPA, and\nhence worth devoting the whole ", 
-            "*next tutorial chapter* to it."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "print ds.a.mapper"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Having all these attributes being part of a dataset is often a useful thing\nto have, but in some cases (e.g. when it comes to efficiency, and/or very\nlarge datasets) one might want to have a leaner dataset with just the\ninformation that is really necessary. One way to achieve this, is to strip\nall unwanted attributes. The Dataset class'\n", 
-            "[AttrDataset.copy()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.copy) method can help with that."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "stripped = ds.copy(deep=False, sa=['time_coords'], fa=[], a=[])\n", 
-            "print stripped"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "We can see that all attributes besides `time_coords` have been filtered out.\nSetting the `deep` arguments to `False` causes the copy function to reuse the\ndata from the source dataset to generate the new stripped one, without\nduplicating all data in memory -- meaning both datasets now share the sample\ndata and any change done to `ds` will also affect `stripped`."
-          ]
-        }, 
-        {
-          "cell_type": "heading", 
-          "level": 2, 
-          "metadata": {}, 
-          "source": [
-            "Storage"
-          ]
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Some data preprocessing can take a long time.  One would rather prevent\ndoing it over and over again, and instead just store the preprocessed data\ninto a file for subsequent analyses. PyMVPA offers functionality to store a\nlarge variety of objects, including datasets, into ", 
-            "[HDF5][HDF5] files. A variant\nof this format is also used by recent versions of Matlab to store data.\n\n", 
-            "For HDF5 support PyMVPA depends on the ", 
-            "[h5py][h5py] package. If it is available,\nany dataset can be saved to a file by simply calling\n", 
-            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) with the desired filename."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "import tempfile, shutil\n", 
-            "tempdir = tempfile.mkdtemp()\n", 
-            "ds.save(os.path.join(tempdir, 'mydataset.hdf5'))"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "HDF5 is a flexible format that also supports, for example, data\ncompression. To enable it, you can pass additional arguments to\n", 
-            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) that are supported by\n", 
-            "`Group.create_dataset()`. Instead of using\n", 
-            "[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) one can also use the ", 
-            "[h5save()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5save.html#mvpa2-base-hdf5-h5save)\nfunction in a similar way. Saving the same dataset with maximum\ngzip-compression looks like this:"
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "ds.save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), compression=9)\n", 
-            "h5save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), ds, compression=9)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "markdown", 
-          "metadata": {}, 
-          "source": [
-            "\n\n", 
-            "Loading datasets from a file is easy too. ", 
-            "[h5load()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5load.html#mvpa2-base-hdf5-h5load) takes a filename as\nan argument and returns the stored dataset. Compressed data will be handled\ntransparently."
-          ]
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "loaded = h5load(os.path.join(tempdir, 'mydataset.hdf5'))\n", 
-            "np.all(ds.samples == loaded.samples)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }, 
-        {
-          "cell_type": "code", 
-          "collapsed": false, 
-          "input": [
-            "shutil.rmtree(tempdir, ignore_errors=True)"
-          ], 
-          "language": "python", 
-          "metadata": {}, 
-          "outputs": []
-        }
-      ], 
-      "metadata": {}
-    }
-  ]
-}
-"""</t>
-<t tx="ekr.20121008164702.3284">class IpynbReader:
-    
-    @others
-</t>
-<t tx="ekr.20121008164702.3285">def __init__ (self,c):
-    
-    self.c = c
-
-    self.root = root = g.findNodeAnywhere(c,'ipynb tree')
-    assert root
-    for p2 in root.children():
-        p2.doDelete(root)
-
-</t>
-<t tx="ekr.20121008164702.3286">def do_cell(self,cell,level):
-    
-    trace = False
-    ct  = cell.get('cell_type')
-    src = cell.get('source') or []
-    if ct == 'heading':
-        level = cell.get('level')
-        # h = 'heading level %s %s' % (level,src)
-        h = src[0] if src else 'heading: ** no aList **'
-        if trace: g.trace('** heading: %s %s' % (level,h))
-        p = self.get_node(h,level)
-    else:
-        h = ct
-        if trace: g.trace('** node: %s %s' % (level,h))
-        p = self.get_node(ct,level+1)
-        if ct == 'markdown':
-            p.b = '@language rest\n\n' + ''.join(src).strip()
-        elif ct == 'code':
-            aList = cell.get('input') or []
-            language = cell.get('language')
-            if language:
-                aList.insert(0,'@language %s\n\n' % (language))
-            p.b = ''.join(aList)
-            outputs = cell.get('outputs')
-            if outputs:
-                # To do: handle this.
-                g.trace(outputs)
-                
-        # Make sure we haven't missed anything.
-        for key in sorted(cell.keys()):
-            keys = ('cell_type','code','collapsed','input','language','markdown','outputs','source')
-            if key not in keys and cell.get(key) not in (None,{},[]):
-                print('%10s %s' % (key,cell.get(key)))
-                
-    return level</t>
-<t tx="ekr.20121008164702.3287">def do_worksheet(self,d):
-
-    level = 0
-    cells = d.get('cells')
-    for cell in cells:
-        level = self.do_cell(cell,level)
-</t>
-<t tx="ekr.20121008164702.3288">def get_node (self,h,level):
-    
-    '''Return a new node at the indicated level.'''
-    
-    # g.trace(level,len(self.stack),h)
-    
-    if 1 &gt; level &gt; len(self.stack) + 1:
-        g.trace('bad level: %s' % level)
-        return None
-    else:
-        parent = self.stack[level-1]
-        p = parent.insertAsLastChild()
-        p.h = h 
-        self.stack = self.stack[:level]
-        self.stack.append(p)
-        assert len(self.stack) == level+1
-        return p</t>
-<t tx="ekr.20121008164702.3289">def parse (self,s):
-    
-    d = json.loads(g.toUnicode(s),strict=False)
-
-    count = 1
-    for d2 in d.get('worksheets'):
-        local_root = self.root.insertAsLastChild()
-        metadata = d2.get('metadata')
-        if metadata:
-            local_root.h = 'worksheet %s %s' % (count,metadata)
-        else:
-            local_root.h = 'worksheet %s' % count
-        self.stack = [local_root]
-        self.do_worksheet(d2)
-        count += 1
-
-    self.c.redraw()
-</t>
-<t tx="ekr.20121008164702.3290"></t>
-<t tx="ekr.20121008164702.3291"></t>
-<t tx="ekr.20121008164702.3292"></t>
-<t tx="ekr.20121008164702.3293">@language rest
-
-- - -
-*Note*
-
-This tutorial part is also available for download as an [IPython notebook][IPython notebook]:
-[[ipynb][ipynb]]- - -</t>
-<t tx="ekr.20121008164702.3294">@language rest
-
-A [Dataset](http://pymvpa.org/generated/mvpa2.datasets.base.Dataset.html#mvpa2-datasets-base-dataset) is the basic data container in PyMVPA. It
-serves as the primary form of input data storage, but also as container for
-more complex results returned by some algorithm. In this tutorial part we will
-take a look at what a dataset consists of, and how it works.
-
-In the simplest case, a dataset only contains *data* that is a matrix of
-numerical values.</t>
-<t tx="ekr.20121008164702.3295">@language python
-
-from mvpa2.tutorial_suite import *
-data = [[  1,  1, -1],
-        [  2,  0,  0],
-        [  3,  1,  1],
-        [  4,  0, -1]]
-ds = Dataset(data)
-ds.shape</t>
-<t tx="ekr.20121008164702.3296">@language python
-
-len(ds)</t>
-<t tx="ekr.20121008164702.3297">@language python
-
-ds.nfeatures</t>
-<t tx="ekr.20121008164702.3298">@language python
-
-ds.samples</t>
-<t tx="ekr.20121008164702.3299">@language rest
-
-In the above example, every row vector in the `data` matrix becomes an
-observation or a [sample](http://pymvpa.org/glossary.html#term-sample) in the dataset, and every column vector
-represents an individual variable or a [feature](http://pymvpa.org/glossary.html#term-feature). The concepts of samples
-and features are essential for a dataset, hence we take a further, closer look.
-
-The dataset assumes the first axis of the data to be the samples separating
-dimension. If the dataset is created using a one-dimensional vector it will
-therefore have as many samples as elements in the vector, and only one feature.</t>
-<t tx="ekr.20121008164702.3300">@language python
-
-one_d = [ 0, 1, 2, 3 ]
-one_ds = Dataset(one_d)
-one_ds.shape</t>
-<t tx="ekr.20121008164702.3301">@language rest
-
-On the other hand, if a dataset is created from multi-dimensional data, only its
-second axis represents the features</t>
-<t tx="ekr.20121008164702.3302">@language python
-
-import numpy as np
-m_ds = Dataset(np.random.random((3, 4, 2, 3)))
-m_ds.shape</t>
-<t tx="ekr.20121008164702.3303">@language python
-
-m_ds.nfeatures</t>
-<t tx="ekr.20121008164702.3304">@language rest
-
-In this case we have a dataset with three samples and four features, where each
-feature is a 2x3 matrix. In case somebody is wondering now, why not simply each
-value in the data array is considered as its own feature (yielding 24 features)
--- stay tuned, as this is going to be of importance later on.</t>
-<t tx="ekr.20121008164702.3305"></t>
-<t tx="ekr.20121008164702.3306">@language rest
-
-What we have seen so far does not really warrant the use of a dataset over a
-plain array or a matrix with samples. However, in the MVPA context we often need
-to know more about each samples than just the value of its features.  In the
-previous tutorial part we have already seen that per-sample [target](http://pymvpa.org/glossary.html#term-target)
-values are required for supervised-learning algorithms, and that a dataset
-often has to be split based on the origin of specific groups of samples.  For
-this type of auxiliary information a dataset can also contain collections of
-three types of [attribute](http://pymvpa.org/glossary.html#term-attribute)s: [sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute), [feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute), and
-[dataset attribute](http://pymvpa.org/glossary.html#term-dataset-attribute).</t>
-<t tx="ekr.20121008164702.3307"></t>
-<t tx="ekr.20121008164702.3308">@language rest
-
-In a dataset each [sample](http://pymvpa.org/glossary.html#term-sample) can have an arbitrary number of additional
-attributes. They are stored as vectors of the same length as the number of samples
-in a collection, and are accessible via the `sa` attribute. A collection is
-derived from a standard Python `dict`, and hence adding sample attributes
-works identical to adding elements to a dictionary:</t>
-<t tx="ekr.20121008164702.3309">@language python
-
-ds.sa['some_attr'] = [ 0., 1, 1, 3 ]
-ds.sa.keys()</t>
-<t tx="ekr.20121008164702.3310">@language rest
-
-However, sample attributes are not directly stored as plain data, but for
-various reasons as a so-called [Collectable](http://pymvpa.org/generated/mvpa2.base.collections.Collectable.html#mvpa2-base-collections-collectable) that in
-turn embeds a NumPy array with the actual attribute:</t>
-<t tx="ekr.20121008164702.3311">@language python
-
-type(ds.sa['some_attr'])</t>
-<t tx="ekr.20121008164702.3312">@language python
-
-ds.sa['some_attr'].value</t>
-<t tx="ekr.20121008164702.3313">@language rest
-
-This "complication" is done to be able to extend attributes with additional
-functionality that is often needed and can offer significant speed-up of
-processing. For example, sample attributes carry a list of their unique values.
-This list is only computed once (upon first request) and can subsequently be
-accessed directly without repeated and expensive searches:</t>
-<t tx="ekr.20121008164702.3314">@language python
-
-ds.sa['some_attr'].unique</t>
-<t tx="ekr.20121008164702.3315">@language rest
-
-However, for most interactive uses of PyMVPA this type of access to attributes'
-`.value` is relatively cumbersome (too much typing), therefore collections offer direct
-attribute access by name:</t>
-<t tx="ekr.20121008164702.3316">@language python
-
-ds.sa.some_attr</t>
-<t tx="ekr.20121008164702.3317">@language rest
-
-Another purpose of the sample attribute collection is to preserve data
-integrity, by disallowing improper attributes:</t>
-<t tx="ekr.20121008164702.3318">@language python
-
-ds.sa['invalid'] = 4</t>
-<t tx="ekr.20121008164702.3319">@language python
-
-ds.sa['invalid'] = [ 1, 2, 3, 4, 5, 6 ]</t>
-<t tx="ekr.20121008164702.3320">@language rest
-
-But other than basic plausibility checks no further constraints on values of
-samples attributes exist. As long as the length of the attribute vector matches
-the number of samples in the dataset, and the attributes values can be stored
-in a NumPy array, any value is allowed. For example, it is perfectly possible
-and supported to store literal attributes. It should also be noted that each
-attribute may have its own individual data type, hence it is possible to have
-literal and numeric attributes in the same dataset.</t>
-<t tx="ekr.20121008164702.3321">@language python
-
-ds.sa['literal'] = ['one', 'two', 'three', 'four']
-sorted(ds.sa.keys())</t>
-<t tx="ekr.20121008164702.3322">@language python
-
-for attr in ds.sa:
-   print "%s: %s" % (attr, ds.sa[attr].value.dtype.name)</t>
-<t tx="ekr.20121008164702.3323"></t>
-<t tx="ekr.20121008164702.3324">@language rest
-
-[Feature attribute](http://pymvpa.org/glossary.html#term-feature-attribute)s are almost identical to [sample attribute](http://pymvpa.org/glossary.html#term-sample-attribute)s the *only* difference is that instead of having one attribute value per
-sample, feature attributes have one value per (guess what? ...) *feature*.
-Moreover, they are stored in a separate collection in the datasets that is
-called `fa`:</t>
-<t tx="ekr.20121008164702.3325">@language python
-
-ds.nfeatures</t>
-<t tx="ekr.20121008164702.3326">@language python
-
-ds.fa['my_fav'] = [0, 1, 0]
-ds.fa['responsible'] = ['me', 'you', 'nobody']
-sorted(ds.fa.keys())</t>
-<t tx="ekr.20121008164702.3327"></t>
-<t tx="ekr.20121008164702.3328">@language rest
-
-Finally, there can be also attributes, not per each sample, or each
-feature, but for the dataset as a whole: so called [dataset](http://pymvpa.org/glossary.html#term-dataset)s. Assigning such attributes and accessing them later on work in
-exactly the same way as for the other two types of attributes, except that dataset
-attributes are stored in their own collection which is accessible via the
-`a` property of the dataset.  However, in contrast to sample and feature
-attribute no constraints on the type or size are imposed -- anything can be
-stored. Let's store a list with all files in the current directory, just
-because we can:</t>
-<t tx="ekr.20121008164702.3329">@language python
-
-from glob import glob
-ds.a['pointless'] = glob("*")
-'setup.py' in ds.a.pointless</t>
-<t tx="ekr.20121008164702.3330"></t>
-<t tx="ekr.20121008164702.3331">@language rest
-
-At this point we can already construct a dataset from simple arrays and
-enrich it with an arbitrary number of additional attributes. But just
-having a dataset isn't enough. From part one of this tutorial we already
-know that we need to be able to select subsets of a dataset for further
-processing, and we also know that this is possible with PyMVPA's datasets.
-Now it is time to have a closer look into how it works.
-
-Slicing a dataset (i.e. selecting specific subsets) is very similar to
-slicing a NumPy array. It actually works *almost* identical. A dataset
-supports Python's `slice` syntax, but also selection by boolean masks, and
-indices. The following three slicing operations
-result in equivalent output datasets, by always selecting every other samples
-in the dataset:</t>
-<t tx="ekr.20121008164702.3332">@language python
-
-ds.samples</t>
-<t tx="ekr.20121008164702.3333">@language python
-
-ds[::2].samples</t>
-<t tx="ekr.20121008164702.3334">@language python
-
-mask = np.array([True, False, True, False])
-ds[mask].samples</t>
-<t tx="ekr.20121008164702.3335">@language python
-
-ds[[0, 2]].samples</t>
-<t tx="ekr.20121008164702.3336">@language rest
-
-- - -
-*Exercise*
-
-Search the `NumPy documentation`_ for the difference between "basic slicing"
-and "advanced indexing". Especially the aspect of memory consumption
-applies to dataset slicing as well, and being aware of this fact might
-help to write more efficient analysis scripts. Which of the three slicing
-approaches above is the most memory-efficient?  Which of the three slicing
-approaches above might lead to unexpected side-effects if output dataset
-gets modified?</t>
-<t tx="ekr.20121008164702.3337">@language python
-
-# you can use this cell to for this exercise</t>
-<t tx="ekr.20121008164702.3338">@language rest
-
-- - -
-
-
-All three slicing-styles are equally applicable to the selection of feature
-subsets within a dataset. Remember, features are represented on the second axis
-of a dataset.</t>
-<t tx="ekr.20121008164702.3339">@language python
-
-ds[:, [1,2]].samples</t>
-<t tx="ekr.20121008164702.3340">@language rest
-
-By applying a selection by indices to the second axis, we can easily get
-the last two features of our example dataset. Please note the `:` is supplied
-as first axis slicing. This is the Python way to indicate *take everything
-along this axis*, hence including all samples.
-
-As you can guess, it is also possible to select subsets of samples and
-features at the same time.</t>
-<t tx="ekr.20121008164702.3341">@language python
-
-subds = ds[[0,1], [0,2]]
-subds.samples</t>
-<t tx="ekr.20121008164702.3342">@language rest
-
-If you have prior experience with NumPy you might be confused now. What you
-might have expected is this:</t>
-<t tx="ekr.20121008164702.3343">@language python
-
-ds.samples[[0,1], [0,2]]</t>
-<t tx="ekr.20121008164702.3344">@language rest
-
-The above code applies the same slicing directly to the NumPy array with
-the samples, and the result is fundamentally different. For NumPy arrays
-this style of slicing allows to select specific elements by their indices on
-each axis of an array. For PyMVPA's datasets this mode is not very useful,
-instead we typically want to select rows and columns, i.e. samples and
-features given by their indices.</t>
-<t tx="ekr.20121008164702.3345">@language rest
-
-- - -
-*Exercise*
-
-Try to select samples [0,1] and features [0,2,3] simultaneously using
-dataset slicing.  Now apply the same slicing to the samples array itself
-(`ds.samples`) -- make sure that the result doesn't surprise you and find
-a pure NumPy way to achieve similar selection.</t>
-<t tx="ekr.20121008164702.3346">@language python
-
-# you can use this cell to for this exercise</t>
-<t tx="ekr.20121008164702.3347">@language rest
-
-- - -
-
-
-One last interesting thing to look at, in the context of dataset slicing
-are the attributes. What happens to them when a subset of samples and/or
-features is chosen? Our original dataset had both samples and feature attributes:</t>
-<t tx="ekr.20121008164702.3348">@language python
-
-print ds.sa.some_attr</t>
-<t tx="ekr.20121008164702.3349">@language python
-
-print ds.fa.responsible</t>
-<t tx="ekr.20121008164702.3350">@language rest
-
-Now let's look at what they became in the subset-dataset we previously
-created:</t>
-<t tx="ekr.20121008164702.3351">@language python
-
-print subds.sa.some_attr</t>
-<t tx="ekr.20121008164702.3352">@language python
-
-print subds.fa.responsible</t>
-<t tx="ekr.20121008164702.3353">@language rest
-
-We see that both attributes are still there and, moreover, also the
-appropriate subsets have been selected.</t>
-<t tx="ekr.20121008164702.3354"></t>
-<t tx="ekr.20121008164702.3355">@language rest
-
-Enough of theoretical foreplay -- let's look at a concrete example of an
-fMRI dataset. PyMVPA has several helper functions to load data from
-specialized formats, and the one for fMRI data is
-[fmri_dataset()](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset). The example dataset we are going to
-look at is a single subject from Haxby et al. (2001) that we already
-loaded in part one of this tutorial. For more convenience, and less typing
-we first specify the path of the directory with the fMRI data.</t>
-<t tx="ekr.20121008164702.3356">@language python
-
-path=os.path.join(tutorial_data_path, 'data')</t>
-<t tx="ekr.20121008164702.3357">@language rest
-
-In the simplest case, we now let [fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) do its job, by just
-pointing it to the fMRI data file. The data is stored as a NIfTI file that has
-all runs of the experiment concatenated into a single file.</t>
-<t tx="ekr.20121008164702.3358">@language python
-
-ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'))
-len(ds)</t>
-<t tx="ekr.20121008164702.3359">@language python
-
-ds.nfeatures</t>
-<t tx="ekr.20121008164702.3360">@language python
-
-ds.shape</t>
-<t tx="ekr.20121008164702.3361">@language rest
-
-We can notice two things. First, it worked! Second, we get a
-two-dimensional dataset with 1452 samples (these are volumes in the NIfTI
-file), and over 160k features (these are voxels in the volume). The voxels
-are represented as a one-dimensional vector, and it seems that they have
-lost their association with the 3D-voxel-space. However, this is not the
-case, as we will see in the next chapter.  PyMVPA represents
-data in this simple format to make it compatible with a vast range of generic
-algorithms that expect data to be a simple matrix.
-
-We just loaded all data from that NIfTI file, but usually we would be
-interested in a subset only, i.e. "brain voxels".
-[fmri_dataset](http://pymvpa.org/generated/mvpa2.datasets.mri.fmri_dataset.html#mvpa2-datasets-mri-fmri-dataset) is capable of performing data masking. We just need to
-specify a mask image. Such mask image is generated in pretty much any fMRI
-analysis pipeline -- may it be a full-brain mask computed during
-skull-stripping, or an activation map from a functional localizer. We are going
-to use the original GLM-based localizer mask of ventral temporal cortex
-from Haxby et al. (2001). We already know that it comprises 577 voxels.
-Let's reload the dataset:</t>
-<t tx="ekr.20121008164702.3362">@language python
-
-ds = fmri_dataset(os.path.join(path, 'bold.nii.gz'),
-                  mask=os.path.join(path, 'mask_vt.nii.gz'))
-len(ds)</t>
-<t tx="ekr.20121008164702.3363">@language python
-
-ds.nfeatures</t>
-<t tx="ekr.20121008164702.3364">@language rest
-
-As expected, we get the same number of samples and also only 577 features
--- voxels corresponding to non-zero elements in the mask image. Now, let's
-explore this dataset a little further.
-
-Besides samples the dataset offers number of attributes that enhance the
-data with information that is present in the NIfTI image header in the file. Each sample has
-information about its volume ID in the time series and the actual acquisition
-time (relative to the beginning of the file). Moreover, the original voxel
-index (sometimes referred to as `ijk`) for each feature is available too.
-Finally, the dataset also contains information about the dimensionality
-of the input volumes, voxel size, and any other NIfTI-specific information
-since it also includes a dump of the full NIfTI image header.</t>
-<t tx="ekr.20121008164702.3365">@language rest
-
-- - -
-*Note*
-
-Previously (0.4.x versions and 0.5 development prior March 03, 2010),
-PyMVPA exposed 4D (and 3D with degenerate 1st dimension) data in `tkji`
-(corresponds to `tzyx` if volumes were axial slices in
-neurologic convention) order of dimensions.  Now it uses more convenient
-order `tijk` (corresponding to `txyz`), which will match the order exposed
-by NiBabel (PyNIfTI and NiftiImage still expose them as `tkji`).- - -</t>
-<t tx="ekr.20121008164702.3366">@language python
-
-ds.sa.time_indices[:5]</t>
-<t tx="ekr.20121008164702.3367">@language python
-
-ds.sa.time_coords[:5]</t>
-<t tx="ekr.20121008164702.3368">@language python
-
-ds.fa.voxel_indices[:5]</t>
-<t tx="ekr.20121008164702.3369">@language python
-
-ds.a.voxel_eldim</t>
-<t tx="ekr.20121008164702.3370">@language python
-
-ds.a.voxel_dim</t>
-<t tx="ekr.20121008164702.3371">@language python
-
-'imghdr' in ds.a</t>
-<t tx="ekr.20121008164702.3372">@language rest
-
-In addition to all this information, the dataset also carries a key
-attribute: the *mapper*. A mapper is an important concept in PyMVPA, and
-hence worth devoting the whole *next tutorial chapter* to it.</t>
-<t tx="ekr.20121008164702.3373">@language python
-
-print ds.a.mapper</t>
-<t tx="ekr.20121008164702.3374">@language rest
-
-Having all these attributes being part of a dataset is often a useful thing
-to have, but in some cases (e.g. when it comes to efficiency, and/or very
-large datasets) one might want to have a leaner dataset with just the
-information that is really necessary. One way to achieve this, is to strip
-all unwanted attributes. The Dataset class'
-[AttrDataset.copy()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.copy) method can help with that.</t>
-<t tx="ekr.20121008164702.3375">@language python
-
-stripped = ds.copy(deep=False, sa=['time_coords'], fa=[], a=[])
-print stripped</t>
-<t tx="ekr.20121008164702.3376">@language rest
-
-We can see that all attributes besides `time_coords` have been filtered out.
-Setting the `deep` arguments to `False` causes the copy function to reuse the
-data from the source dataset to generate the new stripped one, without
-duplicating all data in memory -- meaning both datasets now share the sample
-data and any change done to `ds` will also affect `stripped`.</t>
-<t tx="ekr.20121008164702.3377"></t>
-<t tx="ekr.20121008164702.3378">@language rest
-
-Some data preprocessing can take a long time.  One would rather prevent
-doing it over and over again, and instead just store the preprocessed data
-into a file for subsequent analyses. PyMVPA offers functionality to store a
-large variety of objects, including datasets, into [HDF5][HDF5] files. A variant
-of this format is also used by recent versions of Matlab to store data.
-
-For HDF5 support PyMVPA depends on the [h5py][h5py] package. If it is available,
-any dataset can be saved to a file by simply calling
-[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) with the desired filename.</t>
-<t tx="ekr.20121008164702.3379">@language python
-
-import tempfile, shutil
-tempdir = tempfile.mkdtemp()
-ds.save(os.path.join(tempdir, 'mydataset.hdf5'))</t>
-<t tx="ekr.20121008164702.3380">@language rest
-
-HDF5 is a flexible format that also supports, for example, data
-compression. To enable it, you can pass additional arguments to
-[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) that are supported by
-`Group.create_dataset()`. Instead of using
-[AttrDataset.save()](http://pymvpa.org/generated/mvpa2.base.dataset.AttrDataset.html#mvpa2.base.dataset.AttrDataset.save) one can also use the [h5save()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5save.html#mvpa2-base-hdf5-h5save)
-function in a similar way. Saving the same dataset with maximum
-gzip-compression looks like this:</t>
-<t tx="ekr.20121008164702.3381">@language python
-
-ds.save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), compression=9)
-h5save(os.path.join(tempdir, 'mydataset.gzipped.hdf5'), ds, compression=9)</t>
-<t tx="ekr.20121008164702.3382">@language rest
-
-Loading datasets from a file is easy too. [h5load()](http://pymvpa.org/generated/mvpa2.base.hdf5.h5load.html#mvpa2-base-hdf5-h5load) takes a filename as
-an argument and returns the stored dataset. Compressed data will be handled
-transparently.</t>
-<t tx="ekr.20121008164702.3383">@language python
-
-loaded = h5load(os.path.join(tempdir, 'mydataset.hdf5'))
-np.all(ds.samples == loaded.samples)</t>
-<t tx="ekr.20121008164702.3384">@language python
-
-shutil.rmtree(tempdir, ignore_errors=True)</t>
 <t tx="ekr.20121011100948.4582">'''Recursively import all python files in theDir and clean the result.'''
 
 import os
@@ -11822,23 +7745,9 @@ li.dirty-clone-mark {
 display xml as Leo outlines using css
 &lt;/li&gt;
 &lt;ul&gt;
-  &lt;li class='plus body'&gt;
+  &lt;li class='minus body'&gt;
   @button display css
   &lt;/li&gt;
-  &lt;ul&gt;
-    &lt;li class='leaf dirty-body'&gt;
-    &amp;lt;&amp;lt; define css &amp;gt;&amp;gt;
-    &lt;/li&gt;
-    &lt;li class='leaf body'&gt;
-    css utils
-    &lt;/li&gt;
-    &lt;li class='leaf body'&gt;
-    escapeHtml
-    &lt;/li&gt;
-    &lt;li class='leaf body'&gt;
-    headlineToHtml
-    &lt;/li&gt;
-  &lt;/ul&gt;
   &lt;li class='minus clone-mark'&gt;
   test
   &lt;/li&gt;
@@ -11967,7 +7876,6 @@ def selector(n):
     table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
     return '-'.join([s for (n2,s) in table if n &amp; n2]) or 'leaf'
 </t>
-<t tx="ekr.20131128115544.3332"></t>
 <t tx="ekr.20131128115544.3333"></t>
 <t tx="ekr.20140808094008.3549">import meta
 print(meta)</t>
@@ -12624,5 +8532,6 @@ This is a comment</t>
 def spam():
     '''This is a docstring.'''
     pass</t>
+<t tx="ekr.20160420153653.1"></t>
 </tnodes>
 </leo_file>
