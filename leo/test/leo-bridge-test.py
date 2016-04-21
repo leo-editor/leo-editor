@@ -11,7 +11,7 @@ files = [
 
 # Switches...
 gui = 'nullGui'         # 'nullGui', 'qt',
-kill_leo_output = True  # True: kill all output produced by g.es_print.
+kill_leo_output = False # True: kill all output produced by g.es_print.
 loadPlugins = False     # True: attempt to load plugins.
 readSettings = True     # True: read standard settings files.
 silent = True           # True: don't print signon messages.

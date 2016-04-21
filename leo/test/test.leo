@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.46" body_secondary_ratio="0.65">
-	<global_window_position top="133" left="703" height="826" width="1010"/>
+	<global_window_position top="148" left="367" height="826" width="1010"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -8547,7 +8547,7 @@ files = [
 
 # Switches...
 gui = 'nullGui'         # 'nullGui', 'qt',
-kill_leo_output = True  # True: kill all output produced by g.es_print.
+kill_leo_output = False # True: kill all output produced by g.es_print.
 loadPlugins = False     # True: attempt to load plugins.
 readSettings = True     # True: read standard settings files.
 silent = True           # True: don't print signon messages.
