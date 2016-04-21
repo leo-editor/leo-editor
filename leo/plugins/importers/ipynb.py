@@ -3,10 +3,12 @@
 '''The @auto importer for Jupyter (.ipynb) files.'''
 import re
 import leo.core.leoGlobals as g
+trace_import = False
 try:
     import nbformat
 except ImportError:
-    g.es_print('import-jupyter-notebook requires nbformat package')
+    if trace_import:
+        g.es_print('import-jupyter-notebook requires nbformat package')
     nbformat = None
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB

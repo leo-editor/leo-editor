@@ -82,7 +82,7 @@ class BridgeController:
         trace = False
         if not self.isValidPython(): return
         #@+<< initLeo imports >>
-        #@+node:ekr.20070227093629.1: *4* << initLeo imports >>
+        #@+node:ekr.20070227093629.1: *4* << initLeo imports >> initLeo (leoBridge)
         # Import leoGlobals, but do NOT set g.
         try:
             import leo.core.leoGlobals as leoGlobals
