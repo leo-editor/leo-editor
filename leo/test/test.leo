@@ -8546,12 +8546,13 @@ files = [
 ]
 
 # Switches...
-gui='nullGui'           # 'nullGui', 'qt',
-loadPlugins=False       # True: attempt to load plugins.
-readSettings=True       # True: read standard settings files.
-silent=True             # True: don't print signon messages.
+gui = 'nullGui'         # 'nullGui', 'qt',
+kill_leo_output = True  # True: kill all output produced by g.es_print.
+loadPlugins = False     # True: attempt to load plugins.
+readSettings = True     # True: read standard settings files.
+silent = True           # True: don't print signon messages.
 trace_sys_path = False  # True: trace imports here.
-verbose=True            # True: verbose output.
+verbose = True          # True: verbose output.
 
 # Import stuff...
 dir_ = os.path.abspath('.')
@@ -8573,6 +8574,15 @@ controller = leoBridge.controller(
     silent=silent,
     verbose=verbose)
 g = controller.globals()
+
+# This kills all output from commanders.
+if kill_leo_output:
+    
+    def do_nothing(*args, **keys):
+        pass
+        
+    g.es_print = do_nothing
+    
 for path in files:
     if os.path.exists(path):
         c = controller.openLeoFile(path)
