@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1235,6 +1235,7 @@
 </v>
 <v t="ekr.20160418165705.1"><vh>** document history list</vh></v>
 <v t="ekr.20160418165714.1"><vh>** add @data history-list to leoSettings.leo</vh></v>
+<v t="ekr.20160421122006.1"><vh>** Improve leoBridge docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -1252,7 +1253,6 @@ There are four kinds of settings files:
 
 3. **Machine settings files**, named **LeoSettings.leo** (note the capital 'L'), and appearing in a unique directory.
 
-4. **Command-line settings files**, specified using Leo's -c command-line option. Any .leo file may be used, provided it has an @settings tree. These files typically provide a common set of settings for files scattered in various places on the file system.
 
 The following sections describe the kinds of nodes in @settings trees.
 </t>
@@ -5852,10 +5852,7 @@ With all these options it should be possible to emulate the keyboard behavior of
    c. homeDir/&lt;machine-name&gt;LeoSettings.leo (note capitalization)
    d. localDir/myLeoSettings.leo
 
-3. Local settings files:
-
-   a. The file specified by the -c command-line option.
-   b. The file being loaded.
+3. Local settings files: the file being loaded.
 
 Settings that appear later in this list override settings that appear earlier in this list.  This happens on a setting-by-setting basis, *not* on a file-by-file basis.  In other words, each individual setting overrides only the *corresponding* setting in previously-read files.  Reading a setting file does *not* reset all previous settings. Note that the same file might appear several times in the search list. Leo detects such duplicate file names and only loads each settings file once. Leo remembers all the settings in settings files and does not reread those settings when reading another .leo file.
 
@@ -5915,7 +5912,6 @@ The command name follows @item. If the body text of an @item node exists, this b
 
 - **localDir**, the directory containing the .leo file being loaded.
 
-In addition, Leo's -c command-line option can specify any .leo file anywhere.
 </t>
 <t tx="ekr.20090130144433.1">All questions are welcome at http://groups.google.com/group/leo-editor
 </t>
@@ -18686,7 +18682,8 @@ Font setting overridden by new workbook
 </t>
 <t tx="ekr.20160418165705.1"></t>
 <t tx="ekr.20160418165714.1"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160421122006.1"></t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

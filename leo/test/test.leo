@@ -854,6 +854,7 @@
 <v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
 <v t="ekr.20160421054609.1"><vh>@clean leo-bridge-test.py</vh></v>
+<v t="ekr.20160421123215.1"><vh>kill all output</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1154,7 +1155,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8593,5 +8594,12 @@ for path in files:
             print('%s has %s nodes' % (c.shortFileName(), n))
     else:
         print('file not found: %s' % path)</t>
+<t tx="ekr.20160421123215.1">def do_nothing(*args, **keys):
+    pass
+        
+g.es_print = do_nothing
+g.es = do_nothing
+
+g.es('test')</t>
 </tnodes>
 </leo_file>
