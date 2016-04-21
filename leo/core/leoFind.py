@@ -1433,6 +1433,7 @@ class LeoFind:
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
         trace = False and not g.unitTesting
+        verbose = True
         c, u, w = self.c, self.c.undoer, self.s_ctrl
         both = self.search_body and self.search_headline
         if clone_find_all_flattened:
@@ -1468,11 +1469,18 @@ class LeoFind:
         if clone_find:
             clones = set()
             while p and p != after:
+                if trace and verbose:
+                    g.trace(p.h)
                 if p.v in skip:
                     p.moveToThreadNext()
-                elif p.is_at_ignore() or p.is_at_all():
-                    if trace: g.trace('skipping tree', p.h)
+                elif (
+                    (p.is_at_ignore() or p.is_at_all()) and
+                    not c.shortFileName().endswith('unitTest.leo')
+                        # 2016/04/21: all full searches of unitTest.leo.
+                ):
+                    if trace: g.trace('===== skipping tree', p.h)
                     p.moveToNodeAfterTree()
+                    if trace: g.trace('next:', p.h)
                 else:
                     found = self.findNextBatchMatch(p)
                     if found:
