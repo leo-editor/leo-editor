@@ -279,12 +279,13 @@ class BridgeController:
         return g.app.leoID
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self):
-        g = self.g
-        for kind, theDir in (
-            ("global config", g.app.globalConfigDir),
-            ("home", g.app.homeDir),
-        ):
-            g.blue('', kind, 'directory', '', ':', theDir)
+        if not self.silentMode:
+            g = self.g
+            for kind, theDir in (
+                ("global config", g.app.globalConfigDir),
+                ("home", g.app.homeDir),
+            ):
+                g.blue('', kind, 'directory', '', ':', theDir)
     #@+node:ekr.20070227093918: *3* bridge.isOpen
     def isOpen(self):
         '''Return True if the bridge is open.'''

@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.79" body_secondary_ratio="0.65">
+<globals body_outline_ratio="0.46" body_secondary_ratio="0.65">
 	<global_window_position top="133" left="703" height="826" width="1010"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -853,6 +853,7 @@
 </v>
 <v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
+<v t="ekr.20160421054609.1"><vh>@clean leo-bridge-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1153,7 +1154,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="4"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8533,5 +8534,29 @@ def spam():
     '''This is a docstring.'''
     pass</t>
 <t tx="ekr.20160420153653.1"></t>
+<t tx="ekr.20160421054609.1">'''A simple test bed for the leoBridge module.'''
+import os
+import sys
+abspath, join = os.path.abspath, os.path.join
+dir_ = abspath('.')
+if dir_ not in sys.path:
+    # print('append to sys.path: %s' % dir_)
+    sys.path.append(dir_)
+# import leo.core.leoQt as leoQt
+    # Required only if we want to use the qt gui.
+import leo.core.leoBridge as leoBridge
+# print('sys.path:...\n%s' % '\n'.join(sorted(sys.path)))
+# print('sys.argv: %s %s' % (len(sys.argv), '\n'.join(sys.argv)))
+
+controller = leoBridge.controller(
+    gui='nullGui',
+    # gui='qt', # not qttabs
+    loadPlugins=False,  # True: attempt to load plugins.
+    readSettings=False, # True: read standard settings files.
+    silent=True,      # True: don't print signon messages.
+    verbose=True)     # True: print informational messages.
+g = controller.globals()
+# c = controller.openLeoFile(path)
+</t>
 </tnodes>
 </leo_file>
