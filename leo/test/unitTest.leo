@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1267,6 +1267,7 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
 </v>
 <v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -12744,6 +12745,32 @@ else:
             break
 </t>
 <t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
+</t>
+<t tx="ekr.20160318094009.1">if not g.isPython3:
+    self.skipTest('python 3 test')
+else:
+    import leo.core.leoAst as leoAst
+    import leo.external.make_stub_files as msf
+    import leo.external.py2cs as py2cs
+    import ast, tokenize
+    path = g.os_path_finalize_join(g.app.loadDir,
+        '..', 'test', 'unittest', 'python3_test.py')
+    assert g.os_path_exists(path), path
+    fn = g.shortFileName(path)
+    source = open(path, 'r').read()
+    node = ast.parse(source, filename=fn, mode='exec')
+    src = open(path, 'r').read()
+    readlines = g.ReadLinesClass(src).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    leoAst.AstFullTraverser().visit(node)
+    s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
+    assert s
+    s = leoAst.AstFormatter().format(node)
+    assert s
+    s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+    assert s
+    controller = msf.StandAloneMakeStubFile()
+    msf.StubTraverser(controller).visit(node)
 </t>
 <t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
 import re

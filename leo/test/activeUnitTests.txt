@@ -1369,7 +1369,7 @@ else:
     import leo.external.py2cs as py2cs
     import ast, tokenize
     path = g.os_path_finalize_join(g.app.loadDir,
-        '..', 'test', 'python3_test.py')
+        '..', 'test', 'unittest', 'python3_test.py')
     assert g.os_path_exists(path), path
     fn = g.shortFileName(path)
     source = open(path, 'r').read()
