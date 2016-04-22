@@ -111,7 +111,7 @@ class SessionManager:
         else:
             print('can not save session: no leo.session file')
     #@-others
-#@+node:ekr.20120420054855.14375: ** Commands
+#@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear
 @g.command('session-clear')
 def session_clear_command(event):
