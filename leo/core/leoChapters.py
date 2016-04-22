@@ -281,7 +281,7 @@ class ChapterController:
         # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
-            if ch in string.ascii_letters:
+            if ch in (string.ascii_letters + string.digits):
                 result.append(ch)
             elif ch in ' \t':
                 result.append('-')
