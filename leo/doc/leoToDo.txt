@@ -38,7 +38,7 @@ In Windows operating systems, the UNC name format is:
 
 Python: Accessing Windows mapped network drive with known URL, but unknown drive letter
 http://stackoverflow.com/questions/12730025/python-accessing-windows-mapped-network-drive-with-known-url-but-unknown-drive
-.. @+node:ekr.20160418070509.1: *3* (5) Later
+.. @+node:ekr.20160418070509.1: *3* (4) Later
 Some of these may wait until after 5.3-b1.
 .. @+node:ekr.20151231100231.1: *4* #180: goto-prev-history-node bugged with bookmarks
 https://github.com/leo-editor/leo-editor/issues/180
@@ -97,8 +97,6 @@ https://github.com/leo-editor/leo-editor/issues/252
 .. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 - Make sure it is called.
 - Use rest colorizer as a template.
-.. @+node:ekr.20160421121117.1: *4* #268: cff & cfa could search some @all trees
-https://github.com/leo-editor/leo-editor/issues/268
 .. @+node:ekr.20160403043354.1: ** To do: 5.4
 @language rest
 @wrap

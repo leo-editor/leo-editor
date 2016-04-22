@@ -20,6 +20,8 @@ https://groups.google.com/d/msg/leo-editor/1eNTdxLUXJs/y6xUsxdvBwAJ
 The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 .. @+node:ekr.20160418065539.1: ** Fixed #258: leoBridge does not work with @auto-md
 https://github.com/leo-editor/leo-editor/issues/258
+.. @+node:ekr.20160421121117.1: ** #268: cff & cfa could search some @all trees
+https://github.com/leo-editor/leo-editor/issues/268
 .. @-all
 .. @@nosearch
 .. @@killbeautify
