@@ -21,6 +21,7 @@ The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 .. @+node:ekr.20160418065539.1: ** Fixed #258: leoBridge does not work with @auto-md
 https://github.com/leo-editor/leo-editor/issues/258
 .. @-all
+.. @@nosearch
 .. @@killbeautify
 .. @@language rest
 .. @@wrap

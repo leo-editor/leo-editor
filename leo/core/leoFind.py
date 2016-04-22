@@ -792,8 +792,10 @@ class LeoFind:
         clone-find-all, aka find-clone-all and cfa.
         
         Create an organizer node whose descendants contain clones of all nodes
-        matching the search string. The list is *not* flattened: clones appear
-        only once in the descendants of the organizer node.
+        matching the search string, except @nosearch trees.
+        
+        The list is *not* flattened: clones appear only once in the
+        descendants of the organizer node.
         '''
         c = self.c; k = self.k; tag = 'clone-find-all'
         state = k.getState(tag)
@@ -819,9 +821,11 @@ class LeoFind:
         clone-find-all-flattened, aka find-clone-all-flattened, cff.
         
         Create an organizer node whose direct children are clones of all nodes
-        matching the search string. The list is flattened: every cloned node
-        appears as a direct child of the organizer node, even if the clone also
-        is a descendant of another cloned node.
+        matching the search string, except @nosearch trees.
+        
+        The list is flattened: every cloned node appears as a direct child
+        of the organizer node, even if the clone also is a descendant of
+        another cloned node.
         '''
         c = self.c; k = self.k; tag = 'clone-find-all-flattened'
         state = k.getState(tag)
@@ -1433,10 +1437,9 @@ class LeoFind:
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
         trace = False and not g.unitTesting
-        verbose = True
-        c, u, w = self.c, self.c.undoer, self.s_ctrl
-        both = self.search_body and self.search_headline
-        if clone_find_all_flattened:
+        c, flatten = self.c, clone_find_all_flattened
+        clone_find = clone_find_all or flatten
+        if flatten:
             undoType = 'Clone Find All Flattened'
         elif clone_find_all:
             undoType = 'Clone Find All'
@@ -1445,9 +1448,8 @@ class LeoFind:
         if not self.checkArgs():
             return
         self.initInHeadline()
-        clone_find = clone_find_all or clone_find_all_flattened
-        if clone_find:
-            self.p = None # Restore will select the root position.
+        ### if clone_find:
+        ###    self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
             # Sets self.p and self.onlyPosition.
@@ -1458,85 +1460,45 @@ class LeoFind:
             ok = self.precompilePattern()
             if not ok: return
         if self.suboutline_only:
-            self.p = p = c.p.copy()
+            p = c.p
             after = p.nodeAfterTree()
         else:
             # Always search the entire outline.
-            self.p = p = c.rootPosition()
+            p = c.rootPosition()
             after = None
-        skip = set() # vnodes that should be skipped.
-        count = 0
         if clone_find:
-            clones = set()
-            while p and p != after:
-                if trace and verbose:
-                    g.trace(p.h)
-                if p.v in skip:
-                    p.moveToThreadNext()
-                elif (
-                    (p.is_at_ignore() or p.is_at_all()) and
-                    not c.shortFileName().endswith('unitTest.leo')
-                        # 2016/04/21: all full searches of unitTest.leo.
-                ):
-                    if trace: g.trace('===== skipping tree', p.h)
-                    p.moveToNodeAfterTree()
-                    if trace: g.trace('next:', p.h)
-                else:
-                    found = self.findNextBatchMatch(p)
-                    if found:
-                        if trace: g.trace('found', p.h)
-                        clones.add(p.copy())
-                        count += 1
-                    if clone_find_all_flattened:
-                        skip.add(p.v)
-                        p.moveToThreadNext()
-                    elif found:
-                        # Don't look at the node or it's descendants.
-                        for p2 in p.self_and_subtree():
-                            skip.add(p2.v)
-                        p.moveToNodeAfterTree()
-                    else:
-                        p.moveToThreadNext() 
-            if clones:
-                undoData = u.beforeInsertNode(c.p)
-                found = self.createCloneFindAllNodes(clones, clone_find_all_flattened)
-                u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
-                c.selectPosition(found)
-                c.setChanged(True)
+            count = self.doCloneFindAll(after, data, flatten, p, undoType)
         else:
-            result = []
-            while 1:
-                pos, newpos = self.findNextMatch()
-                if not self.p: self.p = c.p
-                if pos is None: break
-                count += 1
-                s = w.getAllText()
-                i, j = g.getLine(s, pos)
-                line = s[i: j]
-                if both:
-                    result.append('%s%s\n%s%s\n' % (
-                        '-' * 20, self.p.h,
-                        "head: " if self.in_headline else "body: ",
-                        line.rstrip()+'\n'))
-                elif self.p.isVisited():
-                    result.append(line.rstrip()+'\n')
-                else:
-                    result.append('%s%s\n%s' % ('-' * 20, self.p.h, line.rstrip()+'\n'))
-                    self.p.setVisited()
-            if result:
-                undoData = u.beforeInsertNode(c.p)
-                found = self.createFindAllNode(result)
-                u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
-                c.selectPosition(found)
-                c.setChanged(True)
-            else:
-                self.restore(data)
+            self.p = p
+            count = self.doFindAll(after, data, p, undoType)
         c.contractAllHeadlines()
-        if found:
-            c.selectPosition(found)
         # c.redraw()
         g.es("found", count, "matches for", self.find_text)
-    #@+node:ekr.20141023110422.1: *5* find.createCloneFindAllNodes
+    #@+node:ekr.20160422072841.1: *5* find.doCloneFindAll & helpers
+    def doCloneFindAll(self, after, data, flatten, p, undoType):
+        '''Handle the clone-find-all command, from p to after.'''
+        c, u = self.c, self.c.undoer
+        count, found = 0, None
+        clones, skip = set(), set()
+        while p and p != after:
+            progress = p.copy()
+            if p.v in skip:
+                p.moveToThreadNext()
+            else:
+                count = self.doCloneFindAllHelper(clones, count, flatten, p, skip)
+            assert p != progress
+        if clones:
+            undoData = u.beforeInsertNode(c.p)
+            found = self.createCloneFindAllNodes(clones, flatten)
+            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(found)
+            c.setChanged(True)
+            c.selectPosition(found)
+        else:
+            # This may have been the cause of cff not selecting any node.
+            self.restore(data)
+        return count
+    #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes
     def createCloneFindAllNodes(self, clones, flattened):
         '''
         Create a "Found" node as the last node of the outline.
@@ -1545,6 +1507,7 @@ class LeoFind:
         c = self.c
         # Create the found node.
         found = c.lastTopLevel().insertAfter()
+        assert found
         found.h = 'Found:%s' % self.find_text
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
@@ -1555,17 +1518,77 @@ class LeoFind:
             p2 = p.clone()
             p2.moveToLastChildOf(found)
         return found
-    #@+node:ekr.20150717105329.1: *5* find.createFindAllNode
+    #@+node:ekr.20160422071747.1: *6* find.doCloneFindAllHelper
+    def doCloneFindAllHelper(self, clones, count, flatten, p, skip):
+        '''Handle the cff or cfa at node p.'''
+        trace = False and not g.unitTesting
+        verbose = False
+        if trace and verbose: g.trace(p.h)
+        if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+            if trace: g.trace('===== skipping tree', p.h)
+            p.moveToNodeAfterTree()
+            return count
+        found = self.findNextBatchMatch(p)
+        if found:
+            if trace and verbose: g.trace('found', p.h)
+            clones.add(p.copy())
+            count += 1
+        if flatten:
+            skip.add(p.v)
+            p.moveToThreadNext()
+        elif found:
+            # Don't look at the node or it's descendants.
+            for p2 in p.self_and_subtree():
+                skip.add(p2.v)
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext() 
+        return count
+    #@+node:ekr.20160422073500.1: *5* find.doFindAll & helpers
+    def doFindAll(self, after, data, p, undoType):
+        '''Handle the find-all command from p to after.'''
+        c, u, w = self.c, self.c.undoer, self.s_ctrl
+        both = self.search_body and self.search_headline
+        count, found, result = 0, None, []
+        while 1:
+            pos, newpos = self.findNextMatch()
+            if not self.p: self.p = c.p
+            if pos is None: break
+            count += 1
+            s = w.getAllText()
+            i, j = g.getLine(s, pos)
+            line = s[i: j]
+            if both:
+                result.append('%s%s\n%s%s\n' % (
+                    '-' * 20, self.p.h,
+                    "head: " if self.in_headline else "body: ",
+                    line.rstrip()+'\n'))
+            elif self.p.isVisited():
+                result.append(line.rstrip()+'\n')
+            else:
+                result.append('%s%s\n%s' % ('-' * 20, self.p.h, line.rstrip()+'\n'))
+                self.p.setVisited()
+        if result:
+            undoData = u.beforeInsertNode(c.p)
+            found = self.createFindAllNode(result)
+            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            c.selectPosition(found)
+            c.setChanged(True)
+        else:
+            self.restore(data)
+        return count
+    #@+node:ekr.20150717105329.1: *6* find.createFindAllNode
     def createFindAllNode(self, result):
         '''Create a "Found All" node as the last node of the outline.'''
         c = self.c
         found = c.lastTopLevel().insertAfter()
+        assert found
         found.h = 'Found All:%s' % self.find_text
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = '# %s\n%s' % (status, ''.join(result))
         return found
-    #@+node:ekr.20160224141710.1: *5* find.findNextBatchMatch
+    #@+node:ekr.20160224141710.1: *6* find.findNextBatchMatch
     def findNextBatchMatch(self, p):
         '''Find the next batch match at p.'''
         trace = False and not g.unitTesting

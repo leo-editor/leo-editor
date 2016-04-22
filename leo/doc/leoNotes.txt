@@ -16199,4 +16199,5 @@ def show_result(self, result):
     elif result.result:
         put('Result: %s' % result.result)
 .. @-all
+.. @@nosearch
 .. @-leo
