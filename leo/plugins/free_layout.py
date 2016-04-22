@@ -357,7 +357,7 @@ def free_layout_restore(event):
     """
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
-#@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
+#@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load (changed)
 @g.command('free-layout-load')
 def free_layout_load(event):
     """free_layout_load - load layout from menu
@@ -373,8 +373,11 @@ def free_layout_load(event):
         return
     name = str(action.text())
     c.db['_ns_layout'] = name
-    layout = g.app.db['ns_layouts'][name]
-    c.free_layout.get_top_splitter().load_layout(layout)
+    # layout = g.app.db['ns_layouts'][name]
+    layouts = g.app.db.get('ns_layouts', {})
+    layout = layouts.get(name)
+    if layout:
+        c.free_layout.get_top_splitter().load_layout(layout)
 #@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
 def free_layout_zoom(event):
