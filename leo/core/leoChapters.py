@@ -47,26 +47,14 @@ class ChapterController:
         if trace: g.es_debug('(cc)')
         cc, c = self, self.c
         cc.createIcon()
-        # Create the main chapter
         if trace: g.trace('===== ChapterController.finishCreate')
-        # Usually done in cc.setAllChapterNames.
-        if not cc.chaptersDict.get('main'):
-            cc.chaptersDict['main'] = Chapter(c, cc, 'main')
-            cc.makeCommand('main')
-        for p in c.all_unique_positions():
-            chapterName, binding = self.parseHeadline(p)
-            if chapterName:
-                if cc.chaptersDict.get(chapterName):
-                    self.error('duplicate chapter name: %s' % chapterName)
-                else:
-                    cc.chaptersDict[chapterName] = Chapter(c, cc, chapterName)
-                    cc.makeCommand(chapterName, binding)
+        cc.setAllChapterNames()
+            # Create all chapters.
         # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
         cc.initing = False
-        # Always select the main chapter.
-        # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main', collapse=False)
-            # 2010/10/09: an important bug fix!
+            # Always select the main chapter.
+            # It can be alarming to open a small chapter in a large .leo file.
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
     def makeCommand(self, chapterName, binding=None):
         '''Make chapter-select-<chapterName> command.'''
@@ -94,6 +82,7 @@ class ChapterController:
                 finally:
                     cc.selectChapterLockout = False
             else:
+                # Possible, but not likely.
                 cc.note('no such chapter: %s' % name)
                 
         # Always bind the command without a shortcut.
@@ -142,8 +131,6 @@ class ChapterController:
         if not chapter:
             g.es_print('no such @chapter node: %s' % name)
             return
-            # chapter = cc.chaptersDict[name] = Chapter(c, cc, name)
-            # chapter.p = c.p
         try:
             self.selectChapterLockout = True
             cc.selectChapterByNameHelper(chapter, collapse=collapse)
@@ -154,18 +141,14 @@ class ChapterController:
     def selectChapterByNameHelper(self, chapter, collapse=True):
         trace = False and not g.unitTesting
         cc, c = self, self.c
-        if trace:
-            g.trace('===== %s' % chapter)
-            # g.trace('main', cc.getChapter('main'))
+        if trace: g.trace('===== %s' % chapter)
         if not cc.selectedChapter and chapter.name == 'main':
             chapter.p = c.p
             if trace: g.trace('main already selected:', chapter)
             return
         if chapter == cc.selectedChapter:
             chapter.p = c.p
-            if trace:
-                g.trace('already selected:', chapter)
-                # g.trace('main', cc.getChapter('main'))
+            if trace: g.trace('already selected:', chapter)
             return
         if cc.selectedChapter:
             if trace: g.trace('unselecting:', cc.selectedChapter)
@@ -349,15 +332,18 @@ class ChapterController:
         c, cc, result = self.c, self, []
         sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         seen = set()
-        cc.makeCommand('main')
-            # This binds any existing bindings to chapter-select-main.
-        for p in c.all_positions():
+        if 'main' not in cc.chaptersDict:
+            cc.chaptersDict['main'] = Chapter(c, cc, 'main')
+            cc.makeCommand('main')
+                # This binds any existing bindings to chapter-select-main.
+        for p in c.all_unique_positions():
             chapterName, binding = self.parseHeadline(p)
-            if chapterName:
-                if p.v not in seen:
-                    seen.add(p.v)
-                    if chapterName != sel_name:
-                        result.append(chapterName)
+            if chapterName and p.v not in seen:
+                seen.add(p.v)
+                if chapterName != sel_name:
+                    result.append(chapterName)
+                if chapterName not in cc.chaptersDict:
+                    cc.chaptersDict[chapterName] = Chapter(c, cc, chapterName)
                     cc.makeCommand(chapterName, binding)
         if 'main' not in result and sel_name != 'main':
             result.append('main')
