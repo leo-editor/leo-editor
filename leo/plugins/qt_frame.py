@@ -126,7 +126,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if where:
             where = d.get(where)
             if where: self.addToolBar(where, self.iconBar)
-    #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
+    #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers (changed)
     def createMainWindow(self):
         '''
         Create the component ivars of the main window.
@@ -137,18 +137,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_ui = self
         self.setMainWindowOptions()
         self.createCentralWidget()
-        splitter, splitter2 = self.createMainLayout(self.centralwidget)
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout
         if self.bigTree:
-            self.createBodyPane(splitter)
-            self.createLogPane(splitter)
-            treeFrame = self.createOutlinePane(splitter2)
-            splitter2.addWidget(treeFrame)
-            splitter2.addWidget(splitter)
+            self.createBodyPane(secondary_splitter)
+            self.createLogPane(secondary_splitter)
+            treeFrame = self.createOutlinePane(main_splitter)
+            main_splitter.addWidget(treeFrame)
+            main_splitter.addWidget(secondary_splitter)
         else:
-            self.createOutlinePane(splitter)
-            self.createLogPane(splitter)
-            self.createBodyPane(splitter2)
+            self.createOutlinePane(secondary_splitter)
+            self.createLogPane(secondary_splitter)
+            self.createBodyPane(main_splitter)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(dw)
@@ -233,29 +233,30 @@ class DynamicWindow(QtWidgets.QMainWindow):
         '''It's useful to create this late, because c.config is now valid.'''
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (REVISE)
-    ### To do: remove calls to setObjectName.
-    ### To do: remove calls to splitterMoved.connect.
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (changed)
     def createMainLayout(self, parent):
         '''Create the layout for Leo's main window.'''
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        # Splitter two is the "main" splitter, containing splitter.
-        splitter2 = splitter_class(parent)
-        splitter2.setOrientation(QtCore.Qt.Vertical)
-        splitter2.setObjectName("splitter_2")
-        splitter2.splitterMoved.connect(self.onSplitter2Moved)
-        splitter = splitter_class(splitter2)
-        splitter.setOrientation(QtCore.Qt.Horizontal)
-        splitter.setObjectName("splitter")
-            # It's unwise to change this name:
-            # users may have saved layouts that refer to it.
-        splitter.splitterMoved.connect(self.onSplitter1Moved)
+        main_splitter = splitter_class(parent)
+        main_splitter.setOrientation(QtCore.Qt.Vertical)
+        if g.new_splitters:
+            pass
+        else:
+            main_splitter.setObjectName("splitter_2")
+            main_splitter.splitterMoved.connect(self.onMainSplitterMoved)
+        secondary_splitter = splitter_class(main_splitter)
+        secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
+        if g.new_splitters:
+            pass
+        else:
+            secondary_splitter.setObjectName("splitter")
+            secondary_splitter.splitterMoved.connect(self.onSecondarySplitterMoved)
         # Official ivar:
         self.verticalLayout = vLayout
-        self.setSizePolicy(splitter)
-        self.verticalLayout.addWidget(splitter2)
-        return splitter, splitter2
+        self.setSizePolicy(secondary_splitter)
+        self.verticalLayout.addWidget(main_splitter)
+        return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
     def createMenuBar(self):
         '''Create Leo's menu bar.'''
@@ -888,20 +889,24 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1/2Moved & helper (TO BE DELETED)
-    def onSplitter1Moved(self, pos, index):
-        '''Handle a moved event in splitter1.'''
-        c = self.leo_c
-        w = c.free_layout.get_main_splitter()
-        if w:
-             c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
+    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1/2Moved & helper (changed)
+    if g.new_splitters:
+        pass
+    else:
 
-    def onSplitter2Moved(self, pos, index):
-        '''Handle a moved event in splitter2.'''
-        c = self.leo_c
-        w = c.free_layout.get_splitter2()
-        if w:
-            c.frame.ratio = self.splitterFrac(w, pos, index)
+        def onMainSplitterMoved(self, pos, index):
+            '''Handle a moved event in the main splitter.'''
+            c = self.leo_c
+            w = c.free_layout.get_main_splitter()
+            if w:
+                c.frame.ratio = self.splitterFrac(w, pos, index)
+
+        def onSecondarySplitterMoved(self, pos, index):
+            '''Handle a moved event in the secondary splitter.'''
+            c = self.leo_c
+            w = c.free_layout.get_secondary_splitter()
+            if w:
+                 c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
     #@+node:ekr.20140913054442.17865: *5* dw.splitterMovedHelper
     def splitterFrac(self, splitter, pos, index):
         '''Return the ratio of pos to the total.'''
@@ -939,14 +944,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         fl = c.free_layout
         if not fl: return
-        splitter = fl.get_main_splitter()
-        splitter2 = fl.get_splitter2()
-        if splitter and splitter2:
+        splitter1 = fl.get_main_splitter()
+        splitter2 = fl.get_secondary_splitter()
+        if splitter1 and splitter2:
             vert = orientation and orientation.lower().startswith('v')
             h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
-            orientation1 = h if vert else v
-            orientation2 = v if vert else h
-            splitter.setOrientation(orientation1)
+            orientation1 = v if vert else h
+            orientation2 = h if vert else v
+            splitter1.setOrientation(orientation1)
             splitter2.setOrientation(orientation2)
     #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
     if 0: # Override for debugging only.
@@ -2543,8 +2548,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.resizePanesToRatio(r, r2)
     #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self, ratio, ratio2):
+        '''Resize splitter1 and splitter2 using the given ratios.'''
         trace = False and not g.unitTesting
-        f = self
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
         self.divideLeoSplitter1(ratio)
@@ -2553,7 +2558,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
         free_layout = self.c and self.c.free_layout
-        w = free_layout.get_splitter2()
+        w = free_layout.get_main_splitter()
         if w:
             self.divideAnySplitter(frac, w)
         # else: g.trace('===== skip', g.callers())
@@ -2562,7 +2567,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def divideLeoSplitter2(self, frac):
         '''Divide the secondary splitter.'''
         free_layout = self.c and self.c.free_layout
-        w = free_layout.get_main_splitter()
+        w = free_layout.get_secondary_splitter()
         if w:
             self.divideAnySplitter(frac, w)
         # else: g.trace('===== skip', g.callers())
@@ -2823,8 +2828,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         frame.resizePanesToRatio(0.5, frame.secondary_ratio)
     #@+node:ekr.20110605121601.18305: *5* hideLogWindow (qtFrame)
     def hideLogWindow(self, event=None):
-        frame = self
-        frame.divideLeoSplitter2(0.99)
+        '''Hide the log pane.'''
+        self.divideLeoSplitter2(0.99)
     #@+node:ekr.20110605121601.18306: *5* minimizeAll (qtFrame)
     @cmd('minimize-all')
     def minimizeAll(self, event=None):

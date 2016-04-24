@@ -152,18 +152,37 @@ class FreeLayoutController:
             g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
     #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (rewrite)
-    def get_main_splitter(self):
-        '''Return the splitter whose name is "splitter".'''
-        return self.get_splitter_by_name('splitter')
-        
-    def get_splitter2(self):
-        '''Return the splitter whose name is "splitter_2".'''
-        return self.get_splitter_by_name('splitter_2')
+    if g.new_splitters:
+        #@+others
+        #@+node:ekr.20160424035254.1: *4* get_secondary_splitter (NEW)
+        ### NEW g.new_splitter code
 
-    def get_splitter_by_name(self, name):
-        '''Return the splitter with the given objectName().'''
-        top = self.get_top_splitter()
-        return top and top.get_splitter_by_name(name)
+        def get_secondary_splitter(self):
+            '''Return the splitter whose name is "splitter".'''
+            return self.get_splitter_by_name('splitter')
+            
+        #@+node:ekr.20160424035257.1: *4* get_main_splitter (NEW)
+        def get_main_splitter(self):
+            '''Return the splitter whose name is "splitter_2".'''
+            return self.get_splitter_by_name('splitter_2')
+        #@-others
+    else:
+        #@+<< old get_splitter* >>
+        #@+node:ekr.20160424035115.1: *4* << old get_splitter* >> (FreeLayoutController)
+        ### OLD CODE
+        def get_secondary_splitter(self):
+            '''Return the secondary splitter".'''
+            return self.get_splitter_by_name('splitter')
+            
+        def get_main_splitter(self):
+            '''Return main splitter".'''
+            return self.get_splitter_by_name('splitter_2')
+
+        def get_splitter_by_name(self, name):
+            '''Return the splitter with the given objectName().'''
+            top = self.get_top_splitter()
+            return top and top.get_splitter_by_name(name)
+        #@-<< old get_splitter* >>
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
         '''Return the top splitter of c.frame.top.'''
