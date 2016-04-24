@@ -391,7 +391,6 @@ class LeoQtEventFilter(QtCore.QObject):
         '''Return the text version of the modifiers of the key event.'''
         modifiers = event.modifiers()
         # The order of this table must match the order created by k.strokeFromSetting.
-        # When g.new_keys is True, k.strokeFromSetting will canonicalize the setting.
         qt = QtCore.Qt
         if sys.platform.startswith('darwin'):
             # Yet another MacOS hack:

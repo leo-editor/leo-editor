@@ -24,11 +24,6 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
-new_keys = False
-    # This project hardly seems urgent.
-    # True: Qt input methods produce a **user setting**, not a stroke.
-if new_keys:
-    print('\n***** new_keys')
 # Debugging options...
 enableDB = True
     # Don't even think about eliminating this constant:
