@@ -151,67 +151,46 @@ class FreeLayoutController:
         if not nd or nd.h != "@settings":
             g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
-    #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (changed)
-    if g.new_splitters:
-        #@+others
-        #@+node:ekr.20160424035257.1: *4* flc.get_main_splitter & helper (new)
-        def get_main_splitter(self, w=None):
-            '''
-            Return the splitter the main splitter, or None. The main splitter is a
-            NestedSplitter that contains the body pane.
-            
-            Yes, the user could delete the secondary splitter but if so, there is
-            not much we can do here.
-            '''
-            trace = False and not g.unitTesting
-            top = self.get_top_splitter()
-            if top:
-                w = top.find_child(QtWidgets.QWidget, "bodyFrame")
-                while w:
-                    if isinstance(w, NestedSplitter):
-                        if trace: g.trace('found splitter', id(w))
-                        return w
-                    w = w.parent()
-            if trace: g.trace('not found')
-            return None
-        #@+node:ekr.20160424035254.1: *4* flc.get_secondary_splitter & helper (new)
-        def get_secondary_splitter(self):
-            '''
-            Return the secondary splitter, if it exists. The secondary splitter
-            contains the outline pane.
-            
-            Yes, the user could delete the outline pane, but if so, there is not
-            much we can do here.
-            '''
-            trace = False and not g.unitTesting
-            top = self.get_top_splitter()
-            if top:
-                w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
-                while w:
-                    if isinstance(w, NestedSplitter):
-                        if trace: g.trace('found splitter', id(w))
-                        return w
-                    w = w.parent()
-            if trace: g.trace('not found')
-            return None
-        #@-others
-    else:
-        #@+<< old get_splitter* >>
-        #@+node:ekr.20160424035115.1: *4* << old get_splitter* >> (FreeLayoutController)
-        ### OLD CODE
-        def get_secondary_splitter(self):
-            '''Return the secondary splitter".'''
-            return self.get_splitter_by_name('secondary_splitter')
-            
-        def get_main_splitter(self):
-            '''Return main splitter".'''
-            return self.get_splitter_by_name('main_splitter')
-
-        def get_splitter_by_name(self, name):
-            '''Return the splitter with the given objectName().'''
-            top = self.get_top_splitter()
-            return top and top.get_splitter_by_name(name)
-        #@-<< old get_splitter* >>
+    #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter & helper
+    def get_main_splitter(self, w=None):
+        '''
+        Return the splitter the main splitter, or None. The main splitter is a
+        NestedSplitter that contains the body pane.
+        
+        Yes, the user could delete the secondary splitter but if so, there is
+        not much we can do here.
+        '''
+        trace = False and not g.unitTesting
+        top = self.get_top_splitter()
+        if top:
+            w = top.find_child(QtWidgets.QWidget, "bodyFrame")
+            while w:
+                if isinstance(w, NestedSplitter):
+                    if trace: g.trace('found splitter', id(w))
+                    return w
+                w = w.parent()
+        if trace: g.trace('not found')
+        return None
+    #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter & helper
+    def get_secondary_splitter(self):
+        '''
+        Return the secondary splitter, if it exists. The secondary splitter
+        contains the outline pane.
+        
+        Yes, the user could delete the outline pane, but if so, there is not
+        much we can do here.
+        '''
+        trace = False and not g.unitTesting
+        top = self.get_top_splitter()
+        if top:
+            w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
+            while w:
+                if isinstance(w, NestedSplitter):
+                    if trace: g.trace('found splitter', id(w))
+                    return w
+                w = w.parent()
+        if trace: g.trace('not found')
+        return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
         '''Return the top splitter of c.frame.top.'''
@@ -405,7 +384,7 @@ def free_layout_restore(event):
     """
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
-#@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load (changed)
+#@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
 def free_layout_load(event):
     """free_layout_load - load layout from menu
