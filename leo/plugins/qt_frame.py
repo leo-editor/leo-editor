@@ -2554,7 +2554,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         else:
             f.ratio, f.secondary_ratio = r, r2
         f.resizePanesToRatio(r, r2)
-    #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
+    #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio (changed)
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         trace = False and not g.unitTesting

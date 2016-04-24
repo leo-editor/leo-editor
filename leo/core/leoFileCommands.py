@@ -309,7 +309,7 @@ if sys.platform != 'cli':
                         g.trace(name, len(val))
             if trace: g.trace(c.mFileName, d)
             return d # Assigned to self.global_window_position
-        #@+node:ekr.20060919110638.37: *5* sax.startGlobals
+        #@+node:ekr.20060919110638.37: *5* sax.startGlobals (changed)
         def startGlobals(self, attrs):
             trace = False and not g.unitTesting
             c = self.c
