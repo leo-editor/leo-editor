@@ -28,7 +28,6 @@ free-layout-zoom
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import leo.core.leoGlobals as g
-import leo.plugins.qt_frame as qt_frame
 from leo.core.leoQt import QtWidgets
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
@@ -152,7 +151,7 @@ class FreeLayoutController:
         if not nd or nd.h != "@settings":
             g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
-    #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (rewrite)
+    #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (changed)
     if g.new_splitters:
         #@+others
         #@+node:ekr.20160424035257.1: *4* flc.get_main_splitter & helper (new)

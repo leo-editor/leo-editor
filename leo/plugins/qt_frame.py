@@ -1982,12 +1982,12 @@ class LeoQtBody(leoFrame.LeoBody):
             self.textRendererLabel = self.packRenderer(f, name, w)
             self.textRendererVisible = True
     #@-others
-#@+node:ekr.20110605121601.18245: ** class LeoQtFrame
+#@+node:ekr.20110605121601.18245: ** class LeoQtFrame (leoFrame)
 class LeoQtFrame(leoFrame.LeoFrame):
     """A class that represents a Leo window rendered in qt."""
     #@+others
-    #@+node:ekr.20110605121601.18246: *3*  Birth & Death (qtFrame)
-    #@+node:ekr.20110605121601.18247: *4* __init__ (qtFrame)
+    #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
+    #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__
     def __init__(self, c, title, gui):
         # Init the base class.
         leoFrame.LeoFrame.__init__(self, c, gui)
@@ -2005,7 +2005,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
         self.setIvars()
-    #@+node:ekr.20110605121601.18248: *5* setIvars (qtFrame)
+    #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
@@ -2031,7 +2031,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.wantedWidget = None
         self.wantedCallbackScheduled = False
         self.scrollWay = None
-    #@+node:ekr.20110605121601.18249: *4* __repr__ (qtFrame)
+    #@+node:ekr.20110605121601.18249: *4* qtFrame.__repr__
     def __repr__(self):
         return "<LeoQtFrame: %s>" % self.title
     #@+node:ekr.20150509040227.1: *4* qtFrame.cmd (decorator)
@@ -2056,7 +2056,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18251: *5* createSplitterComponents (qtFrame)
+    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
     def createSplitterComponents(self):
         f = self; c = f.c
         f.tree = qt_tree.LeoQtTree(c, f)
@@ -2064,20 +2064,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
         f.body = LeoQtBody(f, None)
         f.splitVerticalFlag, f.ratio, f.secondary_ratio = f.initialRatios()
         f.resizePanesToRatio(f.ratio, f.secondary_ratio)
-    #@+node:ekr.20110605121601.18252: *4* initCompleteHint
+    #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self):
         '''A kludge: called to enable text changed events.'''
         self.initComplete = True
         # g.trace(self.c)
     #@+node:ekr.20110605121601.18253: *4* Destroying the qtFrame
-    #@+node:ekr.20110605121601.18254: *5* destroyAllObjects (not used)
+    #@+node:ekr.20110605121601.18254: *5* qtFrame.destroyAllObjects (not used)
     def destroyAllObjects(self):
         """Clear all links to objects in a Leo window."""
         frame = self; c = self.c
         # g.printGcAll()
         # Do this first.
         #@+<< clear all vnodes in the tree >>
-        #@+node:ekr.20110605121601.18255: *6* << clear all vnodes in the tree>>
+        #@+node:ekr.20110605121601.18255: *6* << clear all vnodes in the tree>> (qtFrame)
         vList = [z for z in c.all_unique_nodes()]
         for v in vList:
             g.clearAllIvars(v)
@@ -2099,7 +2099,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             g.clearAllIvars(body.colorizer)
             g.clearAllIvars(body)
             g.clearAllIvars(tree)
-    #@+node:ekr.20110605121601.18256: *5* destroySelf (qtFrame)
+    #@+node:ekr.20110605121601.18256: *5* qtFrame.destroySelf
     def destroySelf(self):
         # Remember these: we are about to destroy all of our ivars!
         c, top = self.c, self.top
@@ -2112,7 +2112,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c.exists = False # Make sure this one ivar has not been destroyed.
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
-    #@+node:ekr.20110605121601.18257: *3* class QtStatusLineClass (qtFrame)
+    #@+node:ekr.20110605121601.18257: *3* qtFrame.class QtStatusLineClass
     class QtStatusLineClass:
         '''A class representing the status line.'''
         #@+others
@@ -2246,7 +2246,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.lastCol = col
             self.lastFcol = fcol
         #@-others
-    #@+node:ekr.20110605121601.18262: *3* class QtIconBarClass
+    #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass:
         '''A class representing the singleton Icon bar'''
         #@+others
@@ -2458,8 +2458,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     (c.config.getString('mod_scripting_subtext') or '')
                 )
         #@-others
-    #@+node:ekr.20110605121601.18274: *3* Configuration (qtFrame)
-    #@+node:ekr.20110605121601.18275: *4* configureBar (qtFrame)
+    #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
+    #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar, verticalFlag):
         c = self.c
         # Get configuration settings.
@@ -2486,7 +2486,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 # Panes arranged horizontally; vertical splitter bar
                 bar.configure(width=7, cursor="sb_h_double_arrow")
-    #@+node:ekr.20110605121601.18276: *4* configureBarsFromConfig (qtFrame)
+    #@+node:ekr.20110605121601.18276: *4* qtFrame.configureBarsFromConfig
     def configureBarsFromConfig(self):
         c = self.c
         w = c.config.getInt("split_bar_width")
@@ -2506,14 +2506,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # Could be a user error.
             g.es("exception in user configuration for splitbar")
             g.es_exception()
-    #@+node:ekr.20110605121601.18277: *4* reconfigureFromConfig (qtFrame)
+    #@+node:ekr.20110605121601.18277: *4* qtFrame.reconfigureFromConfig
     def reconfigureFromConfig(self):
         '''Init the configuration of the Qt frame from settings.'''
         c, frame = self.c, self
         frame.configureBarsFromConfig()
         frame.setTabWidth(c.tab_width)
         c.redraw()
-    #@+node:ekr.20110605121601.18278: *4* setInitialWindowGeometry (qtFrame)
+    #@+node:ekr.20110605121601.18278: *4* qtFrame.setInitialWindowGeometry
     def setInitialWindowGeometry(self):
         """Set the position and size of the frame to config params."""
         c = self.c
@@ -2524,15 +2524,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # g.trace(h,w,x,y)
         if h and w and x and y:
             self.setTopGeometry(w, h, x, y)
-    #@+node:ekr.20110605121601.18279: *4* setTabWidth (qtFrame)
+    #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
     def setTabWidth(self, w):
         # A do-nothing because tab width is set automatically.
         # It *is* called from Leo's core.
         pass
-    #@+node:ekr.20110605121601.18280: *4* setWrap (qtFrame)
+    #@+node:ekr.20110605121601.18280: *4* qtFrame.setWrap
     def setWrap(self, p=None, force=False):
         return self.c.frame.body.setWrap(p, force)
-    #@+node:ekr.20110605121601.18281: *4* reconfigurePanes (qtFrame)
+    #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes
     def reconfigurePanes(self):
         f = self; c = f.c
         if f.splitVerticalFlag:
@@ -2547,7 +2547,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.ratio, f.secondary_ratio = r, r2
         f.resizePanesToRatio(r, r2)
-    #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame)
+    #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         trace = False and not g.unitTesting
@@ -2555,7 +2555,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter1/2 (qtFrame)
+    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
         free_layout = self.c and self.c.free_layout
@@ -2563,7 +2563,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if w:
             self.divideAnySplitter(frac, w)
         # else: g.trace('===== skip', g.callers())
-        self.ratio = frac # Ratio splitter1
+        if g.new_splitters:
+            pass
+        else:
+            self.ratio = frac # Ratio splitter1
 
     def divideLeoSplitter2(self, frac):
         '''Divide the secondary splitter.'''
@@ -2572,9 +2575,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if w:
             self.divideAnySplitter(frac, w)
         # else: g.trace('===== skip', g.callers())
-        self.secondary_ratio = frac # Ratio of splitter2
-
-    #@+node:ekr.20110605121601.18284: *4* divideAnySplitter (qtFrame)
+        if g.new_splitters:
+            pass
+        else:
+            self.secondary_ratio = frac # Ratio of splitter2
+    #@+node:ekr.20110605121601.18284: *4* qtFrame.divideAnySplitter
     # This is the general-purpose placer for splitters.
     # It is the only general-purpose splitter code in Leo.
 
@@ -2591,8 +2596,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         s1 = int(s * frac + 0.5)
         s2 = s - s1
         splitter.setSizes([s1, s2])
-    #@+node:ekr.20110605121601.18285: *3* Event handlers (qtFrame)
-    #@+node:ekr.20110605121601.18286: *4* frame.OnCloseLeoEvent
+    #@+node:ekr.20110605121601.18285: *3* qtFrame.Event handlers
+    #@+node:ekr.20110605121601.18286: *4* qtFrame.OnCloseLeoEvent
     # Called from quit logic and when user closes the window.
     # Returns True if the close happened.
 
@@ -2603,16 +2608,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c.requestCloseWindow = True
         else:
             g.app.closeLeoWindow(self)
-    #@+node:ekr.20110605121601.18287: *4* frame.OnControlKeyUp/Down
+    #@+node:ekr.20110605121601.18287: *4* qtFrame.OnControlKeyUp/Down
     def OnControlKeyDown(self, event=None):
         self.controlKeyIsDown = True
 
     def OnControlKeyUp(self, event=None):
         self.controlKeyIsDown = False
-    #@+node:ekr.20110605121601.18290: *4* OnActivateTree
+    #@+node:ekr.20110605121601.18290: *4* qtFrame.OnActivateTree
     def OnActivateTree(self, event=None):
         pass
-    #@+node:ekr.20110605121601.18291: *4* OnBodyClick, OnBodyRClick (not used)
+    #@+node:ekr.20110605121601.18291: *4* qtFrame.OnBodyClick, OnBodyRClick (not used)
     # At present, these are not called,
     # but they could be called by LeoQTextBrowser.
 
@@ -2640,7 +2645,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.doHook("bodyrclick2", c=c, p=p, v=p, event=event)
         except Exception:
             g.es_event_exception("iconrclick")
-    #@+node:ekr.20110605121601.18292: *4* OnBodyDoubleClick (Events) (not used)
+    #@+node:ekr.20110605121601.18292: *4* qtFrame.OnBodyDoubleClick (Events) (not used)
     # Not called
 
     def OnBodyDoubleClick(self, event=None):
@@ -2653,9 +2658,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         except Exception:
             g.es_event_exception("bodydclick")
         return "break" # Restore this to handle proper double-click logic.
-    #@+node:ekr.20110605121601.18293: *3* Gui-dependent commands
-    #@+node:ekr.20110605121601.18294: *4* Minibuffer commands... (qtFrame)
-    #@+node:ekr.20110605121601.18295: *5* contractPane (qtFrame)
+    #@+node:ekr.20110605121601.18293: *3* qtFrame.Gui-dependent commands
+    #@+node:ekr.20110605121601.18294: *4* qtFrame.Minibuffer commands...
+    #@+node:ekr.20110605121601.18295: *5* qtFrame.contractPane
     @cmd('contract-pane')
     def contractPane(self, event=None):
         '''Contract the selected pane.'''
@@ -2676,7 +2681,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.contractOutlinePane()
                     c.treeWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18296: *5* expandPane (qtFrame)
+    #@+node:ekr.20110605121601.18296: *5* qtFrame.expandPane
     @cmd('expand-pane')
     def expandPane(self, event=None):
         '''Expand the selected pane.'''
@@ -2697,7 +2702,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.expandOutlinePane()
                     c.treeWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18297: *5* fullyExpandPane (qtFrame)
+    #@+node:ekr.20110605121601.18297: *5* qtFrame.fullyExpandPane
     @cmd('fully-expand-pane')
     def fullyExpandPane(self, event=None):
         '''Fully expand the selected pane.'''
@@ -2718,7 +2723,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.fullyExpandOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18298: *5* hidePane
+    #@+node:ekr.20110605121601.18298: *5* qtFrame.hidePane
     @cmd('hide-pane')
     def hidePane(self, event=None):
         '''Completely contract the selected pane.'''
@@ -2739,7 +2744,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.hideOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18299: *5* expand/contract/hide...Pane (qtFrame) (TEST)
+    #@+node:ekr.20110605121601.18299: *5* qtFrame.expand/contract/hide...Pane (changed)
     @cmd('contract-body-pane')
     @cmd('expand-outline-pane')
     def contractBodyPane(self, event=None):
@@ -2769,7 +2774,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Expand the log pane.'''
         r = max(0.0, self.secondary_ratio - 0.1)
         self.divideLeoSplitter2(r)
-    #@+node:ekr.20110605121601.18300: *5* fullyExpand/hide...Pane (qtFrame)
+    #@+node:ekr.20110605121601.18300: *5* qtFrame.fullyExpand/hide...Pane
     @cmd('fully-expand-body-pane')
     @cmd('hide-outline-pane')
     def fullyExpandBodyPane(self, event=None):
@@ -2791,8 +2796,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def hideLogPane(self, event=None):
         '''Completely contract the log pane.'''
         self.divideLeoSplitter2(1.0)
-    #@+node:ekr.20110605121601.18301: *4* Window Menu...
-    #@+node:ekr.20110605121601.18302: *5* toggleActivePane (qtFrame)
+    #@+node:ekr.20110605121601.18301: *4* qtFrame.Window Menu...
+    #@+node:ekr.20110605121601.18302: *5* qtFrame.toggleActivePane
     @cmd('toggle-active-pane')
     def toggleActivePane(self, event=None):
         '''Toggle the focus between the outline and body panes.'''
@@ -2805,7 +2810,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c.bodyWantsFocus()
         else:
             c.treeWantsFocus()
-    #@+node:ekr.20110605121601.18303: *5* cascade
+    #@+node:ekr.20110605121601.18303: *5* qtFrame.cascade
     @cmd('cascade-windows')
     def cascade(self, event=None):
         '''Cascade all Leo windows.'''
@@ -2821,17 +2826,17 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 if x > 200:
                     x = 10 + delta; y = 40 + delta
                     delta += 10
-    #@+node:ekr.20110605121601.18304: *5* equalSizedPanes (qtFrame)
+    #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes
     @cmd('equal-sized-panes')
     def equalSizedPanes(self, event=None):
         '''Make the outline and body panes have the same size.'''
         frame = self
         frame.resizePanesToRatio(0.5, frame.secondary_ratio)
-    #@+node:ekr.20110605121601.18305: *5* hideLogWindow (qtFrame)
+    #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
     def hideLogWindow(self, event=None):
         '''Hide the log pane.'''
         self.divideLeoSplitter2(0.99)
-    #@+node:ekr.20110605121601.18306: *5* minimizeAll (qtFrame)
+    #@+node:ekr.20110605121601.18306: *5* qtFrame.minimizeAll
     @cmd('minimize-all')
     def minimizeAll(self, event=None):
         '''Minimize all Leo's windows.'''
@@ -2849,13 +2854,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(QtCore.Qt.WindowMinimized)
-    #@+node:ekr.20110605121601.18307: *5* toggleSplitDirection (qtFrame)
+    #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @cmd('toggle-split-direction')
     def toggleSplitDirection(self, event=None):
         '''Toggle the split direction in the present Leo window.'''
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
-    #@+node:ekr.20110605121601.18308: *5* resizeToScreen (qtFrame)
+    #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @cmd('resize-to-screen')
     def resizeToScreen(self, event=None):
         '''Resize the Leo window so it fill the entire screen.'''
@@ -2870,8 +2875,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(QtCore.Qt.WindowMaximized)
-    #@+node:ekr.20110605121601.18309: *4* Help Menu...
-    #@+node:ekr.20110605121601.18310: *5* leoHelp
+    #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
+    #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
     @cmd('open-offline-tutorial')
     def leoHelp(self, event=None):
         '''Open Leo's offline tutorial.'''
@@ -2894,7 +2899,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     if 0:
                         g.es("exception downloading", "sbooks.chm")
                         g.es_exception()
-    #@+node:ekr.20110605121601.18311: *3* Qt bindings... (qtFrame)
+    #@+node:ekr.20110605121601.18311: *3* qtFrame.Qt bindings...
     def bringToFront(self):
         self.lift()
 
