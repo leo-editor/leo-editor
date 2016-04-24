@@ -243,14 +243,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if g.new_splitters:
             pass
         else:
-            main_splitter.setObjectName("splitter_2")
+            main_splitter.setObjectName("main_splitter")
             main_splitter.splitterMoved.connect(self.onMainSplitterMoved)
         secondary_splitter = splitter_class(main_splitter)
         secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
         if g.new_splitters:
             pass
         else:
-            secondary_splitter.setObjectName("splitter")
+            secondary_splitter.setObjectName("secondary_splitter")
             secondary_splitter.splitterMoved.connect(self.onSecondarySplitterMoved)
         # Official ivar:
         self.verticalLayout = vLayout

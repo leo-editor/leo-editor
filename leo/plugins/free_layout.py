@@ -163,8 +163,8 @@ class FreeLayoutController:
             
         #@+node:ekr.20160424035257.1: *4* get_main_splitter (NEW)
         def get_main_splitter(self):
-            '''Return the splitter whose name is "splitter_2".'''
-            return self.get_splitter_by_name('splitter_2')
+            '''Return the splitter whose name is "main_splitter".'''
+            return self.get_splitter_by_name('main_splitter')
         #@-others
     else:
         #@+<< old get_splitter* >>
@@ -172,11 +172,11 @@ class FreeLayoutController:
         ### OLD CODE
         def get_secondary_splitter(self):
             '''Return the secondary splitter".'''
-            return self.get_splitter_by_name('splitter')
+            return self.get_splitter_by_name('secondary_splitter')
             
         def get_main_splitter(self):
             '''Return main splitter".'''
-            return self.get_splitter_by_name('splitter_2')
+            return self.get_splitter_by_name('main_splitter')
 
         def get_splitter_by_name(self, name):
             '''Return the splitter with the given objectName().'''
