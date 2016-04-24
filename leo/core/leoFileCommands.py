@@ -350,7 +350,7 @@ if sys.platform != 'cli':
                             g.trace('** not cached:', '%1.2f %1.2f' % (
                                 c.frame.ratio, c.frame.secondary_ratio))
                 except Exception:
-                    g.es_exception() #####
+                    # g.es_exception()
                     pass
         #@+node:ekr.20060919110638.38: *5* sax.startWinPos
         def startWinPos(self, attrs):
