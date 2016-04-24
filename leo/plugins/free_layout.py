@@ -151,7 +151,7 @@ class FreeLayoutController:
         if not nd or nd.h != "@settings":
             g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
-    #@+node:ekr.20160416082543.1: *3* flc.get_splitter*
+    #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (rewrite)
     def get_main_splitter(self):
         '''Return the splitter whose name is "splitter".'''
         return self.get_splitter_by_name('splitter')

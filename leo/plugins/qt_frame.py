@@ -234,7 +234,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Always create this, but only one is used when g.new_find is True.
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (REVISE)
+    ### To do: remove calls to setObjectName.
+    ### To do: remove calls to splitterMoved.connect.
     def createMainLayout(self, parent):
         '''Create the layout for Leo's main window.'''
         # c = self.leo_c
@@ -892,7 +894,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1/2Moved & helper
+    #@+node:ekr.20140913054442.17863: *4* dw.onSplitter1/2Moved & helper (TO BE DELETED)
     def onSplitter1Moved(self, pos, index):
         '''Handle a moved event in splitter1.'''
         c = self.leo_c
@@ -2545,38 +2547,51 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.ratio, f.secondary_ratio = r, r2
         f.resizePanesToRatio(r, r2)
-    #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame)
+    #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame) (DONE)
     def resizePanesToRatio(self, ratio, ratio2):
         trace = False and not g.unitTesting
         f = self
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
-        f.divideLeoSplitter(self.splitVerticalFlag, ratio)
-        f.divideLeoSplitter(not self.splitVerticalFlag, ratio2)
-    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter (qtFrame)
-    def divideLeoSplitter(self, verticalFlag, frac):
-        '''Divide the main or secondary splitter, using the key invariant.'''
-        if self.splitVerticalFlag == verticalFlag:
-            self.divideLeoSplitter1(frac, verticalFlag)
-            self.ratio = frac # Ratio of body pane to tree pane.
-        else:
-            self.divideLeoSplitter2(frac, verticalFlag)
-            self.secondary_ratio = frac # Ratio of tree pane to log pane.
+        ### f.divideLeoSplitter(self.splitVerticalFlag, ratio)
+        ### f.divideLeoSplitter(not self.splitVerticalFlag, ratio2)
+        self.divideLeoSplitter1(ratio)
+        self.divideLeoSplitter2(ratio2)
+            
+        ### REF
+        # if self.splitVerticalFlag == verticalFlag:
+            # self.divideLeoSplitter1(frac, verticalFlag)
+            # self.ratio = frac # Ratio splitter1
+        # else:
+            # self.divideLeoSplitter2(frac, verticalFlag)
+            # self.secondary_ratio = frac # Ratio of splitter2
+    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter1/2 (qtFrame) (REVISE)
+    ### To be removed.
+    # def divideLeoSplitter(self, verticalFlag, frac):
+        # '''Divide the main or secondary splitter, using the key invariant.'''
+        # if self.splitVerticalFlag == verticalFlag:
+            # self.divideLeoSplitter1(frac)
+            # self.ratio = frac # Ratio splitter1
+        # else:
+            # self.divideLeoSplitter2(frac)
+            # self.secondary_ratio = frac # Ratio of splitter2
 
-    def divideLeoSplitter1(self, frac, verticalFlag):
+    def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
         free_layout = self.c and self.c.free_layout
         w = free_layout.get_splitter2()
         if w:
             self.divideAnySplitter(frac, w)
         # else: g.trace('===== skip', g.callers())
+        self.ratio = frac # Ratio splitter1
 
-    def divideLeoSplitter2(self, frac, verticalFlag):
+    def divideLeoSplitter2(self, frac):
         '''Divide the secondary splitter.'''
         free_layout = self.c and self.c.free_layout
         w = free_layout.get_main_splitter()
         if w:
             self.divideAnySplitter(frac, w)
+        self.secondary_ratio = frac # Ratio of splitter2
         # else: g.trace('===== skip', g.callers())
     #@+node:ekr.20110605121601.18284: *4* divideAnySplitter (qtFrame)
     # This is the general-purpose placer for splitters.
@@ -2743,82 +2758,66 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.hideOutlinePane()
                     c.bodyWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18299: *5* expand/contract/hide...Pane
-    #@+at The first arg to divideLeoSplitter means the following:
-    # 
-    #     f.splitVerticalFlag: use the primary   (tree/body) ratio.
-    # not f.splitVerticalFlag: use the secondary (tree/log) ratio.
-    #@@c
-
+    #@+node:ekr.20110605121601.18299: *5* expand/contract/hide...Pane (qtFrame) (TEST)
     @cmd('contract-body-pane')
+    @cmd('expand-outline-pane')
     def contractBodyPane(self, event=None):
         '''Contract the body pane.'''
-        f = self; r = min(1.0, f.ratio + 0.1)
-        f.divideLeoSplitter(f.splitVerticalFlag, r)
+        r = min(1.0, self.ratio + 0.1)
+        ### self.divideLeoSplitter(f.splitVerticalFlag, r)
+        self.divideLeoSplitter1(r)
+        
+    expandOutlinePane = contractBodyPane
 
+    @cmd('contract-outline-pane')
+    @cmd('expand-body-pane')
+    def contractOutlinePane(self, event=None):
+        '''Contract the outline pane.'''
+        r = max(0.0, self.ratio - 0.1)
+        ### self.divideLeoSplitter(f.splitVerticalFlag, r)
+        self.divideLeoSplitter1(r)
+        
+    expandBodyPane = contractOutlinePane
+        
     @cmd('contract-log-pane')
     def contractLogPane(self, event=None):
         '''Contract the log pane.'''
-        f = self; r = min(1.0, f.secondary_ratio + 0.1) # 2010/02/23: was f.ratio
-        f.divideLeoSplitter(not f.splitVerticalFlag, r)
-
-    @cmd('contract-outline-pane')
-    def contractOutlinePane(self, event=None):
-        '''Contract the outline pane.'''
-        f = self; r = max(0.0, f.ratio - 0.1)
-        f.divideLeoSplitter(f.splitVerticalFlag, r)
-
-    @cmd('expand-body-pane')
-    def expandBodyPane(self, event=None):
-        '''Expand the body pane.'''
-        self.contractOutlinePane()
+        r = min(1.0, self.secondary_ratio + 0.1)
+        ### self.divideLeoSplitter(not f.splitVerticalFlag, r)
+        self.divideLeoSplitter2(r)
 
     @cmd('expand-log-pane')
     def expandLogPane(self, event=None):
         '''Expand the log pane.'''
-        f = self; r = max(0.0, f.secondary_ratio - 0.1) # 2010/02/23: was f.ratio
-        f.divideLeoSplitter(not f.splitVerticalFlag, r)
-
-    @cmd('expand-outline-pane')
-    def expandOutlinePane(self, event=None):
-        '''Expand the outline pane.'''
-        self.contractBodyPane()
-    #@+node:ekr.20110605121601.18300: *5* fullyExpand/hide...Pane
+        r = max(0.0, self.secondary_ratio - 0.1)
+        ### self.divideLeoSplitter(not f.splitVerticalFlag, r)
+        self.divideLeoSplitter2(r)
+    #@+node:ekr.20110605121601.18300: *5* fullyExpand/hide...Pane (qtFrame)
     @cmd('fully-expand-body-pane')
+    @cmd('hide-outline-pane')
     def fullyExpandBodyPane(self, event=None):
         '''Fully expand the body pane.'''
-        f = self
-        f.divideLeoSplitter(f.splitVerticalFlag, 0.0)
+        ### self.divideLeoSplitter(f.splitVerticalFlag, 0.0)
+        self.divideLeoSplitter1(0.0)
 
+    @cmd('fully-expand-outline-pane')
+    @cmd('hide-body-pane')
+    def fullyExpandOutlinePane(self, event=None):
+        '''Fully expand the outline pane.'''
+        ### self.divideLeoSplitter(f.splitVerticalFlag, 1.0)
+        self.divideLeoSplitter1(1.0)
+        
     @cmd('fully-expand-log-pane')
     def fullyExpandLogPane(self, event=None):
         '''Fully expand the log pane.'''
-        f = self
-        f.divideLeoSplitter(not f.splitVerticalFlag, 0.0)
-
-    @cmd('fully-expand-outline-pane')
-    def fullyExpandOutlinePane(self, event=None):
-        '''Fully expand the outline pane.'''
-        f = self
-        f.divideLeoSplitter(f.splitVerticalFlag, 1.0)
-
-    @cmd('hide-body-pane')
-    def hideBodyPane(self, event=None):
-        '''Completely contract the body pane.'''
-        f = self
-        f.divideLeoSplitter(f.splitVerticalFlag, 1.0)
+        ### self.divideLeoSplitter(not f.splitVerticalFlag, 0.0)
+        self.divideLeoSplitter2(0.0)
 
     @cmd('hide-log-pane')
     def hideLogPane(self, event=None):
         '''Completely contract the log pane.'''
-        f = self
-        f.divideLeoSplitter(not f.splitVerticalFlag, 1.0)
-
-    @cmd('hide-outline-pane')
-    def hideOutlinePane(self, event=None):
-        '''Completely contract the outline pane.'''
-        f = self
-        f.divideLeoSplitter(f.splitVerticalFlag, 0.0)
+        ### self.divideLeoSplitter(not f.splitVerticalFlag, 1.0)
+        self.divideLeoSplitter2(1.0)
     #@+node:ekr.20110605121601.18301: *4* Window Menu...
     #@+node:ekr.20110605121601.18302: *5* toggleActivePane (qtFrame)
     @cmd('toggle-active-pane')
@@ -2858,7 +2857,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18305: *5* hideLogWindow
     def hideLogWindow(self, event=None):
         frame = self
-        frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
+        frame.divideLeoSplitter2(0.99)
     #@+node:ekr.20110605121601.18306: *5* minimizeAll (qtFrame)
     @cmd('minimize-all')
     def minimizeAll(self, event=None):

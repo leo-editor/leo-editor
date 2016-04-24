@@ -1269,18 +1269,19 @@ else:
         c.treeWantsFocusNow,
     )
     for func in table:
+        name = func.__name__
         func()
         f.contractPane()
         if func == c.logWantsFocusNow:
             assert ratio2 != f.secondary_ratio,'fail 1'
         else:
-            assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
+            assert ratio != f.ratio,'fail 2: %s, %s: %s' % (ratio,f.ratio,name)
         func()
         f.expandPane()
-        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
-            ratio,f.ratio)
-        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s' % (
-            ratio2,f.secondary_ratio)
+        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s: %s' % (
+            ratio,f.ratio,name)
+        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
+            ratio2,f.secondary_ratio,name)
 #@+node:ekr.20100131171342.5506: *3* leoApp
 #@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
 @

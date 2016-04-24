@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.44" body_secondary_ratio="0.78">
-	<global_window_position top="108" left="527" height="957" width="914"/>
+<globals body_outline_ratio="0.54" body_secondary_ratio="0.78">
+	<global_window_position top="108" left="527" height="957" width="1099"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
@@ -1268,6 +1268,7 @@ marks="ekr.20100205235740.5392,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+<v t="ekr.20100223123103.5382"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8742,18 +8743,19 @@ else:
         c.treeWantsFocusNow,
     )
     for func in table:
+        name = func.__name__
         func()
         f.contractPane()
         if func == c.logWantsFocusNow:
             assert ratio2 != f.secondary_ratio,'fail 1'
         else:
-            assert ratio != f.ratio,'fail 2: %s, %s' % (ratio,f.ratio)
+            assert ratio != f.ratio,'fail 2: %s, %s: %s' % (ratio,f.ratio,name)
         func()
         f.expandPane()
-        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s' % (
-            ratio,f.ratio)
-        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s' % (
-            ratio2,f.secondary_ratio)
+        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s: %s' % (
+            ratio,f.ratio,name)
+        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
+            ratio2,f.secondary_ratio,name)
 </t>
 <t tx="ekr.20100225094004.5405"># test/at-file-test.leo contains tnodeList.
 # test/at-file-test.py contains file-like sentinels.

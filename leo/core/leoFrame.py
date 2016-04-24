@@ -756,7 +756,8 @@ class LeoFrame(object):
         self.es_newlines = 0 # newline count for this log stream
         self.openDirectory = ""
         self.saved = False # True if ever saved
-        self.splitVerticalFlag, self.ratio, self.secondary_ratio = True, 0.5, 0.5 # Set by initialRatios later.
+        self.splitVerticalFlag, self.ratio, self.secondary_ratio = True, 0.5, 0.5
+            # Set by initialRatios later.
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
