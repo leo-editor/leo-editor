@@ -231,7 +231,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
-        # Always create this, but only one is used when g.new_find is True.
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (REVISE)
@@ -528,9 +527,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row = dw.create_find_buttons(grid, parent, max_row2, row)
         row = dw.create_help_row(grid, parent, row)
         # Status row
-        if g.new_find:
-            dw.create_find_status(grid, parent, row)
-            row += 1
+        dw.create_find_status(grid, parent, row)
+        row += 1
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -549,10 +547,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.setColumnStretch(2, 10)
         grid.setColumnMinimumWidth(1, 75)
         grid.setColumnMinimumWidth(2, 175)
-        if g.new_find:
-            pass
-        else:
-            grid.setColumnMinimumWidth(3, 50)
         return grid
     #@+node:ekr.20131118152731.16849: *6* dw.create_find_header
     def create_find_header(self, grid, parent, row):
@@ -709,7 +703,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return row
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
     def create_find_status(self, grid, parent, row):
-        '''Create the status line (new_find only).'''
+        '''Create the status line.'''
         dw = self
         status_label = dw.createLabel(parent, 'status-label', 'Status')
         status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
@@ -2547,35 +2541,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.ratio, f.secondary_ratio = r, r2
         f.resizePanesToRatio(r, r2)
-    #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame) (DONE)
+    #@+node:ekr.20110605121601.18282: *4* resizePanesToRatio (qtFrame)
     def resizePanesToRatio(self, ratio, ratio2):
         trace = False and not g.unitTesting
         f = self
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
-        ### f.divideLeoSplitter(self.splitVerticalFlag, ratio)
-        ### f.divideLeoSplitter(not self.splitVerticalFlag, ratio2)
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-            
-        ### REF
-        # if self.splitVerticalFlag == verticalFlag:
-            # self.divideLeoSplitter1(frac, verticalFlag)
-            # self.ratio = frac # Ratio splitter1
-        # else:
-            # self.divideLeoSplitter2(frac, verticalFlag)
-            # self.secondary_ratio = frac # Ratio of splitter2
-    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter1/2 (qtFrame) (REVISE)
-    ### To be removed.
-    # def divideLeoSplitter(self, verticalFlag, frac):
-        # '''Divide the main or secondary splitter, using the key invariant.'''
-        # if self.splitVerticalFlag == verticalFlag:
-            # self.divideLeoSplitter1(frac)
-            # self.ratio = frac # Ratio splitter1
-        # else:
-            # self.divideLeoSplitter2(frac)
-            # self.secondary_ratio = frac # Ratio of splitter2
-
+    #@+node:ekr.20110605121601.18283: *4* divideLeoSplitter1/2 (qtFrame)
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
         free_layout = self.c and self.c.free_layout
@@ -2591,8 +2565,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         w = free_layout.get_main_splitter()
         if w:
             self.divideAnySplitter(frac, w)
-        self.secondary_ratio = frac # Ratio of splitter2
         # else: g.trace('===== skip', g.callers())
+        self.secondary_ratio = frac # Ratio of splitter2
+
     #@+node:ekr.20110605121601.18284: *4* divideAnySplitter (qtFrame)
     # This is the general-purpose placer for splitters.
     # It is the only general-purpose splitter code in Leo.
@@ -2674,7 +2649,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return "break" # Restore this to handle proper double-click logic.
     #@+node:ekr.20110605121601.18293: *3* Gui-dependent commands
     #@+node:ekr.20110605121601.18294: *4* Minibuffer commands... (qtFrame)
-    #@+node:ekr.20110605121601.18295: *5* contractPane
+    #@+node:ekr.20110605121601.18295: *5* contractPane (qtFrame)
     @cmd('contract-pane')
     def contractPane(self, event=None):
         '''Contract the selected pane.'''
@@ -2695,7 +2670,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.contractOutlinePane()
                     c.treeWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18296: *5* expandPane
+    #@+node:ekr.20110605121601.18296: *5* expandPane (qtFrame)
     @cmd('expand-pane')
     def expandPane(self, event=None):
         '''Expand the selected pane.'''
@@ -2716,7 +2691,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f.expandOutlinePane()
                     c.treeWantsFocus()
                     break
-    #@+node:ekr.20110605121601.18297: *5* fullyExpandPane
+    #@+node:ekr.20110605121601.18297: *5* fullyExpandPane (qtFrame)
     @cmd('fully-expand-pane')
     def fullyExpandPane(self, event=None):
         '''Fully expand the selected pane.'''
@@ -2764,7 +2739,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def contractBodyPane(self, event=None):
         '''Contract the body pane.'''
         r = min(1.0, self.ratio + 0.1)
-        ### self.divideLeoSplitter(f.splitVerticalFlag, r)
         self.divideLeoSplitter1(r)
         
     expandOutlinePane = contractBodyPane
@@ -2774,7 +2748,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def contractOutlinePane(self, event=None):
         '''Contract the outline pane.'''
         r = max(0.0, self.ratio - 0.1)
-        ### self.divideLeoSplitter(f.splitVerticalFlag, r)
         self.divideLeoSplitter1(r)
         
     expandBodyPane = contractOutlinePane
@@ -2783,40 +2756,34 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def contractLogPane(self, event=None):
         '''Contract the log pane.'''
         r = min(1.0, self.secondary_ratio + 0.1)
-        ### self.divideLeoSplitter(not f.splitVerticalFlag, r)
         self.divideLeoSplitter2(r)
 
     @cmd('expand-log-pane')
     def expandLogPane(self, event=None):
         '''Expand the log pane.'''
         r = max(0.0, self.secondary_ratio - 0.1)
-        ### self.divideLeoSplitter(not f.splitVerticalFlag, r)
         self.divideLeoSplitter2(r)
     #@+node:ekr.20110605121601.18300: *5* fullyExpand/hide...Pane (qtFrame)
     @cmd('fully-expand-body-pane')
     @cmd('hide-outline-pane')
     def fullyExpandBodyPane(self, event=None):
         '''Fully expand the body pane.'''
-        ### self.divideLeoSplitter(f.splitVerticalFlag, 0.0)
         self.divideLeoSplitter1(0.0)
 
     @cmd('fully-expand-outline-pane')
     @cmd('hide-body-pane')
     def fullyExpandOutlinePane(self, event=None):
         '''Fully expand the outline pane.'''
-        ### self.divideLeoSplitter(f.splitVerticalFlag, 1.0)
         self.divideLeoSplitter1(1.0)
         
     @cmd('fully-expand-log-pane')
     def fullyExpandLogPane(self, event=None):
         '''Fully expand the log pane.'''
-        ### self.divideLeoSplitter(not f.splitVerticalFlag, 0.0)
         self.divideLeoSplitter2(0.0)
 
     @cmd('hide-log-pane')
     def hideLogPane(self, event=None):
         '''Completely contract the log pane.'''
-        ### self.divideLeoSplitter(not f.splitVerticalFlag, 1.0)
         self.divideLeoSplitter2(1.0)
     #@+node:ekr.20110605121601.18301: *4* Window Menu...
     #@+node:ekr.20110605121601.18302: *5* toggleActivePane (qtFrame)
@@ -2848,13 +2815,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 if x > 200:
                     x = 10 + delta; y = 40 + delta
                     delta += 10
-    #@+node:ekr.20110605121601.18304: *5* equalSizedPanes
+    #@+node:ekr.20110605121601.18304: *5* equalSizedPanes (qtFrame)
     @cmd('equal-sized-panes')
     def equalSizedPanes(self, event=None):
         '''Make the outline and body panes have the same size.'''
         frame = self
         frame.resizePanesToRatio(0.5, frame.secondary_ratio)
-    #@+node:ekr.20110605121601.18305: *5* hideLogWindow
+    #@+node:ekr.20110605121601.18305: *5* hideLogWindow (qtFrame)
     def hideLogWindow(self, event=None):
         frame = self
         frame.divideLeoSplitter2(0.99)
@@ -2882,7 +2849,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Toggle the split direction in the present Leo window.'''
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
-        return
     #@+node:ekr.20110605121601.18308: *5* resizeToScreen (qtFrame)
     @cmd('resize-to-screen')
     def resizeToScreen(self, event=None):
@@ -3044,10 +3010,6 @@ class LeoQtLog(leoFrame.LeoLog):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
-        if g.new_find:
-            pass
-        else:
-            c.findCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
@@ -3231,24 +3193,6 @@ class LeoQtLog(leoFrame.LeoLog):
                 widget.setObjectName('log-widget')
             # Set binding on all log pane widgets.
             g.app.gui.setFilter(c, widget, self, tag='log')
-            # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
-            if tabName == 'Log':
-                if g.new_find:
-                    # createFindDialog puts an event handler in the dialog itself.
-                    pass
-                else:
-                    assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-                    find_widget = c.frame.top.leo_find_widget
-                    # 2011/11/21: A hack: add an event filter.
-                    g.app.gui.setFilter(c, find_widget, widget, 'find-widget')
-                    if trace: g.trace('** Adding event filter for Find', find_widget)
-                    # 2011/11/21: A hack: make the find_widget an official log widget.
-                    self.contentsDict['Find'] = find_widget
-                    # 2013/09/20:
-                    if hasattr(c.frame.top, 'leo_spell_widget'):
-                        spell_widget = c.frame.top.leo_spell_widget
-                        if trace: g.trace('** Adding event filter for Spell', find_widget)
-                        g.app.gui.setFilter(c, spell_widget, widget, 'spell-widget')
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget, tabName)
         else:
