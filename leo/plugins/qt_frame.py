@@ -245,6 +245,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             main_splitter.setObjectName("main_splitter")
             main_splitter.splitterMoved.connect(self.onMainSplitterMoved)
+        
         secondary_splitter = splitter_class(main_splitter)
         secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
         if g.new_splitters:

@@ -28,6 +28,7 @@ free-layout-zoom
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import leo.core.leoGlobals as g
+import leo.plugins.qt_frame as qt_frame
 from leo.core.leoQt import QtWidgets
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
@@ -154,17 +155,46 @@ class FreeLayoutController:
     #@+node:ekr.20160416082543.1: *3* flc.get_splitter* (rewrite)
     if g.new_splitters:
         #@+others
-        #@+node:ekr.20160424035254.1: *4* get_secondary_splitter (NEW)
-        ### NEW g.new_splitter code
-
-        def get_secondary_splitter(self):
-            '''Return the splitter whose name is "splitter".'''
-            return self.get_splitter_by_name('splitter')
+        #@+node:ekr.20160424035257.1: *4* flc.get_main_splitter & helper (new)
+        def get_main_splitter(self, w=None):
+            '''
+            Return the splitter the main splitter, or None. The main splitter is a
+            NestedSplitter that contains the body pane.
             
-        #@+node:ekr.20160424035257.1: *4* get_main_splitter (NEW)
-        def get_main_splitter(self):
-            '''Return the splitter whose name is "main_splitter".'''
-            return self.get_splitter_by_name('main_splitter')
+            Yes, the user could delete the secondary splitter but if so, there is
+            not much we can do here.
+            '''
+            trace = False and not g.unitTesting
+            top = self.get_top_splitter()
+            if top:
+                w = top.find_child(QtWidgets.QWidget, "bodyFrame")
+                while w:
+                    if isinstance(w, NestedSplitter):
+                        if trace: g.trace('found splitter', id(w))
+                        return w
+                    w = w.parent()
+            if trace: g.trace('not found')
+            return None
+        #@+node:ekr.20160424035254.1: *4* flc.get_secondary_splitter & helper (new)
+        def get_secondary_splitter(self):
+            '''
+            Return the secondary splitter, if it exists. The secondary splitter
+            contains the outline pane.
+            
+            Yes, the user could delete the outline pane, but if so, there is not
+            much we can do here.
+            '''
+            trace = False and not g.unitTesting
+            top = self.get_top_splitter()
+            if top:
+                w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
+                while w:
+                    if isinstance(w, NestedSplitter):
+                        if trace: g.trace('found splitter', id(w))
+                        return w
+                    w = w.parent()
+            if trace: g.trace('not found')
+            return None
         #@-others
     else:
         #@+<< old get_splitter* >>
