@@ -758,8 +758,11 @@ class LeoFrame(object):
         self.saved = False # True if ever saved
         self.splitVerticalFlag = True
             # Set by initialRatios later.
-        self.ratio, self.secondary_ratio = 0.5, 0.5
-            # Set by initialRatios later.
+        if g.new_splitters:
+            pass # These are now LeoQtFrame properties.
+        else:
+            self.ratio, self.secondary_ratio = 0.5, 0.5
+                # Set by initialRatios later.
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
@@ -1972,6 +1975,7 @@ class NullFrame(LeoFrame):
         self.iconBar = NullIconBarClass(self.c, self)
         self.isNullFrame = True
         self.outerFrame = None
+        self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
         self.top = None # Always None.

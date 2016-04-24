@@ -107,6 +107,9 @@ if sys.platform != 'cli':
             self.node = None
             self.nodeList = [] # List of SaxNodeClass objects with the present VNode.
             self.nodeStack = []
+            if g.new_splitters:
+                self.ratio = 0.5
+                self.secondary_ratio = 0.5
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
         #@+node:ekr.20060919110638.29: *4*  sax.Do nothing
@@ -312,23 +315,42 @@ if sys.platform != 'cli':
             c = self.c
             if self.inClipboard:
                 return
-            c.frame.ratio, c.frame.secondary_ratio = 0.5, 0.5 # Set defaults.
+            if g.new_splitters:
+                pass
+            else:
+                c.frame.ratio, c.frame.secondary_ratio = 0.5, 0.5 # Set defaults.
             if trace: g.trace(c.mFileName)
             use_db = g.enableDB and c.mFileName
             if use_db:
                 ratio, ratio2 = c.cacher.getCachedGlobalFileRatios()
-                c.frame.ratio, c.frame.secondary_ratio = ratio, ratio2
+                if trace: g.trace(ratio, ratio2)
+                if g.new_splitters:
+                    self.ratio, self.secondary_ratio = ratio, ratio2
+                else:
+                    c.frame.ratio, c.frame.secondary_ratio = ratio, ratio2
             else:
                 try:
                     for bunch in self.attrsToList(attrs):
                         name = bunch.name; val = bunch.val
                         if name == 'body_outline_ratio':
-                            c.frame.ratio = float(val) # 2010/01/11
+                            if g.new_splitters:
+                                self.ratio = float(val)
+                            else:
+                                c.frame.ratio = float(val)
                         elif name == 'body_secondary_ratio':
-                            c.frame.secondary_ratio = float(val) # 2010/01/11
-                    if trace: g.trace('** not cached:', '%1.2f %1.2f' % (
-                        c.frame.ratio, c.frame.secondary_ratio))
+                            if g.new_splitters:
+                                self.secondary_ratio = float(val)
+                            else:
+                                c.frame.secondary_ratio = float(val)
+                    if trace:
+                        if g.new_splitters:
+                            g.trace('** not cached:', '%1.2f %1.2f' % (
+                                self.ratio, self.secondary_ratio))
+                        else:
+                            g.trace('** not cached:', '%1.2f %1.2f' % (
+                                c.frame.ratio, c.frame.secondary_ratio))
                 except Exception:
+                    g.es_exception() #####
                     pass
         #@+node:ekr.20060919110638.38: *5* sax.startWinPos
         def startWinPos(self, attrs):
@@ -362,8 +384,12 @@ if sys.platform != 'cli':
             # Causes window to appear.
             # g.trace('ratio',c.frame.ratio,c)
             if c.frame.top:
-                c.frame.resizePanesToRatio(
-                    c.frame.ratio, c.frame.secondary_ratio)
+                if g.new_splitters:
+                    c.frame.resizePanesToRatio(
+                        self.ratio, self.secondary_ratio)
+                else:
+                    c.frame.resizePanesToRatio(
+                        c.frame.ratio, c.frame.secondary_ratio)
             if not self.silent and not g.unitTesting:
                 g.es("reading:", self.fileName)
         #@+node:ekr.20060919110638.41: *5* sax.startTnode

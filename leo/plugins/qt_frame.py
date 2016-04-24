@@ -908,7 +908,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w = c.free_layout.get_secondary_splitter()
             if w:
                  c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
-    #@+node:ekr.20140913054442.17865: *5* dw.splitterMovedHelper
+    #@+node:ekr.20140913054442.17865: *5* dw.splitterFrac
     def splitterFrac(self, splitter, pos, index):
         '''Return the ratio of pos to the total.'''
         i, j = splitter.getRange(index)
@@ -2056,14 +2056,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.app.windowList.append(f)
         f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
-    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
+    #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents (changed)
     def createSplitterComponents(self):
-        f = self; c = f.c
+        c, f = self.c, self
         f.tree = qt_tree.LeoQtTree(c, f)
         f.log = LeoQtLog(f, None)
         f.body = LeoQtBody(f, None)
-        f.splitVerticalFlag, f.ratio, f.secondary_ratio = f.initialRatios()
-        f.resizePanesToRatio(f.ratio, f.secondary_ratio)
+        if g.new_splitters:
+            f.splitVerticalFlag, ratio, secondary_ratio = f.initialRatios()
+            f.resizePanesToRatio(ratio, secondary_ratio)
+        else:
+            f.splitVerticalFlag, f.ratio, f.secondary_ratio = f.initialRatios()
+            f.resizePanesToRatio(f.ratio, f.secondary_ratio)
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self):
         '''A kludge: called to enable text changed events.'''
@@ -2532,7 +2536,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18280: *4* qtFrame.setWrap
     def setWrap(self, p=None, force=False):
         return self.c.frame.body.setWrap(p, force)
-    #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes
+    #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes (changed)
     def reconfigurePanes(self):
         f = self; c = f.c
         if f.splitVerticalFlag:
@@ -2545,7 +2549,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if r == None or r < 0.0 or r > 1.0: r = 0.3
             r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
             if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-        f.ratio, f.secondary_ratio = r, r2
+        if g.new_splitters:
+            pass
+        else:
+            f.ratio, f.secondary_ratio = r, r2
         f.resizePanesToRatio(r, r2)
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio, ratio2):
@@ -2555,7 +2562,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.splitVerticalFlag, ratio, ratio2), g.callers(4))
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
+    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (changed)
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
         free_layout = self.c and self.c.free_layout
@@ -2584,6 +2591,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # It is the only general-purpose splitter code in Leo.
 
     def divideAnySplitter(self, frac, splitter):
+        '''Set the splitter sizes.'''
+        trace = False and not g.unitTesting
         sizes = splitter.sizes()
         if len(sizes) != 2:
             g.trace('%s widget(s) in %s' % (len(sizes), id(splitter)))
@@ -2595,6 +2604,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         s = s1 + s2
         s1 = int(s * frac + 0.5)
         s2 = s - s1
+        if trace: g.trace(s, s1, s2)
         splitter.setSizes([s1, s2])
     #@+node:ekr.20110605121601.18285: *3* qtFrame.Event handlers
     #@+node:ekr.20110605121601.18286: *4* qtFrame.OnCloseLeoEvent
@@ -2826,12 +2836,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 if x > 200:
                     x = 10 + delta; y = 40 + delta
                     delta += 10
-    #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes
+    #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes (changed)
     @cmd('equal-sized-panes')
     def equalSizedPanes(self, event=None):
         '''Make the outline and body panes have the same size.'''
-        frame = self
-        frame.resizePanesToRatio(0.5, frame.secondary_ratio)
+        self.resizePanesToRatio(0.5, self.secondary_ratio)
     #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
     def hideLogWindow(self, event=None):
         '''Hide the log pane.'''
@@ -2899,6 +2908,54 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     if 0:
                         g.es("exception downloading", "sbooks.chm")
                         g.es_exception()
+    #@+node:ekr.20160424080647.1: *3* qtFrame.Properties (new)
+    # The ratio and secondary_ratio properties are read-only.
+    #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
+    if g.new_splitters:
+        
+        def __get_ratio(self):
+            '''Return splitter ratio of the main splitter.'''
+            trace = False and not g.unitTesting
+            c = self.c
+            free_layout = c.free_layout
+            if free_layout:
+                w = free_layout.get_main_splitter()
+                if w:
+                    aList = w.sizes()
+                    if len(aList) == 2:
+                        n1, n2 = aList
+                        ratio = float(n1) / float(n1 + n2)
+                        if trace: g.trace('%s %s %4.2f' % (n1, n2, ratio))
+                        return ratio
+            if trace: g.trace('default: 0.5')
+            return 0.5
+        
+        ratio = property(
+            __get_ratio, # No setter.
+            doc="qtFrame.ratio property")
+    #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
+    if g.new_splitters:
+        
+        def __get_secondary_ratio(self):
+            '''Return the splitter ratio of the secondary splitter.'''
+            trace = False and not g.unitTesting
+            c = self.c
+            free_layout = c.free_layout
+            if free_layout:
+                w = free_layout.get_secondary_splitter()
+                if w:
+                    aList = w.sizes()
+                    if len(aList) == 2:
+                        n1, n2 = aList
+                        ratio = float(n1) / float(n1 + n2)
+                        if trace: g.trace('%s %s %4.2f' % (n1, n2, ratio))
+                        return ratio
+            if trace: g.trace('default: 0.5')
+            return 0.5
+        
+        secondary_ratio = property(
+            __get_secondary_ratio, # no setter.
+            doc="qtFrame.secondary_ratio property")
     #@+node:ekr.20110605121601.18311: *3* qtFrame.Qt bindings...
     def bringToFront(self):
         self.lift()
