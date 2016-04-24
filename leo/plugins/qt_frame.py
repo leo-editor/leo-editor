@@ -86,7 +86,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helper
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
-        # g.trace('(DynamicWindow)',g.callers())
+        # g.trace('(DynamicWindow)')
         c = self.leo_c
         self.leo_master = master
             # A LeoTabbedTopLevel for tabbed windows.
@@ -102,15 +102,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.bigTree = c.config.getBool('big_outline_pane')
         if useUI:
             self.leo_ui = uic.loadUi(ui_description_file, self)
-        else:
-            self.createMainWindow()
+                # This is increasingly unlikely to work.
+        main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
         orientation = c.config.getString('initial_split_orientation')
-        self.setSplitDirection(orientation)
+        self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
@@ -154,6 +154,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createStatusBar(dw)
         # Signals
         QtCore.QMetaObject.connectSlotsByName(dw)
+        return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
@@ -940,20 +941,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """ Set icon visible in title bar and task bar """
         self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
-    def setSplitDirection(self, orientation='vertical'):
-        '''Set the splitter orientation for the Leo main window.'''
+    def setSplitDirection(self, main_splitter, secondary_splitter, orientation):
+        '''Set the orientations of the splitters in the Leo main window.'''
         c = self.leo_c
-        fl = c.free_layout
-        if not fl: return
-        splitter1 = fl.get_main_splitter()
-        splitter2 = fl.get_secondary_splitter()
-        if splitter1 and splitter2:
-            vert = orientation and orientation.lower().startswith('v')
-            h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
-            orientation1 = v if vert else h
-            orientation2 = h if vert else v
-            splitter1.setOrientation(orientation1)
-            splitter2.setOrientation(orientation2)
+        vert = orientation and orientation.lower().startswith('v')
+        # g.trace('orientation', orientation, 'vert', vert)
+        h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
+        orientation1 = v if vert else h
+        orientation2 = h if vert else v
+        main_splitter.setOrientation(orientation1)
+        secondary_splitter.setOrientation(orientation2)
     #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
     if 0: # Override for debugging only.
 
@@ -1461,7 +1458,6 @@ class LeoQtBody(leoFrame.LeoBody):
     def createEditor(self, name):
         c = self.c; p = c.p
         f = c.frame.top.leo_ui.leo_body_inner_frame
-            # Valid regardless of qt_frame.useUI
         # Step 1: create the editor.
         w = qt_text.LeoQTextBrowser(f, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
@@ -1745,7 +1741,6 @@ class LeoQtBody(leoFrame.LeoBody):
         trace = False and not g.unitTesting
         c = self.c
         f = c.frame.top.leo_ui.leo_body_inner_frame
-            # Valid regardless of qt_frame.useUI
         if n is None: n = self.numberOfEditors
         layout = f.layout()
         f.setObjectName('editorFrame')
@@ -2068,6 +2063,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         else:
             f.splitVerticalFlag, f.ratio, f.secondary_ratio = f.initialRatios()
             f.resizePanesToRatio(f.ratio, f.secondary_ratio)
+        # g.trace('vertical', self.splitVerticalFlag)
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self):
         '''A kludge: called to enable text changed events.'''
@@ -2493,6 +2489,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18276: *4* qtFrame.configureBarsFromConfig
     def configureBarsFromConfig(self):
         c = self.c
+        # g.trace('splitVerticalFlag', self.splitVerticalFlag)
         w = c.config.getInt("split_bar_width")
         if not w or w < 1: w = 7
         relief = c.config.get("split_bar_relief", "relief")
@@ -2538,7 +2535,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return self.c.frame.body.setWrap(p, force)
     #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes (changed)
     def reconfigurePanes(self):
-        f = self; c = f.c
+        c, f = self.c, self
+        # g.trace(f.splitVerticalFlag)
         if f.splitVerticalFlag:
             r = c.config.getRatio("initial_vertical_ratio")
             if r == None or r < 0.0 or r > 1.0: r = 0.5
@@ -2558,10 +2556,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         trace = False and not g.unitTesting
-        if trace: g.trace('%5s, %0.2f %0.2f' % (
-            self.splitVerticalFlag, ratio, ratio2), g.callers(4))
+        if trace: g.trace('vertical: %5s, %0.2f %0.2f' % (
+            self.splitVerticalFlag, ratio, ratio2))
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
+        
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (changed)
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''

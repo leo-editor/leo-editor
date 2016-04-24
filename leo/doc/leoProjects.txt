@@ -22,6 +22,16 @@ The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 https://github.com/leo-editor/leo-editor/issues/258
 .. @+node:ekr.20160421121117.1: ** #268: cff & cfa could search some @all trees
 https://github.com/leo-editor/leo-editor/issues/268
+.. @+node:ekr.20160418172314.1: ** #264: Solution to #261 needs improvement
+https://groups.google.com/d/msg/leo-editor/9KnhXmusJVY/BiNFmyPcBwAJ
+@string initial_split_orientation = horizontal no effect.
+
+#264: Solution to #261 needs improvement
+https://github.com/leo-editor/leo-editor/issues/264
+
+If you go from the initial layout to a custom layout and then back to "Default", you get a layout the *looks* like the default, but has no splitter 'splitter_2'. The splitters are unnamed.
+
+So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
