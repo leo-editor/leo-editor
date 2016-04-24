@@ -24,10 +24,6 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
-new_modes = False
-    # True: use ModeController and ModeInfo classes.
-if new_modes:
-    print('\n***** new_modes')
 new_keys = False
     # This project hardly seems urgent.
     # True: Qt input methods produce a **user setting**, not a stroke.

@@ -1670,8 +1670,6 @@ class KeyHandlerClass:
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
         self.defineSettingsIvars()
-        if g.new_modes:
-            self.modeController = ModeController(c)
         self.defineTkNames()
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
@@ -2351,10 +2349,7 @@ class KeyHandlerClass:
         '''Make all key bindings in all of Leo's panes.'''
         k = self; c = k.c
         k.bindingsDict = {}
-        if g.new_modes:
-            k.modeController.addModeCommands()
-        else:
-            k.addModeCommands()
+        k.addModeCommands()
         k.makeBindingsFromCommandsDict()
         k.initSpecialIvars()
         k.initAbbrev()
@@ -3975,45 +3970,38 @@ class KeyHandlerClass:
         if not modeName:
             g.trace('oops: no modeName')
             return
-        if g.new_modes:
-            mode = k.modeController.getMode(modeName)
-            if mode:
-                mode.initMode()
-            else:
-                g.trace('***** oops: no mode', modeName)
+        d = g.app.config.modeCommandsDict.get('enter-' + modeName)
+        if not d:
+            self.badMode(modeName)
+            return
         else:
-            d = g.app.config.modeCommandsDict.get('enter-' + modeName)
-            if not d:
-                self.badMode(modeName)
-                return
+            k.modeBindingsDict = d
+            si = d.get('*command-prompt*')
+            if si:
+                prompt = si.kind # A kludge.
             else:
-                k.modeBindingsDict = d
-                si = d.get('*command-prompt*')
-                if si:
-                    prompt = si.kind # A kludge.
-                else:
-                    prompt = modeName
-                if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
-                    modeName, prompt, sorted(list(d.keys()))))
-            k.inputModeName = modeName
-            k.silentMode = False
-            aList = d.get('*entry-commands*', [])
-            if aList:
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    commandName = si.commandName
-                    if trace: g.trace('entry command:', commandName)
-                    k.simulateCommand(commandName)
-                    # Careful, the command can kill the commander.
-                    if g.app.quitting or not c.exists: return
-                    # New in Leo 4.5: a startup command can immediately transfer to another mode.
-                    if commandName.startswith('enter-'):
-                        if trace: g.trace('redirect to mode', commandName)
-                        return
-            # Create bindings after we know whether we are in silent mode.
-            w = k.modeWidget if k.silentMode else k.w
-            k.createModeBindings(modeName, d, w)
-            k.showStateAndMode(prompt=prompt)
+                prompt = modeName
+            if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
+                modeName, prompt, sorted(list(d.keys()))))
+        k.inputModeName = modeName
+        k.silentMode = False
+        aList = d.get('*entry-commands*', [])
+        if aList:
+            for si in aList:
+                assert g.isShortcutInfo(si), si
+                commandName = si.commandName
+                if trace: g.trace('entry command:', commandName)
+                k.simulateCommand(commandName)
+                # Careful, the command can kill the commander.
+                if g.app.quitting or not c.exists: return
+                # New in Leo 4.5: a startup command can immediately transfer to another mode.
+                if commandName.startswith('enter-'):
+                    if trace: g.trace('redirect to mode', commandName)
+                    return
+        # Create bindings after we know whether we are in silent mode.
+        w = k.modeWidget if k.silentMode else k.w
+        k.createModeBindings(modeName, d, w)
+        k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
     def NEWgeneralModeHandler(self, event,
         commandName=None, func=None, modeName=None, nextMode=None, prompt=None):
@@ -4577,37 +4565,6 @@ class KeyHandlerClass:
             k.resetLabel()
             c.macroCommands.startKbdMacro(event)
             c.macroCommands.callLastKeyboardMacro(event)
-    #@-others
-#@+node:ekr.20120208064440.10148: ** class ModeController
-class ModeController:
-
-    def __init__(self, c):
-        self.c = c
-        self.d = {} # Keys are command names, values are modes.
-        self.k = c.k
-        g.trace(self)
-
-    def __repr__(self):
-        return '<ModeController %s>' % self.c.shortFileName()
-
-    __str__ = __repr__
-    #@+others
-    #@+node:ekr.20120208064440.10161: *3* addModeCommands (ModeController)
-    def addModeCommands(self):
-        g.trace(self, self.d)
-        for mode in self.d.values():
-            mode.createModeCommand()
-    #@+node:ekr.20120208064440.10163: *3* getMode (ModeController)
-    def getMode(self, modeName):
-        g.trace(self)
-        mode = self.d.get(modeName)
-        g.trace(modeName, mode)
-        return mode
-    #@+node:ekr.20120208064440.10164: *3* makeMode (ModeController)
-    def makeMode(self, name, aList):
-        mode = ModeInfo(self.c, name, aList)
-        g.trace(self, mode.name, mode)
-        self.d[mode.name] = mode
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo:

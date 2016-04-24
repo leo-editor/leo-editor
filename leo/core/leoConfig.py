@@ -607,51 +607,42 @@ class ParserBaseClass:
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         trace = False and not g.unitTesting
         c, k = self.c, self.c.k
-        if g.new_modes:
-            aList = []
-            for line in g.splitLines(p.b):
-                line = line.strip()
-                if line and not g.match(line, 0, '#'):
-                    name2, si = self.parseShortcutLine('*mode-setting*', line)
-                    aList.append((name2, si),)
-            k.modeController.makeMode(name, aList)
-        else:
-            name1 = name
-            # g.trace('%20s' % (name),c.fileName())
-            modeName = self.computeModeName(name)
-            d = g.TypedDictOfLists(
-                name='modeDict for %s' % (modeName),
-                keyType=type('commandName'), valType=g.ShortcutInfo)
-            s = p.b
-            lines = g.splitLines(s)
-            for line in lines:
-                line = line.strip()
-                if line and not g.match(line, 0, '#'):
-                    name, si = self.parseShortcutLine('*mode-setting*', line)
-                    assert g.isShortcutInfo(si), si
-                    if not name:
-                        # An entry command: put it in the special *entry-commands* key.
-                        d.add('*entry-commands*', si)
-                    elif si is not None:
-                        # A regular shortcut.
-                        si.pane = modeName
-                        aList = d.get(name, [])
-                        for z in aList:
-                            assert g.isShortcutInfo(z), z
-                        # Important: use previous bindings if possible.
-                        key2, aList2 = c.config.getShortcut(name)
-                        for z in aList2:
-                            assert g.isShortcutInfo(z), z
-                        aList3 = [z for z in aList2 if z.pane != modeName]
-                        if aList3:
-                            # g.trace('inheriting',[b.val for b in aList3])
-                            aList.extend(aList3)
-                        aList.append(si)
-                        d.replace(name, aList)
-                # Restore the global shortcutsDict.
-                if trace: g.trace(d.dump())
-                # Create the command, but not any bindings to it.
-                self.createModeCommand(modeName, name1, d)
+        name1 = name
+        # g.trace('%20s' % (name),c.fileName())
+        modeName = self.computeModeName(name)
+        d = g.TypedDictOfLists(
+            name='modeDict for %s' % (modeName),
+            keyType=type('commandName'), valType=g.ShortcutInfo)
+        s = p.b
+        lines = g.splitLines(s)
+        for line in lines:
+            line = line.strip()
+            if line and not g.match(line, 0, '#'):
+                name, si = self.parseShortcutLine('*mode-setting*', line)
+                assert g.isShortcutInfo(si), si
+                if not name:
+                    # An entry command: put it in the special *entry-commands* key.
+                    d.add('*entry-commands*', si)
+                elif si is not None:
+                    # A regular shortcut.
+                    si.pane = modeName
+                    aList = d.get(name, [])
+                    for z in aList:
+                        assert g.isShortcutInfo(z), z
+                    # Important: use previous bindings if possible.
+                    key2, aList2 = c.config.getShortcut(name)
+                    for z in aList2:
+                        assert g.isShortcutInfo(z), z
+                    aList3 = [z for z in aList2 if z.pane != modeName]
+                    if aList3:
+                        # g.trace('inheriting',[b.val for b in aList3])
+                        aList.extend(aList3)
+                    aList.append(si)
+                    d.replace(name, aList)
+            # Restore the global shortcutsDict.
+            if trace: g.trace(d.dump())
+            # Create the command, but not any bindings to it.
+            self.createModeCommand(modeName, name1, d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith(self, p, kind, name, val):
         # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
@@ -1169,12 +1160,10 @@ class GlobalConfigManager:
         self.inited = False
         self.menusList = []
         self.menusFileName = ''
-        if g.new_modes:
-            pass # Use k.ModeController instead.
-        else:
-            self.modeCommandsDict = g.TypedDict(
-                name='modeCommandsDict',
-                keyType=type('commandName'), valType=g.TypedDictOfLists)
+        self.modeCommandsDict = g.TypedDict(
+            name='modeCommandsDict',
+            keyType=type('commandName'),
+            valType=g.TypedDictOfLists)
         # Inited later...
         self.panes = None
         self.sc = None

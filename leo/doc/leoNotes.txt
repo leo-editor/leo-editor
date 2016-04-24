@@ -16198,6 +16198,36 @@ def show_result(self, result):
         put(result.error_in_exec)
     elif result.result:
         put('Result: %s' % result.result)
+.. @+node:ekr.20120208064440.10148: *3* class ModeController
+class ModeController:
+
+    def __init__(self, c):
+        self.c = c
+        self.d = {} # Keys are command names, values are modes.
+        self.k = c.k
+        g.trace(self)
+
+    def __repr__(self):
+        return '<ModeController %s>' % self.c.shortFileName()
+
+    __str__ = __repr__
+    @others
+.. @+node:ekr.20120208064440.10161: *4* addModeCommands (ModeController)
+def addModeCommands(self):
+    g.trace(self, self.d)
+    for mode in self.d.values():
+        mode.createModeCommand()
+.. @+node:ekr.20120208064440.10163: *4* getMode (ModeController)
+def getMode(self, modeName):
+    g.trace(self)
+    mode = self.d.get(modeName)
+    g.trace(modeName, mode)
+    return mode
+.. @+node:ekr.20120208064440.10164: *4* makeMode (ModeController)
+def makeMode(self, name, aList):
+    mode = ModeInfo(self.c, name, aList)
+    g.trace(self, mode.name, mode)
+    self.d[mode.name] = mode
 .. @-all
 .. @@nosearch
 .. @-leo
