@@ -1200,12 +1200,13 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18430: *3* qtree.scrollToItem
     def scrollToItem(self, item):
         w = self.treeWidget
-        # g.trace(self.traceItem(item),g.callers(4))
+        # g.trace(self.traceItem(item))
         hPos, vPos = self.getScroll()
-        w.scrollToItem(item, w.PositionAtCenter)
-        
-        # ZoomQuiet doesn't like this.
+        w.scrollToItem(item, w.EnsureVisible)
+            # Fix #265: Erratic scrolling bug.
+            # w.PositionAtCenter causes unwanted scrolling.
         self.setHScroll(0)
+            # Necessary
     #@+node:ekr.20110605121601.18431: *3* qtree.setCurrentItemHelper
     def setCurrentItemHelper(self, item):
         w = self.treeWidget

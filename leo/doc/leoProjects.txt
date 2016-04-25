@@ -32,6 +32,11 @@ https://github.com/leo-editor/leo-editor/issues/264
 If you go from the initial layout to a custom layout and then back to "Default", you get a layout the *looks* like the default, but has no splitter 'splitter_2'. The splitters are unnamed.
 
 So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
+.. @+node:ekr.20160425071702.1: ** Fixed: #265: Erratic scrolling bug
+https://github.com/leo-editor/leo-editor/issues/265
+
+Discussion
+https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
 .. @-all
 .. @@nosearch
 .. @@killbeautify
