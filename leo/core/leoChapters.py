@@ -134,11 +134,11 @@ class ChapterController:
         try:
             self.selectChapterLockout = True
             cc.selectChapterByNameHelper(chapter, collapse=collapse)
-            c.redraw(chapter.p) # 2016/04/20.
         finally:
             self.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
+        '''Select the chapter, and redraw if necessary.'''
         trace = False and not g.unitTesting
         cc, c = self, self.c
         if trace: g.trace('===== %s' % chapter)
@@ -175,6 +175,9 @@ class ChapterController:
                 # Compare vnodes, not positions.
                 if p.v != c.p.v:
                     p.contract()
+        c.redraw(chapter.p)
+            # Fix part of #265.
+            # Redraw only here, when we are sure it is needed.
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):

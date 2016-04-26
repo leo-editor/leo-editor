@@ -189,9 +189,12 @@ class LeoQtTree(leoFrame.LeoTree):
         self.setItemForCurrentPosition(scroll=scroll)
         c.requestRedrawFlag = False
         if trace:
-            theTime = g.timeSince(t1)
-            g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
-                self.redrawCount, scroll, self.nodeDrawCount, theTime), g.callers())
+            if verbose:
+                theTime = g.timeSince(t1)
+                g.trace('** %s: scroll %5s drew %3s nodes in %s' % (
+                    self.redrawCount, scroll, self.nodeDrawCount, theTime), g.callers())
+            else:
+                g.trace('**', self.redrawCount, g.callers())
         return p # Return the position, which may have changed.
     # Compatibility
 

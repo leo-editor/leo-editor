@@ -5200,14 +5200,14 @@ class Commands(object):
     #@+node:ekr.20080514131122.20: *3* c.outerUpdate
     def outerUpdate(self):
         trace = False and not g.unitTesting
-        verbose = False; traceFocus = True
+        verbose = False; traceFocus = False
         c = self; aList = []
         if not c.exists or not c.k:
             return
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
         c.requestRedrawFlag = False
-        if trace and (verbose or aList):
+        if trace and verbose:
             g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
         if c.requestBringToFront:
             if hasattr(c.frame, 'bringToFront'):
@@ -5233,7 +5233,7 @@ class Commands(object):
             c.recolor_now(incremental=c.incrementalRecolorFlag)
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % w)
+            if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
             c.set_focus(w)
         else:
             # We must not set the focus to the body pane here!
