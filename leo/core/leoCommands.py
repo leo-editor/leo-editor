@@ -3527,7 +3527,7 @@ class Commands(object):
     def contractNodeOrGoToParent(self, event=None):
         """Simulate the left Arrow Key in folder of Windows Explorer."""
         trace = False and not g.unitTesting
-        c = self; p = c.p
+        c, cc, p = self, self.chapterController, self.p
         parent = p.parent()
         redraw = False
         if trace: g.trace(p.h,
@@ -3544,7 +3544,11 @@ class Commands(object):
                     if child.isExpanded():
                         child.contract()
                         redraw = True
-            c.goToParent()
+            if cc and cc.inChapter and parent.h.startswith('@chapter '):
+                if trace: g.trace('root is selected chapter', parent.h)
+            else:
+                if trace: g.trace('not an @chapter node', parent.h)
+                c.goToParent()
         # This is a bit off-putting.
         # elif not parent and not c.hoistStack:
             # p = c.rootPosition()
@@ -4439,7 +4443,6 @@ class Commands(object):
     def goToParent(self, event=None):
         '''Select the parent of the selected node.'''
         c = self; p = c.p
-        # g.trace(p.parent())
         c.treeSelectHelper(p and p.parent())
     #@+node:ekr.20031218072017.2921: *5* c.goToPrevSibling
     @cmd('goto-prev-sibling')
