@@ -14,22 +14,13 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone
 
 All recent activity
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+isort%3Aupdated-desc+
-.. @+node:ekr.20151231100231.1: *3* #180: goto-prev-history-node bugged with bookmarks
-https://github.com/leo-editor/leo-editor/issues/180
-
-Terry:
-I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
-
-What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
-.. @+node:ekr.20160418070509.1: *3* (3) Later
-Some of these may wait until after 5.3-b1.
-.. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
+.. @+node:ekr.20160405110731.1: *3* #189: Better support for UNL navigation of Leo's code
 https://github.com/leo-editor/leo-editor/issues/189
 
 Improve g.recursiveUNLSearch?
 
 I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
-.. @+node:ekr.20130806072439.20374: *5* Ignore URL's in scripts?
+.. @+node:ekr.20130806072439.20374: *4* Ignore URL's in scripts?
 From: HaveF <iamaplayer@gmail.com>
 
 I write a script (say, @button button-1) in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to leo-file-B.leo.
@@ -68,9 +59,9 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
-.. @+node:ekr.20160418065622.1: *4* #252: Wishlist: goto-next clone activate chapter view
+.. @+node:ekr.20160418065622.1: *3* #252: Wishlist: goto-next clone activate chapter view
 https://github.com/leo-editor/leo-editor/issues/252
-.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
+.. @+node:ekr.20160413081725.1: *3* Revise colorizer for markdown
 - Make sure it is called.
 - Use rest colorizer as a template.
 .. @+node:ekr.20160403043354.1: ** To do: 5.4
