@@ -243,7 +243,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     continue
                 self.declutter_patterns[-1][1].append((cmd, arg))
 
-        text = str(item.text(0)) if g.isPython3 else unicode(item.text(0))
+        text = str(item.text(0)) if g.isPython3 else g.u(item.text(0))
         new_icons = []
         for pattern, cmds in self.declutter_patterns:
             if pattern.match(text):
