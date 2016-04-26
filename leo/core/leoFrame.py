@@ -1694,9 +1694,12 @@ class LeoTree(object):
         c = self.c
         call_event_handlers = p != old_p
         if call_event_handlers:
-            select = not g.doHook("select1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+            select = not g.doHook("select1",
+                c=c, new_p=p, old_p=old_p,
+                new_v=p, old_v=old_p)
         else:
             select = True
+        # g.trace('select', select)
         if select:
             self.revertHeadline = p.h
             c.frame.setWrap(p)
@@ -1708,7 +1711,7 @@ class LeoTree(object):
                 elif btc.should_go_away(p):
                     btc.go_away()
             self.set_body_text_after_select(p, old_p, traceTime)
-            c.nodeHistory.update(p) # Remember this position.
+            c.nodeHistory.update(p)
         if traceTime:
             delta_t = time.time() - t1
             if False or delta_t > 0.1:

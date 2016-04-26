@@ -3323,22 +3323,25 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
     """
+    trace = False and not g.unitTesting
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
 
     def moveToP(c, p):
+        if trace: g.trace(p and p.h)
         c.expandAllAncestors(p)
         c.selectPosition(p)
         c.redraw()
         c.frame.bringToFront()
 
-    found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp,
-                                             soft_idx=soft_idx, hard_idx=hard_idx)
+    found, maxdepth, maxp = recursiveUNLFind(
+        unlList, c, depth, p, maxdepth, maxp,
+        soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
         moveToP(c, maxp)
     return found, maxdepth, maxp
-#@+node:ekr.20140711071454.17654: *4* g.recureiveUNLFind
+#@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                      soft_idx=False, hard_idx=False):
     """
@@ -3394,7 +3397,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                     order.append(nths[nth_same])
             # Then we try *all* other nodes with same header
             order += [n for n, s in enumerate(heads)
-                      if n not in order and s == target]
+                        if n not in order and s == target]
             # Then position based, if requested
             if soft_idx and nth_sib < len(heads):
                 order.append(nth_sib)
@@ -3407,14 +3410,18 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         # note, the above also fixes calling with soft_idx=True and an old UNL
     for ndi in order:
         nd = nds[ndi]
-        if target == nd.h or (use_idx_mode and (soft_idx or hard_idx) and ndi == nth_sib):
+        if (
+            target == nd.h or
+            (use_idx_mode and (soft_idx or hard_idx) and ndi == nth_sib)
+        ):
             if depth + 1 == len(unlList): # found it
                 return True, maxdepth, nd
             else:
                 if maxdepth < depth + 1:
                     maxdepth = depth + 1
                     maxp = nd.copy()
-                found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth + 1, nd,
+                found, maxdepth, maxp = g.recursiveUNLFind(
+                    unlList, c, depth + 1, nd,
                     maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
                 if found:
                     return found, maxdepth, maxp
@@ -3426,14 +3433,15 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         for p in c.all_unique_positions():
             if any([p.h.replace('--%3E', '-->') in unl for unl in unlList]):
                 aList.append((p.copy(), p.get_UNL(False, False, True)))
-        # unl_list = [re.sub(pos_pattern,"",x).replace('--%3E','-->') for x in unl.split('-->')]
         maxcount = 0
         singleMatch = True
         for iter_unl in aList:
             count = 0
             compare_list = unlList[:]
             for header in reversed(iter_unl[1].split('-->')):
-                if re.sub(pos_pattern, "", header).replace('--%3E', '-->') == compare_list[-1]:
+                if (re.sub(pos_pattern, "", header).replace('--%3E', '-->') ==
+                     compare_list[-1]
+                ):
                     count = count + 1
                     compare_list.pop(-1)
                 else:
@@ -6520,22 +6528,28 @@ def handleUrl(url, c=None, p=None):
             g.trace('url          ', url)
             g.trace('c.frame.title', c.frame.title)
             g.trace('leo_path     ', leo_path)
+            g.trace('parsed.fragment', fragment)
             g.trace('parsed.netloc', netloc)
             g.trace('parsed.path  ', path)
-            g.trace('parsed.scheme', scheme)
+            g.trace('parsed.scheme', repr(scheme))
         if c and scheme in ('', 'file'):
             if not leo_path:
                 if '-->' in path:
-                    g.recursiveUNLSearch(unquote(path).split("-->"), c,
-                                         soft_idx=True)
+                    g.recursiveUNLSearch(
+                        unquote(path).split("-->"),
+                        c,
+                        soft_idx=True)
                     return
                 if not path and fragment:
-                    g.recursiveUNLSearch(unquote(fragment).split("-->"), c,
-                                         soft_idx=True)
+                    g.recursiveUNLSearch(
+                        unquote(fragment).split("-->"),
+                        c,
+                        soft_idx=True)
                     return
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # Immediately end editing, so that typing in the new window works properly.
+                # Immediately end editing,
+                # so that typing in the new window works properly.
                 c.endEditing()
                 c.redraw_now()
                 if g.unitTesting:

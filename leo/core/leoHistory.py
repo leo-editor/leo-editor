@@ -15,13 +15,21 @@ class NodeHistory:
             # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
+    #@+node:ekr.20160426061203.1: ** NodeHistory.dump
+    def dump(self):
+        '''Dump the beadList'''
+        for i, data in enumerate(self.beadList):
+            p, chapter = data
+            p = p and p.h or 'no p'
+            chapter = chapter and chapter.name or 'main'
+            mark = '**' if i == self.beadPointer else '  '
+            print('%s %s %s %s' % (mark, i, chapter, p))
     #@+node:ekr.20070615134813: ** NodeHistory.goNext
     def goNext(self):
         '''Select the next node, if possible.'''
         if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p, chapter = self.beadList[self.beadPointer]
-            # g.trace(self.beadPointer,p.h)
             self.select(p, chapter)
     #@+node:ekr.20130915111638.11288: ** NodeHistory.goPrev
     def goPrev(self):
@@ -34,12 +42,12 @@ class NodeHistory:
     #@+node:ekr.20130915111638.11294: ** NodeHistory.select
     def select(self, p, chapter):
         '''
-        if p.v exists anywhere, select p in chapter p if possible.
-        Otherwise, remove p from self.beadList.
+        Update the history list when selecting p.
+        Called only from self.goToNext/PrevHistory
         '''
         trace = False and not g.unitTesting
         c, cc = self.c, self.c.chapterController
-        if trace: g.trace(c.positionExists(p), p and p.h)
+        if trace: g.trace('(NodeHistory)', p and p.h, g.callers(2))
         if c.positionExists(p):
             self.skipBeadUpdate = True
             try:
@@ -49,30 +57,47 @@ class NodeHistory:
                 c.selectPosition(p) # Calls cc.selectChapterForPosition
             finally:
                 self.skipBeadUpdate = False
-        else:
-            self.beadList = [data for data in self.beadList if data[0].v != p.v]
-            self.beadPointer = len(self.beadList) - 1
+        # Fix bug #180: Always call self.update here.
+        self.update(p, change=False)
     #@+node:ville.20090724234020.14676: ** NodeHistory.update
-    def update(self, p):
-        '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
+    def update(self, p, change=True):
+        '''
+        Update the beadList while p is being selected.
+        Called *only* from c.frame.tree.selectHelper.
+        '''
         trace = False and not g.unitTesting
         c, cc = self.c, self.c.chapterController
-        if not p or self.skipBeadUpdate:
-            # We have been called from self.doNext or self.doPrev.
-            # Do *not* update the bead list here!
+        if not p or not c.positionExists(p) or self.skipBeadUpdate:
             return
         # A hack: don't add @chapter nodes.
         # These are selected during the transitions to a new chapter.
         if p.h.startswith('@chapter '):
             return
-        # Leo 4.11: remove any duplicates of p.
-        self.beadList = [data for data in self.beadList if data[0].v != p.v]
-        data = p.copy(), cc.getSelectedChapter()
-        self.beadList.append(data)
-        # Leo 4.11: always set beadPointer to the end.
-        # This works because self.doNext and self.doPrev do not change the beadList.
-        self.beadPointer = len(self.beadList) - 1
-        if trace: g.trace(len(self.beadList), self.beadPointer, p and p.h, g.callers())
+        # Fix bug #180: handle the change flag.
+        aList, found = [], -1
+        for i, data in enumerate(self.beadList):
+            p2, junk_chapter = data
+            if c.positionExists(p2):
+                if p == p2:
+                    if change:
+                        pass # We'll append later.
+                    elif found == -1:
+                        found = i
+                        aList.append(data)
+                    else:
+                        pass # Remove any duplicate.
+                else:
+                    aList.append(data)
+        if change or found == -1:
+            data = p.copy(), cc.getSelectedChapter()
+            aList.append(data)
+            self.beadPointer = len(aList) - 1
+        else:
+            self.beadPointer = found
+        self.beadList = aList
+        if trace:
+            g.trace('(NodeHistory) change:', change, p.h)
+            self.dump()
     #@-others
 #@@language python
 #@@tabwidth -4
