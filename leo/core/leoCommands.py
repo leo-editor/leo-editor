@@ -3763,11 +3763,14 @@ class Commands(object):
                 p.contract()
         c.expansionNode = c.p.copy()
         c.expansionLevel = max_level + 1
-        g.es('level', max_level + 1)
-            # It's always useful to announce the level.
         if c.expansionLevel != old_expansion_level:
             if trace: g.trace('level', level, 'max_level', max_level+1)
             c.redraw()
+        # It's always useful to announce the level.
+        # c.k.setLabelBlue('level: %s' % (max_level+1))
+        # g.es('level', max_level + 1)
+        c.frame.putStatusLine('level: %s' % (max_level+1))
+            # bg='red', fg='red')
     #@+node:ekr.20031218072017.2922: *4* Mark...
     #@+node:ekr.20090905110447.6098: *5* c.cloneMarked
     @cmd('clone-marked-nodes')
