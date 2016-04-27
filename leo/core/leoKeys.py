@@ -2521,6 +2521,9 @@ class KeyHandlerClass:
                 ins = w.getInsertPoint()
                 c.frame.log.deleteTab('Completion')
                 w.setSelectionRange(sel1, sel2, insert=ins)
+            else:
+                c.frame.log.deleteTab('Completion')
+                    # 2016/04/27
             if k.mb_help:
                 s = k.getLabel()
                 commandName = s[len(helpPrompt):].strip()
