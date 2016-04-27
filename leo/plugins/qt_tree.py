@@ -223,6 +223,8 @@ class LeoQtTree(leoFrame.LeoTree):
                 icons = [i for i in com.getIconList(nd) if 'visualIcon' not in i]
                 com.setIconList(nd, icons, False)
 
+        self.declutter_update = True
+
         return None
     #@+node:tbrown.20150807090639.1: *4* qtree.declutter_node
     def declutter_node(self, c, p, item):
