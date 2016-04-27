@@ -3662,11 +3662,12 @@ class Commands(object):
     def expandNextLevel(self, event=None):
         '''Increase the expansion level of the outline and
         Expand all nodes at that level or lower.'''
-        c = self; v = c.currentVnode()
+        c = self
         # Expansion levels are now local to a particular tree.
-        if c.expansionNode != v:
+        if c.expansionNode != c.p:
             c.expansionLevel = 1
-            c.expansionNode = v
+            c.expansionNode = c.p.copy()
+        # g.trace(c.expansionLevel)
         self.expandToLevel(c.expansionLevel + 1)
     #@+node:ekr.20031218072017.2907: *6* c.c.expandNode
     @cmd('expand-node')
@@ -3728,11 +3729,11 @@ class Commands(object):
     def expandPrevLevel(self, event=None):
         '''Decrease the expansion level of the outline and
         Expand all nodes at that level or lower.'''
-        c = self; v = c.currentVnode()
+        c = self
         # Expansion levels are now local to a particular tree.
-        if c.expansionNode != v:
+        if c.expansionNode != c.p:
             c.expansionLevel = 1
-            c.expansionNode = v
+            c.expansionNode = c.p.copy()
         self.expandToLevel(max(1, c.expansionLevel - 1))
     #@+node:ekr.20031218072017.2909: *5* Utilities
     #@+node:ekr.20031218072017.2910: *6* c.contractSubtree
@@ -3747,19 +3748,26 @@ class Commands(object):
             v.expand()
             v = v.threadNext()
         c.redraw()
-    #@+node:ekr.20031218072017.2912: *6* c.expandToLevel (rewritten in 4.4)
+    #@+node:ekr.20031218072017.2912: *6* c.expandToLevel
     def expandToLevel(self, level):
+        trace = False and not g.unitTesting
         c = self
-        current = c.p
-        n = current.level()
-        for p in current.self_and_subtree():
+        n = c.p.level()
+        old_expansion_level = c.expansionLevel
+        max_level = 0
+        for p in c.p.self_and_subtree():
             if p.level() - n + 1 < level:
                 p.expand()
+                max_level = max(max_level, p.level() - n + 1)
             else:
                 p.contract()
-        c.expansionLevel = level
-        c.expansionNode = c.p
-        c.redraw()
+        c.expansionNode = c.p.copy()
+        c.expansionLevel = max_level + 1
+        g.es('level', max_level + 1)
+            # It's always useful to announce the level.
+        if c.expansionLevel != old_expansion_level:
+            if trace: g.trace('level', level, 'max_level', max_level+1)
+            c.redraw()
     #@+node:ekr.20031218072017.2922: *4* Mark...
     #@+node:ekr.20090905110447.6098: *5* c.cloneMarked
     @cmd('clone-marked-nodes')
@@ -6231,9 +6239,10 @@ class Commands(object):
     def positionExists(self, p, root=None):
         """Return True if a position exists in c's tree"""
         # Important: do not call p.isAncestorOf here.
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         c = self
         if not p or not p.v:
+            if trace: g.trace('fail 1', p)
             return False
         if root and p == root:
             return True
@@ -6244,13 +6253,13 @@ class Commands(object):
             if root and p == root:
                 return True
             elif not old_v.isNthChildOf(old_n, p.v):
-                if trace: g.trace('fail 1', p)
+                if trace: g.trace('fail 2', p, g.callers())
                 return False
         if root:
             exists = p == root
         else:
             exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        if trace and not exists: g.trace('fail 2', p)
+        if trace and not exists: g.trace('fail 3', p, g.callers())
         return exists
     #@+node:ekr.20040803140033.2: *4* c.rootPosition
     _rootCount = 0

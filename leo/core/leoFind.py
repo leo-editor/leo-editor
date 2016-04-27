@@ -1439,8 +1439,6 @@ class LeoFind:
         if not self.checkArgs():
             return
         self.initInHeadline()
-        ### if clone_find:
-        ###    self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
             # Sets self.p and self.onlyPosition.
@@ -1482,11 +1480,9 @@ class LeoFind:
             undoData = u.beforeInsertNode(c.p)
             found = self.createCloneFindAllNodes(clones, flatten)
             u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
-            c.selectPosition(found)
             c.setChanged(True)
             c.selectPosition(found)
         else:
-            # This may have been the cause of cff not selecting any node.
             self.restore(data)
         return count
     #@+node:ekr.20141023110422.1: *6* find.createCloneFindAllNodes
@@ -1499,6 +1495,7 @@ class LeoFind:
         # Create the found node.
         found = c.lastTopLevel().insertAfter()
         assert found
+        assert c.positionExists(found)
         found.h = 'Found:%s' % self.find_text
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
