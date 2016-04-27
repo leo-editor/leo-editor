@@ -46,6 +46,16 @@ t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 .. @+node:ekr.20160418065622.1: ** Fixed #252: goto-next clone activate chapter view
 https://github.com/leo-editor/leo-editor/issues/252
+.. @+node:ekr.20160427043252.1: ** Fixed #270: Leo's keyboard events don't work after...
+Leo's keyboard events doesn't work after "Insert" on headline and Alt+Tab Alt+Tab.
+https://github.com/leo-editor/leo-editor/issues/270
+
+Strange behavior when I leave Leo (Alt+Tab) after "Insert" on headline node.
+
+When I come back (Alt+Tab) to Leo only the menu works (Alt+F, ...) and the mouse.
+
+Other unusual behavior:
+left-arrow, right-arrow changes between Leo documents (like Ctrl+Tab in normal behavior)
 .. @-all
 .. @@nosearch
 .. @@killbeautify

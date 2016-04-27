@@ -580,8 +580,13 @@ class LeoQtGui(leoGui.LeoGui):
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
         '''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(g.app.gui.get_focus())
+
         self.active = False
             # Used only by c.idle_focus_helper.
+
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and not self.deactivated_name:
@@ -599,8 +604,13 @@ class LeoQtGui(leoGui.LeoGui):
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
         '''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(g.app.gui.get_focus())
+
         self.active = True
             # Used only by c.idle_focus_helper.
+        
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:

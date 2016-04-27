@@ -393,15 +393,15 @@ class Commands(object):
             return c.os_path_finalize(c.mFileName).lower()
         else:
             return 0
-    #@+node:ekr.20110509064011.14563: *3* c.idle_focus_helper
+    #@+node:ekr.20110509064011.14563: *3* c.idle_focus_helper & helpers
     idle_focus_count = 0
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        active = False # True: force focus to the body.
         trace = False and not g.unitTesting
         trace_inactive_focus = False
         trace_in_dialog = False
+        # active = False # True: force focus to the body.
         c = self
         assert tag == 'idle'
         if g.app.unitTesting or keys.get('c') != c:
@@ -413,29 +413,45 @@ class Commands(object):
         w = g.app.gui.get_focus()
         if g.app.gui.active:
             if trace:
-                self.trace_idle_focus(active, w)
-            if not w and active:
-                c.bodyWantsFocusNow()
+                self.trace_idle_focus(w)
+            if w and self.is_unusual_focus(w):
+                if trace:
+                    w_class = w and w.__class__.__name__
+                    g.trace('***** unusual focus', w_class)
+                # Fix bug 270: Leo's keyboard events doesn't work after "Insert"
+                # on headline and Alt+Tab, Alt+Tab
+                # Presumably, intricate details of Qt event handling are involved.
+                # The focus was in the tree, so put the focus back in the tree.
+                c.treeWantsFocusNow()
+            # elif not w and active:
+                # c.bodyWantsFocusNow()
         elif trace and trace_inactive_focus:
-            count = c.idle_focus_count
             w_class = w and w.__class__.__name__
+            count = c.idle_focus_count
             g.trace('%s inactive focus: %s' % (count, w_class))
-    #@+node:ekr.20150403063658.1: *4* c.trace_idle_focus
-    last_unusual_focus = None
-    last_no_focus = False
-
-    def trace_idle_focus(self, active, w):
-        '''Trace the focus for w, minimizing chatter.'''
+    #@+node:ekr.20160427062131.1: *4* c.is_unusual_focus
+    def is_unusual_focus(self, w):
+        '''Return True if w is not in an expected place.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = False and not g.unitTesting
-        c = self
-        table1 = (# Specific.
+        table = (
             QtWidgets.QTextEdit,
             QtWidgets.QLineEdit,
             qt_frame.LeoQTreeWidget,
         )
-        table2 = (# Inclusive, safe.
+        return not isinstance(w, table)
+    #@+node:ekr.20150403063658.1: *4* c.trace_idle_focus
+    last_unusual_focus = None
+    last_no_focus = False
+
+    def trace_idle_focus(self, w):
+        '''Trace the focus for w, minimizing chatter.'''
+        from leo.core.leoQt import QtWidgets
+        import leo.plugins.qt_frame as qt_frame
+        trace = True and not g.unitTesting
+        trace_known = False
+        c = self
+        table = (
             QtWidgets.QWidget,
             qt_frame.LeoQTreeWidget,
         )
@@ -443,18 +459,20 @@ class Commands(object):
         w_class = w and w.__class__.__name__
         if w:
             c.last_no_focus = False
-            if not isinstance(w, table1):
+            if self.is_unusual_focus(w):
                 if w_class != c.last_unusual_focus:
                     c.last_unusual_focus = w_class
                     g.trace('%s unusual focus: %s' % (count, w_class))
             else:
                 c.last_unusual_focus = None
-                if not isinstance(w, table2):
-                    g.trace('%s unknown focus: %s' % (count, w_class))
-                elif trace:
-                    g.trace('%s known focus: %s' % (count, w_class))
-        elif active:
-            g.trace('%s no focus -> body' % (count))
+                if trace:
+                    if trace_known and isinstance(w, table):
+                        g.trace('%s known focus: %s' % (count, w_class))
+                    elif not isinstance(w, table):
+                        g.trace('%s unknown focus: %s' % (count, w_class))
+        # elif active:
+            # g.trace('%s no focus -> body' % (count))
+        # el
         elif not c.last_no_focus:
             c.last_no_focus = True
             g.trace('%s no focus' % (count))
@@ -3087,10 +3105,12 @@ class Commands(object):
     @cmd('insert-node')
     def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
         '''Insert a node after the presently selected node.'''
+        trace = False and not g.unitTesting
         c = self; u = c.undoer
         current = c.p
         if not current: return
         c.endEditing()
+        if trace: g.trace('==========', c.p.h, g.app.gui.get_focus())
         undoData = c.undoer.beforeInsertNode(current)
         # Make sure the new node is visible when hoisting.
         if (as_child or
