@@ -6236,13 +6236,15 @@ class Commands(object):
         # c = self
         return leoNodes.Position(None)
     #@+node:ekr.20040307104131.3: *4* c.positionExists
-    def positionExists(self, p, root=None):
+    def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
         # Important: do not call p.isAncestorOf here.
-        trace = False # and not g.unitTesting
+        trace = (False or trace) and not g.unitTesting
         c = self
         if not p or not p.v:
-            if trace: g.trace('fail 1', p)
+            if trace:
+                g.trace('fail 1', p)
+                c.dumpPosition(p)
             return False
         if root and p == root:
             return True
@@ -6253,14 +6255,25 @@ class Commands(object):
             if root and p == root:
                 return True
             elif not old_v.isNthChildOf(old_n, p.v):
-                if trace: g.trace('fail 2', p, g.callers())
+                if trace:
+                    g.trace('fail 2', p, g.callers())
+                    c.dumpPosition(p)
                 return False
         if root:
             exists = p == root
         else:
             exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        if trace and not exists: g.trace('fail 3', p, g.callers())
+        if trace and not exists:
+            g.trace('fail 3', p, g.callers())
+            c.dumpPosition(p)
         return exists
+    #@+node:ekr.20160427153457.1: *5* c.dumpPosition
+    def dumpPosition(self, p):
+        '''Dump position p and it's ancestors.'''
+        g.trace('=====',p.h, p._childIndex)
+        for i, data in enumerate(p.stack):
+            v, childIndex = data
+            print('%s %s %s' % (i, childIndex, v._headString))
     #@+node:ekr.20040803140033.2: *4* c.rootPosition
     _rootCount = 0
 

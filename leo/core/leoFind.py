@@ -1480,6 +1480,7 @@ class LeoFind:
             undoData = u.beforeInsertNode(c.p)
             found = self.createCloneFindAllNodes(clones, flatten)
             u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            assert c.positionExists(found, trace=True), found
             c.setChanged(True)
             c.selectPosition(found)
         else:
@@ -1493,9 +1494,10 @@ class LeoFind:
         '''
         c = self.c
         # Create the found node.
+        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
         found = c.lastTopLevel().insertAfter()
         assert found
-        assert c.positionExists(found)
+        assert c.positionExists(found), found
         found.h = 'Found:%s' % self.find_text
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
@@ -1503,8 +1505,13 @@ class LeoFind:
         found.b = '# ' + flat + status
         # Clone nodes as children of the found node.
         for p in clones:
-            p2 = p.clone()
-            p2.moveToLastChildOf(found)
+            # Do *not* call p.clone here.
+            # That would cause problems if p.clone precedes found.
+            # Apparently, p.moveToLastChildOf(found) doesn't work here.
+            # Instead, create the clone directly as a child of found.
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkAsNthChild(found, n, adjust=False)
         return found
     #@+node:ekr.20160422071747.1: *6* find.doCloneFindAllHelper
     def doCloneFindAllHelper(self, clones, count, flatten, p, skip):
