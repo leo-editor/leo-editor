@@ -44,6 +44,8 @@ for p in c.all_unique_positions():
         pass
 t2 = time.clock()
 g.es('%s nodes, %5.3f sec' % (n, t2-t1))
+.. @+node:ekr.20160418065622.1: ** Fixed #252: goto-next clone activate chapter view
+https://github.com/leo-editor/leo-editor/issues/252
 .. @-all
 .. @@nosearch
 .. @@killbeautify

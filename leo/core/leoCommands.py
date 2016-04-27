@@ -4350,7 +4350,6 @@ class Commands(object):
         p.moveToThreadNext()
         wrapped = False
         while 1:
-            # g.trace(p.v,p.h)
             if p and p.v == v:
                 break
             elif p:
@@ -4362,14 +4361,22 @@ class Commands(object):
                 p = c.rootPosition()
         if p:
             if cc:
-                cc.selectChapterByName('main')
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+                # Fix bug #252: goto-next clone activate chapter.
+                # https://github.com/leo-editor/leo-editor/issues/252
+                chapter = cc.getSelectedChapter()
+                old_name = chapter and chapter.name
+                new_name = cc.findChapterNameForPosition(p)
+                if new_name == old_name:
+                    c.selectPosition(p)
+                    c.redraw_after_select(p)
+                else:
+                    c.selectPosition(p)
+                    cc.selectChapterByName(new_name)
+            else:
+                c.selectPosition(p)
+                c.redraw_after_select(p)
         else:
             g.blue('done')
-        # if cc:
-            # name = cc.findChapterNameForPosition(p)
-            # cc.selectChapterByName(name)
     #@+node:ekr.20071213123942: *5* c.findNextClone
     @cmd('find-next-clone')
     def findNextClone(self, event=None):
