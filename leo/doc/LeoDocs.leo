@@ -968,6 +968,7 @@
 <v t="ekr.20131015035606.16780"><vh>Moving the cursor</vh></v>
 </v>
 <v t="ekr.20131015035606.16801"><vh>Frequently used commands</vh></v>
+<v t="ekr.20160428104050.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
 <v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
 <v t="ekr.20131031101712.16486"><vh>Node types</vh></v>
@@ -1229,25 +1230,19 @@
 <v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
-<v t="ekr.20160415031743.20"><vh>Docs TO DO</vh>
-<v t="ekr.20160428074511.1"><vh>Cheat Sheet</vh>
-<v t="ekr.20160422082853.1"><vh>@nosearch</vh></v>
-<v t="ekr.20160428074531.1"><vh>cfa, cff, cfam, cffm</vh></v>
-<v t="ekr.20160428074700.1"><vh>@history list</vh></v>
-</v>
-<v t="ekr.20160428074605.1"><vh>Tutorial</vh>
-<v t="ekr.20160428074616.1"><vh>cfa, cff, cfam, cffm</vh></v>
-</v>
-<v t="ekr.20160428074627.1"><vh>References</vh>
+<v t="ekr.20160414191645.1"><vh>To do: FAQ: pylint command/script</vh></v>
+<v t="ekr.20160428074627.1"><vh>To do: Ref</vh>
 <v t="ekr.20160428074641.1"><vh>cfa, cff, cfam, cffm</vh></v>
 <v t="ekr.20160428074708.1"><vh>@history list</vh></v>
 </v>
-<v t="ekr.20160414191645.1"><vh>FAQ: pylint command/script</vh></v>
-<v t="ekr.20160428074729.1"><vh>Scripting</vh>
+<v t="ekr.20160428074729.1"><vh>To do: Scripting</vh>
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
 <v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
 </v>
+<v t="ekr.20160428074605.1"><vh>To do: Tutorial</vh>
+<v t="ekr.20160428074616.1"><vh>cfa, cff, cfam, cffm</vh></v>
 </v>
+<v t="ekr.20160428104050.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12907,6 +12902,7 @@ See the `Directives reference`_ for full details::
     @language rest          # restructured text
     @language plain         # plain text: no syntax coloring.
     @lineending lineending
+    @nosearch               # suppress searching for cff &amp; cfa commands.
     @pagewidth 100
     @raw, @end_raw          # @file only.
     @tabwidth -4            # use spaces
@@ -12919,11 +12915,12 @@ Leading whitespace is allowed (and significant) for::
     @all
     @others
     </t>
-<t tx="ekr.20131015035606.16788">For documentation see node: "About this file" in leoSettings.leo.
+<t tx="ekr.20131015035606.16788">For documentation see node: "About this file" in leoSettings.leo::
 
-- Key bindings:     @shortcuts
-- Visual settings:  @data qt-gui-plugin-style-sheet
-- Enabling plugins: @enabled-plugins
+    Command history:    @history-list
+    Key bindings:       @shortcuts
+    Visual settings:    @data qt-gui-plugin-style-sheet
+    Enabling plugins:   @enabled-plugins
 
 To disable a binding for a key, bind it to do-nothing::
 
@@ -13153,17 +13150,18 @@ The `scripting portion`_ of `Leo's cheat sheet`_ contains much more information 
 
 `Leo's Directive Reference`_ discusses all directives in great detail. It would be a good idea to skim this chapter to see what it contains.
 </t>
-<t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details:
+<t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
-- bookmarks.py: Manages URL's used as bookmarks.
-- contextmenu.py: Brings up context menu when user right-clicks a headline.
-- mod_scripting.py: Supports @button and @command nodes.
-- quicksearch.py: Adds Nav tab for searching.
-- todo.py: Manages to-do lists and simple project management.
-- valuespace.py: Creates an outline-oriented spreadsheet.
-- viewrendered.py: Creates a rendering pane.
-  Automatically loaded by Leo's help commands.
-  Supports @graphics-script, @image, @html, @movie and @svg nodes.
+    bookmarks.py:       Manages URL's used as bookmarks.
+    contextmenu.py:     Creates context menus for headlines.
+    mod_scripting.py:   Supports @button and @command nodes.
+    quicksearch.py:     Adds Nav tab for searching.
+    todo.py:            To-do lists and simple project management.
+    valuespace.py:      Creates an outline-oriented spreadsheet.
+    viewrendered.py:    Creates a rendering pane.
+                        Automatically loaded by Leo's help commands.
+                        Supports @graphics-script, @image, @html,
+                        @movie and @svg nodes.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
 reading LeoDocs.leo.</t>
@@ -13902,7 +13900,7 @@ More: Associate leo files
 </t>
 <t tx="ekr.20131028213522.17138">::
 
-    Usage: launchLeo.py [options]
+    Usage: launchLeo.py [options] file1, file2, ...
     
     Options:
       -h, --help            show this help message and exit
@@ -13916,7 +13914,6 @@ More: Associate leo files
       --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --old-nosent          disable new @clean update logic
       --screen-shot=SCREENSHOT_FN
                             take a screen shot and then exit
       --script=SCRIPT       execute a script and then exit
@@ -13930,7 +13927,7 @@ More: Associate leo files
       -v, --version         print version number and exit
       --window-size=WINDOW_SIZE
                             initial window size (height x width)
-</t>
+    </t>
 <t tx="ekr.20131028213522.17150"></t>
 <t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to actually get an html file that can be loaded into a word processor to output an .odt or .docx file for example.
 
@@ -14003,32 +14000,33 @@ You now have several choices.
 
 See `Running Leo`_ for how to run Leo after installing it.
 </t>
-<t tx="ekr.20131031101712.16486">Supported by Leo's core:
+<t tx="ekr.20131031101712.16486">Supported by Leo's core::
 
-- @chapter
-- @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
-- @settings
-- @test, @testsetup, @testclass
-- @url
+    @chapter
+    @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
+    @settings
+    @test, @testsetup, @testclass
+    @url
 
-Within @settings trees:
+Within @settings trees::
 
-- @bool, @color, @directory, @encoding, @int
-- @float, @font, @ratio, @path, @string
-- @buttons, @commands
-- @enabled-plugins
-- @menus, @menu, @menuat, @item
-- @openwith, @shortcuts
+    @bool, @buttons, @color, @commands
+    @directory, @encoding
+    @enabled-plugins, @float, @font,
+    @history-list, @int
+    @menus, @menu, @menuat, @item
+    @openwith, @path, @shortcuts, @string
 
-Supported by plugins:
+Supported by plugins::
 
-- bookmarks.py: @bookmarks, @bookmark
-- at_folder.py: @folder
-- at_produce.py: @produce
-- at_view.py: @clip, @strip, @view
-- expfolder.py: @expfolder
-- mod_scripting.py: @button, @command, @script
-- viewrendered.py: @graphics-script, @image, @html, @movie and @svg
+    bookmarks.py:       @bookmarks, @bookmark
+    at_folder.py:       @folder
+    at_produce.py:      @produce
+    at_view.py:         @clip, @strip, @view
+    expfolder.py:       @expfolder
+    mod_scripting.py:   @button, @command, @script
+    viewrendered.py:    @graphics-script, @image
+                        @html, @movie, @svg
 </t>
 <t tx="ekr.20131031101712.16685">Leo 4.10 final was released March 29, 2012. It contained a huge number of improvements and bug fixes::
 
@@ -18505,7 +18503,6 @@ Fixed at a039305.
 
 Changed g.get_directives_dict.</t>
 <t tx="ekr.20160415031743.2"></t>
-<t tx="ekr.20160415031743.20"></t>
 <t tx="ekr.20160415031743.21">Here is a cool pattern for organizing long docstrings:
 
 1. Start your file with:
@@ -18650,7 +18647,6 @@ https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
 https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 </t>
-<t tx="ekr.20160422082853.1"></t>
 <t tx="ekr.20160428073403.10">https://github.com/leo-editor/leo-editor/issues/252
 </t>
 <t tx="ekr.20160428073403.11">Leo's keyboard events doesn't work after "Insert" on headline and Alt+Tab Alt+Tab.
@@ -18693,15 +18689,22 @@ https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
 
 The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 </t>
-<t tx="ekr.20160428074511.1"></t>
-<t tx="ekr.20160428074531.1"></t>
 <t tx="ekr.20160428074605.1"></t>
 <t tx="ekr.20160428074616.1"></t>
 <t tx="ekr.20160428074627.1"></t>
 <t tx="ekr.20160428074641.1"></t>
-<t tx="ekr.20160428074700.1"></t>
 <t tx="ekr.20160428074708.1"></t>
 <t tx="ekr.20160428074729.1"></t>
+<t tx="ekr.20160428104050.1">The **clone find** commands, cfa and cff,  move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
+
+    cfa     clone-find-all
+    cff     clone-find-all-flattened
+    
+The **clone-marked** commands move clones of all marked nodes under an organizer node. Especially useful for gathering nodes by hand::
+
+    cfam    clone-find-marked 
+    cffm    clone-find-flattened-marked
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
