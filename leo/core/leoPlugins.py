@@ -504,8 +504,9 @@ class LeoPluginsController:
                 # g.es_exception()
             result = None
         except Exception:
-            report('exception importing plugin: %s' % moduleName)
-            g.es_exception()
+            if trace:
+                report('exception importing plugin: %s' % moduleName)
+                g.es_exception()
             result = None
         self.loadingModuleNameStack.pop()
         if result:
@@ -527,8 +528,9 @@ class LeoPluginsController:
                             report('%s.init() returned False' % moduleName)
                         result = None
                 except Exception:
-                    report('exception loading plugin: %s' % moduleName)
-                    g.es_exception()
+                    if trace:
+                        report('exception loading plugin: %s' % moduleName)
+                        g.es_exception()
                     result = None
             else:
                 # No top-level init function.

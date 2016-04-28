@@ -682,7 +682,7 @@ LeoDist.leo:
 
 Run pyinstaller:
 - Delete leo-editor/dist and leo-editor/build folders first.
-- Run pyinstaller launchLeo-unified.spec.
+- Run pyinstaller2 launchLeo-unified.spec.
 - Test it, then rerun it (so .pyo files are not part of the package)
 - Compress the folder:
     - Windows: Leo_&lt;version&gt;_Win.zip.
