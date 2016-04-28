@@ -401,7 +401,6 @@ class Commands(object):
         trace = False and not g.unitTesting
         trace_inactive_focus = False
         trace_in_dialog = False
-        # active = False # True: force focus to the body.
         c = self
         assert tag == 'idle'
         if g.app.unitTesting or keys.get('c') != c:
@@ -432,14 +431,22 @@ class Commands(object):
     #@+node:ekr.20160427062131.1: *4* c.is_unusual_focus
     def is_unusual_focus(self, w):
         '''Return True if w is not in an expected place.'''
-        from leo.core.leoQt import QtWidgets
-        import leo.plugins.qt_frame as qt_frame
-        table = (
-            QtWidgets.QTextEdit,
-            QtWidgets.QLineEdit,
-            qt_frame.LeoQTreeWidget,
-        )
-        return not isinstance(w, table)
+        if 1:
+            # Fix bug 270: Leo's keyboard events doesn't work after "Insert"
+            # on headline and Alt+Tab, Alt+Tab
+            # Fix #276: Focus lost...in Nav text input
+            import leo.plugins.qt_frame as qt_frame
+            return isinstance(w, qt_frame.QtTabBarWrapper)
+        else:
+            # Wrong: we can't list all the "usual" widgets.
+            from leo.core.leoQt import QtWidgets
+            table = (
+                QtWidgets.QListWidget,
+                QtWidgets.QTextEdit,
+                QtWidgets.QLineEdit,
+                qt_frame.LeoQTreeWidget,
+            )
+            return not isinstance(w, table)
     #@+node:ekr.20150403063658.1: *4* c.trace_idle_focus
     last_unusual_focus = None
     last_no_focus = False
