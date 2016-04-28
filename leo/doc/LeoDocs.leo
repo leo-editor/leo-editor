@@ -18189,7 +18189,7 @@ In short, unit tests are a *master tool* for any programmer or designer.
 <t tx="ekr.20160310062634.1"></t>
 <t tx="ekr.20160310062651.1">::
 
-    Leo 5.2 beta 1 release March 15, 2016
+    Leo 5.2-final release March 18, 2016
 
     Easy install with PyInstaller packaging
     c.cloneFindByPredicate
@@ -18358,7 +18358,7 @@ For example, a documentation script might "scrape" one or more .leo files for da
 
 
 </t>
-<t tx="ekr.20160415031743.1">Leo 5.3-b1 April 22, 2016
+<t tx="ekr.20160415031743.1">Leo 5.3-b1 April 29, 2016
 
 [Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
@@ -18566,7 +18566,9 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 - The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>
 <t tx="ekr.20160417063026.1"></t>
 <t tx="ekr.20160417112500.1"></t>
-<t tx="ekr.20160417112511.1">- Leo now supports Jupyter Notebook (.ipynb) files.
+<t tx="ekr.20160417112511.1">Leo 5.3-b1 released April 29, 2016.
+
+- Leo now supports Jupyter Notebook (.ipynb) files.
 - @chapter is now allowed anywhere. No need for @chapters.
 - Faster spell checking.
 - The rst3 command supports @rst-table.
