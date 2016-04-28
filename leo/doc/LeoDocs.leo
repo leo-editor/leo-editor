@@ -396,6 +396,7 @@
 <v t="ekr.20131002055813.19037"><vh>Moving the cursor in text panes</vh></v>
 <v t="ekr.20131001100335.15946"><vh>The minibuffer &amp; completions</vh></v>
 <v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
+<v t="ekr.20160428113347.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Getting help</vh></v>
 <v t="ekr.20131004064408.16020"><vh>Leo directives</vh></v>
@@ -1187,7 +1188,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131008041326.16080"></v>
 <v t="ekr.20160417112500.1"></v>
 <v t="ekr.20160415031743.1"><vh>Leo 5.3 release notes</vh>
 <v t="ekr.20160415031743.2"><vh>Bug fixes</vh>
@@ -1238,10 +1238,6 @@
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
 <v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
 </v>
-<v t="ekr.20160428074605.1"><vh>To do: Tutorial</vh>
-<v t="ekr.20160428074616.1"><vh>cfa, cff, cfam, cffm</vh></v>
-</v>
-<v t="ekr.20160428104050.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18644,8 +18640,6 @@ https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
 
 The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 </t>
-<t tx="ekr.20160428074605.1"></t>
-<t tx="ekr.20160428074616.1"></t>
 <t tx="ekr.20160428074729.1"></t>
 <t tx="ekr.20160428104050.1">The **clone find** commands, cfa and cff,  move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
 
@@ -18692,6 +18686,16 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     cffm    clone-find-flattened-marked
 </t>
 <t tx="ekr.20160428111506.1">The body text contains a list of commands, one per line, to be preloaded into Leo's command history. You access command history using the up and down arrow keys in Leo's minibuffer.</t>
+<t tx="ekr.20160428113347.1">The **clone find** commands, cfa and cff are extraordinarily useful. These commands move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
+
+    cfa     clone-find-all
+    cff     clone-find-all-flattened
+    
+The **clone-marked** commands move clones of all marked nodes under an organizer node. Especially useful for gathering nodes by hand::
+
+    cfam    clone-find-marked 
+    cffm    clone-find-flattened-marked
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
