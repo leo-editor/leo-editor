@@ -18502,7 +18502,7 @@ Alia K: Leo + Ipython notebook integration is a killer app indeed.
 
 - Added leo/plugins/importer/ipynb.py &amp; leo/plugins/writers/ipynb.py
 
-How to use sphynx with markdown:
+How to use sphinx with markdown:
 - https://github.com/spatialaudio/nbsphinx/
 - http://nbsphinx.readthedocs.org/en/0.2.5/usage.html#Sphinx-Setup
 </t>
