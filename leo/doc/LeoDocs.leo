@@ -305,6 +305,7 @@
 <v t="ekr.20141109053526.4"><vh>Scipting &amp; Testing</vh>
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
+<v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
 <v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
@@ -1230,7 +1231,7 @@
 <v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
-<v t="ekr.20160414191645.1"><vh>To do: FAQ: pylint command/script</vh></v>
+<v t="ekr.20050831195331.1"></v>
 <v t="ekr.20160428074627.1"><vh>To do: Ref</vh>
 <v t="ekr.20160428074641.1"><vh>cfa, cff, cfam, cffm</vh></v>
 <v t="ekr.20160428074708.1"><vh>@history list</vh></v>
@@ -18376,41 +18377,6 @@ For example, a documentation script might "scrape" one or more .leo files for da
 
 
 </t>
-<t tx="ekr.20160414191645.1">On Fri, Mar 25, 2016 at 6:59 AM, john lunzer &lt;lunzer@gmail.com&gt; wrote:
-
-​&gt; ​My biggest wishlist item is what I would "Livelint" which constantly runs and reruns pylint (or similar) in the background​.​
-​
-This basically already exists.  On Windows, I have this pylint.bat file:
-
-python2 c:\leo.repo\leo-editor\pylint-leo.py ^
-rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
-
-In other words, the top-level leo-editor folder contains:
-
-- pylint-leo.py
-- pylint-leo-rc.txt
-
-c:\leo.repo\leo-editor&gt;c:\Anaconda2\python.exe c:\leo.repo\leo-editor\pylint-leo.py rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt -h
-Usage: pylint-leo.py [options]
-
-Options:
-  -h, --help   show this help message and exit
-  -a           all
-  -c           core
-  -e           external
-  -f FILENAME  filename, relative to leo folder
-  -g           gui plugins
-  -m           modes
-  -p           plugins
-  -s           silent
-  -u           user commands
-  -v           report pylint version
-
-
-My typical usage is pylint -a -s
-
-Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
-</t>
 <t tx="ekr.20160415031743.1">Leo 5.3-b1 April 22, 2016
 
 [Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
@@ -18704,6 +18670,30 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
 
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
+</t>
+<t tx="ekr.20160428105918.1">Leo's pylint command hangs Leo while it is running. The top-level leo-editor folder contains pylint-leo.py and pylint-leo-rc.txt. To run pylint outside of Leo, create a .bat or .sh file to run leo-editor/pylint-leo.py. On Windows, I use this pylint.bat file::
+
+    python2 c:\leo.repo\leo-editor\pylint-leo.py ^
+    rc=c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt %*
+
+The -h option produces this::
+
+    Usage: pylint-leo.py [options]
+    
+    Options:
+      -h, --help   show this help message and exit
+      -a           all
+      -c           core
+      -e           external
+      -f FILENAME  filename, relative to leo folder
+      -g           gui plugins
+      -m           modes
+      -p           plugins
+      -s           silent
+      -u           user commands
+      -v           report pylint version
+
+My typical usage is pylint -a -s
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
