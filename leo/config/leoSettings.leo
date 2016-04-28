@@ -436,6 +436,7 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
@@ -11151,6 +11152,11 @@ v2: V</t>
 <t tx="ekr.20160318061607.5"></t>
 <t tx="ekr.20160318061607.6"></t>
 <t tx="ekr.20160318061607.7"></t>
+<t tx="ekr.20160428072005.1"># Lines starting with '#' are comment lines.
+# A list of command names to be pre-loaded into the history list.
+pylint
+sort-lines
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
