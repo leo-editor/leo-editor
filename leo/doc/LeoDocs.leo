@@ -486,6 +486,7 @@
 <v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh>
 <v t="ekr.20090116094356.5"><vh>\@button</vh></v>
 <v t="ekr.20090116094356.6"><vh>\@commands</vh></v>
+<v t="ekr.20160428111506.1"><vh>\@command-history</vh></v>
 <v t="ekr.20090116094356.7"><vh>\@data</vh></v>
 <v t="ekr.20090116094356.8"><vh>\@enabled-plugins</vh></v>
 <v t="ekr.20090116094356.11"><vh>\@font</vh></v>
@@ -690,6 +691,7 @@
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
 </v>
+<v t="ekr.20160428110816.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20150318110552.29"><vh>File commands</vh>
 <v t="ekr.20150318110552.30"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="ekr.20150318110552.31"><vh>Closing outlines &amp; quitting Leo</vh></v>
@@ -1185,6 +1187,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20131008041326.16080"></v>
 <v t="ekr.20160417112500.1"></v>
 <v t="ekr.20160415031743.1"><vh>Leo 5.3 release notes</vh>
 <v t="ekr.20160415031743.2"><vh>Bug fixes</vh>
@@ -1230,11 +1233,6 @@
 </v>
 <v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
-</v>
-<v t="ekr.20050831195331.1"></v>
-<v t="ekr.20160428074627.1"><vh>To do: Ref</vh>
-<v t="ekr.20160428074641.1"><vh>cfa, cff, cfam, cffm</vh></v>
-<v t="ekr.20160428074708.1"><vh>@history list</vh></v>
 </v>
 <v t="ekr.20160428074729.1"><vh>To do: Scripting</vh>
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
@@ -5058,31 +5056,26 @@ The file leo/test/test.leo contains the source code for leoBridgeTest.py. Here i
 </t>
 <t tx="ekr.20070317043727">Organizer nodes have headlines that do no start with @. Organizer nodes may be inserted freely without changing the meaning of an @setting tree.
 </t>
-<t tx="ekr.20070317043727.2">Simple settings nodes have headlines of the form::
+<t tx="ekr.20070317043727.2">Simple settings nodes have headlines of the form ``@&lt;type&gt; name = val``.
+These settings set the value of name to val, with the indicated type::
 
-    @&lt;type&gt; name = val
-
-set the value of name to val, with the indicated type.
-
-&lt;type&gt; may be one of the following:
-
-=============== =========================================================================================
-&lt;type&gt;          Valid values
---------------- -----------------------------------------------------------------------------------------
-\@bool           True, False, 0, 1
-\@color          A Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes)
-\@directory      A path to a directory
-\@float          A floating point number of the form nn.ff.
-\@int            An integer
-\@ints[list]     An integer (must be one of the ints in the list).
-                 Example: @ints meaningOfLife[0,42,666]=42
-\@keys[name]     Gives a name to a set of bindings for the Check Bindings script in leoSettings.leo.
-\@path           A path to a directory or file
-\@ratio          A floating point number between 0.0 and 1.0, inclusive.
-\@string         A string
-\@strings[list]  A string (must be one of the strings in the list).
-                 Example: @strings tk_relief['flat','groove','raised']='groove'
-=============== =========================================================================================
+    &lt;type&gt;          Valid values
+    ------          ------------
+    @bool           True, False, 0, 1
+    @color          A Qt color name or value, such as 'red' or 'xf2fddff'   
+                    (without the quotes)
+    @directory      A path to a directory
+    @float          A floating point number of the form nn.ff.
+    @int            An integer
+    @ints[list]     An integer (must be one of the ints in the list).
+                    Example: @ints meaningOfLife[0,42,666]=42
+    @keys[name]     Gives a name to a set of bindings.
+                    (For the Check Bindings script in leoSettings.leo.)
+    @path           A path to a directory or file
+    @ratio          A floating point number between 0.0 and 1.0, inclusive.
+    @string         A string
+    @strings[list]  A string (must be one of the strings in the list).
+                    Example: @strings tk_relief['flat','groove','raised']='groove'
 
 **Note**: For a list of Tk color specifiers see:
 
@@ -5091,26 +5084,22 @@ set the value of name to val, with the indicated type.
 
 **Important**: you can use the show-colors minibuffer command to guide you in making these settings.
 </t>
-<t tx="ekr.20070317043727.3">Complex settings nodes have headlines of the form::
+<t tx="ekr.20070317043727.3">Complex settings nodes have headlines of the form ``@&lt;type&gt; description``::
 
-    @&lt;type&gt; description
-
-The type may be one of the following:
-
-=================== =====================================================================
-&lt;type&gt;              Valid values 
-------------------- ---------------------------------------------------------------------
-\@buttons           Child @button nodes create global buttons
-\@commands          Child @command nodes create global buttons
-\@data              Body text contains a list of strings, one per line.
-\@enabled-plugins   Body text contains a list of enabled plugins
-\@font              Body text contains a font description
-\@menus             Child @menu and @item nodes create menus and menu items.
-\@menuat            Child @menu and @item nodes modify menu tree create by \@menus.
-\@mode [name]       Body text contains a list of shortcut specifiers.
-\@recentfiles       Body text contains a list of file paths.
-\@shortcuts         Body text contains a list of shortcut specifies.
-=================== =====================================================================
+    @&lt;type&gt;             Valid values
+    -------             ------------
+    @buttons            Child @button nodes create global buttons.
+    @commands           Child @command nodes create global buttons.
+    @command-history    Body is a list of commands pre-loaded into history list.
+    @data               Body is a list of strings, one per line.
+    @enabled-plugins    Body is a list of enabled plugins.
+    @font               Body is a font description.
+    @menus              Child @menu and @item nodes create menus and menu items.
+    @menuat             Child @menu and @item nodes modify menu trees
+                        created by \@menus.
+    @mode [name]        Body is a list of shortcut specifiers.
+    @recentfiles        Body is a list of file paths.
+    @shortcuts          Body is a list of shortcut specifies.
 
 Complex nodes specify settings in their body text.
 See the following sections for details.
@@ -18657,9 +18646,6 @@ The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 </t>
 <t tx="ekr.20160428074605.1"></t>
 <t tx="ekr.20160428074616.1"></t>
-<t tx="ekr.20160428074627.1"></t>
-<t tx="ekr.20160428074641.1"></t>
-<t tx="ekr.20160428074708.1"></t>
 <t tx="ekr.20160428074729.1"></t>
 <t tx="ekr.20160428104050.1">The **clone find** commands, cfa and cff,  move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
 
@@ -18695,6 +18681,17 @@ The -h option produces this::
 
 My typical usage is pylint -a -s
 </t>
+<t tx="ekr.20160428110816.1">The **clone find** commands, cfa and cff,  move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
+
+    cfa     clone-find-all
+    cff     clone-find-all-flattened
+    
+The **clone-marked** commands move clones of all marked nodes under an organizer node. Especially useful for gathering nodes by hand::
+
+    cfam    clone-find-marked 
+    cffm    clone-find-flattened-marked
+</t>
+<t tx="ekr.20160428111506.1">The body text contains a list of commands, one per line, to be preloaded into Leo's command history. You access command history using the up and down arrow keys in Leo's minibuffer.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
