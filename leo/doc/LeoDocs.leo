@@ -691,7 +691,6 @@
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
 </v>
-<v t="ekr.20160428110816.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20150318110552.29"><vh>File commands</vh>
 <v t="ekr.20150318110552.30"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="ekr.20150318110552.31"><vh>Closing outlines &amp; quitting Leo</vh></v>
@@ -701,6 +700,7 @@
 <v t="ekr.20150318110552.35"><vh>Creating &amp; deleting directories &amp; files</vh></v>
 <v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
 </v>
+<v t="ekr.20160428110816.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
 <v t="ekr.20150323200950.1"><vh>Language conversion commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
