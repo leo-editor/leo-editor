@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -398,7 +398,7 @@
 <v t="ekr.20131002055813.19037"><vh>Moving the cursor in text panes</vh></v>
 <v t="ekr.20131001100335.15946"><vh>The minibuffer &amp; completions</vh></v>
 <v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text</vh></v>
-<v t="ekr.20160428113347.1"><vh>Gathering find commands</vh></v>
+<v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Getting help</vh></v>
 <v t="ekr.20131004064408.16020"><vh>Leo directives</vh></v>
@@ -671,6 +671,7 @@
 <v t="ekr.20150323161357.3"><vh>Moving outline nodes</vh></v>
 <v t="ekr.20150323161357.4"><vh>Moving the cursor</vh></v>
 </v>
+<v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20150318110552.10"><vh>Debug commands</vh></v>
 <v t="ekr.20150318110552.18"><vh>Edit commands</vh>
 <v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
@@ -703,7 +704,6 @@
 <v t="ekr.20150318110552.35"><vh>Creating &amp; deleting directories &amp; files</vh></v>
 <v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
 </v>
-<v t="ekr.20160428110816.1"><vh>Gathering find commands</vh></v>
 <v t="ekr.20150318110552.37"><vh>Help commands</vh></v>
 <v t="ekr.20150323200950.1"><vh>Language conversion commands</vh></v>
 <v t="ekr.20150318110552.38"><vh>Minibuffer commands</vh></v>
@@ -18684,7 +18684,7 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
