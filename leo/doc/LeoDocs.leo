@@ -305,6 +305,7 @@
 <v t="ekr.20141109053526.4"><vh>Scipting &amp; Testing</vh>
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
+<v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
 <v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
@@ -324,6 +325,7 @@
 <v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
+<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
 <v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
@@ -1233,10 +1235,6 @@
 </v>
 <v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
-</v>
-<v t="ekr.20160428074729.1"><vh>To do: Scripting</vh>
-<v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
-<v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -18350,11 +18348,9 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="ekr.20160414191631.1">A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
+<t tx="ekr.20160414191631.1">A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children. A **gathering script** can provide most of the benefits of detached clone:
 
-A **gathering script** can provide most of the benefits of detached clone:
-
-1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
+1. The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
 
 2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
 
@@ -18454,29 +18450,22 @@ Fixed at a039305.
 
 Changed g.get_directives_dict.</t>
 <t tx="ekr.20160415031743.2"></t>
-<t tx="ekr.20160415031743.21">Here is a cool pattern for organizing long docstrings:
+<t tx="ekr.20160415031743.21">Start your file with::
 
-1. Start your file with:
+    '''
+    &lt;&lt; docstring &gt;&gt;
+    '''
 
-'''
-&lt;&lt; docstring &gt;&gt;
-'''
-
-2. The &lt;&lt; docstring &gt;&gt; section can just contain:
+The &lt;&lt; docstring &gt;&gt; section can just contain::
 
     @language rest # or md
     @wrap
     @others
 
 This allows the "interior" of the docstring to be colored using rST (or markdown).
+The children of the &lt;&lt; docstring &gt;&gt; node form the actual docstring. No section names are required!
 
-3. The children of the &lt;&lt; docstring &gt;&gt; node form the actual docstring. No section names are required!
-
-**Summary**
-
-This pattern allows us to organize large docstrings in a natural, Leonine way.
-
-The only drawback is that the actual external file contains sentinel lines separating the parts of the docstring.  In practice, it's no big deal, especially if each child starts with a blank line.
+This pattern organizes large docstrings in a Leonine way. The only drawback is that the actual external file contains sentinel lines separating the parts of the docstring. In practice, it's no big deal, especially if each child starts with a blank line.
 </t>
 <t tx="ekr.20160415031743.28">@chapter is now allowed anywhere. No need for @chapters.
 
@@ -18640,7 +18629,6 @@ https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
 
 The problem was an apparent reversion. VimEvent's now need a "c" ivar.
 </t>
-<t tx="ekr.20160428074729.1"></t>
 <t tx="ekr.20160428104050.1">The **clone find** commands, cfa and cff,  move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
 
     cfa     clone-find-all
