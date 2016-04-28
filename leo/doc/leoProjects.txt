@@ -1,61 +1,6 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20160303040846.1: ** Added clean-at-clean-files & clean-at-clean-tree commands
-.. @+node:ekr.20151231100231.1: ** Fixed #180: goto-prev-history-node bugged with bookmarks
-https://github.com/leo-editor/leo-editor/issues/180
-
-Terry:
-I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
-
-What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
-.. @+node:ekr.20160418065539.1: ** Fixed #258: leoBridge does not work with @auto-md
-https://github.com/leo-editor/leo-editor/issues/258
-.. @+node:ekr.20160418172314.1: ** Fixed #264: Solution to #261 needs improvement
-https://groups.google.com/d/msg/leo-editor/9KnhXmusJVY/BiNFmyPcBwAJ
-@string initial_split_orientation = horizontal no effect.
-
-#264: Solution to #261 needs improvement
-https://github.com/leo-editor/leo-editor/issues/264
-
-If you go from the initial layout to a custom layout and then back to "Default", you get a layout the *looks* like the default, but has no splitter 'splitter_2'. The splitters are unnamed.
-
-So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
-.. @+node:ekr.20160425071702.1: ** Fixed #265: Erratic scrolling bug
-https://github.com/leo-editor/leo-editor/issues/265
-
-Discussion
-https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
-.. @+node:ekr.20160421121117.1: ** Fixed #268: cff & cfa could search some @all trees
-https://github.com/leo-editor/leo-editor/issues/268
-.. @+node:ekr.20160418071704.1: ** Fixed vim-mode problems
-https://groups.google.com/d/msg/leo-editor/1eNTdxLUXJs/y6xUsxdvBwAJ
-
-The problem was an apparent reversion. VimEvent's now need a "c" ivar.
-.. @+node:ekr.20160416183702.1: ** How long does it take to search LeoPy.leo?
-@language python
-# 7559 nodes: 0.075 sec.
-import time
-t1 = time.clock()
-n = 0
-for p in c.all_unique_positions():
-    n += 1
-    if p.h.startswith('@chapter '):
-        pass
-t2 = time.clock()
-g.es('%s nodes, %5.3f sec' % (n, t2-t1))
-.. @+node:ekr.20160418065622.1: ** Fixed #252: goto-next clone activate chapter view
-https://github.com/leo-editor/leo-editor/issues/252
-.. @+node:ekr.20160427043252.1: ** Fixed #270: Leo's keyboard events don't work after...
-Leo's keyboard events doesn't work after "Insert" on headline and Alt+Tab Alt+Tab.
-https://github.com/leo-editor/leo-editor/issues/270
-
-Strange behavior when I leave Leo (Alt+Tab) after "Insert" on headline node.
-
-When I come back (Alt+Tab) to Leo only the menu works (Alt+F, ...) and the mouse.
-
-Other unusual behavior:
-left-arrow, right-arrow changes between Leo documents (like Ctrl+Tab in normal behavior)
 .. @-all
 .. @@nosearch
 .. @@killbeautify

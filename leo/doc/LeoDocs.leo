@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1191,6 +1191,7 @@
 <v t="ekr.20160415031743.3"><vh>Create xml stylesheet elements only from settings</vh></v>
 <v t="ekr.20160415031743.15"><vh>Fixed #132: Section Reference causes clone on Leo-Editor file open</vh></v>
 <v t="ekr.20160415031743.6"><vh>Fixed #156: ILeo errors not piped to Log and Do not show in Ipython console</vh></v>
+<v t="ekr.20160428073403.3"><vh>Fixed #180: goto-prev-history-node bugged with bookmarks</vh></v>
 <v t="ekr.20160415031743.12"><vh>Fixed #221: goto-global-line navigating to wrong line reported by PyLint</vh></v>
 <v t="ekr.20160416163605.21"><vh>Fixed #241: QMimeData...</vh></v>
 <v t="ekr.20160415031743.10"><vh>Fixed #242: @auto-rst open/save error</vh></v>
@@ -1198,23 +1199,30 @@
 <v t="ekr.20160415031743.11"><vh>Fixed #247: @language c breaks goto-global-line</vh></v>
 <v t="ekr.20160415031743.9"><vh>Fixed #249: Leo and Stickynote plugin do not request to save</vh></v>
 <v t="ekr.20160416163605.17"><vh>Fixed #251: goto-global-line is inaccurate with @clean</vh></v>
+<v t="ekr.20160428073403.10"><vh>Fixed #252: goto-next clone activate chapter view</vh></v>
+<v t="ekr.20160428073403.4"><vh>Fixed #258: leoBridge does not work with @auto-md</vh></v>
 <v t="ekr.20160416163605.105"><vh>Fixed #261: exception executing equal-sized-panes</vh></v>
+<v t="ekr.20160428073403.5"><vh>Fixed #264: Solution to #261 needs improvement</vh></v>
+<v t="ekr.20160428073403.6"><vh>Fixed #265: Erratic scrolling bug</vh></v>
+<v t="ekr.20160428073403.7"><vh>Fixed #268: cff &amp; cfa could search some @all trees</vh></v>
+<v t="ekr.20160428073403.11"><vh>Fixed #270: Leo's keyboard events don't work after...</vh></v>
 <v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
 <v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
 <v t="ekr.20160416163605.4"><vh>Fixed shutdown hard crash on Python 3</vh></v>
+<v t="ekr.20160428073403.8"><vh>Fixed vim-mode problems</vh></v>
 <v t="ekr.20160418093902.1"><vh>Investigated #129: Font setting overridden by new workbook</vh></v>
 <v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh></v>
 <v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
+<v t="ekr.20160416163605.33"><vh>Leo now honors @bool outline_pane_has_initial_focus</vh></v>
 <v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
 <v t="ekr.20160416163605.34"><vh>Leo now allows bindings to numbers!</vh></v>
-<v t="ekr.20160417062046.1"><vh>Leo now allows plain keys to be found in the outline pane</vh></v>
-<v t="ekr.20160416163605.33"><vh>Leo now honors @bool outline_pane_has_initial_focus</vh></v>
 <v t="ekr.20160416163605.36"><vh>The last outline node is now always visible.</vh></v>
 </v>
 <v t="ekr.20160417063026.1"><vh>Major features</vh>
 <v t="ekr.20160415031743.28"><vh>Improved chapters</vh></v>
 <v t="ekr.20160416163627.1"><vh>Improved Leo's spell tab</vh></v>
 <v t="ekr.20160415031743.32"><vh>Leo now supports Jupyter (.ipynb) files</vh></v>
+<v t="ekr.20160417062046.1"><vh>Leo now allows plain keys to be found in the outline pane</vh></v>
 <v t="ekr.20160415031743.33"><vh>The rst3 command now supports @rst-table</vh></v>
 <v t="ekr.20160416163605.6"><vh>The show-invisibles command uses Qt characters</vh></v>
 </v>
@@ -1222,21 +1230,24 @@
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
 <v t="ekr.20160415031743.20"><vh>Docs TO DO</vh>
-<v t="ekr.20160414191609.1"><vh>Document cffm, cff in Tutorial, cheat sheet, etc</vh></v>
-<v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
-<v t="ekr.20160414191645.1"><vh>pylint command/script</vh></v>
+<v t="ekr.20160428074511.1"><vh>Cheat Sheet</vh>
+<v t="ekr.20160422082853.1"><vh>@nosearch</vh></v>
+<v t="ekr.20160428074531.1"><vh>cfa, cff, cfam, cffm</vh></v>
+<v t="ekr.20160428074700.1"><vh>@history list</vh></v>
+</v>
+<v t="ekr.20160428074605.1"><vh>Tutorial</vh>
+<v t="ekr.20160428074616.1"><vh>cfa, cff, cfam, cffm</vh></v>
+</v>
+<v t="ekr.20160428074627.1"><vh>References</vh>
+<v t="ekr.20160428074641.1"><vh>cfa, cff, cfam, cffm</vh></v>
+<v t="ekr.20160428074708.1"><vh>@history list</vh></v>
+</v>
+<v t="ekr.20160414191645.1"><vh>FAQ: pylint command/script</vh></v>
+<v t="ekr.20160428074729.1"><vh>Scripting</vh>
 <v t="ekr.20160415031743.21"><vh>A Leonine pattern to organize docstrings</vh></v>
-<v t="ekr.20160417113739.1"><vh>Docs wishlist for newbies (Fidel)</vh>
-<v t="ekr.20160417113739.2"><vh>Quickstart tells how to associate .leo files</vh></v>
-<v t="ekr.20160417113739.3"><vh>More buttons in quick-start guide</vh></v>
-<v t="ekr.20160417113739.4"><vh>Better descript of plugins</vh></v>
-<v t="ekr.20160417113739.5"><vh>Quickstart opens by default</vh></v>
+<v t="ekr.20160414191631.1"><vh>Gathering scripts</vh></v>
 </v>
 </v>
-<v t="ekr.20160418165705.1"><vh>** document history list</vh></v>
-<v t="ekr.20160418165714.1"><vh>** add @data history-list to leoSettings.leo</vh></v>
-<v t="ekr.20160421122006.1"><vh>** Improve leoBridge docs</vh></v>
-<v t="ekr.20160422082853.1"><vh>** document @nosearch</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18355,12 +18366,9 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="ekr.20160414191609.1"></t>
-<t tx="ekr.20160414191631.1">The frequently asked-for feature if for clones that don't share children.  It's been amusing to think of multi-colored threaded trees, split nodes, and what have you.
+<t tx="ekr.20160414191631.1">A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
 
-The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children.
-
-Imo, this one special case *in no way* justifies changes to Leo's vnodes or positions.  Instead, the simplest and the most general thing that could possibly work is to gather desired data using a script.
+A **gathering script** can provide most of the benefits of detached clone:
 
 1, The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
 
@@ -18368,9 +18376,7 @@ Imo, this one special case *in no way* justifies changes to Leo's vnodes or posi
 
 For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
 
-That's all there is to it.
 
-Edward
 </t>
 <t tx="ekr.20160414191645.1">On Fri, Mar 25, 2016 at 6:59 AM, john lunzer &lt;lunzer@gmail.com&gt; wrote:
 
@@ -18406,10 +18412,6 @@ Options:
 My typical usage is pylint -a -s
 
 Of course, this only runs pylint once (on all of Leo's files) in the background.  The rest is left as an exercise for the reader ;-)
-
-Hmm.  It seems I haven't documented the pylint script (until now).  Shame on me.
-
-Edward
 </t>
 <t tx="ekr.20160415031743.1">Leo 5.3-b1 April 22, 2016
 
@@ -18633,7 +18635,7 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 - The rst3 command supports @rst-table.
 - The show-invisibles command now uses native Qt characters.
 </t>
-<t tx="ekr.20160417112540.32">- Added clean-at-clean-files and clean-at-clean-tre commands.
+<t tx="ekr.20160417112540.32">- Added clean-at-clean-files and clean-at-clean-tree commands.
 - Added python-to-coffeescript command.
 - Better defaults for open/save file dialogs.
 - Improved clone-find commands.
@@ -18642,50 +18644,65 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
   (https://pypi.python.org/pypi/meta) package is available.
 
 - The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>
-<t tx="ekr.20160417113739.1">From the thread: "Associate .Leo files to open with Leo when double click"
-https://groups.google.com/d/msg/leo-editor/KOXSm8crU1I/qCLYzZCJuc4J
-
-
-
-
-
-
-
-
-</t>
-<t tx="ekr.20160417113739.2">Include a small file within the Quickstart guide which would associate files automatically.
-
-(Or maybe asking for imput, which can be done through a Leo node and this way the user learns about its functionality).
-</t>
-<t tx="ekr.20160417113739.3">More buttons or scripts in quick start guide, preferably before the "programming" section, so when a new user opens it, he has had the opportunity to do Ctrl+B on several scripts. For instance:
-
-- showing in the log the name of all the nodes within the selected one,
-- having some subnodes with numbers and doing math on them and showing the result on the log pane
-- As much "silly" but visual functions as possible.
-
-so the user, by going pressing ctrl+b on each, gets a bigger chance to understand what is Leo.
-
-In my oppinion some users will just stop in the quickguide if they are not presented with such a thing before going to docs.leo etc.
-</t>
-<t tx="ekr.20160417113739.4">The description of the plugins is not as accessible as it should be.
-
-A script for activating them easier, been a week using Leo and still cant quite activate, find the descriptions or use them freely.
-
-If each plugin or script had an example of use that would be priceless, for instance, including them all in quickstart (both scripts, plugins branchs) and then the new user could just go through all clicking on the examples and just seeing Leo work and show its potential.
-</t>
-<t tx="ekr.20160417113739.5">Quickstart should be open by default (instead of current Leo workbook) at least until the user changes some config and prevents that from happening.
-</t>
 <t tx="ekr.20160418093902.1">Leo reading CheatSheet settings
 https://groups.google.com/forum/#!topic/leo-editor/cicfbqZn1lQ
 
 https://github.com/leo-editor/leo-editor/issues/129
 Font setting overridden by new workbook
 </t>
-<t tx="ekr.20160418165705.1"></t>
-<t tx="ekr.20160418165714.1"></t>
-<t tx="ekr.20160421122006.1"></t>
 <t tx="ekr.20160422082853.1"></t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160428073403.10">https://github.com/leo-editor/leo-editor/issues/252
+</t>
+<t tx="ekr.20160428073403.11">Leo's keyboard events doesn't work after "Insert" on headline and Alt+Tab Alt+Tab.
+https://github.com/leo-editor/leo-editor/issues/270
+
+Strange behavior when I leave Leo (Alt+Tab) after "Insert" on headline node.
+
+When I come back (Alt+Tab) to Leo only the menu works (Alt+F, ...) and the mouse.
+
+Other unusual behavior:
+left-arrow, right-arrow changes between Leo documents (like Ctrl+Tab in normal behavior)
+</t>
+<t tx="ekr.20160428073403.3">https://github.com/leo-editor/leo-editor/issues/180
+
+Terry:
+I suspect this is not really a bookmark specific problem. Rather, the point in code execution where visited positions are recorded for goto-prev-history-node is too "high", so that a lot of things which change the selected node are missed by it.
+
+What is the definition of visiting a node? It could be giving focus to the body editor, but that would be confusing, so it seems it should be having the tree drawn with a node selected counts as visiting the node.
+</t>
+<t tx="ekr.20160428073403.4">https://github.com/leo-editor/leo-editor/issues/258
+</t>
+<t tx="ekr.20160428073403.5">https://groups.google.com/d/msg/leo-editor/9KnhXmusJVY/BiNFmyPcBwAJ
+@string initial_split_orientation = horizontal no effect.
+
+#264: Solution to #261 needs improvement
+https://github.com/leo-editor/leo-editor/issues/264
+
+If you go from the initial layout to a custom layout and then back to "Default", you get a layout the *looks* like the default, but has no splitter 'splitter_2'. The splitters are unnamed.
+
+So rather than searching for the splitter called splitter_2, you'd need to search for the splitter containing the two panes usually separated by splitter 2.
+</t>
+<t tx="ekr.20160428073403.6">https://github.com/leo-editor/leo-editor/issues/265
+
+Discussion
+https://groups.google.com/forum/#!topic/leo-editor/Tlf4FVwDDSY
+</t>
+<t tx="ekr.20160428073403.7">https://github.com/leo-editor/leo-editor/issues/268
+</t>
+<t tx="ekr.20160428073403.8">https://groups.google.com/d/msg/leo-editor/1eNTdxLUXJs/y6xUsxdvBwAJ
+
+The problem was an apparent reversion. VimEvent's now need a "c" ivar.
+</t>
+<t tx="ekr.20160428074511.1"></t>
+<t tx="ekr.20160428074531.1"></t>
+<t tx="ekr.20160428074605.1"></t>
+<t tx="ekr.20160428074616.1"></t>
+<t tx="ekr.20160428074627.1"></t>
+<t tx="ekr.20160428074641.1"></t>
+<t tx="ekr.20160428074700.1"></t>
+<t tx="ekr.20160428074708.1"></t>
+<t tx="ekr.20160428074729.1"></t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

@@ -3696,6 +3696,18 @@ keys.sort()
 aList = ['%3d %s' % (words.get(key),str(key)) for key in keys]
 print g.listToString(aList)
 g.es('searched %s' % p1.h)
+#@+node:ekr.20160428073540.1: *3* How long does it take to search LeoPy.leo?
+@language python
+# 7559 nodes: 0.075 sec.
+import time
+t1 = time.clock()
+n = 0
+for p in c.all_unique_positions():
+    n += 1
+    if p.h.startswith('@chapter '):
+        pass
+t2 = time.clock()
+g.es('%s nodes, %5.3f sec' % (n, t2-t1))
 #@+node:ekr.20111017085134.16018: *3* Inspect modules
 import inspect
 
