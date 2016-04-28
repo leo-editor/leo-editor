@@ -5105,7 +5105,8 @@ move-lines-up               ! body = Ctrl-UpArrow
 move-lines-down             ! body = Ctrl-DnArrow 
   
 goto-first-visible-node     = Alt-Home
-goto-last-visible-node      = Alt-End
+# goto-last-visible-node    = Alt-End
+goto-last-sibling           = Alt-End
 
 back-page                       ! text = PageUp
 back-page-extend-selection      ! text = Shift-PageUp
