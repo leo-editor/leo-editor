@@ -694,7 +694,7 @@ Run make-leo.
 - Commit any changed files.
 
 Create the executable installer:
-- Double-click leo.nsi.
+- Double-click leo.nsi. (Run with makeNSIS.exe)
 
 Test files in installed folder:
 - Run all unit tests in the installed folder, with the installed Leo.
@@ -704,8 +704,8 @@ Test files in installed folder:
     - LeoDocs.leo
 
 Create a git tag **last**:
-- Do *not* use -f option!
 - Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
+    - Do *not* use -f option!
 
 Scan all folders &amp; files before uploading.
 
