@@ -7,10 +7,10 @@ The -r option no longer exists. Instead, use Leo's pylint command to run
 pylint on all Python @<file> nodes in a given tree.
 
 On windows, the following .bat file runs this file::
-    python27 pylint-leo.py %*
+    python2 pylint-leo.py %*
 
 On Ubuntu, the following alias runs this file::
-    pylint="python27 pylint-leo.py"
+    pylint="python2 pylint-leo.py"
 '''
 #@@language python
 # pylint: disable=invalid-name
@@ -21,7 +21,6 @@ import optparse
 import os
 import sys
 import time
-rc_warning_given = False
 #@+others
 #@+node:ekr.20150514101801.1: ** getCommandList
 def getCommandList():
@@ -198,7 +197,6 @@ def report_version():
 
 def run(theDir,fn,silent,rpython=False):
     '''Run pylint on fn.'''
-    global rc_warning_given
     # A little hack. theDir is empty for the -f option.
     if theDir:
         fn = os.path.join('leo',theDir,fn)
@@ -207,9 +205,8 @@ def run(theDir,fn,silent,rpython=False):
     if not fn.endswith('.py'):
         fn = fn+'.py'
     if not os.path.exists(rc_fn):
-        if not rc_warning_given:
-            rc_warning_given = True
-            print('pylint rc file not found: %s' % (rc_fn))
+        print('pylint rc file not found: %s' % (rc_fn))
+        return 0.0
     if not os.path.exists(fn):
         print('file not found: %s' % (fn))
         return 0.0
@@ -387,10 +384,12 @@ def run(theDir,fn,silent,rpython=False):
         ])
     # Execute the command in a separate process.
     command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-        sys.executable,args)
+        sys.executable, args)
     t1 = time.clock()
+    g.trace('t1', t1)
     g.execute_shell_commands(command)
     t2 = time.clock()
+    g.trace('t2', t2)
     return t2-t1
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
