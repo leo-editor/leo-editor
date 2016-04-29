@@ -191,6 +191,8 @@ import coffeescript
 g.es(coffeescript)
 .. @+node:ekr.20160429062541.1: *5* #128: javascript importer should be rewritten
 https://github.com/leo-editor/leo-editor/issues/128
+.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
+# Use rest colorizer as a template.
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
