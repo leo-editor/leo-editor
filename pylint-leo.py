@@ -173,16 +173,15 @@ def getTable(scope):
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table, silent):
     '''Call run on all tables in tables_table.'''
-    if False and tables_table and sys.platform.startswith('win') and scope != 'file':
-        g.cls()
-    # Do these imports **after** clearing the screen.
     from pylint import lint
-        # in pythonN/Lib/site-packages.
-    t = 0.0
+    t1 = time.clock()
+    n = 0
     for table, theDir in tables_table:
         for fn in table:
-            t += run(theDir, fn, silent)
-    print('time: %5.2f sec.' % t)
+            n += 1
+            run(theDir, fn, silent)
+    t2 = time.clock()
+    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():
     try:
@@ -197,6 +196,7 @@ def report_version():
 
 def run(theDir,fn,silent,rpython=False):
     '''Run pylint on fn.'''
+    trace = False and not g.unitTesting
     # A little hack. theDir is empty for the -f option.
     if theDir:
         fn = os.path.join('leo',theDir,fn)
@@ -386,11 +386,10 @@ def run(theDir,fn,silent,rpython=False):
     command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
         sys.executable, args)
     t1 = time.clock()
-    g.trace('t1', t1)
     g.execute_shell_commands(command)
     t2 = time.clock()
-    g.trace('t2', t2)
-    return t2-t1
+    if trace:
+        g.trace('%4.2f %s' % (t2-t1, g.shortFileName(fn)))
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''

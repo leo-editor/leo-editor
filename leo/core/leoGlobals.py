@@ -1923,6 +1923,8 @@ def run_pylint(fn, rc,
             sherlock.stop()
             sherlock.print_stats(patterns=stats_patterns or [])
     else:
+        # print('g.run_pylint: lint: %s' % lint)
+        # print('g.run_pylint: %s' % g.shortFileName(fn))
         lint.Run(args)
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n):
