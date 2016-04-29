@@ -1,6 +1,13 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20160428075048.1: ** quickstart.leo tells how add Windows file associations
+@language rest
+@wrap
+
+Include a small file within the Quickstart guide which would associate files automatically.
+
+(Or maybe asking for imput, which can be done through a Leo node and this way the user learns about its functionality).
 .. @-all
 .. @@nosearch
 .. @@killbeautify

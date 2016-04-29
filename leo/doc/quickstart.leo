@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
 	<global_window_position top="50" left="50" height="500" width="700"/>
@@ -78,6 +78,7 @@
 </v>
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
+<v t="ekr.20160429174727.1"><vh>Creating Windows file associations</vh></v>
 <v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
@@ -142,6 +143,42 @@ import sys
     pass
 
 
+</t>
+<t tx="ekr.20160429174727.1">*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
 </t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
 (ctrl+s) to create an **external file** which is directly
@@ -371,7 +408,7 @@ just remove the first @ character from @@auto-rst and save,
 opening the external file afterwards.
 </t>
 <t tx="ville.20090701184416.1555"></t>
-<t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e65733171036802752e">@language rest
+<t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657331710158000000007102580b000000756e6465726c696e65733271036802752e">@language rest
 @tabwidth -4
 @others
 
