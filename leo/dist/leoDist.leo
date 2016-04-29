@@ -266,62 +266,56 @@ Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Description: **Leo is**:
-
-- An outliner. Everything in Leo is an outline.
-- A Personal Information Manager.
-- A browser with a memory.
-- A powerful scripting environment.
-- A tool for studying other people's code.
-- A fully-featured IDE, with emacs-like commands.
-- Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, vim and xemacs.
-- Written in 100% pure Python
-- Compatible with Python 2.6 and above or Python 3.0 and above.
-
-**Leo's unique features**:
-    
-- Always-present, persistent, outline structure.
-- Leo's underlying data is a Directed Acyclic Graph.
-- Clones create multiple views of an outline.
-- A simple, powerful, outline-oriented Python API.
-- Scripts and programs can be composed from outlines.
-- Importers convert flat text into outlines.
-- Scripts have full access to all of Leo's sources.
-- Commands that act on outline structure.
-  Example: the rst3 command converts outlines to reStructuredText.
-- @test and @suite scripts create unit tests automatically.
-- @button scripts apply scripts to outline data.
-- Outline-oriented directives.
-
-Simulating these features in vim or Emacs is possible, just as
-it is possible to simulate Python in assembly language...
-
-**Links**
-
-- Leo's home page:  http://leoeditor.com
-- Documentation:    http://leoeditor.com/leo_toc.html
-- Tutorials:        http://leoeditor.com/tutorial.html
-- Video tutorials:  http://leoeditor.com/screencasts.html
-- Forum:            http://groups.google.com/group/leo-editor
-- Download:         http://sourceforge.net/projects/leo/files/
-- Github sources:   https://github.com/leo-editor/leo-editor
-- What people are saying about Leo:     http://leoeditor.com/testimonials.html
-- A web page that displays .leo files:  http://leoeditor.com/load-leo.html
-- More links:       http://leoeditor.com/leoLinks.html
-
 Download URL: http://sourceforge.net/projects/leo/files/
 Keywords: Outliner, IDE, PIM
-Platform: Windows, Linux, MacOS
-Categories:
-    Development Status :: 6 - Mature
-    License :: OSI Approved :: MIT License
-    Operating System :: MacOS
-    Operating System :: Microsoft :: Windows
-    Operating System :: POSIX :: Linux
-    Programming Language :: Python
-    Topic :: Software Development
-    Topic :: Text Processing
+Platform: Windows, Linux, MaxOS
+
+Classifiers: Development Status :: 6 - Mature
+             License :: OSI Approved :: MIT License
+             Operating System :: MacOS
+             Operating System :: Microsoft :: Windows
+             Operating System :: POSIX :: Linux
+             Programming Language :: Python
+             Topic :: Software Development
+             Topic :: Text Processing
+
+Description: Leo is:
+             - An outliner. Everything in Leo is an outline.
+             - A Personal Information Manager.
+             - A browser with a memory.
+             - A powerful scripting environment.
+             - A tool for studying other people's code.
+             - A fully-featured IDE, with emacs-like commands.
+             - Extensible via a simple plugin architecture.
+             - A tool that plays well with  IPython, vim and xemacs.
+             - Written in 100% pure Python
+             - Compatible with Python 2.6 and above or Python 3.0 and above.
+             **Leo's unique features**
+             - Always-present, persistent, outline structure.
+             - Leo's underlying data is a Directed Acyclic Graph.
+             - Clones create multiple views of an outline.
+             - A simple, powerful, outline-oriented Python API.
+             - Scripts and programs can be composed from outlines.
+             - Importers convert flat text into outlines.
+             - Scripts have full access to all of Leo's sources.
+             - Commands that act on outline structure.
+               Example: the rst3 command converts outlines to reStructuredText.
+             - @test and @suite scripts create unit tests automatically.
+             - @button scripts apply scripts to outline data.
+             - Outline-oriented directives.
+             Simulating these features in vim or Emacs is possible, just as
+             it is possible to simulate Python in assembly language...
+             **Links**
+             - Leo's home page:  http://leoeditor.com
+             - Documentation:    http://leoeditor.com/leo_toc.html
+             - Tutorials:        http://leoeditor.com/tutorial.html
+             - Video tutorials:  http://leoeditor.com/screencasts.html
+             - Forum:            http://groups.google.com/group/leo-editor
+             - Download:         http://sourceforge.net/projects/leo/files/
+             - Github sources:   https://github.com/leo-editor/leo-editor
+             - What people are saying about Leo:     http://leoeditor.com/testimonials.html
+             - A web page that displays .leo files:  http://leoeditor.com/load-leo.html
+             - More links:       http://leoeditor.com/leoLinks.html
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.3-b1 April 29, 2016
 
