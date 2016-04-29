@@ -290,6 +290,7 @@ Description: Leo is:
              - A tool that plays well with  IPython, vim and xemacs.
              - Written in 100% pure Python
              - Compatible with Python 2.6 and above or Python 3.0 and above.
+             - A tool with an inspiring and active community.
              **Leo's unique features**
              - Always-present, persistent, outline structure.
              - Leo's underlying data is a Directed Acyclic Graph.
@@ -2791,6 +2792,7 @@ Includes descendant settings if os.environ('HOSTNAME') != name
 - A tool that plays well with  IPython, vim and xemacs.
 - Written in 100% pure Python
 - Compatible with Python 2.6 and above or Python 3.0 and above.
+- A tool with an inspiring and active community.
 
 **Leo's unique features**:
     
