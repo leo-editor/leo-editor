@@ -2500,7 +2500,9 @@ To enable a theme:
 2. Move the tree so it is the *last* top-level node under @settings.
 3. Remove the @ignore from the copy of this node.
 4. Enable one of the three themes below by removing @ignore for its node.
-5. Test by opening another Leo outline.
+5. Select menu Settings&gt;Reload Styles.
+6. Test by opening another Leo outline.
+
 </t>
 <t tx="edward.20150613090031.10"></t>
 <t tx="edward.20150613090031.100">Foreground color of unselected headline text in a headline that is being edited.
