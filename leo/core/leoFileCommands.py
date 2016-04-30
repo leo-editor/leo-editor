@@ -637,7 +637,13 @@ class FileCommands:
                     return False
         return True
     #@+node:ekr.20031218072017.1553: *4* fc.getLeoFile & helpers
-    def getLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
+    def getLeoFile(self,
+        theFile,
+        fileName,
+        readAtFileNodesFlag=True,
+        silent=False,
+        checkOpenFiles=True,
+    ):
         '''
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
@@ -652,7 +658,8 @@ class FileCommands:
         recoveryNode = None
         try:
             c.loading = True # disable c.changed
-            if not silent:
+            if not silent and checkOpenFiles:
+                # Don't check for open file when reverting.
                 g.app.checkForOpenFile(c, fileName)
             ok = fc.getLeoFileHelper(theFile, fileName, silent)
                 # Read the .leo file and create the outline.

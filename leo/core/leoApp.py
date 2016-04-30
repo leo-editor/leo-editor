@@ -2690,7 +2690,7 @@ class LoadManager:
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
             # The log is not set properly here.
-            ok = lm.readOpenedLeoFile(c, gui, fn, readAtFileNodesFlag, theFile)
+            ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
                 # Call c.fileCommands.openLeoFile to read the .leo file.
             if not ok: return None
         else:
@@ -2855,7 +2855,7 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
-    def readOpenedLeoFile(self, c, gui, fn, readAtFileNodesFlag, theFile):
+    def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
         # lm = self
@@ -2869,6 +2869,17 @@ class LoadManager:
         else:
             g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
         return ok
+    #@+node:ekr.20160430063406.1: *3* LM.revertCommander
+    def revertCommander(self, c):
+        '''Revert c to the previously saved contents.'''
+        lm = self
+        fn = c.mFileName
+        # Re-read the file.
+        theFile = lm.openLeoOrZipFile(fn)
+        if theFile:
+            c.fileCommands.initIvars()
+            c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
+                # Closes the file.
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:

@@ -1236,27 +1236,17 @@ class Commands(object):
         '''Revert the contents of a Leo outline to last saved contents.'''
         c = self
         # Make sure the user wants to Revert.
-        if not c.mFileName:
+        fn = c.mFileName
+        if not fn:
+            g.es('can not revert unnamed file.')
+        if not g.os_path_exists(fn):
+            g.es('Can not revert unsaved file: %s' % fn)
             return
         reply = g.app.gui.runAskYesNoDialog(c, "Revert",
-            "Revert to previous version of " + c.mFileName + "?")
+            "Revert to previous version of %s?" % fn)
         c.bringToFront()
-        if reply == "no":
-            return
-        # Rename this frame so the open logic won't think it is open.
-        fileName = c.mFileName; c.mFileName = ""
-        # Create a new frame before deleting this frame.
-        try:
-            g.app.reverting = True
-            c2 = g.openWithFileName(fileName, old_c=c)
-        finally:
-            g.app.reverting = False
-        if c2:
-            c2.frame.deiconify()
-            g.doHook("close-frame", c=c)
-            g.app.destroyWindow(c.frame)
-        else:
-            c.mFileName = fileName
+        if reply == "yes":
+            g.app.loadManager.revertCommander(c)
     #@+node:ekr.20070413045221: *5* c.saveAsUnzipped & saveAsZipped
     @cmd('save-file-as-unzipped')
     def saveAsUnzipped(self, event=None):
