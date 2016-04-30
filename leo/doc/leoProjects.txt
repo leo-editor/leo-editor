@@ -13,6 +13,8 @@ https://github.com/leo-editor/leo-editor/issues/279
 
 - Revert moves the reverted tab to the right.
 - Leo hangs afterwards when closing!
+.. @+node:ekr.20141017110114.18267: ** Investigated #280: @data qt-scintilla-styles only works in leoSetting.leo
+- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

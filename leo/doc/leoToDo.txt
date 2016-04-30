@@ -10,8 +10,6 @@
 Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429063246.1: *3* 5.4 Bugs
-.. @+node:ekr.20141017110114.18267: *4* #280: @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 .. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
 https://github.com/leo-editor/leo-editor/issues/127
 
