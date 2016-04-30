@@ -8,6 +8,11 @@
 Include a small file within the Quickstart guide which would associate files automatically.
 
 (Or maybe asking for imput, which can be done through a Leo node and this way the user learns about its functionality).
+.. @+node:ekr.20120219152142.34262: ** Fixed #279: Revert bugs with tabs
+https://github.com/leo-editor/leo-editor/issues/279
+
+- Revert moves the reverted tab to the right.
+- Leo hangs afterwards when closing!
 .. @-all
 .. @@nosearch
 .. @@killbeautify
