@@ -9,34 +9,8 @@
 
 Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
-.. @+node:ekr.20160429063246.1: *3* 5.4 Bugs
-.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Javascript and perl need more work.
-.. @+node:ekr.20130805080841.21380: *5* #1222947: javascript import bug (Hard)
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
-.. @+node:ekr.20160429064536.1: *3* 5.4 Enhancements
+.. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
+The remaining bugs are more like enhancements.
 .. @+node:ekr.20160429063322.1: *4* #275: clone-marked/copy-marked/move-marked
 https://github.com/leo-editor/leo-editor/issues/275
 .. @+node:ekr.20160427071821.1: *4* #236: abbrev-write generates different continuations than used in @data
@@ -182,10 +156,28 @@ https://github.com/leo-editor/leo-editor/issues/278
 https://pypi.python.org/pypi/CoffeeScript/1.1.2
 import coffeescript
 g.es(coffeescript)
-.. @+node:ekr.20160429062541.1: *5* #128: javascript importer should be rewritten
+.. @+node:ekr.20160430150528.1: *5* #128: Javascript importer should be rewritten(Hard)
 https://github.com/leo-editor/leo-editor/issues/128
+
+A common idiom:
+
+var express = require('express');
+var app = express.createServer(express.logger());
+
+app.get('/', function(request, response) {
+response.send('Hello World!');
+});
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+console.log("Listening on " + port);
+});
 .. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 # Use rest colorizer as a template.
+.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Javascript and perl need more work.
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
