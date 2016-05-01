@@ -25,6 +25,7 @@
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
 </v>
+<v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20160315105606.1"><vh>Previous announcements</vh>
@@ -2824,6 +2825,12 @@ it is possible to simulate Python in assembly language...
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20160501153808.1">- Install pyenchant. (spelling)
+- Install meta (livecode plugin)
+- Downinstall setuptools:
+    - Erase setuptools stuff from Lib/sitecustomize.
+    - pip2/3 install setuptools==19.2
 </t>
 </tnodes>
 </leo_file>
