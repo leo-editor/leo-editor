@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -10108,8 +10108,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 5.2 b1
-| latest_release_date = {{release date and age|2016|03|15}}
+| latest_release_version = 5.3
+| latest_release_date = {{release date and age|2016|04|02}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
 | license = [[Python (programming language)|Python]] License
@@ -13350,7 +13350,9 @@ The Leonine World
 - It is easy to run only the @test nodes in a particular suboutline.
 - @test scripts can easily use data in their children.
 
-**Work flow**: Clones accelerate your work flow by focusing your attention on the task at hand. Once you have gathered the relevant nodes, there is no need to keep searching for them. You can change the clones, and the original nodes change as well. This is a great way to fix bugs or to write books.
+.. _`clone-find`: tutorial-basics.html#clone-find-commands
+
+**Work flow**: The `clone-find`_ commands gather all match a pattern under a single node. No need to keep searching for them. You can change the clones, and the original nodes change as well. This is a great way to fix bugs or to write books.
 
 **Databases**: Leo's clones create new opportunities for scriptable databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
 </t>
@@ -18358,9 +18360,9 @@ For example, a documentation script might "scrape" one or more .leo files for da
 
 
 </t>
-<t tx="ekr.20160415031743.1">Leo 5.3-b1 April 29, 2016
+<t tx="ekr.20160415031743.1">Leo 5.3-final May 2, 2016
 
-[Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.3-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.3**
 
@@ -18567,7 +18569,7 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 - The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>
 <t tx="ekr.20160417063026.1"></t>
 <t tx="ekr.20160417112500.1"></t>
-<t tx="ekr.20160417112511.1">Leo 5.3-b1 released April 29, 2016.
+<t tx="ekr.20160417112511.1">Leo 5.3-final released May 2, 2016.
 
 - Leo now supports Jupyter Notebook (.ipynb) files.
 - @chapter is now allowed anywhere. No need for @chapters.
@@ -18687,7 +18689,7 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
