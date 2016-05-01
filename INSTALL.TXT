@@ -44,7 +44,7 @@ A. Add  ~/leo-5.2 to your path.
 B. Create alias for Leo.
 
 I prefer using aliases because they allow me to start Leo using Python 2 or 3,
-or other distributesion, like Anaconda 2 or 3.
+or other distributions, like Anaconda 2 or 3.
 
 See `Running Leo`_ for how to run Leo after installing it.
 
