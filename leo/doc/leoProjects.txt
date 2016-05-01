@@ -1,20 +1,6 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20160428075048.1: ** quickstart.leo tells how add Windows file associations
-@language rest
-@wrap
-
-Include a small file within the Quickstart guide which would associate files automatically.
-
-(Or maybe asking for imput, which can be done through a Leo node and this way the user learns about its functionality).
-.. @+node:ekr.20120219152142.34262: ** Fixed #279: Revert bugs with tabs
-https://github.com/leo-editor/leo-editor/issues/279
-
-- Revert moves the reverted tab to the right.
-- Leo hangs afterwards when closing!
-.. @+node:ekr.20141017110114.18267: ** Investigated #280: @data qt-scintilla-styles only works in leoSetting.leo
-- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

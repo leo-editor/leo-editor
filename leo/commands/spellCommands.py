@@ -419,7 +419,7 @@ class SpellTabHandler:
     #@+node:ekr.20150514063305.505: *4* find & helper
     def find(self, event=None):
         """Find the next unknown word."""
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_lookup = False
         trace_end_body = False
         if not self.loaded:

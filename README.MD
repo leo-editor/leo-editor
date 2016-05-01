@@ -1,6 +1,6 @@
-Leo 5.3-b1 April 29, 2016
+Leo 5.3-final May 2, 2016
 
-[Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.3-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.3**
 

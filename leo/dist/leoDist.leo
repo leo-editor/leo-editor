@@ -142,7 +142,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160428153901.1"><vh>Leo 5.3-b1</vh></v>
+<v t="ekr.20160428153901.1"><vh>Leo 5.3-final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -260,7 +260,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.3-b1
+Version: 5.3
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -318,9 +318,9 @@ Description: Leo is:
              - A web page that displays .leo files:  http://leoeditor.com/load-leo.html
              - More links:       http://leoeditor.com/leoLinks.html
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.3-b1 April 29, 2016
+<t tx="EKR.20040519090846.9">Leo 5.3-final May 2, 2016
 
-[Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.3-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.3**
 
@@ -648,7 +648,7 @@ Update release notes and web documentation:
 - Update version number and modification date on Leo's home page.
   (The sphinx date is updated automatically.)
 - Regenerate all .html files.
-- Copy files to web.
+- Copy files to web, including leo/doc/html/index.html
 
 LeoReleaseNotes.leo:
 - Update release notes from LeoDocs.leo
@@ -771,7 +771,7 @@ Copy these files from the leo\dist folder to the top-level folder::
     nsi-boilerplate.txt
 '''
 
-version = '5.3-b1' ##version
+version = '5.3-final' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1080,7 +1080,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.3-b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.3-final/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -2767,9 +2767,9 @@ Includes descendant settings if os.environ('HOSTNAME') != name
 </t>
 <t tx="ekr.20160314155303.1"></t>
 <t tx="ekr.20160315105606.1"></t>
-<t tx="ekr.20160428153901.1">Leo 5.3-b1 April 29, 2016
+<t tx="ekr.20160428153901.1">Leo 5.3-final May 2, 2016
 
-[Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.3-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
 **The highlights of Leo 5.3**
 

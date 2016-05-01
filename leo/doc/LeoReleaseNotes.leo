@@ -21099,7 +21099,7 @@ Includes descendant settings if os.environ('HOSTNAME') != name
 @string gutter-font-style = @font-style
 @string gutter-font-weight = @font-weight
 </t>
-<t tx="ekr.20160428153451.1">Leo 5.3-b1 April 29, 2016
+<t tx="ekr.20160428153451.1">Leo 5.3-final May 2, 2016
 
 [Leo](http://leoeditor.com/) 5.3-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
@@ -21305,7 +21305,8 @@ Changed g.get_directives_dict.</t>
 - Added python-to-coffeescript command.
 - Better defaults for open/save file dialogs.
 - Improved clone-find commands.
-- Improved kill &amp; yank commands.</t>
+- Improved kill &amp; yank commands.
+- quickstart.leo tells how add Windows file associations.</t>
 <t tx="ekr.20160428153451.42">- The livecode plugin is enabled by default, provided that the [meta](https://pypi.python.org/pypi/meta) package is available.
 
 - The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.</t>

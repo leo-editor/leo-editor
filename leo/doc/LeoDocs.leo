@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1213,6 +1213,7 @@
 <v t="ekr.20160428073403.6"><vh>Fixed #265: Erratic scrolling bug</vh></v>
 <v t="ekr.20160428073403.7"><vh>Fixed #268: cff &amp; cfa could search some @all trees</vh></v>
 <v t="ekr.20160428073403.11"><vh>Fixed #270: Leo's keyboard events don't work after...</vh></v>
+<v t="ekr.20160501113304.3"><vh>Fixed #279: Revert bugs with tabs</vh></v>
 <v t="ekr.20160415031743.16"><vh>Fixed an ancient scrolling problem</vh></v>
 <v t="ekr.20160415031743.5"><vh>Fixed bug: Undo paste-node selected the wrong node</vh></v>
 <v t="ekr.20160416163605.4"><vh>Fixed shutdown hard crash on Python 3</vh></v>
@@ -1220,9 +1221,10 @@
 <v t="ekr.20160418093902.1"><vh>Investigated #129: Font setting overridden by new workbook</vh></v>
 <v t="ekr.20160415031743.13"><vh>Investigated #205: @ or @doc does't work perfectly in @clean</vh></v>
 <v t="ekr.20160415031743.7"><vh>Investigated #248:  Empty lines in @file/@clean trees</vh></v>
-<v t="ekr.20160416163605.33"><vh>Leo now honors @bool outline_pane_has_initial_focus</vh></v>
+<v t="ekr.20160501113304.4"><vh>Investigated #280: @data qt-scintilla-styles only works in leoSetting.leo</vh></v>
 <v t="ekr.20160415031743.4"><vh>jEdit2py now runs only on Python 3</vh></v>
 <v t="ekr.20160416163605.34"><vh>Leo now allows bindings to numbers!</vh></v>
+<v t="ekr.20160416163605.33"><vh>Leo now honors @bool outline_pane_has_initial_focus</vh></v>
 <v t="ekr.20160416163605.36"><vh>The last outline node is now always visible.</vh></v>
 </v>
 <v t="ekr.20160417063026.1"><vh>Major features</vh>
@@ -13973,15 +13975,15 @@ Then run::
 </t>
 <t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.2.
+into a folder in your home directory, say ~/leo-5.3.
 
 You now have several choices.
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.2 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.3 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.2
+    cd ~/leo-5.3
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -18562,7 +18564,8 @@ closeLeoWindow now calls g.app.windowList.remove(frame).
 - Added python-to-coffeescript command.
 - Better defaults for open/save file dialogs.
 - Improved clone-find commands.
-- Improved kill &amp; yank commands.</t>
+- Improved kill &amp; yank commands.
+- quickstart.leo tells how add Windows file associations.</t>
 <t tx="ekr.20160417062046.1"></t>
 <t tx="ekr.20160417062135.1">- The livecode plugin is enabled by default, provided that the [meta](https://pypi.python.org/pypi/meta) package is available.
 
@@ -18689,7 +18692,14 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20160501113304.3">https://github.com/leo-editor/leo-editor/issues/279
+
+- Revert moves the reverted tab to the right.
+- Leo hangs afterwards when closing!
+</t>
+<t tx="ekr.20160501113304.4">- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
+</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
