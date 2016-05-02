@@ -9,11 +9,17 @@ https://github.com/leo-editor/leo-editor/issues/272
 
 Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
 .. @+node:ekr.20160502073033.1: *4* Investigated #273: Qt Bug involving large text nodes
-It looks like nothing more that can be done.
+Only minor improvements were made.
 
-Indeed, the problem arises *within* w.setPlainText.
+The ultimate source of the delay when selecting large text is *not* syntax coloring,
+but instead the call to self.old_w.setPlainText(self.p.b) in btw.create_widgets.
 
-Experiments show that the *full* text must be loaded within btc.create_widgets. Failure to do so can cause data loss. There are too many paths through the selection logic to attemp to "recover" from the failure to load the body widget initially.
+Experiments show loading "dummy" text in btw.create_widgets can lead to data loss.
+There are too many paths through the selection logic to attemp to "recover"
+from the failure to load the body widget initially.
+
+Obviously, data loss is a much bigger problem than slow load times.
+I am going to declare this issue not to be solvable.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
