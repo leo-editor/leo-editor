@@ -16147,124 +16147,25 @@ def skip_matching_python_parens(s, i):
     '''
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
-.. @+node:ekr.20110605121601.18020: *3* lqtb.event handlers (not used)
-.. @+node:ekr.20110605121601.18021: *4* lqtb.mousePress/ReleaseEvent
-# def mousePressEvent (self,event):
-    # QtWidgets.QTextBrowser.mousePressEvent(self,event)
+.. @+node:ekr.20140901062324.18713: *3* qtm.Idle time (removed)
+if 0:
 
-def mouseReleaseEvent(self, *args, **keys):
-    '''Handle a mouse release event in a LeoQTextBrowser.'''
-    g.trace('LeoQTextBrowser', args, keys)
-    if len(args) == 1:
-        event = args[0]
-        self.onMouseUp(event)
-        QtWidgets.QTextBrowser.mouseReleaseEvent(self, event)
-    elif len(args) == 2:
-        event = args[1]
-        QtWidgets.QTextBrowser.mouseReleaseEvent(self, *args)
-    else:
-        g.trace('can not happen')
-        return
-.. @+node:ekr.20110605121601.18022: *4* lqtb.onMouseUp
-def onMouseUp(self, event=None):
-    # Open the url on a control-click.
-    g.trace('(LeoQTextBrowser)', event)
-    if QtCore.Qt.ControlModifier & event.modifiers():
-        event = {'c': self.leo_c}
-        g.openUrlOnClick(event)
-.. @+node:ekr.20100701112151.5959: *3* getDiff
-def getDiff(self, s1, s2):
-    lines1 = g.splitLines(s1)
-    lines2 = g.splitLines(s2)
-    diffLines = difflib.Differ().compare(lines1, lines2)
-    return diffLines
-.. @+node:ekr.20160328145029.1: *3* ileo.show_result (no longer used)
-def show_result(self, result):
-    '''Show the result, an IPython.core.interactiveshell.ExecutionResult.'''
-    # sys.stderr writes to Qt console.
-    # g.es_print writes to console window, if any.
-    
-    ############ All we had to do was sys.stdout.flush() ###########
-    
-    def put(s):
-        # g.trace(s.__class__.__name__, isinstance(s, Exception))
-        sys.stderr.write(repr(s).rstrip()+'\n')
-            # This seems to be the best that can be done.
-        sys.stderr.flush()
+    def after_idle(self, func, threadCount):
+        # g.trace(func.__name__,'threadCount',threadCount)
+        return func(threadCount)
 
-    if result.error_before_exec:
-        put(result.error_before_exec)
-    elif result.error_in_exec:
-        put(result.error_in_exec)
-    elif result.result:
-        put('Result: %s' % result.result)
-.. @+node:ekr.20120208064440.10148: *3* class ModeController
-class ModeController:
+    def after(self, n, func, threadCount):
 
-    def __init__(self, c):
-        self.c = c
-        self.d = {} # Keys are command names, values are modes.
-        self.k = c.k
-        g.trace(self)
+        def after_callback(func=func, threadCount=threadCount):
+            # g.trace(func.__name__,threadCount)
+            return func(threadCount)
 
-    def __repr__(self):
-        return '<ModeController %s>' % self.c.shortFileName()
+        QtCore.QTimer.singleShot(n, after_callback)
 
-    __str__ = __repr__
-    @others
-.. @+node:ekr.20120208064440.10161: *4* addModeCommands (ModeController)
-def addModeCommands(self):
-    g.trace(self, self.d)
-    for mode in self.d.values():
-        mode.createModeCommand()
-.. @+node:ekr.20120208064440.10163: *4* getMode (ModeController)
-def getMode(self, modeName):
-    g.trace(self)
-    mode = self.d.get(modeName)
-    g.trace(modeName, mode)
-    return mode
-.. @+node:ekr.20120208064440.10164: *4* makeMode (ModeController)
-def makeMode(self, name, aList):
-    mode = ModeInfo(self.c, name, aList)
-    g.trace(self, mode.name, mode)
-    self.d[mode.name] = mode
-.. @+node:ekr.20160424035115.1: *3* << old get_splitter* >> (FreeLayoutController)
-### OLD CODE
-def get_secondary_splitter(self):
-    '''Return the secondary splitter".'''
-    return self.get_splitter_by_name('secondary_splitter')
-    
-def get_main_splitter(self):
-    '''Return main splitter".'''
-    return self.get_splitter_by_name('main_splitter')
-
-def get_splitter_by_name(self, name):
-    '''Return the splitter with the given objectName().'''
-    top = self.get_top_splitter()
-    return top and top.get_splitter_by_name(name)
-.. @+node:ekr.20140913054442.17863: *3* dw.onSplitter1/2Moved & helper
-if g.new_splitters:
-    pass
-else:
-
-    def onMainSplitterMoved(self, pos, index):
-        '''Handle a moved event in the main splitter.'''
-        c = self.leo_c
-        w = c.free_layout.get_main_splitter()
-        if w:
-            c.frame.ratio = self.splitterFrac(w, pos, index)
-
-    def onSecondarySplitterMoved(self, pos, index):
-        '''Handle a moved event in the secondary splitter.'''
-        c = self.leo_c
-        w = c.free_layout.get_secondary_splitter()
-        if w:
-             c.frame.secondary_ratio = self.splitterFrac(w, pos, index)
-.. @+node:ekr.20140913054442.17865: *4* dw.splitterFrac
-def splitterFrac(self, splitter, pos, index):
-    '''Return the ratio of pos to the total.'''
-    i, j = splitter.getRange(index)
-    return float(pos) / float(j - i)
+    def scheduleIdleTimeRoutine(self, function, *args, **keys):
+        g.trace()
+        # if not g.app.unitTesting:
+            # self.widget.after_idle(function,*args,**keys)
 .. @-all
 .. @@nosearch
 .. @-leo
