@@ -64,10 +64,27 @@ class PythonQSyntaxHighlighter:
     #@+node:ekr.20140825132752.18566: *4* pqsh.rehighlight
     def rehighlight(self):
         '''Color the whole document.'''
-        if self.d:
-            # g.trace('*****',g.callers())
-            cursor = QtGui.QTextCursor(self.d)
-            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+        trace = False and not g.unitTesting
+        c, d = self.c, self.d
+        if d:
+            n = d.characterCount()
+            if 0 < c.max_pre_loaded_body_chars < n:
+                if trace: g.trace('big text: no color', c.p.h)
+            elif n > 1000*10:
+               
+                def rehightlight_callback(c=c, d=d, p=c.p, self=self):
+                    if p == c.p:
+                        if trace: g.trace('=====', n, p.h)
+                        cursor = QtGui.QTextCursor(d)
+                        self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+                    else:
+                        if trace: g.trace('node not selected', p.h)
+                    
+                QtCore.QTimer.singleShot(200, rehightlight_callback)
+            else:
+                if trace: g.trace(n)
+                cursor = QtGui.QTextCursor(d)
+                self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
     #@+node:ekr.20140825132752.18568: *4* pqsh.rehighlightBlock (not used)
     def rehighlightBlock(self, block):
         '''Reapplies the highlighting to the given QTextBlock block.'''

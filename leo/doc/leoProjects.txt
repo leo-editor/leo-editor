@@ -1,7 +1,19 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20160501154818.1: ** Bugs
+.. @+node:ekr.20160502072908.1: ** 5.2 projects
+.. @+node:ekr.20160501154818.1: *3* Bugs
+.. @+node:ekr.20160502072925.1: *3* Features
+.. @+node:ekr.20160429063430.1: *4* Added #272: optionally delay syntax coloring
+https://github.com/leo-editor/leo-editor/issues/272
+
+Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
+.. @+node:ekr.20160502073033.1: *4* Investigated #273: Qt Bug involving large text nodes
+It looks like nothing more that can be done.
+
+Indeed, the problem arises *within* w.setPlainText.
+
+Experiments show that the *full* text must be loaded within btc.create_widgets. Failure to do so can cause data loss. There are too many paths through the selection logic to attemp to "recover" from the failure to load the body widget initially.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

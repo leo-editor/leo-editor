@@ -11,10 +11,6 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
-.. @+node:ekr.20160429063430.1: *4* #272: optionally delay syntax coloring
-https://github.com/leo-editor/leo-editor/issues/272
-
-Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
 .. @+node:ekr.20160429063322.1: *4* #275: clone-marked/copy-marked/move-marked
 https://github.com/leo-editor/leo-editor/issues/275
 .. @+node:ekr.20160427071821.1: *4* #236: abbrev-write generates different continuations than used in @data

@@ -248,25 +248,6 @@ class QTextMixin:
         i = self.toPythonIndex(index)
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
-    #@+node:ekr.20140901062324.18713: *4* qtm.Idle time (removed)
-    if 0:
-
-        def after_idle(self, func, threadCount):
-            # g.trace(func.__name__,'threadCount',threadCount)
-            return func(threadCount)
-
-        def after(self, n, func, threadCount):
-
-            def after_callback(func=func, threadCount=threadCount):
-                # g.trace(func.__name__,threadCount)
-                return func(threadCount)
-
-            QtCore.QTimer.singleShot(n, after_callback)
-
-        def scheduleIdleTimeRoutine(self, function, *args, **keys):
-            g.trace()
-            # if not g.app.unitTesting:
-                # self.widget.after_idle(function,*args,**keys)
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self):
         trace = (False or g.trace_scroll) and not g.unitTesting
@@ -379,7 +360,7 @@ class QLineEditWrapper(QTextMixin):
         '''QHeadlineWrapper.'''
         pass
     #@+node:ekr.20110605121601.18125: *4* qlew.setAllText
-    def setAllText(self, s):
+    def setAllText(self, s, h=None):
         '''Set all text of a Qt headline widget.'''
         if self.check():
             w = self.widget
@@ -1176,7 +1157,7 @@ class QScintillaWrapper(QTextMixin):
         row, col = g.convertPythonIndexToRowCol(s, i)
         w.ensureLineVisible(row)
     #@+node:ekr.20110605121601.18113: *4* qsciw.setAllText
-    def setAllText(self, s):
+    def setAllText(self, s, h=None):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w, Qsci.QsciScintilla), w
@@ -1560,19 +1541,20 @@ class QTextEditWrapper(QTextMixin):
         if trace: g.trace(self.getInsertPoint())
         self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
-    def setAllText(self, s):
+    def setAllText(self, s, h=None):
         '''Set the text of body pane.'''
         trace = False and not g.unitTesting
-        traceTime = False and not g.unitTesting
+        trace_time = True and not g.unitTesting
         c, w = self.c, self.widget
-        if trace: g.trace(len(s), c.p and c.p.h)
+        if h is None: h = c.p and c.p.h or '<no p>'
+        if trace and not trace_time: g.trace(len(s), h)
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         # Be careful: Scintilla doesn't have a colorer.
         colorer = highlighter and highlighter.colorer
         if colorer: colorer.initFlag = True
         try:
-            if traceTime:
+            if trace and trace_time:
                 t1 = time.time()
             self.changingText = True # Disable onTextChanged.
             colorizer.changingText = True # Disable colorizer.
@@ -1582,10 +1564,9 @@ class QTextEditWrapper(QTextMixin):
             # w.update()
                 # 2014/08/30: w.update does not ensure that all text is loaded
                 # before the user starts editing it!
-            if traceTime:
+            if trace and trace_time:
                 delta_t = time.time() - t1
-                if False or delta_t > 0.1:
-                    g.trace('w.setPlainText: %2.3f sec.' % (delta_t))
+                g.trace('%4.2f sec. %6s chars %s' % (delta_t, len(s), h))
         finally:
             self.changingText = False
             colorizer.changingText = False
