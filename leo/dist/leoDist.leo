@@ -267,19 +267,17 @@ Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Download URL: http://sourceforge.net/projects/leo/files/
 Keywords: Outliner, IDE, PIM
 Platform: Windows, Linux, MaxOS
-
-Classifiers: Development Status :: 6 - Mature
-             License :: OSI Approved :: MIT License
-             Operating System :: MacOS
-             Operating System :: Microsoft :: Windows
-             Operating System :: POSIX :: Linux
-             Programming Language :: Python
-             Topic :: Software Development
-             Topic :: Text Processing
-
+Classifier: Development Status :: 6 - Mature
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Classifier: Topic :: Text Processing
+Download-URL: http://sourceforge.net/projects/leo/files/
 Description: Leo is:
              - An outliner. Everything in Leo is an outline.
              - A Personal Information Manager.
@@ -292,7 +290,9 @@ Description: Leo is:
              - Written in 100% pure Python
              - Compatible with Python 2.6 and above or Python 3.0 and above.
              - A tool with an inspiring and active community.
+             
              **Leo's unique features**
+             
              - Always-present, persistent, outline structure.
              - Leo's underlying data is a Directed Acyclic Graph.
              - Clones create multiple views of an outline.
@@ -307,7 +307,9 @@ Description: Leo is:
              - Outline-oriented directives.
              Simulating these features in vim or Emacs is possible, just as
              it is possible to simulate Python in assembly language...
+             
              **Links**
+             
              - Leo's home page:  http://leoeditor.com
              - Documentation:    http://leoeditor.com/leo_toc.html
              - Tutorials:        http://leoeditor.com/tutorial.html
@@ -318,6 +320,7 @@ Description: Leo is:
              - What people are saying about Leo:     http://leoeditor.com/testimonials.html
              - A web page that displays .leo files:  http://leoeditor.com/load-leo.html
              - More links:       http://leoeditor.com/leoLinks.html
+
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.3-final May 2, 2016
 
