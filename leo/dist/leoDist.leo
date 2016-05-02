@@ -279,6 +279,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 Description: Leo is:
+
              - An outliner. Everything in Leo is an outline.
              - A Personal Information Manager.
              - A browser with a memory.
@@ -305,8 +306,9 @@ Description: Leo is:
              - @test and @suite scripts create unit tests automatically.
              - @button scripts apply scripts to outline data.
              - Outline-oriented directives.
-             Simulating these features in vim or Emacs is possible, just as
-             it is possible to simulate Python in assembly language...
+             
+             Simulating these features in vim, Emacs or Eclipse is possible,
+             just as it is possible to simulate Python in assembly language...
              
              **Links**
              
@@ -320,7 +322,6 @@ Description: Leo is:
              - What people are saying about Leo:     http://leoeditor.com/testimonials.html
              - A web page that displays .leo files:  http://leoeditor.com/load-leo.html
              - More links:       http://leoeditor.com/leoLinks.html
-
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.3-final May 2, 2016
 
