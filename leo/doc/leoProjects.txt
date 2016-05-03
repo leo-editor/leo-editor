@@ -37,6 +37,8 @@ These commands work as follows:
 
 - They find all marked nodes, regardless of chapter, and leave
   the presently selected chapter selected, if possible.
+.. @+node:ekr.20160503084702.1: *4* pylint command appends leo directory to sys.path
+This allows the pylint command to work without any sitecustomize.py file.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
