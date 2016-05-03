@@ -93,6 +93,21 @@ Nodes can be added and removed from the display with the following mouse actions
 **shift-left-click on bookmark**
     Add the current node as a *child* of the clicked bookmark,
     and display the clicked bookmarks children.
+**control-alt-shift-left-click on bookmark**
+    Goto and hoist
+
+The above as a table::
+
+    SAC
+    --- goto, or, ON BACKGROUND, add
+    --+ delete
+    -+- edit bookmark in tree (ON BACKGROUND, edit from top of bookmark tree)
+    -++ link bookmark to current node
+    +-- add as child bookmark, show children
+    +-+ rename bookmark
+    ++- show child bookmarks without changing selected node
+    +++ goto and hoist 
+
 
 The ``@setting`` ``@int bookmarks-levels = 1`` sets the number of levels of
 hierarchy shown in the bookmarks pane. By default, the @setting @int
@@ -548,7 +563,7 @@ class BookMarkDisplay:
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
-    #@+node:tbrown.20131227100801.23859: *3* button_clicked
+    #@+node:tbnorth.20160502105134.1: *3* button_clicked
     def button_clicked(self, event, bm, but, up=False):
         """button_clicked - handle a button being clicked
 
@@ -587,6 +602,10 @@ class BookMarkDisplay:
         # Alt-Shift => navigate in bookmarks without changing nodes
         no_move = mods == (QtCore.Qt.AltModifier | QtCore.Qt.ShiftModifier)
 
+        # Alt-Control-Shift => hoist outline after going to node
+        hoist = mods == (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier |
+            QtCore.Qt.ShiftModifier)
+
         # otherwise, look up the bookmark
         self.upwards = up
         self.second = not up and self.current == bm.v
@@ -595,6 +614,9 @@ class BookMarkDisplay:
         self.show_list(self.get_list(), up=up)
         if bm.url and not up and not no_move:
             g.handleUrl(bm.url, c=self.c)
+            if hoist:
+                self.c.hoist()
+
     #@+node:tbrown.20140807091931.30231: *3* button_menu
     def button_menu(self, event, bm, but, up=False):
         """button_menu - handle a button being right-clicked
