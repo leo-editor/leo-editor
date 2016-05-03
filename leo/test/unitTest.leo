@@ -1222,7 +1222,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e333971097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657331711958030000002d7e2e711a580b000000756e6465726c696e657332711b58010000003d711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
 <v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
@@ -1268,8 +1268,8 @@
 <v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20100223123103.5382"></v>
-</v>
 <v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -9286,18 +9286,24 @@ else:
     
     def test(p):
         setup_test(p)
+        n = p.numberOfChildren()
+        assert n == 4 ,'delete: children: %s' % (n)
         c.moveMarked()
-        root = c.rootPosition()
-        assert root.h == 'Moved marked nodes',root.h
+        assert c.p.h == 'Moved marked nodes'
         n = p.numberOfChildren()
         assert n == 2 ,'delete: children: %s' % (n)
-        c.undoer.undo()
-        n = p.numberOfChildren()
-        assert n == 4,'undo: children: %s' % (n)
-        c.undoer.redo()
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-    
+        if 0:
+            # The new move-marked-nodes command doesn't
+            # leave the result in the root node.
+            root = c.rootPosition()
+            assert root.h == 'Moved marked nodes',root.h
+        if 0: # The move-marked-nodes command is no longer undoable.
+            c.undoer.undo()
+            n = p.numberOfChildren()
+            assert n == 4,'undo: children: %s' % (n)
+            c.undoer.redo()
+            n = p.numberOfChildren()
+            assert n == 2 ,'delete: children: %s' % (n)
     try:
         test(p)
     finally:

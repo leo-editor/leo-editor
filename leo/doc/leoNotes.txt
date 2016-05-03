@@ -16147,25 +16147,64 @@ def skip_matching_python_parens(s, i):
     '''
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
-.. @+node:ekr.20140901062324.18713: *3* qtm.Idle time (removed)
-if 0:
-
-    def after_idle(self, func, threadCount):
-        # g.trace(func.__name__,'threadCount',threadCount)
-        return func(threadCount)
-
-    def after(self, n, func, threadCount):
-
-        def after_callback(func=func, threadCount=threadCount):
-            # g.trace(func.__name__,threadCount)
-            return func(threadCount)
-
-        QtCore.QTimer.singleShot(n, after_callback)
-
-    def scheduleIdleTimeRoutine(self, function, *args, **keys):
-        g.trace()
-        # if not g.app.unitTesting:
-            # self.widget.after_idle(function,*args,**keys)
+.. @+node:ekr.20160503052503.1: *3* undo-move-marked-nodes
+.. @+node:ekr.20111005152227.15562: *4* u.afterMoveMarkedNodes (no longer used)
+def afterMoveMarkedNodes(self, data, p):
+    u = self; c = u.c
+    if u.redoing or u.undoing:
+        return
+    bunch = u.createCommonBunch(p)
+    # Set types & helpers
+    bunch.kind = 'move-marked-nodes'
+    bunch.undoType = 'move-marked-nodes'
+    # Set helpers
+    bunch.undoHelper = u.undoMoveMarkedNodes
+    bunch.redoHelper = u.redoMoveMarkedNodes
+    bunch.newP = p.copy()
+    bunch.deleteMarkedNodesData = data
+    # bunch.dirtyVnodeList = dirtyVnodeList
+    bunch.newChanged = c.isChanged()
+    bunch.newDirty = p.isDirty()
+    bunch.newMarked = p.isMarked()
+    u.pushBead(bunch)
+.. @+node:ekr.20111005152227.15563: *4* u.undoMoveMarkedNodes (no longer used)
+def undoMoveMarkedNodes(self):
+    u = self; c = u.c
+    # Undo the moves in reverse order
+    new = True
+    aList = u.deleteMarkedNodesData[:]
+    aList.reverse()
+    if new:
+        root = u.p
+        g.trace('*** root', root.h)
+    else:
+        root = c.rootPosition()
+    for p in aList:
+        if p.stack:
+            parent_v, junk = p.stack[-1]
+        else:
+            parent_v = c.hiddenRootNode
+        p.v._addLink(p._childIndex, parent_v)
+    # A shortcut. This deletes all the "extra copies of the nodes".
+    if new:
+        back = root.back() or c.rootPosition()
+        root.doDelete()
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(back)
+    else:
+        root.doDelete()
+        u.p.setAllAncestorAtFileNodesDirty()
+        c.selectPosition(u.p)
+.. @+node:ekr.20111005152227.15564: *4* u.redoMoveMarkedNodes (no longer used)
+def redoMoveMarkedNodes(self):
+    
+    # g.es('can not redo move-marked-nodes')
+    c, u = self.c, self
+    ### c.selectPosition(u.p)
+    ### g.trace('***', 'u.p', u.p.h, 'u.newP', u.newP.h)
+    c.moveMarked()
+    ### c.selectPosition(u.newP)
+    u.newChanged = c.isChanged()
 .. @-all
 .. @@nosearch
 .. @-leo

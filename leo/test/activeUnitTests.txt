@@ -8254,18 +8254,24 @@ else:
     
     def test(p):
         setup_test(p)
+        n = p.numberOfChildren()
+        assert n == 4 ,'delete: children: %s' % (n)
         c.moveMarked()
-        root = c.rootPosition()
-        assert root.h == 'Moved marked nodes',root.h
+        assert c.p.h == 'Moved marked nodes'
         n = p.numberOfChildren()
         assert n == 2 ,'delete: children: %s' % (n)
-        c.undoer.undo()
-        n = p.numberOfChildren()
-        assert n == 4,'undo: children: %s' % (n)
-        c.undoer.redo()
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-    
+        if 0:
+            # The new move-marked-nodes command doesn't
+            # leave the result in the root node.
+            root = c.rootPosition()
+            assert root.h == 'Moved marked nodes',root.h
+        if 0: # The move-marked-nodes command is no longer undoable.
+            c.undoer.undo()
+            n = p.numberOfChildren()
+            assert n == 4,'undo: children: %s' % (n)
+            c.undoer.redo()
+            n = p.numberOfChildren()
+            assert n == 2 ,'delete: children: %s' % (n)
     try:
         test(p)
     finally:

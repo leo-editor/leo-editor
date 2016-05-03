@@ -1505,10 +1505,7 @@ class LeoFind:
         found.b = '# ' + flat + status
         # Clone nodes as children of the found node.
         for p in clones:
-            # Do *not* call p.clone here.
-            # That would cause problems if p.clone precedes found.
-            # Apparently, p.moveToLastChildOf(found) doesn't work here.
-            # Instead, create the clone directly as a child of found.
+            # Create the clone directly as a child of found.
             p2 = p.copy()
             n = found.numberOfChildren()
             p2._linkAsNthChild(found, n, adjust=False)

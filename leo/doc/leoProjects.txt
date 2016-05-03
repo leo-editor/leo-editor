@@ -3,11 +3,6 @@
 .. @+all
 .. @+node:ekr.20160502072908.1: ** 5.2 projects
 .. @+node:ekr.20160501154818.1: *3* Bugs
-.. @+node:ekr.20160502072925.1: *3* Features
-.. @+node:ekr.20160429063430.1: *4* Added #272: optionally delay syntax coloring
-https://github.com/leo-editor/leo-editor/issues/272
-
-Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
 .. @+node:ekr.20160502073033.1: *4* Investigated #273: Qt Bug involving large text nodes
 Only minor improvements were made.
 
@@ -20,6 +15,28 @@ from the failure to load the body widget initially.
 
 Obviously, data loss is a much bigger problem than slow load times.
 I am going to declare this issue not to be solvable.
+.. @+node:ekr.20160502072925.1: *3* Features
+.. @+node:ekr.20160429063430.1: *4* Added #272: optionally delay syntax coloring
+https://github.com/leo-editor/leo-editor/issues/272
+
+Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
+.. @+node:ekr.20160429063322.1: *4* Added #275: clone-marked/copy-marked/move-marked
+https://github.com/leo-editor/leo-editor/issues/275
+
+- Improved clone-marked-nodes and move-marked-nodes.
+- Added copy-marked nodes.
+
+Note: The move-marked-nodes command is no longer undoable.
+The docstring suggests using clone-marked-nodes, followed by copy/paste.
+
+These commands work as follows:
+
+- They create an organizer node after c.p.
+  (That's not always possible for move-marked-nodes,
+  in which case the organizer node becomes the last top-level node).
+
+- They find all marked nodes, regardless of chapter, and leave
+  the presently selected chapter selected, if possible.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
