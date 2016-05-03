@@ -39,6 +39,21 @@ These commands work as follows:
   the presently selected chapter selected, if possible.
 .. @+node:ekr.20160503084702.1: *4* pylint command appends leo directory to sys.path
 This allows the pylint command to work without any sitecustomize.py file.
+.. @+node:ekr.20160427071821.1: *4* Wont do: #236: abbrev-write generates different continuations than used in @data
+abbrev-write generates different continuations than used in @data
+https://github.com/leo-editor/leo-editor/issues/236
+
+When defining abbreviations in a @data abbreviations node,
+continuation looks like:
+continue;;=line 1
+: line 2
+: line 3
+
+when abbreviations are dumped via abbrev-write they look like:
+continue;;=line 1\n line 2\n line 3
+
+I would consider the abbrev-write file more useful if it used the
+same continuation convention as in @data nodes
 .. @-all
 .. @@nosearch
 .. @@killbeautify
