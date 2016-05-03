@@ -611,8 +611,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         try:
             d = self.abbrevs
             data = s.split('=')
-            # name = data[0].strip()
-            # 2012/02/29: Do *not* strip ws, and allow the user to specify ws.
+            # Do *not* strip ws so the user can specify ws.
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
             if val.endswith('\n'): val = val[: -1]
@@ -748,6 +747,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             for name in sorted(d.keys()):
                 val, tag = self.abbrevs.get(name)
                 val = val.replace('\n', '\\n')
+                # Fix bug #236: write continuations in same format as in
+                # @data abbreviations nodes
+                ### New code.
+                ### val = ''.join([': %s' % (z) for z in g.splitLines(val)])
                 s = '%s=%s\n' % (name, val)
                 if not g.isPython3:
                     s = g.toEncodedString(s, reportErrors=True)
