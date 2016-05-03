@@ -11,12 +11,6 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
-.. @+node:ekr.20160502085619.1: *4* Move menu commands from commands.py
-# Preserve names in the commander.
-
-@cmd('x') # sets c.x = x??
-def x(self, event):
-    ...
 .. @+node:ekr.20160427071821.1: *4* #236: abbrev-write generates different continuations than used in @data
 abbrev-write generates different continuations than used in @data
 https://github.com/leo-editor/leo-editor/issues/236
@@ -77,7 +71,7 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
-.. @+node:ekr.20160429062306.1: *4* Importers
+.. @+node:ekr.20160429062306.1: *4* 4 Importers
 .. @+node:ekr.20160429062804.1: *5* #32: Add freemind and mindjet imports
 https://github.com/leo-editor/leo-editor/issues/32
 .. @+node:ekr.20160327112237.1: *5* #225: Add support for @language json
