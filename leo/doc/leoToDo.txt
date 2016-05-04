@@ -13,6 +13,10 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone
 The remaining bugs are more like enhancements.
 .. @+node:ekr.20160429062804.1: *4* #32: Add freemind and mindjet imports
 https://github.com/leo-editor/leo-editor/issues/32
+
+The code:
+https://github.com/leo-editor/snippets/tree/master/issue_attach/32
+
 .. @+node:ekr.20160327112237.1: *4* #225: Add support for @language json
 @language python
 .. @+node:ekr.20160420153409.1: *5* Convert Leo outline to/from json
@@ -107,7 +111,8 @@ var port = process.env.PORT || 5000;
 app.listen(port, function() {
 console.log("Listening on " + port);
 });
-.. @+node:ekr.20160503094114.1: *4* 4 Minor
+.. @+node:ekr.20160503094114.1: *4* 5 Minor
+.. @+node:ekr.20160503095033.1: *5* remove useUI switch
 .. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown
 # Use rest colorizer as a template.
 .. @+node:ekr.20151231101050.1: *5* #127: Bracket matching is buggy

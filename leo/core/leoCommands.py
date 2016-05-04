@@ -796,7 +796,9 @@ class Commands(object):
             ("C/C++ files", "*.cpp"),
             ("C/C++ files", "*.h"),
             ("C/C++ files", "*.hpp"),
+            ("FreeMind files", "*.mm.html"),
             ("Java files", "*.java"),
+            ("Mindjet files", "*.csv"),
             ("Lua files", "*.lua"),
             ("Pascal files", "*.pas"),
             ("Python files", "*.py")]
@@ -824,20 +826,23 @@ class Commands(object):
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
             junk, ext = g.os_path_splitext(fn)
-            if ext.startswith('.'): ext = ext[1:]
-            if ext in ('cw', 'cweb'):
+            if ext.startswith('.'):
+                ext = ext[1:]
+            if ext == 'csv':
+                ic.importMindMap([fn])
+            elif ext in ('cw', 'cweb'):
                 ic.importWebCommand([fn], "cweb")
+            elif fn.endswith('mm.html'):
+                ic.importFreeMind([fn])
             elif ext in ('nw', 'noweb'):
                 ic.importWebCommand([fn], "noweb")
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand([fn], '@clean') # "@nosent",)
-            # No longer supported.
-            # c.importCommands.importFilesCommand (names,"@root")
+                ic.importFilesCommand([fn], '@clean')
         c.raise_error_dialogs(kind='read')
+        
     # Compatibility
-
     importAtFile = importAnyFile
     importAtRoot = importAnyFile
     importCWEBFiles = importAnyFile
@@ -853,8 +858,12 @@ class Commands(object):
             f = open(fn, 'r')
         except IOError:
             return False
-        s = f.read()
-        f.close()
+        try:
+            s = f.read()
+        except Exception:
+            s = ''
+        finally:
+            f.close()
         val = s.find('@+leo-ver=') > -1
         return val
     #@+node:ekr.20031218072017.1623: *5* c.new

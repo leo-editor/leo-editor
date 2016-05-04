@@ -6,6 +6,7 @@
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
+import csv
 try:
     import docutils
     import docutils.core
@@ -15,6 +16,10 @@ except ImportError:
     # print('leoImport.py: can not import docutils')
 import glob
 import importlib
+try:
+    import lxml.html
+except ImportError:
+    lxml = None
 import os
 import re
 if g.isPython3:
@@ -771,7 +776,12 @@ class LeoImportCommands:
         c.redraw(current)
         return p
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand & helper
-    def importFilesCommand(self, files=None, treeType=None, redrawFlag=True, shortFn=False):
+    def importFilesCommand(self,
+        files=None,
+        treeType=None,
+        redrawFlag=True,
+        shortFn=False,
+    ):
         # Not a command.  It must *not* have an event arg.
         c, current = self.c, self.c.p
         if not c or not current or not files:
@@ -805,7 +815,7 @@ class LeoImportCommands:
             name = name.replace('\\', '/') # 2011/11/25
             current.initHeadString(name)
         return current
-    #@+node:ekr.20031218072017.3214: *4* ic.importFlattenedOutline & allies
+    #@+node:ekr.20031218072017.3214: *4* ic.importFlattenedOutline & helpers
     #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
@@ -960,7 +970,257 @@ class LeoImportCommands:
                     lastLevel = level
                     plusFlag = newFlag
         return True
-    #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & allies
+    #@+node:ekr.20160503125237.1: *4* ic.importFreeMind & helpers
+    def importFreeMind(self, files):
+        
+        '''INSTRUCTIONS FOR EXPORTING FROM FREEMIND:
+        Export your outline into html, then you can use this script.
+        '''
+
+        # Define FreeMindImporter class.
+        #@+others
+        #@+node:ekr.20160503145550.1: *5* class FreeMindImporter
+        class FreeMindImporter:
+            '''Importer class for FreeMind (.mmap) files.'''
+            
+            def __init__(self, c):
+                '''ctor for FreeMind Importer class.'''
+                self.c = c
+                self.count = 0
+                # self.outline_dict = {}
+                self.d = {}
+
+            #@+others
+            #@+node:ekr.20160503191518.2: *6* freemind.add_children_as_nodes
+            def add_children_as_nodes(self, node_id_to_add, parent_id):
+                
+                c, d = self.c, self.d
+                for p in c.p.self_and_subtree():
+                    if p.h == parent_id:
+                        parent = p
+                        break
+                else:
+                    g.trace('===== fail', parent_id)
+                    return
+                child = parent.insertAsLastChild()
+                child.h = node_id_to_add
+                child.b = d[node_id_to_add]['string']
+                for child_id in d[node_id_to_add]['children']:
+                    self.add_children_as_nodes(child_id, node_id_to_add)
+            #@+node:ekr.20160503125844.1: *6* freemind.create_outline
+            def create_outline(self, path):
+                '''Create a tree of nodes from a FreeMind file.'''
+                c = self.c
+                junk, fileName = g.os_path_split(path)
+                undoData = c.undoer.beforeInsertNode(c.p)
+                if 1:
+                    self.import_file(path)
+                    c.undoer.afterInsertNode(c.p, 'Import', undoData)
+                    return c.p
+                else: ###
+                    # Create the top-level headline.
+                    p = c.lastTopLevel().insertAfter()
+                    fn = g.shortFileName(path).strip()
+                    if fn.endswith('.mmap'):
+                        fn = fn[: -5]
+                    p.h = fn
+                    # Create the outline under p.
+                    self.scan(path, p)
+                    c.undoer.afterInsertNode(p, 'Import', undoData)
+                    return p
+            #@+node:ekr.20160503191518.3: *6* freemind.element_to_node
+            def element_to_node(self, parent_node, element):
+
+                c, d = self.c, self.d
+                self.count += 1
+                n = str(self.count)
+                children = list(element.iterchildren())
+                if not children:
+                    return
+                d[n] = {}
+                d[parent_node]['children'].append(n)
+                if list(children[0].iterchildren()):
+                    d[n]['string'] = list(children[0].iterchildren())[0].text
+                else:
+                    d[n]['string'] = children[0].text
+                d[n]['children'] = list()
+                if len(children) > 1:
+                    for child in children[1].iterchildren():
+                        self.element_to_node(n, child)
+            #@+node:ekr.20160503191518.4: *6* freemind.import_file
+            def import_file(self, path):
+                '''The main line of the FreeMindImporter class.'''
+                c, d = self.c, self.d
+                max_chars_in_header = 80
+                # 1: Import into the dict.
+                htmltree = lxml.html.parse(path)
+                root = htmltree.getroot()
+                body = root.findall('body')[0]
+                d['0'] = {}
+                d['0']['children'] = []
+                children = list(body.iterchildren())
+                d[str(self.count)]['string'] = list(children[0].iterchildren())[0].text
+                d[str(self.count)]['children'] = []
+                for item in list(children[1].iterchildren()):
+                    self.element_to_node('0', item)
+                # 2: Create new node & select it.
+                p = c.lastTopLevel().insertAfter()
+                c.selectPosition(p)
+                # 3: Create the outline from the dict.
+                c.p.h = '0'
+                c.p.b = d['0']['string']
+                for child_id in d['0']['children']:
+                    self.add_children_as_nodes(child_id, '0')
+                # 4: Set headines.
+                for p in c.p.self_and_subtree():
+                    lines = p.b.splitlines()
+                    if len(lines) == 1 and len(lines[0]) < max_chars_in_header:
+                        # g.trace(p.h, '-->', p.b.splitlines()[0])
+                        p.h = p.b.splitlines()[0]
+                        p.b = ""
+                    elif lines: # Only if we haven't seen this node.
+                        p.h = "@node_with_long_text"
+                c.redraw()
+            #@+node:ekr.20160503145113.1: *6* freemind.import_files
+            def import_files(self, files):
+                '''Import a list of FreeMind (.mmap) files.'''
+                c = self.c
+                if files:
+                    self.tab_width = c.getTabWidth(c.p)
+                    for fileName in files:
+                        g.setGlobalOpenDir(fileName)
+                        p = self.create_outline(fileName)
+                        p.contract()
+                        p.setDirty()
+                        c.setChanged(True)
+                    c.redraw(p)
+            #@-others
+        #@-others
+        
+        if lxml:
+            FreeMindImporter(self.c).import_files(files)
+        else:
+            g.es_print('can not import lxml.html')
+    #@+node:ekr.20160503125219.1: *4* ic.importMindMap & helpers
+    def importMindMap(self, files):
+        '''Import a list of MindMap (.csv) files.'''
+
+        # Define the MindMapImporter class.
+        #@+others
+        #@+node:ekr.20160503144404.1: *5* class MindMapImporter
+        class MindMapImporter:
+            '''Mind Map Importer class.'''
+            
+            def __init__(self, c):
+                '''ctor for MindMapImporter class.'''
+                self.c = c
+                
+            #@+others
+            #@+node:ekr.20160503130209.1: *6* mindmap.create_outline
+            def create_outline(self, path):
+                c = self.c
+                junk, fileName = g.os_path_split(path)
+                undoData = c.undoer.beforeInsertNode(c.p)
+                # Create the top-level headline.
+                p = c.lastTopLevel().insertAfter()
+                fn = g.shortFileName(path).strip()
+                if fn.endswith('.csv'):
+                    fn = fn[:-4]
+                p.h = fn
+                self.scan(path, p)
+                c.undoer.afterInsertNode(p, 'Import', undoData)
+                return p
+            #@+node:ekr.20160503144647.1: *6* mindmap.import_files
+            def import_files(self, files):
+                '''Import a list of MindMap (.csv) files.'''
+                c = self.c
+                if files:
+                    self.tab_width = c.getTabWidth(c.p)
+                    for fileName in files:
+                        g.setGlobalOpenDir(fileName)
+                        p = self.create_outline(fileName)
+                        p.contract()
+                        p.setDirty()
+                        c.setChanged(True)
+                    c.redraw(p)
+            #@+node:ekr.20160503130256.1: *6* mindmap.scan & helpers
+            def scan(self, path, target):
+                '''Create an outline from a MindMap (.csv) file.'''
+                c = self.c
+                f = open(path)
+                reader = csv.reader(f)
+                max_chars_in_header = 80
+                n1 = n = target.level()
+                p = target.copy()
+                for row in list(reader)[1:]:
+                    new_level = self.csv_level(row) + n1
+                    self.csv_string(row)
+                    if new_level > n:
+                        p = p.insertAsLastChild().copy()
+                        p.b = self.csv_string(row)
+                        n = n+1
+                    elif new_level == n:
+                        p = p.insertAfter().copy()
+                        p.b = self.csv_string(row)
+                    elif new_level < n:
+                        for item in p.parents():
+                            if item.level() == new_level-1:
+                                p = item.copy()
+                                break
+                        p = p.insertAsLastChild().copy()
+                        p.b = self.csv_string(row)
+                        n = p.level()
+                for p in target.unique_subtree():
+                    if len(p.b.splitlines()) == 1:
+                        if len(p.b.splitlines()[0]) < max_chars_in_header:
+                            p.h = p.b.splitlines()[0]
+                            p.b = ""
+                        else:
+                            p.h = "@node_with_long_text"
+                    else:
+                        p.h = "@node_with_long_text"
+                c.redraw()
+                f.close()
+            #@+node:ekr.20160503130810.4: *7* mindmap.csv_level
+            def csv_level(self, row):
+                '''Return the level of the given row.'''
+                count = 0
+                while count <= len(row):
+                    if row[count]:
+                        return count+1
+                    else:
+                        count = count+1
+                return -1
+
+            #@+node:ekr.20160503130810.5: *7* mindmap.csv_string
+            def csv_string(self, row):
+                '''Return the string for the given csv row.'''
+                count = 0
+                while count<=len(row):
+                    if row[count]:
+                        return row[count]
+                    else:
+                        count = count+1
+                return None
+
+            #@-others
+        #@-others
+        
+        MindMapImporter(self.c).import_files(files)
+    #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
+    def importWebCommand(self, files, webType):
+        c = self.c; current = c.p
+        if current == None: return
+        if not files: return
+        self.tab_width = c.getTabWidth(current) # New in 4.3.
+        self.webType = webType
+        for fileName in files:
+            g.setGlobalOpenDir(fileName)
+            p = self.createOutlineFromWeb(fileName, current)
+            p.contract()
+            p.setDirty()
+            c.setChanged(True)
+        c.redraw(current)
     #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
     def createOutlineFromWeb(self, path, parent):
         c = self.c; u = c.undoer
@@ -975,20 +1235,6 @@ class LeoImportCommands:
         self.scanWebFile(path, p)
         u.afterInsertNode(p, 'Import', undoData)
         return p
-    #@+node:ekr.20031218072017.3226: *5* importWebCommand
-    def importWebCommand(self, files, webType):
-        c = self.c; current = c.p
-        if current == None: return
-        if not files: return
-        self.tab_width = c.getTabWidth(current) # New in 4.3.
-        self.webType = webType
-        for fileName in files:
-            g.setGlobalOpenDir(fileName)
-            p = self.createOutlineFromWeb(fileName, current)
-            p.contract()
-            p.setDirty()
-            c.setChanged(True)
-        c.redraw(current)
     #@+node:ekr.20031218072017.3227: *5* findFunctionDef
     def findFunctionDef(self, s, i):
         # Look at the next non-blank line for a function name.
@@ -1926,6 +2172,8 @@ class RecursiveImportController:
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
         try:
+            # pylint: disable=used-before-assignment
+            # p *is* properly initied.
             c = self.c
             p = c.p
             p1 = p.copy()
