@@ -11,85 +11,6 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
-.. @+node:ekr.20160327112237.1: *4* #225: Add support for @language json
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/225
-
-@language python
-.. @+node:ekr.20160420153409.1: *5* Convert Leo outline to/from json
-@language python
-
-'''Write node & links version of json.'''
-
-# from __future__ import print_function
-import json
-
-class JsonController:
-    @others
-
-g.cls()
-jc = JsonController()
-s = jc.to_json(c,p=None)
-d = json.loads(s)
-
-nodes = {}
-print('nodes...')
-for d2 in d.get('nodes'):
-    gnx = d2.get('gnx')
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-    nodes[gnx] = d2
-    
-keys = sorted(list(nodes.keys()))
-
-if 0:
-    print()
-    print('keys',keys)
-
-aList = d.get('top')
-print()
-print('top...')
-for gnx in aList:
-    assert gnx in keys,gnx
-    d2 = nodes.get(gnx)
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-.. @+node:ekr.20160420153409.2: *6* to_json
-def to_json (self,c,p=None):
-    
-    '''Convert p's tree to JSON, or the entire outline if p is None.'''
-    
-    if p:
-        top = [p.v.gnx]
-        nodes = list(set([p.v for p in p.self_and_subtree()]))
-    else:
-        top = [v.gnx for v in c.hiddenRootNode.children]
-        nodes = [v for v in c.all_unique_nodes()]
-
-    nodes = [self.vnode_dict(v) for v in nodes]
-    d = {'top':top,'nodes':nodes}
-    s = json.dumps(d)
-    return s
-.. @+node:ekr.20160420153409.3: *6* vnode_dict
-def vnode_dict (self,v):
-    
-    return {
-        'gnx': v.gnx,
-        'h':v.h, 'b':v.b,
-        # 'ua': v.u,
-        'children': [z.gnx for z in v.children]
-    }
-.. @+node:ekr.20160420153642.1: *5* json stuff
-.. @+node:ekr.20160420153642.2: *6* @json-outline
-# The root node for testing read_json_data.
-.. @+node:ekr.20160420153642.3: *6* @input-tree
-.. @+node:ekr.20160420153642.4: *7* child1
-# child 1 text: test of escapes: "\"
-.. @+node:ekr.20160420153642.5: *8* grandchild11
-# grandchild11 body.
-.. @+node:ekr.20160420153642.6: *8* grandchild12
-.. @+node:ekr.20160420153642.7: *7* child2
-.. @+node:ekr.20160420153642.8: *8* grandchild21
 .. @+node:ekr.20160318113142.1: *4* #278: Create coffeescript importer
 @language python
 
@@ -139,7 +60,6 @@ app.listen port, ->
   console.log 'Listening on ' + port
   return
 .. @+node:ekr.20160503094114.1: *4* 5 Minor
-.. @+node:ekr.20160503095033.1: *5* remove useUI switch
 .. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown
 # Use rest colorizer as a template.
 .. @+node:ekr.20151231101050.1: *5* #127: Bracket matching is buggy
@@ -193,6 +113,7 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
+.. @+node:ekr.20160504150658.1: *3* remove static abbrev-* commands
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
