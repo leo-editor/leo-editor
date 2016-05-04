@@ -3586,6 +3586,8 @@ class KeyHandlerClass:
         if trace: g.trace(char)
         if not char: return
         c = self.c
+        if not c.config.getBool('plain-key-outline-search'):
+            return
 
         def match(p):
             '''Return True if p contains char.'''
