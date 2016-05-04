@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160504080826.1: * @file importers/json.py
 '''The @auto importer for .json files.'''
+# pylint: disable=import-self
+# json is not the same as leo.plugins.json
 import json
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
@@ -26,13 +28,13 @@ class JSON_Scanner:
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
+        import pprint
         trace = False and not g.unitTesting
         c, d = self.c, self.gnx_dict
-        if trace: g.trace(parent.h, pprint(parent_d))
+        if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
             if trace:
-                import pprint
                 g.trace('child', pprint.pprint(d2))
             if child_gnx in self.vnodes_dict:
                 # It's a clone.
@@ -65,7 +67,7 @@ class JSON_Scanner:
                 p.clearDirty()
             c.setChanged(changed)
         else:
-            root.setDirty(setDescendentsDirty=False)
+            parent.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
         return ok
     #@+node:ekr.20160504092347.2: *4* BaseScanner.escapeFalseSectionReferences
