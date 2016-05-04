@@ -981,13 +981,6 @@ class LeoImportCommands:
         else:
             g.es_print('can not import lxml.html')
             
-    if lxml:
-        @g.command('import-free-mind-files')
-        def import_mind_jet(event):
-            '''Prompt for free-mind files and import them.'''
-            c = event.get('c')
-            if c:
-                FreeMindImporter(c).prompt_for_files()
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap & helpers
     def importMindMap(self, files):
         '''
@@ -995,13 +988,6 @@ class LeoImportCommands:
         https://www.mindjet.com/
         '''
         MindMapImporter(self.c).import_files(files)
-        
-    @g.command('import-mind-jet-files')
-    def import_mind_jet(event):
-        '''Prompt for mind-jet files and import them.'''
-        c = event.get('c')
-        if c:
-            MindMapImporter(c).prompt_for_files()
     #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files, webType):
         c = self.c; current = c.p
@@ -2367,28 +2353,6 @@ class ZimImportController:
             c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
-#@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
-@g.command('import-zim-folder')
-def import_zim_command(event):
-    '''
-    Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
-    This command requires the following Leo settings::
-
-        @int rst_level = 0
-        @string rst_type
-        @string zim_node_name
-        @string path_to_zim
-    '''
-    c = event.get('c')
-    if c:
-        ZimImportController(c).run()
-#@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
-@g.command('parse-body')
-def parse_body_command(event):
-    '''The parse-body command.'''
-    c = event.get('c')
-    if c and c.p:
-        c.importCommands.parse_body(c.p)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):
@@ -2416,6 +2380,44 @@ def headToPrevNode(event):
             u.afterChangeNodeContents(p2, undoType, b2)
         u.afterChangeGroup(p, undoType)
         c.selectPosition(p2)
+#@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
+if lxml:
+
+    @g.command('import-free-mind-files')
+    def import_free_mind_files(event):
+        '''Prompt for free-mind files and import them.'''
+        c = event.get('c')
+        if c:
+            FreeMindImporter(c).prompt_for_files()
+#@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
+@g.command('import-mind-jet-files')
+def import_mind_jet_files(event):
+    '''Prompt for mind-jet files and import them.'''
+    c = event.get('c')
+    if c:
+        MindMapImporter(c).prompt_for_files()
+#@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
+@g.command('import-zim-folder')
+def import_zim_command(event):
+    '''
+    Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+    This command requires the following Leo settings::
+
+        @int rst_level = 0
+        @string rst_type
+        @string zim_node_name
+        @string path_to_zim
+    '''
+    c = event.get('c')
+    if c:
+        ZimImportController(c).run()
+#@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
+@g.command('parse-body')
+def parse_body_command(event):
+    '''The parse-body command.'''
+    c = event.get('c')
+    if c and c.p:
+        c.importCommands.parse_body(c.p)
 #@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
 @g.command('tail-to-next-node')
 def tailToNextNode(event=None):
