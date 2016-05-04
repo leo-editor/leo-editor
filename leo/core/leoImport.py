@@ -973,8 +973,9 @@ class LeoImportCommands:
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind & helpers
     def importFreeMind(self, files):
         
-        '''INSTRUCTIONS FOR EXPORTING FROM FREEMIND:
-        Export your outline into html, then you can use this script.
+        '''
+        Import a list of .mm.html files exported from FreeMind:
+        http://freemind.sourceforge.net/wiki/index.php/Main_Page
         '''
 
         # Define FreeMindImporter class.
@@ -1103,7 +1104,10 @@ class LeoImportCommands:
             g.es_print('can not import lxml.html')
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap & helpers
     def importMindMap(self, files):
-        '''Import a list of MindMap (.csv) files.'''
+        '''
+        Import a list of .csv files exported from MindJet:
+        https://www.mindjet.com/
+        '''
 
         # Define the MindMapImporter class.
         #@+others
