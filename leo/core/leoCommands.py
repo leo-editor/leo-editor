@@ -798,6 +798,7 @@ class Commands(object):
             ("C/C++ files", "*.hpp"),
             ("FreeMind files", "*.mm.html"),
             ("Java files", "*.java"),
+            # ("JSON files", "*.json"),
             ("Mindjet files", "*.csv"),
             ("Lua files", "*.lua"),
             ("Pascal files", "*.pas"),
@@ -832,6 +833,9 @@ class Commands(object):
                 ic.importMindMap([fn])
             elif ext in ('cw', 'cweb'):
                 ic.importWebCommand([fn], "cweb")
+            # Not useful. Use @auto x.json instead.
+            # elif ext == 'json':
+                # ic.importJSON([fn])
             elif fn.endswith('mm.html'):
                 ic.importFreeMind([fn])
             elif ext in ('nw', 'noweb'):

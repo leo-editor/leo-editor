@@ -16,6 +16,7 @@ except ImportError:
     # print('leoImport.py: can not import docutils')
 import glob
 import importlib
+import json
 try:
     import lxml.html
 except ImportError:
@@ -970,7 +971,7 @@ class LeoImportCommands:
                     lastLevel = level
                     plusFlag = newFlag
         return True
-    #@+node:ekr.20160503125237.1: *4* ic.importFreeMind & helpers
+    #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
         '''
         Import a list of .mm.html files exported from FreeMind:
@@ -981,7 +982,7 @@ class LeoImportCommands:
         else:
             g.es_print('can not import lxml.html')
             
-    #@+node:ekr.20160503125219.1: *4* ic.importMindMap & helpers
+    #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
         '''
         Import a list of .csv files exported from MindJet:

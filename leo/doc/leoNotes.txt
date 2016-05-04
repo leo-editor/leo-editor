@@ -16205,6 +16205,15 @@ def redoMoveMarkedNodes(self):
     c.moveMarked()
     ### c.selectPosition(u.newP)
     u.newChanged = c.isChanged()
+.. @+node:ekr.20160504060801.1: *3* ic.importJSON
+# Not useful: we'll do @auto x.json instead.
+
+def importJSON(self, files):
+    '''
+    Import a list of .csv files exported from MindJet:
+    https://www.mindjet.com/
+    '''
+    JSON_Importer(self.c).import_files(files)
 .. @-all
 .. @@nosearch
 .. @-leo

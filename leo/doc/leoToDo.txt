@@ -12,8 +12,15 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
 .. @+node:ekr.20160327112237.1: *4* #225: Add support for @language json
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/225
+
 @language python
 .. @+node:ekr.20160420153409.1: *5* Convert Leo outline to/from json
+@language python
+
 '''Write node & links version of json.'''
 
 # from __future__ import print_function
