@@ -1703,6 +1703,134 @@ class FreeMindImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@-others
+#@+node:ekr.20160504144241.1: ** class JSON_Importer (To do)
+class JSON_Importer:
+    '''A class to import .json files.'''
+
+    def __init__(self, c):
+        '''ctor for JSON_Importer class.'''
+        self.c = c
+    
+    #@+others
+    #@+node:ekr.20160504144353.1: *3* json.create_nodes
+    def create_nodes(self, parent, parent_d):
+        '''Create the tree of nodes rooted in parent.'''
+        import pprint
+        trace = False and not g.unitTesting
+        c, d = self.c, self.gnx_dict
+        if trace: g.trace(parent.h, pprint.pprint(parent_d))
+        for child_gnx in parent_d.get('children'):
+            d2 = d.get(child_gnx)
+            if trace:
+                g.trace('child', pprint.pprint(d2))
+            if child_gnx in self.vnodes_dict:
+                # It's a clone.
+                v = self.vnodes_dict.get(child_gnx)
+                n = parent.numberOfChildren()
+                child = leoNodes.Position(v)
+                child._linkAsNthChild(parent, n)
+                # Don't create children again.
+            else:
+                child = parent.insertAsLastChild()
+                child.h = d2.get('h') or '<**no h**>'
+                child.b = d2.get('b') or g.u('')
+                if d2.get('gnx'):
+                    child.v.findIndex = gnx = d2.get('gnx')
+                    self.vnodes_dict[gnx] = child.v
+                if d2.get('ua'):
+                    child.u = d2.get('ua')
+                self.create_nodes(child, d2)
+    #@+node:ekr.20160504144241.2: *3* json.create_outline
+    def create_outline(self, path):
+        c = self.c
+        junk, fileName = g.os_path_split(path)
+        undoData = c.undoer.beforeInsertNode(c.p)
+        # Create the top-level headline.
+        p = c.lastTopLevel().insertAfter()
+        fn = g.shortFileName(path).strip()
+        if fn.endswith('.json'):
+            fn = fn[:-5]
+        p.h = fn
+        self.scan(path, p)
+        c.undoer.afterInsertNode(p, 'Import', undoData)
+        return p
+    #@+node:ekr.20160504144241.3: *3* json.import_files
+    def import_files(self, files):
+        '''Import a list of MindMap (.csv) files.'''
+        c = self.c
+        if files:
+            self.tab_width = c.getTabWidth(c.p)
+            for fileName in files:
+                g.setGlobalOpenDir(fileName)
+                p = self.create_outline(fileName)
+                p.contract()
+                p.setDirty()
+                c.setChanged(True)
+            c.redraw(p)
+    #@+node:ekr.20160504144241.4: *3* json.prompt_for_files
+    def prompt_for_files(self):
+        '''Prompt for a list of MindJet (.csv) files and import them.'''
+        c = self.c
+        types = [
+            ("JSON files", "*.json"),
+            ("All files", "*"),
+        ]
+        names = g.app.gui.runOpenFileDialog(c,
+            title="Import MindJet File",
+            filetypes=types,
+            defaultextension=".csv",
+            multiple=True)
+        c.bringToFront()
+        if names:
+            g.chdir(names[0])
+            self.import_files(names)
+    #@+node:ekr.20160504144545.1: *3* json.put
+    def put(self, s):
+        '''Write line s using at.os, taking special care of newlines.'''
+        at = self.c.leoAtFile
+        at.os(s[: -1] if s.endswith('\n') else s)
+        at.onl()
+    #@+node:ekr.20160504144314.1: *3* json.scan (rewrite)
+    def scan(self, s, parent):
+        '''Create an outline from a MindMap (.csv) file.'''
+        trace = False and not g.unitTesting
+        c, d, self.gnx_dict = self.c, json.loads(s), {}
+        for d2 in d.get('nodes', []):
+            gnx = d2.get('gnx')
+            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
+            self.gnx_dict[gnx] = d2
+        top_d = d.get('top')
+        if top_d:
+            # Don't set parent.h or parent.gnx or parent.v.u.
+            parent.b = top_d.get('b') or ''
+            self.create_nodes(parent, top_d)
+            c.redraw()
+        return bool(top_d)
+    #@+node:ekr.20160504144241.7: *3* json.vnode_dict
+    def vnode_dict(self, v):
+        return {
+            'gnx': v.gnx,
+            'h': v.h, 'b': v.b,
+            # 'ua': v.u,
+            'children': [z.gnx for z in v.children]
+        }
+    #@+node:ekr.20160504144455.1: *3* json.write
+    def write(self, root, forceSentinels=False):
+        """Write all the @auto-json node."""
+        nodes = list(set([p.v for p in root.subtree()]))
+        nodes = [self.vnode_dict(v) for v in nodes]
+        d = {
+            'top': self.vnode_dict(root.v),
+            'nodes': nodes,
+        }
+        s = json.dumps(d,
+            sort_keys=True,
+            indent=2, # Pretty print.
+            separators=(',', ': '))
+        self.put(s)
+        root.setVisited()
+        return True
+    #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter:
     '''Mind Map Importer class.'''
