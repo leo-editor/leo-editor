@@ -77,6 +77,7 @@ In general, if you pick an invalid file, the importers will fail gracefully.
 https://github.com/leo-editor/leo-editor/issues/225
 
 @language python
+.. @+node:ekr.20160503093403.1: *4* Removed all static abbrev commands
 .. @-all
 .. @@nosearch
 .. @@killbeautify

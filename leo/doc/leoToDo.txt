@@ -66,8 +66,6 @@ app.listen port, ->
 https://github.com/leo-editor/leo-editor/issues/127
 
 Javascript and perl need more work.
-.. @+node:ekr.20160503093403.1: *5* Remove all static abbrev commands
-After allowing time for comments.
 .. @+node:ekr.20160405110731.1: *5* #189: Better support for UNL navigation of Leo's code
 https://github.com/leo-editor/leo-editor/issues/189
 
@@ -113,7 +111,6 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
-.. @+node:ekr.20160504150658.1: *3* remove static abbrev-* commands
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
