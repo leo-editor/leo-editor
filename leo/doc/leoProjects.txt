@@ -54,6 +54,19 @@ continue;;=line 1\n line 2\n line 3
 
 I would consider the abbrev-write file more useful if it used the
 same continuation convention as in @data nodes
+.. @+node:ekr.20160429062804.1: *4* Added #32: Add freemind and mindjet imports
+https://github.com/leo-editor/leo-editor/issues/32
+
+The code:
+https://github.com/leo-editor/snippets/tree/master/issue_attach/32
+
+There are two ways to access these commands:
+
+1. Using the general import-files command, via the minibuffer or the File:Import File menu.  This opens a dialog that picks the proper importer **based on the file's extension**.  mm.html files get the FreeMind importer. .csv files get the MindJet importer.
+
+2. If these conventions don't suit you, you can use specific import-free-mind-files or import-mind-jet-files commands. These open a dialog in which the specific extension is pre-selected, but you can pick any file as usual.  In particular, it's possible to use the MindJet importer to open .ipynb files, which have .csv format.
+
+In general, if you pick an invalid file, the importers will fail gracefully.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
