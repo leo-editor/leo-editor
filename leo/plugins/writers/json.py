@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160504083330.1: * @file writers/json.py
-'''The @auto write code for vimoutline (.otl) files.'''
+'''The @auto write code for .json files.'''
 # pylint: disable=unused-import
 import copy
 import json
@@ -9,7 +9,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160504083330.2: ** class JSON_Writer
 class JSON_Writer(basewriter.BaseWriter):
-    '''The writer class for .jsone files.'''
+    '''The writer class for .json files.'''
     # No ctor.
     #@+others
     #@+node:ekr.20160504083330.3: *3* json.write
