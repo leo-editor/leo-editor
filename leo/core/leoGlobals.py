@@ -3081,6 +3081,21 @@ def openWithFileName(fileName, old_c=None, gui=None):
     returns the commander of the newly-opened outline.
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
+#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
+def readFileIntoUnicodeString(fn, silent=False):
+    '''Return the raw contents of the file whose full path is fn.'''
+    try:
+        f = open(fn, 'rb')
+        s = f.read()
+        f.close()
+        return g.toUnicode(s)
+    except IOError:
+        if not silent:
+            g.error('can not open', fn)
+    except Exception:
+        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
+        g.es_exception()
+    return None
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn, silent=False):
     '''Return the raw contents of the file whose full path is fn.'''
