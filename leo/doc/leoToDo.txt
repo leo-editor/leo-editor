@@ -91,13 +91,27 @@ def vnode_dict (self,v):
 .. @+node:ekr.20160420153642.7: *7* child2
 .. @+node:ekr.20160420153642.8: *8* grandchild21
 .. @+node:ekr.20160318113142.1: *4* #278: Create coffeescript importer
-https://github.com/leo-editor/leo-editor/issues/278
+@language python
 
-https://pypi.python.org/pypi/CoffeeScript/1.1.2
+# https://github.com/leo-editor/leo-editor/issues/278
+# A bridge to the coffeescript compiler
+# Must install coffeescript first.
+# https://pypi.python.org/pypi/CoffeeScript/1.1.2
 import coffeescript
 g.es(coffeescript)
 .. @+node:ekr.20160430150528.1: *4* #128: Javascript importer should be rewritten(Hard)
 https://github.com/leo-editor/leo-editor/issues/128
+
+Convert to coffeescript
+http://js2.coffee/
+
+There is also a "coffee" command-line utility.
+It's installed on my system.
+http://coffeescript.org/documentation/docs/command.html
+
+To install coffeescript:
+
+    npm install -g coffee-script
 
 A common idiom:
 
@@ -112,6 +126,18 @@ var port = process.env.PORT || 5000;
 app.listen(port, function() {
 console.log("Listening on " + port);
 });
+
+The corresponding coffeescript is:
+
+express = require('express')
+app = express.createServer(express.logger())
+app.get '/', (request, response) ->
+  response.send 'Hello World!'
+  return
+port = process.env.PORT or 5000
+app.listen port, ->
+  console.log 'Listening on ' + port
+  return
 .. @+node:ekr.20160503094114.1: *4* 5 Minor
 .. @+node:ekr.20160503095033.1: *5* remove useUI switch
 .. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown

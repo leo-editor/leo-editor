@@ -3,7 +3,8 @@
 '''The @auto importer for .json files.'''
 import json
 import leo.core.leoGlobals as g
-import leo.plugins.importers.basescanner as basescanner
+import leo.core.leoNodes as leoNodes
+# import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
@@ -19,7 +20,9 @@ class JSON_Scanner:
         self.c = importCommands.c
         self.atAuto = atAuto
         self.gnx_dict = {}
-            # Keys are gnx. Values are vnode_dicts.
+            # Keys are gnx's. Values are vnode_dicts.
+        self.vnodes_dict = {}
+            # Keys are gnx's. Values are already-created vnodes.
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
@@ -31,14 +34,23 @@ class JSON_Scanner:
             if trace:
                 import pprint
                 g.trace('child', pprint.pprint(d2))
-            child = parent.insertAsLastChild()
-            child.h = d2.get('h') or '<**no h**>'
-            child.b = d2.get('b') or g.u('')
-            if d2.get('gnx'):
-                child.v.findIndex = d2.get('gnx')
-            if d2.get('ua'):
-                child.u = d2.get('ua')
-            self.create_nodes(child, d2)
+            if child_gnx in self.vnodes_dict:
+                # It's a clone.
+                v = self.vnodes_dict.get(child_gnx)
+                n = parent.numberOfChildren()
+                child = leoNodes.Position(v)
+                child._linkAsNthChild(parent, n)
+                # Don't create children again.
+            else:
+                child = parent.insertAsLastChild()
+                child.h = d2.get('h') or '<**no h**>'
+                child.b = d2.get('b') or g.u('')
+                if d2.get('gnx'):
+                    child.v.findIndex = gnx = d2.get('gnx')
+                    self.vnodes_dict[gnx] = child.v
+                if d2.get('ua'):
+                    child.u = d2.get('ua')
+                self.create_nodes(child, d2)
     #@+node:ekr.20160504092347.1: *3* json.run
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
