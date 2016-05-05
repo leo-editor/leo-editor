@@ -6,6 +6,7 @@
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
 # Required so the unit test that simulates an @auto leoImport.py will work!
 import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
 import csv
 try:
     import docutils

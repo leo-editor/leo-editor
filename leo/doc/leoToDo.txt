@@ -11,6 +11,8 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
+.. @+node:ekr.20160505042139.1: *4* Make it easier to import .json files
+Create a class that helps json import scripts.
 .. @+node:ekr.20160318113142.1: *4* #278: Create coffeescript importer
 @language python
 
@@ -59,7 +61,7 @@ port = process.env.PORT or 5000
 app.listen port, ->
   console.log 'Listening on ' + port
   return
-.. @+node:ekr.20160503094114.1: *4* 5 Minor
+.. @+node:ekr.20160503094114.1: *4* 3 Minor
 .. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown
 # Use rest colorizer as a template.
 .. @+node:ekr.20151231101050.1: *5* #127: Bracket matching is buggy

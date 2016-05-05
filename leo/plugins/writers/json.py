@@ -2,6 +2,8 @@
 #@+node:ekr.20160504083330.1: * @file writers/json.py
 '''The @auto write code for .json files.'''
 # pylint: disable=unused-import
+# pylint: disable=import-self
+# json is not the same as leo.plugins.json
 import copy
 import json
 import leo.core.leoGlobals as g
