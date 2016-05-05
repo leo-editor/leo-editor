@@ -20,14 +20,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         self.def_name = None
         self.errors = 0
         self.tab_width = self.c.tab_width or -4
-    #@+node:ekr.20160505104405.1: *3* coffee.adjust_lines (test)
-    def adjust_lines(self, lines, indent=True):
-        s = ''.join(lines)
-        s = self.undentBody(s, ignoreComments=True)
-        lines = g.splitLines(s)
-        if indent:
-            lines = [' '*4+z for z in lines]
-        return lines
     #@+node:ekr.20160505114047.1: *3* coffee.class_name
     def class_name(self, s):
         '''Return the name of the class in line s.'''
@@ -35,6 +27,40 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         m = re.match(r'class(\s+)(\w+)',s)
         name = m.group(2) if m else '<**bad class name**>'
         return 'class ' + name
+    #@+node:ekr.20160505173347.1: *3* coffee.delete_trailing_lines (test)
+    def delete_trailing_lines(self, p):
+        '''Delete the trailing lines of p.b and return them.'''
+        trace = False and not g.unitTesting
+        body_lines, trailing_lines = [], []
+        for s in g.splitLines(p.b):
+            strip = s.strip()
+            if not strip or strip.startswith('#'):
+                trailing_lines.append(s)
+            else:
+                body_lines.extend(trailing_lines)
+                body_lines.append(s)
+                trailing_lines = []
+        # Clear trailing lines if they are all blank.
+        if all([not z.strip() for z in trailing_lines]):
+            trailing_lines = []
+        if trace and trailing_lines:
+            g.trace(len(trailing_lines), p.h) # repr(trailing_lines))
+        p.b = ''.join(body_lines)
+        return ''.join(trailing_lines)
+    #@+node:ekr.20160505170558.1: *3* coffee.move_trailing_lines (test)
+    def move_trailing_lines(self, parent):
+        '''Move trailing lines into the following node.'''
+        prev_lines = []
+        last = None
+        for p in parent.subtree():
+            trailing_lines = self.delete_trailing_lines(p)
+            if prev_lines:
+                g.trace('moving lines from', last.h, 'to', p.h)
+                p.b = prev_lines + p.b
+            prev_lines = trailing_lines
+            last = p.copy()
+        if prev_lines:
+            last.b = last.b + prev_lines
     #@+node:ekr.20160505102909.1: *3* coffee.skip_block
     def skip_block(self, lines):
         '''Return all lines of the block that starts at lines[0].'''
@@ -51,11 +77,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                 block_lines.append(s)
             else:
                 break
-        if trace:
-            print('')
-            g.trace('block_lines...')
-            for s in block_lines:
-                print(s)
         return block_lines
     #@+node:ekr.20160505111722.1: *3* coffee.lws
     def lws(self, s):
@@ -69,6 +90,8 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         if prepass:
             return False, []
         self.scan(s, parent, indent=False)
+        self.move_trailing_lines(parent)
+        self.undent_nodes(parent)
         ok = self.errors == 0
         # g.app.unitTestDict['result'] = ok
         if self.atAuto and ok:
@@ -150,22 +173,22 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                 body_lines.append(s)
                 i += 1
             elif is_class or is_def:
-                if not at_others:
-                    at_others = True
-                    body_lines.append('@others\n' if is_def else '    @others')
+                child = parent.insertAsLastChild()
+                child.h = self.class_name(s) if is_class else self.def_name
+                child.b = strip + '\n'
+                if is_class:
+                    # child.b = child.b + '@others\n' if is_def else '    @others\n'
+                    child.b = child.b + '    @others\n'
                 block_lines = self.skip_block(lines[i:])
                 assert block_lines
                 i += len(block_lines)
                 s2 = ''.join(block_lines[1:])
-                child = parent.insertAsLastChild()
-                child.h = self.class_name(s) if is_class else self.def_name
-                child.b = strip + '\n' # Unindent the class/def line.
                 self.scan(s2, child)
             else:
                 body_lines.append(s)
                 i += 1
             assert progress < i
-        parent.b = parent.b + ''.join(self.adjust_lines(body_lines, indent=indent))
+        parent.b = parent.b + ''.join(body_lines)
     #@+node:ekr.20160505113917.1: *3* coffee.starts_def
     def starts_def(self, s):
         '''
@@ -175,6 +198,36 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         m = re.match('(.*):(.*)->', s)
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
+    #@+node:ekr.20160505180032.1: *3* coffee.undent_body
+    def undent_body(self, s):
+        '''Return the undented body of s.'''
+        leading_lines = []
+        lines = g.splitLines(s)
+        # First, completely undent all leading whitespace or comment lines.
+        for s in lines:
+            strip = s.strip()
+            if not strip or strip.startswith('#'):
+                leading_lines.append(strip + '\n')
+            else:
+                break
+        i = len(leading_lines)
+        # Unindent the def/class line.
+        if i < len(lines):
+            lines[i] = lines[i].lstrip()
+        s = ''.join(lines[i:])
+        s = self.undentBody(s, ignoreComments=True)
+            # undentBody is defined in the base class.
+        # Remove all blank lines from leading lines.
+        while leading_lines and not leading_lines[0].strip():
+            leading_lines = leading_lines[1:]
+        return ''.join(leading_lines) + s
+        
+        
+    #@+node:ekr.20160505170639.1: *3* coffee.undent_nodes
+    def undent_nodes(self, parent):
+        '''Unindent all nodes in parent's tree.'''
+        for p in parent.self_and_subtree():
+            p.b = self.undent_body(p.b)
     #@-others
 #@-others
 importer_dict = {
