@@ -1704,16 +1704,87 @@ class FreeMindImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@-others
-#@+node:ekr.20160504144241.1: ** class JSON_Importer (To do)
-class JSON_Importer:
-    '''A class to import .json files.'''
+#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
+class JSON_Import_Helper:
+    '''
+    A class that helps client scripts import .json files.
+    
+    Client scripts supply data describing how to create Leo outlines from
+    the .json data.
+    '''
 
     def __init__(self, c):
-        '''ctor for JSON_Importer class.'''
+        '''ctor for the JSON_Import_Helper class.'''
         self.c = c
     
     #@+others
-    #@+node:ekr.20160504144353.1: *3* json.create_nodes
+    #@+node:ekr.20160505044925.1: *3*  unused code
+    if 0:
+        #@+others
+        #@+node:ekr.20160505045041.1: *4* unused write code
+        #@+node:ekr.20160504144545.1: *5* json.put
+        def put(self, s):
+            '''Write line s using at.os, taking special care of newlines.'''
+            at = self.c.leoAtFile
+            at.os(s[: -1] if s.endswith('\n') else s)
+            at.onl()
+        #@+node:ekr.20160504144241.7: *5* json.vnode_dict
+        def vnode_dict(self, v):
+            return {
+                'gnx': v.gnx,
+                'h': v.h, 'b': v.b,
+                # 'ua': v.u,
+                'children': [z.gnx for z in v.children]
+            }
+        #@+node:ekr.20160504144455.1: *5* json.write
+        def write(self, root, forceSentinels=False):
+            """Write all the @auto-json node."""
+            nodes = list(set([p.v for p in root.subtree()]))
+            nodes = [self.vnode_dict(v) for v in nodes]
+            d = {
+                'top': self.vnode_dict(root.v),
+                'nodes': nodes,
+            }
+            s = json.dumps(d,
+                sort_keys=True,
+                indent=2, # Pretty print.
+                separators=(',', ': '))
+            self.put(s)
+            root.setVisited()
+            return True
+        #@+node:ekr.20160505045049.1: *4* unused read code
+        #@+node:ekr.20160504144241.3: *5* json.import_files
+        def import_files(self, files):
+            '''Import a list of MindMap (.csv) files.'''
+            c = self.c
+            if files:
+                self.tab_width = c.getTabWidth(c.p)
+                for fileName in files:
+                    g.setGlobalOpenDir(fileName)
+                    p = self.create_outline(fileName)
+                    p.contract()
+                    p.setDirty()
+                    c.setChanged(True)
+                c.redraw(p)
+        #@+node:ekr.20160504144241.4: *5* json.prompt_for_files
+        def prompt_for_files(self):
+            '''Prompt for a list of MindJet (.csv) files and import them.'''
+            c = self.c
+            types = [
+                ("JSON files", "*.json"),
+                ("All files", "*"),
+            ]
+            names = g.app.gui.runOpenFileDialog(c,
+                title="Import MindJet File",
+                filetypes=types,
+                defaultextension=".csv",
+                multiple=True)
+            c.bringToFront()
+            if names:
+                g.chdir(names[0])
+                self.import_files(names)
+        #@-others
+    #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
         import pprint
@@ -1741,7 +1812,7 @@ class JSON_Importer:
                 if d2.get('ua'):
                     child.u = d2.get('ua')
                 self.create_nodes(child, d2)
-    #@+node:ekr.20160504144241.2: *3* json.create_outline
+    #@+node:ekr.20160504144241.2: *3* json.create_outline (generalize)
     def create_outline(self, path):
         c = self.c
         junk, fileName = g.os_path_split(path)
@@ -1755,43 +1826,7 @@ class JSON_Importer:
         self.scan(path, p)
         c.undoer.afterInsertNode(p, 'Import', undoData)
         return p
-    #@+node:ekr.20160504144241.3: *3* json.import_files
-    def import_files(self, files):
-        '''Import a list of MindMap (.csv) files.'''
-        c = self.c
-        if files:
-            self.tab_width = c.getTabWidth(c.p)
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                p = self.create_outline(fileName)
-                p.contract()
-                p.setDirty()
-                c.setChanged(True)
-            c.redraw(p)
-    #@+node:ekr.20160504144241.4: *3* json.prompt_for_files
-    def prompt_for_files(self):
-        '''Prompt for a list of MindJet (.csv) files and import them.'''
-        c = self.c
-        types = [
-            ("JSON files", "*.json"),
-            ("All files", "*"),
-        ]
-        names = g.app.gui.runOpenFileDialog(c,
-            title="Import MindJet File",
-            filetypes=types,
-            defaultextension=".csv",
-            multiple=True)
-        c.bringToFront()
-        if names:
-            g.chdir(names[0])
-            self.import_files(names)
-    #@+node:ekr.20160504144545.1: *3* json.put
-    def put(self, s):
-        '''Write line s using at.os, taking special care of newlines.'''
-        at = self.c.leoAtFile
-        at.os(s[: -1] if s.endswith('\n') else s)
-        at.onl()
-    #@+node:ekr.20160504144314.1: *3* json.scan (rewrite)
+    #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
     def scan(self, s, parent):
         '''Create an outline from a MindMap (.csv) file.'''
         trace = False and not g.unitTesting
@@ -1807,30 +1842,6 @@ class JSON_Importer:
             self.create_nodes(parent, top_d)
             c.redraw()
         return bool(top_d)
-    #@+node:ekr.20160504144241.7: *3* json.vnode_dict
-    def vnode_dict(self, v):
-        return {
-            'gnx': v.gnx,
-            'h': v.h, 'b': v.b,
-            # 'ua': v.u,
-            'children': [z.gnx for z in v.children]
-        }
-    #@+node:ekr.20160504144455.1: *3* json.write
-    def write(self, root, forceSentinels=False):
-        """Write all the @auto-json node."""
-        nodes = list(set([p.v for p in root.subtree()]))
-        nodes = [self.vnode_dict(v) for v in nodes]
-        d = {
-            'top': self.vnode_dict(root.v),
-            'nodes': nodes,
-        }
-        s = json.dumps(d,
-            sort_keys=True,
-            indent=2, # Pretty print.
-            separators=(',', ': '))
-        self.put(s)
-        root.setVisited()
-        return True
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter:
