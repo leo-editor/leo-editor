@@ -17,6 +17,8 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             atAuto=atAuto, language='coffeescript')
         # self.c = importCommands.c
         # self.atAuto = atAuto
+        self.at_others = []
+            # A list of postitions that have an @others directive.
         self.def_name = None
         self.errors = 0
         self.tab_width = self.c.tab_width or -4
@@ -27,7 +29,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         m = re.match(r'class(\s+)(\w+)',s)
         name = m.group(2) if m else '<**bad class name**>'
         return 'class ' + name
-    #@+node:ekr.20160505173347.1: *3* coffee.delete_trailing_lines (test)
+    #@+node:ekr.20160505173347.1: *3* coffee.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p.b and return them.'''
         trace = False and not g.unitTesting
@@ -46,42 +48,35 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         if trace and trailing_lines:
             g.trace(len(trailing_lines), p.h) # repr(trailing_lines))
         p.b = ''.join(body_lines)
-        return ''.join(trailing_lines)
-    #@+node:ekr.20160505170558.1: *3* coffee.move_trailing_lines (test)
+        return trailing_lines
+    #@+node:ekr.20160505111722.1: *3* coffee.lws
+    def lws(self, s):
+        '''Return the indentation of line s.'''
+        return g.computeLeadingWhitespaceWidth(s, self.tab_width)
+    #@+node:ekr.20160505170558.1: *3* coffee.move_trailing_lines
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
+        trace = False and not g.unitTesting
         prev_lines = []
         last = None
         for p in parent.subtree():
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
-                g.trace('moving lines from', last.h, 'to', p.h)
-                p.b = prev_lines + p.b
+                if trace: g.trace('moving lines from', last.h, 'to', p.h)
+                p.b = ''.join(prev_lines) + p.b
             prev_lines = trailing_lines
             last = p.copy()
         if prev_lines:
-            last.b = last.b + prev_lines
-    #@+node:ekr.20160505102909.1: *3* coffee.skip_block
-    def skip_block(self, lines):
-        '''Return all lines of the block that starts at lines[0].'''
-        trace = False and not g.unitTesting
-        assert lines
-        block_lines = [lines[0]]
-        level1 = self.lws(lines[0])
-        if trace: g.trace('first line', level1, repr(lines[0]))
-        for i, s in enumerate(lines[1:]):
-            strip = s.strip()
-            level = self.lws(s)
-            if trace: g.trace(level1, level, repr(s))
-            if not strip or strip.startswith('#') or level > level1:
-                block_lines.append(s)
+            # These should go after the @others lines in the parent.
+            lines = g.splitLines(parent.b)
+            for i, s in enumerate(lines):
+                if s.strip().startswith('@others'):
+                    lines = lines[:i+1] + prev_lines + lines[i+2:]
+                    parent.b = ''.join(lines)
+                    break
             else:
-                break
-        return block_lines
-    #@+node:ekr.20160505111722.1: *3* coffee.lws
-    def lws(self, s):
-        '''Return the indentation of line s.'''
-        return g.computeLeadingWhitespaceWidth(s, self.tab_width)
+                # Fall back.
+                last.b = last.b + ''.join(prev_lines)
     #@+node:ekr.20160505100917.1: *3* coffee.run
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The top-level code for the coffeescript scanners.'''
@@ -156,11 +151,11 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             self.report(message)
         return ''.join(result)
     #@+node:ekr.20160505100958.1: *3* coffee.scan
-    def scan(self, s1, parent, indent=True):
+    def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
         if not s1.strip():
             return
-        at_others, i, body_lines = False, 0, []
+        i, body_lines = 0, []
         lines = g.splitLines(s1)
         level = self.lws(lines[0])
         while i < len(lines):
@@ -168,7 +163,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             s = lines[i]
             strip = s.strip()
             is_class = g.match_word(s, 0, 'class')
-            is_def = not is_class and self.starts_def(s)
+            is_def = do_def and not is_class and self.starts_def(s)
             if strip.startswith('#'):
                 body_lines.append(s)
                 i += 1
@@ -177,25 +172,45 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                 child.h = self.class_name(s) if is_class else self.def_name
                 child.b = strip + '\n'
                 if is_class:
-                    # child.b = child.b + '@others\n' if is_def else '    @others\n'
-                    child.b = child.b + '    @others\n'
+                    child.b = child.b + ' '*abs(self.tab_width)+'@others\n\n'
+                    self.at_others.append(child.copy())
+                elif not any([parent == z for z in self.at_others]):
+                    self.at_others.append(parent.copy())
+                    body_lines.append('@others\n\n')
                 block_lines = self.skip_block(lines[i:])
                 assert block_lines
                 i += len(block_lines)
                 s2 = ''.join(block_lines[1:])
-                self.scan(s2, child)
+                self.scan(s2, child, do_def=not is_def)
             else:
                 body_lines.append(s)
                 i += 1
             assert progress < i
         parent.b = parent.b + ''.join(body_lines)
+    #@+node:ekr.20160505102909.1: *3* coffee.skip_block
+    def skip_block(self, lines):
+        '''Return all lines of the block that starts at lines[0].'''
+        trace = False and not g.unitTesting
+        assert lines
+        block_lines = [lines[0]]
+        level1 = self.lws(lines[0])
+        if trace: g.trace('first line', level1, repr(lines[0]))
+        for i, s in enumerate(lines[1:]):
+            strip = s.strip()
+            level = self.lws(s)
+            if trace: g.trace(level1, level, repr(s))
+            if not strip or strip.startswith('#') or level > level1:
+                block_lines.append(s)
+            else:
+                break
+        return block_lines
     #@+node:ekr.20160505113917.1: *3* coffee.starts_def
     def starts_def(self, s):
         '''
         Return True if line s starts a coffeescript function.
         Sets or clears the def_name ivar.
         '''
-        m = re.match('(.*):(.*)->', s)
+        m = re.match('(.*):(.*)->', s) or re.match('(.*)->', s)
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
     #@+node:ekr.20160505180032.1: *3* coffee.undent_body
