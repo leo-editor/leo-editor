@@ -11,23 +11,10 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
-.. @+node:ekr.20160505042139.1: *4* Make it easier to import .json files
-Create a class that helps json import scripts.
 .. @+node:ekr.20160430150528.1: *4* #128: Javascript importer should be rewritten
 https://github.com/leo-editor/leo-editor/issues/128
 
-Convert to coffeescript
-http://js2.coffee/
-
-There is also a "coffee" command-line utility.
-It's installed on my system.
-http://coffeescript.org/documentation/docs/command.html
-
-To install coffeescript:
-
-    npm install -g coffee-script
-
-A common idiom:
+The plan: get this common idiom to work properly:
 
 var express = require('express');
 var app = express.createServer(express.logger());
@@ -40,7 +27,20 @@ var port = process.env.PORT || 5000;
 app.listen(port, function() {
 console.log("Listening on " + port);
 });
+.. @+node:ekr.20160506103345.1: *5* A bad idea: convert to coffeescript
+There would be no way to get round-tripping.
 
+Convert to coffeescript
+http://js2.coffee/
+
+There is also a "coffee" command-line utility.
+It's installed on my system.
+http://coffeescript.org/documentation/docs/command.html
+
+To install coffeescript:
+
+    npm install -g coffee-script
+    
 The corresponding coffeescript is:
 
 express = require('express')
@@ -52,20 +52,19 @@ port = process.env.PORT or 5000
 app.listen port, ->
   console.log 'Listening on ' + port
   return
-.. @+node:ekr.20160503094114.1: *4* 3 Minor
-.. @+node:ekr.20160413081725.1: *5* Revise colorizer for markdown
+.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
 # Use rest colorizer as a template.
-.. @+node:ekr.20151231101050.1: *5* #127: Bracket matching is buggy
+.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
 https://github.com/leo-editor/leo-editor/issues/127
 
 Javascript and perl need more work.
-.. @+node:ekr.20160405110731.1: *5* #189: Better support for UNL navigation of Leo's code
+.. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
 https://github.com/leo-editor/leo-editor/issues/189
 
 Improve g.recursiveUNLSearch?
 
 I want to make UNL's as robust as possible, for the Cheat Sheet & other tutorial.
-.. @+node:ekr.20130806072439.20374: *6* Ignore URL's in scripts?
+.. @+node:ekr.20130806072439.20374: *5* Ignore URL's in scripts?
 From: HaveF <iamaplayer@gmail.com>
 
 I write a script (say, @button button-1) in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to leo-file-B.leo.
@@ -104,6 +103,39 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
+.. @+node:ekr.20160506104241.1: *4* #283: Show global line number in lower left status bar
+https://github.com/leo-editor/leo-editor/issues/283
+.. @+node:ekr.20160506104405.1: *4* #283: Improve automatic creation of myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/282
+
+Terry: I think automatically creating the file is worth keeping.  We could add a popup to tell the user it was just created if we wanted it to be more obvious.
+
+Without automagic creation, the new user must correctly layout a Leo
+settings file.
+
+  @settings
+    @enabled-plugins
+    @shortcuts
+
+etc. before they can change any settings, which I think is too much of
+a barrier.
+
+It does not copy all of leoSettings.leo, which would be a bad
+idea.  It just copies key bindings and enabled-plugins.
+
+It should be created in ~/.leo/myLeoSettings.leo, that's worked fine so
+far.
+.. @+node:ekr.20160505042139.1: *4* #284: More flexible imports for .json files
+https://github.com/leo-editor/leo-editor/issues/284
+
+Create a class that helps json import scripts.
+
+Original discussion:
+https://groups.google.com/d/msg/leo-editor/k0TS8JGxNiA/GleSjF2lAgAJ
+
+A helper class, JSON_Import_Helper (jih) would contain all the general code. You could say that this helper class is conceptually similar to the RecursiveImportController class.
+
+Client scripts would tell the jih class what elements are to create outline structure, which elements should be ignored, and which elements are to create headline text, body text, or even may uA's.
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
