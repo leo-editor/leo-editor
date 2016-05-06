@@ -15,8 +15,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         basescanner.BaseScanner.__init__(self,
             importCommands,
             atAuto=atAuto, language='coffeescript')
-        # self.c = importCommands.c
-        # self.atAuto = atAuto
         self.at_others = []
             # A list of postitions that have an @others directive.
         self.def_name = None
@@ -32,7 +30,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20160505173347.1: *3* coffee.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p.b and return them.'''
-        trace = False and not g.unitTesting
         body_lines, trailing_lines = [], []
         for s in g.splitLines(p.b):
             strip = s.strip()
@@ -45,8 +42,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         # Clear trailing lines if they are all blank.
         if all([not z.strip() for z in trailing_lines]):
             trailing_lines = []
-        if trace and trailing_lines:
-            g.trace(len(trailing_lines), p.h) # repr(trailing_lines))
         p.b = ''.join(body_lines)
         return trailing_lines
     #@+node:ekr.20160505111722.1: *3* coffee.lws
@@ -56,13 +51,12 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20160505170558.1: *3* coffee.move_trailing_lines
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
-        trace = False and not g.unitTesting
         prev_lines = []
         last = None
         for p in parent.subtree():
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
-                if trace: g.trace('moving lines from', last.h, 'to', p.h)
+                # g.trace('moving lines from', last.h, 'to', p.h)
                 p.b = ''.join(prev_lines) + p.b
             prev_lines = trailing_lines
             last = p.copy()
@@ -190,15 +184,12 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20160505102909.1: *3* coffee.skip_block
     def skip_block(self, lines):
         '''Return all lines of the block that starts at lines[0].'''
-        trace = False and not g.unitTesting
         assert lines
         block_lines = [lines[0]]
         level1 = self.lws(lines[0])
-        if trace: g.trace('first line', level1, repr(lines[0]))
         for i, s in enumerate(lines[1:]):
             strip = s.strip()
             level = self.lws(s)
-            if trace: g.trace(level1, level, repr(s))
             if not strip or strip.startswith('#') or level > level1:
                 block_lines.append(s)
             else:
@@ -210,7 +201,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         Return True if line s starts a coffeescript function.
         Sets or clears the def_name ivar.
         '''
-        m = re.match('(.*):(.*)->', s) or re.match('(.*)->', s)
+        m = re.match('(.+):(.*)->', s) or re.match('(.+)=(.*)->', s)
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
     #@+node:ekr.20160505180032.1: *3* coffee.undent_body
