@@ -15,6 +15,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         basescanner.BaseScanner.__init__(self,
             importCommands,
             atAuto=atAuto, language='coffeescript')
+        self.strict = False
         self.at_others = []
             # A list of postitions that have an @others directive.
         self.def_name = None
@@ -79,6 +80,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         if prepass:
             return False, []
         self.scan(s, parent, indent=False)
+        parent.b = '@language coffeescript\n\n' + parent.b.lstrip()
         self.move_trailing_lines(parent)
         self.undent_nodes(parent)
         ok = self.errors == 0
@@ -163,11 +165,23 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                 body_lines.append(s)
                 i += 1
             elif is_class or is_def:
+                # Important: all undents are done in a later pass.
                 child = parent.insertAsLastChild()
                 child.h = self.class_name(s) if is_class else self.def_name
-                child.b = strip + '\n'
+                child.b = s
+                
                 if is_class:
-                    child.b = child.b + ' '*abs(self.tab_width)+'@others\n\n'
+                    # The indentation will be the difference between s and s2
+                    if i+1 < len(lines):
+                        s2 = ''.join(lines[i+1:])
+                        s1_level = self.getLeadingIndent(s, 0, ignoreComments=False)
+                        s2_level = self.getLeadingIndent(s2, 0, ignoreComments=True)
+                        # g.trace(s1_level, s2_level, s.rstrip())
+                    else:
+                        self.errors += 1
+                        return
+                    indent = max(0, s2_level-s1_level)
+                    child.b = child.b + ' '*indent+'@others\n\n'
                     self.at_others.append(child.copy())
                 elif not any([parent == z for z in self.at_others]):
                     self.at_others.append(parent.copy())
@@ -218,9 +232,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             else:
                 break
         i = len(leading_lines)
-        # Unindent the def/class line.
-        if i < len(lines):
-            lines[i] = lines[i].lstrip()
+        # Don't unindent the def/class line! It prevents later undents.
         s = ''.join(lines[i:])
         s = self.undentBody(s, ignoreComments=True)
             # undentBody is defined in the base class.
@@ -228,7 +240,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         while leading_lines and not leading_lines[0].strip():
             leading_lines = leading_lines[1:]
         return ''.join(leading_lines) + s
-        
+
         
     #@+node:ekr.20160505170639.1: *3* coffee.undent_nodes
     def undent_nodes(self, parent):
