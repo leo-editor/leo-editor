@@ -109,6 +109,8 @@ in each outline where you want those buttons.
 @wrap
 
 Some of these may not happen.
+.. @+node:ekr.20160506101850.1: *4* Apply mypy to Leo
+.. @+node:ekr.20160506101840.1: *4* Study valuespace plugin and jedi completer
 .. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
 Must be easy to use.
 
