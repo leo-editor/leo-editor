@@ -147,6 +147,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20160505100958.1: *3* coffee.scan
     def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
+        # pylint: disable=arguments-differ
         if not s1.strip():
             return
         i, body_lines = 0, []
