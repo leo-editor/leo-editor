@@ -18,9 +18,12 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         self.strict = False
         self.at_others = []
             # A list of postitions that have an @others directive.
+        self.at_tab_width = None
+            # Default, overridden later.
         self.def_name = None
         self.errors = 0
         self.tab_width = self.c.tab_width or -4
+            # Used to compute lws.
     #@+node:ekr.20160505114047.1: *3* coffee.class_name
     def class_name(self, s):
         '''Return the name of the class in line s.'''
@@ -80,7 +83,9 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         if prepass:
             return False, []
         self.scan(s, parent, indent=False)
-        parent.b = '@language coffeescript\n\n' + parent.b.lstrip()
+        prefix = '@language coffeescript\n@tabwidth %s\n\n' % (
+            self.at_tab_width or -2)
+        parent.b =  prefix + parent.b.lstrip()
         self.move_trailing_lines(parent)
         self.undent_nodes(parent)
         ok = self.errors == 0
@@ -93,59 +98,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             parent.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
         return ok
-    #@+node:ekr.20160505100917.2: *4* BaseScanner.escapeFalseSectionReferences
-    def escapeFalseSectionReferences(self, s):
-        '''
-        Probably a bad idea.  Keep the apparent section references.
-        The perfect-import write code no longer attempts to expand references
-        when the perfectImportFlag is set.
-        '''
-        return s
-        # result = []
-        # for line in g.splitLines(s):
-            # r1 = line.find('<<')
-            # r2 = line.find('>>')
-            # if r1>=0 and r2>=0 and r1<r2:
-                # result.append("@verbatim\n")
-                # result.append(line)
-            # else:
-                # result.append(line)
-        # return ''.join(result)
-    #@+node:ekr.20160505100917.3: *4* BaseScanner.checkBlanksAndTabs
-    def checkBlanksAndTabs(self, s):
-        '''Check for intermixed blank & tabs.'''
-        # Do a quick check for mixed leading tabs/blanks.
-        blanks = tabs = 0
-        for line in g.splitLines(s):
-            lws = line[0: g.skip_ws(line, 0)]
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        ok = blanks == 0 or tabs == 0
-        if not ok:
-            self.report('intermixed blanks and tabs')
-        return ok
-    #@+node:ekr.20160505100917.4: *4* BaseScanner.regularizeWhitespace
-    def regularizeWhitespace(self, s):
-        '''Regularize leading whitespace in s:
-        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        This is only called for strict languages.'''
-        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
-        if tab_width < 0: # Convert tabs to blanks.
-            for line in lines:
-                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
-                if s != line: changed = True
-                result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
-            for line in lines:
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
-                if s != line: changed = True
-                result.append(s)
-        if changed:
-            action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
-            message = 'inconsistent leading whitespace. %s' % action
-            self.report(message)
-        return ''.join(result)
     #@+node:ekr.20160505100958.1: *3* coffee.scan
     def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
@@ -181,6 +133,8 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                         self.errors += 1
                         return
                     indent = max(0, s2_level-s1_level)
+                    if not self.at_tab_width:
+                        self.at_tab_width = -indent
                     child.b = child.b + ' '*indent+'@others\n\n'
                     self.at_others.append(child.copy())
                 elif not any([parent == z for z in self.at_others]):
