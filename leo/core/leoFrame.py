@@ -195,7 +195,7 @@ class WrapperAPI(object):
 
     def selectAllText(self, insert=None): pass
 
-    def setAllText(self, s): pass
+    def setAllText(self, s, h=None): pass
 
     def setFocus(self): pass # Required: sets the focus to wrapper.widget.
 
@@ -1719,24 +1719,36 @@ class LeoTree(object):
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = False and force and not g.unitTesting
-        if traceTime: t1 = time.time()
+        trace = False and not g.unitTesting
+        trace_pass = False
+        trace_time = (True or traceTime)
+        if trace_time: t1 = time.clock()
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
+        # Part 1: get the old text.
         old_s = w.getAllText()
+        if trace: g.trace('=====', len(s), p.h)
+        if trace and trace_time:
+            t2 = time.clock()
+            print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
-            if trace: g.trace('*pass', len(s), p.h, old_p.h)
+            if trace and trace_pass: g.trace('*pass', len(s), p.h, old_p.h)
+            return
+        # Part 2: set the new text.
+        # w.setAllText destroys all color tags, so do a full recolor.
+        if 0 < c.max_pre_loaded_body_chars < len(s):
+            # Don't load the text if not wanted.
+            if trace and trace_time:
+                t3 = time.clock()
+                print('  part2: setAllText %4.2f sec' % (t3-t2))
         else:
-            # w.setAllText destroys all color tags, so do a full recolor.
-            if trace: g.trace('*reload', len(s), p.h, old_p and old_p.h)
-            w.setAllText(s) # ***** Very slow
-            if traceTime:
-                delta_t = time.time() - t1
-                if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
-            # Part 2:
-            if traceTime: t2 = time.time()
+            w.setAllText(s, h = p.h)
+            if trace and trace_time:
+                t3 = time.clock()
+                print('  part2: setAllText %4.2f sec' % (t3-t2))
+            # Part 3: colorize.
             # We can't call c.recolor_now here.
             colorizer = c.frame.body.colorizer
             if hasattr(colorizer, 'setHighlighter'):
@@ -1744,11 +1756,10 @@ class LeoTree(object):
                     self.frame.body.recolor(p)
             else:
                 self.frame.body.recolor(p)
-            if traceTime:
-                delta_t = time.time() - t2
-                tot_t = time.time() - t1
-                if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
-                if tot_t > 0.1: g.trace('total: %2.3f sec' % (tot_t))
+        if trace and trace_time:
+            t4 = time.clock()
+            print('  part3: colorize   %4.2f sec' % (t4-t3))
+            print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
@@ -2470,7 +2481,7 @@ class StringTextWrapper:
         '''StringTextWrapper.'''
         self.setSelectionRange(0, 'end', insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
-    def setAllText(self, s):
+    def setAllText(self, s, h=None):
         '''StringTextWrapper.'''
         self.s = s
         i = len(self.s)

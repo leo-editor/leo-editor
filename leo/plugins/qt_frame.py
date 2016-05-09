@@ -3,7 +3,6 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 #@@first
 '''Leo's qt frame classes.'''
-useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
 import leo.core.leoGlobals as g
@@ -12,7 +11,7 @@ import leo.core.leoColorizer as leoColorizer
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import Qsci, uic
+from leo.core.leoQt import Qsci
 import leo.plugins.qt_events as qt_events
 import leo.plugins.qt_text as qt_text
 import leo.plugins.qt_tree as qt_tree
@@ -100,9 +99,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
         self.bigTree = c.config.getBool('big_outline_pane')
-        if useUI:
-            self.leo_ui = uic.loadUi(ui_description_file, self)
-                # This is increasingly unlikely to work.
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)

@@ -791,17 +791,19 @@ class BaseScanner:
     #@+node:ekr.20140727075002.18225: *3* BaseScanner.undentBody
     def undentBody(self, s, ignoreComments=True):
         '''Remove the first line's leading indentation from all lines of s.'''
-        trace = False
-        if trace: g.trace('before...\n', g.listToString(g.splitLines(s)))
+        trace = False and not g.unitTesting
+        verbose = False
+        if trace and verbose: g.trace('before...\n', g.listToString(g.splitLines(s)))
         if self.isRst:
             return s # Never unindent rst code.
         # Calculate the amount to be removed from each line.
         undentVal = self.getLeadingIndent(s, 0, ignoreComments=ignoreComments)
+        if trace: g.trace(undentVal, g.splitLines(s)[0].rstrip())
         if undentVal == 0:
             return s
         else:
             result = self.undentBy(s, undentVal)
-            if trace: g.trace('after...\n', g.listToString(g.splitLines(result)))
+            if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
             return result
     #@+node:ekr.20140727075002.18226: *3* BaseScanner.undentBy
     def undentBy(self, s, undentVal):

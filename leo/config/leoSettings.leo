@@ -685,6 +685,7 @@
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20160504145653.1"><vh>@bool plain_key_outline_search = True</vh></v>
 <v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
@@ -11159,6 +11160,9 @@ v2: V</t>
 # A list of command names to be pre-loaded into the history list.
 pylint
 sort-lines
+</t>
+<t tx="ekr.20160504145653.1">True: plain keys in the outline pane search for headlines.
+False: Ignore plain keys in the outline pane.
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 

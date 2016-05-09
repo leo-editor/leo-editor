@@ -39,7 +39,7 @@ commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
 commit_info = json.load(open(commit_path))
 commit_timestamp = commit_info['timestamp']
 commit_asctime = commit_info['asctime']
-version = "5.3-final" # Always used.
+version = "5.4-devel" # Always used.
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
 theDir = os.path.dirname(__file__)

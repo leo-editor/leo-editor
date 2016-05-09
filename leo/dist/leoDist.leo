@@ -25,6 +25,7 @@
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
 </v>
+<v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20160315105606.1"><vh>Previous announcements</vh>
@@ -266,20 +267,19 @@ Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Download URL: http://sourceforge.net/projects/leo/files/
 Keywords: Outliner, IDE, PIM
 Platform: Windows, Linux, MaxOS
-
-Classifiers: Development Status :: 6 - Mature
-             License :: OSI Approved :: MIT License
-             Operating System :: MacOS
-             Operating System :: Microsoft :: Windows
-             Operating System :: POSIX :: Linux
-             Programming Language :: Python
-             Topic :: Software Development
-             Topic :: Text Processing
-
+Classifier: Development Status :: 6 - Mature
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Classifier: Topic :: Text Processing
+Download-URL: http://sourceforge.net/projects/leo/files/
 Description: Leo is:
+
              - An outliner. Everything in Leo is an outline.
              - A Personal Information Manager.
              - A browser with a memory.
@@ -291,7 +291,9 @@ Description: Leo is:
              - Written in 100% pure Python
              - Compatible with Python 2.6 and above or Python 3.0 and above.
              - A tool with an inspiring and active community.
+             
              **Leo's unique features**
+             
              - Always-present, persistent, outline structure.
              - Leo's underlying data is a Directed Acyclic Graph.
              - Clones create multiple views of an outline.
@@ -304,9 +306,12 @@ Description: Leo is:
              - @test and @suite scripts create unit tests automatically.
              - @button scripts apply scripts to outline data.
              - Outline-oriented directives.
-             Simulating these features in vim or Emacs is possible, just as
-             it is possible to simulate Python in assembly language...
+             
+             Simulating these features in vim, Emacs or Eclipse is possible,
+             just as it is possible to simulate Python in assembly language...
+             
              **Links**
+             
              - Leo's home page:  http://leoeditor.com
              - Documentation:    http://leoeditor.com/leo_toc.html
              - Tutorials:        http://leoeditor.com/tutorial.html
@@ -2824,6 +2829,12 @@ it is possible to simulate Python in assembly language...
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20160501153808.1">- Install pyenchant. (spelling)
+- Install meta (livecode plugin)
+- Downinstall setuptools:
+    - Erase setuptools stuff from Lib/sitecustomize.
+    - pip2/3 install setuptools==19.2
 </t>
 </tnodes>
 </leo_file>

@@ -11,25 +11,53 @@ Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
-.. @+node:ekr.20160429063322.1: *4* #275: clone-marked/copy-marked/move-marked
-https://github.com/leo-editor/leo-editor/issues/275
-.. @+node:ekr.20160427071821.1: *4* #236: abbrev-write generates different continuations than used in @data
-abbrev-write generates different continuations than used in @data
-https://github.com/leo-editor/leo-editor/issues/236
+.. @+node:ekr.20160430150528.1: *4* #128: Javascript importer should be rewritten
+https://github.com/leo-editor/leo-editor/issues/128
 
-When defining abbreviations in a @data abbreviations node,
-continuation looks like:
-continue;;=line 1
-: line 2
-: line 3
+The plan: get this common idiom to work properly:
 
-when abbreviations are dumped via abbrev-write they look like:
-continue;;=line 1\n line 2\n line 3
+var express = require('express');
+var app = express.createServer(express.logger());
 
-I would consider the abbrev-write file more useful if it used the
-same continuation convention as in @data nodes
-.. @+node:ekr.20160429063430.1: *4* #272: optionally delay syntax coloring
-https://github.com/leo-editor/leo-editor/issues/272
+app.get('/', function(request, response) {
+response.send('Hello World!');
+});
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+console.log("Listening on " + port);
+});
+.. @+node:ekr.20160506103345.1: *5* A bad idea: convert to coffeescript
+There would be no way to get round-tripping.
+
+Convert to coffeescript
+http://js2.coffee/
+
+There is also a "coffee" command-line utility.
+It's installed on my system.
+http://coffeescript.org/documentation/docs/command.html
+
+To install coffeescript:
+
+    npm install -g coffee-script
+    
+The corresponding coffeescript is:
+
+express = require('express')
+app = express.createServer(express.logger())
+app.get '/', (request, response) ->
+  response.send 'Hello World!'
+  return
+port = process.env.PORT or 5000
+app.listen port, ->
+  console.log 'Listening on ' + port
+  return
+.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
+# Use rest colorizer as a template.
+.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
+https://github.com/leo-editor/leo-editor/issues/127
+
+Javascript and perl need more work.
 .. @+node:ekr.20160405110731.1: *4* #189: Better support for UNL navigation of Leo's code
 https://github.com/leo-editor/leo-editor/issues/189
 
@@ -75,114 +103,46 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
-.. @+node:ekr.20160429062306.1: *4* Importers
-.. @+node:ekr.20160429062804.1: *5* #32: Add freemind and mindjet imports
-https://github.com/leo-editor/leo-editor/issues/32
-.. @+node:ekr.20160327112237.1: *5* #225: Add support for @language json
-@language python
-.. @+node:ekr.20160420153409.1: *6* Convert Leo outline to/from json
-'''Write node & links version of json.'''
+.. @+node:ekr.20160506104241.1: *4* #283: Show global line number in lower left status bar
+https://github.com/leo-editor/leo-editor/issues/283
+.. @+node:ekr.20160506104405.1: *4* #283: Improve automatic creation of myLeoSettings.leo
+https://github.com/leo-editor/leo-editor/issues/282
 
-# from __future__ import print_function
-import json
+Terry: I think automatically creating the file is worth keeping.  We could add a popup to tell the user it was just created if we wanted it to be more obvious.
 
-class JsonController:
-    @others
+Without automagic creation, the new user must correctly layout a Leo
+settings file.
 
-g.cls()
-jc = JsonController()
-s = jc.to_json(c,p=None)
-d = json.loads(s)
+  @settings
+    @enabled-plugins
+    @shortcuts
 
-nodes = {}
-print('nodes...')
-for d2 in d.get('nodes'):
-    gnx = d2.get('gnx')
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-    nodes[gnx] = d2
-    
-keys = sorted(list(nodes.keys()))
+etc. before they can change any settings, which I think is too much of
+a barrier.
 
-if 0:
-    print()
-    print('keys',keys)
+It does not copy all of leoSettings.leo, which would be a bad
+idea.  It just copies key bindings and enabled-plugins.
 
-aList = d.get('top')
-print()
-print('top...')
-for gnx in aList:
-    assert gnx in keys,gnx
-    d2 = nodes.get(gnx)
-    print('%-25s %s' % (d2.get('gnx'),d2.get('h')))
-.. @+node:ekr.20160420153409.2: *7* to_json
-def to_json (self,c,p=None):
-    
-    '''Convert p's tree to JSON, or the entire outline if p is None.'''
-    
-    if p:
-        top = [p.v.gnx]
-        nodes = list(set([p.v for p in p.self_and_subtree()]))
-    else:
-        top = [v.gnx for v in c.hiddenRootNode.children]
-        nodes = [v for v in c.all_unique_nodes()]
+It should be created in ~/.leo/myLeoSettings.leo, that's worked fine so
+far.
+.. @+node:ekr.20160505042139.1: *4* #284: More flexible imports for .json files
+https://github.com/leo-editor/leo-editor/issues/284
 
-    nodes = [self.vnode_dict(v) for v in nodes]
-    d = {'top':top,'nodes':nodes}
-    s = json.dumps(d)
-    return s
-.. @+node:ekr.20160420153409.3: *7* vnode_dict
-def vnode_dict (self,v):
-    
-    return {
-        'gnx': v.gnx,
-        'h':v.h, 'b':v.b,
-        # 'ua': v.u,
-        'children': [z.gnx for z in v.children]
-    }
-.. @+node:ekr.20160420153642.1: *6* json stuff
-.. @+node:ekr.20160420153642.2: *7* @json-outline
-# The root node for testing read_json_data.
-.. @+node:ekr.20160420153642.3: *7* @input-tree
-.. @+node:ekr.20160420153642.4: *8* child1
-# child 1 text: test of escapes: "\"
-.. @+node:ekr.20160420153642.5: *9* grandchild11
-# grandchild11 body.
-.. @+node:ekr.20160420153642.6: *9* grandchild12
-.. @+node:ekr.20160420153642.7: *8* child2
-.. @+node:ekr.20160420153642.8: *9* grandchild21
-.. @+node:ekr.20160318113142.1: *5* #278: Create coffeescript importer
-https://github.com/leo-editor/leo-editor/issues/278
+Create a class that helps json import scripts.
 
-https://pypi.python.org/pypi/CoffeeScript/1.1.2
-import coffeescript
-g.es(coffeescript)
-.. @+node:ekr.20160430150528.1: *5* #128: Javascript importer should be rewritten(Hard)
-https://github.com/leo-editor/leo-editor/issues/128
+Original discussion:
+https://groups.google.com/d/msg/leo-editor/k0TS8JGxNiA/GleSjF2lAgAJ
 
-A common idiom:
+A helper class, JSON_Import_Helper (jih) would contain all the general code. You could say that this helper class is conceptually similar to the RecursiveImportController class.
 
-var express = require('express');
-var app = express.createServer(express.logger());
-
-app.get('/', function(request, response) {
-response.send('Hello World!');
-});
-
-var port = process.env.PORT || 5000;
-app.listen(port, function() {
-console.log("Listening on " + port);
-});
-.. @+node:ekr.20160413081725.1: *4* Revise colorizer for markdown
-# Use rest colorizer as a template.
-.. @+node:ekr.20151231101050.1: *4* #127: Bracket matching is buggy
-https://github.com/leo-editor/leo-editor/issues/127
-
-Javascript and perl need more work.
+Client scripts would tell the jih class what elements are to create outline structure, which elements should be ignored, and which elements are to create headline text, body text, or even may uA's.
 .. @+node:ekr.20160318112838.1: *3* 5.4 Next
 @language rest
 @wrap
 
 Some of these may not happen.
+.. @+node:ekr.20160506101850.1: *4* Apply mypy to Leo
+.. @+node:ekr.20160506101840.1: *4* Study valuespace plugin and jedi completer
 .. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -2399,6 +2359,48 @@ Personally I think Leo could navigate cyclic graphs, see http://leo.zwiki.org/Gr
 I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
 .. @+node:ekr.20150516123559.1: *4* Doc parts should colorize like rst/md by default
 This seems more difficult than I thought.
+.. @+node:ekr.20160503093454.2: *4* Ignore URL's in scripts?
+@language rest
+@wrap
+
+From: HaveF <iamaplayer@gmail.com>
+
+I write a script (say, @button button-1) in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to leo-file-B.leo.
+
+When I'm working on leo-file-B.leo, I may have ideas to improve the @button button-1, but at that time(working on leo-file-B.leo), I may forget where the original place of @button button-1 is. Even I store the original scripts in the default workbook.leo is a tedious work to deal with(open it, locate where the original script is, update it...)
+
+After I add the @url at the first line of @button button-1, I can decide if the improvements what I made on leo-file-B.leo's @button button-1 should or shouldn't be merged to the original and upstream @button button-1(in leo-file-A.leo) easily by just a click.
+
+And if I work on leo-file-C.leo, I want to use the same script, but I just only remember I use the script in the leo-file-B.leo instead of original place. With @url I can easily jump to original place, and copy it to leo-file-C.leo.
+
+Using @url in the leo script, I can make the scripts consistency and
+diversity at same time.
+
+===== Feature request
+
+At present, you can use this idea by comment the @url line after jump. If @url isn't comment, the leo-editor will say... SyntaxError: invalid syntax at the @url line.
+
+Maybe it is a good idea to omit the @url line in the script when executing script?
+
+===== EKR
+
+Yes.  I think this is a good idea.  A similar idea occurred to me when looking at @rclick nodes.  
+
+At present, the context_menu plugin contains an ugly hack:  it allows an @rclick node to *follow* an @button node.  This is needed at present when the @button node contains @others: the @rclick node can't be part of the script "pulled in" by @others.
+
+It would be much more elegant to ignore @rclick nodes when computing the script.  This would require a change to the @others logic, but I think it is worthwhile.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I do this kind of thing by keeping buttons in @files...
+
+@file ~/.leo/gen  # general utility buttons
+@file ~/.leo/dml  # tools for editing an XML dialect I use
+@file ~/.leo/sql  # tools for editing SQL / interacting with server
+
+so changes made in one outline are automatically propagated to other
+outlines next time they're reloaded.  You just reference the files
+in each outline where you want those buttons.
 .. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.

@@ -335,10 +335,6 @@ class Position(object):
             # g.trace(aList)
         aList.reverse()
         return aList
-    #@+node:ekr.20040117171654: *4* p.copy
-    def copy(self):
-        """"Return an independent copy of a position."""
-        return Position(self.v, self._childIndex, self.stack)
     #@+node:ekr.20040310153624: *4* p.dump
     def dumpLink(self, link):
         return link if link else "<none>"
@@ -1332,11 +1328,18 @@ class Position(object):
         p2 = p.copy() # Do *not* copy the VNode!
         p2._linkAfter(p) # This should "just work"
         return p2
+    #@+node:ekr.20040117171654: *4* p.copy
+    def copy(self):
+        """"Return an independent copy of a position."""
+        return Position(self.v, self._childIndex, self.stack)
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
     # These used by unit tests, by the group_operations plugin,
     # and by the files-compare-leo-files command.
 
+    # To do: use v.copyTree instead.
+
     def copyTreeAfter(self):
+        '''Copy p and insert it after itself.'''
         p = self
         p2 = p.insertAfter()
         p.copyTreeFromSelfTo(p2)
@@ -1352,6 +1355,14 @@ class Position(object):
         for child in p.children():
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
+    #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
+    def copyWithNewVnodes(self, copyMarked=False):
+        '''
+        Return an **unliked** copy of p with a new vnode v.
+        The new vnode is complete copy of v and all its descendants.
+        '''
+        p = self
+        return Position(v=p.v.copyTree(copyMarked))
     #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
     def createNodeHierarchy(self, heads, forcecreate=False):
         ''' Create the proper hierarchy of nodes with headlines defined in
@@ -2087,6 +2098,31 @@ class VNodeBase(object):
         pattern = g.toUnicode(pattern)
         pattern = pattern.lower().replace(' ', '').replace('\t', '')
         return h.startswith(pattern)
+    #@+node:ekr.20160502100151.1: *3* v.copyTree
+    def copyTree(self, copyMarked=False):
+        '''
+        Return an all-new tree of vnodes that are copies of self and all its
+        descendants.
+        
+        **Important**: the v.parents ivar must be [] for all nodes.
+        v._addParentLinks will set all parents.
+        '''
+        v = self
+        # Allocate a new vnode and gnx with empty children & parents.
+        v2 = VNode(context=v.context, gnx=None)
+        assert v2.parents == [], v2.parents
+        assert v2.gnx
+        assert v.gnx != v2.gnx
+        # Copy vnode fields. Do **not** set v2.parents.
+        v2._headString = v._headString
+        v2._bodyString = v._bodyString
+        v2.u = copy.deepcopy(v.u)
+        if copyMarked and v.isMarked():
+            v2.setMarked()
+        # Recursively copy all descendant vnodes.
+        for child in v.children:
+            v2.children.append(child.copyTree(copyMarked))
+        return v2
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     body_unicode_warning = False
@@ -2452,8 +2488,9 @@ class VNodeBase(object):
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
-        if trace: g.trace('*** added parent', parent_v, 'to', v,
-            'len(parents)', len(v.parents))
+        if trace:
+            g.trace('*** added parent', parent_v, 'to', v,
+                    'len(parents)', len(v.parents))
         # Set zodb changed flags.
         v._p_changed = 1
         parent_v._p_changed = 1
@@ -2469,8 +2506,9 @@ class VNodeBase(object):
         trace = False and not g.unitTesting
         v = self
         v.parents.append(parent)
-        if trace: g.trace(
-            '*** added parent', parent, 'to', v, 'len(parents)', len(v.parents))
+        if trace:
+            g.trace('v', v.h, 'parent', parent.h, g.callers())
+            # '*** added parent', parent, 'to', v, 'len(parents)', len(v.parents))
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)

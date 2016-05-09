@@ -48,7 +48,12 @@ class BigTextController:
         c = self.c
         self.active_flag = True
         warning = self.warning_message()
-        self.old_w.setPlainText(self.p.b) # essential.
+        if 1: # essential
+            self.old_w.setPlainText(self.p.b)
+        else: # can lose data.
+            self.old_w.setPlainText(
+                '@nocolor-node\n\nBig text not loaded: %s characters. Limit is %s' % (
+                len(self.p.b), c.max_pre_loaded_body_chars))
         self.w = w = QtWidgets.QWidget() # No parent needed.
         layout = QtWidgets.QVBoxLayout() # No parent needed.
         w.setLayout(layout)
@@ -88,6 +93,8 @@ class BigTextController:
         self.active_flag = False
         c = self.c
         if self.w:
+            # Does not work.
+            # self.old_w.setPlainText(self.p.b)
             self.layout.removeWidget(self.w)
             self.w.deleteLater()
             self.w = None
@@ -185,7 +192,7 @@ class BigTextController:
         '''Return the warning message.'''
         c = self.c
         s = '''\
-    Loading big text (%s characters, limit is %s characters)
+    Loading big text: %s characters. Limit is %s.
 
     Beware of a Qt bug: You will **lose data** if you change the text
     before it is fully loaded (before the scrollbar stops moving).

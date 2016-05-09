@@ -1,6 +1,83 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20160502072908.1: ** 5.2 projects
+.. @+node:ekr.20160501154818.1: *3* Bugs
+.. @+node:ekr.20160502073033.1: *4* Investigated #273: Qt Bug involving large text nodes
+Only minor improvements were made.
+
+The ultimate source of the delay when selecting large text is *not* syntax coloring,
+but instead the call to self.old_w.setPlainText(self.p.b) in btw.create_widgets.
+
+Experiments show loading "dummy" text in btw.create_widgets can lead to data loss.
+There are too many paths through the selection logic to attemp to "recover"
+from the failure to load the body widget initially.
+
+Obviously, data loss is a much bigger problem than slow load times.
+I am going to declare this issue not to be solvable.
+.. @+node:ekr.20160504150917.1: *3* Code
+.. @+node:ekr.20160504150922.1: *4* removed useUI switch
+It hasn't been active for a long, long time.
+.. @+node:ekr.20160502072925.1: *3* Features
+.. @+node:ekr.20160429063430.1: *4* Added #272: optionally delay syntax coloring
+https://github.com/leo-editor/leo-editor/issues/272
+
+Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
+.. @+node:ekr.20160429063322.1: *4* Added #275: clone-marked/copy-marked/move-marked
+https://github.com/leo-editor/leo-editor/issues/275
+
+- Improved clone-marked-nodes and move-marked-nodes.
+- Added copy-marked nodes.
+
+Note: The move-marked-nodes command is no longer undoable.
+The docstring suggests using clone-marked-nodes, followed by copy/paste.
+
+These commands work as follows:
+
+- They create an organizer node after c.p.
+  (That's not always possible for move-marked-nodes,
+  in which case the organizer node becomes the last top-level node).
+
+- They find all marked nodes, regardless of chapter, and leave
+  the presently selected chapter selected, if possible.
+.. @+node:ekr.20160503084702.1: *4* pylint command appends leo directory to sys.path
+This allows the pylint command to work without any sitecustomize.py file.
+.. @+node:ekr.20160427071821.1: *4* Wont do: #236: abbrev-write generates different continuations than used in @data
+abbrev-write generates different continuations than used in @data
+https://github.com/leo-editor/leo-editor/issues/236
+
+When defining abbreviations in a @data abbreviations node,
+continuation looks like:
+continue;;=line 1
+: line 2
+: line 3
+
+when abbreviations are dumped via abbrev-write they look like:
+continue;;=line 1\n line 2\n line 3
+
+I would consider the abbrev-write file more useful if it used the
+same continuation convention as in @data nodes
+.. @+node:ekr.20160429062804.1: *4* Added #32: Add freemind and mindjet imports
+https://github.com/leo-editor/leo-editor/issues/32
+
+The code:
+https://github.com/leo-editor/snippets/tree/master/issue_attach/32
+
+There are two ways to access these commands:
+
+1. Using the general import-files command, via the minibuffer or the File:Import File menu.  This opens a dialog that picks the proper importer **based on the file's extension**.  mm.html files get the FreeMind importer. .csv files get the MindJet importer.
+
+2. If these conventions don't suit you, you can use specific import-free-mind-files or import-mind-jet-files commands. These open a dialog in which the specific extension is pre-selected, but you can pick any file as usual.  In particular, it's possible to use the MindJet importer to open .ipynb files, which have .csv format.
+
+In general, if you pick an invalid file, the importers will fail gracefully.
+.. @+node:ekr.20160327112237.1: *4* #225: Added support for @auto x.json
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/225
+
+@language python
+.. @+node:ekr.20160503093403.1: *4* Removed all static abbrev commands
 .. @-all
 .. @@nosearch
 .. @@killbeautify

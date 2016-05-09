@@ -796,7 +796,10 @@ class Commands(object):
             ("C/C++ files", "*.cpp"),
             ("C/C++ files", "*.h"),
             ("C/C++ files", "*.hpp"),
+            ("FreeMind files", "*.mm.html"),
             ("Java files", "*.java"),
+            # ("JSON files", "*.json"),
+            ("Mindjet files", "*.csv"),
             ("Lua files", "*.lua"),
             ("Pascal files", "*.pas"),
             ("Python files", "*.py")]
@@ -824,20 +827,26 @@ class Commands(object):
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
             junk, ext = g.os_path_splitext(fn)
-            if ext.startswith('.'): ext = ext[1:]
-            if ext in ('cw', 'cweb'):
+            if ext.startswith('.'):
+                ext = ext[1:]
+            if ext == 'csv':
+                ic.importMindMap([fn])
+            elif ext in ('cw', 'cweb'):
                 ic.importWebCommand([fn], "cweb")
+            # Not useful. Use @auto x.json instead.
+            # elif ext == 'json':
+                # ic.importJSON([fn])
+            elif fn.endswith('mm.html'):
+                ic.importFreeMind([fn])
             elif ext in ('nw', 'noweb'):
                 ic.importWebCommand([fn], "noweb")
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand([fn], '@clean') # "@nosent",)
-            # No longer supported.
-            # c.importCommands.importFilesCommand (names,"@root")
+                ic.importFilesCommand([fn], '@clean')
         c.raise_error_dialogs(kind='read')
+        
     # Compatibility
-
     importAtFile = importAnyFile
     importAtRoot = importAnyFile
     importCWEBFiles = importAnyFile
@@ -853,8 +862,12 @@ class Commands(object):
             f = open(fn, 'r')
         except IOError:
             return False
-        s = f.read()
-        f.close()
+        try:
+            s = f.read()
+        except Exception:
+            s = ''
+        finally:
+            f.close()
         val = s.find('@+leo-ver=') > -1
         return val
     #@+node:ekr.20031218072017.1623: *5* c.new
@@ -3777,15 +3790,21 @@ class Commands(object):
         # Create a new node to hold clones.
         parent = p1.insertAfter()
         parent.h = 'Clones of marked nodes'
-        moved, n, p = [], 0, c.rootPosition()
+        cloned, n, p = [], 0, c.rootPosition()
         while p:
             # Careful: don't clone already-cloned nodes.
             if p == parent:
                 p.moveToNodeAfterTree()
-            elif p.isMarked() and not p.v in moved:
-                moved.append(p.v)
-                # Moving the clone leaves position p unchanged.
-                p.clone().moveToLastChildOf(parent)
+            elif p.isMarked() and not p.v in cloned:
+                cloned.append(p.v)
+                if 0: # old code
+                    # Calling p.clone would cause problems
+                    p.clone().moveToLastChildOf(parent)
+                else: # New code.
+                    # Create the clone directly as a child of parent.
+                    p2 = p.copy()
+                    n = parent.numberOfChildren()
+                    p2._linkAsNthChild(parent, n, adjust=True)
                 p.moveToNodeAfterTree()
                 n += 1
             else:
@@ -3800,6 +3819,38 @@ class Commands(object):
             c.selectPosition(p1)
         if not g.unitTesting:
             g.blue('cloned %s nodes' % (n))
+        c.redraw()
+    #@+node:ekr.20160502090456.1: *5* c.copyMarked
+    @cmd('copy-marked-nodes')
+    def copyMarked(self, event=None):
+        """Copy all marked nodes as children of a new node."""
+        c = self; u = c.undoer; p1 = c.p.copy()
+        # Create a new node to hold clones.
+        parent = p1.insertAfter()
+        parent.h = 'Copies of marked nodes'
+        copied, n, p = [], 0, c.rootPosition()
+        while p:
+            # Careful: don't clone already-cloned nodes.
+            if p == parent:
+                p.moveToNodeAfterTree()
+            elif p.isMarked() and not p.v in copied:
+                copied.append(p.v)
+                p2 = p.copyWithNewVnodes(copyMarked=True)
+                p2._linkAsNthChild(parent, n, adjust=True)
+                p.moveToNodeAfterTree()
+                n += 1
+            else:
+                p.moveToThreadNext()
+        if n:
+            c.setChanged(True)
+            parent.expand()
+            c.selectPosition(parent)
+            u.afterCopyMarkedNodes(p1)
+        else:
+            parent.doDelete()
+            c.selectPosition(p1)
+        if not g.unitTesting:
+            g.blue('copied %s nodes' % (n))
         c.redraw()
     #@+node:ekr.20111005081134.15540: *5* c.deleteMarked
     @cmd('delete-marked-nodes')
@@ -3827,35 +3878,63 @@ class Commands(object):
     #@+node:ekr.20111005081134.15539: *5* c.moveMarked & helper
     @cmd('move-marked-nodes')
     def moveMarked(self, event=None):
-        '''Move all marked nodes as children of parent position.'''
-        c = self; u = c.undoer; p1 = c.p.copy()
+        '''
+        Move all marked nodes as children of a new node.
+        This command is not undoable.
+        Consider using clone-marked-nodes, followed by copy/paste instead.
+        '''
+        c, u = self, self.undoer
+        p1 = c.p.copy()
         # Check for marks.
         for v in c.all_unique_nodes():
             if v.isMarked():
                 break
         else:
             return g.warning('no marked nodes')
-        # Create a new root node to hold the moved nodes.
+        result = g.app.gui.runAskYesNoDialog(c,
+            'Move Marked Nodes?',
+            message='move-marked-nodes is not undoable\nProceed?',
+        )
+        if result == 'no':
+            return
+        # Create a new *root* node to hold the moved nodes.
+        # This node's position remains stable while other nodes move.
         parent = c.createMoveMarkedNode()
         assert not parent.isMarked()
-        undo_data, p = [], c.rootPosition()
+        moved = []
+        p = c.rootPosition()
         while p:
             assert parent == c.rootPosition()
             # Careful: don't move already-moved nodes.
             if p.isMarked() and not parent.isAncestorOf(p):
-                undo_data.append(p.copy())
+                moved.append(p.copy())
                 next = p.positionAfterDeletedTree()
                 p.moveToLastChildOf(parent)
+                    # This does not change parent's position.
                 p = next
             else:
                 p.moveToThreadNext()
-        if undo_data:
-            u.afterMoveMarkedNodes(undo_data, p1)
+        if moved:
+            # Find a position p2 outside of parent's tree with p2.v == p1.v.
+            # Such a position may not exist.
+            p2 = c.rootPosition()
+            while p2:
+                if p2 == parent:
+                    p2.moveToNodeAfterTree()
+                elif p2.v == p1.v:
+                    break
+                else:
+                    p2.moveToThreadNext()
+            else:
+                # Not found.  Move to last top-level.
+                p2 = c.lastTopLevel()
+            parent.moveAfter(p2)
+            # u.afterMoveMarkedNodes(moved, p1)
             if not g.unitTesting:
-                g.blue('moved %s nodes' % (len(undo_data)))
+                g.blue('moved %s nodes' % (len(moved)))
             c.setChanged(True)
-        # Don't even *think* about restoring the old position.
-        c.contractAllHeadlines()
+        # c.contractAllHeadlines()
+            # Causes problems when in a chapter.
         c.selectPosition(parent)
         c.redraw()
     #@+node:ekr.20111005081134.15543: *6* c.createMoveMarkedNode
