@@ -355,6 +355,33 @@ if QtWidgets:
             menu.exec_(self.mapToGlobal(pos))
             for i in 0, 1:
                 widget[i].setStyleSheet(sheet[i])
+        #@+node:tbnorth.20160510091151.1: *3* nsh.mouseEvents
+        def mousePressEvent(self, event):
+            """mouse event - mouse pressed on splitter handle,
+            pass info. up to splitter
+
+            :param QMouseEvent event: mouse event
+            """
+            self.splitter()._splitter_clicked(
+                self, event, release=False, double=False)
+
+        def mouseReleaseEvent(self, event):
+            """mouse event - mouse pressed on splitter handle,
+            pass info. up to splitter
+
+            :param QMouseEvent event: mouse event
+            """
+            self.splitter()._splitter_clicked(
+                self, event, release=True, double=False)
+
+        def mouseDoubleClickEvent(self, event):
+            """mouse event - mouse pressed on splitter handle,
+            pass info. up to splitter
+
+            :param QMouseEvent event: mouse event
+            """
+            self.splitter()._splitter_clicked(
+                self, event, release=True, double=True)
         #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
 if QtWidgets:
@@ -370,6 +397,21 @@ if QtWidgets:
             # QtConst.Vertical: QtConst.Horizontal,
             # QtConst.Horizontal: QtConst.Vertical
         }
+
+        # NestedSplitter is a kind of meta-widget, in that it manages
+        # panes across multiple actual splitters, even windows.
+        # So to create a signal for a click on splitter handle, we
+        # need to propagate the .connect() call across all the
+        # actual splitters, current and future
+        _splitterClickedArgs = []  # save for future added splitters
+        # a regular signal, but you can't use its .connect() directly
+        _splitterClickedSignal = QtCore.pyqtSignal(
+            QtWidgets.QSplitter,
+            QtWidgets.QSplitterHandle,
+            QtGui.QMouseEvent,
+            bool,
+            bool
+        )
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
@@ -393,6 +435,9 @@ if QtWidgets:
                     # splitter handle context menu
                     root.zoomed = False
             self.root = root
+            for args in self._splitterClickedArgs:
+                # apply any .connect() calls that occured earlier
+                self._splitterClickedSignal.connect(*args)
         #@+node:ekr.20110605121601.17968: *3* ns.__repr__
         def __repr__(self):
             # parent = self.parent()
@@ -1089,8 +1134,10 @@ if QtWidgets:
             if _depth == 1:
                 return '\n'.join(_ans)
         #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
-        def zoom_toggle(self):
+        def zoom_toggle(self, local=False):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane
+
+            :param bool local: just zoom pane within its own splitter
             """
             if self.root.zoomed:
                 for ns in self.top().self_and_descendants():
@@ -1106,7 +1153,8 @@ if QtWidgets:
                     parent = parent.parent()
                 if not focused:
                     g.es("Not zoomed, and no focus")
-                for ns in self.top().self_and_descendants():
+                for ns in (self if local else self.top()).self_and_descendants():
+                    # FIXME - shouldn't be doing this across windows
                     ns._unzoom = ns.sizes()
                     for i in range(ns.count()):
                         w = ns.widget(i)
@@ -1116,6 +1164,27 @@ if QtWidgets:
                             ns.setSizes(sizes)
                             break
             self.root.zoomed = not self.root.zoomed
+        #@+node:tbnorth.20160510092439.1: *3* ns._splitter_clicked
+        def _splitter_clicked(self, handle, event, release, double):
+            """_splitter_clicked - coordinate propagation of signals
+            for clicks on handles.  Turned out not to need any particular
+            coordination, handles could call self._splitterClickedSignal.emit
+            directly, but design wise this is a useful control point.
+
+            :param QSplitterHandle handle: handle that was clicked
+            :param QMouseEvent event: click event
+            :param bool release: was it a release event
+            :param bool double: was it a double click event
+            """
+            self._splitterClickedSignal.emit(self, handle, event, release, double)
+        #@+node:tbnorth.20160510123445.1: *3* splitterClicked_connect
+        def splitterClicked_connect(self, *args):
+            """Apply .connect() args to all actual splitters,
+            and store for application to future splitters.
+            """
+            self._splitterClickedArgs.append(args)
+            for splitter in self.top().self_and_descendants():
+                splitter._splitterClickedSignal.connect(*args)
         #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
