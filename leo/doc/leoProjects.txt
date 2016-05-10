@@ -78,6 +78,24 @@ https://github.com/leo-editor/leo-editor/issues/225
 
 @language python
 .. @+node:ekr.20160503093403.1: *4* Removed all static abbrev commands
+.. @+node:ekr.20160318113142.1: *4* #278: Created coffeescript importer
+https://github.com/leo-editor/leo-editor/issues/278
+.. @+node:ekr.20160506075450.1: *5* Notes
+# Coffeescript compiler without node.js
+# http://stackoverflow.com/questions/11575404/coffeescript-compiler-without-node-js
+
+# You can run javascript in python with http://code.google.com/p/pyv8/. (link is dead)
+# PyV8 binaries: https://github.com/emmetio/pyv8-binaries
+
+# Bridge to PyV8
+# https://pypi.python.org/pypi/PyV8
+
+# https://github.com/leo-editor/leo-editor/issues/278
+# A bridge to the coffeescript compiler
+# Must install coffeescript first.
+# https://pypi.python.org/pypi/CoffeeScript/1.1.2
+import coffeescript
+g.es(coffeescript)
 .. @-all
 .. @@nosearch
 .. @@killbeautify

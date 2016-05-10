@@ -230,6 +230,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20160510062322.1"><vh>** regedit file to associate Leo icons</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2837,5 +2838,64 @@ it is possible to simulate Python in assembly language...
     - Erase setuptools stuff from Lib/sitecustomize.
     - pip2/3 install setuptools==19.2
 </t>
+<t tx="ekr.20160510062322.1">@language rest
+@wrap
+
+===== @button make-regedit
+
+From NSIS script:
+
+Section "${ext} File Association" SEC02
+    SectionIn 1 2 3 4
+    WriteRegStr HKCR "${ext}" "" "${name}File"
+    WriteRegStr HKCR "${name}File" "" "${name} File"
+    WriteRegStr HKCR "${name}File\shell" "" "open"
+    ; The single quotes below appear to be required.
+    WriteRegStr HKCR "${name}File\DefaultIcon" "" '"$INSTDIR\${app_icon}"'
+    ; https://github.com/leo-editor/leo-editor/issues/24
+    WriteRegStr HKCR "${name}File\shell\open\command" "" '"${PythonExecutable}" "$INSTDIR\launchLeo.py %*"'
+SectionEnd
+
+Instructions
+Step 1:
+
+Create a subkey named DefaultIcon in one of the following two locations:
+
+    For a file-type assignment, HKEY_CLASSES_ROOT\.extension
+    For an application assignment, HKEY_CLASSES_ROOT\ProgID
+
+Step 2:
+
+Assign the DefaultIcon subkey a default value of type REG_SZ that
+specifies the fully qualified path for the file that contains the icon.
+Step 3:
+
+Call the SHChangeNotify function to notify the Shell to update its icon cache.
+Remarks
+
+The following example shows a detailed view of the registry entries that
+are required for a file-type icon assignment.
+The file name extension is associated with an application,
+but the icon assignment is to the file name extension itself so that
+the associated application does not dictate the default icon.
+
+HKEY_CLASSES_ROOT
+   .myp
+      (Default) = MyProgram.1
+      DefaultIcon
+         (Default) = C:\MyDir\MyProgram.exe,2
+
+The following example shows a detailed view of the registry entries that are required for an application icon assignment. The .myp file name extension is first associated with the MyProgram.1 application. The MyProgram.1 ProgID subkey is then assigned the custom default icon.
+
+HKEY_CLASSES_ROOT
+   .myp
+      (Default) = MyProgram.1
+   MyProgram.1
+      DefaultIcon
+         (Default) = C:\MyDir\MyProgram.exe,2
+
+Any file that contains an icon is acceptable, including .ico, .exe, and .dll files.
+If there is more than one icon in the file, the path should be followed by a comma,
+and then the index of the icon.</t>
 </tnodes>
 </leo_file>
