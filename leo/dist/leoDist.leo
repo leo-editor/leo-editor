@@ -202,6 +202,7 @@
 </v>
 <v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
 <v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
+<v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
 </v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
@@ -230,7 +231,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
