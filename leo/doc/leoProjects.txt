@@ -96,6 +96,14 @@ https://github.com/leo-editor/leo-editor/issues/278
 # https://pypi.python.org/pypi/CoffeeScript/1.1.2
 import coffeescript
 g.es(coffeescript)
+.. @+node:ekr.20160510132357.1: *4* Added Installer that only installs file associations
+You can find it here: https://sourceforge.net/projects/leo/files/Leo/5.3-final/.
+
+It works for me on Windows 10. This completes #285.
+
+This is useful for people who install Leo using git, or any other way except using the full Windows installer.  It creates file associations and (optionally) a desktop icon.
+
+The installer prompts for both the already-installed Leo installation folder (leo-editor for those using git) and a top-level Python directory. Necessary for auto-launching Leo. It also asks whether you want to open Leo in a console.  On my system, pythonw.exe doesn't work for Anaconda3, so a "yes" is required.  I'll probably back-port some of these features to the full installer.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
