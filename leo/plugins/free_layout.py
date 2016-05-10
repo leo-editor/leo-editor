@@ -28,7 +28,7 @@ free-layout-zoom
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtWidgets, QtCore
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
         # NestedSplitterChoice
@@ -128,6 +128,7 @@ class FreeLayoutController:
         splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
+        splitter.splitterClicked_connect(self.splitter_clicked)
     #@+node:tbrown.20120119080604.22982: *3* flc.embed (FreeLayoutController)
     def embed(self):
         """called from ns_do_context - embed layout in outline's
@@ -365,6 +366,34 @@ class FreeLayoutController:
         ans.append(('Body', '_leo_pane:bodyFrame'))
         ans.append(('Tab pane', '_leo_pane:logFrame'))
         return ans
+    #@+node:tbnorth.20160510122413.1: *3* flc.splitter_clicked
+    def splitter_clicked(self, splitter, handle, event, release, double):
+        """
+        splitter_clicked - middle click release will zoom adjacent
+        body / tree panes
+
+        :param NestedSplitter splitter: splitter containing clicked handle
+        :param NestedSplitterHandle handle: clicked handle
+        :param QMouseEvent event: mouse event for click
+        :param bool release: was it a Press or Release event
+        :param bool double: was it a double click event
+        """
+        if not release or event.button() != QtCore.Qt.MidButton:
+            return
+        if splitter.root.zoomed:  # unzoom if *any* handle clicked
+            splitter.zoom_toggle()
+            return
+        before = splitter.widget(splitter.indexOf(handle) - 1)
+        after = splitter.widget(splitter.indexOf(handle))
+        for pane in before, after:
+            if pane.objectName() == 'bodyFrame':
+                pane.setFocus()
+                splitter.zoom_toggle()
+                return
+            if pane.objectName() == 'outlineFrame':
+                pane.setFocus()
+                splitter.zoom_toggle(local=True)
+                return
     #@-others
 #@+node:ekr.20160416065221.1: ** commands: free_layout.py
 #@+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
