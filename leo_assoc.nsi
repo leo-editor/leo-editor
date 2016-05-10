@@ -155,9 +155,9 @@ SectionEnd ; end Uninstall section
 Section -Post
   WriteRegStr HKLM ${leo_hklm} "" "$INSTDIR"
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${uninst_key}" "DisplayName" "Leo-${version} Associations (remove only)"
+  WriteRegStr HKLM "${uninst_key}" "DisplayName" "Leo File Associations (remove only)"
   WriteRegStr HKLM "${uninst_key}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${uninst_key}" "DisplayVersion" "${version} Associations"
+  WriteRegStr HKLM "${uninst_key}" "DisplayVersion" "Leo File Associations"
   WriteRegStr HKLM "${uninst_key}" "URLInfoAbout" "${site}"
   WriteRegStr HKLM "${uninst_key}" "Publisher" "${publisher}"
 SectionEnd
