@@ -714,15 +714,16 @@ Create Release on SourceForge: http://sourceforge.net/projects/leo/
 Announcements
 - Update version number on Leo's wikipedia site:
   http://en.wikipedia.org/wiki/Leo_%28editor%29
-  Edit with the 'Edit this page' *tab* (not a link)
-- Update version number on web site.
-
-1. Announce to SourceForge:  http://sourceforge.net/projects/leo/
+  - Edit with the 'Edit this page' *tab* (not a link)
+  - Update version number on web site.
+- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+   This must be done *soon* after the release's actual commit.
+- Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
    **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
-2. Announce to leo-editor.
+- Announce to leo-editor.
    **Paste source-forge announcement**.
-3. Announce to Python-announce-list using email:
+- Announce to Python-announce-list using email:
    mailto:python-announce-list@python.org
    **Paste source-forge or leo-editor announcement**.
   - Check it by visiting the archive:
