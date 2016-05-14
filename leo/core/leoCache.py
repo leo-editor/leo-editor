@@ -34,7 +34,7 @@ normcase = g.os_path_normcase
 split = g.os_path_split
 #@+others
 #@+node:ekr.20100208062523.5885: ** class Cacher
-class Cacher:
+class Cacher(object):
     '''A class that encapsulates all aspects of Leo's file caching.'''
     #@+others
     #@+node:ekr.20100208082353.5919: *3* cacher.Birth
@@ -374,7 +374,7 @@ class Cacher:
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
-class PickleShareDB:
+class PickleShareDB(object):
     """ The main 'connection' object for PickleShare database """
     #@+others
     #@+node:ekr.20100208223942.5968: *3*  Birth & special methods

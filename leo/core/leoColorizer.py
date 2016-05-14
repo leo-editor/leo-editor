@@ -16,7 +16,7 @@ import time
 #@-<< imports >>
 #@+<< class PythonQSyntaxHighlighter >>
 #@+node:ekr.20140825132752.18554: ** << class PythonQSyntaxHighlighter >>
-class PythonQSyntaxHighlighter:
+class PythonQSyntaxHighlighter(object):
     '''
     Python implementation of QtGui.QSyntaxHighlighter.
 
@@ -314,7 +314,7 @@ class PythonQSyntaxHighlighter:
 #@-<< class PythonQSyntaxHighlighter >>
 #@+others
 #@+node:ekr.20140906081909.18690: ** class ColorizerMixin
-class ColorizerMixin:
+class ColorizerMixin(object):
     '''A mixin class for all c.frame.body.colorizer classes.'''
 
     def __init__(self, c):
@@ -498,7 +498,7 @@ class ColorizerMixin:
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
 
-class JEditColorizer:
+class JEditColorizer(object):
     '''
     This class contains jEdit pattern matchers adapted
     for use with QSyntaxHighlighter.
@@ -2258,7 +2258,7 @@ class JEditColorizer:
 #@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
 # This is c.frame.body.colorizer
 
-class LeoQtColorizer:
+class LeoQtColorizer(object):
     '''An adaptor class that interfaces Leo's core to two class:
 
     1. a subclass of QSyntaxHighlighter,

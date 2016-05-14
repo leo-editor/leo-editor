@@ -14,7 +14,7 @@ def cmd(name):
 
 #@+<< class To_Python >>
 #@+node:ekr.20150514063305.123: ** << class To_Python >>
-class To_Python:
+class To_Python(object):
     '''The base class for x-to-python commands.'''
     #@+others
     #@+node:ekr.20150514063305.124: *3* top.cmd (decorator
@@ -939,7 +939,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         '''
         #@+others
         #@+node:ekr.20160213070235.1: *4* class MakeStubFileAdapter
-        class MakeStubFileAdapter:
+        class MakeStubFileAdapter(object):
             '''
             An class that adapts leo/external/make_stub_files.py to Leo.
 
@@ -1113,7 +1113,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         '''
         #@+others
         #@+node:ekr.20160316092837.1: *4* class Python_To_Coffeescript_Adapter
-        class Python_To_Coffeescript_Adapter:
+        class Python_To_Coffeescript_Adapter(object):
             '''An interface class between Leo and leo/external/py2cs.py.'''
             #@+others
             #@+node:ekr.20160316112717.1: *5* py2cs.ctor

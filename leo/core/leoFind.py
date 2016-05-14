@@ -60,7 +60,7 @@ import sys
 #@-<< Theory of operation of find/change >>
 #@+others
 #@+node:ekr.20070105092022.1: ** class SearchWidget
-class SearchWidget:
+class SearchWidget(object):
     '''A class to simulating high-level interface widget.'''
     # This could be a StringTextWrapper, but this code is simple and good.
 
@@ -113,7 +113,7 @@ class SearchWidget:
         return g.toPythonIndex(self.s, i)
     #@-others
 #@+node:ekr.20061212084717: ** class LeoFind (LeoFind.py)
-class LeoFind:
+class LeoFind(object):
     """The base class for Leo's Find commands."""
     #@+others
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth

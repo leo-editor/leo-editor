@@ -18,7 +18,7 @@ from pickle import loads
 from binascii import unhexlify
 
 #@+node:ekr.20120519121124.9921: ** class LeoNode
-class LeoNode:
+class LeoNode(object):
     """Representation of a Leo node.  Root node has itself as parent.
 
     :IVariables:

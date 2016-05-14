@@ -80,7 +80,7 @@ def pylint_command(event):
     '''
     #@+others
     #@+node:ekr.20150514125218.8: *4* class PylintCommand
-    class PylintCommand:
+    class PylintCommand(object):
         '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
 
         def __init__(self, c):
@@ -196,7 +196,7 @@ def pylint_command(event):
             c.save()
         PylintCommand(c).run()
 #@+node:ekr.20120209051836.10241: ** class LeoApp
-class LeoApp:
+class LeoApp(object):
     """A class representing the Leo application itself.
 
     Ivars of this class are Leo's global variables."""
@@ -1509,7 +1509,7 @@ class LeoApp:
                 text="Ok")
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
-class LoadManager:
+class LoadManager(object):
     '''A class to manage loading .leo files, including configuration files.'''
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
@@ -2538,7 +2538,7 @@ class LoadManager:
                     import Tkinter as Tk
                     #@+<< define emergency dialog class >>
                     #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
-                    class EmergencyDialog:
+                    class EmergencyDialog(object):
                         """A class that creates an Tkinter dialog with a single OK button."""
                         #@+others
                         #@+node:ekr.20120219154958.10493: *6* __init__ (emergencyDialog)
@@ -2886,7 +2886,7 @@ class LoadManager:
                 # Closes the file.
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
-class PreviousSettings:
+class PreviousSettings(object):
     '''A class holding the settings and shortcuts dictionaries
     that are computed in the first pass when loading local
     files and passed to the second pass.'''
@@ -2903,7 +2903,7 @@ class PreviousSettings:
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
-class RecentFilesManager:
+class RecentFilesManager(object):
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):

@@ -233,7 +233,7 @@ bunch = Bunch
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
-class FileLikeObject:
+class FileLikeObject(object):
     """Define a file-like object for redirecting writes to a string.
 
     The caller is responsible for handling newlines correctly."""
@@ -288,7 +288,7 @@ fileLikeObject = FileLikeObject
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
 
-class GeneralSetting:
+class GeneralSetting(object):
     '''A class representing any kind of setting except shortcuts.'''
 
     def __init__(self, kind, encoding=None, ivar=None, setting=None, val=None, path=None, tag='setting', unl=None):
@@ -316,7 +316,7 @@ class GeneralSetting:
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
-class KeyStroke:
+class KeyStroke(object):
     '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
 
     This allows type-checking assertions in the code.'''
@@ -395,7 +395,7 @@ def isStroke(obj):
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
-class MatchBrackets:
+class MatchBrackets(object):
     '''
     A class implementing the match-brackets command. In the interest of
     speed, the code assumes that the user invokes the match-bracket command
@@ -764,7 +764,7 @@ class MatchBrackets:
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
 #@@nobeautify
 
-class NullObject:
+class NullObject(object):
     """
     An object that does nothing, and does it very well.
     From the Python cookbook, recipe 5.23
@@ -853,7 +853,7 @@ class PosList(list):
         return aList2
     #@-others
 #@+node:EKR.20040612114220.4: *3* class g.ReadLinesClass
-class ReadLinesClass:
+class ReadLinesClass(object):
     """A class whose next method provides a readline method for Python's tokenize module."""
 
     def __init__(self, s):
@@ -871,7 +871,7 @@ class ReadLinesClass:
 
     __next__ = next
 #@+node:ekr.20031218072017.3121: *3* class g.RedirectClass & convenience functions
-class RedirectClass:
+class RedirectClass(object):
     """A class to redirect stdout and stderr to Leo's log pane."""
     #@+<< RedirectClass methods >>
     #@+node:ekr.20031218072017.1656: *4* << RedirectClass methods >>
@@ -970,7 +970,7 @@ def rawPrint(s):
 #@-others
 #@-<< define convenience methods for redirecting streams >>
 #@+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
-class SherlockTracer:
+class SherlockTracer(object):
     '''
     A stand-alone tracer class with many of Sherlock's features.
 
@@ -1314,7 +1314,7 @@ class SherlockTracer:
 # Important: The startup code uses this class,
 # so it is convenient to define it in leoGlobals.py.
 
-class ShortcutInfo:
+class ShortcutInfo(object):
     '''A class representing any kind of key binding line.
 
     This includes other information besides just the KeyStroke.'''
@@ -1362,7 +1362,7 @@ class ShortcutInfo:
 def isShortcutInfo(obj):
     return isinstance(obj, ShortcutInfo)
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
-class Tracer:
+class Tracer(object):
     '''A "debugger" that computes a call graph.
 
     To trace a function and its callers, put the following at the function's start:
@@ -1479,7 +1479,7 @@ def startTracer(limit=0, trace=False, verbose=False):
     sys.settrace(t.tracer)
     return t
 #@+node:ekr.20120129181245.10220: *3* class g.TypedDict/OfLists & isTypedDict/OfLists
-class TypedDict:
+class TypedDict(object):
     '''A class containing a name and enforcing type checking.'''
     #@+others
     #@+node:ekr.20120205022040.17769: *4* td.ctor
@@ -1635,7 +1635,7 @@ def check_cmd_instance_dict(c, g):
             if name != key:
                 g.trace('class mismatch', key, name)
 #@+node:ville.20090521164644.5924: *3* g.command (decorator)
-class Command:
+class Command(object):
     '''
     A global decorator for functions outside of any class.
 

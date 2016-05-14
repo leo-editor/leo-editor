@@ -446,7 +446,7 @@ class ImportExportTestCase(unittest.TestCase):
         c.selectPosition(self.old_p)
     #@-others
 #@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
-class RunTestExternallyHelperClass:
+class RunTestExternallyHelperClass(object):
     '''A helper class to run tests externally.'''
     #@+others
     #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
@@ -586,7 +586,7 @@ class RunTestExternallyHelperClass:
         os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
-class TestManager:
+class TestManager(object):
     '''A controller class to encapuslate test-runners.'''
     #@+others
     #@+node:ekr.20120220070422.10418: *3*  ctor (TestManager)

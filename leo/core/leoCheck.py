@@ -16,7 +16,7 @@ import re
 import time
 #@+others
 #@+node:ekr.20160109173821.1: ** class BindNames
-class BindNames:
+class BindNames(object):
     '''A class that binds all names to objects without traversing any tree.'''
 
     def __init__(self):
@@ -41,7 +41,7 @@ def bind_names(self, context):
     # Restore the context.
     self.parent_context = old_parent
 #@+node:ekr.20160109102859.1: ** class Context
-class Context:
+class Context(object):
     '''
     Context class (NEW)
 
@@ -603,7 +603,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
 
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
-class ProjectUtils:
+class ProjectUtils(object):
     '''A class to compute the files in a project.'''
     # To do: get project info from @data nodes.
     #@+others
@@ -719,7 +719,7 @@ class ProjectUtils:
             return files
     #@-others
 #@+node:ekr.20150604164113.1: ** class ShowData
-class ShowData:
+class ShowData(object):
     '''The driver class for analysis project.'''
     #@+others
     #@+node:ekr.20150604165500.1: *3*  ctor
@@ -1215,7 +1215,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             self.visit(node.value)
     #@-others
 #@+node:ekr.20160109150703.1: ** class Stats
-class Stats:
+class Stats(object):
     '''A class containing global statistics & other data'''
     #@+others
     #@+node:ekr.20160109150703.2: *3*  sd.ctor

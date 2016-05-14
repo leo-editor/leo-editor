@@ -37,7 +37,7 @@ def go():
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1, name2)
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
-class BaseLeoCompare:
+class BaseLeoCompare(object):
     """The base class for Leo's compare code."""
     #@+others
     #@+node:ekr.20031218072017.3634: *3* compare.__init__

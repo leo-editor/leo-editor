@@ -50,7 +50,7 @@ import time
 # These classes are for documentation and unit testing.
 # They are the base class for no class.
 #@+node:ekr.20140904043623.18535: *3* class ColorizerAPI
-class ColorizerAPI:
+class ColorizerAPI(object):
     '''The required API of c.frame.body.colorizer.'''
 
     def __init__(self, c, widget): pass
@@ -71,7 +71,7 @@ class ColorizerAPI:
 
     def write_colorizer_cache(self, p): pass
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
-class StatusLineAPI:
+class StatusLineAPI(object):
     '''The required API for c.frame.statusLine.'''
 
     def __init__(self, c, parentFrame): pass
@@ -92,7 +92,7 @@ class StatusLineAPI:
 
     def update(self): pass
 #@+node:ekr.20140907201613.18663: *3* class TreeAPI
-class TreeAPI:
+class TreeAPI(object):
     '''The required API for c.frame.tree.'''
 
     def __init__(self, frame): pass
@@ -213,7 +213,7 @@ class WrapperAPI(object):
 
     def toPythonIndexRowCol(self, index): return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
-class IconBarAPI:
+class IconBarAPI(object):
     '''The required API for c.frame.iconBar.'''
 
     def __init__(self, c, parentFrame): pass
@@ -2348,7 +2348,7 @@ class NullTree(LeoTree):
             g.trace('-' * 20, 'oops')
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
-class StringTextWrapper:
+class StringTextWrapper(object):
     '''A class that represents text as a Python string.'''
     #@+others
     #@+node:ekr.20070228074228.2: *3* stw.ctor

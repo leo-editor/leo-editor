@@ -1115,7 +1115,7 @@ class LeoQtGui(leoGui.LeoGui):
             QtCore.QObject.emit = new_emit
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
-class StyleClassManager:
+class StyleClassManager(object):
     style_sclass_property = 'style_class' # name of QObject property for styling
     #@+others
     #@+node:tbrown.20150724090431.2: *3* update_view
@@ -1245,7 +1245,7 @@ class StyleClassManager:
         self.set_sclasses(w, props)
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
-class StyleSheetManager:
+class StyleSheetManager(object):
     '''A class to manage (reload) Qt style sheets.'''
     #@+others
     #@+node:ekr.20140912110338.19371: *3* ssm.__init__

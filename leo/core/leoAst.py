@@ -8,7 +8,7 @@ import token as token_module
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20141012064706.18390: ** class AstDumper
-class AstDumper:
+class AstDumper(object):
     '''
     Return a formatted dump (a string) of the AST node.
 
@@ -105,7 +105,7 @@ class AstDumper:
             [repr(z) for z in getattr(node, attr)])
     #@-others
 #@+node:ekr.20141012064706.18399: ** class AstFormatter
-class AstFormatter:
+class AstFormatter(object):
     '''
     A class to recreate source code from an AST.
 
@@ -815,7 +815,7 @@ class AstFormatter:
         return name
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
-class AstFullTraverser:
+class AstFullTraverser(object):
     '''
     A fast traverser for AST trees: it visits every node (except node.ctx fields).
 
@@ -1393,7 +1393,7 @@ class AstPatternFormatter(AstFormatter):
         return 'Str' # return repr(node.s)
     #@-others
 #@+node:ekr.20150722204300.1: ** class HTMLReportTraverser
-class HTMLReportTraverser:
+class HTMLReportTraverser(object):
     '''
     Create html reports from an AST tree.
 

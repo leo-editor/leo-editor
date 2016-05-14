@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
-class ExternalFile:
+class ExternalFile(object):
     '''A class holding all data about an external file.'''
     
     def __init__(self, c, ext, p, path, time):
@@ -25,7 +25,7 @@ class ExternalFile:
         
     __str__ = __repr__
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
-class ExternalFilesController:
+class ExternalFilesController(object):
     '''
     A class tracking changes to external files:
         

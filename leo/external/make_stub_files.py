@@ -124,7 +124,7 @@ def truncate(s, n):
 
 
 #@+node:ekr.20160317055215.1: **  class AstFormatter
-class AstFormatter:
+class AstFormatter(object):
     '''
     A class to recreate source code from an AST.
     
@@ -940,12 +940,12 @@ class AstArgFormatter (AstFormatter):
 #@+node:ekr.20160317054700.86: ** class LeoGlobals
 
 
-class LeoGlobals:
+class LeoGlobals(object):
     '''A class supporting g.pdb and g.trace for compatibility with Leo.'''
     #@+others
     #@+node:ekr.20160317054700.87: *3* class NullObject (Python Cookbook)
 
-    class NullObject:
+    class NullObject(object):
         """
         An object that does nothing, and does it very well.
         From the Python cookbook, recipe 5.23
@@ -1526,7 +1526,7 @@ class ReduceTypes:
 #@+node:ekr.20160317054700.118: ** class StandAloneMakeStubFile
 
 
-class StandAloneMakeStubFile:
+class StandAloneMakeStubFile(object):
     '''
     A class to make Python stub (.pyi) files in the ~/stubs directory for
     every file mentioned in the [Source Files] section of
@@ -2894,7 +2894,7 @@ class StubTraverser (ast.NodeVisitor):
 #@+node:ekr.20160317054700.188: ** class TestClass
 
 
-class TestClass:
+class TestClass(object):
     '''
     A class containing constructs that have caused difficulties.
     This is in the make_stub_files directory, not the test directory.

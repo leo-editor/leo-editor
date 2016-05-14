@@ -6,7 +6,7 @@ from leo.core.leoQt import QtWidgets
 import leo.plugins.qt_text as qt_text
 #@+others
 #@+node:tbrown.20140919120654.24038: ** class BigTextController
-class BigTextController:
+class BigTextController(object):
     #@+others
     #@+node:tbrown.20140919120654.24039: *3* btc.__init__
     def __init__(self, c):

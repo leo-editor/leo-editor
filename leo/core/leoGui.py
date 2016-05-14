@@ -15,7 +15,7 @@ import leo.core.leoFrame as leoFrame
     # for NullGui and StringTextWrapper.
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui
-class LeoGui:
+class LeoGui(object):
     """The base class of all gui classes.
 
     Subclasses are expected to override all do-nothing methods of this class.
@@ -234,7 +234,7 @@ class LeoGui:
         pass
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent
-class LeoKeyEvent:
+class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
@@ -425,7 +425,7 @@ class NullGui(LeoGui):
         return val
     #@-others
 #@+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
-class NullScriptingControllerClass:
+class NullScriptingControllerClass(object):
     '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
 
     This keeps pylint happy.'''

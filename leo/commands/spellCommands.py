@@ -19,7 +19,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'spellCommands',])
 #@+others
 #@+node:ekr.20150514063305.510: ** class EnchantClass
-class EnchantClass:
+class EnchantClass(object):
     """A wrapper class for PyEnchant spell checker"""
     #@+others
     #@+node:ekr.20150514063305.511: *3*  __init__ (EnchantClass)
@@ -348,7 +348,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20150514063305.499: ** class SpellTabHandler
-class SpellTabHandler:
+class SpellTabHandler(object):
     """A class to create and manage Leo's Spell Check dialog."""
     #@+others
     #@+node:ekr.20150514063305.500: *3* Birth & death

@@ -134,7 +134,7 @@ import time
 #@-<< about key dicts >>
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
-class AutoCompleterClass:
+class AutoCompleterClass(object):
     '''A class that inserts autocompleted and calltip text in text widgets.
     This class shows alternatives in the tabbed log pane.
 
@@ -951,7 +951,7 @@ class AutoCompleterClass:
         return s
     #@-others
 #@+node:ekr.20110312162243.14260: ** class ContextSniffer
-class ContextSniffer:
+class ContextSniffer(object):
     """ Class to analyze surrounding context and guess class
 
     For simple dynamic code completion engines.
@@ -989,7 +989,7 @@ class ContextSniffer:
         vars.append(klass)
     #@-others
 #@+node:ekr.20140813052702.18194: ** class FileNameChooser
-class FileNameChooser:
+class FileNameChooser(object):
     '''A class encapsulation file selection & completion logic.'''
     # pylint: disable=no-self-argument
     # The first argument is fnc.
@@ -1172,7 +1172,7 @@ class FileNameChooser:
             g.es('', s, tabName=fnc.tabName)
     #@-others
 #@+node:ekr.20140816165728.18940: ** class GetArg
-class GetArg:
+class GetArg(object):
     '''
     A class encapsulating all k.getArg logic.
 
@@ -1637,7 +1637,7 @@ class GetArg:
             return ' '
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
-class KeyHandlerClass:
+class KeyHandlerClass(object):
     '''
     A class to support emacs-style commands.
     c.k is an instance of this class.
@@ -4572,7 +4572,7 @@ class KeyHandlerClass:
             c.macroCommands.callLastKeyboardMacro(event)
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
-class ModeInfo:
+class ModeInfo(object):
 
     def __repr__(self):
         return '<ModeInfo %s>' % self.name

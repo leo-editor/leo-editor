@@ -526,7 +526,7 @@ def run_ctags(paths):
 def test(self):
     pass
 #@+node:ekr.20110310091639.14256: ** class CodeWise
-class CodeWise:
+class CodeWise(object):
     #@+others
     #@+node:ekr.20110310091639.14257: *3* __init__(CodeWise)
     def __init__(self, dbpath=None):
@@ -736,7 +736,7 @@ class CodeWise:
                 self.add_source('tagdir', a)
     #@-others
 #@+node:ekr.20110310091639.14275: ** class ContextSniffer
-class ContextSniffer:
+class ContextSniffer(object):
     """ Class to analyze surrounding context and guess class
 
     For simple dynamic code completion engines

@@ -35,7 +35,7 @@ import urllib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
-class LeoImportCommands:
+class LeoImportCommands(object):
     '''
     A class implementing all of Leo's import/export code. This class
     uses **importers** in the leo/plugins/importers folder.
@@ -1581,7 +1581,7 @@ class LeoImportCommands:
         # g.trace(self.encoding)
     #@-others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
-class FreeMindImporter:
+class FreeMindImporter(object):
     '''Importer class for FreeMind (.mmap) files.'''
     
     def __init__(self, c):
@@ -1705,7 +1705,7 @@ class FreeMindImporter:
             self.import_files(names)
     #@-others
 #@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
-class JSON_Import_Helper:
+class JSON_Import_Helper(object):
     '''
     A class that helps client scripts import .json files.
     
@@ -1844,7 +1844,7 @@ class JSON_Import_Helper:
         return bool(top_d)
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
-class MindMapImporter:
+class MindMapImporter(object):
     '''Mind Map Importer class.'''
     
     def __init__(self, c):
@@ -1961,7 +1961,7 @@ class MindMapImporter:
 
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
-class RecursiveImportController:
+class RecursiveImportController(object):
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
@@ -2366,7 +2366,7 @@ class RecursiveImportController:
         g.es('imported %s nodes in %2.2f sec' % (n, t2 - t1))
     #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
-class ZimImportController:
+class ZimImportController(object):
     '''
     A class to import Zim folders and files: http://zim-wiki.org/
     First use Zim to export your project to rst files.

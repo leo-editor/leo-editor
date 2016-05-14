@@ -1048,7 +1048,7 @@ class LeoGlobals(object):
     #@+node:ekr.20160316091132.81: *3* class NullObject (Python Cookbook)
 
 
-    class NullObject:
+    class NullObject(object):
         """
         An object that does nothing, and does it very well.
         From the Python cookbook, recipe 5.23
@@ -1065,7 +1065,7 @@ class LeoGlobals(object):
     #@+node:ekr.20160316091132.82: *3* class ReadLinesClass
 
 
-    class ReadLinesClass:
+    class ReadLinesClass(object):
         """A class whose next method provides a readline method for Python's tokenize module."""
 
         def __init__(self, s):

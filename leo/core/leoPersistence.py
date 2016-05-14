@@ -22,7 +22,7 @@ def view_pack_command(event):
     if c and c.persistenceController:
         c.persistenceController.clean()
 #@+node:ekr.20140711111623.17795: ** class ConvertController
-class ConvertController:
+class ConvertController(object):
     '''A class to convert @file trees to @auto trees.'''
 
     def __init__(self, c, p):
@@ -168,7 +168,7 @@ class ConvertController:
         return s
     #@-others
 #@+node:ekr.20140711111623.17790: ** class PersistenceDataController
-class PersistenceDataController:
+class PersistenceDataController(object):
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
     '''

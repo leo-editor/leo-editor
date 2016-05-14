@@ -6,7 +6,7 @@ import string
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
-class ChapterController:
+class ChapterController(object):
     '''A per-commander controller that manages chapters and related nodes.'''
     #@+others
     #@+node:ekr.20070530075604: *3* Birth
@@ -355,7 +355,7 @@ class ChapterController:
         return result
     #@-others
 #@+node:ekr.20070317085708: ** class Chapter
-class Chapter:
+class Chapter(object):
     '''A class representing the non-gui data of a single chapter.'''
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__

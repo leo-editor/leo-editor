@@ -17,7 +17,7 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
-class AtFile:
+class AtFile(object):
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: *3* << define class constants >>

@@ -708,7 +708,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Define class EventWrapper.
         #@+others
         #@+node:ekr.20131118172620.16892: *7* class EventWrapper
-        class EventWrapper:
+        class EventWrapper(object):
             #@+others
             #@+node:ekr.20131119204029.18406: *8* ctor
             def __init__(self, c, w, next_w, func):
@@ -922,7 +922,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             QtWidgets.QMainWindow.setWindowTitle(self, s)
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager
-class FindTabManager:
+class FindTabManager(object):
     '''A helper class for the LeoFind class.'''
     #@+others
     #@+node:ekr.20131117120458.16794: *3*  ftm.ctor
@@ -2071,7 +2071,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18257: *3* qtFrame.class QtStatusLineClass
-    class QtStatusLineClass:
+    class QtStatusLineClass(object):
         '''A class representing the status line.'''
         #@+others
         #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
@@ -2205,7 +2205,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.lastFcol = fcol
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
-    class QtIconBarClass:
+    class QtIconBarClass(object):
         '''A class representing the singleton Icon bar'''
         #@+others
         #@+node:ekr.20110605121601.18263: *4*  ctor (QtIconBarClass)
@@ -4065,7 +4065,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         return self.c.fileName() or '<unsaved file>'
     #@-others
 #@+node:ekr.20110605121601.18385: ** class LeoQtSpellTab
-class LeoQtSpellTab:
+class LeoQtSpellTab(object):
     #@+others
     #@+node:ekr.20110605121601.18386: *3* LeoQtSpellTab.__init__
     def __init__(self, c, handler, tabName):
@@ -4180,7 +4180,7 @@ class LeoQtSpellTab:
         return state
     #@-others
 #@+node:ekr.20110605121601.18438: ** class LeoQtTreeTab
-class LeoQtTreeTab:
+class LeoQtTreeTab(object):
     '''
     A class representing a so-called tree-tab.
 
@@ -4387,7 +4387,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
             g.trace('can not happen: no action for %s' % (commandName))
     #@-others
 #@+node:ekr.20110605121601.18461: ** class QtSearchWidget
-class QtSearchWidget:
+class QtSearchWidget(object):
     """A dummy widget class to pass to Leo's core find code."""
 
     def __init__(self):
@@ -4397,7 +4397,7 @@ class QtSearchWidget:
         self.body = self
         self.text = None
 #@+node:ekr.20110605121601.18462: ** class SDIFrameFactory
-class SDIFrameFactory:
+class SDIFrameFactory(object):
     """
     Top-level frame builder for Qt Gui without tabs.
 
@@ -4427,7 +4427,7 @@ class SDIFrameFactory:
         pass
     #@-others
 #@+node:ekr.20110605121601.18464: ** class TabbedFrameFactory
-class TabbedFrameFactory:
+class TabbedFrameFactory(object):
     """ 'Toplevel' frame builder for tabbed toplevel interface
 
     This causes Leo to maintain only one toplevel window,

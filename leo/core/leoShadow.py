@@ -40,7 +40,7 @@ import unittest
 #@-<< imports >>
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
-class ShadowController:
+class ShadowController(object):
     '''A class to manage @shadow files'''
     #@+others
     #@+node:ekr.20080708094444.79: *3*  x.ctor
@@ -702,7 +702,7 @@ class ShadowController:
             return self.p and self.p.h or '@test-shadow: no self.p'
         #@-others
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
-    class Marker:
+    class Marker(object):
         '''A class representing comment delims in @shadow files.'''
         #@+others
         #@+node:ekr.20090529061522.6257: *4* ctor & repr

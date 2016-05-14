@@ -454,7 +454,7 @@ if sys.platform != 'cli':
             g.pr('attrs:', list(self.attributes.values()))
         #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
-class FileCommands:
+class FileCommands(object):
     """A class creating the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: *3* fc.Birth

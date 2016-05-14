@@ -9,7 +9,7 @@ from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import Qsci
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
-class QTextMixin:
+class QTextMixin(object):
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
     #@+others
     #@+node:ekr.20140901062324.18732: *3* qtm.ctor & helper
