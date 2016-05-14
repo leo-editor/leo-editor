@@ -11,7 +11,7 @@ else:
     StringIO = StringIO.StringIO
 import time
 
-class BaseScanner:
+class BaseScanner(object):
     '''The base class for all import scanner classes.'''
     #@+others
     #@+node:ekr.20140727075002.18188: ** BaseScanner.ctor

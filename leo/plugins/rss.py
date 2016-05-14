@@ -168,7 +168,7 @@ def onCreate (tag, keys):
     theRSSController = RSSController(c)
     c.theRSSController = theRSSController
 #@+node:peckj.20131002201824.5544: ** class RSSController
-class RSSController:
+class RSSController(object):
 
     #@+others
     #@+node:peckj.20131002201824.5545: *3* __init__ (RSSController, rss.py)

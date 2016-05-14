@@ -8,7 +8,7 @@ import leo.core.leoGlobals as g
 ### import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
-class Export_IPYNB:
+class Export_IPYNB(object):
     '''A class to export outlines to .ipynb files.'''
 
     #@+others

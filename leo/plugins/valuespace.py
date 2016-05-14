@@ -401,7 +401,7 @@ def vs_last_pretty(event):
     c = event['c']
     vs_last(event, text=pprint.pformat(get_vs(c).d.get('_last')))
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
-class ValueSpaceController:
+class ValueSpaceController(object):
 
     '''A class supporting per-commander evaluation spaces
     containing @a, @r and @= nodes.

@@ -242,7 +242,7 @@ def createExportMenus (tag,keywords):
             command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
-class pluginController:
+class pluginController(object):
     """A per commander plugin controller to create and handle
     minibuffer commands that control the plugins functions.
     """

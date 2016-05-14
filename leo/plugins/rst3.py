@@ -524,7 +524,7 @@ class link_htmlparserClass (linkAnchorParserClass):
     #@-others
 #@-others
 #@+node:ekr.20050805162550.8: ** class rstClass
-class rstClass:
+class rstClass(object):
 
     '''A class to write rst markup in Leo outlines.'''
 

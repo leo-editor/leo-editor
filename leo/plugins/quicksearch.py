@@ -412,7 +412,7 @@ def matchlines(b, miter):
     return res
 
 #@+node:ville.20090314215508.12: ** class QuickSearchController
-class QuickSearchController:
+class QuickSearchController(object):
 
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__

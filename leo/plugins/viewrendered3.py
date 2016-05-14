@@ -1250,7 +1250,7 @@ if QtWidgets:
             return '%s\n%s\n\n' % (s, ch * n)
         #@-others
 #@+node:ekr.20160331123847.23: ** class ViewRenderedProvider3
-class ViewRenderedProvider3:
+class ViewRenderedProvider3(object):
     
     def __init__(self, c):
         '''Ctor for ViewRenderedProvider3 class.'''

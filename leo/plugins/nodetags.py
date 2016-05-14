@@ -85,7 +85,7 @@ def onCreate (tag, keys):
     c.theTagController = theTagController
 
 #@+node:peckj.20140804103733.9246: ** class TagController
-class TagController:
+class TagController(object):
     #@+others
     #@+node:peckj.20140804103733.9266: *3* initialization
     #@+node:peckj.20140804103733.9262: *4* __init__

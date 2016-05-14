@@ -256,7 +256,7 @@ def screencast_start(event):
             p = m.find_screencast(c.p)
             m.start(p)
 #@+node:ekr.20120913110135.10607: ** class ScreenCastController
-class ScreenCastController:
+class ScreenCastController(object):
     #@+others
     #@+node:ekr.20120913110135.10606: *3* __init__ (ScreenCastController)
     def __init__(self, c):

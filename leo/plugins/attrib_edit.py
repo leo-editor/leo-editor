@@ -522,7 +522,7 @@ class editWatcher(object):
     #X         a = a.setdefault(i, {})
     #X     a[path[-1]] = value
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
-class attrib_edit_Controller:
+class attrib_edit_Controller(object):
 
     '''A per-commander class that manages attribute editing.'''
 

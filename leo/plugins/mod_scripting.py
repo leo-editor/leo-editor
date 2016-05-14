@@ -296,7 +296,7 @@ class AtButtonCallback(object):
             return None
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
-class ScriptingController:
+class ScriptingController(object):
     '''A class defining scripting commands.'''
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor

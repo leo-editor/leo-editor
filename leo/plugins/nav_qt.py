@@ -46,7 +46,7 @@ def onCreate (tag, keys):
     if not nc:
         controllers [h] = NavController(c)
 #@+node:ville.20090518182905.5425: ** class NavController
-class NavController:
+class NavController(object):
 
     #@+others
     #@+node:ville.20090518182905.5426: *3* __init__

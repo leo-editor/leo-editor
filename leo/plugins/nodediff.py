@@ -130,7 +130,7 @@ def onCreate (tag, keys):
     theNodeDiffController = NodeDiffController(c)
     c.theNodeDiffController = theNodeDiffController
 #@+node:peckj.20140113131037.5797: ** class NodeDiffController
-class NodeDiffController:
+class NodeDiffController(object):
 
     #@+others
     #@+node:peckj.20140113131037.5798: *3* __init__ (NodeDiffController, nodediff.py)

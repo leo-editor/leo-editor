@@ -81,7 +81,7 @@ def onCreate (tag, keywords):
 
     c.frame.menu.createMenuEntries(menu,table,dynamicMenu=True)
 #@+node:ekr.20050301083306.6: ** class controller
-class controller:
+class controller(object):
 
     #@+others
     #@+node:ekr.20050301083306.7: *3* ctor

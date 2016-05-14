@@ -219,7 +219,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
             QtWidgets.QGraphicsView.wheelEvent(self, event)
     #@-others
 #@+node:tbrown.20110413094721.24681: ** class GetImage
-class GetImage:
+class GetImage(object):
     """Image handling functions"""
 
     @staticmethod

@@ -103,7 +103,7 @@ def onCreate(tag, keys):
     if c:
         c.opmlController = OpmlController(c)
 #@+node:ekr.20060904141220: ** class NodeClass
-class NodeClass:
+class NodeClass(object):
     '''
     A class representing one outline element.
 
@@ -135,7 +135,7 @@ class NodeClass:
         print('attrs: %s' % self.attributes.values())
     #@-others
 #@+node:ekr.20060904103412.6: ** class OpmlController
-class OpmlController:
+class OpmlController(object):
     '''The controller class for this plugin.'''
     #@+others
     #@+node:ekr.20060904103412.7: *3* oc.__init__
@@ -389,7 +389,7 @@ class OpmlController:
             c.opmlCommands.writeFile(fileName)
     #@-others
 #@+node:ekr.20060919172012.2: ** class PutToOPML
-class PutToOPML:
+class PutToOPML(object):
     '''Write c.p's tree as OPML, using the owner's put method.'''
 
     def __init__(self, owner):

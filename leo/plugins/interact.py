@@ -287,7 +287,7 @@ class InteractBASH(Interact):
         return path
     #@-others
 #@+node:tbrown.20090603104805.4961: ** class InteractController
-class InteractController:
+class InteractController(object):
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
@@ -331,7 +331,7 @@ class InteractController:
             )
     #@-others
 #@+node:tbrown.20090603104805.4966: ** class InteractButton
-class InteractButton:
+class InteractButton(object):
 
     """contains target data and function for moving node"""
     #@+others

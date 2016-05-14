@@ -137,7 +137,7 @@ def onCreate (tag, keys):
     theSFTPController = SFTPController(c)
     c.theSFTPController = theSFTPController
 #@+node:peckj.20140218144401.6041: ** class SFTPController
-class SFTPController:
+class SFTPController(object):
     
     #@+others
     #@+node:peckj.20140218144401.6042: *3* __init__

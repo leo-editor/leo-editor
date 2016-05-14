@@ -31,7 +31,7 @@ def init ():
     return ok
 
 #@+node:ville.20120503224623.3581: ** class MylynController
-class MylynController:
+class MylynController(object):
     def __init__(self):
         self.scoring = {}
 

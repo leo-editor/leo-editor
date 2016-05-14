@@ -828,7 +828,7 @@ class quickMove(object):
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton
-class quickMoveButton:
+class quickMoveButton(object):
 
     """contains target data and function for moving node"""
 

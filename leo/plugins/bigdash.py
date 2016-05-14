@@ -82,7 +82,7 @@ def init ():
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20140919160020.17909: ** class BigDash
-class BigDash:
+class BigDash(object):
     #@+others
     #@+node:ekr.20140919160020.17916: *3* __init__
     def __init__(self):
@@ -161,7 +161,7 @@ class BigDash:
 
     #@-others
 #@+node:ekr.20140919160020.17897: ** class GlobalSearch
-class GlobalSearch:
+class GlobalSearch(object):
     #@+others
     #@+node:ekr.20140919160020.17898: *3* __init__
     def __init__(self):
@@ -386,7 +386,7 @@ if QtCore:
     class LeoConnector(QtCore.QObject):
         pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
-class LeoFts:
+class LeoFts(object):
     #@+others
     #@+node:ekr.20140920041848.17940: *3* __init__
     def __init__(self,gnxcache,idx_dir):
@@ -474,7 +474,7 @@ class LeoFts:
         self.ix.close()
     #@-others
 #@+node:ekr.20140920041848.17933: ** class GnxCache
-class GnxCache:
+class GnxCache(object):
     """ map gnx => vnode """
     #@+others
     #@+node:ekr.20140920041848.17934: *3* __init__

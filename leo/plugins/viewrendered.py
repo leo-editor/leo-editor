@@ -442,7 +442,7 @@ def update_rendering_pane(event):
         if vr:
             vr.update(tag='view', keywords={'c': c, 'force': True})
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
-class ViewRenderedProvider:
+class ViewRenderedProvider(object):
     #@+others
     #@+node:tbrown.20110629084915.35154: *3* __init__
     def __init__(self, c):

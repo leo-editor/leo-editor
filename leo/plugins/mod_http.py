@@ -337,7 +337,7 @@ def getConfiguration(c):
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:bwmulder.20050326191345: ** class config
-class config:
+class config(object):
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
@@ -683,7 +683,7 @@ class leo_interface(object):
             f.write("</h2>\n")
     #@-others
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
-class LeoActions:
+class LeoActions(object):
     """
     A place to collect other URL based actions like saving bookmarks from
     the browser. Conceptually this stuff could go in class leo_interface
@@ -899,7 +899,7 @@ class LeoActions:
         return f
     #@-others
 #@+node:tbrown.20150729112701.1: ** class ExecHandler
-class ExecHandler:
+class ExecHandler(object):
     """
     Quasi-RPC GET based interface
     """

@@ -101,7 +101,7 @@ def onCreate(tag,keywords):
     if c:
         ParamClass(c)
 #@+node:ekr.20040916091520.2: ** class ParamClass
-class ParamClass:
+class ParamClass(object):
 
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__

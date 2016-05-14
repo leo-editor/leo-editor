@@ -87,7 +87,7 @@ def main():
     b.show()
     a.exec_()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
-class NowOrLater:
+class NowOrLater(object):
     #@+others
     #@+node:ekr.20121126095734.12434: *3* __init__
 
@@ -166,7 +166,7 @@ class RRunner(QtCore.QThread):
 
     #@-others
 #@+node:ekr.20140910173844.17824: ** class SysProcessRunner
-class SysProcessRunner:
+class SysProcessRunner(object):
     def __init__(self):
         # dict of lists (queues)
         self.q = {}
@@ -208,7 +208,7 @@ class SysProcessRunner:
         p.finished.connect(fini)
 
 #@+node:ekr.20121126095734.12419: ** class ThreadQueue
-class ThreadQueue:
+class ThreadQueue(object):
     #@+others
     #@+node:ekr.20121126095734.12420: *3* __init__
     def __init__(self):

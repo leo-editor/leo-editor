@@ -163,7 +163,7 @@ def onCreate (tag, keys):
         c.ipythonController.startIPython()
 
 #@+node:ekr.20080201143145.6: *3* class ipythonController
-class ipythonController:
+class ipythonController(object):
 
     '''A per-commander controller that manages the
     singleton IPython ipshell instance.'''
@@ -319,7 +319,7 @@ def pushToIPython (self,script=None):
 def started (self):
     return gIP
 #@+node:ekr.20080204103804.3: *3* class leoInterface
-class leoInterface:
+class leoInterface(object):
 
     '''A class to allow full access to Leo from Ipython.
 
@@ -433,7 +433,7 @@ def cleanup_consoles(self, evt=None):
     for c in self.consoles:
         c.kill()
 #@+node:ekr.20130930062914.15971: *3* class LeoInterface
-class LeoInterface:
+class LeoInterface(object):
 
     '''A class to allow full access to Leo from Ipython.
 
