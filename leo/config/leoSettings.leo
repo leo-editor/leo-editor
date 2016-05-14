@@ -2139,6 +2139,10 @@
 <v t="ekr.20120926072255.11432"><vh>@color minibuffer-foreground-color = black</vh></v>
 <v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
+<v t="ekr.20160514162747.1"><vh>Tab colors</vh>
+<v t="ekr.20160514162753.1"><vh>@color selected-tab-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20160514162820.1"><vh>@color unselected-tab-bg = lightgrey</vh></v>
+</v>
 </v>
 <v t="ekr.20041213105954"><vh>Windows</vh>
 <v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
@@ -2444,6 +2448,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20110611092035.16471"></v>
+<v t="ekr.20140915194122.19470"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -10535,6 +10541,14 @@ QTabbedWidget {
     background-color: @tabbed-widget-bg;
 }
 
+QTabBar::tab {
+    background: @unselected-tab-bg;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: @selected-tab-bg;
+}
+
 QStackedWidget {
     border-color:       @stacked-widget-border-color;
     background-color:   @stacked-widget-bg;
@@ -11164,6 +11178,9 @@ sort-lines
 <t tx="ekr.20160504145653.1">True: plain keys in the outline pane search for headlines.
 False: Ignore plain keys in the outline pane.
 </t>
+<t tx="ekr.20160514162747.1"></t>
+<t tx="ekr.20160514162753.1"></t>
+<t tx="ekr.20160514162820.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
