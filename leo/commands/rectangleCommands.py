@@ -12,10 +12,12 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the RectangleCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'rectangleCommands',])
-
+    
+#@+others
+#@+node:ekr.20160514120751.1: ** class RectangleCommandsClass
 class RectangleCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.448: ** rectangle.ctor
+    #@+node:ekr.20150514063305.448: *3* rectangle.ctor
     def __init__(self, c):
         '''Ctor for RectangleCommandsClass.'''
         # pylint: disable=super-init-not-called
@@ -32,15 +34,15 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         't': ('string-rectangle', self.stringRectangle),
         'y': ('yank-rectangle', self.yankRectangle),
         }
-    #@+node:ekr.20150514063305.451: ** check
+    #@+node:ekr.20150514063305.451: *3* check
     def check(self, event, warning='No rectangle selected'):
         '''
         Return True if there is a selection.
         Otherwise, return False and issue a warning.
         '''
         return self._chckSel(event, warning)
-    #@+node:ekr.20150514063305.453: ** rectangle.Entries
-    #@+node:ekr.20150514063305.454: *3* clearRectangle
+    #@+node:ekr.20150514063305.453: *3* rectangle.Entries
+    #@+node:ekr.20150514063305.454: *4* clearRectangle
     @cmd('rectangle-clear')
     def clearRectangle(self, event):
         '''Clear the rectangle defined by the start and end of selected text.'''
@@ -56,7 +58,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             w.insert('%s.%s' % (r, r2), fill)
         w.setSelectionRange('%s.%s' % (r1, r2), '%s.%s' % (r3, r2 + len(fill)))
         self.endCommand()
-    #@+node:ekr.20150514063305.455: *3* closeRectangle
+    #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
     def closeRectangle(self, event):
         '''Delete the rectangle if it contains nothing but whitespace..'''
@@ -76,11 +78,11 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         j = '%s.%s' % (r3, r2)
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
-    #@+node:ekr.20150515060613.1: *3* copyRectangleToRegister
+    #@+node:ekr.20150515060613.1: *4* copyRectangleToRegister
     @cmd('rectangle-copy-to-register')
     def copyRectangleToRegister(self, event):
         self.c.registerCommands.copyRectangleToRegister(event)
-    #@+node:ekr.20150514063305.456: *3* deleteRectangle
+    #@+node:ekr.20150514063305.456: *4* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle(self, event):
         '''Delete the rectangle defined by the start and end of selected text.'''
@@ -95,7 +97,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         j = '%s.%s' % (r3, r2)
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
-    #@+node:ekr.20150514063305.457: *3* killRectangle
+    #@+node:ekr.20150514063305.457: *4* killRectangle
     @cmd('rectangle-kill')
     def killRectangle(self, event):
         '''Kill the rectangle defined by the start and end of selected text.'''
@@ -114,7 +116,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             ins = '%s.%s' % (r, r2)
             w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
-    #@+node:ekr.20150514063305.458: *3* openRectangle
+    #@+node:ekr.20150514063305.458: *4* openRectangle
     @cmd('rectangle-open')
     def openRectangle(self, event):
         '''
@@ -133,7 +135,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         j = '%s.%s' % (r3, r2 + len(fill))
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
-    #@+node:ekr.20150514063305.459: *3* stringRectangle
+    #@+node:ekr.20150514063305.459: *4* stringRectangle
     @cmd('rectangle-string')
     def stringRectangle(self, event):
         '''
@@ -174,7 +176,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             # 2010/1/1: Fix bug 480422:
             # string-rectangle kills syntax highlighting.
             c.frame.body.recolor(c.p, incremental=False)
-    #@+node:ekr.20150514063305.460: *3* yankRectangle
+    #@+node:ekr.20150514063305.460: *4* yankRectangle
     @cmd('rectangle-yank')
     def yankRectangle(self, event, killRect=None):
         '''Yank into the rectangle defined by the start and end of selected text.'''
@@ -204,4 +206,6 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@-others
+#@-others
+
 #@-leo

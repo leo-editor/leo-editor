@@ -12,11 +12,13 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the MacroCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'macroCommands',])
-
+    
+#@+others
+#@+node:ekr.20160514120837.1: ** class MacroCommandsClass
 class MacroCommandsClass(BaseEditCommandsClass):
     '''Records, plays, saves and restores keyboard macros.'''
     #@+others
-    #@+node:ekr.20150514063305.432: ** macro.ctor
+    #@+node:ekr.20150514063305.432: *3* macro.ctor
     def __init__(self, c):
         '''Ctor for MacroCommandsClass class.'''
         # pylint: disable=super-init-not-called
@@ -27,7 +29,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         self.namedMacros = {}
         # Important: we must not interfere with k.state in startRecordingMacro!
         self.recordingMacro = False
-    #@+node:ekr.20150514063305.434: ** callLastMacro
+    #@+node:ekr.20150514063305.434: *3* callLastMacro
     # Called from universal-command.
 
     @cmd('macro-call-last')
@@ -36,7 +38,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         # g.trace(self.lastMacro)
         if self.lastMacro:
             self.executeMacro(self.lastMacro)
-    #@+node:ekr.20150514063305.435: ** callNamedMacro
+    #@+node:ekr.20150514063305.435: *3* callNamedMacro
     @cmd('macro-call')
     def callNamedMacro(self, event):
         '''Prompts for a macro name, then executes it.'''
@@ -56,7 +58,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
             else:
                 g.es('no macro named %s' % k.arg)
             k.resetLabel()
-    #@+node:ekr.20150514063305.436: ** completeMacroDef
+    #@+node:ekr.20150514063305.436: *3* completeMacroDef
     def completeMacroDef(self, name, macro):
         '''
         Add the macro to the list of macros, and add the macro's name to
@@ -79,7 +81,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
             g.es_print('loaded: %s' % (name))
         c.commandsDict[name] = func
         self.namedMacros[name] = macro
-    #@+node:ekr.20150514063305.437: ** endMacro
+    #@+node:ekr.20150514063305.437: *3* endMacro
     @cmd('macro-end-recording')
     def endMacro(self, event=None):
         '''Stops recording a macro.'''
@@ -96,7 +98,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         else:
             k.setLabelBlue('Empty keyboard macro')
             # g.es('Empty keyboard macro')
-    #@+node:ekr.20150514063305.438: ** executeMacro
+    #@+node:ekr.20150514063305.438: *3* executeMacro
     def executeMacro(self, macro):
         trace = False and not g.unitTesting
         c, k = self.c, self.c.k
@@ -104,7 +106,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         for event in macro:
             if trace: g.trace(repr(event))
             k.masterKeyHandler(event)
-    #@+node:ekr.20150514063305.439: ** getMacrosNode
+    #@+node:ekr.20150514063305.439: *3* getMacrosNode
     def getMacrosNode(self):
         '''Return the position of the @macros node.'''
         c = self.c
@@ -126,7 +128,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         g.es_print('Created: %s' % p2.h)
         c.redraw()
         return p2
-    #@+node:ekr.20150514063305.440: ** getWidgetName
+    #@+node:ekr.20150514063305.440: *3* getWidgetName
     def getWidgetName(self, obj):
         if not obj:
             return ''
@@ -136,7 +138,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
             if hasattr(obj.widget, 'objectName'):
                 return obj.widget.objectName()
         return ''
-    #@+node:ekr.20150514063305.441: ** loadMacros
+    #@+node:ekr.20150514063305.441: *3* loadMacros
     @cmd('macro-load-all')
     def loadMacros(self, event=None):
         '''Load macros from the @macros node.'''
@@ -185,7 +187,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         # finish of the last macro.
         if macro:
             self.completeMacroDef(name, macro)
-    #@+node:ekr.20150514063305.442: ** nameLastMacro
+    #@+node:ekr.20150514063305.442: *3* nameLastMacro
     @cmd('macro-name-last')
     def nameLastMacro(self, event):
         '''Prompts for the name to be given to the last recorded macro.'''
@@ -198,7 +200,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
             name = k.arg
             self.completeMacroDef(name, self.lastMacro)
             k.setLabelGrey('Macro defined: %s' % name)
-    #@+node:ekr.20150514063305.443: ** printMacros & printLastMacro
+    #@+node:ekr.20150514063305.443: *3* printMacros & printLastMacro
     @cmd('macro-print-all')
     def printMacros(self, event=None):
         '''Prints the name and definition of all named macros.'''
@@ -216,7 +218,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         if self.lastMacro:
             for event in self.lastMacro:
                 g.es(repr(event.stroke))
-    #@+node:ekr.20150514063305.444: ** saveMacros
+    #@+node:ekr.20150514063305.444: *3* saveMacros
     @cmd('macro-save-all')
     def saveMacros(self, event=None):
         '''Store macros in the @macros node..'''
@@ -233,7 +235,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
                 result.append(event.stroke)
             result.append('') # Blank line terminates
         p.b = '\n'.join(result)
-    #@+node:ekr.20150514063305.445: ** startRecordingMacro
+    #@+node:ekr.20150514063305.445: *3* startRecordingMacro
     @cmd('macro-start-recording')
     def startRecordingMacro(self, event):
         '''Start recording or continue to record a macro.'''
@@ -250,4 +252,5 @@ class MacroCommandsClass(BaseEditCommandsClass):
         else:
             g.trace('can not happen: no event')
     #@-others
+#@-others
 #@-leo

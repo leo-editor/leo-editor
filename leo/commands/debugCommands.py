@@ -15,15 +15,17 @@ import sys
 def cmd(name):
     '''Command decorator for the DebugCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'debugCommands',])
-
+    
+#@+others
+#@+node:ekr.20160514095909.1: ** class DebugCommandsClass
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.103: ** collectGarbage
+    #@+node:ekr.20150514063305.103: *3* debug.collectGarbage
     @cmd('gc-collect-garbage')
     def collectGarbage(self, event=None):
         """Run Python's Gargabe Collector."""
         g.collectGarbage()
-    #@+node:ekr.20150514063305.104: ** invoke_debugger & helper
+    #@+node:ekr.20150514063305.104: *3* debug.invoke_debugger & helper
     @cmd('debug')
     def invoke_debugger(self, event=None):
         '''
@@ -61,7 +63,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         else:
             args = [sys.executable, winpdb, '-t', filename]
             os.spawnv(os.P_NOWAIT, python, args)
-    #@+node:ekr.20150514063305.105: *3* findDebugger
+    #@+node:ekr.20150514063305.105: *4* debug.findDebugger
     def findDebugger(self):
         '''Find the debugger using settings.'''
         c = self.c
@@ -80,7 +82,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
                     g.warning('debugger does not exist:', debugger)
         g.es('no debugger found.')
         return None
-    #@+node:ekr.20150514063305.106: ** dumpAll/New/VerboseObjects
+    #@+node:ekr.20150514063305.106: *3* debug.dumpAll/New/VerboseObjects
     @cmd('gc-dump-all-objects')
     def dumpAllObjects(self, event=None):
         '''Print a summary of all existing Python objects.'''
@@ -107,7 +109,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         g.trace_gc = True
         g.printGcVerbose()
         g.trace_gc = old
-    #@+node:ekr.20150514063305.107: ** enable/disableGcTrace
+    #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
     @cmd('gc-trace-disable')
     def disableGcTrace(self, event=None):
         '''Enable tracing of Python's Garbage Collector.'''
@@ -122,18 +124,18 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.blue('enabled verbose gc stats')
         else:
             g.blue('enabled brief gc stats')
-    #@+node:ekr.20150514063305.108: ** freeTreeWidgets
+    #@+node:ekr.20150514063305.108: *3* debug.freeTreeWidgets
     def freeTreeWidgets(self, event=None):
         '''Free all widgets used in Leo's outline pane.'''
         c = self.c
         c.frame.tree.destroyWidgets()
         c.redraw()
-    #@+node:ekr.20150514063305.109: ** pdb
+    #@+node:ekr.20150514063305.109: *3* debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):
         '''Fall into pdb.'''
         g.pdb()
-    #@+node:ekr.20150514063305.110: ** printFocus
+    #@+node:ekr.20150514063305.110: *3* debug.printFocus
     @cmd('print-focus')
     def printFocus(self, event=None):
         '''
@@ -145,18 +147,18 @@ class DebugCommandsClass(BaseEditCommandsClass):
         w = g.app.gui.get_focus()
         g.es_print('c.requestedFocusWidget:', c.widget_name(c.requestedFocusWidget))
         g.es_print('           c.get_focus:', c.widget_name(c.get_focus()))
-    #@+node:ekr.20150514063305.111: ** printGcSummary
+    #@+node:ekr.20150514063305.111: *3* debug.printGcSummary
     @cmd('gc-print-summary')
     def printGcSummary(self, event=None):
         '''Print a brief summary of all Python objects.'''
         g.printGcSummary()
-    #@+node:ekr.20150514063305.112: ** printStats
+    #@+node:ekr.20150514063305.112: *3* debug.printStats
     def printStats(self, event=None):
         '''Print statistics about the objects that Leo is using.'''
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()
-    #@+node:ekr.20150514063305.113: ** runUnitTest commands
+    #@+node:ekr.20150514063305.113: *3* debug.runUnitTest commands
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):
         '''Run all unit tests contained in the presently selected outline.
@@ -194,4 +196,5 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False, marked=False)
     #@-others
+#@-others
 #@-leo

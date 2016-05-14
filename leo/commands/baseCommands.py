@@ -5,10 +5,12 @@
 '''The base class for all of Leo's user commands.'''
 import leo.core.leoGlobals as g
 
+#@+others
+#@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:
     '''The base class for all edit command classes'''
     #@+others
-    #@+node:ekr.20150516040334.1: ** BaseEdit.ctor
+    #@+node:ekr.20150516040334.1: *3* BaseEdit.ctor
     def __init__(self, c):
         '''
         Ctor for the BaseEditCommandsClass class.
@@ -17,8 +19,8 @@ class BaseEditCommandsClass:
         Subclasses without ctors call this ctor implicitly.
         '''
         self.c = c
-    #@+node:ekr.20150514043714.3: ** BaseEdit.begin/endCommand (handles undo)
-    #@+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
+    #@+node:ekr.20150514043714.3: *3* BaseEdit.begin/endCommand (handles undo)
+    #@+node:ekr.20150514043714.4: *4* BaseEdit.beginCommand
     def beginCommand(self, w, undoType='Typing'):
         '''Do the common processing at the start of each command.'''
         c, p = self.c, self.c.p
@@ -37,7 +39,7 @@ class BaseEditCommandsClass:
         else:
             self.undoData = None
         return w
-    #@+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
+    #@+node:ekr.20150514043714.6: *4* BaseEdit.endCommand
     def endCommand(self, label=None, changed=True, setLabel=True):
         '''
         Do the common processing at the end of each command.
@@ -58,7 +60,7 @@ class BaseEditCommandsClass:
                 k.setLabelGrey(label)
             else:
                 k.resetLabel()
-    #@+node:ekr.20150514043714.7: ** BaseEdit.editWidget
+    #@+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
     def editWidget(self, event, forceFocus=True):
         '''Return the edit widget for the event. Also sets self.w'''
         trace = False and not g.unitTesting
@@ -74,16 +76,16 @@ class BaseEditCommandsClass:
             c.widgetWantsFocusNow(w)
         self.w = w
         return w
-    #@+node:ekr.20150514043714.8: ** BaseEdit.getWSString
+    #@+node:ekr.20150514043714.8: *3* BaseEdit.getWSString
     def getWSString(self, s):
         return ''.join([ch if ch == '\t' else ' ' for ch in s])
-    #@+node:ekr.20150514043714.9: ** BaseEdit.oops
+    #@+node:ekr.20150514043714.9: *3* BaseEdit.oops
     def oops(self):
         g.pr("BaseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
-    #@+node:ekr.20150514043714.10: ** BaseEdit.Helpers
-    #@+node:ekr.20150514043714.11: *3* BaseEdit._chckSel
+    #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
+    #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
     def _chckSel(self, event, warning='no selection'):
         '''Return True if there is a selection in the edit widget.'''
         k = self.c.k
@@ -93,7 +95,7 @@ class BaseEditCommandsClass:
             # k.setLabelGrey(warning)
             g.es(warning, color='red')
         return val
-    #@+node:ekr.20150514043714.13: *3* BaseEdit.getRectanglePoints
+    #@+node:ekr.20150514043714.13: *4* BaseEdit.getRectanglePoints
     def getRectanglePoints(self, w):
         c = self.c
         c.widgetWantsFocusNow(w)
@@ -102,9 +104,10 @@ class BaseEditCommandsClass:
         r1, r2 = g.convertPythonIndexToRowCol(s, i)
         r3, r4 = g.convertPythonIndexToRowCol(s, j)
         return r1 + 1, r2, r3 + 1, r4
-    #@+node:ekr.20150514043714.14: *3* BaseEdit.keyboardQuit
+    #@+node:ekr.20150514043714.14: *4* BaseEdit.keyboardQuit
     def keyboardQuit(self, event=None):
         '''Clear the state and the minibuffer label.'''
         return self.c.k.keyboardQuit()
     #@-others
+#@-others
 #@-leo

@@ -3,20 +3,19 @@
 #@+node:ekr.20150514040234.1: * @file ../commands/registerCommands.py
 #@@first
 '''Leo's register commands.'''
-#@+<< imports >>
-#@+node:ekr.20150514050501.1: ** << imports >> (registerCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-#@-<< imports >>
 
 def cmd(name):
     '''Command decorator for the RegisterCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'registerCommands',])
 
+#@+others
+#@+node:ekr.20160514120143.1: ** class RegisterCommandsClass
 class RegisterCommandsClass(BaseEditCommandsClass):
     '''Create registers a-z and the corresponding Emacs commands.'''
     #@+others
-    #@+node:ekr.20150514063305.463: ** register.ctor
+    #@+node:ekr.20150514063305.463: *3* register.ctor
     def __init__(self, c):
         '''Ctor for RegisterCommandsClass class.'''
         # pylint: disable=super-init-not-called
@@ -26,7 +25,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
         self.method = None
         self.registerMode = 0 # Must be an int.
         self.registers = g.app.globalRegisters
-    #@+node:ekr.20150514063305.465: ** register.addRegisterItems
+    #@+node:ekr.20150514063305.465: *3* register.addRegisterItems
     def addRegisterItems(self):
         methodDict = {
             '+': self.incrementRegister,
@@ -53,11 +52,11 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             'v': 'view register',
         }
         return methodDict, helpDict
-    #@+node:ekr.20150514063305.466: ** register.checkBodySelection
+    #@+node:ekr.20150514063305.466: *3* register.checkBodySelection
     def checkBodySelection(self, warning='No text selected'):
         return self._chckSel(event=None, warning=warning)
-    #@+node:ekr.20150514063305.467: ** register.Entries
-    #@+node:ekr.20150514063305.468: *3* appendToRegister
+    #@+node:ekr.20150514063305.467: *3* register.Entries
+    #@+node:ekr.20150514063305.468: *4* appendToRegister
     @cmd('register-append-to')
     def appendToRegister(self, event):
         '''Prompt for a register name and append the selected text to the register's contents.'''
@@ -83,7 +82,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.469: *3* prependToRegister
+    #@+node:ekr.20150514063305.469: *4* prependToRegister
     @cmd('register-prepend-to')
     def prependToRegister(self, event):
         '''Prompt for a register name and prepend the selected text to the register's contents.'''
@@ -109,7 +108,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.470: *3* copyRectangleToRegister
+    #@+node:ekr.20150514063305.470: *4* copyRectangleToRegister
     @cmd('register-copy-rectangle-to')
     def copyRectangleToRegister(self, event):
         '''
@@ -142,7 +141,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.471: *3* copyToRegister
+    #@+node:ekr.20150514063305.471: *4* copyToRegister
     @cmd('register-copy-to')
     def copyToRegister(self, event):
         '''Prompt for a register name and append the selected text to the register's contents.'''
@@ -167,7 +166,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.472: *3* incrementRegister
+    #@+node:ekr.20150514063305.472: *4* incrementRegister
     @cmd('register-increment')
     def incrementRegister(self, event):
         '''Prompt for a register name and increment its value if it has a numeric value.'''
@@ -193,7 +192,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.473: *3* insertRegister
+    #@+node:ekr.20150514063305.473: *4* insertRegister
     @cmd('register-insert')
     def insertRegister(self, event):
         '''Prompt for a register name and and insert the value of another register into its contents.'''
@@ -223,7 +222,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.474: *3* jumpToRegister
+    #@+node:ekr.20150514063305.474: *4* jumpToRegister
     @cmd('register-jump-to')
     def jumpToRegister(self, event):
         '''Prompt for a register name and set the insert point to the value in its register.'''
@@ -250,7 +249,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register %s is empty' % key)
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.475: *3* numberToRegister (not used)
+    #@+node:ekr.20150514063305.475: *4* numberToRegister (not used)
     #@+at
     # C-u number C-x r n reg
     #     Store number into register reg (number-to-register).
@@ -275,7 +274,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
                 k.setLabelGrey('number-to-register not ready yet.')
             else:
                 k.setLabelGrey('Register must be a letter')
-    #@+node:ekr.20150514063305.476: *3* pointToRegister
+    #@+node:ekr.20150514063305.476: *4* pointToRegister
     @cmd('register-point-to')
     def pointToRegister(self, event):
         '''Prompt for a register name and put a value indicating the insert point in the register.'''
@@ -298,7 +297,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514063305.477: *3* viewRegister
+    #@+node:ekr.20150514063305.477: *4* viewRegister
     @cmd('register-view')
     def viewRegister(self, event):
         '''Prompt for a register name and print its contents.'''
@@ -318,7 +317,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@+node:ekr.20150514043714.12: ** register.checkIfRectangle
+    #@+node:ekr.20150514043714.12: *3* register.checkIfRectangle
     def checkIfRectangle(self, event):
         c, k = self.c, self.c.k
         key = event and event.char.lower() or ''
@@ -330,4 +329,5 @@ class RegisterCommandsClass(BaseEditCommandsClass):
         else:
             return False
     #@-others
+#@-others
 #@-leo

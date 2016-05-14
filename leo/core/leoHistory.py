@@ -3,11 +3,12 @@
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
 import leo.core.leoGlobals as g
-
+#@+others
+#@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
     '''A class encapsulating knowledge of visited nodes.'''
     #@+others
-    #@+node:ekr.20070615131604.1: ** NodeHistory.ctor
+    #@+node:ekr.20070615131604.1: *3* NodeHistory.ctor
     def __init__(self, c):
         '''Ctor for NodeHistory class.'''
         self.c = c
@@ -15,7 +16,7 @@ class NodeHistory:
             # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
-    #@+node:ekr.20160426061203.1: ** NodeHistory.dump
+    #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
     def dump(self):
         '''Dump the beadList'''
         for i, data in enumerate(self.beadList):
@@ -24,14 +25,14 @@ class NodeHistory:
             chapter = chapter and chapter.name or 'main'
             mark = '**' if i == self.beadPointer else '  '
             print('%s %s %s %s' % (mark, i, chapter, p))
-    #@+node:ekr.20070615134813: ** NodeHistory.goNext
+    #@+node:ekr.20070615134813: *3* NodeHistory.goNext
     def goNext(self):
         '''Select the next node, if possible.'''
         if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
-    #@+node:ekr.20130915111638.11288: ** NodeHistory.goPrev
+    #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
     def goPrev(self):
         '''Select the previously visited node, if possible.'''
         if self.beadPointer > 0:
@@ -39,7 +40,7 @@ class NodeHistory:
             p, chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p, chapter)
-    #@+node:ekr.20130915111638.11294: ** NodeHistory.select
+    #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select(self, p, chapter):
         '''
         Update the history list when selecting p.
@@ -59,7 +60,7 @@ class NodeHistory:
                 self.skipBeadUpdate = False
         # Fix bug #180: Always call self.update here.
         self.update(p, change=False)
-    #@+node:ville.20090724234020.14676: ** NodeHistory.update
+    #@+node:ville.20090724234020.14676: *3* NodeHistory.update
     def update(self, p, change=True):
         '''
         Update the beadList while p is being selected.
@@ -99,6 +100,7 @@ class NodeHistory:
             g.trace('(NodeHistory) change:', change, p.h)
             self.dump()
     #@-others
+#@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

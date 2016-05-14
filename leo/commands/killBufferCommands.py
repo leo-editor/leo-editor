@@ -12,11 +12,13 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the KillBufferCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'killBufferCommands',])
-
+    
+#@+others
+#@+node:ekr.20160514120919.1: ** class KillBufferCommandsClass
 class KillBufferCommandsClass(BaseEditCommandsClass):
     '''A class to manage the kill buffer.'''
     #@+others
-    #@+node:ekr.20150514063305.409: ** kill.ctor
+    #@+node:ekr.20150514063305.409: *3* kill.ctor
     def __init__(self, c):
         '''Ctor for KillBufferCommandsClass class.'''
         # pylint: disable=super-init-not-called
@@ -29,7 +31,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.reset = None
             # The index of the next item to be returned in
             # g.app.globalKillBuffer by iterateKillBuffer.
-    #@+node:ekr.20150514063305.411: ** addToKillBuffer
+    #@+node:ekr.20150514063305.411: *3* addToKillBuffer
     def addToKillBuffer(self, text):
         '''
         Insert the text into the kill buffer if force is True or
@@ -39,7 +41,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.globalKillBuffer = [
                 z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
-    #@+node:ekr.20150514063305.412: ** backwardKillSentence
+    #@+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')
     def backwardKillSentence(self, event):
         '''Kill the previous sentence.'''
@@ -58,7 +60,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.c.frame.body.forceFullRecolor()
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.413: ** backwardKillWord & killWord
+    #@+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
     def backwardKillWord(self, event):
         '''Kill the previous word.'''
@@ -88,12 +90,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.kill(event, i, j, undoType=None)
             c.frame.body.forceFullRecolor()
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.414: ** clearKillRing
+    #@+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
     def clearKillRing(self, event=None):
         '''Clear the kill ring.'''
         g.app.globalKillbuffer = []
-    #@+node:ekr.20150514063305.415: ** getClipboard
+    #@+node:ekr.20150514063305.415: *3* getClipboard
     def getClipboard(self):
         '''Return the contents of the clipboard.'''
         try:
@@ -105,11 +107,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         except Exception:
             g.es_exception()
         return None
-    #@+node:ekr.20150514063305.416: ** iterateKillBuffer
+    #@+node:ekr.20150514063305.416: *3* iterateKillBuffer
     class KillBufferIterClass:
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
         #@+others
-        #@+node:ekr.20150514063305.417: *3* __init__ & __iter__ (iterateKillBuffer)
+        #@+node:ekr.20150514063305.417: *4* __init__ & __iter__ (iterateKillBuffer)
         def __init__(self, c):
             '''Ctor for KillBufferIterClass class.'''
             # g.trace('iterateKillBuffer.__init')
@@ -118,7 +120,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
         def __iter__(self):
             return self
-        #@+node:ekr.20150514063305.418: *3* next
+        #@+node:ekr.20150514063305.418: *4* next
         def next(self):
             commands = self.c.killBufferCommands
             aList = g.app.globalKillBuffer # commands.killBuffer
@@ -142,7 +144,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
-    #@+node:ekr.20150514063305.419: ** kill (helper)
+    #@+node:ekr.20150514063305.419: *3* kill (helper)
     def kill(self, event, frm, to, force=False, undoType=None):
         '''A helper method for all kill commands.'''
         w = self.editWidget(event)
@@ -164,7 +166,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if undoType:
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.420: ** killToEndOfLine
+    #@+node:ekr.20150514063305.420: *3* killToEndOfLine
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event):
         '''Kill from the cursor to end of the line.'''
@@ -187,7 +189,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             i = j
         if i < j:
             self.kill(event, i, j, undoType='kill-line')
-    #@+node:ekr.20150514063305.421: ** KillLine
+    #@+node:ekr.20150514063305.421: *3* KillLine
     @cmd('kill-line')
     def killLine(self, event):
         '''Kill the line containing the cursor.'''
@@ -206,7 +208,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             pass # Kill the newline in the present line.
         self.kill(event, i, j, undoType='kill-line')
-    #@+node:ekr.20150514063305.422: ** killRegion & killRegionSave & helper
+    #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave & helper
     @cmd('kill-region')
     def killRegion(self, event):
         '''Kill the text selection.'''
@@ -231,7 +233,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
         # self.removeRKeys(w)
-    #@+node:ekr.20150514063305.423: ** killSentence
+    #@+node:ekr.20150514063305.423: *3* killSentence
     @cmd('kill-sentence')
     def killSentence(self, event):
         '''Kill the sentence containing the cursor.'''
@@ -250,7 +252,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.c.frame.body.forceFullRecolor()
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.424: ** killWs
+    #@+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
     def killWs(self, event, undoType='kill-ws'):
         '''Kill whitespace.'''
@@ -273,7 +275,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 self.addToKillBuffer(ws)
             if undoType:
                 self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.425: ** yank
+    #@+node:ekr.20150514063305.425: *3* yank
     @cmd('yank')
     def yank(self, event, pop=False):
         '''
@@ -315,12 +317,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             c.frame.body.forceFullRecolor()
         finally:
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.426: ** yankPop
+    #@+node:ekr.20150514063305.426: *3* yankPop
     @cmd('yank-pop')
     def yankPop(self, event):
         '''Insert the next entry of the kill ring.'''
         self.yank(event, pop=True)
-    #@+node:ekr.20150514063305.427: ** zapToCharacter
+    #@+node:ekr.20150514063305.427: *3* zapToCharacter
     @cmd('zap-to-character')
     def zapToCharacter(self, event):
         '''Kill characters from the insertion point to a given character.'''
@@ -347,4 +349,5 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(ins)
             self.endCommand(changed=True, setLabel=True)
     #@-others
+#@-others
 #@-leo

@@ -14,21 +14,23 @@ import subprocess
 def cmd(name):
     '''Command decorator for the ControlCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'controlCommands',])
-
+    
+#@+others
+#@+node:ekr.20160514095828.1: ** class ControlCommandsClass
 class ControlCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.88: ** control.ctor
+    #@+node:ekr.20150514063305.88: *3* control.ctor
     def __init__(self, c):
         '''Ctor for ControlCommandsClass.'''
         # pylint: disable=super-init-not-called
         self.c = c
         self.payload = None
-    #@+node:ekr.20150514063305.90: ** advertizedUndo
+    #@+node:ekr.20150514063305.90: *3* advertizedUndo
     @cmd('advertised-undo')
     def advertizedUndo(self, event):
         '''Undo the previous command.'''
         self.c.undoer.undo()
-    #@+node:ekr.20150514063305.91: ** executeSubprocess
+    #@+node:ekr.20150514063305.91: *3* executeSubprocess
     def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
         k = self.c.k
@@ -40,7 +42,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         k.keyboardQuit()
             # Inits vim mode too.
         g.es('Done: %s' % command)
-    #@+node:ekr.20150514063305.92: ** print plugins info...
+    #@+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('print-plugin-handlers')
     def printPluginHandlers(self, event=None):
         '''Print the handlers for each plugin.'''
@@ -64,7 +66,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         that enables the plugin.
         '''
         g.app.pluginsController.printPluginsInfo(self.c)
-    #@+node:ekr.20150514063305.93: ** setSilentMode
+    #@+node:ekr.20150514063305.93: *3* setSilentMode
     @cmd('set-silent-mode')
     def setSilentMode(self, event=None):
         '''
@@ -74,7 +76,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             --> set-silent-mode
         '''
         self.c.k.silentMode = True
-    #@+node:ekr.20150514063305.94: ** shellCommand
+    #@+node:ekr.20150514063305.94: *3* shellCommand
     @cmd('shell-command')
     def shellCommand(self, event):
         '''Execute a shell command.'''
@@ -88,7 +90,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             # k.commandName = 'shell-command: %s' % command
             # k.clearState()
             self.executeSubprocess(event, command)
-    #@+node:ekr.20150514063305.95: ** shellCommandOnRegion
+    #@+node:ekr.20150514063305.95: *3* shellCommandOnRegion
     @cmd('shell-command-on-region')
     def shellCommandOnRegion(self, event):
         '''Execute a command taken from the selected text in a separate process.'''
@@ -103,7 +105,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
                 # k.clearState()
                 g.es('No text selected')
         k.keyboardQuit()
-    #@+node:ekr.20150514063305.96: ** actOnNode
+    #@+node:ekr.20150514063305.96: *3* actOnNode
     @cmd('act-on-node')
     def actOnNode(self, event):
         '''
@@ -122,14 +124,14 @@ class ControlCommandsClass(BaseEditCommandsClass):
         This will upcase the headline when it starts with ``@up``.
         '''
         g.act_on_node(self.c, self.c.p, event)
-    #@+node:ekr.20150514063305.97: ** shutdown, saveBuffersKillEmacs & setShutdownHook
+    #@+node:ekr.20150514063305.97: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
     @cmd('save-buffers-kill-leo')
     def shutdown(self, event):
         '''Quit Leo, prompting to save any unsaved files first.'''
         g.app.onQuit()
 
     saveBuffersKillLeo = shutdown
-    #@+node:ekr.20150514063305.98: ** suspend & iconifyFrame
+    #@+node:ekr.20150514063305.98: *3* suspend & iconifyFrame
     @cmd('suspend')
     def suspend(self, event):
         '''Minimize the present Leo window.'''
@@ -142,4 +144,5 @@ class ControlCommandsClass(BaseEditCommandsClass):
         '''Minimize the present Leo window.'''
         self.suspend(event)
     #@-others
+#@-others
 #@-leo
