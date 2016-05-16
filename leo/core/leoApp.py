@@ -11,6 +11,7 @@ import os
 import optparse
 import string
 import sys
+import time
 import traceback
 import zipfile
 import platform
@@ -131,7 +132,8 @@ def pylint_command(event):
             c, root = self.c, self.c.p
             try:
                 import time
-                from pylint import lint
+                from pylint import lint # NOQA
+                    # flake8: lint imported but not used.
                 # in pythonN/Lib/site-packages.
             except ImportError:
                 g.warning('can not import pylint')
@@ -195,6 +197,149 @@ def pylint_command(event):
         if c.isChanged():
             c.save()
         PylintCommand(c).run()
+#@+node:ekr.20160516072613.1: *3* pyflakes command
+@g.command('pyflakes')
+def pyflakes_command(event):
+    '''
+    Run pylint on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    #@+others
+    #@+node:ekr.20160516072613.2: *4* class PyflakesCommand
+    class PyflakesCommand(object):
+        '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
+
+        def __init__(self, c):
+            '''ctor for PyflakesCommand class.'''
+            self.c = c
+            self.flake8_main = None
+            self.flake8_engine = None
+            self.pyflakes_api = None
+            self.reporter_reporter = None
+            self.seen = [] # List of checked vnodes.
+        #@+others
+        #@+node:ekr.20160516072613.3: *5* pyflakes.check
+        def check(self, p):
+            '''Check a single node.  Return True if it is a Python @<file> node.'''
+            found = False
+            if p.isAnyAtFileNode():
+                # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
+                aList = g.get_directives_dict_list(p)
+                path = c.scanAtPathDirectives(aList)
+                fn = p.anyAtFileNodeName()
+                if fn.endswith('.py'):
+                    fn = g.os_path_finalize_join(path, fn)
+                    if p.v not in self.seen:
+                        self.seen.append(p.v)
+                        self.run_pyflakes(fn)
+                        found = True
+            return found
+        #@+node:ekr.20160516111656.1: *5* pyflakes.get_flake8_config
+        def get_flake8_config(self):
+            '''Return the path to the pylint configuration file.'''
+            trace = False and not g.unitTesting
+            base = 'flake8.txt'
+            table = (
+                g.os_path_finalize_join(g.app.homeDir, base),
+                    # In ~/
+                g.os_path_finalize_join(g.app.homeDir, '.leo', base),
+                    # In ~/.leo
+                g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
+                    # In leo/test
+            )
+            for fn in table:
+                fn = g.os_path_abspath(fn)
+                if g.os_path_exists(fn):
+                    if trace: g.trace('found:', fn)
+                    return fn
+            g.es_print('no flake8 configuration file found in\n%s' % (
+                '\n'.join(table)))
+            return None
+        #@+node:ekr.20160516072613.5: *5* pyflakes.run
+        def run(self, p=None):
+            '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
+            c = self.c
+            root = p or c.p
+            try:
+                import flake8.main
+                import flake8.engine
+                self.flake8_engine = flake8.engine
+                self.flake8_main = flake8.main
+            except Exception:
+                flake8 = None
+            try:
+                import pyflakes.api
+                import pyflakes.reporter
+                self.pyflakes_api = pyflakes.api
+                self.pyflakes_reporter = pyflakes.reporter
+                # in pythonN/Lib/site-packages.
+            except ImportError:
+                if flake8 is None:
+                    g.warning('can not import flake8 or pyflakes')
+                    return
+            # Make sure Leo is on sys.path.
+            leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+            if leo_path not in sys.path:
+                sys.path.append(leo_path)
+            # Run pyflakes on all Python @<file> nodes in root's tree.
+            t1 = time.clock()
+            found = False
+            for p in root.self_and_subtree():
+                found |= self.check(p)
+            # Look up the tree if no @<file> nodes were found.
+            if not found:
+                for p in root.parents():
+                    if self.check(p):
+                        found = True
+                        break
+            # If still not found, expand the search if root is a clone.
+            if not found:
+                isCloned = any([p.isCloned() for p in root.self_and_parents()])
+                # g.trace(isCloned,root.h)
+                if isCloned:
+                    for p in c.all_positions():
+                        if p.isAnyAtFileNode():
+                            isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                            # g.trace(isAncestor,p.h)
+                            if isAncestor and self.check(p):
+                                break
+            g.es_print('pyflakes: done %s' % g.timeSince(t1))
+        #@+node:ekr.20160516072613.6: *5* pyflakes.run_pyflakes
+        def run_pyflakes(self, fn):
+            '''Run pyflakes on fn.'''
+            if not os.path.exists(fn):
+                print('file not found:', fn)
+                return
+            # Report the file name.
+            sfn = g.shortFileName(fn)
+            s = g.readFileIntoUnicodeString(fn, silent=False)
+            if not s.strip():
+                return
+            if self.flake8_main:
+                print('flake8: %s' % sfn)
+                flake8_style = self.flake8_engine.get_style_guide(
+                    parse_argv=False,
+                    config_file=self.get_flake8_config(),
+                )
+                report = flake8_style.check_files(paths=[fn])
+                # testing hack...
+                options = flake8_style.options
+                options.statistics = True
+                self.flake8_main.print_report(report, flake8_style)
+            else:
+                print('pyflakes: %s' % sfn)
+                reporter = self.pyflakes_reporter.Reporter(
+                    warningStream=sys.stderr,
+                    errorStream=sys.stderr)
+                self.pyflakes_api.check(s, sfn, reporter)
+        #@-others
+    #@-others
+        # define class PyFlakesCommand.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        PyflakesCommand(c).run()
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp(object):
     """A class representing the Leo application itself.
@@ -490,7 +635,7 @@ class LeoApp(object):
         self.language_delims_dict = {
             # Internally, lower case is used for all language names.
             # Keys are languages, values are 1,2 or 3-tuples of delims.
-            "actionscript"       : "// /* */", #jason 2003-07-03
+            "actionscript"       : "// /* */", # jason 2003-07-03
             "ada"                : "--",
             "ada95"              : "--",
             "ahk"                : ";",
@@ -505,7 +650,7 @@ class LeoApp(object):
             "assembly_parrot"    : "#",
             "assembly_r2000"     : "#",
             "assembly_x86"       : ";",
-            "autohotkey"         : "; /* */", #TL - AutoHotkey language
+            "autohotkey"         : "; /* */", # TL - AutoHotkey language
             "awk"                : "#",
             "b"                  : "// /* */",
             "batch"              : "REM_", # Use the REM hack.
@@ -643,7 +788,7 @@ class LeoApp(object):
             "verilog"            : "// /* */",
             "vhdl"               : "--",
             "vim"                : "\"",
-            "vimoutline"         : "#", #TL 8/25/08 Vim's outline plugin
+            "vimoutline"         : "#", # TL 8/25/08 Vim's outline plugin
             "xml"                : "<!-- -->",
             "xsl"                : "<!-- -->",
             "xslt"               : "<!-- -->",
@@ -674,7 +819,7 @@ class LeoApp(object):
 
         # Keys are languages, values are extensions.
         self.language_extension_dict = {
-            "actionscript"  : "as", #jason 2003-07-03
+            "actionscript"  : "as", # jason 2003-07-03
             "ada"           : "ada",
             "ada95"         : "ada",
             "ahk"           : "ahk",
@@ -684,7 +829,7 @@ class LeoApp(object):
             "applescript"   : "scpt",
             "asp"           : "asp",
             "aspect_j"      : "aj",
-            "autohotkey"    : "ahk", #TL - AutoHotkey language
+            "autohotkey"    : "ahk", # TL - AutoHotkey language
             "awk"           : "awk",
             "b"             : "b",
             "batch"         : "bat", # Leo 4.5.1.
@@ -803,7 +948,7 @@ class LeoApp(object):
             "verilog"       : "v",
             "vhdl"          : "vhd", # Only one extension is valid: .vhdl
             "vim"           : "vim",
-            "vimoutline"    : "otl", #TL 8/25/08 Vim's outline plugin
+            "vimoutline"    : "otl", # TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
             "xsl"           : "xsl",
             "xslt"          : "xsl",
@@ -836,7 +981,7 @@ class LeoApp(object):
             "ahk":      "autohotkey",
             "aj":       "aspect_j",
             "apdl":     "apdl",
-            "as":       "actionscript", #jason 2003-07-03
+            "as":       "actionscript", # jason 2003-07-03
             "asp":      "asp",
             "awk":      "awk",
             "b":        "b",
@@ -908,7 +1053,7 @@ class LeoApp(object):
             # "nsi":      "nsis2",
             "nw":       "noweb",
             "occ":      "occam",
-            "otl":      "vimoutline", #TL 8/25/08 Vim's outline plugin
+            "otl":      "vimoutline", # TL 8/25/08 Vim's outline plugin
             "p":        "pascal",
             # "p":      "pop11", # Conflicts with pascal.
             "php":      "php",
@@ -1056,12 +1201,12 @@ class LeoApp(object):
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
-                #v = os.sys.getwindowsversion()
-                #sysVersion += ', '.join([str(z) for z in v])
-                ## peckj 20140416: determine true OS architecture
-                ## the following code should return the proper architecture
-                ## regardless of whether or not the python architecture matches
-                ## the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
+                # v = os.sys.getwindowsversion()
+                # sysVersion += ', '.join([str(z) for z in v])
+                # peckj 20140416: determine true OS architecture
+                # the following code should return the proper architecture
+                # regardless of whether or not the python architecture matches
+                # the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
                 v = platform.win32_ver()
                 release, winbuild, sp, ptype = v
                 true_platform = os.environ['PROCESSOR_ARCHITECTURE']
@@ -1095,7 +1240,7 @@ class LeoApp(object):
         app = self
         argName = app.guiArgName
         if g.in_bridge:
-             # print('createDefaultGui: g.in_bridge: %s' % g.in_bridge)
+            # print('createDefaultGui: g.in_bridge: %s' % g.in_bridge)
             return # The bridge will create the gui later.
         if app.gui:
             return # This method can be called twice if we had to get .leoID.txt.
@@ -1333,7 +1478,8 @@ class LeoApp(object):
             if g.isPython3:
                 leoid = input('LeoID: ')
             else:
-                leoid = raw_input('LeoID: ')
+                leoid = raw_input('LeoID: ') # NOQA
+                    # flake8: undefined name 'raw_input'
         else:
             leoid = g.app.gui.runAskLeoIDDialog()
         # Bug fix: 2/6/05: put result in g.app.leoID.
@@ -1437,7 +1583,6 @@ class LeoApp(object):
     #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
     def checkForOpenFile(self, c, fn):
         '''Warn if fn is already open and add fn to already_open_files list.'''
-        trace = True and not g.unitTesting
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             return
@@ -1965,7 +2110,6 @@ class LoadManager(object):
 
         The caller must init the c.config object.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
         lm = self
         if not fn: return None
         giveMessage = (
@@ -2209,7 +2353,8 @@ class LoadManager(object):
         import leo.core.leoSessions as leoSessions
         # Import leoIPython only if requested.  The import is quite slow.
         if g.app.useIpython:
-            import leo.core.leoIPython as leoIPython
+            import leo.core.leoIPython as leoIPython # NOQA
+                # flake8: LeoIPython imported but unused.
         # Make sure we call the new leoPlugins.init top-level function.
         leoPlugins.init()
         # Force the user to set g.app.leoID.
