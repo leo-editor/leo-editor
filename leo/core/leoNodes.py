@@ -231,6 +231,8 @@ class Position(object):
         """Return True if two positions are equivalent."""
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
+        if not isinstance(p2, Position):
+            return False
         if p2 is None or p2.v is None:
             return p1.v is None
         elif isinstance(p2, self.__class__):
