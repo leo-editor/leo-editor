@@ -157,7 +157,7 @@ class FreeLayoutController(object):
         '''
         Return the splitter the main splitter, or None. The main splitter is a
         NestedSplitter that contains the body pane.
-        
+
         Yes, the user could delete the secondary splitter but if so, there is
         not much we can do here.
         '''
@@ -177,7 +177,7 @@ class FreeLayoutController(object):
         '''
         Return the secondary splitter, if it exists. The secondary splitter
         contains the outline pane.
-        
+
         Yes, the user could delete the outline pane, but if so, there is not
         much we can do here.
         '''

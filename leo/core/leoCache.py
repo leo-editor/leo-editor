@@ -50,7 +50,7 @@ class Cacher(object):
         self.globals_tag = 'leo.globals'
             # 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         self.inited = False
-        
+
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
         trace = False and not g.unitTesting

@@ -132,7 +132,7 @@ class Undoer(object):
     def cmd(name):
         '''Command decorator for the Undoer class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'undoer',])
+        return g.new_cmd_decorator(name, ['c', 'undoer', ])
     #@+node:ekr.20050416092908.1: *3* u.Internal helpers
     #@+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
     def clearOptionalIvars(self):
@@ -212,7 +212,8 @@ class Undoer(object):
     def recognizeStartOfTypingWord(self,
         old_lines, old_row, old_col, old_ch,
         new_lines, new_row, new_col, new_ch,
-        prev_row, prev_col):
+        prev_row, prev_col
+    ):
         ''' A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of
         undo with 'word' granularity.
@@ -380,7 +381,7 @@ class Undoer(object):
         # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
         #@-<< about u.saveTree >>
-        u = self; topLevel = (treeInfo == None)
+        u = self; topLevel = (treeInfo is None)
         if topLevel: treeInfo = []
         # Add info for p.v.  Duplicate tnode info is harmless.
         data = (p.v, u.createVnodeUndoInfo(p.v), u.createTnodeUndoInfo(p.v))
@@ -926,9 +927,12 @@ class Undoer(object):
             u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams
     def setUndoTypingParams(self, p, undo_type, oldText, newText, oldSel, newSel, oldYview=None):
-        '''Save enough information so a typing operation can be undone and redone.
+        '''
+        Save enough information to undo or redo typing operation.
 
-        Do nothing when called from the undo/redo logic because the Undo and Redo commands merely reset the bead pointer.'''
+        Do nothing when called from the undo/redo logic because the Undo
+        and Redo commands merely reset the bead pointer.
+        '''
         trace = False and not g.unitTesting
         verbose = False
         u = self; c = u.c
@@ -936,7 +940,7 @@ class Undoer(object):
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
             return None
-        if undo_type == None:
+        if undo_type is None:
             return None
         if undo_type == "Can't Undo":
             u.clearUndoState()
@@ -1119,7 +1123,8 @@ class Undoer(object):
                         elif old_col == 0 or new_col == 0:
                             # py-lint: disable=W0511
                             # W0511:1362: TODO
-                            # TODO this is not true, we might as well just have entered a char at the beginning of an existing line
+                            # TODO this is not true, we might as well just have entered a
+                            # char at the beginning of an existing line
                             pass # We have just inserted a line.
                         else:
                             # 2011/04/01: Patch by Sam Hartsfield
@@ -1779,7 +1784,7 @@ class Undoer(object):
         '''Replace p and its subtree using old_data during undo.'''
         # Same as undoReplace except uses g.Bunch.
         u = self; c = u.c
-        if new_data == None:
+        if new_data is None:
             # This is the first time we have undone the operation.
             # Put the new data in the bead.
             bunch = u.beads[u.bead]

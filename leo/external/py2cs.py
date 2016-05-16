@@ -95,7 +95,7 @@ def dump_list(title, aList):
 def op_name(node,strict=True):
     '''Return the print name of an operator node.'''
     d = {
-        # Binary operators. 
+        # Binary operators.
         'Add':       '+',
         'BitAnd':    '&',
         'BitOr':     '|',
@@ -175,7 +175,7 @@ class CoffeeScriptTraverser(object):
         self.tokens_for_statement = None
         self.trailing_comment = None
         self.trailing_comment_at_lineno = None
-        
+
     #@+node:ekr.20160316091132.14: *3*  cv.format
 
     def format(self, node, s, tokens):
@@ -396,7 +396,7 @@ class CoffeeScriptTraverser(object):
     # Attribute(expr value, identifier attr, expr_context ctx)
 
     def do_Attribute(self, node):
-        
+
         # Don't visit node.attr: it is always a string.
         val = self.visit(node.value)
         val = '@' if val == '@' else val + '.'
@@ -627,7 +627,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.55: *4* cv.Assert
 
     def do_Assert(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         test = self.visit(node.test)
@@ -649,7 +649,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.57: *4* cv.AugAssign
 
     def do_AugAssign(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         s = '%s%s=%s' % (
@@ -660,21 +660,21 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.58: *4* cv.Break
 
     def do_Break(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         return head + self.indent('break') + tail
     #@+node:ekr.20160316091132.59: *4* cv.Continue
 
     def do_Continue(self, node):
-        
+
         head = self.leading_lines(node)
         tail = self.trailing_comment(node)
         return head + self.indent('continue') + tail
     #@+node:ekr.20160316091132.60: *4* cv.Delete
 
     def do_Delete(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         targets = [self.visit(z) for z in node.targets]
@@ -705,7 +705,7 @@ class CoffeeScriptTraverser(object):
     # Python 2.x only
 
     def do_Exec(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         body = self.visit(node.body)
@@ -752,7 +752,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.65: *4* cv.Global
 
     def do_Global(self, node):
-        
+
         head = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = 'global %s' % ','.join(node.names)
@@ -780,7 +780,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.67: *4* cv.Import & helper
 
     def do_Import(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         names = []
@@ -820,7 +820,7 @@ class CoffeeScriptTraverser(object):
     # 3: Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
-        
+
         # https://www.python.org/dev/peps/pep-3104/
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
@@ -829,7 +829,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.70: *4* cv.Pass
 
     def do_Pass(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         return head + self.indent('pass') + tail
@@ -838,7 +838,7 @@ class CoffeeScriptTraverser(object):
     # Python 2.x only
 
     def do_Print(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         vals = []
@@ -854,7 +854,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.72: *4* cv.Raise
 
     def do_Raise(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         args = []
@@ -866,7 +866,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.73: *4* cv.Return
 
     def do_Return(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         if node.value:
@@ -943,7 +943,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.76: *4* cv.TryFinally
 
     def do_TryFinally(self, node):
-        
+
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         result.append(self.indent('try:' + tail))
@@ -961,7 +961,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.77: *4* cv.While
 
     def do_While(self, node):
-        
+
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = 'while %s:' % self.visit(node.test)
@@ -980,7 +980,7 @@ class CoffeeScriptTraverser(object):
         return ''.join(result)
     #@+node:ekr.20160316091132.78: *4* cv.With
 
-    # 2:  With(expr context_expr, expr? optional_vars, 
+    # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,
     #          stmt* body)
@@ -1019,7 +1019,7 @@ class CoffeeScriptTraverser(object):
     #@+node:ekr.20160316091132.79: *4* cv.Yield
 
     def do_Yield(self, node):
-        
+
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         if getattr(node, 'value', None) is not None:
@@ -1032,7 +1032,7 @@ class CoffeeScriptTraverser(object):
     # 3: YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
-        
+
         # https://www.python.org/dev/peps/pep-0380/
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
@@ -1592,7 +1592,7 @@ class TokenSync(object):
             kind = token_module.tok_name[t1].lower()
             srow, scol = t3
             erow, ecol = t4
-            line = erow-1 if kind == 'string' else srow-1 
+            line = erow-1 if kind == 'string' else srow-1
             result[line].append(token)
             if trace: g.trace('%3s %s' % (line, self.dump_token(token)))
         assert len(self.lines) + 1 == len(result), len(result)
@@ -1664,12 +1664,12 @@ class TokenSync(object):
         '''Return the node of node's tree with the largest lineno field.'''
 
         class LineWalker(ast.NodeVisitor):
-            
+
             def __init__ (self):
                 '''Ctor for LineWalker class.'''
                 self.node = None
                 self.lineno = -1
-                
+
             def visit(self, node):
                 '''LineWalker.visit.'''
                 if hasattr(node, 'lineno'):
@@ -1681,11 +1681,11 @@ class TokenSync(object):
                         self.visit(z)
                 else:
                     self.generic_visit(node)
-     
+
         w = LineWalker()
         w.visit(node)
         return w.node
-                
+
     #@+node:ekr.20160316091132.121: *3* ts.leading_lines
 
     def leading_lines(self, node):
@@ -1754,7 +1754,7 @@ class TokenSync(object):
         '''Return the value of the token.'''
         t1, t2, t3, t4, t5 = token
         return g.toUnicode(t5)
-        
+
     def token_val(self, token):
         '''Return the raw value of the token.'''
         t1, t2, t3, t4, t5 = token
@@ -1762,7 +1762,7 @@ class TokenSync(object):
     #@+node:ekr.20160316091132.126: *3* ts.tokens_for_statement
 
     def tokens_for_statement(self, node):
-        
+
         assert isinstance(node, ast.AST), node
         name = node.__class__.__name__
         if hasattr(node, 'lineno'):
@@ -1771,8 +1771,8 @@ class TokenSync(object):
         else:
             g.trace('no lineno', name)
 
-        
-        
+
+
     #@+node:ekr.20160316091132.127: *3* ts.trailing_comment
 
     def trailing_comment(self, node):

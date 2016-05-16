@@ -71,7 +71,7 @@ class PythonQSyntaxHighlighter(object):
             if 0 < c.max_pre_loaded_body_chars < n:
                 if trace: g.trace('big text: no color', c.p.h)
             elif n > 1000*10:
-               
+
                 def rehightlight_callback(c=c, d=d, p=c.p, self=self):
                     if p == c.p:
                         if trace: g.trace('=====', n, p.h)
@@ -79,7 +79,7 @@ class PythonQSyntaxHighlighter(object):
                         self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
                     else:
                         if trace: g.trace('node not selected', p.h)
-                    
+
                 QtCore.QTimer.singleShot(200, rehightlight_callback)
             else:
                 if trace: g.trace(n)

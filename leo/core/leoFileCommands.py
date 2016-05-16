@@ -428,7 +428,7 @@ if sys.platform != 'cli':
 
     class SaxNodeClass:
         '''A class representing one <v> element.
-    
+
         Use getters to access the attributes, properties and rules of this mode.
         '''
         #@+others
@@ -679,7 +679,7 @@ class FileCommands(object):
                 c.k.showStateAndMode()
                 c.outerUpdate()
                 timer.stop()
-        
+
             timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
             if timer:
                 timer.start()
@@ -1606,7 +1606,7 @@ class FileCommands(object):
         Leo 5.3:
         - Use only the stylesheet setting, ignoreing c.frame.stylesheet.
         - Write no stylesheet element if there is no setting.
-        
+
         The old way made it almost impossible to delete stylesheet element.
         '''
         trace = False and not g.unitTesting

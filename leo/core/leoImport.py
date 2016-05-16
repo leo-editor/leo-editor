@@ -92,7 +92,7 @@ class LeoImportCommands(object):
                     except Exception:
                         if trace_exception:
                             g.es_exception()
-                        g.warning('can not import leo.plugins.importers.%s' % ( 
+                        g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
     #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
@@ -982,7 +982,7 @@ class LeoImportCommands(object):
             FreeMindImporter(self.c).import_files(files)
         else:
             g.es_print('can not import lxml.html')
-            
+
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
         '''
@@ -1583,7 +1583,7 @@ class LeoImportCommands(object):
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
 class FreeMindImporter(object):
     '''Importer class for FreeMind (.mmap) files.'''
-    
+
     def __init__(self, c):
         '''ctor for FreeMind Importer class.'''
         self.c = c
@@ -1594,7 +1594,7 @@ class FreeMindImporter(object):
     #@+others
     #@+node:ekr.20160503191518.2: *3* freemind.add_children_as_nodes
     def add_children_as_nodes(self, node_id_to_add, parent_id):
-        
+
         c, d = self.c, self.d
         for p in c.p.self_and_subtree():
             if p.h == parent_id:
@@ -1708,7 +1708,7 @@ class FreeMindImporter(object):
 class JSON_Import_Helper(object):
     '''
     A class that helps client scripts import .json files.
-    
+
     Client scripts supply data describing how to create Leo outlines from
     the .json data.
     '''
@@ -1716,7 +1716,7 @@ class JSON_Import_Helper(object):
     def __init__(self, c):
         '''ctor for the JSON_Import_Helper class.'''
         self.c = c
-    
+
     #@+others
     #@+node:ekr.20160505044925.1: *3*  unused code
     if 0:
@@ -1846,11 +1846,11 @@ class JSON_Import_Helper(object):
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter(object):
     '''Mind Map Importer class.'''
-    
+
     def __init__(self, c):
         '''ctor for MindMapImporter class.'''
         self.c = c
-        
+
     #@+others
     #@+node:ekr.20160503130209.1: *3* mindmap.create_outline
     def create_outline(self, path):

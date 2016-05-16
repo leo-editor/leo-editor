@@ -15,7 +15,7 @@ import string
 def cmd(name):
     '''Command decorator for the abbrevCommands class.'''
     return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514095531.1: ** class AbbrevCommands
 class AbbrevCommandsClass(BaseEditCommandsClass):

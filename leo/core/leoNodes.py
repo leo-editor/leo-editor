@@ -2003,7 +2003,7 @@ class VNodeBase(object):
     def atNoSentinelsFileNodeName(self):
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
-        
+
     def atRstFileNodeName(self):
         names = ("@rst",)
         return self.findAtFileName(names)
@@ -2050,7 +2050,7 @@ class VNodeBase(object):
 
     def isAtFileNode(self):
         return bool(self.atFileNodeName())
-        
+
     def isAtRstFileNode(self):
         return bool(self.atRstFileNodeName())
 
@@ -2103,7 +2103,7 @@ class VNodeBase(object):
         '''
         Return an all-new tree of vnodes that are copies of self and all its
         descendants.
-        
+
         **Important**: the v.parents ivar must be [] for all nodes.
         v._addParentLinks will set all parents.
         '''

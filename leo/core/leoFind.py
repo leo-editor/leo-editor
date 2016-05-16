@@ -784,10 +784,10 @@ class LeoFind(object):
     def minibufferCloneFindAll(self, event=None, preloaded=None):
         '''
         clone-find-all, aka find-clone-all and cfa.
-        
+
         Create an organizer node whose descendants contain clones of all nodes
         matching the search string, except @nosearch trees.
-        
+
         The list is *not* flattened: clones appear only once in the
         descendants of the organizer node.
         '''
@@ -813,10 +813,10 @@ class LeoFind(object):
     def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
         '''
         clone-find-all-flattened, aka find-clone-all-flattened, cff.
-        
+
         Create an organizer node whose direct children are clones of all nodes
         matching the search string, except @nosearch trees.
-        
+
         The list is flattened: every cloned node appears as a direct child
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
@@ -1534,7 +1534,7 @@ class LeoFind(object):
                 skip.add(p2.v)
             p.moveToNodeAfterTree()
         else:
-            p.moveToThreadNext() 
+            p.moveToThreadNext()
         return count
     #@+node:ekr.20160422073500.1: *5* find.doFindAll & helpers
     def doFindAll(self, after, data, p, undoType):

@@ -12,7 +12,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the RectangleCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'rectangleCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514120751.1: ** class RectangleCommandsClass
 class RectangleCommandsClass(BaseEditCommandsClass):

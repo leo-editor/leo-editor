@@ -584,7 +584,7 @@ class AstFormatter(object):
     # Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
-        
+
         return self.indent('nonlocal %s\n' % ', '.join(node.names))
     #@+node:ekr.20141012064706.18457: *4* f.Pass
     def do_Pass(self, node):
@@ -707,7 +707,7 @@ class AstFormatter(object):
                 self.level -= 1
         return ''.join(result)
     #@+node:ekr.20141012064706.18465: *4* f.With
-    # 2:  With(expr context_expr, expr? optional_vars, 
+    # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,
     #          stmt* body)
@@ -753,7 +753,7 @@ class AstFormatter(object):
     # YieldFrom(expr value)
 
     def do_YieldFrom(self, node):
-        
+
         return self.indent('yield from %s\n' % (
             self.visit(node.value)))
     #@+node:ekr.20141012064706.18467: *3* f.Utils
@@ -914,7 +914,7 @@ class AstFullTraverser(object):
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
-    # 2: arguments = (expr* args, identifier? vararg, 
+    # 2: arguments = (expr* args, identifier? vararg,
     #                 identifier? kwarg, expr* defaults)
     # 3: arguments = (arg*  args, arg? vararg,
     #                 arg* kwonlyargs, expr* kw_defaults,
@@ -1230,7 +1230,7 @@ class AstFullTraverser(object):
     # Nonlocal(identifier* names)
 
     def do_Nonlocal(self, node):
-        
+
         pass
     #@+node:ekr.20141012064706.18518: *4* ft.Pass
     def do_Pass(self, node):
@@ -1306,7 +1306,7 @@ class AstFullTraverser(object):
         for z in node.orelse:
             self.visit(z)
     #@+node:ekr.20141012064706.18526: *4* ft.With
-    # 2:  With(expr context_expr, expr? optional_vars, 
+    # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,
     #          stmt* body)
@@ -1400,7 +1400,7 @@ class HTMLReportTraverser(object):
     Inspired by Paul Boddie.
 
     This version writes all html to a global code list.
-    
+
     At present, this code does not show comments.
     The TokenSync class is probably the best way to do this.
     '''
@@ -1461,10 +1461,10 @@ class HTMLReportTraverser(object):
         rt.gen(':')
     #@+node:ekr.20150723100346.1: *4* rt.comma & clean_comma
     def comma(rt):
-        
+
         rt.clean(' ')
         rt.gen(', ')
-        
+
     def clean_comma(rt):
 
         rt.clean(', ')
@@ -1498,7 +1498,7 @@ class HTMLReportTraverser(object):
         rt.blank()
     #@+node:ekr.20150722204300.24: *4* rt.name
     def name(rt, name):
-        
+
         # Div would put each name on a separate line.
         # span messes up whitespace, for now.
         # rt.span('name')
@@ -1750,7 +1750,7 @@ class HTMLReportTraverser(object):
                 rt.visit(z)
                 rt.gen(sep)
             rt.clean(sep)
-                
+
     #@+node:ekr.20150722204300.46: *3* rt.visitors
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
@@ -1970,14 +1970,14 @@ class HTMLReportTraverser(object):
     # 3: arg = (identifier arg, expr? annotation)
 
     def do_arg(rt, node):
-        
+
         rt.gen(node.arg)
         if getattr(node, 'annotation', None):
             rt.colon()
             rt.visit(node.annotation)
     #@+node:ekr.20150722204300.48: *5* rt.tuple_parameter
     def tuple_parameter(rt, node):
-        
+
         assert isinstance(node, (list, tuple)), node
         rt.gen("(")
         for param in node:
@@ -2206,7 +2206,7 @@ class HTMLReportTraverser(object):
         rt.visit_list(node.body)
     #@+node:ekr.20150722204300.81: *4* rt.Name
     def do_Name(rt, node):
-        
+
         rt.name(node.id)
     #@+node:ekr.20160315165109.1: *4* rt.NameConstant
     def do_NameConstant(rt, node): # Python 3 only.
@@ -2216,7 +2216,7 @@ class HTMLReportTraverser(object):
     # Nonlocal(identifier* names)
 
     def do_Nonlocal(rt, node):
-        
+
         rt.div('statement')
         rt.keyword('nonlocal')
         rt.gen(', '.join(node.names))
@@ -2291,7 +2291,7 @@ class HTMLReportTraverser(object):
 
         def clean(s):
             return s.replace(' ','').replace('\n','').replace('"','').replace("'",'')
-            
+
         assert g.isString(node.s)
         if rt.last_doc and clean(rt.last_doc) == clean(node.s):
             # Already seen.
@@ -2387,7 +2387,7 @@ class HTMLReportTraverser(object):
             rt.div_body(node.orelse)
         rt.end_div('statement')
     #@+node:ekr.20150722204300.95: *4* rt.With
-    # 2:  With(expr context_expr, expr? optional_vars, 
+    # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,
     #          stmt* body)
@@ -2425,7 +2425,7 @@ class HTMLReportTraverser(object):
     # YieldFrom(expr value)
 
     def do_YieldFrom(rt, node):
-        
+
         rt.div('statement')
         rt.keyword('yield from')
         rt.visit(node.value)

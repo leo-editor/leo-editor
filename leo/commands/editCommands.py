@@ -383,16 +383,16 @@ class EditCommandsClass(BaseEditCommandsClass):
     def diffMarkedNodes(self, event):
         '''
         This command does nothing unless exactly two nodes, say p1 and p2, are marked.
-        
+
         When two nodes *are* marked, this command does the following:
-            
+
         1. Creates a **diff node** as the last top-level node. The body of the
            diff ndoe shows the diffs between the two marked nodes, that is,
            difflib.Differ().compare(p1.b, p2.b)
-        
+
         2. Move *clones* of p1 and p2 to be children of the diff node,
            and unmarks all nodes. This is usually what is wanted.
-        
+
         To rerun the command, just mark two nodes again.
         '''
         c = self.c
@@ -728,7 +728,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         '''
         Put the cursor at the line in the *outline* corresponding to the line
         with the given line number *in the external file*.
-        
+
         For external files containing sentinels, there may be *several* lines
         in the file that correspond to the same line in the outline.
         '''

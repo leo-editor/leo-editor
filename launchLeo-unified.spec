@@ -198,7 +198,7 @@ def define_hidden_imports():
                  'plugins/importers', 'plugins/writers',
     ):
         hidden_imports.extend(get_modules(name))
-        
+
     hidden_imports = [z.replace('/','.') for z in hidden_imports]
     if 0:
         print('hidden imports...')

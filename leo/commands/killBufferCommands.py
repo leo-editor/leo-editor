@@ -12,7 +12,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the KillBufferCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'killBufferCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514120919.1: ** class KillBufferCommandsClass
 class KillBufferCommandsClass(BaseEditCommandsClass):
@@ -154,7 +154,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # Delete the selection range if it spans a line.
             i, j = w.getSelectionRange()
             s = w.get(i, j)
-            if s.find('\n') > -1: 
+            if s.find('\n') > -1:
                 frm, to = i, j
         s = w.get(frm, to)
         if undoType:

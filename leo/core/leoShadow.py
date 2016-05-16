@@ -358,7 +358,6 @@ class ShadowController(object):
         Preprocess public lines, adding newlines as needed.
         This happens before the diff.
         '''
-        x, marker = self, self.marker
         result = []
         for line in lines:
             if not line.endswith('\n'):
@@ -390,7 +389,6 @@ class ShadowController(object):
         to the private file (with_sentinels)
         '''
         trace, verbose = False and not g.unitTesting, False
-        import leo.core.leoAtFile as leoAtFile
         x = self; at = self.c.atFileCommands
         at.errors = 0
         if trace: g.trace('*** header scanned: encoding:', at.encoding)

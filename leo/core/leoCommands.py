@@ -631,7 +631,7 @@ class Commands(object):
     def cloneFindAllFlattenedMarked(self, event=None):
         '''
         clone-find-all-flattened-marked, aka cffm.
-        
+
         Create an organizer node whose direct children are clones of all marked
         nodes. The list is flattened: every cloned node appears as a direct
         child of the organizer node, even if the clone also is a descendant of
@@ -765,8 +765,8 @@ class Commands(object):
                     # 'relPath': iconPath,
                     'where': 'beforeHeadline',
                     'xoffset': 2, 'xpad': 1,
-                    'yoffset': 0, 
-                    
+                    'yoffset': 0,
+
                 })
                 p.v.u ['icons'] = aList
         elif iconPath:
@@ -847,7 +847,7 @@ class Commands(object):
             else:
                 ic.importFilesCommand([fn], '@clean')
         c.raise_error_dialogs(kind='read')
-        
+
     # Compatibility
     importAtFile = importAnyFile
     importAtRoot = importAnyFile
@@ -980,7 +980,7 @@ class Commands(object):
         See ExternalFilesController.open_with for details about d.
         '''
         c = self
-        
+
         if g.app.externalFilesController:
             if d:
                 # Select an ancestor @<file> node if possible.

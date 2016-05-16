@@ -11,7 +11,7 @@ import tempfile
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile(object):
     '''A class holding all data about an external file.'''
-    
+
     def __init__(self, c, ext, p, path, time):
         '''Ctor for ExternalFile class.'''
         self.c = c
@@ -19,26 +19,26 @@ class ExternalFile(object):
         self.p = p.copy()
         self.path = path
         self.time = time
-        
+
     def __repr__(self):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
-        
+
     __str__ = __repr__
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController(object):
     '''
     A class tracking changes to external files:
-        
+
     - temp files created by open-with commands.
     - external files corresponding to @file nodes.
-    
+
     This class raises a dialog when a file changes outside of Leo.
-    
+
     **Convention**:
-    
+
     - d is always a dict created by the @open-with logic.
       It would be difficult and pointless to change d.
-    
+
     - ef is always an ExternalFiles instance.
     '''
     #@+others
@@ -195,7 +195,7 @@ class ExternalFilesController(object):
     def open_with(self, c, d):
         '''
         Called by c.openWith to handle items in the Open With... menu.
-        
+
         d is a dictionary created from an @openwith settings node.
 
         'args':     the command-line arguments to be used to open the file.
@@ -203,9 +203,9 @@ class ExternalFilesController(object):
         'kind':     the method used to open the file, such as subprocess.Popen.
         'name':     menu label (used only by the menu code).
         'shortcut': menu shortcut (used only by the menu code).
-        
+
         d may also have the following entry, created by c.openWith:
-            
+
         'p':        the nearest @<file> node.
         '''
         trace = False and not g.unitTesting
@@ -299,7 +299,7 @@ class ExternalFilesController(object):
         '''
         Create the temp file used by open-with if necessary.
         Add the corresponding ExternalFile instance to self.files
-        
+
         d is a dictionary created from an @openwith settings node.
 
         'args':     the command-line arguments to be used to open the file.
@@ -473,7 +473,7 @@ class ExternalFilesController(object):
     def open_temp_file(self, c, d, fn, testing=False):
         '''
         Open a temp file corresponding to fn in an external editor.
-        
+
         d is a dictionary created from an @openwith settings node.
 
         'args':     the command-line arguments to be used to open the file.
@@ -559,7 +559,7 @@ class ExternalFilesController(object):
         trace = False and not g.unitTesting
         t = new_time or self.get_mtime(path)
         if trace: g.trace(t, path)
-        self._time_d[g.os_path_realpath(path)] = t 
+        self._time_d[g.os_path_realpath(path)] = t
     #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path
     def temp_file_path(self, c, p, ext):
         '''Return the path to the temp file for p and ext.'''

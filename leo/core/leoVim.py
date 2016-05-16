@@ -28,8 +28,8 @@ def show_stroke(stroke):
         'period':       '.',
         'space':        ' ',
     }
-    # g.trace(stroke,d.get(s,s))
-    return d.get(s,s)
+    # g.trace(stroke,d.get(s, s))
+    return d.get(s, s)
 #@+node:ekr.20140802183521.17996: ** class VimEvent
 class VimEvent(object):
     '''A class to contain the components of the dot.'''
@@ -125,10 +125,10 @@ class VimCommands(object):
         'percent': None,            # '%'
         'period': None,             # '.' Not a motion.
         'plus': None,               # '+'
-        'question': vc.vim_question,# '?'
+        'question': vc.vim_question, # '?'
         'quotedbl': None,           # '"'
         'quoteleft': None,          # '`'
-        'Return':vc.vim_return,     # '\n'
+        'Return': vc.vim_return,    # '\n'
         'semicolon': None,          # ';'
         'slash': vc.vim_slash,      # '/'
         'underscore': None,         # '_'
@@ -465,7 +465,7 @@ class VimCommands(object):
     def cmd(name):
         '''Command decorator for the VimCommands class.'''
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'vimCommands',])
+        return g.new_cmd_decorator(name, ['c', 'vimCommands', ])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set vc.return_value.
     # All key handlers must end with a call to an acceptance method.
@@ -584,7 +584,7 @@ class VimCommands(object):
         '''Common code for beginning insert mode.'''
         trace = (False or vc.trace) and not g.unitTesting
         if trace: g.trace(vc.stroke)
-        c = vc.c
+        # c = vc.c
         if not w: w = vc.w
         vc.state = 'insert'
         vc.command_i = w.getInsertPoint() if i is None else i
@@ -1005,7 +1005,7 @@ class VimCommands(object):
                 # Only k.masterKeyHandler can insert characters!
                 # Create an event satisfying both k.masterKeyHandler and vc.do_key.
                 vc.k.masterKeyHandler(g.Bunch(
-                     # for vc.do_key...
+                    # for vc.do_key...
                     w=vc.w,
                     # for k.masterKeyHandler...
                     widget=vc.w,
@@ -1096,9 +1096,8 @@ class VimCommands(object):
 
     def vim_f2(vc):
         '''Handle f <stroke>'''
-        trace = bool and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
-            ec = vc.c.editCommands
+            # ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
@@ -1145,7 +1144,8 @@ class VimCommands(object):
 
     def vim_g2(vc):
         if vc.is_text_wrapper(vc.w):
-            event, w = vc.event, vc.w
+            # event = vc.event
+            w = vc.w
             extend = vc.state == 'visual'
             s = w.getAllText()
             i = w.getInsertPoint()
@@ -1369,7 +1369,7 @@ class VimCommands(object):
     #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(vc):
         '''Find previous occurance of word under the cursor.'''
-        ec = vc.c.editCommands
+        # ec = vc.c.editCommands
         w = vc.w
         if vc.is_text_wrapper(w):
             i1 = w.getInsertPoint()
@@ -1402,14 +1402,13 @@ class VimCommands(object):
 
     def vim_q2(vc):
         g.trace(vc.stroke)
-        letters = string.ascii_letters
+        # letters = string.ascii_letters
         vc.done()
     #@+node:ekr.20140807152406.18127: *5* vc.vim_question
     def vim_question(vc):
         '''Begin a search.'''
         if vc.is_text_wrapper(vc.w):
             fc = vc.c.findCommands
-            ftm = fc.ftm
             vc.search_stroke = vc.stroke # A scratch ivar for vc.update_dot_before_search.
             fc.reverse = True
             fc.openFindTab(vc.event)
@@ -1465,7 +1464,7 @@ class VimCommands(object):
     #@+node:ekr.20140810210411.18239: *5* vc.vim_star
     def vim_star(vc):
         '''Find previous occurance of word under the cursor.'''
-        ec = vc.c.editCommands
+        # ec = vc.c.editCommands
         w = vc.w
         if vc.is_text_wrapper(w):
             i1 = w.getInsertPoint()
@@ -1496,7 +1495,7 @@ class VimCommands(object):
     def vim_t2(vc):
         '''Handle t <stroke>'''
         if vc.is_text_wrapper(vc.w):
-            ec = vc.c.editCommands
+            # ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
@@ -1532,7 +1531,7 @@ class VimCommands(object):
     def vim_T2(vc):
         '''Handle T <stroke>'''
         if vc.is_text_wrapper(vc.w):
-            ec = vc.c.editCommands
+            # ec = vc.c.editCommands
             w = vc.w
             s = w.getAllText()
             if s:
@@ -1695,11 +1694,11 @@ class VimCommands(object):
     def vim_y3(vc):
         '''Complete the y command after the cursor has moved.'''
         # The motion is responsible for all repeat counts.
-         # y2w doesn't extend to line.  y2j does.
+        # y2w doesn't extend to line.  y2j does.
         trace = False and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
             extend_to_line = vc.y_stroke in ('jk')
-            n = vc.n1 * vc.n
+            # n = vc.n1 * vc.n
             w = vc.w
             s = w.getAllText()
             i1, i2 = vc.motion_i, w.getInsertPoint()
@@ -1806,8 +1805,10 @@ class VimCommands(object):
     #     `]              (motion) go to the end of the previously operated or put text
     #     ``              (motion) go to the position before the last jump
     # 
-    # N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
-    #     %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    # N   %       (motion) goto line N percentage down in the file.
+    #             N must be given, otherwise it is the % command.
+    #     %       (motion) find the next brace, bracket, comment,
+    #             or "#if"/ "#else"/"#endif" in this line and go to its match
     # 
     # N   #       (motion) search backward for the identifier under the cursor
     # N   *       (motion) search forward for the identifier under the cursor
@@ -2009,13 +2010,11 @@ class VimCommands(object):
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
-                ftm = fc.ftm
                 vc.search_stroke = None
                     # Tell vc.update_dot_before_search not to update the dot.
                 fc.reverse = False
                 fc.openFindTab(vc.event)
                 fc.ftm.clear_focus()
-                old_node_only = fc.node_only
                 fc.node_only = True
                     # Doesn't work.
                 fc.searchWithPresentOptions(vc.event)
@@ -2365,7 +2364,6 @@ class VimCommands(object):
         bx = 'beginning-of-line-extend-selection'
         ex = 'end-of-line-extend-selection'
         w = vc.w
-        s = w.getAllText()
         i = w.getInsertPoint()
         # We would like to set insert=i0, but
         # w.setSelectionRange requires either insert==i or insert==j.

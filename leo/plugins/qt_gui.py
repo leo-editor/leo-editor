@@ -610,7 +610,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         self.active = True
             # Used only by c.idle_focus_helper.
-        
+
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:

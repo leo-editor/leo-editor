@@ -14,7 +14,7 @@ import subprocess
 def cmd(name):
     '''Command decorator for the ControlCommandsClass class.'''
     return g.new_cmd_decorator(name, ['c', 'controlCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514095828.1: ** class ControlCommandsClass
 class ControlCommandsClass(BaseEditCommandsClass):

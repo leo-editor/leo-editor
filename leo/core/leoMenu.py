@@ -1198,14 +1198,14 @@ class LeoMenu(object):
     def createOpenWithMenuFromTable(self, table):
         '''
         Table is a list of dictionaries, created from @openwith settings nodes.
-        
+
         This menu code uses these keys:
-        
+
             'name':     menu label.
             'shortcut': optional menu shortcut.
-        
+
         efc.open_temp_file uses these keys:
-       
+
             'args':     the command-line arguments to be used to open the file.
             'ext':      the file extension.
             'kind':     the method used to open the file, such as subprocess.Popen.
@@ -1251,7 +1251,7 @@ class LeoMenu(object):
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
         Each dictionary d has the following keys:
-       
+
         'args':     the command-line arguments used to open the file.
         'ext':      not used here: used by efc.open_temp_file.
         'kind':     not used here: used by efc.open_temp_file.

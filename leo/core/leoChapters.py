@@ -84,7 +84,7 @@ class ChapterController(object):
             else:
                 # Possible, but not likely.
                 cc.note('no such chapter: %s' % name)
-                
+
         # Always bind the command without a shortcut.
         # This will create the command bound to any existing settings.
         bindings = (None, binding) if binding else (None,)
@@ -295,7 +295,7 @@ class ChapterController(object):
             g.callers(2))
         if not chapter and not selChapter:
             if trace: g.trace('*** selecting main chapter')
-            return 
+            return
         if not p:
             if trace: g.trace('no p')
             return

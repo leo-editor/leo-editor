@@ -80,7 +80,7 @@ class GoToCommands(object):
         '''
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (zero-based) line.
-        
+
         Only non-sentinel lines increment the global line count, but
         @+node sentinels reset the offset within the node.
 

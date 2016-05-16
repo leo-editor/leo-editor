@@ -2513,7 +2513,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.splitVerticalFlag, ratio, ratio2))
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-        
+
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
@@ -2703,7 +2703,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Contract the body pane.'''
         r = min(1.0, self.ratio + 0.1)
         self.divideLeoSplitter1(r)
-        
+
     expandOutlinePane = contractBodyPane
 
     @cmd('contract-outline-pane')
@@ -2712,9 +2712,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         '''Contract the outline pane.'''
         r = max(0.0, self.ratio - 0.1)
         self.divideLeoSplitter1(r)
-        
+
     expandBodyPane = contractOutlinePane
-        
+
     @cmd('contract-log-pane')
     def contractLogPane(self, event=None):
         '''Contract the log pane.'''
@@ -2738,7 +2738,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def fullyExpandOutlinePane(self, event=None):
         '''Fully expand the outline pane.'''
         self.divideLeoSplitter1(1.0)
-        
+
     @cmd('fully-expand-log-pane')
     def fullyExpandLogPane(self, event=None):
         '''Fully expand the log pane.'''

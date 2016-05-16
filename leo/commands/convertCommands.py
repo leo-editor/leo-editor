@@ -449,7 +449,7 @@ class To_Python(object):
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
     '''Leo's file-conversion commands'''
-    
+
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
         # pylint: disable=super-init-not-called
@@ -1139,8 +1139,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.run()
                 else:
                     g.es_print('can not load py2cs.py')
-                   
-                
+
+
             #@+node:ekr.20160316094011.7: *5* py2cs.finalize
             def finalize(self, fn):
                 '''Finalize and regularize a filename.'''

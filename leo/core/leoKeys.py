@@ -3593,7 +3593,7 @@ class KeyHandlerClass(object):
             '''Return True if p contains char.'''
             s = p.h.lower() if char.islower() else p.h
             return s.find(char) > -1
-            
+
         # Start at c.p, then retry everywhere.
         for p in (c.p, c.rootPosition()):
             p = p.copy()
@@ -3607,7 +3607,7 @@ class KeyHandlerClass(object):
                     return
                 else:
                     p.moveToVisNext(c)
-                
+
         # Too confusing for the user.
         # re_pat = re.compile(r'^@(\w)+[ \t](.+)')
 

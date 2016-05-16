@@ -12,7 +12,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 def cmd(name):
     '''Command decorator for the BufferCommands class.'''
     return g.new_cmd_decorator(name, ['c', 'bufferCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514095727.1: ** class BufferCommandsClass
 class BufferCommandsClass(BaseEditCommandsClass):

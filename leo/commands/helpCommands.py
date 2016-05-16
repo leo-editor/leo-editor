@@ -14,7 +14,7 @@ import sys
 def cmd(name):
     '''Command decorator for the helpCommands class.'''
     return g.new_cmd_decorator(name, ['c', 'helpCommands',])
-    
+
 #@+others
 #@+node:ekr.20160514121110.1: ** class HelpCommandsClass
 class HelpCommandsClass(BaseEditCommandsClass):
