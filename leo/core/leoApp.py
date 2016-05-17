@@ -1540,8 +1540,10 @@ class LeoApp(object):
             g.app.createDefaultGui(fileName='g.app.setLeoId', verbose=True)
         if g.app.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
-            import builtins
-            f = builtins.input if g.isPython3 else builtins.raw_input
+            f = input if g.isPython3 else raw_input
+            # import builtins.
+                # Fails on Linux with Python 2!
+            # f = builtins.input if g.isPython3 else builtins.raw_input
                 # Use this to suppresss pyflakes complaint.
             leoid = f('LeoID: ')
         else:

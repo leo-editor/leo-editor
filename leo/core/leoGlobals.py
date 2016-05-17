@@ -6305,9 +6305,11 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     ok = True
     # pylint: disable=undefined-variable
     # unicode does not exist in Python 3.
-    import builtins
-    f = builtins.str if g.isPython3 else builtins.unicode
-        # Suppress pyflakes complaint.
+    f = str if g.isPython3 else unicode
+    # import builtins
+        # Fails on Linux for Python 2!
+    # f = builtins.str if g.isPython3 else builtins.unicode
+        # # Suppress pyflakes complaint.
     if s is None:
         s = g.u('')
     if not g.isUnicode(s):
