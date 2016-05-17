@@ -216,11 +216,39 @@ def pyflakes_command(event):
             self.flake8_engine = None
             self.pyflakes_api = None
             self.reporter_reporter = None
-            self.seen = [] # List of checked vnodes.
+            self.seen = [] # List of checked paths.
         #@+others
-        #@+node:ekr.20160516072613.3: *5* pyflakes.check
-        def check(self, p):
-            '''Check a single node.  Return True if it is a Python @<file> node.'''
+        #@+node:ekr.20160516072613.6: *5* pyflakes.check_all
+        def check_all(self, paths):
+            '''Run pyflakes on fn.'''
+            if self.flake8_main:
+                # Prefer flake8 to 
+                flake8_style = self.flake8_engine.get_style_guide(
+                    parse_argv=False,
+                    config_file=self.get_flake8_config(),
+                )
+                report = flake8_style.check_files(paths=paths)
+                # Set statistics here, instead of from the command line.
+                options = flake8_style.options
+                options.statistics = True
+                options.total_errors = True
+                # options.benchmark = True
+                self.flake8_main.print_report(report, flake8_style)
+            else:
+                for fn in paths:
+                    # Report the file name.
+                    sfn = g.shortFileName(fn)
+                    print('pyflakes: %s' % sfn)
+                    s = g.readFileIntoUnicodeString(fn, silent=False)
+                    if not s.strip():
+                        return
+                    reporter = self.pyflakes_reporter.Reporter(
+                        warningStream=sys.stderr,
+                        errorStream=sys.stderr)
+                    self.pyflakes_api.check(s, sfn, reporter)
+        #@+node:ekr.20160516072613.3: *5* pyflakes.find
+        def find(self, p):
+            '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
             found = False
             if p.isAnyAtFileNode():
                 # Fix bug: https://github.com/leo-editor/leo-editor/issues/67
@@ -229,9 +257,8 @@ def pyflakes_command(event):
                 fn = p.anyAtFileNodeName()
                 if fn.endswith('.py'):
                     fn = g.os_path_finalize_join(path, fn)
-                    if p.v not in self.seen:
-                        self.seen.append(p.v)
-                        self.run_pyflakes(fn)
+                    if fn not in self.seen:
+                        self.seen.append(fn)
                         found = True
             return found
         #@+node:ekr.20160516111656.1: *5* pyflakes.get_flake8_config
@@ -247,11 +274,12 @@ def pyflakes_command(event):
                 g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
                     # In leo/test
             )
-            for fn in table:
-                fn = g.os_path_abspath(fn)
-                if g.os_path_exists(fn):
-                    if trace: g.trace('found:', fn)
-                    return fn
+            for base in ('flake8', 'flake8.txt'):
+                for fn in table:
+                    fn = g.os_path_abspath(fn)
+                    if g.os_path_exists(fn):
+                        if trace: g.trace('found:', fn)
+                        return fn
             g.es_print('no flake8 configuration file found in\n%s' % (
                 '\n'.join(table)))
             return None
@@ -285,11 +313,11 @@ def pyflakes_command(event):
             t1 = time.clock()
             found = False
             for p in root.self_and_subtree():
-                found |= self.check(p)
+                found |= self.find(p)
             # Look up the tree if no @<file> nodes were found.
             if not found:
                 for p in root.parents():
-                    if self.check(p):
+                    if self.find(p):
                         found = True
                         break
             # If still not found, expand the search if root is a clone.
@@ -301,37 +329,13 @@ def pyflakes_command(event):
                         if p.isAnyAtFileNode():
                             isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
                             # g.trace(isAncestor,p.h)
-                            if isAncestor and self.check(p):
+                            if isAncestor and self.find(p):
                                 break
-            g.es_print('pyflakes: done %s' % g.timeSince(t1))
-        #@+node:ekr.20160516072613.6: *5* pyflakes.run_pyflakes
-        def run_pyflakes(self, fn):
-            '''Run pyflakes on fn.'''
-            if not os.path.exists(fn):
-                print('file not found:', fn)
-                return
-            # Report the file name.
-            sfn = g.shortFileName(fn)
-            s = g.readFileIntoUnicodeString(fn, silent=False)
-            if not s.strip():
-                return
-            if self.flake8_main:
-                print('flake8: %s' % sfn)
-                flake8_style = self.flake8_engine.get_style_guide(
-                    parse_argv=False,
-                    config_file=self.get_flake8_config(),
-                )
-                report = flake8_style.check_files(paths=[fn])
-                # testing hack...
-                options = flake8_style.options
-                options.statistics = True
-                self.flake8_main.print_report(report, flake8_style)
-            else:
-                print('pyflakes: %s' % sfn)
-                reporter = self.pyflakes_reporter.Reporter(
-                    warningStream=sys.stderr,
-                    errorStream=sys.stderr)
-                self.pyflakes_api.check(s, sfn, reporter)
+            paths = list(set(self.seen))
+            if paths:
+                self.check_all(paths)
+            g.es_print('pyflakes: %s file%s in %s' % (
+                len(paths), g.plural(paths), g.timeSince(t1)))
         #@-others
     #@-others
         # define class PyFlakesCommand.
