@@ -424,7 +424,6 @@ class MatchBrackets(object):
         if self.language in ('javascript', 'perl',):
             assert s[i] == '/'
             offset = 1 if self.forward else - 1
-            i1 = i
             i += offset
             while 0 <= i < len(s) and s[i] != '\n':
                 if s[i] == '/':
@@ -471,8 +470,7 @@ class MatchBrackets(object):
         Scan the string starting at s[i] (forward or backward).
         Return the index of the next character.
         '''
-        # if not self.forward: g.pdb()
-        i1 = i if self.forward else i + 1
+        # i1 = i if self.forward else i + 1
         delim = s[i]
         assert delim in "'\"", repr(delim)
         offset = 1 if self.forward else -1
@@ -498,7 +496,6 @@ class MatchBrackets(object):
     def find_matching_bracket(self, ch1, s, i):
         '''Find the bracket matching s[i] for self.language.'''
         self.forward = ch1 in self.open_brackets
-        offset = 1 if self.forward else - 1
         # Find the character matching the initial bracket.
         for n in range(len(self.brackets)):
             if ch1 == self.brackets[n]:
@@ -599,7 +596,6 @@ class MatchBrackets(object):
             if s[i] == '\n':
                 if self.single_comment:
                     # Scan backward for any single-comment delim.
-                    found = None
                     i -= 1
                     while 0 <= i and s[i] != '\n':
                         if g.match(s, i, self.single_comment):
@@ -651,7 +647,6 @@ class MatchBrackets(object):
     #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
     def back_scan_comment(self, s, i):
         '''Return the index of the character after a comment.'''
-        trace = False and not g.unitTesting
         i1 = i
         if g.match(s, i, self.end_comment):
             i1 += len(self.end_comment) # For traces.
@@ -659,7 +654,6 @@ class MatchBrackets(object):
             while 0 <= i:
                 if g.match(s, i, self.start_comment):
                     i -= 1
-                    # g.trace('multi-line',s[i:i1])
                     return i
                 i -= 1
             self.oops('unmatched multiline comment')
@@ -670,7 +664,6 @@ class MatchBrackets(object):
             i -= 1
             while 0 <= i and s[i] != '\n':
                 if g.match(s, i, self.single_comment):
-                    # g.trace('single-line',s[i:i1].rstrip())
                     found = i-1
                 i -= 1
             if found is None:
@@ -683,7 +676,6 @@ class MatchBrackets(object):
         Return True if s[i] ends a comment. This is called while scanning
         backward, so this is a bit of a guess.
         '''
-        i1 = i
         if s[i] == '\n':
             # This is the hard (dubious) case.
             # Let w, x, y and z stand for any strings not containg // or quotes.
@@ -733,7 +725,6 @@ class MatchBrackets(object):
         '''The driver for the MatchBrackets class.'''
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
-        brackets = "()[]{}<>"
         s = w.getAllText()
         ins = w.getInsertPoint()
         ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
@@ -6257,7 +6248,6 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
     import leo.core.leoAtFile as leoAtFile
     at = leoAtFile.AtFile(c)
     w = c.frame.body.wrapper
-    p1 = p and p.copy()
     if not p: p = c.p
     try:
         if g.app.inBridge:
@@ -6408,7 +6398,9 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     ok = True
     # pylint: disable=undefined-variable
     # unicode does not exist in Python 3.
-    f = str if g.isPython3 else unicode
+    import builtins
+    f = builtins.str if g.isPython3 else builtins.unicode
+        # Suppress pyflakes complaint.
     if s is None:
         s = g.u('')
     if not g.isUnicode(s):
