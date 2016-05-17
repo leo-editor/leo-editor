@@ -253,43 +253,50 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
 
 def compare_ast(node1, node2):
 
-    def fail(node1, node2):
+    trace = False and not g.unitTesting
+
+    def fail(node1, node2, tag):
+        '''Report a failed mismatch in the beautifier. This is a bug.'''
         name1 = node1.__class__.__name__
         name2 = node2.__class__.__name__
-        format = 'compare_ast failed: %s %s %r %r'
+        format = 'compare_ast failed: %s: %s %s %r %r'
         if name1 == 'str':
-            print(format % (name1, name2, node1, node2))
+            print(format % (tag, name1, name2, node1, node2))
         elif name1 == 'Str':
-            print(format % (name1, name2, node1.s, node2.s))
+            print(format % (tag, name1, name2, node1.s, node2.s))
+        elif 1:
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r'
+            print(format % (tag, name1, name2, node1, node2))
         else:
-            format = 'compare_ast failed: %s %s %r %r %r %r'
-            attr1 = getattr(node1, 'lineno', '???')
-            attr2 = getattr(node2, 'lineno', '???')
-            print(format % (name1, name2, node1, node2, attr1, attr2))
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
+            attr1 = getattr(node1, 'lineno', '<no lineno>')
+            attr2 = getattr(node2, 'lineno', '<no lineno>')
+            print(format % (tag, name1, name2, node1, node2, attr1, attr2))
+
     # pylint: disable=unidiomatic-typecheck
     if type(node1) != type(node2):
-        fail(node1, node2)
+        if trace: fail(node1, node2, 'type mismatch')
         return False
-    # The types match. Recursively compare components.
+    # The types of node1 and node2 match. Recursively compare components.
     if isinstance(node1, ast.AST):
         for kind, var in vars(node1).items():
             if kind not in ('lineno', 'col_offset', 'ctx'):
-                var2 = getattr(node2, kind, None)
+                var2 = vars(node2).get(kind) # Bug fix: 2016/05/16.
                 if not compare_ast(var, var2):
-                    fail(var, var2)
+                    if trace: fail(var, var2, 'AST subnode mismatch')
                     return False
         return True
     elif isinstance(node1, list):
         if len(node1) != len(node2):
-            # fail(node1, node2)
+            if trace: fail(node1, node2, 'list len mismatch')
             return False
         for i in range(len(node1)):
             if not compare_ast(node1[i], node2[i]):
-                # fail(node1, node2)
+                if trace: fail(node1, node2, 'list element mismatch')
                 return False
         return True
     elif node1 != node2:
-        fail(node1, node2)
+        if trace: fail(node1, node2, 'node mismatch')
         return False
     else:
         return True
@@ -816,15 +823,15 @@ class PythonTokenBeautifier(object):
         self.beautify_time = 0.0
         self.check_time = 0.0
         self.total_time = 0.0
-         # Undo vars
+        # Undo vars
         self.changed = False
         self.dirtyVnodeList = []
     #@+node:ekr.20150530072449.1: *3* ptb.Entries
     #@+node:ekr.20150528171137.1: *4* ptb.prettyPrintNode
     def prettyPrintNode(self, p):
         '''The driver for beautification: beautify a single node.'''
-        c = self.c
-        trace = False and not g.unitTesting
+        # c = self.c
+        # trace = False and not g.unitTesting
         if not should_beautify(p):
             # @nobeautify is in effect.
             return
@@ -1080,7 +1087,7 @@ class PythonTokenBeautifier(object):
     def blank(self):
         '''Add a blank request on the code list.'''
         prev = self.code_list[-1]
-        if not prev.kind in (
+        if prev.kind not in (
             'blank', 'blank-lines',
             'file-start',
             'line-end', 'line-indent',
