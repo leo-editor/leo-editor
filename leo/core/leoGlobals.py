@@ -689,7 +689,7 @@ class MatchBrackets(object):
                 # Scan backward for single-line comment delims or quotes.
                 quote = None
                 i -= 1
-                while 0 <= i and  s[i] != '\n':
+                while 0 <= i and s[i] != '\n':
                     progress = i
                     if quote and s[i] == quote:
                         quote = None
@@ -873,7 +873,7 @@ class RedirectClass(object):
         self.encoding = 'utf-8' # 2019/03/29 For pdb.
     #@+node:ekr.20041012082437.1: *5* isRedirected
     def isRedirected(self):
-        return self.old != None
+        return self.old is not None
     #@+node:ekr.20041012082437.2: *5* flush
     # For LeoN: just for compatibility.
 
@@ -1798,7 +1798,7 @@ def file_date(theFile, format=None):
     if theFile and len(theFile) and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
-            if format == None:
+            if format is None:
                 format = "%m/%d/%y %H:%M:%S"
             return time.strftime(format, time.gmtime(n))
         except(ImportError, NameError):
@@ -2042,10 +2042,10 @@ def printGcObjects(tag=''):
         typesDict = {}
         for obj in gc.get_objects():
             t = type(obj)
-            if t == 'instance' and t != types.UnicodeType:
+            if t == 'instance' and t != types.UnicodeType: # NOQA
                 try: t = obj.__class__
                 except Exception: pass
-            if t != types.FrameType:
+            if t != types.FrameType: # NOQA
                 r = repr(t) # was type(obj) instead of repr(t)
                 n = typesDict.get(r, 0)
                 typesDict[r] = n + 1
@@ -2502,7 +2502,7 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
         s = d.get('pagewidth')
         if s is not None:
             i, val = g.skip_long(s, 0)
-            if val != None and val > 0:
+            if val is not None and val > 0:
                 # g.trace(val)
                 return val
             else:
@@ -2555,7 +2555,7 @@ def scanAtRootOptions(s, i, err_flag=False):
             z_line = g.get_line(s, i)
             g.es("unknown option:", z_opt, "in", z_line)
         #@-<< scan another @root option >>
-    if mode == None:
+    if mode is None:
         doc = app.config.at_root_bodies_start_in_doc_mode
         mode = "doc" if doc else "code"
     # g.trace(mode,g.callers(3))
@@ -2715,7 +2715,7 @@ def set_language(s, i, issue_errors_flag=False):
     """
     tag = "@language"
     # g.trace(g.get_line(s,i))
-    assert(i != None)
+    assert(i is not None)
     # assert(g.match_word(s,i,tag))
     if g.match_word(s, i, tag):
         i += len(tag)
@@ -2812,7 +2812,7 @@ def computeStandardDirectories():
     return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
-    if fileName == None:
+    if not fileName:
         return "untitled"
     else:
         path, fn = g.os_path_split(fileName)
@@ -2906,7 +2906,7 @@ def guessExternalEditor(c=None):
     else:
         g.es('''No editor set.
 Please set LEO_EDITOR or EDITOR environment variable,
-or do g.app.db['LEO_EDITOR'] = "gvim"'''         )
+or do g.app.db['LEO_EDITOR'] = "gvim"''')
         return None
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
 def init_dialog_folder(c, p, use_at_path=True):
@@ -3459,7 +3459,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                 singleMatch = True
             elif count == maxcount:
                 singleMatch = False
-        if maxcount and singleMatch == True:
+        if maxcount and singleMatch:
             maxp = p
             maxdepth = p.level()
     return False, maxdepth, maxp
@@ -3855,17 +3855,18 @@ def match(s, i, pattern):
     return s and pattern and s.find(pattern, i, i + len(pattern)) == i
 #@+node:ekr.20031218072017.3182: *4* match_c_word
 def match_c_word(s, i, name):
-    if name == None: return False
     n = len(name)
-    if n == 0: return False
-    return name == s[i: i + n] and (i + n == len(s) or not g.is_c_id(s[i + n]))
+    return (
+        name and
+        name == s[i: i + n] and
+        (i + n == len(s) or not g.is_c_id(s[i + n]))
+    )
 #@+node:ekr.20031218072017.3183: *4* match_ignoring_case
 def match_ignoring_case(s1, s2):
-    if s1 == None or s2 == None: return False
-    return s1.lower() == s2.lower()
+    return s1 and s2 and s1.lower() == s2.lower()
 #@+node:ekr.20031218072017.3184: *4* match_word
 def match_word(s, i, pattern):
-    if pattern == None: return False
+    if pattern is None: return False
     j = len(pattern)
     if j == 0: return False
     if s.find(pattern, i, i + j) != i:
@@ -5330,9 +5331,9 @@ def prettyPrintType(obj):
     t = type(obj)
     if t in (types.BuiltinFunctionType, types.FunctionType):
         return 'function'
-    elif t == types.ModuleType:
+    elif t == types.ModuleType: # NOQA
         return 'module'
-    elif t == types.InstanceType:
+    elif t == types.InstanceType: # NOQA
         return 'object'
     elif t in method_types:
         return 'method'
@@ -5625,105 +5626,6 @@ def CheckVersionToInt(s):
             return int(s)
         else:
             return 0
-#@+node:ekr.20060921100435.1: *4* g.oldCheckVersion (Dave Hein)
-#@+at g.CheckVersion() is a generic version checker.  Assumes a
-# version string of up to four parts, or tokens, with
-# leftmost token being most significant and each token
-# becoming less signficant in sequence to the right.
-# 
-# RETURN VALUE
-# 
-# 1 if comparison is True
-# 0 if comparison is False
-# 
-# PARAMETERS
-# 
-# version: the version string to be tested
-# againstVersion: the reference version string to be
-#               compared against
-# condition: can be any of "==", "!=", ">=", "<=", ">", or "<"
-# stringCompare: whether to test a token using only the
-#              leading integer of the token, or using the
-#              entire token string.  For example, a value
-#              of "0.0.1.0" means that we use the integer
-#              value of the first, second, and fourth
-#              tokens, but we use a string compare for the
-#              third version token.
-# delimiter: the character that separates the tokens in the
-#          version strings.
-# 
-# The comparison uses the precision of the version string
-# with the least number of tokens.  For example a test of
-# "8.4" against "8.3.3" would just compare the first two
-# tokens.
-# 
-# The version strings are limited to a maximum of 4 tokens.
-#@@c
-
-def oldCheckVersion(version, againstVersion, condition=">=", stringCompare="0.0.0.0", delimiter='.'):
-    # tokenize the stringCompare flags
-    compareFlag = stringCompare.split('.')
-    # tokenize the version strings
-    testVersion = version.split(delimiter)
-    testAgainst = againstVersion.split(delimiter)
-    # find the 'precision' of the comparison
-    tokenCount = 4
-    if tokenCount > len(testAgainst):
-        tokenCount = len(testAgainst)
-    if tokenCount > len(testVersion):
-        tokenCount = len(testVersion)
-    # Apply the stringCompare flags
-    justInteger = re.compile("^[0-9]+")
-    for i in range(tokenCount):
-        if "0" == compareFlag[i]:
-            m = justInteger.match(testVersion[i])
-            testVersion[i] = m.group()
-            m = justInteger.match(testAgainst[i])
-            testAgainst[i] = m.group()
-        elif "1" != compareFlag[i]:
-            errMsg = "stringCompare argument must be of " + "the form \"x.x.x.x\" where each " + "'x' is either '0' or '1'."
-            raise EnvironmentError(errMsg)
-    # Compare the versions
-    if condition == ">=":
-        for i in range(tokenCount):
-            if testVersion[i] < testAgainst[i]:
-                return 0
-            if testVersion[i] > testAgainst[i]:
-                return 1 # it was greater than
-        return 1 # it was equal
-    if condition == ">":
-        for i in range(tokenCount):
-            if testVersion[i] < testAgainst[i]:
-                return 0
-            if testVersion[i] > testAgainst[i]:
-                return 1 # it was greater than
-        return 0 # it was equal
-    if condition == "==":
-        for i in range(tokenCount):
-            if testVersion[i] != testAgainst[i]:
-                return 0 # any token was not equal
-        return 1 # every token was equal
-    if condition == "!=":
-        for i in range(tokenCount):
-            if testVersion[i] != testAgainst[i]:
-                return 1 # any token was not equal
-        return 0 # every token was equal
-    if condition == "<":
-        for i in range(tokenCount):
-            if testVersion[i] >= testAgainst[i]:
-                return 0
-            if testVersion[i] < testAgainst[i]:
-                return 1 # it was less than
-        return 0 # it was equal
-    if condition == "<=":
-        for i in range(tokenCount):
-            if testVersion[i] > testAgainst[i]:
-                return 0
-            if testVersion[i] < testAgainst[i]:
-                return 1 # it was less than
-        return 1 # it was equal
-    # didn't find a condition that we expected.
-    raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@+node:ekr.20031218072017.3147: *3* g.choose (deprecated)
 # This can and should be replaced by Python's ternary operator.
 
@@ -6305,8 +6207,13 @@ def handleScriptException(c, p, script, script1):
         i += 1
     #@-<< dump the lines near the error >>
 #@+node:ekr.20031218072017.2418: *3* g.initScriptFind (no longer used)
-def initScriptFind(c, findHeadline, changeHeadline=None, firstNode=None,
-    script_search=True, script_change=True):
+def initScriptFind(c,
+    findHeadline,
+    changeHeadline=None,
+    firstNode=None,
+    script_search=True,
+    script_change=True,
+):
     import leo.core.leoGlobals as g
     # Find the scripts.
     p = c.p

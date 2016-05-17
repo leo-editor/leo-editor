@@ -5,26 +5,32 @@
 
 # To suppress any ONE line: # NOQA
 
-max-line-length = 110
+max-line-length = 120
 # exclude = tests/*
 max-complexity = 100
 
 ignore = 
 
-    E116, E122, E123, E124, E128, E131, 
+    E116, E121, E122, E123, E124, E126, E127, E128, E131, 
  
 # Indentation...
 # E116 unexpected indentation (comment)
 # Fails for hanging comments.
-# E123: closing bracket does not match indentation of opening braket.
+# E121: continuation line under-indented for haning indent.
+# E123: closing bracket does not match indentation of opening bracket.
 # E124: closing bracket does not match visual indentation
+# E126: continuation line over-indented for haning indent.
+# E127: continuation line over-indented for visual indent
 # E128 continuation line under-indented for visual indent
+# My convention ignores this.
 # E131 continuation line unaligned for hanging indent
 # Fails for tables.
 
-    E203, E241,
+    E203, E226, E231, E241,
 
 # E203: whitespace before ':'
+# E226: missing whitespace around arithmetic operator.
+# E231: missing whitespace after ','
 # E241: multiple spaces after ':'
 # Fails in aligned dict defintions.
 
@@ -48,6 +54,11 @@ ignore =
 # E301 expected 1 blank line, found 0
 # E302 expected 2 blank lines, found 0
 # Fails for most nodes.
+
+    E402,
+    
+# E402: Module-level import not at top of file.
+# Complaints because isPython3 is defined first.
 
     E701, E702, E704
 

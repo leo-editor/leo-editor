@@ -16214,6 +16214,108 @@ def importJSON(self, files):
     https://www.mindjet.com/
     '''
     JSON_Importer(self.c).import_files(files)
+.. @+node:ekr.20060921100435.1: *3* g.oldCheckVersion (Dave Hein)
+@ g.CheckVersion() is a generic version checker.  Assumes a
+version string of up to four parts, or tokens, with
+leftmost token being most significant and each token
+becoming less signficant in sequence to the right.
+
+RETURN VALUE
+
+1 if comparison is True
+0 if comparison is False
+
+PARAMETERS
+
+version: the version string to be tested
+againstVersion: the reference version string to be
+              compared against
+condition: can be any of "==", "!=", ">=", "<=", ">", or "<"
+stringCompare: whether to test a token using only the
+             leading integer of the token, or using the
+             entire token string.  For example, a value
+             of "0.0.1.0" means that we use the integer
+             value of the first, second, and fourth
+             tokens, but we use a string compare for the
+             third version token.
+delimiter: the character that separates the tokens in the
+         version strings.
+
+The comparison uses the precision of the version string
+with the least number of tokens.  For example a test of
+"8.4" against "8.3.3" would just compare the first two
+tokens.
+
+The version strings are limited to a maximum of 4 tokens.
+@c
+
+def oldCheckVersion(version, againstVersion, condition=">=", stringCompare="0.0.0.0", delimiter='.'):
+    # tokenize the stringCompare flags
+    compareFlag = stringCompare.split('.')
+    # tokenize the version strings
+    testVersion = version.split(delimiter)
+    testAgainst = againstVersion.split(delimiter)
+    # find the 'precision' of the comparison
+    tokenCount = 4
+    if tokenCount > len(testAgainst):
+        tokenCount = len(testAgainst)
+    if tokenCount > len(testVersion):
+        tokenCount = len(testVersion)
+    # Apply the stringCompare flags
+    justInteger = re.compile("^[0-9]+")
+    for i in range(tokenCount):
+        if "0" == compareFlag[i]:
+            m = justInteger.match(testVersion[i])
+            testVersion[i] = m.group()
+            m = justInteger.match(testAgainst[i])
+            testAgainst[i] = m.group()
+        elif "1" != compareFlag[i]:
+            errMsg = (
+                "stringCompare argument must be of " +
+                "the form \"x.x.x.x\" where each " +
+                "'x' is either '0' or '1'.")
+            raise EnvironmentError(errMsg)
+    # Compare the versions
+    if condition == ">=":
+        for i in range(tokenCount):
+            if testVersion[i] < testAgainst[i]:
+                return 0
+            if testVersion[i] > testAgainst[i]:
+                return 1 # it was greater than
+        return 1 # it was equal
+    if condition == ">":
+        for i in range(tokenCount):
+            if testVersion[i] < testAgainst[i]:
+                return 0
+            if testVersion[i] > testAgainst[i]:
+                return 1 # it was greater than
+        return 0 # it was equal
+    if condition == "==":
+        for i in range(tokenCount):
+            if testVersion[i] != testAgainst[i]:
+                return 0 # any token was not equal
+        return 1 # every token was equal
+    if condition == "!=":
+        for i in range(tokenCount):
+            if testVersion[i] != testAgainst[i]:
+                return 1 # any token was not equal
+        return 0 # every token was equal
+    if condition == "<":
+        for i in range(tokenCount):
+            if testVersion[i] >= testAgainst[i]:
+                return 0
+            if testVersion[i] < testAgainst[i]:
+                return 1 # it was less than
+        return 0 # it was equal
+    if condition == "<=":
+        for i in range(tokenCount):
+            if testVersion[i] > testAgainst[i]:
+                return 0
+            if testVersion[i] < testAgainst[i]:
+                return 1 # it was less than
+        return 1 # it was equal
+    # didn't find a condition that we expected.
+    raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 .. @-all
 .. @@nosearch
 .. @-leo
