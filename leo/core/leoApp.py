@@ -7,6 +7,10 @@
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
 try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
+try:
     import flake8
 except ImportError:
     flake8 = None
@@ -1540,11 +1544,8 @@ class LeoApp(object):
             g.app.createDefaultGui(fileName='g.app.setLeoId', verbose=True)
         if g.app.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
-            f = input if g.isPython3 else raw_input
-            # import builtins.
-                # Fails on Linux with Python 2!
-            # f = builtins.input if g.isPython3 else builtins.raw_input
-                # Use this to suppresss pyflakes complaint.
+            f = builtins.input if g.isPython3 else builtins.raw_input
+                # Suppress pyflakes complaint.
             leoid = f('LeoID: ')
         else:
             leoid = g.app.gui.runAskLeoIDDialog()
