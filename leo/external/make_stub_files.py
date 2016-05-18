@@ -2925,7 +2925,7 @@ class TestClass(object):
 
     def return_array(self):
         s = 'abc'
-        def f():
+        def f(s):
             pass
         return f(s[1:-1])
     #@+node:ekr.20160317054700.192: *3* return_list
@@ -2938,7 +2938,7 @@ class TestClass(object):
         if 1:
             return aList
         else:
-            return list(re.finditer(s))
+            return list(re.finditer('abc', s))
     #@-others
 #@-others
 g = LeoGlobals() # For ekr.

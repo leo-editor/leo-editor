@@ -109,6 +109,7 @@ g = sys.modules.get(get_module.__module__)
 assert g, 'no g'
 # print(g)
 #@-<< imports >>
+# pylint: disable=unidiomatic-typecheck
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+<< define usage >>
 #@+node:ekr.20110310091639.14292: ** << define usage >>

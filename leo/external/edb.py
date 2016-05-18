@@ -72,13 +72,8 @@ Debugger commands
 # NOTE: the actual command documentation is collected from docstrings of the
 # commands and is appended to __doc__ after the class has been defined.
 #@-<< docstring >>
-
+# pylint: disable=eval-used
 # edb: pdb modified by EKR.'''
-
-# from __future__ import print_function
-    # Fix bug: invalid syntax on print statement
-    # https://bugs.launchpad.net/leo-editor/+bug/1184605
-
 #@+<< imports >>
 #@+node:ekr.20110914171443.7241: ** << imports >>
 from __future__ import print_function
@@ -1684,7 +1679,7 @@ if __doc__ is not None:
         'args', 'print', 'pp', 'whatis', 'source', 'display', 'undisplay',
         'interact', 'alias', 'unalias', 'debug', 'quit',
     ]
-
+    _command = None
     for _command in _help_order:
         __doc__ += getattr(Pdb, 'do_' + _command).__doc__.strip() + '\n\n'
 
