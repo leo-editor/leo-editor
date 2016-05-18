@@ -15,11 +15,8 @@ On Ubuntu, the following alias runs this file::
     # flake8-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
-import flake8
-import glob
 import optparse
 import os
-import sys
 import time
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
@@ -145,7 +142,6 @@ def scanOptions():
     else: scope = 'all'
     return scope, silent
 #@-others
-
 g_option_fn = None
 scope, silent = scanOptions()
 table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)

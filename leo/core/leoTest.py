@@ -70,13 +70,24 @@ class EditBodyTestCase(unittest.TestCase):
         try:
             # Don't call the Undoer if we expect no change.
             if not tm.compareOutlines(self.before, self.after, compareHeadlines=False, report=False):
-                assert tm.compareOutlines(self.tempNode, self.after, compareHeadlines=False), '%s: before undo1' % commandName
+                assert tm.compareOutlines(
+                    self.tempNode,
+                    self.after,
+                    compareHeadlines=False), '%s: before undo1' % commandName
                 c.undoer.undo()
-                assert tm.compareOutlines(self.tempNode, self.before, compareHeadlines=False), '%s: after undo1' % commandName
+                assert tm.compareOutlines(
+                    self.tempNode,
+                    self.before,
+                    compareHeadlines=False), '%s: after undo1' % commandName
                 c.undoer.redo()
-                assert tm.compareOutlines(self.tempNode, self.after, compareHeadlines=False), '%s: after redo' % commandName
+                assert tm.compareOutlines(
+                    self.tempNode,
+                    self.after,
+                    compareHeadlines=False), '%s: after redo' % commandName
                 c.undoer.undo()
-                assert tm.compareOutlines(self.tempNode, self.before, compareHeadlines=False), '%s: after undo2' % commandName
+                assert tm.compareOutlines(
+                    self.tempNode,
+                    self.before, compareHeadlines=False), '%s: after undo2' % commandName
         except Exception:
             self.fail()
             raise
@@ -133,7 +144,7 @@ class GeneralTestCase(unittest.TestCase):
     #@+others
     #@+node:ekr.20051104075904.6: *3* __init__ (GeneralTestCase)
     def __init__(self, c, p, setup_script=None):
-         # Init the base class.
+        '''Ctor for the GeneralTestCase class.'''
         unittest.TestCase.__init__(self)
         self.c = c
         self.p = p.copy()
@@ -407,7 +418,7 @@ class LinterTable():
         external = self.external()
         gui_plugins = self.gui_plugins()
         modes = self.modes()
-        ignores = self.ignores()
+        # ignores = self.ignores()
         plugins = self.plugins()
         d = {
             'all': (
@@ -1108,17 +1119,20 @@ class TestManager(object):
             untangleInputP.moveToNext()
             inputSet[untangleInputP.h] = untangleInputP.b
             if trace_test:
-                g.es("test file name: %s\ntest file contents: %s" % (untangleInputP.h, untangleInputP.b))
+                g.es("test file name: %s\ntest file contents: %s" % (
+                    untangleInputP.h, untangleInputP.b))
         c.tangleCommands.untangle(event=None, p=rootTestToChangeP)
         try:
             assert tm.compareOutlines(rootTestToChangeP, rootResultP), "Expected outline not created"
             c.tangleCommands.tangle(event=None, p=rootTestToChangeP)
             inputSetList = sorted(inputSet)
             resultList = sorted(c.tangleCommands.tangle_output)
-            assert inputSetList == resultList, "Expected tangled file list %s, got %s" % (repr(resultList), repr(inputSetList))
+            assert inputSetList == resultList, "Expected tangled file list %s, got %s" % (
+                repr(resultList), repr(inputSetList))
             for t in inputSet:
                 result = g.toUnicode(c.tangleCommands.tangle_output[t])
-                assert inputSet[t] == result, "Expected %s with content %s, got %s" % (t, inputSet[t], result)
+                assert inputSet[t] == result, "Expected %s with content %s, got %s" % (
+                    t, inputSet[t], result)
         finally:
             rootTestToChangeP.doDelete()
     #@+node:ekr.20131111140646.16544: *4* TM.runVimTest
