@@ -411,7 +411,7 @@ class AstFormatter(object):
         # Not used: list context.
         # self.visit(node.ctx)
         elts = [self.visit(z) for z in node.elts]
-        elst = [z for z in elts if z] # Defensive.
+        elts = [z for z in elts if z] # Defensive.
         return '[%s]' % ','.join(elts)
 
     #@+node:ekr.20160317055215.30: *4* f.ListComp
@@ -1140,7 +1140,6 @@ class Pattern(object):
         Return a list of match objects for all matches in s.
         These are regex match objects or (start, end) for balanced searches.
         '''
-        trace = False
         if self.is_balanced():
             aList, i = [], 0
             while i < len(s):
@@ -1884,11 +1883,11 @@ class StandAloneMakeStubFile(object):
                     g.trace('duplicate pattern', pattern)
                 else:
                     self.names_dict [name] = pattern.repl_s
-        if 0:
+        if trace:
             g.trace('names_dict...')
             for z in sorted(self.names_dict):
                 print('  %s: %s' % (z, self.names_dict.get(z)))
-        if 0:
+        if trace:
             g.trace('patterns_dict...')
             for z in sorted(self.patterns_dict):
                 aList = self.patterns_dict.get(z)
@@ -2116,8 +2115,7 @@ class StubFormatter (AstFormatter):
     def do_List(self, node):
         '''StubFormatter.List.'''
         elts = [self.visit(z) for z in node.elts]
-        elst = [z for z in elts if z] # Defensive.
-        # g.trace('=====',elts)
+        elts = [z for z in elts if z] # Defensive.
         return 'List[%s]' % ', '.join(elts)
     #@+node:ekr.20160317054700.150: *4* sf.Name
 
@@ -2901,13 +2899,12 @@ class TestClass(object):
     '''
     # pylint: disable=no-member
     # pylint: disable=undefined-variable
-    # pylint: disable=no-self-argument
     # pylint: disable=no-method-argument
     # pylint: disable=unsubscriptable-object
     #@+others
     #@+node:ekr.20160317054700.189: *3* parse_group (Guido)
 
-    def parse_group(group):
+    def parse_group(self, group):
         if len(group) >= 3 and group[-2] == 'as':
             del group[-2:]
         ndots = 0
@@ -2921,12 +2918,15 @@ class TestClass(object):
         return ndots, os.sep.join(group[::2])
     #@+node:ekr.20160317054700.190: *3* return_all
 
-    def return_all(self):
+    def return_all(self, s3):
         return all([is_known_type(z) for z in s3.split(',')])
         # return all(['abc'])
     #@+node:ekr.20160317054700.191: *3* return_array
 
-    def return_array():
+    def return_array(self):
+        s = 'abc'
+        def f():
+            pass
         return f(s[1:-1])
     #@+node:ekr.20160317054700.192: *3* return_list
 
@@ -2934,11 +2934,11 @@ class TestClass(object):
         return [a]
     #@+node:ekr.20160317054700.193: *3* return_two_lists (fails)
 
-    def return_two_lists(s):
+    def return_two_lists(self, aList, s):
         if 1:
             return aList
         else:
-            return list(self.regex.finditer(s))
+            return list(re.finditer(s))
     #@-others
 #@-others
 g = LeoGlobals() # For ekr.

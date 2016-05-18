@@ -365,7 +365,7 @@ class AstFormatter(object):
         # Not used: list context.
         # self.visit(node.ctx)
         elts = [self.visit(z) for z in node.elts]
-        elst = [z for z in elts if z] # Defensive.
+        elts = [z for z in elts if z] # Defensive.
         return '[%s]' % ','.join(elts)
     #@+node:ekr.20141012064706.18428: *4* f.ListComp
     def do_ListComp(self, node):
@@ -1079,7 +1079,7 @@ class AstFullTraverser(object):
     # ListComp(expr elt, comprehension* generators)
 
     def do_ListComp(self, node):
-        elt = self.visit(node.elt)
+        self.visit(node.elt)
         for z in node.generators:
             self.visit(z)
     #@+node:ekr.20141012064706.18498: *4* ft.Name (revise)
@@ -1347,7 +1347,7 @@ class AstFullTraverser(object):
         trace = False
         # Visit the children with the new parent.
         old_parent = self.parent
-        parent = node
+        self.parent = node # Bug fix: 2016/05/18.
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name)
         if trace: g.trace(method_name)
@@ -2536,7 +2536,7 @@ class TokenSync(object):
         else:
             t1, t2, t3, t4, t5 = token
             kind = g.toUnicode(token_module.tok_name[t1].lower())
-            raw_val = g.toUnicode(t5)
+            # raw_val = g.toUnicode(t5)
             val = g.toUnicode(t2)
             if verbose:
                 return 'token: %10s %r' % (kind, val)

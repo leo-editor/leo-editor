@@ -281,7 +281,7 @@ class extendForth(object):
     def createDefiningWordRule(self, word):
 
         def forth_defining_word_rule(colorer, s, i):
-            pattern = ''
+
             return colorer.match_word_and_regexp(s, i,
                 kind1="keyword2", # defining word
                 word=word,
