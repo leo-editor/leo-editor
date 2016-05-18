@@ -10,9 +10,11 @@ On Ubuntu, the following alias runs this file::
     pyflake="python pyflake-leo.py"
 '''
 #@@language python
+#@@tabwidth -4
 # pylint: disable=invalid-name
     # flake8-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
+import leo.core.leoTest as leoTest
 import flake8
 import glob
 import optparse
@@ -20,154 +22,6 @@ import os
 import sys
 import time
 #@+others
-#@+node:ekr.20160517182239.2: ** getCommandList
-def getCommandList():
-    '''Return list of all command modules in leo/commands.'''
-    pattern = g.os_path_finalize_join('.', 'leo', 'commands', '*.py')
-    return sorted([
-        g.shortFileName(fn)
-            for fn in glob.glob(pattern)
-                if g.shortFileName(fn) != '__init__.py'])
-#@+node:ekr.20160517182239.3: ** getCoreList
-def getCoreList():
-    pattern = g.os_path_finalize_join('.', 'leo', 'core', 'leo*.py')
-    # pattern = g.os_path_finalize_join('leo','core','leo*.py')
-    aList = [
-        g.shortFileName(fn)
-            for fn in glob.glob(pattern)
-                if g.shortFileName(fn) != '__init__.py']
-    aList.extend([
-         'runLeo.py',
-    ])
-    return sorted(aList)
-#@+node:ekr.20160517182239.4: ** getExternalList
-def getExternalList():
-    '''Return list of files in leo/external'''
-    return [
-        # 'ipy_leo',
-        'leosax',
-        'lproto',
-    ]
-#@+node:ekr.20160517182239.5: ** getGuiPluginsList
-def getGuiPluginsList():
-    pattern = g.os_path_finalize_join('.', 'leo', 'plugins', 'qt_*.py')
-    aList = [
-        g.shortFileName(fn)
-            for fn in glob.glob(pattern)
-                if g.shortFileName(fn) != '__init__.py']
-    aList.extend([
-        'free_layout',
-        'nested_splitter',
-    ])
-    if 'qt_main.py' in aList:
-        # Auto-generated file.
-        aList.remove('qt_main.py')
-    return sorted(aList)
-#@+node:ekr.20160517182239.6: ** getModesList
-def getModesList():
-    pattern = g.os_path_finalize_join('.', 'leo', 'modes', '*.py')
-    return [
-        g.shortFileName(fn)
-            for fn in glob.glob(pattern)
-                if g.shortFileName(fn) != '__init__.py']
-#@+node:ekr.20160517182239.7: ** getPassList
-def getPassList():
-    return (
-        '__init__', 'FileActions',
-        # 'UNL', # in plugins table.
-        'active_path', 'add_directives', 'attrib_edit',
-        'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
-        'codewisecompleter', 'colorize_headlines', 'contextmenu',
-        'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
-        'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
-        'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
-        'leoOPML', 'leoremote', 'lineNumbers',
-        'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
-        # 'mod_scripting', # in plugins table.
-        'mod_speedups', 'mod_timestamp',
-        'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
-        'open_shell', 'open_with', 'outline_export', 'quit_leo',
-        'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
-        'qt_main', 'qt_quicksearch', 'qt_commands',
-        'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
-        'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
-        'rst3',
-        # 'scrolledmessage', # No longer exists.
-        'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
-        'testRegisterCommand', 'todo',
-        # 'toolbar', # in plugins table.
-        'trace_gc_plugin', 'trace_keys', 'trace_tags',
-        'vim', 'xemacs',
-    )
-#@+node:ekr.20160517182239.8: ** getPluginsList
-def getPluginsList():
-    '''Return a list of all important plugins.'''
-    aList = []
-    # g.app.loadDir does not exist: use '.' instead.
-    for theDir in ('', 'importers', 'writers'):
-        pattern = g.os_path_finalize_join('.', 'leo', 'plugins', theDir, '*.py')
-        for fn in glob.glob(pattern):
-            sfn = g.shortFileName(fn)
-            if sfn != '__init__.py':
-                sfn = os.sep.join([theDir, sfn]) if theDir else sfn
-                aList.append(sfn)
-    remove = [
-        'free_layout.py', # Gui-related.
-        'gtkDialogs.py', # Many errors, not important.
-        'leofts.py', # Not (yet) in leoPlugins.leo.
-        'nested_splitter.py', # Gui-related.
-        'qtGui.py', # Dummy file
-        'qt_main.py', # Created automatically.
-    ]
-    aList = sorted([z for z in aList if z not in remove])
-    # Remove all gui related items.
-    for z in sorted(aList):
-        if z.startswith('qt_'):
-            aList.remove(z)
-    # g.trace('\n'.join(aList))
-    return aList
-#@+node:ekr.20160517182239.9: ** getTable
-def getTable(scope):
-    d = {
-        'all': (
-            (coreList, 'core'),
-            (commandList, 'commands'),
-            (guiPluginsList, 'plugins'),
-            (pluginsList, 'plugins'),
-            (externalList, 'external'),
-        ),
-        'commands': (
-            (commandList, 'commands'),
-        ),
-        'core': (
-            (coreList, 'core'),
-            (commandList, 'commands'),
-            (guiPluginsList, 'plugins'),
-            (externalList, 'external'),
-        ),
-        'external': (
-            (externalList, 'external'),
-        ),
-        'file': (
-            ([g_option_fn], ''),
-                # Default directory is the leo directory (was leo/core)
-        ),
-        'gui': (
-            (guiPluginsList, 'plugins'),
-        ),
-        'modes': (
-            (modesList, 'modes'),
-        ),
-        'plugins': (
-            (pluginsList, 'plugins'),
-            # (passList,'plugins'),
-        ),
-    }
-    tables_table = d.get(scope)
-    if not tables_table:
-        print('bad scope', scope)
-        tables_table = ()
-    return tables_table
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(tables_table, silent):
     '''Call run on all tables in tables_table.'''
@@ -291,23 +145,12 @@ def scanOptions():
     else: scope = 'all'
     return scope, silent
 #@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-#@@nobeautify
-g_option_fn     = None
-scope, silent   = scanOptions()
-commandList     = getCommandList()
-coreList        = getCoreList()
-externalList    = getExternalList()
-guiPluginsList  = getGuiPluginsList()
-modesList       = getModesList()
-passList        = getPassList()
-pluginsList     = getPluginsList()
+
+g_option_fn = None
+scope, silent = scanOptions()
+table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
 if scope == 'version':
     report_version()
 else:
-    tables_table = getTable(scope)
-    main(tables_table, silent)
-#@@beautify
+    main(table, silent)
 #@-leo
