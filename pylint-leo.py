@@ -170,10 +170,15 @@ def getTable(scope):
         print('bad scope', scope)
         tables_table = ()
     return tables_table
-#@+node:ekr.20140331201252.16859: ** main
+#@+node:ekr.20140331201252.16859: ** main & helpers
 def main(tables_table, silent):
     '''Call run on all tables in tables_table.'''
-    from pylint import lint
+    try:
+        from pylint import lint
+        assert lint
+    except ImportError:
+        print('pylint-leo.py: can not import pylint')
+        return
     t1 = time.clock()
     n = 0
     for table, theDir in tables_table:
@@ -182,22 +187,15 @@ def main(tables_table, silent):
             run(theDir, fn, silent)
     t2 = time.clock()
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
-#@+node:ekr.20140526142452.17594: ** report_version
-def report_version():
-    try:
-        from pylint import lint
-        rc_fn = os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt'))
-        rc_fn = rc_fn.replace('\\', '/')
-        lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
-    except ImportError:
-        g.trace('can not import pylint')
-#@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
+#@+node:ekr.20100221142603.5644: *3* run (pylint-leo.py)
 #@@nobeautify
 
 def run(theDir,fn,silent,rpython=False):
     '''Run pylint on fn.'''
     trace = False and not g.unitTesting
-    # A little hack. theDir is empty for the -f option.
+    # theDir is empty for the -f option.
+    from pylint import lint
+    assert lint
     if theDir:
         fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
@@ -209,180 +207,21 @@ def run(theDir,fn,silent,rpython=False):
         return 0.0
     if not os.path.exists(fn):
         print('file not found: %s' % (fn))
-        return 0.0
+        return
     # Report the file name and one level of directory.
     path = g.os_path_dirname(fn)
     dirs = path.split(os.sep)
     theDir = dirs and dirs[-1] or ''
     if not silent:
         print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
-    # Create the required args.
+    
+    # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     args = ','.join([
         "fn=r'%s'" % (fn),
         "rc=r'%s'" % (rc_fn),
     ])
-    if scope == 'stc-test': # The --tt option.
-        # Report that Sherlock is enabled.
-        print('pylint-leo.py --tt: enabling Sherlock traces')
-        print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
-        # Report the source code.
-        s = open(fn).read()
-        print('pylint-leo.py: source:\n\n%s\n' % s)
-        # Add the optional Sherlock args.
-        dots = True
-        patterns = [
-            #@+<< Sherlock patterns for pylint >>
-            #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
-            #@@nobeautify
-
-            # Note:  A leading * is never valid: change to .*
-
-            '+.*infer*',
-                # '+.*infer_name',
-                '+.*infer_stmts',
-
-            '+YES::__init__',
-
-            # '+TypeChecker::add_message',
-                # '+.*add_message',
-                # '+PyLinter::add_message',
-                # '+TextReporter::add_message'
-
-            # '+.*visit*',
-                # '+TypeChecker::visit_getattr',
-                # '+.*visit_class',
-                # '+Basic*::visit_*',
-
-            # '+.*__init__',
-                # '+Instance::__init__',
-                # '+Class::__init__',
-                # '+Module::__init__',
-                # '+Function::__init__',
-
-            # '+:.*typecheck.py',
-            # '+:.*inference.py',
-            # '+:.*variables.py',
-
-            # Old traces
-
-            # '+:.*bases.py',
-            # '+.*path_raise_wrapper',
-
-            # Enable everything.
-            # # '+.*',
-
-            # # Disable entire files.
-            # # '-:.*\\lib\\.*', # Disables everything.
-
-            # # Pylint files.
-            # #'-:.*base.py',
-            # #'-:.*bases.py',
-            # '-:.*builder.py',
-            # '-:.*__init__.py',
-            # '-:.*format.py',
-            # '-:.*interface.py', # implements
-            # '-:.*rebuilder.py',
-            # #'-:.*scoped_nodes',
-            # # General library files.
-            # '-:.*leoGlobals.py',
-            # '-:.*codecs.py',
-            # '-:.*config.py',
-            # '-:.*configuration.py',
-            # '-:.*ConfigParser.py',
-            # '-:.*copy\.py',
-            # '-:.*gettext.py',
-            # '-:.*genericpath.py',
-            # '-:.*graph.py',
-            # '-:.*locale.py',
-            # '-:.*optik_ext.py',
-            # '-:.*optparse.py',
-            # '-:.*os.py',
-            # '-:.*ntpath.py',
-            # '-:.*pickle.py',
-            # '-:.*re.py',
-            # '-:.*similar.py',
-            # '-:.*shlex.py',
-            # '-:.*sre_compile.py',
-            # '-:.*sre_parse.py',
-            # '-:.*string_escape.py',
-            # '-:.*text.py',
-            # '-:.*threading.py',
-            # '-:.*tokenize.py',
-            # '-:.*utils.py',
-
-            # # Enable entire files.
-            # # '+:.*base.py',
-            # # '+:.*bases.py',
-            # # '+:.*classes.py',
-            # # '+:.*design_analysis.py',
-            # # '+:.*format.py',
-            # # '+:.*inference.py',
-            # # '+:.*logging.py',
-            # # '+:.*mixins.py',
-            # # '+:.*newstyle.py',
-            # # '+:.*node_classes.py',
-            # # '+:.*protocols.py',
-            # # '+:.*scoped_nodes.py',
-            # # '+:.*typecheck.py',
-            # # '+:.*variables.py',
-
-            # # Disable individual methods.
-            # '-close', # __init__.py
-            # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
-            # '-frame','-root','-scope', # scoped_nodes
-            # '-register', # various files.
-
-            # # '-abspath','-normpath','-isstring','-normalize',
-            # # '-splitext','-_splitext','-splitdrive','-splitstrip',
-            # # '-.*option.*','-get','-set_option',
-            # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
-            # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
-            # # '-_parse.*','-set_parser','-set_conflict_handler',
-            # # '-append','-match',
-            # # '-isbasestring',
-            # # '-save.*','-memoize','-put',
-
-            # # '-persistent_id',
-            # # '-__next',
-            # # '-nodes_of_class',
-            # # '-__.*',
-            # # '-_check.*',
-            # # '-_.*',
-            # # '-load_.*',
-            #@-<< Sherlock patterns for pylint >>
-        ]
-        show_return = True
-        stats_patterns = [
-            #@+<< Sherlock stats patterns for pylint >>
-            #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
-            #@@nobeautify
-
-            # '+.*__init__',
-                # astroid.bases.py
-                '+BoundMethod::__init__',
-                '+InferenceContext::__init__',
-                '+Instance::__init__',
-                '+UnboundMethod::__init__',
-                # astroid.node_classes.py
-                '+Arguments::__init__',
-                '+CallFunc::__init__',
-                '+Const::__init__',
-                # astroid.scoped_nods.py
-                '+Class::__init__',
-                '+Function::__init__',
-                '+Module::__init__',
-            #@-<< Sherlock stats patterns for pylint >>
-        ]
-        verbose = True
-        args = args + ',' + ','.join([
-            'dots=%s' % (dots),
-            'patterns=%s' % (patterns),
-            'sherlock=True',
-            'show_return=%s' % (show_return),
-            'stats_patterns=%s' % (stats_patterns),
-            'verbose=%s' % (verbose),
-        ])
-    # Execute the command in a separate process.
+    if 0: # Prints error number.
+        args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
         sys.executable, args)
     t1 = time.clock()
@@ -390,6 +229,15 @@ def run(theDir,fn,silent,rpython=False):
     t2 = time.clock()
     if trace:
         g.trace('%4.2f %s' % (t2-t1, g.shortFileName(fn)))
+#@+node:ekr.20140526142452.17594: ** report_version
+def report_version():
+    try:
+        from pylint import lint
+        rc_fn = os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt'))
+        rc_fn = rc_fn.replace('\\', '/')
+        lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
+    except ImportError:
+        g.trace('can not import pylint')
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''
@@ -405,7 +253,6 @@ def scanOptions():
     add('-m', action='store_true', help='modes')
     add('-p', action='store_true', help='plugins')
     add('-s', action='store_true', help='silent')
-    # add('-r', action='store_true', help = 'recent')
     add('-u', action='store_true', help='user commands')
     add('-v', action='store_true', help='report pylint version')
     # Parse the options.

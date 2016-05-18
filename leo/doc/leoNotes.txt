@@ -16316,6 +16316,204 @@ def oldCheckVersion(version, againstVersion, condition=">=", stringCompare="0.0.
         return 1 # it was equal
     # didn't find a condition that we expected.
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
+.. @+node:ekr.20160518071043.1: *3* run (pylint-leo.py) (with Sherlock args)
+# This was used to trace pylint, without success.
+
+def run(theDir,fn,silent,rpython=False):
+    '''Run pylint on fn.'''
+    trace = False and not g.unitTesting
+    # A little hack. theDir is empty for the -f option.
+    if theDir:
+        fn = os.path.join('leo',theDir,fn)
+    rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
+    fn = os.path.abspath(fn)
+    if not fn.endswith('.py'):
+        fn = fn+'.py'
+    if not os.path.exists(rc_fn):
+        print('pylint rc file not found: %s' % (rc_fn))
+        return 0.0
+    if not os.path.exists(fn):
+        print('file not found: %s' % (fn))
+        return 0.0
+    # Report the file name and one level of directory.
+    path = g.os_path_dirname(fn)
+    dirs = path.split(os.sep)
+    theDir = dirs and dirs[-1] or ''
+    if not silent:
+        print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
+    # Create the required args.
+    args = ','.join([
+        "fn=r'%s'" % (fn),
+        "rc=r'%s'" % (rc_fn),
+    ])
+    if scope == 'stc-test': # The --tt option.
+        # Report that Sherlock is enabled.
+        print('pylint-leo.py --tt: enabling Sherlock traces')
+        print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
+        # Report the source code.
+        s = open(fn).read()
+        print('pylint-leo.py: source:\n\n%s\n' % s)
+        # Add the optional Sherlock args.
+        dots = True
+        patterns = [
+            << Sherlock patterns for pylint >>
+        ]
+        show_return = True
+        stats_patterns = [
+            << Sherlock stats patterns for pylint >>
+        ]
+        verbose = True
+        args = args + ',' + ','.join([
+            'dots=%s' % (dots),
+            'patterns=%s' % (patterns),
+            'sherlock=True',
+            'show_return=%s' % (show_return),
+            'stats_patterns=%s' % (stats_patterns),
+            'verbose=%s' % (verbose),
+        ])
+    
+    # Execute the command in a separate process.
+    command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+        sys.executable, args)
+    t1 = time.clock()
+    g.execute_shell_commands(command)
+    t2 = time.clock()
+    if trace:
+        g.trace('%4.2f %s' % (t2-t1, g.shortFileName(fn)))
+.. @+node:ekr.20160518071043.2: *4* << Sherlock patterns for pylint >>
+@nobeautify
+
+# Note:  A leading * is never valid: change to .*
+
+'+.*infer*',
+    # '+.*infer_name',
+    '+.*infer_stmts',
+
+'+YES::__init__',
+
+# '+TypeChecker::add_message',
+    # '+.*add_message',
+    # '+PyLinter::add_message',
+    # '+TextReporter::add_message'
+
+# '+.*visit*',
+    # '+TypeChecker::visit_getattr',
+    # '+.*visit_class',
+    # '+Basic*::visit_*',
+
+# '+.*__init__',
+    # '+Instance::__init__',
+    # '+Class::__init__',
+    # '+Module::__init__',
+    # '+Function::__init__',
+
+# '+:.*typecheck.py',
+# '+:.*inference.py',
+# '+:.*variables.py',
+
+# Old traces
+
+# '+:.*bases.py',
+# '+.*path_raise_wrapper',
+
+# Enable everything.
+# # '+.*',
+
+# # Disable entire files.
+# # '-:.*\\lib\\.*', # Disables everything.
+
+# # Pylint files.
+# #'-:.*base.py',
+# #'-:.*bases.py',
+# '-:.*builder.py',
+# '-:.*__init__.py',
+# '-:.*format.py',
+# '-:.*interface.py', # implements
+# '-:.*rebuilder.py',
+# #'-:.*scoped_nodes',
+# # General library files.
+# '-:.*leoGlobals.py',
+# '-:.*codecs.py',
+# '-:.*config.py',
+# '-:.*configuration.py',
+# '-:.*ConfigParser.py',
+# '-:.*copy\.py',
+# '-:.*gettext.py',
+# '-:.*genericpath.py',
+# '-:.*graph.py',
+# '-:.*locale.py',
+# '-:.*optik_ext.py',
+# '-:.*optparse.py',
+# '-:.*os.py',
+# '-:.*ntpath.py',
+# '-:.*pickle.py',
+# '-:.*re.py',
+# '-:.*similar.py',
+# '-:.*shlex.py',
+# '-:.*sre_compile.py',
+# '-:.*sre_parse.py',
+# '-:.*string_escape.py',
+# '-:.*text.py',
+# '-:.*threading.py',
+# '-:.*tokenize.py',
+# '-:.*utils.py',
+
+# # Enable entire files.
+# # '+:.*base.py',
+# # '+:.*bases.py',
+# # '+:.*classes.py',
+# # '+:.*design_analysis.py',
+# # '+:.*format.py',
+# # '+:.*inference.py',
+# # '+:.*logging.py',
+# # '+:.*mixins.py',
+# # '+:.*newstyle.py',
+# # '+:.*node_classes.py',
+# # '+:.*protocols.py',
+# # '+:.*scoped_nodes.py',
+# # '+:.*typecheck.py',
+# # '+:.*variables.py',
+
+# # Disable individual methods.
+# '-close', # __init__.py
+# '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
+# '-frame','-root','-scope', # scoped_nodes
+# '-register', # various files.
+
+# # '-abspath','-normpath','-isstring','-normalize',
+# # '-splitext','-_splitext','-splitdrive','-splitstrip',
+# # '-.*option.*','-get','-set_option',
+# # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
+# # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
+# # '-_parse.*','-set_parser','-set_conflict_handler',
+# # '-append','-match',
+# # '-isbasestring',
+# # '-save.*','-memoize','-put',
+
+# # '-persistent_id',
+# # '-__next',
+# # '-nodes_of_class',
+# # '-__.*',
+# # '-_check.*',
+# # '-_.*',
+# # '-load_.*',
+.. @+node:ekr.20160518071043.3: *4* << Sherlock stats patterns for pylint >>
+@nobeautify
+
+# '+.*__init__',
+    # astroid.bases.py
+    '+BoundMethod::__init__',
+    '+InferenceContext::__init__',
+    '+Instance::__init__',
+    '+UnboundMethod::__init__',
+    # astroid.node_classes.py
+    '+Arguments::__init__',
+    '+CallFunc::__init__',
+    '+Const::__init__',
+    # astroid.scoped_nods.py
+    '+Class::__init__',
+    '+Function::__init__',
+    '+Module::__init__',
 .. @-all
 .. @@nosearch
 .. @-leo
