@@ -343,7 +343,7 @@ def pyflakes_command(event):
             for fn in paths:
                 # Report the file name.
                 sfn = g.shortFileName(fn)
-                print('pyflakes: %s' % sfn)
+                # print('pyflakes: %s' % sfn)
                 s = g.readFileIntoEncodedString(fn, silent=False)
                 if not s.strip():
                     return
