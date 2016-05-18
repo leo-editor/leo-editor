@@ -344,7 +344,7 @@ def pyflakes_command(event):
                 # Report the file name.
                 sfn = g.shortFileName(fn)
                 print('pyflakes: %s' % sfn)
-                s = g.readFileIntoUnicodeString(fn, silent=False)
+                s = g.readFileIntoEncodedString(fn, silent=False)
                 if not s.strip():
                     return
                 r = reporter.Reporter(
