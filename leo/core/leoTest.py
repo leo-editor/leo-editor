@@ -8,6 +8,10 @@ Run the unit tests in test.leo using the Execute Script command.
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui # For UnitTestGui.
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import doctest
 import gc
 import glob
@@ -172,7 +176,7 @@ class GeneralTestCase(unittest.TestCase):
         script = g.getScript(c, p).strip()
         if self.setup_script:
             script = self.setup_script + '\n' + script
-        tm.assert_(script)
+        tm.assertTrue(script)
         if c.shortFileName() == 'dynamicUnitTest.leo':
             c.write_script_file = True
         # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
@@ -195,7 +199,7 @@ class GeneralTestCase(unittest.TestCase):
             if g.isPython3:
                 exec(compile(script, scriptFile, 'exec'), d)
             else:
-                execfile(scriptFile, d)
+                builtins.execfile(scriptFile, d)
         else:
             exec(script, d)
     #@+node:ekr.20051104075904.11: *3* shortDescription
@@ -235,7 +239,7 @@ class ImportExportTestCase(unittest.TestCase):
         command = getattr(c, commandName) # Will fail if command does not exist.
         command(event=None)
         failedMethod = g.app.unitTestDict.get("fail")
-        self.failIf(failedMethod, failedMethod)
+        self.assertFalse(failedMethod, failedMethod)
     #@+node:ekr.20051104075904.83: *3* runTest
     def runTest(self):
         # """Import Export Test Case"""
@@ -737,7 +741,7 @@ class TestManager(object):
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
-                    execfile(scriptFile, d)
+                    builtins.execfile(scriptFile, d)
             else:
                 exec(script + '\n', d)
             testclass = g.app.scriptDict.get('testclass')
@@ -781,7 +785,7 @@ class TestManager(object):
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
-                    execfile(scriptFile, d)
+                    builtins.execfile(scriptFile, d)
             else:
                 exec(script + '\n', d)
             suite = g.app.scriptDict.get("suite")
@@ -1693,7 +1697,8 @@ def factorial(n):
         try:
             result *= factor
         except OverflowError:
-            result *= long(factor)
+            f = builtins.int if g.isPython3 else builtins.long
+            result *= f(factor)
         factor += 1
     return result
 #@+node:ekr.20051104075904.17: *3* leoTest.py:runGC & helpers (apparently not used)
@@ -1784,7 +1789,7 @@ def printGc(message=None):
                 funcDict[key] = None
                 if key not in lastFunctionsDict:
                     g.pr('\n', obj)
-                    args, varargs, varkw, defaults = inspect.getargspec(obj)
+                    args, varargs, varkw, defaults = inspect.signature(obj)
                     g.pr("args", args)
                     if varargs: g.pr("varargs", varargs)
                     if varkw: g.pr("varkw", varkw)

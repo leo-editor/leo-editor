@@ -74,9 +74,7 @@ class LeoImportCommands(object):
         # Allow plugins to be defined in ~/.leo/plugins.
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        seen = set()
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            path = g.os_path_finalize_join(plugins, 'importers')
             pattern = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'plugins', 'importers', '*.py')
             for fn in glob.glob(pattern):
@@ -90,7 +88,7 @@ class LeoImportCommands(object):
                             'leo.plugins.importers.%s' % module_name)
                         self.parse_importer_dict(sfn, m)
                     except Exception:
-                        if trace_exception:
+                        if trace and trace_exception:
                             g.es_exception()
                         g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
@@ -1623,7 +1621,7 @@ class FreeMindImporter(object):
     #@+node:ekr.20160503191518.3: *3* freemind.element_to_node
     def element_to_node(self, parent_node, element):
 
-        c, d = self.c, self.d
+        d = self.d
         self.count += 1
         n = str(self.count)
         children = list(element.iterchildren())
@@ -1789,7 +1787,7 @@ class JSON_Import_Helper(object):
         '''Create the tree of nodes rooted in parent.'''
         import pprint
         trace = False and not g.unitTesting
-        c, d = self.c, self.gnx_dict
+        d = self.gnx_dict
         if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
@@ -2021,11 +2019,11 @@ class RecursiveImportController(object):
                     # '@auto','@clean','@nosent' cause problems.
         if dirs:
             for dir_ in sorted(dirs):
-                prefix = dir_
                 self.import_dir(dir_, child)
     #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
     def clean_all(self, dir_, p):
         '''Clean all imported nodes. This takes a lot of time.'''
+        trace = False and not g.unitTesting
         t1 = time.time()
         prev_dir = None
         for p in p.self_and_subtree():
@@ -2050,7 +2048,7 @@ class RecursiveImportController(object):
                     junk, ext = g.os_path_splitext(path)
                     self.clean(p, ext)
         t2 = time.time()
-        # g.trace('%2.2f sec' % (t2-t1))
+        if trace: g.trace('%2.2f sec' % (t2-t1))
     #@+node:ekr.20130823083943.12599: *4* clean
     def clean(self, p, ext):
         '''
@@ -2062,7 +2060,6 @@ class RecursiveImportController(object):
         - Merge a node containing no class or def lines with the previous node.
         '''
         g.blue('cleaning', g.shortFileName(p.h))
-        c = self.c
         root = p.copy()
         for tag in ('@@file', '@file'):
             if p.h.startswith(tag):
@@ -2130,7 +2127,6 @@ class RecursiveImportController(object):
         if p2:
             nl = '\n' if s.endswith('\n') else '\n\n'
             p2.b = p2.b + nl + s
-            h = p.h
             p.doDelete(p2)
     #@+node:ekr.20130823083943.12603: *4* move_decorator_lines
     def move_decorator_lines(self, p):
@@ -2252,7 +2248,8 @@ class RecursiveImportController(object):
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         '''
-        t1 = time.time()
+        trace = False and not g.unitTesting
+        if trace: t1 = time.time()
         root = p.copy()
         self.fix_back_slashes(root.copy())
         prefix = prefix.replace('\\', '/')
@@ -2260,8 +2257,9 @@ class RecursiveImportController(object):
             self.remove_empty_nodes(root.copy())
         self.minimize_headlines(root.copy().firstChild(), prefix)
         self.clear_dirty_bits(root.copy())
-        t2 = time.time()
-        # g.trace('%2.2f sec' % (t2-t1))
+        if trace:
+            t2 = time.time()
+            g.trace('%2.2f sec' % (t2-t1))
     #@+node:ekr.20130823083943.12608: *4* clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
@@ -2346,7 +2344,6 @@ class RecursiveImportController(object):
             bunch = c.undoer.beforeChangeTree(p1)
             root = p.insertAfter()
             root.h = 'imported files'
-            prefix = dir_
             self.import_dir(dir_, root.copy())
             for p in root.self_and_subtree():
                 n += 1
@@ -2395,7 +2392,7 @@ class ZimImportController(object):
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path)
         """
-        c = self.c
+        # c = self.c
         pathToZim = g.os_path_abspath(self.pathToZim)
         pathToIndex = g.os_path_join(pathToZim, 'index.rst')
         if not g.os_path_exists(pathToIndex):
