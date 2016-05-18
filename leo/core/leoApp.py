@@ -340,7 +340,7 @@ def pyflakes_command(event):
         def check_all(self, paths):
             '''Run pyflakes on fn.'''
             from pyflakes import api, reporter
-            for fn in paths:
+            for fn in sorted(paths):
                 # Report the file name.
                 sfn = g.shortFileName(fn)
                 # print('pyflakes: %s' % sfn)

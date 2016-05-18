@@ -232,7 +232,6 @@ class PersistenceDataController(object):
         Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
         '''
-        trace = False and not g.unitTesting
         # Delete all children of the @data node.
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
@@ -272,7 +271,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(self, at_data, root):
         '''Delete all children of the @data node'''
-        c = self.c
         if at_data.hasChildren():
             at_data.deleteAllChildren()
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
@@ -299,7 +297,6 @@ class PersistenceDataController(object):
             gnx:<gnx>
             unl:<unl>
         '''
-        trace = False and not g.unitTesting
         lines = g.splitLines(at_gnxs.b)
         gnxs = [s[4:].strip() for s in lines if s.startswith('gnx:')]
         unls = [s[4:].strip() for s in lines if s.startswith('unl:')]

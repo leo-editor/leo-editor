@@ -141,7 +141,7 @@ class ExternalFilesController(object):
         trace = False and not g.unitTesting
         if not self.is_enabled(c) or g.unitTesting:
             return
-        # g.trace('checking',c.shortFileName())
+        if trace: g.trace('checking',c.shortFileName())
         p = c.rootPosition()
         seen = set()
         while p:
@@ -168,7 +168,6 @@ class ExternalFilesController(object):
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, ef):
         '''Update the open-with node given by ef.'''
-        trace = False and not g.unitTesting
         assert isinstance(ef, ExternalFile), ef
         if ef.path and os.path.exists(ef.path):
             time = self.get_mtime(ef.path)

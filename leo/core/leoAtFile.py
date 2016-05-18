@@ -187,7 +187,6 @@ class AtFile(object):
         Set entries in at.writersDispatchDict and at.atAutoWritersDict using
         entries in m.writers_dict.
         '''
-        trace = False and not g.unitTesting
         at = self
         writer_d = getattr(m, 'writer_dict', None)
         if writer_d:
@@ -525,7 +524,7 @@ class AtFile(object):
                 if not fn: return None
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                at.inputFile = f = open(fn, 'rb')
+                at.inputFile = open(fn, 'rb')
                 # new_read_line logic.
                 at.readFileToUnicode(fn)
                     # Sets at.encoding...
@@ -1359,7 +1358,6 @@ class AtFile(object):
     #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
         '''Add an entry to c.nodeConflictList.'''
-        trace = False and not g.unitTesting
         at, c = self, self.c
         if at.perfectImportRoot:
             if not postPass:
@@ -1641,7 +1639,6 @@ class AtFile(object):
         '''Create a version 5 vnode.'''
         at = self
         trace = False and not g.unitTesting
-        trace_s = True
         oldLevel = len(at.thinNodeStack)
         newLevel = level
         assert oldLevel >= 1
@@ -1673,7 +1670,7 @@ class AtFile(object):
         """
         trace = False and not g.unitTesting
         trace_tree = False
-        at, c, indices = self, self.c, g.app.nodeIndices
+        c = self.c
         if trace and trace_tree:
             g.trace(n, len(parent.children), parent.h, ' -> ', headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
@@ -1717,7 +1714,6 @@ class AtFile(object):
         trace = False and not g.unitTesting
         verbose = True
         at = self; c = at.c
-        indices = g.app.nodeIndices
         gnx = gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         last = at.lastThinNode # A VNode.
@@ -2714,7 +2710,7 @@ class AtFile(object):
 
         This is a kludgy method used only by the import code.'''
         at = self
-        s = at.readFileToUnicode(fileName)
+        at.readFileToUnicode(fileName)
             # inits at.readLine.
         junk, junk, isThin = at.scanHeader(None)
             # scanHeader uses at.readline instead of its args.
@@ -3160,7 +3156,7 @@ class AtFile(object):
     def saveOutlineIfPossible(self):
         '''Save the outline if only persistence data nodes are dirty.'''
         trace = False and not g.unitTesting
-        at, c = self, self.c
+        c = self.c
         changed_positions = [p.copy() for p in c.all_unique_positions() if p.v.isDirty()]
         at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
         if at_persistence:
@@ -3856,7 +3852,6 @@ class AtFile(object):
     #@+node:ekr.20041005105605.172: *8* putAtOthersChild
     def putAtOthersChild(self, p):
         at = self
-        parent_v = p._parentVnode()
         at.putOpenNodeSentinel(p)
         at.putBody(p)
         at.putCloseNodeSentinel(p)
@@ -3866,7 +3861,6 @@ class AtFile(object):
         Return True if p should be included in the expansion of the @others
         directive in the body text of p's parent.
         """
-        trace = False and not g.unitTesting
         at = self
         i = g.skip_ws(p.h, 0)
         isSection, junk = at.isSectionName(p.h, i)
@@ -3936,7 +3930,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.177: *7* putRefAt
     def putRefAt(self, s, i, n1, n2, p, delta):
         """Put a reference at s[n1:n2+2] from p."""
-        at, c = self, self.c
+        at = self
         name = s[n1: n2 + 2]
         ref = at.findReference(name, p)
         if not ref: return None
@@ -4001,10 +3995,10 @@ class AtFile(object):
         at = self
         j = g.skip_line(s, i)
         s = s[i: j]
-        if at.endSentinelComment:
-            leading = at.indent
-        else:
-            leading = at.indent + len(at.startSentinelComment) + 1
+        # if at.endSentinelComment:
+            # leading = at.indent
+        # else:
+            # leading = at.indent + len(at.startSentinelComment) + 1
         if not s or s[0] == '\n':
             # A blank line.
             at.putBlankDocLine()
@@ -4769,7 +4763,7 @@ class AtFile(object):
                 ):
                     g.warning("correcting line endings in:", at.targetFileName)
                 #@-<< report if the files differ only in line endings >>
-                mode = at.stat(at.targetFileName)
+                # mode = at.stat(at.targetFileName)
                 s = at.outputContents
                 ok = at.create(at.targetFileName, s)
                 if ok:

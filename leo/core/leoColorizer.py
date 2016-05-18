@@ -10,6 +10,10 @@ python_qsh = True
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import leo.core.leoGlobals as g
 from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import re
 import string
 import time
@@ -102,7 +106,6 @@ class PythonQSyntaxHighlighter(object):
             # QtGui.QTextCursor.MoveOperation operation
         self.inReformatBlocks = True
         try:
-            c = self.c
             cursor.beginEditBlock()
             from_ = cursor.position()
             cursor.movePosition(operation)
@@ -2184,7 +2187,6 @@ class JEditColorizer(object):
         trace = False and not g.unitTesting
         traceCallers = False; traceLine = True
         traceState = False; traceReturns = False
-        limit = True # do only 10 lines at a time.
         # Update the counts.
         self.recolorCount += 1
         if self.colorizer.changingText:
@@ -2622,7 +2624,7 @@ if QtGui:
                 if g.isPython3:
                     s = str(s)
                 else:
-                    s = unicode(s)
+                    s = builtins.unicode(s)
                 self.colorer.recolor(s)
                 v = self.c.p.v
                 if hasattr(v, 'colorCache') and v.colorCache and not self.colorizer.changingText:
@@ -2720,7 +2722,7 @@ if Qsci:
 
         def configure_lexer(self):
             '''Configure the QScintilla lexer.'''
-            c = self.leo_c
+            # c = self.leo_c
             lexer = self
             # To do: use c.config setting.
             # pylint: disable=no-member

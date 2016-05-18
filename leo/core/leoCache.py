@@ -166,7 +166,6 @@ class Cacher(object):
         '''
         trace = False and not g.unitTesting
         c = self.c
-        indices = g.app.nodeIndices
         gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         if gnxString is None: v = None
@@ -358,7 +357,7 @@ class Cacher(object):
         assert g.app.db is not None
             # a PickleShareDB instance.
         # Make sure g.guessExternalEditor works.
-        junk = g.app.db.get("LEO_EDITOR")
+        g.app.db.get("LEO_EDITOR")
         self.initFileDB('~/testpickleshare')
         db = self.db
         db.clear()

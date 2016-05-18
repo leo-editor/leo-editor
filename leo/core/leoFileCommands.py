@@ -1587,8 +1587,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.1246: *5* fc.putProlog
     def putProlog(self):
         '''Put the prolog of the xml file.'''
-        c = self.c
-        # tag = 'http://www.leo-editor.org/2011/leo'
         tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
         # Put "created by Leo" line.
@@ -2067,7 +2065,7 @@ class FileCommands(object):
             return ''
     #@+node:ekr.20040701065235.2: *4* fc.putDescendentAttributes
     def putDescendentAttributes(self, p):
-        nodeIndices = g.app.nodeIndices
+
         # Create lists of all tnodes whose vnodes are marked or expanded.
         marks = []; expanded = []
         for p in p.subtree():

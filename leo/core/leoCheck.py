@@ -145,7 +145,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.in_attr = False
             # True: traversing inner parts of an AST.Attribute tree.
         self.module_context = None
-        self.parent_node = None
+        self.parent = None
     #@+node:ekr.20160108105958.3: *3*  p1.run (entry point)
     def run (self,root):
 
@@ -155,13 +155,13 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
         assert isinstance(node, ast.AST), node.__class__.__name__
         # Visit the children with the new parent.
-        old_parent = self.parent_node
-        parent = node
+        old_parent = self.parent
+        self.parent = node
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name)
         # g.trace(method_name)
         method(node)
-        self.parent_node = old_parent
+        self.parent = old_parent
     #@+node:ekr.20160108105958.11: *3* p1.visitors
     #@+node:ekr.20160109134854.1: *4* Contexts
     #@+node:ekr.20160108105958.8: *5* p1.def_args_helper
@@ -187,7 +187,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         # Define the class name in the old context.
         old_cx.define_name(name)
         # Visit bases in the old context.
-        bases = self.visit_list(node.bases)
+        # bases = self.visit_list(node.bases)
         new_cx = Context(
             fn=None,
             kind='class',
@@ -273,9 +273,9 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     def do_Attribute(self,node):
 
         # Visit...
-        cx = self.context
-        old_attr,self.in_attr = self.in_attr,True
-        ctx = self.kind(node.ctx)
+        # cx = self.context
+        old_attr, self.in_attr = self.in_attr, True
+        # ctx = self.kind(node.ctx)
         self.visit(node.value)
         # self.visit(node.ctx)
         self.in_attr = old_attr
@@ -283,7 +283,8 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             base_node = node
             kind = self.kind(base_node)
             if kind in ('Builtin','Name'):
-                base_name = base_node.id
+                # base_name = base_node.id
+                pass
             elif kind in ('Dict','List','Num','Str','Tuple',):
                 pass
             elif kind in ('BinOp','UnaryOp'):
@@ -311,8 +312,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx  = self.context
         ctx = self.kind(node.ctx)
         name = node.id
-
-        def_flag,ref_flag=False,False
+        # def_flag,ref_flag=False,False
 
         if ctx in ('AugLoad','AugStore','Load'):
             # Note: AugStore does *not* define the symbol.
@@ -343,12 +343,11 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         '''
         Add the imported file to u.files_list if needed
         and create a context for the file.'''
-        trace = False
         cx = self.context
         cx.statements_list.append(node)
-        e_list,names = [],[]
+        # e_list, names = [],[]
         for fn,asname in self.get_import_names(node):
-            fn2 = self.resolve_import_name(fn)
+            self.resolve_import_name(fn)
             # Not yet.
             # # Important: do *not* analyze modules not in the files list.
             # if fn2:
@@ -397,14 +396,9 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         Add the imported file to u.files_list if needed
         and add the imported symbols to the *present* context.
         '''
-        trace = False ; dump = False
         cx = self.context
         cx.statements_list.append(node)
-        module = self.resolve_import_name(node.module)
-        # if m and m not in self.u.files_list:
-            # if trace: g.trace('adding module',m)
-            # self.u.files_list.append(m)
-        # e_list,names = [],[]
+        self.resolve_import_name(node.module)
         for fn,asname in self.get_import_names(node):
             fn2 = asname or fn
             cx.import_name(fn2)

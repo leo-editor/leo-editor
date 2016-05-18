@@ -30,6 +30,7 @@ else:
         isQt5 = False
         try:
             from PyQt4 import Qt
+            assert Qt # for pyflakes
         except ImportError:
             if strict:
                 print('leoQt.py: can not import either PyQt4 or PyQt5.')
@@ -45,6 +46,7 @@ if fail:
     phonon = uic = None
     qt_version = '<no version>'
     printsupport = None
+    assert QUrl # for pyflakes
 elif isQt5:
     try:
         from PyQt5 import QtCore
@@ -60,6 +62,7 @@ else:
         from PyQt4 import QtCore
         from PyQt4 import QtGui
         from PyQt4.QtCore import QUrl
+        assert QUrl # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
