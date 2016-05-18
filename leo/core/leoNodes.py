@@ -97,7 +97,6 @@ class NodeIndices(object):
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         '''
         trace = False and not g.unitTesting
-        trace_hold = False
         if v is None:
             g.internalError('getNewIndex: v is None')
             return ''
@@ -893,7 +892,6 @@ class Position(object):
     #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
     def isOutsideAnyAtFileTree(self):
         '''Select the first clone of target that is outside any @file node.'''
-        trace = False and not g.unitTesting
         p = self
         for parent in p.self_and_parents():
             if parent.isAnyAtFileNode():
@@ -2394,7 +2392,7 @@ class VNodeBase(object):
         traceTime = False and not g.unitTesting
         v = self
         ins = v.insertSpot
-        start, n = v.selectionStart, v.selectionLength
+        # start, n = v.selectionStart, v.selectionLength
         spot = v.scrollBarSpot
         body = self.context.frame.body
         w = body.wrapper

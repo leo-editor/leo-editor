@@ -234,7 +234,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
-        c = self.c
         data = self.getOutlineDataHelper(p)
         self.set(p, kind, name, data)
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
@@ -606,7 +605,7 @@ class ParserBaseClass(object):
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         trace = False and not g.unitTesting
-        c, k = self.c, self.c.k
+        c = self.c
         name1 = name
         # g.trace('%20s' % (name),c.fileName())
         modeName = self.computeModeName(name)
@@ -982,7 +981,7 @@ class ParserBaseClass(object):
     def traverse(self):
         '''Traverse the entire settings tree.'''
         trace = False and not g.unitTesting
-        c, k = self.c, self.c.k
+        c = self.c
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'), valType=g.GeneralSetting)
@@ -1796,7 +1795,7 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
     def getSettingSource(self, setting):
         '''return the name of the file responsible for setting.'''
-        c, d = self.c, self.settingsDict
+        d = self.settingsDict
         if d:
             assert g.isTypedDict(d), d
             si = d.get(setting)

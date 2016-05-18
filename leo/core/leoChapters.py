@@ -45,7 +45,7 @@ class ChapterController(object):
         '''Create the box in the icon area.'''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(cc)')
-        cc, c = self, self.c
+        cc = self
         cc.createIcon()
         if trace: g.trace('===== ChapterController.finishCreate')
         cc.setAllChapterNames()
@@ -121,10 +121,10 @@ class ChapterController(object):
     def selectChapterByName(self, name, collapse=True):
         '''Select a chapter.  Return True if a redraw is needed.'''
         trace = False and not g.unitTesting
+        cc = self
         if self.selectChapterLockout:
             if trace: g.trace('lockout', g.callers())
             return
-        cc, c = self, self.c
         if g.isInt(name):
             return cc.note('PyQt5 chapaters not supported')
         chapter = cc.getChapter(name)
@@ -132,10 +132,10 @@ class ChapterController(object):
             g.es_print('no such @chapter node: %s' % name)
             return
         try:
-            self.selectChapterLockout = True
+            cc.selectChapterLockout = True
             cc.selectChapterByNameHelper(chapter, collapse=collapse)
         finally:
-            self.selectChapterLockout = False
+            cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
         '''Select the chapter, and redraw if necessary.'''
@@ -400,7 +400,7 @@ class Chapter(object):
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
     def chapterSelectHelper(self, w=None, selectEditor=True):
         trace = False and not g.unitTesting
-        c, cc, name = self.c, self.cc, self.name
+        c, cc = self.c, self.cc
         if trace: g.trace('-----------', self, 'w:', bool(w))
         cc.selectedChapter = self
         if self.name == 'main':
@@ -447,7 +447,7 @@ class Chapter(object):
         '''Return a valid position p such that p.v == v.'''
         trace = False and not g.unitTesting
         verbose = False
-        c, cc, name = self.c, self.cc, self.name
+        c, name = self.c, self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
         if name == 'main' and c.positionExists(p1):
             return p1
