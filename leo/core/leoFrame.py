@@ -1212,7 +1212,7 @@ class LeoLog(object):
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoLog class.'''
         self.frame = frame
-        self.c = c = frame and frame.c or None
+        self.c = frame and frame.c or None
         self.enabled = True
         self.newlines = 0
         self.isNull = False
@@ -1699,11 +1699,10 @@ class LeoTree(object):
                 new_v=p, old_v=old_p)
         else:
             select = True
-        # g.trace('select', select)
         if select:
             self.revertHeadline = p.h
             c.frame.setWrap(p)
-            w = c.frame.body.wrapper.widget
+            # w = c.frame.body.wrapper.widget
             btc = c.bigTextController
             if btc:
                 if btc.should_add_buttons(old_p, p):
@@ -1788,7 +1787,6 @@ class LeoTree(object):
         '''Scroll the cursor. It deserves separate timing stats.'''
         if traceTime:
             t1 = time.time()
-        c = self.c
         p.restoreCursorAndScroll()
             # Was in setBodyTextAfterSelect
         if traceTime:
@@ -2496,13 +2494,9 @@ class StringTextWrapper(object):
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
     def setSelectionRange(self, i, j, insert=None):
         '''StringTextWrapper.'''
-        i1, j1, insert1 = i, j, insert
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
-        if insert is not None:
-            self.ins = self.toPythonIndex(insert)
-        else:
-            self.ins = j
+        self.ins = j if insert is None else self.toPythonIndex(insert)
         if self.trace: g.trace('i', i, 'j', j, 'insert', repr(insert))
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):

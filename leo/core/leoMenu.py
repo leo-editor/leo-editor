@@ -1211,7 +1211,7 @@ class LeoMenu(object):
             'kind':     the method used to open the file, such as subprocess.Popen.
         '''
         # trace = False and not g.unitTesting
-        c, k = self.c, self.c.k
+        k = self.c.k
         if not table: return
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.

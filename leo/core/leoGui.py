@@ -13,6 +13,10 @@ Plugins may define their own gui classes by setting g.app.gui.
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
     # for NullGui and StringTextWrapper.
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui(object):
@@ -474,7 +478,7 @@ class UnitTestGui(NullGui):
         if g.isPython3:
             return str(s)
         else:
-            return unicode(s)
+            return builtins.unicode(s)
     #@-others
 #@-others
 #@@language python

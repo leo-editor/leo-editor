@@ -130,7 +130,7 @@ class LeoFind(object):
         self.ftm = None
             # Created by dw.createFindTab.
         self.frame = None
-        self.k = k = c.k
+        self.k = c.k
         self.re_obj = None
 
         # Options ivars: set by FindTabManager.init.
@@ -511,7 +511,6 @@ class LeoFind(object):
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     @cmd('start-search')
     def startSearch(self, event):
-        c = self.c
         w = self.editWidget(event)
         if w:
             self.preloadFindPattern(w)
@@ -616,9 +615,7 @@ class LeoFind(object):
     #@+node:ekr.20131117164142.16949: *4* find.iSearch
     def iSearch(self, again=False):
         '''Handle the actual incremental search.'''
-        c = self.c
-        p = c.p
-        k = self.k
+        c, k = self.c, self.k
         self.p = c.p
         reverse = not self.isearch_forward
         pattern = k.getLabel(ignorePrompt=True)
@@ -702,7 +699,7 @@ class LeoFind(object):
             self.abortSearch()
             return
         # Reduce the stack by net 1.
-        junk = self.pop()
+        self.pop()
         p, i, j, in_headline = self.pop()
         self.push(p, i, j, in_headline)
         if trace: g.trace(p.h, i, j, in_headline)
@@ -1091,7 +1088,7 @@ class LeoFind(object):
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
         c, k = self.c, self.k
-        self.w = w = self.editWidget(event)
+        self.w = self.editWidget(event)
         if not self.w:
             g.trace('no self.w')
             return
@@ -2112,7 +2109,6 @@ class LeoFind(object):
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )
-        prompt = 'wixbhacf[esn]' # This quickly become cruft.
         result = [option for option, ivar in table if ivar.checkState()]
         table2 = (
             ('Suboutline', ftm.radio_button_suboutline_only),
@@ -2122,7 +2118,6 @@ class LeoFind(object):
             if ivar.isChecked():
                 result.append('[%s]' % option)
                 break
-        # c.frame.putStatusLine('Find (%s): %s' % (prompt, ' '.join(result)))
         c.frame.putStatusLine('Find: %s' % ' '.join(result))
     #@+node:ekr.20150619070602.1: *4* find.showStatus
     def showStatus(self, found):

@@ -2,6 +2,8 @@
 #@+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
+# pylint: disable=deprecated-method
+    # The new methods may not exist in Python 2.
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
@@ -824,7 +826,7 @@ class AutoCompleterClass(object):
     #@+node:ekr.20061031131434.39: *4* ac.insert_general_char
     def insert_general_char(self, ch):
         trace = False and not g.unitTesting
-        c, k = self.c, self.k; w = self.w
+        k, w = self.k, self.w
         if trace: g.trace(repr(ch))
         if g.isWordChar(ch):
             self.insert_string(ch)
@@ -1229,7 +1231,7 @@ class GetArg(object):
     def do_back_space(ga, tabList, completion=True):
         '''Handle a backspace and update the completion list.'''
         trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        k = ga.k
         ga.tabList = tabList[:] if tabList else []
         if trace: g.trace('len(ga.tabList)', len(ga.tabList))
         # Update the label.
@@ -1262,7 +1264,7 @@ class GetArg(object):
         '''Handle tab completion when the user hits a tab.'''
         trace = False and not g.unitTesting
         # g.trace('\n'+'\n'.join([z for z in tabList if z.startswith('@')]))
-        c, k = ga.c, ga.k
+        c = ga.c
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
             if trace: g.trace('len(ga.tabList)', len(ga.tabList))
@@ -1453,7 +1455,7 @@ class GetArg(object):
     def do_end(ga, event, char, stroke):
         '''A return or escape has been seen.'''
         trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        k = ga.k
         if trace:
             g.trace('char', repr(char), stroke, k.getArgEscapes)
             if ga.after_get_arg_state:
@@ -2312,7 +2314,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20130924035029.12741: *5* k.initOneAbbrev
     def initOneAbbrev(self, commandName, key):
         '''Enter key as an abbreviation for commandName in c.commandsDict.'''
-        c, k = self.c, self
+        c = self.c
         if c.commandsDict.get(key):
             g.trace('ignoring duplicate abbrev: %s', key)
         else:
@@ -2347,7 +2349,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
-        k = self; c = k.c
+        k = self
         k.bindingsDict = {}
         k.addModeCommands()
         k.makeBindingsFromCommandsDict()
@@ -2421,7 +2423,7 @@ class KeyHandlerClass(object):
     def addToCommandHistory(self, commandName):
         '''Add a name to the command history.'''
         k = self
-        h, i = k.commandHistory, k.commandIndex
+        h = k.commandHistory
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
@@ -2561,7 +2563,8 @@ class KeyHandlerClass(object):
     def callAltXFunction(self, event):
         '''Call the function whose name is in the minibuffer.'''
         trace = False and not g.unitTesting
-        k = self; c = k.c; s = k.getLabel()
+        c, k = self.c, self
+        # s = k.getLabel()
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         if trace: g.trace('command:', commandName, 'tail:', tail)
@@ -4372,7 +4375,7 @@ class KeyHandlerClass(object):
         k.setInputState(state)
     #@+node:ekr.20061031131434.133: *4* k.setInputState
     def setInputState(self, state, set_border=False):
-        c, k = self.c, self
+        k = self
         k.unboundKeyAction = state
     #@+node:ekr.20061031131434.199: *4* k.setState
     def setState(self, kind, n, handler=None):
@@ -4396,7 +4399,6 @@ class KeyHandlerClass(object):
         c, k = self.c, self
         state = k.unboundKeyAction
         mode = k.getStateKind()
-        inOutline = False
         if not g.app.gui: return
         if not w:
             w = g.app.gui.get_focus(c)
@@ -4502,7 +4504,7 @@ class KeyHandlerClass(object):
         # of -1. These unusual cases will be described when they come up; they are always
         # to make the individual command more convenient to use.
         #@-<< about repeat counts >>
-        c, k = self.c, self
+        k = self
         state = k.getState('u-arg')
         stroke = event and event.stroke or None
         if state == 0:
@@ -4657,8 +4659,7 @@ class ModeInfo(object):
                     if trace: g.trace(modeName, d2)
     #@+node:ekr.20120208064440.10195: *3* createModeCommand (ModeInfo) (not used)
     def createModeCommand(self):
-        g.trace(self)
-        c, k = self.c, self.k
+        c = self.c
         key = 'enter-' + self.name.replace(' ', '-')
 
         def enterModeCallback(event=None, self=self):
@@ -4679,7 +4680,7 @@ class ModeInfo(object):
     def init(self, name, dataList):
         '''aList is a list of tuples (commandName,si).'''
         trace = False and not g.unitTesting
-        c, d, k, modeName = self.c, self.d, self.c.k, self.name
+        c, d, modeName = self.c, self.d, self.name
         for name, si in dataList:
             assert g.isShortcutInfo(si), si
             if not name:
