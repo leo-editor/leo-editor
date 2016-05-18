@@ -745,7 +745,7 @@ class PersistenceDataController(object):
     def unl(self, p):
         '''Return the unl corresponding to the given position.'''
         return '-->'.join(reversed(
-            [self.expected_headline(p) for p in p.self_and_parents()]))
+            [self.expected_headline(p2) for p2 in p.self_and_parents()]))
     #@+node:ekr.20140711111623.17885: *5* pd.unl_tail
     def unl_tail(self, unl):
         '''Return the last part of a unl.'''

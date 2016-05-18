@@ -73,7 +73,7 @@ class PrintingController(object):
     #@+node:ekr.20150419124739.15: *4* pr.getBodies
     def getBodies(self, p):
         '''Return a concatenated version of the tree at p'''
-        return '\n'.join([p.b for p in p.self_and_subtree()])
+        return '\n'.join([p2.b for p2 in p.self_and_subtree()])
     #@+node:ekr.20150420085602.1: *4* pr.getNodes
     def getNodes(self, p):
         '''Return the entire script at node p.'''

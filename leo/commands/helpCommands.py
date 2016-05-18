@@ -357,7 +357,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                     n2 = max(n2, len(s2))
                     data.append((s1, s2, s3),)
         data.sort(key=lambda x: x[1])
-        return ','.join(['%s %s' % (s1, s2) for s1, s2, s3 in data]).strip()
+        return ','.join(['%s %s' % (z1, z2) for z1, z2, z3 in data]).strip()
     #@+node:ekr.20150514063305.383: *4* helpForCommandFinisher
     def helpForCommandFinisher(self, commandName):
         c, s = self.c, None

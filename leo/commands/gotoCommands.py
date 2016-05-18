@@ -33,7 +33,7 @@ class GoToCommands(object):
             lines = g.splitLines(s)
             if trace:
                 g.trace('sentinels', sentinels)
-                aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
+                aList = ['%3s %s' % (i, s2) for i, s2 in enumerate(lines)]
                 g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
             # Step 2: scan the lines for line n.
             if sentinels:

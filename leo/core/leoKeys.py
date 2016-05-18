@@ -928,7 +928,7 @@ class AutoCompleterClass(object):
             if ch:
                 n = d.get(ch, 0)
                 d[ch] = n + 1
-        aList = ['%s %d' % (ch, d.get(ch)) for ch in sorted(d)]
+        aList = ['%s %d' % (ch, d.get(ch2)) for ch2 in sorted(d)]
         if len(aList) > 1:
             tabList = aList
         else:
@@ -1601,7 +1601,7 @@ class GetArg(object):
                 s3 = commandName
                 data.append((s1, s2, s3),)
                 n = max(n, len(s1))
-        aList = ['%*s %s %s' % (-n, s1, s2, s3) for s1, s2, s3 in data]
+        aList = ['%*s %s %s' % (-n, z1, z2, z3) for z1, z2, z3 in data]
         if legend:
             aList.extend([
                 '',
@@ -2842,7 +2842,7 @@ class KeyHandlerClass(object):
                 n = max(n, len(s1))
                 data.append((s1, s2),)
         # This isn't perfect in variable-width fonts.
-        lines = ['%*s %s\n' % (-n, s1, s2) for s1, s2 in data]
+        lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     @cmd('repeat-complex-command')
