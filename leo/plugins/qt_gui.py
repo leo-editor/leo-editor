@@ -21,7 +21,8 @@ import sys
 if 1:
     # This defines the commands defined by @g.command.
     # pylint: disable=unused-import
-    import leo.plugins.qt_commands
+    import leo.plugins.qt_commands as qt_commands
+    assert qt_commands
 #@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init
@@ -178,7 +179,7 @@ class LeoQtGui(leoGui.LeoGui):
     def findDialogSelectCommander(self, c):
         '''Update the Find Dialog when c changes.'''
         if self.globalFindDialog:
-            c.ftm = ftm = g.app.globalFindTabManager
+            c.ftm = g.app.globalFindTabManager
             d = self.globalFindDialog
             fn = c.shortFileName() or 'Untitled'
             d.setWindowTitle('Find in %s' % fn)
@@ -634,6 +635,7 @@ class LeoQtGui(leoGui.LeoGui):
         Create an event filter in obj.
         w is a wrapper object, not necessarily a QWidget.
         '''
+        # gui = self
         if 0:
             g.trace(isinstance(w, QtWidgets.QWidget),
                 hasattr(w, 'getName') and w.getName() or None,
@@ -643,7 +645,6 @@ class LeoQtGui(leoGui.LeoGui):
                 isinstance(obj, QtWidgets.QWidget), obj.__class__.__name__,
                 isinstance(w, QtWidgets.QWidget), w.__class__.__name__))
         assert isinstance(obj, QtWidgets.QWidget), obj
-        gui = self
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)
         w.ev_filter = theFilter
@@ -669,7 +670,7 @@ class LeoQtGui(leoGui.LeoGui):
     def set_focus(self, c, w):
         """Put the focus on the widget."""
         trace = False and not g.unitTesting
-        gui = self
+        # gui = self
         if w:
             if hasattr(w, 'widget') and w.widget: w = w.widget
             if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
@@ -1646,7 +1647,7 @@ class StyleSheetManager(object):
             sheet = c.p.b
             sheet = self.expand_css_constants(sheet)
             w = self.get_master_widget(c.frame.top)
-            a = w.setStyleSheet(sheet)
+            w.setStyleSheet(sheet)
     #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         '''Set the master style sheet for all widgets using config settings.'''
@@ -1676,7 +1677,7 @@ class StyleSheetManager(object):
             if w is None:
                 w = self.get_master_widget(top)
             if trace: g.trace(w, len(sheet))
-            a = w.setStyleSheet(sheet)
+            w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')
     #@-others

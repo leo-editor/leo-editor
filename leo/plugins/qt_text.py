@@ -6,7 +6,6 @@
 import leo.core.leoGlobals as g
 import time
 from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
-from leo.core.leoQt import Qsci
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin(object):
@@ -15,7 +14,6 @@ class QTextMixin(object):
     #@+node:ekr.20140901062324.18732: *3* qtm.ctor & helper
     def __init__(self, c=None):
         '''Ctor for QTextMixin class'''
-        name = 'QTextMixin'
         self.c = c
         self.changingText = False # A lockout for onTextChanged.
         self.enabled = True
@@ -851,7 +849,6 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self, bold, n, painter, top_left, scroll_y):
         '''Paint n, right justified in the line number field.'''
-        c = self.c
         if bold:
             self.setBold(painter, True)
         s = str(n)
@@ -1028,7 +1025,7 @@ class QScintillaWrapper(QTextMixin):
                 QtCore.QTimer.singleShot(delay, func)
             #@+node:ekr.20140902084950.18636: *5* addFlashCallback
             def addFlashCallback(self=self):
-                n, i = self.flashCount, self.flashIndex
+                i = self.flashIndex
                 w = self.widget
                 self.setSelectionRange(i, i + 1)
                 if self.flashBg:
@@ -1052,7 +1049,7 @@ class QScintillaWrapper(QTextMixin):
             # Numbered color names don't work in Ubuntu 8.10, so...
             if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[: -1]
             if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[: -1]
-            w = self.widget # A QsciScintilla widget.
+            # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
             self.flashIndex = self.toPythonIndex(i)
@@ -1092,13 +1089,11 @@ class QScintillaWrapper(QTextMixin):
         return i, j
     #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition (to do)
     def getXScrollPosition(self):
-        w = self.widget
-        # g.trace(g.callers())
+        # w = self.widget
         return 0 # Not ready yet.
 
     def getYScrollPosition(self):
-        w = self.widget
-        # g.trace(g.callers())
+        # w = self.widget
         return 0 # Not ready yet.
     #@+node:ekr.20110605121601.18111: *4* qsciw.hasSelection
     def hasSelection(self):
@@ -1328,7 +1323,7 @@ class QTextEditWrapper(QTextMixin):
             QtCore.QTimer.singleShot(delay, func)
 
         def addFlashCallback(self=self, w=w):
-            n, i = self.flashCount, self.flashIndex
+            i = self.flashIndex
             cursor = w.textCursor() # Must be the widget's cursor.
             cursor.setPosition(i)
             cursor.movePosition(e.Right, e.KeepAnchor, 1)

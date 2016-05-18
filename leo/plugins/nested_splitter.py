@@ -226,8 +226,8 @@ if QtWidgets:
                 if max_parent_splits >= 2:
                     break # two is enough
             for i in 0, 1:
-                keep = splitter.widget(index)
-                cull = splitter.widget(index - 1)
+                # keep = splitter.widget(index)
+                # cull = splitter.widget(index - 1)
                 if (max_parent_splits >= 2 or # more splits upstream
                     splitter.count() > 2 or # 3+ splits here, or 2+ downstream
                     neighbour[not i] and neighbour[not i].max_count() >= 2

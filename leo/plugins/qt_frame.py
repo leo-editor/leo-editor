@@ -402,9 +402,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return w
     #@+node:ekr.20110605121601.18162: *5* dw.createTabWidget
     def createTabWidget(self, parent, name, hPolicy=None, vPolicy=None):
-        # w = LeoBaseTabWidget(parent)
         w = QtWidgets.QTabWidget(parent)
-        tb = w.tabBar()
+        # tb = w.tabBar()
         # tb.setTabsClosable(True)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         self.setName(w, name)
@@ -702,7 +701,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw.find_status_edit = status_line
     #@+node:ekr.20131118172620.16891: *6* dw.override_events
     def override_events(self):
-        c, dw = self.leo_c, self
+        # dw = self
+        c = self.leo_c
         fc = c.findCommands
         ftm = fc.ftm
         # Define class EventWrapper.
@@ -905,7 +905,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
     def setSplitDirection(self, main_splitter, secondary_splitter, orientation):
         '''Set the orientations of the splitters in the Leo main window.'''
-        c = self.leo_c
+        # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
         # g.trace('orientation', orientation, 'vert', vert)
         h, v = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
@@ -1127,9 +1127,9 @@ class FindTabManager(object):
         w = d.get(checkbox_name)
         assert w
         assert hasattr(find,checkbox_name),checkbox_name
-        old_val = getattr(find,checkbox_name)
+        # old_val = getattr(find,checkbox_name)
         w.toggle() # The checkbox callback toggles the ivar.
-        new_val = getattr(find,checkbox_name)
+        # new_val = getattr(find,checkbox_name)
         # g.trace(checkbox_name,old_val,new_val)
         if find.minibuffer_mode:
             find.showFindOptionsInStatusArea()
@@ -3942,7 +3942,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c2.selectPosition(p2)
             s = c2.fileCommands.putLeoOutline()
             # Paste the outline after the selected node.
-            pasted = c.fileCommands.getLeoOutlineFromClipboard(
+            c.fileCommands.getLeoOutlineFromClipboard(
                 s, reassignIndices=True)
         dummy_p.doDelete()
         c.selectPosition(p)
@@ -4270,14 +4270,14 @@ class LeoQtTreeTab(object):
     #@+node:ekr.20110605121601.18446: *3* tt.setTabLabel
     def setTabLabel(self, tabName):
         '''LeoQtTreeTab.'''
-        tt, w = self, self.w
+        w = self.w
         i = w.findText(tabName)
         if i > -1:
             w.setCurrentIndex(i)
     #@+node:ekr.20110605121601.18447: *3* tt.setNames
     def setNames(self):
         '''LeoQtTreeTab: Recreate the list of items.'''
-        tt, w = self, self.w
+        w = self.w
         names = self.cc.setAllChapterNames()
         w.clear()
         w.insertItems(0, names)

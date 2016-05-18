@@ -124,7 +124,6 @@ class BigTextController(object):
     #@+node:tbrown.20140919120654.24042: *3* btc.load_nc
     def load_nc(self):
         '''Load the big text with a leading @killcolor directive.'''
-        traceTime = False
         c, p = self.c, self.c.p
         if not c.positionExists(p):
             return
