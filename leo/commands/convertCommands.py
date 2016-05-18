@@ -1126,7 +1126,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # self.output_fn = None
                 self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
                 # Connect to the external module.
-                self.py2cs = py2cs = g.importExtension(
+                self.py2cs = g.importExtension(
                     'py2cs',
                     pluginName=None,
                     verbose=False,
@@ -1657,6 +1657,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
         try:
             import nbformat
+            assert nbformat
         except ImportError:
             g.es_print('import-jupyter-notebook requires nbformat package')
             return

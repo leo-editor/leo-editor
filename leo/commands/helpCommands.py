@@ -339,7 +339,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         k.fullCommand(event, help=True, helpHandler=self.helpForCommandFinisher)
     #@+node:ekr.20150514063305.382: *4* getBindingsForCommand
     def getBindingsForCommand(self, commandName):
-        c, k = self.c, self.c.k
+        k = self.c.k
         data = []
         n1, n2 = 4, 20
         d = k.bindingsDict

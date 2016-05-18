@@ -223,7 +223,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     @cmd('spell-as-you-type-toggle')
     def as_you_type_toggle(self, event):
         """as_you_type_toggle - toggle spell as you type."""
-        c = self.c
+        # c = self.c
         if self.spell_as_you_type:
             self.spell_as_you_type = False
             if not self.wrap_as_you_type:
@@ -238,7 +238,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     @cmd('spell-as-you-type-wrap')
     def as_you_type_wrap(self, event):
         """as_you_type_wrap - toggle wrap as you type."""
-        c = self.c
+        # c = self.c
         if self.wrap_as_you_type:
             self.wrap_as_you_type = False
             if not self.spell_as_you_type:

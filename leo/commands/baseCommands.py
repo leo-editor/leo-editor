@@ -88,7 +88,6 @@ class BaseEditCommandsClass(object):
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
     def _chckSel(self, event, warning='no selection'):
         '''Return True if there is a selection in the edit widget.'''
-        k = self.c.k
         w = self.editWidget(event)
         val = w and w.hasSelection()
         if warning and not val:

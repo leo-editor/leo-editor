@@ -230,7 +230,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514045829.17: *4* getBufferName
     def getBufferName(self, event, finisher):
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
-        c, k = self.c, self.c.k
+        k = self.c.k
         state = k.getState('getBufferName')
         if state == 0:
             self.computeData()

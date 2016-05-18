@@ -66,7 +66,7 @@ class MacroCommandsClass(BaseEditCommandsClass):
         '''
         # Called from loadFile and nameLastMacro.
         trace = False and not g.unitTesting
-        c, k = self.c, self.c.k
+        c = self.c
         if trace:
             g.trace('macro::%s' % (name))
             for event in macro:

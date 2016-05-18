@@ -420,7 +420,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('escape')
     def watchEscape(self, event):
         '''Enter watch escape mode.'''
-        c, k = self.c, self.c.k
+        k = self.c.k
         char = event and event.char or ''
         if not k.inState():
             k.setState('escape', 'start', handler=self.watchEscape)
@@ -445,7 +445,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 k.keyboardQuit()
     #@+node:ekr.20150514063305.212: *4* escEvaluate (Revise)
     def escEvaluate(self, event):
-        c, k = self.c, self.c.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w:
             return
@@ -619,7 +619,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.222: *5* findCharacterHelper
     def findCharacterHelper(self, event, backward, extend):
         '''Put the cursor at the next occurance of a character on a line.'''
-        c, k = self.c, self.c.k
+        k = self.c.k
         tag = 'find-char'
         state = k.getState(tag)
         if state == 0:
@@ -913,7 +913,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = p or c.p
         if p.u:
-            a = p.v.unknownAttributes
             p.v._p_changed = 1
             self.setIconList(p, [])
             p.setDirty()
@@ -1137,7 +1136,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('backward-delete-char')
     def backwardDeleteCharacter(self, event=None):
         '''Delete the character to the left of the cursor.'''
-        c, p = self.c, self.c.p
+        c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -1428,7 +1427,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('insert-soft-tab')
     def insertSoftTab(self, event):
         '''Insert spaces equivalent to one tab.'''
-        c, p = self.c, self.c.p
+        c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -1503,7 +1502,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         '''
         trace = False and not g.unitTesting
-        c, k, p = self.c, self.c.k, self.c.p
+        c, p = self.c, self.c.p
         verbose = True
         w = self.editWidget(event)
         if not w:
@@ -1594,12 +1593,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         if ch in self.openBracketsList:
             for z in range(len(self.openBracketsList)):
                 d[self.openBracketsList[z]] = self.closeBracketsList[z]
-            reverse = False # Search forward
+            # reverse = False # Search forward
         else:
             for z in range(len(self.openBracketsList)):
                 d[self.closeBracketsList[z]] = self.openBracketsList[z]
-            reverse = True # Search backward
-        delim2 = d.get(ch)
+            # reverse = True # Search backward
         s = w.getAllText()
         # A partial fix for bug 127: Bracket matching is buggy.
         language = g.getLanguageAtPosition(c, p)
@@ -2016,7 +2014,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.289: *5* setMoveCol
     def setMoveCol(self, w, spot):
         '''Set the column to which an up or down arrow will attempt to move.'''
-        c, p = self.c, self.c.p
+        p = self.c.p
         i, row, col = w.toPythonIndexRowCol(spot)
         self.moveSpot = i
         self.moveCol = col
@@ -2481,7 +2479,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('select-all')
     def selectAllText(self, event):
         '''Select all text.'''
-        c, k = self.c, self.c.k
+        k = self.c.k
         w = self.editWidget(event)
         if not w: return
         # Bug fix 2013/12/13: Special case the minibuffer.
@@ -2820,7 +2818,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('backward-kill-paragraph')
     def backwardKillParagraph(self, event):
         '''Kill the previous paragraph.'''
-        c, k = self.c, self.c.k
+        c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -2876,7 +2874,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('kill-paragraph')
     def killParagraph(self, event):
         '''Kill the present paragraph.'''
-        c, k = self.c, self.c.k
+        c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -3154,7 +3152,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-down-line')
     def scrollOutlineDownLine(self, event=None):
         '''Scroll the outline pane down one line.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('down-line')
         elif hasattr(tree.canvas, 'leo_treeBar'):
@@ -3164,7 +3162,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-down-page')
     def scrollOutlineDownPage(self, event=None):
         '''Scroll the outline pane down one page.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('down-page')
         elif hasattr(tree.canvas, 'leo_treeBar'):
@@ -3174,7 +3172,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-up-line')
     def scrollOutlineUpLine(self, event=None):
         '''Scroll the outline pane up one line.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('up-line')
         elif hasattr(tree.canvas, 'leo_treeBar'):
@@ -3184,7 +3182,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-up-page')
     def scrollOutlineUpPage(self, event=None):
         '''Scroll the outline pane up one page.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('up-page')
         elif hasattr(tree.canvas, 'leo_treeBar'):
@@ -3194,7 +3192,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-left')
     def scrollOutlineLeft(self, event=None):
         '''Scroll the outline left.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('left')
         elif hasattr(tree.canvas, 'xview_scroll'):
@@ -3203,7 +3201,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('scroll-outline-right')
     def scrollOutlineRight(self, event=None):
         '''Scroll the outline left.'''
-        c, tree = self.c, self.c.frame.tree
+        tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
             tree.scrollDelegate('right')
         elif hasattr(tree.canvas, 'xview_scroll'):

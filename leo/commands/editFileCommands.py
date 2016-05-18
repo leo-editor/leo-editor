@@ -27,7 +27,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         '''Adjust whitespace in all @clean files.'''
         c = self.c
         undoType = 'clean-@clean-files'
-        bunch = c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
+        c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
             if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
@@ -45,7 +45,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160417131341.1: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p, undoType):
         '''Adjust whitespace in p, part of an @clean tree.'''
-        c = self.c
         s = p.b.strip()
         if not s or p.h.strip().startswith('<<'):
             return False
@@ -231,7 +230,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20150722080308.2: *4* ct.compare
             def compare(self, d1, d2, p1, p2, root):
                 '''Compare dicts d1 and d2.'''
-                c = self.c
                 for h in sorted(d1.keys()):
                     p1, p2 = d1.get(h), d2.get(h)
                     if h in d2:

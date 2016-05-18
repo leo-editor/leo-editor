@@ -144,9 +144,13 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Doesn't work if the focus isn't in a pane with bindings!
         '''
         c = self.c
-        w = g.app.gui.get_focus()
-        g.es_print('c.requestedFocusWidget:', c.widget_name(c.requestedFocusWidget))
-        g.es_print('           c.get_focus:', c.widget_name(c.get_focus()))
+        # w = g.app.gui.get_focus()
+        g.es_print(
+            'c.requestedFocusWidget:',
+            c.widget_name(c.requestedFocusWidget))
+        g.es_print(
+            '           c.get_focus:',
+            c.widget_name(c.get_focus()))
     #@+node:ekr.20150514063305.111: *3* debug.printGcSummary
     @cmd('gc-print-summary')
     def printGcSummary(self, event=None):

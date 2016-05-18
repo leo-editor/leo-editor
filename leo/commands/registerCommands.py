@@ -260,7 +260,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
     #@@c
 
     def numberToRegister(self, event):
-        c, k = self.c, self.c.k
+        k = self.c.k
         state = k.getState('number-to-reg')
         char = event and event.char or ''
         if state == 0:
@@ -319,7 +319,7 @@ class RegisterCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20150514043714.12: *3* register.checkIfRectangle
     def checkIfRectangle(self, event):
-        c, k = self.c, self.c.k
+        k = self.c.k
         key = event and event.char.lower() or ''
         val = self.registers.get(key)
         if isinstance(val, list):

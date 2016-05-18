@@ -48,7 +48,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self):
         '''AbbrevCommandsClass.finishCreate.'''
-        c, k = self.c, self.c.k
+        c = self.c
         self.init_settings()
         self.init_abbrev()
         self.init_tree_abbrev()
@@ -494,7 +494,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.
         '''
-        c, p, u = self.c, self.c.p, self.c.p.v.u
+        c, p = self.c, self.c.p
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
@@ -528,8 +528,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         all possible completions if the prefix is the same as the word.
         '''
         trace = False and not g.unitTesting
-        c = self.c
-        p = c.p
         w = self.editWidget(event)
         if not w:
             if trace: g.trace('no widget!')
@@ -678,16 +676,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     k.setLabelBlue('Add Abbreviation: ')
                     k.getArg(event, 'add-abbr', 1, self.addAbbreviation)
             else:
-                w = self.w
                 k.clearState()
                 k.resetLabel()
-                value = k.argSelectedText # 2010/09/01.
+                value = k.argSelectedText
                 if k.arg.strip():
                     self.abbrevs[k.arg] = value, 'dynamic'
                     k.abbrevOn = True
                     k.setLabelGrey(
-                        "Abbreviation (on): '%s' = '%s'" % (
-                            k.arg, value))
+                        "Abbreviation (on): '%s' = '%s'" % (k.arg, value))
         #@+node:ekr.20150514043850.27: *4* abbrev.addInverseAbbreviation
         @cmd('abbrev-inverse-add-global')
         def addInverseAbbreviation(self, event):
