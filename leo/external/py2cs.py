@@ -17,19 +17,38 @@ Hosted at: https://github.com/edreamleo/python-to-coffeescript
 #@+node:ekr.20160316091132.2: **   << license >> (python_to_coffeescript.py)
 #@@nocolor-node
 #@+at
-# All parts of this script are distributed under the following copyright. This is intended to be the same as the MIT license, namely that this script is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
+# All parts of this script are distributed under the following copyright.
+# This is intended to be the same as the MIT license, namely that this script
+# is absolutely free, even for commercial use, including resale. There is no
+# GNU-like "copyleft" restriction. This license is compatible with the GPL.
 # 
 # **Copyright 2016 by Edward K. Ream. All Rights Reserved.**
 # 
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
 # 
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 # 
-# **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+# **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.**
 #@-<< license >>
 #@+<< imports >>
 #@+node:ekr.20160316091132.3: **   << imports >> (python_to_coffeescript.py)
 import ast
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import glob
 import optparse
 import os
@@ -224,7 +243,7 @@ class CoffeeScriptTraverser(object):
             if isPython3:
                 assert isinstance(s, str)
             else:
-                assert isinstance(s, (str, unicode))
+                assert isinstance(s, (str, builtins.unicode))
             return s
     #@+node:ekr.20160316091132.17: *3* cv.Contexts
 
@@ -492,7 +511,7 @@ class CoffeeScriptTraverser(object):
         # Not used: list context.
         # self.visit(node.ctx)
         elts = [self.visit(z) for z in node.elts]
-        elst = [z for z in elts if z] # Defensive.
+        elts = [z for z in elts if z] # Defensive.
         return '[%s]' % ','.join(elts)
     #@+node:ekr.20160316091132.39: *4* cv.ListComp
 
@@ -1251,11 +1270,11 @@ class LeoGlobals(object):
         def u(self, s):
             '''Return s, converted to unicode from Qt widgets.'''
             # pylint: disable = undefined-variable
-            return unicode(s)
+            return builtins.unicode(s)
 
         def ue(self, s, encoding):
             # pylint: disable = undefined-variable
-            return unicode(s, encoding)
+            return builtins.unicode(s, encoding)
     #@-others
 #@+node:ekr.20160316091132.95: ** class MakeCoffeeScriptController
 
@@ -1307,7 +1326,6 @@ class MakeCoffeeScriptController(object):
         if os.path.exists(out_fn) and not self.overwrite:
             print('file exists: %s' % out_fn)
         elif not dir_ or os.path.exists(dir_):
-            t1 = time.clock()
             if s is None:
                 s = open(fn).read()
             readlines = g.ReadLinesClass(s).next
@@ -1634,7 +1652,7 @@ class TokenSync(object):
         else:
             t1, t2, t3, t4, t5 = token
             kind = g.toUnicode(token_module.tok_name[t1].lower())
-            raw_val = g.toUnicode(t5)
+            # raw_val = g.toUnicode(t5)
             val = g.toUnicode(t2)
             if verbose:
                 return 'token: %10s %r' % (kind, val)

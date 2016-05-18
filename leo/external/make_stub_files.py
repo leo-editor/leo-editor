@@ -2801,7 +2801,7 @@ class StubTraverser (ast.NodeVisitor):
         # Step 1: Return None if there are no return statements.
         if trace and self.returns:
             g.trace('name: %s r:\n%s' % (name, r))
-        if not [z for z in self.returns if z.value != None]:
+        if not [z for z in self.returns if z.value is not None]:
             return 'None: ...'
         # Step 2: [Def Name Patterns] override all other patterns.
         for pattern in self.def_patterns:

@@ -83,21 +83,19 @@ Debugger commands
 #@+node:ekr.20110914171443.7241: ** << imports >>
 from __future__ import print_function
 
-import os
-import re
-import sys
-
-import cmd
-# import ekr_cmd as cmd
-
 import bdb
-import dis
+import cmd
 import code
-import pprint
-import signal
+import dis
 import inspect
-import traceback
 import linecache
+import os
+import pprint
+import re
+# import reprlib
+import signal
+import sys
+import traceback
 #@-<< imports >>
 #@+<< usage >>
 #@+node:ekr.20110914171443.7242: ** << usage >>
@@ -213,6 +211,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         # Try to load readline if it exists
         try:
             import readline
+            assert readline
         except ImportError:
             pass
         self.allow_kbdint = False
@@ -236,12 +235,12 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         self.commands = {} # associates a command list to breakpoint numbers
         self.commands_doprompt = {} # for each bp num, tells if the prompt
                                     # must be disp. after execing the cmd list
-        self.commands_silent = {} # for each bp num, tells if the stack trace
-                                  # must be disp. after execing the cmd list
-        self.commands_defining = False # True while in the process of defining
-                                       # a command list
-        self.commands_bnum = None # The breakpoint number for which we are
-                                  # defining a list
+        self.commands_silent = {}   # for each bp num, tells if the stack trace
+                                    # must be disp. after execing the cmd list
+        self.commands_defining = False  # True while in the process of defining
+                                        # a command list
+        self.commands_bnum = None   # The breakpoint number for which we are
+                                    # defining a list
     #@+node:ekr.20110914171443.7252: *3* sigint_handler
     def sigint_handler(self, signum, frame):
         if self.allow_kbdint:
@@ -337,18 +336,15 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     #@+node:ekr.20110914171443.7259: *4* format_stack_entry (edb, overrides bdb)
     def format_stack_entry(self, frame_lineno, lprefix=': '):
 
-        import linecache, reprlib
-
+        import linecache
+        import reprlib
         frame, lineno = frame_lineno
         filename = self.canonic(frame.f_code.co_filename)
-
         # EKR.
         if filename == '<string>':
             filename = self._getval('__file__')
             filename = self.canonic(filename)
-
         s = '%s(%r)' % (filename, lineno)
-
         co_name = frame.f_code.co_name
         if co_name:
             # EKR.
@@ -361,24 +357,16 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             args = frame.f_locals['__args__']
         else:
             args = None
-
         if args:
             s += reprlib.repr(args)
-
-        # EKR.
-        # else:
-            # s += '()'
-
         if '__return__' in frame.f_locals:
             rv = frame.f_locals['__return__']
             s += '->'
             s += reprlib.repr(rv)
 
         line = linecache.getline(filename, lineno, frame.f_globals)
-
         if line:
             s += lprefix + line.strip()
-
         return s
     #@+node:ekr.20110914171443.7260: *3* Actual overrides of Pdb methods
     #@+node:ekr.20110914171443.7261: *4* _getval (edb)
@@ -676,8 +664,10 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     def user_line(self, frame):
         """This function is called when we stop or break at this line."""
         if self._wait_for_mainpyfile:
-            if (self.mainpyfile != self.canonic(frame.f_code.co_filename)
-                or frame.f_lineno <= 0):
+            if (
+                self.mainpyfile != self.canonic(frame.f_code.co_filename) or
+                frame.f_lineno <= 0
+            ):
                 return
             self._wait_for_mainpyfile = False
 

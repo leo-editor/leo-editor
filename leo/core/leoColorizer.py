@@ -2387,7 +2387,7 @@ class LeoQtColorizer(object):
         '''Set self.language based on the directives in p's tree.'''
         trace = False and not g.unitTesting
         c = self.c
-        if c == None: return None # self.c may be None for testing.
+        if c is None: return None # self.c may be None for testing.
         root = p.copy()
         self.colorCacheFlag = False
         self.language = None

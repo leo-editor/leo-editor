@@ -123,14 +123,14 @@ if 0:
         return colorer.match_keywords(s, i)
 # Properties for forth mode.
 properties = {
-	# "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
+    # "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
     "lineComment": "\\",
 }
 # Attributes dict for forth_main ruleset.
 forth_main_attributes_dict = {
     "default": "null",
     "digit_re": "",
-	# "escape": "\\",
+    # "escape": "\\",
     "highlight_digits": "false",
     "ignore_case": "false",
     "no_word_sep": "",
