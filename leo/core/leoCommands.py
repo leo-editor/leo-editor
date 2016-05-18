@@ -8,6 +8,10 @@ import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
 # The leoCommands ctor now does most leo.core.leo* imports.
 # This breaks circular dependencies.
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import imp
 import itertools
 import os
@@ -252,6 +256,7 @@ class Commands(object):
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.
+        assert leoBeautify # for pyflakes.
         import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         # User commands...
@@ -576,7 +581,8 @@ class Commands(object):
     def check_event(self, event):
         '''Check an event object.'''
         trace = False and not g.unitTesting
-        c, k = self, self.k
+        # c = self
+        k = self.k
         import leo.core.leoGui as leoGui
 
         def test(val, message):
@@ -1746,7 +1752,7 @@ class Commands(object):
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
-                    execfile(scriptFile, d)
+                    builtins.execfile(scriptFile, d)
             else:
                 exec(script, d)
         finally:
@@ -1793,7 +1799,7 @@ class Commands(object):
         Go to line n (zero-based) of a script.
         Called from g.handleScriptException.
         """
-        import leo.commands.gotoCommands as gotoCommands
+        # import leo.commands.gotoCommands as gotoCommands
         c = self
         c.gotoCommands.find_file_line(n)
 
@@ -1802,7 +1808,7 @@ class Commands(object):
         Go to line n (zero-based) of a script.
         Called from g.handleScriptException.
         """
-        import leo.commands.gotoCommands as gotoCommands
+        # import leo.commands.gotoCommands as gotoCommands
         c = self
         c.gotoCommands.find_script_line(n, p)
     #@+node:ekr.20031218072017.2086: *6* c.preferences
@@ -2230,7 +2236,7 @@ class Commands(object):
         in effect determines amount of indentation. (not yet) A numeric argument
         specifies the column to indent to.
         '''
-        c = self; current = c.p; undoType = 'Indent Region'
+        c, undoType = self, 'Indent Region'
         tab_width = c.getTabWidth(c.p)
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         changed, result = False, []
@@ -2246,7 +2252,8 @@ class Commands(object):
     #@+node:ekr.20131103054650.16535: *7* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
         '''Return True if p.b contains different @language directives.'''
-        c, languages, tag = self, set(), '@language'
+        # c = self
+        languages, tag = set(), '@language'
         for s in g.splitLines(p.b):
             if g.match_word(s, 0, tag):
                 i = g.skip_ws(s, len(tag))
@@ -3093,7 +3100,7 @@ class Commands(object):
     @cmd('delete-node')
     def deleteOutline(self, event=None, op_name="Delete Node"):
         """Deletes the selected outline."""
-        c = self; cc = c.chapterController; u = c.undoer
+        c, u = self, self.undoer
         p = c.p
         if not p: return
         c.endEditing() # Make sure we capture the headline for Undo.
@@ -3885,7 +3892,7 @@ class Commands(object):
         This command is not undoable.
         Consider using clone-marked-nodes, followed by copy/paste instead.
         '''
-        c, u = self, self.undoer
+        c = self
         p1 = c.p.copy()
         # Check for marks.
         for v in c.all_unique_nodes():
@@ -5270,7 +5277,6 @@ class Commands(object):
         """
         c, p = self, self.p
         trace = (False or c.config.getBool('trace_doCommand')) and not g.unitTesting
-        commandName = command and command.__name__
         c.setLog()
         self.command_count += 1
         # The presence of this message disables all commands.
@@ -6733,7 +6739,7 @@ class Commands(object):
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
         trace = False and not g.unitTesting
-        c, d, x = self, {}, g.app.nodeIndices
+        c, d = self, {},
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             assert g.isUnicode(gnxString)
@@ -6966,7 +6972,7 @@ class Commands(object):
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''
-        c = self
+        # c = self
         if g.app.externalFilesController:
             g.app.externalFilesController.set_time(fn)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
