@@ -12,7 +12,7 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20160122104332.1"><vh>Buttons</vh>
-<v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
+<v t="ekr.20150507170849.1" a="M"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
 <v t="ekr.20150508071622.1"><vh>create_decorator</vh></v>
 <v t="ekr.20150508063412.1"><vh>create_decorators</vh></v>
@@ -22,7 +22,7 @@
 <v t="ekr.20150507175246.1"><vh>munge_lines</vh></v>
 <v t="ekr.20150508062944.1"><vh>run</vh></v>
 </v>
-<v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
+<v t="ekr.20150509183433.1" a="M"><vh>@@button make-decorators2</vh>
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
 <v t="ekr.20150509183433.3"><vh>create_decorator</vh></v>
 <v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
@@ -30,13 +30,13 @@
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
-<v t="ekr.20150703061709.1"><vh>@button run-pylint</vh></v>
+<v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
+<v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
 <v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
-<v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
 </v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
@@ -80,7 +80,7 @@
 <v t="ekr.20160316081359.1"><vh>try_tests</vh></v>
 </v>
 </v>
-<v t="ekr.20160316100329.1"><vh>@button py2cs</vh>
+<v t="ekr.20160316100329.1"><vh>@@button py2cs</vh>
 <v t="ekr.20160316100524.1"><vh>cmd</vh></v>
 <v t="ekr.20160316091923.1"><vh>ccc.python-to-coffeescript</vh>
 <v t="ekr.20160316092837.1"><vh>class Python_To_Coffeescript_Adapter</vh>
@@ -96,7 +96,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d710528580a000000707269736574646174657106580a000000323031352d30352d3237710758080000007072696f7269747971084d0f277575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d7102285808000000616e6e6f7461746571037d710428580a000000707269736574646174657105580a000000323031352d30352d3237710658080000007072696f7269747971074d0f2775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -111,7 +111,8 @@
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2608"
+marks="ekr.20150514125218.8,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
@@ -137,7 +138,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6374696d657103580c000000313331393436303438332e30710458090000007374725f6d74696d657105580d000000313331393436373033382e3235710658090000007374725f6174696d657107580c000000313332303432323637302e397108755805000000302e332e3071097d710a2858090000007374725f6374696d65710b580c000000313331393439313330362e30710c58090000007374725f6d74696d65710d580d000000313331393439323330312e3532710e58090000007374725f6174696d65710f580d000000313331393534393339302e38397110755805000000302e332e3371117d71122858090000007374725f6374696d657113580c000000313331393436303438332e30711458090000007374725f6d74696d657115580d000000313332303432323639302e3534711658090000007374725f6174696d657117580d000000313332303433343235372e33367118755805000000302e332e3571197d711a2858090000007374725f6374696d65711b580c000000313331393633383634382e30711c58090000007374725f6d74696d65711d580c000000313331393634313131372e39711e58090000007374725f6174696d65711f580d000000313331393634313435352e39377120755805000000302e332e3271217d71222858090000007374725f6374696d657123580c000000313331393436303438332e30712458090000007374725f6d74696d657125580d000000313331393436373035302e3438712658090000007374725f6174696d657127580d000000313331393436373035302e34387128755805000000302e332e3471297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580d000000313331393634313038352e3038712e58090000007374725f6174696d65712f580c000000313331393634353330362e32713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6d74696d657103580d000000313331393436373033382e3235710458090000007374725f6174696d657105580c000000313332303432323637302e39710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3071097d710a2858090000007374725f6d74696d65710b580d000000313331393439323330312e3532710c58090000007374725f6174696d65710d580d000000313331393534393339302e3839710e58090000007374725f6374696d65710f580c000000313331393439313330362e307110755805000000302e332e3271117d71122858090000007374725f6d74696d657113580d000000313331393436373035302e3438711458090000007374725f6174696d657115580d000000313331393436373035302e3438711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3371197d711a2858090000007374725f6d74696d65711b580d000000313332303432323639302e3534711c58090000007374725f6174696d65711d580d000000313332303433343235372e3336711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3571217d71222858090000007374725f6d74696d657123580c000000313331393634313131372e39712458090000007374725f6174696d657125580d000000313331393634313435352e3937712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3471297d712a2858090000007374725f6d74696d65712b580d000000313331393634313038352e3038712c58090000007374725f6174696d65712d580c000000313331393634353330362e32712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -167,7 +168,8 @@
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
-<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
+<v t="ekr.20061031131434"
+expanded="ekr.20061031131434.4,ekr.20061031131434.16,ekr.20061031131434.20,"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
@@ -176,12 +178,16 @@
 <v t="ekr.20140919181357.24956"><vh>@file ../plugins/qt_big_text.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
 <v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
-<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
-<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
+<v t="ekr.20140907123524.18774"
+expanded="ekr.20110605121601.18166,ekr.20111022222228.16980,ekr.20110605121601.18365,ekr.20110605121601.18369,ekr.20110605121601.18370,ekr.20110605121601.18371,ekr.20110605121601.18372,"><vh>@file ../plugins/qt_frame.py</vh></v>
+<v t="ekr.20140907085654.18699"
+expanded="ekr.20110605121601.18487,ekr.20150615211522.1,ekr.20110607182447.16456,"><vh>@file ../plugins/qt_gui.py</vh></v>
 <v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
 <v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
-<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
-<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
+<v t="ekr.20140831085423.18598"
+expanded="ekr.20140901062324.18719,ekr.20150403094706.2,ekr.20110605121601.18103,ekr.20110605121601.18107,ekr.20140901062324.18594,ekr.20110605121601.18071,ekr.20110605121601.18078,"><vh>@file ../plugins/qt_text.py</vh></v>
+<v t="ekr.20140907131341.18707"
+expanded="ekr.20110605121601.17873,"><vh>@file ../plugins/qt_tree.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
 </v>
 <v t="ekr.20160226082945.1"><vh>PyInstaller</vh>
@@ -224,6 +230,8 @@
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
+<v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
+<v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
@@ -237,7 +245,7 @@
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258050000006c696e6b7371035d710458010000007871054b0058010000007971064b00752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358050000006c696e6b7371045d710558010000007971064b00752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -906,14 +914,14 @@ if 0:
 </t>
 <t tx="ekr.20150326145530.3"># Properties for forth mode.
 properties = {
-	# "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
+    # "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
     "lineComment": "\\",
 }
 # Attributes dict for forth_main ruleset.
 forth_main_attributes_dict = {
     "default": "null",
     "digit_re": "",
-	# "escape": "\\",
+    # "escape": "\\",
     "highlight_digits": "false",
     "ignore_case": "false",
     "no_word_sep": "",
@@ -942,7 +950,7 @@ rulesDictDict = {
 # Import dict for forth mode.
 importDict = {}
 </t>
-<t tx="ekr.20150326145530.4">class extendForth:
+<t tx="ekr.20150326145530.4">class extendForth(object):
     '''A helper class to extend the mode tables from @data forth-x settings.'''
     @others
 </t>
@@ -1071,7 +1079,7 @@ def createBracketRule(self, begin):
 def createDefiningWordRule(self, word):
 
     def forth_defining_word_rule(colorer, s, i):
-        pattern = ''
+
         return colorer.match_word_and_regexp(s, i,
             kind1="keyword2", # defining word
             word=word,
@@ -1135,13 +1143,15 @@ contract-log-pane</t>
 '''Save a copy of this file to the Backup directory.'''
 theDir,base = g.os_path_split(c.fileName())
 path = g.os_path_join('~/Dropbox/','backups','leoPy',base)
-c.backup(path)
+c.backup(path, useTimeStamp=True)
+    # Dropbox can show previous versions!
+    # But this depends on proxy/firewall settings.
 </t>
 <t tx="ekr.20150507170849.1">g.cls()
 
 print('===== Start =====')
 
-class CreateDecorators:
+class CreateDecorators(object):
     '''
     A class to create decorators from tables in getPublicCommands.
     
@@ -1330,7 +1340,7 @@ CreateDecorators(c,make_changes=False).run()
 make_changes = True
     # True, actually make the change
 
-class CreateDecorators:
+class CreateDecorators(object):
     '''
     A class to create decorators from tables in getPublicCommands.
     
@@ -1860,7 +1870,7 @@ def python2coffeescript(self, event):
     Python_To_Coffeescript_Adapter(c).main()
     c.bodyWantsFocus()
 </t>
-<t tx="ekr.20160316092837.1">class Python_To_Coffeescript_Adapter:
+<t tx="ekr.20160316092837.1">class Python_To_Coffeescript_Adapter(object):
     '''An interface class between Leo and leo/external/py2cs.py.'''
     @others
 </t>
@@ -1870,8 +1880,8 @@ def python2coffeescript(self, event):
         self.run()
     else:
         g.es_print('can not load py2cs.py')
-       
-    
+
+
 </t>
 <t tx="ekr.20160316094011.7">def finalize(self, fn):
     '''Finalize and regularize a filename.'''
@@ -1963,7 +1973,7 @@ finally:
     # self.output_fn = None
     self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
     # Connect to the external module.
-    self.py2cs = py2cs = g.importExtension(
+    self.py2cs = g.importExtension(
         'py2cs',
         pluginName=None,
         verbose=False,
