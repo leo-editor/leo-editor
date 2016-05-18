@@ -20,13 +20,13 @@ import sys
 import time
 #@+others
 #@+node:ekr.20160518000549.10: ** main & helpers
-def main(tables_table, silent):
+def main(tables_table):
     '''Call run on all tables in tables_table.'''    
     t1 = time.clock()
     n = 0
     for table, dir_ in tables_table:
         n += len(table)
-        check_all(dir_, table, silent)
+        check_all(dir_, table)
     t2 = time.clock()
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160518000549.11: *3* get_home
@@ -49,7 +49,7 @@ def get_home():
             home = None
     return home
 #@+node:ekr.20160518000741.1: *3* check_all
-def check_all(dir_, files, silent):
+def check_all(dir_, files):
     '''Run pyflakes on fn.'''
     from pyflakes import api, reporter
     loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
@@ -66,8 +66,7 @@ def check_all(dir_, files, silent):
     for fn in paths:
         # Report the file name.
         sfn = g.shortFileName(fn)
-        if not silent:
-            print('pyflakes: %s' % sfn)
+        # if not silent: print('pyflakes: %s' % sfn)
         s = g.readFileIntoEncodedString(fn, silent=False)
         if not s.strip():
             return
@@ -97,13 +96,13 @@ def scanOptions():
     add('-g', action='store_true', help='gui plugins')
     add('-m', action='store_true', help='modes')
     add('-p', action='store_true', help='plugins')
-    add('-s', action='store_true', help='silent')
+    # add('-s', action='store_true', help='silent')
     add('-u', action='store_true', help='user commands')
     add('-v', '--version', dest='v',
         action='store_true', help='report flake8 version')
     # Parse the options.
     options, args = parser.parse_args()
-    silent = options.s
+    # silent = options.s
     if options.a: scope = 'all'
     elif options.c: scope = 'core'
     elif options.e: scope = 'external'
@@ -115,19 +114,19 @@ def scanOptions():
     elif options.g: scope = 'gui'
     elif options.m: scope = 'modes'
     elif options.p: scope = 'plugins'
-    elif options.s: scope = 'silent'
+    # elif options.s: scope = 'silent'
     elif options.u: scope = 'commands'
     elif options.v: scope = 'version'
     else: scope = 'all'
-    return scope, silent
+    return scope
 #@-others
 #@@language python
 #@@tabwidth -4
 g_option_fn = None
-scope, silent = scanOptions()
+scope = scanOptions()
 table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
 if scope == 'version':
     report_version()
 else:
-    main(table, silent)
+    main(table)
 #@-leo
