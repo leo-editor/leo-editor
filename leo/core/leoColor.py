@@ -720,8 +720,6 @@ def getColor(name, default=None):
 
     If 'name' is not in global_color_database then getColor(default, None)
     is called and that result returned.
-
-
     """
     if not g.isString(name):
         return name

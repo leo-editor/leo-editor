@@ -1619,7 +1619,6 @@ class HTMLReportTraverser(object):
                 assert not extra
                 rt.gen("<div>")
         rt.div_stack.append(class_name)
-
     #@+node:ekr.20150722222149.1: *4* rt.div_body
     def div_body(rt, aList):
         if aList:
@@ -1750,7 +1749,6 @@ class HTMLReportTraverser(object):
                 rt.visit(z)
                 rt.gen(sep)
             rt.clean(sep)
-
     #@+node:ekr.20150722204300.46: *3* rt.visitors
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)

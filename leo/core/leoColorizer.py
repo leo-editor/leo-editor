@@ -1534,7 +1534,8 @@ class JEditColorizer(object):
     def match_eol_span(self, s, i,
         kind=None, seq='',
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate='', exclude_match=False):
+        delegate='', exclude_match=False
+    ):
         '''Succeed if seq matches s[i:]'''
         if self.verbose: g.trace(g.callers(1), i, repr(s[i: i + 20]))
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
@@ -1628,7 +1629,8 @@ class JEditColorizer(object):
     def match_mark_following(self, s, i,
         kind='', pattern='',
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        exclude_match=False):
+        exclude_match=False
+    ):
         '''Succeed if s[i:] matches pattern.'''
         if not self.allow_mark_prev: return 0
         # g.trace(g.callers(1),i,repr(s[i:i+20]))
@@ -1669,7 +1671,8 @@ class JEditColorizer(object):
     def match_mark_previous(self, s, i,
         kind='', pattern='',
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        exclude_match=False):
+        exclude_match=False
+    ):
         '''Return the length of a matched SEQ or 0 if no match.
 
         'at_line_start':    True: sequence must start the line.
@@ -2653,9 +2656,10 @@ if QtGui:
                 try:
                     tree.selecting = True
                     if (
-                        self.colorizer.colorCacheFlag
-                        and hasattr(p.v, 'colorCache') and p.v.colorCache
-                        and not g.unitTesting
+                        self.colorizer.colorCacheFlag and
+                        hasattr(p.v, 'colorCache') and
+                        p.v.colorCache and
+                        not g.unitTesting
                     ):
                         # Should be no need to init the colorizer.
                         self.rehighlight_with_cache(p.v.colorCache)

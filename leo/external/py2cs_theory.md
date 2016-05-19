@@ -28,7 +28,7 @@ At startup, the TokenSync ctor assigns all the incoming tokens to various lists.
     ts.line_tokens[i]: all the tokens on line i
     ts.string_tokens[i]: all string tokens on line i
     st.ignored_lines: the blank or comment line on line i
-    
+
 It is very easy to create these lists. The code does not depend on any arcane details.
 
 #### Recovering the exact spelling of stings.
@@ -41,13 +41,13 @@ ts.synch_string returns the *next* string on the line. Here it is, stripped of d
         token = tokens.pop(0)
         self.string_tokens[node.lineno-1] = tokens
         return self.token_val(token)
-       
+
 Stripped of defensive code, the do_Str visitor is just:
 
     def do_Str(self, node):
         '''A string constant, including docstrings.'''
         return self.sync_string(node)
-        
+
 #### Recovering otherwise ignored nodes
 
 **ts.leading_lines(node)** returns a list of otherwise ignored lines that
@@ -68,7 +68,7 @@ The visitor for each statement intersperses otherwise ignored tokens using calls
 The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
 
     def do_If(self, node):
-   
+
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = 'if %s:%s' % (self.visit(node.test), tail)

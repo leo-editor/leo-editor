@@ -1133,7 +1133,6 @@ class FindTabManager(object):
         # g.trace(checkbox_name,old_val,new_val)
         if find.minibuffer_mode:
             find.showFindOptionsInStatusArea()
-
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QtWidgets.QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
@@ -2150,10 +2149,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # back upstream, infer status like this:
             status = None
             if (fg == c.config.getColor('find-found-fg') and
-                bg == c.config.getColor('find-found-bg')):
+                bg == c.config.getColor('find-found-bg')
+            ):
                 status = 'info'
             elif (fg == c.config.getColor('find-not-found-fg') and
-                bg == c.config.getColor('find-not-found-bg')):
+                bg == c.config.getColor('find-not-found-bg')
+            ):
                 status = 'fail'
 
             d = self.styleSheetCache
@@ -2496,14 +2497,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c, f = self.c, self
         if f.splitVerticalFlag:
             r = c.config.getRatio("initial_vertical_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.5
+            if r is None or r < 0.0 or r > 1.0: r = 0.5
             r2 = c.config.getRatio("initial_vertical_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
             r = c.config.getRatio("initial_horizontal_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.3
+            if r is None or r < 0.0 or r > 1.0: r = 0.3
             r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         f.resizePanesToRatio(r, r2)
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio, ratio2):
@@ -2513,7 +2514,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.splitVerticalFlag, ratio, ratio2))
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac):
         '''Divide the main splitter.'''
@@ -3247,7 +3247,7 @@ class LeoQtLog(leoFrame.LeoLog):
         return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20110605121601.18330: *4* LeoQtLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self):
-        return len([val for val in self.contentsDict.values() if val != None])
+        return len([val for val in self.contentsDict.values() if val is not None])
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helper
     # createText is used by LeoLog.selectTab.
@@ -3759,7 +3759,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             u.afterMoveNode(p1, 'Drag', undoData, dirtyVnodeList)
             if (not as_child or
                 p2.isExpanded() or
-                c.config.getBool("drag-alt-drag-expands") is not False):
+                c.config.getBool("drag-alt-drag-expands") is not False
+            ):
                 c.redraw_now(p1)
             else:
                 c.redraw_now(p2)
@@ -4301,10 +4302,8 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
     def mouseReleaseEvent(self, event):
-        ## middle click close on tabs -- JMP 20140505
-        ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-        ## Using this blogpost as a guide:
-        ## http://www.mikeyd.com.au/2011/03/12/adding-the-ability-to-close-a-tab-with-mouses-middle-button-to-qts-qtabwidget/
+        # middle click close on tabs -- JMP 20140505
+        # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         if event.button() == QtCore.Qt.MidButton:
             self.tabCloseRequested.emit(self.tabAt(event.pos()))
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)

@@ -91,7 +91,6 @@ class BaseLeoPlugin(object):
     Usage
     =====
 
-
     Initialization
     --------------
 
@@ -185,7 +184,6 @@ class BaseLeoPlugin(object):
 
             def ciao(self, event):
                 g.pr("ciao baby (%s)" % self.c.p.h)
-
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
 

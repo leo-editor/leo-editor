@@ -466,7 +466,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         '''
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
-
     #@+node:ekr.20150514063305.160: *4* class C_To_Python (To_Python)
     class C_To_Python(To_Python):
         #@+others
@@ -1076,7 +1075,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 x.trace_reduce = self.trace_reduce
                 x.trace_visitors = self.trace_visitors
                 x.run(node)
-
             #@+node:ekr.20160213070235.8: *5* msf.run
             def run(self, p):
                 '''Make stub files for all files in p's tree.'''
@@ -1139,8 +1137,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.run()
                 else:
                     g.es_print('can not load py2cs.py')
-
-
             #@+node:ekr.20160316094011.7: *5* py2cs.finalize
             def finalize(self, fn):
                 '''Finalize and regularize a filename.'''

@@ -71,7 +71,8 @@ import time
 #@+others
 #@+node:ekr.20090502071837.12: ** code_block
 def code_block(name, arguments, options,
-    content, lineno, content_offset, block_text, state, state_machine):
+    content, lineno, content_offset, block_text, state, state_machine
+):
     '''Implement the code-block directive for docutils.'''
     try:
         language = arguments[0]
@@ -1643,7 +1644,7 @@ class RstCommands(object):
         assert stylesheet_name
         if trace: g.trace('stylesheet_name', stylesheet_name)
         path = g.os_path_finalize_join(stylesheet_path, stylesheet_name)
-        if self.getOption(p, 'stylesheet_embed') == False:
+        if self.getOption(p, 'stylesheet_embed') is False:
             rel_path = g.os_path_join(
                 rel_stylesheet_path, self.getOption(p, 'stylesheet_name'))
             rel_path = rel_path.replace('\\', '/') # 2010/01/28
@@ -2022,7 +2023,9 @@ class AnchorHtmlParserClass(LinkAnchorParserClass):
             self.anchor_map[self.current_file] = (self.current_file, self.p)
             simple_name = g.os_path_split(self.current_file)[1]
             self.anchor_map[simple_name] = self.anchor_map[self.current_file]
-            # if bwm_file: print >> bwm_file, "anchor(1): current_file:", self.current_file, "position:", self.p, "Simple name:", simple_name
+            # if bwm_file:
+            #   print >> bwm_file, "anchor(1): current_file:",
+            #   self.current_file, "position:", self.p, "Simple name:", simple_name
             # Not sure what to do here, exactly. Do I need to manipulate
             # the pathname?
         for name, value in attrs:

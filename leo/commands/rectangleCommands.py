@@ -207,5 +207,4 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@-others
 #@-others
-
 #@-leo

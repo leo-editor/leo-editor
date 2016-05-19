@@ -781,17 +781,17 @@ class LeoFrame(object):
     def initialRatios(self):
         c = self.c
         s = c.config.get("initial_split_orientation", "string")
-        verticalFlag = s == None or (s != "h" and s != "horizontal")
+        verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
             r = c.config.getRatio("initial_vertical_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.5
+            if r is None or r < 0.0 or r > 1.0: r = 0.5
             r2 = c.config.getRatio("initial_vertical_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
             r = c.config.getRatio("initial_horizontal_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.3
+            if r is None or r < 0.0 or r > 1.0: r = 0.3
             r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+            if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         # g.trace(r,r2)
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* longFileName & shortFileName
@@ -1304,7 +1304,7 @@ class LeoLog(object):
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self):
-        return len([val for val in list(self.frameDict.values()) if val != None])
+        return len([val for val in list(self.frameDict.values()) if val is not None])
     #@+node:ekr.20070302101304: *3* LeoLog.put & putnl
     # All output to the log stream eventually comes here.
 

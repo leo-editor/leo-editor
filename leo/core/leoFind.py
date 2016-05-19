@@ -2273,8 +2273,8 @@ class LeoFind(object):
         # Wrap does not apply to limited searches.
         if (self.wrap and
             not self.node_only and
-            not self.suboutline_only
-            and self.wrapPosition == None
+            not self.suboutline_only and
+            self.wrapPosition is None
         ):
             self.wrapping = True
             self.wrapPos = ins

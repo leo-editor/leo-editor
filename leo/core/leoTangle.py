@@ -248,7 +248,7 @@ class DefNode(object):
         self.name = name
         self.indent = indent
         self.code = code
-        if self.code == None: self.code = ""
+        if self.code is None: self.code = ""
         self.part = part
         self.of = of
         self.nl_flag = nl_flag
@@ -471,7 +471,7 @@ class BaseTangleCommands(object):
         if not self.tangleTree(p, report_errors=True):
             g.es("looking for a parent to tangle...")
             while p:
-                assert(self.head_root == None)
+                assert(self.head_root is None)
                 d = g.get_directives_dict(p, [self.head_root])
                 if 'root' in d:
                     g.es("tangling parent")
@@ -556,12 +556,13 @@ class BaseTangleCommands(object):
         self.errors += g.app.scanErrors
         if self.errors > 0:
             self.warning("----- No file written because of errors")
-        elif self.root_list == None:
+        elif self.root_list is None:
             self.warning("----- The outline contains no roots")
         else:
             self.put_all_roots() # pass 2 top level function.
     #@+node:ekr.20031218072017.3477: *4* tangleTree (calls cleanup)
-    # This function is called only from the top level, so there is no need to initialize globals.
+    # This function is called only from the top level,
+    # so there is no need to initialize globals.
 
     def tangleTree(self, p, report_errors):
         """Tangles all nodes in the tree whose root is p.
@@ -574,9 +575,8 @@ class BaseTangleCommands(object):
         self.path_warning_given = False
         self.tangling = True
         while p and p != next:
-    #        g.trace(p)
             self.setRootFromHeadline(p)
-            assert(self.head_root == None)
+            assert self.head_root is None
             theDict = g.get_directives_dict(p, [self.head_root])
             is_ignore = 'ignore' in theDict
             is_root = 'root' in theDict
@@ -601,7 +601,7 @@ class BaseTangleCommands(object):
     #@+node:ekr.20031218072017.3478: *4* untangle
     def untangle(self, event=None, p=None):
         c = self.c
-        if p == None:
+        if not p:
             p = c.p
         self.initUntangleCommand()
         # must be done at this point, since initUntangleCommand blows away tangle_output
@@ -719,7 +719,7 @@ class BaseTangleCommands(object):
                 #@-<< fake the file access >>
             else:
                 file_buf, e = g.readFileIntoString(path)
-            if not file_buf is None:
+            if file_buf is not None:
                 file_buf = file_buf.replace('\r', '')
                 if not g.unitTesting:
                     g.es('', '@root ' + path)
@@ -732,13 +732,12 @@ class BaseTangleCommands(object):
                 self.scan_derived_file(file_buf)
                 # g.trace(self.ust_dump())
                 if self.errors + g.app.scanErrors == 0:
-                    #@+<< Pass 3: Untangle the outline using the UST and a newly-created TST >>
-                    #@+node:ekr.20031218072017.3485: *5* << Pass 3:  Untangle the outline using the UST and a newly-created TST >>
-                    #@+at
-                    # This code untangles the root and all its siblings. We don't call tangleTree here
-                    # because we must handle all siblings. tanglePass1 handles an entire tree. It also
-                    # handles @ignore.
-                    #@@c
+                    # Untangle the outline using the UST and a newly-created TST
+                    #@+<< Pass 3 >>
+                    #@+node:ekr.20031218072017.3485: *5* << Pass 3  >>
+                    # This code untangles the root and all its siblings.
+                    # We don't call tangleTree here because we must handle all siblings.
+                    # tanglePass1 handles an entire tree. It also handles @ignore.
                     self.tangling = False
                     p = begin
                     while p and p != end: # Don't use iterator.
@@ -750,7 +749,7 @@ class BaseTangleCommands(object):
                             break
                         p.moveToNodeAfterTree()
                     self.ust_warn_about_orphans()
-                    #@-<< Pass 3: Untangle the outline using the UST and a newly-created TST >>
+                    #@-<< Pass 3 >>
         self.cleanup()
     #@+node:ekr.20031218072017.3486: *4* untangleTree
     # This funtion is called when the user selects any "Untangle" command.
@@ -768,7 +767,7 @@ class BaseTangleCommands(object):
         self.delims_table = False
         while p and p != afterEntireTree and self.errors + g.app.scanErrors == 0:
             self.setRootFromHeadline(p)
-            assert(self.head_root == None)
+            assert(self.head_root is None)
             theDict = g.get_directives_dict(p, [self.head_root])
             ignore = 'ignore' in theDict
             root = 'root' in theDict
@@ -783,7 +782,7 @@ class BaseTangleCommands(object):
                 p.moveToThreadNext()
                 while p and p != afterUnit and self.errors + g.app.scanErrors == 0:
                     self.setRootFromHeadline(p)
-                    assert(self.head_root == None)
+                    assert(self.head_root is None)
                     theDict = g.get_directives_dict(p, [self.head_root])
                     root = 'root' in theDict
                     if root:
@@ -851,8 +850,12 @@ class BaseTangleCommands(object):
         # g.trace(kind,g.get_line(s,i))
         if kind == plain_line:
             pass
-        elif(kind == at_code or kind == at_doc or
-            kind == at_root or kind == section_def):
+        elif(
+            kind == at_code or
+            kind == at_doc or
+            kind == at_root or
+            kind == section_def
+        ):
             i = j; done = True # Terminate this code section and rescan.
         elif kind == section_ref:
             # Enter the reference.
@@ -1053,7 +1056,8 @@ class BaseTangleCommands(object):
                     else:
                         part = 1 # Use 1 for root part.
                         head = s[: j]; tail = s[k:]
-                        # g.trace("old_root_name <%s> part <%d> head <%s> code <%s> tail <%s>" % (old_root_name,part,head,code,tail))
+                        # g.trace("old_root_name <%s> part <%d> head <%s> code <%s> tail <%s>" % (
+                        #   old_root_name,part,head,code,tail))
                         s, i, changed = self.update_def(old_root_name, part, head, code, tail, is_root_flag=True)
                         if changed: anyChanged = True
                 # g.trace(self.st_dump())
@@ -1100,8 +1104,10 @@ class BaseTangleCommands(object):
             if g.is_nl(s, i):
                 nl_i = i = g.skip_nl(s, i)
                 i, done, delims = self.handle_newline(s, i, delims)
-            elif ch == '@' and (g.match(s, i + 1, "<<") or # must be on different lines
-                g.match(s, i + 1, ">>")):
+            elif ch == '@' and (
+                g.match(s, i + 1, "<<") or # must be on different lines
+                g.match(s, i + 1, ">>")
+            ):
                 i += 3 # skip the noweb escape sequence.
             elif ch == '<':
                 #@+<< handle possible noweb section reference >>
@@ -1388,7 +1394,7 @@ class BaseTangleCommands(object):
         width = self.page_width
         words = 0; word_width = 0; line_width = 0
         # 8/1/02: can't use choose here!
-        if delims[0] == None: single_w = 0
+        if delims[0] is None: single_w = 0
         else: single_w = len(delims[0])
         # Make sure we put at least 20 characters on a line.
         if width - max(0, self.tangle_indent) < 20:
@@ -1876,7 +1882,8 @@ class BaseTangleCommands(object):
             if part_number in section.parts:
                 part = section.parts[part_number]
                 if update_flag: part.update_flag = True
-                # g.trace("update_flag: %s part.update_flag: %s found: %s(%d)(%s):%s...\n" % (repr(update_flag),repr(part.update_flag),name,part_number,repr(part.part),part.code))
+                # g.trace("update_flag: %s part.update_flag: %r found: %r(%d)(%r):%s...\n" % (
+                #    update_flag,part.update_flag,name,part_number,part.part,part.code))
                 return part, True
         # g.trace("not found: %s(%d)...\n" % (name,part_number))
         return None, False
@@ -2135,8 +2142,11 @@ class BaseTangleCommands(object):
                     if not result:
                         self.mismatch("Mismatched single-line comments")
                 elif g.match(s1, p1, self.comment) and g.match(s2, p2, self.comment):
-                    while(p1 < len(s1) and p2 < len(s2) and
-                        not g.match(s1, p1, self.comment_end) and not g.match(s2, p2, self.comment_end)):
+                    while(
+                        p1 < len(s1) and p2 < len(s2) and
+                        not g.match(s1, p1, self.comment_end) and
+                        not g.match(s2, p2, self.comment_end)
+                    ):
                         # ws doesn't have to match exactly either!
                         if g.is_nl(s1, p1) or g.is_ws(s1[p1]):
                             p1 = g.skip_ws_and_nl(s1, p1)
@@ -2155,8 +2165,11 @@ class BaseTangleCommands(object):
                     if not result:
                         self.mismatch("Mismatched block comments")
                 elif g.match(s1, p1, self.comment2) and g.match(s2, p2, self.comment2):
-                    while(p1 < len(s1) and p2 < len(s2) and
-                        not g.match(s1, p1, self.comment2_end) and not g.match(s2, p2, self.comment2_end)):
+                    while(
+                        p1 < len(s1) and p2 < len(s2) and
+                        not g.match(s1, p1, self.comment2_end) and
+                        not g.match(s2, p2, self.comment2_end)
+                    ):
                         # ws doesn't have to match exactly either!
                         if g.is_nl(s1, p1) or g.is_ws(s1[p1]):
                             p1 = g.skip_ws_and_nl(s1, p1)
@@ -2549,7 +2562,8 @@ class BaseTangleCommands(object):
         false_ret = head + code + tail, len(head) + len(code), False
         part, found = self.ust_lookup(name, part_number, is_root_flag, update_flag=True)
         if not found:
-            # g.trace("not found: name <%s> part_number <%s> is_root_flag <%s>" % (name, repr(part_number), repr(is_root_flag)))
+            # g.trace("not found: name <%s> part_number <%s> is_root_flag <%s>" % (
+            #   name, repr(part_number), repr(is_root_flag)))
             return false_ret # Not an error.
         ucode = g.toUnicode(part.code, self.encoding)
         #@+<< Remove leading blank lines and comments from ucode >>
@@ -3097,7 +3111,7 @@ class BaseTangleCommands(object):
             if kind == bad_section_name:
                 kind = plain_line # not an error.
             elif kind == at_root:
-                assert(self.head_root == None)
+                assert(self.head_root is None)
                 if self.head_root:
                     self.setRootFromText(self.head_root, report_errors)
                 else:
@@ -3122,7 +3136,8 @@ class BaseTangleCommands(object):
                     ("@code", at_code),
                     ("@doc", at_doc),
                     ("@root", at_root),
-                    ("@section", at_section)]:
+                    ("@section", at_section)
+                ]:
                     if g.match_word(s, i, name):
                         kind = theType; break
             if self.raw_cweb_flag and kind == at_other:

@@ -85,7 +85,6 @@ class ExternalFilesController(object):
         for ef in files:
             self.destroy_external_file(ef)
         self.files = [z for z in self.files if z.path not in paths]
-
     #@+node:ekr.20031218072017.2614: *5* efc.destroy_external_file
     def destroy_external_file(self, ef):
         '''Destroy the file corresponding to the given ExternalFile instance.'''
@@ -272,7 +271,7 @@ class ExternalFilesController(object):
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
-        if p is None:
+        if not p:
             for ef in self.files:
                 if ef.path == path:
                     where = ef.p.h

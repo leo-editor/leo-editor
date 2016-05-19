@@ -1340,7 +1340,7 @@ class GlobalConfigManager(object):
         if type1 in shortcuts or type2 in shortcuts:
             g.trace('oops: type in shortcuts')
         return (
-            type1 == None or type2 == None or
+            type1 is None or type2 is None or
             type1.startswith('string') and type2 not in shortcuts or
             type1 == 'int' and type2 == 'size' or
             (type1 in shortcuts and type2 in shortcuts) or
@@ -1674,7 +1674,7 @@ class LocalConfigManager(object):
         if type1 in shortcuts or type2 in shortcuts:
             g.trace('oops: type in shortcuts')
         return (
-            type1 == None or type2 == None or
+            type1 is None or type2 is None or
             type1.startswith('string') and type2 not in shortcuts or
             type1 == 'int' and type2 == 'size' or
             (type1 in shortcuts and type2 in shortcuts) or
@@ -2100,8 +2100,10 @@ class SettingsFinder(object):
         if which == 'cancel' or not value:
             return
         unl = value and value.unl
-        if g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
-            g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')):
+        if (
+            g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
+            g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')
+        )):
             msg = ("The setting '@{specific}' is in the Leo global configuration "
             "file 'leoSettings.leo'\nand should probably be copied to "
             "'myLeoSettings.leo' before editing.\n"

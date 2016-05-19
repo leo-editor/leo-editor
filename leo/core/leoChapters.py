@@ -522,7 +522,6 @@ class Chapter(object):
             p = root or c.p
             c.setCurrentPosition(p)
         if trace: g.trace(c.hoistStack)
-
     #@-others
 #@-others
 #@@language python

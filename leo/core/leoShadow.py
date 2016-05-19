@@ -7,7 +7,6 @@
 '''
 leoShadow.py
 
-
 This code allows users to use Leo with files which contain no sentinels
 and still have information flow in both directions between outlines and
 derived files.
@@ -19,8 +18,6 @@ When Leo first reads an @shadow we create a file without sentinels in the regula
 
 The slightly hard thing to do is to pick up changes from the file without
 sentinels, and put them into the file with sentinels.
-
-
 
 Settings:
 - @string shadow_subdir (default: .leo_shadow): name of the shadow directory.

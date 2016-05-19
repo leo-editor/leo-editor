@@ -167,7 +167,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         if self.busy():
             return g.trace('*** full_redraw: busy!', g.callers())
-        if p is None:
+        if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
             # Make sure the current position is visible.
@@ -431,7 +431,6 @@ class LeoQtTree(leoFrame.LeoTree):
         c = keywords['c']
         if c != self.c:
             return None
-
 
         if isinstance(QtWidgets.QApplication.focusWidget(), QtWidgets.QLineEdit):
             # when search results are found in headlines headkey2 fires
@@ -808,7 +807,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
         This is *not* an event handler: it is called from other event handlers."""
         # Note: "headrclick" hooks handled by VNode callback routine.
-        if event != None:
+        if event:
             c = self.c
             c.setLog()
             if not g.doHook("create-popup-menu", c=c, p=p, v=p, event=event):

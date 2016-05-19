@@ -32,7 +32,6 @@ try:
     import StringIO as io # Python 2
 except ImportError:
     import io # Python 3
-
 #@-<< imports >>
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+others
@@ -100,7 +99,6 @@ def main():
     controller.run()
     print('done')
 #@+node:ekr.20160317054700.5: *3* merge_types (not used)
-
 #@+node:ekr.20160317054700.6: *3* reduce_types
 #@+node:ekr.20160317054700.7: **   utility functions
 #@+node:ekr.20160317054700.8: *3* dump
@@ -121,8 +119,6 @@ def pdb(self):
 def truncate(s, n):
     '''Return s truncated to n characters.'''
     return s if len(s) <= n else s[:n-3] + '...'
-
-
 #@+node:ekr.20160317055215.1: **  class AstFormatter
 class AstFormatter(object):
     '''
@@ -136,14 +132,12 @@ class AstFormatter(object):
 
     # Entries...
     #@+node:ekr.20160317055215.3: *4* f.__call__ (not used)
-
     #@+node:ekr.20160317055215.4: *4* f.format
     def format(self, node):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
         val = self.visit(node)
         return val and val.strip() or ''
-
     #@+node:ekr.20160317055215.5: *4* f.visit
     def visit(self, node):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
@@ -162,7 +156,6 @@ class AstFormatter(object):
     #@+node:ekr.20160317055215.6: *3* f.Contexts
 
     # Contexts...
-
     #@+node:ekr.20160317055215.7: *4* f.ClassDef (make_stub_files)
 
     # 2: ClassDef(identifier name, expr* bases,
@@ -194,7 +187,6 @@ class AstFormatter(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-
     #@+node:ekr.20160317055215.8: *4* f.FunctionDef (make_stub_files)
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
@@ -219,18 +211,15 @@ class AstFormatter(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-
     #@+node:ekr.20160317055215.9: *4* f.Interactive
     def do_Interactive(self, node):
         for z in node.body:
             self.visit(z)
-
     #@+node:ekr.20160317055215.10: *4* f.Module
     def do_Module(self, node):
         assert 'body' in node._fields
         result = ''.join([self.visit(z) for z in node.body])
         return result # 'module:\n%s' % (result)
-
     #@+node:ekr.20160317055215.11: *4* f.Lambda
     def do_Lambda(self, node):
         return self.indent('lambda %s: %s' % (
@@ -244,19 +233,16 @@ class AstFormatter(object):
     def do_Expr(self, node):
         '''An outer expression: must be indented.'''
         return self.indent('%s\n' % self.visit(node.value))
-
     #@+node:ekr.20160317055215.14: *4* f.Expression
     def do_Expression(self, node):
         '''An inner expression: do not indent.'''
         return '%s\n' % self.visit(node.body)
-
     #@+node:ekr.20160317055215.15: *4* f.GeneratorExp
     def do_GeneratorExp(self, node):
         elt = self.visit(node.elt) or ''
         gens = [self.visit(z) for z in node.generators]
         gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
         return '<gen %s for %s>' % (elt, ','.join(gens))
-
     #@+node:ekr.20160317055215.16: *4* f.ctx nodes
     def do_AugLoad(self, node):
         return 'AugLoad'
@@ -333,11 +319,9 @@ class AstFormatter(object):
         return '%s.%s' % (
             self.visit(node.value),
             node.attr) # Don't visit node.attr: it is always a string.
-
     #@+node:ekr.20160317055215.21: *4* f.Bytes
     def do_Bytes(self, node): # Python 3.x only.
         return str(node.s)
-
     #@+node:ekr.20160317055215.22: *4* f.Call & f.keyword
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -353,7 +337,6 @@ class AstFormatter(object):
             args.append('**%s' % (self.visit(node.kwargs)))
         args = [z for z in args if z] # Kludge: Defensive coding.
         return '%s(%s)' % (func, ','.join(args))
-
     #@+node:ekr.20160317055215.23: *5* f.keyword
     # keyword = (identifier arg, expr value)
 
@@ -1300,15 +1283,19 @@ class Pattern(object):
                 # g.trace(i, m.group(i))
                 s = s.replace(group, m.group(i))
         return s
+    #@-others
+#@+node:ekr.20160519071605.1: ** class ReduceTypes
 
 
 class ReduceTypes:
     '''
     A helper class for the top-level reduce_types function.
-
+    
     This class reduces a list of type hints to a string containing the
     reduction of all types in the list.
     '''
+    #@+others
+    #@+node:ekr.20160519071605.2: *3* __init__
 
     def __init__(self, aList=None, name=None, trace=False):
         '''Ctor for ReduceTypes class.'''
@@ -1317,6 +1304,7 @@ class ReduceTypes:
         self.optional = False
         self.trace = trace
 
+    #@+node:ekr.20160519071605.3: *3* is_known_type
     def is_known_type(self, s):
         '''
         Return True if s is nothing but a single known type.
@@ -1382,6 +1370,7 @@ class ReduceTypes:
         if trace: g.trace('Fail:', s1)
         return False
 
+    #@+node:ekr.20160519071605.4: *3* reduce_collection
     def reduce_collection(self, aList, kind):
         '''
         Reduce the inner parts of a collection for the given kind.
@@ -1414,6 +1403,7 @@ class ReduceTypes:
         if trace: g.trace('3', result)
         return result
 
+    #@+node:ekr.20160519071605.5: *3* reduce_numbers
     def reduce_numbers(self, aList):
         '''
         Return aList with all number types in aList replaced by the most
@@ -1436,6 +1426,7 @@ class ReduceTypes:
         if trace: g.trace(aList)
         return aList
 
+    #@+node:ekr.20160519071605.6: *3* reduce_types
     def reduce_types(self):
         '''
         self.aList consists of arbitrarily many types because this method is
@@ -1470,10 +1461,12 @@ class ReduceTypes:
         else:
             return self.show('Union[%s]' % (', '.join(sorted(r))))
 
+    #@+node:ekr.20160519071605.7: *3* reduce_unknowns
     def reduce_unknowns(self, aList):
         '''Replace all unknown types in aList with Any.'''
         return [z if self.is_known_type(z) else 'Any' for z in aList]
 
+    #@+node:ekr.20160519071605.8: *3* show
     def show(self, s, known=True):
         '''Show the result of reduce_types.'''
         aList, name = self.aList, self.name
@@ -1497,6 +1490,7 @@ class ReduceTypes:
                 # widths above match the corresponding indents in match_all and match.
         return s
 
+    #@+node:ekr.20160519071605.9: *3* split_types
     def split_types(self, s):
         '''Split types on *outer level* commas.'''
         aList, i1, level = [], 0, 0
@@ -1510,17 +1504,6 @@ class ReduceTypes:
                 i1 = i+1
         aList.append(s[i1:].strip())
         return aList
-    #@-others
-#@+node:ekr.20160317054700.109: ** class ReduceTypes
-    #@+others
-    #@+node:ekr.20160317054700.110: *3* rt.ctor
-    #@+node:ekr.20160317054700.111: *3* rt.is_known_type
-    #@+node:ekr.20160317054700.112: *3* rt.reduce_collection
-    #@+node:ekr.20160317054700.113: *3* rt.reduce_numbers
-    #@+node:ekr.20160317054700.114: *3* rt.reduce_types
-    #@+node:ekr.20160317054700.115: *3* rt.reduce_unknowns
-    #@+node:ekr.20160317054700.116: *3* rt.show
-    #@+node:ekr.20160317054700.117: *3* rt.split_types
     #@-others
 #@+node:ekr.20160317054700.118: ** class StandAloneMakeStubFile
 

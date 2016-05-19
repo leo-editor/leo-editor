@@ -1606,7 +1606,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
         if j is not None:
             self.flashCharacter(w, j)
-
     #@+node:ekr.20150514063305.273: *5* initBracketMatcher
     def initBracketMatcher(self, c):
         '''Init the bracket matching code in selfInsertCommand.'''
@@ -1911,7 +1910,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         except Exception:
             return
         if which == 'flush':
-            keeplines = [x for x in keeplines if x != None]
+            keeplines = [x for x in keeplines if x is not None]
         w.delete(i, end)
         w.insert(i, ''.join(keeplines))
         w.setInsertPoint(i)

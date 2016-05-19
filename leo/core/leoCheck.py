@@ -328,7 +328,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         else:
             assert ctx == 'Del',ctx
             self.stats.n_del_names += 1
-
     #@+node:ekr.20160109140648.1: *4* Imports
     #@+node:ekr.20160108105958.21: *5* p1.Import
     #@+at From Guido:
@@ -553,7 +552,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.stats.n_assignments += 1
         cx.assignments_list.append(node)
         cx.statements_list.append(node)
-
     #@+node:ekr.20160108105958.15: *5* p1.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -594,7 +592,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         cx = self.context
         cx.returns_list.append(node)
         cx.statements_list.append(node)
-
     #@-others
 #@+node:ekr.20150525123715.1: ** class ProjectUtils
 class ProjectUtils(object):
@@ -1323,7 +1320,6 @@ class Stats(object):
                 print('%s%s: %s' % (pad,s,getattr(sd,var)))
         print('')
     #@-others
-
 #@+node:ekr.20150704135836.1: ** test
 def test(c, files):
     r'''

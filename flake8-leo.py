@@ -92,8 +92,8 @@ def check_all(dir_, files, style):
             fn = fn+'.py'
         paths.append(fn)
     # Set statistics here, instead of from the command line.
-    options = style.options
-    options.statistics = True
+    # options = style.options
+    # options.statistics = True
     # options.total_errors = True
     # options.benchmark = True
     report = style.check_files(paths=paths)

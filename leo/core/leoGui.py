@@ -107,7 +107,9 @@ class LeoGui(object):
         self.oops()
 
     def runAskYesNoCancelDialog(self, c, title,
-        message=None, yesMessage="Yes", noMessage="No", yesToAllMessage=None, defaultButton="Yes"):
+        message=None, yesMessage="Yes", noMessage="No",
+        yesToAllMessage=None, defaultButton="Yes"
+    ):
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
 
@@ -413,7 +415,9 @@ class NullGui(LeoGui):
         return self.simulateDialog("yesNoDialog", "no")
 
     def runAskYesNoCancelDialog(self, c, title,
-        message=None, yesMessage="Yes", noMessage="No", yesToAllMessage=None, defaultButton="Yes"):
+        message=None, yesMessage="Yes", noMessage="No",
+        yesToAllMessage=None, defaultButton="Yes"
+    ):
         return self.simulateDialog("yesNoCancelDialog", "cancel")
     #@+node:ekr.20100521090440.5893: *3* onActivateEvent/onDeactivateEvent (NullGui)
     def onActivateEvent(self, *args, **keys):

@@ -81,7 +81,6 @@ class LeoQtGui(leoGui.LeoGui):
         QtCore.pyqtRemoveInputHook()
         if trace: print('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
-
     #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
@@ -221,7 +220,10 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18496: *4* LeoQtGui.runAskDateTimeDialog
     def runAskDateTimeDialog(self, c, title,
-        message='Select Date/Time', init=None, step_min=None):
+        message='Select Date/Time',
+        init=None,
+        step_min=None
+    ):
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -260,8 +262,12 @@ class LeoQtGui(leoGui.LeoGui):
 
         class Calendar(QtWidgets.QDialog):
 
-            def __init__(self, parent=None, message='Select Date/Time',
-                init=None, step_min=None):
+            def __init__(self,
+                parent=None,
+                message='Select Date/Time',
+                init=None,
+                step_min=None
+            ):
                 if step_min is None: step_min = {}
                 QtWidgets.QDialog.__init__(self, parent)
                 layout = QtWidgets.QVBoxLayout()
@@ -271,8 +277,8 @@ class LeoQtGui(leoGui.LeoGui):
                 self.dt.setCalendarPopup(True)
                 layout.addWidget(self.dt)
                 buttonBox = QtWidgets.QDialogButtonBox(
-                QtWidgets.QDialogButtonBox.Ok
-                    | QtWidgets.QDialogButtonBox.Cancel)
+                    QtWidgets.QDialogButtonBox.Ok |
+                    QtWidgets.QDialogButtonBox.Cancel)
                 layout.addWidget(buttonBox)
                 buttonBox.accepted.connect(self.accept)
                 buttonBox.rejected.connect(self.reject)
@@ -475,10 +481,13 @@ class LeoQtGui(leoGui.LeoGui):
             return s
     #@+node:ekr.20110605121601.18501: *4* LeoQtGui.runPropertiesDialog
     def runPropertiesDialog(self,
-        title='Properties', data=None, callback=None, buttons=None):
+        title='Properties',
+        data=None,
+        callback=None,
+        buttons=None
+    ):
         """Dispay a modal TkPropertiesDialog"""
         if data is None: data = {}
-        # g.trace(data)
         g.warning('Properties menu not supported for Qt gui')
         result = 'Cancel'
         return result, data
@@ -679,7 +688,8 @@ class LeoQtGui(leoGui.LeoGui):
     def ensure_commander_visible(self, c1):
         """Check to see if c.frame is in a tabbed ui, and if so, make sure
         the tab is visible"""
-        # START: copy from Code-->Startup & external files-->@file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
+        # START: copy from Code-->Startup & external files-->
+        # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
@@ -905,7 +915,12 @@ class LeoQtGui(leoGui.LeoGui):
             c.bodyWantsFocus()
 
         def executeScriptCallback(event=None,
-            b=b, c=c, buttonText=buttonText, p=p and p.copy(), script=script):
+            b=b,
+            c=c,
+            buttonText=buttonText,
+            p=p and p.copy(),
+            script=script
+        ):
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)
             else:

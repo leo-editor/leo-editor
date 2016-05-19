@@ -97,7 +97,6 @@ def flake8_command(event):
                 options.total_errors = True
                 # options.benchmark = True
                 main.print_report(report, style)
-            
         #@+node:ekr.20160517133049.3: *5* flake8.find
         def find(self, p):
             '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
@@ -134,7 +133,7 @@ def flake8_command(event):
                         return fn
             if not g.unitTesting:
                 g.es_print('no flake8 configuration file found in\n%s' % (
-                    '\n'.join(table)))
+                    '\n'.join(dir_table)))
             return None
         #@+node:ekr.20160517133049.5: *5* flake8.run
         def run(self, p=None):
@@ -359,7 +358,6 @@ def pyflakes_command(event):
                 if False and errors:
                     # Annoying.
                     print('%s error%s in %s' % (errors, g.plural(errors), fn))
-
         #@+node:ekr.20160516072613.3: *5* pyflakes.find
         def find(self, p):
             '''Return True and add p's path to self.seen if p is a Python @<file> node.'''

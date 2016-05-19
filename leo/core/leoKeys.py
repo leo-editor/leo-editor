@@ -192,7 +192,7 @@ class AutoCompleterClass(object):
         state = k.unboundKeyAction
         w = event and event.w or c.get_focus()
         self.force = force
-        if not state in ('insert', 'overwrite'):
+        if state not in ('insert', 'overwrite'):
             if trace: g.trace('not in insert/overwrite mode')
             return
         # First, handle the invocation character as usual.
@@ -3601,7 +3601,7 @@ class KeyHandlerClass(object):
         for p in (c.p, c.rootPosition()):
             p = p.copy()
             if p == c.p and match(p):
-                 p.moveToVisNext(c)
+                p.moveToVisNext(c)
             while p:
                 if trace: g.trace(p.h)
                 if match(p):
@@ -3922,7 +3922,12 @@ class KeyHandlerClass(object):
             k.setLabelBlue(modeName + ': ') # ,protect=True)
     #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler (OLD)
     def generalModeHandler(self, event,
-        commandName=None, func=None, modeName=None, nextMode=None, prompt=None):
+        commandName=None,
+        func=None,
+        modeName=None,
+        nextMode=None,
+        prompt=None
+    ):
         '''Handle a mode defined by an @mode node in leoSettings.leo.'''
         k = self; c = k.c
         state = k.getState(modeName)
@@ -4012,7 +4017,12 @@ class KeyHandlerClass(object):
         k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
     def NEWgeneralModeHandler(self, event,
-        commandName=None, func=None, modeName=None, nextMode=None, prompt=None):
+        commandName=None,
+        func=None,
+        modeName=None,
+        nextMode=None,
+        prompt=None
+    ):
         '''Handle a mode defined by an @mode node in leoSettings.leo.'''
         k = self; c = k.c
         state = k.getState(modeName)
@@ -4360,9 +4370,9 @@ class KeyHandlerClass(object):
     def inState(self, kind=None):
         k = self
         if kind:
-            return k.state.kind == kind and k.state.n != None
+            return k.state.kind == kind and k.state.n is not None
         else:
-            return k.state.kind and k.state.n != None
+            return k.state.kind and k.state.n is not None
     #@+node:ekr.20080511122507.4: *4* k.setDefaultInputState
     def setDefaultInputState(self):
         k = self; state = k.defaultUnboundKeyAction
@@ -4381,7 +4391,7 @@ class KeyHandlerClass(object):
     def setState(self, kind, n, handler=None):
         trace = False and not g.unitTesting
         k = self
-        if kind and n != None:
+        if kind and n is not None:
             if trace: g.trace('**** setting %s %s %s' % (
                 kind, n, handler and handler.__name__), g.callers())
             k.state.kind = kind

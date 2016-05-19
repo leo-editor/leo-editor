@@ -436,7 +436,6 @@ class MatchBrackets(object):
             return False
         else:
             return False
-
     #@+node:ekr.20160121112536.1: *5* mb.scan_regex
     def scan_regex(self, s, i):
         '''Scan a regex (or regex substitution for perl).'''
@@ -755,7 +754,6 @@ class MatchBrackets(object):
         else:
             g.es("unmatched", repr(ch))
     #@-others
-
 #@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
 #@@nobeautify
 

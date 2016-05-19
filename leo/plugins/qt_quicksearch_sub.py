@@ -57,5 +57,3 @@ class Ui_LeoQuickSearchWidget(object):
                 None, QtGui.QApplication.UnicodeUTF8))
             self.showParents.setText(QtGui.QApplication.translate("LeoQuickSearchWidget", "Show Parents", 
                 None, QtGui.QApplication.UnicodeUTF8))
-
-

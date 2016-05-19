@@ -313,7 +313,8 @@ if QtWidgets:
                     self.add_item(lambda: splitter.open_window(), submenu, "Empty")
                 # adapted from choice_menu()
                 if (splitter.root.marked and
-                    splitter.top().max_count() > 1):
+                    splitter.top().max_count() > 1
+                ):
                     self.add_item(lambda: splitter.open_window(action="_move_marked_there"),
                         submenu, "Move marked there")
                 for provider in splitter.root.providers:
@@ -384,7 +385,7 @@ if QtWidgets:
                 self, event, release=True, double=True)
         #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-if QtWidgets:
+if QtWidgets: # NOQA
 
     class NestedSplitter(QtWidgets.QSplitter):
         enabled = True
@@ -814,7 +815,8 @@ if QtWidgets:
                 cull = []
                 for i in self.root.providers:
                     if (hasattr(i, 'ns_provider_id') and
-                        i.ns_provider_id() == id_):
+                        i.ns_provider_id() == id_
+                    ):
                         cull.append(i)
                 for i in cull:
                     self.root.providers.remove(i)
@@ -825,7 +827,8 @@ if QtWidgets:
             # clear marked if it's going to be deleted
             if (self.root.marked and (self.root.marked[3] == widget or
                 isinstance(self.root.marked[3], NestedSplitter) and
-                self.root.marked[3].contains(widget))):
+                self.root.marked[3].contains(widget))
+            ):
                 self.root.marked = None
             # send close signal to all children
             if isinstance(widget, NestedSplitter):

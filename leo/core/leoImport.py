@@ -282,8 +282,12 @@ class LeoImportCommands(object):
             if self.isDocStart(s, i) or g.match_word(s, i, "@doc"):
                 i, result = self.convertDocPartToWeb(s, i, result)
                 docSeen = True
-            elif(g.match_word(s, i, "@code") or g.match_word(s, i, "@root") or
-                g.match_word(s, i, "@c") or g.match(s, i, lb)):
+            elif(
+                g.match_word(s, i, "@code") or
+                g.match_word(s, i, "@root") or
+                g.match_word(s, i, "@c") or
+                g.match(s, i, lb)
+            ):
                 if not docSeen:
                     docSeen = True
                     result += docstart
@@ -317,10 +321,12 @@ class LeoImportCommands(object):
             if (g.match_word(s, i, "@doc") or
                 g.match_word(s, i, "@c") or
                 g.match_word(s, i, "@root") or
-                g.match_word(s, i, "@code")): # 2/25/03
+                g.match_word(s, i, "@code") # 2/25/03
+            ): 
                 return i, result
             elif(g.match(s, i, "<<") and # must be on separate lines.
-                g.find_on_line(s, i, ">>=") > -1):
+                g.find_on_line(s, i, ">>=") > -1
+            ):
                 return i, result
             else:
                 # Copy the entire line, escaping '@' and
@@ -907,7 +913,7 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3220: *5* importFlattenedOutline
     def importFlattenedOutline(self, files): # Not a command, so no event arg.
         c = self.c; u = c.undoer; current = c.p
-        if current == None: return
+        if current is None: return
         if len(files) < 1: return
         self.setEncoding()
         fileName = files[0] # files contains at most one file.
@@ -980,7 +986,6 @@ class LeoImportCommands(object):
             FreeMindImporter(self.c).import_files(files)
         else:
             g.es_print('can not import lxml.html')
-
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
         '''
@@ -991,7 +996,7 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files, webType):
         c = self.c; current = c.p
-        if current == None: return
+        if current is None: return
         if not files: return
         self.tab_width = c.getTabWidth(current) # New in 4.3.
         self.webType = webType
@@ -1567,7 +1572,7 @@ class LeoImportCommands(object):
     def setEncoding(self, p=None, atAuto=False):
         # c.scanAllDirectives checks the encoding. It may return None.
         c = self.c
-        if p is None: p = c.p
+        if not p: p = c.p
         theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
@@ -1945,7 +1950,6 @@ class MindMapImporter(object):
             else:
                 count = count+1
         return -1
-
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
         '''Return the string for the given csv row.'''
@@ -1956,7 +1960,6 @@ class MindMapImporter(object):
             else:
                 count = count+1
         return None
-
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController(object):

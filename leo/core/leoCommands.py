@@ -830,7 +830,7 @@ class Commands(object):
         # New in Leo 4.9: choose the type of import based on the extension.
         c.init_error_dialogs()
         derived = [z for z in names if c.looksLikeDerivedFile(z)]
-        others = [z for z in names if not z in derived]
+        others = [z for z in names if z not in derived]
         if derived:
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
@@ -2421,7 +2421,7 @@ class Commands(object):
         else:
             format = c.config.getString("headline_time_format_string")
             gmt = c.config.getBool("headline_gmt_time")
-        if format == None:
+        if format is None:
             format = default_format
         try:
             # import time
@@ -2787,8 +2787,9 @@ class Commands(object):
             return
         c.endEditing()
         s = p.h.strip()
-        if (s[0: 2] == "<<"
-            or s[-2:] == ">>"): # Must be on separate line.
+        if (s[0: 2] == "<<" or
+            s[-2:] == ">>" # Must be on separate line.
+        ): 
             if s[0: 2] == "<<": s = s[2:]
             if s[-2:] == ">>": s = s[: -2]
             s = s.strip()
@@ -3221,7 +3222,7 @@ class Commands(object):
                       reverse=False):
         '''Sort the siblings of a node.'''
         c = self; u = c.undoer
-        if p is None: p = c.p
+        if not p : p = c.p
         if not p: return
         c.endEditing()
         undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
@@ -3229,7 +3230,7 @@ class Commands(object):
         parent = p.parent()
         oldChildren = parent_v.children[:]
         newChildren = parent_v.children[:]
-        if key == None:
+        if key is None:
 
             def lowerKey(self):
                 return (self.h.lower())
@@ -3417,7 +3418,8 @@ class Commands(object):
     #@+node:ekr.20040723094220.3: *7* c.checkPythonCode
     def checkPythonCode(self, event=None,
         unittest=False, ignoreAtIgnore=True,
-        suppressErrors=False, checkOnSave=False):
+        suppressErrors=False, checkOnSave=False
+    ):
         '''Check the selected tree for syntax and tab errors.'''
         c = self; count = 0; result = "ok"
         if not unittest:
@@ -3804,7 +3806,7 @@ class Commands(object):
             # Careful: don't clone already-cloned nodes.
             if p == parent:
                 p.moveToNodeAfterTree()
-            elif p.isMarked() and not p.v in cloned:
+            elif p.isMarked() and p.v not in cloned:
                 cloned.append(p.v)
                 if 0: # old code
                     # Calling p.clone would cause problems
@@ -3842,7 +3844,7 @@ class Commands(object):
             # Careful: don't clone already-cloned nodes.
             if p == parent:
                 p.moveToNodeAfterTree()
-            elif p.isMarked() and not p.v in copied:
+            elif p.isMarked() and p.v not in copied:
                 copied.append(p.v)
                 p2 = p.copyWithNewVnodes(copyMarked=True)
                 p2._linkAsNthChild(parent, n, adjust=True)
@@ -4972,7 +4974,9 @@ class Commands(object):
         #@+at
         #@@language rest
         #@@wrap
-        # The Aha: the positions passed to p.deletePositionsInList only *specify* the desired changes; the only way to *make* those changes is to operate on vnodes!
+        # The Aha: the positions passed to p.deletePositionsInList only
+        # *specify* the desired changes; the only way to *make* those changes is
+        # to operate on vnodes!
         # 
         # Consider this outline, containing no clones::
         # 
@@ -4980,19 +4984,32 @@ class Commands(object):
         #       - A
         #       - B
         # 
-        # The fundamental problem is this. If we delete node A, the index of node B in ROOT.children will change. This problem has (almost) nothing to do with clones or positions.
+        # The fundamental problem is this. If we delete node A, the index of
+        # node B in ROOT.children will change. This problem has (almost) nothing
+        # to do with clones or positions.
         # 
-        # To make this concrete, let's look at the *vnodes* that represent this tree. It is the vnodes, and *not* the positions, that represent all of Leo's data. Let ROOT, A and B be the vnodes corresponding to the nodes ROOT, A and B. ROOT.children will look like this at first::
+        # To make this concrete, let's look at the *vnodes* that represent this
+        # tree. It is the vnodes, and *not* the positions, that represent all of
+        # Leo's data. Let ROOT, A and B be the vnodes corresponding to the nodes
+        # ROOT, A and B. ROOT.children will look like this at first::
         # 
         #     ROOT.children = [A,B]
         # 
-        # That is, the children array contains references (links) to both A and B. After deleting A, we will have::
+        # That is, the children array contains references (links) to both A and
+        # B. After deleting A, we will have::
         # 
         #     ROOT.children = [B]
         # 
-        # As you can see, the reference to B is at index 1 of ROOT.children before deleting A, and at index 0 of ROOT.children after deleting A. Thus, *any* position referring to B will become invalid after deleting A.
+        # As you can see, the reference to B is at index 1 of ROOT.children
+        # before deleting A, and at index 0 of ROOT.children after deleting A.
+        # Thus, *any* position referring to B will become invalid after deleting
+        # A.
         # 
-        # Several people, including myself, have proposed an unsound solution--just delete positions in reverse order, so that B will be deleted before A. This idea has appeal, but it is wrong. Here is an outline that shows that there is *no* correct order for deleting positions. All A' nodes are clones of each other::
+        # Several people, including myself, have proposed an unsound
+        # solution--just delete positions in reverse order, so that B will be
+        # deleted before A. This idea has appeal, but it is wrong. Here is an
+        # outline that shows that there is *no* correct order for deleting
+        # positions. All A' nodes are clones of each other::
         # 
         #     + ROOT
         #       + A'
@@ -5000,45 +5017,76 @@ class Commands(object):
         #       + A'
         #         - B # at position p2
         # 
-        # **Important**: B is *not* a clone. Also note that there is only *one* node called A and *one* node called B. The children arrays will look like::
+        # **Important**: B is *not* a clone. Also note that there is only *one*
+        # node called A and *one* node called B. The children arrays will look
+        # like::
         # 
         #     ROOT.children = [A,A]
         #     A.children = [B]
         #     B.children = []
         # 
-        # It surely must be reasonable to pass either *or both* positions p1 and p2 to p.deletePositionsInList. But after deleting the B corresponding to p1, the children arrays will look like:
+        # It surely must be reasonable to pass either *or both* positions p1 and
+        # p2 to p.deletePositionsInList. But after deleting the B corresponding
+        # to p1, the children arrays will look like:
         # 
         #     ROOT.children = [A,A]
         #     A.children = []
         #     B.children = [] # B is no longer referenced anywhere!
         # 
-        # So if p.deletePositionsInList attempts to delete position p2 (from A), B will no longer appear in A.children!
+        # So if p.deletePositionsInList attempts to delete position p2 (from A),
+        # B will no longer appear in A.children!
         # 
-        # There are many other cases that we could discuss, but the conclusion in all cases is that we must use the positions passed to p.deletePositionsInList only as *hints* about what to do.
+        # There are many other cases that we could discuss, but the conclusion
+        # in all cases is that we must use the positions passed to
+        # p.deletePositionsInList only as *hints* about what to do.
         # 
-        # Happily, there is a simple strategy that sidesteps all the difficulties:
+        # Happily, there is a simple strategy that sidesteps all the
+        # difficulties:
         # 
-        # Step 1. Verify, *before* making any changes to the outline, that all the positions passed to p.deletePositionsInList *initially* make sense.
+        # Step 1. Verify, *before* making any changes to the outline, that all
+        # the positions passed to p.deletePositionsInList *initially* make
+        # sense.
         # 
-        # Step 2. Treat each position as a "request" to delete *some* vnode from the children array in the *position's* parent vnode.
+        # Step 2. Treat each position as a "request" to delete *some* vnode from
+        # the children array in the *position's* parent vnode.
         # 
         # This is just a bit subtle. Let me explain it in detail.
         # 
-        # First, recall that vnodes do not have unique parent vnodes. Because of clones, a vnode may may have *many* parents. Happily, every position *does* specify a unique parent (vnode) at that position.
+        # First, recall that vnodes do not have unique parent vnodes. Because of
+        # clones, a vnode may may have *many* parents. Happily, every position
+        # *does* specify a unique parent (vnode) at that position.
         # 
-        # Second, as shown above, there is no way to order positions such that all later positions remain valid. As the example above shows, deleting (the vnode corresponding to) a position P may cause *all* later positions referring to P.v to refer to *already deleted* vnodes.
+        # Second, as shown above, there is no way to order positions such that
+        # all later positions remain valid. As the example above shows, deleting
+        # (the vnode corresponding to) a position P may cause *all* later
+        # positions referring to P.v to refer to *already deleted* vnodes.
         # 
-        # In other words, we simply *must* ignore the child indices in positions. Given a position P, P.parent is well defined. So Step 2 above will simply delete the *first* element in P.parent.children containing P.v.
+        # In other words, we simply *must* ignore the child indices in
+        # positions. Given a position P, P.parent is well defined. So Step 2
+        # above will simply delete the *first* element in P.parent.children
+        # containing P.v.
         # 
-        # As we have seen, there may not even *be* any such element of P.parent.children: a previous delete may have already deleted the last item of P.parent.children equal to P.v. That should *not* be considered an error--Step 1 has ensured that all positions *originally* did make sense.
+        # As we have seen, there may not even *be* any such element of
+        # P.parent.children: a previous delete may have already deleted the last
+        # item of P.parent.children equal to P.v. That should *not* be
+        # considered an error--Step 1 has ensured that all positions
+        # *originally* did make sense.
         # 
         # Summary
         # 
-        # Positions passed to p.deletePositionsInList specify *vnodes* to be deleted from specific parents, but they do *not* specify at what index in the parent.children array (if any!) those vnodes are to be found. The algorithm will delete the *first* item in the children array that references the vnode to be deleted.
+        # Positions passed to p.deletePositionsInList specify *vnodes* to be
+        # deleted from specific parents, but they do *not* specify at what index
+        # in the parent.children array (if any!) those vnodes are to be found.
+        # The algorithm will delete the *first* item in the children array that
+        # references the vnode to be deleted.
         # 
-        # This will almost always be good enough. In the unlikely event that more control is desired, p.deletePositionsInList can not possibly be used.
+        # This will almost always be good enough. In the unlikely event that
+        # more control is desired, p.deletePositionsInList can not possibly be
+        # used.
         # 
-        # The new emphasis on vnodes at last puts the problem an a completely solid foundation. Moreover, the new algorithm should be considerably faster than the old: there is no need to sort positions.
+        # The new emphasis on vnodes at last puts the problem an a completely
+        # solid foundation. Moreover, the new algorithm should be considerably
+        # faster than the old: there is no need to sort positions.
         #@-<< theory of operation >>
         trace = (False or g.app.debug) and not g.unitTesting
         c = self
@@ -5632,7 +5680,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.13: *4* c.recolor_now
     def recolor_now(self, p=None, incremental=False, interruptable=True):
         c = self
-        if p is None:
+        if not p:
             p = c.p
         # g.trace('incremental',incremental,p and p.h,g.callers())
         c.frame.body.colorizer.colorize(p,
@@ -6292,10 +6340,6 @@ class Commands(object):
         c = self
         root = c.rootPosition()
         return p and root and p == root # 2011/03/03
-        # if p is None or c._rootPosition is None:
-            # return False
-        # else:
-            # return p == c._rootPosition
     #@+node:ekr.20031218072017.2987: *5* c.isChanged
     def isChanged(self):
         return self.changed

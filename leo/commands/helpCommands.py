@@ -633,7 +633,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
         To drag, click and hold on a headline and drag it over another headline.
         Control-drags create clones; regular drags move the node.
 
-
         Files
         -----
 
@@ -1149,5 +1148,4 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 c.putHelpFor(s2)
     #@-others
 #@-others
-
 #@-leo

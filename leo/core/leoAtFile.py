@@ -463,13 +463,17 @@ class AtFile(object):
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
     # The vnode ctor must not create this ivar!
     # 
-    # at.terminateBody detects clone conflicts. The old value is v.b. The new value is::
+    # at.terminateBody detects clone conflicts. The old value is
+    # v.b. The new value is::
     # 
     #     ''.join(v.tempBodyList)
     # 
-    # at.terminateBody calls at.indicateNodeChanged when a mismatch is detected. at.indicateNodeChanged adds an entry in c.nodeConflictList for each clone conflict.
+    # at.terminateBody calls at.indicateNodeChanged when a
+    # mismatch is detected. at.indicateNodeChanged adds an entry
+    # in c.nodeConflictList for each clone conflict.
     # 
-    # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes' node for each entry in c.nodeConflictList.
+    # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes'
+    # node for each entry in c.nodeConflictList.
     #@-<< Detecting clone conflicts >>
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
@@ -1298,7 +1302,7 @@ class AtFile(object):
         seen = {}
         for p in root.self_and_subtree():
             v = p.v
-            if not v.gnx in seen:
+            if v.gnx not in seen:
                 old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
@@ -2159,7 +2163,7 @@ class AtFile(object):
         i = g.skip_ws(s, i + len(tag))
         # Get the clone count.
         junk, val = g.skip_long(s, i)
-        if val == None:
+        if val is None:
             at.readError("Invalid count in @clone sentinel")
         else:
             at.cloneSibCount = val
@@ -4923,7 +4927,7 @@ class AtFile(object):
                 return False
         try:
             os.rename(src, dst)
-            if mode != None:
+            if mode is not None:
                 self.chmod(dst, mode)
             return True
         except Exception:
