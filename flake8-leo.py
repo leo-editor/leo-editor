@@ -23,18 +23,18 @@ import time
 def main(table):
     '''Call run on all tables in tables_table.'''
     from flake8 import engine
+    config_file = get_flake8_config()
+    if not config_file:
+        return
     style = engine.get_style_guide(
-        parse_argv=False,
-        config_file=get_flake8_config(),
-    )
-    if style:
-        t1 = time.clock()
-        n = 0
-        for files, dir_ in table:
-            n += len(table)
-            check_all(dir_, files, style)
-        t2 = time.clock()
-        print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
+        parse_argv=False, config_file=config_file)
+    t1 = time.clock()
+    n = 0
+    for files, dir_ in table:
+        n += len(files)
+        check_all(dir_, files, style)
+    t2 = time.clock()
+    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160517222900.1: *3* get_home
 def get_home():
     """Returns the user's home directory."""
@@ -57,23 +57,24 @@ def get_home():
 #@+node:ekr.20160517222236.1: *3* get_flake8_config
 def get_flake8_config():
     '''Return the path to the flake8 configuration file.'''
+    trace = False and not g.unitTesting
     join = g.os_path_finalize_join
     homeDir = get_home()
     loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    # g.trace('home', homeDir, 'loadDir', loadDir)
-    table = (
+    base_table = ('flake8', 'flake8.txt')
+    dir_table = (
         homeDir,
         join(homeDir, '.leo'),
         join(loadDir, '..', '..', 'leo', 'test'),
     )
-    for base in ('flake8', 'flake8.txt'):
-        for path in table:
+    for base in base_table:
+        for path in dir_table:
             fn = g.os_path_abspath(join(path, base))
             if g.os_path_exists(fn):
-                g.trace('found:', fn)
+                if trace: g.trace('found:', fn)
                 return fn
     print('no flake8 configuration file found in\n%s' % (
-        '\n'.join(table)))
+        '\n'.join(dir_table)))
     return None
 #@+node:ekr.20160517222332.1: *3* check_all
 def check_all(dir_, files, style):
@@ -93,7 +94,7 @@ def check_all(dir_, files, style):
     # Set statistics here, instead of from the command line.
     options = style.options
     options.statistics = True
-    options.total_errors = True
+    # options.total_errors = True
     # options.benchmark = True
     report = style.check_files(paths=paths)
     main.print_report(report, style)

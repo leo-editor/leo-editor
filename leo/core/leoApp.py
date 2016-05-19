@@ -84,19 +84,20 @@ def flake8_command(event):
         def check_all(self, paths):
             '''Run flake8 on all paths.'''
             from flake8 import engine, main
-            style = engine.get_style_guide(
-                parse_argv=False,
-                config_file=self.get_flake8_config(),
-            )
-            if not style:
-                return
-            report = style.check_files(paths=paths)
-            # Set statistics here, instead of from the command line.
-            options = style.options
-            options.statistics = True
-            options.total_errors = True
-            # options.benchmark = True
-            main.print_report(report, style)
+            config_file = self.get_flake8_config()
+            if config_file:
+                style = engine.get_style_guide(
+                    parse_argv=False,
+                    config_file=config_file,
+                )
+                report = style.check_files(paths=paths)
+                # Set statistics here, instead of from the command line.
+                options = style.options
+                options.statistics = True
+                options.total_errors = True
+                # options.benchmark = True
+                main.print_report(report, style)
+            
         #@+node:ekr.20160517133049.3: *5* flake8.find
         def find(self, p):
             '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
@@ -114,15 +115,19 @@ def flake8_command(event):
         #@+node:ekr.20160517133049.4: *5* flake8.get_flake8_config
         def get_flake8_config(self):
             '''Return the path to the pylint configuration file.'''
-            trace = False and not g.unitTesting
+            trace = True and not g.unitTesting
             join = g.os_path_finalize_join
-            table = (
+            dir_table = (
                 g.app.homeDir,
                 join(g.app.homeDir, '.leo'),
                 join(g.app.loadDir, '..', '..', 'leo', 'test'),
             )
-            for base in ('flake8', 'flake8.txt'):
-                for path in table:
+            if g.isPython3:
+                base_table = ('flake8', 'flake8.txt')
+            else:
+                base_table = ('flake8',)
+            for base in base_table:
+                for path in dir_table:
                     fn = g.os_path_abspath(join(path, base))
                     if g.os_path_exists(fn):
                         if trace: g.trace('found:', fn)
