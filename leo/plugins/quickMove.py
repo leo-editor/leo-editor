@@ -819,7 +819,7 @@ class quickMove(object):
             # other lines are just ignored
 
         g.app.db['_quickmove']['global_targets'] = [
-            {'name': name, 'unl': unl} for name, unl in new
+            {'name': name2, 'unl': unl2} for name2, unl2 in new
         ]
         # make sure g.app.db knows it's been changed
         g.app.db['_quickmove'] = g.app.db['_quickmove']

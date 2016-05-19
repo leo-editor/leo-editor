@@ -37,9 +37,7 @@ g.assertUi('qt')
 #@+node:ville.20110115234843.8746: ** init
 def init ():
 
-
     ok = g.app.gui.guiName() == "qt"
-
     if ok:
         if 0: # Use this if you want to create the commander class before the frame is fully created.
             g.registerHandler('before-create-leo-frame',onCreate)
@@ -47,9 +45,7 @@ def init ():
             g.registerHandler('after-create-leo-frame',onCreate)
 
         g.registerHandler('outlinedrop', onDrop)
-
         g.plugin_signon(__name__)
-
     return ok
 #@+node:ville.20110115234843.8753: ** onDrop
 def onDrop(tag, keys):
@@ -76,9 +72,8 @@ def mime_data_dump(md):
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
-
-    thePluginController = pluginController(c)
+    if c:
+        pluginController(c)
 #@+node:ville.20110115234843.8748: ** class pluginController
 class pluginController:
 

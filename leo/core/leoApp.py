@@ -343,7 +343,6 @@ def pyflakes_command(event):
             for fn in sorted(paths):
                 # Report the file name.
                 sfn = g.shortFileName(fn)
-                # print('pyflakes: %s' % sfn)
                 s = g.readFileIntoEncodedString(fn, silent=False)
                 if not s.strip():
                     return
@@ -351,7 +350,11 @@ def pyflakes_command(event):
                     errorStream=sys.stderr,
                     warningStream=sys.stderr,
                     )
-                api.check(s, sfn, r)
+                errors = api.check(s, sfn, r)
+                if False and errors:
+                    # Annoying.
+                    print('%s error%s in %s' % (errors, g.plural(errors), fn))
+
         #@+node:ekr.20160516072613.3: *5* pyflakes.find
         def find(self, p):
             '''Return True and add p's path to self.seen if p is a Python @<file> node.'''

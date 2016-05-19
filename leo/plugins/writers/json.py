@@ -6,7 +6,7 @@
 # json is not the same as leo.plugins.json
 import copy
 import json
-import leo.core.leoGlobals as g
+# import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160504083330.2: ** class JSON_Writer

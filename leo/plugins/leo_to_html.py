@@ -210,9 +210,8 @@ def onCreate (tag, keys):
     controller for the commander issuing the hook.
     """
     c = keys.get('c')
-    if not c: return
-
-    thePluginController = pluginController(c)
+    if c:
+        pluginController(c)
 #@+node:bob.20080107154936.4: *3* createExportMenus
 def createExportMenus (tag,keywords):
 
@@ -250,13 +249,11 @@ class pluginController(object):
     #@+others
     #@+node:bob.20080107154757.1: *3* __init__(pluginController, leo_to_html.py)
     def __init__ (self,c):
-
         """
         Initialze pluginController by registering minibuffer commands.
         """
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
         for command in (
             'export-html',
             'export-html-bullet',
@@ -425,20 +422,11 @@ class Leo_to_HTML(object):
     #@+node:bob.20080107160008: *4* doItemHeadlineTags
     def doItemHeadlineTags(self, p, level=1):
         """" Recursivley proccess an outline node into an xhtml list."""
-
-        xhtml = self.xhtml
-
         self.doHeadline(p, level)
         self.doBodyElement(p, level)
-
         if p.hasChildren() and self.showSubtree(p):
-
             for item in p.children():
-                self.doItemHeadlineTags(item, level +1)
-
-
-
-
+                self.doItemHeadlineTags(item, level+1)
     #@+node:bob.20080107165629: *4* doItemBulletList
     def doItemBulletList(self, p):
         """" Recursivley proccess an outline node into an xhtml list."""

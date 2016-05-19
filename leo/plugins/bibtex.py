@@ -149,9 +149,10 @@ def onHeadKey(tag,keywords):
     20141127 - note headkey2 now only fires on `Enter`, no need
     to check which key brought us here.
     """
+    # c = keywords.get("c")
     # To do: check for duplicate keys here.
-    p = keywords.get("p") or keywords.get("v")
-    c = keywords.get("c")
+    p = keywords.get("p")
+    if not p: return
     h = p.h.strip()
     i = h.find(' ')
     kind = h[:i]
@@ -228,8 +229,8 @@ def readBibTexFileIntoTree(bibFile, c):
 def writeTreeAsBibTex(bibFile,root,c):
     """Write root's *subtree* to bibFile."""
     trace = False and not g.unitTesting
-    d = c.scanAllDirectives(p=root)
-    encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
+    # d = c.scanAllDirectives(p=root)
+    # encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
     strings,entries = [],[]
     for p in root.subtree():
         h = p.h

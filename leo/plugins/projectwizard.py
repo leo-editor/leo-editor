@@ -115,7 +115,8 @@ def rclick_path_importfile(c,p,menu):
             ("All files","*"),
             ("Python files","*.py"),
         ]
-        # This is incomplete.
+        # This is incomplete: files is not used.
+        # files = g.app.gui.runOpenFileDialog(c,
         g.app.gui.runOpenFileDialog(c,
             title = "Import files",
             filetypes = table,

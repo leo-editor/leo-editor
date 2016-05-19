@@ -1,31 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ville.20110304230157.6513: * @file systray.py
-#@+<< docstring >>
-#@+node:ville.20110219221839.6550: ** << docstring >>
-''' systray
-'''
-#@-<< docstring >>
-
+''' systray'''
 __version__ = '0.2'
-#@+<< version history >>
-#@+node:ville.20110219221839.6551: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.1 Functionally complete version
-#@-<< version history >>
-
-#@+<< imports >>
-#@+node:ville.20110219221839.6552: ** << imports >>
 import leo.core.leoGlobals as g
-
 g.assertUi('qt')
-
 from PyQt4 import QtGui, QtCore
-
-# Whatever other imports your plugins uses.
-#@-<< imports >>
-
 #@+others
 #@+node:ville.20110219221839.6553: ** init
 def init ():
@@ -63,9 +42,8 @@ def createTrayIcon():
 def onCreate (tag, keys):
 
     c = keys.get('c')
-    if not c: return
-
-    thePluginController = pluginController(c)
+    if c:
+        pluginController(c)
 #@+node:ville.20110219221839.6555: ** class pluginController
 class pluginController:
 
@@ -91,11 +69,9 @@ class pluginController:
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
     #@+node:ville.20110219221839.6558: *3* clickPrev
     def clickPrev(self):
+        
         c = self.c
-        p = c.goPrevVisitedNode()
-        # g.trace(p)
-        #if p: c.selectPosition(p)
-
+        c.goPrevVisitedNode()
     #@+node:ville.20110219221839.6559: *3* clickNext
     def clickNext(self):
         c = self.c

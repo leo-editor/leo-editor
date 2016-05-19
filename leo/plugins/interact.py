@@ -318,11 +318,11 @@ class InteractController(object):
     #@+node:tbrown.20090603104805.4965: *3* addButton (interact.py)
     def addButton(self,first):
         '''Add a button for an interact class.'''
-        c = self.c ; p = c.p
+        c = self.c
         sc = scriptingController(c)
         mb = InteractButton(c,class_=first)
         if mb.available():
-            b = sc.createIconButton(
+            sc.createIconButton(
                 args=None,
                 text = mb.interactor.buttonText(),
                 command = mb.run,

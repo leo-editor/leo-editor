@@ -13,15 +13,12 @@ class DartWriter(basewriter.BaseWriter):
     #@+node:ekr.20141116100154.4: ** dart.write
     def write (self,root):
         """Write all the *descendants* of an .dart node."""
-        at = self
-        trace = False
         root_level = root.level()
         for p in root.subtree():
             indent = p.level()-root_level
             self.put('%s %s' % ('*'*indent,p.h))
             for s in p.b.splitlines(False):
                 if not g.isDirective(s):
-                    if trace: g.trace(s)
                     self.put(s)
         root.setVisited()
         return True

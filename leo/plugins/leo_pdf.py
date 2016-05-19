@@ -616,19 +616,13 @@ if docutils:
             if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
                 self.styleSheet = visitor.styleSheet
                 self.encode = visitor.encode
-
             if reportlab:
-
                 out = StringIO.StringIO()
-
-                doc = reportlab.platypus.SimpleDocTemplate(out,
+                reportlab.platypus.SimpleDocTemplate(out,
                     pagesize=reportlab.lib.pagesizes.A4)
-
                 # The 'real' code is doc.build(story)
                 visitor.buildFromIntermediateFile(s,story,visitor)
-
                 return out.getvalue()
-
             else:
                 return ''
         #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
@@ -699,14 +693,13 @@ if docutils:
             self.writer = writer
             self.contents = contents
             self.story = []
-
             # Some of these may be needed, even though they are not referenced directly.
-            self.settings = settings = doctree.settings
-            ### self.styleSheet = stylesheet and stylesheet.getStyleSheet()
+            self.settings = doctree.settings
+            # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
             self.language = get_language(doctree)
-                ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+                # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *3* as_what
         def as_what(self):
 
@@ -779,7 +772,7 @@ if docutils:
         def __init__(self, writer,doctree):
 
             self.writer = writer
-            self.settings = settings = doctree.settings
+            self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.

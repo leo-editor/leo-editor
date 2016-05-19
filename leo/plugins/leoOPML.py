@@ -350,7 +350,7 @@ class OpmlController(object):
             defaultextension=".opml")
         c.bringToFront()
         if fileName and len(fileName) > 0:
-            c2 = self.readFile(fileName)
+            self.readFile(fileName)
         else:
             c.bodyWantsFocus()
     #@+node:ekr.20060904103721.1: *3* oc.writeFile
@@ -465,7 +465,7 @@ class PutToOPML(object):
         self.put('\n</body>')
     #@+node:ekr.20060919172012.6: *3* putOPMLNode
     def putOPMLNode(self, p):
-        c = self.c
+
         indent = ' ' * (4 * p.level()) # Always use 4-space indents.
         body = p.bodyString() or ''; head = p.headString() or ''
         attrFormat = ' %s="%s"'

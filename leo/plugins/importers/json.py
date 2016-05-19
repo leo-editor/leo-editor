@@ -30,7 +30,7 @@ class JSON_Scanner:
         '''Create the tree of nodes rooted in parent.'''
         import pprint
         trace = False and not g.unitTesting
-        c, d = self.c, self.gnx_dict
+        d = self.gnx_dict
         if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)

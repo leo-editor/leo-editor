@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ville.20091009202416.10040: * @file leoremote.py
 #@+<< docstring >>
-#@+node:ville.20091009202416.10041: ** << docstring >>
+#@+node:ville.20091009202416.10041: ** << docstring >> (leoremote.py)
 ''' Remote control for Leo.
 
     NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
@@ -29,13 +29,18 @@ Example client::
 
 '''
 #@-<< docstring >>
-
+#@+<< imports >>
+#@+node:ekr.20160519045636.1: ** << imports >> (leoremote.py)
 import leo.core.leoGlobals as g
 from leo.external import lproto
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import os
 import socket # For a test of its capabilities.
 import tempfile
-
+#@-<< imports >>
 #@+others
 #@+node:ville.20091009202416.10045: ** init
 def init ():
@@ -50,7 +55,7 @@ def init ():
 #@+node:ville.20091010231411.5262: ** g.command('leoserv-start')
 @g.command('leoserv-start')
 def leoserv_start(event):
-    c = event['c']
+    # c = event['c']
     g.app.leoserv = lps = lproto.LProtoServer()
 
     def dispatch_script(msg, ses):
@@ -64,7 +69,11 @@ def leoserv_start(event):
             ses['pydict'] = {'g' : g }
 
         # print("run file",pth)
-        execfile(pth, ses['pydict'])
+        if g.isPython3:
+            g.trace('no python 3 support')
+            # exec(compile(script, scriptFile, 'exec'), d)
+        else:
+            builtins.execfile(pth, ses['pydict'])
         # print("run done")
 
     lps.set_receiver(dispatch_script)
@@ -87,9 +96,8 @@ def run_remote_script(fname):
 
     # c and p are ambiguous for remote script
     print("rrs")
-
     d = {'g': g }
-    execfile(fname, d)
+    builtins.execfile(fname, d)
 #@-others
 #@@language python
 #@@tabwidth -4

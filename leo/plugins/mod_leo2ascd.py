@@ -128,7 +128,7 @@ def CodeChunk(text, width=72):
     lastSpacePosition = 0
     shortWidth = width - 4
     prefix = ''
-    suffix = ' \\'
+    # suffix = ' \\'
     textLen = len(text)
     if width > textLen:
         chunkList.append(text)
@@ -241,7 +241,7 @@ def WriteNode(v,startinglevel, ascFile):
             ascFile.write("%s\n" % lineString)
         except IOError:
             g.es("Could not write to output file: %s" % ascFile.name)
-            statusOfWriteOutputLine = CV.END_PROGRAM
+            # statusOfWriteOutputLine = CV.END_PROGRAM
 
     # Get the headline text.
     h = v.headString()
@@ -363,7 +363,7 @@ def WriteNode(v,startinglevel, ascFile):
 def WriteTreeAsAsc(p,fn):
     'Writes the tree under p to the file ascFile'
     try:
-        ascFile = file(fn,'w')
+        ascFile = open(fn,'w')
     except IOError:
         g.es("Could not open output file: %s" % fn)
         return

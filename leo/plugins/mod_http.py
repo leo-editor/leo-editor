@@ -264,7 +264,7 @@ def init():
         getGlobalConfiguration()
         if config.http_active:
             try:
-                s = Server(config.http_ip, config.http_port, RequestHandler)
+                Server(config.http_ip, config.http_port, RequestHandler)
             except socket.error as e:
                 g.es("mod_http server initialization failed (%s:%s): %s" % (
                     config.http_ip, config.http_port, e))
@@ -302,7 +302,7 @@ def getGlobalConfiguration():
 def plugin_wrapper(tag, keywords):
     if g.app.killed:
         return
-    first = True
+    # first = True
     while loop(config.http_timeout):
         pass
 #@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
@@ -312,7 +312,7 @@ def onFileOpen(tag, keywords):
     wasactive = config.http_active
     getConfiguration(c)
     if config.http_active and not wasactive: # Ok for unit testing:
-        s = Server('', config.http_port, RequestHandler)
+        Server('', config.http_port, RequestHandler)
         asyncore.read = a_read
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled on port %s, version %s" % (
@@ -1251,7 +1251,7 @@ def poll(timeout=0.0):
         #@+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
-        except select.error as err:
+        except select.error: # as err:
             # if err[0] != EINTR:
                 # raise
             # else:

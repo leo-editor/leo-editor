@@ -13,6 +13,7 @@
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
+<v t="ekr.20160510132151.1"><vh>@button backup</vh></v>
 <v t="ekr.20160412101537.1"><vh>@button test-jup-import</vh>
 <v t="ekr.20160412101537.2"><vh>class Import_IPYNB</vh>
 <v t="ekr.20160412101537.3"><vh>ctor</vh></v>
@@ -185,15 +186,16 @@
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
 <v t="ekr.20140727075002.18109"><vh>@file importers/basescanner.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file importers/c.py</vh></v>
+<v t="ekr.20160505094722.1"><vh>@file importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
 <v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file importers/elisp.py</vh></v>
 <v t="ekr.20140723122936.18138"><vh>@file importers/html.py</vh></v>
 <v t="ekr.20140723122936.18142"><vh>@file importers/ini.py</vh></v>
-<v t="ekr.20160412101008.1"
-expanded="ekr.20160412115053.1,"><vh>@file importers/ipynb.py</vh></v>
+<v t="ekr.20160412101008.1"><vh>@file importers/ipynb.py</vh></v>
 <v t="ekr.20140723122936.18143"><vh>@file importers/java.py</vh></v>
 <v t="ekr.20140723122936.18144"><vh>@file importers/javascript.py</vh></v>
+<v t="ekr.20160504080826.1"><vh>@file importers/json.py</vh></v>
 <v t="ekr.20140725190808.18066"><vh>@file importers/markdown.py</vh></v>
 <v t="ekr.20140723122936.18146"><vh>@file importers/org.py</vh></v>
 <v t="ekr.20140723122936.18150"><vh>@file importers/otl.py</vh></v>
@@ -237,7 +239,7 @@ expanded="ekr.20160412115053.1,"><vh>@file importers/ipynb.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20080214092357"><vh>@file test/ekr_test.py</vh></v>
-<v t="ekr.20050130120433"><vh>@file test/failed_import.py</vh></v>
+<v t="ekr.20050130120433"><vh>@@file test/failed_import.py</vh></v>
 <v t="ekr.20071113085315"><vh>@file test/failed_to_load_plugin.py</vh></v>
 <v t="ekr.20051016160700"><vh>@file testRegisterCommand.py</vh></v>
 </v>
@@ -260,6 +262,7 @@ expanded="ekr.20160412115053.1,"><vh>@file importers/ipynb.py</vh></v>
 </v>
 </v>
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
+<v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
@@ -267,13 +270,16 @@ expanded="ekr.20160412115053.1,"><vh>@file importers/ipynb.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
+<v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file writers/__init__.py</vh></v>
 <v t="ekr.20140726091031.18143"><vh>@file writers/basewriter.py</vh></v>
+<v t="ekr.20141116100154.2"><vh>@file writers/dart.py</vh></v>
 <v t="ekr.20160412101901.1"><vh>@file writers/ipynb.py</vh></v>
+<v t="ekr.20160504083330.1"><vh>@file writers/json.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
 <v t="ekr.20140726091031.18079"><vh>@file writers/org.py</vh></v>
@@ -303,7 +309,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104580400000074797065710558080000006e6f6465526563747106752e">@language python
+<t tx="edream.110203113231.618" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358050000006c696e6b7371045d710558010000007971064b00752e">@language python
 @tabwidth -4
 @pagewidth 80
 </t>
@@ -387,6 +393,25 @@ make this work, just put@others in the root of your plugin as shown.Note
 that@others may be nested, as shown in class myClass.
 </t>
 <t tx="ekr.20050111122605"></t>
+<t tx="ekr.20050130120433">'''A plugin to test import problems.'''
+
+import leo.core.leoGlobals as g
+
+def onStart(tag,keywords):
+    pass
+
+# pylint: disable=unused-import
+try:
+    import xyzzy
+except ImportError:
+    g.cantImport('xyzzy',pluginName='failed_import')
+
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    g.registerHandler("start2", onStart)
+    g.plugin_signon(__name__)
+    return True
+</t>
 <t tx="ekr.20050303051035">@nocolor-node
 
 The following nodes show recommended style when writing plugins.</t>
@@ -419,7 +444,7 @@ If it's long, you might put it in a separate section.
 
     thePluginController=pluginController(c)
 </t>
-<t tx="ekr.20050303051222">class pluginController:
+<t tx="ekr.20050303051222">class pluginController(object):
 
     @others</t>
 <t tx="ekr.20050303051222.1">def __init__(self,c):
@@ -561,7 +586,7 @@ if not g.unitTesting:
         # Perhaps this should be a user option, 
         # but splitting adds signifincant whitespace.
         # The user can always split nodes manually if desired.
-    i0, last, parent = 0, p.copy(), p.copy()
+    i0, last = 0, p.copy()
     if not s.strip():
         return
     lines = g.splitLines(s)
@@ -697,7 +722,7 @@ if not g.unitTesting:
             name = info.get('name')
     return name
 </t>
-<t tx="ekr.20160412101537.2">class Import_IPYNB:
+<t tx="ekr.20160412101537.2">class Import_IPYNB(object):
     '''A class to import .ipynb files.'''
 
     @others
@@ -745,7 +770,7 @@ if not g.unitTesting:
     
     if g.os_path_exists(fn):
         with open(fn) as f:
-            payload_source = f.name
+            # payload_source = f.name
             payload = f.read()
         nb = nbformat.reads(payload, as_version=4)
             # nbformat.NO_CONVERT: no conversion
@@ -930,6 +955,14 @@ Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
 <t tx="ekr.20160412115053.1"></t>
 <t tx="ekr.20160412115123.1"></t>
+<t tx="ekr.20160510132151.1">@language python
+'''Save a copy of this file to the Backup directory.'''
+theDir,base = g.os_path_split(c.fileName())
+path = g.os_path_join('~/Dropbox/','backups','leoPlugins',base)
+c.backup(path, useTimeStamp=True)
+    # Dropbox can show previous versions!
+    # But this depends on proxy/firewall settings.
+</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

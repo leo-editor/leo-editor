@@ -13,13 +13,9 @@ Requires at least version 0.19 of mod_scripting.
 
 """
 #@-<< docstring >>
-
 import leo.core.leoGlobals as g
-
 from leo.plugins.mod_scripting import scriptingController
-
 __version__ = "0.5"
-
 #@+<< version history >>
 #@+node:ekr.20060328125925.3: ** << version history >>
 #@+at
@@ -31,7 +27,6 @@ __version__ = "0.5"
 #          Among other things, this creates the save-hoist commnand.
 # 0.5 EKR: Made gui-independent.
 #@-<< version history >>
-
 #@+others
 #@+node:ekr.20060328125925.4: ** init
 def init ():
@@ -43,14 +38,11 @@ def init ():
     return True
 #@+node:ekr.20060328125925.5: ** onCreate
 def onCreate (tag, keys):
-
     """Handle the onCreate event in the chapterHoist plugin."""
-
     c = keys.get('c')
-
     if c:
         sc = scriptingController(c)
-        ch = chapterHoist(sc,c)
+        chapterHoist(sc,c)
 #@+node:ekr.20060328125925.6: ** class chapterHoist
 class chapterHoist(object):
     #@+others
@@ -101,7 +93,7 @@ class chapterHoist(object):
             c.hoist()
             return 'break'
 
-        b = sc.createIconButton(
+        sc.createIconButton(
             args=None,
             text=buttonText,
             command=hoistButtonCallback,

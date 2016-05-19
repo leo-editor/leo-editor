@@ -75,7 +75,7 @@ class geotag_Controller(object):
 #@+node:tbrown.20091214233510.5357: ** cmd_open_server_page (gettag_Controller)
 @g.command('geotag-open-server-page')
 def cmd_OpenServerPage(event):
-    c = event.get('c')
+    # c = event.get('c')
     g.pygeotag.open_server_page()
     # g.pygeotag.callback = c.geotag.callback
 

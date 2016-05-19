@@ -65,33 +65,26 @@ def strip_tags(html):
 
 def emit_message(c, p, message):
     for part in message.walk():
-        ty = part.get_content_maintype()
+        part.get_content_maintype()
         pl = part.get_payload(decode = True)
         p2 = p.insertAfter()
-        
         bo = strip_tags(pl)
         p2.h = '%s [%s]' % (message['subject'], message['from'])
         p2.b = bo
-    
 
 @g.command('mail-refresh')
 def mail_refresh(event):
     c = event['c']
     p = c.p
     assert p.h.startswith('@mbox')
-    
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
-    
     mb = path + "/" + p.h.split(None,1)[1]
-    
     folder = mailbox.mbox(mb)
     g.es(folder)
-    
     r = p.insertAsLastChild()
     for message in folder:        
         emit_message(c,r, message)
-    
     c.redraw()
 #@-others
 #@-leo

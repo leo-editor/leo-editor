@@ -401,6 +401,7 @@ class FlowLayout(QtWidgets.QLayout):
     #@+node:ekr.20140917180536.17900: *3* insertWidget
     def insertWidget(self, index, item):
         x = QtWidgets.QWidgetItem(item)
+        assert x # for pyflakes
         # item.setParent(x)
         # self.itemList.insert(index, x)
     #@+node:ekr.20140917180536.17901: *3* count

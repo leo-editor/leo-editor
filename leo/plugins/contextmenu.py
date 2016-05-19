@@ -88,14 +88,9 @@ def install_handlers():
         Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
         """
         c = event['c']
-        pos = c.currentPosition()
         editor = g.guessExternalEditor()
-
-        # c.openWith(data = ('subprocess.Popen', editor, None))
         d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
         c.openWith(d=d)
-
-
     #@-<< Add commands >>
 
 #@+node:ekr.20140724211116.19257: ** Commands
@@ -252,7 +247,7 @@ def openwith_rclick(c,p,menu):
         if editor:
             cmd = '%s "%s"' % (editor, absp)
             g.es('Edit: %s' % cmd)
-            p = subprocess.Popen(cmd, shell=True)
+            subprocess.Popen(cmd, shell=True)
     #@+node:ekr.20140613141207.17667: *4* openfolder_rclick_cb
     def openfolder_rclick_cb():
 
@@ -325,7 +320,7 @@ def refresh_rclick(c,p,menu):
     #@-others
     split = p.h.split(None,1)
     if len(split) >= 2 and p.anyAtFileNodeName():
-        typ = split[0]
+        # typ = split[0]
         action = menu.addAction("Refresh from disk")
         action.triggered.connect(refresh_rclick_cb)
         # action.connect(action, Qt.SIGNAL("triggered()"), refresh_rclick_cb)

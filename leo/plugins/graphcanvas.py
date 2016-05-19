@@ -31,10 +31,10 @@ else:
 # from xml.sax.saxutils import quoteattr
 
 try:
-    # pylint: disable=unused-import
     import pydot
     import dot_parser
-except ImportError:
+    assert dot_parser
+except Exception:
     pydot = None
 
 # Fail gracefully if the gui is not qt.
@@ -197,10 +197,6 @@ class GraphicsView(QtWidgets.QGraphicsView):
         self.glue = glue
         self.current_scale = 0
         QtWidgets.QGraphicsView.__init__(self, *args)
-    #@+node:bob.20110119123023.7399: *3* mouseDoubleClickEvent
-    def mouseDoubleClickEvent(self, event):
-        QtWidgets.QGraphicsView.mouseDoubleClickEvent(self, event)
-        nn = self.glue.newNode(pnt=self.mapToScene(event.pos()))
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
 
@@ -217,6 +213,10 @@ class GraphicsView(QtWidgets.QGraphicsView):
         else:
 
             QtWidgets.QGraphicsView.wheelEvent(self, event)
+    #@+node:bob.20110119123023.7399: *3* mouseDoubleClickEvent
+    def mouseDoubleClickEvent(self, event):
+        QtWidgets.QGraphicsView.mouseDoubleClickEvent(self, event)
+        self.glue.newNode(pnt=self.mapToScene(event.pos()))
     #@-others
 #@+node:tbrown.20110413094721.24681: ** class GetImage
 class GetImage(object):
@@ -454,7 +454,7 @@ class nodeEllipse(nodeRect):
 
     def do_update(self):
         marginX = self.text.document().size().width()/2
-        marginY = self.text.document().size().height()/2
+        # marginY = self.text.document().size().height()/2
         self.bg.setRect(-marginX, 0,
             self.text.document().size().width()*2,
             self.text.document().size().height())
@@ -735,24 +735,18 @@ class graphcanvasController(object):
 
         if pygraphviz:
             G = pygraphviz.AGraph(strict=False,directed=True)
-
             if type_ == 'dot LR':
                 G.graph_attr['rankdir']='LR'
-
             type_ = type_.split()[0]
             G.graph_attr['ranksep']='0.125'
-
         elif pydot:
             G = pydot.Dot('graphname', graph_type='digraph')
-
             if type_ == 'dot LR':
                 G.set_layout('dot')
                 G.set('rankdir', 'LR')
             else:
                 G.set_layout(type_)
-
             G.set('ranksep', '0.125')
-
         for from_, to in self.link.values():
             if pygraphviz:
                 G.add_edge(
@@ -767,18 +761,13 @@ class graphcanvasController(object):
                 G.add_node( (i, i.gnx) )
             elif pydot:
                 gnode = pydot.Node( i.gnx)
-
-                rect = self.nodeItem[i].boundingRect()
+                # rect = self.nodeItem[i].boundingRect()
                 G.add_node(gnode)
-
                 for child in i.children:
                     key = (i, child)
-
                     if key not in self.hierarchyLinkItem or child not in self.nodeItem:
                         continue
-
                     G.add_edge(pydot.Edge( i.gnx, child.gnx ))
-
         if pygraphviz:
             G.layout(prog=type_)
         elif pydot:
@@ -790,12 +779,10 @@ class graphcanvasController(object):
             if pygraphviz:
                 gn = G.get_node( (i, i.gnx) )
                 x,y = map(float, gn.attr['pos'].split(','))
-
                 i.u['_bklnk']['x'] = x
                 i.u['_bklnk']['y'] = -y
                 self.nodeItem[i].setPos(x, -y)
                 self.nodeItem[i].do_update()
-
             elif pydot:
                 lst = G.get_node(''.join(['"', i.gnx, '"']))
                 if len(lst) > 0:
@@ -804,15 +791,11 @@ class graphcanvasController(object):
                     i.u['_bklnk']['y'] = -y
                     self.nodeItem[i].setPos(x, -y)
                     self.nodeItem[i].do_update()
-
         if pydot:
             x,y,width,height = map(float, G.get_bb().strip('"').split(','))
             self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(x,y,width,height))
-
         self.do_update(adjust=False)
-
         self.center_graph()
-
         # self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
         # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), QtConst.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
@@ -903,12 +886,9 @@ class graphcanvasController(object):
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-
         while True:
-
-            loaded = len(self.node)
+            # loaded = len(self.node)
             linked = set()
-
             for i in self.nodeItem:
                 for j in blc.linksTo(i):
                     if j not in self.nodeItem:
@@ -916,15 +896,11 @@ class graphcanvasController(object):
                 for j in blc.linksFrom(i):
                     if j not in self.nodeItem:
                         linked.add(j)
-
             for node in linked:
-
                 self.loadGraph(what=[node])
-
             if not linked or what != 'all':
                 # none added, or doing just one round
                 break
-
     #@+node:bob.20110119123023.7413: *3* addLinkItem
     def addLinkItem(self, from_, to, hierarchyLink = False):
         if from_ not in self.nodeItem:

@@ -247,7 +247,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         if g.match(s, i-1, '}'):
             g.trace('returns:\n\n%s\n\n' % s[i1: i+1])
             object_s = s[i1+1:i-1].strip()
-            junk_i = self.scanHelper(parent, object_s)
+            self.scanHelper(parent, object_s)
         else:
             g.trace('==== no object')
         return i

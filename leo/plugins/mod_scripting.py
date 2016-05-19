@@ -284,9 +284,9 @@ class AtButtonCallback(object):
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
     def __repr__(self):
         '''__repr__ for AtButtonCallback class.'''
-        c, gnx, script = self.c, self.gnx, self.script or ''
+        c = self.c
         return 'AtButtonCallback %s gnx: %s len(script) %s' % (
-            c.shortFileName(), self.gnx, len(script))
+            c.shortFileName(), self.gnx, len(self.script or ''))
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
     def __getattr__(self, attr):
         '''Implement __name__.'''
@@ -381,7 +381,7 @@ class ScriptingController(object):
                 target = g.os_path_join(g.app.loadDir, 'leoScriptModule.py')
                 f = None
                 try:
-                    f = file(target, 'w')
+                    f = open(target, 'w')
                     f.write('# A module holding the script to be debugged.\n')
                     if self.debuggerKind == 'idle':
                         # This works, but uses the lame pdb debugger.
@@ -406,6 +406,7 @@ class ScriptingController(object):
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule'] # Essential.
                 import leo.core.leoScriptModule as leoScriptModule
+                assert leoScriptModule # for pyflakes.
             else:
                 g.error('No debugger active')
         c.bodyWantsFocus()
@@ -713,7 +714,7 @@ class ScriptingController(object):
         not appear in the status line nor the button name.
         '''
         trace = False and not g.app.unitTesting and not g.app.batchMode
-        c = self.c; h = p.h
+        h = p.h
         shortcut = self.getShortcut(h)
         docstring = g.getDocString(p.b)
         statusLine = docstring if docstring else 'Local script button'
@@ -750,7 +751,6 @@ class ScriptingController(object):
     #@+node:ekr.20060328125248.13: *4* sc.handleAtPluginNode @plugin
     def handleAtPluginNode(self, p):
         '''Handle @plugin nodes.'''
-        c = self.c
         tag = "@plugin"
         h = p.h
         assert(g.match(h, 0, tag))
@@ -769,7 +769,7 @@ class ScriptingController(object):
         elif g.pluginIsLoaded(theFile):
             g.warning("plugin already loaded: %s" % (theFile))
         else:
-            theModule = g.loadOnePlugin(theFile)
+            g.loadOnePlugin(theFile)
     #@+node:peckj.20131113130420.6851: *4* sc.handleAtRclickNode @rclick
     def handleAtRclickNode(self, p):
         '''Handle @rclick name [@key[=]shortcut].'''
@@ -939,7 +939,6 @@ class ScriptingController(object):
     def getShortcut(self, h):
         '''Return the keyboard shortcut from the given headline string'''
         shortcut = None
-        tag = '@key'
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))

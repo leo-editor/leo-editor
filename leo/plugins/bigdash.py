@@ -205,9 +205,9 @@ class GlobalSearch(object):
         outlines = {}
         for r in res:
             if '#' in r["parent"]:
-                file_name, node = r["parent"].split('#', 1)
+                file_name, junk = r["parent"].split('#', 1)
             else:
-                file_name, node = r["parent"], None
+                file_name = r["parent"]
             outlines.setdefault(file_name, []).append(r)
         hits.append("<p>%d hits (max. hits reported = %d)</p>"%
             (len(res), fts_max_hits))
@@ -414,7 +414,7 @@ class LeoFts(object):
     def create(self):
 
         schema = self.schema()
-        self.ix = ix = create_in(self.idx_dir, schema)
+        self.ix = create_in(self.idx_dir, schema)
     #@+node:ekr.20140920041848.17943: *3* index_nodes (bigdash.py)
     def index_nodes(self,c):
         writer = self.ix.writer()

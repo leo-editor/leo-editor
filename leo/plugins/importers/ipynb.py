@@ -218,7 +218,7 @@ class Import_IPYNB(object):
             # Perhaps this should be a user option, 
             # but splitting adds signifincant whitespace.
             # The user can always split nodes manually if desired.
-        i0, last, parent = 0, p.copy(), p.copy()
+        i0, last = 0, p.copy()
         if not s.strip():
             return
         lines = g.splitLines(s)
@@ -378,7 +378,7 @@ class Import_IPYNB(object):
         
         if g.os_path_exists(fn):
             with open(fn) as f:
-                payload_source = f.name
+                # payload_source = f.name
                 payload = f.read()
             nb = nbformat.reads(payload, as_version=4)
                 # nbformat.NO_CONVERT: no conversion

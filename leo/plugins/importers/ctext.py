@@ -2,11 +2,8 @@
 #@+node:tbrown.20140801105909.47549: * @file importers/ctext.py
 #@@language python
 #@@tabwidth -4
-#@+others
-#@+node:tbrown.20140801105909.47550: ** ctext declarations
-import time
-# import leo.core.leoGlobals as g
 from leo.plugins.importers.basescanner import BaseScanner
+#@+others
 #@+node:tbrown.20140801105909.47551: ** class CTextScanner
 class CTextScanner(BaseScanner):
     """
@@ -42,6 +39,7 @@ class CTextScanner(BaseScanner):
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* run
     def run(self, s, parent, parse_body=False, prepass=False):
+
         cchar = '#'
         if self.fileType.lower() == '.tex':
             cchar = '%'
@@ -51,7 +49,6 @@ class CTextScanner(BaseScanner):
             cchar = '/'
         level = -1
         nd = parent.copy()
-        start = time.time()
         lines = []
         for line in s.split('\n'):
             if line.startswith(cchar * 3):
@@ -74,7 +71,6 @@ class CTextScanner(BaseScanner):
             else:
                 lines.append(line)
         self.write_lines(nd, lines)
-        # g.es("CText import in %s" % (time.time()-start))
         return True
     #@-others
 #@-others

@@ -2,7 +2,6 @@
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
 '''The BaseScanner class used by all importers in leo.plugins.importers.'''
 import leo.core.leoGlobals as g
-# import leo.core.leoImport as leoImport
 if g.isPython3:
     import io
     StringIO = io.StringIO
@@ -228,7 +227,7 @@ class BaseScanner(object):
             for i in range(max(n1, n2)):
                 ok = self.compareHelper(lines1, lines2, i, self.strict)
                 if not ok:
-                    bad_1i, bad_i2 = i, i
+                    bad_i1, bad_i2 = i, i # bug fix: 2016/05/19.
                     break
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:

@@ -10,15 +10,14 @@ Scoring is based on how much you edit the nodes.
 '''
 
 # By VMV.
-# pylint: disable=wildcard-import
 #@+<< imports >>
 #@+node:ville.20120503224623.3577: ** << imports >>
 # import sys
 import leo.core.leoGlobals as g
-# pylint: disable=unused-wildcard-import
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+
+# from PyQt4.QtCore import *
+# from PyQt4.QtGui import *
+# from PyQt4.QtWebKit import *
 #@-<< imports >>
 #@+others
 #@+node:ville.20120503224623.3578: ** init
@@ -30,27 +29,34 @@ def init ():
     ctr.set_handlers()
     return ok
 
-#@+node:ville.20120503224623.3581: ** class MylynController
+#@+node:ekr.20160519050823.1: ** class MylynController
 class MylynController(object):
+    #@+others
+    #@+node:ekr.20160519050823.2: *3* __init__
     def __init__(self):
         self.scoring = {}
 
+    #@+node:ekr.20160519050823.3: *3* add_score
     def add_score(self, v, points):
         cur = self.scoring.get(v, 0)
         cur+=points
         self.scoring[v] = cur
+
+    #@+node:ekr.20160519050823.4: *3* children_hnd
     def children_hnd(self, tag, kw):
         print(tag, kw)
         ns = kw["nodes"]
         for v in ns:
             self.add_score(v, 100)
 
+    #@+node:ekr.20160519050823.5: *3* content_hnd
     def content_hnd(self,tag, kw):
         print(tag, kw)
         ns = kw["nodes"]
         for v in ns:
             self.add_score(v, 1)
 
+    #@+node:ekr.20160519050823.6: *3* set_handlers
     def set_handlers(self):
 
         g.registerHandler("childrenModified", self.children_hnd)
@@ -61,6 +67,7 @@ class MylynController(object):
             for k,v in self.scoring.items():
                 g.es(str(k) + " " + str(v))
 
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

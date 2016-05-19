@@ -646,7 +646,7 @@ class ScreenShotController(object):
         '''Return a dict d. Keys are ids, values are elements.'''
         sc = self
         aList = sc.getElementsWithAttrib(e, 'id')
-        return dict([(e.attrib.get('id'), e) for e in aList])
+        return dict([(e.attrib.get('id'), e2) for e2 in aList])
     #@+node:ekr.20100908110845.5537: *4* getParents
     def getParents(self, e, d=None):
         sc = self

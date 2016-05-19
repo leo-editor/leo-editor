@@ -106,7 +106,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             return
         i, body_lines = 0, []
         lines = g.splitLines(s1)
-        level = self.lws(lines[0])
+        # level = self.lws(lines[0])
         while i < len(lines):
             progress = i
             s = lines[i]
@@ -121,7 +121,6 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
                 child = parent.insertAsLastChild()
                 child.h = self.class_name(s) if is_class else self.def_name
                 child.b = s
-                
                 if is_class:
                     # The indentation will be the difference between s and s2
                     if i+1 < len(lines):

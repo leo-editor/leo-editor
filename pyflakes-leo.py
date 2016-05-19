@@ -66,7 +66,6 @@ def check_all(dir_, files):
     for fn in paths:
         # Report the file name.
         sfn = g.shortFileName(fn)
-        # if not silent: print('pyflakes: %s' % sfn)
         s = g.readFileIntoEncodedString(fn, silent=False)
         if not s.strip():
             return
@@ -74,7 +73,10 @@ def check_all(dir_, files):
             errorStream=sys.stderr,
             warningStream=sys.stderr,
             )
-        api.check(s, sfn, r)
+        errors = api.check(s, sfn, r)
+        if False and errors:
+            print('pyflakes: %s error%s in %s' % (
+                errors, g.plural(errors), fn))
 #@+node:ekr.20160518000549.14: ** report_version
 def report_version():
     try:

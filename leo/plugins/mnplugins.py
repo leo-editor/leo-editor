@@ -108,15 +108,11 @@ def insertOKcmd(self,event=None):
         g.es('OK in child missing')
 #@+node:ekr.20040205071616.9: ** insertUser
 def insertUser (self,event=None):
-
     """Handle the Insert User command."""
-
-    c = self ; v = c.currentVnode()
+    c = self
     w = c.frame.body.wrapper
-
     oldSel = w.getSelectionRange()
     w.deleteTextSelection() # Works if nothing is selected.
-
     stamp = mnstamp()
     i = w.getInsertPoint()
     w.insert(i,stamp)

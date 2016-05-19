@@ -15,6 +15,10 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
+try:
+    import builtins # Python 3
+except ImportError:
+    import __builtin__ as builtins # Python 2.
 import os
 #@-<< imports >>
 #@+<< TODO >>
@@ -41,7 +45,7 @@ import os
 # Ideally, comments in the body go away as the "leoGUI interface" improves.
 # Written on a hundred-column terminal. :S
 #@-<< TODO >>
-get_input = input if g.isPython3 else raw_input
+get_input = input if g.isPython3 else builtins.raw_input
 #@+others
 #@+node:ekr.20150107090324.4: ** init
 def init():
@@ -118,7 +122,7 @@ class textGui(leoGui.LeoGui):
     #@+node:ekr.20150107090324.18: *3* text_run & helper
     def text_run(self):
         frame_idx = 0
-        get_input = input if g.isPython3 else raw_input
+        get_input = input if g.isPython3 else builtins.raw_input
         while not self.killed:
             # Frames can come and go.
             if frame_idx > len(self.frames) - 1:
@@ -146,8 +150,8 @@ class textGui(leoGui.LeoGui):
                 s = int(s)
             except ValueError:
                 s = -1
-            if s >= 0 and s <= len(self.frames) - 1:
-                frame_idx = s
+            # if s >= 0 and s <= len(self.frames) - 1:
+            #    frame_idx = s
         elif s in ('t', 'tree'):
             f.tree.text_draw_tree()
         elif s in ('q', 'quit'):
@@ -169,7 +173,7 @@ class TextFrame(leoFrame.LeoFrame):
         ### self.title = title # Per leoFrame.__init__
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
     def createFirstTreeNode(self):
-        c, f = self.c, self
+        c = self.c
         v = leoNodes.vnode(context=c)
         p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
@@ -211,8 +215,7 @@ class TextFrame(leoFrame.LeoFrame):
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
         c = self.c; k = c.k; w = self.body.bodyCtrl
-        if g.isPython3: get_input = input
-        else: get_input = raw_input
+        get_input = input if g.isPython3 else builtins.raw_input
         key = get_input('Keystroke > ')
         if not key: return
 
@@ -440,8 +443,8 @@ class textTree(leoFrame.LeoTree):
     #@+node:ekr.20150107090324.65: *3* select
     def select(self, p, scroll=True):
         # TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
-        c = self.c; frame = c.frame
-        body = w = c.frame.body.bodyCtrl
+        c = self.c
+        w = c.frame.body.bodyCtrl
         c.setCurrentPosition(p)
         # This is also where the body-text control is given the text of the selected node...
         # Always do this.    Otherwise there can be problems with trailing hewlines.
