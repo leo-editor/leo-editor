@@ -144,9 +144,9 @@ def scanOptions():
 #@-others
 g_option_fn = None
 scope = scanOptions()
-table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
 if scope == 'version':
     report_version()
 else:
+    table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
     main(table)
 #@-leo
