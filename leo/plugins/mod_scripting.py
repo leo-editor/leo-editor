@@ -172,8 +172,9 @@ def init():
     ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
     if ok:
         sc = 'ScriptingControllerClass'
-        if (not hasattr(g.app.gui, sc)
-            or getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass):
+        if (not hasattr(g.app.gui, sc) or
+            getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass
+        ):
             setattr(g.app.gui, sc, ScriptingController)
         # Note: call onCreate _after_ reading the .leo file.
         # That is, the 'after-create-leo-frame' hook is too early!

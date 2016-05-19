@@ -139,14 +139,22 @@ class BigDash(object):
             s = """
     <h12>Dashboard</h2>
     <table cellspacing="10">
-    <tr><td> <b>s</b> foobar</td><td>   <i>Simple string search for "foobar" in all open documents</i></td></tr>
-    <tr><td> <b>fts init</b></td><td>   <i>Initialize full text search  (create index) for all open documents</i></td></tr>
-    <tr><td> <b>fts add</b></td><td>    <i>Add currently open, still unindexed leo files to index</i></td></tr>
-    <tr><td> <b>f</b> foo bar</td><td>   <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
-    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>   <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
-    <tr><td> <b>help</b></td><td>       <i>Show this help</i></td></tr>
-    <tr><td> <b>stats</b></td><td>      <i>List indexed files</i></td></tr>
-    <tr><td> <b>fts refresh</b></td><td><i>re-index files</i></td></tr>
+    <tr><td> <b>s</b> foobar</td><td>
+        <i>Simple string search for "foobar" in all open documents</i></td></tr>
+    <tr><td> <b>fts init</b></td><td>
+        <i>Initialize full text search  (create index) for all open documents</i></td></tr>
+    <tr><td> <b>fts add</b></td><td>
+        <i>Add currently open, still unindexed leo files to index</i></td></tr>
+    <tr><td> <b>f</b> foo bar</td><td>
+        <i>Do full text search for node with terms 'foo' AND 'bar'</i></td></tr>
+    <tr><td> <b>f</b> h:foo b:bar wild?ards*</td><td>
+        <i>Search for foo in heading and bar in body, test wildcards</i></td></tr>
+    <tr><td> <b>help</b></td><td>
+        <i>Show this help</i></td></tr>
+    <tr><td> <b>stats</b></td><td>
+        <i>List indexed files</i></td></tr>
+    <tr><td> <b>fts refresh</b></td><td>
+        <i>re-index files</i></td></tr>
     </table>
     """
         else:

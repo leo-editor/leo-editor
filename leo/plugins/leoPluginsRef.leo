@@ -189,6 +189,7 @@
 <v t="ekr.20160505094722.1"><vh>@file importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file importers/csharp.py</vh></v>
 <v t="tbrown.20140801105909.47549"><vh>@file importers/ctext.py</vh></v>
+<v t="ekr.20141116100154.1"><vh>@file importers/dart.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file importers/elisp.py</vh></v>
 <v t="ekr.20140723122936.18138"><vh>@file importers/html.py</vh></v>
 <v t="ekr.20140723122936.18142"><vh>@file importers/ini.py</vh></v>
@@ -248,6 +249,7 @@
 <v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
 <v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
+<v t="tbrown.20130930160706.23451"><vh>@file markup_inline.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
 </v>
@@ -268,6 +270,7 @@
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
+<v t="ekr.20160519123329.1"><vh>@edit QNCalendarWidget.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
@@ -277,6 +280,7 @@
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file writers/__init__.py</vh></v>
 <v t="ekr.20140726091031.18143"><vh>@file writers/basewriter.py</vh></v>
+<v t="tbrown.20140804103545.29975"><vh>@file writers/ctext.py</vh></v>
 <v t="ekr.20141116100154.2"><vh>@file writers/dart.py</vh></v>
 <v t="ekr.20160412101901.1"><vh>@file writers/ipynb.py</vh></v>
 <v t="ekr.20160504083330.1"><vh>@file writers/json.py</vh></v>
@@ -309,7 +313,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358050000006c696e6b7371045d710558010000007971064b00752e">@language python
+<t tx="edream.110203113231.618" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058010000007871044b0058050000006c696e6b7371055d7106752e">@language python
 @tabwidth -4
 @pagewidth 80
 </t>
@@ -709,7 +713,7 @@ if not g.unitTesting:
 </t>
 <t tx="ekr.20160412101537.17"></t>
 <t tx="ekr.20160412101537.18">def error(self, s):
-    
+
     g.es_print('error: %s' % (s), color='red')
 </t>
 <t tx="ekr.20160412101537.19">def get_code_language(self, d):
@@ -743,7 +747,7 @@ if not g.unitTesting:
     return fn
 </t>
 <t tx="ekr.20160412101537.21">def is_dict(self, obj):
-    
+
     return isinstance(obj, (dict, nbformat.NotebookNode))
 </t>
 <t tx="ekr.20160412101537.22">def is_empty_code(self, cell):
@@ -760,14 +764,14 @@ if not g.unitTesting:
     return False
 </t>
 <t tx="ekr.20160412101537.23">def new_node(self, h):
-    
+
     parent = self.parent or self.root
     p = parent.insertAsLastChild()
     p.h = h
     return p
 </t>
 <t tx="ekr.20160412101537.24">def parse(self, fn):
-    
+
     if g.os_path_exists(fn):
         with open(fn) as f:
             # payload_source = f.name
@@ -803,7 +807,7 @@ if not g.unitTesting:
         # The root of the to-be-created outline.
 </t>
 <t tx="ekr.20160412101537.4">def do_any(self, key, val):
-    
+
     # if key == 'output_type': g.trace(val.__class__.__name__)
     if key == 'source':
         self.do_source(key, val)
@@ -818,7 +822,7 @@ if not g.unitTesting:
         self.do_other(key, val)
 </t>
 <t tx="ekr.20160412101537.5">def do_dict(self, key, d):
-    
+
     assert self.is_dict(d), d.__class__.__name__
     keys = list(d.keys())
     is_cell = self.parent == self.cell
@@ -846,7 +850,7 @@ if not g.unitTesting:
     self.parent = old_parent
 </t>
 <t tx="ekr.20160412101537.6">def do_other(self, key, val):
-    
+
     if key == 'execution_count' and val is None:
         pass # The exporter will create the proper value.
     else:
@@ -858,7 +862,7 @@ if not g.unitTesting:
             p.b = repr(val)
 </t>
 <t tx="ekr.20160412101537.7">def do_string(self, key, val):
-    
+
     assert g.isString(val)
     is_cell = self.parent == self.cell
     if is_cell and key == 'cell_type':

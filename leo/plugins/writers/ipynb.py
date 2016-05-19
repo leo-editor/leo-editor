@@ -85,9 +85,9 @@ class Export_IPYNB(object):
             s = s + ','
         line = '%s%s' % (' '*self.indent, s)
         self.lines.append(line)
-        
+
     def put_key_string(self, key, s):
-        
+
         self.put('"%s": "%s"' % (key, self.clean(s)))
 
     def put_key_val(self, key, val, indent=False):
@@ -97,7 +97,7 @@ class Export_IPYNB(object):
             self.indent += 1
     #@+node:ekr.20160412101845.6: *4* put_any_non_cell_data
     def put_any_non_cell_data(self, p, exclude=None):
-        
+
         if self.is_cell(p):
             return # put_cell handles this.
         assert p.h.startswith('#'), p.h
@@ -265,7 +265,7 @@ class Export_IPYNB(object):
         self.indent -= 1
         if key:
             self.put(key)
-        
+
     def put_indent(self, key=None):
         '''Put the key and then decrease the indentation level.'''
         if key:

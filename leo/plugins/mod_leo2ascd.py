@@ -173,7 +173,7 @@ def GetAscFilename(c,p):
         containsAscFileDirective = patternAscDirectiveFile.match(line)
         if containsAscFileDirective:
             ascFileName = containsAscFileDirective.group(1)
-            if (ascFileName != None):
+            if (ascFileName is not None):
                 base = os.path.split(c.mFileName)[0]  # linux or windows
                 if (((base[0]=="/") and (ascFileName[0] != "/")) or
                    ((base[1]==":") and (ascFileName[1] != ":"))):
@@ -189,8 +189,8 @@ def SectionUnderline(h,level,v):
         g.es("Section level is less than 1:\n  %s" % v.headString())
         level = 1
     elif level > asciiDocSectionLevels - 1:
-        g.es("Section level is more than maximum Section Levels: %d\n  %s" \
-           % (asciiDocSectionLevels, v.headString()))
+        g.es("Section level is more than maximum Section Levels: %d\n  %s" % (
+            asciiDocSectionLevels, v.headString()))
         level = asciiDocSectionLevels - 1
     str = Conf.current["headingUnderlines"][level]  #'
     return str*max(len(h),1)
@@ -200,7 +200,7 @@ def WriteAll(c):
     p = c.rootPosition()
     while p:
         ascFileN = GetAscFilename(c,p)
-        if ascFileN != None:
+        if ascFileN:
             WriteTreeAsAsc(p,ascFileN)
             p.moveToNodeAfterTree()
         else:
@@ -349,7 +349,7 @@ def WriteNode(v,startinglevel, ascFile):
             lastLinePrintedType = CV.LINE_WAS_CODE
         else:
             WriteOutputLine("%s" % line)
-        if statusOfWriteOutputLine != None:
+        if statusOfWriteOutputLine is not None:
             return statusOfWriteOutputLine
 
     if lastLinePrintedType == CV.LINE_WAS_CODE:
@@ -357,7 +357,7 @@ def WriteNode(v,startinglevel, ascFile):
         if inCodeExtract:
             WriteOutputLine("\n%s" % Conf.current["delimiterForCodeSectionDefinition"])
             inCodeExtract = False
-    if containsAscIignore != None:
+    if containsAscIignore is not None:
         return CV.NODE_IGNORE # flag ignore tree to caller
 #@+node:ekr.20101110094152.5838: *3* WriteTreeAsAsc
 def WriteTreeAsAsc(p,fn):
@@ -390,7 +390,7 @@ def WriteTreeOfCurrentNode(c):
             break
         else:
             p.moveToParent()
-    if ascFileN == None:
+    if ascFileN is None:
         g.es("Sorry, there was no @ascfile directive in this outline tree.")
     else:
         WriteTreeAsAsc(p,ascFileN)

@@ -9,49 +9,87 @@ By Jacob M. Peck
 API
 ===
 
-This plugin registers a controller object to c.theTagController, which provides the following API::
+This plugin registers a controller object to c.theTagController, which provides
+the following API::
 
     tc = c.theTagController
-    tc.get_all_tags() # return a list of all tags used in the current outline, automatically updated to be consistent
-    tc.get_tagged_nodes('foo') # return a list of positions tagged 'foo'
-    tc.get_tags(p) # return a list of tags applied to the node at position p; returns [] if node has no tags
-    tc.add_tag(p, 'bar') # add the tag 'bar' to the node at position p
-    tc.remove_tag(p, 'baz') # remove the tag 'baz' from p if it is in the tag list
+    tc.get_all_tags()
+        return a list of all tags used in the current outline,
+        automatically updated to be consistent
+    tc.get_tagged_nodes('foo')
+        return a list of positions tagged 'foo'
+    tc.get_tags(p)
+        return a list of tags applied to the node at position p.
+        returns [] if node has no tags
+    tc.add_tag(p, 'bar')
+        add the tag 'bar' to the node at position p
+    tc.remove_tag(p, 'baz')
+        remove the tag 'baz' from p if it is in the tag list
 
 Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as a set.
 
 UI
 ==
 
-The "Tags" tab in the Log pane is the UI for this plugin.  The bar at the top is a search bar, editable to allow complex search queries.  It is pre-populated with all existing tags in the outline, and remembers your custom searches within the given session.  It also acts double duty as an input box for the add (+) button, which adds the contents of the search bar as a tag to the currently selected node.
+The "Tags" tab in the Log pane is the UI for this plugin. The bar at the top is
+a search bar, editable to allow complex search queries. It is pre-populated with
+all existing tags in the outline, and remembers your custom searches within the
+given session. It also acts double duty as an input box for the add (+) button,
+which adds the contents of the search bar as a tag to the currently selected
+node.
 
-The list box in the middle is a list of headlines of nodes which contain the tag(s) defined by the current search string.  These are clickable, and doing so will center the focus in the outline pane on the selected node.
+The list box in the middle is a list of headlines of nodes which contain the
+tag(s) defined by the current search string. These are clickable, and doing so
+will center the focus in the outline pane on the selected node.
 
-Below the list box is a dynamic display of tags on the currently selected node.  Left-clicking on any of these will populate the search bar with that tag, allowing you to explore similarly tagged nodes.  Right-clicking on a tag will remove it from the currently selected node.
+Below the list box is a dynamic display of tags on the currently selected node.
+Left-clicking on any of these will populate the search bar with that tag,
+allowing you to explore similarly tagged nodes. Right-clicking on a tag will
+remove it from the currently selected node.
 
 The status line at the bottom is purely informational.
 
-The tag browser has set-algebra querying possible.  Users may search for strings like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get nodes with either or both.  Set difference (-) and symmetric set difference (^) are supported as well.  These queries are left-associative, meaning they are read from left to right, with no other precedence.  Parentheses are not supported.  Additionally, regular expression support is included, and tag hierarchies can be implemented with wildcards.  See below for more details.
+The tag browser has set-algebra querying possible. Users may search for strings
+like 'foo&bar', to get nodes with both tags foo and bar, or 'foo|bar' to get
+nodes with either or both. Set difference (-) and symmetric set difference (^)
+are supported as well. These queries are left-associative, meaning they are read
+from left to right, with no other precedence. Parentheses are not supported.
+Additionally, regular expression support is included, and tag hierarchies can be
+implemented with wildcards. See below for more details.
 
 Searching
 ---------
 
-Searching on tags in the UI is based on set algebra.  The following syntax is used::
+Searching on tags in the UI is based on set algebra. The following syntax is
+used::
 
     <tag>&<tag> - return nodes tagged with both the given tags
     <tag>|<tag> - return nodes tagged with either of the given tags (or both)
     <tag>-<tag> - return nodes tagged with the first tag, but not the second tag
     <tag>^<tag> - return nodes tagged with either of the given tags (but *not* both)
 
-These may be combined, and are applied left-associatively, building the set from the left, such that the query `foo&bar^baz` will return only nodes tagged both 'foo' and 'bar', or nodes tagged with 'baz', but *not* tagged with all three.
+These may be combined, and are applied left-associatively, building the set from
+the left, such that the query `foo&bar^baz` will return only nodes tagged both
+'foo' and 'bar', or nodes tagged with 'baz', but *not* tagged with all three.
 
-Additionally, the search string may be any valid regular expression, meaning you can search using wildcards (*), and using this, you can create tag hierarchies, for example 'work/priority' and 'work/long-term'.  Searching for 'work/*' would return all nodes tagged with either 'work/priority' or 'work/long-term'.
+Additionally, the search string may be any valid regular expression, meaning you
+can search using wildcards (*), and using this, you can create tag hierarchies,
+for example 'work/priority' and 'work/long-term'. Searching for 'work/*' would
+return all nodes tagged with either 'work/priority' or 'work/long-term'.
 
-Please note that this plugin automatically replaces '*' with '.*' in your search string to produce python-friendly regular expressions.  This means nothing to the end-user, except that '*' can be used as a wildcard freely, as one expects.
+Please note that this plugin automatically replaces '*' with '.*' in your search
+string to produce python-friendly regular expressions. This means nothing to the
+end-user, except that '*' can be used as a wildcard freely, as one expects.
 
 Tag Limitations
 ---------------
-The API is unlimited in tagging abilities.  If you do not wish to use the UI, then the API may be used to tag nodes with any arbitrary strings.  The UI, however, due to searching capabilities, may *not* be used to tag (or search for) nodes with tags containing the special search characters, `&|-^`.  The UI also cannot search for tags of zero-length, and it automatically removes surrounding whitespace (calling .strip()).
+
+The API is unlimited in tagging abilities. If you do not wish to use the UI,
+then the API may be used to tag nodes with any arbitrary strings. The UI,
+however, due to searching capabilities, may *not* be used to tag (or search for)
+nodes with tags containing the special search characters, `&|-^`. The UI also
+cannot search for tags of zero-length, and it automatically removes surrounding
+whitespace (calling .strip()).
 '''
 #@-<< docstring >>
 #@+<< imports >>

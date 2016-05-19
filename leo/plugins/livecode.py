@@ -155,7 +155,8 @@ class LiveCodeDisplay(object):
             node_result = None
 
             if (n < len(self.codeblocks) and
-                self.codeblocks[n].code == block[n]):
+                self.codeblocks[n].code == block[n]
+            ):
                 # same code, assume same result
                 node_result = self.codeblocks[n].result
             else:

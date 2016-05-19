@@ -71,7 +71,8 @@ def importCiscoConfig(c):
         defaultextension='ini',
     )
 
-    if not name:	return
+    if not name:
+        return
 
     p = current.insertAsNthChild(0)
     c.setHeadString(p,"cisco config: %s" % name)
@@ -102,7 +103,8 @@ def importCiscoConfig(c):
     while i<(lines-1):
         for customLine in customBlocks:
             if (linelist[i].startswith(customLine) or
-                linelist[i].startswith('no %s' % customLine)):
+                linelist[i].startswith('no %s' % customLine)
+            ):
                 #@+<< process custom line >>
                 #@+node:edream.110203113231.674: *3* << process custom line >>
                 if customLine not in blocks:

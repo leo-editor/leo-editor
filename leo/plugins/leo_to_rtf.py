@@ -82,40 +82,42 @@ def export_rtf( c ):
     # Write RTF list table that provides numbered list formatting
     #@+<< listtable >>
     #@+node:danr7.20060902085826: *3* << listtable >>
+    #@@wrap
+
     f.write("{\\*\\listtable{\\list\\listtemplateid1723346216\\listhybrid\n")
 
-    f.write("{\\listlevel\\levelnfc0\\levelnfcn0\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0\n")
+    f.write("{\\listlevel\\levelnfc0\\levelnfcn0\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0\n")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698703\\\'02\\\'00.;}\n\n")
-    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li720\\jclisttab\\tx720 }")
+    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li720\\jclisttab\\tx720 }") # NOQA
 
-    f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")
+    f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698713\\\'02\\\'01.;} {\\levelnumbers\\\'01;}")
-    f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li1440\\jclisttab\\tx1440 }")
+    f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li1440\\jclisttab\\tx1440 }") # NOQA
 
-    f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")
+    f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698715\\\'02\\\'02.;} {\\levelnumbers\\\'01;}")
     f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1\\fi-180\\li2160\\jclisttab\\tx2160 }")
 
     f.write("{\\listlevel\\levelnfc0\\levelnfcn0\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1")
     f.write("\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698703\\\'02\\\'03.;}")
-    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1\\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li2880\\jclisttab\\tx2880 }")
+    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1\\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li2880\\jclisttab\\tx2880 }")  # NOQA
 
     f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0")
-    f.write("\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698713\\\'02\\\'04.;}")
-    f.write("{\\levelnumbers\\\'01;} \\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li3600\\jclisttab\\tx3600 }")
+    f.write("\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698713\\\'02\\\'04.;}")  # NOQA
+    f.write("{\\levelnumbers\\\'01;} \\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li3600\\jclisttab\\tx3600 }")  # NOQA
 
     f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2")
-    f.write("\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698715\\\'02\\\'05.;} {\\levelnumbers\\\'01;} \\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-180\\li4320\\jclisttab\\tx4320 }")
+    f.write("\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698715\\\'02\\\'05.;} {\\levelnumbers\\\'01;} \\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-180\\li4320\\jclisttab\\tx4320 }")  # NOQA
 
     f.write("{\\listlevel\\levelnfc0\\levelnfcn0")
-    f.write("\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698703\\\'02\\\'06.;}")
-    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li5040\\jclisttab\\tx5040 }")
+    f.write("\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0{\\leveltext\\leveltemplateid67698703\\\'02\\\'06.;}")  # NOQA
+    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li5040\\jclisttab\\tx5040 }")  # NOQA
 
-    f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")
+    f.write("{\\listlevel\\levelnfc4\\levelnfcn4\\leveljc0\\leveljcn0\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698713\\\'02\\\'07.;}")
-    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li5760\\jclisttab\\tx5760 }")
+    f.write("{\\levelnumbers\\\'01;}\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-360\\li5760\\jclisttab\\tx5760 }")  # NOQA
 
-    f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")
+    f.write("{\\listlevel\\levelnfc2\\levelnfcn2\\leveljc2\\leveljcn2\\levelfollow0\\levelstartat1\\levelspace360\\levelindent0")  # NOQA
     f.write("{\\leveltext\\leveltemplateid67698715\\\'02\\\'08.;}{\\levelnumbers\\\'01;}")
     f.write("\\chbrdr\\brdrnone\\brdrcf1 \\chshdng0\\chcfpat1\\chcbpat1 \\fi-180\\li6480\\jclisttab\\tx6480 }")
 

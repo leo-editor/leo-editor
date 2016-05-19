@@ -233,7 +233,10 @@ def install_qt_quicksearch_tab(c):
                 QtCore.SIGNAL("currentChanged(int)"), activate_input)
 #@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict
 class OrderedDefaultDict(OrderedDict):
-    '''Credit:  http://stackoverflow.com/questions/4126348/how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426'''
+    '''
+    Credit:  http://stackoverflow.com/questions/4126348/
+    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
+    '''
     def __init__(self, *args, **kwargs):
         if not args:
             self.default_factory = None
@@ -620,7 +623,7 @@ class QuickSearchController(object):
             else:
                 hNodes = node.self_and_subtree()
                 bNodes = node.self_and_subtree()
-            
+
         else:
             hNodes = [self.c.p]
             bNodes = [self.c.p]

@@ -533,7 +533,6 @@ class nodeTable(nodeRect):
         self.updating = False
 
     def do_update(self):
-
         nodeRect.do_update(self)
 
         if self.updating:
@@ -976,11 +975,13 @@ class graphcanvasController(object):
         lastNode = self.lastNodeItem
         if (lastNode and
             not isinstance(lastNode, nodeNone) and
-            not isinstance(lastNode, nodeImage)):
+            not isinstance(lastNode, nodeImage)
+        ):
             lastNode.bg.setPen(QtGui.QPen(QtConst.NoPen))
 
         if  (not isinstance(nodeItem, nodeNone) and
-             not isinstance(nodeItem, nodeImage)):
+             not isinstance(nodeItem, nodeImage)
+        ):
             nodeItem.bg.setPen(self.selectPen)
 
         oldItem = self.lastNodeItem
@@ -1240,7 +1241,7 @@ class graphcanvasController(object):
     #@+node:tbrown.20110122085529.15388: *5* itemForPos
     def nodeitemForPos(self, pos=None):
 
-        if pos == None:
+        if not pos:
             pos = self.c.currentPosition()
 
         if pos.v not in self.nodeItem:
@@ -1272,8 +1273,11 @@ class graphcanvasController(object):
         painter = QtGui.QPainter(image)
         self.ui.canvas.render(painter)
         painter.end()
-
-        path = QtWidgets.QFileDialog.getSaveFileName(caption="Export to File", filter="*.png", selectedFilter="Images (*.png)")
+        path = QtWidgets.QFileDialog.getSaveFileName(
+            caption="Export to File",
+            filter="*.png",
+            selectedFilter="Images (*.png)",
+        )
         image.save(path)
     #@+node:bob.20110121113659.3413: *4* Formatting
     #@+node:bob.20110120111825.3356: *5* setColor

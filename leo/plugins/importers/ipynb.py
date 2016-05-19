@@ -84,7 +84,7 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412115123.1: *3* Scanners
     #@+node:ekr.20160412101537.4: *4* do_any & helpers
     def do_any(self, key, val):
-        
+
         # if key == 'output_type': g.trace(val.__class__.__name__)
         if key == 'source':
             self.do_source(key, val)
@@ -99,7 +99,7 @@ class Import_IPYNB(object):
             self.do_other(key, val)
     #@+node:ekr.20160412101537.5: *5* do_dict
     def do_dict(self, key, d):
-        
+
         assert self.is_dict(d), d.__class__.__name__
         keys = list(d.keys())
         is_cell = self.parent == self.cell
@@ -127,7 +127,7 @@ class Import_IPYNB(object):
         self.parent = old_parent
     #@+node:ekr.20160412101537.6: *5* do_other
     def do_other(self, key, val):
-        
+
         if key == 'execution_count' and val is None:
             pass # The exporter will create the proper value.
         else:
@@ -139,7 +139,7 @@ class Import_IPYNB(object):
                 p.b = repr(val)
     #@+node:ekr.20160412101537.7: *5* do_string
     def do_string(self, key, val):
-        
+
         assert g.isString(val)
         is_cell = self.parent == self.cell
         if is_cell and key == 'cell_type':
@@ -322,7 +322,7 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.17: *3* Utils
     #@+node:ekr.20160412101537.18: *4* error
     def error(self, s):
-        
+
         g.es_print('error: %s' % (s), color='red')
     #@+node:ekr.20160412101537.19: *4* get_code_language
     def get_code_language(self, d):
@@ -351,7 +351,7 @@ class Import_IPYNB(object):
         return fn
     #@+node:ekr.20160412101537.21: *4* is_dict
     def is_dict(self, obj):
-        
+
         return isinstance(obj, (dict, nbformat.NotebookNode))
     #@+node:ekr.20160412101537.22: *4* is_empty_code
     def is_empty_code(self, cell):
@@ -368,14 +368,14 @@ class Import_IPYNB(object):
         return False
     #@+node:ekr.20160412101537.23: *4* new_node
     def new_node(self, h):
-        
+
         parent = self.parent or self.root
         p = parent.insertAsLastChild()
         p.h = h
         return p
     #@+node:ekr.20160412101537.24: *4* parse
     def parse(self, fn):
-        
+
         if g.os_path_exists(fn):
             with open(fn) as f:
                 # payload_source = f.name

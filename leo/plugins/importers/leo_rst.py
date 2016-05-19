@@ -134,7 +134,7 @@ class RstScanner(basescanner.BaseScanner):
         '''Return True if s consists of only the same rST underline character.'''
         if not s: return False
         ch1 = s[0]
-        if not ch1 in self.underlines:
+        if ch1 not in self.underlines:
             return False
         for ch in s:
             if ch != ch1:

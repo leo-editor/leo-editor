@@ -114,7 +114,7 @@ def flake8_command(event):
         #@+node:ekr.20160517133049.4: *5* flake8.get_flake8_config
         def get_flake8_config(self):
             '''Return the path to the pylint configuration file.'''
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             join = g.os_path_finalize_join
             dir_table = (
                 g.app.homeDir,

@@ -7,7 +7,7 @@ import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20160505094722.2: ** class CoffeeScriptScanner
 class CoffeeScriptScanner(basescanner.BaseScanner):
-    
+
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee.__init__
     def __init__(self, importCommands, atAuto):
@@ -194,7 +194,7 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
             leading_lines = leading_lines[1:]
         return ''.join(leading_lines) + s
 
-        
+
     #@+node:ekr.20160505170639.1: *3* coffee.undent_nodes
     def undent_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''

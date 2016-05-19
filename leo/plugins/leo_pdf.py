@@ -765,7 +765,8 @@ if docutils:
                     context = self.styleSheet))
         #@-others
 #@+node:ekr.20090704103932.5195: ** class PDFTranslator (docutils.nodes.NodeVisitor)
-if docutils:
+if docutils: # NOQA
+
     class PDFTranslator (docutils.nodes.NodeVisitor):
         #@+others
         #@+node:ekr.20090704103932.5196: *3* __init__ (PDFTranslator)

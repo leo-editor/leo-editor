@@ -252,11 +252,10 @@ class textBody(leoFrame.LeoBody):
         self.bodyCtrl = textBodyCtrl(c, name)
         self.colorizer = leoFrame.NullColorizer(self.c)
     #@+node:ekr.20150107090324.33: *3* bind
-    # undoc: newLeoCommanderAndFrame -> c.finishCreate -> k.finishCreate -> k.completeAllBindings -> k.makeMasterGuiBinding -> 2156 w.bind ; nullBody
+    # undoc: newLeoCommanderAndFrame -> c.finishCreate -> k.finishCreate ->
+    # k.completeAllBindings -> k.makeMasterGuiBinding -> 2156 w.bind ; nullBody
 
     def bind(self, bindStroke, callback):
-        # Quiet, please.
-        ##self.oops()
         pass
     #@+node:ekr.20150107090324.34: *3* setEditorColors
     # TODO Tkinter onBodyChanged undo call and many others. =(
@@ -325,16 +324,14 @@ class textLeoMenu(leoMenu.LeoMenu):
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
     def new_menu(self, parent, tearoff=0, label=''):
-        if tearoff != False:
+        if tearoff:
             raise NotImplementedError(repr(tearoff))
-        # I don't know what the 'parent' argument is for; neither does the wx GUI.
-        ### return textMenu()
         menu = textLeoMenu(parent or self.frame)
         menu.entries = []
         return menu
     #@+node:ekr.20150107090324.49: *3* add_cascade
     def add_cascade(self, parent, label, menu, underline):
-        if parent == None:
+        if parent is None:
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command
@@ -421,7 +418,7 @@ class textLog(leoFrame.LeoLog):
     #@-others
 #@+node:ekr.20150107090324.60: ** class textTree
 class textTree(leoFrame.LeoTree):
-	# undoc: k.makeAllBindings ; nullTree
+    # undoc: k.makeAllBindings ; nullTree
     #@+others
     #@+node:ekr.20150107090324.61: *3* setBindings
     def setBindings(self):

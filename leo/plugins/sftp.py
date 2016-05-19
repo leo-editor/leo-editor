@@ -17,30 +17,37 @@ This plugin requires the python module 'paramiko' to be installed.
 This plugin operates on @sftp nodes, which are defined as nodes 
 with headlines that start with `@sftp` and follow one of the following
 patterns::
-    
+
     @sftp username@host!port:path/to/remote.file
     @sftp username@host:path/to/remote.file
     @sftp host!port:path/to/remote.file
     @sftp host:path/to/remote.file
-    
-This headline tells the sftp plugin almost all it needs to know to connect to the remote server
-and edit the file.  If the username is omitted, it defaults to your LeoID.  If the port is omitted,
-it defaults to 22, the standard sftp port.
+
+This headline tells the sftp plugin almost all it needs to know to connect to
+the remote server and edit the file. If the username is omitted, it defaults to
+your LeoID. If the port is omitted, it defaults to 22, the standard sftp port.
 
 General usage
 =============
-Generally, you'll create an empty node with a proper @sftp headline, and then run the minibuffer command `sftp-pull`.  When you're satisfied with your edits, you can then run the command `sftp-push` to push your changes back to the server.
+
+Generally, you'll create an empty node with a proper @sftp headline, and then
+run the minibuffer command `sftp-pull`. When you're satisfied with your edits,
+you can then run the command `sftp-push` to push your changes back to the
+server.
 
 On passwords and host keys
 ==========================
-This plugin checks host-keys before communicating with the remote server.  The first time you connect
-to a remote server per Leo session, you'll need to agree to let the host-key into your trusted hosts
-list.  This is a Leo-centric list, and does not use your operating system's known_hosts file, in order
-to keep it platform independent.
 
-Similarly, this plugin does not (yet) use SSH key-based authentication.  It will instead prompt you for
-your password the first time you connect to a server per Leo session.  Future attempts will be cached, 
-in order to cut down on typing.  You can use the `@bool sftp-cache-credentials` setting to prevent password caching.
+This plugin checks host-keys before communicating with the remote server. The
+first time you connect to a remote server per Leo session, you'll need to agree
+to let the host-key into your trusted hosts list. This is a Leo-centric list,
+and does not use your operating system's known_hosts file, in order to keep it
+platform independent.
+
+Similarly, this plugin does not (yet) use SSH key-based authentication. It will
+instead prompt you for your password the first time you connect to a server per
+Leo session. Future attempts will be cached, in order to cut down on typing. You
+can use the `@bool sftp-cache-credentials` setting to prevent password caching.
 
 
 Configuration Settings
@@ -58,11 +65,12 @@ Commands
 ========
 
 This plugin provides the following commands:
-    
+
 sftp-push
 ---------
 
-Overwrites the file on the remote server with the contents of the body of the currently selected @sftp node.
+Overwrites the file on the remote server with the contents of the body of the
+currently selected @sftp node.
 
 sftp-push-all
 -------------
@@ -72,7 +80,8 @@ Runs an `sftp-push` on all @sftp nodes in the current outline.
 sftp-pull
 ---------
 
-Replaces the body of the currently selected @sftp node with the contents of the file on the remote server.
+Replaces the body of the currently selected @sftp node with the contents of the
+file on the remote server.
 
 sftp-pull-all
 -------------
@@ -82,8 +91,8 @@ Runs an `sftp-pull` on all @sftp nodes in the current outline.
 sftp-forget-credentials
 -----------------------
 
-Makes sftp.py forget your entered passwords.  Only available if `@bool sftp-cache-credentials = True`.
-
+Makes sftp.py forget your entered passwords. Only available if `@bool
+sftp-cache-credentials = True`.
 
 '''
 #@-<< docstring >>
@@ -130,24 +139,24 @@ def init ():
     return ok
 #@+node:peckj.20140218144401.6040: ** onCreate
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     theSFTPController = SFTPController(c)
     c.theSFTPController = theSFTPController
 #@+node:peckj.20140218144401.6041: ** class SFTPController
 class SFTPController(object):
-    
+
     #@+others
     #@+node:peckj.20140218144401.6042: *3* __init__
     def __init__ (self,c):
-        
+
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-        
+
         self._CACHE_CREDENTIALS = c.config.getBool('sftp-cache-credentials', True)
-        
+
         # register commands
         c.k.registerCommand('sftp-push',shortcut=None,func=self.sftp_push)
         c.k.registerCommand('sftp-push-all',shortcut=None,func=self.sftp_push_all)
@@ -174,15 +183,15 @@ class SFTPController(object):
         or
         @sftp hostname:path/to/remote/file
         '''
-        
+
         username = None
         port = None
-        
+
         headline = headline.split(' ',1)[1] # strip the @sftp bit
         has_username = '@' in headline
         has_port = '!' in headline
         has_path = ':' in headline
-        
+
         if not has_path:
             self.log("ERROR: need a file path!", color='red')
             return
@@ -191,25 +200,25 @@ class SFTPController(object):
         if len(remotefile) == 0:
             self.log("ERROR: need a file path!", color='red')
             return
-        
+
         if has_port:
             try:
                 port = int(headline[headline.find('!')+1:headline.find(':')])
             except Exception:
                 self.log("ERROR parsing port.  Falling back to port 22.", color='red')
-          
+
         if has_username:
             username = headline.split('@',1)[0]
             if len(username) == 0:
                 self.log("ERROR parsing username.  Falling back to leoID value.", color='red')
-        
+
         hostname = headline.split(':')[0]
         if has_port: hostname = hostname.split('!')[0]
         if has_username: hostname = hostname.split('@')[1]
-        
+
         if not port: port = 22
         if not username: username = g.app.leoID
-        
+
         return {'port': port, 'hostname': hostname, 'username': username, 'remotefile': remotefile}
     #@+node:peckj.20140218144401.6160: *4* get_password
     def get_password(self, username, hostname):
@@ -258,13 +267,18 @@ class SFTPController(object):
         hostkey = t.get_remote_server_key()
         cached_hostkey = self.get_hostkey(host)
         if cached_hostkey is None:
-            store = self.confirm_hostkey('Unknown host: %s' % host, 'Add the server key for host \'%s\' to the trusted host list?' % host)
+            store = self.confirm_hostkey(
+                'Unknown host: %s' % host,
+                'Add the server key for host \'%s\' to the trusted host list?' % host)
             if store:
                 self.set_hostkey(host, hostkey)
             else:
                 return (None,None) # abort
         elif cached_hostkey != hostkey:
-            store = self.confirm_hostkey('Hostkey does not match!', 'The remote host \'%s\' provided a key that does not match the stored key.  This could indicate a man-in-the-middle attack.  Continue anyway?' % host)
+            store = self.confirm_hostkey(
+                'Hostkey does not match!',
+                'The remote host \'%s\' provided a key that does not match the stored key. ' +
+                ' This could indicate a man-in-the-middle attack.  Continue anyway?' % host)
             if store:
                 self.set_hostkey(host, hostkey)
             else:
@@ -321,7 +335,7 @@ class SFTPController(object):
                     t.close()
             except Exception:
                 self.log('Communications error!', color='red')
-       
+
         else:
             self.log('Not an @sftp node!', color='red')
     #@+node:peckj.20140218144401.6176: *4* sftp_push_all

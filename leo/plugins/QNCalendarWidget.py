@@ -19,7 +19,7 @@ def init():
 class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up
-    
+
         :Parameters:
         - `self`: the widget
         - `n`: number of months to display
@@ -27,15 +27,15 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
         - `year`: year of first calendar
         - `month`: month of first calendar
         """
-    
+
         QtWidgets.QCalendarWidget.__init__(self)
-        
+
         self.build(n, columns, year=year, month=month)
-        
+
     def build(self, n=3, columns=3, year=None, month=None):
-        
+
         self.calendars = []
-        
+
         if year is None:
             year = datetime.date.today().year
         if month is None:
@@ -66,17 +66,17 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             calendar.activated.connect(self.return_result)
             self.calendars.append(calendar)
             layout.addWidget(calendar, i//columns, i%columns)
-        
+
     def currentPageChanged(self, year, month, cal):
         """currentPageChanged - Handle change of view 
-    
+
         :Parameters:
         - `self`: self
         - `year`: new year
         - `month`: new month
         - `cal`: which calendar
         """
-    
+
         for i in range(cal.i):
             month -= 1
             if month == 0:
@@ -88,17 +88,17 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             if month == 13:
                 year += 1
                 month = 1
-                
+
     activated = QtCore.pyqtSignal(QtCore.QDate)
-                
+
     def return_result(self, date):
         """return_result - Return result
-    
+
         :Parameters:
         - `self`: self
         - `cal`: the calendar that was activated
         """
-        
+
         for i in self.calendars:
             old = i.blockSignals(True)  # stop currentPageChanged firing
             y, m = i.yearShown(), i.monthShown()
@@ -106,17 +106,17 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             i.setCurrentPage(y, m)
             i.blockSignals(old)
         self.activated.emit(date)
-        
+
 class QNDateEdit(QtWidgets.QDateEdit):
     def __init__(self, parent=None, n=3, columns=3):
         """set up
-    
+
         :Parameters:
         - `self`: the widget
         - `n`: number of months to display
         - `columns`: months to display before start a new row
         """
-        
+
         QtWidgets.QDateEdit.__init__(self, parent)
         self.setCalendarPopup(True)
         self.cw = QNCalendarWidget(n=n, columns=columns)
@@ -127,7 +127,7 @@ def main():
     win = QtWidgets.QWidget()
     l = QtWidgets.QVBoxLayout()
     win.setLayout(l)
-    
+
     w = QtWidgets.QDateEdit()
     w.setCalendarPopup(True)
     l.addWidget(w)

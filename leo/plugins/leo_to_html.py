@@ -465,9 +465,9 @@ class Leo_to_HTML(object):
         if not self.include_body: return
 
         self.xhtml.append(
-            self.openBodyString \
-            + '<pre>' + safe(pp.b) + '</pre>' \
-            + self.closeBodyString
+            self.openBodyString +
+            '<pre>' + safe(pp.b) + '</pre>' +
+            self.closeBodyString
         )
 
     #@+node:bob.20080107175336: *4* showSubtree

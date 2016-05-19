@@ -112,7 +112,7 @@ class MarkdownScanner(basescanner.BaseScanner):
         if not s:
             return 0
         ch1 = s[0]
-        if not ch1 in '=-':
+        if ch1 not in '=-':
             return 0 # Bug fix: 2016/04/11.
         for ch in s:
             if ch == '\n':

@@ -135,7 +135,7 @@ class FTPurl(object):
             auth = parse[1][:authIndex]
             ftphost = parse[1][authIndex+1:]
         self.ftp = ftplib.FTP(ftphost)
-        if auth == None:
+        if auth is None:
             self.ftp.login()
         else:
             # the URL has username/password
@@ -221,7 +221,7 @@ class FTPurl(object):
         """Issue a LIST command passing the specified argument and return output as a string."""
         s = []
 
-        if path == None:
+        if path is None:
             path = self.dirname
         try:
             listcmd = 'LIST %s' % path
@@ -233,7 +233,7 @@ class FTPurl(object):
     #@+node:edream.110203113231.890: *4* exists
     def exists(self, path=None):
         """Return 1 if the specified path exists. If path is omitted, the current file name is tried."""
-        if path == None:
+        if path is None:
             path = self.filename
 
         s = self.dir(path)

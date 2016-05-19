@@ -460,7 +460,11 @@ class anchor_htmlParserClass (linkAnchorParserClass):
             self.anchor_map[self.current_file] = (self.current_file, self.p)
             simple_name = g.os_path_split(self.current_file)[1]
             self.anchor_map[simple_name] = self.anchor_map[self.current_file]
-            if bwm_file: print >> bwm_file, "anchor(1): current_file:", self.current_file, "position:", self.p, "Simple name:", simple_name
+            if bwm_file: print >> bwm_file, (
+                "anchor(1): current_file:", self.current_file,
+                "position:", self.p,
+                "Simple name:", simple_name,
+            )
             # Not sure what to do here, exactly. Do I need to manipulate
             # the pathname?
 
@@ -945,7 +949,7 @@ class rstClass(object):
             # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
-                if not ivar in seen:
+                if ivar not in seen:
                     seen.append(ivar)
                     val = d.get(key)
                     self.setOption(key,val,p.h)
@@ -1852,7 +1856,9 @@ class rstClass(object):
                 pprint.pprint(replacements, bwm_file)
             for line, column, href, href_file, http_node_ref in replacements:
                 if bwm_file:
-                    print >> bwm_file, "relocate_references(3): line:", line, "Column:", column, "href:", href, "href_file:", href_file, "http_node_ref:", http_node_ref
+                    print >> bwm_file, ( "relocate_references(3): line:",
+                        line, "Column:", column, "href:", href,
+                        "href_file:", href_file, "http_node_ref:", http_node_ref)
                 marker_parts = href.split("#")
                 if len(marker_parts) == 2:
                     marker = marker_parts [1]

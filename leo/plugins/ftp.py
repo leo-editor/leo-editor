@@ -52,11 +52,11 @@ class pluginController(object):
 
         g.es("upload started")
         p = g.findTopLevelNode(c, '@data ftp')
-        if p != None:
+        if p:
             files = json.loads(p.b)
-    #@+at
-    # credentials - array of (host, pass) of server, to while the files must be uploaded I suggest, that the locations must be the same
-    #@@c
+
+            # credentials - array of (host, pass) of server,
+            # to while the files must be uploaded I suggest that the locations must be the same.
             credentials = files[0]
 
             for element in credentials:

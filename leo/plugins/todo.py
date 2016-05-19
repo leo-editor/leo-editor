@@ -185,8 +185,8 @@ if g.app.gui.guiName() == "qt":
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
                 "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
                 "butPriQuery", "butPriBullet", "butPri7",
-                "butPri3"]:
-
+                "butPri3"
+            ]:
                 w = getattr(u, but)
                 # w.property() seems to give QVariant in python 2.x and int in 3.x!?
                 try:
@@ -575,8 +575,9 @@ class todoController(object):
 
         ''' Remove our dict from the node'''
 
-        if (hasattr(node,"unknownAttributes" )
-            and udict in node.unknownAttributes):
+        if (hasattr(node,"unknownAttributes") and
+            udict in node.unknownAttributes
+        ):
 
             del node.unknownAttributes[udict]
     #@+node:tbrown.20090119215428.21: *4* hasUD
@@ -612,7 +613,8 @@ class todoController(object):
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
 
             if (not hasattr(node, '_cached_src_vnode') or
-                not node._cached_src_vnode):
+                not node._cached_src_vnode
+            ):
                 src_unl = node.u['annotate']['src_unl']
                 c1 = self.c
                 p1 = c1.vnode2position(node)
@@ -625,7 +627,8 @@ class todoController(object):
 
             # if the above succeeded in getting the required attributes
             if (hasattr(node, '_cached_src_vnode') and
-                node._cached_src_vnode):
+                node._cached_src_vnode
+            ):
                 node._cached_src_c.cleo.setat(node._cached_src_vnode, attrib, val)
                 op = node._cached_src_c.vnode2position(node._cached_src_vnode)
                 node._cached_src_c.cleo.loadIcons(op)
@@ -635,7 +638,7 @@ class todoController(object):
         isDefault = self.testDefault(attrib, val)
 
         if (not hasattr(node,'unknownAttributes') or
-            not "annotate" in node.unknownAttributes or
+            "annotate" not in node.unknownAttributes or
             not isinstance(node.unknownAttributes["annotate"], dict)
         ):
             # dictionary doesn't exist
@@ -644,7 +647,7 @@ class todoController(object):
             if not hasattr(node,'unknownAttributes'):  # node has no unknownAttributes
                 node.unknownAttributes = {}
                 node.unknownAttributes["annotate"] = {}
-            elif(not "annotate" in node.unknownAttributes or
+            elif("annotate" not in node.unknownAttributes or
                  not isinstance(node.unknownAttributes["annotate"], dict)
             ):
                 node.unknownAttributes["annotate"] = {}
@@ -654,7 +657,8 @@ class todoController(object):
 
         # dictionary exists
         if (attrib not in node.unknownAttributes["annotate"] or
-            node.unknownAttributes["annotate"][attrib] != val):
+            node.unknownAttributes["annotate"][attrib] != val
+        ):
             self.c.setChanged(True)
 
         node.unknownAttributes["annotate"][attrib] = val
@@ -723,7 +727,7 @@ class todoController(object):
             p = self.c.currentPosition()
         v = p.v
 
-        if val == None: return
+        if val is None: return
 
         self.setat(v, 'progress', val)
     #@+node:tbrown.20090119215428.33: *4* set_time_req
@@ -733,7 +737,7 @@ class todoController(object):
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-        if val == None:
+        if val is None:
             return
         self.setat(v, 'time_req', val)
         if self.getat(v, 'progress') == '':
@@ -783,24 +787,24 @@ class todoController(object):
         # get values from children, if any
         for cn in p.children():
             ans = self.recalc_time(cn.copy(), clear)
-            if time_totl == None:
+            if time_totl is None:
                 time_totl = ans[0]
             else:
-                if ans[0] != None: time_totl += ans[0]
+                if ans[0] is not None: time_totl += ans[0]
 
-            if time_done == None:
+            if time_done is None:
                 time_done = ans[1]
             else:
-                if ans[1] != None: time_done += ans[1]
+                if ans[1] is not None: time_done += ans[1]
 
-        if time_totl != None:  # some value returned
+        if time_totl is not None:  # some value returned
 
             if clear:  # then we should just clear our values
                 self.setat(v, 'progress', '')
                 self.setat(v, 'time_req', '')
                 return (time_totl, time_done)
 
-            if time_done != None:  # some work done
+            if time_done is not None:  # some work done
                 # can't round derived progress without getting bad results form show_times
                 if time_totl == 0:
                     pr = 0.
@@ -1283,12 +1287,14 @@ def todo_inc_pri(event):
     todo_dec_pri(event, direction=-1)
 
 for cmd, method in [
-        ("todo-children-todo", "childrenTodo"),
-        ("todo-find-todo", "find_todo"),
-    ]:
+    ("todo-children-todo", "childrenTodo"),
+    ("todo-find-todo", "find_todo"),
+]:
+
     def f(event, method=method):
         getattr(event.c.cleo, method)()
         event.c.redraw()
+
     g.command(cmd)(f)
 #@-others
 #@@language python

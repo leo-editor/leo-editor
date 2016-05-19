@@ -69,7 +69,7 @@ class pluginController:
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
     #@+node:ville.20110219221839.6558: *3* clickPrev
     def clickPrev(self):
-        
+
         c = self.c
         c.goPrevVisitedNode()
     #@+node:ville.20110219221839.6559: *3* clickNext

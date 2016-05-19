@@ -4,17 +4,17 @@
 #@+node:tbrown.20080613095157.3: ** << docstring >> (active_path)
 r'''Synchronizes \@path nodes with folders.
 
-If a node is named '\@path *<path_to_folder>*', the content (file and folder names)
-of the folder and the children of that node will synchronized whenever you double-click
-the node.
+If a node is named '\@path *<path_to_folder>*', the content (file and folder
+names) of the folder and the children of that node will synchronized whenever
+you double-click the node.
 
 For files not previously seen in a folder a new node will appear on top of the
 children list (with a mark).
 
-Folders appear in the list as /foldername/. If you double click on the
-folder node, it will have children added to it based on the contents of
-the folder on disk. These folders have the '@path' directive as the first line
-of their body text.
+Folders appear in the list as /foldername/. If you double click on the folder
+node, it will have children added to it based on the contents of the folder on
+disk. These folders have the '@path' directive as the first line of their body
+text.
 
 When files are deleted from the folder and the list is updated by double
 clicking the files will appear in the list as *filename* (or */foldername/*).
@@ -28,58 +28,71 @@ Files and folders can be created by entering a node with the required name as
 its headline (must start and/or end with "/" for a folder) and then double
 clicking on the node.
 
-\@auto nodes can be set up for existing files can be loaded by
-double clicking on the node. If you prefer
-\@shadow or something else use the "active_path_attype" setting,
-without the "@".
+\@auto nodes can be set up for existing files can be loaded by double clicking
+on the node. If you prefer \@shadow or something else use the
+"active_path_attype" setting, without the "@".
 
 There are commands on the Plugins active_path submenu:
 
 - show path - show the current path
-- set absolute path - changes a node "/dirname/" to "@path /absolute/path/to/dirname".
+- set absolute path - changes a node "/dirname/" to "@path
+  /absolute/path/to/dirname".
 - purge vanished (recursive) - remove *entries*
 - update recursive - recursive load of directories, use with caution on large
   file systems
 - pick dir - select a folder interactively to make a new top level @path node
 - mark-content - mark outline content in the @path tree, as opposed to
-  filesystem content.  Useful if you want to delete the @path tree to
-  check for content not on the filesystem first
+  filesystem content. Useful if you want to delete the @path tree to check for
+  content not on the filesystem first
 
-If you want to use an input other than double clicking a node
-set active_path_event to a value like 'hypercclick1' or 'headrclick1'.
+If you want to use an input other than double clicking a node set
+active_path_event to a value like 'hypercclick1' or 'headrclick1'.
 
-There are @settings for ignoring directory entries and automatically loading files.  ``re.search`` is used, rather than ``re.match``, so patterns need only match part of the filename, not the whole filename.
+There are @settings for ignoring directory entries and automatically loading
+files. ``re.search`` is used, rather than ``re.match``, so patterns need only
+match part of the filename, not the whole filename.
 
 The body of the @setting ``@data active_path_ignore`` is a list of regex
-patterns, one per line.  Directory entries matching any pattern in the list will be ignored.  The names of directories used for matching will have forward slashes around them ('/dirname/'), so patterns can use this to distinguish between directories and files.
+patterns, one per line. Directory entries matching any pattern in the list will
+be ignored. The names of directories used for matching will have forward slashes
+around them ('/dirname/'), so patterns can use this to distinguish between
+directories and files.
 
 The body of the @setting ``@data active_path_autoload`` is a list of regex
-patterns, one per line.  File entries matching any pattern in the list will be loaded automatically.  This works only with files, not directories (but you can load directories recursively anyway).
+patterns, one per line. File entries matching any pattern in the list will be
+loaded automatically. This works only with files, not directories (but you can
+load directories recursively anyway).
 
-Autoloading can be toggled with `active-path-toggle-autoload`, autoloading defaults
-to initially on unless @bool active-path-do-autoload = False.
+Autoloading can be toggled with `active-path-toggle-autoload`, autoloading
+defaults to initially on unless @bool active-path-do-autoload = False.
 
-Set ``@bool active_path_load_docstring = True`` to have active_path load the docstring
-of .py files automatically.  These nodes start with the special string::
+Set ``@bool active_path_load_docstring = True`` to have active_path load the
+docstring of .py files automatically. These nodes start with the special
+string::
 
     @language rest # AUTOLOADED DOCSTRING
 
-which must be left intact if you want active path to be able to double-click load
-the file later.
+which must be left intact if you want active path to be able to double-click
+load the file later.
 
-\@float active_path_timeout_seconds (default 10.) controls the maximum
-time active_path will spend on a recursive operation.
+\@float active_path_timeout_seconds (default 10.) controls the maximum time
+active_path will spend on a recursive operation.
 
-\@int active_path_max_size (default 1000000) controls the maximum
-size file active_path will open without query.
+\@int active_path_max_size (default 1000000) controls the maximum size file
+active_path will open without query.
 
-Per Folder file/folder inclusion and exclusion by adding flags to the body of an active path folder (either ``@`` or ``/*/``), can include multiple ``inc=`` and ``exc=`` flags:
+Per Folder file/folder inclusion and exclusion by adding flags to the body of an
+active path folder (either ``@`` or ``/*/``), can include multiple ``inc=`` and
+``exc=`` flags:
 
 - ``excdirs`` - excludes all directories
 - ``excfiles`` - excludes all files
-- ``inc=`` - a single item or comma separated list of strings to include in the list of files/folders
-- ``exc=`` - a single item or comma separated list of strings to exclude in the list of files/folders
-- ``re`` - search using regular expressions (otherwise a case-sensitive 'in' comparison)
+- ``inc=`` - a single item or comma separated list of strings to include in the
+  list of files/folders
+- ``exc=`` - a single item or comma separated list of strings to exclude in the
+  list of files/folders
+- ``re`` - search using regular expressions (otherwise a case-sensitive 'in'
+  comparison)
 
 active_path is a rewrite of the at_directory plugin to use \@path directives
 (which influence \@auto and other \@file type directives), and to handle
@@ -188,16 +201,18 @@ def isDirNode(p):
     return (
         p.h.startswith('@path ') or
         #  '/foo/' form *assumes* @path in body
-        (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
-        or p.h.strip().startswith('/')
+        (not p.h.strip().startswith('@') and p.h.strip().endswith('/')) or
+        p.h.strip().startswith('/')
         )
 #@+node:tbrown.20091128094521.15039: ** isFileNode
 def isFileNode(p):
     """really isEligibleToBecomeAFileNode"""
-    return (not p.h.strip().startswith('@') and not p.hasChildren() and
-      not isDirNode(p) and isDirNode(p.parent())
-      and (not p.b.strip() or # p.b.startswith(c.__active_path['DS_SENTINEL']
-      p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
+    return (
+        not p.h.strip().startswith('@') and not p.hasChildren() and
+        not isDirNode(p) and isDirNode(p.parent()) and
+        (not p.b.strip() or 
+        p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
+            # p.b.startswith(c.__active_path['DS_SENTINEL']
       ))
 #@+node:jlunz.20150611151435.1: ** inAny
 def inAny(item, group, regEx=False):
@@ -337,24 +352,26 @@ def flattenOrganizers(p):
     """
     for n in p.children():
         yield n
-        if (not isDirNode(n)
-            and not n.h.startswith('@')):
+        if not isDirNode(n) and not n.h.startswith('@'):
             for i in flattenOrganizers(n):
                 yield i
 #@+node:tbrown.20080613095157.6: ** sync_node_to_folder
 def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
     """Decide whether we're opening or creating a file or a folder"""
 
-    if (not updateOnly
-      and not recurse
-      and isDirNode(parent) and not parent.h.strip().startswith('@path')
-      and not parent.b.strip().startswith('@path')):
+    if (
+        not updateOnly and
+        not recurse and
+        isDirNode(parent) and not parent.h.strip().startswith('@path') and
+        not parent.b.strip().startswith('@path')
+    ):
         createDir(c,parent,d)
         return True  # even if it didn't happen, else get stuck in edit mode w/o focus
 
     if os.path.isdir(d):
-        if (isDirNode(parent)
-            and (not updateOnly or recurse or parent.hasChildren())):
+        if (isDirNode(parent) and
+            (not updateOnly or recurse or parent.hasChildren())
+        ):
             # no '/' or @path implies organizer
             openDir(c,parent,d)
             return True
@@ -568,8 +585,9 @@ def openDir(c,parent,d):
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
         h = p.h.strip('/*')  # strip / and *
-        if (h not in oldlist
-            or (p.hasChildren() and not isDirNode(p))):  # clears bogus '*' marks
+        if (h not in oldlist or
+            (p.hasChildren() and not isDirNode(p))
+        ):  # clears bogus '*' marks
             nh = p.h.strip('*')  # strip only *
         else:
             nh = '*'+p.h.strip('*')+'*'
@@ -712,9 +730,9 @@ def cond(p):
     return p.h.startswith('*') and p.h.endswith('*')
 
 def condunl(p):
-    return (isFileNode(p) and not p.b.strip()
-            or
-            isDirNode(p) and not p.hasChildren())
+    return (
+        isFileNode(p) and not p.b.strip() or
+        isDirNode(p) and not p.hasChildren())
 
 def dtor(p):
     # g.es(p.h)

@@ -121,17 +121,16 @@ rendering must be specified by putting it in a ``@md`` node.
 Special Renderings
 ===================
 
-As stated above, the rendering pane renders body text as reStructuredText
-by default, with all Leo directives removed. However, if the body text
-starts with ``<`` (after removing directives), the body text is rendered as
-html.
+As stated above, the rendering pane renders body text as reStructuredText by
+default, with all Leo directives removed. However, if the body text starts with
+``<`` (after removing directives), the body text is rendered as html.
 
 This plugin renders @md, @image, @html, @movie, @networkx and @svg nodes as
 follows:
 
-**Note**: For @image, @movie and @svg nodes, either the headline or the
-first line of body text may contain a filename. If relative, the filename
-is resolved relative to Leo's load directory.
+**Note**: For @image, @movie and @svg nodes, either the headline or the first
+line of body text may contain a filename. If relative, the filename is resolved
+relative to Leo's load directory.
 
 - ``@md`` renderes the body text as markdown, as described above.
 
@@ -153,8 +152,9 @@ is resolved relative to Leo's load directory.
 - ``@networkx`` is non-functional at present.  It is intended to
   render the body text as a [networkx](http://networkx.lanl.gov/) graph.
 
-- ``@svg`` renders the file as a (possibly animated!) svg [Scalable Vector Image](http://en.wikipedia.org/wiki/Scalable_Vector_Graphics).
-  
+- ``@svg`` renders the file as a (possibly animated!) svg
+  [Scalable Vector Image](http://en.wikipedia.org/wiki/Scalable_Vector_Graphics).
+
   **Note**: if the first character of the body text is ``<`` after removing
   Leo directives, the contents of body pane is taken to be an svg image.
 
@@ -525,7 +525,7 @@ def update_rendering_pane(event):
             vr.update(tag='view', keywords={'c': c, 'force': True})
 
 #@+node:ekr.20160331123847.27: ** class ViewRenderedController3 (QWidget)
-if QtWidgets:
+if QtWidgets: # NOQA
 
     class ViewRenderedController3(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
@@ -1248,14 +1248,14 @@ if QtWidgets:
         #@-others
 #@+node:ekr.20160331123847.23: ** class ViewRenderedProvider3
 class ViewRenderedProvider3(object):
-    
+
     def __init__(self, c):
         '''Ctor for ViewRenderedProvider3 class.'''
         self.c = c
-    
+
     def ns_provides(self):
         return [('Viewrendered3', vr3_ns_id)]
-        
+
     def ns_provide(self, id_):
         global controllers
         if id_ == vr3_ns_id:
@@ -1403,7 +1403,7 @@ class WebViewPlus(QtWidgets.QWidget):
         # Layouts
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.setContentsMargins(0, 0, 0, 0) # Remove the default 11px margins
-        vlayout.setSpacing( 0 );  # remove spacing between content widgets
+        vlayout.setSpacing( 0 )  # remove spacing between content widgets
         vlayout.addWidget(self.toolbar)
         vlayout.addWidget(view)
         self.setLayout(vlayout)
@@ -1609,7 +1609,7 @@ class WebViewPlus(QtWidgets.QWidget):
         #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
     #@+node:ekr.20160331124028.36: *4* wvp.setHtml (EKR)
     def setHtml(self, s):
-        
+
         self.view.setHtml(s)
     #@+node:ekr.20160331124028.37: *4* wvp.state_change
     def state_change(self, checked):

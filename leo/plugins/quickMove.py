@@ -440,7 +440,8 @@ class quickMove(object):
         for mover, button in qm.buttons:
             if (mover.target == v and
                 (not type_ or mover.type_ == type_) and
-                (not first or mover.which == first)):  # TNB untested .first -> .which
+                (not first or mover.which == first)
+            ):  # TNB untested .first -> .which
                 cnt += 1
                 v.u['quickMove']['buttons'].append(
                     {'first':mover.which, 'type': mover.type_})

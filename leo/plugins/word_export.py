@@ -98,16 +98,15 @@ def writeNodeAndTree (c, word, header_style, level,
     maxlevel = 3,
     usesections = 1,
     sectionhead = "",
-    vnode = None):
-
+    vnode = None
+):
     """Write a node and its children to Word"""
-
     if vnode is None:
         vnode = c.currentVnode()
     #
     dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
-    if encoding == None:
+    if encoding is None:
         # encoding = c.config.default_derived_file_encoding
         encoding = sys.getdefaultencoding()
     #

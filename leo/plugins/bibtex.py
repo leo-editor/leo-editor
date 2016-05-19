@@ -8,11 +8,14 @@ r''' Creates a BibTex file from an  '@bibtex <filename>' tree.
 
 Nodes of the form '@<x> key' create entries in the file.
 
-When the user creates a new node (presses enter in headline text) the plugin automatically inserts a template for the entry in the body pane.
+When the user creates a new node (presses enter in headline text) the plugin
+automatically inserts a template for the entry in the body pane.
 
-The 'templates' dict in the <\< globals >\> section defines the template. The default, the template creates all required entries.
+The 'templates' dict in the <\< globals >\> section defines the template. The
+default, the template creates all required entries.
 
-Double-clicking the @bibtex node writes the file. For example, the following outline::
+Double-clicking the @bibtex node writes the file. For example, the following
+outline::
 
     -@bibtex biblio.bib
      +@book key,
@@ -25,7 +28,9 @@ creates the following 'biblio.bib' files::
     author = {A. Uthor},
     year= 1999}
 
-@string nodes define strings and may contain multiple entries. The plugin writes all @string nodes at the start of the file. For example, the following outline::
+@string nodes define strings and may contain multiple entries. The plugin writes
+ all @string nodes at the start of the file. For example, the following
+ outline::
 
     -@bibtext biblio.bib
      +@string
@@ -47,9 +52,13 @@ creates the following file::
     author = {A. Uthor},
     journal = j1}
 
-Headlines that do not start with '@' are organizer nodes: the plugin does not write organizer nodes, but does write descendant nodes.
+Headlines that do not start with '@' are organizer nodes: the plugin does not
+write organizer nodes, but does write descendant nodes.
 
-BibTeX files can be imported by creating an empty node with '@bibtex filename' in the headline. Double-clicking it will read the file and parse it into a @bibtex tree. No syntax checks are made: the file is expected to be a valid BibTeX file.
+BibTeX files can be imported by creating an empty node with '@bibtex filename'
+in the headline. Double-clicking it will read the file and parse it into a
+@bibtex tree. No syntax checks are made: the file is expected to be a valid
+BibTeX file.
 
 '''
 #@-<< docstring >>
@@ -73,10 +82,15 @@ __version__ = '0.7'
 # - Automatic inserting of templates when new entries are created.
 # 
 # 0.4 Timo Honkasalo 2005/03/02
-# - Some changes in writeTreeAsBibTex (better format), added entrytypes in globals.
+# 
+# - Some changes in writeTreeAsBibTex (better format), added entrytypes in
+#   globals.
 # - Greatly simplified and enhanced the performance of readBibTexFileIntoTree.
-# - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@' (whitespace stripped) instead of '@', so that fields may contain '@' (like a 'mailto' field most likely would).
-# - Changed <<write template>> to move cursor to the entry point of first field (16 columns right).
+# - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@'
+#   (whitespace stripped) instead of '@', so that fields may contain '@' (like a
+#   'mailto' field most likely would).
+# - Changed <<write template>> to move cursor to the entry point of first field
+#   (16 columns right).
 # - Bugfix: templates now include commas after each field
 # 
 # 0.5 EKR: 2014/12/11: This plugin now works with Python 3.

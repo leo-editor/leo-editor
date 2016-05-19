@@ -243,7 +243,10 @@ if encOK:
 
     @g.command('stickynoteenckey')
     def sn_getenckey(dummy=None):
-        txt,ok = QInputDialog.getText(None, 'Enter key', 'Enter key.\nData lost if key is lost.\nSee docs. for key upgrade notes.')
+        txt,ok = QInputDialog.getText(None,
+            'Enter key',
+            'Enter key.\nData lost if key is lost.\nSee docs. for key upgrade notes.',
+        )
         if not ok:
             return
 
@@ -434,7 +437,7 @@ def create_subnode(c, heading):
     return chi.copy()
 #@+node:ekr.20160403065539.1: *3* find_or_create_stickynotes
 def find_or_create_stickynotes(c):
-    
+
     # Huh? This makes no sense, and can cause a crash.
         # wb = get_workbook()
         # assert wb,'no wb'
@@ -458,7 +461,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
     # pylint: disable=function-redefined
     # focusin and focusout are redefined elsewhere.
     v = p.v
-    
+
     if focusin is None:
         def focusin():
             if v is c.p.v:
@@ -494,7 +497,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
     # Fix #249: Leo and Stickynote plugin do not request to save
     # Don't set the node dirty unless it has been changed.
     # p.setDirty()
-    
+
     def textchanged_cb():
         nf.dirty = True
 

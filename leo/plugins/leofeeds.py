@@ -5,9 +5,9 @@
 ''' Read feeds from rss / atom / whatever sources
 
 Usage: Create node with a headline like:
-    
+
     @feed http://www.planetqt.org/atom.xml
-    
+
 (or somesuch).
 
 Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires "feedparser" python module
@@ -32,7 +32,7 @@ import leo.core.leoGlobals as g
 
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
-    
+
 import feedparser
 import sys
 
@@ -90,7 +90,7 @@ def emit(r, h, b):
     chi.b = b
 
 def emitfeed(url, p):
-    
+
     d = feedparser.parse(url)
     r = p.insertAsLastChild()
     r.h = d.channel.title
@@ -102,9 +102,9 @@ def emitfeed(url, p):
             cnt = ent.content[0].value
         except AttributeError:
             cnt = ent['summary']
-                        
+
         e.b = strip_tags(cnt)
-        
+
         #e.b = str(ent)
         e.h = ent.title
         for li in ent.links:
@@ -116,26 +116,26 @@ def emitfeed(url, p):
                 ec = chi(e)
                 ec.h = '@url Enclosure: ' +  enc.get('type','notype') + " " + enc.get('length','')
                 ec.b = enc.get('href', '')
-                
+
         full = chi(e)
         full.h = "orig"
         full.b = cnt
-        
+
 
 def feeds_act_on_node(c,p,event):
- 
+
     sp = p.h.split(None, 1)
     if sp[0] not in ['@feed']:
         raise leoPlugins.TryNext
-        
+
     emitfeed(sp[1], p)           
     c.redraw()
 
 def feeds_install():
     g.act_on_node.add(feeds_act_on_node, 99)
-        
-    
-    
+
+
+
 #emitfeed("http://feedparser.org/docs/examples/atom10.xml", p)
 #c.redraw()
 #@-others

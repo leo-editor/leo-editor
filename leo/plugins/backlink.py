@@ -108,12 +108,12 @@ class backlinkController(object):
             # collect old -> new ID mapping
             if (hasattr(v, 'unknownAttributes') and
                 '_bklnk' in v.u and
-                'id' in v.u['_bklnk']):
+                'id' in v.u['_bklnk']
+            ):
                 update[v.u['_bklnk']['id']] = v.gnx
 
         for v in c.all_unique_nodes():
-            if (hasattr(v, 'unknownAttributes') and
-                '_bklnk' in v.u):
+            if (hasattr(v, 'unknownAttributes') and '_bklnk' in v.u):
 
                 if 'id' in v.u['_bklnk']:
                     # remove old id
@@ -361,8 +361,10 @@ class backlinkController(object):
                 other = self.vnode[link[1]]
                 if '_bklnk' not in other.u or 'links' not in other.u['_bklnk']:
                     self.initBacklink(other)
-                if not [i for i in other.u['_bklnk']['links']
-                    if i[1] == vnode]:
+                if not [
+                    i for i in other.u['_bklnk']['links']
+                        if i[1] == vnode
+                ]:
                     # we are not in the other's list
                     direc = {'U':'U', 'S':'D', 'D':'S'}[link[0]]
                     other.u['_bklnk']['links'].append((direc, vnode))
@@ -490,14 +492,14 @@ class backlinkController(object):
                 smenu = Tk.Menu(menu,tearoff=0,takefocus=1)
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
-                    c.add_command(menu,label={'S':'->','D':'<-','U':'--'}[i[0]]
-                        + i[1].h,
+                    c.add_command(menu,
+                        label={'S':'->','D':'<-','U':'--'}[i[0]] + i[1].h,
                         underline=0,command=goThere)
                     def delLink(on=v,
                         to=i[1].v.unknownAttributes['_bklnk']['id'],
                         type_=i[0]): self.deleteLink(on,to,type_)
-                    c.add_command(smenu,label={'S':'->','D':'<-','U':'--'}[i[0]]
-                        + i[1].h,
+                    c.add_command(smenu,
+                        label={'S':'->','D':'<-','U':'--'}[i[0]] + i[1].h,
                         underline=0,command=delLink)
                 menu.add_cascade(label='Delete link', menu=smenu,underline=1)
                 menu.add_separator()

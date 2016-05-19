@@ -50,8 +50,11 @@ class Recorder(object):
 
     These shell commands convert saved frames to video
 
-    ls /tmp/image*.ppm | xargs -IFILE -n1 -P4 mogrify -format png FILE
-    mencoder mf:///tmp/image*.png -mf fps=12:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o output.avi
+    ls /tmp/image*.ppm |
+        xargs -IFILE -n1 -P4 mogrify -format png FILE
+    mencoder mf:///tmp/image*.png -mf
+        fps=12:type=png -ovc lavc -lavcopts
+        vcodec=mpeg4:mbd=2:trell -oac copy -o output.avi
     rm -k /tmp/image*.ppm /tmp/image*.png
     """
     #@+others

@@ -465,7 +465,7 @@ class ViewRenderedProvider(object):
             return vr
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-if QtWidgets:
+if QtWidgets: # NOQA
 
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''

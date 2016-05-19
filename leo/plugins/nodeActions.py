@@ -305,10 +305,10 @@ def doNodeAction(pClicked, c):
             else:
                 directives = "[]"
             #What directives exist?
-            useRegEx = re.search("X", directives) != None
-            passEventInternal = re.search("V", directives) != None
+            useRegEx = re.search("X", directives) is not None
+            passEventInternal = re.search("V", directives) is not None
             if not passEventExternal: #don't disable once enabled.
-                passEventExternal = re.search(">", directives) != None
+                passEventExternal = re.search(">", directives) is not None
             #Remove the directives from the end of the pattern (if they exist)
             pattern = re.sub( " \[.*]$", "", pattern, 1)
             if messageLevel >= 4:
@@ -356,7 +356,7 @@ def doNodeAction(pClicked, c):
                 #Indicate that at least one pattern was matched
                 foundPattern = True
                 #Don't trigger more patterns unless enabled in patterns' headline
-                if passEventInternal == False:
+                if not passEventInternal:
                     break
             else:
                 if messageLevel >= 3:
@@ -368,7 +368,7 @@ def doNodeAction(pClicked, c):
             if messageLevel >= 1:
                 g.blue("nA: No patterns matched to """ + hClicked + '"')
             return False #TL - Inform onIconDoubleClick that no action was taken
-        elif passEventExternal == True:
+        elif passEventExternal:
             #last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")

@@ -2,17 +2,12 @@
 #@+node:tbrown.20140804103545.29975: * @file writers/ctext.py
 #@@language python
 #@@tabwidth -4
-#@+others
-#@+node:tbrown.20140804103545.29976: ** ctext declarations
-
-# import time
 import leo.plugins.writers.basewriter as basewriter
-
+#@+others
 #@+node:tbrown.20140804103545.29977: ** class CTextWriter
 class CTextWriter(basewriter.BaseWriter):
     #@+others
     #@+node:tbrown.20140804103545.29978: *3* recurse
-
     def recurse(self, nd, level=0):
         self.put(nd.b.strip()+'\n\n')
         for child in nd.children():
@@ -20,10 +15,9 @@ class CTextWriter(basewriter.BaseWriter):
             txt += self.cchar * max(0, 75-len(txt))
             self.put(txt+'\n\n')
             self.recurse(child, level+1)
-
     #@+node:tbrown.20140804103545.29979: *3* write
     def write(self,root):
-        
+
         self.cchar = '#'
         if root.h.lower()[-4:] == '.tex':
             self.cchar = '%'
@@ -31,7 +25,6 @@ class CTextWriter(basewriter.BaseWriter):
             self.cchar = '-'
         if root.h.lower()[-3:] == '.js':
             self.cchar = '/'
-        
         self.recurse(root, 0)
         return True
 

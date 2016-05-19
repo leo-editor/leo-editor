@@ -62,7 +62,7 @@ Saving bookmarks from browser to Leo
 
 To do this, add a bookmark to the browser with the following URL / Location::
 
-    javascript:w=window; d=w.document; ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');for (i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' + escape(JSON.stringify(ln)) + '&url=' + escape(w.location.href),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no");void(0);
+    javascript:w=window; d=w.document; ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');for (i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' + escape(JSON.stringify(ln)) + '&url=' + escape(w.location.href),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no");void(0); # NOQA
 
 and edit the port (8130 in the example above) to match the port you're using for
 mod_http.
@@ -115,19 +115,21 @@ The basic form is::
 The query parameters are:
 
 ``cmd`` (required)
-    A valid python snippet for Leo to execute.  Executed by
-    the ``vs-eval`` command in the ``valuespace`` plug-in.  Can be
-    specified multiple times, each is executed in order.  May contain
-    newlines, see examples.
+    A valid python snippet for Leo to execute. Executed by the ``vs-eval``
+    command in the ``valuespace`` plug-in. Can be specified multiple times, each
+    is executed in order. May contain newlines, see examples.
+
 ``c`` (optional)
-    Which currently loaded outline to use, can be an integer, starting
-    from zero, or the full path+filename, or just the base filename.
-    Defaults to 0 (zero), i.e. the "first" open outline.
+    Which currently loaded outline to use, can be an integer, starting from
+    zero, or the full path+filename, or just the base filename. Defaults to 0
+    (zero), i.e. the "first" open outline.
+
 ``enc`` (optional)
-    Encoding for response, 'str', 'repr', or 'json'.  Used to render
-    the returned value.
+    Encoding for response, 'str', 'repr', or 'json'. Used to render the returned
+    value.
+
 ``mime_type`` (optional)
-    Defaults to ``text/plain``.  Could be useful to use ``text/html`` etc.
+    Defaults to ``text/plain``. Could be useful to use ``text/html`` etc.
 
 A special variant url is::
 
@@ -142,8 +144,8 @@ This command::
 
     curl http://localhost:8130/_/exec/?cmd='c.bringToFront()' >/dev/null
 
-will raise the Leo window, or at least make the window manager signal the
-need to raise it.
+will raise the Leo window, or at least make the window manager signal the need
+to raise it.
 
 ::
 

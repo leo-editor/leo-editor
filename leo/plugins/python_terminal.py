@@ -21,21 +21,25 @@ Enabling this plugin will add a new tab to the Log pane, labeled "Python Console
 python command shell, with access to `g`, `c`, and `p` included!
 
 Features:
-
-    - Includes support for g, c, and p
-    - Each outline tab has a separate python console, with a separate namespace (aside from g, of course)
-    - Extremely primitive tab-completion
-    - Command history (use !hist to list, and !hist(n) to recall the n'th entry)
-    - !clear to clear the console
+- Includes support for g, c, and p
+- Each outline tab has a separate python console, with a separate namespace (aside from g, of course)
+- Extremely primitive tab-completion
+- Command history (use !hist to list, and !hist(n) to recall the n'th entry)
+- !clear to clear the console
 
 Caveats:
 
-    - Stdout and stderr are proprely redirected to the interactive console pane while it has focus, but proprely reset to their previous values when focus is lost.  If code executed inside the interactive console pane needs to output to the command-line stdout/stderr, please use sys.__stdout__ and sys.__stderr__.
-    - Just as with scripts, if you do something dangerous, you're on your own
+Stdout and stderr are proprely redirected to the interactive console pane while
+it has focus, but proprely reset to their previous values when focus is lost. If
+code executed inside the interactive console pane needs to output to the
+command-line stdout/stderr, please use sys.__stdout__ and sys.__stderr__. - Just
+as with scripts, if you do something dangerous, you're on your own
 
-This code is largely lifted from http://stackoverflow.com/questions/12431555/enabling-code-completion-in-an-embedded-python-interpreter, with some modifications made for Leo embedding.
+This code is largely lifted from
+http://stackoverflow.com/questions/12431555/
+enabling-code-completion-in-an-embedded-python-interpreter,
+with some modifications made for Leo embedding.
 '''
-
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20150428142729.2: ** << imports >>

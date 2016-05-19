@@ -294,12 +294,13 @@ class notetextedit(QTextEdit):
         else:
             text = '<a href="http://{0}">{0}</a> '.format(text)
 
-        # the below works but doesn't pick up highlighting of an anchor - would have to do the underlining and blue color
-        #format = QTextCharFormat()
-        #format.setAnchor(True)
-        #format.setAnchorHref(text)
-        #cursor.setCharFormat(format)
-        ##self.setTextCursor(cursor)
+        # the below works but doesn't pick up highlighting of an anchor
+        # would have to do the underlining and blue color
+            #format = QTextCharFormat()
+            #format.setAnchor(True)
+            #format.setAnchorHref(text)
+            #cursor.setCharFormat(format)
+            #self.setTextCursor(cursor)
 
         #this also works and generates highlighting
         cursor.deleteChar()
@@ -572,7 +573,9 @@ class notetextedit(QTextEdit):
                             text = QString("`%1`").arg(text)
                         elif char_format.fontItalic():
                             text = QString("*%1*").arg(text)
-                        elif char_format.fontWeight() > QFont.Normal: #font-weight:600; same as for an H1; H1 font-size:xx-large; H1 20; H2 15 H3 12
+                        elif char_format.fontWeight() > QFont.Normal:
+                            #font-weight:600; same as for an H1;
+                            #H1 font-size:xx-large; H1 20; H2 15 H3 12
                             text = QString("**%1**").arg(text)
 
                         para += text

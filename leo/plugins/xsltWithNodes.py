@@ -50,8 +50,9 @@ import weakref
 #@@killcolor
 
 #@+at
-# 1. Having space before the start of the document caused it not to work.  I fixed this by striping the whitespace from the start
-# and end of the data at xslt time.
+# 1. Having space before the start of the document caused it not to work. I fixed
+#    this by striping the whitespace from the start and end of the data at xslt
+#    time.
 # 
 # 2. having a @ right before a tag causes it to not process.
 #     It appears to be safe to follow this pattern:
@@ -215,10 +216,11 @@ def getString (c):
     cS = StringIO()
 
     if not hasattr( at, 'new_df' ):
-    #if new_at_file: # 4.3 code base.
+        # 4.3 code base.
         at.toStringFlag = True
         # at.outputFile = cS
-        at.writeOpenFile(pos,nosentinels=True,toString=True) #How the heck does this fill cS with data, if at.outputFile is never set?
+        at.writeOpenFile(pos,nosentinels=True,toString=True)
+            #How the heck does this fill cS with data, if at.outputFile is never set?
         # at.outputFile = None
         # at.toStringFlag = False
 
@@ -233,7 +235,11 @@ def getString (c):
     return cleanString( cS.getvalue() )
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):
-    '''This def performs a simple test on a node.  Can the data be successfully parsed by minidom or not.  Results are output to the log'''
+    '''
+    This def performs a simple test on a node.
+    Can the data be successfully parsed by minidom or not?
+    Results are output to the log.
+    '''
     s = getString( c )
     try:
         minidom.parseString( s )
@@ -269,7 +275,7 @@ def styleNodeSelected( c ):
 
 #@+node:mork.20041010100633: ** addMenu
 def addMenu( tag, keywords ):
-    
+
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')

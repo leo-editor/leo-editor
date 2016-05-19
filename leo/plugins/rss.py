@@ -43,17 +43,20 @@ This plugin is configured with the following @settings:
 @string rss-date-format
 -----------------------
 
-Format string to provide datetime.time.strftime, to format entry dates.  Defaults to '%Y-%m-%d %I:%M %p' if not provided.
+Format string to provide datetime.time.strftime, to format entry dates. Defaults
+to '%Y-%m-%d %I:%M %p' if not provided.
 
 @bool rss-sort-newest-first
 ---------------------------
 
-If True, newest entries are placed before older entries.  If False, older entries are placed before newer entries.
+If True, newest entries are placed before older entries. If False, older entries
+are placed before newer entries.
 
 @string rss-headline-format
 ---------------------------
 
-The format of an entry headline, specified with various tokens.  Defaults to '[<date>] <title>' if not provided.
+The format of an entry headline, specified with various tokens. Defaults to
+'[<date>] <title>' if not provided.
 
 Valid tokens are:
 
@@ -62,12 +65,15 @@ Valid tokens are:
 | <link> - the entry link (not recommended in headline)
 | <summary> - the entry summary (extremely not recommeded in headline)
 
-Anything that isn't a valid token is retained untouched, such as the square brackets in the default setting.
+Anything that isn't a valid token is retained untouched, such as the square
+brackets in the default setting.
 
 @data rss-body-format
 ---------------------
 
-The body of this node will provide the structure of the body of parsed entry nodes.  Empty lines should be denoted with '\\n' on a line by itself.  It defaults to the following, if not provided::
+The body of this node will provide the structure of the body of parsed entry
+nodes. Empty lines should be denoted with '\\n' on a line by itself. It defaults
+to the following, if not provided::
 
     @url <link>
     \n
@@ -76,13 +82,16 @@ The body of this node will provide the structure of the body of parsed entry nod
     \n
     <summary>
 
-Valid tokens are the same as for `@string rss-headline-format`.  Any instance of '\n' on a line by itself is replaced with an empty line.  All other strings that are not valid tokens are retained untouched, such as the `@url` directive in the default.
+Valid tokens are the same as for `@string rss-headline-format`. Any instance of
+'\n' on a line by itself is replaced with an empty line. All other strings that
+are not valid tokens are retained untouched, such as the `@url` directive in the
+default.
 
 
 Commands
 ========
 
-This plugin uses commands to operate on these `@feed` definitions.  The following
+This plugin uses commands to operate on these `@feed` definitions. The following
 commands are available:
 
 rss-parse-selected-feed
@@ -94,9 +103,9 @@ children of the `@feed` node.  Can be SLOW for large feeds.
 rss-parse-all-feeds
 -------------------
 
-Parses all `@feed` nodes in the current outline, creating entries for
-each story as children of the appropriate `@feed` nodes.  Not recommended,
-as it can make Leo appear to be locked up while running.
+Parses all `@feed` nodes in the current outline, creating entries for each story
+as children of the appropriate `@feed` nodes. Not recommended, as it can make
+Leo appear to be locked up while running.
 
 rss-delete-selected-feed-stories
 --------------------------------
@@ -234,8 +243,17 @@ class RSSController(object):
                 name = entry.get('title',default=self._NO_NAME)
                 link = entry.get('link',default=self._NO_LINK)
                 desc = entry.get('summary',default=self._NO_SUMMARY)
-                headline = headline_format.replace('<date>',date).replace('<title>',name).replace('<summary>',desc).replace('<link>',link)
-                body = body_format.replace('<date>',date).replace('<title>',name).replace('<summary>',desc).replace('<link>',link)
+                headline = (
+                    headline_format.replace('<date>',date).
+                    replace('<title>',name).
+                    replace('<summary>',desc).
+                    replace('<link>',link)
+                )
+                body = (
+                    body_format.replace('<date>',date).
+                    replace('<title>',name).
+                    replace('<summary>',desc).
+                    replace('<link>',link))
                 newp = pos.insertAsLastChild()
                 newp.h = headline
                 newp.b = body

@@ -562,7 +562,7 @@ class BaseScanner(object):
         body = body1 + body2
         if trace: g.trace('body: %s' % repr(body))
         tail = body[len(body.rstrip()):]
-        if not '\n' in tail:
+        if '\n' not in tail:
             self.warning(
                 '%s %s does not end with a newline; one will be added\n%s' % (
                 self.functionSpelling, self.sigId, g.get_line(s, codeEnd)))

@@ -301,7 +301,15 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr.update(tag='show-scrolled-message', keywords={'c': c, 'force': True, 's': s, 'kind': 'rst', 'show-scrolled-message': True})
+    vr.update(
+        tag='show-scrolled-message',
+        keywords={
+            'c': c,
+            'force': True,
+            's': s,
+            'kind': 'rst',
+            'show-scrolled-message': True,
+        })
     return True
 #@+node:ekr.20140226074510.4195: ** Commands
 #@+node:ekr.20140226074510.4196: *3* g.command('preview')
@@ -781,7 +789,7 @@ class WebViewPlus(QtWidgets.QWidget):
         #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
     #@+node:ekr.20160325203354.1: *4* setHtml (EKR)
     def setHtml(self, s):
-        
+
         self.view.setHtml(s)
     #@+node:ekr.20140226075611.16794: *4* state_change
     def state_change(self, checked):

@@ -2,20 +2,28 @@
 #@+node:peckj.20131130132659.5964: * @file nodewatch.py
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
-'''Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
-The nodes that show up in this GUI are scriptable on a per-outline basis, with @nodewatch
-nodes.
+'''
+Provides a GUI in the Log pane (tab name 'Nodewatch') that lists node headlines.
+The nodes that show up in this GUI are scriptable on a per-outline basis, with
+@nodewatch nodes.
 
 By Jacob M. Peck
 
 @nodewatch Nodes
 ================
 
-This plugin leverages Leo's scripting abilities to create programmable lists of nodes to act as jumplists via a GUI panel in the Log pane.  These lists are definable on a per-outline basis by using @nodewatch nodes.
+This plugin leverages Leo's scripting abilities to create programmable lists of
+nodes to act as jumplists via a GUI panel in the Log pane. These lists are
+definable on a per-outline basis by using @nodewatch nodes.
 
-A @nodewatch node must be a child of a @settings node for this plugin to use it.  This is a safety feature, and will not be changed.
+A @nodewatch node must be a child of a @settings node for this plugin to use it.
+This is a safety feature, and will not be changed.
 
-A @nodewatch node is a Leo script that interacts with the 'c.theNodewatchController' object, namely calling the 'add' method on it, providing it with a category name (string) and a list of vnodes (list).  An example minimal @nodewatch node is as follows (first line is headline, rest is body)::
+A @nodewatch node is a Leo script that interacts with the
+'c.theNodewatchController' object, namely calling the 'add' method on it,
+providing it with a category name (string) and a list of vnodes (list). An
+example minimal @nodewatch node is as follows (first line is headline, rest is
+body)::
 
     @nodewatch Nodewatch Demo
       @language python
@@ -26,7 +34,8 @@ A @nodewatch node is a Leo script that interacts with the 'c.theNodewatchControl
               nodes.append(vnode)
       c.theNodewatchController.add(categoryname,nodes)
 
-If that node is a child of a @settings node, it will be run every time the 'Refresh' button in the GUI is clicked.
+If that node is a child of a @settings node, it will be run every time the
+'Refresh' button in the GUI is clicked.
 
 GUI Operation
 =============
@@ -37,18 +46,31 @@ The Nodewatch GUI is fairly straightforward, consisting of 3 parts:
 2. The Refresh button
 3. The item list
 
-The dropdown box is filled with items named with the appropriate categoryname strings given to c.theNodewatchController.add().  It controls the item list below.
+The dropdown box is filled with items named with the appropriate categoryname
+strings given to c.theNodewatchController.add(). It controls the item list
+below.
 
-The item list is a list of node headlines -- those returned by the @nodewatch node whose categoryname matches the currently selected item in the dropdown box.  Clicking on an item in this list will select the node in the outline.
+The item list is a list of node headlines -- those returned by the @nodewatch
+node whose categoryname matches the currently selected item in the dropdown box.
+Clicking on an item in this list will select the node in the outline.
 
-The Refresh button reads and executes all valid @nodewatch nodes in the current outline, and updates the rest of the GUI appropriately.  The 'nodewatch-update' minibuffer command is an alias for this.  This is the only time the scripts are executed, so you might wish to get in the habit of clicking this button when you open the Nodewatch GUI.
+The Refresh button reads and executes all valid @nodewatch nodes in the current
+outline, and updates the rest of the GUI appropriately. The 'nodewatch-update'
+minibuffer command is an alias for this. This is the only time the scripts are
+executed, so you might wish to get in the habit of clicking this button when you
+open the Nodewatch GUI.
 
 Important Note
 ==============
 
-This plugin allows scripts to be executed, and therefore is a security risk.  Unless the '@bool nodewatch_autoexecute_scripts' setting is True, all scripts are only run via user intervention.  You are advised to carefully examine any @settings->@nodewatch nodes in the outline before clicking 'Refresh', running 'nodewatch-update', or setting '@bool nodewatch_autoexecute_scripts = True'.
+This plugin allows scripts to be executed, and therefore is a security risk.
+Unless the '@bool nodewatch_autoexecute_scripts' setting is True, all scripts
+are only run via user intervention. You are advised to carefully examine any
+@settings->@nodewatch nodes in the outline before clicking 'Refresh', running
+'nodewatch-update', or setting '@bool nodewatch_autoexecute_scripts = True'.
 
-Additionally, this plugin does NO checks to make sure that @nodewatch scripts aren't destructive.  Caveat User.
+Additionally, this plugin does NO checks to make sure that @nodewatch scripts
+aren't destructive. Caveat User.
 
 Configuration Settings
 ======================
@@ -57,7 +79,9 @@ This plugin is configured with the following @settings:
 
 @bool nodewatch_autoexecute_scripts
 -----------------------------------
-Defaults to False.  If set to True, all @settings->@nodewatch nodes in the current outline are executed when the outline loads.
+
+Defaults to False. If set to True, all @settings->@nodewatch nodes in the
+current outline are executed when the outline loads.
 
 Commands
 ========
@@ -66,7 +90,9 @@ This plugin defines only one command.
 
 nodewatch-refresh
 -----------------
-Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI (same as clicking the refresh button in the nodewatch GUI).
+
+Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
+(same as clicking the refresh button in the nodewatch GUI).
 
 '''
 #@-<< docstring >>

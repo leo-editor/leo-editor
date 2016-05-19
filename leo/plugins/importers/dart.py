@@ -35,7 +35,7 @@ class DartScanner(basescanner.BaseScanner):
         # Returns len(s) on unterminated string.
         return g.skip_python_string(s,i,verbose=False)
     #@-others
-    
+
 importer_dict = {
     'class': DartScanner,
     'extensions': ['.dart',],
