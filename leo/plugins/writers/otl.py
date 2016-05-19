@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18078: * @file writers/otl.py
 '''The @auto write code for vimoutline (.otl) files.'''
-# pylint: disable=unused-import
-import leo.core.leoGlobals as g
+# import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18083: ** class OtlWriter

@@ -69,17 +69,13 @@ def createPasteAsHeadlinesMenu (tag,keywords):
 #@+node:danr7.20060912105041.6: ** paste_as_headlines
 def paste_as_headlines(c):
     # g.es("Starting...")
-
     currentPos = c.p
     clipText = g.app.gui.getTextFromClipboard()
-
     # Split clipboard text elements into a list
     clipList = clipText.split("\n")
-
     init_indent = len(clipList[0]) - len(clipList[0].lstrip())
     cur_pos = currentPos.copy()
     ancestors = [(init_indent,cur_pos)]
-
     for tempHead in clipList:
         indent = len(tempHead) - len(tempHead.lstrip())
         tempHead = tempHead.strip()
@@ -91,17 +87,14 @@ def paste_as_headlines(c):
                 while indent < ancestors[-1][0] and indent >= init_indent:
                     ancestors.pop()
 
-            cur_indent = indent
-
+            # cur_indent = indent
             insertNode = ancestors[-1][1].insertAsLastChild()
             cur_pos = insertNode.copy()
-
             if len(tempHead)>50:
                 c.setHeadString(insertNode,tempHead[:50])
                 c.setBodyString(insertNode,tempHead)
             else:
                 c.setHeadString(insertNode,tempHead)
-
     currentPos.expand()
     c.redraw()
 #@-others

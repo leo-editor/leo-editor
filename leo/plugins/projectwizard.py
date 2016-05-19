@@ -25,19 +25,17 @@ def init ():
     return ok
 #@+node:ville.20090614224528.8141: ** auto_walk() and g.command('projectwizard')
 def auto_walk(c, directory, parent=None, isroot=True):
-    """ source: http://leo.zwiki.org/CreateShadows
+    """
+    source: http://leo.zwiki.org/CreateShadows
 
     (create @auto files instead)
-
     """
-
     from os import listdir
     from os.path import join, abspath, basename, normpath, isfile
     from fnmatch import fnmatch
-    import os
+    # import os
 
     RELATIVE_PATHS = False
-
     patterns_to_ignore = ['*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
     patterns_to_import = ['*.py','*.c', '*.cpp']
     match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
@@ -113,14 +111,16 @@ def rclick_path_importfile(c,p,menu):
     def importfiles_rclick_cb():
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
-
-        table = [("All files","*"),
-            ("Python files","*.py"),]
-        fnames = g.app.gui.runOpenFileDialog(c,
-            title = "Import files",filetypes = table,
+        table = [
+            ("All files","*"),
+            ("Python files","*.py"),
+        ]
+        # This is incomplete.
+        g.app.gui.runOpenFileDialog(c,
+            title = "Import files",
+            filetypes = table,
             defaultextension = '.notused',
             multiple=True)
-
         print("import files from",path)
 
     action = menu.addAction("Import files")

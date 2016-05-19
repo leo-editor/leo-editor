@@ -143,12 +143,10 @@ def show_unittest_failures(event):
 #@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c):
 
-    #tabw = c.frame.top.tabWidget
-
+    # tabw = c.frame.top.tabWidget
     wdg = LeoQuickSearchWidget(c, mode="nav")
-    qsWidgent = wdg
     c.frame.log.createTab("Nav", widget = wdg)
-    #tabw.addTab(wdg, "QuickSearch")
+    # tabw.addTab(wdg, "QuickSearch")
 
     def focus_quicksearch_entry(event):
         c.frame.log.selectTab('Nav')
@@ -271,15 +269,11 @@ class QuickSearchEventFilter(QtCore.QObject):
     #@+node:ekr.20111015194452.15719: *3* eventFilter
     def eventFilter(self,obj,event):
 
-        #print "Event filter"
+        # g.trace()
         eventType = event.type()
         ev = QtCore.QEvent
-
         # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
-        kinds = [ev.KeyPress,ev.KeyRelease]
-
-        #g.trace(eventType,eventType in kinds)
-
+        # kinds = [ev.KeyPress,ev.KeyRelease]
         if eventType == ev.KeyRelease:
             #print "key event"
             lw = self.listWidget
@@ -305,8 +299,8 @@ class QuickSearchEventFilter(QtCore.QObject):
 #@+node:ville.20121223213319.3670: ** dumpfocus
 def dumpfocus():
     f = QtGui.QApplication.instance().focusWidget()
-    g.es("Focus: " + 'f')
-    print("Focus: " + 'f')
+    g.es("Focus: " + f)
+    print("Focus: " + f)
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
 class LeoQuickSearchWidget(QtWidgets.QWidget):
 
@@ -667,11 +661,11 @@ class QuickSearchController(object):
 
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
-            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
-            bpat = pat[2:]
+            # bpat = pat[2:]
             flags = 0
         combo = self.widgetUI.comboBox.currentText()
         if combo == "All":
@@ -681,11 +675,11 @@ class QuickSearchController(object):
         else:
             hNodes = [self.c.p]
         hm = self.find_h(hpat, hNodes, flags)
-        #self.addHeadlineMatches(hm)
-        #bm = self.c.find_b(bpat, flags)
-        #self.addBodyMatches(bm)
+        # self.addHeadlineMatches(hm)
+        # bm = self.c.find_b(bpat, flags)
+        # self.addBodyMatches(bm)
         return hm, []
-        #self.lw.insertItem(0, "%d hits"%self.lw.count())
+        # self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:jlunz.20150826091415.1: *3* find_h
     def find_h(self, regex, nodes, flags=re.IGNORECASE):
         """ Return list (a PosList) of all nodes where zero or more characters at

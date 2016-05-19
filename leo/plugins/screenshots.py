@@ -410,6 +410,7 @@ class ScreenShotController(object):
         # import flags
         try:
             from PIL import Image, ImageChops
+            assert Image, ImageChops # for pyflakes
             self.got_pil = True
         except ImportError:
             self.got_pil = False
@@ -708,7 +709,7 @@ class ScreenShotController(object):
     #@+node:ekr.20100913085058.5654: *5* find_slideshow_node
     def find_slideshow_node(self, p):
         '''Return the nearest ancestor @slideshow node.'''
-        sc = self
+        # sc = self
         for p2 in p.self_and_parents():
             if g.match_word(p2.h, 0, '@slideshow'):
                 return p2
@@ -846,7 +847,8 @@ class ScreenShotController(object):
     #@+node:ekr.20100908110845.5542: *5* get_template_fn
     def get_template_fn(self, p):
         '''Return the full, absolute, template file name.'''
-        sc = self; c = sc.c
+        sc = self
+        # c = sc.c
         template_fn = sc.get_option('template_fn')
         if template_fn:
             fn = sc.fix(g.os_path_finalize(template_fn))
@@ -1287,7 +1289,8 @@ class ScreenShotController(object):
         Create a slide from node p.
         Call Inkscape to edit the slide if requested.
         '''
-        sc = self; c = sc.c
+        sc = self
+        # c = sc.c
         if not sc.init(p): return
         # Make directories and copy the sphinx build files into them.
         sc.make_all_directories()
@@ -1436,7 +1439,7 @@ class ScreenShotController(object):
     #@+node:ekr.20101005193146.5689: *5* make_slide_contents
     def make_slide_contents(self):
         sc = self
-        n = sc.slide_number
+        # n = sc.slide_number
         h = sc.get_slide_title()
         body = sc.slide_node.b
         # 2010/11/21: Don't use h.title(): it can produce bad results.
@@ -1567,7 +1570,7 @@ class ScreenShotController(object):
         text = d.get('co_text_%d' % (n))
         frame = d.get('co_frame_%d' % (n))
         text_id = text.get('id')
-        frame_id = frame.get('id')
+        # frame_id = frame.get('id')
         pnts = frame.get('d').split()
         i = 0
         while i < len(pnts):
@@ -1652,7 +1655,8 @@ class ScreenShotController(object):
     def take_screen_shot(self):
         '''Take the screen shot, create an @image node,
         and add an .. image:: directive to p.'''
-        sc = self; p = sc.slide_node
+        sc = self
+        # p = sc.slide_node
         # Always create 'screenshot-setup.leo'
         fn = sc.create_setup_leo_file()
         # Always open fn in a separate process.
@@ -1798,7 +1802,6 @@ class ScreenShotController(object):
     #@+node:ekr.20101113193341.5449: *5* adjust_slide_node & helpers
     def adjust_slide_node(self, p, slide_number):
         '''Adjust p, an @slide node.'''
-        trace = True
         sc = self
         # Delete the first "@url built slide" node.
         sc.delete_at_url_built_slide_node(p)
@@ -1806,7 +1809,7 @@ class ScreenShotController(object):
         if sc.has_at_no_screenshot_node(p):
             return
         # Add or update the "@url final output file" node.
-        p2 = sc.add_at_url_final_output_file(p, slide_number)
+        sc.add_at_url_final_output_file(p, slide_number)
         # Add the .. image:: directive.
         sc.add_image_directive(p, slide_number)
     #@+node:ekr.20101113193341.5450: *6* add_at_url_final_output_file

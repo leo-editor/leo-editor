@@ -117,7 +117,7 @@ def init ():
 def stickynote_f(event):
     """ Launch editable 'sticky note' for c.p."""
     c = event['c']
-    nf = mknote(c, c.p)
+    mknote(c, c.p)
 #@+node:ville.20110304230157.6526: *3* g.command('stickynote-new')
 @g.command('stickynote-new')
 def stickynote_new_f(event):
@@ -126,7 +126,7 @@ def stickynote_new_f(event):
     p = find_or_create_stickynotes(c)
     p2 = p.insertAsLastChild()
     p2.h = time.asctime()
-    nf = mknote(c, p2)
+    mknote(c, p2)
     # Fix #249: Leo and Stickynote plugin do not request to save.
     c.setChanged(True)
     c.redraw(p2)
@@ -673,7 +673,7 @@ class Tabula(QMainWindow):
 
         for gnx, geom in stored.items():
             try:
-                po = ncache[gnx]
+                ncache[gnx]
             except KeyError:
                 g.trace("lost note", gnx)
                 continue

@@ -236,7 +236,7 @@ def doMinidomTest( c ):
     '''This def performs a simple test on a node.  Can the data be successfully parsed by minidom or not.  Results are output to the log'''
     s = getString( c )
     try:
-        mdom = minidom.parseString( s )
+        minidom.parseString( s )
     except Exception as x:
         g.error("Minidom could not parse node because of:\n %s" % x)
         return

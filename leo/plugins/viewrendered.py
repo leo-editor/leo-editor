@@ -598,7 +598,7 @@ if QtWidgets:
             '''Update the vr pane.'''
             verbose = False
             pc = self
-            c, p = pc.c, pc.c.p
+            p = pc.c.p
             if pc.must_update(keywords):
                 if trace:
                     if verbose: g.trace('===== updating', keywords)
@@ -800,7 +800,6 @@ if QtWidgets:
                     mdext = [x.strip() for x in mdext.split(',')]
                     s = markdown(s, mdext)
                     s = g.toUnicode(s)
-                    show = True
                 except SystemMessage as sm:
                     msg = sm.args[0]
                     if 'SEVERE' in msg or 'FATAL' in msg:
@@ -908,7 +907,6 @@ if QtWidgets:
                     s = publish_string(s, writer_name='html')
                     if trace: g.trace('after docutils', len(s))
                     s = g.toUnicode(s) # 2011/03/15
-                    show = True
                 except SystemMessage as sm:
                     # g.trace(sm,sm.args)
                     msg = sm.args[0]

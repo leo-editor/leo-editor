@@ -885,7 +885,7 @@ def makeTestHierachy(c):
         if f.endswith('/'):
             os.makedirs(os.path.normpath(f))
         else:
-            file(os.path.normpath(f),'w')
+            open(os.path.normpath(f),'w')
 
 def deleteTestHierachy(c):
 

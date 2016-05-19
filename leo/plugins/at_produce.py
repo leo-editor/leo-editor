@@ -140,7 +140,8 @@ def runList(c,aList):
                 fe.close()
                 f.write('===============\n' )
         f.seek(0)
-        s = f.read()
+        # s = f.read()
+        f.read()
     finally:
         f.close()
 

@@ -13,7 +13,7 @@ tk dialogs.
 '''
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import os
+# import os
 import subprocess
 trace = False
 #@+others
@@ -72,12 +72,12 @@ def callZenity(title, multiple=False, save=False, test=False):
 #@+node:ekr.20101110095557.5894: ** runOpenFileDialog
 def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=False):
     """Call zenity's open file(s) dialog."""
-    initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+    # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, multiple=multiple)
 #@+node:ekr.20101110095557.5896: ** runSaveFileDialog
 def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextension=None):
     """Call zenity's save file dialog."""
-    initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+    # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, save=True)
 #@-others
 #@@language python

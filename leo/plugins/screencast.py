@@ -360,7 +360,8 @@ class ScreenCastController(object):
         return m.find_prev_screencast(p) or m.find_next_screencast(p)
     #@+node:ekr.20120916193057.10608: *5* find_next_screencast
     def find_next_screencast(self, p):
-        m = self; p = p.copy()
+        # m = self
+        p = p.copy()
         while p:
             if p.h.startswith('@screencast'):
                 return p
@@ -369,7 +370,8 @@ class ScreenCastController(object):
         return None
     #@+node:ekr.20120916193057.10609: *5* find_prev_screencast
     def find_prev_screencast(self, p):
-        m = self; p = p.copy()
+        # m = self
+        p = p.copy()
         while p:
             if p.h.startswith('@screencast'):
                 return p
@@ -515,7 +517,6 @@ class ScreenCastController(object):
     #@+node:ekr.20120916062255.10593: *4* single_key
     def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
         '''Simulate typing a single key, properly saving and restoring m.k_state.'''
-        trace = True and not g.unitTesting
         m = self; k = m.c.k
         w = w or m.pane_widget(pane or 'body')
         force = n1 is not None or n2 is not None
@@ -523,10 +524,10 @@ class ScreenCastController(object):
         if force and n2 is None: n2 = 0.095
         try:
             if m.k_state.kind:
-                old_state_kind = m.k_state.kind
+                # old_state_kind = m.k_state.kind
                 k.setState(m.k_state.kind, m.k_state.n, m.k_state.handler)
             else:
-                old_state_kind = None
+                # old_state_kind = None
                 k.clearState()
             w.repaint() # *not* tree.update.
             m.wait(n1, n2)
@@ -750,7 +751,7 @@ class ScreenCastController(object):
     #@+node:ekr.20120914163440.10582: *4* resolve_icon_fn
     def resolve_icon_fn(self, fn):
         '''Resolve fn relative to the Icons directory.'''
-        m = self
+        # m = self
         dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
         path = g.os_path_finalize_join(dir_, fn)
         if g.os_path_exists(path):

@@ -414,7 +414,7 @@ def xml_validate(event):
 
     parser = etree.XMLParser(dtd_validation=True)
     try:
-        dom = etree.fromstring(xml_, parser=parser)
+        etree.fromstring(xml_, parser=parser)
         g.es('No errors found')
     except etree.XMLSyntaxError as xse:
         g.es('ERROR validating XML')

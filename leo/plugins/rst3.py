@@ -231,7 +231,7 @@ else:
 #@+node:ekr.20090429055156.63: *3* runUnitTests
 def runUnitTests(c):
 
-    controller = rstClass(c)
+    rstClass(c)
     p = g.findNodeAnywhere(c,'UnitTests')
     if p:
         c.selectPosition(p)
@@ -879,21 +879,16 @@ class rstClass(object):
             return {}
     #@+node:ekr.20050807120331.2: *5* scanNodeForOptions
     def scanNodeForOptions (self,p):
-
-        '''Return a dictionary containing all the option-name:value entries in p.
+        '''
+        Return a dictionary containing all the option-name:value entries in p.
 
         Such entries may arise from @rst-option or @rst-options in the headline,
-        or from @ @rst-options doc parts.'''
-
-        h = p.h
-
+        or from @ @rst-options doc parts.
+        '''
         d = self.scanHeadlineForOptions(p)
-
         d2 = self.scanForOptionDocParts(p,p.b)
-
         # A fine point: body options over-ride headline options.
         d.update(d2)
-
         return d
     #@+node:ekr.20050808070018: *5* scanOption
     def scanOption (self,p,s):
@@ -1041,16 +1036,22 @@ class rstClass(object):
     #@+node:ekr.20051121102358: *5* processTopTree
     def processTopTree (self,p,justOneFile=False):
 
-        c = self.c ; current = p.copy()
-
+        current = p.copy()
         for p in current.self_and_parents():
             h = p.h
             if h.startswith('@rst') and not h.startswith('@rst-'):
-                self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
+                self.processTree(p,
+                    ext=None,
+                    toString=False,
+                    justOneFile=justOneFile,
+                )
                 break
         else:
-            self.processTree(current,ext=None,toString=False,justOneFile=justOneFile)
-
+            self.processTree(current,
+                ext=None,
+                toString=False,
+                justOneFile=justOneFile,
+            )
         g.blue('done')
     #@+node:ekr.20050805162550.17: *5* processTree
     def processTree(self,p,ext,toString,justOneFile):
@@ -1166,12 +1167,12 @@ class rstClass(object):
         return ok
     #@+node:ekr.20050809082854.1: *5* writeToDocutils (sets argv) & helper
     def writeToDocutils (self,s):
-
-        '''Send s to docutils using the writer implied by self.ext and return the result.'''
-
-        openDirectory = self.c.frame.openDirectory
+        '''
+        Send s to docutils using the writer implied by self.ext and return the
+        result.
+        '''
+        # openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
-
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         writer = None
@@ -1424,19 +1425,18 @@ class rstClass(object):
             result.append(self.formatCodeModeLine(line,i,numberOption))
     #@+node:ekr.20060608094815: *5* handleDocOnlyMode
     def handleDocOnlyMode (self,p,lines):
-
-        '''Handle the preprocessed body text in doc_only mode as follows:
+        '''
+        Handle the preprocessed body text in doc_only mode as follows:
 
         - Blank lines are copied after being cleaned.
         - @ @rst-markup lines get copied as is.
         - All doc parts get copied.
-        - All code parts are ignored.'''
-
-        ignore              = self.getOption('ignore_this_headline')
+        - All code parts are ignored.
+        '''
+        # ignore            = self.getOption('ignore_this_headline')
         showHeadlines       = self.getOption('show_headlines')
         showThisHeadline    = self.getOption('show_this_headline')
         showOrganizers      = self.getOption('show_organizer_nodes')
-
         result = [] ; n = 0
         while n < len(lines):
             s = lines [n] ; n += 1
@@ -1835,7 +1835,7 @@ class rstClass(object):
                 print >> bwm_file
                 print >> bwm_file, "relocate_references(1): Position, attr:"
                 pprint.pprint((p, attr), bwm_file)
-            http_lines = attr [3:]
+            # http_lines = attr [3:]
             parser = link_htmlparserClass(self,p)
             for line in attr [3:]:
                 try:
@@ -1863,10 +1863,11 @@ class rstClass(object):
                     except Exception:
                         g.es("Skipped ", attr[line + 2])
                 else:
-                    filename = marker_parts [0]
+                    # filename = marker_parts [0]
                     try:
                         attr [line + 2] = attr [line + 2].replace(
-                            'href="%s"' % href,'href="%s"' % http_node_ref)
+                            'href="%s"' % href,
+                            'href="%s"' % http_node_ref)
                     except Exception:
                         g.es("Skipped", attr[line+2])
         # g.trace('after %s\n\n\n',attr)

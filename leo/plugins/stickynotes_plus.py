@@ -388,9 +388,9 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5414: *3* textEffectMenu
     def textEffectMenu(self):
-        format = self.currentCharFormat()
-        cursor = self.textCursor()
-        blockformat = cursor.blockFormat()
+        # format = self.currentCharFormat()
+        # cursor = self.textCursor()
+        # blockformat = cursor.blockFormat()
         menu = QMenu("Text Effect")
         for text, shortcut, data, checked in (
                 ("&Bold", "Ctrl+B", notetextedit.Bold,
@@ -673,8 +673,7 @@ def stickynoter_f(event):
 @g.command('stickynoteplus')
 def stickynoteplus_f(event):
     """ Launch editable 'sticky note' for the node """
-
-    c= event['c']
+    c = event['c']
     p = c.p
     v = p.v
     def get_markdown(): #focusin():

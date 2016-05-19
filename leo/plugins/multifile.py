@@ -136,15 +136,13 @@ def insertDirectoryString (c):
 #@+node:mork.20041018204908.3: ** decoratedOpenFileForWriting
 def decoratedOpenFileForWriting (self,root,fileName,toString):
 
-    c = self.c
-
     # Call the original method.
+    global files
     global originalOpenFileForWriting
     val = originalOpenFileForWriting(self,root,fileName,toString)
-
     # Save a pointer to the root for later.
-    if root.isDirty(): files [fileName] = root.copy()
-
+    if root.isDirty():
+        files [fileName] = root.copy()
     # Return whatever the original method returned.
     return val
 #@+node:mork.20041018204908.6: ** stop

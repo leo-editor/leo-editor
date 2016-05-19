@@ -356,17 +356,17 @@ def OpenProcess(p):
     # In,OutThread.File,ErrThread.File	= os.popen3(command,"t")
     #### OutThread.File,In,ErrThread.File = os.popen3(command,"t")
 
-    PIPE = subprocess.PIPE
-    proc = subprocess.Popen(command, shell=True) # , # bufsize=bufsize,
-    #     stdin=PIPE,stdout=PIPE,stderr=PIPE) # ,close_fds=True)
-
+    # PIPE = subprocess.PIPE
+    proc = subprocess.Popen(command, shell=True)
+        # bufsize=bufsize,
+        # stdin=PIPE,
+        # stdout=PIPE,
+        # stderr=PIPE) ,close_fds=True)
     In             = proc.stdin
     OutThread.File = proc.stdout
     ErrThread.File = proc.stderr
-
     OutThread.start()
     ErrThread.start()
-
     # Mark and select the node.
     RunNode.setMarked()
     c = RunNode.v.context

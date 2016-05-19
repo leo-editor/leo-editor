@@ -249,15 +249,12 @@ class SFTPController(object):
         host = params['hostname']
         port = params['port']
         user = params['username']
-        remotefile = params['remotefile']
-      
+        # remotefile = params['remotefile']
         passwd = self.get_password(user, host)
         if passwd is None:
-            return (None,None)
-            
+            return (None,None)  
         t = paramiko.Transport((host, port))
         t.connect(username=user, password=passwd)
-      
         hostkey = t.get_remote_server_key()
         cached_hostkey = self.get_hostkey(host)
         if cached_hostkey is None:
@@ -272,7 +269,6 @@ class SFTPController(object):
                 self.set_hostkey(host, hostkey)
             else:
                 return (None,None) # abort
-      
         sftp = paramiko.SFTPClient.from_transport(t)
         return (t,sftp)
     #@+node:peckj.20140218144401.6172: *3* commands

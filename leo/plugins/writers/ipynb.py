@@ -1,11 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160412101901.1: * @file writers/ipynb.py
 '''The @auto write code for jupyter (.ipynb) files.'''
-# py--lint: disable=unused-import
 import re
 import sys
 import leo.core.leoGlobals as g
-### import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(object):
@@ -34,7 +32,6 @@ class Export_IPYNB(object):
         Entry point for export-jupyter-notebook
         Import the given .ipynb file.
         '''
-        trace = True # and not g.unitTesting
         self.root = root
         self.indent = 0
         self.lines = []

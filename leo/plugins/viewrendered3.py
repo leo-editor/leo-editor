@@ -662,7 +662,7 @@ if QtWidgets:
         def update(self, tag, keywords):
             '''Update the vr pane.'''
             pc = self
-            c, p = pc.c, pc.c.p
+            p = pc.c.p
             if pc.must_update(keywords):
                 if trace:
                     if verbose: g.trace('===== updating', keywords)
@@ -909,7 +909,6 @@ if QtWidgets:
                         mdext = [x.strip() for x in mdext.split(',')]
                         s = markdown(s, mdext)
                         s = g.toUnicode(s)
-                        show = True
                     except SystemMessage as sm:
                         msg = sm.args[0]
                         if 'SEVERE' in msg or 'FATAL' in msg:
@@ -999,7 +998,6 @@ if QtWidgets:
         def update_rst(self, s, keywords, force_rst=False):
             '''Update rst in the vr pane.'''
             pc = self
-            verbose = True
             if trace: g.trace(len(s))
             if VR3:
                 # Do this regardless of whether we show the widget or not.
@@ -1053,7 +1051,6 @@ if QtWidgets:
                         s = publish_string(s, writer_name='html')
                         if trace: g.trace('after docutils:', len(s))
                         s = g.toUnicode(s) # 2011/03/15
-                        show = True
                     except SystemMessage as sm:
                         # g.trace(sm,sm.args)
                         msg = sm.args[0]
@@ -1592,7 +1589,6 @@ class WebViewPlus(QtWidgets.QWidget):
         """Render the string html in this pane."""
             # A new method by EKR.
             # Fixes bug 136: viewrendered2 chokes on displaying @html nodes
-        c = self.c
         self.getUIconfig()
         # show_scrolled_message = keywords.get('show-scrolled-message', False)
         self.html = g.toUnicode(html)
@@ -1644,7 +1640,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20160331124028.40: *4* wvp.render_helper & helper
     def render_helper(self):
         '''Rendering helper: self.rendering is True.'''
-        c, p, pc = self.c, self.c.p, self.pc
+        p, pc = self.c.p, self.pc
         self.getUIconfig()
             # Get the UI config again, in case directly called by control.
         if got_docutils:
@@ -1796,7 +1792,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20160331124028.46: *7* wvp.exec_code
     def exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
-        c = self.c
+        # c = self.c
         saveout = sys.stdout # save stdout
         saveerr = sys.stderr
         sys.stdout = bufferout = StringIO()
@@ -1931,7 +1927,7 @@ class WebViewPlus(QtWidgets.QWidget):
     #@+node:ekr.20160331124028.52: *4* wvp.md_render_helper & helper
     def md_render_helper(self):
         '''Rendinging helper: self.rendering is True.'''
-        c, p, pc = self.c, self.c.p, self.pc
+        p, pc = self.c.p, self.pc
         self.getUIconfig()
             # Get the UI config again, in case directly called by control.
         if got_markdown:
@@ -2068,7 +2064,7 @@ class WebViewPlus(QtWidgets.QWidget):
         """Execute the code, capturing the output in stdout and stderr."""
         trace = True and not g.unitTesting
         if trace: g.trace('\n', code)
-        c = self.c
+        # c = self.c
         saveout = sys.stdout # save stdout
         saveerr = sys.stderr
         sys.stdout = bufferout = StringIO()

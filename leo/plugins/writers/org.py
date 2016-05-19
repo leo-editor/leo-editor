@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18079: * @file writers/org.py
 '''The @auto write code for Emacs org-mode (.org) files.'''
-# pylint: disable=unused-import
-import leo.core.leoGlobals as g
+# import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18155: ** class OrgModeWriter
@@ -14,7 +13,6 @@ class OrgModeWriter(basewriter.BaseWriter):
     #@+node:ekr.20140726091031.18154: *3* orgw.write
     def write(self, root, forceSentinels=False):
         """Write all the *descendants* of an @auto-org-mode node."""
-        at = self
         root_level = root.level()
         first = root.firstChild()
         for p in root.subtree():
