@@ -50,7 +50,7 @@ def run(fn, verbose):
     if not os.path.exists(rc_fn):
         print('pylint rc file not found: %s' % (rc_fn))
         return
-    if True or verbose: ###
+    if verbose:
         path = g.os_path_dirname(fn)
         dirs = path.split(os.sep)
         theDir = dirs and dirs[-1] or ''
