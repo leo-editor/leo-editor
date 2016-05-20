@@ -16514,6 +16514,25 @@ def run(theDir,fn,silent,rpython=False):
     '+Class::__init__',
     '+Function::__init__',
     '+Module::__init__',
+.. @+node:ekr.20160518000549.11: *3* get_home (not used, pyflakes-leo.py)
+def get_home():
+    """Returns the user's home directory."""
+    home = g.os_path_expanduser("~")
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE
+        # environment vars, then gives up.
+    if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
+        # Get the indirect reference to the true home.
+        home = os.getenv(home[1: -1], default=None)
+    if home:
+        # Important: This returns the _working_ directory if home is None!
+        # This was the source of the 4.3 .leoID.txt problems.
+        home = g.os_path_finalize(home)
+        if (
+            not g.os_path_exists(home) or
+            not g.os_path_isdir(home)
+        ):
+            home = None
+    return home
 .. @-all
 .. @@nosearch
 .. @-leo

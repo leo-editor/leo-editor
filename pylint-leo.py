@@ -23,7 +23,7 @@ import sys
 import time
 #@+others
 #@+node:ekr.20140331201252.16859: ** main & helpers
-def main(tables_table, verbose):
+def main(files, verbose):
     '''Call run on all tables in tables_table.'''
     try:
         from pylint import lint
@@ -32,45 +32,28 @@ def main(tables_table, verbose):
         print('pylint-leo.py: can not import pylint')
         return
     t1 = time.clock()
-    n = 0
-    for table, theDir in tables_table:
-        for fn in table:
-            n += 1
-            run(theDir, fn, verbose)
+    for fn in files:
+        run(fn, verbose)
     t2 = time.clock()
+    n = len(files)
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20100221142603.5644: *3* run (pylint-leo.py)
 #@@nobeautify
 
-def run(theDir,fn,verbose):
+def run(fn, verbose):
     '''Run pylint on fn.'''
     trace = False and not g.unitTesting
     # theDir is empty for the -f option.
     from pylint import lint
     assert lint
-    if theDir:
-        fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
-    fn = os.path.abspath(fn)
-    if not fn.endswith('.py'):
-        fn = fn+'.py'
     if not os.path.exists(rc_fn):
         print('pylint rc file not found: %s' % (rc_fn))
-        return 0.0
-    if not os.path.exists(fn):
-        print('file not found: %s' % (fn))
         return
-    # Make *sure* that we check files only once.
-    if fn in seen:
-        g.trace('already seen:', fn)
-        return
-    else:
-        seen.add(fn)
-    # Report the file name and one level of directory.
-    path = g.os_path_dirname(fn)
-    dirs = path.split(os.sep)
-    theDir = dirs and dirs[-1] or ''
-    if verbose:
+    if True or verbose: ###
+        path = g.os_path_dirname(fn)
+        dirs = path.split(os.sep)
+        theDir = dirs and dirs[-1] or ''
         print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     args = ','.join([
@@ -114,6 +97,9 @@ def scanOptions():
     add('--verbose', action='store_true',  help='verbose output')
     # Parse the options.
     options, args = parser.parse_args()
+    if options.v:
+        # -v anywhere just prints the version.
+        return 'version', False
     verbose = options.verbose
     if options.a: scope = 'all'
     elif options.c: scope = 'core'
@@ -137,11 +123,10 @@ def scanOptions():
 #@@nobeautify
 g_option_fn = None
 scope, verbose = scanOptions()
-seen = set()
 if scope == 'version':
     report_version()
 else:
-    table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
-    main(table, verbose)
+    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files, verbose)
 #@@beautify
 #@-leo

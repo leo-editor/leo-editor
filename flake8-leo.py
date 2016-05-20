@@ -20,21 +20,18 @@ import os
 import time
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
-def main(table):
+def main(files):
     '''Call run on all tables in tables_table.'''
     from flake8 import engine
     config_file = get_flake8_config()
-    if not config_file:
-        return
-    style = engine.get_style_guide(
-        parse_argv=False, config_file=config_file)
-    t1 = time.clock()
-    n = 0
-    for files, dir_ in table:
-        n += len(files)
-        check_all(dir_, files, style)
-    t2 = time.clock()
-    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
+    if config_file:
+        style = engine.get_style_guide(
+            parse_argv=False, config_file=config_file)
+        t1 = time.clock()
+        check_all(files, style)
+        t2 = time.clock()
+        n = len(files)
+        print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160517222900.1: *3* get_home
 def get_home():
     """Returns the user's home directory."""
@@ -77,34 +74,35 @@ def get_flake8_config():
         '\n'.join(dir_table)))
     return None
 #@+node:ekr.20160517222332.1: *3* check_all
-def check_all(dir_, files, style):
+def check_all(files, style):
     '''Run flake8 on all paths.'''
     from flake8 import main
-    loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    paths = []
-    for fn in files:
-        if dir_:
-            fn = g.os_path_join(loadDir, dir_, fn)
-        else:
-            fn = g.os_path_join(loadDir, fn)
-        fn = g.os_path_abspath(fn)
-        if not fn.endswith('.py'):
-            fn = fn+'.py'
-        if g.os_path_exists(fn):
-            # Make *sure* that we check files only once.
-            if fn in seen:
-                g.trace('already seen:', fn)
-            else:
-                seen.add(fn)
-                paths.append(fn)
-        else:
-            print('does not exist: %s' % (fn))
+    # loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+    # paths = []
+    # for fn in files:
+        # if dir_:
+            # fn = g.os_path_join(loadDir, dir_, fn)
+        # else:
+            # fn = g.os_path_join(loadDir, fn)
+        # fn = g.os_path_abspath(fn)
+        # if not fn.endswith('.py'):
+            # fn = fn+'.py'
+        # if g.os_path_exists(fn):
+            # # Make *sure* that we check files only once.
+            # if fn in seen:
+                # g.trace('already seen:', fn)
+            # else:
+                # seen.add(fn)
+                # paths.append(fn)
+        # else:
+            # print('does not exist: %s' % (fn))
+
     # Set statistics here, instead of from the command line.
     # options = style.options
     # options.statistics = True
     # options.total_errors = True
     # options.benchmark = True
-    report = style.check_files(paths=paths)
+    report = style.check_files(paths=files)
     main.print_report(report, style)
 #@+node:ekr.20160517182239.11: ** report_version
 def report_version():
@@ -153,10 +151,9 @@ def scanOptions():
 #@-others
 g_option_fn = None
 scope = scanOptions()
-seen = set()
 if scope == 'version':
     report_version()
 else:
-    table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
-    main(table)
+    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files)
 #@-leo

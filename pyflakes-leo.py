@@ -10,81 +10,35 @@ On Ubuntu, the following alias runs this file::
     pyflake="python pyflake-leo.py"
 '''
 #@@language python
+#@@tabwidth -4
 # pylint: disable=invalid-name
     # pyflakes-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
+from pyflakes import api, reporter
 import optparse
 import os
 import sys
 import time
 #@+others
-#@+node:ekr.20160518000549.10: ** main & helpers
-def main(tables_table):
+#@+node:ekr.20160518000549.10: ** main
+def main(files):
     '''Call run on all tables in tables_table.'''    
     t1 = time.clock()
-    n = 0
-    for table, dir_ in tables_table:
-        n += len(table)
-        check_all(dir_, table)
-    t2 = time.clock()
-    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
-#@+node:ekr.20160518000549.11: *3* get_home
-def get_home():
-    """Returns the user's home directory."""
-    home = g.os_path_expanduser("~")
-        # Windows searches the HOME, HOMEPATH and HOMEDRIVE
-        # environment vars, then gives up.
-    if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
-        # Get the indirect reference to the true home.
-        home = os.getenv(home[1: -1], default=None)
-    if home:
-        # Important: This returns the _working_ directory if home is None!
-        # This was the source of the 4.3 .leoID.txt problems.
-        home = g.os_path_finalize(home)
-        if (
-            not g.os_path_exists(home) or
-            not g.os_path_isdir(home)
-        ):
-            home = None
-    return home
-#@+node:ekr.20160518000741.1: *3* check_all
-def check_all(dir_, files):
-    '''Run pyflakes on fn.'''
-    from pyflakes import api, reporter
-    loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    paths = []
     for fn in files:
-        if dir_:
-            fn = g.os_path_join(loadDir, dir_, fn)
-        else:
-            fn = g.os_path_join(loadDir, fn)
-        fn = g.os_path_abspath(fn)
-        if not fn.endswith('.py'):
-            fn = fn+'.py'
-        if g.os_path_exists(fn):
-            # Make *sure* that we check files only once.
-            if fn in seen:
-                g.trace('already seen:', fn)
-            else:
-                seen.add(fn)
-                paths.append(fn)
-        else:
-            print('does not exist: %s' % (fn))
-    for fn in paths:
         # Report the file name.
+        assert g.os_path_exists(fn), fn
         sfn = g.shortFileName(fn)
         s = g.readFileIntoEncodedString(fn, silent=False)
-        if not s.strip():
-            return
-        r = reporter.Reporter(
-            errorStream=sys.stderr,
-            warningStream=sys.stderr,
-            )
-        errors = api.check(s, sfn, r)
-        if False and errors:
-            print('pyflakes: %s error%s in %s' % (
-                errors, g.plural(errors), fn))
+        if s and s.strip():
+            r = reporter.Reporter(
+                errorStream=sys.stderr,
+                warningStream=sys.stderr,
+                )
+            api.check(s, sfn, r)
+    t2 = time.clock()
+    n = len(files)
+    print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160518000549.14: ** report_version
 def report_version():
     try:
@@ -109,7 +63,7 @@ def scanOptions():
     # add('-s', action='store_true', help='silent')
     add('-u', action='store_true', help='user commands')
     add('-v', '--version', dest='v',
-        action='store_true', help='report flake8 version')
+        action='store_true', help='report pyflakes version')
     # Parse the options.
     options, args = parser.parse_args()
     # silent = options.s
@@ -130,14 +84,11 @@ def scanOptions():
     else: scope = 'all'
     return scope
 #@-others
-#@@language python
-#@@tabwidth -4
 g_option_fn = None
 scope = scanOptions()
-seen = set()
 if scope == 'version':
     report_version()
 else:
-    table = leoTest.LinterTable().get_table(scope, fn=g_option_fn)
-    main(table)
+    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files)
 #@-leo

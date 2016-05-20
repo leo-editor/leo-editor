@@ -321,7 +321,8 @@ class LinterTable():
         '''Return list of all of Leo's core files.'''
         pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
         aList = self.get_files(pattern)
-        aList.extend(['runLeo.py',])
+        for fn in ['runLeo.py',]:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
         return sorted(aList)
     #@+node:ekr.20160518074545.4: *3* external
     def external(self):
@@ -330,7 +331,9 @@ class LinterTable():
         aList = self.get_files(pattern)
         remove = [
             'leoSAGlobals.py',
+            'leoftsindex.py',
         ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
         return sorted([z for z in aList if z not in remove])
     #@+node:ekr.20160518074545.5: *3* gui_plugins
     def gui_plugins(self):
@@ -338,13 +341,13 @@ class LinterTable():
         pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
         aList = self.get_files(pattern)
         # These are not included, because they don't start with 'qt_':
-        aList.extend([
-            'free_layout.py',
-            'nested_splitter.py',
-        ])
+        add = ['free_layout.py', 'nested_splitter.py',]
         remove = [
             'qt_main.py', # auto-generated file.
         ]
+        for fn in add:
+            aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         return sorted(set([z for z in aList if z not in remove]))
     #@+node:ekr.20160518074545.6: *3* modes
     def modes(self):
@@ -386,12 +389,13 @@ class LinterTable():
         aList = []
         for theDir in ('', 'importers', 'writers'):
             pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+            aList.extend(self.get_files(pattern))
             # Don't use get_files here.
-            for fn in glob.glob(pattern):
-                sfn = g.shortFileName(fn)
-                if sfn != '__init__.py':
-                    sfn = os.sep.join([theDir, sfn]) if theDir else sfn
-                    aList.append(sfn)
+            # for fn in glob.glob(pattern):
+                # sfn = g.shortFileName(fn)
+                # if sfn != '__init__.py':
+                    # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
+                    # aList.append(sfn)
         remove = [
             # 2016/05/20: *do* include gui-related plugins.
             # This allows the -a option not to doubly-include gui-related plugins.
@@ -402,76 +406,51 @@ class LinterTable():
             'qtGui.py', # Dummy file
             'qt_main.py', # Created automatically.
         ]
+        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
         # Remove all gui related items.
-        for z in sorted(aList):
-            if z.startswith('qt_'):
-                aList.remove(z)
+        # for z in sorted(aList):
+            # if z.startswith('qt_'):
+                # aList.remove(z)
         # g.trace('\n'.join(aList))
-        return aList
+        return sorted(set(aList))
     #@+node:ekr.20160520093506.1: *3* get_files
     def get_files(self, pattern):
-        '''Return the list of short file names matching the pattern.'''
+        '''Return the list of absolute file names matching the pattern.'''
         return sorted([
-            g.shortFileName(fn)
-                for fn in glob.glob(pattern)
-                    if g.shortFileName(fn) != '__init__.py'])
-    #@+node:ekr.20160518074545.9: *3* get_table
-    def get_table(self, scope, fn):
-        '''
-        Return a table used to specify files for pylint-leo.py, leo-flake8.py
-        and leo-pyflakes.py.
-        '''
-        core = self.core()
-        commands = self.commands()
-        external = self.external()
-        gui_plugins = self.gui_plugins()
-        modes = self.modes()
-        # ignores = self.ignores()
-        plugins = self.plugins()
-        
+            fn for fn in glob.glob(pattern)
+                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+    #@+node:ekr.20160518074545.9: *3* get_files_for_scope
+    def get_files_for_scope(self, scope, fn):
+        '''Return a list of absolute filenames for external linters.'''
         d = {
-            'all': (
-                (core, 'core'),
-                (commands, 'commands'),
-                # These should all be included in plugins.
-                    # (gui_plugins, 'plugins'),
-                (plugins, 'plugins'),
-                (external, 'external'),
-                (modes, 'modes'),
-            ),
-            'commands': (
-                (commands, 'commands'),
-            ),
-            'core': (
-                (core, 'core'),
-                (commands, 'commands'),
-                (gui_plugins, 'plugins'),
-                (external, 'external'),
-            ),
-            'external': (
-                (external, 'external'),
-            ),
-            'file': (
-                ([fn],''),
-                    # Default directory is the leo directory (was leo/core)
-            ),
-            'gui': (
-                (gui_plugins, 'plugins'),
-            ),
-            'modes': (
-                (modes, 'modes'),
-            ),
-            'plugins': (
-                (plugins, 'plugins'),
-                # (ignores,'plugins'),
-            ),
+            'all':      [self.core, self.commands, self.external, self.plugins, self.modes],
+            'commands': [self.commands],
+            'core':     [self.core, self.commands, self.external, self.gui_plugins],
+            'external': [self.external],
+            'file':     [fn],
+            'gui':      [self.gui_plugins],
+            'modes':    [self.modes],
+            'plugins':  [self.plugins],
         }
-        tables_table = d.get(scope)
-        if not tables_table:
+        functions = d.get(scope)
+        paths = []
+        if functions:
+            for func in functions:
+                files = func()
+                for fn in files:
+                    fn = g.os_path_abspath(fn)
+                    if g.os_path_exists(fn):
+                        if g.os_path_isfile(fn):
+                            paths.append(fn)
+                    else:
+                        print('does not exist: %s' % fn)
+            paths = sorted(set(paths))
+            # g.trace('\n'+'\n'.join('%2s %s' % (i+1,z) for i,z in enumerate(paths)))
+            return paths
+        else:
             print('LinterTable.get_table: bad scope', scope)
-            tables_table = ()
-        return tables_table
+            return []
     #@-others
 #@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
 class RunTestExternallyHelperClass(object):
