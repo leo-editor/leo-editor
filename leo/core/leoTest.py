@@ -304,57 +304,53 @@ class ImportExportTestCase(unittest.TestCase):
 #@+node:ekr.20160518074224.1: ** class LinterTable
 class LinterTable():
     '''A class to encapsulate lists of leo modules under test.'''
+    def __init__(self):
+        '''Ctor for LinterTable class.'''
+        # Define self. relative to leo.core.leoGlobals
+        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+        # g.trace('LinterTable', self.loadDir)
+
     #@+others
     #@+node:ekr.20160518074545.2: *3* commands
     def commands(self):
         '''Return list of all command modules in leo/commands.'''
-        pattern = g.os_path_finalize_join('.', 'leo', 'commands', '*.py')
-        return sorted([
-            g.shortFileName(fn)
-                for fn in glob.glob(pattern)
-                    if g.shortFileName(fn) != '__init__.py'])
+        pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
+        return self.get_files(pattern)
     #@+node:ekr.20160518074545.3: *3* core
     def core(self):
-        pattern = g.os_path_finalize_join('.', 'leo', 'core', 'leo*.py')
-        # pattern = g.os_path_finalize_join('leo','core','leo*.py')
-        aList = [
-            g.shortFileName(fn)
-                for fn in glob.glob(pattern)
-                    if g.shortFileName(fn) != '__init__.py']
-        aList.extend([
-             'runLeo.py',
-        ])
+        '''Return list of all of Leo's core files.'''
+        pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
+        aList = self.get_files(pattern)
+        aList.extend(['runLeo.py',])
         return sorted(aList)
     #@+node:ekr.20160518074545.4: *3* external
     def external(self):
         '''Return list of files in leo/external'''
-        return [
-            # 'ipy_leo',
-            'leosax',
-            'lproto',
+        pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
+        aList = self.get_files(pattern)
+        remove = [
+            'leoSAGlobals.py',
         ]
+        return sorted([z for z in aList if z not in remove])
     #@+node:ekr.20160518074545.5: *3* gui_plugins
     def gui_plugins(self):
-        pattern = g.os_path_finalize_join('.', 'leo', 'plugins', 'qt_*.py')
-        aList = [
-            g.shortFileName(fn)
-                for fn in glob.glob(pattern)
-                    if g.shortFileName(fn) != '__init__.py']
+        '''Return list of all of Leo's gui-related files.'''
+        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
+        aList = self.get_files(pattern)
+        # These are not included, because they don't start with 'qt_':
         aList.extend([
-            'free_layout',
-            'nested_splitter',
+            'free_layout.py',
+            'nested_splitter.py',
         ])
-        if 'qt_main.py' in aList:
-            # Auto-generated file.
-            aList.remove('qt_main.py')
-        return sorted(aList)
+        remove = [
+            'qt_main.py', # auto-generated file.
+        ]
+        return sorted(set([z for z in aList if z not in remove]))
     #@+node:ekr.20160518074545.6: *3* modes
     def modes(self):
-        pattern = g.os_path_finalize_join('.', 'leo', 'modes', '*.py')
-        return [
-            g.shortFileName(fn)
-                for fn in glob.glob(pattern)
-                    if g.shortFileName(fn) != '__init__.py']
+        '''Return list of all files in leo/modes'''
+        pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
+        return self.get_files(pattern)
     #@+node:ekr.20160518074545.7: *3* ignores (not used!)
     def ignores(self):
         return (
@@ -388,19 +384,21 @@ class LinterTable():
     def plugins(self):
         '''Return a list of all important plugins.'''
         aList = []
-        # g.app.loadDir does not exist: use '.' instead.
         for theDir in ('', 'importers', 'writers'):
-            pattern = g.os_path_finalize_join('.', 'leo', 'plugins', theDir, '*.py')
+            pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+            # Don't use get_files here.
             for fn in glob.glob(pattern):
                 sfn = g.shortFileName(fn)
                 if sfn != '__init__.py':
                     sfn = os.sep.join([theDir, sfn]) if theDir else sfn
                     aList.append(sfn)
         remove = [
-            'free_layout.py', # Gui-related.
+            # 2016/05/20: *do* include gui-related plugins.
+            # This allows the -a option not to doubly-include gui-related plugins.
+                # 'free_layout.py', # Gui-related.
+                # 'nested_splitter.py', # Gui-related.
             'gtkDialogs.py', # Many errors, not important.
             'leofts.py', # Not (yet) in leoPlugins.leo.
-            'nested_splitter.py', # Gui-related.
             'qtGui.py', # Dummy file
             'qt_main.py', # Created automatically.
         ]
@@ -411,6 +409,13 @@ class LinterTable():
                 aList.remove(z)
         # g.trace('\n'.join(aList))
         return aList
+    #@+node:ekr.20160520093506.1: *3* get_files
+    def get_files(self, pattern):
+        '''Return the list of short file names matching the pattern.'''
+        return sorted([
+            g.shortFileName(fn)
+                for fn in glob.glob(pattern)
+                    if g.shortFileName(fn) != '__init__.py'])
     #@+node:ekr.20160518074545.9: *3* get_table
     def get_table(self, scope, fn):
         '''
@@ -424,13 +429,16 @@ class LinterTable():
         modes = self.modes()
         # ignores = self.ignores()
         plugins = self.plugins()
+        
         d = {
             'all': (
                 (core, 'core'),
                 (commands, 'commands'),
-                (gui_plugins, 'plugins'),
+                # These should all be included in plugins.
+                    # (gui_plugins, 'plugins'),
                 (plugins, 'plugins'),
                 (external, 'external'),
+                (modes, 'modes'),
             ),
             'commands': (
                 (commands, 'commands'),

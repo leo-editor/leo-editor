@@ -62,7 +62,15 @@ def check_all(dir_, files):
         fn = g.os_path_abspath(fn)
         if not fn.endswith('.py'):
             fn = fn+'.py'
-        paths.append(fn)
+        if g.os_path_exists(fn):
+            # Make *sure* that we check files only once.
+            if fn in seen:
+                g.trace('already seen:', fn)
+            else:
+                seen.add(fn)
+                paths.append(fn)
+        else:
+            print('does not exist: %s' % (fn))
     for fn in paths:
         # Report the file name.
         sfn = g.shortFileName(fn)
@@ -126,6 +134,7 @@ def scanOptions():
 #@@tabwidth -4
 g_option_fn = None
 scope = scanOptions()
+seen = set()
 if scope == 'version':
     report_version()
 else:

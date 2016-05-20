@@ -60,6 +60,12 @@ def run(theDir,fn,verbose):
     if not os.path.exists(fn):
         print('file not found: %s' % (fn))
         return
+    # Make *sure* that we check files only once.
+    if fn in seen:
+        g.trace('already seen:', fn)
+        return
+    else:
+        seen.add(fn)
     # Report the file name and one level of directory.
     path = g.os_path_dirname(fn)
     dirs = path.split(os.sep)
@@ -131,6 +137,7 @@ def scanOptions():
 #@@nobeautify
 g_option_fn = None
 scope, verbose = scanOptions()
+seen = set()
 if scope == 'version':
     report_version()
 else:
