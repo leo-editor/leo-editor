@@ -7,6 +7,80 @@ import textwrap
 import token as token_module
 import leo.core.leoGlobals as g
 #@+others
+#@+node:ekr.20160521104628.1: **  top-level
+#@+node:ekr.20160521104555.1: *3* leoAst._op_names
+#@@nobeautify
+
+_op_names = {
+    # Binary operators.
+    'Add':       '+',
+    'BitAnd':    '&',
+    'BitOr':     '|',
+    'BitXor':    '^',
+    'Div':       '/',
+    'FloorDiv':  '//',
+    'LShift':    '<<',
+    'Mod':       '%',
+    'Mult':      '*',
+    'Pow':       '**',
+    'RShift':    '>>',
+    'Sub':       '-',
+    # Boolean operators.
+    'And':   ' and ',
+    'Or':    ' or ',
+    # Comparison operators
+    'Eq':    '==',
+    'Gt':    '>',
+    'GtE':   '>=',
+    'In':    ' in ',
+    'Is':    ' is ',
+    'IsNot': ' is not ',
+    'Lt':    '<',
+    'LtE':   '<=',
+    'NotEq': '!=',
+    'NotIn': ' not in ',
+    # Context operators.
+    'AugLoad':  '<AugLoad>',
+    'AugStore': '<AugStore>',
+    'Del':      '<Del>',
+    'Load':     '<Load>',
+    'Param':    '<Param>',
+    'Store':    '<Store>',
+    # Unary operators.
+    'Invert':   '~',
+    'Not':      ' not ',
+    'UAdd':     '+',
+    'USub':     '-',
+}
+#@+node:ekr.20160521103254.1: *3* leoAst.unit_test
+def unit_test(raise_on_fail=True):
+    '''Run basic unit tests for this file.'''
+    import _ast
+    # import leo.core.leoAst as leoAst
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'PyCF_ONLY_AST', # A constant,
+        'AST', # The base class,
+    ]
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    ft = AstFullTraverser()
+    errors, nodes, ops = 0,0,0
+    for z in aList:
+        if hasattr(ft, 'do_' + z):
+            nodes += 1
+        else:
+            if _op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print('Missing FullTraverser visitor for: %s' % z)
+    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@+node:ekr.20141012064706.18390: ** class AstDumper
 class AstDumper(object):
     '''
@@ -2677,80 +2751,6 @@ class TokenSync(object):
         self.first_leading_line = i
         return trailing
     #@-others
-#@+node:ekr.20160521104628.1: ** top-level
-#@+node:ekr.20160521104555.1: *3* leoAst._op_names
-#@@nobeautify
-
-_op_names = {
-    # Binary operators.
-    'Add':       '+',
-    'BitAnd':    '&',
-    'BitOr':     '|',
-    'BitXor':    '^',
-    'Div':       '/',
-    'FloorDiv':  '//',
-    'LShift':    '<<',
-    'Mod':       '%',
-    'Mult':      '*',
-    'Pow':       '**',
-    'RShift':    '>>',
-    'Sub':       '-',
-    # Boolean operators.
-    'And':   ' and ',
-    'Or':    ' or ',
-    # Comparison operators
-    'Eq':    '==',
-    'Gt':    '>',
-    'GtE':   '>=',
-    'In':    ' in ',
-    'Is':    ' is ',
-    'IsNot': ' is not ',
-    'Lt':    '<',
-    'LtE':   '<=',
-    'NotEq': '!=',
-    'NotIn': ' not in ',
-    # Context operators.
-    'AugLoad':  '<AugLoad>',
-    'AugStore': '<AugStore>',
-    'Del':      '<Del>',
-    'Load':     '<Load>',
-    'Param':    '<Param>',
-    'Store':    '<Store>',
-    # Unary operators.
-    'Invert':   '~',
-    'Not':      ' not ',
-    'UAdd':     '+',
-    'USub':     '-',
-}
-#@+node:ekr.20160521103254.1: *3* leoAst.unit_test
-def unit_test(raise_on_fail=True):
-    '''Run basic unit tests for this file.'''
-    import _ast
-    # import leo.core.leoAst as leoAst
-    # Compute all fields to test.
-    aList = sorted(dir(_ast))
-    remove = [
-        'PyCF_ONLY_AST', # A constant,
-        'AST', # The base class,
-    ]
-    aList = [z for z in aList if not z.startswith('_') and not z in remove]
-    # Now test them.
-    ft = AstFullTraverser()
-    errors, nodes, ops = 0,0,0
-    for z in aList:
-        if hasattr(ft, 'do_' + z):
-            nodes += 1
-        else:
-            if ft._op_names.get(z):
-                ops += 1
-            else:
-                errors += 1
-                print('Missing FullTraverser visitor for: %s' % z)
-    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
-    if raise_on_fail:
-        assert not errors, s
-    else:
-        print(s)
 #@-others
 #@@language python
 #@@tabwidth -4
