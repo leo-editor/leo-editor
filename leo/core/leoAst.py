@@ -373,9 +373,13 @@ class AstFormatter(object):
         gens = [self.visit(z) for z in node.generators]
         gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
         return '%s for %s' % (elt, ''.join(gens))
-    #@+node:ekr.20141012064706.18429: *4* f.Name
+    #@+node:ekr.20141012064706.18429: *4* f.Name & NameConstant
     def do_Name(self, node):
         return node.id
+
+    def do_NameConstant(self, node): # Python 3 only.
+        s = repr(node.value)
+        return 'bool' if s in ('True', 'False') else s
     #@+node:ekr.20141012064706.18430: *4* f.Num
     def do_Num(self, node):
         return repr(node.n)
@@ -764,55 +768,6 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18469: *4* f.indent
     def indent(self, s):
         return '%s%s' % (' ' * 4 * self.level, s)
-    #@+node:ekr.20141012064706.18470: *4* f.op_name
-    #@@nobeautify
-
-    def op_name (self,node,strict=True):
-        '''Return the print name of an operator node.'''
-        d = {
-            # Binary operators.
-            'Add':       '+',
-            'BitAnd':    '&',
-            'BitOr':     '|',
-            'BitXor':    '^',
-            'Div':       '/',
-            'FloorDiv':  '//',
-            'LShift':    '<<',
-            'Mod':       '%',
-            'Mult':      '*',
-            'Pow':       '**',
-            'RShift':    '>>',
-            'Sub':       '-',
-            # Boolean operators.
-            'And':   ' and ',
-            'Or':    ' or ',
-            # Comparison operators
-            'Eq':    '==',
-            'Gt':    '>',
-            'GtE':   '>=',
-            'In':    ' in ',
-            'Is':    ' is ',
-            'IsNot': ' is not ',
-            'Lt':    '<',
-            'LtE':   '<=',
-            'NotEq': '!=',
-            'NotIn': ' not in ',
-            # Context operators.
-            'AugLoad':  '<AugLoad>',
-            'AugStore': '<AugStore>',
-            'Del':      '<Del>',
-            'Load':     '<Load>',
-            'Param':    '<Param>',
-            'Store':    '<Store>',
-            # Unary operators.
-            'Invert':   '~',
-            'Not':      ' not ',
-            'UAdd':     '+',
-            'USub':     '-',
-        }
-        name = d.get(self.kind(node),'<%s>' % node.__class__.__name__)
-        if strict: assert name,self.kind(node)
-        return name
     #@-others
 #@+node:ekr.20141012064706.18471: ** class AstFullTraverser
 class AstFullTraverser(object):
@@ -913,6 +868,56 @@ class AstFullTraverser(object):
     def kind(self, node):
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
+    #@+node:ekr.20160521102250.1: *4* ft.op_name
+    #@@nobeautify
+
+    _op_names = {
+        # Binary operators.
+        'Add':       '+',
+        'BitAnd':    '&',
+        'BitOr':     '|',
+        'BitXor':    '^',
+        'Div':       '/',
+        'FloorDiv':  '//',
+        'LShift':    '<<',
+        'Mod':       '%',
+        'Mult':      '*',
+        'Pow':       '**',
+        'RShift':    '>>',
+        'Sub':       '-',
+        # Boolean operators.
+        'And':   ' and ',
+        'Or':    ' or ',
+        # Comparison operators
+        'Eq':    '==',
+        'Gt':    '>',
+        'GtE':   '>=',
+        'In':    ' in ',
+        'Is':    ' is ',
+        'IsNot': ' is not ',
+        'Lt':    '<',
+        'LtE':   '<=',
+        'NotEq': '!=',
+        'NotIn': ' not in ',
+        # Context operators.
+        'AugLoad':  '<AugLoad>',
+        'AugStore': '<AugStore>',
+        'Del':      '<Del>',
+        'Load':     '<Load>',
+        'Param':    '<Param>',
+        'Store':    '<Store>',
+        # Unary operators.
+        'Invert':   '~',
+        'Not':      ' not ',
+        'UAdd':     '+',
+        'USub':     '-',
+    }
+
+    def op_name (self,node,strict=True):
+        '''Return the print name of an operator node.'''
+        name = self._op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        if strict: assert name, self.kind(node)
+        return name
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
     # 2: arguments = (expr* args, identifier? vararg,
     #                 identifier? kwarg, expr* defaults)
@@ -1088,6 +1093,12 @@ class AstFullTraverser(object):
     def do_Name(self, node):
         # self.visit(node.ctx)
         pass
+        
+    def do_NameConstant(self, node): # Python 3 only.
+        pass
+        # s = repr(node.value)
+        # return 'bool' if s in ('True', 'False') else s
+
     #@+node:ekr.20150522081736.1: *4* ft.Num
     def do_Num(self, node):
         pass # Num(object n) # a number as a PyObject.
@@ -1384,6 +1395,10 @@ class AstPatternFormatter(AstFormatter):
 
     def do_Name(self, node):
         return 'Bool' if node.id in ('True', 'False') else node.id
+        
+    def do_NameConstant(self, node): # Python 3 only.
+        s = repr(node.value)
+        return 'bool' if s in ('True', 'False') else s
 
     def do_Num(self, node):
         return 'Num' # return repr(node.n)
@@ -2700,6 +2715,35 @@ class TokenSync(object):
         self.first_leading_line = i
         return trailing
     #@-others
+#@+node:ekr.20160521103254.1: ** leoAst.unit_test
+def unit_test(raise_on_fail=True):
+    '''Run basic unit tests for this file.'''
+    import _ast
+    # import leo.core.leoAst as leoAst
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'PyCF_ONLY_AST', # A constant,
+        'AST', # The base class,
+    ]
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    ft = AstFullTraverser()
+    errors, nodes, ops = 0,0,0
+    for z in aList:
+        if hasattr(ft, 'do_' + z):
+            nodes += 1
+        else:
+            if ft._op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print('Missing FullTraverser visitor for: %s' % z)
+    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@-others
 #@@language python
 #@@tabwidth -4
