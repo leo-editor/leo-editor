@@ -17,7 +17,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 from pyflakes import api, reporter
 import optparse
-import os
+# import os
 import sys
 import time
 #@+others

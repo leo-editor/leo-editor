@@ -224,7 +224,7 @@ def pylint_command(event):
             self.wait = True
                 # The no-wait code doesn't seem to work.
         #@+others
-        #@+node:ekr.20150514125218.9: *5* pylint.check
+        #@+node:ekr.20150514125218.9: *5* check
         def check(self, p, rc_fn):
             '''Check a single node.  Return True if it is a Python @<file> node.'''
             found = False
@@ -240,7 +240,7 @@ def pylint_command(event):
                         self.run_pylint(fn, rc_fn)
                         found = True
             return found
-        #@+node:ekr.20150514125218.10: *5* pylint.get_rc_file
+        #@+node:ekr.20150514125218.10: *5* get_rc_file
         def get_rc_file(self):
             '''Return the path to the pylint configuration file.'''
             trace = False and not g.unitTesting
@@ -259,7 +259,7 @@ def pylint_command(event):
             g.es_print('no pylint configuration file found in\n%s' % (
                 '\n'.join(table)))
             return None
-        #@+node:ekr.20150514125218.11: *5* pylint.run
+        #@+node:ekr.20150514125218.11: *5* run
         def run(self):
             '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
             c, root = self.c, self.c.p
@@ -294,7 +294,7 @@ def pylint_command(event):
                                 break
             if self.wait:
                 g.es_print('pylint: done %s' % g.timeSince(t1))
-        #@+node:ekr.20150514125218.12: *5* pylint.run_pylint
+        #@+node:ekr.20150514125218.12: *5* run_pylint
         def run_pylint(self, fn, rc_fn):
             '''Run pylint on fn with the given pylint configuration file.'''
             if not os.path.exists(fn):
