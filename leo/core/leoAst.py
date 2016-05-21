@@ -417,6 +417,12 @@ class AstFormatter(object):
         elts = [self.visit(z) for z in node.elts]
         return '(%s)' % ','.join(elts)
     #@+node:ekr.20141012064706.18436: *3* f.Operators
+    #@+node:ekr.20160521104724.1: *4* f.op_name
+    def op_name (self,node,strict=True):
+        '''Return the print name of an operator node.'''
+        name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        if strict: assert name, self.kind(node)
+        return name
     #@+node:ekr.20141012064706.18437: *4* f.BinOp
     def do_BinOp(self, node):
         return '%s%s%s' % (
@@ -869,53 +875,9 @@ class AstFullTraverser(object):
         return node.__class__.__name__
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20160521102250.1: *4* ft.op_name
-    #@@nobeautify
-
-    _op_names = {
-        # Binary operators.
-        'Add':       '+',
-        'BitAnd':    '&',
-        'BitOr':     '|',
-        'BitXor':    '^',
-        'Div':       '/',
-        'FloorDiv':  '//',
-        'LShift':    '<<',
-        'Mod':       '%',
-        'Mult':      '*',
-        'Pow':       '**',
-        'RShift':    '>>',
-        'Sub':       '-',
-        # Boolean operators.
-        'And':   ' and ',
-        'Or':    ' or ',
-        # Comparison operators
-        'Eq':    '==',
-        'Gt':    '>',
-        'GtE':   '>=',
-        'In':    ' in ',
-        'Is':    ' is ',
-        'IsNot': ' is not ',
-        'Lt':    '<',
-        'LtE':   '<=',
-        'NotEq': '!=',
-        'NotIn': ' not in ',
-        # Context operators.
-        'AugLoad':  '<AugLoad>',
-        'AugStore': '<AugStore>',
-        'Del':      '<Del>',
-        'Load':     '<Load>',
-        'Param':    '<Param>',
-        'Store':    '<Store>',
-        # Unary operators.
-        'Invert':   '~',
-        'Not':      ' not ',
-        'UAdd':     '+',
-        'USub':     '-',
-    }
-
     def op_name (self,node,strict=True):
         '''Return the print name of an operator node.'''
-        name = self._op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
+        name = _op_names.get(self.kind(node),'<%s>' % node.__class__.__name__)
         if strict: assert name, self.kind(node)
         return name
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
@@ -2715,7 +2677,52 @@ class TokenSync(object):
         self.first_leading_line = i
         return trailing
     #@-others
-#@+node:ekr.20160521103254.1: ** leoAst.unit_test
+#@+node:ekr.20160521104628.1: ** top-level
+#@+node:ekr.20160521104555.1: *3* leoAst._op_names
+#@@nobeautify
+
+_op_names = {
+    # Binary operators.
+    'Add':       '+',
+    'BitAnd':    '&',
+    'BitOr':     '|',
+    'BitXor':    '^',
+    'Div':       '/',
+    'FloorDiv':  '//',
+    'LShift':    '<<',
+    'Mod':       '%',
+    'Mult':      '*',
+    'Pow':       '**',
+    'RShift':    '>>',
+    'Sub':       '-',
+    # Boolean operators.
+    'And':   ' and ',
+    'Or':    ' or ',
+    # Comparison operators
+    'Eq':    '==',
+    'Gt':    '>',
+    'GtE':   '>=',
+    'In':    ' in ',
+    'Is':    ' is ',
+    'IsNot': ' is not ',
+    'Lt':    '<',
+    'LtE':   '<=',
+    'NotEq': '!=',
+    'NotIn': ' not in ',
+    # Context operators.
+    'AugLoad':  '<AugLoad>',
+    'AugStore': '<AugStore>',
+    'Del':      '<Del>',
+    'Load':     '<Load>',
+    'Param':    '<Param>',
+    'Store':    '<Store>',
+    # Unary operators.
+    'Invert':   '~',
+    'Not':      ' not ',
+    'UAdd':     '+',
+    'USub':     '-',
+}
+#@+node:ekr.20160521103254.1: *3* leoAst.unit_test
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
