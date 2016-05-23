@@ -871,13 +871,16 @@ class CoffeeScriptTraverser(object):
         s = 'print(%s)' % ','.join(vals)
         return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.72: *4* cv.Raise
+    # Raise(expr? type, expr? inst, expr? tback)    Python 2
+    # Raise(expr? exc, expr? cause)                 Python 3
 
     def do_Raise(self, node):
 
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         args = []
-        for attr in ('type', 'inst', 'tback'):
+        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        for attr in attrs:
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
         s = 'raise %s' % ', '.join(args) if args else 'raise'

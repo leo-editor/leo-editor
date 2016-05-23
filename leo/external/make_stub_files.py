@@ -670,9 +670,13 @@ class AstFormatter(object):
             ','.join(vals)))
 
     #@+node:ekr.20160317055215.62: *4* f.Raise
+    # Raise(expr? type, expr? inst, expr? tback)    Python 2
+    # Raise(expr? exc, expr? cause)                 Python 3
+
     def do_Raise(self, node):
         args = []
-        for attr in ('type', 'inst', 'tback'):
+        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        for attr in attrs:
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
         if args:

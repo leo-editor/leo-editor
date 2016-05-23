@@ -741,9 +741,13 @@ class AstFormatter(object):
         return self.indent('print(%s)\n' % (
             ','.join(vals)))
     #@+node:ekr.20141012064706.18459: *4* f.Raise
+    # Raise(expr? type, expr? inst, expr? tback)    Python 2
+    # Raise(expr? exc, expr? cause)                 Python 3
+
     def do_Raise(self, node):
         args = []
-        for attr in ('type', 'inst', 'tback'):
+        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        for attr in attrs:
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
         if args:
@@ -1376,15 +1380,15 @@ class AstFullTraverser(object):
         for expr in node.values:
             self.visit(expr)
     #@+node:ekr.20141012064706.18520: *4* ft.Raise
-    # Raise(expr? type, expr? inst, expr? tback)
+    # Raise(expr? type, expr? inst, expr? tback)    Python 2
+    # Raise(expr? exc, expr? cause)                 Python 3
 
     def do_Raise(self, node):
-        if getattr(node, 'type', None):
-            self.visit(node.type)
-        if getattr(node, 'inst', None):
-            self.visit(node.inst)
-        if getattr(node, 'tback', None):
-            self.visit(node.tback)
+        
+        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        for attr in attrs:
+            if getattr(node, attr, None):
+                self.visit(getattr(node, attr))
     #@+node:ekr.20141012064706.18521: *4* ft.Return
     # Return(expr? value)
 
@@ -2422,10 +2426,17 @@ class HTMLReportTraverser(object):
         rt.gen(')')
         rt.end_div('statement')
     #@+node:ekr.20150722204300.85: *4* rt.Raise
+    # Raise(expr? type, expr? inst, expr? tback)    Python 2
+    # Raise(expr? exc, expr? cause)                 Python 3
+
     def do_Raise(rt, node):
 
         rt.div('statement')
         rt.keyword("raise")
+        attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
+        for attr in attrs:
+            if getattr(node, attr, None) is not None:
+                rt.visit(getattr(node, attr))
         rt.end_div('statement')
     #@+node:ekr.20160523105022.1: *4* rt.Repr
     # Python 2.x only
