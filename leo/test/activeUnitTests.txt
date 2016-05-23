@@ -1387,6 +1387,11 @@ else:
     assert s
     controller = msf.StandAloneMakeStubFile()
     msf.StubTraverser(controller).visit(node)
+#@+node:ekr.20160523094102.1: *4* @test leoAst traverser classes
+# Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.core.leoAst as leoAst
+leoAst.unit_test(raise_on_fail=True)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)
