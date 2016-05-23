@@ -100,6 +100,44 @@ def main():
     print('done')
 #@+node:ekr.20160317054700.5: *3* merge_types (not used)
 #@+node:ekr.20160317054700.6: *3* reduce_types
+#@+node:ekr.20160523111223.1: **   unit_test
+def unit_test(raise_on_fail=True):
+    '''Run basic unit tests for this file.'''
+    import _ast
+    import leo.core.leoAst as leoAst
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite', # Not necessary.
+        'PyCF_ONLY_AST', # A constant,
+        'AST', # The base class,
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classe
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    table = (
+        # AstFullTraverser,
+        AstArgFormatter,
+        AstFormatter,
+    )
+    for class_ in table:
+        traverser = class_()
+        errors, nodes, ops = 0,0,0
+        for z in aList:
+            if hasattr(traverser, 'do_' + z):
+                nodes += 1
+            elif leoAst._op_names.get(z):
+                ops += 1
+            else:
+                errors += 1
+                print('Missing %s visitor for: %s' % (
+                    traverser.__class__.__name__,z))
+    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@+node:ekr.20160317054700.7: **   utility functions
 #@+node:ekr.20160317054700.8: *3* dump
 #@+node:ekr.20160317054700.9: *3* dump_dict
@@ -187,13 +225,13 @@ class AstFormatter(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-    #@+node:ekr.20160317055215.8: *4* f.FunctionDef (make_stub_files)
+    #@+node:ekr.20160317055215.8: *4* f.FunctionDef & AsyncFunctionDef (make_stub_files)
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node):
+    def do_FunctionDef(self, node, async=False):
         '''Format a FunctionDef node.'''
         result = []
         if node.decorator_list:
@@ -201,16 +239,22 @@ class AstFormatter(object):
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
+        asynch_prefix = 'asynch ' if async else ''
         if getattr(node, 'returns', None): # Python 3.
             returns = self.visit(node.returns)
-            result.append(self.indent('def %s(%s): -> %s\n' % (name, args, returns)))
+            result.append(self.indent('%sdef %s(%s): -> %s\n' % (
+                asynch_prefix, name, args, returns)))
         else:
-            result.append(self.indent('def %s(%s):\n' % (name, args)))
+            result.append(self.indent('%sdef %s(%s):\n' % (
+                asynch_prefix, name, args)))
         for z in node.body:
             self.level += 1
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
+        
+    def do_AsyncFunctionDef(self, node):
+        return self.do_FunctionDef(node, async=True)
     #@+node:ekr.20160317055215.9: *4* f.Interactive
     def do_Interactive(self, node):
         for z in node.body:
@@ -453,6 +497,30 @@ class AstFormatter(object):
     def do_Tuple(self, node):
         elts = [self.visit(z) for z in node.elts]
         return '(%s)' % ', '.join(elts)
+    #@+node:ekr.20160523135038.2: *4* f.DictComp (new)
+    # DictComp(expr key, expr value, comprehension* generators)
+
+    def do_DictComp(self, node):
+        # EKR: visit generators first, then value.
+        for z in node.generators:
+            self.visit(z)
+        self.visit(node.value)
+        self.visit(node.key)
+    #@+node:ekr.20160523135038.3: *4* f.Set (new)
+    # Set(expr* elts)
+
+    def do_Set(self, node):
+        for z in node.elts:
+            self.visit(z)
+            
+    #@+node:ekr.20160523135038.4: *4* f.SetComp (new)
+    # SetComp(expr elt, comprehension* generators)
+
+    def do_SetComp(self, node):
+        # EKR: visit generators first.
+        for z in node.generators:
+            self.visit(z)
+        self.visit(node.elt)
     #@+node:ekr.20160317055215.38: *3* f.Operators
 
     # Operators...
@@ -522,6 +590,13 @@ class AstFormatter(object):
             self.op_name(node.op), # Bug fix: 2013/03/08.
             self.visit(node.value)))
 
+    #@+node:ekr.20160523135457.1: *4* f.Await
+    # Await(expr value)
+
+    def do_Await(self, node):
+
+        return self.indent('await %s\n' % (
+            self.visit(node.value)))
     #@+node:ekr.20160317055215.48: *4* f.Break
     def do_Break(self, node):
         return self.indent('break\n')
@@ -569,10 +644,11 @@ class AstFormatter(object):
         else:
             return self.indent('exec %s\n' % (body))
 
-    #@+node:ekr.20160317055215.53: *4* f.For
-    def do_For(self, node):
+    #@+node:ekr.20160317055215.53: *4* f.For & AsyncFor
+    def do_For(self, node, async=False):
         result = []
-        result.append(self.indent('for %s in %s:\n' % (
+        result.append(self.indent('%sfor %s in %s:\n' % (
+            'asynch ' if async else '',
             self.visit(node.target),
             self.visit(node.iter))))
         for z in node.body:
@@ -586,6 +662,9 @@ class AstFormatter(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
+        
+    def do_AsyncFor(self, node):
+        return self.do_For(node, async=True)
 
     #@+node:ekr.20160317055215.54: *4* f.Global
     def do_Global(self, node):
@@ -780,7 +859,7 @@ class AstFormatter(object):
                 self.level -= 1
         return ''.join(result)
 
-    #@+node:ekr.20160317055215.70: *4* f.With (make_stub_files)
+    #@+node:ekr.20160317055215.70: *4* f.With & AsyncWith (make_stub_files)
 
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
@@ -788,9 +867,9 @@ class AstFormatter(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node):
+    def do_With(self, node, async=False):
         result = []
-        result.append(self.indent('with '))
+        result.append(self.indent('%swith ' % 'async ' if async else ''))
         vars_list = []
         if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
@@ -818,6 +897,8 @@ class AstFormatter(object):
         result.append('\n')
         return ''.join(result)
 
+    def do_AsyncWith(self, node):
+        return self.do_With(node, async=True)
     #@+node:ekr.20160317055215.71: *4* f.Yield
     def do_Yield(self, node):
         if getattr(node, 'value', None):
@@ -826,7 +907,6 @@ class AstFormatter(object):
         else:
             return self.indent('yield\n')
     #@+node:ekr.20160317055215.72: *4* f.YieldFrom (Python 3)
-
     # YieldFrom(expr value)
 
     def do_YieldFrom(self, node):

@@ -1392,6 +1392,13 @@ else:
 
 import leo.core.leoAst as leoAst
 leoAst.unit_test(raise_on_fail=True)
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)

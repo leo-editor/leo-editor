@@ -1324,7 +1324,7 @@ class AstFullTraverser(object):
             self.visit(node.globals)
         if getattr(node, 'locals', None):
             self.visit(node.locals)
-    #@+node:ekr.20141012064706.18514: *4* ft.For
+    #@+node:ekr.20141012064706.18514: *4* ft.For & AsyncFor
     # For(expr target, expr iter, stmt* body, stmt* orelse)
 
     def do_For(self, node):
@@ -1440,7 +1440,7 @@ class AstFullTraverser(object):
             self.visit(z)
         for z in node.orelse:
             self.visit(z)
-    #@+node:ekr.20141012064706.18526: *4* ft.With
+    #@+node:ekr.20141012064706.18526: *4* ft.With & AsyncWith
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
     # 3:  With(withitem* items,

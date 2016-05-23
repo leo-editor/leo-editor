@@ -81,6 +81,38 @@ def main():
     controller.scan_options()
     controller.run()
     print('done')
+#@+node:ekr.20160523111738.1: **   unit_test
+def unit_test(raise_on_fail=True):
+    '''Run basic unit tests for this file.'''
+    import _ast
+    import leo.core.leoAst as leoAst
+    # Compute all fields to test.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite', # Not necessary.
+        'PyCF_ONLY_AST', # A constant,
+        'AST', # The base class,
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classe
+    aList = [z for z in aList if not z.startswith('_') and not z in remove]
+    # Now test them.
+    traverser = CoffeeScriptTraverser(controller=None)
+    errors, nodes, ops = 0,0,0
+    for z in aList:
+        if hasattr(traverser, 'do_' + z):
+            nodes += 1
+        elif leoAst._op_names.get(z):
+            ops += 1
+        else:
+            errors += 1
+            print('Missing %s visitor for: %s' % (
+                traverser.__class__.__name__,z))
+    s = '%s node types, %s op types, %s errors' % (nodes, ops, errors)
+    if raise_on_fail:
+        assert not errors, s
+    else:
+        print(s)
 #@+node:ekr.20160316091132.5: **   utility functions
 
 #
@@ -286,7 +318,7 @@ class CoffeeScriptTraverser(object):
             self.level -= 1
         self.class_stack.pop()
         return ''.join(result)
-    #@+node:ekr.20160316091132.19: *4* cv.FunctionDef
+    #@+node:ekr.20160316091132.19: *4* cv.FunctionDef & AsyncFunctionDef
 
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
@@ -319,6 +351,8 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
+        
+    do_AsyncFunctionDef = do_FunctionDef
     #@+node:ekr.20160316091132.20: *4* cv.Interactive
 
     def do_Interactive(self, node):
@@ -357,6 +391,16 @@ class CoffeeScriptTraverser(object):
     #
     # CoffeeScriptTraverser operands...
     #
+    #@+node:ekr.20160316091132.28: *4* cv.arg (Python3 only)
+
+    # 3: arg = (identifier arg, expr? annotation)
+
+    def do_arg(self, node):
+
+        # Visit the node.annotation to keep strings in synch.
+        if getattr(node, 'annotation', None):
+            self.visit(node.annotation)
+        return node.arg
     #@+node:ekr.20160316091132.27: *4* cv.arguments
 
     # 2: arguments = (expr* args, identifier? vararg,
@@ -400,16 +444,6 @@ class CoffeeScriptTraverser(object):
             if getattr(node, 'kwarg', None):
                 args2.append('**' + node.kwarg)
         return ','.join(args2)
-    #@+node:ekr.20160316091132.28: *4* cv.arg (Python3 only)
-
-    # 3: arg = (identifier arg, expr? annotation)
-
-    def do_arg(self, node):
-
-        # Visit the node.annotation to keep strings in synch.
-        if getattr(node, 'annotation', None):
-            self.visit(node.annotation)
-        return node.arg
     #@+node:ekr.20160316091132.29: *4* cv.Attribute
 
     # Attribute(expr value, identifier attr, expr_context ctx)
@@ -493,6 +527,15 @@ class CoffeeScriptTraverser(object):
         else:
             result.append('}')
         return ''.join(result)
+    #@+node:ekr.20160523135819.3: *4* cv.DictComp (new)
+    # DictComp(expr key, expr value, comprehension* generators)
+
+    def do_DictComp(self, node):
+        elt = self.visit(node.elt)
+        gens = [self.visit(z) for z in node.generators]
+        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        return '%s for %s' % (elt, ''.join(gens))
+
     #@+node:ekr.20160316091132.35: *4* cv.Ellipsis
 
     def do_Ellipsis(self, node):
@@ -538,6 +581,21 @@ class CoffeeScriptTraverser(object):
 
     def do_Repr(self, node):
         return 'repr(%s)' % self.visit(node.value)
+    #@+node:ekr.20160523135819.4: *4* cv.Set (new)
+    # Set(expr* elts)
+
+    def do_Set(self, node):
+        elts = [self.visit(z) for z in node.elts]
+        elts = [z for z in elts if z] # Defensive.
+        return '{%s}' % ','.join(elts)
+    #@+node:ekr.20160523135819.5: *4* cv.SetComp (new)
+    # SetComp(expr elt, comprehension* generators)
+
+    def do_SetComp(self, node):
+        elt = self.visit(node.elt)
+        gens = [self.visit(z) for z in node.generators]
+        gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
+        return '%s for %s' % (elt, ''.join(gens))
     #@+node:ekr.20160316091132.43: *4* cv.Slice
 
     def do_Slice(self, node):
@@ -676,6 +734,13 @@ class CoffeeScriptTraverser(object):
             op_name(node.op),
             self.visit(node.value))
         return head + self.indent(s) + tail
+    #@+node:ekr.20160523135819.2: *4* cv.Await (Python 3)
+    # Await(expr value)
+
+    def do_Await(self, node):
+
+        return self.indent('await %s\n' % (
+            self.visit(node.value)))
     #@+node:ekr.20160316091132.58: *4* cv.Break
 
     def do_Break(self, node):
@@ -746,13 +811,14 @@ class CoffeeScriptTraverser(object):
         tail = self.trailing_comment(node)
         s = '%s' % self.visit(node.value)
         return head + self.indent(s) + tail
-    #@+node:ekr.20160316091132.64: *4* cv.For
+    #@+node:ekr.20160316091132.64: *4* cv.For & AsyncFor
 
-    def do_For(self, node):
+    def do_For(self, node, async=False):
 
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
-        s = 'for %s in %s:' % (
+        s = '%sfor %s in %s:' % (
+            'async ' if async else '',
             self.visit(node.target),
             self.visit(node.iter))
         result.append(self.indent(s + tail))
@@ -768,6 +834,9 @@ class CoffeeScriptTraverser(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
+        
+    def do_AsyncFor(self, node):
+        return self.do_For(node, async=True)
     #@+node:ekr.20160316091132.65: *4* cv.Global
 
     def do_Global(self, node):
@@ -1000,7 +1069,7 @@ class CoffeeScriptTraverser(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-    #@+node:ekr.20160316091132.78: *4* cv.With
+    #@+node:ekr.20160316091132.78: *4* cv.With & AsyncWith (Python 3)
 
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
@@ -1008,12 +1077,12 @@ class CoffeeScriptTraverser(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node):
+    def do_With(self, node, async=False):
 
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         vars_list = []
-        result.append(self.indent('with '))
+        result.append(self.indent('%swith ' % ('async ' if async else '')))
         if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
         if getattr(node, 'optional_vars', None):
@@ -1038,6 +1107,10 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result) + tail
+        
+    def do_AsyncWith(self, node):
+        return self.do_With(node, async=True)
+
     #@+node:ekr.20160316091132.79: *4* cv.Yield
 
     def do_Yield(self, node):
