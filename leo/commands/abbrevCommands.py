@@ -251,7 +251,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if '' not in prefixes: prefixes.append('')
         for prefix in prefixes:
             i = j - len(prefix)
-            word = g.toUnicode(prefix) + ch
+            word = g.toUnicode(prefix) + g.toUnicode(ch)
             val, tag = self.tree_abbrevs_d.get(word), 'tree'
             # if val: g.trace('*****',word,'...\n\n',len(val))
             if not val:
