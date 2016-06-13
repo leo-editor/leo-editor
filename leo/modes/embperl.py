@@ -3,23 +3,23 @@
 
 # Properties for embperl mode.
 properties = {
-	"commentEnd": "-->",
-	"commentStart": "<!--",
+    "commentEnd": "-->",
+    "commentStart": "<!--",
 }
 
 # Attributes dict for embperl_main ruleset.
 embperl_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "false",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "false",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for embperl mode.
 attributesDictDict = {
-	"embperl_main": embperl_main_attributes_dict,
+    "embperl_main": embperl_main_attributes_dict,
 }
 
 # Keywords dict for embperl_main ruleset.
@@ -27,7 +27,7 @@ embperl_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for embperl mode.
 keywordsDictDict = {
-	"embperl_main": embperl_main_keywords_dict,
+    "embperl_main": embperl_main_keywords_dict,
 }
 
 # Rules for embperl_main ruleset.
@@ -65,16 +65,16 @@ def embperl_rule4(colorer, s, i):
 
 # Rules dict for embperl_main ruleset.
 rulesDict1 = {
-	"[": [embperl_rule0,embperl_rule1,embperl_rule2,embperl_rule3,embperl_rule4,],
+    "[": [embperl_rule0,embperl_rule1,embperl_rule2,embperl_rule3,embperl_rule4,],
 }
 
 # x.rulesDictDict for embperl mode.
 rulesDictDict = {
-	"embperl_main": rulesDict1,
+    "embperl_main": rulesDict1,
 }
 
 # Import dict for embperl mode.
 importDict = {
-	"embperl_main": ["html::main",],
+    "embperl_main": ["html::main",],
 }
 

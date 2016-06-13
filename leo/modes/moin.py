@@ -3,23 +3,23 @@
 
 # Properties for moin mode.
 properties = {
-	"lineComment": "##",
-	"wrap": "soft",
+    "lineComment": "##",
+    "wrap": "soft",
 }
 
 # Attributes dict for moin_main ruleset.
 moin_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "\\",
-	"highlight_digits": "false",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "\\",
+    "highlight_digits": "false",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for moin mode.
 attributesDictDict = {
-	"moin_main": moin_main_attributes_dict,
+    "moin_main": moin_main_attributes_dict,
 }
 
 # Keywords dict for moin_main ruleset.
@@ -27,7 +27,7 @@ moin_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for moin mode.
 keywordsDictDict = {
-	"moin_main": moin_main_keywords_dict,
+    "moin_main": moin_main_keywords_dict,
 }
 
 # Rules for moin_main ruleset.
@@ -196,45 +196,45 @@ def moin_rule36(colorer, s, i):
 
 # Rules dict for moin_main ruleset.
 rulesDict1 = {
-	" ": [moin_rule3,],
-	"#": [moin_rule0,moin_rule1,],
-	"'": [moin_rule6,],
-	"-": [moin_rule7,],
-	"=": [moin_rule8,],
-	"A": [moin_rule9,],
-	"B": [moin_rule10,],
-	"C": [moin_rule11,],
-	"D": [moin_rule12,],
-	"E": [moin_rule13,],
-	"F": [moin_rule14,],
-	"G": [moin_rule15,],
-	"H": [moin_rule16,],
-	"I": [moin_rule17,],
-	"J": [moin_rule18,],
-	"K": [moin_rule19,],
-	"L": [moin_rule20,],
-	"M": [moin_rule21,],
-	"N": [moin_rule22,],
-	"O": [moin_rule23,],
-	"P": [moin_rule24,],
-	"Q": [moin_rule25,],
-	"R": [moin_rule26,],
-	"S": [moin_rule27,],
-	"T": [moin_rule28,],
-	"U": [moin_rule29,],
-	"V": [moin_rule30,],
-	"W": [moin_rule31,],
-	"X": [moin_rule32,],
-	"Y": [moin_rule33,],
-	"Z": [moin_rule34,],
-	"[": [moin_rule2,moin_rule35,moin_rule36,],
-	"`": [moin_rule5,],
-	"{": [moin_rule4,],
+    " ": [moin_rule3,],
+    "#": [moin_rule0,moin_rule1,],
+    "'": [moin_rule6,],
+    "-": [moin_rule7,],
+    "=": [moin_rule8,],
+    "A": [moin_rule9,],
+    "B": [moin_rule10,],
+    "C": [moin_rule11,],
+    "D": [moin_rule12,],
+    "E": [moin_rule13,],
+    "F": [moin_rule14,],
+    "G": [moin_rule15,],
+    "H": [moin_rule16,],
+    "I": [moin_rule17,],
+    "J": [moin_rule18,],
+    "K": [moin_rule19,],
+    "L": [moin_rule20,],
+    "M": [moin_rule21,],
+    "N": [moin_rule22,],
+    "O": [moin_rule23,],
+    "P": [moin_rule24,],
+    "Q": [moin_rule25,],
+    "R": [moin_rule26,],
+    "S": [moin_rule27,],
+    "T": [moin_rule28,],
+    "U": [moin_rule29,],
+    "V": [moin_rule30,],
+    "W": [moin_rule31,],
+    "X": [moin_rule32,],
+    "Y": [moin_rule33,],
+    "Z": [moin_rule34,],
+    "[": [moin_rule2,moin_rule35,moin_rule36,],
+    "`": [moin_rule5,],
+    "{": [moin_rule4,],
 }
 
 # x.rulesDictDict for moin mode.
 rulesDictDict = {
-	"moin_main": rulesDict1,
+    "moin_main": rulesDict1,
 }
 
 # Import dict for moin mode.

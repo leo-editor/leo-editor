@@ -3,44 +3,44 @@
 
 # Properties for tex mode.
 properties = {
-	"lineComment": "%",
+    "lineComment": "%",
 }
 
 # Attributes dict for tex_main ruleset.
 tex_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for tex_math ruleset.
 tex_math_attributes_dict = {
-	"default": "MARKUP",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "MARKUP",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for tex_verbatim ruleset.
 tex_verbatim_attributes_dict = {
-	"default": "NULL",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "NULL",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for tex mode.
 attributesDictDict = {
-	"tex_main": tex_main_attributes_dict,
-	"tex_math": tex_math_attributes_dict,
-	"tex_verbatim": tex_verbatim_attributes_dict,
+    "tex_main": tex_main_attributes_dict,
+    "tex_math": tex_math_attributes_dict,
+    "tex_verbatim": tex_verbatim_attributes_dict,
 }
 
 # Keywords dict for tex_main ruleset.
@@ -54,9 +54,9 @@ tex_verbatim_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for tex mode.
 keywordsDictDict = {
-	"tex_main": tex_main_keywords_dict,
-	"tex_math": tex_math_keywords_dict,
-	"tex_verbatim": tex_verbatim_keywords_dict,
+    "tex_main": tex_main_keywords_dict,
+    "tex_math": tex_math_keywords_dict,
+    "tex_verbatim": tex_verbatim_keywords_dict,
 }
 
 # Rules for tex_main ruleset.
@@ -136,13 +136,13 @@ def tex_rule14(colorer, s, i):
 
 # Rules dict for tex_main ruleset.
 rulesDict1 = {
-	"$": [tex_rule0,tex_rule1,],
-	"%": [tex_rule10,],
-	"[": [tex_rule13,],
-	"\\": [tex_rule2,tex_rule3,tex_rule4,tex_rule5,tex_rule6,tex_rule7,tex_rule8,tex_rule9,],
-	"]": [tex_rule14,],
-	"{": [tex_rule11,],
-	"}": [tex_rule12,],
+    "$": [tex_rule0,tex_rule1,],
+    "%": [tex_rule10,],
+    "[": [tex_rule13,],
+    "\\": [tex_rule2,tex_rule3,tex_rule4,tex_rule5,tex_rule6,tex_rule7,tex_rule8,tex_rule9,],
+    "]": [tex_rule14,],
+    "{": [tex_rule11,],
+    "}": [tex_rule12,],
 }
 
 # Rules for tex_math ruleset.
@@ -274,34 +274,34 @@ def tex_rule45(colorer, s, i):
 
 # Rules dict for tex_math ruleset.
 rulesDict2 = {
-	"!": [tex_rule26,],
-	"\"": [tex_rule43,],
-	"%": [tex_rule45,],
-	"&": [tex_rule33,],
-	"'": [tex_rule42,],
-	"(": [tex_rule20,],
-	")": [tex_rule19,],
-	"*": [tex_rule30,],
-	"+": [tex_rule27,],
-	",": [tex_rule38,],
-	"-": [tex_rule28,],
-	".": [tex_rule37,],
-	"/": [tex_rule29,],
-	":": [tex_rule41,],
-	";": [tex_rule39,],
-	"<": [tex_rule32,],
-	"=": [tex_rule25,],
-	">": [tex_rule31,],
-	"?": [tex_rule40,],
-	"[": [tex_rule23,],
-	"\\": [tex_rule15,tex_rule16,tex_rule17,tex_rule18,],
-	"]": [tex_rule24,],
-	"^": [tex_rule35,],
-	"`": [tex_rule44,],
-	"{": [tex_rule21,],
-	"|": [tex_rule34,],
-	"}": [tex_rule22,],
-	"~": [tex_rule36,],
+    "!": [tex_rule26,],
+    "\"": [tex_rule43,],
+    "%": [tex_rule45,],
+    "&": [tex_rule33,],
+    "'": [tex_rule42,],
+    "(": [tex_rule20,],
+    ")": [tex_rule19,],
+    "*": [tex_rule30,],
+    "+": [tex_rule27,],
+    ",": [tex_rule38,],
+    "-": [tex_rule28,],
+    ".": [tex_rule37,],
+    "/": [tex_rule29,],
+    ":": [tex_rule41,],
+    ";": [tex_rule39,],
+    "<": [tex_rule32,],
+    "=": [tex_rule25,],
+    ">": [tex_rule31,],
+    "?": [tex_rule40,],
+    "[": [tex_rule23,],
+    "\\": [tex_rule15,tex_rule16,tex_rule17,tex_rule18,],
+    "]": [tex_rule24,],
+    "^": [tex_rule35,],
+    "`": [tex_rule44,],
+    "{": [tex_rule21,],
+    "|": [tex_rule34,],
+    "}": [tex_rule22,],
+    "~": [tex_rule36,],
 }
 
 # Rules for tex_verbatim ruleset.
@@ -311,9 +311,9 @@ rulesDict3 = {}
 
 # x.rulesDictDict for tex mode.
 rulesDictDict = {
-	"tex_main": rulesDict1,
-	"tex_math": rulesDict2,
-	"tex_verbatim": rulesDict3,
+    "tex_main": rulesDict1,
+    "tex_math": rulesDict2,
+    "tex_verbatim": rulesDict3,
 }
 
 # Import dict for tex mode.

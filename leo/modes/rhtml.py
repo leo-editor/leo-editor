@@ -3,45 +3,45 @@
 
 # Properties for rhtml mode.
 properties = {
-	"commentEnd": "%>",
-	"commentStart": "<%#",
+    "commentEnd": "%>",
+    "commentStart": "<%#",
 }
 
 # Attributes dict for rhtml_main ruleset.
 rhtml_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for rhtml_tags ruleset.
 rhtml_tags_attributes_dict = {
-	"default": "MARKUP",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "MARKUP",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for rhtml_tags_literal ruleset.
 rhtml_tags_literal_attributes_dict = {
-	"default": "LITERAL1",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "LITERAL1",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for rhtml mode.
 attributesDictDict = {
-	"rhtml_main": rhtml_main_attributes_dict,
-	"rhtml_tags": rhtml_tags_attributes_dict,
-	"rhtml_tags_literal": rhtml_tags_literal_attributes_dict,
+    "rhtml_main": rhtml_main_attributes_dict,
+    "rhtml_tags": rhtml_tags_attributes_dict,
+    "rhtml_tags_literal": rhtml_tags_literal_attributes_dict,
 }
 
 # Keywords dict for rhtml_main ruleset.
@@ -55,9 +55,9 @@ rhtml_tags_literal_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for rhtml mode.
 keywordsDictDict = {
-	"rhtml_main": rhtml_main_keywords_dict,
-	"rhtml_tags": rhtml_tags_keywords_dict,
-	"rhtml_tags_literal": rhtml_tags_literal_keywords_dict,
+    "rhtml_main": rhtml_main_keywords_dict,
+    "rhtml_tags": rhtml_tags_keywords_dict,
+    "rhtml_tags_literal": rhtml_tags_literal_keywords_dict,
 }
 
 # Rules for rhtml_main ruleset.
@@ -118,8 +118,8 @@ def rhtml_rule8(colorer, s, i):
 
 # Rules dict for rhtml_main ruleset.
 rulesDict1 = {
-	"&": [rhtml_rule8,],
-	"<": [rhtml_rule0,rhtml_rule1,rhtml_rule2,rhtml_rule3,rhtml_rule4,rhtml_rule5,rhtml_rule6,rhtml_rule7,],
+    "&": [rhtml_rule8,],
+    "<": [rhtml_rule0,rhtml_rule1,rhtml_rule2,rhtml_rule3,rhtml_rule4,rhtml_rule5,rhtml_rule6,rhtml_rule7,],
 }
 
 # Rules for rhtml_tags ruleset.
@@ -154,10 +154,10 @@ def rhtml_rule13(colorer, s, i):
 
 # Rules dict for rhtml_tags ruleset.
 rulesDict2 = {
-	"\"": [rhtml_rule11,],
-	"'": [rhtml_rule12,],
-	"<": [rhtml_rule9,rhtml_rule10,],
-	"=": [rhtml_rule13,],
+    "\"": [rhtml_rule11,],
+    "'": [rhtml_rule12,],
+    "<": [rhtml_rule9,rhtml_rule10,],
+    "=": [rhtml_rule13,],
 }
 
 # Rules for rhtml_tags_literal ruleset.
@@ -176,14 +176,14 @@ def rhtml_rule15(colorer, s, i):
 
 # Rules dict for rhtml_tags_literal ruleset.
 rulesDict3 = {
-	"<": [rhtml_rule14,rhtml_rule15,],
+    "<": [rhtml_rule14,rhtml_rule15,],
 }
 
 # x.rulesDictDict for rhtml mode.
 rulesDictDict = {
-	"rhtml_main": rulesDict1,
-	"rhtml_tags": rulesDict2,
-	"rhtml_tags_literal": rulesDict3,
+    "rhtml_main": rulesDict1,
+    "rhtml_tags": rulesDict2,
+    "rhtml_tags_literal": rulesDict3,
 }
 
 # Import dict for rhtml mode.

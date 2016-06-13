@@ -6,17 +6,17 @@ properties = {}
 
 # Attributes dict for patch_main ruleset.
 patch_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for patch mode.
 attributesDictDict = {
-	"patch_main": patch_main_attributes_dict,
+    "patch_main": patch_main_attributes_dict,
 }
 
 # Keywords dict for patch_main ruleset.
@@ -24,7 +24,7 @@ patch_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for patch mode.
 keywordsDictDict = {
-	"patch_main": patch_main_keywords_dict,
+    "patch_main": patch_main_keywords_dict,
 }
 
 # Rules for patch_main ruleset.
@@ -81,19 +81,19 @@ def patch_rule9(colorer, s, i):
 
 # Rules dict for patch_main ruleset.
 rulesDict1 = {
-	"!": [patch_rule7,],
-	"*": [patch_rule9,],
-	"+": [patch_rule0,patch_rule3,],
-	"-": [patch_rule1,patch_rule5,],
-	"<": [patch_rule6,],
-	">": [patch_rule4,],
-	"@": [patch_rule8,],
-	"I": [patch_rule2,],
+    "!": [patch_rule7,],
+    "*": [patch_rule9,],
+    "+": [patch_rule0,patch_rule3,],
+    "-": [patch_rule1,patch_rule5,],
+    "<": [patch_rule6,],
+    ">": [patch_rule4,],
+    "@": [patch_rule8,],
+    "I": [patch_rule2,],
 }
 
 # x.rulesDictDict for patch mode.
 rulesDictDict = {
-	"patch_main": rulesDict1,
+    "patch_main": rulesDict1,
 }
 
 # Import dict for patch mode.

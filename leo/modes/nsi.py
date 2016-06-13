@@ -3,22 +3,22 @@
 
 # Properties for nsi mode.
 properties = {
-	"lineComment": ";",
+    "lineComment": ";",
 }
 
 # Attributes dict for nsi_main ruleset.
 nsi_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for nsi mode.
 attributesDictDict = {
-	"nsi_main": nsi_main_attributes_dict,
+    "nsi_main": nsi_main_attributes_dict,
 }
 
 # Keywords dict for nsi_main ruleset.
@@ -26,7 +26,7 @@ nsi_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for nsi mode.
 keywordsDictDict = {
-	"nsi_main": nsi_main_keywords_dict,
+    "nsi_main": nsi_main_keywords_dict,
 }
 
 # Rules for nsi_main ruleset.
@@ -50,14 +50,14 @@ def nsi_rule2(colorer, s, i):
 
 # Rules dict for nsi_main ruleset.
 rulesDict1 = {
-	";": [nsi_rule0,],
-	'"': [nsi_rule1,],
-	"'": [nsi_rule2,],
+    ";": [nsi_rule0,],
+    '"': [nsi_rule1,],
+    "'": [nsi_rule2,],
 }
 
 # x.rulesDictDict for nsi mode.
 rulesDictDict = {
-	"nsi_main": rulesDict1,
+    "nsi_main": rulesDict1,
 }
 
 # Import dict for nsi mode.

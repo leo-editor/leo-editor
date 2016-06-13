@@ -9,24 +9,6 @@
 
 Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
-.. @+node:ekr.20160520153611.1: *3* Remove tabs from leo/modes/*.py
-@language python
-
-import glob
-path = g.os_path_join(g.app.loadDir, '..', 'modes', '*.py')
-# print(g.os_path_exists(path))
-aList = glob.glob(path)
-# print('\n'.join(sorted(aList)))
-for fn in aList[:1]:
-    f = open(fn, 'r')
-    s1 = f.read()
-    f.close()
-    s2 = s.replace('\t', '    ')
-    if s1 != s2:
-        print('changed: %s' % fn)
-        f = open(fn, 'w')
-        f.write(s2)
-        f.close()
 .. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
 The remaining bugs are more like enhancements.
 .. @+node:ekr.20160430150528.1: *4* #128: Javascript importer should be rewritten

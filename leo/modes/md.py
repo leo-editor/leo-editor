@@ -3,114 +3,114 @@
 
 # Properties for md mode.
 properties = {
-	"commentEnd": "-->",
-	"commentStart": "<!--",
-	"indentSize": "4",
-	"maxLineLen": "120",
-	"tabSize": "4",
+    "commentEnd": "-->",
+    "commentStart": "<!--",
+    "indentSize": "4",
+    "maxLineLen": "120",
+    "tabSize": "4",
 }
 
 # Attributes dict for md_main ruleset.
 md_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_inline_markup ruleset.
 md_inline_markup_attributes_dict = {
-	"default": "MARKUP",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "MARKUP",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_block_html_tags ruleset.
 md_block_html_tags_attributes_dict = {
-	"default": "MARKUP",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "MARKUP",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_markdown ruleset.
 md_markdown_attributes_dict = {
-	"default": "MARKUP",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "MARKUP",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_link_label_definition ruleset.
 md_link_label_definition_attributes_dict = {
-	"default": "KEYWORD3",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "KEYWORD3",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_link_inline_url_title ruleset.
 md_link_inline_url_title_attributes_dict = {
-	"default": "KEYWORD3",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "KEYWORD3",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_link_inline_url_title_close ruleset.
 md_link_inline_url_title_close_attributes_dict = {
-	"default": "KEYWORD3",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "KEYWORD3",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_link_inline_label_close ruleset.
 md_link_inline_label_close_attributes_dict = {
-	"default": "LABEL",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "LABEL",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Attributes dict for md_markdown_blockquote ruleset.
 md_markdown_blockquote_attributes_dict = {
-	"default": "LABEL",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "LABEL",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for md mode.
 attributesDictDict = {
-	"md_block_html_tags": md_block_html_tags_attributes_dict,
-	"md_inline_markup": md_inline_markup_attributes_dict,
-	"md_link_inline_label_close": md_link_inline_label_close_attributes_dict,
-	"md_link_inline_url_title": md_link_inline_url_title_attributes_dict,
-	"md_link_inline_url_title_close": md_link_inline_url_title_close_attributes_dict,
-	"md_link_label_definition": md_link_label_definition_attributes_dict,
-	"md_main": md_main_attributes_dict,
-	"md_markdown": md_markdown_attributes_dict,
-	"md_markdown_blockquote": md_markdown_blockquote_attributes_dict,
+    "md_block_html_tags": md_block_html_tags_attributes_dict,
+    "md_inline_markup": md_inline_markup_attributes_dict,
+    "md_link_inline_label_close": md_link_inline_label_close_attributes_dict,
+    "md_link_inline_url_title": md_link_inline_url_title_attributes_dict,
+    "md_link_inline_url_title_close": md_link_inline_url_title_close_attributes_dict,
+    "md_link_label_definition": md_link_label_definition_attributes_dict,
+    "md_main": md_main_attributes_dict,
+    "md_markdown": md_markdown_attributes_dict,
+    "md_markdown_blockquote": md_markdown_blockquote_attributes_dict,
 }
 
 # Keywords dict for md_main ruleset.
@@ -142,15 +142,15 @@ md_markdown_blockquote_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for md mode.
 keywordsDictDict = {
-	"md_block_html_tags": md_block_html_tags_keywords_dict,
-	"md_inline_markup": md_inline_markup_keywords_dict,
-	"md_link_inline_label_close": md_link_inline_label_close_keywords_dict,
-	"md_link_inline_url_title": md_link_inline_url_title_keywords_dict,
-	"md_link_inline_url_title_close": md_link_inline_url_title_close_keywords_dict,
-	"md_link_label_definition": md_link_label_definition_keywords_dict,
-	"md_main": md_main_keywords_dict,
-	"md_markdown": md_markdown_keywords_dict,
-	"md_markdown_blockquote": md_markdown_blockquote_keywords_dict,
+    "md_block_html_tags": md_block_html_tags_keywords_dict,
+    "md_inline_markup": md_inline_markup_keywords_dict,
+    "md_link_inline_label_close": md_link_inline_label_close_keywords_dict,
+    "md_link_inline_url_title": md_link_inline_url_title_keywords_dict,
+    "md_link_inline_url_title_close": md_link_inline_url_title_close_keywords_dict,
+    "md_link_label_definition": md_link_label_definition_keywords_dict,
+    "md_main": md_main_keywords_dict,
+    "md_markdown": md_markdown_keywords_dict,
+    "md_markdown_blockquote": md_markdown_blockquote_keywords_dict,
 }
 
 # Rules for md_main ruleset.
@@ -190,8 +190,8 @@ def md_rule5(colorer, s, i):
 
 # Rules dict for md_main ruleset.
 rulesDict1 = {
-	" ": [md_rule4,],
-	"<": [md_rule0,md_rule1,md_rule2,md_rule3,md_rule5,],
+    " ": [md_rule4,],
+    "<": [md_rule0,md_rule1,md_rule2,md_rule3,md_rule5,],
 }
 
 # Rules for md_inline_markup ruleset.
@@ -238,14 +238,14 @@ def md_rule11(colorer, s, i):
 
 # Rules dict for md_block_html_tags ruleset.
 rulesDict3 = {
-	" ": [md_rule8], # new
-	"\t":[md_rule8], # new
-	"\"": [md_rule9,],
-	"'": [md_rule10,],
-	# "(": [md_rule8,],
-	"=": [md_rule11,],
-	# "[": [md_rule6,], # Will never fire: the leadin character is any non-space!
-	# "{": [md_rule7,], # Will never fire: the leading character is any non-space!
+    " ": [md_rule8], # new
+    "\t":[md_rule8], # new
+    "\"": [md_rule9,],
+    "'": [md_rule10,],
+    # "(": [md_rule8,],
+    "=": [md_rule11,],
+    # "[": [md_rule6,], # Will never fire: the leadin character is any non-space!
+    # "{": [md_rule7,], # Will never fire: the leading character is any non-space!
 }
 
 # Rules for md_markdown ruleset.
@@ -354,13 +354,13 @@ def md_rule29(colorer, s, i):
 # Rules dict for md_markdown ruleset.
 rulesDict4 = {
 # Existing leadins...
-	"!": [md_rule27,],
-	"#": [md_rule22,],
-	"*": [md_rule13,md_rule23,md_rule24,md_rule28,md_rule29], # new: 23,24,28,29.
-	"\\": [md_rule15,md_rule16,md_rule26,],
-	"_": [md_rule14,md_rule23,md_rule24,md_rule28,md_rule29], # new: 23,24,28,29.
-	"`": [md_rule17,md_rule18,md_rule19,], # new: 19
-	"[": [md_rule27,], # new: 27 old: 12,21,23,24,25.
+    "!": [md_rule27,],
+    "#": [md_rule22,],
+    "*": [md_rule13,md_rule23,md_rule24,md_rule28,md_rule29], # new: 23,24,28,29.
+    "\\": [md_rule15,md_rule16,md_rule26,],
+    "_": [md_rule14,md_rule23,md_rule24,md_rule28,md_rule29], # new: 23,24,28,29.
+    "`": [md_rule17,md_rule18,md_rule19,], # new: 19
+    "[": [md_rule27,], # new: 27 old: 12,21,23,24,25.
 # Unused leadins...
     # "(": [md_rule28,md_rule29,],
 # New leadins...
@@ -401,10 +401,10 @@ def md_rule33(colorer, s, i):
 
 # Rules dict for md_link_label_definition ruleset.
 rulesDict5 = {
-	"\"": [md_rule31,],
-	"(": [md_rule32,],
-	")": [md_rule33,],
-	"\\": [md_rule30,],
+    "\"": [md_rule31,],
+    "(": [md_rule32,],
+    ")": [md_rule33,],
+    "\\": [md_rule30,],
 }
 
 # Rules for md_link_inline_url_title ruleset.
@@ -427,9 +427,9 @@ def md_rule36(colorer, s, i):
 
 # Rules dict for md_link_inline_url_title ruleset.
 rulesDict6 = {
-	"(": [md_rule36,],
-	"[": [md_rule35,],
-	"]": [md_rule34,],
+    "(": [md_rule36,],
+    "[": [md_rule35,],
+    "]": [md_rule34,],
 }
 
 # Rules for md_link_inline_url_title_close ruleset.
@@ -441,7 +441,7 @@ def md_rule37(colorer, s, i):
 
 # Rules dict for md_link_inline_url_title_close ruleset.
 rulesDict7 = {
-	")": [md_rule37,],
+    ")": [md_rule37,],
 }
 
 # Rules for md_link_inline_label_close ruleset.
@@ -453,7 +453,7 @@ def md_rule38(colorer, s, i):
 
 # Rules dict for md_link_inline_label_close ruleset.
 rulesDict8 = {
-	"]": [md_rule38,],
+    "]": [md_rule38,],
 }
 
 # Rules for md_markdown_blockquote ruleset.
@@ -559,14 +559,14 @@ rulesDict9 = {
 # old, unused.
 # "!": [], # 53
 # "[": [], # 47,49,50,51,
-	" ": [md_rule39,md_rule46,md_rule49,md_rule50], # new: 46,49,50
-	"\t":[md_rule46,md_rule50,], # new: 46,50
-	"#": [md_rule48,],
-	"(": [md_rule54,md_rule55,], # 45,46
-	"*": [md_rule41,md_rule49,md_rule50,md_rule54,md_rule55,], # new: 49,50,54,55
-	"<": [md_rule40,],
-	"\\": [md_rule43,md_rule44,], # 52,53
-	"_": [md_rule42,md_rule49,md_rule54,md_rule55,], # new: 49,54,55 
+    " ": [md_rule39,md_rule46,md_rule49,md_rule50], # new: 46,49,50
+    "\t":[md_rule46,md_rule50,], # new: 46,50
+    "#": [md_rule48,],
+    "(": [md_rule54,md_rule55,], # 45,46
+    "*": [md_rule41,md_rule49,md_rule50,md_rule54,md_rule55,], # new: 49,50,54,55
+    "<": [md_rule40,],
+    "\\": [md_rule43,md_rule44,], # 52,53
+    "_": [md_rule42,md_rule49,md_rule54,md_rule55,], # new: 49,54,55 
 # new leadins:
     "+":[md_rule50,],
     "-":[md_rule47,md_rule49,md_rule50,],
@@ -587,21 +587,21 @@ rulesDict9 = {
 
 # x.rulesDictDict for md mode.
 rulesDictDict = {
-	"md_block_html_tags": rulesDict3,
-	"md_inline_markup": rulesDict2,
-	"md_link_inline_label_close": rulesDict8,
-	"md_link_inline_url_title": rulesDict6,
-	"md_link_inline_url_title_close": rulesDict7,
-	"md_link_label_definition": rulesDict5,
-	"md_main": rulesDict1,
-	"md_markdown": rulesDict4,
-	"md_markdown_blockquote": rulesDict9,
+    "md_block_html_tags": rulesDict3,
+    "md_inline_markup": rulesDict2,
+    "md_link_inline_label_close": rulesDict8,
+    "md_link_inline_url_title": rulesDict6,
+    "md_link_inline_url_title_close": rulesDict7,
+    "md_link_label_definition": rulesDict5,
+    "md_main": rulesDict1,
+    "md_markdown": rulesDict4,
+    "md_markdown_blockquote": rulesDict9,
 }
 
 # Import dict for md mode.
 importDict = {
-	"md_inline_markup": ["html::tags",],
-	"md_link_label_definition": ["md_link_label_definition::markdown",],
-	"md_main": ["md_main::markdown",],
+    "md_inline_markup": ["html::tags",],
+    "md_link_label_definition": ["md_link_label_definition::markdown",],
+    "md_main": ["md_main::markdown",],
 }
 

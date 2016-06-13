@@ -3,26 +3,26 @@
 
 # Properties for yaml mode.
 properties = {
-	"indentNextLines": "\\s*([^\\s]+\\s*:|-)\\s*$",
-	"indentSize": "2",
-	"noTabs": "true",
-	"tabSize": "2",
-	"lineComment": "#",
+    "indentNextLines": "\\s*([^\\s]+\\s*:|-)\\s*$",
+    "indentSize": "2",
+    "noTabs": "true",
+    "tabSize": "2",
+    "lineComment": "#",
 }
 
 # Attributes dict for yaml_main ruleset.
 yaml_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for yaml mode.
 attributesDictDict = {
-	"yaml_main": yaml_main_attributes_dict,
+    "yaml_main": yaml_main_attributes_dict,
 }
 
 # Keywords dict for yaml_main ruleset.
@@ -30,7 +30,7 @@ yaml_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for yaml mode.
 keywordsDictDict = {
-	"yaml_main": yaml_main_keywords_dict,
+    "yaml_main": yaml_main_keywords_dict,
 }
 
 # Rules for yaml_main ruleset.
@@ -137,30 +137,30 @@ def yaml_rule24(colorer, s, i):
 
 # Rules dict for yaml_main ruleset.
 rulesDict1 = {
-	# EKR: \\s represents  [\t\n\r\f\v], so the whitespace characters themselves, rather than a backspace, must be the leadin characters!
-	# This is a bug in jEdit2py.
-	"\t":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],	
-	"\n":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
-	" ": [yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
-	"#":[yaml_rule0,],
-	"!": [yaml_rule22,yaml_rule23,yaml_rule24,],
-	"&": [yaml_rule11,],
-	"*": [yaml_rule12,],
-	"+": [yaml_rule8,],
-	"-": [yaml_rule1,yaml_rule7,],
-	".": [yaml_rule2,],
-	">": [yaml_rule10,],
-	"[": [yaml_rule4,],
-	## "\\": [yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
-	"]": [yaml_rule3,],
-	"{": [yaml_rule5,],
-	"|": [yaml_rule9,],
-	"}": [yaml_rule6,],
+    # EKR: \\s represents  [\t\n\r\f\v], so the whitespace characters themselves, rather than a backspace, must be the leadin characters!
+    # This is a bug in jEdit2py.
+    "\t":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],    
+    "\n":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
+    " ": [yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
+    "#":[yaml_rule0,],
+    "!": [yaml_rule22,yaml_rule23,yaml_rule24,],
+    "&": [yaml_rule11,],
+    "*": [yaml_rule12,],
+    "+": [yaml_rule8,],
+    "-": [yaml_rule1,yaml_rule7,],
+    ".": [yaml_rule2,],
+    ">": [yaml_rule10,],
+    "[": [yaml_rule4,],
+    ## "\\": [yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
+    "]": [yaml_rule3,],
+    "{": [yaml_rule5,],
+    "|": [yaml_rule9,],
+    "}": [yaml_rule6,],
 }
 
 # x.rulesDictDict for yaml mode.
 rulesDictDict = {
-	"yaml_main": rulesDict1,
+    "yaml_main": rulesDict1,
 }
 
 # Import dict for yaml mode.

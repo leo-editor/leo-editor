@@ -3,22 +3,22 @@
 
 # Properties for ini mode.
 properties = {
-	"lineComment": ";",
+    "lineComment": ";",
 }
 
 # Attributes dict for ini_main ruleset.
 ini_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for ini mode.
 attributesDictDict = {
-	"ini_main": ini_main_attributes_dict,
+    "ini_main": ini_main_attributes_dict,
 }
 
 # Keywords dict for ini_main ruleset.
@@ -26,7 +26,7 @@ ini_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for ini mode.
 keywordsDictDict = {
-	"ini_main": ini_main_keywords_dict,
+    "ini_main": ini_main_keywords_dict,
 }
 
 # Rules for ini_main ruleset.
@@ -53,15 +53,15 @@ def ini_rule3(colorer, s, i):
 
 # Rules dict for ini_main ruleset.
 rulesDict1 = {
-	"#": [ini_rule2,],
-	";": [ini_rule1,],
-	"=": [ini_rule3,],
-	"[": [ini_rule0,],
+    "#": [ini_rule2,],
+    ";": [ini_rule1,],
+    "=": [ini_rule3,],
+    "[": [ini_rule0,],
 }
 
 # x.rulesDictDict for ini mode.
 rulesDictDict = {
-	"ini_main": rulesDict1,
+    "ini_main": rulesDict1,
 }
 
 # Import dict for ini mode.

@@ -3,22 +3,22 @@
 
 # Properties for texinfo mode.
 properties = {
-	"lineComment": "@c",
+    "lineComment": "@c",
 }
 
 # Attributes dict for texinfo_main ruleset.
 texinfo_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "true",
-	"ignore_case": "true",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "true",
+    "ignore_case": "true",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for texinfo mode.
 attributesDictDict = {
-	"texinfo_main": texinfo_main_attributes_dict,
+    "texinfo_main": texinfo_main_attributes_dict,
 }
 
 # Keywords dict for texinfo_main ruleset.
@@ -26,7 +26,7 @@ texinfo_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for texinfo mode.
 keywordsDictDict = {
-	"texinfo_main": texinfo_main_keywords_dict,
+    "texinfo_main": texinfo_main_keywords_dict,
 }
 
 # Rules for texinfo_main ruleset.
@@ -55,14 +55,14 @@ def texinfo_rule4(colorer, s, i):
 
 # Rules dict for texinfo_main ruleset.
 rulesDict1 = {
-	"@": [texinfo_rule0,texinfo_rule1,texinfo_rule2,],
-	"{": [texinfo_rule3,],
-	"}": [texinfo_rule4,],
+    "@": [texinfo_rule0,texinfo_rule1,texinfo_rule2,],
+    "{": [texinfo_rule3,],
+    "}": [texinfo_rule4,],
 }
 
 # x.rulesDictDict for texinfo mode.
 rulesDictDict = {
-	"texinfo_main": rulesDict1,
+    "texinfo_main": rulesDict1,
 }
 
 # Import dict for texinfo mode.

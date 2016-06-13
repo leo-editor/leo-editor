@@ -3,23 +3,23 @@
 
 # Properties for rest mode.
 properties = {
-	"indentNextLines": ".+::$",
-	"lineComment": "..",
+    "indentNextLines": ".+::$",
+    "lineComment": "..",
 }
 
 # Attributes dict for rest_main ruleset.
 rest_main_attributes_dict = {
-	"default": "null",
-	"digit_re": "",
-	"escape": "",
-	"highlight_digits": "false",
-	"ignore_case": "false",
-	"no_word_sep": "",
+    "default": "null",
+    "digit_re": "",
+    "escape": "",
+    "highlight_digits": "false",
+    "ignore_case": "false",
+    "no_word_sep": "",
 }
 
 # Dictionary of attributes dictionaries for rest mode.
 attributesDictDict = {
-	"rest_main": rest_main_attributes_dict,
+    "rest_main": rest_main_attributes_dict,
 }
 
 # Keywords dict for rest_main ruleset.
@@ -27,7 +27,7 @@ rest_main_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for rest mode.
 keywordsDictDict = {
-	"rest_main": rest_main_keywords_dict,
+    "rest_main": rest_main_keywords_dict,
 }
 
 # Rules for rest_main ruleset.
@@ -147,25 +147,25 @@ def rest_rule26(colorer, s, i):
 
 # Rules dict for rest_main ruleset.
 rulesDict1 = {
-	"\"": [rest_rule7,],
-	"#": [rest_rule6,],
-	"*": [rest_rule10,rest_rule14,rest_rule15,],
-	"+": [rest_rule9,rest_rule25,rest_rule26,],
-	"-": [rest_rule3,],
-	".": [rest_rule1,rest_rule11,rest_rule13,rest_rule16,],
-	":": [rest_rule24,],
-	"=": [rest_rule2,],
-	"[": [rest_rule18,rest_rule19,rest_rule20,rest_rule21,],
-	"^": [rest_rule8,],
-	"_": [rest_rule0,],
-	"`": [rest_rule5,rest_rule17,rest_rule22,rest_rule23,],
-	"|": [rest_rule12,],
-	"~": [rest_rule4,],
+    "\"": [rest_rule7,],
+    "#": [rest_rule6,],
+    "*": [rest_rule10,rest_rule14,rest_rule15,],
+    "+": [rest_rule9,rest_rule25,rest_rule26,],
+    "-": [rest_rule3,],
+    ".": [rest_rule1,rest_rule11,rest_rule13,rest_rule16,],
+    ":": [rest_rule24,],
+    "=": [rest_rule2,],
+    "[": [rest_rule18,rest_rule19,rest_rule20,rest_rule21,],
+    "^": [rest_rule8,],
+    "_": [rest_rule0,],
+    "`": [rest_rule5,rest_rule17,rest_rule22,rest_rule23,],
+    "|": [rest_rule12,],
+    "~": [rest_rule4,],
 }
 
 # x.rulesDictDict for rest mode.
 rulesDictDict = {
-	"rest_main": rulesDict1,
+    "rest_main": rulesDict1,
 }
 
 # Import dict for rest mode.
