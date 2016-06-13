@@ -328,6 +328,7 @@ class LeoQtEventFilter(QtCore.QObject):
             ('Control-', 'Ctrl+'),
             # Use Alt+Key-1, etc.  Sheesh.
             # ('Key-','Key+'),
+            ('Meta-', 'Meta+'), # 2016/06/13: per Karsten Wolf.
             ('Shift-', 'Shift+')
         )
         for a, b in table:
@@ -392,22 +393,14 @@ class LeoQtEventFilter(QtCore.QObject):
         modifiers = event.modifiers()
         # The order of this table must match the order created by k.strokeFromSetting.
         qt = QtCore.Qt
-        if sys.platform.startswith('darwin'):
-            # Yet another MacOS hack:
-            table = (
-                (qt.AltModifier, 'Alt'), # For Apple keyboard.
-                (qt.MetaModifier, 'Alt'), # For Microsoft keyboard.
-                (qt.ControlModifier, 'Control'),
-                # No way to generate Meta.
-                (qt.ShiftModifier, 'Shift'),
-            )
-        else:
-            table = (
-                (qt.AltModifier, 'Alt'),
-                (qt.ControlModifier, 'Control'),
-                (qt.MetaModifier, 'Meta'),
-                (qt.ShiftModifier, 'Shift'),
-            )
+        # 2016/06/13: toStroke can now generate meta on MacOS.
+        # In other words: only one version of this table is needed.
+        table = (
+            (qt.AltModifier, 'Alt'),
+            (qt.ControlModifier, 'Control'),
+            (qt.MetaModifier, 'Meta'),
+            (qt.ShiftModifier, 'Shift'),
+        )
         mods = [b for a, b in table if (modifiers & a)]
         return mods
     #@+node:ekr.20140907103315.18767: *3* Tracing
