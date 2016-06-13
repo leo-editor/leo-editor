@@ -398,14 +398,8 @@ if QtWidgets: # NOQA
             # QtConst.Vertical: QtConst.Horizontal,
             # QtConst.Horizontal: QtConst.Vertical
         }
-
-        # NestedSplitter is a kind of meta-widget, in that it manages
-        # panes across multiple actual splitters, even windows.
-        # So to create a signal for a click on splitter handle, we
-        # need to propagate the .connect() call across all the
-        # actual splitters, current and future
-        _splitterClickedArgs = []  # save for future added splitters
-        # a regular signal, but you can't use its .connect() directly
+        # a regular signal, but you can't use its .connect() directly,
+        # use splitterClicked_connect()
         _splitterClickedSignal = QtCore.pyqtSignal(
             QtWidgets.QSplitter,
             QtWidgets.QSplitterHandle,
@@ -413,6 +407,7 @@ if QtWidgets: # NOQA
             bool,
             bool
         )
+
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
@@ -435,10 +430,17 @@ if QtWidgets: # NOQA
                     # list of top level NestedSplitter windows opened from 'Open Window'
                     # splitter handle context menu
                     root.zoomed = False
-            self.root = root
-            for args in self._splitterClickedArgs:
+                # NestedSplitter is a kind of meta-widget, in that it manages
+                # panes across multiple actual splitters, even windows.
+                # So to create a signal for a click on splitter handle, we
+                # need to propagate the .connect() call across all the
+                # actual splitters, current and future
+                root._splitterClickedArgs = []  # save for future added splitters
+            for args in root._splitterClickedArgs:
                 # apply any .connect() calls that occured earlier
                 self._splitterClickedSignal.connect(*args)
+
+            self.root = root
         #@+node:ekr.20110605121601.17968: *3* ns.__repr__
         def __repr__(self):
             # parent = self.parent()
@@ -1185,7 +1187,7 @@ if QtWidgets: # NOQA
             """Apply .connect() args to all actual splitters,
             and store for application to future splitters.
             """
-            self._splitterClickedArgs.append(args)
+            self.root._splitterClickedArgs.append(args)
             for splitter in self.top().self_and_descendants():
                 splitter._splitterClickedSignal.connect(*args)
         #@-others
