@@ -2365,7 +2365,12 @@ class AtFile(object):
         assert not at.importing, 'not at.importing'
             # We can be importing when using the import-file command.
         if newLevel > oldLevel:
-            assert newLevel == oldLevel + 1, 'newLevel == oldLevel + 1'
+            # A possible fix for bug #289.
+            if newLevel != oldLevel + 1:
+                # g.trace('expected level %s got level %s' % (
+                #    oldLevel + 1, newLevel), g.callers())
+                newLevel = oldLevel + 1
+            # assert newLevel == oldLevel + 1, 'newLevel == oldLevel + 1'
         else:
             while oldLevel > newLevel:
                 oldLevel -= 1

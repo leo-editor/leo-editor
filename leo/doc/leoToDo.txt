@@ -142,7 +142,6 @@ Client scripts would tell the jih class what elements are to create outline stru
 
 Some of these may not happen.
 .. @+node:ekr.20160506101850.1: *4* Apply mypy to Leo
-.. @+node:ekr.20160506101840.1: *4* Study valuespace plugin and jedi completer
 .. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -365,7 +364,7 @@ There is no easy way to do this at present, but it's probably reasonable to disa
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion
+.. @+node:ekr.20160327111800.1: *4* Support jedi auto-completion (& valuespace)
 - jedi is available in the
 - Can we use live code inside Leo?
 
