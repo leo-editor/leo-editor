@@ -219,18 +219,17 @@ def install_qt_quicksearch_tab(c):
     def activate_input(idx, c=c):
         wdg = c.frame.nav
         tab_widget = wdg.parent().parent()
-        if tab_widget.currentWidget() == wdg:
+        if (tab_widget and
+            hasattr(tab_widget, 'currentWidget') and
+            tab_widget.currentWidget() == wdg
+        ):
             wdg.ui.lineEdit.selectAll()
             wdg.ui.lineEdit.setFocus()
 
     # Careful: we may be unit testing.
     if wdg and wdg.parent():
         tab_widget = wdg.parent().parent()
-        if 1:
-            tab_widget.currentChanged.connect(activate_input)
-        else:
-            tab_widget.connect(tab_widget,
-                QtCore.SIGNAL("currentChanged(int)"), activate_input)
+        tab_widget.currentChanged.connect(activate_input)
 #@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict
 class OrderedDefaultDict(OrderedDict):
     '''
