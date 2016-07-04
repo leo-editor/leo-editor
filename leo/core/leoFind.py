@@ -1452,13 +1452,20 @@ class LeoFind(object):
             # Always search the entire outline.
             p = c.rootPosition()
             after = None
-        if clone_find:
-            count = self.doCloneFindAll(after, data, flatten, p, undoType)
-        else:
-            self.p = p
-            count = self.doFindAll(after, data, p, undoType)
-        c.contractAllHeadlines()
-        # c.redraw()
+        # Fix #292: Never collapse nodes during find-all commands.
+        old_sparse_find = c.sparse_find
+        try:
+            c.sparse_find = False
+            if clone_find:
+                count = self.doCloneFindAll(after, data, flatten, p, undoType)
+            else:
+                self.p = p
+                count = self.doFindAll(after, data, p, undoType)
+            # c.contractAllHeadlines()
+        finally:
+            c.sparse_find = old_sparse_find
+        if count:
+            c.redraw()
         g.es("found", count, "matches for", self.find_text)
     #@+node:ekr.20160422072841.1: *5* find.doCloneFindAll & helpers
     def doCloneFindAll(self, after, data, flatten, p, undoType):

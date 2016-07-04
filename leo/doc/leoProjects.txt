@@ -24,6 +24,10 @@ The colorizer now colorizers the following properly:
 @classmethod
 basestring
 
+.. @+node:ekr.20160704084005.1: *4* Fixed #292 
+https://github.com/leo-editor/leo-editor/issues/292
+
+The new code temporarily sets c.sparse_find to False.
 .. @+node:ekr.20160504150917.1: *3* Code
 .. @+node:ekr.20160504150922.1: *4* Removed useUI switch
 It hasn't been active for a long, long time.
