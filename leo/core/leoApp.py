@@ -259,7 +259,7 @@ def pylint_command(event):
             g.es_print('no pylint configuration file found in\n%s' % (
                 '\n'.join(table)))
             return None
-        #@+node:ekr.20150514125218.11: *5* run
+        #@+node:ekr.20150514125218.11: *5* pylint.run
         def run(self):
             '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
             c, root = self.c, self.c.p

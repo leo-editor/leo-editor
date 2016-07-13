@@ -111,11 +111,20 @@ elif isQt5:
     try:
         from PyQt5 import QtWebKit
     except ImportError:
-        QtWebKit = None
+        # 2016/07/13: Reinhard: Support pyqt 5.6...
+        try:
+            from PyQt5 import QtWebEngineCore as QtWebKit
+        except ImportError:
+            QtWebKit = None
     try:
         import PyQt5.QtWebKitWidgets as QtWebKitWidgets
     except ImportError:
-        QtWebKitWidgets = None
+        try:
+            # 2016/07/13: Reinhard: Support pyqt 5.6...
+            import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
+            QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
+        except ImportError:
+            QtWebKitWidgets = None
 else:
     try:
         QString = QtCore.QString
