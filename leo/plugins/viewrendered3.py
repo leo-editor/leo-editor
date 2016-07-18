@@ -704,22 +704,7 @@ if QtWidgets: # NOQA
                         g.es_exception()
                         pc.deactivate()
                     if sb:
-                        pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                # Saving scroll position for QWebView used in new html_class
-                #            elif w.__class__ == pc.html_class:
-                #                # The widge may no longer exist.
-                #                mf = None
-                #                try:
-                #                    mf = w.view.page().mainFrame()
-                #                except Exception:
-                #                    g.es_exception()
-                #                    pc.deactivate()
-                #                if mf:
-                #                    pos = mf.scrollBarValue(QtCore.Qt.Vertical)
-                #                    pc.scrollbar_pos_dict[p.v] = pos
-                #                    print 'saved1 scroll pos', pos
-                # Will be called at idle time.
-                # if trace: g.trace('no update')
+                        self.w.save_scroll_position()
         #@+node:ekr.20160331123847.37: *4* vr3.embed_widget & helper
         def embed_widget(self, w, delete_callback=None):
             '''Embed widget w in the free_layout splitter.'''
@@ -915,14 +900,10 @@ if QtWidgets: # NOQA
                             s = 'MD error:\n%s\n\n%s' % (msg, s)
                 sb = w.verticalScrollBar()
                 if sb:
-                    d = pc.scrollbar_pos_dict
                     if pc.node_changed:
-                        # Set the scrollbar.
-                        pos = d.get(p.v, sb.sliderPosition())
-                        sb.setSliderPosition(pos)
+                        self.w.restore_scroll_position()
                     else:
-                        # Save the scrollbars
-                        d[p.v] = pos = sb.sliderPosition()
+                        self.w.save_scroll_position()
                 # 2016/03/25: honor @language md.
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanColorDirectives(p)
@@ -1058,14 +1039,10 @@ if QtWidgets: # NOQA
                             s = 'RST error:\n%s\n\n%s' % (msg, s)
                 sb = w.verticalScrollBar()
                 if sb:
-                    d = pc.scrollbar_pos_dict
                     if pc.node_changed:
-                        # Set the scrollbar.
-                        pos = d.get(p.v, sb.sliderPosition())
-                        sb.setSliderPosition(pos)
+                        self.w.restore_scroll_position()
                     else:
-                        # Save the scrollbars
-                        d[p.v] = pos = sb.sliderPosition()
+                        self.w.save_scroll_position()
                 if trace: g.trace('setHtml: language=%s, default=%s, force_rst=%s' % (
                     language, pc.default_kind, force_rst))
                 w.setHtml(s)
@@ -1532,9 +1509,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if self.lock_mode_action.isChecked(): # Just become active
             self.plock = self.pc.c.p.copy() # make a copy of node position
             self.plockmode = self.get_mode() # copy current node's md/rst state
-            if self.pr:
-                self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
-                mainFrame().scrollBarValue(QtCore.Qt.Vertical)
+            self.save_scroll_position()
         else:
             self.render_delegate()
                 # Render again since root node may have changed now
@@ -1605,8 +1580,21 @@ class WebViewPlus(QtWidgets.QWidget):
             spos = 0
         else:
             spos = d.get(self.pr.v, mf.scrollBarValue(QtCore.Qt.Vertical))
+            if spos == -1:  # stick to bottom of page
+                spos = mf.scrollBarMaximum(QtCore.Qt.Vertical)
         mf.setScrollBarValue(QtCore.Qt.Vertical, spos)
-        #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
+    #@+node:tbnorth.20160718112948.1: *4* wvp.save_scroll_position
+    def save_scroll_position(self):
+        # Save scroll bar position for (possibly) new node
+        if not self.pr:
+            return
+        mf = self.view.page().mainFrame()
+        spos = mf.scrollBarValue(QtCore.Qt.Vertical)
+        if spos == mf.scrollBarMaximum(QtCore.Qt.Vertical):
+            # make scrollbar stick to bottom of page, 
+            # see restore_scroll_position()
+            spos = -1
+        self.pc.scrollbar_pos_dict[self.pr.v] = spos
     #@+node:ekr.20160331124028.36: *4* wvp.setHtml (EKR)
     def setHtml(self, s):
 
@@ -1679,9 +1667,7 @@ class WebViewPlus(QtWidgets.QWidget):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
-        pc.scrollbar_pos_dict[self.last_node.v] = ps
+        self.save_scroll_position()
         # Which node should be rendered?
         self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
@@ -1964,9 +1950,7 @@ class WebViewPlus(QtWidgets.QWidget):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
-        pc.scrollbar_pos_dict[self.last_node.v] = ps
+        self.save_scroll_position()
         # Which node should be rendered?
         self.getUIconfig()  # Update the state of self.lock_mode
         if self.lock_mode:
