@@ -2425,6 +2425,7 @@ class LoadManager(object):
         import leo.core.leoPlugins as leoPlugins
         import leo.core.leoSessions as leoSessions
         # Import leoIPython only if requested.  The import is quite slow.
+        self.setStdStreams()
         if g.app.useIpython:
             import leo.core.leoIPython as leoIPython
                 # This launches the IPython Qt Console.  It *is* required.
@@ -2627,6 +2628,79 @@ class LoadManager(object):
             else:
                 result.append(z)
         return result
+    #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
+    def setStdStreams(self):
+        '''
+        Make sure that stdout and stderr exist.
+        This is an issue when running Leo with pythonw.exe.
+        '''
+        # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
+        # import pdb ; pdb.set_trace()
+        import sys
+        import leo.core.leoGlobals as g
+        
+        # Define class LeoStdOut
+        #@+others
+        #@+node:ekr.20160718091844.1: *6* class LeoStdOut
+        class LeoStdOut:
+            '''A class to put stderr & stdout to Leo's log pane.'''
+
+            def __init__(self, kind):
+                self.kind = kind
+                g.es_print = self.write
+                g.pr = self.write
+
+            def flush(*args, **keys):
+                pass
+                
+            #@+others
+            #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
+            def write(self, *args, **keys):
+                '''Put all non-keyword args to the log pane, as in g.es.'''
+                trace = False
+                    # Tracing will lead to unbounded recursion unless
+                    # sys.stderr has been redirected on the command line.
+                if trace:
+                    for z in args:
+                        sys.stderr.write('arg: %r\n' % z)
+                    for z in keys:
+                        sys.stderr.write('key: %r\n' % z)
+                app = g.app
+                if not app or app.killed: return
+                if app.gui and app.gui.consoleOnly: return
+                log = app.log
+                # Compute the effective args.
+                d = {
+                    'color': None,
+                    'commas': False,
+                    'newline': True,
+                    'spaces': True,
+                    'tabName': 'Log',
+                }
+                # Handle keywords for g.pr and g.es_print.
+                d = g.doKeywordArgs(keys, d)
+                color = d.get('color')
+                if color == 'suppress': return
+                elif log and color is None:
+                    color = g.actualColor('black')
+                color = g.actualColor(color)
+                tabName = d.get('tabName') or 'Log'
+                s = g.translateArgs(args, d)
+                if app.batchMode:
+                    if log:
+                        log.put(s)
+                elif log and app.logInited:
+                    # from_redirect is the big difference between this and g.es.
+                    log.put(s, color=color, tabName=tabName, from_redirect=True)
+                else:
+                    app.logWaiting.append((s, color),)
+            #@-others
+        #@-others
+
+        if not sys.stdout:
+            sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
+        if not sys.stderr:
+            sys.stderr = sys.__stderr__ = LeoStdOut('stderr')
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
         '''Create a Leo window for each file in the lm.files list.'''
