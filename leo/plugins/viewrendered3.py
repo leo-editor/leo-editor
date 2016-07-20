@@ -916,9 +916,9 @@ if QtWidgets: # NOQA
                         w.zoomIn(4) # Doesn't work.
                 else:
                     w.setPlainText(s)
-                if sb and pos:
+                if sb and p:
                     # Restore the scrollbars
-                    sb.setSliderPosition(pos)
+                    sb.setSliderPosition(p)
         #@+node:ekr.20160331123847.44: *4* vr3.update_movie
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
@@ -1048,9 +1048,9 @@ if QtWidgets: # NOQA
                 w.setHtml(s)
                 if pc.default_kind == 'big':
                     w.zoomIn(4) # Doesn't work.
-                if sb and pos:
+                if sb and p:
                     # Restore the scrollbars
-                    sb.setSliderPosition(pos)
+                    sb.setSliderPosition(p)
         #@+node:ekr.20160331123847.47: *4* vr3.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
