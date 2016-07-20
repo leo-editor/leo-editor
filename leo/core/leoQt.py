@@ -123,6 +123,14 @@ elif isQt5:
             # 2016/07/13: Reinhard: Support pyqt 5.6...
             import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
             QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
+            # 2016/07/20: Per
+            # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
+            # used by richtext.py
+            QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
+            # used by viewrendered(2|3).py, bigdash.py
+            QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
+            # used by viewrendered(2|3).py
+            QtWebKitWidgets.QWebSettings = QtWebKitWidgets.QWebEngineSettings
         except ImportError:
             QtWebKitWidgets = None
 else:
