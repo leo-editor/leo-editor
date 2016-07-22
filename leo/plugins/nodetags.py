@@ -223,6 +223,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.search_re = '(&|\||-|\^)'
         self.custom_searches = []
         g.registerHandler('select2', self.select2_hook)
+        g.registerHandler('create-node', self.command2_hook) # fix tag jumplist positions after new node insertion
         g.registerHandler('command2', self.command2_hook)
     #@+node:peckj.20140804114520.15202: *4* initUI
     def initUI(self):
@@ -414,10 +415,8 @@ class LeoTagWidget(QtWidgets.QWidget):
         paste_cmds = ['paste-node',
                       'pasteOutlineRetainingClones', # strange that this one isn't canonicalized
                       'paste-retaining-clones']
-        if keywords.get('label') not in paste_cmds:
-            return
-
-        self.tc.initialize_taglist()
+        if keywords.get('label') in paste_cmds:
+          self.tc.initialize_taglist()
         self.update_all()
     #@-others
 #@-others
