@@ -1398,8 +1398,6 @@ class LeoTree(object):
             if trace: g.trace('****** no w for p: %s', repr(p))
             return
         ch = '\n' # New in 4.4: we only report the final keystroke.
-        if g.doHook("headkey1", c=c, p=p, v=p, ch=ch):
-            return # The hook claims to have handled the event.
         if s is None: s = w.getAllText()
         if trace:
             g.trace('*** LeoTree', g.callers(5))
@@ -1431,6 +1429,8 @@ class LeoTree(object):
         self.revertHeadline = s
         p.initHeadString(s)
         if trace: g.trace('changed', changed, 'new', repr(s))
+        if g.doHook("headkey1", c=c, p=p, v=p, ch=ch, changed=changed):
+            return # The hook claims to have handled the event.
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
             if not c.changed: c.setChanged(True)
@@ -1444,7 +1444,7 @@ class LeoTree(object):
         if changed:
             c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-        g.doHook("headkey2", c=c, p=p, v=p, ch=ch)
+        g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):

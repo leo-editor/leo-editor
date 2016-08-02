@@ -611,10 +611,11 @@ class LeoQtTree(leoFrame.LeoTree):
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
         '''Officially change a headline.'''
         trace = False and not g.unitTesting
-        verbose = True
+        trace_hook = True
+        verbose = False
         c = self.c; u = c.undoer
         if not p:
-            if trace: g.trace('** no p')
+            if trace and verbose: g.trace('** no p')
             return
         item = self.getCurrentItem()
         if not item:
@@ -627,10 +628,12 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         s = g.u(e.text())
         self.closeEditorHelper(e, item)
-        if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s):
-            return
         oldHead = p.h
         changed = s != oldHead
+        if trace and trace_hook:
+            g.trace('headkey1: changed %s' % (changed), g.callers())
+        if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
+            return
         if changed:
             # New in Leo 4.10.1.
             if trace: g.trace('(nativeTree) new', repr(s), 'old', repr(p.h))
@@ -661,7 +664,7 @@ class LeoQtTree(leoFrame.LeoTree):
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
-        g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s)
+        g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
         # This is a crucial shortcut.
         if g.unitTesting: return
         if changed:
