@@ -528,8 +528,6 @@ class BookMarkDisplay(object):
         self.second = False  # second click of current bookmark?
         self.upwards = False  # moving upwards through hierarchy
 
-        self.already = -1  # used to indicate existing link when same link added again
-
         self.w = QtWidgets.QWidget()
 
         self.dark = c.config.getBool("color_theme_is_dark")
@@ -576,8 +574,20 @@ class BookMarkDisplay(object):
 
         c = v.context
         p = c.vnode2position(v)
-        nd = p.insertAsNthChild(0)
         new_url = self.get_unl()
+
+        # check url doesn't exist at this level
+        dupes = [i for i in v.children 
+                 if new_url == i.b.split('\n', 1)[0].strip()]
+        if dupes:
+            g.es("Bookmark already exists", color='red')
+            for bm in dupes:
+                bm.u['__bookmarks']['is_dupe'] = True
+            self.show_list(self.get_list())
+            return
+
+        nd = p.insertAsNthChild(0)
+
         nd.b = new_url
         nd.h = (
             self.c.frame.body.wrapper.hasSelection() and
@@ -788,7 +798,6 @@ class BookMarkDisplay(object):
         :Parameters:
         - `links`: Bookmarks to show
         """
-
         p = self.v.context.vnode2position(self.v)
         if not p:
             return
@@ -832,8 +841,9 @@ class BookMarkDisplay(object):
             top.setLayout(layout)
             for bm in links:
 
-                but = QtWidgets.QPushButton(bm.head)
+                bm.v.u.setdefault('__bookmarks', {'is_dupe': False})
 
+                but = QtWidgets.QPushButton(bm.head)
                 if bm.url:
                     but.setToolTip(bm.url)
 
@@ -853,9 +863,14 @@ class BookMarkDisplay(object):
                         showing = True
                         todo.append(bm.children)
 
-                style_sheet = ("background: #%s;" %
-                    self.color(bm.head, dark=self.dark))
+                if bm.v.u['__bookmarks']['is_dupe']:
+                    style_sheet = "background: red; color: white;"
+                else:
+                    style_sheet = ("background: #%s;" %
+                        self.color(bm.head, dark=self.dark))
+
                 but.setStyleSheet(style_sheet)
+                bm.v.u['__bookmarks']['is_dupe'] = False
 
                 classes = []
                 if bm.v == self.current:
