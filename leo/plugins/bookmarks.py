@@ -322,21 +322,24 @@ def cmd_bookmark(event,child=False,organizer=False):
         bm.current = bm.v
     if bm.current == bm.v:  # first use or other conditions
         container = bm.v
+    elif child:
+        container = bm.current
+    elif not bm.current.b.strip():  # no url implies folder
+        container = bm.current
     else:
-        if child:
-            container = bm.current
-        else:
-            container = bm.current.parents[0]
+        container = bm.current.parents and bm.current.parents[0] or bm.v
 
     new_url = bm.get_unl()
 
     # check url doesn't exist at this level
     dupes = [i for i in container.children 
-             if new_url == i.b.split('\n', 1)[0].strip()]
-    if dupes:
-        g.es("Bookmark already exists", color='red')
-        for nd in dupes:
-            nd.u['__bookmarks']['is_dupe'] = True
+             if i.b.split('\n', 1)[0].strip() == new_url]
+    if dupes and not organizer:
+        what = "Child bookmark" if child else "Bookmark"
+        g.es("%s exists" % what, color='red')
+        for other in bm.get_list(levels=0):
+            if other.v in dupes:
+                other.v.u['__bookmarks']['is_dupe'] = True
         bm.show_list(bm.get_list())
         return
 
@@ -348,14 +351,26 @@ def cmd_bookmark(event,child=False,organizer=False):
         c.frame.body.wrapper.getSelectedText() or
         bm.fix_text(c.p.h)
     )
-    nd.b = new_url
+    if not organizer:
+        nd.b = new_url
+    else:
+        nd.v.u['__bookmarks'] = {
+            'is_dupe': False,
+        }
     bm.current = nd.v
+    if organizer:
+        g.es("Showing new (empty) folder:\n'%s'" % nd.h)
     bm.show_list(bm.get_list())
 
 @g.command('bookmarks-bookmark-child')
 def cmd_bookmark_child(event):
     """bookmark current node as child of current bookmark"""
     cmd_bookmark(event,child=True)
+
+@g.command('bookmarks-bookmark-organizer')
+def cmd_bookmark_organizer(event):
+    """bookmark current node as organizer (no link)"""
+    cmd_bookmark(event,organizer=True)
 #@+node:tbrown.20140101093550.25176: ** bookmarks-level-*
 @g.command('bookmarks-level-increase')
 def cmd_level_increase(event, delta=1):
@@ -573,6 +588,9 @@ class BookMarkDisplay(object):
         - `bookmarks`: bookmarks in this pane
         """
 
+        if event.button() == QtCore.Qt.RightButton:
+            return self.context_menu(event)
+
         if bookmarks:
             v = bookmarks[0].v.parents[0]  # node containing bookmarks
         else:
@@ -618,7 +636,7 @@ class BookMarkDisplay(object):
             return
         # Shift => add child bookmark
         if mods == QtCore.Qt.ShiftModifier:
-            self.add_child_bookmark(bm)
+            cmd_bookmark_child(event={'c': bm.v.context})
             return
 
         # Alt-Shift => navigate in bookmarks without changing nodes
@@ -632,13 +650,15 @@ class BookMarkDisplay(object):
         self.upwards = up
         self.second = not up and self.current == bm.v
         self.current = bm.v
+        if up and not bm.url and bm.v != self.v:
+            # folders are only current when you're in them
+            self.current = self.current.parents[0]
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list(), up=up)
         if bm.url and not up and not no_move:
             g.handleUrl(bm.url, c=self.c)
             if hoist:
                 self.c.hoist()
-
     #@+node:tbrown.20140807091931.30231: *3* button_menu
     def button_menu(self, event, bm, but, up=False):
         """button_menu - handle a button being right-clicked
@@ -656,7 +676,10 @@ class BookMarkDisplay(object):
             ("Re-name bookmark", self.rename_bookmark),
             ("Edit bookmark in tree", self.edit_bookmark),
             ("Delete bookmark", self.delete_bookmark),
-            ("Add this node as child bookmark", self.add_child_bookmark),
+            ("Add this node as child bookmark",
+                lambda e: cmd_bookmark_child(event={'c': bm.v.context})),
+            ("Add bookmark folder",
+                lambda e: cmd_bookmark_organizer(event={'c': bm.v.context})),
         ]
         for action in actions:
             # pylint: disable=cell-var-from-loop
@@ -674,6 +697,26 @@ class BookMarkDisplay(object):
         menu.addAction(act)
 
         menu.exec_(but.mapToGlobal(event.pos()))
+    #@+node:tbnorth.20160830110146.1: *3* context_menu
+    def context_menu(self, event):
+        """context_menu
+        """
+
+        menu = QtWidgets.QMenu()
+        bm = self.c._bookmarks
+
+        actions = [
+            ("Edit bookmarks in tree", self.edit_bookmark),
+            ("Add bookmark folder",
+                lambda e: cmd_bookmark_organizer(event={'c': bm.v.context})),
+        ]
+        for action in actions:
+            # pylint: disable=cell-var-from-loop
+            act = QtWidgets.QAction(action[0], menu)
+            act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
+            menu.addAction(act)
+
+        menu.exec_(self.w.mapToGlobal(event.pos()))
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -715,7 +758,7 @@ class BookMarkDisplay(object):
             return ' '.join(parts)
         return text
     #@+node:tbrown.20110712100955.39216: *3* get_list
-    def get_list(self):
+    def get_list(self, levels=None):
         """Return list of Bookmarks
         """
 
@@ -723,6 +766,9 @@ class BookMarkDisplay(object):
         p = self.v.context.vnode2position(self.v)
         if not p:
             return
+
+        if levels is None:
+            levels = self.levels
 
         def strip(s):
             if s.startswith('@url'):
@@ -754,7 +800,7 @@ class BookMarkDisplay(object):
 
                 result.append(bm)
 
-                if self.levels == 0:  # non-hierarchical
+                if levels == 0:  # non-hierarchical
                     recurse_bm(p, result)
                 else:
                     recurse_bm(p, children, ancestors=ancestors+[bm])
@@ -805,7 +851,7 @@ class BookMarkDisplay(object):
 
         while todo:
 
-            links = todo.pop(0)
+            links = todo and todo.pop(0) or []
 
             top = QtWidgets.QWidget()
             # pylint: disable=undefined-loop-variable
@@ -829,7 +875,9 @@ class BookMarkDisplay(object):
             top.setLayout(layout)
             for bm in links:
 
-                bm.v.u.setdefault('__bookmarks', {'is_dupe': False})
+                bm.v.u.setdefault('__bookmarks', {
+                    'is_dupe': False,
+                })
 
                 but = QtWidgets.QPushButton(bm.head)
                 if bm.url:
@@ -843,7 +891,7 @@ class BookMarkDisplay(object):
                 layout.addWidget(but)
 
                 showing = False
-                if bm.children and self.current:
+                if self.current and (bm.children or not bm.url):
                     nd = self.current
                     while nd != bm.v and nd.parents:
                         nd = nd.parents[0]
@@ -892,9 +940,6 @@ class BookMarkDisplay(object):
                 next_row = self.w.layout().itemAt(1).widget().layout()
                 but = QtWidgets.QPushButton('^')
                 bm = showing_chain.pop(0)
-
-                # but.mouseReleaseEvent = (lambda event, bm=bm, but=but:
-                    # self.button_clicked(event, bm, but, up=True))
 
                 def mouseReleaseHandler2(event, bm=bm, but=but):
                     self.button_clicked(event, bm, but, up=True)
@@ -982,28 +1027,6 @@ class BookMarkDisplay(object):
         p = c.vnode2position(v)
         c.selectPosition(p)
         c.bringToFront()
-    #@+node:tbrown.20131227100801.40521: *3* add_child_bookmark
-    def add_child_bookmark(self, bm):
-        """add_child_bookmark - Add a child bookmark
-
-        :Parameters:
-        - `bm`: bookmark to which to add a child
-        """
-
-        c = bm.v.context
-        p = c.vnode2position(bm.v)
-        new_url = self.get_unl()
-        nd = p.insertAsNthChild(0)
-        nd.b = new_url
-        nd.h = (
-            self.c.frame.body.wrapper.hasSelection() and
-            self.c.frame.body.wrapper.getSelectedText() or
-            self.fix_text(self.c.p.h)
-        )
-
-        c.redraw()
-        self.current = nd.v
-        self.show_list(self.get_list())
     #@-others
 #@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
 class BookMarkDisplayProvider(object):
