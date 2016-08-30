@@ -311,7 +311,7 @@ def cmd_switch(event):
     oc.bringToFront()
 #@+node:tbrown.20140101093550.25175: ** bookmarks-bookmark-*
 @g.command('bookmarks-bookmark')
-def cmd_bookmark(event,child=False):
+def cmd_bookmark(event,child=False,organizer=False):
     """bookmark current node"""
     c = event.get('c')
     if not hasattr(c, '_bookmarks'):
@@ -328,6 +328,18 @@ def cmd_bookmark(event,child=False):
         else:
             container = bm.current.parents[0]
 
+    new_url = bm.get_unl()
+
+    # check url doesn't exist at this level
+    dupes = [i for i in container.children 
+             if new_url == i.b.split('\n', 1)[0].strip()]
+    if dupes:
+        g.es("Bookmark already exists", color='red')
+        for nd in dupes:
+            nd.u['__bookmarks']['is_dupe'] = True
+        bm.show_list(bm.get_list())
+        return
+
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
@@ -336,7 +348,7 @@ def cmd_bookmark(event,child=False):
         c.frame.body.wrapper.getSelectedText() or
         bm.fix_text(c.p.h)
     )
-    nd.b = bm.get_unl()
+    nd.b = new_url
     bm.current = nd.v
     bm.show_list(bm.get_list())
 
@@ -571,32 +583,8 @@ class BookMarkDisplay(object):
         if mods == QtCore.Qt.AltModifier:
             self.edit_bookmark(None, v=v)
             return
-
-        c = v.context
-        p = c.vnode2position(v)
-        new_url = self.get_unl()
-
-        # check url doesn't exist at this level
-        dupes = [i for i in v.children 
-                 if new_url == i.b.split('\n', 1)[0].strip()]
-        if dupes:
-            g.es("Bookmark already exists", color='red')
-            for bm in dupes:
-                bm.u['__bookmarks']['is_dupe'] = True
-            self.show_list(self.get_list())
-            return
-
-        nd = p.insertAsNthChild(0)
-
-        nd.b = new_url
-        nd.h = (
-            self.c.frame.body.wrapper.hasSelection() and
-            self.c.frame.body.wrapper.getSelectedText() or
-            self.fix_text(self.c.p.h)
-        )
-        c.redraw()
-        self.current = nd.v
-        self.show_list(self.get_list())
+        
+        cmd_bookmark(event={'c': v.context})
     #@+node:tbnorth.20160502105134.1: *3* button_clicked
     def button_clicked(self, event, bm, but, up=False):
         """button_clicked - handle a button being clicked
