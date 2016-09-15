@@ -416,8 +416,8 @@ class LeoTagWidget(QtWidgets.QWidget):
                       'pasteOutlineRetainingClones', # strange that this one isn't canonicalized
                       'paste-retaining-clones']
         if keywords.get('label') in paste_cmds:
-          self.tc.initialize_taglist()
-        self.update_all()
+            self.tc.initialize_taglist()
+            self.update_all()
     #@-others
 #@-others
 #@@language python
