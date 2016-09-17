@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1239,6 +1239,9 @@
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
 <v t="ekr.20160502092850.1"><vh>** update myLeoSettings.leo docs</vh></v>
+<v t="ekr.20050830115714"></v>
+<v t="ekr.20150312080344.12"></v>
+<v t="ekr.20141108064630.13"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15057,7 +15060,12 @@ The tree, body and log objects have a *wrapper* object::
     c.frame.body.wrapper
     c.frame.log.wrapper
 
-See http://leoeditor.com/scripting.html#c-frame-body-bodyctrl for a description of the high-level text interface supported by all high-level text widgets, including the log and body classes.
+For the actual wrapper interface, see::
+
+    leoPyRef.leo#Code--&gt;Qt gui--&gt;@file ../plugins/qt_text.py--&gt;
+    class QTextEditWrapper(QTextMixin)--&gt;qtew.High-level interface
+
+This interface applies to all high-level text widgets, including the log and body classes. 
 
 These wrapper classes have a widget ivar, which is a reference to the corresponding Qt widget object.  For example::
 
@@ -15072,6 +15080,8 @@ yields::
     True
 
 As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
+
+See http://leoeditor.com/tutorial-scripting.html#wrappers-vs-widgets for a discussion of wrappers versus actual widgets.
 
 ==== Terry
 
@@ -18705,7 +18715,7 @@ how Leo searches for existing settings, if you attempt to open (through
 the Settings menu) myLeoSettings.leo when it doesn't exist, it's
 automagically created with a copy of @enabled-plugins from
 leoSettings.leo. </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
