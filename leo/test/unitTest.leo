@@ -57,25 +57,33 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20160403165232.24"><vh>@gnxs</vh></v>
+<v t="ekr.20160917131926.25"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20160403165233.11"><vh>@gnxs</vh></v>
+<v t="ekr.20160917131927.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20160403165232.9"><vh>@gnxs</vh></v>
+<v t="ekr.20160917131926.10"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20160403165232.2"><vh>@gnxs</vh></v>
+<v t="ekr.20160917131926.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20160403165231.9"><vh>@gnxs</vh></v>
+<v t="ekr.20160917131925.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143351.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
 <v t="ekr.20160403143351.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160917122402.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20160917122402.2"><vh>@data:#@auto</vh>
+<v t="ekr.20160917122402.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160917122402.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20160917122402.5"><vh>@data:#@auto</vh>
+<v t="ekr.20160917122402.6"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -1222,7 +1230,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f746573747103580400000061626364710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e333971197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20160330182418.1"><vh>Recent failures</vh>
 <v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
@@ -12963,39 +12971,6 @@ def spam(): # line 2
 </t>
 <t tx="ekr.20160403152507.1">def eggs(): # line 4
     pass</t>
-<t tx="ekr.20160403165231.9">gnx: ekr.20160403164217.4
-unl: section 1
-gnx: ekr.20160403164217.5
-unl: section 2
-</t>
-<t tx="ekr.20160403165232.2">gnx: ekr.20160403164217.15
-unl: section 1
-gnx: ekr.20160403164217.16
-unl: section 2
-</t>
-<t tx="ekr.20160403165232.24">gnx: ekr.20160403164217.9
-unl: class child1
-gnx: ekr.20160403164217.10
-unl: class child1--&gt;child1_method1
-gnx: ekr.20160403164217.11
-unl: class child1--&gt;child1_method2
-gnx: ekr.20160403164217.12
-unl: class child2
-gnx: ekr.20160403164217.13
-unl: class child2--&gt;child2_method1
-gnx: ekr.20160403164217.14
-unl: class child2--&gt;child2_method2
-</t>
-<t tx="ekr.20160403165232.9">gnx: ekr.20160403164217.17
-unl: section 1
-gnx: ekr.20160403164217.18
-unl: section 2
-</t>
-<t tx="ekr.20160403165233.11">gnx: ekr.20160403164217.19
-unl: section 1
-gnx: ekr.20160403164217.20
-unl: section 2
-</t>
 <t tx="ekr.20160410152100.1"></t>
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
 g.app.unitTestDict ['expectedErrors'] = 0
@@ -13144,6 +13119,57 @@ msf.unit_test(raise_on_fail=True)
 import leo.external.py2cs as py2cs
 py2cs.unit_test(raise_on_fail=True)
 
+</t>
+<t tx="ekr.20160917122402.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20160917122402.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20160917122402.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20160917122402.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20160917122402.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20160917122402.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20160917131925.9">gnx: ekr.20160917131918.4
+unl: section 1
+gnx: ekr.20160917131918.5
+unl: section 2
+</t>
+<t tx="ekr.20160917131926.10">gnx: ekr.20160917131918.17
+unl: section 1
+gnx: ekr.20160917131918.18
+unl: section 2
+</t>
+<t tx="ekr.20160917131926.25">gnx: ekr.20160917131918.9
+unl: class child1
+gnx: ekr.20160917131918.10
+unl: class child1--&gt;child1_method1
+gnx: ekr.20160917131918.11
+unl: class child1--&gt;child1_method2
+gnx: ekr.20160917131918.12
+unl: class child2
+gnx: ekr.20160917131918.13
+unl: class child2--&gt;child2_method1
+gnx: ekr.20160917131918.14
+unl: class child2--&gt;child2_method2
+</t>
+<t tx="ekr.20160917131926.3">gnx: ekr.20160917131918.15
+unl: section 1
+gnx: ekr.20160917131918.16
+unl: section 2
+</t>
+<t tx="ekr.20160917131927.5">gnx: ekr.20160917131918.19
+unl: section 1
+gnx: ekr.20160917131918.20
+unl: section 2
 </t>
 </tnodes>
 </leo_file>

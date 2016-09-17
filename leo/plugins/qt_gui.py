@@ -82,6 +82,9 @@ class LeoQtGui(leoGui.LeoGui):
         if trace: print('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
     #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
+
+
+    #@+node:ekr.20160917125946.1: *4* LeoQtGui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
         trace = False and not g.unitTesting
@@ -91,13 +94,12 @@ class LeoQtGui(leoGui.LeoGui):
             s = g.toUnicode(s)
             QtWidgets.QApplication.processEvents()
             # Fix #241: QMimeData object error
-            # g.trace('QString', QString)
             cb.setText(QString(s))
             QtWidgets.QApplication.processEvents()
             if trace: g.trace(len(s), type(s), s[: 25])
         else:
             g.trace('no clipboard!')
-
+    #@+node:ekr.20160917125948.1: *4* LeoQtGui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
         trace = False and not g.unitTesting
@@ -114,6 +116,19 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace('no clipboard!')
             return ''
+    #@+node:ekr.20160917130023.1: *4* LeoQtGui.setClipboardSelection
+    def setClipboardSelection(self, s):
+        '''
+        Set the clipboard selection to s.
+        There are problems with PyQt5.
+        '''
+        if isQt5:
+            # Alas, returning reopens bug 218: https://github.com/leo-editor/leo-editor/issues/218
+            return 
+        if s:
+            # This code generates a harmless, but annoying warning on PyQt5.
+            cb = self.qtApp.clipboard()
+            cb.setText(QString(s), mode=cb.Selection)
     #@+node:ekr.20110605121601.18487: *3* LeoQtGui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *4* LeoQtGui.alert
     def alert(self, c, message):

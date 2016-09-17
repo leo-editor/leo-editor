@@ -5,7 +5,7 @@
 '''Text classes for the Qt version of Leo'''
 import leo.core.leoGlobals as g
 import time
-from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QString, QtWidgets
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin(object):
@@ -1447,13 +1447,10 @@ class QTextEditWrapper(QTextMixin):
         if trace: g.trace(kind, 'extend', extend, 'yscroll', w.getYScrollPosition())
         self.rememberSelectionAndScroll()
         # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
-        if 1:
-            cursor = w.textCursor()
-            sel = cursor.selection().toPlainText()
-            if sel:
-                cb = g.app.gui.qtApp.clipboard()
-                cb.setText(sel, mode=cb.Selection)
-            # QtWidgets.QApplication.processEvents()
+        cursor = w.textCursor()
+        sel = cursor.selection().toPlainText()
+        if sel and hasattr(g.app.gui, 'setClipboardSelection'):
+            g.app.gui.setClipboardSelection(sel)
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
     def pageUpDown(self, op, moveMode):
@@ -1614,12 +1611,8 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(i, tc.KeepAnchor)
         w.setTextCursor(tc)
         # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
-        if 1:
-            app = QtWidgets.QApplication
-            cb = app.clipboard()
-            if s[i: j]:
-                cb.setText(s[i: j], mode=cb.Selection)
-            # QtWidgets.QApplication.processEvents()
+        if hasattr(g.app.gui, 'setClipboardSelection'):
+            g.app.gui.setClipboardSelection(s[i:j])
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v # Always accurate.
         v.insertSpot = ins
