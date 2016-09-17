@@ -3105,6 +3105,8 @@ class LeoQtLog(leoFrame.LeoLog):
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
+        if trace:
+            print('LeoQtLog.put: %r' % (s))
         if w:
             sb = w.horizontalScrollBar()
             # pos = sb.sliderPosition()
@@ -3117,12 +3119,19 @@ class LeoQtLog(leoFrame.LeoLog):
             else:
                 s = s.rstrip().replace('\n', '<br>')
             s = '<font color="%s">%s</font>' % (color, s)
-            if trace: print('LeoQtLog.put', type(s), '%4s' % (len(s)), s[: 40], w)
+            if trace:
+                # print('LeoQtLog.put: %4s redirect: %5s\n  %s' % (
+                    # len(s), from_redirect, s))
+                print('LeoQtLog.put: %r' % (s))
             if from_redirect:
                 w.insertHtml(s)
             else:
-                w.append(s) # w.append is a QTextBrowser method.
-                # w.insertHtml(s+'<br>') # Also works.
+                # w.append(s)
+                    # w.append is a QTextBrowser method.
+                    # This works.
+                # This also works.  Use it to see if it fixes #301:
+                # Log window doesn't get line separators
+                w.insertHtml(s+'<br>')
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
         else:
@@ -3134,6 +3143,8 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
+        # This is not called normally.
+        # print('LeoQtLog.put: %s' % g.callers())
         if g.app.quitting:
             return
         if tabName:
