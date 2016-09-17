@@ -3117,7 +3117,7 @@ class LeoQtLog(leoFrame.LeoLog):
             else:
                 s = s.rstrip().replace('\n', '<br>')
             s = '<font color="%s">%s</font>' % (color, s)
-            if trace: print('LeoQtLog.put', type(s), len(s), s[: 40], w)
+            if trace: print('LeoQtLog.put', type(s), '%4s' % (len(s)), s[: 40], w)
             if from_redirect:
                 w.insertHtml(s)
             else:
