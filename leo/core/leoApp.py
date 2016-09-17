@@ -3225,7 +3225,7 @@ class RecentFilesManager(object):
             rf.recentFiles.append(name)
     #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles
     def cleanRecentFiles(self, c):
-        '''Removed items from the recent files list that are no longer valid.'''
+        '''Remove items from the recent files list that are no longer valid.'''
         rf = self
         dat = c.config.getData('path-demangle')
         if not dat:
@@ -3322,6 +3322,10 @@ class RecentFilesManager(object):
                 if dirCount[z]['entry'] is not None]
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
     def getRecentFiles(self):
+        # Fix #299: Leo loads a deleted file.
+        self.recentFiles = [z for z in self.recentFiles
+            if g.os_path_exists(z)]
+        # g.trace('\n'.join([z for z in self.recentFiles]))
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
     def getRecentFilesTable(self):
