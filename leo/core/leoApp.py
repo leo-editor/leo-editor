@@ -1657,6 +1657,9 @@ class LeoApp(object):
     def checkForOpenFile(self, c, fn):
         '''Warn if fn is already open and add fn to already_open_files list.'''
         d, tag = g.app.db, 'open-leo-files'
+        if g.app.reverting:
+            # Fix #302: revert to saved doesn't reset external file change monitoring
+            g.app.already_open_files = []
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             return
         aList = g.app.db.get(tag) or []
