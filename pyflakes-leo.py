@@ -53,7 +53,7 @@ def scanOptions():
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
     add = parser.add_option
-    add('-a', action='store_true', help='all')
+    add('-a', action='store_true', help='all (default)')
     add('-c', action='store_true', help='core')
     add('-e', action='store_true', help='external')
     add('-f', dest='filename', help='filename, relative to leo folder')
