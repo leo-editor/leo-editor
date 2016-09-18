@@ -1,7 +1,7 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20160502072908.1: ** 5.2 projects
+.. @+node:ekr.20160502072908.1: ** 5.4 projects
 .. @+node:ekr.20160501154818.1: *3* Bugs
 .. @+node:ekr.20160502073033.1: *4* Investigated #273: Qt Bug involving large text nodes
 Only minor improvements were made.
@@ -24,7 +24,7 @@ The colorizer now colorizers the following properly:
 @classmethod
 basestring
 
-.. @+node:ekr.20160704084005.1: *4* Fixed #292 
+.. @+node:ekr.20160704084005.1: *4* Fixed #292
 https://github.com/leo-editor/leo-editor/issues/292
 
 The new code temporarily sets c.sparse_find to False.

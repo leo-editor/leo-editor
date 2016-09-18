@@ -364,6 +364,7 @@
 <v t="ekr.20100108102217.1968"><vh>testKeys</vh></v>
 </v>
 <v t="ekr.20110416065515.2437"><vh>jinja2</vh></v>
+<v t="ekr.20160421123215.1"><vh>kill all output</vh></v>
 <v t="ekr.20101110190130.2451"><vh>leoremote client</vh></v>
 <v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
 <v t="ekr.20110325142419.2337"><vh>QCompleter example</vh>
@@ -699,19 +700,6 @@
 </v>
 <v t="ekr.20100127111116.2059"><vh>wrapping</vh></v>
 </v>
-<v t="ekr.20100205114630.2091"><vh>Files</vh>
-<v t="ekr.20100204062222.2035"><vh>@@@auto C:\leo.repo\trunk\leo\extensions\Pmw\Pmw_1_3\lib</vh></v>
-<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
-<v t="ekr.20091230064146.1912"><vh>@@auto xml-tags-test.xml</vh>
-<v t="ekr.20100110172917.1943"><vh>xml</vh></v>
-<v t="ekr.20100110172917.1944"><vh>test.a</vh></v>
-<v t="ekr.20100110172917.1945"><vh>test-b</vh></v>
-</v>
-<v t="ekr.20100110151049.2004"><vh>@@auto-rst unicode-headline-test.txt</vh>
-<v t="ekr.20100110172917.1961"><vh>section 1: Ę</vh></v>
-</v>
-<v t="ekr.20100203233053.2033"><vh>@@file at-path-in-body-test.py</vh></v>
-</v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20080531131542.1"><vh>Prototype of mxTextTools</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
@@ -854,7 +842,6 @@
 <v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
 <v t="ekr.20160421054609.1"><vh>@clean leo-bridge-test.py</vh></v>
-<v t="ekr.20160421123215.1"><vh>kill all output</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1155,7 +1142,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -2741,7 +2728,7 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
 self.assertEqual(1,1)</t>
 <t tx="ekr.20090309064612.2"></t>
-<t tx="ekr.20090309064612.3"></t>
+<t tx="ekr.20090309064612.3"># Why aren't these unit tests??</t>
 <t tx="ekr.20090309064612.4"></t>
 <t tx="ekr.20090316115500.1"></t>
 <t tx="ekr.20090428081009.1">import PyQt4.QtCore as QtCore
@@ -2850,65 +2837,6 @@ register()</t>
 assert g.os_path_exists(fn)
 c.editCommands.insertIconFromFile(path=fn)
 c.bodyWantsFocusNow()</t>
-<t tx="ekr.20090706044257.1784">@language unknown_language
-#!/bin/sh
-#@+leo-ver=4-thin
-#@+node:EKR.20040519082027.33:@file-thin ../../install
-#@@first
-
-# This script installs Leo on *nix.
-# Initial version by by Frank Merenda (fmerenda@yahoo.com)
-
-# Variables...
-LEO_PREFIX=${LEO_PREFIX:-/usr/local}
-LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
-
-# Bug fix: 2008/4/8: replace /lib/leo by /lib.
-LEO_LIB_DIR="${LEO_PREFIX}/lib"
-
-echo ""
-echo "Prefix directory set to \"$LEO_PREFIX\""
-
-# Make the directory structure
-if [ ! -d $LEO_LIB_DIR ] ; then
-    echo ""
-    echo Making directory structure $LEO_LIB_DIR
-
-    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2&gt;&amp;1`
-    if [ $? -ne 0 ]; then
-        echo Failure making directory $LEO_LIB_DIR!
-        exit 1;
-    fi
-fi
-
-if [ ! -d $LEO_PREFIX/bin ] ; then
-    echo ""
-    echo Making directory structure $LEO_PREFIX/bin
-    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2&gt;&amp;1`
-    if [ $? -ne 0 ]; then
-        echo Failure making directory $LEO_PREFIX/bin!
-        exit 1;
-    fi
-fi
-
-# Copy the files
-cp -rp leo $LEO_LIB_DIR
-chown -R root:root $LEO_LIB_DIR
-
-echo "PYTHONPATH=${LEO_PREFIX}/lib python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"\$@\"" &gt; $LEO_RUN_SCRIPT_OUTPUT
-
-RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
-
-echo ""
-echo "Leo installed successfully"
-echo "Make sure ${LEO_PREFIX}/bin is in your path then"
-echo "type 'leo filename.leo' to use it."   
-echo ""
-
-exit 0;
-#@-node:EKR.20040519082027.33:@file-thin ../../install
-#@-leo
-</t>
 <t tx="ekr.20090715064044.1782">@language python
 
 b = p.b
@@ -3651,10 +3579,6 @@ py:if
 py:match
 script
 </t>
-<t tx="ekr.20091230064146.1912">@language xml
-@tabwidth -4
-@others
-</t>
 <t tx="ekr.20091230081322.1919">import unicodedata as u
 table = ('a','9','_',':','.',)
 table2 = (
@@ -3906,27 +3830,6 @@ cursor.movePosition(QtGui.QTextCursor.Up,QtGui.QTextCursor.KeepAnchor,15)
 w.setTextCursor(cursor)
 c.bodyWantsFocusNow()</t>
 <t tx="ekr.20100109084336.1996"></t>
-<t tx="ekr.20100110151049.2004">@language rest
-@tabwidth -4
-@others
-
-.. Warning: this node is ignored when writing this file.
-.. However, @ @rst-options are recognized in this node.
-</t>
-<t tx="ekr.20100110172917.1943">&lt;xml&gt;
-&lt;/xml&gt;
-</t>
-<t tx="ekr.20100110172917.1944">&lt;test.a&gt;
-a
-&lt;/test.a&gt;
-</t>
-<t tx="ekr.20100110172917.1945">&lt;test-b&gt;
-b
-&lt;/test-b&gt;
-</t>
-<t tx="ekr.20100110172917.1961">Section 1: Ę
-
-</t>
 <t tx="ekr.20100118122048.2003"># For new colorizer
 
 python_keyword1_font_family = DejaVu Sans Mono
@@ -4084,16 +3987,9 @@ finally:
     while p.hasChildren():
         p.firstChild().doDelete(newNode = None)
    c.redraw_now()</t>
-<t tx="ekr.20100203233053.2033">@language python
-
-#@path aPathaab
-
-# This is a test2</t>
-<t tx="ekr.20100204062222.2035">This crashed Leo in path.py during startup</t>
 <t tx="ekr.20100205074729.2085"></t>
 <t tx="ekr.20100205074729.2086">line 1: node a changed 2</t>
 <t tx="ekr.20100205074729.2087">@all</t>
-<t tx="ekr.20100205114630.2091"></t>
 <t tx="ekr.20100330082345.2120">@language pseudoplain
 
 This is a [[test]] of something.</t>
