@@ -6858,7 +6858,7 @@ class Commands(object):
         c = self
         p = c.p
         if p:
-            if trace: g.trace('(c)', p.h)
+            if trace: g.trace(p.h, g.callers())
             c.frame.tree.endEditLabel()
         # The following code would be wrong; c.endEditing is a utility method.
         # k = c.k

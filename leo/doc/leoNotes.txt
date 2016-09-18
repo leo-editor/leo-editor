@@ -16533,6 +16533,16 @@ def get_home():
         ):
             home = None
     return home
+.. @+node:ekr.20160504053037.1: *3* test class-based decorators
+# test __call__ method
+
+class Test(object):
+    def __init__(self):
+        g.trace('-----')
+    def __call__(self):
+        g.trace('=====')
+
+Test()()
 .. @+node:ekr.20160603042613.1: ** @@clean resolve.py
 '''Resolve Python symbols.'''
 
@@ -16677,7 +16687,7 @@ def unit_test(raise_on_fail=True):
         assert not errors, s
     else:
         print(s)
-.. @+node:ekr.20160603042613.9: *3* resolve.Binding & Definition (not used) 
+.. @+node:ekr.20160603042613.9: *3* resolve.Binding & Definition (not used)
 
 # Binding and Definitions classes...
 .. @+node:ekr.20160603042613.10: *4* class Binding

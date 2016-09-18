@@ -12,10 +12,9 @@ This plugin is active only if::
 
 """
 
-# By Paul Paterson.
+# By Paul Paterson. Rewritten by EKR.
 import leo.core.leoGlobals as g
 import time
-
 # The global settings dict.
 gDict = {} # Keys are commanders, values are settings dicts.
 
@@ -32,78 +31,60 @@ def init ():
     return ok
 #@+node:edream.110203113231.726: ** onCreate (mod_autosave.py)
 def onCreate(tag, keywords):
-
     """Handle the per-Leo-file settings."""
-
     global gDict
-
     c = keywords.get('c')
-    if g.app.killed or not c or not c.exists: return
-    if g.unitTesting: return  # 2011/02/28
-
-    # 2011/02/28: do nothing here if we already have registered the idle-time hook.
+    if g.app.unitTesting or g.app.killed or not c or not c.exists:
+        return
+    # Do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())
-    if d: return
-
-    active = c.config.getBool('mod_autosave_active',default=False)
-    interval = c.config.getInt('mod_autosave_interval')
-
-    if active:
-        # Create an entry in the global settings dict.
-        d = {
-            'last':time.time(),
-            'interval':interval,
-        }
-        gDict[c.hash()] = d
-        g.es("auto save enabled every %s sec." % (
-            interval),color="orange")
-        g.registerHandler('idle',onIdle)
-        ### g.enableIdleTimeHook()
-    else:
-        g.es("@bool mod_autosave_active=False",color='orange')
+    if not d:
+        active = c.config.getBool('mod_autosave_active',default=False)
+        interval = c.config.getInt('mod_autosave_interval')
+        if active:
+            # Create an entry in the global settings dict.
+            gDict[c.hash()] = {
+                'last':time.clock(),
+                'interval':interval,
+            }
+            message = "auto save %s sec. after changes" % (interval)
+            g.registerHandler('idle',onIdle)
+        else:
+            message = "@bool mod_autosave_active=False"
+        g.es(message, color='orange')
 #@+node:ekr.20100904062957.10654: ** onIdle
 def onIdle (tag,keywords):
-
     """Save the current document if it has a name"""
-
     global gDict
-
-    trace = False and not g.unitTesting
+    guiName = g.app.gui.guiName()
+    if guiName not in ('qt','qttabs'):
+        return
     c = keywords.get('c')
-    if g.app.killed or not c or not c.exists: return
-    if g.unitTesting: return # 2011/02/28
     d = gDict.get(c.hash())
-    if not d: return
-    last = d.get('last')
-    interval = d.get('interval')
-    if time.time()-last >= interval:
-        # 2010/11/16: disable autosave unless focus is in the body or Tree.
-        w = c.get_focus()
-        guiName = g.app.gui.guiName()
-        if guiName in ('qt','qttabs'):
-            bodyWidget = c.frame.body
-            treeWidget = c.frame.tree.treeWidget # QtGui.
+    if c and d and c.exists and c.mFileName and not g.app.killed and not g.unitTesting:
+        # Wait the entire interval after c is first changed or saved.
+        # Imo (EKR) this is the desired behavior.
+        # It gives the user a chance to revert changes before they are changed.
+        if c.changed:
+            last = d.get('last')
+            interval = d.get('interval')
+            if time.clock()-last >= interval:
+                autosave(c, d)
+                d['last'] = time.clock()
+                gDict[c.hash()] = d
         else:
-            return # Only Qt and Tk gui's are supported.
-        isBody = w == bodyWidget
-        isTree = w == treeWidget
-        if trace: g.trace(
-            'isBody: %s, isTree: %s, w: %s, bodyWidget: %s, treeWidget: %s' % (
-                isBody,isTree,w,bodyWidget, treeWidget))
-        if c.mFileName and c.changed and (isBody or isTree):
-            # g.trace(w)
-            s = "Autosave: %s" % time.ctime()
-            g.es(s,color="orange")
-            if trace: g.trace('message: %s' % (s))
-            c.fileCommands.save(c.mFileName)
-            c.set_focus(w,force=True) # 2010/11/16: save & restore focus.
-        elif trace:
-            g.trace('not changed.')
-        # Update the global dict.
-        d['last'] = time.time()
-        gDict[c.hash()] = d
-    elif trace:
-        g.trace('not time',c.shortFileName())
+            d['last'] = time.clock()
+            gDict[c.hash()] = d
+#@+node:ekr.20160917174238.1: ** autosave
+def autosave(c, d):
+    '''
+    Save the file, retaining focus.
+    Note, however, that headline widgets disappear when a redraw happens.
+    '''
+    w = c.get_focus()
+    g.es_print("Autosave: %s" % time.ctime(),color="orange")
+    c.fileCommands.save(c.mFileName)
+    c.set_focus(w,force=True)
 #@-others
 #@@language python
 #@@tabwidth -4

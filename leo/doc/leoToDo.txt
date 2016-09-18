@@ -10,7 +10,7 @@
 Everything assigned to 5.4
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
 .. @+node:ekr.20160506101850.1: *3* Apply mypy to Leo
-.. @+node:ekr.20160429064536.1: *3* 5.4 Bugs & enhancements
+.. @+node:ekr.20160429064536.1: *3* 5.4 Enhancements
 The remaining bugs are more like enhancements.
 .. @+node:ekr.20160430150528.1: *4* #128: Javascript importer should be rewritten
 https://github.com/leo-editor/leo-editor/issues/128
