@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="62" left="392" height="1041" width="1112"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2162,6 +2162,7 @@
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
 </v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh>
+<v t="ekr.20160918113150.1"><vh>@bool show_iconbar = True</vh></v>
 <v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
 </v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
@@ -4778,7 +4779,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -11181,6 +11182,7 @@ False: Ignore plain keys in the outline pane.
 <t tx="ekr.20160514162747.1"></t>
 <t tx="ekr.20160514162753.1"></t>
 <t tx="ekr.20160514162820.1"></t>
+<t tx="ekr.20160918113150.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
