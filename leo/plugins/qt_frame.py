@@ -102,6 +102,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
+        # #266 A setting to hide the icon bar.
+        show_iconbar = c.config.getBool('show_iconbar', default=True)
+        if not show_iconbar:
+            self.iconBar.hide()
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)

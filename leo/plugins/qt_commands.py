@@ -79,6 +79,7 @@ for vis in 'hide', 'show', 'toggle':
             w = widget(c)
             if vis == 'toggle':
                 vis = 'hide' if w.isVisible() else 'show'
+            # Executes either w.hide() or w.show()
             getattr(w, vis)()
 
         g.command("gui-%s-%s" % (name, vis))(dovis)
