@@ -46,7 +46,7 @@ def onCreate(tag, keywords):
         if active:
             # Create an entry in the global settings dict.
             gDict[c.hash()] = {
-                'last':time.clock(),
+                'last':time.time(),
                 'interval':interval,
             }
             message = "auto save %s sec. after changes" % (interval)
@@ -76,14 +76,14 @@ def onIdle (tag,keywords):
             else:
                 last = d.get('last')
                 interval = d.get('interval')
-                if time.clock()-last >= interval:
+                if time.time()-last >= interval:
                     g.es_print("Autosave: %s" % time.ctime(),color="orange")
                     c.fileCommands.save(c.mFileName)
                     c.set_focus(w,force=True)
-                    d['last'] = time.clock()
+                    d['last'] = time.time()
                     gDict[c.hash()] = d
         else:
-            d['last'] = time.clock()
+            d['last'] = time.time()
             gDict[c.hash()] = d
 #@-others
 #@@language python
