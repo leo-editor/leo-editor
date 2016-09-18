@@ -549,6 +549,14 @@ class VimCommands(object):
         '''Print a not ready message and quit.'''
         g.es('not ready', g.callers(1))
         vc.quit()
+    #@+node:ekr.20160918060654.1: *5* vc.on_activate
+    def on_activate(vc):
+        '''Handle an activate event.'''
+        # Fix #270: Vim keys don't always work after double Alt+Tab.
+        vc.quit()
+        vc.show_status()
+        # This seems not to be needed.
+        # vc.c.k.keyboardQuit(setFocus=True)
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(vc):
         '''

@@ -608,10 +608,8 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         if trace:
             g.trace(g.app.gui.get_focus())
-
         self.active = False
             # Used only by c.idle_focus_helper.
-
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and not self.deactivated_name:
@@ -620,7 +618,7 @@ class LeoQtGui(leoGui.LeoGui):
                 if trace: g.trace(self.deactivated_name)
                 c.k.keyboardQuit(setFocus=False)
                     # The best way to retain as much focus as possible.
-                g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
+        g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
@@ -632,10 +630,11 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         if trace:
             g.trace(g.app.gui.get_focus())
-
         self.active = True
             # Used only by c.idle_focus_helper.
-
+        # Fix #270: Vim keys don't always work after double Alt+Tab.
+        if c.exists and not g.app.killed and c.vimCommands:
+            c.vimCommands.on_activate()
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:
@@ -649,7 +648,7 @@ class LeoQtGui(leoGui.LeoGui):
                     c.treeWantsFocusNow()
                 else:
                     c.bodyWantsFocusNow()
-                g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
+        g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20130921043420.21175: *4* LeoQtGui.setFilter
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
     # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
