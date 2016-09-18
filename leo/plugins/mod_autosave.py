@@ -14,6 +14,8 @@ This plugin is active only if::
 
 # By Paul Paterson. Rewritten by EKR.
 import leo.core.leoGlobals as g
+# import leo.plugins.qt_text as qt_text
+from leo.core.leoQt import QtWidgets
 import time
 # The global settings dict.
 gDict = {} # Keys are commanders, values are settings dicts.
@@ -66,25 +68,23 @@ def onIdle (tag,keywords):
         # Imo (EKR) this is the desired behavior.
         # It gives the user a chance to revert changes before they are changed.
         if c.changed:
-            last = d.get('last')
-            interval = d.get('interval')
-            if time.clock()-last >= interval:
-                autosave(c, d)
-                d['last'] = time.clock()
-                gDict[c.hash()] = d
+            w = c.get_focus()
+            if isinstance(w, QtWidgets.QLineEdit):
+                # Saving now would destroy the focus.
+                # There is **no way** to recreate outline editing after a redraw.
+                pass
+            else:
+                last = d.get('last')
+                interval = d.get('interval')
+                if time.clock()-last >= interval:
+                    g.es_print("Autosave: %s" % time.ctime(),color="orange")
+                    c.fileCommands.save(c.mFileName)
+                    c.set_focus(w,force=True)
+                    d['last'] = time.clock()
+                    gDict[c.hash()] = d
         else:
             d['last'] = time.clock()
             gDict[c.hash()] = d
-#@+node:ekr.20160917174238.1: ** autosave
-def autosave(c, d):
-    '''
-    Save the file, retaining focus.
-    Note, however, that headline widgets disappear when a redraw happens.
-    '''
-    w = c.get_focus()
-    g.es_print("Autosave: %s" % time.ctime(),color="orange")
-    c.fileCommands.save(c.mFileName)
-    c.set_focus(w,force=True)
 #@-others
 #@@language python
 #@@tabwidth -4
