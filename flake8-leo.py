@@ -27,9 +27,9 @@ def main(files):
     if config_file:
         style = engine.get_style_guide(
             parse_argv=False, config_file=config_file)
-        t1 = time.clock()
+        t1 = time.time()
         check_all(files, style)
-        t2 = time.clock()
+        t2 = time.time()
         n = len(files)
         print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160517222900.1: *3* get_home

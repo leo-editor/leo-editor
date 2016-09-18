@@ -2452,7 +2452,7 @@ class StubTraverser (ast.NodeVisitor):
         if os.path.exists(fn) and not self.overwrite:
             print('file exists: %s' % fn)
         elif not dir_ or os.path.exists(dir_):
-            t1 = time.clock()
+            t1 = time.time()
             # Delayed output allows sorting.
             self.parent_stub = Stub(kind='root', name='<new-stubs>')
             for z in self.prefix_lines or []:
@@ -2468,7 +2468,7 @@ class StubTraverser (ast.NodeVisitor):
                 self.output_file.close()
                 self.output_file = None
                 self.parent_stub = None
-            t2 = time.clock()
+            t2 = time.time()
             print('wrote: %s in %4.2f sec' % (fn, t2 - t1))
         else:
             print('output directory not not found: %s' % dir_)

@@ -2174,20 +2174,20 @@ def stat(name=None):
     d[name] = 1 + d.get(name, 0)
 #@+node:ekr.20031218072017.3137: *3* g.Timing
 def getTime():
-    return time.clock()
+    return time.time()
 
 def esDiffTime(message, start):
-    delta = time.clock() - start
+    delta = time.time() - start
     g.es('', "%s %5.2f sec." % (message, delta))
-    return time.clock()
+    return time.time()
 
 def printDiffTime(message, start):
-    delta = time.clock() - start
+    delta = time.time() - start
     g.pr("%s %5.2f sec." % (message, delta))
-    return time.clock()
+    return time.time()
 
 def timeSince(start):
-    return "%5.2f sec." % (time.clock() - start)
+    return "%5.2f sec." % (time.time() - start)
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and

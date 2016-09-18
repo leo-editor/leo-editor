@@ -77,7 +77,7 @@ def beautifyPythonTree(event):
     p0 = p0 or c.p
     if should_kill_beautify(p0):
         return
-    t1 = time.clock()
+    t1 = time.time()
     pp = PythonTokenBeautifier(c)
     prev_changed = 0
     for p in p0.self_and_subtree():
@@ -100,7 +100,7 @@ def beautifyPythonTree(event):
             g.es_print('beautified %s node%s' % (
                 n, g.plural(n)))
     pp.end_undo()
-    t2 = time.clock()
+    t2 = time.time()
     # pp.print_stats()
     if not g.unitTesting:
         if is_auto:
@@ -367,13 +367,13 @@ def should_kill_beautify(p):
 #@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
 def main():
     '''External entry point for Leo's beautifier.'''
-    t1 = time.clock()
+    t1 = time.time()
     base = g.os_path_abspath(os.curdir)
     files, options = scan_options()
     for path in files:
         path = g.os_path_finalize_join(base, path)
         beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.clock() - t1))
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
 #@+node:ekr.20150601170125.1: *4* beautify (stand alone)
 def beautify(options, path):
     '''Beautify the file with the given path.'''
@@ -430,19 +430,19 @@ def test_beautifier(c, h, p, settings):
             forcePythonSentinels=True,
             useSentinels=False)
     g.trace(h.strip())
-    t1 = time.clock()
+    t1 = time.time()
     s1 = g.toEncodedString(s)
     node1 = ast.parse(s1, filename='before', mode='exec')
-    t2 = time.clock()
+    t2 = time.time()
     readlines = g.ReadLinesClass(s).next
     tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.clock()
+    t3 = time.time()
     beautifier = PythonTokenBeautifier(c)
     keep_blank_lines = settings.get('tidy-keep-blank-lines')
     if keep_blank_lines is not None:
         beautifier.delete_blank_lines = not keep_blank_lines
     s2 = beautifier.run(tokens)
-    t4 = time.clock()
+    t4 = time.time()
     try:
         s2_e = g.toEncodedString(s2)
         node2 = ast.parse(s2_e, filename='before', mode='exec')
@@ -450,7 +450,7 @@ def test_beautifier(c, h, p, settings):
     except Exception:
         g.es_exception()
         ok = False
-    t5 = time.clock()
+    t5 = time.time()
     #  Update the stats
     beautifier.n_input_tokens += len(tokens)
     beautifier.n_output_tokens += len(beautifier.code_list)
@@ -842,7 +842,7 @@ class PythonTokenBeautifier(object):
             # Do this *after* we are sure @beautify is in effect.
             self.replace_body(p, '')
             return
-        t1 = time.clock()
+        t1 = time.time()
         # Replace Leonine syntax with special comments.
         comment_string, s0 = comment_leo_lines(p)
         try:
@@ -858,12 +858,12 @@ class PythonTokenBeautifier(object):
             g.es_exception()
             self.skip_message('Exception', p)
             return
-        t2 = time.clock()
+        t2 = time.time()
         readlines = g.ReadLinesClass(s0).next
         tokens = list(tokenize.generate_tokens(readlines))
-        t3 = time.clock()
+        t3 = time.time()
         s2 = self.run(tokens)
-        t4 = time.clock()
+        t4 = time.time()
         try:
             s2_e = g.toEncodedString(s2)
             node2 = ast.parse(s2_e, filename='before', mode='exec')
@@ -876,7 +876,7 @@ class PythonTokenBeautifier(object):
         if not ok:
             self.skip_message('BeautifierError', p)
             return
-        t5 = time.clock()
+        t5 = time.time()
         # Restore the tags after the compare
         s3 = uncomment_leo_lines(comment_string, p, s2)
         self.replace_body(p, s3)

@@ -59,7 +59,7 @@ class RopeController(object):
 #@+node:ekr.20140526123310.17593: ** test
 def test(c):
     g.cls()
-    t1 = time.clock()
+    t1 = time.time()
     RopeController(c).run()
     print('done: %s sec.' % g.timeSince(t1))
 #@-others

@@ -31,10 +31,10 @@ def main(files, verbose):
     except ImportError:
         print('pylint-leo.py: can not import pylint')
         return
-    t1 = time.clock()
+    t1 = time.time()
     for fn in files:
         run(fn, verbose)
-    t2 = time.clock()
+    t2 = time.time()
     n = len(files)
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20100221142603.5644: *3* run (pylint-leo.py)
@@ -64,9 +64,9 @@ def run(fn, verbose):
         args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
         sys.executable, args)
-    t1 = time.clock()
+    t1 = time.time()
     g.execute_shell_commands(command)
-    t2 = time.clock()
+    t2 = time.time()
     if trace:
         g.trace('%4.2f %s' % (t2-t1, g.shortFileName(fn)))
 #@+node:ekr.20140526142452.17594: ** report_version

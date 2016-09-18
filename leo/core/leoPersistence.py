@@ -64,15 +64,15 @@ class ConvertController(object):
         c = cc.c
         root, pd = cc.root, c.persistenceController
         # set the expected imported headline for all vnodes.
-        t1 = time.clock()
+        t1 = time.time()
         cc.set_expected_imported_headlines(root)
-        t2 = time.clock()
+        t2 = time.time()
         # Delete all previous @data nodes for this tree.
         cc.delete_at_data_nodes(root)
-        t3 = time.clock()
+        t3 = time.time()
         # Ensure that all nodes of the tree are regularized.
         ok = pd.prepass(root)
-        t4 = time.clock()
+        t4 = time.time()
         if not ok:
             g.es_print('Can not convert', root.h, color='red')
             if trace: g.trace(
@@ -83,21 +83,21 @@ class ConvertController(object):
             return
         # Create the appropriate @data node.
         at_auto_view = pd.update_before_write_foreign_file(root)
-        t5 = time.clock()
+        t5 = time.time()
         # Write the @file node as if it were an @auto node.
         s = cc.strip_sentinels()
-        t6 = time.clock()
+        t6 = time.time()
         if trace and trace_s:
             g.trace('source file...\n', s)
         # Import the @auto string.
         ok, p = cc.import_from_string(s)
-        t7 = time.clock()
+        t7 = time.time()
         if ok:
             # Change at_auto_view.b so it matches p.gnx.
             at_auto_view.b = pd.at_data_body(p)
             # Recreate the organizer nodes, headlines, etc.
             pd.update_after_read_foreign_file(p)
-            t8 = time.clock()
+            t8 = time.time()
             # if not ok:
                 # p.h = '@@' + p.h
                 # g.trace('restoring original @auto file')
@@ -106,9 +106,9 @@ class ConvertController(object):
                     # p.h = '@@' + p.h + ' (restored)'
                     # if p.next():
                         # p.moveAfter(p.next())
-            t9 = time.clock()
+            t9 = time.time()
         else:
-            t8 = t9 = time.clock()
+            t8 = t9 = time.time()
         if trace: g.trace(
             '\n  set_expected_imported_headlines: %4.2f sec' % (t2 - t1),
             # '\n  delete_at_data_nodes:          %4.2f sec' % (t3-t2),

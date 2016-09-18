@@ -145,7 +145,7 @@ def flake8_command(event):
             if leo_path not in sys.path:
                 sys.path.append(leo_path)
             # Run flake8 on all Python @<file> nodes in root's tree.
-            t1 = time.clock()
+            t1 = time.time()
             found = False
             for p in root.self_and_subtree():
                 found |= self.find(p)
@@ -271,7 +271,7 @@ def pylint_command(event):
             if leo_path not in sys.path:
                 sys.path.append(leo_path)
             # Run lint on all Python @<file> nodes in root's tree.
-            t1 = time.clock()
+            t1 = time.time()
             found = False
             for p in root.self_and_subtree():
                 found |= self.check(p, rc_fn)
@@ -382,7 +382,7 @@ def pyflakes_command(event):
             if leo_path not in sys.path:
                 sys.path.append(leo_path)
             # Run pyflakes on all Python @<file> nodes in root's tree.
-            t1 = time.clock()
+            t1 = time.time()
             found = False
             for p in root.self_and_subtree():
                 found |= self.find(p)

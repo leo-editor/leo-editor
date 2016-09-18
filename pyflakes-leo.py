@@ -24,7 +24,7 @@ import time
 #@+node:ekr.20160518000549.10: ** main
 def main(files):
     '''Call run on all tables in tables_table.'''    
-    t1 = time.clock()
+    t1 = time.time()
     for fn in files:
         # Report the file name.
         assert g.os_path_exists(fn), fn
@@ -36,7 +36,7 @@ def main(files):
                 warningStream=sys.stderr,
                 )
             api.check(s, sfn, r)
-    t2 = time.clock()
+    t2 = time.time()
     n = len(files)
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20160518000549.14: ** report_version

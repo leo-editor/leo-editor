@@ -1721,7 +1721,7 @@ class LeoTree(object):
         trace = False and not g.unitTesting
         trace_pass = False
         trace_time = (True or traceTime)
-        if trace_time: t1 = time.clock()
+        if trace_time: t1 = time.time()
         # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c
         w = c.frame.body.wrapper
@@ -1730,7 +1730,7 @@ class LeoTree(object):
         old_s = w.getAllText()
         if trace: g.trace('=====', len(s), p.h)
         if trace and trace_time:
-            t2 = time.clock()
+            t2 = time.time()
             print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
             if trace and trace_pass: g.trace('*pass', len(s), p.h, old_p.h)
@@ -1740,12 +1740,12 @@ class LeoTree(object):
         if 0 < c.max_pre_loaded_body_chars < len(s):
             # Don't load the text if not wanted.
             if trace and trace_time:
-                t3 = time.clock()
+                t3 = time.time()
                 print('  part2: setAllText %4.2f sec' % (t3-t2))
         else:
             w.setAllText(s, h = p.h)
             if trace and trace_time:
-                t3 = time.clock()
+                t3 = time.time()
                 print('  part2: setAllText %4.2f sec' % (t3-t2))
             # Part 3: colorize.
             # We can't call c.recolor_now here.
@@ -1756,7 +1756,7 @@ class LeoTree(object):
             else:
                 self.frame.body.recolor(p)
         if trace and trace_time:
-            t4 = time.clock()
+            t4 = time.time()
             print('  part3: colorize   %4.2f sec' % (t4-t3))
             print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.

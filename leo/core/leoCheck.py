@@ -734,7 +734,7 @@ class ShowData(object):
     def run(self, files):
         '''Process all files'''
         self.files = files
-        t1 = time.clock()
+        t1 = time.time()
         for fn in files:
             s, e = g.readFileIntoString(fn)
             if s:
@@ -759,7 +759,7 @@ class ShowData(object):
                     # self.scan(fn, s)
             else:
                 g.trace('skipped', g.shortFileName(fn))
-        t2 = time.clock()
+        t2 = time.time()
             # Get the time exlusive of print time.
         self.show_results()
         g.trace('done: %4.1f sec.' % (t2 - t1))

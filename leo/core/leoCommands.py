@@ -42,7 +42,7 @@ class Commands(object):
         if trace and g.trace_startup: g.es_debug('(Commands)', g.shortFileName(fileName))
         c = self
         if trace and not g.trace_startup:
-            t1 = time.clock()
+            t1 = time.time()
         # Official ivars.
         self._currentPosition = self.nullPosition()
         self._topPosition = self.nullPosition()
@@ -6943,7 +6943,7 @@ class Commands(object):
         if found:
             c.selectPosition(p)
             c.redraw_after_select(p)
-            c.navTime = time.clock()
+            c.navTime = time.time()
             c.navPrefix = newPrefix
             # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)
         else:
@@ -6961,7 +6961,7 @@ class Commands(object):
         if deltaTime in (None, 0.0):
             return False
         else:
-            nearTime = c.navTime and time.clock() - c.navTime < deltaTime
+            nearTime = c.navTime and time.time() - c.navTime < deltaTime
             return nearTime
     #@+node:ekr.20061002095711: *5* c.navHelper
     def navHelper(self, p, ch, extend):
