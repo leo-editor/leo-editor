@@ -98,18 +98,29 @@ class BigDash(object):
     #@+node:ekr.20140919160020.17915: *3* create_ui
     def create_ui(self):
 
+        
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
         self.web = web = QtWebKitWidgets.QWebView(w)
-        self.web.linkClicked.connect(self._lnk_handler)
+        try:
+            # PyQt4
+            self.web.linkClicked.connect(self._lnk_handler)
+            # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
+        except AttributeError:
+            # PyQt5
+            pass # Not clear what to do.
         self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
         self.lc = lc = LeoConnector()
-        web.page().mainFrame().addToJavaScriptWindowObject("leo",lc)
-        web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
+        try:
+            web.page().mainFrame().addToJavaScriptWindowObject("leo",lc)
+            web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
+        except AttributeError:
+            # PyQt5
+            pass # Not clear what to do.
         w.setLayout(lay)
         #web.load(QUrl("http://google.fi"))
         self.show_help()
