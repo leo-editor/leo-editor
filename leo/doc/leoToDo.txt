@@ -755,7 +755,7 @@ def readEndRef(self, unused_s, unused_i):
 https://github.com/leo-editor/leo-editor/issues/303
 .. @+node:ekr.20160918103646.1: *4* Test all viewrendered examples
 - md fails
-.. @+node:ekr.20160918111232.1: *3* re: #305: settings for menu and button text have no effect on Ubuntu with PyQt5
+.. @+node:ekr.20160918111232.1: *3* re: #305: Settings for menu and button text have no effect on Ubuntu with PyQt5
 @language rest
 @wrap
 
