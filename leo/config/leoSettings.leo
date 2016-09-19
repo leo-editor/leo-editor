@@ -3811,7 +3811,7 @@ command.  For example,
 @mode quick-commands
 
 creates the enter-quick-commands command. You can bind keys to such commands in
-@shortcut nodes as usual.
+@shortcuts nodes as usual.
 
 Notes:
 
@@ -4779,7 +4779,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="3,15,1">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
