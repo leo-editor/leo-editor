@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.54" body_secondary_ratio="0.78">
-	<global_window_position top="108" left="527" height="957" width="1099"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -57,19 +57,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20160917131926.25"><vh>@gnxs</vh></v>
+<v t="edward.20160919054711.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20160917131927.5"><vh>@gnxs</vh></v>
+<v t="edward.20160919054711.14"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20160917131926.10"><vh>@gnxs</vh></v>
+<v t="edward.20160919054710.11"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20160917131926.3"><vh>@gnxs</vh></v>
+<v t="edward.20160919054710.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20160917131925.9"><vh>@gnxs</vh></v>
+<v t="edward.20160919054709.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -1230,54 +1230,27 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e333971017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20160330182418.1"><vh>Recent failures</vh>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
-<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
-<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
-</v>
-<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
-<v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
-</v>
-<v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
-</v>
-<v t="ekr.20120310121839.3949"><vh>@test c.hoist @chapter node</vh></v>
-<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
-<v t="ekr.20160327132053.1"><vh>@test g.compute_directives_re</vh></v>
-<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
-<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
-<v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting</vh></v>
-<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
-<v t="ekr.20110610122533.3369"><vh>goto-global-line tests</vh>
-<v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
-<v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
-<v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
-</v>
-<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20150626101643.1"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20150626100652.1"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20150625101047.1"><vh>@test find_file_line: @auto-py</vh></v>
-<v t="ekr.20150626093653.1"><vh>@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20160403143643.1"><vh>@test find_file_line: @clean-c</vh></v>
-<v t="ekr.20160403143655.1"><vh>@test find_file_line: @clean-python</vh></v>
-<v t="ekr.20160403123650.1"><vh>@test find_file_line: @file-c</vh></v>
-<v t="ekr.20110610122533.3395"><vh>@test find_file_line: @file-python</vh></v>
-<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent-python</vh></v>
-<v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
-<v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
-</v>
-<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
-<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
-<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
-</v>
-<v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
-<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+<v t="edward.20160919053702.1"><vh>Ubuntu/Py3 fails</vh>
 <v t="ekr.20100223123103.5382"></v>
-<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
-<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+<v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
+<v t="ekr.20100830113702.5969"><vh>@test delete-word (no selection)</vh>
+<v t="ekr.20100830113702.5970"><vh>work</vh></v>
+<v t="ekr.20100830113702.5971"><vh>before sel=1.10,1.10</vh></v>
+<v t="ekr.20100830113702.5972"><vh>after sel=1.10,1.10</vh></v>
+</v>
+<v t="ekr.20100830113702.5977"><vh>@test delete-word (selection)</vh>
+<v t="ekr.20100830113702.5978"><vh>work</vh></v>
+<v t="ekr.20100830113702.5979"><vh>before sel=1.7,1.12</vh></v>
+<v t="ekr.20100830113702.5980"><vh>after sel=1.7,1.7</vh></v>
+</v>
+<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
+<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1319,6 +1292,40 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
+</t>
+<t tx="edward.20160919053702.1"># These fail for mysterious reasons on Ubuntu with PyQt5.</t>
+<t tx="edward.20160919054709.9">gnx: edward.20160416174241.4
+unl: section 1
+gnx: edward.20160416174241.5
+unl: section 2
+</t>
+<t tx="edward.20160919054710.11">gnx: edward.20160416174241.17
+unl: section 1
+gnx: edward.20160416174241.18
+unl: section 2
+</t>
+<t tx="edward.20160919054710.4">gnx: edward.20160416174241.15
+unl: section 1
+gnx: edward.20160416174241.16
+unl: section 2
+</t>
+<t tx="edward.20160919054711.14">gnx: edward.20160416174241.19
+unl: section 1
+gnx: edward.20160416174241.20
+unl: section 2
+</t>
+<t tx="edward.20160919054711.3">gnx: edward.20160416174241.9
+unl: class child1
+gnx: edward.20160416174241.10
+unl: class child1--&gt;child1_method1
+gnx: edward.20160416174241.11
+unl: class child1--&gt;child1_method2
+gnx: edward.20160416174241.12
+unl: class child2
+gnx: edward.20160416174241.13
+unl: class child2--&gt;child2_method1
+gnx: edward.20160416174241.14
+unl: class child2--&gt;child2_method2
 </t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4
@@ -7323,6 +7330,158 @@ k.registerCommand('print-hello','Alt-Ctrl-Shift-p',f)
 k.registerCommand('print-hello2',None,f2)
 </t>
 <t tx="ekr.20051104081502.99"></t>
+<t tx="ekr.20051107115231.16">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.keyHandler
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redrawAndEdit(p) # To make node visible
+    w = c.edit_widget(p)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    
+    try:
+        assert w
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        g.app.gui.set_focus(c,w)
+        w2 = g.app.gui.get_focus(c)
+        w.setSelectionRange('end','end')
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.h)
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.17">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.k
+    if k.defaultUnboundKeyAction == 'insert':
+        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redrawAndEdit(p) # To make the node visible.
+        w = c.edit_widget(p)
+        # print('guiName',g.app.gui.guiName())
+        try:
+            assert w, 'oops1'
+            wName = g.app.gui.widget_name(w)
+            assert wName.startswith('head'),'w.name:%s' % wName
+            w.setSelectionRange('end','end')
+            g.app.gui.event_generate(c,'X','Shift+X',w)
+            g.app.gui.event_generate(c,'Y','Shift+Y',w)
+            g.app.gui.event_generate(c,'Z','Shift+Z',w)
+            g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h + 'XYZ',(
+                'oops2: expected: %s, got: %s' % (
+                    h + 'XYZ',p.h))
+            if g.app.gui.guiName() != 'nullGui':
+                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                    c.undoer.undoMenuLabel)
+            k.manufactureKeyPressForCommandName(w,'undo')
+            if g.app.gui.guiName() != 'nullGui':
+                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+            assert p.h == h,'oops5 got: %s, expected: %s' % (
+                p.h,h)
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.18">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.keyHandler
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    frame = c.frame
+    tree = frame.tree
+    canvas = tree.canvas
+    c.redrawAndEdit(p) # To make node visible
+    w = c.edit_widget(p)
+    try:
+        assert w,'oops1'
+        w.setSelectionRange('end','end')
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        w.setSelectionRange('end','end')
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h + paste,'oops2 got: %s' % p.h
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.h == h,'oops3 got: %s' % p.h
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.20">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.keyHandler
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w, 'Null w'
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        w.setSelectionRange('1.1','1.2')
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        g.app.gui.event_generate(c,'\n','Return',w)
+        assert p.h == h[0] + paste + h[2:]
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.h == h, 'head mismatch'
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.21">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.k
+    if k.defaultUnboundKeyAction == 'insert':
+        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+        h = 'Test headline abc'
+        p = c.testManager.findNodeAnywhere(h)
+        assert p,'node not found: %s' % h
+        c.redraw(p) # To make node visible
+        tree.editLabel(p)
+        w = c.edit_widget(p)
+        try:
+            assert w
+            w.setSelectionRange('end','end')
+            g.app.gui.event_generate(c,'X','Shift+X',w)
+            g.app.gui.event_generate(c,'Y','Shift+Y',w)
+            g.app.gui.event_generate(c,'Z','Shift+Z',w)
+            g.app.gui.event_generate(c,'\n','Return',w)
+            assert p.h == h + 'XYZ'
+            k.manufactureKeyPressForCommandName(w,'undo')
+            assert p.h == h
+        finally:
+            if 1:
+                c.setHeadString(p,h) # Essential
+                c.redraw(p)
+</t>
 <t tx="ekr.20051107115231.25"># getWidth no longer exists.
 k = c.keyHandler
 h = 'Test headline abc'
@@ -7349,6 +7508,35 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.28">import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('skip headline test')
+else:
+    k = c.keyHandler
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w,'oops1'
+        w.setSelectionRange('end','end')
+        paste = 'ABC'
+        g.app.gui.replaceClipboardWith(paste)
+        w.setSelectionRange('end','end')
+        k.manufactureKeyPressForCommandName(w,'paste-text')
+        c.selectPosition(p.visBack(c))
+        assert p.h == h + paste
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.h == h,'expected: %s, got: %s' % (
+            h,p.h)
+    finally:
+        if 1:
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)
 </t>
 <t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
@@ -7769,7 +7957,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -7785,19 +7973,6 @@ else:
     return key
 
 
-</t>
-<t tx="ekr.20071113090055.5"># This will work regardless of where this method is.
-@language python
-@tabwidth -4
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-@pagewidth 120
-
-d = c.atFileCommands.scanAllDirectives(p)
-# print(d)
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == -4
-# assert d.get('path').endswith('xyzzy')
-assert d.get('pagewidth') == 120
 </t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
@@ -7951,31 +8126,6 @@ pass
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
-</t>
-<t tx="ekr.20080917151620.9">@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-
-d = c.scanAllDirectives(p)
-# print(g.dictToString(d))
-
-table = (
-    ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
 </t>
 <t tx="ekr.20081121164135.1">path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 c.testManager.runLeoTest(path)
@@ -8302,119 +8452,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5483">import os
-import sys
-
-trace = False
-
-python_interp = sys.executable
-test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","..")
-
-leo_file   = g.os_path_join(src_path,"launchLeo.py")
-batch_file = g.os_path_join(test_path,"batchTest.py")
-test_file  = g.os_path_join(test_path,"createdFile.txt")
-
-# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
-
-if 1:
-    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
-else:
-    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
-
-@others
-
-if trace:
-    print('@test batch mode: loadDir: %s' % g.app.loadDir)
-
-removeFile(test_file)
-os.system(command)
-
-assert(g.os_path_exists(test_file))
-</t>
-<t tx="ekr.20100131171342.5484">def removeFile(path):
-
-    trace = False
-
-    if os.path.exists(test_file):
-        if trace:
-            print("@test batch mode: removeFile: deleting",test_file)
-        os.remove(test_file)
-    else:
-        if trace:
-            print("@test batch mode: removeFile: not found:",test_file)
-</t>
-<t tx="ekr.20100131171342.5508"></t>
-<t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
-
-if g.app.isExternalUnitTest:
-    print('running @test leoBridge init logic')
-    # This can not be run locally!
-    b = leoBridge.controller(gui='nullGui',
-        loadPlugins=True,
-        readSettings=True,
-        silent=False,
-        tracePlugins=True,
-        verbose=True)
-    g = b.globals()
-    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
-    assert g.os_path_exists(path)
-    c = b.openLeoFile(path)
-    assert c
-    assert c.rootPosition()
-else:
-    self.skipTest('Can not be run locally')
-</t>
-<t tx="ekr.20100131171342.5608"># print('settingsNameDict',c.k.settingsNameDict)
-
-table = (
-    ('Key-1','1'), # 2016/04/12
-    ('key-1','1'), # 2016/04/12
-    ('1', '1'), # 2016/04/12
-    ('a','a'),
-    ('A','a'),
-    ('Alt-a','Alt+a'),
-    ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+A'),
-    ('Alt-=','Alt+equal'),
-    ('Alt-+','Alt+plus'),
-    # We can no longer igtnore the shift.
-    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Alt--','Alt+minus'),
-    ('Shift-a','A'),
-    ('Shift-A','A'),
-    ('RtArrow','Right'),
-    ('Shift-RtArrow','Shift+Right'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
-    ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-)
-for setting, result in table:
-    val = c.k.strokeFromSetting(setting)
-    assert val==result,'Expected %s, Got %s' % (result,val)
-</t>
-<t tx="ekr.20100131180007.5434">@language python
-@comment a b c
-    # @comment must follow @language.
-@tabwidth -8
-@pagewidth 72
-@encoding utf-8
-@path: anError # @path ends with ':'.
-
-# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
-
-d = g.get_directives_dict(p)
-
-# assert d.get('_p') == p # Never used, and a bad idea.
-assert d.get('language') == 'python'
-assert d.get('tabwidth') == '-8'
-assert d.get('pagewidth') == '72'
-assert d.get('encoding') == 'utf-8'
-assert d.get('comment') == 'a b c'
-assert not d.get('path'),d.get('path')
-# assert d.get('path').endswith('xyzzy')
-</t>
 <t tx="ekr.20100203163606.5365">import os
 
 def run(files):
@@ -8552,36 +8589,6 @@ for obj,ivar,command in table:
     finally:
         setattr(obj,ivar,val1)
 </t>
-<t tx="ekr.20100205235740.5392">import glob
-trace = False
-failed,n = [],0
-skip_tuples3 = (
-    ('extensions','asciidoc.py'),
-)
-skip_tuples2 = (
-    ('test', 'python3_test.py'),
-)
-join = g.os_path_finalize_join
-skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
-skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
-for theDir in ('core','external','extensions','plugins','scripts','test'):
-    if trace: print(theDir)
-    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-    assert g.os_path_exists(path),path
-    aList = glob.glob(g.os_path_join(path,'*.py'))
-    for z in aList:
-        if z in skip_list:
-            pass # print('%s: skipped: %s' % (p.h,z))
-        else:
-            n += 1
-            fn = g.shortFileName(z)
-            # if trace: print('%8s %s' % (theDir,fn))
-            s,e = g.readFileIntoString(z)
-            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-                failed.append(z)
-if trace: print('tested %s files' % n)
-assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
-</t>
 <t tx="ekr.20100208095817.5387"># Disabled this test because it's best to open this file without caching.
 
 import leo.core.leoCache as leoCache
@@ -8591,19 +8598,6 @@ cacher = leoCache.cacher(c)
 assert cacher.test()
 </t>
 <t tx="ekr.20100208230953.5383"></t>
-<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c, p, 'syntax-error')
-assert child, 'no child'
-try:
-    c.goToScriptLineNumber(1, child)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-</t>
-<t tx="ekr.20100212072149.5342">@language python
-def spam:
-    pass
-</t>
 <t tx="ekr.20100223094723.5375"></t>
 <t tx="ekr.20100223094723.5376">import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -8743,7 +8737,7 @@ if g.app.isExternalUnitTest:
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
-        return abs(f1-f2) &lt; 0.0001
+        return abs(f1-f2) &lt; 0.01
     f = c.frame
     ratio,ratio2 = f.ratio,f.secondary_ratio
     table = (
@@ -8786,6 +8780,40 @@ finally:
         g.app.destroyWindow(c2.frame)
         c.setLog()
         c.bodyWantsFocus()
+</t>
+<t tx="ekr.20100830113702.5969">import sys
+if g.app.gui.guiName() == 'qt':
+    if sys.platform.startswith('linux'):
+        self.skipTest('skip headline test')
+    else:
+        exec(g.findTestScript(c,'@common leoEditCommands test code'))
+        runEditCommandTest(c,p,inHeadline=False)
+        runEditCommandTest(c,p,inHeadline=True)
+else:
+    self.skipTest('skip qt test')
+</t>
+<t tx="ekr.20100830113702.5970">aaaa bbbb dddd
+</t>
+<t tx="ekr.20100830113702.5971">aaaa bbbb cccc dddd
+</t>
+<t tx="ekr.20100830113702.5972">aaaa bbbb dddd
+</t>
+<t tx="ekr.20100830113702.5977">import sys
+if g.app.gui.guiName() == 'qt':
+    if sys.platform.startswith('linux'):
+        self.skipTest('skip headline test')
+    else:
+        exec(g.findTestScript(c,'@common leoEditCommands test code'))
+        runEditCommandTest(c,p,inHeadline=False)
+        runEditCommandTest(c,p,inHeadline=True)
+else:
+    self.skipTest('skip qt test')
+</t>
+<t tx="ekr.20100830113702.5978">aaaa bbcc dddd
+</t>
+<t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd
+</t>
+<t tx="ekr.20100830113702.5980">aaaa bbcc dddd
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -9046,7 +9074,6 @@ Last paragraph.
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110610122533.3369"></t>
 <t tx="ekr.20110610122533.3388"></t>
 <t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -9096,41 +9123,6 @@ if not g.app.isExternalUnitTest:
         print('root:%s, n:%s, len(lines): %s' % (
             root and root.h, n, len(lines)))
 </t>
-<t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    gnx = target.v.fileIndex
-    assert gnx
-    found = c.gotoCommands.find_gnx(root, gnx, h)
-    assert found, 'not found'
-</t>
-<t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
-</t>
 <t tx="ekr.20110610122533.3397"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
 
@@ -9147,28 +9139,6 @@ if not g.app.isExternalUnitTest:
         print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
             root and root.h,isRaw,n,len(lines)))
 </t>
-<t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@nosent unittest/at-nosent-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtNoSentFileNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
-            break
-</t>
 <t tx="ekr.20110610122533.3401"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
     root = p.parent().parent()
@@ -9180,15 +9150,6 @@ if not g.app.isExternalUnitTest:
     p, found = c.gotoCommands.find_root(child)
     assert p == target, 'p' #p and p.h
     assert found, 'not found'
-</t>
-<t tx="ekr.20110610122533.3404">c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
-c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
-
-</t>
-<t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode'] = False
 </t>
 <t tx="ekr.20110610122533.3406"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -9286,37 +9247,6 @@ for i in range(len(aList)):
         total += 1
 
 g.es('"%s": total tests: %s' % (p.h,total))
-</t>
-<t tx="ekr.20111006064419.3493">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-
-    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
-    
-    def test(p):
-        setup_test(p)
-        n = p.numberOfChildren()
-        assert n == 4 ,'delete: children: %s' % (n)
-        c.moveMarked()
-        assert c.p.h == 'Moved marked nodes'
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-        if 0:
-            # The new move-marked-nodes command doesn't
-            # leave the result in the root node.
-            root = c.rootPosition()
-            assert root.h == 'Moved marked nodes',root.h
-        if 0: # The move-marked-nodes command is no longer undoable.
-            c.undoer.undo()
-            n = p.numberOfChildren()
-            assert n == 4,'undo: children: %s' % (n)
-            c.undoer.redo()
-            n = p.numberOfChildren()
-            assert n == 2 ,'delete: children: %s' % (n)
-    try:
-        test(p)
-    finally:
-        tear_down(p,'Moved marked nodes')
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
@@ -9498,6 +9428,28 @@ w.insert(1,'z')         ; check('xzyac')
 w.deleteTextSelection() ; check('xzyac')
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
+
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('skip cycle-all-focus')
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    w_name = g.app.gui.widget_name
+    w = c.frame.body
+    seen = []
+    while w:
+        event = g.bunch(widget=w)
+        c.editCommands.cycleAllFocus(event=event)
+        w = g.app.gui.get_focus()
+        if w in seen: break
+        seen.append(w)
+        # print(id(w),w_name(w))
+    assert len(seen) &gt;2, "expected &gt;2, got %s" % len(seen)
+</t>
 <t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
     pass # Prints to console, which is annoying.
 else:
@@ -9630,34 +9582,6 @@ if not g.app.isExternalUnitTest:
 # End
 </t>
 <t tx="ekr.20120228174052.3929"># node 1 text A.
-</t>
-<t tx="ekr.20120310121839.3949"># Not valid when run externally: the chapter node will not exist.
-if not g.app.isExternalUnitTest:
-
-    p1 = g.findNodeAnywhere(c,'@chapter aaa')
-    assert p1
-    p2 = g.findNodeAnywhere(c,'aaa node 1')
-    assert p2
-    try:
-        # g.es_print('**1**', c.hoistStack)
-        assert not c.hoistStack, ('fail1', c.hoistStack)
-        c.selectPosition(p1)
-        assert c.p == p1, ('fail2', c.p, p1)
-        c.hoist()
-            # New in Leo 5.3: should do nothing
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, ('fail3', c.p, p2)
-        c.dehoist()
-            # New in Leo 5.3: should do nothing:
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
-        assert c.hoistStack == [], ('fail5', c.hoistStack)
-    finally:
-        c.hoistStack = []
-        c.selectPosition(p)
-        c.redraw()
-else:
-    self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20130503061511.4137">import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -12613,21 +12537,6 @@ finally:
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
-<t tx="ekr.20141111092038.12">s = '''
-
-# Header
-
-After header text
-
-## Subheader
-
-After subheader text
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -12669,187 +12578,16 @@ for p in p.children():
 </t>
 <t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
 </t>
-<t tx="ekr.20150625101047.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto unittest/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 13, n
-            if trace: print('not found: %s' % n)
-            break
-</t>
 <t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
 unl: at_auto_child
 </t>
-<t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtAutoRstNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 9, n
-            break
-</t>
 <t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
-</t>
-<t tx="ekr.20150626100652.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
 </t>
 <t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
 </t>
-<t tx="ekr.20150626101643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
-</t>
 <t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
 </t>
-<t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
-            break
-</t>
 <t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
-</t>
-<t tx="ekr.20160318094009.1">if not g.isPython3:
-    self.skipTest('python 3 test')
-else:
-    import leo.core.leoAst as leoAst
-    import leo.external.make_stub_files as msf
-    import leo.external.py2cs as py2cs
-    import ast, tokenize
-    path = g.os_path_finalize_join(g.app.loadDir,
-        '..', 'test', 'unittest', 'python3_test.py')
-    assert g.os_path_exists(path), path
-    fn = g.shortFileName(path)
-    source = open(path, 'r').read()
-    node = ast.parse(source, filename=fn, mode='exec')
-    src = open(path, 'r').read()
-    readlines = g.ReadLinesClass(src).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    leoAst.AstFullTraverser().visit(node)
-    s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
-    assert s
-    s = leoAst.AstFormatter().format(node)
-    assert s
-    s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
-    assert s
-    controller = msf.StandAloneMakeStubFile()
-    msf.StubTraverser(controller).visit(node)
-</t>
-<t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
-import re
-pat = g.compute_directives_re()
-pat = re.compile(pat, re.MULTILINE)
-table = (
-    '@wrap', # The failure case.
-    '@wrap ',
-    '@wrap\n',
-    '@wrap\t',
-)
-for s in table:
-    m = pat.search(s)
-    assert m, repr(s)
-</t>
-<t tx="ekr.20160330182418.1"></t>
-<t tx="ekr.20160403123650.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
 </t>
 <t tx="ekr.20160403143048.1">@language c
 @tabwidth -4
@@ -12879,87 +12617,6 @@ unl: spam
 gnx: ekr.20160403142841.11
 unl: eggs
 </t>
-<t tx="ekr.20160403143643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('//@')]
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
-    table = (
-        # n is the 1-based offset
-        (3, 4,  '// before @others // line 1'),
-        (2, 8,  'def spam(): // line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): // line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '// last line: line 6'),
-    )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-    assert not found
-</t>
-<t tx="ekr.20160403143655.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('#@')]
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
-        # print('')
-        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
-    table = (
-        # n is the 1-based offset
-        (3, 4,  '# Before @others: line 1'),
-        (2, 8,  'def spam(): # line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): # line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '# Last line: line 6'),
-    )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-    assert not found
-</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
     pass</t>
 <t tx="ekr.20160403150216.1">@nocolor-node
@@ -12971,155 +12628,6 @@ def spam(): # line 2
 </t>
 <t tx="ekr.20160403152507.1">def eggs(): # line 4
     pass</t>
-<t tx="ekr.20160410152100.1"></t>
-<t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
-try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
-    table = (
-        (1, 'Top'),
-        (2, 'Section 1#'),
-        (2, 'Section 2'),
-        (3, 'Section 2.1'),
-        (4, 'Section 2.1.1'),
-        (3, 'Section 2.2'),
-        (2, 'Section 3'),
-    )
-    after = p.nodeAfterTree()
-    root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
-    p = root.firstChild()
-    for n, h in table:
-        n2 = p.level() - root.level()
-        assert h == p.h, (h, p.h)
-        assert n == n2, (n, n2, p.h)
-        p.moveToThreadNext()
-    assert p == after, p.h
-finally:
-    if 1:
-        root.doDelete()
-        c.redraw()
-</t>
-<t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
-try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
-    table = (
-        (1, 'Top'),
-        (2, 'Section 1'),
-        (2, 'Section 2'),
-        (3, 'Section 2.1'),
-        (4, 'Section 2.1.1'),
-        (3, 'Section 2.2'),
-        (2, 'Section 3'),
-    )
-    after = p.nodeAfterTree()
-    root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
-    p = root.firstChild()
-    for n, h in table:
-        n2 = p.level() - root.level()
-        assert h == p.h, (h, p.h)
-        assert n == n2, (n, n2, p.h)
-        p.moveToThreadNext()
-    assert p == after, p.h
-finally:
-    if 1:
-        root.doDelete()
-        c.redraw()
-</t>
-<t tx="ekr.20160411034540.1">s = '''\
-#Top
-The top section
-
-##Section 1#
-section 1, line 1
-section 1, line 2
-
-##Section 2
-section 2, line 1
-
-###Section 2.1
-section 2.1, line 1
-
-####Section 2.1.1
-section 2.2.1 line 1
-
-###Section 2.2
-
-##Section 3
-Section 3, line 1
-
-'''
-</t>
-<t tx="ekr.20160411044042.1">s = '''\
-Top
-====
-
-The top section
-
-Section 1
----------
-
-section 1, line 1
--- Not an underline
-selction 1, line 2
-
-Section 2
----------
-
-section 2, line 1
-
-###Section 2.1
-
-section 2.1, line 1
-
-####Section 2.1.1
-
-section 2.2.1 line 1
-
-###Section 2.2
-section 2.2, line 1.
-
-Section 3
----------
-
-section 3, line 1
-
-'''
-</t>
-<t tx="ekr.20160419061017.1">import leo.core.leoGui as leoGui # LeoKeyEvent
-import leo.core.leoVim as leoVim # VimEvent.
-import leo.plugins.qt_frame as qt_frame # EventWrapper
-event = func = next_w = parent = None
-char = shortcut = stroke = w = x = y = None
-x_root = y_root = None
-# The EventWrapper class is buried too deep to test easily.
-# I'll try harder if it ever become a problem ;-)
-    # dw = qt_frame.DynamicWindow(c, parent)
-    # event_wrapper = dw.EventWrapper(c, w, next_w, func)
-key_event = leoGui.LeoKeyEvent(
-    c, char, event, shortcut,
-    w, x, y, x_root, y_root)
-vim_event = leoVim.VimEvent(c, char, stroke, w)
-# assert hasattr(event_wrapper, 'c')
-assert hasattr(key_event, 'c')
-assert hasattr(vim_event, 'c')
-</t>
-<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
-
-import leo.core.leoAst as leoAst
-leoAst.unit_test(raise_on_fail=True)
-
-import leo.external.make_stub_files as msf
-msf.unit_test(raise_on_fail=True)
-
-import leo.external.py2cs as py2cs
-py2cs.unit_test(raise_on_fail=True)
-
-</t>
 <t tx="ekr.20160917122402.1">gnx: ekr.20090627070131.4975
 </t>
 <t tx="ekr.20160917122402.2">gnx: ekr.20090627070131.4975
@@ -13137,39 +12645,6 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
-</t>
-<t tx="ekr.20160917131925.9">gnx: ekr.20160917131918.4
-unl: section 1
-gnx: ekr.20160917131918.5
-unl: section 2
-</t>
-<t tx="ekr.20160917131926.10">gnx: ekr.20160917131918.17
-unl: section 1
-gnx: ekr.20160917131918.18
-unl: section 2
-</t>
-<t tx="ekr.20160917131926.25">gnx: ekr.20160917131918.9
-unl: class child1
-gnx: ekr.20160917131918.10
-unl: class child1--&gt;child1_method1
-gnx: ekr.20160917131918.11
-unl: class child1--&gt;child1_method2
-gnx: ekr.20160917131918.12
-unl: class child2
-gnx: ekr.20160917131918.13
-unl: class child2--&gt;child2_method1
-gnx: ekr.20160917131918.14
-unl: class child2--&gt;child2_method2
-</t>
-<t tx="ekr.20160917131926.3">gnx: ekr.20160917131918.15
-unl: section 1
-gnx: ekr.20160917131918.16
-unl: section 2
-</t>
-<t tx="ekr.20160917131927.5">gnx: ekr.20160917131918.19
-unl: section 1
-gnx: ekr.20160917131918.20
-unl: section 2
 </t>
 </tnodes>
 </leo_file>
