@@ -2653,7 +2653,7 @@ class LoadManager(object):
                 g.es_print = self.write
                 g.pr = self.write
 
-            def flush(*args, **keys):
+            def flush(self, *args, **keys):
                 pass
                 
             #@+others
