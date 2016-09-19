@@ -5,7 +5,7 @@
 '''Text classes for the Qt version of Leo'''
 import leo.core.leoGlobals as g
 import time
-from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QString, QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin(object):
