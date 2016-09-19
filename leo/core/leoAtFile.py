@@ -3922,9 +3922,21 @@ class AtFile(object):
                 "undefined section: %s\n\treferenced from: %s" % (name, p.h))
         return ref
     #@+node:ekr.20041005105605.176: *7* putRefLine
+    ref_warning_given = False
+
     def putRefLine(self, s, i, n1, n2, p):
         """Put a line containing one or more references."""
         at = self
+        
+        def warn(s):
+            # Attempt tof fix #289:
+            # Leo crashes with unusual combination of @clean and .leo file
+            if 0: # This does not seem to work.
+                if s.strip() and not self.ref_warning_given:
+                    g.es_print('Warning: %s will be written on a new line.' %
+                        g.angleBrackets(s.strip()))
+                    self.ref_warning_given = True
+
         # Compute delta only once.
         delta = self.putRefAt(s, i, n1, n2, p, delta=None)
         if delta is None: return # 11/23/03
@@ -3932,9 +3944,13 @@ class AtFile(object):
             i = n2 + 2
             hasRef, n1, n2 = at.findSectionName(s, i)
             if hasRef:
+                warn(s[n1:n2])
                 self.putAfterMiddleRef(s, i, n1, delta)
                 self.putRefAt(s, n1, n1, n2, p, delta)
             else: break
+        end = g.skip_line(s, i)
+        after = s[i: end].strip()
+        warn(after)
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20041005105605.177: *7* putRefAt
     def putRefAt(self, s, i, n1, n2, p, delta):
