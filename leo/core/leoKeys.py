@@ -928,7 +928,7 @@ class AutoCompleterClass(object):
             if ch:
                 n = d.get(ch, 0)
                 d[ch] = n + 1
-        aList = ['%s %d' % (ch, d.get(ch2)) for ch2 in sorted(d)]
+        aList = ['%s %d' % (ch2, d.get(ch2)) for ch2 in sorted(d)]
         if len(aList) > 1:
             tabList = aList
         else:
