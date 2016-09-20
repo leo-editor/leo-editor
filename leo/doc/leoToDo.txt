@@ -3,15 +3,6 @@
 .. @@language rest # override the default .txt coloring.
 .. @@wrap
 .. @+all
-.. @+node:ekr.20160403043354.1: ** re: 5.4
-@language rest
-@wrap
-
-Everything assigned to 5.4
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
-
-Bugs assigned to 5.4
-https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3ABug%20-label%3ACan%27tFix
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap

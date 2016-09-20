@@ -272,6 +272,7 @@ class RstCommands(object):
             '@rst-table', # New in Leo 5.3.
             '@rst-option',
             '@rst-options',
+            '@rst-preformat', # Fix #286.
         ]
     #@+node:ekr.20090502071837.40: *4* rst.munge
     def munge(self, name):
@@ -1016,6 +1017,7 @@ class RstCommands(object):
                 '@rst-option', '@rst-options',
                 '@rst-no-head', '@rst-no-headlines',
                 '@rst-table', # new in Leo 5.3.
+                '@rst-preformat', # Fix #286.
             ):
                 return
             # Remove all other headline commands from the headline.
