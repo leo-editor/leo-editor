@@ -306,6 +306,11 @@ class LeoFind(object):
     def cloneFindAllFlattenedCommand(self, event=None):
         self.setup_command()
         self.findAll(clone_find_all=True, clone_find_all_flattened=True)
+    #@+node:ekr.20160920105621.1: *4* find.cloneFindTagCommand (new)
+    def cloneFindTagCommand(self):
+        '''Handle the clone-find-tag command.'''
+        self.setup_command()
+        self.cloneFindTag()
     #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
     def findAllCommand(self, event=None):
         self.setup_command()
@@ -833,6 +838,37 @@ class LeoFind(object):
             k.showStateAndMode()
             self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
             c.treeWantsFocus()
+    #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag (new)
+    @cmd('clone-find-tag')
+    @cmd('find-clone-tag')
+    @cmd('cft')
+    def minibufferCloneFindTag(self, event=None):
+        '''
+        clone-find-all, aka find-clone-all and cfa.
+
+        Create an organizer node whose descendants contain clones of all nodes
+        matching the search string, except @nosearch trees.
+
+         The list is *always* flattened: every cloned node appears as a direct child
+        of the organizer node, even if the clone also is a descendant of
+        another cloned node.
+        '''
+        c = self.c; k = self.k; tag = 'clone-find-tag'
+        state = k.getState(tag)
+        if state == 0:
+            w = self.editWidget(event) # sets self.w
+            if w:
+                ###
+                # if not preloaded:
+                    # self.preloadFindPattern(w)
+                self.stateZeroHelper(event, tag, 'Clone Find Tag: ',
+                    self.minibufferCloneFindTag)
+        else:
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            self.generalSearchHelper(k.arg, cloneFindTag=True)
+            c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     @cmd('find-all')
     def minibufferFindAll(self, event=None):
@@ -901,7 +937,8 @@ class LeoFind(object):
     def generalSearchHelper(self, pattern,
         cloneFindAll=False,
         cloneFindAllFlattened=False,
-        findAll=False
+        cloneFindTag=False,
+        findAll=False,
     ):
         c = self.c
         self.setupSearchPattern(pattern)
@@ -917,6 +954,8 @@ class LeoFind(object):
             self.cloneFindAllCommand()
         elif cloneFindAllFlattened:
             self.cloneFindAllFlattenedCommand()
+        elif cloneFindTag:
+            self.cloneFindTagCommand()
         else:
             # This handles the reverse option.
             self.findNextCommand()
@@ -1422,6 +1461,47 @@ class LeoFind(object):
         self.initInHeadline()
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
+    #@+node:ekr.20160920114454.1: *4* find.cloneFindTag & helpers
+    def cloneFindTag(self):
+        '''Handle the clone-find-tag command.'''
+        c, u = self.c, self.c.undoer
+        tc = c.theTagController
+        if not tc:
+            g.es_print('nodetags not active')
+            return
+        clones = tc.get_tagged_nodes(self.find_text)
+        if clones:
+            undoType = 'Clone Find Tag'
+            undoData = u.beforeInsertNode(c.p)
+            found = self.createCloneTagNodes(clones)
+            u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
+            assert c.positionExists(found, trace=True), found
+            c.setChanged(True)
+            c.selectPosition(found)
+            c.redraw()
+        else:
+            g.es_print('tag not found: %s' % self.find_text)
+        return len(clones)
+    #@+node:ekr.20160920112617.2: *5* find.createCloneTagNodes
+    def createCloneTagNodes(self, clones):
+        '''
+        Create a "Found Tag" node as the last node of the outline.
+        Clone all positions in the clones set as children of found.
+        '''
+        c = self.c
+        # Create the found node.
+        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+        found = c.lastTopLevel().insertAfter()
+        assert found
+        assert c.positionExists(found), found
+        found.h = 'Found Tag: %s' % self.find_text
+        # Clone nodes as children of the found node.
+        for p in clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkAsNthChild(found, n, adjust=False)
+        return found
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
         trace = False and not g.unitTesting
@@ -2101,6 +2181,17 @@ class LeoFind(object):
                     i += 1 # Skip the escaped character.
             i += 1
         return s
+    #@+node:ekr.20131117164142.17006: *4* find.setupArgs
+    def setupArgs(self, forward=False, regexp=False, word=False):
+        '''
+        Set up args for commands that force various values for commands
+        (re-/word-/search-backward/forward)
+        that force one or more of these values to be a spefic value.
+        '''
+        if forward is not None: self.reverse = not forward
+        if regexp is not None: self.patern_match = True
+        if word is not None: self.whole_word = True
+        self.showFindOptions()
     #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea
     def showFindOptionsInStatusArea(self):
         '''Show find options in the status area.'''
@@ -2146,17 +2237,6 @@ class LeoFind(object):
         fg = found_fg if found else not_found_fg
         if c.config.getBool("show-find-result-in-status") is not False:
             c.frame.putStatusLine(s, bg=bg, fg=fg)
-    #@+node:ekr.20131117164142.17006: *4* find.setupArgs
-    def setupArgs(self, forward=False, regexp=False, word=False):
-        '''
-        Set up args for commands that force various values for commands
-        (re-/word-/search-backward/forward)
-        that force one or more of these values to be a spefic value.
-        '''
-        if forward is not None: self.reverse = not forward
-        if regexp is not None: self.patern_match = True
-        if word is not None: self.whole_word = True
-        self.showFindOptions()
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs(self):
