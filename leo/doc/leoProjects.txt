@@ -2484,6 +2484,15 @@ Added the following new helper methods:
 
 p.copyWithNewVnodes: calls v.copyTree.
 v.copyTree: a clearer version of p.copyTreeFromSelfTo.
+.. @+node:ekr.20160919142711.1: *4* Fixed #286: @rst-preformat directive is formatted into headline
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/286
+
+The fix was to add '@pre-format' to lists in writeHeadlineHelper and initHeadlineCommands.
+
+These nodes have been tagged with #286.
 .. @+node:ekr.20160917194225.1: *4* Fixed #291: mod_autosave.py does not always save...
 https://github.com/leo-editor/leo-editor/issues/291
 .. @+node:ekr.20120217070122.10467: *5* c.initEventIvars
