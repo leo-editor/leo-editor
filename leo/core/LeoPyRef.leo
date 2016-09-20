@@ -12,7 +12,7 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20160122104332.1"><vh>Buttons</vh>
-<v t="ekr.20150507170849.1" a="M"><vh>@@button create decorators</vh>
+<v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
 <v t="ekr.20150508071622.1"><vh>create_decorator</vh></v>
 <v t="ekr.20150508063412.1"><vh>create_decorators</vh></v>
@@ -22,7 +22,7 @@
 <v t="ekr.20150507175246.1"><vh>munge_lines</vh></v>
 <v t="ekr.20150508062944.1"><vh>run</vh></v>
 </v>
-<v t="ekr.20150509183433.1" a="M"><vh>@@button make-decorators2</vh>
+<v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
 <v t="ekr.20150509183433.3"><vh>create_decorator</vh></v>
 <v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
@@ -30,14 +30,27 @@
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
+<v t="ekr.20160316100329.1"><vh>@@button py2cs</vh>
+<v t="ekr.20160316100524.1"><vh>cmd</vh></v>
+<v t="ekr.20160316091923.1"><vh>ccc.python-to-coffeescript</vh>
+<v t="ekr.20160316092837.1"><vh>class Python_To_Coffeescript_Adapter</vh>
+<v t="ekr.20160316112717.1"><vh>py2cs.ctor</vh></v>
+<v t="ekr.20160316093019.1"><vh>py2cs.main</vh></v>
+<v t="ekr.20160316094011.7"><vh>py2cs.finalize</vh></v>
+<v t="ekr.20160316094011.8"><vh>py2cs.to_coffeescript</vh></v>
+<v t="ekr.20160316094011.9"><vh>py2cs.run</vh></v>
+<v t="ekr.20160316141812.1"><vh>py2cs.strip_sentinels</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
-<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
-<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
+<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
+<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140919093158.17876"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
@@ -80,23 +93,10 @@
 <v t="ekr.20160316081359.1"><vh>try_tests</vh></v>
 </v>
 </v>
-<v t="ekr.20160316100329.1"><vh>@@button py2cs</vh>
-<v t="ekr.20160316100524.1"><vh>cmd</vh></v>
-<v t="ekr.20160316091923.1"><vh>ccc.python-to-coffeescript</vh>
-<v t="ekr.20160316092837.1"><vh>class Python_To_Coffeescript_Adapter</vh>
-<v t="ekr.20160316112717.1"><vh>py2cs.ctor</vh></v>
-<v t="ekr.20160316093019.1"><vh>py2cs.main</vh></v>
-<v t="ekr.20160316094011.7"><vh>py2cs.finalize</vh></v>
-<v t="ekr.20160316094011.8"><vh>py2cs.to_coffeescript</vh></v>
-<v t="ekr.20160316094011.9"><vh>py2cs.run</vh></v>
-<v t="ekr.20160316141812.1"><vh>py2cs.strip_sentinels</vh></v>
-</v>
-</v>
-</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d7102285808000000616e6e6f7461746571037d710428580a000000707269736574646174657105580a000000323031352d30352d3237710658080000007072696f7269747971074d0f2775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d71052858080000007072696f7269747971064d0f27580a000000707269736574646174657107580a000000323031352d30352d323771087575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -111,8 +111,7 @@
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"
-marks="ekr.20150514125218.8,"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
@@ -124,6 +123,7 @@ marks="ekr.20150514125218.8,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
+<v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31372e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
@@ -137,8 +137,8 @@ marks="ekr.20150514125218.8,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
-<v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6d74696d657103580d000000313331393436373033382e3235710458090000007374725f6174696d657105580c000000313332303432323637302e39710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3071097d710a2858090000007374725f6d74696d65710b580d000000313331393439323330312e3532710c58090000007374725f6174696d65710d580d000000313331393534393339302e3839710e58090000007374725f6374696d65710f580c000000313331393439313330362e307110755805000000302e332e3271117d71122858090000007374725f6d74696d657113580d000000313331393436373035302e3438711458090000007374725f6174696d657115580d000000313331393436373035302e3438711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3371197d711a2858090000007374725f6d74696d65711b580d000000313332303432323639302e3534711c58090000007374725f6174696d65711d580d000000313332303433343235372e3336711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3571217d71222858090000007374725f6d74696d657123580c000000313331393634313131372e39712458090000007374725f6174696d657125580d000000313331393634313435352e3937712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3471297d712a2858090000007374725f6d74696d65712b580d000000313331393634313038352e3038712c58090000007374725f6174696d65712d580c000000313331393634353330362e32712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20090502071837.3" descendentVnodeUnknownAttributes="7d7100285807000000302e332e302e3371017d7102580b0000005f5f6e6f64655f746167737103635f5f6275696c74696e5f5f0a7365740a7104285d710558040000002332383671066174710752710873580d000000302e332e312e312e342e392e3071097d710a68036804285d710b580400000023323836710c6174710d52710e73752e"><vh>@file leoRst.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6d74696d657103580d000000313331393436373033382e3235710458090000007374725f6174696d657105580c000000313332303432323637302e39710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3071097d710a2858090000007374725f6d74696d65710b580d000000313331393439323330312e3532710c58090000007374725f6174696d65710d580d000000313331393534393339302e3839710e58090000007374725f6374696d65710f580c000000313331393439313330362e307110755805000000302e332e3371117d71122858090000007374725f6d74696d657113580d000000313332303432323639302e3534711458090000007374725f6174696d657115580d000000313332303433343235372e3336711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3271197d711a2858090000007374725f6d74696d65711b580d000000313331393436373035302e3438711c58090000007374725f6174696d65711d580d000000313331393436373035302e3438711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3471217d71222858090000007374725f6d74696d657123580d000000313331393634313038352e3038712458090000007374725f6174696d657125580c000000313331393634353330362e32712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3571297d712a2858090000007374725f6d74696d65712b580c000000313331393634313131372e39712c58090000007374725f6174696d65712d580d000000313331393634313435352e3937712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -165,11 +165,10 @@ marks="ekr.20150514125218.8,"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
-<v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
+<v t="ekr.20060123151617" descendentVnodeUnknownAttributes="7d7100285807000000302e322e382e3571017d7102580b0000005f5f6e6f64655f746167737103635f5f6275696c74696e5f5f0a7365740a7104285d71055803000000636674710661747107527108735808000000302e322e362e313071097d710a580b0000005f5f6e6f64655f74616773710b6804285d710c580c0000007461675f6368696c6472656e710d6174710e52710f735807000000302e322e352e3271107d711168036804285d71125803000000636674711361747114527115735809000000302e322e352e352e3071167d7117580b0000005f5f6e6f64655f7461677371186804285d71195803000000636674711a6174711b52711c735807000000302e322e352e35711d7d711e580b0000005f5f6e6f64655f74616773711f6804285d712028580c0000007461675f6368696c6472656e7121580300000063667471226574712352712473752e"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
-<v t="ekr.20061031131434"
-expanded="ekr.20061031131434.4,ekr.20061031131434.16,ekr.20061031131434.20,"><vh>@file leoKeys.py</vh></v>
+<v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
@@ -178,16 +177,12 @@ expanded="ekr.20061031131434.4,ekr.20061031131434.16,ekr.20061031131434.20,"><vh
 <v t="ekr.20140919181357.24956"><vh>@file ../plugins/qt_big_text.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
 <v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
-<v t="ekr.20140907123524.18774"
-expanded="ekr.20110605121601.18166,ekr.20111022222228.16980,ekr.20110605121601.18365,ekr.20110605121601.18369,ekr.20110605121601.18370,ekr.20110605121601.18371,ekr.20110605121601.18372,"><vh>@file ../plugins/qt_frame.py</vh></v>
-<v t="ekr.20140907085654.18699"
-expanded="ekr.20110605121601.18487,ekr.20150615211522.1,ekr.20110607182447.16456,"><vh>@file ../plugins/qt_gui.py</vh></v>
+<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
+<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
 <v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
 <v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
-<v t="ekr.20140831085423.18598"
-expanded="ekr.20140901062324.18719,ekr.20150403094706.2,ekr.20110605121601.18103,ekr.20110605121601.18107,ekr.20140901062324.18594,ekr.20110605121601.18071,ekr.20110605121601.18078,"><vh>@file ../plugins/qt_text.py</vh></v>
-<v t="ekr.20140907131341.18707"
-expanded="ekr.20110605121601.17873,"><vh>@file ../plugins/qt_tree.py</vh></v>
+<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
+<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
 </v>
 <v t="ekr.20160226082945.1"><vh>PyInstaller</vh>
@@ -244,8 +239,16 @@ expanded="ekr.20110605121601.17873,"><vh>@file ../plugins/qt_tree.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
-<t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358050000006c696e6b7371045d710558010000007971064b00752e"># This file contains almost all of Leo's sources.
+<t tx="EKR.20040519090151.2">@language rest
+@wrap
+
+Everything assigned to 5.4
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aopen+is%3Aissue+milestone%3A5.4
+
+Bugs assigned to 5.4
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aopen%20is%3Aissue%20label%3ABug%20-label%3ACan%27tFix
+</t>
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -1783,7 +1786,7 @@ At startup, the TokenSync ctor assigns all the incoming tokens to various lists.
     ts.line_tokens[i]: all the tokens on line i
     ts.string_tokens[i]: all string tokens on line i
     st.ignored_lines: the blank or comment line on line i
-    
+
 It is very easy to create these lists. The code does not depend on any arcane details.
 
 #### Recovering the exact spelling of stings.
@@ -1796,13 +1799,13 @@ ts.synch_string returns the *next* string on the line. Here it is, stripped of d
         token = tokens.pop(0)
         self.string_tokens[node.lineno-1] = tokens
         return self.token_val(token)
-       
+
 Stripped of defensive code, the do_Str visitor is just:
 
     def do_Str(self, node):
         '''A string constant, including docstrings.'''
         return self.sync_string(node)
-        
+
 #### Recovering otherwise ignored nodes
 
 **ts.leading_lines(node)** returns a list of otherwise ignored lines that
@@ -1824,7 +1827,7 @@ The visitor for each statement intersperses otherwise ignored tokens using calls
 The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
 
     def do_If(self, node):
-   
+
         result = self.leading_lines(node)
         tail = self.trailing_comment(node)
         s = 'if %s:%s' % (self.visit(node.test), tail)
@@ -1880,8 +1883,6 @@ def python2coffeescript(self, event):
         self.run()
     else:
         g.es_print('can not load py2cs.py')
-
-
 </t>
 <t tx="ekr.20160316094011.7">def finalize(self, fn):
     '''Finalize and regularize a filename.'''
