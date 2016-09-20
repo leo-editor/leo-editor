@@ -306,11 +306,6 @@ class LeoFind(object):
     def cloneFindAllFlattenedCommand(self, event=None):
         self.setup_command()
         self.findAll(clone_find_all=True, clone_find_all_flattened=True)
-    #@+node:ekr.20160920105621.1: *4* find.cloneFindTagCommand (new)
-    def cloneFindTagCommand(self):
-        '''Handle the clone-find-tag command.'''
-        self.setup_command()
-        self.cloneFindTag()
     #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
     def findAllCommand(self, event=None):
         self.setup_command()
@@ -838,7 +833,7 @@ class LeoFind(object):
             k.showStateAndMode()
             self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
             c.treeWantsFocus()
-    #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag (new)
+    #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
     @cmd('cft')
@@ -856,18 +851,14 @@ class LeoFind(object):
         c = self.c; k = self.k; tag = 'clone-find-tag'
         state = k.getState(tag)
         if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if w:
-                ###
-                # if not preloaded:
-                    # self.preloadFindPattern(w)
+            if self.editWidget(event): # sets self.w
                 self.stateZeroHelper(event, tag, 'Clone Find Tag: ',
                     self.minibufferCloneFindTag)
         else:
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
-            self.generalSearchHelper(k.arg, cloneFindTag=True)
+            self.cloneFindTag(k.arg)
             c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     @cmd('find-all')
@@ -884,6 +875,54 @@ class LeoFind(object):
         '''Replace all instances of the search string with the replacement string.'''
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, changeAllFlag=True)
+    #@+node:ekr.20160920164418.2: *4* find.minibufferTagChildren & helper
+    @cmd('tag-children')
+    def minibufferTagChildren(self, event=None):
+        '''tag-children: add a tag to all children of c.p.'''
+        c = self.c; k = self.k; tag = 'tag-children'
+        state = k.getState(tag)
+        if state == 0:
+            if self.editWidget(event): # sets self.w
+                self.stateZeroHelper(event, tag, 'Tag Children: ',
+                    self.minibufferTagChildren)
+        else:
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            self.tagChildren(k.arg)
+            c.treeWantsFocus()
+    #@+node:ekr.20160920164418.4: *5* find.tagChildren
+    def tagChildren(self, tag):
+        '''Handle the clone-find-tag command.'''
+        c = self.c
+        tc = c.theTagController
+        if tc:
+            for p in c.p.children():
+                tc.add_tag(p,tag)
+            g.es_print('Added %s tag to %s nodes' % (
+                tag, len(list(c.p.children()))))
+        else:
+            g.es_print('nodetags not active')
+    #@+node:ekr.20160920164418.5: *6* find.createCloneTagNodes
+    def createCloneTagNodes(self, clones):
+        '''
+        Create a "Found Tag" node as the last node of the outline.
+        Clone all positions in the clones set as children of found.
+        '''
+        c = self.c
+        # Create the found node.
+        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+        found = c.lastTopLevel().insertAfter()
+        assert found
+        assert c.positionExists(found), found
+        found.h = 'Found Tag: %s' % self.find_text
+        # Clone nodes as children of the found node.
+        for p in clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkAsNthChild(found, n, adjust=False)
+        return found
     #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
     def addChangeStringToLabel(self):
@@ -937,7 +976,6 @@ class LeoFind(object):
     def generalSearchHelper(self, pattern,
         cloneFindAll=False,
         cloneFindAllFlattened=False,
-        cloneFindTag=False,
         findAll=False,
     ):
         c = self.c
@@ -954,8 +992,6 @@ class LeoFind(object):
             self.cloneFindAllCommand()
         elif cloneFindAllFlattened:
             self.cloneFindAllFlattenedCommand()
-        elif cloneFindTag:
-            self.cloneFindTagCommand()
         else:
             # This handles the reverse option.
             self.findNextCommand()
@@ -1462,14 +1498,14 @@ class LeoFind(object):
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
     #@+node:ekr.20160920114454.1: *4* find.cloneFindTag & helpers
-    def cloneFindTag(self):
+    def cloneFindTag(self, tag):
         '''Handle the clone-find-tag command.'''
         c, u = self.c, self.c.undoer
         tc = c.theTagController
         if not tc:
             g.es_print('nodetags not active')
             return
-        clones = tc.get_tagged_nodes(self.find_text)
+        clones = tc.get_tagged_nodes(tag)
         if clones:
             undoType = 'Clone Find Tag'
             undoData = u.beforeInsertNode(c.p)

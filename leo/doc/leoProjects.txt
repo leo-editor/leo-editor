@@ -6039,6 +6039,11 @@ continue;;=line 1\n line 2\n line 3
 
 I would consider the abbrev-write file more useful if it used the
 same continuation convention as in @data nodes
+.. @+node:ekr.20160920115856.1: *4* Added clone-find-tag (cft) and tag-children commands
+@language rest
+@wrap
+
+Nodes marked with cft tag or tag-children tags.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
