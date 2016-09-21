@@ -903,26 +903,6 @@ class LeoFind(object):
                 tag, len(list(c.p.children()))))
         else:
             g.es_print('nodetags not active')
-    #@+node:ekr.20160920164418.5: *6* find.createCloneTagNodes
-    def createCloneTagNodes(self, clones):
-        '''
-        Create a "Found Tag" node as the last node of the outline.
-        Clone all positions in the clones set as children of found.
-        '''
-        c = self.c
-        # Create the found node.
-        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
-        found = c.lastTopLevel().insertAfter()
-        assert found
-        assert c.positionExists(found), found
-        found.h = 'Found Tag: %s' % self.find_text
-        # Clone nodes as children of the found node.
-        for p in clones:
-            # Create the clone directly as a child of found.
-            p2 = p.copy()
-            n = found.numberOfChildren()
-            p2._linkAsNthChild(found, n, adjust=False)
-        return found
     #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
     def addChangeStringToLabel(self):
