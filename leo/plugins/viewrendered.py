@@ -831,6 +831,8 @@ if QtWidgets: # NOQA
                 # Restore the scrollbars
                 sb.setSliderPosition(pos)
         #@+node:ekr.20110320120020.14481: *4* vr.update_movie
+        movie_warning = False
+
         def update_movie(self, s, keywords):
             '''Update a movie in the vr pane.'''
             # pylint: disable=maybe-no-member
@@ -841,11 +843,14 @@ if QtWidgets: # NOQA
             ok, path = pc.get_fn(s, '@movie')
             if not ok:
                 w = pc.ensure_text_widget()
-                w.setPlainText('Movie\n\nfile not found: %s' % (path))
+                w.setPlainText('Not found: %s' % (path))
                 return
             if not phonon:
+                if not self.movie_warning:
+                    self.movie_warning = True
+                    g.es_print('No phonon movie player')
                 w = pc.ensure_text_widget()
-                w.setPlainText('Movie\n\nno phonon movie player: %s' % (path))
+                w.setPlainText('')
                 return
             if pc.vp:
                 vp = pc.vp
@@ -863,6 +868,7 @@ if QtWidgets: # NOQA
                     pc.vp.deleteLater()
                     pc.vp = None
 
+            g.es_print('playing', path)
             pc.embed_widget(vp, delete_callback=delete_callback)
             pc.show()
             vp = pc.vp
@@ -887,16 +893,15 @@ if QtWidgets: # NOQA
             assert pc.w
             if s:
                 pc.show()
+            # Show text only if we have docutils and only if we have rst or md language.
             if got_docutils:
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanColorDirectives(p)
                 if trace: g.trace(language)
-                raw = language not in ('rst', 'rest', 'markdown', 'md')
-                if not raw and not isHtml:
-                    s = pc.convert_to_html(s)
-            else:
-                raw = True
-            pc.set_rst_text(raw, s, w)
+                if language in ('rst', 'rest', 'markdown', 'md'):
+                    if not isHtml:
+                        s = pc.convert_to_html(s)
+                    pc.set_rst_text(s, w)
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
         def convert_to_html(self, s):
             '''Convert s to html using docutils.'''
@@ -920,7 +925,7 @@ if QtWidgets: # NOQA
                     s = 'RST error:\n%s\n\n%s' % (msg, s)
             return s
         #@+node:ekr.20160921071239.1: *5* vr.set_rst_text
-        def set_rst_text(self, raw, s, w):
+        def set_rst_text(self, s, w):
             '''Set text in w to s, preserving scroll position.'''
             pc = self
             p = pc.c.p
@@ -934,10 +939,7 @@ if QtWidgets: # NOQA
                 else:
                     # Save the scrollbars
                     d[p.v] = pos = sb.sliderPosition()
-            if raw:
-                w.setPlainText(s)
-            else:
-                w.setHtml(s)
+            w.setHtml(s)
             if sb:
                 # Restore the scrollbars
                 assert pos is not None
@@ -983,22 +985,11 @@ if QtWidgets: # NOQA
             elif pc.default_kind in ('markdown', 'md'):
                 pc.update_md(s, keywords)
             else:
+                # Do nothing.
+                g.trace('ignore',s)
                 w = pc.ensure_text_widget()
                 pc.show()
-                g.trace(s)
-                if 0:
-                    w.setReadOnly(False)
-                    w.setHtml(s)
-                    w.setReadOnly(True)
-                elif 0:
-                    w.setPlainText('')
-                else:
-                    url = pc.get_url(s, '@url')
-                    if url:
-                        w.setPlainText('@url %s' % url)
-                    else:
-                        w.setPlainText('@url: no url given')
-                
+                w.setPlainText('')
         #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
         #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
         def ensure_text_widget(self):
@@ -1062,6 +1053,7 @@ if QtWidgets: # NOQA
                 else:
                     fn = g.os_path_finalize(fn)
             ok = g.os_path_exists(fn)
+            # if not ok: g.trace('not found', fn)
             return ok, fn
         #@+node:ekr.20110321005148.14536: *5* vr.get_url
         def get_url(self, s, tag):
