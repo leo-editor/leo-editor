@@ -4,7 +4,7 @@
 #@+node:ekr.20140226074510.4187: ** << docstring >>
 '''
 
-Creates a window for *live* rendering of reSTructuredText, markdown text,
+viewrendered2.py: Creates a window for *live* rendering of reSTructuredText, markdown text,
 images, movies, sounds, rst, html, etc.
 
 Dependencies
@@ -193,6 +193,7 @@ See the viewrendered.py plugin for additional acknowledgments.
 
 '''
 #@-<< docstring >>
+# Porting to PyQt5: https://wiki.qt.io/Porting_from_QtWebKit_to_QtWebEngine
 __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >> (viewrendered2.py)
@@ -277,10 +278,14 @@ def decorate_window(w):
 #@+node:ekr.20140226074510.4192: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.registerHandler('scrolledMessage', show_scrolled_message)
-    return True
+    ok = not isQt5
+    if ok:
+        g.plugin_signon(__name__)
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('scrolledMessage', show_scrolled_message)
+    else:
+        g.es_print('The viewrendered plugin is not compatible with PyQt5')
+    return ok
 #@+node:ekr.20140226074510.4193: *3* onCreate (viewrendered2.py)
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -485,8 +490,13 @@ class WebViewPlus(QtWidgets.QWidget):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
         view = QtWebKitWidgets.QWebView()
-        mf = view.page().mainFrame()
-        mf.contentsSizeChanged.connect(self.restore_scroll_position)
+        try:
+            # PyQt4
+            mf = view.page().mainFrame()
+            mf.contentsSizeChanged.connect(self.restore_scroll_position)
+        except AttributeError:
+            # PyQt5
+            pass
         # ToolBar parts
         self.export_button = QtWidgets.QPushButton('Export')
         self.export_button.clicked.connect(self.export)
@@ -610,8 +620,13 @@ class WebViewPlus(QtWidgets.QWidget):
         else:
             view.settings().setAttribute(QtWebKitWidgets.QWebSettings.PluginsEnabled, True)
         # Prevent caching, especially of images
-        view.settings().setMaximumPagesInCache(0)
-        view.settings().setObjectCacheCapacities(0, 0, 0)
+        try:
+            # PyQt4
+            view.settings().setMaximumPagesInCache(0)
+            view.settings().setObjectCacheCapacities(0, 0, 0)
+        except AttributeError:
+            # PyQt5
+            pass
         #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
         return view
@@ -845,7 +860,12 @@ class WebViewPlus(QtWidgets.QWidget):
     def to_html(self, p):
         '''Convert p.b to html using docutils.'''
         c, pc = self.c, self.pc
-        mf = self.view.page().mainFrame()
+        try:
+            # PyQt4
+            mf = self.view.page().mainFrame()
+        except AttributeError:
+            # mf = self.view.page()
+            mf = self.view
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
