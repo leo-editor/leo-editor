@@ -330,16 +330,20 @@ def decorate_window(w):
 #@+node:ekr.20160331123847.8: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = bool(QtSvg and QtWebKitWidgets and not isQt5)
-    if ok:
-        g.plugin_signon(__name__)
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.registerHandler('scrolledMessage', show_scrolled_message)
-    elif isQt5:
-        g.es_print('The viewrendered3 plugin is not compatible with PyQt5')
-    elif not QtSvg and QtWebKitWidgets:
-        g.es_print('The viewrendered plugin requires QtSvg and QtWebKitWidgets')
-    return ok
+    if 1:
+        g.es_print('The viewrendered3 plugin is not ready yet')
+        return False
+    else:
+        ok = bool(QtSvg and QtWebKitWidgets and not isQt5)
+        if ok:
+            g.plugin_signon(__name__)
+            g.registerHandler('after-create-leo-frame', onCreate)
+            g.registerHandler('scrolledMessage', show_scrolled_message)
+        elif isQt5:
+            g.es_print('The viewrendered3 plugin is not compatible with PyQt5')
+        elif not QtSvg and QtWebKitWidgets:
+            g.es_print('The viewrendered plugin requires QtSvg and QtWebKitWidgets')
+        return ok
 #@+node:ekr.20160331123847.9: *3* onCreate (viewrendered3.py)
 def onCreate(tag, keys):
     c = keys.get('c')

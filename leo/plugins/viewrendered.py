@@ -509,7 +509,7 @@ if QtWidgets: # NOQA
             # Init.
             self.create_dispatch_dict()
             self.activate()
-        #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
+        #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
         def create_dispatch_dict(self):
             pc = self
             d = {
@@ -582,6 +582,26 @@ if QtWidgets: # NOQA
             '''Unlock the vr pane.'''
             g.note('rendering pane unlocked')
             self.locked = False
+        #@+node:ekr.20160921071239.1: *3* vr.set_html
+        def set_html(self, s, w):
+            '''Set text in w to s, preserving scroll position.'''
+            pc = self
+            p = pc.c.p
+            sb = w.verticalScrollBar()
+            if sb:
+                d = pc.scrollbar_pos_dict
+                if pc.node_changed:
+                    # Set the scrollbar.
+                    pos = d.get(p.v, sb.sliderPosition())
+                    sb.setSliderPosition(pos)
+                else:
+                    # Save the scrollbars
+                    d[p.v] = pos = sb.sliderPosition()
+            w.setHtml(s)
+            if sb:
+                # Restore the scrollbars
+                assert pos is not None
+                sb.setSliderPosition(pos)
         #@+node:ekr.20110319143920.14466: *3* vr.underline
         def underline(self, s):
             '''Generate rST underlining for s.'''
@@ -767,7 +787,7 @@ if QtWidgets: # NOQA
             w.setReadOnly(False)
             w.setHtml(template)
             w.setReadOnly(True)
-        #@+node:peckj.20130207132858.3671: *4* vr.update_md
+        #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
             pc = self; c = pc.c; p = c.p
@@ -779,57 +799,41 @@ if QtWidgets: # NOQA
             assert pc.w
             if s:
                 pc.show()
-            if not got_markdown:
+            if got_markdown:
+                force = keywords.get('force')
+                colorizer = c.frame.body.colorizer
+                language = colorizer.scanColorDirectives(p)
+                if trace: g.trace(language)
+                if force or language in ('rst', 'rest', 'markdown', 'md'):
+                    if not isHtml:
+                        s = self.convert_to_markdown(s)
+                self.set_html(s,w)
+            else:
                 g.trace('markdown not available: using rst')
                 self.update_rst(s,keywords)
-                return
-                ### isHtml = True
-                ### s = '<pre>\n%s</pre>' % s
-            if not isHtml:
-                # Not html: convert to html.
-                path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
-                if not os.path.isdir(path):
-                    path = os.path.dirname(path)
-                if os.path.isdir(path):
-                    os.chdir(path)
-                try:
-                    msg = '' # The error message from docutils.
-                    if pc.title:
-                        s = pc.underline(pc.title) + s
-                        pc.title = None
-                    mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
-                    mdext = [x.strip() for x in mdext.split(',')]
-                    s = markdown(s, mdext)
-                    s = g.toUnicode(s)
-                except SystemMessage as sm:
-                    msg = sm.args[0]
-                    if 'SEVERE' in msg or 'FATAL' in msg:
-                        s = 'MD error:\n%s\n\n%s' % (msg, s)
-            sb = w.verticalScrollBar()
-            if sb:
-                d = pc.scrollbar_pos_dict
-                if pc.node_changed:
-                    # Set the scrollbar.
-                    pos = d.get(p.v, sb.sliderPosition())
-                    sb.setSliderPosition(pos)
-                else:
-                    # Save the scrollbars
-                    d[p.v] = pos = sb.sliderPosition()
-            # 2016/03/25: honor @language md.
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanColorDirectives(p)
-            if (
-                language in ('markdown', 'md') or
-                pc.default_kind in ('big', 'rst', 'html', 'md')
-            ):
-                w.setHtml(s)
-                if pc.default_kind == 'big':
-                    w.zoomIn(4) # Doesn't work.
-            else:
-                w.setPlainText(s)
-            if sb and pos:
-                # Restore the scrollbars
-                sb.setSliderPosition(pos)
+        #@+node:ekr.20160921134552.1: *5* convert_to_markdown
+        def convert_to_markdown(self, s):
+            '''Convert s to html using the markdown processor.'''
+            pc = self
+            c, p = pc.c, pc.c.p
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            try:
+                if pc.title:
+                    s = pc.underline(pc.title) + s
+                    pc.title = None
+                mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+                mdext = [x.strip() for x in mdext.split(',')]
+                s = markdown(s, mdext)
+                s = g.toUnicode(s)
+            except SystemMessage as sm:
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    s = 'MD error:\n%s\n\n%s' % (msg, s)
+            return s
         #@+node:ekr.20110320120020.14481: *4* vr.update_movie
         movie_warning = False
 
@@ -895,13 +899,16 @@ if QtWidgets: # NOQA
                 pc.show()
             # Show text only if we have docutils and only if we have rst or md language.
             if got_docutils:
+                force = keywords.get('force')
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanColorDirectives(p)
                 if trace: g.trace(language)
-                if language in ('rst', 'rest', 'markdown', 'md'):
+                if force or language in ('rst', 'rest', 'markdown', 'md'):
                     if not isHtml:
                         s = pc.convert_to_html(s)
-                    pc.set_rst_text(s, w)
+                    pc.set_html(s, w)
+            else:
+                w.setPlainText('')
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
         def convert_to_html(self, s):
             '''Convert s to html using docutils.'''
@@ -924,26 +931,6 @@ if QtWidgets: # NOQA
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg, s)
             return s
-        #@+node:ekr.20160921071239.1: *5* vr.set_rst_text
-        def set_rst_text(self, s, w):
-            '''Set text in w to s, preserving scroll position.'''
-            pc = self
-            p = pc.c.p
-            sb = w.verticalScrollBar()
-            if sb:
-                d = pc.scrollbar_pos_dict
-                if pc.node_changed:
-                    # Set the scrollbar.
-                    pos = d.get(p.v, sb.sliderPosition())
-                    sb.setSliderPosition(pos)
-                else:
-                    # Save the scrollbars
-                    d[p.v] = pos = sb.sliderPosition()
-            w.setHtml(s)
-            if sb:
-                # Restore the scrollbars
-                assert pos is not None
-                sb.setSliderPosition(pos)
         #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
