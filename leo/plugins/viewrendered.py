@@ -517,18 +517,16 @@ if QtWidgets: # NOQA
                 'html': pc.update_html,
                 'graphics-script': pc.update_graphics_script,
                 'image': pc.update_image,
+                'markdown': pc.update_md,
+                'md': pc.update_md,
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
+                'rest': pc.update_rst,
+                'rst': pc.update_rst,
                 'svg': pc.update_svg,
-                'url': pc.update_url,
+                # 'url': pc.update_url,
                 # 'xml': pc.update_xml,
             }
-            if got_markdown:
-                for key in ('markdown', 'md'):
-                    d [key] = pc.update_md
-            if got_docutils:
-                for key in ('rest', 'rst'):
-                    d [key] = pc.update_rst
             pc.dispatch_dict = d
             return d
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
@@ -782,8 +780,11 @@ if QtWidgets: # NOQA
             if s:
                 pc.show()
             if not got_markdown:
-                isHtml = True
-                s = '<pre>\n%s</pre>' % s
+                g.trace('markdown not available: using rst')
+                self.update_rst(s,keywords)
+                return
+                ### isHtml = True
+                ### s = '<pre>\n%s</pre>' % s
             if not isHtml:
                 # Not html: convert to html.
                 path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -844,7 +845,7 @@ if QtWidgets: # NOQA
                 return
             if not phonon:
                 w = pc.ensure_text_widget()
-                w.setPlainText('Movie\n\nno movie player: %s' % (path))
+                w.setPlainText('Movie\n\nno phonon movie player: %s' % (path))
                 return
             if pc.vp:
                 vp = pc.vp
@@ -874,44 +875,55 @@ if QtWidgets: # NOQA
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
-        #@+node:ekr.20110320120020.14477: *4* vr.update_rst
+        #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
-            c = pc.c
-            p = c.p
+            c, p = pc.c, pc.c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
-            if trace: g.trace('isHtml', isHtml, p.h)
             # Do this regardless of whether we show the widget or not.
             w = pc.ensure_text_widget()
             assert pc.w
             if s:
                 pc.show()
-            if not got_docutils:
-                isHtml = True
-                s = '<pre>\n%s</pre>' % s
-            if not isHtml:
-                # Not html: convert to html.
-                path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
-                if not os.path.isdir(path):
-                    path = os.path.dirname(path)
-                if os.path.isdir(path):
-                    os.chdir(path)
-                try:
-                    msg = '' # The error message from docutils.
-                    if pc.title:
-                        s = pc.underline(pc.title) + s
-                        pc.title = None
-                    # Call docutils to get the string.
-                    s = publish_string(s, writer_name='html')
-                    if trace: g.trace('after docutils', len(s))
-                    s = g.toUnicode(s) # 2011/03/15
-                except SystemMessage as sm:
-                    # g.trace(sm,sm.args)
-                    msg = sm.args[0]
-                    if 'SEVERE' in msg or 'FATAL' in msg:
-                        s = 'RST error:\n%s\n\n%s' % (msg, s)
+            if got_docutils:
+                colorizer = c.frame.body.colorizer
+                language = colorizer.scanColorDirectives(p)
+                if trace: g.trace(language)
+                raw = language not in ('rst', 'rest', 'markdown', 'md')
+                if not raw and not isHtml:
+                    s = pc.convert_to_html(s)
+            else:
+                raw = True
+            pc.set_rst_text(raw, s, w)
+        #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
+        def convert_to_html(self, s):
+            '''Convert s to html using docutils.'''
+            c, p = self.c, self.c.p
+            # Update the current path.
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            if not os.path.isdir(path):
+                path = os.path.dirname(path)
+            if os.path.isdir(path):
+                os.chdir(path)
+            try:
+                if self.title:
+                    s = self.underline(self.title) + s
+                    self.title = None
+                # Call docutils to get the string.
+                s = publish_string(s, writer_name='html')
+                s = g.toUnicode(s)
+            except SystemMessage as sm:
+                msg = sm.args[0]
+                if 'SEVERE' in msg or 'FATAL' in msg:
+                    s = 'RST error:\n%s\n\n%s' % (msg, s)
+            return s
+        #@+node:ekr.20160921071239.1: *5* vr.set_rst_text
+        def set_rst_text(self, raw, s, w):
+            '''Set text in w to s, preserving scroll position.'''
+            pc = self
+            p = pc.c.p
             sb = w.verticalScrollBar()
             if sb:
                 d = pc.scrollbar_pos_dict
@@ -922,21 +934,13 @@ if QtWidgets: # NOQA
                 else:
                     # Save the scrollbars
                     d[p.v] = pos = sb.sliderPosition()
-            # 2016/03/25: honor @language rest.
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanColorDirectives(p)
-            if (
-                language in ('rst', 'rest') or
-                # pc.default_kind in ('big', 'rst', 'html', 'md')
-                pc.default_kind in ('markdown', 'md')
-            ):
-                w.setHtml(s)
-                if pc.default_kind == 'big':
-                    w.zoomIn(4) # Doesn't work.
-            else:
+            if raw:
                 w.setPlainText(s)
-            if sb and pos:
+            else:
+                w.setHtml(s)
+            if sb:
                 # Restore the scrollbars
+                assert pos is not None
                 sb.setSliderPosition(pos)
         #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
@@ -967,19 +971,34 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110321005148.14537: *4* vr.update_url
         def update_url(self, s, keywords):
             pc = self
-            w = pc.ensure_text_widget()
-            pc.show()
-            if 1:
-                w.setPlainText('')
+            c, p = self.c, self.c.p
+            colorizer = c.frame.body.colorizer
+            language = colorizer.scanColorDirectives(p)
+            if language in ('rest', 'rst'):
+                pc.update_rst(s, keywords)
+            elif language in ('markdown', 'md'):
+                pc.update_md(s, keywords)
+            elif pc.default_kind in ('rest', 'rst'):
+                pc.update_rst(s, keywords)
+            elif pc.default_kind in ('markdown', 'md'):
+                pc.update_md(s, keywords)
             else:
-                url = pc.get_url(s, '@url')
-                if url:
-                    w.setPlainText('@url %s' % url)
+                w = pc.ensure_text_widget()
+                pc.show()
+                g.trace(s)
+                if 0:
+                    w.setReadOnly(False)
+                    w.setHtml(s)
+                    w.setReadOnly(True)
+                elif 0:
+                    w.setPlainText('')
                 else:
-                    w.setPlainText('@url: no url given')
-            # w.setReadOnly(False)
-            # w.setHtml(s)
-            # w.setReadOnly(True)
+                    url = pc.get_url(s, '@url')
+                    if url:
+                        w.setPlainText('@url %s' % url)
+                    else:
+                        w.setPlainText('@url: no url given')
+                
         #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
         #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
         def ensure_text_widget(self):
