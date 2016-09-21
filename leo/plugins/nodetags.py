@@ -235,23 +235,23 @@ class LeoTagWidget(QtWidgets.QWidget):
         # verticalLayout
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_2.setObjectName("nodetags-verticalLayout_2")
 
         # horizontalLayout: contains
         # "Refresh" button
         # comboBox
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.horizontalLayout.setObjectName("nodetags-horizontalLayout")
 
         # horizontalLayout2: contains
         # label2
         # not much by default -- it's a place to add buttons for current tags
         self.horizontalLayout2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout2.setContentsMargins(0,0,0,0)
-        self.horizontalLayout2.setObjectName("horizontalLayout2")
+        self.horizontalLayout2.setObjectName("nodetags-horizontalLayout2")
         label2 = QtWidgets.QLabel(self)
-        label2.setObjectName("label2")
+        label2.setObjectName("nodetags-label2")
         label2.setText("Tags for current node:")
         self.horizontalLayout2.addWidget(label2)
 
@@ -261,25 +261,25 @@ class LeoTagWidget(QtWidgets.QWidget):
         # horizontalLayout2
         # label
         self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.setObjectName("nodetags-verticalLayout")
 
         self.comboBox = QtWidgets.QComboBox(self)
-        self.comboBox.setObjectName("comboBox")
+        self.comboBox.setObjectName("nodetags-comboBox")
         self.comboBox.setEditable(True)
         self.horizontalLayout.addWidget(self.comboBox)
 
         self.pushButton = QtWidgets.QPushButton("+", self)
-        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setObjectName("nodetags-pushButton")
         self.pushButton.setMinimumSize(24,24)
         self.pushButton.setMaximumSize(24,24)
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.listWidget = QtWidgets.QListWidget(self)
-        self.listWidget.setObjectName("listWidget")
+        self.listWidget.setObjectName("nodetags-listWidget")
         self.verticalLayout.addWidget(self.listWidget)
         self.verticalLayout.addLayout(self.horizontalLayout2)
         self.label = QtWidgets.QLabel(self)
-        self.label.setObjectName("label")
+        self.label.setObjectName("nodetags-label")
         self.label.setText("Total: 0 items")
         self.verticalLayout.addWidget(self.label)
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -306,6 +306,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             child = hl2.takeAt(0)
             child.widget().deleteLater()
         label = QtWidgets.QLabel(self)
+        label.setObjectName("nodetags-label2")
         label.setText('Tags for current node:')
         hl2.addWidget(label)
         tags = self.tc.get_tags(pos)
@@ -313,6 +314,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         for tag in tags:
             l = QtWidgets.QLabel(self)
             l.setText(tag)
+            l.setObjectName('nodetags-label3')
             hl2.addWidget(l)
             l.mouseReleaseEvent = self.callback_factory(tag)
 
