@@ -142,6 +142,11 @@ A helper class, JSON_Import_Helper (jih) would contain all the general code. You
 Client scripts would tell the jih class what elements are to create outline structure, which elements should be ignored, and which elements are to create headline text, body text, or even may uA's.
 .. @+node:ekr.20160506075353.1: *4* #278: Create coffeescript importer
 https://github.com/leo-editor/leo-editor/issues/278
+.. @+node:ekr.20160918110110.1: *4* #303: The VR plugins should be merged
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/303
 .. @+node:ekr.20160318112838.1: *3* 5.5 Enhancements 2
 @language rest
 @wrap

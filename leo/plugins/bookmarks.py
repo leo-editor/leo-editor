@@ -712,6 +712,8 @@ class BookMarkDisplay(object):
         ]
         for action in actions:
             # pylint: disable=cell-var-from-loop
+            # pylint: disable=undefined-variable
+            # weird: bm clearly *is* defined.
             act = QtWidgets.QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
