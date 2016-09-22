@@ -742,7 +742,9 @@ class WebViewPlus(QtWidgets.QWidget):
         show_scrolled_message = keywords.get('show-scrolled-message', False)
         if show_scrolled_message and got_docutils:
             c = self.c
-            html = publish_string(s, writer_name='html', settings_overrides=self.docutils_settings)
+            html = publish_string(s,
+                writer_name='html',
+                settings_overrides=self.docutils_settings)
             html = g.toUnicode(html)
             self.html = html
             self.path = c.getNodePath(c.rootPosition())
@@ -826,7 +828,6 @@ class WebViewPlus(QtWidgets.QWidget):
             # if already rendering, don't execute
             self.timer.start() # Don't forget to do this last render request
         else:
-            g.trace()
             try:
                 self.rendering = True
                 self.render_helper()

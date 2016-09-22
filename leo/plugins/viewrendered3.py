@@ -235,6 +235,10 @@ plugins.
 #@-others
 #@-<< vr3 docstring >>
 '''
+#
+# This plugin is not functional and is no longer in development.
+#
+
 #pylint: disable=no-member
 trace = False
 verbose = False
