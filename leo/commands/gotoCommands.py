@@ -59,7 +59,6 @@ class GoToCommands(object):
             return None 
         else: # Prototype code.
             trace = False and not g.unitTesting
-            c = self.c
             root, fileName = self.find_root(p)
             has_sentinels = p.isAtFileNode()
             if root:
