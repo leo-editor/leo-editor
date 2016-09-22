@@ -125,7 +125,7 @@ elif isQt5:
             # used by viewrendered(2|3).py, bigdash.py, richtext.py.
             import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
             QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
-            QtWebKit.QWebSettings = settings = QtWebKitWidgets.QWebEngineSettings
+            QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
             QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
         except ImportError:
             QtWebKitWidgets = None

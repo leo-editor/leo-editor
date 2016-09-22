@@ -488,7 +488,7 @@ if QtWidgets: # NOQA
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
             if isQt5 and sys.platform.startswith('win'):
-                # Work around #303: https://github.com/leo-editor/leo-editor/issues/304
+                # Work around #304: https://github.com/leo-editor/leo-editor/issues/304
                 self.html_class = QtWidgets.QTextBrowser
             else:
                 self.html_class = QtWebKitWidgets.QWebView
