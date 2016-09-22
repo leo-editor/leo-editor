@@ -491,9 +491,10 @@ if QtWidgets: # NOQA
             if isQt5 and sys.platform.startswith('win'):
                 # Work around #304: https://github.com/leo-editor/leo-editor/issues/304
                 self.html_class = QtWidgets.QTextBrowser
+                    # Doesn't handle @html display Leo Tree properly.
             else:
                 self.html_class = QtWebKitWidgets.QWebView
-                # In VR2, this is a WebViewPlus.
+                    # In VR2, this is a WebViewPlus.
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
@@ -614,7 +615,7 @@ if QtWidgets: # NOQA
             n = max(4, len(g.toEncodedString(s, reportErrors=False)))
             # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
             return '%s\n%s\n\n' % (s, ch * n)
-        #@+node:ekr.20101112195628.5426: *3* update & helpers
+        #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
         # Must have this signature: called by leoPlugins.callTagHandler.
 
         def update(self, tag, keywords):
@@ -747,6 +748,7 @@ if QtWidgets: # NOQA
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
+            if trace: g.trace(pc.html_class)
             if pc.must_change_widget(pc.html_class):
                 try:
                     w = pc.html_class()
@@ -912,6 +914,8 @@ if QtWidgets: # NOQA
                     if not isHtml:
                         s = pc.convert_to_html(s)
                     pc.set_html(s, w)
+                else:
+                    w.setPlainText('')
             else:
                 w.setPlainText('')
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
