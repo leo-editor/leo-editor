@@ -51,6 +51,58 @@ class GoToCommands(object):
                 return None, -1, False
         else:
             return self.find_script_line(n, p)
+    #@+node:ekr.20160921210529.1: *3* goto.find_node_start  & helper
+    def find_node_start(self, p):
+        '''Return the global line number of the first line of p.b'''
+        # See #283: https://github.com/leo-editor/leo-editor/issues/283
+        if 1: # Not ready yet, and probably will never be ready.
+            return None 
+        else: # Prototype code.
+            trace = False and not g.unitTesting
+            c = self.c
+            root, fileName = self.find_root(p)
+            has_sentinels = p.isAtFileNode()
+            if root:
+                if root == p:
+                    return 0
+                s = self.get_external_file_with_sentinels(root)
+                    # s has sentinels, regardless of root's @<file> kind.
+                lines = g.splitLines(s)
+                if trace:
+                    g.trace('=====', p.h)
+                    for i, s in enumerate(lines):
+                        print('%3s %s' % (i,s.rstrip()))
+                delim1, delim2 = self.get_delims(root)
+                count = 0
+                for s in lines:
+                    # g.trace(count, s.rstrip())
+                    if self.is_sentinel(delim1, delim2, s):
+                        if trace: g.trace(s.rstrip())
+                        s2 = s.strip()[len(delim1):]
+                        if has_sentinels:
+                            count += 1
+                        elif self.is_visible_sentinel(s2):
+                            count += 1
+                        if s2.startswith('@+node'):
+                            gnx, h = self.get_script_node_info(s, delim2)
+                            if p.gnx == gnx:
+                                break
+                    else:
+                        count += 1
+                if trace: g.trace(count, root.h)
+                return count
+            else:
+                return None
+    #@+node:ekr.20160921220517.1: *4* goto.is_visible_sentinel
+    def is_visible_sentinel(self, s):
+        '''Return True if s is a sentinel that actually would appear in the external file.'''
+        # This code is a prototype. More work is needed.
+        table = ('@@', '@+doc')
+        for z in table:
+            if s.startswith(z):
+                g.trace('visible: %s' % s.rstrip())
+                return True
+        return False
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n, root):
         '''

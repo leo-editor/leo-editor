@@ -10,6 +10,7 @@ import leo.core.leoColor as leoColor
 import leo.core.leoColorizer as leoColorizer
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
+import leo.commands.gotoCommands as gotoCommands
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Qsci
 import leo.plugins.qt_events as qt_events
@@ -2169,7 +2170,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
-        #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update
+        #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update & helper
         def update(self):
             if g.app.killed: return
             c = self.c; body = c.frame.body
@@ -2202,12 +2203,30 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
-                row, col, fcol = 0, 0, ''
-            self.put1(
-                "line: %d, col: %d, fcol: %s" % (row, col, fcol))
+                row, col, fcol = '', 0, 0, ''
+            if 1: 
+                self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
+            else:
+                #283 is not ready yet, and probably will never be.
+                fline = self.file_line()
+                fline = '' if fline is None else fline + row
+                self.put1(
+                    "fline: %s line: %d col: %d fcol: %s" % (fline, row, col, fcol))
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
+        #@+node:ekr.20160921205759.1: *5* file_line
+        def file_line(self):
+            '''
+            Return the line of the first line of c.p in its external file.
+            Return None if c.p is not part of an external file.
+            '''
+            c, p = self.c, self.c.p
+            if p:
+                goto = gotoCommands.GoToCommands(c)
+                return goto.find_node_start(p)
+            else:
+                return None
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass(object):
