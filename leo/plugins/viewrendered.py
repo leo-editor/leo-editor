@@ -195,7 +195,7 @@ trace = False
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
 # docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
 try:
@@ -470,7 +470,7 @@ if QtWidgets: # NOQA
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20110317080650.14380: *3* ctor & helper
+        #@+node:ekr.20110317080650.14380: *3* ctor & helper (vr)
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             self.c = c
@@ -487,7 +487,11 @@ if QtWidgets: # NOQA
             self.graphics_class = QtWidgets.QGraphicsWidget
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
-            self.html_class = QtWebKitWidgets.QWebView
+            if isQt5 and sys.platform.startswith('win'):
+                # Work around #303: https://github.com/leo-editor/leo-editor/issues/304
+                self.html_class = QtWidgets.QTextBrowser
+            else:
+                self.html_class = QtWebKitWidgets.QWebView
                 # In VR2, this is a WebViewPlus.
             self.inited = False
             self.length = 0 # The length of previous p.b.

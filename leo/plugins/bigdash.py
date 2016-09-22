@@ -36,7 +36,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+<< imports >>
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore,QtGui,QtWidgets,QtWebKitWidgets
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets,QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
     # pylint: disable=no-name-in-module
@@ -71,12 +71,12 @@ def global_search_f(event):
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-    if ok:
-        try:
-            QtWebKitWidgets.QWebView(None)
-        except AttributeError:
-            print('bigdash.py: QWebView must be installed')
-            ok = False
+    # if ok:
+        # try:
+            # QtWebKitWidgets.QWebView(None)
+        # except AttributeError:
+            # print('bigdash.py: QWebView must be installed')
+            # ok = False
     if ok:
         g.app._global_search = GlobalSearch()
         g.plugin_signon(__name__)
@@ -95,14 +95,17 @@ class BigDash(object):
     #@+node:ekr.20140919160020.17912: *3* add_cmd_handler
     def add_cmd_handler(self,f):
         self.handlers.append(f)
-    #@+node:ekr.20140919160020.17915: *3* create_ui
+    #@+node:ekr.20140919160020.17915: *3* create_ui (bigdash.py)
     def create_ui(self):
 
-        
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-        self.web = web = QtWebKitWidgets.QWebView(w)
+        # Workaround #303: https://github.com/leo-editor/leo-editor/issues/304
+        if isQt5 and sys.platform.startswith('win'):
+            self.web = web = QtWidgets.QTextBrowser(w)
+        else:
+            self.web = web = QtWebKitWidgets.QWebView(w)
         try:
             # PyQt4
             self.web.linkClicked.connect(self._lnk_handler)

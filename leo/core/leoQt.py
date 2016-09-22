@@ -120,17 +120,13 @@ elif isQt5:
         import PyQt5.QtWebKitWidgets as QtWebKitWidgets
     except ImportError:
         try:
-            # 2016/07/13: Reinhard: Support pyqt 5.6...
+            # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
+            # Reinhard: Support pyqt 5.6...
+            # used by viewrendered(2|3).py, bigdash.py, richtext.py.
             import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
             QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
-            # 2016/07/20: Per
-            # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
-            # used by richtext.py
-            QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
-            # used by viewrendered(2|3).py, bigdash.py
+            QtWebKit.QWebSettings = settings = QtWebKitWidgets.QWebEngineSettings
             QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
-            # used by viewrendered(2|3).py
-            QtWebKitWidgets.QWebSettings = QtWebKitWidgets.QWebEngineSettings
         except ImportError:
             QtWebKitWidgets = None
 else:
