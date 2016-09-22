@@ -284,7 +284,7 @@ def init():
         g.registerHandler('after-create-leo-frame', onCreate)
         g.registerHandler('scrolledMessage', show_scrolled_message)
     else:
-        g.es_print('The viewrendered plugin is not compatible with PyQt5')
+        g.es_print('The viewrendered2 plugin is not compatible with PyQt5')
     return ok
 #@+node:ekr.20140226074510.4193: *3* onCreate (viewrendered2.py)
 def onCreate(tag, keys):

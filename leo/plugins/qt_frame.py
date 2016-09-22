@@ -2203,7 +2203,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
-                row, col, fcol = '', 0, 0, ''
+                row, col, fcol = 0, 0, ''
             if 1: 
                 self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
             else:
