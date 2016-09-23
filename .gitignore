@@ -47,6 +47,8 @@ leo/test/unittest/rst_write_test.txt
 
 gradient.png
 log.txt
+stdout.txt
+stdin.txt
 
 leo/*.zip
 
