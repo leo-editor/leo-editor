@@ -205,6 +205,7 @@ expanded="ekr.20060824111500.113,"><vh>@file leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20160923132650.1"><vh>Recent</vh>
 <v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
+<v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2237,6 +2238,24 @@ func(c, obj)
    
 c.p.expand()
 c.redraw()
+</t>
+<t tx="ekr.20160923133728.1">@language python
+
+import glob
+path = g.os_path_join(g.app.loadDir, '..', 'modes', '*.py')
+# print(g.os_path_exists(path))
+aList = glob.glob(path)
+# print('\n'.join(sorted(aList)))
+for fn in aList:
+    f = open(fn, 'r')
+    s1 = f.read()
+    f.close()
+    s2 = s1.replace('\t', '    ')
+    if s1 != s2:
+        print('changed: %s' % fn)
+        f = open(fn, 'w')
+        f.write(s2)
+        f.close()
 </t>
 </tnodes>
 </leo_file>
