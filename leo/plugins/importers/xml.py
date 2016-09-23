@@ -43,17 +43,20 @@ class XmlScanner(basescanner.BaseScanner):
     #@+node:ekr.20140723122936.18121: *3* addTags
     def addTags(self):
         '''Add items to self.class/functionTags and from settings.'''
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
+        if trace: g.trace(self.c.fileName(), self.tags_setting)
         for ivar, setting in (
             ('classTags', self.tags_setting),
         ):
             aList = getattr(self, ivar)
+            if trace: g.trace('aList', aList)
             aList2 = c.config.getData(setting) or []
             aList2 = [z.lower() for z in aList2]
+            if trace: g.trace('aList2', aList2)
             aList.extend(aList2)
             setattr(self, ivar, aList)
-            if trace: g.trace(ivar, aList)
+            if trace: g.trace('result', ivar, aList)
     #@+node:ekr.20140723122936.18122: *3* adjust_class_ref (XmlScanner)
     def adjust_class_ref(self, s):
         '''Ensure that @others appears at the start of a line.'''
