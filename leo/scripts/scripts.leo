@@ -203,6 +203,9 @@
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e362e323271017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"
 expanded="ekr.20060824111500.113,"><vh>@file leoScripts.txt</vh></v>
 </v>
+<v t="ekr.20160923132650.1"><vh>Recent</vh>
+<v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2046,6 +2049,194 @@ def format_arguments(self, node):
 <t tx="ekr.20160123185308.91">def visit_Return(self, node):
 
     self.returns.add(node.value)
+</t>
+<t tx="ekr.20160923132650.1"></t>
+<t tx="ekr.20160923132656.1">@language python
+"""Introspect"""
+
+# By Terry Brown.  Requires Python 2.x.
+
+# https://groups.google.com/forum/#!msg/leo-editor/Qu2HccpC_wc/_ee11jIvAQAJ
+
+import types
+
+sub_mode = 'instance'
+# 'instance' or 'class' - controls which, instance or class names,
+# are put it a subnode.  'instance class' sub-nodes both.
+# '' appends classes after names, not useful.
+
+def classname(thing):
+    if hasattr(thing, '__class__'):
+        return thing.__class__.__name__
+    else:
+        return thing.__name__
+
+if not hasattr(c.p.v, '_introspection_target'):
+    txt = g.app.gui.runAskOkCancelStringDialog(
+        c, "Introspect what", "Introspect what")
+    if txt is not None:
+        o = eval(txt)
+        c.p.v._introspection_target = o
+        c.p.h = "%s %s" % (txt, classname(o))
+
+# c.p.deletePositionsInList([i.copy() for i in p.children()])
+
+obj = c.p.v._introspection_target
+g.es(classname(obj))
+
+def show_obj(c, obj):
+
+    inames = sorted(dir(obj))
+    
+    things = {}
+    instances = []
+    for iname in inames:
+        
+        if iname.startswith('__'):
+            continue
+        
+        o = getattr(obj, iname)
+        cname = classname(o)
+        instances.append((iname, o))
+        things.setdefault(cname, []).append(instances[-1])
+
+    if 'instance' in sub_mode:
+        tnd = c.p.v.insertAsNthChild(0)
+        tnd.h = "&lt;by name&gt;"
+    else:
+        tnd = c.p.v
+
+    instances.sort()
+    for iname, o in instances:
+        
+        if classname(o) == 'position':
+            # apparently this collapses the space-time continuum?
+            continue
+        
+        nd = tnd.insertAsLastChild()
+        
+        if not seen_already(tnd, nd, iname, o):
+            nd.h = "%s %s" % (iname, format_type(nd, o))
+            nd._introspection_target = o
+
+    if 'class' in sub_mode:
+        ttnd = c.p.v.insertAsNthChild(0)
+        ttnd.h = "&lt;by class&gt;"
+    else:
+        ttnd = c.p.v
+
+    for cname in sorted(things):
+    
+        if len(things[cname]) == 1:
+            tnd = ttnd
+        else:
+            tnd = ttnd.insertAsLastChild()
+            tnd.h = "&lt;%s&gt;"%cname
+    
+        for iname, o in sorted(things[cname]):
+            
+            if cname == 'position':
+                # apparently this collapses the space-time continuum?
+                continue
+            
+            nd = tnd.insertAsLastChild()
+            if not seen_already(tnd, nd, iname, o):
+                show_child(nd, iname, o)
+                nd._introspection_target = o
+         
+def seen_already(tnd, nd, iname, o):
+        
+    up = tnd.parents
+    while up:
+        if (hasattr(up[0], '_introspection_target') and
+            up[0]._introspection_target is o):
+            break
+        up = up[0].parents
+    else:
+        return False
+        
+    nd.h = "[%s %s]" % (classname(o), iname)
+    pos = c.vnode2position(up[0])
+    nd.b = pos.get_UNL(with_file=True, with_proto=True)
+    
+    return True
+            
+def show_child(nd, iname, o):
+                
+    nd._introspection_target = o
+    nd.h = "%s %s" % (format_type(nd, o), iname)
+    
+docable = (
+    types.ClassType, types.MethodType, types.UnboundMethodType, 
+    types.BuiltinFunctionType, types.BuiltinMethodType,
+)
+    
+def format_type(nd, o):
+    
+    if isinstance(o, docable):
+        if hasattr(o, '__doc__'):
+            nd.b = o.__doc__
+    
+    if isinstance(o, (str, unicode)):
+        nd.b = o
+        return "%s '%s'" % (classname(o), o[:20])
+    elif isinstance(o, bool):
+        return "%s %s" % (classname(o), 'T' if o else 'F')
+    elif isinstance(o, (int, float)):
+        return "%s %s" % (classname(o), o)
+    elif isinstance(o, (tuple, list, dict)):
+        return "%s %s" % (classname(o), len(o))
+    else:
+        return classname(o)
+    
+def show_list(c, list_):
+    
+    if len(list_) &gt; 100:
+        nd = c.p.v.insertAsLastChild()
+        nd.h = "&lt;%s of %d items truncated&gt;" % len(list_.__class__.__name__, list_)
+        
+    if len(list_) == 0:
+        nd = c.p.v.insertAsLastChild()
+        nd.h = "&lt;%s of 0 items&gt;" % list_.__class__.__name__
+        
+    for n, i in enumerate(list_[:100]):
+        nd = c.p.v.insertAsLastChild()
+        show_child(nd, '', i)
+        nd.h = "%d: %s" % (n, nd.h)
+        nd._introspection_target = i
+
+def show_dict(c, dict_):
+    
+    if len(dict_) &gt; 100:
+        nd = c.p.v.insertAsLastChild()
+        nd.h = "&lt;dict of %d items truncated&gt;" % len(dict_)
+        
+    if len(dict_) == 0:
+        nd = c.p.v.insertAsLastChild()
+        nd.h = "&lt;dict of 0 items&gt;"
+        
+    keys = dict_.keys()
+    keys.sort()
+        
+    for k in keys[:100]:
+        nd = c.p.v.insertAsLastChild()
+        i = dict_[k]
+        show_child(nd, '', i)
+        nd.h = "%s: %s" % (k, nd.h)
+        nd._introspection_target = i
+
+dispatch = {
+    list: show_list,
+    tuple: show_list,
+    dict: show_dict,
+}
+
+func = dispatch.get(type(obj), show_obj)
+
+func(c, obj)
+   
+c.p.expand()
+c.redraw()
 </t>
 </tnodes>
 </leo_file>
