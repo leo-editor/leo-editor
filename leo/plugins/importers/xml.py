@@ -43,7 +43,7 @@ class XmlScanner(basescanner.BaseScanner):
     #@+node:ekr.20140723122936.18121: *3* addTags
     def addTags(self):
         '''Add items to self.class/functionTags and from settings.'''
-        trace = False and not g.unitTesting
+        trace = False
         c = self.c
         if trace: g.trace(self.c.fileName(), self.tags_setting)
         for ivar, setting in (
