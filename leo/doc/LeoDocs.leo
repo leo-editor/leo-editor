@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1240,6 +1240,72 @@
 </v>
 <v t="ekr.20160502092850.1"><vh>** update myLeoSettings.leo docs</vh></v>
 <v t="ekr.20160921140909.1"><vh>** Add to docs: cut/paste example</vh></v>
+<v t="ekr.20160923133132.1"><vh>Leo 5.4 release notes</vh>
+<v t="ekr.20160923133117.3"><vh>Bugs fixed</vh>
+<v t="ekr.20160923133117.4"><vh>Fixed #241: QMimeData object error</vh></v>
+<v t="ekr.20160923133117.23"><vh>Fixed #270: Vim keys don't always work after double Alt+Tab</vh></v>
+<v t="ekr.20160923133117.38"><vh>Fixed #272: optionally delay syntax coloring</vh></v>
+<v t="ekr.20160923133117.104"><vh>Fixed #275: clone-marked/copy-marked/move-marked</vh></v>
+<v t="ekr.20160923133117.129"><vh>Fixed #286: @rst-preformat directive is formatted into headline</vh></v>
+<v t="ekr.20160923133117.130"><vh>Fixed #291: mod_autosave.py does not always save...</vh></v>
+<v t="ekr.20160923133117.142"><vh>Fixed #292: find-all commands collapse outline</vh></v>
+<v t="ekr.20160923133117.143"><vh>Fixed #295: Enhancement request: after-headline-edit hook</vh></v>
+<v t="ekr.20160923133117.159"><vh>Fixed #301: Log window doesn't get line separators</vh></v>
+<v t="ekr.20160923133117.168"><vh>Fixed #302: revert to saved doesn't reset external file change monitoring</vh></v>
+<v t="ekr.20160923133117.175"><vh>Fixed bug in ac.get_summary_list</vh></v>
+<v t="ekr.20160923133117.176"><vh>Fixed expand-to-level bug</vh></v>
+<v t="ekr.20160923133117.245"><vh>Fixed timing stats for pylint-leo on Linux</vh></v>
+<v t="ekr.20160923133117.178"><vh>Investigated #273: Qt Bug involving large text nodes</vh></v>
+</v>
+<v t="ekr.20160923133117.179"><vh>Code</vh>
+<v t="ekr.20160923133117.180"><vh>@buttons for pyflakes &amp; flake8</vh>
+<v t="ekr.20160923133117.181"><vh>@@button test-pyflakes @key=Ctrl-6</vh>
+<v t="ekr.20160923133117.193"><vh>class PyflakesCommand</vh>
+<v t="ekr.20160923133117.194"><vh>pyflakes.check_all</vh></v>
+<v t="ekr.20160923133117.195"><vh>pyflakes.find</vh></v>
+<v t="ekr.20160923133117.255"><vh>pyflakes.run</vh></v>
+</v>
+</v>
+<v t="ekr.20160923133117.186"><vh>@@button test-flake8 @key=Ctrl-7</vh>
+<v t="ekr.20160923133117.198"><vh>class Flake8Command</vh>
+<v t="ekr.20160923133117.199"><vh>flake8.check_all</vh></v>
+<v t="ekr.20160923133117.200"><vh>flake8.find</vh></v>
+<v t="ekr.20160923133117.201"><vh>flake8.get_flake8_config</vh></v>
+<v t="ekr.20160923133117.248"><vh>flake8.run</vh></v>
+</v>
+</v>
+<v t="ekr.20160923133117.192"><vh>pyflakes command</vh>
+<v t="ekr.20160923133117.193"></v>
+</v>
+<v t="ekr.20160923133117.197"><vh>flake8 command</vh>
+<v t="ekr.20160923133117.198"></v>
+</v>
+</v>
+<v t="ekr.20160923133117.203"><vh>Fixed compare_ast bug</vh>
+<v t="ekr.20160923133117.204"><vh>compare_ast</vh></v>
+<v t="ekr.20160923133117.205"><vh>mb.scan_comment</vh></v>
+</v>
+<v t="ekr.20160923133117.206"><vh>Moved class defs out of @file nodes</vh></v>
+<v t="ekr.20160923133117.208"><vh>Removed useUI switch</vh></v>
+</v>
+<v t="ekr.20160923133117.209"><vh>Features</vh>
+<v t="ekr.20160923133117.210"><vh>#032: Added freemind and mindjet imports</vh></v>
+<v t="ekr.20160923133117.211"><vh>#225: Added support for @auto x.json</vh></v>
+<v t="ekr.20160923133117.212"><vh>#225: Added upport @auto x.json</vh></v>
+<v t="ekr.20160923133117.229"><vh>#266: Added a setting to hide the icon bar</vh></v>
+<v t="ekr.20160923133117.232"><vh>#272: optionally delay syntax coloring</vh></v>
+<v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
+<v t="ekr.20160923133117.234"><vh>#278: Created coffeescript importer</vh></v>
+<v t="ekr.20160923133117.236"><vh>Added @bool plain-key-outline-search</vh></v>
+<v t="ekr.20160923133117.238"><vh>Added installer that only installs file associations</vh></v>
+<v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
+<v t="ekr.20160923133117.242"><vh>colorize basestring, @staticmethod &amp; @classmethod</vh></v>
+<v t="ekr.20160923133117.299"><vh>pylint command appends leo directory to sys.path</vh></v>
+<v t="ekr.20160923133117.300"><vh>Removed all static abbrev commands</vh></v>
+<v t="ekr.20160923133117.301"><vh>Wont do: #236: abbrev-write generates different continuations than used in @data</vh></v>
+<v t="ekr.20160923133117.302"><vh>Added clone-find-tag (cft) and tag-children commands</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18715,6 +18781,564 @@ automagically created with a copy of @enabled-plugins from
 leoSettings.leo. </t>
 <t tx="ekr.20160921140909.1">g.app.gui.replaceClipboardWith('hi')
 print(g.app.gui.getTextFromClipboard())
+</t>
+<t tx="ekr.20160923133117.104">https://github.com/leo-editor/leo-editor/issues/275
+
+- Improved clone-marked-nodes and move-marked-nodes.
+- Added copy-marked nodes.
+
+These commands work as follows:
+
+- They create an organizer node after c.p.
+  (That's not always possible for move-marked-nodes,
+  in which case the organizer node becomes the last top-level node).
+
+- They find all marked nodes, regardless of chapter, and leave
+  the presently selected chapter selected, if possible.
+
+**Note**: The move-marked-nodes command is no longer undoable.
+- The docstring suggests using clone-marked-nodes, followed by copy/paste.
+- Moved the undo/redo methods to the attic.
+- Modified @test move-marked-nodes so it doesn't check undo/redo.
+
+Added the following new helper methods:
+
+p.copyWithNewVnodes: calls v.copyTree.
+v.copyTree: a clearer version of p.copyTreeFromSelfTo.
+</t>
+<t tx="ekr.20160923133117.129">https://github.com/leo-editor/leo-editor/issues/286
+
+The fix was to add '@pre-format' to lists in writeHeadlineHelper and initHeadlineCommands.
+
+These nodes have been tagged with #286.
+</t>
+<t tx="ekr.20160923133117.130">https://github.com/leo-editor/leo-editor/issues/291
+</t>
+<t tx="ekr.20160923133117.142">https://github.com/leo-editor/leo-editor/issues/292
+
+The new code temporarily sets c.sparse_find to False.
+</t>
+<t tx="ekr.20160923133117.143">https://github.com/leo-editor/leo-editor/issues/295
+</t>
+<t tx="ekr.20160923133117.159"></t>
+<t tx="ekr.20160923133117.168">https://github.com/leo-editor/leo-editor/issues/302
+
+It seems revert to saved, which reloads the whole outline, does not reset the external file change monitoring (timestamps?) so that editing and saving an
+@&lt;file&gt; after the revert triggers spurious warnings about the file being
+modified externally.
+</t>
+<t tx="ekr.20160923133117.175">This bug only shows up when using Python 3, because of different rules for scopes in comprehensions.
+</t>
+<t tx="ekr.20160923133117.176"></t>
+<t tx="ekr.20160923133117.178">Only minor improvements were made.
+
+The ultimate source of the delay when selecting large text is *not* syntax coloring,
+but instead the call to self.old_w.setPlainText(self.p.b) in btw.create_widgets.
+
+Experiments show loading "dummy" text in btw.create_widgets can lead to data loss.
+There are too many paths through the selection logic to attemp to "recover"
+from the failure to load the body widget initially.
+
+Obviously, data loss is a much bigger problem than slow load times.
+I am going to declare this issue not to be solvable.
+</t>
+<t tx="ekr.20160923133117.179"></t>
+<t tx="ekr.20160923133117.180"></t>
+<t tx="ekr.20160923133117.181"># g.cls()
+import os
+import pyflakes
+import sys
+import time
+if 1:
+    p = c.p
+else:
+    h = '@file leoApp.py'
+    p = g.findNodeAnywhere(c, h)
+assert p
+@others
+if c.isChanged():
+    c.save()
+PyflakesCommand(c).run(p=p)
+
+</t>
+<t tx="ekr.20160923133117.186"># g.cls()
+import flake8
+import os
+import sys
+import time
+if 1:
+    p = c.p
+else:
+    h = '@file leoApp.py'
+    p = g.findNodeAnywhere(c, h)
+assert p
+@others
+if c.isChanged():
+    c.save()
+Flake8Command(c).run(p=p)
+
+</t>
+<t tx="ekr.20160923133117.192">@g.command('pyflakes')
+def pyflakes_command(event):
+    '''
+    Run pyflakes on all nodes of the selected tree,
+    or the first @&lt;file&gt; node in an ancestor.
+    '''
+    @others
+        # define class PyFlakesCommand.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        if pyflakes:
+            PyflakesCommand(c).run()
+        else:
+            g.es_print('can not import pyflakes')
+</t>
+<t tx="ekr.20160923133117.193">class PyflakesCommand(object):
+    '''A class to run pyflakes on all Python @&lt;file&gt; nodes in c.p's tree.'''
+
+    def __init__(self, c):
+        '''ctor for PyflakesCommand class.'''
+        self.c = c
+        self.seen = [] # List of checked paths.
+
+    @others
+</t>
+<t tx="ekr.20160923133117.194">def check_all(self, paths):
+    '''Run pyflakes on fn.'''
+    from pyflakes import api, reporter
+    for fn in sorted(paths):
+        # Report the file name.
+        sfn = g.shortFileName(fn)
+        s = g.readFileIntoEncodedString(fn, silent=False)
+        if not s.strip():
+            return
+        r = reporter.Reporter(
+            errorStream=sys.stderr,
+            warningStream=sys.stderr,
+            )
+        errors = api.check(s, sfn, r)
+        if False and errors:
+            # Annoying.
+            print('%s error%s in %s' % (errors, g.plural(errors), fn))
+</t>
+<t tx="ekr.20160923133117.195">def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @&lt;file&gt; node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+</t>
+<t tx="ekr.20160923133117.197">@g.command('flake8')
+def flake8_command(event):
+    '''
+    Run flake8 on all nodes of the selected tree,
+    or the first @&lt;file&gt; node in an ancestor.
+    '''
+    @others
+        # define class Flake8Command.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        if flake8:
+            Flake8Command(c).run()
+        else:
+            g.es_print('can not import flake8')
+</t>
+<t tx="ekr.20160923133117.198">class Flake8Command(object):
+    '''A class to run flake8 on all Python @&lt;file&gt; nodes in c.p's tree.'''
+
+    def __init__(self, c, quiet=False):
+        '''ctor for Flake8Command class.'''
+        self.c = c
+        self.quiet = quiet
+        self.seen = [] # List of checked paths.
+
+    @others
+</t>
+<t tx="ekr.20160923133117.199">def check_all(self, paths):
+    '''Run flake8 on all paths.'''
+    from flake8 import engine, main
+    config_file = self.get_flake8_config()
+    if config_file:
+        style = engine.get_style_guide(
+            parse_argv=False,
+            config_file=config_file,
+        )
+        report = style.check_files(paths=paths)
+        # Set statistics here, instead of from the command line.
+        options = style.options
+        options.statistics = True
+        options.total_errors = True
+        # options.benchmark = True
+        main.print_report(report, style)
+</t>
+<t tx="ekr.20160923133117.200">def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @&lt;file&gt; node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+</t>
+<t tx="ekr.20160923133117.201">def get_flake8_config(self):
+    '''Return the path to the pylint configuration file.'''
+    trace = False and not g.unitTesting
+    join = g.os_path_finalize_join
+    dir_table = (
+        g.app.homeDir,
+        join(g.app.homeDir, '.leo'),
+        join(g.app.loadDir, '..', '..', 'leo', 'test'),
+    )
+    if g.isPython3:
+        base_table = ('flake8', 'flake8.txt')
+    else:
+        base_table = ('flake8',)
+    for base in base_table:
+        for path in dir_table:
+            fn = g.os_path_abspath(join(path, base))
+            if g.os_path_exists(fn):
+                if trace: g.trace('found:', fn)
+                return fn
+    if not g.unitTesting:
+        g.es_print('no flake8 configuration file found in\n%s' % (
+            '\n'.join(dir_table)))
+    return None
+</t>
+<t tx="ekr.20160923133117.203"></t>
+<t tx="ekr.20160923133117.204"># http://stackoverflow.com/questions/3312989/
+# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
+
+def compare_ast(node1, node2):
+
+    trace = False and not g.unitTesting
+
+    def fail(node1, node2, tag):
+        '''Report a failed mismatch in the beautifier. This is a bug.'''
+        name1 = node1.__class__.__name__
+        name2 = node2.__class__.__name__
+        format = 'compare_ast failed: %s: %s %s %r %r'
+        if name1 == 'str':
+            print(format % (tag, name1, name2, node1, node2))
+        elif name1 == 'Str':
+            print(format % (tag, name1, name2, node1.s, node2.s))
+        elif 1:
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r'
+            print(format % (tag, name1, name2, node1, node2))
+        else:
+            format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
+            attr1 = getattr(node1, 'lineno', '&lt;no lineno&gt;')
+            attr2 = getattr(node2, 'lineno', '&lt;no lineno&gt;')
+            print(format % (tag, name1, name2, node1, node2, attr1, attr2))
+
+    # pylint: disable=unidiomatic-typecheck
+    if type(node1) != type(node2):
+        if trace: fail(node1, node2, 'type mismatch')
+        return False
+    # The types of node1 and node2 match. Recursively compare components.
+    if isinstance(node1, ast.AST):
+        for kind, var in vars(node1).items():
+            if kind not in ('lineno', 'col_offset', 'ctx'):
+                var2 = vars(node2).get(kind) # Bug fix: 2016/05/16.
+                if not compare_ast(var, var2):
+                    if trace: fail(var, var2, 'AST subnode mismatch')
+                    return False
+        return True
+    elif isinstance(node1, list):
+        if len(node1) != len(node2):
+            if trace: fail(node1, node2, 'list len mismatch')
+            return False
+        for i in range(len(node1)):
+            if not compare_ast(node1[i], node2[i]):
+                if trace: fail(node1, node2, 'list element mismatch')
+                return False
+        return True
+    elif node1 != node2:
+        if trace: fail(node1, node2, 'node mismatch')
+        return False
+    else:
+        return True
+</t>
+<t tx="ekr.20160923133117.205">def scan_comment(self, s, i):
+    '''Return the index of the character after a comment.'''
+    trace = False and not g.unitTesting
+    i1 = i
+    start = self.start_comment if self.forward else self.end_comment
+    end = self.end_comment if self.forward else self.start_comment
+    offset = 1 if self.forward else - 1
+    if g.match(s, i, start):
+        if not self.forward:
+            i1 += len(end)
+        i += offset
+        while 0 &lt;= i &lt; len(s):
+            if g.match(s, i, end):
+                i = i + len(end) if self.forward else i - 1
+                if trace: g.trace('multi-line',s[min(i1,i):max(i1,i)])
+                return i
+            i += offset
+        self.oops('unmatched multiline comment')
+    elif self.forward:
+        # Scan to the newline.
+        target = '\n'
+        while 0 &lt;= i &lt; len(s):
+            if s[i] == '\n':
+                i += 1
+                if trace: g.trace('single-line',s[i1,i].rstrip())
+                return i
+            i += 1
+    else:
+        # Careful: scan to the *first* target on the line
+        target = self.single_comment
+        found = None
+        i -= 1
+        while 0 &lt;= i &lt; len(s) and s[i] != '\n':
+            if g.match(s, i, target):
+                if trace: g.trace('single-line',s[i:i1].rstrip())
+                found = i
+            i -= 1
+        if found is None:
+            self.oops('can not happen: unterminated single-line comment')
+            found = 0
+        return found
+    return i
+</t>
+<t tx="ekr.20160923133117.206">And into subsidiary trees.
+</t>
+<t tx="ekr.20160923133117.208">It hasn't been active for a long, long time.
+</t>
+<t tx="ekr.20160923133117.209"></t>
+<t tx="ekr.20160923133117.210">https://github.com/leo-editor/leo-editor/issues/32
+
+The code:
+https://github.com/leo-editor/snippets/tree/master/issue_attach/32
+
+There are two ways to access these commands:
+
+1. Using the general import-files command, via the minibuffer or the File:Import File menu.  This opens a dialog that picks the proper importer **based on the file's extension**.  mm.html files get the FreeMind importer. .csv files get the MindJet importer.
+
+2. If these conventions don't suit you, you can use specific import-free-mind-files or import-mind-jet-files commands. These open a dialog in which the specific extension is pre-selected, but you can pick any file as usual.  In particular, it's possible to use the MindJet importer to open .ipynb files, which have .csv format.
+
+In general, if you pick an invalid file, the importers will fail gracefully.
+</t>
+<t tx="ekr.20160923133117.211">https://github.com/leo-editor/leo-editor/issues/225</t>
+<t tx="ekr.20160923133117.212">https://github.com/leo-editor/leo-editor/issues/225
+</t>
+<t tx="ekr.20160923133117.229">https://github.com/leo-editor/leo-editor/issues/266
+
+Changed dw.construct.
+</t>
+<t tx="ekr.20160923133117.23">call c.vimCommands.quit()
+</t>
+<t tx="ekr.20160923133117.232">https://github.com/leo-editor/leo-editor/issues/272
+
+Syntax coloring happens *initially* at idle-time. pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
+</t>
+<t tx="ekr.20160923133117.233">https://github.com/leo-editor/leo-editor/issues/275
+
+- Improved clone-marked-nodes and move-marked-nodes.
+- Added copy-marked nodes.
+
+Note: The move-marked-nodes command is no longer undoable.
+The docstring suggests using clone-marked-nodes, followed by copy/paste.
+
+These commands work as follows:
+
+- They create an organizer node after c.p.
+  (That's not always possible for move-marked-nodes,
+  in which case the organizer node becomes the last top-level node).
+
+- They find all marked nodes, regardless of chapter, and leave
+  the presently selected chapter selected, if possible.
+</t>
+<t tx="ekr.20160923133117.234">https://github.com/leo-editor/leo-editor/issues/278
+</t>
+<t tx="ekr.20160923133117.236">Affects k.searchTree.</t>
+<t tx="ekr.20160923133117.238">You can find it here: https://sourceforge.net/projects/leo/files/Leo/5.3-final/.
+
+It works for me on Windows 10. This completes #285.
+
+This is useful for people who install Leo using git, or any other way except using the full Windows installer.  It creates file associations and (optionally) a desktop icon.
+
+The installer prompts for both the already-installed Leo installation folder (leo-editor for those using git) and a top-level Python directory. Necessary for auto-launching Leo. It also asks whether you want to open Leo in a console.  On my system, pythonw.exe doesn't work for Anaconda3, so a "yes" is required.  I'll probably back-port some of these features to the full installer.
+</t>
+<t tx="ekr.20160923133117.239">Changed LeoQtEventFilter.toStroke and LeoQtEventFilter.qtMods.</t>
+<t tx="ekr.20160923133117.242"></t>
+<t tx="ekr.20160923133117.245">Used time.time() instead of time.clock()
+</t>
+<t tx="ekr.20160923133117.248">def run(self, p=None):
+    '''Run flake8 on all Python @&lt;file&gt; nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run flake8 on all Python @&lt;file&gt; nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @&lt;file&gt; nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        # g.trace(isCloned,root.h)
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    # g.trace(isAncestor,p.h)
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('flake8: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+</t>
+<t tx="ekr.20160923133117.255">def run(self, p=None):
+    '''Run Pyflakes on all Python @&lt;file&gt; nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run pyflakes on all Python @&lt;file&gt; nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @&lt;file&gt; nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('pyflakes: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+</t>
+<t tx="ekr.20160923133117.299">This allows the pylint command to work without any sitecustomize.py file.
+</t>
+<t tx="ekr.20160923133117.3"></t>
+<t tx="ekr.20160923133117.300">See unused emacs abbreviation commands.
+</t>
+<t tx="ekr.20160923133117.301">abbrev-write generates different continuations than used in @data
+https://github.com/leo-editor/leo-editor/issues/236
+
+When defining abbreviations in a @data abbreviations node,
+continuation looks like:
+continue;;=line 1
+: line 2
+: line 3
+
+when abbreviations are dumped via abbrev-write they look like:
+continue;;=line 1\n line 2\n line 3
+
+I would consider the abbrev-write file more useful if it used the
+same continuation convention as in @data nodes
+</t>
+<t tx="ekr.20160923133117.302">Nodes marked with cft tag or tag-children tags.
+</t>
+<t tx="ekr.20160923133117.38">https://github.com/leo-editor/leo-editor/issues/272
+
+Syntax coloring happens *initially* at idle-time.
+pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
+
+Most of the time is spent in LeoTree.set_body_text_after_select.
+There is probably not much that can be done about that.
+</t>
+<t tx="ekr.20160923133117.4">See https://gitlab.com/pteam/pteam-qtbase/commit/74a20b77a67ec4d5a8be0f59302075d34151dc05
+
+Created new LeoQtGui.setClipboardSelection method, which at present does nothing for PyQt5.
+This appears to be the only way to avoid the following message:
+    
+    "Data set on unsupported clipboard mode. QMimeData object will be deleted."
+</t>
+<t tx="ekr.20160923133132.1">Leo 5.4-b1   September 30, 2016
+
+[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+
+**The highlights of Leo 5.4**
+
+- Dozens of other improvements and bug fixes.
+
+**Leo is**:
+
+- An outliner. Everything in Leo is an outline.
+- A Personal Information Manager.
+- A browser with a memory.
+- A powerful scripting environment.
+- A tool for studying other people's code.
+- A fully-featured IDE, with emacs-like commands.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, vim and xemacs.
+- Written in 100% pure Python
+- Compatible with Python 2.6 and above or Python 3.0 and above.
+- A tool with an inspiring and active community.
+
+**Leo's unique features**:
+    
+- Always-present, persistent, outline structure.
+- Leo's underlying data is a Directed Acyclic Graph.
+- Clones create multiple views of an outline.
+- A simple, powerful, outline-oriented Python API.
+- Scripts and programs can be composed from outlines.
+- Importers convert flat text into outlines.
+- Scripts have full access to all of Leo's sources.
+- Commands that act on outline structure.
+  Example: the rst3 command converts outlines to reStructuredText.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+- Outline-oriented directives.
+
+Simulating these features in vim, Emacs or Eclisps is possible,
+just as it is possible to simulate Python in assembly language...
+
+**Links**
+
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
