@@ -202,6 +202,8 @@ import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets, QUrl
+import_ok = not isQt5
+    # for now, no commands should work when Qt5 is enabled.
 try:
     import docutils
     import docutils.core
@@ -321,6 +323,7 @@ def show_scrolled_message(tag, kw):
 @g.command('preview')
 def preview(event):
     '''A synonym for the vr-toggle command.'''
+    if not import_ok: return
     toggle_rendering_pane(event)
 #@+node:ekr.20140226074510.4197: *3* g.command('vr')
 @g.command('vr')
@@ -328,6 +331,9 @@ def viewrendered(event):
     """Open render view for commander"""
     trace = False and not g.unitTesting
     c = event.get('c')
+    if not import_ok:
+        g.es_print('vr2 commands are disabled')
+        return
     if not c: return None
     global controllers
     vr = controllers.get(c.hash())
@@ -355,6 +361,7 @@ def viewrendered(event):
 @g.command('vr-contract')
 def contract_rendering_pane(event):
     '''Expand the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -367,6 +374,7 @@ def contract_rendering_pane(event):
 @g.command('vr-expand')
 def expand_rendering_pane(event):
     '''Expand the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -378,6 +386,7 @@ def expand_rendering_pane(event):
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
+    if not import_ok: return
     global controllers
     c = event.get('c')
     if c:
@@ -403,6 +412,7 @@ close_rendering_pane = hide_rendering_pane
 @g.command('vr-lock')
 def lock_rendering_pane(event):
     '''Pause or play a movie in the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -412,6 +422,7 @@ def lock_rendering_pane(event):
 @g.command('vr-pause-play')
 def pause_play_movie(event):
     '''Pause or play a movie in the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -427,6 +438,7 @@ def pause_play_movie(event):
 @g.command('vr-show')
 def show_rendering_pane(event):
     '''Show the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -438,6 +450,7 @@ def show_rendering_pane(event):
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     '''Toggle the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -449,6 +462,7 @@ def toggle_rendering_pane(event):
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
     '''Pause or play a movie in the rendering pane.'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
@@ -458,6 +472,7 @@ def unlock_rendering_pane(event):
 @g.command('vr-update')
 def update_rendering_pane(event):
     '''Update the rendering pane'''
+    if not import_ok: return
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
