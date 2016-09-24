@@ -488,13 +488,13 @@ if QtWidgets: # NOQA
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
             import sys
-            if isQt5 and sys.platform.startswith('win'):
+            if False and isQt5 and sys.platform.startswith('win'):
                 # Work around #304: https://github.com/leo-editor/leo-editor/issues/304
                 self.html_class = QtWidgets.QTextBrowser
                     # Doesn't handle @html display Leo Tree properly.
             else:
                 self.html_class = QtWebKitWidgets.QWebView
-                    # In VR2, this is a WebViewPlus.
+            self.text_class = QtWidgets.QTextBrowser
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
@@ -502,7 +502,6 @@ if QtWidgets: # NOQA
             self.sizes = [] # Saved splitter sizes.
             self.splitter_index = None # The index of the rendering pane in the splitter.
             self.svg_class = QtSvg.QSvgWidget
-            self.text_class = QtWidgets.QTextBrowser
             self.title = None
             self.vp = None # The present video player.
             self.w = None # The present widget in the rendering pane.
@@ -646,14 +645,13 @@ if QtWidgets: # NOQA
                 # Save the scroll position.
                 w = pc.w
                 if w.__class__ == pc.text_class:
-                    # 2011/07/30: The widge may no longer exist.
+                    # 2011/07/30: The widget may no longer exist.
                     try:
                         sb = w.verticalScrollBar()
+                        pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
                     except Exception:
                         g.es_exception()
                         pc.deactivate()
-                    if sb:
-                        pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
                 # Will be called at idle time.
                 # if trace: g.trace('no update')
         #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
@@ -748,13 +746,9 @@ if QtWidgets: # NOQA
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
-            if trace: g.trace(pc.html_class)
+            if trace: g.trace('===== instantiating', pc.html_class, g.callers())
             if pc.must_change_widget(pc.html_class):
-                try:
-                    w = pc.html_class()
-                except TypeError:
-                    # html_class supplied by VR2
-                    w = pc.html_class(pc=pc)
+                w = pc.html_class()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
