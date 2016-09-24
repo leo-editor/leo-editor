@@ -319,167 +319,159 @@ def show_scrolled_message(tag, kw):
         })
     return True
 #@+node:ekr.20140226074510.4195: ** Commands
-#@+node:ekr.20140226074510.4196: *3* g.command('preview')
-@g.command('preview')
-def preview(event):
-    '''A synonym for the vr-toggle command.'''
-    if not import_ok: return
-    toggle_rendering_pane(event)
-#@+node:ekr.20140226074510.4197: *3* g.command('vr')
-@g.command('vr')
-def viewrendered(event):
-    """Open render view for commander"""
-    trace = False and not g.unitTesting
-    c = event.get('c')
-    if not import_ok:
-        g.es_print('vr2 commands are disabled')
-        return
-    if not c: return None
-    global controllers
-    vr = controllers.get(c.hash())
-    if vr:
-        if trace: g.trace('** controller exists: %s' % (vr))
-        vr.show()
-    else:
-        vr = ViewRenderedController(c)
-        controllers[c.hash()] = vr 
-        if trace: g.trace('** new controller: %s' % (vr))
-        if hasattr(c, 'free_layout'):
-            vr._ns_id = '_leo_viewrendered' # for free_layout load/save
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
-            if splitter:
-                ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
-                if not ok:
-                    splitter.insert(0, vr)
-        else:
-            vr.setWindowTitle("Rendered View")
-            vr.resize(600, 600)
+if import_ok:
+    # Define the commands only if this plugin is active.
+    #@+others
+    #@+node:ekr.20140226074510.4196: *3* g.command('preview')
+
+    @g.command('preview')
+    def preview(event):
+        '''A synonym for the vr-toggle command.'''
+        toggle_rendering_pane(event)
+    #@+node:ekr.20140226074510.4197: *3* g.command('vr')
+    @g.command('vr')
+    def viewrendered(event):
+        """Open render view for commander"""
+        trace = False and not g.unitTesting
+        c = event.get('c')
+        if not c: return None
+        global controllers
+        vr = controllers.get(c.hash())
+        if vr:
+            if trace: g.trace('** controller exists: %s' % (vr))
             vr.show()
-    return vr
-#@+node:ekr.20140226074510.4198: *3* g.command('vr-contract')
-@g.command('vr-contract')
-def contract_rendering_pane(event):
-    '''Expand the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.contract()
         else:
-            # Just open the pane.
-            viewrendered(event)
-#@+node:ekr.20140226074510.4199: *3* g.command('vr-expand')
-@g.command('vr-expand')
-def expand_rendering_pane(event):
-    '''Expand the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr:
-            vr.expand()
-#@+node:ekr.20140226074510.4200: *3* g.command('vr-hide')
-@g.command('vr-hide')
-def hide_rendering_pane(event):
-    '''Close the rendering pane.'''
-    if not import_ok: return
-    global controllers
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            vr.deactivate()
-            vr.deleteLater()
-
-            def at_idle(c=c):
-                c.bodyWantsFocusNow()
-
-            QtCore.QTimer.singleShot(0, at_idle)
-            h = c.hash()
-            c.bodyWantsFocus()
-            if vr == controllers.get(h):
-                del controllers[h]
+            vr = ViewRenderedController(c)
+            controllers[c.hash()] = vr 
+            if trace: g.trace('** new controller: %s' % (vr))
+            if hasattr(c, 'free_layout'):
+                vr._ns_id = '_leo_viewrendered' # for free_layout load/save
+                splitter = c.free_layout.get_top_splitter()
+                # Careful: we may be unit testing.
+                if splitter:
+                    ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+                    if not ok:
+                        splitter.insert(0, vr)
             else:
-                g.trace('Can not happen: no controller for %s' % (c))
-# Compatibility
-
-close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20140226074510.4201: *3* g.command('vr-lock')
-@g.command('vr-lock')
-def lock_rendering_pane(event):
-    '''Pause or play a movie in the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr and not vr.locked:
-            vr.lock()
-#@+node:ekr.20140226074510.4202: *3* g.command('vr-pause-play')
-@g.command('vr-pause-play')
-def pause_play_movie(event):
-    '''Pause or play a movie in the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr and vr.vp:
-            vp = vr.vp
-            if vp.isPlaying():
-                vp.pause()
+                vr.setWindowTitle("Rendered View")
+                vr.resize(600, 600)
+                vr.show()
+        return vr
+    #@+node:ekr.20140226074510.4198: *3* g.command('vr-contract')
+    @g.command('vr-contract')
+    def contract_rendering_pane(event):
+        '''Expand the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr:
+                vr.contract()
             else:
-                vp.play()
-#@+node:ekr.20140226074510.4203: *3* g.command('vr-show')
-@g.command('vr-show')
-def show_rendering_pane(event):
-    '''Show the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            pass # hide_rendering_pane(event)
-        else:
-            viewrendered(event)
-#@+node:ekr.20140226074510.4204: *3* g.command('vr-toggle')
-@g.command('vr-toggle')
-def toggle_rendering_pane(event):
-    '''Toggle the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr:
-            hide_rendering_pane(event)
-        else:
-            viewrendered(event)
-#@+node:ekr.20140226074510.4205: *3* g.command('vr-unlock')
-@g.command('vr-unlock')
-def unlock_rendering_pane(event):
-    '''Pause or play a movie in the rendering pane.'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if vr and vr.locked:
-            vr.unlock()
-#@+node:ekr.20140226074510.4206: *3* g.command('vr-update')
-@g.command('vr-update')
-def update_rendering_pane(event):
-    '''Update the rendering pane'''
-    if not import_ok: return
-    c = event.get('c')
-    if c:
-        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
-        if not vr:
-            vr = viewrendered(event)
-        if vr:
-            vr.update(tag='view', keywords={'c': c, 'force': True})
+                # Just open the pane.
+                viewrendered(event)
+    #@+node:ekr.20140226074510.4199: *3* g.command('vr-expand')
+    @g.command('vr-expand')
+    def expand_rendering_pane(event):
+        '''Expand the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if not vr:
+                vr = viewrendered(event)
+            if vr:
+                vr.expand()
+    #@+node:ekr.20140226074510.4200: *3* g.command('vr-hide')
+    @g.command('vr-hide')
+    def hide_rendering_pane(event):
+        '''Close the rendering pane.'''
+        global controllers
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr:
+                vr.deactivate()
+                vr.deleteLater()
+
+                def at_idle(c=c):
+                    c.bodyWantsFocusNow()
+
+                QtCore.QTimer.singleShot(0, at_idle)
+                h = c.hash()
+                c.bodyWantsFocus()
+                if vr == controllers.get(h):
+                    del controllers[h]
+                else:
+                    g.trace('Can not happen: no controller for %s' % (c))
+    # Compatibility
+
+    close_rendering_pane = hide_rendering_pane
+    #@+node:ekr.20140226074510.4201: *3* g.command('vr-lock')
+    @g.command('vr-lock')
+    def lock_rendering_pane(event):
+        '''Pause or play a movie in the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr and not vr.locked:
+                vr.lock()
+    #@+node:ekr.20140226074510.4202: *3* g.command('vr-pause-play')
+    @g.command('vr-pause-play')
+    def pause_play_movie(event):
+        '''Pause or play a movie in the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if not vr:
+                vr = viewrendered(event)
+            if vr and vr.vp:
+                vp = vr.vp
+                if vp.isPlaying():
+                    vp.pause()
+                else:
+                    vp.play()
+    #@+node:ekr.20140226074510.4203: *3* g.command('vr-show')
+    @g.command('vr-show')
+    def show_rendering_pane(event):
+        '''Show the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr:
+                pass # hide_rendering_pane(event)
+            else:
+                viewrendered(event)
+    #@+node:ekr.20140226074510.4204: *3* g.command('vr-toggle')
+    @g.command('vr-toggle')
+    def toggle_rendering_pane(event):
+        '''Toggle the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr:
+                hide_rendering_pane(event)
+            else:
+                viewrendered(event)
+    #@+node:ekr.20140226074510.4205: *3* g.command('vr-unlock')
+    @g.command('vr-unlock')
+    def unlock_rendering_pane(event):
+        '''Pause or play a movie in the rendering pane.'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if vr and vr.locked:
+                vr.unlock()
+    #@+node:ekr.20140226074510.4206: *3* g.command('vr-update')
+    @g.command('vr-update')
+    def update_rendering_pane(event):
+        '''Update the rendering pane'''
+        c = event.get('c')
+        if c:
+            vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
+            if not vr:
+                vr = viewrendered(event)
+            if vr:
+                vr.update(tag='view', keywords={'c': c, 'force': True})
+    #@-others
 #@+node:ekr.20140226075611.16792: ** class WebViewPlus (QWidget)
 class WebViewPlus(QtWidgets.QWidget):
     #@+others
