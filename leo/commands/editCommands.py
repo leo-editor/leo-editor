@@ -43,6 +43,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Settings...
         cf = c.config
         self.autocompleteBrackets = cf.getBool('autocomplete-brackets')
+        self.autojustify = abs(cf.getInt('auto-justify') or 0)
         self.bracketsFlashBg = cf.getColor('flash-brackets-background-color')
         self.bracketsFlashCount = cf.getInt('flash-brackets-count')
         self.bracketsFlashDelay = cf.getInt('flash-brackets-delay')
@@ -1536,20 +1537,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.insertNewlineHelper(w, oldSel, undoType)
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p, w, ch, oldSel)
-        elif ch: # Null chars must not delete the selection.
-            isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
-            i, j = oldSel
-            if i > j: i, j = j, i
-            # Use raw insert/delete to retain the coloring.
-            if i != j: w.delete(i, j)
-            elif action == 'overwrite': w.delete(i)
-            if isPlain:
-                w.insert(i, ch)
-                w.setInsertPoint(i + 1)
-            else:
-                g.app.gui.insertKeyEvent(event, i)
-            if inBrackets and self.flashMatchingBrackets:
-                self.flashMatchingBracketsHelper(c, ch, i, p, w)
+        elif ch:
+            # Null chars must not delete the selection.
+            self.doPlainChar(action, ch, event, inBrackets, oldSel, stroke, w)
         else:
             return
         # Set the column for up and down keys.
@@ -1564,6 +1554,40 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.frame.body.onBodyChanged(undoType=undoType,
                 oldSel=oldSel, oldText=oldText, oldYview=None)
         g.doHook("bodykey2", c=c, p=p, v=p, ch=ch, oldSel=oldSel, undoType=undoType)
+    #@+node:ekr.20160924135613.1: *5* doPlainChar
+    def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
+        c, p = self.c, self.c.p
+        isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+        i, j = oldSel
+        if i > j: i, j = j, i
+        # Use raw insert/delete to retain the coloring.
+        if i != j: w.delete(i, j)
+        elif action == 'overwrite': w.delete(i)
+        if isPlain:
+            ins = w.getInsertPoint()
+            if self.autojustify > 0:
+                # Support #14: auto-justify body text.
+                s = w.getAllText()
+                i = g.skip_to_start_of_line(s, ins)
+                i, j = g.getLine(s, i)
+                # Only insert a newline at the end of a line.
+                if j - i >= self.autojustify and (ins >= len(s) or s[ins] == '\n'):
+                    # Find the start of the word.
+                    n = 0
+                    ins -= 1
+                    while ins-1 > 0 and g.isWordChar(s[ins-1]):
+                        n += 1
+                        ins -= 1
+                    oldSel = (ins, ins)
+                    self.insertNewlineHelper(w, oldSel, undoType=None)
+                    ins = w.getInsertPoint()
+                    ins += (n+1)
+            w.insert(ins, ch)
+            w.setInsertPoint(ins + 1)
+        else:
+            g.app.gui.insertKeyEvent(event, i)
+        if inBrackets and self.flashMatchingBrackets:
+            self.flashMatchingBracketsHelper(c, ch, i, p, w)
     #@+node:ekr.20150514063305.270: *5* doPlainTab
     def doPlainTab(self, s, i, tab_width, w):
         '''Insert spaces equivalent to one tab.'''
