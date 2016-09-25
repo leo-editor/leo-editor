@@ -140,8 +140,6 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
 
-.. - ``@url`` is non-functional at present.
-
 Settings
 ========
 
@@ -470,7 +468,7 @@ if QtWidgets: # NOQA
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20110317080650.14380: *3* ctor & helper (vr)
+        #@+node:ekr.20110317080650.14380: *3* vr.ctor & helper
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             self.c = c

@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140225222704.16748: * @file viewrendered2.py
 #@+<< docstring >>
-#@+node:ekr.20140226074510.4187: ** << docstring >>
+#@+node:ekr.20140226074510.4187: ** << docstring >> (vr2)
 '''
 
 viewrendered2.py: Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -140,8 +140,6 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
-
-.. - ``@url`` is non-functional at present.
 
 Settings
 ========
@@ -492,7 +490,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.view = self.init_view()
         # Must be done after calling init_view.
         self.docutils_settings = self.init_config()
-    #@+node:ekr.20140227055626.16842: *4* init_view
+    #@+node:ekr.20140227055626.16842: *4* vr2.init_view
     def init_view(self):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
@@ -637,7 +635,7 @@ class WebViewPlus(QtWidgets.QWidget):
         #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
         return view
-    #@+node:ekr.20140227055626.16843: *4* init_config
+    #@+node:ekr.20140227055626.16843: *4* vr2.init_config
     def init_config(self):
         '''Init docutils settings.'''
         ds = {}
