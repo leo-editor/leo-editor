@@ -322,14 +322,14 @@ def show_scrolled_message(tag, kw):
 if import_ok:
     # Define the commands only if this plugin is active.
     #@+others
-    #@+node:ekr.20140226074510.4196: *3* g.command('preview')
+    #@+node:ekr.20140226074510.4196: *3* g.command('vr2-preview')
 
-    @g.command('preview')
+    @g.command('vr2-preview')
     def preview(event):
-        '''A synonym for the vr-toggle command.'''
+        '''A synonym for the vr2-toggle command.'''
         toggle_rendering_pane(event)
-    #@+node:ekr.20140226074510.4197: *3* g.command('vr')
-    @g.command('vr')
+    #@+node:ekr.20140226074510.4197: *3* g.command('vr2')
+    @g.command('vr2')
     def viewrendered(event):
         """Open render view for commander"""
         trace = False and not g.unitTesting
@@ -357,8 +357,8 @@ if import_ok:
                 vr.resize(600, 600)
                 vr.show()
         return vr
-    #@+node:ekr.20140226074510.4198: *3* g.command('vr-contract')
-    @g.command('vr-contract')
+    #@+node:ekr.20140226074510.4198: *3* g.command('vr2-contract')
+    @g.command('vr2-contract')
     def contract_rendering_pane(event):
         '''Expand the rendering pane.'''
         c = event.get('c')
@@ -369,8 +369,8 @@ if import_ok:
             else:
                 # Just open the pane.
                 viewrendered(event)
-    #@+node:ekr.20140226074510.4199: *3* g.command('vr-expand')
-    @g.command('vr-expand')
+    #@+node:ekr.20140226074510.4199: *3* g.command('vr2-expand')
+    @g.command('vr2-expand')
     def expand_rendering_pane(event):
         '''Expand the rendering pane.'''
         c = event.get('c')
@@ -380,8 +380,8 @@ if import_ok:
                 vr = viewrendered(event)
             if vr:
                 vr.expand()
-    #@+node:ekr.20140226074510.4200: *3* g.command('vr-hide')
-    @g.command('vr-hide')
+    #@+node:ekr.20140226074510.4200: *3* g.command('vr2-hide')
+    @g.command('vr2-hide')
     def hide_rendering_pane(event):
         '''Close the rendering pane.'''
         global controllers
@@ -405,8 +405,8 @@ if import_ok:
     # Compatibility
 
     close_rendering_pane = hide_rendering_pane
-    #@+node:ekr.20140226074510.4201: *3* g.command('vr-lock')
-    @g.command('vr-lock')
+    #@+node:ekr.20140226074510.4201: *3* g.command('vr2-lock')
+    @g.command('vr2-lock')
     def lock_rendering_pane(event):
         '''Pause or play a movie in the rendering pane.'''
         c = event.get('c')
@@ -414,8 +414,8 @@ if import_ok:
             vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
             if vr and not vr.locked:
                 vr.lock()
-    #@+node:ekr.20140226074510.4202: *3* g.command('vr-pause-play')
-    @g.command('vr-pause-play')
+    #@+node:ekr.20140226074510.4202: *3* g.command('vr2-pause-play')
+    @g.command('vr2-pause-play')
     def pause_play_movie(event):
         '''Pause or play a movie in the rendering pane.'''
         c = event.get('c')
@@ -429,8 +429,8 @@ if import_ok:
                     vp.pause()
                 else:
                     vp.play()
-    #@+node:ekr.20140226074510.4203: *3* g.command('vr-show')
-    @g.command('vr-show')
+    #@+node:ekr.20140226074510.4203: *3* g.command('vr2-show')
+    @g.command('vr2-show')
     def show_rendering_pane(event):
         '''Show the rendering pane.'''
         c = event.get('c')
@@ -440,8 +440,8 @@ if import_ok:
                 pass # hide_rendering_pane(event)
             else:
                 viewrendered(event)
-    #@+node:ekr.20140226074510.4204: *3* g.command('vr-toggle')
-    @g.command('vr-toggle')
+    #@+node:ekr.20140226074510.4204: *3* g.command('vr2-toggle')
+    @g.command('vr2-toggle')
     def toggle_rendering_pane(event):
         '''Toggle the rendering pane.'''
         c = event.get('c')
@@ -451,8 +451,8 @@ if import_ok:
                 hide_rendering_pane(event)
             else:
                 viewrendered(event)
-    #@+node:ekr.20140226074510.4205: *3* g.command('vr-unlock')
-    @g.command('vr-unlock')
+    #@+node:ekr.20140226074510.4205: *3* g.command('vr2-unlock')
+    @g.command('vr2-unlock')
     def unlock_rendering_pane(event):
         '''Pause or play a movie in the rendering pane.'''
         c = event.get('c')
@@ -460,8 +460,8 @@ if import_ok:
             vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
             if vr and vr.locked:
                 vr.unlock()
-    #@+node:ekr.20140226074510.4206: *3* g.command('vr-update')
-    @g.command('vr-update')
+    #@+node:ekr.20140226074510.4206: *3* g.command('vr2-update')
+    @g.command('vr2-update')
     def update_rendering_pane(event):
         '''Update the rendering pane'''
         c = event.get('c')
