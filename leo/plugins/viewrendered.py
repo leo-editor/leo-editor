@@ -483,6 +483,7 @@ if QtWidgets: # NOQA
             self.delete_callback = None
             self.gnx = None
             self.graphics_class = QtWidgets.QGraphicsWidget
+            self.pyplot_canvas = None
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
             import sys
@@ -524,6 +525,7 @@ if QtWidgets: # NOQA
                 'md': pc.update_md,
                 'movie': pc.update_movie,
                 'networkx': pc.update_networkx,
+                'pyplot': pc.update_pyplot,
                 'rest': pc.update_rst,
                 'rst': pc.update_rst,
                 'svg': pc.update_svg,
@@ -707,8 +709,13 @@ if QtWidgets: # NOQA
                 if trace: g.trace('changed node', p.h)
                 return True
             if len(p.b) != pc.length:
-                if trace: g.trace('text changed', p.h)
-                return True
+                if pc.get_kind(p) == 'pyplot':
+                    if trace: g.trace('pyplot text changed', p.h)
+                    pc.length = len(p.b)
+                    return False # Only update explicitly.
+                else:
+                    if trace: g.trace('text changed', p.h)
+                    return True
             # This will be called at idle time.
             # if trace: g.trace('no change')
             return False
@@ -884,6 +891,92 @@ if QtWidgets: # NOQA
             w = pc.ensure_text_widget()
             w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
             pc.show()
+        #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
+        def update_pyplot(self, s, keywords):
+            '''Get the pyplot script at c.p.b and show it.'''
+            c = self.c
+            # To do: show plot in the VR area.
+            if 1:
+                backend = g.os_path_finalize_join(
+                    g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+                if g.os_path_exists(backend):
+                    try:
+                        import matplotlib
+                        matplotlib.use('module://leo.plugins.pyplot_backend')
+                        g.trace('===== LOADED: pyplot.backend')
+                    except ImportError:
+                        g.trace('===== FAIL: pyplot.backend')
+                else:
+                    g.trace('===== MISSING: pyplot.backend')
+            try:
+                import matplotlib
+                import matplotlib.pyplot as plt
+                import numpy as np
+                import matplotlib.animation as animation
+                plt.ion() # Automatically set interactive mode.
+                namespace = {
+                    'animation': animation,
+                    'matplotlib': matplotlib,
+                    'numpy': np, 'np': np,
+                    'pyplot': plt, 'plt': plt,
+                }
+            except ImportError:
+                g.es_print('matplotlib imports failed')
+                namespace = {}
+            self.embed_pyplot_widget()
+            c.executeScript(
+                event=None,
+                args=None, p=None,
+                script=None,
+                useSelectedText=False,
+                define_g=True,
+                define_name='__main__',
+                silent=False,
+                namespace=namespace,
+                raiseFlag=False)
+        #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
+        def embed_pyplot_widget(self):
+            
+            return #####
+            
+            pc = self
+            c = pc.c
+            # Careful: we may be unit testing.
+            splitter = c.free_layout.get_top_splitter()
+            if not splitter:
+                if trace: g.trace('no splitter')
+                return
+            if not pc.pyplot_canvas:
+                
+                if 0:
+                
+                    def leo_new_figure_manager(num, *args, **kwargs):
+                        """
+                        Create a new figure manager instance
+                        """
+                        FigureClass = kwargs.pop('FigureClass', Figure)
+                        thisFig = FigureClass(*args, **kwargs)
+                        return new_figure_manager_given_figure(num, thisFig)
+            
+                    backend_qt4agg.new_figure_manager = leo_new_figure_manager
+                    # g.trace(leo_new_figure_manager)
+                    # bg.trace(backend_qt4agg.new_figure_manager)
+               
+                # TODO Create the widgets.
+                w = None
+                ### Ref
+                # pc.gs = QtWidgets.QGraphicsScene(splitter)
+                # pc.gv = QtWidgets.QGraphicsView(pc.gs)
+                # w = pc.gv.viewport() # A QWidget
+                # Embed the widgets.
+                pc.pyplot_canvas = w
+
+                def delete_callback():
+                    pc.pyplot_canvas.deleteLater()
+                    pc.pyplot_canvas = None
+
+            if pc.pyplot_canvas:
+                pc.embed_widget(w, delete_callback=delete_callback)
         #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
