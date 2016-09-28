@@ -46,6 +46,7 @@ def init():
     g.trace('pyplot_backend.py is not a plugin.')
     return False
 #@+node:ekr.20160928082006.1: ** Leo backend
+# pylint: disable=function-redefined
 #@+node:ekr.20160928074615.2: *3* new_figure_manager
 def new_figure_manager(num, *args, **kwargs):
     """
@@ -71,9 +72,11 @@ def new_figure_manager_given_figure(num, figure):
 if import_ok:
     class FigureCanvasQTAggBase(_FigureCanvasQTAggBase):
         def __init__(self, figure):
+            # pylint: disable=super-init-not-called
             if DEBUG: g.trace('(VR: FigureCanvasQTAggBase)', figure)
             self._agg_draw_pending = False
 else:
+    
     class FigureCanvasQTAggBase:
         def __init__(self, figure):
             g.trace('(VR: DUMMY FigureCanvasQTAggBase)', g.callers())

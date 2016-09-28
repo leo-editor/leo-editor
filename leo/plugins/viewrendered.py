@@ -939,8 +939,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
         def embed_pyplot_widget(self):
             
-            return #####
-            
             pc = self
             c = pc.c
             # Careful: we may be unit testing.
@@ -949,20 +947,6 @@ if QtWidgets: # NOQA
                 if trace: g.trace('no splitter')
                 return
             if not pc.pyplot_canvas:
-                
-                if 0:
-                
-                    def leo_new_figure_manager(num, *args, **kwargs):
-                        """
-                        Create a new figure manager instance
-                        """
-                        FigureClass = kwargs.pop('FigureClass', Figure)
-                        thisFig = FigureClass(*args, **kwargs)
-                        return new_figure_manager_given_figure(num, thisFig)
-            
-                    backend_qt4agg.new_figure_manager = leo_new_figure_manager
-                    # g.trace(leo_new_figure_manager)
-                    # bg.trace(backend_qt4agg.new_figure_manager)
                
                 # TODO Create the widgets.
                 w = None
