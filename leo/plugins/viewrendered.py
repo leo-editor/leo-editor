@@ -484,6 +484,7 @@ if QtWidgets: # NOQA
             self.gnx = None
             self.graphics_class = QtWidgets.QGraphicsWidget
             self.pyplot_canvas = None
+            self.pyplot_imported = False
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
             import sys
@@ -896,14 +897,15 @@ if QtWidgets: # NOQA
             '''Get the pyplot script at c.p.b and show it.'''
             c = self.c
             # To do: show plot in the VR area.
-            if 1:
+            if not self.pyplot_imported:
+                self.pyplot_imported = True
                 backend = g.os_path_finalize_join(
                     g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
                 if g.os_path_exists(backend):
                     try:
                         import matplotlib
                         matplotlib.use('module://leo.plugins.pyplot_backend')
-                        g.trace('===== LOADED: pyplot.backend')
+                        if trace: g.trace('===== LOADED: pyplot.backend')
                     except ImportError:
                         g.trace('===== FAIL: pyplot.backend')
                 else:
