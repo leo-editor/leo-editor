@@ -226,9 +226,9 @@ import os
 if trace:
     print('viewrendered.py: got_markdown: %s' % got_markdown)
 #@-<< imports >>
-#@+<< define stylesheet >>
-#@+node:ekr.20110317024548.14377: ** << define stylesheet >>
-stickynote_stylesheet = """
+#@+<< define stylesheets >>
+#@+node:ekr.20110317024548.14377: ** << define stylesheets >>
+stickynote_stylesheet = '''
 /* The body pane */
 QPlainTextEdit {
     background-color: #fdf5f5; /* A kind of pink. */
@@ -236,12 +236,12 @@ QPlainTextEdit {
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
-    font-size: 12px;
+    font-size: 18px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
-"""
-#@-<< define stylesheet >>
+'''
+#@-<< define stylesheets >>
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 #@+others
@@ -622,7 +622,7 @@ if QtWidgets: # NOQA
             '''Update the vr pane.'''
             verbose = False
             pc = self
-            p = pc.c.p
+            c, p = pc.c, pc.c.p
             if pc.must_update(keywords):
                 if trace:
                     if verbose: g.trace('===== updating', keywords)
@@ -710,8 +710,8 @@ if QtWidgets: # NOQA
                 if trace: g.trace('changed node', p.h)
                 return True
             if len(p.b) != pc.length:
-                if pc.get_kind(p) == 'pyplot':
-                    if trace: g.trace('pyplot text changed', p.h)
+                if pc.get_kind(p) in ('html', 'pyplot'):
+                    if trace: g.trace('html or pyplot text changed', p.h)
                     pc.length = len(p.b)
                     return False # Only update explicitly.
                 else:
@@ -752,15 +752,22 @@ if QtWidgets: # NOQA
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
+            c = pc.c
             if trace: g.trace('===== instantiating', pc.html_class, g.callers())
             if pc.must_change_widget(pc.html_class):
                 w = pc.html_class()
+                settings = w.settings()
+                n = c.config.getInt('qweb_view_font_size')
+                if n:
+                    settings.setFontSize(settings.DefaultFontSize, n)
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
                 w = pc.w
             pc.show()
             w.setHtml(s)
+            # This works for PyQt4, but not 5.
+            c.widgetWantsFocusNow(w)
         #@+node:ekr.20110320120020.14482: *4* vr.update_image
         def update_image(self, s, keywords):
             '''Update an image in the vr pane.'''
