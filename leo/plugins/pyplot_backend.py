@@ -10,7 +10,6 @@ import leo.core.leoGlobals as g
 import leo.plugins.viewrendered as vr
 from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
 import os
-import six
 
 import_ok = True
 if isQt5:
@@ -22,7 +21,6 @@ if isQt5:
 else:
     try:
         import matplotlib
-        from matplotlib._pylab_helpers import Gcf
         import matplotlib.backends.backend_qt4agg as backend
         import matplotlib.backends.backend_qt5 as backend_qt5
         import matplotlib.backend_bases as backend_bases
@@ -32,11 +30,8 @@ else:
 if import_ok:
     try:
         FigureManagerBase       = backend_bases.FigureManagerBase
-        
-        # These work
         FigureCanvasAgg         = backend.FigureCanvasAgg
         FigureCanvasQT          = backend.FigureCanvasQT
-        FigureCanvasQTAgg       = backend.FigureCanvasQTAgg
         FigureCanvasQTAggBase   = backend.FigureCanvasQTAggBase
         FigureManagerQT         = backend.FigureManagerQT
         _FigureCanvasQTAggBase  = backend._FigureCanvasQTAggBase
@@ -57,7 +52,6 @@ def init():
     g.trace('pyplot_backend.py is not a plugin.')
     return False
 #@+node:ekr.20160928082006.1: ** Leo backend
-# pylint: disable=function-redefined`
 #@+node:ekr.20160928074615.2: *3* new_figure_manager
 def new_figure_manager(num, *args, **kwargs):
     """
@@ -76,23 +70,6 @@ def new_figure_manager_given_figure(num, figure):
     canvas = FigureCanvasQTAgg(figure)
     # g.trace('(VR) %s\ncanvas: %s\nfigure: %s' % (num, canvas.__class__, figure.__class__))
     return LeoFigureManagerQT(canvas, num)
-#@+node:ekr.20160928080012.1: *3* class FigureCanvasQTAggBase (not used)
-if 0:
-    if import_ok:
-
-        class FigureCanvasQTAggBase(_FigureCanvasQTAggBase):
-            def __init__(self, figure):
-                # pylint: disable=super-init-not-called
-                g.trace('(VR: FigureCanvasQTAggBase)', figure)
-                g.trace('(VR: _FigureCanvasQTAggBase:', _FigureCanvasQTAggBase)
-                    # backend_qt5agg.FigureCanvasQTAggBase (an object)
-                self._agg_draw_pending = False
-    else:
-        
-        class FigureCanvasQTAggBase:
-            def __init__(self, figure):
-                g.trace('(VR: DUMMY FigureCanvasQTAggBase)', g.callers())
-                self._agg_draw_pending = False
 #@+node:ekr.20160928074615.4: *3* class FigureCanvasQTAgg
 if import_ok:
 
@@ -109,22 +86,6 @@ if import_ok:
             self._drawRect = None
             self.blitbox = None
             self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
-
-else:
-    class FigureCanvasQTAgg:
-        def __init__(self, figure):
-            g.trace('(VR: DUMMY FigureCanvasQTAgg)', figure, g.callers())
-#@+node:ekr.20160929045732.1: *3* class MainWindow (not used)
-# From backend_qt5.py
-
-if 0:
-
-    class MainWindow(QtWidgets.QMainWindow):
-        closing = QtCore.Signal()
-    
-        def closeEvent(self, event):
-            self.closing.emit()
-            QtWidgets.QMainWindow.closeEvent(self, event)
 #@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT (backend_qt5.FigureManager)
 # From backend_qt5.py
 
@@ -241,78 +202,6 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
         pass
-    #@+node:ekr.20160929082310.1: *4* unused
-    if 0:
-        #@+others
-        #@+node:ekr.20160929050151.3: *5* _show_message
-        @QtCore.Slot()
-        def _show_message(self, s):
-            self.statusbar_label.setText(s)
-
-        #@+node:ekr.20160929050151.4: *5* full_screen_toggle
-        def full_screen_toggle(self):
-            if self.window.isFullScreen():
-                self.window.showNormal()
-            else:
-                self.window.showFullScreen()
-
-        #@+node:ekr.20160929050151.5: *5* _widgetclosed
-        def _widgetclosed(self):
-            if self.window._destroying:
-                return
-            self.window._destroying = True
-            try:
-                Gcf.destroy(self.num)
-            except AttributeError:
-                pass
-                # It seems that when the python session is killed,
-                # Gcf can get destroyed before the Gcf.destroy
-                # line is run, leading to a useless AttributeError.
-
-        #@+node:ekr.20160929050151.6: *5* _get_toolbar
-        def _get_toolbar(self, canvas, parent):
-            # must be inited after the window, drawingArea and figure
-            # attrs are set
-            if 1: ### EKR
-                return backend_qt5.NavigationToolbar2QT(canvas, parent, False)
-            else:
-                if matplotlib.rcParams['toolbar'] == 'toolbar2':
-                    toolbar = NavigationToolbar2QT(canvas, parent, False)
-                else:
-                    toolbar = None
-                return toolbar
-        #@+node:ekr.20160929050151.7: *5* resize
-        def resize(self, width, height):
-            'set the canvas size in pixels'
-            self.window.resize(width, height + self._status_and_tool_height)
-
-        #@+node:ekr.20160929050151.8: *5* show
-        def show(self):
-            self.window.show()
-
-        #@+node:ekr.20160929050151.9: *5* destroy
-        def destroy(self, *args):
-            # check for qApp first, as PySide deletes it in its atexit handler
-            if QtWidgets.QApplication.instance() is None:
-                return
-            if self.window._destroying:
-                return
-            self.window._destroying = True
-            self.window.destroyed.connect(self._widgetclosed)
-
-            if self.toolbar:
-                self.toolbar.destroy()
-            if DEBUG:
-                print("destroy figure manager")
-            self.window.close()
-
-        #@+node:ekr.20160929050151.10: *5* get_window_title
-        def get_window_title(self):
-            return six.text_type(self.window.windowTitle())
-        #@+node:ekr.20160929050151.11: *5* set_window_title
-        def set_window_title(self, title):
-            self.window.setWindowTitle(title)
-        #@-others
     #@-others
 #@-others
 #@@language python
