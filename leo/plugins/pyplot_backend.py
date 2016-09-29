@@ -10,28 +10,22 @@ import leo.core.leoGlobals as g
 import leo.plugins.viewrendered as vr
 from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
 
-import_ok = True
 if isQt5:
     assert False, '===== pyplot_backend.py: MUST USE QT4'
     try:
         import matplotlib.backends.backend_qt5agg as backend
     except ImportError:
-        import_ok = False
+        g.es_exception()
 else:
     try:
-        import matplotlib.backends.backend_qt4agg as backend
+        import matplotlib.backends.backend_qt4agg as backend_qt4agg
         import matplotlib.backends.backend_qt5 as backend_qt5
         import matplotlib.backend_bases as backend_bases
+        from matplotlib.figure import Figure
+        FigureManagerBase = backend_bases.FigureManagerBase
+        FigureCanvasQTAgg = backend_qt4agg.FigureCanvasQTAgg
     except ImportError:
         g.es_exception()
-        import_ok = False
-if import_ok:
-    try:
-        FigureManagerBase = backend_bases.FigureManagerBase
-        FigureCanvasQTAgg = backend.FigureCanvasQTAgg
-        from matplotlib.figure import Figure
-    except ImportError:
-        import_ok = False
 #@-<< pyplot_backend imports >>
 #@+others
 #@+node:ekr.20160928073605.1: ** init
@@ -56,7 +50,8 @@ def new_figure_manager_given_figure(num, figure):
     Create a new figure manager instance for the given figure.
     """
     canvas = FigureCanvasQTAgg(figure)
-    # g.trace('(VR) %s\ncanvas: %s\nfigure: %s' % (num, canvas.__class__, figure.__class__))
+    # g.trace('(VR) %s\ncanvas: %s\nfigure: %s' % (
+        # num, canvas.__class__, figure.__class__))
     return LeoFigureManagerQT(canvas, num)
 #@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT
 # From backend_qt5.py
@@ -68,7 +63,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
     canvas      : The FigureCanvas instance
     num         : The Figure number
     toolbar     : The qt.QToolBar
-    window      : The qt.QMainWindow
+    window      : The qt.QMainWindow (not set)
     """
 
     #@+others
@@ -123,7 +118,8 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.canvas.figure.add_axobserver(notify_axes_change)
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
-        pass
+        self.frame.deleteLater()
+        self.frame = None
     #@-others
 #@-others
 #@@language python
