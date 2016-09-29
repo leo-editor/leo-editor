@@ -462,7 +462,6 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
-        self.trace_shutdown = False
         self.trace_plugins = False
             # True: trace imports of plugins.
         self.translateToUpperCase = False
@@ -497,6 +496,10 @@ class LeoApp(object):
             # Set by p.safeMoveToThreadNext.
         self.statsDict = {}
             # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.trace_open_with = True
+            # True: trace open-with logic in core and vim and xemacs plugins.
+        self.trace_shutdown = False
+            # True: trace shutdown logic.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
 
