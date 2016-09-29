@@ -88,7 +88,7 @@ if QtWidgets:
 
     class CKEEditor(QtWidgets.QWidget):
         #@+others
-        #@+node:tbrown.20130813134319.7225: *3* __init__
+        #@+node:tbrown.20130813134319.7225: *3* __init__ (CKEEditor)
         def __init__(self, *args, **kwargs):
 
             self.c = kwargs['c']
