@@ -8,7 +8,7 @@
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 import leo.core.leoGlobals as g
 import leo.plugins.viewrendered as vr
-from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
+from leo.core.leoQt import isQt5, QtCore, QtWidgets
 try:
     if isQt5:
         import matplotlib.backends.backend_qt5agg as backend_qt5agg
@@ -66,13 +66,17 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
 
     #@+others
     #@+node:ekr.20160929050151.2: *4* __init__ (LeoFigureManagerQt)
+    # Do NOT call the base class ctor. It creates a Qt MainWindow.
+        # pylint: disable=super-init-not-called
+        # pylint: disable=non-parent-init-called
+
     def __init__(self, canvas, num):
         '''Ctor for the LeoFigureManagerQt class.'''
         self.c = c = g.app.log.c
         # g.trace('LeoFigureManagerQT', c)
         FigureManagerBase.__init__(self, canvas, num)
         self.canvas = canvas
-        
+
         # New code for Leo: embed the canvas in the viewrendered area.
         self.vr_controller = vc = vr.controllers.get(c.hash())
         self.splitter = c.free_layout.get_top_splitter()
@@ -99,13 +103,14 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
 
         self.toolbar = self._get_toolbar(self.canvas, self.frame)
         if self.toolbar is not None:
+            # The toolbar is a backend_qt5.NavigationToolbar2QT.
             layout = self.frame.layout()
             layout.addWidget(self.toolbar)
             # add text label to status bar
             self.statusbar_label = QtWidgets.QLabel()
             layout.addWidget(self.statusbar_label)
             if isQt5:
-                pass ### To do:
+                pass # The status bar doesn't work yet.
             else:
                 self.toolbar.message.connect(self._show_message)
 
