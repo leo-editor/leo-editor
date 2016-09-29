@@ -9,23 +9,21 @@
 import leo.core.leoGlobals as g
 import leo.plugins.viewrendered as vr
 from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
-
-if isQt5:
-    assert False, '===== pyplot_backend.py: MUST USE QT4'
-    try:
-        import matplotlib.backends.backend_qt5agg as backend
-    except ImportError:
-        g.es_exception()
-else:
-    try:
+try:
+    if isQt5:
+        import matplotlib.backends.backend_qt5agg as backend_qt5agg
+        FigureCanvasQTAgg = backend_qt5agg.FigureCanvasQTAgg
+    else:
         import matplotlib.backends.backend_qt4agg as backend_qt4agg
-        import matplotlib.backends.backend_qt5 as backend_qt5
-        import matplotlib.backend_bases as backend_bases
-        from matplotlib.figure import Figure
-        FigureManagerBase = backend_bases.FigureManagerBase
         FigureCanvasQTAgg = backend_qt4agg.FigureCanvasQTAgg
-    except ImportError:
-        g.es_exception()
+    # Common imports
+    import matplotlib.backends.backend_qt5 as backend_qt5
+    import matplotlib.backend_bases as backend_bases
+    from matplotlib.figure import Figure
+    FigureManagerBase = backend_bases.FigureManagerBase
+        
+except ImportError:
+    g.es_exception()
 #@-<< pyplot_backend imports >>
 #@+others
 #@+node:ekr.20160928073605.1: ** init
@@ -78,7 +76,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         # New code for Leo: embed the canvas in the viewrendered area.
         self.vr_controller = vc = vr.controllers.get(c.hash())
         self.splitter = c.free_layout.get_top_splitter()
-        self.frame = w = QtGui.QFrame()
+        self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)
         vc.embed_widget(w)
@@ -106,7 +104,10 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             # add text label to status bar
             self.statusbar_label = QtWidgets.QLabel()
             layout.addWidget(self.statusbar_label)
-            self.toolbar.message.connect(self._show_message)
+            if isQt5:
+                pass ### To do:
+            else:
+                self.toolbar.message.connect(self._show_message)
 
         self.canvas.draw_idle()
 
