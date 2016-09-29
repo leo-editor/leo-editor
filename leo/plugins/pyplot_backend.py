@@ -124,7 +124,8 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.canvas.figure.add_axobserver(notify_axes_change)
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
-        self.frame.deleteLater()
+        # Causes problems.
+        # self.frame.deleteLater()
         self.frame = None
     #@-others
 #@-others
