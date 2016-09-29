@@ -641,6 +641,8 @@ class leo_interface(object):
                     # Is there something better we can do here?
                     self.send_error(404, "Node not found")
                     return None
+            if f is None:
+                return
             length = f.tell()
             f.seek(0)
             self.send_response(200)
