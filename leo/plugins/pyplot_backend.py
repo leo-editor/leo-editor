@@ -9,7 +9,6 @@
 import leo.core.leoGlobals as g
 import leo.plugins.viewrendered as vr
 from leo.core.leoQt import isQt5, QtCore, QtWidgets, QtGui
-import os
 
 import_ok = True
 if isQt5:
@@ -20,7 +19,6 @@ if isQt5:
         import_ok = False
 else:
     try:
-        import matplotlib
         import matplotlib.backends.backend_qt4agg as backend
         import matplotlib.backends.backend_qt5 as backend_qt5
         import matplotlib.backend_bases as backend_bases
@@ -29,19 +27,9 @@ else:
         import_ok = False
 if import_ok:
     try:
-        FigureManagerBase       = backend_bases.FigureManagerBase
-        FigureCanvasAgg         = backend.FigureCanvasAgg
-        FigureCanvasQT          = backend.FigureCanvasQT
-        FigureCanvasQTAggBase   = backend.FigureCanvasQTAggBase
-        FigureManagerQT         = backend.FigureManagerQT
-        _FigureCanvasQTAggBase  = backend._FigureCanvasQTAggBase
+        FigureManagerBase = backend_bases.FigureManagerBase
+        FigureCanvasQTAgg = backend.FigureCanvasQTAgg
         from matplotlib.figure import Figure
-        # from .backend_qt5agg import FigureCanvasQTAggBase as _FigureCanvasQTAggBase
-        # from .backend_agg import FigureCanvasAgg
-        # from .backend_qt4 import QtCore
-        # from .backend_qt4 import FigureManagerQT
-        # from .backend_qt4 import FigureCanvasQT
-        # from .backend_qt4 import NavigationToolbar2QT
     except ImportError:
         import_ok = False
 #@-<< pyplot_backend imports >>
@@ -70,23 +58,7 @@ def new_figure_manager_given_figure(num, figure):
     canvas = FigureCanvasQTAgg(figure)
     # g.trace('(VR) %s\ncanvas: %s\nfigure: %s' % (num, canvas.__class__, figure.__class__))
     return LeoFigureManagerQT(canvas, num)
-#@+node:ekr.20160928074615.4: *3* class FigureCanvasQTAgg
-if import_ok:
-
-    class FigureCanvasQTAgg(FigureCanvasQTAggBase, FigureCanvasQT, FigureCanvasAgg):
-        """
-        The canvas the figure renders into.  Calls the draw and print fig
-        methods, creates the renderers, etc...
-        """
-        def __init__(self, figure):
-            # g.trace('(VR: FigureCanvasQTAgg)', figure)
-            FigureCanvasQT.__init__(self, figure)
-            FigureCanvasQTAggBase.__init__(self, figure)
-            FigureCanvasAgg.__init__(self, figure)
-            self._drawRect = None
-            self.blitbox = None
-            self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
-#@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT (backend_qt5.FigureManager)
+#@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT
 # From backend_qt5.py
 
 class LeoFigureManagerQT(backend_qt5.FigureManager):
@@ -103,102 +75,52 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
     #@+node:ekr.20160929050151.2: *4* __init__ (LeoFigureManagerQt)
     def __init__(self, canvas, num):
         '''Ctor for the LeoFigureManagerQt class.'''
-        # g.trace('LeoFigureManagerQT', g.app.log and g.app.log.c)
-        self.use_vr = True
         self.c = c = g.app.log.c
+        # g.trace('LeoFigureManagerQT', c)
         FigureManagerBase.__init__(self, canvas, num)
         self.canvas = canvas
-        if self.use_vr:
-            self.vr_controller = vc = vr.controllers.get(c.hash())
-            # g.trace('vr_controller', self.vr_controller)
-            self.splitter = c.free_layout.get_top_splitter()
-            self.frame = w = QtGui.QFrame()
-            w.setLayout(QtWidgets.QVBoxLayout())
-            w.layout().addWidget(self.canvas)
-            vc.embed_widget(w)
-            
-        if self.use_vr:
-            class DummyWindow:
-                def __init__(self, c):
-                    self.c = c
-                    self._destroying = None
-                def windowTitle(self):
-                    return self.c.p.h
-            self.window = DummyWindow(c)
-        else:
-            self.window = MainWindow()
-            self.window.closing.connect(canvas.close_event)
-            self.window.closing.connect(self._widgetclosed)
         
-            self.window.setWindowTitle("Figure %d" % num)
-            image = os.path.join(matplotlib.rcParams['datapath'],
-                                 'images', 'matplotlib.png')
-            self.window.setWindowIcon(QtGui.QIcon(image))
+        # New code for Leo: embed the canvas in the viewrendered area.
+        self.vr_controller = vc = vr.controllers.get(c.hash())
+        self.splitter = c.free_layout.get_top_splitter()
+        self.frame = w = QtGui.QFrame()
+        w.setLayout(QtWidgets.QVBoxLayout())
+        w.layout().addWidget(self.canvas)
+        vc.embed_widget(w)
+            
+        class DummyWindow:
+            
+            def __init__(self, c):
+                self.c = c
+                self._destroying = None
 
-        # Give the keyboard focus to the figure instead of the
-        # manager; StrongFocus accepts both tab and click to focus and
-        # will enable the canvas to process event w/o clicking.
-        # ClickFocus only takes the focus is the window has been
-        # clicked
-        # on. http://qt-project.org/doc/qt-4.8/qt.html#FocusPolicy-enum or
-        # http://doc.qt.digia.com/qt/qt.html#FocusPolicy-enum
+            def windowTitle(self):
+                return self.c.p.h
+
+        self.window = DummyWindow(c)
+
+        # See comments in the base class ctor, in backend_qt5.py.
         self.canvas.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.canvas.setFocus()
-        
-        if self.use_vr:
-            self.canvas._destroying = False
-        else:
-            self.window._destroying = False
-        
-        if self.use_vr:
-            self.toolbar = self._get_toolbar(self.canvas, self.frame)
-            if self.toolbar is not None:
-                layout = self.frame.layout()
-                layout.addWidget(self.toolbar)
-                # add text label to status bar
-                self.statusbar_label = QtWidgets.QLabel()
-                layout.addWidget(self.statusbar_label)
-                self.toolbar.message.connect(self._show_message)
-        else:
-            self.toolbar = self._get_toolbar(self.canvas, self.window)
-            if self.toolbar is not None:
-                self.window.addToolBar(self.toolbar)
-                self.toolbar.message.connect(self._show_message)
-                tbs_height = self.toolbar.sizeHint().height()
-            else:
-                tbs_height = 0
-                
+        self.canvas._destroying = False
+
+        self.toolbar = self._get_toolbar(self.canvas, self.frame)
+        if self.toolbar is not None:
+            layout = self.frame.layout()
+            layout.addWidget(self.toolbar)
             # add text label to status bar
             self.statusbar_label = QtWidgets.QLabel()
-            self.window.statusBar().addWidget(self.statusbar_label)
-            
-        if self.use_vr:
-            pass
-        else:
+            layout.addWidget(self.statusbar_label)
+            self.toolbar.message.connect(self._show_message)
 
-            # resize the main window so it will display the canvas with the
-            # requested size:
-            cs = canvas.sizeHint()
-            sbs = self.window.statusBar().sizeHint()
-            self._status_and_tool_height = tbs_height + sbs.height()
-            height = cs.height() + self._status_and_tool_height
-            self.window.resize(cs.width(), height)
-        
-            self.window.setCentralWidget(self.canvas)
-            
-        if self.use_vr:
-            self.canvas.draw_idle()
-        else:
-            if matplotlib.is_interactive():
-                self.window.show()
-                self.canvas.draw_idle()
+        self.canvas.draw_idle()
 
         def notify_axes_change(fig):
             # This will be called whenever the current axes is changed
             if self.toolbar is not None:
                 self.toolbar.update()
-        self.canvas.figure.add_axobserver(notify_axes_change)
 
+        self.canvas.figure.add_axobserver(notify_axes_change)
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
         pass

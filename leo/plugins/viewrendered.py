@@ -903,6 +903,7 @@ if QtWidgets: # NOQA
                     g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
                 if g.os_path_exists(backend):
                     try:
+                        # The order of these statements is important...
                         import matplotlib
                         matplotlib.use('module://leo.plugins.pyplot_backend')
                         if trace: g.trace('===== LOADED: pyplot.backend')
@@ -911,7 +912,7 @@ if QtWidgets: # NOQA
                 else:
                     g.trace('===== MISSING: pyplot.backend')
             try:
-                import matplotlib
+                import matplotlib # Make *sure* this is imported.
                 import matplotlib.pyplot as plt
                 import numpy as np
                 import matplotlib.animation as animation
