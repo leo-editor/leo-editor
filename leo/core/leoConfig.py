@@ -2083,7 +2083,7 @@ class SettingsFinder(object):
         key = g.app.config.canonicalizeSettingName(setting)
         value = self.c.config.settingsDict.get(key)
         which = None
-        while value and value.val and value.val.startswith('@'):
+        while value and g.isString(value.val) and value.val.startswith('@'):
             msg = ("The relevant setting, '@{specific}', is using the value of "
             "a more general setting, '{general}'.  Would you like to edit the "
             "more specific setting, '@{specific}', or the more general setting, "
