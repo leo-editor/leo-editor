@@ -300,6 +300,21 @@ def getGlobalConfiguration():
     new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
+        
+    css = g.app.config.getData('http_stylesheet', strip_comments=False, strip_data=True) or []
+    css = ''.join(css)
+    g.trace(css)
+    config.start_template = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<style>
+%s
+</style>
+<title>""" % css
+    # g.trace(repr(config.start_template))
+    
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
 def plugin_wrapper(tag, keywords):
     if g.app.killed:
@@ -310,7 +325,7 @@ def plugin_wrapper(tag, keywords):
 #@+node:bwmulder.20050326191345.1: *3* onFileOpen (not used) (mod_http.py)
 def onFileOpen(tag, keywords):
     c = keywords.get("new_c")
-    # g.trace('c',repr(c))
+    g.trace('c',repr(c))
     wasactive = config.http_active
     getConfiguration(c)
     if config.http_active and not wasactive: # Ok for unit testing:
@@ -477,12 +492,7 @@ class leo_interface(object):
             headString, bodyString = "Top level", ""
             format_info = None
         f = StringIO()
-        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html>
-    <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <title>"""     )
+        f.write(config.start_template)
         f.write(escape(window.shortFileName() + ":" + headString))
         f.write("</title>\n</head>\n<body>\n")
         # write navigation
