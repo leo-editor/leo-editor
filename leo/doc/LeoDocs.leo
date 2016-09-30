@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -221,7 +221,7 @@
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
-<v t="ekr.20160304081437.8"><vh>Offray Cárdenas</vh></v>
+<v t="ekr.20160304081437.8"><vh>Offray Cárdenas Luna</vh></v>
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
 </v>
@@ -18196,7 +18196,7 @@ Leo is a wild success on this score. I foresaw none of these developments 20 yea
 
 Edward K. Ream
 </t>
-<t tx="ekr.20160304081437.8">Offray Cárdenas
+<t tx="ekr.20160304081437.8">Offray Cárdenas Luna
 
 This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
 

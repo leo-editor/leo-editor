@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.65">
-	<global_window_position top="97" left="367" height="950" width="1010"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.65">
+	<global_window_position top="72" left="253" height="950" width="1297"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -16,6 +16,7 @@
 <v t="ekr.20140808094008.3549"><vh>@bool vim_mode = False</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20160930062850.1"><vh>@int qweb_view_font_size = 30</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
 <v t="ekr.20110511061102.5232"><vh>@bool enable_autocompleter_initially = False</vh></v>
@@ -885,6 +886,7 @@
 <v t="ekr.20160929143831.9"><vh>Figure 2</vh></v>
 </v>
 <v t="ekr.20160929143831.10"><vh>@pyplot barchar_demo</vh></v>
+<v t="ekr.20160930062725.1"><vh>mathjax-test</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1186,7 +1188,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="6,3"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9401,5 +9403,72 @@ animation.ArtistAnimation(fig2, ims,
     repeat_delay=3000,
     blit=True)
 #im_ani.save('im.mp4', metadata={'artist':'Guido'})</t>
+<t tx="ekr.20160930062725.1">@language html
+
+&lt;!-- I use @int qweb_view_font_size = 30 --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+&lt;/script&gt;
+
+&lt;!-- Both of these work... --&gt;
+
+&lt;script type="text/javascript" async
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"&gt;
+&lt;/script&gt;
+
+&lt;!-- &lt;script type="text/javascript" async --&gt;
+  &lt;!-- src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"&gt; --&gt;
+&lt;!-- &lt;/script&gt; --&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;p&gt;&lt;mathjax&gt;
+
+&lt;h2&gt;Feed-forward Network Functions&lt;/h2&gt;
+We will consider a basic two layer nueral network model, i.e a model that maps inputs to a hidden layer and then to an output layer. We will make &lt;b&gt;the following 
+assumptions&lt;/b&gt;
+
+1. The final output will be a vector $Y$ with $K$ elements, $y_k$, where $y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})$ is the probability that node $k$ is in class $C_1$ and $p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})$
+2. The activation function at a given layer is an arbitrary nonlinear function of a linear combination of the inputs and parameters for that layer
+3. The network is fully connected, i.e. every node at the input layer is connected to every node in the hidden layer and every node in the hidden layer is connected to every node in the output layer
+4. A bias parameter is included at the hidden and output layers
+
+Working from the input layer toward the output layer, we can build this model as follows:
+
+&lt;h3&gt;Input Layer&lt;/h3&gt;
+Assume we have an input vector $\mathbf{x} \in \Re^D$. Then the input layer consists of $D+1$ nodes where the value of the $i^{th}$ node for $i=0\ldots D$, is 0 if $i=0$ and $x_i$, i.e. the $i^{th}$ value of $\mathbf{x}$, otherwise.
+
+&lt;h3&gt;Hidden Layer&lt;/h3&gt;
+At the hidden layer we construct $M$ nodes where the value of $M$ depends on the specifics of the particular modelling problem. For each node, we define a *unit activation*, $a_m$, for $m=1\ldots M$ as &lt;br/&gt;
+$a_m = \sum_{i=0}^D w_{ji}^{(1)}x_i$ &lt;br/&gt;
+where the $(1)$ superscript indicates this weight is for the hidden layer. The output from each node, $z_m$, is then given by the value of a *fixed nonlinear function*, $h$, known as the *activation function*, acting on the unit activation&lt;br/&gt;
+$z_m = h(a_m) = h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right)$&lt;br/&gt;
+Notice that $h$ is the same function for all nodes.
+&lt;h3&gt;Output Layer&lt;/h3&gt;
+The process at the output layer is essentially the same as at the hidden layer. We construct $K$ nodes, where again the value of $K$ depends on the specific modeling problem. For each node, we again define a *unit activation*, $a_k$, for $k=1 \ldots K$ by&lt;br/&gt;
+$a_k = \\sum_{m=0}^M w_{km}^{(2)} z_m$ &lt;br/&gt;
+We again apply a nonlinear activation function, say $y$, to produce the output&lt;br/&gt;
+$y_k = y(a_k)$
+
+Thus, the entire model can be summarized as a $K$ dimensional output vector $Y \in \Re^K$ where each element $y_k$ by&lt;br/&gt;
+$y_k(\mathbf{x},\mathbf{w}) = y \left( \sum_{m=0}^M w_{km}^{(2)} h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right) \right)$
+
+&lt;h3&gt;Generalizations&lt;/h3&gt;
+There are a wide variety of generalizations possible for this model. Some of the more important ones for practical applications include
+
+* Addition of hidden layers
+* Inclusion of *skip-layer* connections, e.g. a connection from an input node directly to an output node
+* Sparse network, i.e. not a fully connected network
+
+&lt;!-- $$ --&gt;
+&lt;/mathjax&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</t>
+<t tx="ekr.20160930062850.1"></t>
 </tnodes>
 </leo_file>
