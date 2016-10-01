@@ -488,7 +488,7 @@ class leo_interface(object):
         <style>%s</style>
         <title>%s</title>
     </head>
-    <body> """ % (css, (escape(window.shortFileName() + ":" + headString))))
+    <body> """ % (config.css, (escape(window.shortFileName() + ":" + headString))))
         # write navigation
         self.add_leo_links(window, node, f)
         # write path
@@ -579,9 +579,7 @@ class leo_interface(object):
         f = StringIO()
         # This is in the head.
         f.write('''
-    <style>
-    %s
-    </style>
+    <style>%s</style>
     <title>ROOT for LEO HTTP plugin</title>
     <h2>Windowlist</h2>
     <hr />
