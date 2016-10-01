@@ -757,9 +757,9 @@ if QtWidgets: # NOQA
                 assert(w == pc.w)
             else:
                 w = pc.w
-            w.setHtml(s)
             if isQt5:
                 w.hide() # This forces a proper update.
+            w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14482: *4* vr.update_image
