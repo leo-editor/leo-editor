@@ -886,7 +886,11 @@
 <v t="ekr.20160929143831.9"><vh>Figure 2</vh></v>
 </v>
 <v t="ekr.20160929143831.10"><vh>@pyplot barchar_demo</vh></v>
-<v t="ekr.20160930062725.1"><vh>mathjax-test</vh></v>
+</v>
+<v t="ekr.20160930220426.1"><vh>MathJax stuff...</vh>
+<v t="ekr.20160930220214.2"><vh>markdown example from .ipynb file</vh></v>
+<v t="ekr.20160930220358.1"><vh>mathjax-test</vh></v>
+<v t="ekr.20160930062725.1"><vh>mathjax-test2</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1188,7 +1192,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="6,3"></t>
+<t tx="ekr.20070416075121" str_leo_pos="7"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9470,5 +9474,62 @@ There are a wide variety of generalizations possible for this model. Some of the
 &lt;/mathjax&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</t>
 <t tx="ekr.20160930062850.1"></t>
+<t tx="ekr.20160930220214.2">@language md
+
+
+&lt;h2&gt;Feed-forward Network Functions&lt;/h2&gt;
+We will consider a basic two layer nueral network model, i.e a model that maps inputs to a hidden layer and then to an output layer. We will make **the following assumptions**
+
+1. The final output will be a vector $Y$ with $K$ elements, $y_k$, where $y_k(\mathbf{x},\mathbf{w}) = p(C_1|\mathbf{x})$ is the probability that node $k$ is in class $C_1$ and $p(C_2|\mathbf{x}) = 1-p(C_1|\mathbf{x})$
+2. The activation function at a given layer is an arbitrary nonlinear function of a linear combination of the inputs and parameters for that layer
+3. The network is fully connected, i.e. every node at the input layer is connected to every node in the hidden layer and every node in the hidden layer is connected to every node in the output layer
+4. A bias parameter is included at the hidden and output layers
+
+Working from the input layer toward the output layer, we can build this model as follows:
+
+&lt;h3&gt;Input Layer&lt;/h3&gt;
+Assume we have an input vector $\mathbf{x} \in \Re^D$. Then the input layer consists of $D+1$ nodes where the value of the $i^{th}$ node for $i=0\ldots D$, is 0 if $i=0$ and $x_i$, i.e. the $i^{th}$ value of $\mathbf{x}$, otherwise.
+
+&lt;h3&gt;Hidden Layer&lt;/h3&gt;
+At the hidden layer we construct $M$ nodes where the value of $M$ depends on the specifics of the particular modelling problem. For each node, we define a *unit activation*, $a_m$, for $m=1\ldots M$ as &lt;br/&gt;
+$a_m = \sum_{i=0}^D w_{ji}^{(1)}x_i$ &lt;br/&gt;
+where the $(1)$ superscript indicates this weight is for the hidden layer. The output from each node, $z_m$, is then given by the value of a *fixed nonlinear function*, $h$, known as the *activation function*, acting on the unit activation&lt;br/&gt;
+$z_m = h(a_m) = h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right)$&lt;br/&gt;
+Notice that $h$ is the same function for all nodes.
+&lt;h3&gt;Output Layer&lt;/h3&gt;
+The process at the output layer is essentially the same as at the hidden layer. We construct $K$ nodes, where again the value of $K$ depends on the specific modeling problem. For each node, we again define a *unit activation*, $a_k$, for $k=1 \ldots K$ by&lt;br/&gt;
+$a_k = \sum_{m=0}^M w_{km}^{(2)} z_m$ &lt;br/&gt;
+We again apply a nonlinear activation function, say $y$, to produce the output&lt;br/&gt;
+$y_k = y(a_k)$
+
+Thus, the entire model can be summarized as a $K$ dimensional output vector $Y \in \Re^K$ where each element $y_k$ by&lt;br/&gt;
+$y_k(\mathbf{x},\mathbf{w}) = y \left( \sum_{m=0}^M w_{km}^{(2)} h \left( \sum_{i=0}^D w_{mi}^{(1)}x_i \right) \right)$
+
+&lt;h3&gt;Generalizations&lt;/h3&gt;
+There are a wide variety of generalizations possible for this model. Some of the more important ones for practical applications include
+
+* Addition of hidden layers
+* Inclusion of *skip-layer* connections, e.g. a connection from an input node directly to an output node
+* Sparse network, i.e. not a fully connected network</t>
+<t tx="ekr.20160930220358.1">@language html
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;MathJax TeX Test Page&lt;/title&gt;
+&lt;script type="text/x-mathjax-config"&gt;
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+&lt;/script&gt;
+&lt;script type="text/javascript" async
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
+$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20160930220426.1"></t>
 </tnodes>
 </leo_file>
