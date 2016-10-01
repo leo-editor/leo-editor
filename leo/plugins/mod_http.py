@@ -6,6 +6,9 @@
 #@+node:ekr.20050111111238: ** << docstring >>
 '''An http plug-in for LEO, based on AsyncHttpServer.py.
 
+Adapted and extended from the Python Cookbook:
+http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
+
 This plug-in has three distinct behaviors:
 
     - Viewing loaded outlines in a browser, e.g. at http://localhost:8130/
@@ -34,6 +37,8 @@ Settings
     must be changed to True for remote code execution
 ``@string rst_http_attributename = 'rst_http_attribute'``
     link to obsolete rst3 plugin
+``@data http_stylesheet``
+    Contains .css for this page.
 
 Browsing Leo files
 ------------------
@@ -186,18 +191,13 @@ which node is selected.
 
 '''
 #@-<< docstring >>
-
-# pylint: disable=deprecated-method
-# parse_qs
-
-# Adapted and extended from the Python Cookbook:
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
-__version__ = "0.99"
-# This encoding must match the character encoding used in your browser.
-# If it does not, non-ascii characters will look very strange.
-browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
+new = False
+    # True: use javascript in the page to expand/contract nodes.
+    # This requires new html generators.
 #@+<< imports >>
 #@+node:EKR.20040517080250.3: ** << imports >>
+# pylint: disable=deprecated-method
+    # parse_qs
 import leo.core.leoGlobals as g
 import asynchat
 import asyncore
@@ -232,30 +232,61 @@ from xml.sax.saxutils import quoteattr
 
 from leo.plugins import valuespace
 #@-<< imports >>
-#@+<< version history >>
-#@+node:ekr.20050328104558: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# 0.93 EKR:
-#     - Added 'version history' section.
-#     - Removed vestigial sections.
-#     - Changed docstring to mention @string rst_http_attributename = 'rst_http_attribute'
-# 0.93 EKR: Added init function.
-# But http was in the Plugins menu because the rst3 plugin imports it.
-# The fix was to the plugins manager, not this plugin or rst3.
-# 0.94 BWM
-# 0.95 EKR: Changed headline from applyConfiguration to getConfiguration to match name of method.
-# 0.96 EKR: suppress all pychecker warnings.
-# 0.97 EKR:
-# - Call g.signon in init so users can see that the plugin is enabled.
-# - Removed the old @page line from the docstring.
-# 0.98 EKR: Handle unicode characters properly.
-# 0.99 Lauri Ojansivu <lauri.ojansivu@gmail.com>: Many change for better html generation.
-# 
-# NOTE: this is legacy info., there have been more additions by other authors.
-#@-<< version history >>
+#@+<< data >>
+#@+node:ekr.20161001100345.1: ** << data >>
+# This encoding must match the character encoding used in your browser.
+# If it does not, non-ascii characters will look very strange.
+browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
 sockets_to_close = []
+#@+<< define javascript >>
+#@+node:ekr.20161001101506.1: *3* << define javascript >>
+#@@language javascript
+
+script = '''
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    #@+<< leo-javascript >>
+    #@+node:ekr.20161001095829.1: *4* << leo-javascript >>
+    $(document).ready(function(){
+        if (true) {
+            // Toggle all but top-level nodes.
+            // This requires an indication
+            $(".node").toggle()
+            $(".outlinepane").children(".node").toggle()
+        } else {
+            // Toggle all second-level nodes.
+            // Safer, until we can see which nodes have children.
+            $(".outlinepane").children(".node").children(".node").toggle()
+        }
+        $("h1").click(function(){
+          $(this).parent().children("div.node").toggle();
+          // The parent div's id is v.x.
+          // Find the tnode div whose id is t.x.
+          console.clear();
+          parent_id=$(this).parent().attr("id");
+          if (parent_id) {
+            target=$(this).parent().attr("id").substring(2);
+              console.log("clicked:"+$(this).text())
+              // console.log("parent:"+$(this).parent())
+              // console.log("target:"+target)
+            $(".tnode").each(function(){
+              console.log($(this).attr("id"))
+              target2=$(this).attr("id").substring(2);
+              if (target === target2) {
+                console.log("found:"+target2)
+                // $("pre.body-text").text($(this).text());
+                $("code").text($(this).text());
+              };
+            }); // end .each.
+          };
+        });
+    });
+    #@-<< leo-javascript >>
+</script>
+'''
+#@-<< define javascript >>
+#@-<< data >>
+
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
 def init():
@@ -320,8 +351,9 @@ def onFileOpen(tag, keywords):
         Server('', config.http_port, RequestHandler)
         asyncore.read = a_read
         g.registerHandler("idle", plugin_wrapper)
-        g.es("http serving enabled on port %s, version %s" % (
-            config.http_port, __version__), color="purple")
+        g.es("http serving enabled on port %s, " % (
+            config.http_port),
+            color="purple")
 #@+node:EKR.20040517080250.48: *3* getConfiguration (not used)
 def getConfiguration(c):
     """Called when the user opens a new file."""
