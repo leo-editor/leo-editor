@@ -66,9 +66,9 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18540: *3* LeoQtEventFilter.eventFilter
     def eventFilter(self, obj, event):
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         traceEvent = True # True: call self.traceEvent.
-        traceKey = True
+        traceKey = False
         c = self.c; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -408,73 +408,111 @@ class LeoQtEventFilter(QtCore.QObject):
     def traceEvent(self, obj, event, tkKey, override):
         if g.unitTesting: return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
+        exclude_names = ('tree', 'log', 'body', 'minibuffer')
+        traceActivate = True
         traceFocus = False
-        traceKey = True
+        traceHide = False
+        traceHover = False
+        traceKey = False
         traceLayout = False
         traceMouse = False
+        tracePaint = False
+        traceUpdate = False
         c, e = self.c, QtCore.QEvent
         eventType = event.type()
+        # http://doc.qt.io/qt-5/qevent.html
         show = []
         ignore = [
             e.MetaCall, # 43
             e.Timer, # 1
             e.ToolTip, # 110
         ]
-        focus_events = (
-            (e.Enter, 'enter'), # 10
-            (e.Leave, 'leave'), # 11
-            (e.FocusIn, 'focus-in'), # 8
-            (e.FocusOut, 'focus-out'), # 9
-            (e.Hide, 'hide'), # 18
-            (e.HideToParent, 'hide-to-parent'), # 27
-            (e.HoverEnter, 'hover-enter'), # 127
-            (e.HoverLeave, 'hover-leave'), # 128
-            (e.HoverMove, 'hover-move'), # 129
-            # (e.LeaveEditFocus,'leave-edit-focus'), # 151
-            (e.Show, 'show'), # 17
-            (e.ShowToParent, 'show-to-parent'), # 26
+        activate_events = (
+            (e.Close, 'close'), # 19
             (e.WindowActivate, 'window-activate'), # 24
             (e.WindowBlocked, 'window-blocked'), # 103
             (e.WindowUnblocked, 'window-unblocked'), # 104
             (e.WindowDeactivate, 'window-deactivate'), # 25
         )
-        key_events = (
+        focus_events = [
+            (e.Enter, 'enter'), # 10
+            (e.Leave, 'leave'), # 11
+            (e.FocusIn, 'focus-in'), # 8
+            (e.FocusOut, 'focus-out'), # 9
+            (e.ShowToParent, 'show-to-parent'), # 26
+        ]
+        if hasattr(e, 'FocusAboutToChange'):
+            focus_events.extend([
+                (e.FocusAboutToChange, 'focus-about-to-change'), # 23
+            ])
+        hide_events = (
+            (e.Hide, 'hide'), # 18
+            (e.HideToParent, 'hide-to-parent'), # 27
+            # (e.LeaveEditFocus,'leave-edit-focus'), # 151
+            (e.Show, 'show'), # 17
+        )
+        hover_events = (
+            (e.HoverEnter, 'hover-enter'), # 127
+            (e.HoverLeave, 'hover-leave'), # 128
+            (e.HoverMove, 'hover-move'), # 129
+        )
+        key_events = [
             (e.KeyPress, 'key-press'), # 6
             (e.KeyRelease, 'key-release'), # 7
             (e.Shortcut, 'shortcut'), # 117
             (e.ShortcutOverride, 'shortcut-override'), # 51
-        )
-        layout_events = (
-            (e.ChildPolished, 'child-polished'), # 69
-            #(e.CloseSoftwareInputPanel,'close-sip'), # 200
-                # Event does not exist on MacOS.
+        ]
+        if hasattr(e, 'InputMethodQuery'):
+            key_events.extend([
+                (e.InputMethodQuery, 'input-method-query'), # 207
+            ])
+        layout_events = [
             (e.ChildAdded, 'child-added'), # 68
+            (e.ChildRemoved, 'child-removed'), # 71
             (e.DynamicPropertyChange, 'dynamic-property-change'), # 170
             (e.FontChange, 'font-change'), # 97
             (e.LayoutRequest, 'layout-request'), # 76
             (e.Move, 'move'), # 13 widget's position changed.
-            (e.PaletteChange, 'palette-change'), # 39
-            (e.ParentChange, 'parent-change'), # 21
-            (e.Paint, 'paint'), # 12
-            (e.Polish, 'polish'), # 75
-            (e.PolishRequest, 'polish-request'), # 74
-            # (e.RequestSoftwareInputPanel,'sip'), # 199
-                # Event does not exist on MacOS.
             (e.Resize, 'resize'), # 14
             (e.StyleChange, 'style-change'), # 100
             (e.ZOrderChange, 'z-order-change'), # 126
-        )
+        ]
+        if hasattr(e, 'CloseSoftwareInputPanel'):
+            layout_events.extend([
+                (e.CloseSoftwareInputPanel,'close-sip'), # 200
+            ])
         mouse_events = (
             (e.MouseMove, 'mouse-move'), # 155
             (e.MouseButtonPress, 'mouse-press'), # 2
             (e.MouseButtonRelease, 'mouse-release'), # 3
             (e.Wheel, 'mouse-wheel'), # 31
         )
+        paint_events = [
+            (e.ChildPolished, 'child-polished'), # 69
+            (e.PaletteChange, 'palette-change'), # 39
+            (e.ParentChange, 'parent-change'), # 21
+            (e.Paint, 'paint'), # 12
+            (e.Polish, 'polish'), # 75
+            (e.PolishRequest, 'polish-request'), # 74
+        ]
+        if hasattr(e, 'RequestSoftwareInputPanel'):
+            paint_events.extend([
+                (e.RequestSoftwareInputPanel,'sip'), # 199
+            ])
+        update_events = (
+            (e.UpdateLater, 'update-later'), # 78
+            (e.UpdateRequest, 'update'), #	77
+        )
         option_table = (
+            (traceActivate, activate_events),
             (traceFocus, focus_events),
+            (traceHide, hide_events),
+            (traceHover, hover_events),
             (traceKey, key_events),
             (traceLayout, layout_events),
             (traceMouse, mouse_events),
+            (tracePaint, paint_events),
+            (traceUpdate, update_events),
         )
         for option, table in option_table:
             if option:
@@ -483,13 +521,18 @@ class LeoQtEventFilter(QtCore.QObject):
                 for n, tag in table:
                     ignore.append(n)
         for val, kind in show:
+            if self.tag in exclude_names:
+                return 
             if eventType == val:
-                g.trace(
-                    '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
-                    self.tag, kind, repr(c.k and c.k.inState()), tkKey, override, obj))
+                if traceKey:
+                    g.trace(
+                        '%-25s %-25s in-state: %5s key: %s override: %s: obj: %s' % (
+                        kind, self.tag, repr(c.k and c.k.inState()), tkKey, override, obj.__class__.__name__))
+                else:
+                    g.trace('%-25s %-25s %s' % (kind, self.tag, obj.__class__.__name__))
                 return
         if eventType not in ignore:
-            g.trace('%3s:%s obj:%s' % (eventType, 'unknown', obj))
+            g.trace('%-25s %-25s %s' % (eventType, self.tag, obj.__class__.__name__))
     #@+node:ekr.20131121050226.16331: *4* LeoQtEventFilter.traceWidget
     def traceWidget(self, event):
         '''Show unexpected events in unusual widgets.'''
