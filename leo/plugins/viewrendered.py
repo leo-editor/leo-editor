@@ -308,7 +308,7 @@ def viewrendered(event):
         if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
-            splitter = c.free_layout.get_top_splitter()
+            vr.splitter = splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if splitter:
                 ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
@@ -487,21 +487,13 @@ if QtWidgets: # NOQA
             self.pyplot_imported = False
             self.gs = None # For @graphics-script: a QGraphicsScene
             self.gv = None # For @graphics-script: a QGraphicsView
-            import sys
-            if False and isQt5 and sys.platform.startswith('win'):
-                # Work around #304: https://github.com/leo-editor/leo-editor/issues/304
-                self.html_class = QtWidgets.QTextBrowser
-                    # Doesn't handle @html display Leo Tree properly.
-            else:
-                self.html_class = QtWebKitWidgets.QWebView
-            self.text_class = QtWidgets.QTextBrowser
             self.inited = False
             self.length = 0 # The length of previous p.b.
             self.locked = False
             self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
             self.sizes = [] # Saved splitter sizes.
+            self.splitter = None
             self.splitter_index = None # The index of the rendering pane in the splitter.
-            self.svg_class = QtSvg.QSvgWidget
             self.title = None
             self.vp = None # The present video player.
             self.w = None # The present widget in the rendering pane.
@@ -622,10 +614,9 @@ if QtWidgets: # NOQA
             '''Update the vr pane.'''
             verbose = False
             pc = self
-            c, p = pc.c, pc.c.p
+            p = pc.c.p
             if pc.must_update(keywords):
-                if trace:
-                    if verbose: g.trace('===== updating', keywords)
+                if trace and verbose: g.trace('===== updating', keywords)
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
@@ -645,7 +636,7 @@ if QtWidgets: # NOQA
             else:
                 # Save the scroll position.
                 w = pc.w
-                if w.__class__ == pc.text_class:
+                if w.__class__ == QtWidgets.QTextBrowser:
                     # 2011/07/30: The widget may no longer exist.
                     try:
                         sb = w.verticalScrollBar()
@@ -666,7 +657,7 @@ if QtWidgets: # NOQA
             self.layout().addWidget(w)
             w.show()
             # Special inits for text widgets...
-            if w.__class__ == pc.text_class:
+            if w.__class__ == QtWidgets.QTextBrowser:
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
                 pc.setBackgroundColor(pc.background_color, text_name, w)
@@ -749,25 +740,28 @@ if QtWidgets: # NOQA
                 script=s,
                 namespace={'gs': pc.gs, 'gv': pc.gv})
         #@+node:ekr.20110321005148.14534: *4* vr.update_html
+        update_html_count = 0
+
         def update_html(self, s, keywords):
             '''Update html in the vr pane.'''
             pc = self
             c = pc.c
-            if trace: g.trace('===== instantiating', pc.html_class, g.callers())
-            if pc.must_change_widget(pc.html_class):
-                w = pc.html_class()
-                settings = w.settings()
+            if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                # g.trace('===== instantiating QWebView')
+                w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb_view_font_size')
                 if n:
+                    settings = w.settings()
                     settings.setFontSize(settings.DefaultFontSize, n)
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
                 w = pc.w
-            pc.show()
             w.setHtml(s)
-            # This works for PyQt4, but not 5.
-            c.widgetWantsFocusNow(w)
+            if isQt5:
+                w.hide() # This forces a proper update.
+            w.show()
+            c.bodyWantsFocusNow()
         #@+node:ekr.20110320120020.14482: *4* vr.update_image
         def update_image(self, s, keywords):
             '''Update an image in the vr pane.'''
@@ -1025,8 +1019,8 @@ if QtWidgets: # NOQA
 
         def update_svg(self, s, keywords):
             pc = self
-            if pc.must_change_widget(pc.svg_class):
-                w = pc.svg_class()
+            if pc.must_change_widget(QtSvg.QSvgWidget):
+                w = QtSvg.QSvgWidget()
                 pc.embed_widget(w)
                 assert(w == pc.w)
             else:
@@ -1070,10 +1064,10 @@ if QtWidgets: # NOQA
         def ensure_text_widget(self):
             '''Swap a text widget into the rendering pane if necessary.'''
             c, pc = self.c, self
-            if pc.must_change_widget(pc.text_class):
+            if pc.must_change_widget(QtWidgets.QTextBrowser):
                 # Instantiate a new QTextBrowser.
                 # Allow non-ctrl clicks to open url's.
-                w = pc.text_class()
+                w = QtWidgets.QTextBrowser()
 
                 def handleClick(url, w=w):
                     event = g.Bunch(c=c, w=w)
