@@ -303,7 +303,6 @@ def getGlobalConfiguration():
         
     css = g.app.config.getData('http_stylesheet', strip_comments=False, strip_data=True) or []
     css = ''.join(css)
-    g.trace(css)
     config.start_template = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
