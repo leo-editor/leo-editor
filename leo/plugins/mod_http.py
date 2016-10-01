@@ -302,18 +302,7 @@ def getGlobalConfiguration():
         config.rst2_http_attributename = new_rst2_http_attributename
         
     css = g.app.config.getData('http_stylesheet', strip_comments=False, strip_data=True) or []
-    css = ''.join(css)
-    config.start_template = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<style>
-%s
-</style>
-<title>""" % css
-    # g.trace(repr(config.start_template))
-    
+    config.css = css = ''.join(css)
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
 def plugin_wrapper(tag, keywords):
     if g.app.killed:
@@ -491,9 +480,15 @@ class leo_interface(object):
             headString, bodyString = "Top level", ""
             format_info = None
         f = StringIO()
-        f.write(config.start_template)
-        f.write(escape(window.shortFileName() + ":" + headString))
-        f.write("</title>\n</head>\n<body>\n")
+        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <style>%s</style>
+        <title>%s</title>
+    </head>
+    <body> """ % (css, (escape(window.shortFileName() + ":" + headString))))
         # write navigation
         self.add_leo_links(window, node, f)
         # write path
@@ -582,10 +577,16 @@ class leo_interface(object):
     #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
     def get_leo_windowlist(self):
         f = StringIO()
-        f.write("<title>ROOT for LEO HTTP plugin</title>\n")
-        f.write("<h2>Windowlist</h2>\n")
-        f.write("<hr />\n") # horizontal rule
-        f.write("<ul>\n")
+        # This is in the head.
+        f.write('''
+    <style>
+    %s
+    </style>
+    <title>ROOT for LEO HTTP plugin</title>
+    <h2>Windowlist</h2>
+    <hr />
+    <ul>
+    ''' % config.css)
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
         for w in windows:
@@ -796,29 +797,37 @@ class LeoActions(object):
             return f
         # send form to collect extra details
         f.write("""
-    <html><head><style>
-    body {font-family:mono; font-size: 80%%;}
-    th {text-align:right}
-    </style><title>Leo Add Bookmark</title>
-    </head><body onload='document.getElementById("tags").focus();'>
-    <form method='GET' action='/_/add/bkmk/'>
-    <input type='hidden' name='_form' value='1'/>
-    <input type='hidden' name='_name' value=%s/>
-    <input type='hidden' name='selection' value=%s/>
-    <input type='hidden' name='ln' value=%s/>
-    <table>
-    <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
-    <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
-    <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
-    <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
-    </table>
-    <input type='submit' value='Save'/><br/>
-    </form>
-    </body></html>"""     % (quoteattr(name),
-                  quoteattr(query.get('selection', [''])[0]),
-                  quoteattr(json.dumps(one_tab_links)),
-                  quoteattr(name),
-                  quoteattr(url)))
+    <html>
+    <head>
+        <style>
+            %s
+            body {font-family:mono; font-size: 80%%;}
+            th {text-align:right}
+        </style>
+    <title>Leo Add Bookmark</title>
+    </head>
+    <body onload='document.getElementById("tags").focus();'>
+        <form method='GET' action='/_/add/bkmk/'>
+            <input type='hidden' name='_form' value='1'/>
+            <input type='hidden' name='_name' value=%s/>
+            <input type='hidden' name='selection' value=%s/>
+            <input type='hidden' name='ln' value=%s/>
+            <table>
+            <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
+            <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
+            <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
+            <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
+            </table>
+            <input type='submit' value='Save'/><br/>
+        </form>
+    </body>
+    </html>""" % (
+            config.css,  # EKR: Add config.css to style.
+            quoteattr(name),
+            quoteattr(query.get('selection', [''])[0]),
+            quoteattr(json.dumps(one_tab_links)),
+            quoteattr(name),
+            quoteattr(url)))
         return f
     #@+node:tbrown.20131122091143.54044: *3* get_one_tab
     def get_one_tab(self, links, nd):
