@@ -631,16 +631,15 @@ class leo_interface(object):
     #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
 
-        expand = '+' if p.hasChildren() else '-'
-        icon = p.v.iconVal
-        f.write('<div class="node" id=%s expand="%s" icon="%02d" b=%s>' % (
+        f.write('<div class="node" id=%s b=%s>' % (
             quoteattr(p.gnx),
-            expand,
-            icon,
             quoteattr(p.b),
         ))
-        # icon="http://leoeditor.com/box%02d.GIF"
-        f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (expand, icon, p.h))
+        f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (
+            ('+' if p.hasChildren() else '-'),
+            p.v.iconVal,
+            p.h,
+        ))
         for child in p.children():
             self.write_node_and_subtree(f, child)
         f.write('</div>')
