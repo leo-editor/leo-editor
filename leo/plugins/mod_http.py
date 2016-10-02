@@ -355,8 +355,6 @@ if new:
                 $(".body-code").text(body);
                 // console.clear();
                 // console.log("body.length:"+body.length)
-                // icon=$(this).attr("icon")
-                // console.log("icon"+icon)
             });
         });
     </script>
@@ -637,7 +635,7 @@ class leo_interface(object):
         ))
         f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (
             ('+' if p.hasChildren() else '-'),
-            p.v.iconVal,
+            p.computeIcon(),
             p.h,
         ))
         for child in p.children():
