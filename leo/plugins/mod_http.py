@@ -280,6 +280,18 @@ if new:
         left: 20px;
     }
     /* Indicator icons... */
+
+    /*
+        We would like something like this to work.
+        Note that the javascript successfully sets icon_url for each h1 element.
+    */
+
+        /* -----
+        h1::before {
+            content: url(attr(icon_url)) ": "
+        }
+        ----- */
+
     h1[icon="00"]::before {
         content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
     }
@@ -347,6 +359,11 @@ if new:
             // Toggle (hide) all but top-level nodes.
             $(".node").toggle()
             $(".outlinepane").children(".node").toggle()
+            // Set h attributes for css
+            $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
+                // Works, but I haven't found how to use it.
+            // $("h1").attr("the_icon", url($("h1").attr("icon_url")))
+                // Fails.
             $("h1").click(function(){
                 // Toggle the expansion state
                 $(this).parent().children("div.node").toggle();
