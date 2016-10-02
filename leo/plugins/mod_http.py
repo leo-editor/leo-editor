@@ -279,18 +279,54 @@ if new:
         position: relative;
         left: 20px;
     }
-    div.node[children="1"] > h1 {
-        /* works */
-        /* background: yellow; */
+    /* Indicator icons... */
+    h1[icon="00"]::before {
+        content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
     }
-    div.node[children="0"] > h1 {
-        /* background: yellow; */
+    h1[icon="01"]::before {
+        content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
     }
-    div.node[children="1"] > h1::before {
-        content: "+ "; 
+    h1[icon="02"]::before {
+        content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
     }
-    div.node[children="0"] > h1::before {
-        content: "- "; 
+    h1[icon="03"]::before {
+        content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
+    }
+    h1[icon="04"]::before {
+        content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
+    }
+    h1[icon="05"]::before {
+        content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
+    }
+    h1[icon="06"]::before {
+        content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
+    }
+    h1[icon="07"]::before {
+        content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
+    }
+    h1[icon="08"]::before {
+        content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
+    }
+    h1[icon="09"]::before {
+        content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
+    }
+    h1[icon="10"]::before {
+        content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
+    }
+    h1[icon="11"]::before {
+        content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
+    }
+    h1[icon="12"]::before {
+        content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
+    }
+    h1[icon="13"]::before {
+        content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
+    }
+    h1[icon="14"]::before {
+        content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
+    }
+    h1[icon="15"]::before {
+        content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
     }
     code {
         /* works */
@@ -311,16 +347,16 @@ if new:
             // Toggle (hide) all but top-level nodes.
             $(".node").toggle()
             $(".outlinepane").children(".node").toggle()
-            // Toggle all second-level nodes.
-            // $(".outlinepane").children(".node").children(".node").toggle()
             $("h1").click(function(){
+                // Toggle the expansion state
                 $(this).parent().children("div.node").toggle();
-                // console.clear();
-                // parent_id=$(this).parent().attr("id");
-                // console.log("id:"+parent_id)
+                // Set the body text.
                 body=$(this).parent().attr("b");
                 $(".body-code").text(body);
+                // console.clear();
                 // console.log("body.length:"+body.length)
+                // icon=$(this).attr("icon")
+                // console.log("icon"+icon)
             });
         });
     </script>
@@ -584,23 +620,27 @@ class leo_interface(object):
         root = p.copy()
         self.write_head(f, p.h, window)
         f.write('<body>')
-        # f.write('<div class="container">')
+        f.write('<div class="container">')
         f.write('<div class="outlinepane">')
         for sib in root.self_and_siblings():
             self.write_node_and_subtree(f, sib)
         f.write('</div>')
-        # f.write('</div>')
+        f.write('</div>')
         self.write_body_pane(f, root)
         f.write('</body></html>')
     #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
 
-        f.write('<div class="node" id=%s b=%s children="%s">' % (
+        expand = '+' if p.hasChildren() else '-'
+        icon = p.v.iconVal
+        f.write('<div class="node" id=%s expand="%s" icon="%02d" b=%s>' % (
             quoteattr(p.gnx),
+            expand,
+            icon,
             quoteattr(p.b),
-            '1' if p.hasChildren() else '0'
         ))
-        f.write('<h1>%s</h1>' % p.h)
+        # icon="http://leoeditor.com/box%02d.GIF"
+        f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (expand, icon, p.h))
         for child in p.children():
             self.write_node_and_subtree(f, child)
         f.write('</div>')
