@@ -15128,6 +15128,31 @@ finally:
 #@+node:ekr.20070611071101.4: *5* limit
 #@+node:ekr.20070611071101.5: *6* d
 #@+node:ekr.20070611071954: *5* e
+#@+node:ekr.20161002020559.1: *4* @test all generator return unique positions
+# This fixes a major bug in *all* generators returning positions.
+trace = False
+root = c.rootPosition
+table = (
+    ('all_positions', c.all_positions),
+    ('all_unique_positions', c.all_unique_positions),
+    ('children', root().children),
+    ('self_and_siblings', root().self_and_siblings),
+    ('self_and_parents', root().firstChild().self_and_parents),
+    ('self_and_subtree', root().self_and_subtree),
+    ('following_siblings', root().following_siblings),
+    ('parents', root().firstChild().firstChild().parents),
+    ('unique_subtree', root().unique_subtree),
+)
+fail = []
+for kind, generator in table:
+    aList = list(generator())
+    aList2 = list(set(aList))
+    if len(aList) == len(aList2) and len(aList) > 1:
+        if trace: print('  OK: %s %s' % (kind, len(aList)))
+    else:
+        if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
+        fail.append(kind)
+assert not fail, fail
 #@+node:ekr.20040712101754.99: *4* @test c iters
 << coverage tests >>
 << duplicate tests >>

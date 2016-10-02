@@ -6223,7 +6223,7 @@ class Commands(object):
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p
+                yield p.copy() # Major bug fix: 2016/10/02
                 p.moveToThreadNext()
         # raise StopIteration
     # Compatibility with old code.
@@ -6236,7 +6236,7 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToThreadNext()
         # raise stopIteration
     # Compatibility with old code.

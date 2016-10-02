@@ -415,7 +415,7 @@ class Position(object):
         p = self
         p = p.firstChild()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToNext()
         # raise stopIteration
     # Compatibility with old code.
@@ -429,7 +429,7 @@ class Position(object):
         # p = p.copy() # Always include the original node.
         p = p.next()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToNext()
         # raise stopIteration
     # Compatibility with old code.
@@ -454,7 +454,7 @@ class Position(object):
         p = self
         p = p.parent()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToParent()
         # raise stopIteration
     # Compatibility with old code.
@@ -466,7 +466,7 @@ class Position(object):
         p = self
         p = p.copy()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToParent()
         # raise stopIteration
     # Compatibility with old code.
@@ -480,7 +480,7 @@ class Position(object):
         while p.hasBack():
             p.moveToBack()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToNext()
         # raise stopIteration
     # Compatibility with old code.
@@ -493,7 +493,7 @@ class Position(object):
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToThreadNext()
         # raise stopIteration
     # Compatibility with old code.
@@ -507,7 +507,7 @@ class Position(object):
         after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            yield p.copy() # Major bug fix: 2016/10/01
+            yield p.copy() # Major bug fix: 2016/10/02
             p.moveToThreadNext()
         # raise stopIteration
     # Compatibility with old code.
@@ -535,7 +535,7 @@ class Position(object):
             if p.v not in seen:
                 seen.add(p.v)
                 # Fixed bug 1255208: p.unique_subtree returns vnodes, not positions.
-                yield p.copy() # Major bug fix: 2016/10/01
+                yield p.copy() # Major bug fix: 2016/10/02
         # raise stopIteration
     # Compatibility with old code.
 

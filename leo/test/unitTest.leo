@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.66">
 	<global_window_position top="54" left="848" height="919" width="1023"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1230,7 +1230,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e333971157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="edward.20160919053702.1"><vh>Ubuntu/Py3 fails</vh>
 <v t="ekr.20100223123103.5382"></v>
@@ -1252,6 +1252,7 @@
 <v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
+<v t="ekr.20161002020559.1"><vh>@test all generator return unique positions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7957,7 +7958,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="8">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -12645,6 +12646,31 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
+</t>
+<t tx="ekr.20161002020559.1"># This fixes a major bug in *all* generators returning positions.
+trace = False
+root = c.rootPosition
+table = (
+    ('all_positions', c.all_positions),
+    ('all_unique_positions', c.all_unique_positions),
+    ('children', root().children),
+    ('self_and_siblings', root().self_and_siblings),
+    ('self_and_parents', root().firstChild().self_and_parents),
+    ('self_and_subtree', root().self_and_subtree),
+    ('following_siblings', root().following_siblings),
+    ('parents', root().firstChild().firstChild().parents),
+    ('unique_subtree', root().unique_subtree),
+)
+fail = []
+for kind, generator in table:
+    aList = list(generator())
+    aList2 = list(set(aList))
+    if len(aList) == len(aList2) and len(aList) &gt; 1:
+        if trace: print('  OK: %s %s' % (kind, len(aList)))
+    else:
+        if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
+        fail.append(kind)
+assert not fail, fail
 </t>
 </tnodes>
 </leo_file>
