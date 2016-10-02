@@ -641,35 +641,38 @@ class leo_interface(object):
 
             Return None if that node can not be identified that way.
         """
+        
         # Identify the window
         for w in g.app.windowList:
             if w.shortFileName() == path[0]:
                 break
         else:
             return None, None
-        if new:
-            return w, w.c.rootPosition()
         # pylint: disable=undefined-loop-variable
         # w *is* defined here.
-        node = w.c.rootVnode()
-        if len(path) >= 2:
-            for i in range(int(path[1])):
-                node = node.next()
-                if node is None:
-                    raise nodeNotFound
-            # go to the i'th child for each path element.
-            for i in path[2:]:
-                try:
-                    int(i)
-                except ValueError:
-                    # No Leo path
-                    raise noLeoNodePath
-                node = node.nthChild(int(i))
-                if node is None:
-                    raise nodeNotFound
+        assert w
+        if new:
+            return w, w.c.rootPosition()
         else:
-            node = None
-        return w, node
+            node = w.c.rootVnode()
+            if len(path) >= 2:
+                for i in range(int(path[1])):
+                    node = node.next()
+                    if node is None:
+                        raise nodeNotFound
+                # go to the i'th child for each path element.
+                for i in path[2:]:
+                    try:
+                        int(i)
+                    except ValueError:
+                        # No Leo path
+                        raise noLeoNodePath
+                    node = node.nthChild(int(i))
+                    if node is None:
+                        raise nodeNotFound
+            else:
+                node = None
+            return w, node
     #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
     def get_leo_windowlist(self):
         f = StringIO()
