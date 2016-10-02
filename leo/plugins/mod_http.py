@@ -191,7 +191,7 @@ which node is selected.
 
 '''
 #@-<< docstring >>
-new = False
+new = True
     # True: use javascript in the page to expand/contract nodes.
     # This requires new html generators.
 #@+<< imports >>
@@ -234,58 +234,101 @@ from leo.plugins import valuespace
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
-# This encoding must match the character encoding used in your browser.
-# If it does not, non-ascii characters will look very strange.
-browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
-sockets_to_close = []
-#@+<< define javascript >>
-#@+node:ekr.20161001101506.1: *3* << define javascript >>
-#@@language javascript
+browser_encoding = 'utf-8' # To do: Can we query the browser for this?
+    # This encoding must match the character encoding used in your browser.
+    # If it does not, non-ascii characters will look very strange.
 
-script = '''
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script>
-    #@+<< leo-javascript >>
-    #@+node:ekr.20161001095829.1: *4* << leo-javascript >>
-    $(document).ready(function(){
-        if (true) {
-            // Toggle all but top-level nodes.
-            // This requires an indication
+sockets_to_close = []
+#@-<< data >>
+if new:
+    #@+<< dynamic_style >>
+    #@+node:ekr.20161001141220.1: ** << dynamic_style>>
+    #@@language css
+
+    dynamic_style = '''
+    /* Must use h1 for nodes: see below. */
+    h1 {
+      font-size: 120%; /* 12pt; */
+      font-style: normal;
+      font-weight: normal;
+    }
+    div.container {
+        /* position:relative; */
+    }
+    div.outlinepane {
+      resize: horizontal;
+      position: absolute;
+      background: #ffffec; /* Leo yellow */
+      top: 10px;
+      /* Fixed height/width creates scrollbars.*/
+      height: 300px;
+      width: 1000px;
+      overflow: scroll;
+      line-height: 0.8;
+    }
+    div.bodypane {
+      resize: both;
+      position: absolute;
+      top: 310px;
+      /* Fixed height/width creates scrollbars.*/
+      height: 500px;
+      width: 1000px;
+      overflow: scroll;
+    }
+    div.node {
+        position: relative;
+        left: 20px;
+    }
+    div.node[children="1"] > h1 {
+        /* works */
+        /* background: yellow; */
+    }
+    div.node[children="0"] > h1 {
+        /* background: yellow; */
+    }
+    div.node[children="1"] > h1::before {
+        content: "+ "; 
+    }
+    div.node[children="0"] > h1::before {
+        content: "- "; 
+    }
+    code {
+        /* works */
+        /* background: yellow; */
+        font-family: "Monospace";
+        font-size: 150%; /* 20pt; */
+    }
+    '''
+    #@-<< dynamic_style >>
+    #@+<< script >>
+    #@+node:ekr.20161001111653.1: ** << script >>
+    #@@language javascript
+
+    script = '''
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Toggle (hide) all but top-level nodes.
             $(".node").toggle()
             $(".outlinepane").children(".node").toggle()
-        } else {
             // Toggle all second-level nodes.
-            // Safer, until we can see which nodes have children.
-            $(".outlinepane").children(".node").children(".node").toggle()
-        }
-        $("h1").click(function(){
-          $(this).parent().children("div.node").toggle();
-          // The parent div's id is v.x.
-          // Find the tnode div whose id is t.x.
-          console.clear();
-          parent_id=$(this).parent().attr("id");
-          if (parent_id) {
-            target=$(this).parent().attr("id").substring(2);
-              console.log("clicked:"+$(this).text())
-              // console.log("parent:"+$(this).parent())
-              // console.log("target:"+target)
-            $(".tnode").each(function(){
-              console.log($(this).attr("id"))
-              target2=$(this).attr("id").substring(2);
-              if (target === target2) {
-                console.log("found:"+target2)
-                // $("pre.body-text").text($(this).text());
-                $("code").text($(this).text());
-              };
-            }); // end .each.
-          };
+            // $(".outlinepane").children(".node").children(".node").toggle()
+            $("h1").click(function(){
+                $(this).parent().children("div.node").toggle();
+                // console.clear();
+                // parent_id=$(this).parent().attr("id");
+                // console.log("id:"+parent_id)
+                body=$(this).parent().attr("b");
+                $(".body-code").text(body);
+                // console.log("body.length:"+body.length)
+            });
         });
-    });
-    #@-<< leo-javascript >>
-</script>
-'''
-#@-<< define javascript >>
-#@-<< data >>
+    </script>
+    '''
+    #@-<< script >>
+else:
+    dynamic_style = ''
+    script = ''
 
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
@@ -461,7 +504,7 @@ class leo_interface(object):
             f.write("\n</p>\n")
         else:
             # top level
-            child = window.c.rootVnode()
+            child = window.c.rootPosition()
             children = [child]
             next = child.next()
             while next:
@@ -497,8 +540,8 @@ class leo_interface(object):
         """
         href = self.create_leo_h_reference(window, node)
         self.create_href(href, text, f)
-    #@+node:EKR.20040517080250.24: *3* format_leo_node
-    def format_leo_node(self, window, node):
+    #@+node:EKR.20040517080250.24: *3* format_leo_node (old)
+    def format_leo_node(self, f, window, node):
         """
         Given a node 'node', return the contents of that node as html text.
 
@@ -511,16 +554,7 @@ class leo_interface(object):
         else:
             headString, bodyString = "Top level", ""
             format_info = None
-        f = StringIO()
-        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%s</style>
-        <title>%s</title>
-    </head>
-    <body> """ % (config.css, (escape(window.shortFileName() + ":" + headString))))
+        self.write_head(f, headString, window)
         # write navigation
         self.add_leo_links(window, node, f)
         # write path
@@ -541,7 +575,35 @@ class leo_interface(object):
                 f.write("\n</p>\n")
         # f.write("</span>\n")
         f.write("\n</body>\n</html>\n")
-        return f
+        # return f
+    #@+node:ekr.20161001114512.1: *3* format_leo_tree (new) & helper
+    def format_leo_tree(self, f, window, p):
+        """
+        Format p and all its children as html text.
+        """
+        root = p.copy()
+        self.write_head(f, p.h, window)
+        f.write('<body>')
+        # f.write('<div class="container">')
+        f.write('<div class="outlinepane">')
+        for sib in root.self_and_siblings():
+            self.write_node_and_subtree(f, sib)
+        f.write('</div>')
+        # f.write('</div>')
+        self.write_body_pane(f, root)
+        f.write('</body></html>')
+    #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
+    def write_node_and_subtree(self, f, p):
+
+        f.write('<div class="node" id=%s b=%s children="%s">' % (
+            quoteattr(p.gnx),
+            quoteattr(p.b),
+            '1' if p.hasChildren() else '0'
+        ))
+        f.write('<h1>%s</h1>' % p.h)
+        for child in p.children():
+            self.write_node_and_subtree(f, child)
+        f.write('</div>')
     #@+node:EKR.20040517080250.25: *3* get_leo_nameparts
     def get_leo_nameparts(self, node):
         """
@@ -585,6 +647,8 @@ class leo_interface(object):
                 break
         else:
             return None, None
+        if new:
+            return w, w.c.rootPosition()
         # pylint: disable=undefined-loop-variable
         # w *is* defined here.
         node = w.c.rootVnode()
@@ -612,20 +676,18 @@ class leo_interface(object):
         # This is in the head.
         f.write('''
     <style>%s</style>
+    %s
     <title>ROOT for LEO HTTP plugin</title>
     <h2>Windowlist</h2>
     <hr />
     <ul>
-    ''' % config.css)
+    ''' % (config.css, script))
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
         for w in windows:
-            f.write("<li>")
             shortfilename = w.shortFileName()
-            f.write('<a href="%s">' % shortfilename)
-            f.write("file name: %s" % shortfilename)
-            f.write("</a>\n")
-            f.write("</li>")
+            f.write('<li><a href="%s">"file name: %s"</a></li>' % (
+                shortfilename, shortfilename))
         f.write("</ul>\n")
         f.write("<hr />\n")
         return f
@@ -646,7 +708,7 @@ class leo_interface(object):
         window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
         result = self.create_leo_h_reference(window, vnode)
         return result
-    #@+node:bwmulder.20050322224921: *3* send_head
+    #@+node:bwmulder.20050322224921: *3* send_head (generates html)
     def send_head(self):
         """Common code for GET and HEAD commands.
 
@@ -659,6 +721,8 @@ class leo_interface(object):
 
          """
         try:
+            # self.path is provided by the RequestHandler class.
+            # g.trace(self.path)
             path = self.split_leo_path(self.path)
             if path[0] == '_':
                 f = self.leo_actions.get_response()
@@ -672,7 +736,14 @@ class leo_interface(object):
                     if window is None:
                         self.send_error(404, "File not found")
                         return None
-                    f = self.format_leo_node(window, node)
+                    if new and node is None:
+                        self.send_error(404, "No root node")
+                        return None
+                    f = StringIO()
+                    if new:
+                        self.format_leo_tree(f, window, node)
+                    else:
+                        self.format_leo_node(f, window, node)
                 except nodeNotFound:
                     self.send_error(404, "Node not found")
                     return None
@@ -706,6 +777,34 @@ class leo_interface(object):
         if path.startswith("/"):
             path = path[1:]
         return path.split('/')
+    #@+node:ekr.20161001124752.1: *3* write_body_pane
+    def write_body_pane(self, f, p):
+
+        f.write('<div class="bodypane">')
+        f.write('<pre class="body-text">')
+        f.write('<code class="body-code">%s</code>' % escape(p.b))
+            # This isn't correct when put in a triple string.
+            # We might be able to use g.adjustTripleString, but this works.
+        f.write('</pre></div>')
+    #@+node:ekr.20161001121838.1: *3* write_head
+    def write_head(self, f, headString, window):
+
+        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <style>%s</style>
+        <style>%s</style>
+        %s
+        <title>%s</title>
+    </head>
+    """ % (
+            dynamic_style,
+            config.css,
+            script,
+            (escape(window.shortFileName() + ":" + headString)))
+        )
     #@+node:EKR.20040517080250.28: *3* write_path
     def write_path(self, node, f):
         result = []
@@ -1348,9 +1447,8 @@ def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
     return result
 #@+node:bwmulder.20050322132919.2: *4* get_http_attribute
 def get_http_attribute(p):
-    vnode = p.v
-    if hasattr(vnode, 'unknownAttributes'):
-        return vnode.unknownAttributes.get(config.rst2_http_attributename, None)
+    if hasattr(p.v, 'unknownAttributes'):
+        return p.v.unknownAttributes.get(config.rst2_http_attributename, None)
     return None
 #@+node:bwmulder.20050322133050: *4* set_http_attribute
 def set_http_attribute(p, value):
