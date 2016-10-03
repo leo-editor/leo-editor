@@ -631,8 +631,8 @@ class leo_interface(object):
     <hr />
     <ul>
     ''' % (
-        getData('http_stylesheet'), # config.css,
-        getData('http_script'),     # script
+        getData('http_stylesheet'),
+        getData('user_http_stylesheet'),
     ))
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
@@ -747,6 +747,7 @@ class leo_interface(object):
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <style>%s</style>
+        <style>%s</style>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
         </script>
         <script>%s</script>
@@ -754,6 +755,7 @@ class leo_interface(object):
     </head>
     """ % (
             getData('http_stylesheet'),
+            getData('user_http_stylesheet'),
             getData('http_script'),
             (escape(window.shortFileName() + ":" + headString)))
         )

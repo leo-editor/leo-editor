@@ -27,6 +27,7 @@
 <v t="ekr.20110612074140.16415"><vh>run</vh></v>
 </v>
 <v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
+<v t="ekr.20161003155658.1"><vh>@@button test-http</vh></v>
 </v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
 <v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
@@ -2457,7 +2458,6 @@
 </v>
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20140915194122.19470"></v>
-<v t="ekr.20161003155658.1"><vh>@button test-http @key=Alt-9</vh></v>
 <v t="ekr.20111003085631.15488"></v>
 </vnodes>
 <tnodes>
@@ -11336,7 +11336,7 @@ g.app.pluginsController.loadOnePlugin(
     tag='open0',
     verbose=False)
 g.app.loadManager.readGlobalSettingsFiles()
-g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo') # /leoPlugins.leo')</t>
+g.handleUrl('http://127.0.0.1:8130/') # /leoPlugins.leo')</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
