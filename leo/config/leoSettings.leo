@@ -11198,6 +11198,9 @@ False: Ignore plain keys in the outline pane.
     // Headlines are *always* visible.
     $("div.node").hide()
     $(".outlinepane").children("div.node").show();
+    // Attach borders to *headlines*.
+    $("div.headline").addClass('unborderclass')
+    $(".outlinepane").children("div.node").children("div.headline:first").removeClass('unborderclass');
     $(".outlinepane").children("div.node").children("div.headline:first").addClass('borderclass');
     // Set h attributes for css
     // $("headline").attr("icon_url", "http://leoeditor.com/box" + $("headline").attr("icon") + ".GIF")
@@ -11211,9 +11214,11 @@ False: Ignore plain keys in the outline pane.
         $(".body-code").text($(e.target).attr("b"));
         // Set the border
         $("div.headline").removeClass('borderclass');
+        $("div.headline").addClass('unborderclass');
+        $(e.target).removeClass('unborderclass');
         $(e.target).addClass('borderclass');
         // console.clear();
-        console.log($(e.target));
+        // console.log($(e.target));
         // console.log($(e.target).children("div.node").length);
         // console.log($(e.target).children("div.node").children("div.headline").length);
         //console.log($(e.target).attr("b").length);
@@ -11226,6 +11231,12 @@ False: Ignore plain keys in the outline pane.
 .borderclass{
   /* Prevents false clicks. */
   border-color: #C1E0FF;
+  border-width: 2px;
+  border-style: solid;
+}
+.unborderclass{
+  /* Prevents false clicks. */
+  border-color: white;
   border-width: 2px;
   border-style: solid;
 }
