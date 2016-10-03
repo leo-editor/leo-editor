@@ -242,13 +242,12 @@ sockets_to_close = []
 #@-<< data >>
 if new:
     #@+<< dynamic_style >>
-    #@+node:ekr.20161001141220.1: ** << dynamic_style>>
+    #@+node:ekr.20161001141220.1: ** << dynamic_style>> (new)
     #@@language css
 
     dynamic_style = '''
-    /* Must use h1 for nodes: see below. */
-    h1 {
-      font-size: 120%; /* 12pt; */
+    div.node {
+      font-size: 16; /*font-size: 120%; */ /* 12pt; */
       font-style: normal;
       font-weight: normal;
     }
@@ -278,66 +277,69 @@ if new:
     div.node {
         position: relative;
         left: 20px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        
     }
     /* Indicator icons... */
 
     /*
         We would like something like this to work.
-        Note that the javascript successfully sets icon_url for each h1 element.
+        Note that the javascript successfully sets icon_url for each node element.
     */
 
         /* -----
-        h1::before {
+        node::before {
             content: url(attr(icon_url)) ": "
         }
         ----- */
 
-    h1[icon="00"]::before {
+    div.node[icon="00"]::before {
         content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
     }
-    h1[icon="01"]::before {
+    div.node[icon="01"]::before {
         content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
     }
-    h1[icon="02"]::before {
+    div.node[icon="02"]::before {
         content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
     }
-    h1[icon="03"]::before {
+    div.node[icon="03"]::before {
         content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
     }
-    h1[icon="04"]::before {
+    div.node[icon="04"]::before {
         content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
     }
-    h1[icon="05"]::before {
+    div.node[icon="05"]::before {
         content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
     }
-    h1[icon="06"]::before {
+    div.node[icon="06"]::before {
         content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
     }
-    h1[icon="07"]::before {
+    div.node[icon="07"]::before {
         content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
     }
-    h1[icon="08"]::before {
+    div.node[icon="08"]::before {
         content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
     }
-    h1[icon="09"]::before {
+    div.node[icon="09"]::before {
         content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
     }
-    h1[icon="10"]::before {
+    div.node[icon="10"]::before {
         content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
     }
-    h1[icon="11"]::before {
+    div.node[icon="11"]::before {
         content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
     }
-    h1[icon="12"]::before {
+    div.node[icon="12"]::before {
         content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
     }
-    h1[icon="13"]::before {
+    div.node[icon="13"]::before {
         content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
     }
-    h1[icon="14"]::before {
+    div.node[icon="14"]::before {
         content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
     }
-    h1[icon="15"]::before {
+    div.node[icon="15"]::before {
         content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
     }
     code {
@@ -357,21 +359,24 @@ if new:
     <script>
         $(document).ready(function(){
             // Toggle (hide) all but top-level nodes.
-            $(".node").toggle()
-            $(".outlinepane").children(".node").toggle()
+            $("div.node").hide();
+            $(".outlinepane").children("div.node").show();
             // Set h attributes for css
-            $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
+            // $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
                 // Works, but I haven't found how to use it.
-            // $("h1").attr("the_icon", url($("h1").attr("icon_url")))
-                // Fails.
-            $("h1").click(function(){
-                // Toggle the expansion state
-                $(this).parent().children("div.node").toggle();
+            $("div.node").click(function(e){
+                e.stopImmediatePropagation()
+                    // Google: jquery click event called twice.
+                // Toggle the expansion state.
+                $(e.target).children().toggle();
                 // Set the body text.
-                body=$(this).parent().attr("b");
-                $(".body-code").text(body);
+                $(".body-code").text($(e.target).attr("b"));
                 // console.clear();
-                // console.log("body.length:"+body.length)
+                //console.log($(e.target));
+                //console.log($(e.target).children().length);
+                //console.log($(e.target).attr("b").length);
+                //console.log($(e.target).children(":first"));
+                //console.log($(e.target).children(":first").is(":visible"));
             });
         });
     </script>
@@ -645,16 +650,28 @@ class leo_interface(object):
         f.write('</body></html>')
     #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
-
-        f.write('<div class="node" id=%s b=%s>' % (
-            quoteattr(p.gnx),
-            quoteattr(p.b),
-        ))
-        f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (
-            ('+' if p.hasChildren() else '-'),
-            p.computeIcon(),
-            p.h,
-        ))
+        
+        if 1:
+             # Make p.h the contents of the <node> element,
+             # so it will be displayed by default.
+             f.write('<div class="node" id=%s icon="%02d" expand="%s" b=%s>%s' % (
+                quoteattr(p.gnx),
+                p.computeIcon(),
+                '+' if p.hasChildren() else '-',
+                quoteattr(p.b),
+                escape(p.h),    
+            ))
+        else:
+            f.write('<div class="node" id=%s b=%s>' % (
+                quoteattr(p.gnx),
+                quoteattr(p.b),
+            ))
+            f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (
+                ('+' if p.hasChildren() else '-'),
+                p.computeIcon(),
+                escape(p.h),
+            ))
+        
         for child in p.children():
             self.write_node_and_subtree(f, child)
         f.write('</div>')
