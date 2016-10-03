@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="62" left="392" height="1041" width="1112"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1918,6 +1918,12 @@
 <v t="btheado.20131124162237.2493"><vh>@string http_ip = 127.0.0.1</vh></v>
 <v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
+<v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
+<v t="ekr.20161003141513.2"><vh>@data http_stylesheet</vh></v>
+</v>
+<v t="ekr.20161003141448.1"><vh>mod_http script</vh>
+<v t="ekr.20161003141448.2"><vh>@data http_script</vh></v>
+</v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
 <v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext = ▼</vh></v>
@@ -2451,6 +2457,7 @@
 </v>
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20140915194122.19470"></v>
+<v t="ekr.20111003085631.15488"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4779,7 +4786,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="3,15,1">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -11183,6 +11190,135 @@ False: Ignore plain keys in the outline pane.
 <t tx="ekr.20160514162753.1"></t>
 <t tx="ekr.20160514162820.1"></t>
 <t tx="ekr.20160918113150.1"></t>
+<t tx="ekr.20161003141448.1">@language javascript
+</t>
+<t tx="ekr.20161003141448.2">$(document).ready(function(){
+    // Toggle (hide) all but top-level nodes.
+    $("div.node").hide();
+    $(".outlinepane").children("div.node").show();
+    // Set h attributes for css
+    // $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
+        // Works, but I haven't found how to use it.
+    $("div.node").click(function(e){
+        e.stopImmediatePropagation()
+            // Google: jquery click event called twice.
+        // Toggle the expansion state.
+        $(e.target).children().toggle();
+        // Set the body text.
+        $(".body-code").text($(e.target).attr("b"));
+        $("div.node").removeClass('borderclass');
+        $(e.target).addClass('borderclass');
+        // console.clear();
+        //console.log($(e.target));
+        //console.log($(e.target).children().length);
+        //console.log($(e.target).attr("b").length);
+        //console.log($(e.target).children(":first"));
+        //console.log($(e.target).children(":first").is(":visible"));
+    });
+});</t>
+<t tx="ekr.20161003141513.1">@language css</t>
+<t tx="ekr.20161003141513.2">/* The main .css stylesheet for the mod_http.py plugin. */
+.borderclass{
+  /* Prevents false clicks. */
+  border-color: #C1E0FF;
+  border-width: 2px;
+  border-style: solid;
+}
+div.node {
+  font-size: 16pt;
+  font-style: normal;
+  font-weight: normal;
+  position: relative;
+  left: 20px;
+  /* Prevent false clicks. */
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+div.container {
+    /* position:relative; */
+}
+div.outlinepane {
+  resize: horizontal;
+  position: absolute;
+  background: #ffffec; /* Leo yellow */
+  top: 10px;
+  /* Fixed height/width creates scrollbars.*/
+  height: 300px;
+  width: 1000px;
+  overflow: scroll;
+  line-height: 0.8;
+}
+div.bodypane {
+  resize: both;
+  position: absolute;
+  top: 310px;
+  /* Fixed height/width creates scrollbars.*/
+  height: 500px;
+  width: 1000px;
+  overflow: scroll;
+}
+/* Indicator icons...
+
+    Alas, the following does not work::
+
+        node::before {
+            content: url(attr(icon_url)) " " attr(expand) " ";
+        }
+*/
+div.node[icon="00"]::before {
+    content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
+}
+div.node[icon="01"]::before {
+    content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
+}
+div.node[icon="02"]::before {
+    content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
+}
+div.node[icon="03"]::before {
+    content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
+}
+div.node[icon="04"]::before {
+    content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
+}
+div.node[icon="05"]::before {
+    content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
+}
+div.node[icon="06"]::before {
+    content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
+}
+div.node[icon="07"]::before {
+    content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
+}
+div.node[icon="08"]::before {
+    content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
+}
+div.node[icon="09"]::before {
+    content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
+}
+div.node[icon="10"]::before {
+    content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
+}
+div.node[icon="11"]::before {
+    content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
+}
+div.node[icon="12"]::before {
+    content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
+}
+div.node[icon="13"]::before {
+    content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
+}
+div.node[icon="14"]::before {
+    content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
+}
+div.node[icon="15"]::before {
+    content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
+}
+code {
+    /* works */
+    /* background: yellow; */
+    font-family: "Monospace";
+    font-size: 150%; /* 20pt; */
+}</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

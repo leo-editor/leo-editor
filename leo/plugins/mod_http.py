@@ -240,151 +240,6 @@ browser_encoding = 'utf-8' # To do: Can we query the browser for this?
 
 sockets_to_close = []
 #@-<< data >>
-if new:
-    #@+<< dynamic_style >>
-    #@+node:ekr.20161001141220.1: ** << dynamic_style>> (new)
-    #@@language css
-
-    dynamic_style = '''
-    div.node {
-      font-size: 16; /*font-size: 120%; */ /* 12pt; */
-      font-style: normal;
-      font-weight: normal;
-    }
-    div.container {
-        /* position:relative; */
-    }
-    div.outlinepane {
-      resize: horizontal;
-      position: absolute;
-      background: #ffffec; /* Leo yellow */
-      top: 10px;
-      /* Fixed height/width creates scrollbars.*/
-      height: 300px;
-      width: 1000px;
-      overflow: scroll;
-      line-height: 0.8;
-    }
-    div.bodypane {
-      resize: both;
-      position: absolute;
-      top: 310px;
-      /* Fixed height/width creates scrollbars.*/
-      height: 500px;
-      width: 1000px;
-      overflow: scroll;
-    }
-    div.node {
-        position: relative;
-        left: 20px;
-        margin-top: 2px;
-        margin-bottom: 2px;
-        
-    }
-    /* Indicator icons... */
-
-    /*
-        We would like something like this to work.
-        Note that the javascript successfully sets icon_url for each node element.
-    */
-
-        /* -----
-        node::before {
-            content: url(attr(icon_url)) ": "
-        }
-        ----- */
-
-    div.node[icon="00"]::before {
-        content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="01"]::before {
-        content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="02"]::before {
-        content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="03"]::before {
-        content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="04"]::before {
-        content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="05"]::before {
-        content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="06"]::before {
-        content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="07"]::before {
-        content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="08"]::before {
-        content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="09"]::before {
-        content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="10"]::before {
-        content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="11"]::before {
-        content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="12"]::before {
-        content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="13"]::before {
-        content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="14"]::before {
-        content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
-    }
-    div.node[icon="15"]::before {
-        content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
-    }
-    code {
-        /* works */
-        /* background: yellow; */
-        font-family: "Monospace";
-        font-size: 150%; /* 20pt; */
-    }
-    '''
-    #@-<< dynamic_style >>
-    #@+<< script >>
-    #@+node:ekr.20161001111653.1: ** << script >>
-    #@@language javascript
-
-    script = '''
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            // Toggle (hide) all but top-level nodes.
-            $("div.node").hide();
-            $(".outlinepane").children("div.node").show();
-            // Set h attributes for css
-            // $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
-                // Works, but I haven't found how to use it.
-            $("div.node").click(function(e){
-                e.stopImmediatePropagation()
-                    // Google: jquery click event called twice.
-                // Toggle the expansion state.
-                $(e.target).children().toggle();
-                // Set the body text.
-                $(".body-code").text($(e.target).attr("b"));
-                // console.clear();
-                //console.log($(e.target));
-                //console.log($(e.target).children().length);
-                //console.log($(e.target).attr("b").length);
-                //console.log($(e.target).children(":first"));
-                //console.log($(e.target).children(":first").is(":visible"));
-            });
-        });
-    </script>
-    '''
-    #@-<< script >>
-else:
-    dynamic_style = ''
-    script = ''
 
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
@@ -430,9 +285,6 @@ def getGlobalConfiguration():
     new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
-        
-    css = g.app.config.getData('http_stylesheet', strip_comments=False, strip_data=True) or []
-    config.css = css = ''.join(css)
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
 def plugin_wrapper(tag, keywords):
     if g.app.killed:
@@ -472,6 +324,18 @@ def getConfiguration(c):
     new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
+#@+node:ekr.20161003140938.1: ** getData
+def getData(setting):
+    '''Return the given @data node.'''
+    aList = g.app.config.getData(
+        setting,
+        strip_comments=False,
+        strip_data=False,
+    ) 
+    s = ''.join(aList or [])
+    g.trace(setting, len(s))
+    # g.trace(s)
+    return s
 #@+node:bwmulder.20050326191345: ** class config
 class config(object):
     http_active = False
@@ -750,12 +614,15 @@ class leo_interface(object):
         # This is in the head.
         f.write('''
     <style>%s</style>
-    %s
+    <style>%s</style>
     <title>ROOT for LEO HTTP plugin</title>
     <h2>Windowlist</h2>
     <hr />
     <ul>
-    ''' % (config.css, script))
+    ''' % (
+        getData('http_stylesheet'), # config.css,
+        getData('http_script'),     # script
+    ))
         a = g.app # get the singleton application instance.
         windows = a.windowList # get the list of all open frames.
         for w in windows:
@@ -869,14 +736,14 @@ class leo_interface(object):
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <style>%s</style>
-        <style>%s</style>
-        %s
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+        </script>
+        <script>%s</script>
         <title>%s</title>
     </head>
     """ % (
-            dynamic_style,
-            config.css,
-            script,
+            getData('http_stylesheet'),
+            getData('http_script'),
             (escape(window.shortFileName() + ":" + headString)))
         )
     #@+node:EKR.20040517080250.28: *3* write_path
