@@ -515,38 +515,18 @@ class leo_interface(object):
     #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
     def write_node_and_subtree(self, f, p):
         
-        if 1:
-            f.write('<div class="node" id=n:%s>' % (
-                quoteattr(p.gnx),
-            ))
-            f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
-                quoteattr(p.gnx),
-                '+' if p.hasChildren() else '-',
-                p.computeIcon(),
-                quoteattr(p.b),
-                escape(p.h),    
-            ))
-        elif 1:
-             # Make p.h the contents of the <node> element,
-             # so it will be displayed by default.
-             f.write('<div class="node" id=%s icon="%02d" expand="%s" b=%s>%s' % (
-                quoteattr(p.gnx),
-                p.computeIcon(),
-                '+' if p.hasChildren() else '-',
-                quoteattr(p.b),
-                escape(p.h),    
-            ))
-        else:
-            f.write('<div class="node" id=%s b=%s>' % (
-                quoteattr(p.gnx),
-                quoteattr(p.b),
-            ))
-            f.write('<h1 expand="%s" icon="%02d">%s</h1>' % (
-                ('+' if p.hasChildren() else '-'),
-                p.computeIcon(),
-                escape(p.h),
-            ))
-        
+        # This organization, with <headline> elements in <node> elements,
+        # allows proper highlighting of nodes.
+        f.write('<div class="node" id=n:%s>' % (
+            quoteattr(p.gnx),
+        ))
+        f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
+            quoteattr(p.gnx),
+            '+' if p.hasChildren() else '-',
+            p.computeIcon(),
+            quoteattr(p.b),
+            escape(p.h),    
+        ))
         for child in p.children():
             self.write_node_and_subtree(f, child)
         f.write('</div>')
