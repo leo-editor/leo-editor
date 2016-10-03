@@ -53,16 +53,20 @@ if os.path.exists(path):
         dirs = pointer.split('/')
         branch = dirs[-1]
         path = os.path.join(theDir, '..', '..', '.git', pointer)
-        s = open(path, 'r').read().strip()[0: 12]
+        try:
+            s = open(path, 'r').read().strip()[0: 12]
             # shorten the hash to a unique shortname
             # (12 characters should be enough until the end of time, for Leo...)
-        git_info['branch'] = branch
-        git_info['commit'] = s
+            git_info['branch'] = branch
+            git_info['commit'] = s
+        except Exception:
+            branch = 'None'
+            s = s[0: 12]
     else:
         branch = 'None'
         s = s[0: 12]
-        git_info['branch'] = branch
-        git_info['commit'] = s
+    git_info['branch'] = branch
+    git_info['commit'] = s
 build = commit_timestamp
 date = commit_asctime
 #@@language python
