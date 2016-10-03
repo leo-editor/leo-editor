@@ -11229,25 +11229,24 @@ False: Ignore plain keys in the outline pane.
 <t tx="ekr.20161003141513.1">@language css</t>
 <t tx="ekr.20161003141513.2">/* The main .css stylesheet for the mod_http.py plugin. */
 .borderclass{
-  /* Prevents false clicks. */
-  border-color: #C1E0FF;
-  border-width: 2px;
-  border-style: solid;
+    border-color: #C1E0FF;
+    border-width: 1px;
+    border-style: solid;
 }
 .unborderclass{
-  /* Prevents false clicks. */
-  border-color: white;
-  border-width: 2px;
-  border-style: solid;
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
 }
 div.headline {
-  color: blue;
-  font-size: 16pt;
-  font-style: normal;
-  font-weight: normal;
-  /* Prevent false clicks. */
-  margin-top: 6px;
-  margin-bottom: 6px;
+    color: blue;
+    font-size: 16pt;
+    font-style: normal;
+    font-weight: normal;
+    /* Prevent false clicks. */
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 4px;
 }
 div.container {
     /* position:relative; */
@@ -11257,24 +11256,24 @@ div.node {
     left: 20px;
 }
 div.outlinepane {
-  resize: horizontal;
-  position: absolute;
-  background: #ffffec; /* Leo yellow */
-  top: 10px;
-  /* Fixed height/width creates scrollbars.*/
-  height: 300px;
-  width: 1000px;
-  overflow: scroll;
-  line-height: 0.8;
+    resize: horizontal;
+    position: absolute;
+    background: #ffffec; /* Leo yellow */
+    top: 10px;
+    /* Fixed height/width creates scrollbars.*/
+    height: 300px;
+    width: 1000px;
+    overflow: scroll;
+    line-height: 0.8;
 }
 div.bodypane {
-  resize: both;
-  position: absolute;
-  top: 310px;
-  /* Fixed height/width creates scrollbars.*/
-  height: 500px;
-  width: 1000px;
-  overflow: scroll;
+    resize: both;
+    position: absolute;
+    top: 310px;
+    /* Fixed height/width creates scrollbars.*/
+    height: 500px;
+    width: 1000px;
+    overflow: scroll;
 }
 /* Indicator icons...
 
