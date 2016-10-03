@@ -2457,6 +2457,7 @@
 </v>
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20140915194122.19470"></v>
+<v t="ekr.20161003155658.1"><vh>@button test-http @key=Alt-9</vh></v>
 <v t="ekr.20111003085631.15488"></v>
 </vnodes>
 <tnodes>
@@ -11193,24 +11194,28 @@ False: Ignore plain keys in the outline pane.
 <t tx="ekr.20161003141448.1">@language javascript
 </t>
 <t tx="ekr.20161003141448.2">$(document).ready(function(){
-    // Toggle (hide) all but top-level nodes.
-    $("div.node").hide();
+    // Toggle (hide) all but top-level *nodes*.
+    // Headlines are *always* visible.
+    $("div.node").hide()
     $(".outlinepane").children("div.node").show();
+    $(".outlinepane").children("div.node").children("div.headline:first").addClass('borderclass');
     // Set h attributes for css
-    // $("h1").attr("icon_url", "http://leoeditor.com/box" + $("h1").attr("icon") + ".GIF")
+    // $("headline").attr("icon_url", "http://leoeditor.com/box" + $("headline").attr("icon") + ".GIF")
         // Works, but I haven't found how to use it.
-    $("div.node").click(function(e){
+    $("div.headline").click(function(e){
         e.stopImmediatePropagation()
             // Google: jquery click event called twice.
         // Toggle the expansion state.
-        $(e.target).children().toggle();
+        $(e.target).parent().children("div.node").toggle()
         // Set the body text.
         $(".body-code").text($(e.target).attr("b"));
-        $("div.node").removeClass('borderclass');
+        // Set the border
+        $("div.headline").removeClass('borderclass');
         $(e.target).addClass('borderclass');
         // console.clear();
-        //console.log($(e.target));
-        //console.log($(e.target).children().length);
+        console.log($(e.target));
+        // console.log($(e.target).children("div.node").length);
+        // console.log($(e.target).children("div.node").children("div.headline").length);
         //console.log($(e.target).attr("b").length);
         //console.log($(e.target).children(":first"));
         //console.log($(e.target).children(":first").is(":visible"));
@@ -11224,18 +11229,21 @@ False: Ignore plain keys in the outline pane.
   border-width: 2px;
   border-style: solid;
 }
-div.node {
+div.headline {
+  color: blue;
   font-size: 16pt;
   font-style: normal;
   font-weight: normal;
-  position: relative;
-  left: 20px;
   /* Prevent false clicks. */
   margin-top: 6px;
   margin-bottom: 6px;
 }
 div.container {
     /* position:relative; */
+}
+div.node {
+    position: relative;
+    left: 20px;
 }
 div.outlinepane {
   resize: horizontal;
@@ -11265,52 +11273,52 @@ div.bodypane {
             content: url(attr(icon_url)) " " attr(expand) " ";
         }
 */
-div.node[icon="00"]::before {
+div.headline[icon="00"]::before {
     content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
 }
-div.node[icon="01"]::before {
+div.headline[icon="01"]::before {
     content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
 }
-div.node[icon="02"]::before {
+div.headline[icon="02"]::before {
     content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
 }
-div.node[icon="03"]::before {
+div.headline[icon="03"]::before {
     content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
 }
-div.node[icon="04"]::before {
+div.headline[icon="04"]::before {
     content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
 }
-div.node[icon="05"]::before {
+div.headline[icon="05"]::before {
     content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
 }
-div.node[icon="06"]::before {
+div.headline[icon="06"]::before {
     content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
 }
-div.node[icon="07"]::before {
+div.headline[icon="07"]::before {
     content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
 }
-div.node[icon="08"]::before {
+div.headline[icon="08"]::before {
     content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
 }
-div.node[icon="09"]::before {
+div.headline[icon="09"]::before {
     content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
 }
-div.node[icon="10"]::before {
+div.headline[icon="10"]::before {
     content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
 }
-div.node[icon="11"]::before {
+div.headline[icon="11"]::before {
     content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
 }
-div.node[icon="12"]::before {
+div.headline[icon="12"]::before {
     content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
 }
-div.node[icon="13"]::before {
+div.headline[icon="13"]::before {
     content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
 }
-div.node[icon="14"]::before {
+div.headline[icon="14"]::before {
     content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
 }
-div.node[icon="15"]::before {
+div.headline[icon="15"]::before {
     content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
 }
 code {
@@ -11319,6 +11327,16 @@ code {
     font-family: "Monospace";
     font-size: 150%; /* 20pt; */
 }</t>
+<t tx="ekr.20161003155658.1"># g.cls()
+if c.isChanged():
+    c.save()
+# *Always* use the most current settings.
+g.app.pluginsController.loadOnePlugin(
+    'leo.plugins.mod_http',
+    tag='open0',
+    verbose=False)
+g.app.loadManager.readGlobalSettingsFiles()
+g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo') # /leoPlugins.leo')</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

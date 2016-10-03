@@ -516,6 +516,17 @@ class leo_interface(object):
     def write_node_and_subtree(self, f, p):
         
         if 1:
+            f.write('<div class="node" id=n:%s>' % (
+                quoteattr(p.gnx),
+            ))
+            f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
+                quoteattr(p.gnx),
+                '+' if p.hasChildren() else '-',
+                p.computeIcon(),
+                quoteattr(p.b),
+                escape(p.h),    
+            ))
+        elif 1:
              # Make p.h the contents of the <node> element,
              # so it will be displayed by default.
              f.write('<div class="node" id=%s icon="%02d" expand="%s" b=%s>%s' % (
