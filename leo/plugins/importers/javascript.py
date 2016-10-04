@@ -3,7 +3,75 @@
 '''The @auto importer for JavaScript.'''
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
+import re
+new_scanner = True
 #@+others
+#@+node:ekr.20161004092007.1: ** class ScanState
+class ScanState(object):
+    '''A class to store and update scanning state.'''
+    #@+others
+    #@+node:ekr.20161004092045.1: *3*  state.ctor
+    def __init__(self):
+        '''Ctor for ScanState class.'''
+        self.context = '' # in ('/*', '"', "'")
+        self.curlies = 0
+        self.parens = 0
+        # self.squares = 0
+            # Probably don't want to keep track of these.
+            
+    def __repr__(self):
+        return 'ScanState: top: %s { %s (: %s, context: %2r' % (
+            int(self.at_top_level()),
+            self.curlies, self.parens, self.context)
+            
+    __str__ = __repr__
+    #@+node:ekr.20161004092056.1: *3* state.at_top_level
+    def at_top_level(self):
+        '''Return True if we are at the top level and not in a block comment.'''
+        return self.curlies == 0 and self.parens == 0 and self.context == ''
+    #@+node:ekr.20161004072614.1: *3* state.scan_leading_lines
+    def scan_leading_lines(self, lines):
+        '''Return the index of the first non-leading line.'''
+        i = 0
+        while i < len(lines):
+            # g.trace('%3s %s' % (i, self), lines[i].rstrip())
+            self.scan_line(lines[i])
+            if self.at_top_level():
+                i += 1
+            else:
+                break
+        return i
+    #@+node:ekr.20161004071532.1: *3* state.scan_line
+    def scan_line(self, s):
+        '''Update the scan state by scanning s.'''
+        i = 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if self.context:
+                if self.context == '/*' and s[i:i+2] == '*/':
+                    self.context = ''
+                    i += 1
+                elif self.context == ch:
+                    self.context = ''
+                else:
+                    pass
+            else:
+                if s[i:i+2] == '/*':
+                    self.context = '/*'
+                    i += 1
+                elif ch in ('"', "'"):
+                    self.context = ch
+                elif ch == '{': self.curlies += 1
+                elif ch == '}': self.curlies -= 1
+                elif ch == '(': self.parens += 1
+                elif ch == ')': self.parens -= 1
+                # elif ch == '[': self.squares += 1
+                # elif ch == ']': self.squares -= 1
+            i += 1
+            assert progress < i
+        # g.trace(repr(self), s.rstrip())
+    #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
@@ -113,8 +181,127 @@ class JavaScriptScanner(basescanner.BaseScanner):
             i2, j2 = g.getLine(s, i1)
             g.trace(i, level, s[i2:j2+1])
         return i
-    #@+node:ekr.20160122071725.1: *3* jss.scan & scanHelper
-    def scan(self, s, parent, parse_body=False):
+    #@+node:ekr.20161004070718.1: *3* jss.scan & helpers
+    def scan(self, s1, parent, parse_body=True):
+        '''Create an outline from a javascript file.'''
+        if new_scanner:
+            self.new_scan(s1, parent, parse_body)
+        else:
+            self.old_scan(s1, parent, parse_body)
+
+    #@+node:ekr.20161004115934.1: *4* jss.new_scan and helpers
+    def new_scan(self, s1, parent, parse_body=True):
+        '''The new, simpler javascript scanner.'''
+        trace = False and not g.unitTesting
+        # pylint: disable=arguments-differ
+        # parse_body not used.
+        if not s1.strip():
+            return
+        lines = g.splitLines(s1)
+        state = ScanState()
+        # 1. Get all leading lines.
+        i = state.scan_leading_lines(lines)
+        has_first = i > 0
+        block = self.get_block(lines, 0, i)
+        blocks = [block] if block else []
+        block_start = i
+        if trace: g.trace(lines[i].rstrip())
+        i += 1
+        in_block = True
+        # 2. Scan all top-level blocks.
+        while i < len(lines):
+            progress = i
+            state.scan_line(lines[i])
+            at_top = state.at_top_level()
+            if in_block and at_top:
+                # Lookahead: add trailing blank lines to the block.
+                while i+1 < len(lines) and not lines[i+1].strip():
+                    i += 1
+                block = self.get_block(lines, block_start, i+1)
+                blocks.append(block)
+                in_block = False
+                block_start = i+1
+                if trace: g.trace(lines[i].rstrip())
+            elif not in_block and not at_top:
+                # Don't set block_start
+                in_block = True
+            i += 1
+            assert progress < i
+        # End properly.
+        block = self.get_block(lines, block_start, i)
+        if block:
+            if trace: g.trace(lines[block_start].rstrip())
+            blocks.append(block)
+        if trace:
+            g.trace('blocks...')
+            for i, block in enumerate(blocks):
+                print('  block: %s' % i)
+                for j, s in enumerate(block):
+                    print('    %3s %s' % (j, s.rstrip()))
+        if blocks:
+            parent.b = '@others\n\n'
+            n = 0
+            for i, block in enumerate(blocks):
+                child = parent.insertAsLastChild()
+                n, h = self.get_headline(block, has_first, i, n)
+                child.h = h
+                child.b = ''.join(block).rstrip()+'\n'
+        # Rescan all blocks.
+        
+        # Put all blocks.
+        
+        # parent.b = parent.b + ''.join(body_lines)
+    #@+node:ekr.20161004103203.1: *5* get_block
+    def get_block(self, lines, i1, i2):
+        '''Return lines[i1:i2] as a list.'''
+        # Note: list(lines[i1:i2] fails badly.
+        n = i2 - i1
+        if n == 0 or i1 >= len(lines):
+            return []
+        elif n == 1:
+            return [lines[i1]]
+        else:
+            return lines[i1:i2]
+        
+    #@+node:ekr.20161004105734.1: *5* get_headline
+    def get_headline(self, block, has_first, i, n):
+        '''
+            Return the desired headline of the given block:
+                
+            - Return (1, first-lines) if block is the leading lines.
+            - Return (n, function-name) for functions of various forms.
+            - Return (n+1, "block n") if no function name can be found.
+        '''
+        if has_first and i == 0:
+            return 1, 'first lines'
+        else:
+            table = (
+                (2, '',      r'function(\s*)(\w+)'),
+                (2, '',      r'var(\s*)(\w+)(\s*)=(\s*)function\('),
+                (1, '',      r'(\w+)(\s*)=(\s*)function\('),
+                (4, 'class ', r'define\((\s*)function(\s*)\((\s*)(\w+)'),
+                (0, 'class', r'define(\s*)\((.*),(\s*)function\('),
+            )
+            for s in block:
+                # This might fail if function x is in a comment...
+                if 1:
+                    for i, prefix, pattern in table:
+                        m = re.match(pattern, s)
+                        if m:
+                            name = m.group(i) if i else prefix
+                            return n, name
+                else:
+                    m = re.match(r'function(\s*)(\w+)', s)
+                    if m: return n, m.group(2)
+                    m = re.match(r'var(\s*)(\w+)(\s*)=(\s*)function\(', s)
+                    if m: return n, m.group(2)
+                    m = re.match(r'(\w+)(\s*)=(\s*)function\(', s)
+                    if m: return n, m.group(1)
+                    m = re.match(r'define(\s*)\(function\((\s*)(\w+)', s)
+                    if m: return n, m.group(3)
+            return n+1, 'block %s' % (n)
+    #@+node:ekr.20160122071725.1: *4* jss.old_scan & scanHelper
+    def old_scan(self, s, parent, parse_body=False):
         '''A javascript scanner.
 
         Create a child of self.root containing section references for
@@ -129,7 +316,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             self.appendStringToBody(parent, s[i:])
         ### Do any language-specific post-processing.
         ### self.endGen(s)
-    #@+node:ekr.20160122071725.2: *4* jss.scanHelper
+    #@+node:ekr.20160122071725.2: *5* jss.scanHelper
     # scanHelper(self, s, i, end, parent, kind)
     def scanHelper(self, parent, s):
         '''Common scanning code used by both scan and putClassHelper.'''
