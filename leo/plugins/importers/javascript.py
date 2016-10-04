@@ -57,7 +57,9 @@ class ScanState(object):
                 else:
                     pass
             else:
-                if s[i:i+2] == '/*':
+                if s[i:i+2] == '//':
+                    break
+                elif s[i:i+2] == '/*':
                     self.context = '/*'
                     i += 1
                 elif ch in ('"', "'"):
