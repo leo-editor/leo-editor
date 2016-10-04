@@ -274,32 +274,22 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''
         if has_first and i == 0:
             return 1, 'first lines'
-        else:
-            table = (
-                (2, '',      r'function(\s*)(\w+)'),
-                (2, '',      r'var(\s*)(\w+)(\s*)=(\s*)function\('),
-                (1, '',      r'(\w+)(\s*)=(\s*)function\('),
-                (4, 'class ', r'define\((\s*)function(\s*)\((\s*)(\w+)'),
-                (0, 'class', r'define(\s*)\((.*),(\s*)function\('),
-            )
-            for s in block:
-                # This might fail if function x is in a comment...
-                if 1:
-                    for i, prefix, pattern in table:
-                        m = re.match(pattern, s)
-                        if m:
-                            name = m.group(i) if i else prefix
-                            return n, name
-                else:
-                    m = re.match(r'function(\s*)(\w+)', s)
-                    if m: return n, m.group(2)
-                    m = re.match(r'var(\s*)(\w+)(\s*)=(\s*)function\(', s)
-                    if m: return n, m.group(2)
-                    m = re.match(r'(\w+)(\s*)=(\s*)function\(', s)
-                    if m: return n, m.group(1)
-                    m = re.match(r'define(\s*)\(function\((\s*)(\w+)', s)
-                    if m: return n, m.group(3)
-            return n+1, 'block %s' % (n)
+        # define common idioms for defining classes and functions.
+        # To do: make this table a user option.
+        table = (
+            (2, '',       r'function(\s*)(\w+)'),
+            (2, '',       r'var(\s*)(\w+)(\s*)=(\s*)function\('),
+            (1, '',       r'(\w+)(\s*)=(\s*)function\('),
+            (4, 'class ', r'define\((\s*)function(\s*)\((\s*)(\w+)'),
+            (0, 'class',  r'define(\s*)\((.*),(\s*)function\('),
+        )
+        s = block[0] # Scan only the first block.
+        for i, prefix, pattern in table:
+            m = re.match(pattern, s)
+            if m:
+                name = m.group(i) if i else prefix
+                return n, name
+        return n+1, 'block %s' % (n)
     #@+node:ekr.20160122071725.1: *4* jss.old_scan & scanHelper
     def old_scan(self, s, parent, parse_body=False):
         '''A javascript scanner.
