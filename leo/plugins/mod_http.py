@@ -191,9 +191,6 @@ which node is selected.
 
 '''
 #@-<< docstring >>
-new = True
-    # True: use javascript in the page to expand/contract nodes.
-    # This requires new html generators.
 #@+<< imports >>
 #@+node:EKR.20040517080250.3: ** << imports >>
 # pylint: disable=deprecated-method
@@ -240,7 +237,6 @@ browser_encoding = 'utf-8' # To do: Can we query the browser for this?
 
 sockets_to_close = []
 #@-<< data >>
-
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
 def init():
@@ -333,8 +329,7 @@ def getData(setting):
         strip_data=False,
     ) 
     s = ''.join(aList or [])
-    g.trace(setting, len(s))
-    # g.trace(s)
+    # g.trace(setting, len(s))
     return s
 #@+node:bwmulder.20050326191345: ** class config
 class config(object):
@@ -387,260 +382,7 @@ class leo_interface(object):
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
     #@+others
-    #@+node:EKR.20040517080250.21: *3* add_leo_links
-    def add_leo_links(self, window, node, f):
-        """
-        Given a node 'node', add links to:
-            The next sibling, if any.
-            the next node.
-            the parent.
-            The children, if any.
-        """
-        # Collecting the navigational links.
-        if node:
-            nodename = node.h
-            threadNext = node.threadNext()
-            sibling = node.next()
-            parent = node.parent()
-            f.write("<p>\n")
-            children = []
-            firstChild = node.firstChild()
-            if firstChild:
-                child = firstChild
-                while child:
-                    children.append(child)
-                    child = child.next()
-            if threadNext is not None:
-                self.create_leo_reference(window, threadNext, "next", f)
-            f.write("<br />")
-            if sibling is not None:
-                self.create_leo_reference(window, sibling, "next Sibling", f)
-            f.write("<br />")
-            if parent is None:
-                self.create_href("/", "Top level", f)
-            else:
-                self.create_leo_reference(window, parent, "Up", f)
-            f.write("<br />")
-            f.write("\n</p>\n")
-        else:
-            # top level
-            child = window.c.rootPosition()
-            children = [child]
-            next = child.next()
-            while next:
-                child = next
-                children.append(child)
-                next = child.next()
-            nodename = window.shortFileName()
-        if children:
-            f.write("\n<h2>")
-            f.write("Children of ")
-            f.write(escape(nodename))
-            f.write("</h2>\n")
-            f.write("<ol>\n")
-            for child in children:
-                f.write("<li>\n")
-                self.create_leo_reference(window, child, child.h, f)
-                f.write("</li>\n")
-            f.write("</ol>\n")
-    #@+node:EKR.20040517080250.22: *3* create_href
-    def create_href(self, href, text, f):
-        f.write('<a href="%s">' % href)
-        f.write(escape(text))
-        f.write("</a>\n")
-    #@+node:bwmulder.20050319134815: *3* create_leo_h_reference
-    def create_leo_h_reference(self, window, node):
-        parts = [window.shortFileName()] + self.get_leo_nameparts(node)
-        href = '/' + '/'.join(parts)
-        return href
-    #@+node:EKR.20040517080250.23: *3* create_leo_reference
-    def create_leo_reference(self, window, node, text, f):
-        """
-        Create a reference to 'node' in 'window', displaying 'text'
-        """
-        href = self.create_leo_h_reference(window, node)
-        self.create_href(href, text, f)
-    #@+node:EKR.20040517080250.24: *3* format_leo_node (old)
-    def format_leo_node(self, f, window, node):
-        """
-        Given a node 'node', return the contents of that node as html text.
-
-        Include some navigational references too
-        """
-        if node:
-            headString = node.h
-            bodyString = node.b
-            format_info = get_http_attribute(node)
-        else:
-            headString, bodyString = "Top level", ""
-            format_info = None
-        self.write_head(f, headString, window)
-        # write navigation
-        self.add_leo_links(window, node, f)
-        # write path
-        self.write_path(node, f)
-        f.write("<hr />\n") # horizontal rule
-        # f.write('<span style="font-family: monospace;">')
-        if format_info:
-            f.write("<p>\n")
-            html_lines = reconstruct_html_from_attrs(format_info, 3)
-            for line in html_lines:
-                f.write(line)
-            f.write("\n</p>\n")
-        else:
-            if (bodyString):
-                f.write("<p>\n")
-            f.write(escape(bodyString))
-            if (bodyString):
-                f.write("\n</p>\n")
-        # f.write("</span>\n")
-        f.write("\n</body>\n</html>\n")
-        # return f
-    #@+node:ekr.20161001114512.1: *3* format_leo_tree (new) & helper
-    def format_leo_tree(self, f, window, p):
-        """
-        Format p and all its children as html text.
-        """
-        root = p.copy()
-        self.write_head(f, p.h, window)
-        f.write('<body>')
-        f.write('<div class="container">')
-        f.write('<div class="outlinepane">')
-        for sib in root.self_and_siblings():
-            self.write_node_and_subtree(f, sib)
-        f.write('</div>')
-        f.write('</div>')
-        self.write_body_pane(f, root)
-        f.write('</body></html>')
-    #@+node:ekr.20161001122919.1: *4* write_node_and_subtree
-    def write_node_and_subtree(self, f, p):
-        
-        # This organization, with <headline> elements in <node> elements,
-        # allows proper highlighting of nodes.
-        f.write('<div class="node" id=n:%s>' % (
-            quoteattr(p.gnx),
-        ))
-        f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
-            quoteattr(p.gnx),
-            '+' if p.hasChildren() else '-',
-            p.computeIcon(),
-            quoteattr(p.b),
-            escape(p.h),    
-        ))
-        for child in p.children():
-            self.write_node_and_subtree(f, child)
-        f.write('</div>')
-    #@+node:EKR.20040517080250.25: *3* get_leo_nameparts
-    def get_leo_nameparts(self, node):
-        """
-        Given a 'node', construct a list of sibling numbers to get to that node.
-        """
-        result = []
-        if node:
-            cnode = node
-            parent = cnode.parent()
-            while parent:
-                i = 0
-                child = parent.firstChild()
-                while child != cnode:
-                    child = child.next()
-                    i += 1
-                result.append(str(i))
-                cnode = parent
-                parent = cnode.parent()
-            i = 0
-            previous = cnode.back()
-            while previous:
-                i += 1
-                previous = previous.back()
-            result.append(str(i))
-            result.reverse()
-        return result
-    #@+node:EKR.20040517080250.26: *3* get_leo_node
-    def get_leo_node(self, path):
-        """
-        given a path of the form:
-            [<short filename>,<number1>,<number2>...<numbern>]
-            identify the leo node which is in that file, and,
-            from top to bottom, is the <number1> child of the topmost
-            node, the <number2> child of that node, and so on.
-
-            Return None if that node can not be identified that way.
-        """
-        
-        # Identify the window
-        for w in g.app.windowList:
-            if w.shortFileName() == path[0]:
-                break
-        else:
-            return None, None
-        # pylint: disable=undefined-loop-variable
-        # w *is* defined here.
-        assert w
-        if new:
-            return w, w.c.rootPosition()
-        else:
-            node = w.c.rootVnode()
-            if len(path) >= 2:
-                for i in range(int(path[1])):
-                    node = node.next()
-                    if node is None:
-                        raise nodeNotFound
-                # go to the i'th child for each path element.
-                for i in path[2:]:
-                    try:
-                        int(i)
-                    except ValueError:
-                        # No Leo path
-                        raise noLeoNodePath
-                    node = node.nthChild(int(i))
-                    if node is None:
-                        raise nodeNotFound
-            else:
-                node = None
-            return w, node
-    #@+node:EKR.20040517080250.27: *3* get_leo_windowlist
-    def get_leo_windowlist(self):
-        f = StringIO()
-        # This is in the head.
-        f.write('''
-    <style>%s</style>
-    <style>%s</style>
-    <title>ROOT for LEO HTTP plugin</title>
-    <h2>Windowlist</h2>
-    <hr />
-    <ul>
-    ''' % (
-        getData('http_stylesheet'),
-        getData('user_http_stylesheet'),
-    ))
-        a = g.app # get the singleton application instance.
-        windows = a.windowList # get the list of all open frames.
-        for w in windows:
-            shortfilename = w.shortFileName()
-            f.write('<li><a href="%s">"file name: %s"</a></li>' % (
-                shortfilename, shortfilename))
-        f.write("</ul>\n")
-        f.write("<hr />\n")
-        return f
-    #@+node:bwmulder.20050319135316: *3* node_reference
-    def node_reference(self, vnode):
-        """
-        Given a position p, return the name of the node.
-        """
-        # 1. Find the root
-        root = vnode
-        parent = root.parent()
-        while parent:
-            root = parent
-            parent = root.parent()
-        while root.v._back:
-            root.moveToBack()
-        # 2. Return the window
-        window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
-        result = self.create_leo_h_reference(window, vnode)
-        return result
-    #@+node:bwmulder.20050322224921: *3* send_head (generates html)
+    #@+node:bwmulder.20050322224921: *3* send_head & helpers
     def send_head(self):
         """Common code for GET and HEAD commands.
 
@@ -654,28 +396,24 @@ class leo_interface(object):
          """
         try:
             # self.path is provided by the RequestHandler class.
-            # g.trace(self.path)
             path = self.split_leo_path(self.path)
             if path[0] == '_':
                 f = self.leo_actions.get_response()
             elif len(path) == 1 and path[0] == 'favicon.ico':
                 f = self.leo_actions.get_favicon()
             elif path == '/':
-                f = self.get_leo_windowlist()
+                f = self.write_leo_windowlist()
             else:
                 try:
-                    window, node = self.get_leo_node(path)
+                    window, root = self.find_window_and_root(path)
                     if window is None:
                         self.send_error(404, "File not found")
                         return None
-                    if new and node is None:
+                    if root is None:
                         self.send_error(404, "No root node")
                         return None
                     f = StringIO()
-                    if new:
-                        self.format_leo_tree(f, window, node)
-                    else:
-                        self.format_leo_node(f, window, node)
+                    self.write_leo_tree(f, window, root)
                 except nodeNotFound:
                     self.send_error(404, "Node not found")
                     return None
@@ -697,19 +435,45 @@ class leo_interface(object):
             import traceback
             traceback.print_exc()
             raise
-    #@+node:EKR.20040517080250.30: *3* split_leo_path
+    #@+node:EKR.20040517080250.26: *4* find_window_and_root
+    def find_window_and_root(self, path):
+        """
+        given a path of the form:
+            [<short filename>,<number1>,<number2>...<numbern>]
+            identify the leo node which is in that file, and,
+            from top to bottom, is the <number1> child of the topmost
+            node, the <number2> child of that node, and so on.
+
+            Return None if that node can not be identified that way.
+        """
+        for w in g.app.windowList:
+            if w.shortFileName() == path[0]:
+                return w, w.c.rootPosition()
+        return None, None
+    #@+node:EKR.20040517080250.30: *4* split_leo_path
     def split_leo_path(self, path):
-        """
-        A leo node is represented by a string of the form:
-            <number1>_<number2>...<numbern>,
-        where <number> is the number of sibling of the node.
-        """
+        '''Split self.path.'''
         if path == '/':
             return '/'
         if path.startswith("/"):
             path = path[1:]
         return path.split('/')
-    #@+node:ekr.20161001124752.1: *3* write_body_pane
+    #@+node:ekr.20161001114512.1: *4* write_leo_tree & helpers
+    def write_leo_tree(self, f, window, root):
+        '''Wriite the entire html file to f.'''
+        root = root.copy()
+        self.write_head(f, root.h, window)
+        f.write('<body>')
+        f.write('<div class="container">')
+        f.write('<div class="outlinepane">')
+        f.write('<h1>%s</h1>' % window.shortFileName())
+        for sib in root.self_and_siblings():
+            self.write_node_and_subtree(f, sib)
+        f.write('</div>')
+        f.write('</div>')
+        self.write_body_pane(f, root)
+        f.write('</body></html>')
+    #@+node:ekr.20161001124752.1: *5* write_body_pane
     def write_body_pane(self, f, p):
 
         f.write('<div class="bodypane">')
@@ -718,7 +482,7 @@ class leo_interface(object):
             # This isn't correct when put in a triple string.
             # We might be able to use g.adjustTripleString, but this works.
         f.write('</pre></div>')
-    #@+node:ekr.20161001121838.1: *3* write_head
+    #@+node:ekr.20161001121838.1: *5* write_head
     def write_head(self, f, headString, window):
 
         f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -739,25 +503,52 @@ class leo_interface(object):
             getData('http_script'),
             (escape(window.shortFileName() + ":" + headString)))
         )
-    #@+node:EKR.20040517080250.28: *3* write_path
-    def write_path(self, node, f):
-        result = []
-        while node:
-            result.append(node.h)
-            node = node.parent()
-        result.reverse()
-        if result:
-            result2 = result[: -1]
-            if result2:
-                result2 = ' / '.join(result2)
-                f.write("<p>\n")
-                f.write("<br />\n")
-                f.write(escape(result2))
-                f.write("<br />\n")
-                f.write("</p>\n")
-            f.write("<h2>")
-            f.write(escape(result[-1]))
-            f.write("</h2>\n")
+    #@+node:ekr.20161001122919.1: *5* write_node_and_subtree
+    def write_node_and_subtree(self, f, p):
+        
+        # This organization, with <headline> elements in <node> elements,
+        # allows proper highlighting of nodes.
+        f.write('<div class="node" id=n:%s>' % (
+            quoteattr(p.gnx),
+        ))
+        f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
+            quoteattr(p.gnx),
+            '+' if p.hasChildren() else '-',
+            p.computeIcon(),
+            quoteattr(p.b),
+            escape(p.h),    
+        ))
+        for child in p.children():
+            self.write_node_and_subtree(f, child)
+        f.write('</div>')
+    #@+node:EKR.20040517080250.27: *4* write_leo_windowlist
+    def write_leo_windowlist(self):
+        f = StringIO()
+        f.write('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <style>%s</style>
+        <style>%s</style>
+        <title>ROOT for LEO HTTP plugin</title>
+    </head>
+    <body>
+        <h1>Windowlist</h1>
+        <hr />
+        <ul>
+    ''' % (
+        getData('http_stylesheet'),
+        getData('user_http_stylesheet'),
+    ))
+        a = g.app # get the singleton application instance.
+        windows = a.windowList # get the list of all open frames.
+        for w in windows:
+            shortfilename = w.shortFileName()
+            f.write('<li><a href="%s">"file name: %s"</a></li>' % (
+                shortfilename, shortfilename))
+        f.write('</ul><hr /></body></html>')
+        return f
     #@-others
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
 class LeoActions(object):

@@ -11228,6 +11228,10 @@ False: Ignore plain keys in the outline pane.
 });</t>
 <t tx="ekr.20161003141513.1">@language css</t>
 <t tx="ekr.20161003141513.2">/* The main .css stylesheet for the mod_http.py plugin. */
+h1 {
+    /* font-size: 16pt; */
+    /* color: red; */
+}
 .borderclass{
     border-color: #C1E0FF;
     border-width: 1px;
