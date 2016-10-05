@@ -27,7 +27,6 @@
 <v t="ekr.20110612074140.16415"><vh>run</vh></v>
 </v>
 <v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
-<v t="ekr.20161003155658.1"><vh>@@button test-http</vh></v>
 </v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
 <v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
@@ -66,6 +65,7 @@
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
+<v t="ekr.20161003155658.1"><vh>@button test-http</vh></v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
@@ -11254,29 +11254,40 @@ div.headline {
 }
 div.container {
     /* position:relative; */
+    position: relative;
 }
 div.node {
     position: relative;
     left: 20px;
 }
 div.outlinepane {
-    resize: horizontal;
-    position: absolute;
-    background: #ffffec; /* Leo yellow */
+    resize: none;
+    /* position: absolute; */
+    position: absolute:
     top: 10px;
+    left: 10px;
+    background: #ffffec; /* Leo yellow */
     /* Fixed height/width creates scrollbars.*/
-    height: 300px;
-    width: 1000px;
+    /* height: 300px; */
+    /* width: 1000px; */
+    height: 50%;
+    width: 100%;
     overflow: scroll;
     line-height: 0.8;
 }
 div.bodypane {
-    resize: both;
-    position: absolute;
-    top: 310px;
+    /* resize: both; */
+    /* position: absolute; */
+    /* top: 310px; */
     /* Fixed height/width creates scrollbars.*/
-    height: 500px;
-    width: 1000px;
+    /* height: 500px; */
+    /* width: 1000px; */
+    position: absolute;
+    resize: none;
+    left: 10px;
+    bottom: 0px;
+    height: 50%;
+    width: 100%;
     overflow: scroll;
 }
 /* Indicator icons...
@@ -11350,7 +11361,7 @@ g.app.pluginsController.loadOnePlugin(
     tag='open0',
     verbose=False)
 g.app.loadManager.readGlobalSettingsFiles()
-g.handleUrl('http://127.0.0.1:8130/') # /leoPlugins.leo')</t>
+g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
