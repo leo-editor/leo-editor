@@ -200,13 +200,24 @@
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
-<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e362e323271017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"
-expanded="ekr.20060824111500.113,"><vh>@file leoScripts.txt</vh></v>
+<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e362e323271017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20160923132650.1"><vh>Recent</vh>
 <v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
 <v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
 </v>
+<v t="ekr.20161005135707.1"><vh>@button import-tab-files</vh>
+<v t="ekr.20161005135707.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20161005135707.3"><vh>class TabImporter</vh>
+<v t="ekr.20161005135707.4"><vh>check</vh></v>
+<v t="ekr.20161005141722.1"><vh>dump_stack</vh></v>
+<v t="ekr.20161005135707.5"><vh>lws</vh></v>
+<v t="ekr.20161005135707.6"><vh>scan</vh></v>
+<v t="ekr.20161005135707.7"><vh>undent</vh></v>
+<v t="ekr.20161005144552.1"><vh>update_stack</vh></v>
+</v>
+</v>
+<v t="ekr.20161005135707.3"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2256,6 +2267,166 @@ for fn in aList:
         f = open(fn, 'w')
         f.write(s2)
         f.close()
+</t>
+<t tx="ekr.20161005135707.1">'''Import tab-indented files.'''
+g.cls()
+if c.isChanged(): c.save()
+if 1: # get s from a file.
+    path = r'c:/test/tab_file_test.txt'
+    s = open(path).read()
+else: # for testing
+    &lt;&lt; define s &gt;&gt;
+    path = 'imported string'
+@others
+last = c.lastTopLevel()
+parent = last.insertAfter()
+parent.h = path
+TabImporter(c).scan(parent, s, separate_nodes=True)
+c.selectPosition(parent)
+parent.expand()
+c.redraw()
+</t>
+<t tx="ekr.20161005135707.2">s = '''
+1.one
+1.two
+    1.1.one
+    1.1.two
+        1.1.1.one
+    1.2.three
+        1.2.1.one
+        1.2.1.two
+2.three
+'''
+        
+    </t>
+<t tx="ekr.20161005135707.3">class TabImporter:
+    
+    def __init__(self, c):
+        '''Ctor for the TabImporter class.'''
+        self.c = c
+
+    @others</t>
+<t tx="ekr.20161005135707.4">def check(self, lines):
+    '''Return False and warn if lines contains mixed leading tabs/blanks.'''
+    blanks, tabs = 0, 0
+    for s in lines:
+        lws = self.lws(s)
+        if '\t' in lws: tabs += 1
+        if ' ' in lws: blanks += 1
+    if tabs and blanks:
+        g.es_print('intermixed leading blanks and tabs.')
+        return False
+    else:
+        return True
+</t>
+<t tx="ekr.20161005135707.5">def lws(self, s):
+    '''Return the length of the leading whitespace of s.'''
+    for i, ch in enumerate(s):
+        if ch not in ' \t':
+            return s[:i]
+    return s
+    
+    </t>
+<t tx="ekr.20161005135707.6">def scan(self, root, s1, separate_nodes=True):
+    trace = True and not g.unitTesting
+    testing = True
+    c, separate = self.c, separate_nodes
+    if not s1.strip() or not root:
+        return
+    if trace: g.trace('importing to children of %s' % root.h)
+    if testing:
+        root.b = s1
+    lines = g.splitLines(s1)
+    if not self.check(lines):
+        return
+    level = 0
+    if separate:
+        stack = []
+        parent = None
+    else:
+        parent = root.insertAsLastChild()
+        parent.h = '' # Will be set later.
+        stack = [(level, parent),]
+    for i, s in enumerate(lines):
+        lws = len(self.lws(s))
+        if trace: g.trace('----- level:', level, 'lws:', lws, s.rstrip())
+        if s.strip() or not separate:
+            level, parent, stack = self.update_stack(
+                level, lws, parent, root, s, separate, stack)
+            if not parent.h:
+                parent.h = s
+            if not separate:
+                parent.b = parent.b + s
+</t>
+<t tx="ekr.20161005135707.7">def undent(self, level, p):
+    '''Unindent all lines of p.b by level.'''
+    if level &lt;= 0:
+        return
+    if p.b.strip():
+        lines = g.splitLines(p.b)
+        ch = lines[0][0]
+        assert ch in ' \t', repr(ch)
+        # Check that all lines start with the proper lws.
+        lws = ch * level
+        for s in lines:
+            if not s.startswith(lws):
+                g.trace('bad indentation:', p.h)
+                return
+        p.b = ''.join([z[len(lws):] for z in lines])
+    else:
+        p.b = ''
+</t>
+<t tx="ekr.20161005141722.1">def dump_stack(self, stack):
+    '''Dump the stack, containing (level, p) tuples.'''
+    g.trace('==========')
+    for i, data in enumerate(stack):
+        level, p = data
+        print('%2s %s %r' % (i, level, p.h))</t>
+<t tx="ekr.20161005144552.1">def update_stack(self, level, lws, parent, root, s, separate, stack):
+    '''Update the stack as necessary and return (level, parent, stack).'''
+    trace = True and not g.unitTesting
+    h = s.strip()
+    if lws == level:
+        if separate:
+            # Replace the top of the stack with a new entry.
+            if stack:
+                stack.pop()
+            grand_parent = stack[-1][1] if stack else root
+            parent = grand_parent.insertAsLastChild() # lws == level
+            parent.h = h
+            stack.append((level, parent),)
+        elif not parent.h:
+            parent.h = h
+    elif lws &gt; level:
+        # Create a new parent.
+        level = lws
+        parent = parent.insertAsLastChild()
+        parent.h = h
+        stack.append((level, parent),)
+    else:
+        # Find the previous parent.
+        self.dump_stack(stack)
+        while stack:
+            level2, parent2 = stack.pop()
+            if level2 == lws:
+                grand_parent = stack[-1][1] if stack else root
+                parent = grand_parent.insertAsLastChild() # lws &lt; level
+                parent.h = h
+                level = lws
+                stack.append((level, parent),)
+                break
+        else:
+            level = 0
+            parent = root.insertAsLastChild()
+            parent.h = h
+            stack = [(0, parent),]
+    if trace:
+        g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
+        self.dump_stack(stack)
+    assert parent and parent == stack[-1][1]
+        # An important invariant.
+    return level, parent, stack
+
 </t>
 </tnodes>
 </leo_file>
