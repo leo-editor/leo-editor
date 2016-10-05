@@ -217,7 +217,6 @@
 <v t="ekr.20161005144552.1"><vh>update_stack</vh></v>
 </v>
 </v>
-<v t="ekr.20161005135707.3"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2328,14 +2327,13 @@ c.redraw()
     
     </t>
 <t tx="ekr.20161005135707.6">def scan(self, root, s1, separate_nodes=True):
-    trace = True and not g.unitTesting
-    testing = True
+    trace = False and not g.unitTesting
     c, separate = self.c, separate_nodes
     if not s1.strip() or not root:
         return
     if trace: g.trace('importing to children of %s' % root.h)
-    if testing:
-        root.b = s1
+    # if trace:
+        # root.b = s1
     lines = g.splitLines(s1)
     if not self.check(lines):
         return
@@ -2384,7 +2382,7 @@ c.redraw()
         print('%2s %s %r' % (i, level, p.h))</t>
 <t tx="ekr.20161005144552.1">def update_stack(self, level, lws, parent, root, s, separate, stack):
     '''Update the stack as necessary and return (level, parent, stack).'''
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     h = s.strip()
     if lws == level:
         if separate:
@@ -2405,7 +2403,7 @@ c.redraw()
         stack.append((level, parent),)
     else:
         # Find the previous parent.
-        self.dump_stack(stack)
+        if trace: self.dump_stack(stack)
         while stack:
             level2, parent2 = stack.pop()
             if level2 == lws:
