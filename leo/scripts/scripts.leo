@@ -2281,6 +2281,7 @@ last = c.lastTopLevel()
 parent = last.insertAfter()
 parent.h = path
 TabImporter(c).scan(parent, s, separate_nodes=True)
+g.es_print('Imported %s' % path)
 c.selectPosition(parent)
 parent.expand()
 c.redraw()
@@ -2332,8 +2333,6 @@ c.redraw()
     if not s1.strip() or not root:
         return
     if trace: g.trace('importing to children of %s' % root.h)
-    # if trace:
-        # root.b = s1
     lines = g.splitLines(s1)
     if not self.check(lines):
         return
@@ -2347,12 +2346,12 @@ c.redraw()
         stack = [(level, parent),]
     for i, s in enumerate(lines):
         lws = len(self.lws(s))
-        if trace: g.trace('----- level:', level, 'lws:', lws, s.rstrip())
+        if trace: g.trace('----- level: %s lws: %s %s' % (
+            level, lws, s.rstrip()))
         if s.strip() or not separate:
             level, parent, stack = self.update_stack(
                 level, lws, parent, root, s, separate, stack)
-            if not parent.h:
-                parent.h = s
+            assert parent and parent.h
             if not separate:
                 parent.b = parent.b + s
 </t>
