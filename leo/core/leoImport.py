@@ -34,6 +34,269 @@ import time
 import urllib
 #@-<< imports >>
 #@+others
+#@+node:ekr.20160503145550.1: ** class FreeMindImporter
+class FreeMindImporter(object):
+    '''Importer class for FreeMind (.mmap) files.'''
+
+    def __init__(self, c):
+        '''ctor for FreeMind Importer class.'''
+        self.c = c
+        self.count = 0
+        # self.outline_dict = {}
+        self.d = {}
+
+    #@+others
+    #@+node:ekr.20160503191518.2: *3* freemind.add_children_as_nodes
+    def add_children_as_nodes(self, node_id_to_add, parent_id):
+
+        c, d = self.c, self.d
+        for p in c.p.self_and_subtree():
+            if p.h == parent_id:
+                parent = p
+                break
+        else:
+            g.trace('===== fail', parent_id)
+            return
+        child = parent.insertAsLastChild()
+        child.h = node_id_to_add
+        child.b = d[node_id_to_add]['string']
+        for child_id in d[node_id_to_add]['children']:
+            self.add_children_as_nodes(child_id, node_id_to_add)
+    #@+node:ekr.20160503125844.1: *3* freemind.create_outline
+    def create_outline(self, path):
+        '''Create a tree of nodes from a FreeMind file.'''
+        c = self.c
+        junk, fileName = g.os_path_split(path)
+        undoData = c.undoer.beforeInsertNode(c.p)
+        try:
+            self.import_file(path)
+            c.undoer.afterInsertNode(c.p, 'Import', undoData)
+        except Exception:
+            g.es_print('Invalid FreeMind file', g.shortFileName(path))
+        return c.p
+    #@+node:ekr.20160503191518.3: *3* freemind.element_to_node
+    def element_to_node(self, parent_node, element):
+
+        d = self.d
+        self.count += 1
+        n = str(self.count)
+        children = list(element.iterchildren())
+        if not children:
+            return
+        d[n] = {}
+        d[parent_node]['children'].append(n)
+        if list(children[0].iterchildren()):
+            d[n]['string'] = list(children[0].iterchildren())[0].text
+        else:
+            d[n]['string'] = children[0].text
+        d[n]['children'] = list()
+        if len(children) > 1:
+            for child in children[1].iterchildren():
+                self.element_to_node(n, child)
+    #@+node:ekr.20160503191518.4: *3* freemind.import_file
+    def import_file(self, path):
+        '''The main line of the FreeMindImporter class.'''
+        c, d = self.c, self.d
+        max_chars_in_header = 80
+        # 1: Import into the dict.
+        htmltree = lxml.html.parse(path)
+        root = htmltree.getroot()
+        body = root.findall('body')[0]
+        d['0'] = {}
+        d['0']['children'] = []
+        children = list(body.iterchildren())
+        d[str(self.count)]['string'] = list(children[0].iterchildren())[0].text
+        d[str(self.count)]['children'] = []
+        for item in list(children[1].iterchildren()):
+            self.element_to_node('0', item)
+        # 2: Create new node & select it.
+        p = c.lastTopLevel().insertAfter()
+        c.selectPosition(p)
+        # 3: Create the outline from the dict.
+        c.p.h = '0'
+        c.p.b = d['0']['string']
+        for child_id in d['0']['children']:
+            self.add_children_as_nodes(child_id, '0')
+        # 4: Set headines.
+        for p in c.p.self_and_subtree():
+            lines = p.b.splitlines()
+            if len(lines) == 1 and len(lines[0]) < max_chars_in_header:
+                # g.trace(p.h, '-->', p.b.splitlines()[0])
+                p.h = p.b.splitlines()[0]
+                p.b = ""
+            elif lines: # Only if we haven't seen this node.
+                p.h = "@node_with_long_text"
+        c.redraw()
+    #@+node:ekr.20160503145113.1: *3* freemind.import_files
+    def import_files(self, files):
+        '''Import a list of FreeMind (.mmap) files.'''
+        c = self.c
+        if files:
+            self.tab_width = c.getTabWidth(c.p)
+            for fileName in files:
+                g.setGlobalOpenDir(fileName)
+                p = self.create_outline(fileName)
+                p.contract()
+                p.setDirty()
+                c.setChanged(True)
+            c.redraw(p)
+    #@+node:ekr.20160504043823.1: *3* freemind.prompt_for_files
+    def prompt_for_files(self):
+        '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
+        c = self.c
+        types = [
+            ("FreeMind files", "*.mm.html"),
+            ("All files", "*"),
+        ]
+        names = g.app.gui.runOpenFileDialog(c,
+            title="Import FreeMind File",
+            filetypes=types,
+            defaultextension=".html",
+            multiple=True)
+        c.bringToFront()
+        if names:
+            g.chdir(names[0])
+            self.import_files(names)
+    #@-others
+#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
+class JSON_Import_Helper(object):
+    '''
+    A class that helps client scripts import .json files.
+
+    Client scripts supply data describing how to create Leo outlines from
+    the .json data.
+    '''
+
+    def __init__(self, c):
+        '''ctor for the JSON_Import_Helper class.'''
+        self.c = c
+
+    #@+others
+    #@+node:ekr.20160505044925.1: *3*  unused code
+    if 0:
+        #@+others
+        #@+node:ekr.20160505045041.1: *4* unused write code
+        #@+node:ekr.20160504144545.1: *5* json.put
+        def put(self, s):
+            '''Write line s using at.os, taking special care of newlines.'''
+            at = self.c.leoAtFile
+            at.os(s[: -1] if s.endswith('\n') else s)
+            at.onl()
+        #@+node:ekr.20160504144241.7: *5* json.vnode_dict
+        def vnode_dict(self, v):
+            return {
+                'gnx': v.gnx,
+                'h': v.h, 'b': v.b,
+                # 'ua': v.u,
+                'children': [z.gnx for z in v.children]
+            }
+        #@+node:ekr.20160504144455.1: *5* json.write
+        def write(self, root, forceSentinels=False):
+            """Write all the @auto-json node."""
+            nodes = list(set([p.v for p in root.subtree()]))
+            nodes = [self.vnode_dict(v) for v in nodes]
+            d = {
+                'top': self.vnode_dict(root.v),
+                'nodes': nodes,
+            }
+            s = json.dumps(d,
+                sort_keys=True,
+                indent=2, # Pretty print.
+                separators=(',', ': '))
+            self.put(s)
+            root.setVisited()
+            return True
+        #@+node:ekr.20160505045049.1: *4* unused read code
+        #@+node:ekr.20160504144241.3: *5* json.import_files
+        def import_files(self, files):
+            '''Import a list of MindMap (.csv) files.'''
+            c = self.c
+            if files:
+                self.tab_width = c.getTabWidth(c.p)
+                for fileName in files:
+                    g.setGlobalOpenDir(fileName)
+                    p = self.create_outline(fileName)
+                    p.contract()
+                    p.setDirty()
+                    c.setChanged(True)
+                c.redraw(p)
+        #@+node:ekr.20160504144241.4: *5* json.prompt_for_files
+        def prompt_for_files(self):
+            '''Prompt for a list of MindJet (.csv) files and import them.'''
+            c = self.c
+            types = [
+                ("JSON files", "*.json"),
+                ("All files", "*"),
+            ]
+            names = g.app.gui.runOpenFileDialog(c,
+                title="Import MindJet File",
+                filetypes=types,
+                defaultextension=".csv",
+                multiple=True)
+            c.bringToFront()
+            if names:
+                g.chdir(names[0])
+                self.import_files(names)
+        #@-others
+    #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
+    def create_nodes(self, parent, parent_d):
+        '''Create the tree of nodes rooted in parent.'''
+        import pprint
+        trace = False and not g.unitTesting
+        d = self.gnx_dict
+        if trace: g.trace(parent.h, pprint.pprint(parent_d))
+        for child_gnx in parent_d.get('children'):
+            d2 = d.get(child_gnx)
+            if trace:
+                g.trace('child', pprint.pprint(d2))
+            if child_gnx in self.vnodes_dict:
+                # It's a clone.
+                v = self.vnodes_dict.get(child_gnx)
+                n = parent.numberOfChildren()
+                child = leoNodes.Position(v)
+                child._linkAsNthChild(parent, n)
+                # Don't create children again.
+            else:
+                child = parent.insertAsLastChild()
+                child.h = d2.get('h') or '<**no h**>'
+                child.b = d2.get('b') or g.u('')
+                if d2.get('gnx'):
+                    child.v.findIndex = gnx = d2.get('gnx')
+                    self.vnodes_dict[gnx] = child.v
+                if d2.get('ua'):
+                    child.u = d2.get('ua')
+                self.create_nodes(child, d2)
+    #@+node:ekr.20160504144241.2: *3* json.create_outline (generalize)
+    def create_outline(self, path):
+        c = self.c
+        junk, fileName = g.os_path_split(path)
+        undoData = c.undoer.beforeInsertNode(c.p)
+        # Create the top-level headline.
+        p = c.lastTopLevel().insertAfter()
+        fn = g.shortFileName(path).strip()
+        if fn.endswith('.json'):
+            fn = fn[:-5]
+        p.h = fn
+        self.scan(path, p)
+        c.undoer.afterInsertNode(p, 'Import', undoData)
+        return p
+    #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
+    def scan(self, s, parent):
+        '''Create an outline from a MindMap (.csv) file.'''
+        trace = False and not g.unitTesting
+        c, d, self.gnx_dict = self.c, json.loads(s), {}
+        for d2 in d.get('nodes', []):
+            gnx = d2.get('gnx')
+            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
+            self.gnx_dict[gnx] = d2
+        top_d = d.get('top')
+        if top_d:
+            # Don't set parent.h or parent.gnx or parent.v.u.
+            parent.b = top_d.get('b') or ''
+            self.create_nodes(parent, top_d)
+            c.redraw()
+        return bool(top_d)
+    #@-others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
 class LeoImportCommands(object):
     '''
@@ -821,7 +1084,37 @@ class LeoImportCommands(object):
             name = name.replace('\\', '/') # 2011/11/25
             current.initHeadString(name)
         return current
-    #@+node:ekr.20031218072017.3214: *4* ic.importFlattenedOutline & helpers
+    #@+node:ekr.20031218072017.3220: *4* ic.importFlattenedOutline & helpers
+    def importFlattenedOutline(self, files): # Not a command, so no event arg.
+        c = self.c; u = c.undoer
+        if not c.p: return
+        if not files: return
+        self.setEncoding()
+        fileName = files[0] # files contains at most one file.
+        g.setGlobalOpenDir(fileName)
+        s, e = g.readFileIntoString(fileName)
+        if s is None: return ''
+        s = s.replace('\r', '') # Fixes bug 626101.
+        array = s.split("\n")
+        # Convert the string to an outline and insert it after the current node.
+        undoData = u.beforeInsertNode(c.p)
+        # First, try importing a tab-delimited outline.
+        importer = TabImporter(c)
+        p = None
+        if s.strip() and importer.check(s, warn=False):
+            p = importer.scan(s, fn=fileName)
+        # Second, try importing a MORE file.
+        if not p:
+            p = self.convertMoreStringsToOutlineAfter(array, c.p)
+        if p:
+            c.endEditing()
+            c.validateOutline()
+            p.setDirty()
+            c.setChanged(True)
+            u.afterInsertNode(p, 'Import', undoData)
+            c.redraw(p)
+        elif not g.unitTesting:
+            g.es_print("not a valid MORE file", fileName)
     #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
@@ -848,8 +1141,7 @@ class LeoImportCommands(object):
                 #@+node:ekr.20031218072017.3216: *6* << Link a new position p into the outline >>
                 assert(level >= 0)
                 if not last_p:
-                    # g.trace(first_p)
-                    theRoot = p = first_p.insertAfter()
+                    theRoot = p = first_p.insertAsLastChild() # 2016/10/06.
                 elif level == lastLevel:
                     p = last_p.insertAfter()
                 elif level == lastLevel + 1:
@@ -896,7 +1188,7 @@ class LeoImportCommands(object):
                     body = ""
                     n = index - bodyLines
                     while n < index:
-                        body += strings[n]
+                        body += strings[n].rstrip()
                         if n != index - 1:
                             body += "\n"
                         n += 1
@@ -910,40 +1202,15 @@ class LeoImportCommands(object):
             c.setChanged(True)
         c.redraw()
         return theRoot
-    #@+node:ekr.20031218072017.3220: *5* importFlattenedOutline
-    def importFlattenedOutline(self, files): # Not a command, so no event arg.
-        c = self.c; u = c.undoer; current = c.p
-        if current is None: return
-        if len(files) < 1: return
-        self.setEncoding()
-        fileName = files[0] # files contains at most one file.
-        g.setGlobalOpenDir(fileName)
-        s, e = g.readFileIntoString(fileName)
-        if s is None: return ''
-        s = s.replace('\r', '') # Fixes bug 626101.
-        array = s.split("\n")
-        # Convert the string to an outline and insert it after the current node.
-        undoData = u.beforeInsertNode(current)
-        p = self.convertMoreStringsToOutlineAfter(array, current)
-        if p:
-            c.endEditing()
-            c.validateOutline()
-            c.redrawAndEdit(p)
-            p.setDirty()
-            c.setChanged(True)
-            u.afterInsertNode(p, 'Import', undoData)
-        else:
-            if not g.unitTesting:
-                g.es("not a valid MORE file", fileName)
     #@+node:ekr.20031218072017.3222: *5* moreHeadlineLevel
     # return the headline level of s,or -1 if the string is not a MORE headline.
 
     def moreHeadlineLevel(self, s):
         level = 0; i = 0
-        while g.match(s, i, '\t'):
+        while i < len(s) and s[i] in ' \t': # 2016/10/06: allow blanks or tabs.
             level += 1
             i += 1
-        plusFlag = True if g.match(s, i, "+") else False
+        plusFlag = g.match(s, i, "+")
         if g.match(s, i, "+ ") or g.match(s, i, "- "):
             return level, plusFlag
         else:
@@ -957,24 +1224,27 @@ class LeoImportCommands(object):
         return self.stringsAreValidMoreFile(strings)
 
     def stringsAreValidMoreFile(self, strings):
+        trace = False and not g.unitTesting
         if len(strings) < 1: return False
         level1, plusFlag = self.moreHeadlineLevel(strings[0])
         if level1 == -1: return False
         # Check the level of all headlines.
-        i = 0; lastLevel = level1
-        while i < len(strings):
-            s = strings[i]; i += 1
+        lastLevel = level1
+        for s in strings:
             level, newFlag = self.moreHeadlineLevel(s)
-            if level > 0:
-                if level < level1 or level > lastLevel + 1:
-                    return False # improper level.
-                elif level > lastLevel and not plusFlag:
-                    return False # parent of this node has no children.
-                elif level == lastLevel and plusFlag:
-                    return False # last node has missing child.
-                else:
-                    lastLevel = level
-                    plusFlag = newFlag
+            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
+                level1, level, lastLevel, s.rstrip()))
+            if level == -1:
+                return True # A body line.
+            elif level < level1 or level > lastLevel + 1:
+                return False # improper level.
+            elif level > lastLevel and not plusFlag:
+                return False # parent of this node has no children.
+            elif level == lastLevel and plusFlag:
+                return False # last node has missing child.
+            else:
+                lastLevel = level
+                plusFlag = newFlag
         return True
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
@@ -1583,269 +1853,6 @@ class LeoImportCommands(object):
             self.encoding = 'utf-8'
         # g.trace(self.encoding)
     #@-others
-#@+node:ekr.20160503145550.1: ** class FreeMindImporter
-class FreeMindImporter(object):
-    '''Importer class for FreeMind (.mmap) files.'''
-
-    def __init__(self, c):
-        '''ctor for FreeMind Importer class.'''
-        self.c = c
-        self.count = 0
-        # self.outline_dict = {}
-        self.d = {}
-
-    #@+others
-    #@+node:ekr.20160503191518.2: *3* freemind.add_children_as_nodes
-    def add_children_as_nodes(self, node_id_to_add, parent_id):
-
-        c, d = self.c, self.d
-        for p in c.p.self_and_subtree():
-            if p.h == parent_id:
-                parent = p
-                break
-        else:
-            g.trace('===== fail', parent_id)
-            return
-        child = parent.insertAsLastChild()
-        child.h = node_id_to_add
-        child.b = d[node_id_to_add]['string']
-        for child_id in d[node_id_to_add]['children']:
-            self.add_children_as_nodes(child_id, node_id_to_add)
-    #@+node:ekr.20160503125844.1: *3* freemind.create_outline
-    def create_outline(self, path):
-        '''Create a tree of nodes from a FreeMind file.'''
-        c = self.c
-        junk, fileName = g.os_path_split(path)
-        undoData = c.undoer.beforeInsertNode(c.p)
-        try:
-            self.import_file(path)
-            c.undoer.afterInsertNode(c.p, 'Import', undoData)
-        except Exception:
-            g.es_print('Invalid FreeMind file', g.shortFileName(path))
-        return c.p
-    #@+node:ekr.20160503191518.3: *3* freemind.element_to_node
-    def element_to_node(self, parent_node, element):
-
-        d = self.d
-        self.count += 1
-        n = str(self.count)
-        children = list(element.iterchildren())
-        if not children:
-            return
-        d[n] = {}
-        d[parent_node]['children'].append(n)
-        if list(children[0].iterchildren()):
-            d[n]['string'] = list(children[0].iterchildren())[0].text
-        else:
-            d[n]['string'] = children[0].text
-        d[n]['children'] = list()
-        if len(children) > 1:
-            for child in children[1].iterchildren():
-                self.element_to_node(n, child)
-    #@+node:ekr.20160503191518.4: *3* freemind.import_file
-    def import_file(self, path):
-        '''The main line of the FreeMindImporter class.'''
-        c, d = self.c, self.d
-        max_chars_in_header = 80
-        # 1: Import into the dict.
-        htmltree = lxml.html.parse(path)
-        root = htmltree.getroot()
-        body = root.findall('body')[0]
-        d['0'] = {}
-        d['0']['children'] = []
-        children = list(body.iterchildren())
-        d[str(self.count)]['string'] = list(children[0].iterchildren())[0].text
-        d[str(self.count)]['children'] = []
-        for item in list(children[1].iterchildren()):
-            self.element_to_node('0', item)
-        # 2: Create new node & select it.
-        p = c.lastTopLevel().insertAfter()
-        c.selectPosition(p)
-        # 3: Create the outline from the dict.
-        c.p.h = '0'
-        c.p.b = d['0']['string']
-        for child_id in d['0']['children']:
-            self.add_children_as_nodes(child_id, '0')
-        # 4: Set headines.
-        for p in c.p.self_and_subtree():
-            lines = p.b.splitlines()
-            if len(lines) == 1 and len(lines[0]) < max_chars_in_header:
-                # g.trace(p.h, '-->', p.b.splitlines()[0])
-                p.h = p.b.splitlines()[0]
-                p.b = ""
-            elif lines: # Only if we haven't seen this node.
-                p.h = "@node_with_long_text"
-        c.redraw()
-    #@+node:ekr.20160503145113.1: *3* freemind.import_files
-    def import_files(self, files):
-        '''Import a list of FreeMind (.mmap) files.'''
-        c = self.c
-        if files:
-            self.tab_width = c.getTabWidth(c.p)
-            for fileName in files:
-                g.setGlobalOpenDir(fileName)
-                p = self.create_outline(fileName)
-                p.contract()
-                p.setDirty()
-                c.setChanged(True)
-            c.redraw(p)
-    #@+node:ekr.20160504043823.1: *3* freemind.prompt_for_files
-    def prompt_for_files(self):
-        '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
-        c = self.c
-        types = [
-            ("FreeMind files", "*.mm.html"),
-            ("All files", "*"),
-        ]
-        names = g.app.gui.runOpenFileDialog(c,
-            title="Import FreeMind File",
-            filetypes=types,
-            defaultextension=".html",
-            multiple=True)
-        c.bringToFront()
-        if names:
-            g.chdir(names[0])
-            self.import_files(names)
-    #@-others
-#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
-class JSON_Import_Helper(object):
-    '''
-    A class that helps client scripts import .json files.
-
-    Client scripts supply data describing how to create Leo outlines from
-    the .json data.
-    '''
-
-    def __init__(self, c):
-        '''ctor for the JSON_Import_Helper class.'''
-        self.c = c
-
-    #@+others
-    #@+node:ekr.20160505044925.1: *3*  unused code
-    if 0:
-        #@+others
-        #@+node:ekr.20160505045041.1: *4* unused write code
-        #@+node:ekr.20160504144545.1: *5* json.put
-        def put(self, s):
-            '''Write line s using at.os, taking special care of newlines.'''
-            at = self.c.leoAtFile
-            at.os(s[: -1] if s.endswith('\n') else s)
-            at.onl()
-        #@+node:ekr.20160504144241.7: *5* json.vnode_dict
-        def vnode_dict(self, v):
-            return {
-                'gnx': v.gnx,
-                'h': v.h, 'b': v.b,
-                # 'ua': v.u,
-                'children': [z.gnx for z in v.children]
-            }
-        #@+node:ekr.20160504144455.1: *5* json.write
-        def write(self, root, forceSentinels=False):
-            """Write all the @auto-json node."""
-            nodes = list(set([p.v for p in root.subtree()]))
-            nodes = [self.vnode_dict(v) for v in nodes]
-            d = {
-                'top': self.vnode_dict(root.v),
-                'nodes': nodes,
-            }
-            s = json.dumps(d,
-                sort_keys=True,
-                indent=2, # Pretty print.
-                separators=(',', ': '))
-            self.put(s)
-            root.setVisited()
-            return True
-        #@+node:ekr.20160505045049.1: *4* unused read code
-        #@+node:ekr.20160504144241.3: *5* json.import_files
-        def import_files(self, files):
-            '''Import a list of MindMap (.csv) files.'''
-            c = self.c
-            if files:
-                self.tab_width = c.getTabWidth(c.p)
-                for fileName in files:
-                    g.setGlobalOpenDir(fileName)
-                    p = self.create_outline(fileName)
-                    p.contract()
-                    p.setDirty()
-                    c.setChanged(True)
-                c.redraw(p)
-        #@+node:ekr.20160504144241.4: *5* json.prompt_for_files
-        def prompt_for_files(self):
-            '''Prompt for a list of MindJet (.csv) files and import them.'''
-            c = self.c
-            types = [
-                ("JSON files", "*.json"),
-                ("All files", "*"),
-            ]
-            names = g.app.gui.runOpenFileDialog(c,
-                title="Import MindJet File",
-                filetypes=types,
-                defaultextension=".csv",
-                multiple=True)
-            c.bringToFront()
-            if names:
-                g.chdir(names[0])
-                self.import_files(names)
-        #@-others
-    #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
-    def create_nodes(self, parent, parent_d):
-        '''Create the tree of nodes rooted in parent.'''
-        import pprint
-        trace = False and not g.unitTesting
-        d = self.gnx_dict
-        if trace: g.trace(parent.h, pprint.pprint(parent_d))
-        for child_gnx in parent_d.get('children'):
-            d2 = d.get(child_gnx)
-            if trace:
-                g.trace('child', pprint.pprint(d2))
-            if child_gnx in self.vnodes_dict:
-                # It's a clone.
-                v = self.vnodes_dict.get(child_gnx)
-                n = parent.numberOfChildren()
-                child = leoNodes.Position(v)
-                child._linkAsNthChild(parent, n)
-                # Don't create children again.
-            else:
-                child = parent.insertAsLastChild()
-                child.h = d2.get('h') or '<**no h**>'
-                child.b = d2.get('b') or g.u('')
-                if d2.get('gnx'):
-                    child.v.findIndex = gnx = d2.get('gnx')
-                    self.vnodes_dict[gnx] = child.v
-                if d2.get('ua'):
-                    child.u = d2.get('ua')
-                self.create_nodes(child, d2)
-    #@+node:ekr.20160504144241.2: *3* json.create_outline (generalize)
-    def create_outline(self, path):
-        c = self.c
-        junk, fileName = g.os_path_split(path)
-        undoData = c.undoer.beforeInsertNode(c.p)
-        # Create the top-level headline.
-        p = c.lastTopLevel().insertAfter()
-        fn = g.shortFileName(path).strip()
-        if fn.endswith('.json'):
-            fn = fn[:-5]
-        p.h = fn
-        self.scan(path, p)
-        c.undoer.afterInsertNode(p, 'Import', undoData)
-        return p
-    #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
-    def scan(self, s, parent):
-        '''Create an outline from a MindMap (.csv) file.'''
-        trace = False and not g.unitTesting
-        c, d, self.gnx_dict = self.c, json.loads(s), {}
-        for d2 in d.get('nodes', []):
-            gnx = d2.get('gnx')
-            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
-            self.gnx_dict[gnx] = d2
-        top_d = d.get('top')
-        if top_d:
-            # Don't set parent.h or parent.gnx or parent.v.u.
-            parent.b = top_d.get('b') or ''
-            self.create_nodes(parent, top_d)
-            c.redraw()
-        return bool(top_d)
-    #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter(object):
     '''Mind Map Importer class.'''
@@ -1959,6 +1966,79 @@ class MindMapImporter(object):
                 return row[count]
             else:
                 count = count+1
+        return None
+    #@-others
+#@+node:ekr.20161006100941.1: ** class MORE_Importer
+class MORE_Importer(object):
+    '''Mind Map Importer class.'''
+
+    def __init__(self, c):
+        '''ctor for MORE_Importer class.'''
+        self.c = c
+
+    #@+others
+    #@+node:ekr.20161006101111.1: *3* MORE.prompt_for_files
+    def prompt_for_files(self):
+        '''Prompt for a list of MORE files and import them.'''
+        c = self.c
+        types = [
+            ("All files", "*"),
+        ]
+        names = g.app.gui.runOpenFileDialog(c,
+            title="Import MORE Files",
+            filetypes=types,
+            # defaultextension=".txt",
+            multiple=True)
+        c.bringToFront()
+        if names:
+            g.chdir(names[0])
+            self.import_files(names)
+    #@+node:ekr.20161006101218.1: *3* MORE.import_files
+    def import_files(self, files):
+        '''Import a list of MORE (.csv) files.'''
+        c = self.c
+        if files:
+            changed = False
+            self.tab_width = c.getTabWidth(c.p)
+            for fileName in files:
+                g.setGlobalOpenDir(fileName)
+                p = self.import_file(fileName)
+                if p:
+                    p.contract()
+                    p.setDirty()
+                    c.setChanged(True)
+                    changed = True
+            if changed:
+                c.redraw(p)
+    #@+node:ekr.20161006101347.1: *3* MORE.import_file
+    def import_file(self, fileName): # Not a command, so no event arg.
+        c = self.c; u = c.undoer
+        ic = c.importCommands
+        if not c.p: return
+        ic.setEncoding()
+        g.setGlobalOpenDir(fileName)
+        s, e = g.readFileIntoString(fileName)
+        if s is None: return ''
+        s = s.replace('\r', '') # Fixes bug 626101.
+        lines = g.splitLines(s)
+        # Convert the string to an outline and insert it after the current node.
+        if ic.stringsAreValidMoreFile(lines):
+            last = c.lastTopLevel()
+            undoData = u.beforeInsertNode(c.p)
+            root = last.insertAfter()
+            root.h = fileName
+            p = ic.convertMoreStringsToOutlineAfter(lines, root)
+            if p:
+                c.endEditing()
+                c.validateOutline()
+                p.setDirty()
+                c.setChanged(True)
+                u.afterInsertNode(root, 'Import MORE File', undoData)
+                c.selectPosition(root)
+                c.redraw()
+                return p
+        if not g.unitTesting:
+            g.es("not a valid MORE file", fileName)
         return None
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
@@ -2365,6 +2445,188 @@ class RecursiveImportController(object):
         t2 = time.time()
         g.es('imported %s nodes in %2.2f sec' % (n, t2 - t1))
     #@-others
+#@+node:ekr.20161006071801.1: ** class TabImporter
+class TabImporter:
+    '''
+    A class to import a file whose outline levels are indicated by
+    leading tabs or blanks (but not both).
+    '''
+    
+    def __init__(self, c, separate=True):
+        '''Ctor for the TabImporter class.'''
+        self.c = c
+        self.stack = []
+        self.root = None
+        self.separate = separate
+        self.stack = []
+
+    #@+others
+    #@+node:ekr.20161006071801.2: *3* tabbed.check
+    def check(self, lines, warn=True):
+        '''Return False and warn if lines contains mixed leading tabs/blanks.'''
+        blanks, tabs = 0, 0
+        for s in lines:
+            lws = self.lws(s)
+            if '\t' in lws: tabs += 1
+            if ' ' in lws: blanks += 1
+        if tabs and blanks:
+            if warn:
+                g.es_print('intermixed leading blanks and tabs.')
+            return False
+        else:
+            return True
+    #@+node:ekr.20161006071801.3: *3* tabbed.dump_stack
+    def dump_stack(self):
+        '''Dump the stack, containing (level, p) tuples.'''
+        g.trace('==========')
+        for i, data in enumerate(self.stack):
+            level, p = data
+            print('%2s %s %r' % (i, level, p.h))
+    #@+node:ekr.20161006073129.1: *3* tabbed.import_files
+    def import_files(self, files):
+        '''Import a list of tab-delimited files.'''
+        c, u = self.c, self.c.undoer
+        if files:
+            p = None
+            for fn in files:
+                try:
+                    g.setGlobalOpenDir(fn)
+                    s = open(fn).read()
+                    s = s.replace('\r', '')
+                except Exception:
+                    continue
+                if s.strip() and self.check(s):
+                    undoData = u.beforeInsertNode(c.p)
+                    last = c.lastTopLevel()
+                    self.root = p = last.insertAfter()
+                    self.scan(s)
+                    p.h = g.shortFileName(fn)
+                    p.contract()
+                    p.setDirty()
+                    u.afterInsertNode(p, 'Import Tabbed File', undoData)
+                if p:
+                    c.setChanged(True)
+                    c.redraw(p)
+    #@+node:ekr.20161006071801.4: *3* tabbed.lws
+    def lws(self, s):
+        '''Return the length of the leading whitespace of s.'''
+        for i, ch in enumerate(s):
+            if ch not in ' \t':
+                return s[:i]
+        return s
+        
+        
+    #@+node:ekr.20161006072958.1: *3* tabbed.prompt_for_files
+    def prompt_for_files(self):
+        '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
+        c = self.c
+        types = [
+            ("All files", "*"),
+        ]
+        names = g.app.gui.runOpenFileDialog(c,
+            title="Import Tabbed File",
+            filetypes=types,
+            defaultextension=".html",
+            multiple=True)
+        c.bringToFront()
+        if names:
+            g.chdir(names[0])
+            self.import_files(names)
+    #@+node:ekr.20161006071801.5: *3* tabbed.scan
+    def scan(self, s1, fn=None):
+        '''Create the outline corresponding to s1.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        # Self.root might be None if we are called from a script.
+        if not self.root:
+            last = c.lastTopLevel()
+            self.root = last.insertAfter()
+            if fn: self.root.h = fn
+        lines = g.splitLines(s1)
+        self.stack = []
+        # Redo the checks in case we are called from a script.
+        if s1.strip() and self.check(lines):
+            if trace: g.trace('importing to %s' % self.root.h)
+            for s in lines:
+                if s.strip() or not self.separate:
+                    self.scan_helper(s)
+        return self.root
+    #@+node:ekr.20161006071801.6: *3* tabbed.scan_helper
+    def scan_helper(self, s):
+        '''Update the stack as necessary and return (level, parent, stack).'''
+        trace = False and not g.unitTesting
+        root, separate, stack = self.root, self.separate, self.stack
+        if stack:
+            level, parent = stack[-1]
+        else:
+            level, parent = 0, None
+        lws = len(self.lws(s))
+        if trace:
+            g.trace('----- level: %s lws: %s %s' % (level, lws, s.rstrip()))
+        h = s.strip()
+        if lws == level:
+            if separate or not parent:
+                # Replace the top of the stack with a new entry.
+                if stack:
+                    stack.pop()
+                grand_parent = stack[-1][1] if stack else root
+                parent = grand_parent.insertAsLastChild() # lws == level
+                parent.h = h
+                stack.append((level, parent),)
+            elif not parent.h:
+                parent.h = h
+        elif lws > level:
+            # Create a new parent.
+            level = lws
+            parent = parent.insertAsLastChild()
+            parent.h = h
+            stack.append((level, parent),)
+        else:
+            # Find the previous parent.
+            if trace: self.dump_stack()
+            while stack:
+                level2, parent2 = stack.pop()
+                if level2 == lws:
+                    grand_parent = stack[-1][1] if stack else root
+                    parent = grand_parent.insertAsLastChild() # lws < level
+                    parent.h = h
+                    level = lws
+                    stack.append((level, parent),)
+                    break
+            else:
+                level = 0
+                parent = root.insertAsLastChild()
+                parent.h = h
+                stack = [(0, parent),]
+        if trace:
+            g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
+            self.dump_stack()
+        assert parent and parent == stack[-1][1]
+            # An important invariant.
+        assert level == stack[-1][0], (level, stack[-1][0])
+        if not separate:
+            parent.b = parent.b + self.undent(level, s)
+        return level
+    #@+node:ekr.20161006071801.7: *3* tabbed.undent
+    def undent(self, level, s):
+        '''Unindent all lines of p.b by level.'''
+        # g.trace(level, s.rstrip())
+        if level <= 0:
+            return s
+        if s.strip():
+            lines = g.splitLines(s)
+            ch = lines[0][0]
+            assert ch in ' \t', repr(ch)
+            # Check that all lines start with the proper lws.
+            lws = ch * level
+            for s in lines:
+                if not s.startswith(lws):
+                    g.trace('bad indentation: %r' % s)
+                    return s
+            return ''.join([z[len(lws):] for z in lines])
+        else:
+            return ''
+    #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
 class ZimImportController(object):
     '''
@@ -2537,6 +2799,20 @@ def import_mind_jet_files(event):
     c = event.get('c')
     if c:
         MindMapImporter(c).prompt_for_files()
+#@+node:ekr.20161006100854.1: *3* @g.command(import-MORE-files)
+@g.command('import-MORE-files')
+def import_MORE_files_command(event):
+    '''Prompt for MORE files and import them.'''
+    c = event.get('c')
+    if c:
+        MORE_Importer(c).prompt_for_files()
+#@+node:ekr.20161006072227.1: *3* @g.command(import-tabbed-files)
+@g.command('import-tabbed-files')
+def import_tabbed_files_command(event):
+    '''Prompt for tabbed files and import them.'''
+    c = event.get('c')
+    if c:
+        TabImporter(c).prompt_for_files()
 #@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
 @g.command('import-zim-folder')
 def import_zim_command(event):

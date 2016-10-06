@@ -1016,7 +1016,14 @@
 <v t="ekr.20131213135427.21860"><vh>@item write-dirty-at-shadow-nodes</vh></v>
 <v t="ekr.20131213135427.21861"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
+<v t="ekr.20161006072026.1"><vh>@menu &amp;Import</vh>
 <v t="ekr.20131213135427.21862"><vh>@item import-file</vh></v>
+<v t="ekr.20161006072143.1"><vh>@item import-free-mind-files</vh></v>
+<v t="ekr.20161006093610.1"><vh>@item import-mind-jet-files</vh></v>
+<v t="ekr.20161006102148.1"><vh>@item import-MORE-files</vh></v>
+<v t="ekr.20161006072041.1"><vh>@item import-tabbed-files</vh></v>
+<v t="ekr.20161006093513.1"><vh>@item import-zim-folder</vh></v>
+</v>
 <v t="ekr.20131213135427.21863"><vh>@menu &amp;Export</vh>
 <v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
 <v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
@@ -2459,6 +2466,7 @@
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20140915194122.19470"></v>
 <v t="ekr.20111003085631.15488"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6626,7 +6634,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21859">Write Dirty @&lt;file&gt; Nodes</t>
 <t tx="ekr.20131213135427.21860">Write Dirty @shadow Nodes</t>
 <t tx="ekr.20131213135427.21861">Write Missing @&lt;file&gt; Nodes</t>
-<t tx="ekr.20131213135427.21862">&amp;Import File...</t>
+<t tx="ekr.20131213135427.21862">Import &amp;Any File...</t>
 <t tx="ekr.20131213135427.21863"></t>
 <t tx="ekr.20131213135427.21864">Export &amp;Outline...</t>
 <t tx="ekr.20131213135427.21865">&amp;Flatten Selected Outline...</t>
@@ -11362,6 +11370,12 @@ g.app.pluginsController.loadOnePlugin(
     verbose=False)
 g.app.loadManager.readGlobalSettingsFiles()
 g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
+<t tx="ekr.20161006072026.1"></t>
+<t tx="ekr.20161006072041.1">Import &amp;Tabbed File...</t>
+<t tx="ekr.20161006072143.1">Import &amp;FreeMind Files...</t>
+<t tx="ekr.20161006093513.1">Import &amp;Zim Folder...</t>
+<t tx="ekr.20161006093610.1">Import &amp;MindJet Files...</t>
+<t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -206,15 +206,14 @@
 <v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
 <v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
 </v>
-<v t="ekr.20161005135707.1"><vh>@button import-tab-files</vh>
-<v t="ekr.20161005135707.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-<v t="ekr.20161005135707.3"><vh>class TabImporter</vh>
-<v t="ekr.20161005135707.4"><vh>check</vh></v>
-<v t="ekr.20161005141722.1"><vh>dump_stack</vh></v>
-<v t="ekr.20161005135707.5"><vh>lws</vh></v>
-<v t="ekr.20161005135707.6"><vh>scan</vh></v>
-<v t="ekr.20161005144552.1"><vh>scan_helper</vh></v>
-<v t="ekr.20161005135707.7"><vh>undent</vh></v>
+<v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
+<v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
+<v t="ekr.20161006092435.3"><vh>check</vh></v>
+<v t="ekr.20161006092435.4"><vh>dump_stack</vh></v>
+<v t="ekr.20161006092435.5"><vh>lws</vh></v>
+<v t="ekr.20161006092435.6"><vh>scan</vh></v>
+<v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
+<v t="ekr.20161006092435.8"><vh>undent</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2267,40 +2266,31 @@ for fn in aList:
         f.write(s2)
         f.close()
 </t>
-<t tx="ekr.20161005135707.1">'''Import tab-indented files.'''
+<t tx="ekr.20161006092435.1">'''Import tab-indented files.'''
 g.cls()
+if c.isChanged():
+    c.save()
 separate = True # True: put all lines in separate nodes.
-if c.isChanged(): c.save()
-if 1: # get s from a file.
-    path = r'c:/test/tab_file_test.txt'
+path = r'c:/test/tab_file_test.txt'
+if 1:
+    # Use the TabImporter class in leoImport.py.
+    import leo.core.leoImport as leoImport
+    importer = leoImport.TabImporter(c, separate=separate)
+    importer.import_files([path])
+else:
+    # Use a custom class.
+    @others
     s = open(path).read()
-else: # for testing
-    &lt;&lt; define s &gt;&gt;
-    path = 'imported string'
-@others
-last = c.lastTopLevel()
-root = last.insertAfter()
-root.h = path
-TabImporter(c, root=root, separate=separate).scan(s)
-g.es_print('Imported %s' % path)
-c.selectPosition(root)
-root.expand()
-c.redraw()
+    last = c.lastTopLevel()
+    root = last.insertAfter()
+    root.h = path
+    TabImporter(c, root=root, separate=separate).scan(s)
+    g.es_print('Imported %s' % path)
+    c.selectPosition(root)
+    root.expand()
+    c.redraw()
 </t>
-<t tx="ekr.20161005135707.2">s = '''
-1.one
-1.two
-    1.1.one
-    1.1.two
-        1.1.1.one
-    1.2.three
-        1.2.1.one
-        1.2.1.two
-2.three
-'''
-        
-    </t>
-<t tx="ekr.20161005135707.3">class TabImporter:
+<t tx="ekr.20161006092435.2">class TabImporter:
     
     def __init__(self, c, root, separate):
         '''Ctor for the TabImporter class.'''
@@ -2310,7 +2300,7 @@ c.redraw()
         self.separate = separate
 
     @others</t>
-<t tx="ekr.20161005135707.4">def check(self, lines):
+<t tx="ekr.20161006092435.3">def check(self, lines):
     '''Return False and warn if lines contains mixed leading tabs/blanks.'''
     blanks, tabs = 0, 0
     for s in lines:
@@ -2323,7 +2313,13 @@ c.redraw()
     else:
         return True
 </t>
-<t tx="ekr.20161005135707.5">def lws(self, s):
+<t tx="ekr.20161006092435.4">def dump_stack(self):
+    '''Dump the stack, containing (level, p) tuples.'''
+    g.trace('==========')
+    for i, data in enumerate(self.stack):
+        level, p = data
+        print('%2s %s %r' % (i, level, p.h))</t>
+<t tx="ekr.20161006092435.5">def lws(self, s):
     '''Return the length of the leading whitespace of s.'''
     for i, ch in enumerate(s):
         if ch not in ' \t':
@@ -2331,7 +2327,7 @@ c.redraw()
     return s
     
     </t>
-<t tx="ekr.20161005135707.6">def scan(self, s1):
+<t tx="ekr.20161006092435.6">def scan(self, s1):
     trace = False and not g.unitTesting
     c, root, separate = self.c, self.root, self.separate
     if not s1.strip() or not root:
@@ -2344,32 +2340,7 @@ c.redraw()
             if s.strip() or not separate:
                 self.scan_helper(s)
 </t>
-<t tx="ekr.20161005135707.7">def undent(self, level, s):
-    '''Unindent all lines of p.b by level.'''
-    # g.trace(level, s.rstrip())
-    if level &lt;= 0:
-        return s
-    if s.strip():
-        lines = g.splitLines(s)
-        ch = lines[0][0]
-        assert ch in ' \t', repr(ch)
-        # Check that all lines start with the proper lws.
-        lws = ch * level
-        for s in lines:
-            if not s.startswith(lws):
-                g.trace('bad indentation: %r' % s)
-                return s
-        return ''.join([z[len(lws):] for z in lines])
-    else:
-        return ''
-</t>
-<t tx="ekr.20161005141722.1">def dump_stack(self):
-    '''Dump the stack, containing (level, p) tuples.'''
-    g.trace('==========')
-    for i, data in enumerate(self.stack):
-        level, p = data
-        print('%2s %s %r' % (i, level, p.h))</t>
-<t tx="ekr.20161005144552.1">def scan_helper(self, s):
+<t tx="ekr.20161006092435.7">def scan_helper(self, s):
     '''Update the stack as necessary and return (level, parent, stack).'''
     trace = False and not g.unitTesting
     root, separate, stack = self.root, self.separate, self.stack
@@ -2424,6 +2395,25 @@ c.redraw()
     if not separate:
         parent.b = parent.b + self.undent(level, s)
     return level
+</t>
+<t tx="ekr.20161006092435.8">def undent(self, level, s):
+    '''Unindent all lines of p.b by level.'''
+    # g.trace(level, s.rstrip())
+    if level &lt;= 0:
+        return s
+    if s.strip():
+        lines = g.splitLines(s)
+        ch = lines[0][0]
+        assert ch in ' \t', repr(ch)
+        # Check that all lines start with the proper lws.
+        lws = ch * level
+        for s in lines:
+            if not s.startswith(lws):
+                g.trace('bad indentation: %r' % s)
+                return s
+        return ''.join([z[len(lws):] for z in lines])
+    else:
+        return ''
 </t>
 </tnodes>
 </leo_file>
