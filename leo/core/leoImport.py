@@ -1099,7 +1099,7 @@ class LeoImportCommands(object):
         array = s.split("\n")
         # Convert the string to an outline and insert it after the current node.
         undoData = u.beforeInsertNode(c.p)
-        # More files are more restrictive than tab-delimited outlines, so try them first.
+        # MORE files are more restrictive than tab-delimited outlines, so try them first.
         p = None
         c.endEditing()
         importer = MORE_Importer(c)
@@ -1842,7 +1842,7 @@ class MindMapImporter(object):
     #@-others
 #@+node:ekr.20161006100941.1: ** class MORE_Importer
 class MORE_Importer(object):
-    '''Mind Map Importer class.'''
+    '''Class to import MORE files.'''
 
     def __init__(self, c):
         '''ctor for MORE_Importer class.'''
@@ -1912,16 +1912,7 @@ class MORE_Importer(object):
         if not g.unitTesting:
             g.es("not a valid MORE file", fileName)
         return None
-    #@+node:ekr.20031218072017.3215: *3* MORE.convertMoreString/StringsToOutlineAfter
-
-    if 0:
-        # No longer used by paste logic.
-        def convertMoreStringToOutlineAfter(self, s, first_p):
-            s = s.replace("\r", "")
-            lines = g.splitLines(s)
-            return self.import_lines(lines, first_p)
-    # Almost all the time spent in this command is spent here.
-
+    #@+node:ekr.20031218072017.3215: *3* MORE.import_lines
     def import_lines(self, strings, first_p):
         c = self.c
         if len(strings) == 0: return None
@@ -1958,7 +1949,7 @@ class MORE_Importer(object):
                 #@+<< Set the headline string, skipping over the leader >>
                 #@+node:ekr.20031218072017.3217: *4* << Set the headline string, skipping over the leader >>
                 j = 0
-                while g.match(s, j, '\t'):
+                while g.match(s, j, '\t') or g.match(s, j, ' '):
                     j += 1
                 if g.match(s, j, "+ ") or g.match(s, j, "- "):
                     j += 2
