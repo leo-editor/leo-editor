@@ -12,35 +12,43 @@ so that it will be copied to dynamicUnitTest.leo when running tests externally.
 #@+node:ekr.20120212130242.3980: *3* newHeadline
 #@+node:ekr.20090529141856.4700: *3* importTests
 @language plain
-#@+node:ekr.20090529141856.4701: *4* tempNode
-#@+node:ekr.20090529141856.4702: *4* importAtRoot
-#@+node:ekr.20090529141856.4703: *5* dialog
-openFileDialog
-test\\unittest\\perfectImport\\formatter.py
-#@+node:ekr.20090529141856.4704: *4* importDerivedFile
-#@+node:ekr.20090529141856.4705: *5* dialog
-openFileDialog
-core\\runLeo.py
-#@+node:ekr.20090529141856.4706: *4* importNowebFiles
-#@+node:ekr.20090529141856.4707: *5* dialog
-openFileDialog
-test\\unittest\\input\\noweave.nw.txt
-#@+node:ekr.20090529141856.4708: *4* importFlattenedOutline
-#@+node:ekr.20090529141856.4709: *5* dialog
-openFileDialog
-test\\unittest\\input\\flat.txt
-#@+node:ekr.20090529141856.4710: *4* importCWEBFiles
-#@+node:ekr.20090529141856.4711: *5* dialog
-openFileDialog
-test\\unittest\\input\\cweave.w
-#@+node:ekr.20090529141856.4712: *4* removeSentinels
-#@+node:ekr.20090529141856.4713: *5* dialog
-openFileDialog
-test\\unittest\\input\\testLeoAtFile.py
 #@+node:ekr.20090529141856.4714: *4* importAtFile
 #@+node:ekr.20090529141856.4715: *5* dialog
 openFileDialog
 test\\unittest\\perfectImport\\formatter.py
+#@+node:ekr.20090529141856.4702: *4* importAtRoot
+#@+node:ekr.20090529141856.4703: *5* dialog
+openFileDialog
+test\\unittest\\perfectImport\\formatter.py
+#@+node:ekr.20090529141856.4710: *4* importCWEBFiles
+#@+node:ekr.20090529141856.4711: *5* dialog
+openFileDialog
+test\\unittest\\input\\cweave.w
+#@+node:ekr.20090529141856.4704: *4* importDerivedFile
+#@+node:ekr.20090529141856.4705: *5* dialog
+openFileDialog
+core\\runLeo.py
+#@+node:ekr.20090529141856.4708: *4* importFlattenedOutline
+#@+node:ekr.20090529141856.4709: *5* dialog
+openFileDialog
+test\\unittest\\input\\flat.txt
+#@+node:ekr.20161006155420.1: *4* importMOREFiles
+#@+node:ekr.20161006155420.2: *5* dialog
+openFileDialog
+test\\unittest\\perfectImport\\MORE_file_test.txt
+#@+node:ekr.20090529141856.4706: *4* importNowebFiles
+#@+node:ekr.20090529141856.4707: *5* dialog
+openFileDialog
+test\\unittest\\input\\noweave.nw.txt
+#@+node:ekr.20161006154740.1: *4* importTabFiles
+#@+node:ekr.20161006154802.1: *5* dialog
+openFileDialog
+test\\unittest\\perfectImport\\tab_file_test.txt
+#@+node:ekr.20090529141856.4712: *4* removeSentinels
+#@+node:ekr.20090529141856.4713: *5* dialog
+openFileDialog
+test\\unittest\\input\\testLeoAtFile.py
+#@+node:ekr.20090529141856.4701: *4* tempNode
 #@+node:ekr.20090529141856.4686: *3* exportTests
 @language plain
 #@+node:ekr.20111115105448.3880: *4* tempNode

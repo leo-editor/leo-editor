@@ -808,9 +808,12 @@ class Commands(object):
             ("Java files", "*.java"),
             # ("JSON files", "*.json"),
             ("Mindjet files", "*.csv"),
+            ("MORE files", "*.MORE"),
             ("Lua files", "*.lua"),
             ("Pascal files", "*.pas"),
-            ("Python files", "*.py")]
+            ("Python files", "*.py"),
+            ("Tabbed files", "*.txt"),
+        ]
         names = g.app.gui.runOpenFileDialog(c,
             title="Import File",
             filetypes=types,
@@ -854,13 +857,15 @@ class Commands(object):
                 ic.importFilesCommand([fn], '@clean')
         c.raise_error_dialogs(kind='read')
 
-    # Compatibility
+    # Compatibility: used by unit tests.
     importAtFile = importAnyFile
     importAtRoot = importAnyFile
     importCWEBFiles = importAnyFile
     importDerivedFile = importAnyFile
     importFlattenedOutline = importAnyFile
+    importMOREFiles = importAnyFile
     importNowebFiles = importAnyFile
+    importTabFiles = importAnyFile
     #@+node:ekr.20110530124245.18248: *7* c.looksLikeDerivedFile
     def looksLikeDerivedFile(self, fn):
         '''Return True if fn names a file that looks like an

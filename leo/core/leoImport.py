@@ -1109,7 +1109,7 @@ class LeoImportCommands(object):
             # Try to import a tab-delimited outline.
             importer = TabImporter(c)
             if importer.check(s, warn=False):
-                p = importer.scan(s, fn=fileName)
+                p = importer.scan(s, fn=fileName, root=c.p)
         if p:
             c.validateOutline()
             p.setDirty()
@@ -2525,13 +2525,14 @@ class TabImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20161006071801.5: *3* tabbed.scan
-    def scan(self, s1, fn=None):
+    def scan(self, s1, fn=None, root=None):
         '''Create the outline corresponding to s1.'''
         trace = False and not g.unitTesting
         c = self.c
-        # Self.root might be None if we are called from a script.
+        # Self.root can be None if we are called from a script or unit test.
         if not self.root:
-            last = c.lastTopLevel()
+            last = root if root else c.lastTopLevel()
+                # For unit testing.
             self.root = last.insertAfter()
             if fn: self.root.h = fn
         lines = g.splitLines(s1)

@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.66">
-	<global_window_position top="54" left="848" height="919" width="1023"/>
+	<global_window_position top="85" left="777" height="919" width="1023"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1230,7 +1230,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657331711958030000002d7e2e711a580b000000756e6465726c696e657332711b58010000003d711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="edward.20160919053702.1"><vh>Ubuntu/Py3 fails</vh>
 <v t="ekr.20100223123103.5382"></v>
@@ -1252,7 +1252,6 @@
 <v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
-<v t="ekr.20161002020559.1"><vh>@test all generator return unique positions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -12646,31 +12645,6 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
-</t>
-<t tx="ekr.20161002020559.1"># This fixes a major bug in *all* generators returning positions.
-trace = False
-root = c.rootPosition
-table = (
-    ('all_positions', c.all_positions),
-    ('all_unique_positions', c.all_unique_positions),
-    ('children', root().children),
-    ('self_and_siblings', root().self_and_siblings),
-    ('self_and_parents', root().firstChild().self_and_parents),
-    ('self_and_subtree', root().self_and_subtree),
-    ('following_siblings', root().following_siblings),
-    ('parents', root().firstChild().firstChild().parents),
-    ('unique_subtree', root().unique_subtree),
-)
-fail = []
-for kind, generator in table:
-    aList = list(generator())
-    aList2 = list(set(aList))
-    if len(aList) == len(aList2) and len(aList) &gt; 1:
-        if trace: print('  OK: %s %s' % (kind, len(aList)))
-    else:
-        if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
-        fail.append(kind)
-assert not fail, fail
 </t>
 </tnodes>
 </leo_file>
