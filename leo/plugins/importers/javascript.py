@@ -316,7 +316,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # x[.y] = function (
             (6, 'class', r'(\s*)define(\*s)\((\s+)function(\s*)\((\s*)(\w+)'),
                 # define ( function ( x
-            (0, 'class', r'(\s*)define(\s*)\((.*),(\s*)function\('),
+            (0, 'class', r'(\s*)define(\s*)\((.*),(\s*)function(\*s)\('),
                 # define (..., function (
         )
         s = ''.join(block)
