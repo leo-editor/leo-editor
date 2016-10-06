@@ -1093,159 +1093,31 @@ class LeoImportCommands(object):
         fileName = files[0] # files contains at most one file.
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
-        if s is None: return ''
+        if s is None or not s.strip():
+            return ''
         s = s.replace('\r', '') # Fixes bug 626101.
         array = s.split("\n")
         # Convert the string to an outline and insert it after the current node.
         undoData = u.beforeInsertNode(c.p)
-        # First, try importing a tab-delimited outline.
-        importer = TabImporter(c)
+        # More files are more restrictive than tab-delimited outlines, so try them first.
         p = None
-        if s.strip() and importer.check(s, warn=False):
-            p = importer.scan(s, fn=fileName)
-        # Second, try importing a MORE file.
+        c.endEditing()
+        importer = MORE_Importer(c)
+        if importer.check(s):
+            p = importer.import_lines(array, c.p)
         if not p:
-            p = self.convertMoreStringsToOutlineAfter(array, c.p)
+            # Try to import a tab-delimited outline.
+            importer = TabImporter(c)
+            if importer.check(s, warn=False):
+                p = importer.scan(s, fn=fileName)
         if p:
-            c.endEditing()
             c.validateOutline()
             p.setDirty()
             c.setChanged(True)
             u.afterInsertNode(p, 'Import', undoData)
             c.redraw(p)
-        elif not g.unitTesting:
-            g.es_print("not a valid MORE file", fileName)
-    #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
-    # Used by paste logic.
-
-    def convertMoreStringToOutlineAfter(self, s, first_p):
-        s = s.replace("\r", "")
-        strings = s.split("\n")
-        return self.convertMoreStringsToOutlineAfter(strings, first_p)
-    # Almost all the time spent in this command is spent here.
-
-    def convertMoreStringsToOutlineAfter(self, strings, first_p):
-        c = self.c
-        if len(strings) == 0: return None
-        if not self.stringsAreValidMoreFile(strings): return None
-        firstLevel, junk = self.moreHeadlineLevel(strings[0])
-        lastLevel = -1; theRoot = last_p = None
-        index = 0
-        while index < len(strings):
-            progress = index
-            s = strings[index]
-            level, junk = self.moreHeadlineLevel(s)
-            level -= firstLevel
-            if level >= 0:
-                #@+<< Link a new position p into the outline >>
-                #@+node:ekr.20031218072017.3216: *6* << Link a new position p into the outline >>
-                assert(level >= 0)
-                if not last_p:
-                    theRoot = p = first_p.insertAsLastChild() # 2016/10/06.
-                elif level == lastLevel:
-                    p = last_p.insertAfter()
-                elif level == lastLevel + 1:
-                    p = last_p.insertAsNthChild(0)
-                else:
-                    assert(level < lastLevel)
-                    while level < lastLevel:
-                        lastLevel -= 1
-                        last_p = last_p.parent()
-                        assert(last_p)
-                        assert(lastLevel >= 0)
-                    p = last_p.insertAfter()
-                last_p = p
-                lastLevel = level
-                #@-<< Link a new position p into the outline >>
-                #@+<< Set the headline string, skipping over the leader >>
-                #@+node:ekr.20031218072017.3217: *6* << Set the headline string, skipping over the leader >>
-                j = 0
-                while g.match(s, j, '\t'):
-                    j += 1
-                if g.match(s, j, "+ ") or g.match(s, j, "- "):
-                    j += 2
-                p.initHeadString(s[j:])
-                #@-<< Set the headline string, skipping over the leader >>
-                #@+<< Count the number of following body lines >>
-                #@+node:ekr.20031218072017.3218: *6* << Count the number of following body lines >>
-                bodyLines = 0
-                index += 1 # Skip the headline.
-                while index < len(strings):
-                    s = strings[index]
-                    level, junk = self.moreHeadlineLevel(s)
-                    level -= firstLevel
-                    if level >= 0:
-                        break
-                    # Remove first backslash of the body line.
-                    if g.match(s, 0, '\\'):
-                        strings[index] = s[1:]
-                    bodyLines += 1
-                    index += 1
-                #@-<< Count the number of following body lines >>
-                #@+<< Add the lines to the body text of p >>
-                #@+node:ekr.20031218072017.3219: *6* << Add the lines to the body text of p >>
-                if bodyLines > 0:
-                    body = ""
-                    n = index - bodyLines
-                    while n < index:
-                        body += strings[n].rstrip()
-                        if n != index - 1:
-                            body += "\n"
-                        n += 1
-                    p.setBodyString(body)
-                #@-<< Add the lines to the body text of p >>
-                p.setDirty()
-            else: index += 1
-            assert progress < index
-        if theRoot:
-            theRoot.setDirty()
-            c.setChanged(True)
-        c.redraw()
-        return theRoot
-    #@+node:ekr.20031218072017.3222: *5* moreHeadlineLevel
-    # return the headline level of s,or -1 if the string is not a MORE headline.
-
-    def moreHeadlineLevel(self, s):
-        level = 0; i = 0
-        while i < len(s) and s[i] in ' \t': # 2016/10/06: allow blanks or tabs.
-            level += 1
-            i += 1
-        plusFlag = g.match(s, i, "+")
-        if g.match(s, i, "+ ") or g.match(s, i, "- "):
-            return level, plusFlag
-        else:
-            return -1, plusFlag
-    #@+node:ekr.20031218072017.3223: *5* stringIs/stringsAreValidMoreFile
-    # Used by paste logic.
-
-    def stringIsValidMoreFile(self, s):
-        s = s.replace("\r", "")
-        strings = s.split("\n")
-        return self.stringsAreValidMoreFile(strings)
-
-    def stringsAreValidMoreFile(self, strings):
-        trace = False and not g.unitTesting
-        if len(strings) < 1: return False
-        level1, plusFlag = self.moreHeadlineLevel(strings[0])
-        if level1 == -1: return False
-        # Check the level of all headlines.
-        lastLevel = level1
-        for s in strings:
-            level, newFlag = self.moreHeadlineLevel(s)
-            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
-                level1, level, lastLevel, s.rstrip()))
-            if level == -1:
-                return True # A body line.
-            elif level < level1 or level > lastLevel + 1:
-                return False # improper level.
-            elif level > lastLevel and not plusFlag:
-                return False # parent of this node has no children.
-            elif level == lastLevel and plusFlag:
-                return False # last node has missing child.
-            else:
-                lastLevel = level
-                plusFlag = newFlag
-        return True
+        # elif not g.unitTesting:
+            # g.es_print("not a valid MORE file", fileName)
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
         '''
@@ -2022,12 +1894,12 @@ class MORE_Importer(object):
         s = s.replace('\r', '') # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.
-        if ic.stringsAreValidMoreFile(lines):
+        if self.check_lines(lines):
             last = c.lastTopLevel()
             undoData = u.beforeInsertNode(c.p)
             root = last.insertAfter()
             root.h = fileName
-            p = ic.convertMoreStringsToOutlineAfter(lines, root)
+            p = self.import_lines(lines, root)
             if p:
                 c.endEditing()
                 c.validateOutline()
@@ -2036,10 +1908,139 @@ class MORE_Importer(object):
                 u.afterInsertNode(root, 'Import MORE File', undoData)
                 c.selectPosition(root)
                 c.redraw()
-                return p
+                return root
         if not g.unitTesting:
             g.es("not a valid MORE file", fileName)
         return None
+    #@+node:ekr.20031218072017.3215: *3* MORE.convertMoreString/StringsToOutlineAfter
+
+    if 0:
+        # No longer used by paste logic.
+        def convertMoreStringToOutlineAfter(self, s, first_p):
+            s = s.replace("\r", "")
+            lines = g.splitLines(s)
+            return self.import_lines(lines, first_p)
+    # Almost all the time spent in this command is spent here.
+
+    def import_lines(self, strings, first_p):
+        c = self.c
+        if len(strings) == 0: return None
+        if not self.check_lines(strings): return None
+        firstLevel, junk = self.headlineLevel(strings[0])
+        lastLevel = -1; theRoot = last_p = None
+        index = 0
+        while index < len(strings):
+            progress = index
+            s = strings[index]
+            level, junk = self.headlineLevel(s)
+            level -= firstLevel
+            if level >= 0:
+                #@+<< Link a new position p into the outline >>
+                #@+node:ekr.20031218072017.3216: *4* << Link a new position p into the outline >>
+                assert(level >= 0)
+                if not last_p:
+                    theRoot = p = first_p.insertAsLastChild() # 2016/10/06.
+                elif level == lastLevel:
+                    p = last_p.insertAfter()
+                elif level == lastLevel + 1:
+                    p = last_p.insertAsNthChild(0)
+                else:
+                    assert(level < lastLevel)
+                    while level < lastLevel:
+                        lastLevel -= 1
+                        last_p = last_p.parent()
+                        assert(last_p)
+                        assert(lastLevel >= 0)
+                    p = last_p.insertAfter()
+                last_p = p
+                lastLevel = level
+                #@-<< Link a new position p into the outline >>
+                #@+<< Set the headline string, skipping over the leader >>
+                #@+node:ekr.20031218072017.3217: *4* << Set the headline string, skipping over the leader >>
+                j = 0
+                while g.match(s, j, '\t'):
+                    j += 1
+                if g.match(s, j, "+ ") or g.match(s, j, "- "):
+                    j += 2
+                p.initHeadString(s[j:])
+                #@-<< Set the headline string, skipping over the leader >>
+                #@+<< Count the number of following body lines >>
+                #@+node:ekr.20031218072017.3218: *4* << Count the number of following body lines >>
+                bodyLines = 0
+                index += 1 # Skip the headline.
+                while index < len(strings):
+                    s = strings[index]
+                    level, junk = self.headlineLevel(s)
+                    level -= firstLevel
+                    if level >= 0:
+                        break
+                    # Remove first backslash of the body line.
+                    if g.match(s, 0, '\\'):
+                        strings[index] = s[1:]
+                    bodyLines += 1
+                    index += 1
+                #@-<< Count the number of following body lines >>
+                #@+<< Add the lines to the body text of p >>
+                #@+node:ekr.20031218072017.3219: *4* << Add the lines to the body text of p >>
+                if bodyLines > 0:
+                    body = ""
+                    n = index - bodyLines
+                    while n < index:
+                        body += strings[n].rstrip()
+                        if n != index - 1:
+                            body += "\n"
+                        n += 1
+                    p.setBodyString(body)
+                #@-<< Add the lines to the body text of p >>
+                p.setDirty()
+            else: index += 1
+            assert progress < index
+        if theRoot:
+            theRoot.setDirty()
+            c.setChanged(True)
+        c.redraw()
+        return theRoot
+    #@+node:ekr.20031218072017.3222: *3* MORE.headlineLevel
+    def headlineLevel(self, s):
+        '''return the headline level of s,or -1 if the string is not a MORE headline.'''
+        level = 0; i = 0
+        while i < len(s) and s[i] in ' \t': # 2016/10/06: allow blanks or tabs.
+            level += 1
+            i += 1
+        plusFlag = g.match(s, i, "+")
+        if g.match(s, i, "+ ") or g.match(s, i, "- "):
+            return level, plusFlag
+        else:
+            return -1, plusFlag
+    #@+node:ekr.20031218072017.3223: *3* MORE.check & check_lines
+    def check(self, s):
+        s = s.replace("\r", "")
+        strings = g.splitLines(s)
+        return self.check_lines(strings)
+
+    def check_lines(self, strings):
+        trace = False and not g.unitTesting
+        if len(strings) < 1: return False
+        level1, plusFlag = self.headlineLevel(strings[0])
+        if level1 == -1: return False
+        # Check the level of all headlines.
+        lastLevel = level1
+        for s in strings:
+            level, newFlag = self.headlineLevel(s)
+            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
+                level1, level, lastLevel, s.rstrip()))
+            if level == -1:
+                return True # A body line.
+            elif level < level1 or level > lastLevel + 1:
+                return False # improper level.
+            elif level > lastLevel and not plusFlag:
+                return False # parent of this node has no children.
+            elif level == lastLevel and plusFlag:
+                return False # last node has missing child.
+            else:
+                lastLevel = level
+                plusFlag = newFlag
+        return True
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController(object):

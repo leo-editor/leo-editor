@@ -6,6 +6,7 @@
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
+import leo.core.leoImport as leoImport
 # The leoCommands ctor now does most leo.core.leo* imports.
 # This breaks circular dependencies.
 try:
@@ -2854,9 +2855,10 @@ class Commands(object):
         # create a *position* to be pasted.
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices, tempOutline)
-        else:
-            pasted = c.importCommands.convertMoreStringToOutlineAfter(s, c.p)
-        if not pasted: return None
+        if not pasted:
+            # 2016/10/06:
+            # We no longer support pasting MORE outlines. Use import-MORE-files instead.
+            return None
         if pasteAsClone:
             copiedBunchList = c.computeCopiedBunchList(pasted, vnodeInfoDict)
         else:
@@ -5906,12 +5908,9 @@ class Commands(object):
             if g.match(s, 0, g.app.prolog_prefix_string):
                 if trace: g.trace('matches xml prolog')
                 return True
-            else:
-                val = c.importCommands.stringIsValidMoreFile(s)
-                if trace: g.trace('More file?', val)
-                return val
-        if trace: g.trace('no clipboard text')
-        return False
+        else:
+            if trace: g.trace('no clipboard text')
+            return False
     #@+node:ekr.20031218072017.2975: *4* c.canPromote
     def canPromote(self):
         c = self; v = c.currentVnode()
