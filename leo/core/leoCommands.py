@@ -6,7 +6,6 @@
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
-import leo.core.leoImport as leoImport
 # The leoCommands ctor now does most leo.core.leo* imports.
 # This breaks circular dependencies.
 try:
@@ -5901,7 +5900,7 @@ class Commands(object):
     #@+node:ekr.20031218072017.2974: *4* c.canPasteOutline
     def canPasteOutline(self, s=None):
         trace = False and not g.unitTesting
-        c = self
+        # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
         if s:
