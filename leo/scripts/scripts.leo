@@ -2269,6 +2269,7 @@ for fn in aList:
 </t>
 <t tx="ekr.20161005135707.1">'''Import tab-indented files.'''
 g.cls()
+separate = True # True: put all lines in separate nodes.
 if c.isChanged(): c.save()
 if 1: # get s from a file.
     path = r'c:/test/tab_file_test.txt'
@@ -2278,12 +2279,12 @@ else: # for testing
     path = 'imported string'
 @others
 last = c.lastTopLevel()
-parent = last.insertAfter()
-parent.h = path
-TabImporter(c).scan(parent, s, separate_nodes=True)
+root = last.insertAfter()
+root.h = path
+TabImporter(c, root=root, separate=separate).scan(s)
 g.es_print('Imported %s' % path)
-c.selectPosition(parent)
-parent.expand()
+c.selectPosition(root)
+root.expand()
 c.redraw()
 </t>
 <t tx="ekr.20161005135707.2">s = '''
@@ -2301,9 +2302,12 @@ c.redraw()
     </t>
 <t tx="ekr.20161005135707.3">class TabImporter:
     
-    def __init__(self, c):
+    def __init__(self, c, root, separate):
         '''Ctor for the TabImporter class.'''
         self.c = c
+        self.stack = []
+        self.root = root
+        self.separate = separate
 
     @others</t>
 <t tx="ekr.20161005135707.4">def check(self, lines):
@@ -2327,9 +2331,9 @@ c.redraw()
     return s
     
     </t>
-<t tx="ekr.20161005135707.6">def scan(self, root, s1, separate_nodes=True):
+<t tx="ekr.20161005135707.6">def scan(self, s1):
     trace = False and not g.unitTesting
-    c, separate = self.c, separate_nodes
+    c, root, separate = self.c, self.root, self.separate
     if not s1.strip() or not root:
         return
     if trace: g.trace('importing to children of %s' % root.h)
@@ -2337,20 +2341,15 @@ c.redraw()
     if not self.check(lines):
         return
     level = 0
-    if separate:
-        stack = []
-        parent = None
-    else:
-        parent = root.insertAsLastChild()
-        parent.h = '' # Will be set later.
-        stack = [(level, parent),]
+    self.stack = []
+    parent = None
     for i, s in enumerate(lines):
         lws = len(self.lws(s))
         if trace: g.trace('----- level: %s lws: %s %s' % (
             level, lws, s.rstrip()))
         if s.strip() or not separate:
             level, parent, stack = self.update_stack(
-                level, lws, parent, root, s, separate, stack)
+                level, lws, parent, s)
             assert parent and parent.h
             if not separate:
                 parent.b = parent.b + s
@@ -2379,12 +2378,13 @@ c.redraw()
     for i, data in enumerate(stack):
         level, p = data
         print('%2s %s %r' % (i, level, p.h))</t>
-<t tx="ekr.20161005144552.1">def update_stack(self, level, lws, parent, root, s, separate, stack):
+<t tx="ekr.20161005144552.1">def update_stack(self, level, lws, parent, s):
     '''Update the stack as necessary and return (level, parent, stack).'''
     trace = False and not g.unitTesting
+    root, separate, stack = self.root, self.separate, self.stack
     h = s.strip()
     if lws == level:
-        if separate:
+        if separate or not parent:
             # Replace the top of the stack with a new entry.
             if stack:
                 stack.pop()
