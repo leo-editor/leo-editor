@@ -213,8 +213,8 @@
 <v t="ekr.20161005141722.1"><vh>dump_stack</vh></v>
 <v t="ekr.20161005135707.5"><vh>lws</vh></v>
 <v t="ekr.20161005135707.6"><vh>scan</vh></v>
+<v t="ekr.20161005144552.1"><vh>scan_helper</vh></v>
 <v t="ekr.20161005135707.7"><vh>undent</vh></v>
-<v t="ekr.20161005144552.1"><vh>update_stack</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2336,52 +2336,50 @@ c.redraw()
     c, root, separate = self.c, self.root, self.separate
     if not s1.strip() or not root:
         return
-    if trace: g.trace('importing to children of %s' % root.h)
+    if trace: g.trace('importing to %s' % root.h)
     lines = g.splitLines(s1)
-    if not self.check(lines):
-        return
-    level = 0
-    self.stack = []
-    parent = None
-    for i, s in enumerate(lines):
-        lws = len(self.lws(s))
-        if trace: g.trace('----- level: %s lws: %s %s' % (
-            level, lws, s.rstrip()))
-        if s.strip() or not separate:
-            level, parent, stack = self.update_stack(
-                level, lws, parent, s)
-            assert parent and parent.h
-            if not separate:
-                parent.b = parent.b + s
+    if self.check(lines):
+        self.stack = []
+        for s in lines:
+            if s.strip() or not separate:
+                self.scan_helper(s)
 </t>
-<t tx="ekr.20161005135707.7">def undent(self, level, p):
+<t tx="ekr.20161005135707.7">def undent(self, level, s):
     '''Unindent all lines of p.b by level.'''
+    # g.trace(level, s.rstrip())
     if level &lt;= 0:
-        return
-    if p.b.strip():
-        lines = g.splitLines(p.b)
+        return s
+    if s.strip():
+        lines = g.splitLines(s)
         ch = lines[0][0]
         assert ch in ' \t', repr(ch)
         # Check that all lines start with the proper lws.
         lws = ch * level
         for s in lines:
             if not s.startswith(lws):
-                g.trace('bad indentation:', p.h)
-                return
-        p.b = ''.join([z[len(lws):] for z in lines])
+                g.trace('bad indentation: %r' % s)
+                return s
+        return ''.join([z[len(lws):] for z in lines])
     else:
-        p.b = ''
+        return ''
 </t>
-<t tx="ekr.20161005141722.1">def dump_stack(self, stack):
+<t tx="ekr.20161005141722.1">def dump_stack(self):
     '''Dump the stack, containing (level, p) tuples.'''
     g.trace('==========')
-    for i, data in enumerate(stack):
+    for i, data in enumerate(self.stack):
         level, p = data
         print('%2s %s %r' % (i, level, p.h))</t>
-<t tx="ekr.20161005144552.1">def update_stack(self, level, lws, parent, s):
+<t tx="ekr.20161005144552.1">def scan_helper(self, s):
     '''Update the stack as necessary and return (level, parent, stack).'''
     trace = False and not g.unitTesting
     root, separate, stack = self.root, self.separate, self.stack
+    if stack:
+        level, parent = stack[-1]
+    else:
+        level, parent = 0, None
+    lws = len(self.lws(s))
+    if trace:
+        g.trace('----- level: %s lws: %s %s' % (level, lws, s.rstrip()))
     h = s.strip()
     if lws == level:
         if separate or not parent:
@@ -2402,7 +2400,7 @@ c.redraw()
         stack.append((level, parent),)
     else:
         # Find the previous parent.
-        if trace: self.dump_stack(stack)
+        if trace: self.dump_stack()
         while stack:
             level2, parent2 = stack.pop()
             if level2 == lws:
@@ -2419,11 +2417,13 @@ c.redraw()
             stack = [(0, parent),]
     if trace:
         g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
-        self.dump_stack(stack)
+        self.dump_stack()
     assert parent and parent == stack[-1][1]
         # An important invariant.
-    return level, parent, stack
-
+    assert level == stack[-1][0], (level, stack[-1][0])
+    if not separate:
+        parent.b = parent.b + self.undent(level, s)
+    return level
 </t>
 </tnodes>
 </leo_file>
