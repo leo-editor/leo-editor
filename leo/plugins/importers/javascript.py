@@ -6,6 +6,21 @@ import leo.plugins.importers.basescanner as basescanner
 import re
 new_scanner = True
 #@+others
+#@+node:ekr.20161007052628.1: ** class Block (needed??)
+class Block:
+    '''A class describing a block and its possible rescans.'''
+
+    def __init__(self, block_lines):
+        '''Ctor for the Block class.'''
+        self.children = []
+        self.block_lines = block_lines
+        # self.first_line = None
+        # self.original_lines = []
+        # self.parent_block = parent_block
+        # self.rescanned_lines = []
+        
+    #@+others
+    #@-others
 #@+node:ekr.20161004092007.1: ** class ScanState
 class ScanState(object):
     '''A class to store and update scanning state.'''
@@ -13,17 +28,14 @@ class ScanState(object):
     #@+node:ekr.20161004092045.1: *3*  state.ctor & reinit
     def __init__(self):
         '''Ctor for ScanState class.'''
-        self.context = '' # in ('/*', '"', "'")
-        self.curlies = 0
-        self.parens = 0
         self.base_curlies = 0
         self.base_parens = 0
+        self.context = '' # in ('/', '/*', '"', "'")
+        self.curlies = 0
+        self.parens = 0
+        self.stack = []
         # self.squares = 0
             # Probably don't want to keep track of these.
-            
-    def reinit(self):
-        self.base_curlies = self.curlies
-        self.base_parens = self.parens
             
     def __repr__(self):
         return 'ScanState: top: %s { %s (: %s, context: %2r' % (
@@ -31,16 +43,31 @@ class ScanState(object):
             self.curlies, self.parens, self.context)
             
     __str__ = __repr__
-    #@+node:ekr.20161004092056.1: *3* state.at_top_level
-    def at_top_level(self):
-        '''Return True if we are at the top level and not in a block comment.'''
-        # return self.curlies == 0 and self.parens == 0 and self.context == ''
-        return (
-            self.curlies <= self.base_curlies and
-            self.parens <= self.base_parens and
-            not self.context
-        )
-    #@+node:ekr.20161004072614.1: *3* state.scan_leading_lines
+    #@+node:ekr.20161004092056.1: *3* state.continues_block and starts_block
+    def continues_block(self):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self.curlies > self.base_curlies or self.parens > self.base_parens
+
+    def starts_block(self):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return not self.context and (
+            (self.curlies > self.base_curlies or self.parens > self.base_parens))
+    #@+node:ekr.20161007053002.1: *3* state.base
+    def base (self):
+        '''Return the present counts.'''
+        return self.curlies, self.parens
+    #@+node:ekr.20161006182212.1: *3* state.push & pop (to be deleted?)
+    def pop(self):
+        '''Restore the base state from the stack.'''
+        self.base_curlies, self.base_parens = self.stack.pop()
+        
+    def push(self):
+        '''Save the base state on the stack and enter a new base state.'''
+        self.stack.append((self.base_curlies, self.base_parens),)
+        self.base_curlies = self.curlies
+        self.base_parens = self.parens
+        
+    #@+node:ekr.20161004072614.1: *3* state.scan_leading_lines (to be deleted?)
     def scan_leading_lines(self, lines):
         '''Return the index of the first non-leading line.'''
         i = 0
@@ -52,6 +79,23 @@ class ScanState(object):
             else:
                 break
         return i
+    #@+node:ekr.20161007061524.1: *3* state.scan_block
+    def scan_block(self, i, lines):
+        '''Scan lines[i:]. Return i, block_lines.'''
+        state = self
+        assert state.starts_block(), i
+        i1 = i
+        i += 1
+        while i < len(lines):
+            progress = i
+            state.scan_line(lines[i])
+            if state.continues_block():
+                i += 1
+            else:
+                i += 1 # Add the line that ends the block
+                break
+            assert progress < i
+        return i, lines[i1:i]
     #@+node:ekr.20161004071532.1: *3* state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
@@ -60,16 +104,24 @@ class ScanState(object):
             progress = i
             ch = s[i]
             if self.context:
-                if self.context == '/*' and s[i:i+2] == '*/':
+                if self.context == '/':
+                    if ch == '\\':
+                        i += 1
+                    elif ch == '/':
+                        self.context = ''
+                            # Regex modifiers won't affect the scan.
+                elif self.context == '/*' and s[i:i+2] == '*/':
                     self.context = ''
                     i += 1
                 elif self.context == ch:
                     self.context = ''
                 else:
-                    pass
+                    pass # Continue the present context
             else:
                 if s[i:i+2] == '//':
                     break
+                elif ch == '/':
+                    self.context = '/' # A regex.
                 elif s[i:i+2] == '/*':
                     self.context = '/*'
                     i += 1
@@ -100,6 +152,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # The language is used to set comment delims.
             alternate_language=alternate_language)
                 # The language used in the @language directive.
+        assert hasattr(self, 'strip_blank_lines')
         if new_scanner:
             self.strict = False
             self.atAutoWarnsAboutLeadingWhitespace = False
@@ -127,6 +180,22 @@ class JavaScriptScanner(basescanner.BaseScanner):
             # Extra semantic data...
             self.classNames = []
             self.functionNames = []
+    #@+node:ekr.20161006164715.1: *3* jss.check
+    def check(self, unused_s, unused_parent):
+        '''Override of javascript checker.'''
+        s1 = g.toUnicode(self.file_s, self.encoding)
+        s2 = self.trialWrite(s1)
+        s1 = self.strip_all(s1)
+        s2 = self.strip_all(s2)
+        ok = s1 == s2
+        if not ok:
+            g.trace('===== s1')
+            for i, s in enumerate(g.splitLines(s1)):
+                print('%3s %s' % (i, s.rstrip()))
+            g.trace('===== s2')
+            for i, s in enumerate(g.splitLines(s2)):
+                print('%3s %s' % (i, s.rstrip()))
+        return ok
     #@+node:ekr.20140723122936.18051: *3* jss.filterTokens
     def filterTokens(self, tokens):
         '''Filter tokens as needed for correct comparisons.
@@ -212,73 +281,85 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''The new, simpler javascript scanner.'''
         trace = False and not g.unitTesting
         # pylint: disable=arguments-differ
-        # parse_body not used.
-        if not s1.strip():
-            return
+            # parse_body not used.
         lines = g.splitLines(s1)
+        self.level, self.name_stack = 0, [] # Updated by rescan_block.
         state = ScanState()
-        # 1. Get all leading lines.
-        i = state.scan_leading_lines(lines)
-        has_first = i > 0
-        block = self.get_block(lines, 0, i)
-        blocks = [block] if block else []
-        block_start = i
-        if trace: g.trace(lines[i].rstrip())
-        i += 1
-        in_block = True
-        # 2. Scan all top-level blocks.
+        blocks = []
+        block_lines = [] # The lines of the present block.
+        # Find all top-level blocks.
+        i = 0
         while i < len(lines):
             progress = i
-            state.scan_line(lines[i])
-            at_top = state.at_top_level()
-            if in_block and at_top:
-                # Lookahead: add trailing blank lines to the block.
-                while i+1 < len(lines) and not lines[i+1].strip():
-                    i += 1
-                block = self.get_block(lines, block_start, i+1)
-                blocks.append(block)
-                in_block = False
-                block_start = i+1
-                if trace: g.trace(lines[i].rstrip())
-            elif not in_block and not at_top:
-                # Don't set block_start
-                in_block = True
-            i += 1
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                if block_lines: blocks.append(block_lines)
+                i, block_lines = state.scan_block(i, lines)
+                blocks.append(block_lines)
+                block_lines = []
+            else:
+                block_lines.append(line)
+                i += 1
             assert progress < i
-        # End properly.
-        block = self.get_block(lines, block_start, i)
-        if block:
-            if trace: g.trace(lines[block_start].rstrip())
-            blocks.append(block)
+        # End the blocks properly.
+        if block_lines:
+            blocks.append(block_lines)
         if trace:
-            g.trace('blocks...')
-            for i, block in enumerate(blocks):
-                print('  block: %s' % i)
-                for j, s in enumerate(block):
-                    print('    %3s %s' % (j, s.rstrip()))
-        if blocks:
-            parent.b = '@others\n' ### Later: indent
-            n = 0
-            for i, block in enumerate(blocks):
-                child = parent.insertAsLastChild()
-                n, h = self.get_headline(block, has_first, i, n)
-                child.h = h
-                child.b = ''.join(block).rstrip()+'\n'
-                self.rescan(child)
-    #@+node:ekr.20161004103203.1: *5* get_block
-    def get_block(self, lines, i1, i2):
-        '''Return lines[i1:i2] as a list.'''
-        # Note: list(lines[i1:i2] fails badly.
-        n = i2 - i1
-        if n == 0 or i1 >= len(lines):
-            return []
-        elif n == 1:
-            return [lines[i1]]
-        else:
-            return lines[i1:i2]
+            self.dump_blocks(blocks, parent)
+        # Rescan all the blocks in context.
+        blocks = self.rescan_blocks(blocks)
+        parent.b = parent.b + '@others\n'
+        for block in blocks:
+            self.put_block(block, parent)
+    #@+node:ekr.20161006172704.1: *5* jss.can_start_block (used by rescan?)
+    def can_start_block(self, s):
+        '''Return False if s should not start a block.'''
+        # A table of inhibiting patterns.
+        trace = False and not g.unitTesting
+        table = (
+            (r'(\s*)require(\s*)\((\s*)\[(\s*)'),
+            (r'(\s*)](\s*),(\s*)function(\s*)\('),
+        )
+        for pattern in table:
+            m = re.match(pattern, s)
+            if m:
+                if trace: g.trace('Match: %s' % (s.rstrip()))
+                return False
+        if trace: g.trace(s.rstrip())
+        return True
         
-    #@+node:ekr.20161004105734.1: *5* get_headline
-    def get_headline(self, block, has_first, i, n):
+        
+    #@+node:ekr.20161007093236.1: *5* jss.dump_blocks
+    def dump_blocks(self, blocks, parent):
+        '''Dump all blocks, which may be Block instances or lists of strings.'''
+        g.trace('blocks in %s...' % parent.h)
+        for i, block in enumerate(blocks):
+            print('  block: %s' % i)
+            lines = block.block_lines if isinstance(block, Block) else block
+            for j, s in enumerate(lines):
+                print('    %3s %s' % (j, s.rstrip()))
+    #@+node:ekr.20161007081548.1: *5* jss.put_block
+    def put_block(self, block, parent):
+        '''Create nodes for block and all its children.'''
+        p = parent.insertAsLastChild()
+        p.h = block.headline
+        p.b = p.b + ''.join(block.block_lines)
+        for child in block.children:
+            self.put_block(child, p)
+    #@+node:ekr.20161007075210.1: *5* jss.rescan_blocks & helper
+    def rescan_blocks(self, blocks):
+        '''Rescan all blocks, looking for further substitutions.'''
+        # The first and last lines begin and end the block.
+        n, result = 1, []
+        for block_lines in blocks:
+            block = Block(block_lines)
+            n, h = self.get_headline(block_lines, n)
+            block.headline = h
+            result.append(block)
+        return result
+    #@+node:ekr.20161004105734.1: *6* jss.get_headline
+    def get_headline(self, block_lines, n):
         '''
         Return the desired headline of the given block:
                 
@@ -286,8 +367,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         - Return (n, function-name) for functions of various forms.
         - Return (n+1, "block n") if no function name can be found.
         '''
-        if has_first and i == 0:
-            return 1, 'first lines'
+        trace = False and not g.unitTesting
         # define common idioms for defining classes and functions.
         # To do: make this table a user option.
         proto1 = re.compile(
@@ -314,93 +394,17 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # var x[.y] = {
             (2, 'func',  r'(\s*)(\w[\w\.]*)(\s*)=(\s*)function(\s*)\('),
                 # x[.y] = function (
-            (6, 'class', r'(\s*)define(\*s)\((\s+)function(\s*)\((\s*)(\w+)'),
-                # define ( function ( x
-            (0, 'class', r'(\s*)define(\s*)\((.*),(\s*)function(\*s)\('),
-                # define (..., function (
+            (0, 'class', r'(\s*)define(\s*)\(\[(.*)\](\s*),(\s*)function\('),
+                # define ( [*], function (
         )
-        s = ''.join(block)
+        s = ''.join(block_lines)
         for i, prefix, pattern in table:
             m = re.match(pattern, s)
             if m:
-                # if prefix == 'proto': g.trace(i, repr(m.group(i)))
+                if trace: g.trace(m.group(0))
                 name = prefix + ' ' + (m.group(i) if i else '')
                 return n, name.strip()
         return n+1, 'block %s' % (n)
-    #@+node:ekr.20161004174614.1: *5* rescan
-    def rescan(self, p):
-        '''Rescan the block p, creating children as necessary.'''
-        trace = False and not g.unitTesting
-        if not p.b.strip():
-            return
-        if trace: g.trace(p.h)
-        lines = g.splitLines(p.b)
-        # Don't spit smallish things.
-        if len(lines) < 20:
-            return
-        # Create a state so that state.at_top_level will be true when it
-        # matches the state after scanning lines[0]
-        state = ScanState()
-        state.scan_line(lines[0])
-        state.reinit()
-        if state.context:
-            g.trace('***** in context:', state.context)
-            return # Probably can't happen, but it would cause problems.
-        # Rescan all but the first and last lines.
-        line0 = lines[0]
-        line9 = lines[-1]
-        lines = lines[1:-1]
-        block_start = i = state.scan_leading_lines(lines)
-        block1 = self.get_block(lines, 0, i)
-        blocks = []
-        i += 1
-        in_block = True
-        while i < len(lines):
-            progress = i
-            state.scan_line(lines[i])
-            at_top = state.at_top_level()
-            if in_block and at_top:
-                # Lookahead: add trailing blank lines to the block.
-                while i+1 < len(lines) and not lines[i+1].strip():
-                    i += 1
-                block = self.get_block(lines, block_start, i+1)
-                blocks.append(block)
-                in_block = False
-                block_start = i+1
-                if trace: g.trace(lines[i].rstrip())
-            elif not in_block and not at_top:
-                # Don't set block_start
-                in_block = True
-            i += 1
-            assert progress < i
-        # End properly.
-        block = self.get_block(lines, block_start, i)
-        if block:
-            if trace: g.trace(lines[block_start].rstrip())
-            blocks.append(block)
-        if trace:
-            g.trace('blocks...')
-            for i, block in enumerate(blocks):
-                print('  block: %s' % i)
-                for j, s in enumerate(block):
-                    print('    %3s %s' % (j, s.rstrip()))
-        if blocks:
-            # Create the new body. Don't change the headline.
-            body_lines = [line0]
-            if block1:
-                body_lines.extend(block1)
-            body_lines.append('@others\n') ### Later: indent
-            body_lines.append(line9)
-            p.b = ''.join(body_lines).rstrip()+'\n'
-            # Generate the child blocks.
-            has_first, n = False, 0
-            for i, block in enumerate(blocks):
-                child = p.insertAsLastChild()
-                n, h = self.get_headline(block, has_first, i, n)
-                child.h = h
-                child.b = ''.join(block).rstrip()+'\n'
-                # And continue the rescan recursively.
-                self.rescan(child)
     #@+node:ekr.20160122071725.1: *4* jss.old_scan & scanHelper
     def old_scan(self, s, parent, parse_body=False):
         '''A javascript scanner.

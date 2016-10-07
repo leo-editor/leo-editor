@@ -498,6 +498,18 @@ class BaseScanner(object):
         if lws: result.extend(lws)
         if trace: g.trace('\nafter: ', result)
         return result
+    #@+node:ekr.20161006165248.1: *3* BaseScanner.strip_lws & strip_blank_lines
+    def strip_all(self, s):
+        '''Strip blank lines and leading whitespace from all lines of s.'''
+        return self.strip_lws(self.strip_blank_lines(s))
+
+    def strip_blank_lines(self, s):
+        '''Strip all blank lines from s.'''
+        return ''.join([z for z in g.splitLines(s) if z.strip()])
+
+    def strip_lws(self, s):
+        '''Strip leading whitespace from all lines of s.'''
+        return ''.join([z.lstrip() for z in g.splitLines(s)])
     #@+node:ekr.20140727075002.18203: *3* BaseScanner.stripTokens
     def stripTokens(self, tokens):
         '''Remove the line_number from all tokens.'''
@@ -520,6 +532,18 @@ class BaseScanner(object):
             return dummy_line
 
         return ''.join([mungeRstLine(z) for z in g.splitLines(s)])
+    #@+node:ekr.20161006164257.1: *3* BaseScanner.trialWrite
+    def trialWrite(self, s):
+        '''Return the trial write for s.'''
+        at = self.c.atFileCommands
+        at.write(self.root,
+            nosentinels=True,
+            perfectImportFlag=True,
+            scriptWrite=False,
+            thinFile=True,
+            toString=True,
+        )
+        return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20140727075002.18205: ** BaseScanner.Code generation
     #@+node:ekr.20140727075002.18206: *3* BaseScanner.adjustParent
     def adjustParent(self, parent, headline):
