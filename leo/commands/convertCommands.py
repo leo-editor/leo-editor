@@ -1672,7 +1672,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160321072007.1: *3* ccc.export-jupyter-notebook
     @cmd('export-jupyter-notebook')
     def exportJupyterNotebook(self, event):
-        '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
+        '''Prompt for a Jupyter (.ipynb) file and convert it to a .ipynb file.'''
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c
         Export_IPYNB(c).export_outline(c.p)
