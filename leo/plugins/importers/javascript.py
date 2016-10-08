@@ -72,9 +72,8 @@ class ScanState(object):
         # self.stack = []
 
     def __repr__(self):
-        return 'ScanState: top: %s { %s (: %s, context: %2r' % (
-            int(self.at_top_level()),
-            self.curlies, self.parens, self.context)
+        return 'ScanState: %3s context: %2r' % (
+            '{' * self.curlies + '(' * self.parens, self.context)
             
     __str__ = __repr__
     
@@ -82,7 +81,7 @@ class ScanState(object):
     #@+node:ekr.20161004092056.1: *3* state.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.curlies > self.base_curlies or self.parens > self.base_parens
+        return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
 
     def starts_block(self):
         '''Return True if the just-scanned line starts an inner block.'''
@@ -95,8 +94,10 @@ class ScanState(object):
     #@+node:ekr.20161007061524.1: *3* state.scan_block
     def scan_block(self, i, lines):
         '''Scan lines[i:]. Return (i, lines).'''
+        trace = False and not g.unitTesting
         state = self
         assert state.starts_block(), i
+        if trace: g.trace('START:', state)
         i1 = i
         i += 1
         while i < len(lines):
@@ -105,6 +106,7 @@ class ScanState(object):
             if state.continues_block():
                 i += 1
             else:
+                if trace: g.trace('DONE: ', i-i1)
                 i += 1 # Add the line that ends the block
                 break
             assert progress < i
@@ -259,50 +261,56 @@ class JavaScriptScanner(basescanner.BaseScanner):
         trace = False and not g.unitTesting
         # define common idioms for defining classes and functions.
         # To do: make this table a user option.
-        proto1 = re.compile(
-            r'\s*Object.create\s*=\s*function.*\n' +
-            r'\s*var\s+(\w+)\s*=\s*function',
-            re.MULTILINE)
-               
-        # Patterns match only at the start.
-        table = (
-            # Compound statements.
-            (0, 'else',   r'\s*else\((.*)\)\s*\{'),
-            # (0, 'else'  r'\s*\}\s*else\((.*)\)\s*\{'),
-            (0, 'for',    r'\s*for(.*)\{'),
-            (0, 'if',     r'\s*if\((.*)\)\s*\{'),
-            (0, 'return', r'\s*return'),
-            (0, 'switch', r'\s*switch(.*)\{'),
-            (0, 'while',  r'\s*while(.*)\{'),
-            # Javascript statements,
-            (1, '//',        r'\s*\/\/\s*(.*)'),
-            (0, 'use strict', r'\"\s*use\s*strict\s*\"\s*;'),
-            (0, 'require',    r'\s*require\s*\('),
-            # Field/ object names...
-            (1, '', r'\s*(\w+\s*\:)'),
-            # Classes, functions, vars...
-            (0, 'class', r'\s*define\s*\(\[(.*)\]\s*,\s*function\('),
-                # define ( [*], function (
-            (1, 'function',  r'\s*function\s+(\w+)'),
-                # function x
-            (1, 'function',  r'\s*var\s+(\w[\w\.]*)\s*=\s*function\('),
-                # var x[.y] = function (
-            (1, 'function',  r'\s*(\w[\w\.]*)\s*=\s*function\s*\('),
-                # x[.y] = function (
-            (1, 'proto', proto1),
-                 # Object.create = function
-                 #     var x = function
-            (0, 'proto', r'\s*Object.create\s*=\s*function\s*\('),
-                # Object.create = function
-            (0, 'proto', r'Function\.prototype\.method\s*=\s*function'),
-                # Function.prototype.method = function
-            (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*new\s+(\w+)'),
-                # var x[.y] = new
-            (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*{'),
-                # var x[.y] = {
-            (1, 'var',   r'\s*var\s+(\w+)\s*;'),
-                # var x;
-        )
+        if 1:
+            table = ()
+        else:
+            #@+<< define table >>
+            #@+node:ekr.20161008125203.1: *4* << define table >>
+            proto1 = re.compile(
+                r'\s*Object.create\s*=\s*function.*\n' +
+                r'\s*var\s+(\w+)\s*=\s*function',
+                re.MULTILINE)
+                   
+            # Patterns match only at the start.
+            table = (
+                # Compound statements.
+                (0, 'else',   r'\s*else\((.*)\)\s*\{'),
+                # (0, 'else'  r'\s*\}\s*else\((.*)\)\s*\{'),
+                (0, 'for',    r'\s*for(.*)\{'),
+                (0, 'if',     r'\s*if\((.*)\)\s*\{'),
+                (0, 'return', r'\s*return'),
+                (0, 'switch', r'\s*switch(.*)\{'),
+                (0, 'while',  r'\s*while(.*)\{'),
+                # Javascript statements,
+                (1, '//',        r'\s*\/\/\s*(.*)'),
+                (0, 'use strict', r'\"\s*use\s*strict\s*\"\s*;'),
+                (0, 'require',    r'\s*require\s*\('),
+                # Field/ object names...
+                (1, '', r'\s*(\w+\s*\:)'),
+                # Classes, functions, vars...
+                (0, 'class', r'\s*define\s*\(\[(.*)\]\s*,\s*function\('),
+                    # define ( [*], function (
+                (1, 'function',  r'\s*function\s+(\w+)'),
+                    # function x
+                (1, 'function',  r'\s*var\s+(\w[\w\.]*)\s*=\s*function\('),
+                    # var x[.y] = function (
+                (1, 'function',  r'\s*(\w[\w\.]*)\s*=\s*function\s*\('),
+                    # x[.y] = function (
+                (1, 'proto', proto1),
+                     # Object.create = function
+                     #     var x = function
+                (0, 'proto', r'\s*Object.create\s*=\s*function\s*\('),
+                    # Object.create = function
+                (0, 'proto', r'Function\.prototype\.method\s*=\s*function'),
+                    # Function.prototype.method = function
+                (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*new\s+(\w+)'),
+                    # var x[.y] = new
+                (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*{'),
+                    # var x[.y] = {
+                (1, 'var',   r'\s*var\s+(\w+)\s*;'),
+                    # var x;
+            )
+            #@-<< define table >>
         s = ''.join(block_lines)
         for i, prefix, pattern in table:
             m = re.match(pattern, s)
@@ -313,11 +321,13 @@ class JavaScriptScanner(basescanner.BaseScanner):
         # Use the first non-blank line.
         for line in block_lines:
             if line.strip():
-                i = line.find('(')
-                if i > -1 and line[:i].strip():
-                    return n, line[:i]
-                else:
-                    return n, line.strip()
+                return n, line.strip()
+                # A bad idea.
+                # i = line.find('(')
+                # if i > -1 and line[:i].strip():
+                    # return n, line[:i]
+                # else:
+                    # return n, line.strip()
         # The last fallback.
         return n+1, 'block %s' % (n)
     #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
