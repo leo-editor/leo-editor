@@ -397,7 +397,7 @@ class Export_IPYNB(object):
             c,
             defaultextension=".ipynb",
             filetypes=[
-                ("Jypyter files", "*.ipynb"),
+                ("Jupyter files", "*.ipynb"),
                 ("All files", "*"),
             ],
             initialfile='',
@@ -421,7 +421,7 @@ class Export_IPYNB(object):
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-jypyter','@auto-ipynb',],
+    '@auto': ['@auto-jupyter','@auto-ipynb',],
     'class': Export_IPYNB,
     'extensions': ['.ipynb',],
 }

@@ -343,7 +343,7 @@ class Import_IPYNB(object):
             title="Open Jupyter File",
             filetypes=[
                 ("All files", "*"),
-                ("Jypyter files", "*.ipynb"),
+                ("Jupyter files", "*.ipynb"),
             ],
             defaultextension=".ipynb",
         )
