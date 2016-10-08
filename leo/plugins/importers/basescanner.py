@@ -532,18 +532,6 @@ class BaseScanner(object):
             return dummy_line
 
         return ''.join([mungeRstLine(z) for z in g.splitLines(s)])
-    #@+node:ekr.20161006164257.1: *3* BaseScanner.trialWrite
-    def trialWrite(self, s):
-        '''Return the trial write for s.'''
-        at = self.c.atFileCommands
-        at.write(self.root,
-            nosentinels=True,
-            perfectImportFlag=True,
-            scriptWrite=False,
-            thinFile=True,
-            toString=True,
-        )
-        return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20140727075002.18205: ** BaseScanner.Code generation
     #@+node:ekr.20140727075002.18206: *3* BaseScanner.adjustParent
     def adjustParent(self, parent, headline):

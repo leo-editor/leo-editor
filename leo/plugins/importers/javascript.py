@@ -10,39 +10,59 @@ new_scanner = True
 class Block:
     '''A class describing a block and its possible rescans.'''
 
-    def __init__(self, block_lines, simple):
+    def __init__(self, lines, simple, base=None):
         '''Ctor for the Block class.'''
+        self.base = base
         self.children = []
-        self.block_lines = block_lines
+        self.lines = lines
+        self.headline = ''
         self.simple = simple
         
     def __repr__(self):
         return 'Block: simple: %s lines: %s children: %s' % (
-            self.simple, len(self.block_lines), len(self.children))
+            self.simple, len(self.lines), len(self.children))
             
     __str__ = __repr__
+    
+    #@+others
+    #@+node:ekr.20161008074449.1: *3* block.undent
+    def undent(self, n):
+        '''Unindent all block lines by n.'''
+        if n > 0:
+            result = []
+            for s in self.lines:
+                if s[:n] in ('\t' * n, ' ' * n):
+                    result.append(s[n:])
+                else:
+                    g.trace('can not happen mixed leading whitespace:', repr(s))
+                    return
+            self.lines = result
+    #@-others
 #@+node:ekr.20161004092007.1: ** class ScanState
 class ScanState(object):
     '''A class to store and update scanning state.'''
-    #@+others
-    #@+node:ekr.20161004092045.1: *3*  state.ctor
-    def __init__(self):
+    
+    def __init__(self, base=None):
         '''Ctor for ScanState class.'''
-        self.base_curlies = 0
-        self.base_parens = 0
+        if base:
+            curlies, parens = base
+        else:
+            curlies, parens = 0, 0
+        self.base_curlies = curlies
+        self.base_parens = parens
         self.context = '' # in ('/', '/*', '"', "'")
-        self.curlies = 0
-        self.parens = 0
-        self.stack = []
-        # self.squares = 0
-            # Probably don't want to keep track of these.
-            
+        self.curlies = curlies
+        self.parens = parens
+        # self.stack = []
+
     def __repr__(self):
         return 'ScanState: top: %s { %s (: %s, context: %2r' % (
             int(self.at_top_level()),
             self.curlies, self.parens, self.context)
             
     __str__ = __repr__
+    
+    #@+others
     #@+node:ekr.20161004092056.1: *3* state.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
@@ -52,13 +72,24 @@ class ScanState(object):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and (
             (self.curlies > self.base_curlies or self.parens > self.base_parens))
-    #@+node:ekr.20161007053002.1: *3* state.base (to be deleted?)
-    def base (self):
+    #@+node:ekr.20161007053002.1: *3* state.get_base
+    def get_base (self):
         '''Return the present counts.'''
         return self.curlies, self.parens
+    #@+node:ekr.20161006182212.1: *3* state.push & pop (NOT USED)
+    def pop(self):
+        '''Restore the base state from the stack.'''
+        self.base_curlies, self.base_parens = self.stack.pop()
+        
+    def push(self):
+        '''Save the base state on the stack and enter a new base state.'''
+        self.stack.append((self.base_curlies, self.base_parens),)
+        self.base_curlies = self.curlies
+        self.base_parens = self.parens
+        
     #@+node:ekr.20161007061524.1: *3* state.scan_block
     def scan_block(self, i, lines):
-        '''Scan lines[i:]. Return i, block_lines.'''
+        '''Scan lines[i:]. Return (i, lines).'''
         state = self
         assert state.starts_block(), i
         i1 = i
@@ -160,28 +191,50 @@ class JavaScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20161006164715.1: *3* jss.check
     def check(self, unused_s, parent):
         '''Override of javascript checker.'''
+        trace = False and not g.unitTesting
+        trace_all_lines = False
         s1 = g.toUnicode(self.file_s, self.encoding)
-        s2 = self.trialWrite(s1)
+        s2 = self.trialWrite()
+        # s2 = self.strip_section_references(s2)
         # s1 = self.strip_all(s1)
         # s2 = self.strip_all(s2)
         ok = s1 == s2
         if not ok:
-            g.trace('===== s1: %s' % parent.h)
-            for i, s in enumerate(g.splitLines(s1)):
-                print('%3s %s' % (i, s.rstrip()))
-            g.trace('===== s2')
-            for i, s in enumerate(g.splitLines(s2)):
-                print('%3s %s' % (i, s.rstrip()))
+            lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
+            n1, n2 = len(lines1), len(lines2)
+            g.trace('===== PERFECT IMPORT FAILED =====')
+            g.trace('len(s1): %s len(s2): %s' % (n1, n2))
+            for i in range(min(n1, n2)):
+                line1, line2 = lines1[i], lines2[i]
+                if line1 != line2:
+                     g.trace('first mismatched line: %s' % i)
+                     g.trace(repr(line1))
+                     g.trace(repr(line2))
+                     break
+            else:
+                g.trace('all common lines match')
+            if trace and trace_all_lines:
+                g.trace('===== s1: %s' % parent.h)
+                for i, s in enumerate(g.splitLines(s1)):
+                    print('%3s %s' % (i+1, s.rstrip()))
+                g.trace('===== s2')
+                for i, s in enumerate(g.splitLines(s2)):
+                    print('%3s %s' % (i+1, s.rstrip()))
         return ok
-    #@+node:ekr.20161007093236.1: *3* jss.dump_blocks
+    #@+node:ekr.20161007093236.1: *3* jss.dump_block & dump_blocks
+    def dump_block(self, block):
+        '''Dump one block.'''
+        lines = block.lines if isinstance(block, Block) else block
+        for j, s in enumerate(lines):
+            print('    %3s %s' % (j, s.rstrip()))
+            
     def dump_blocks(self, blocks, parent):
         '''Dump all blocks, which may be Block instances or lists of strings.'''
         g.trace('blocks in %s...' % parent.h)
         for i, block in enumerate(blocks):
             print('  block: %s' % i)
-            lines = block.block_lines if isinstance(block, Block) else block
-            for j, s in enumerate(lines):
-                print('    %3s %s' % (j, s.rstrip()))
+            self.dump_block(block)
+
     #@+node:ekr.20161004105734.1: *3* jss.get_headline
     def get_headline(self, block_lines, n):
         '''
@@ -208,6 +261,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
             (0, 'if',     r'(\s*)if\((.*)\)(\s*)\{'),
             (0, 'switch', r'(\s*)switch(.*)\{'),
             (0, 'while',  r'(\s*)while(.*)\{'),
+            # Field/ object names...
+            (1, '', r'\s*(\w+\s*\:)'),
             # Classes, functions, vars...
             (0, 'class', r'(\s*)define(\s*)\(\[(.*)\](\s*),(\s*)function\('),
                 # define ( [*], function (
@@ -239,33 +294,151 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 name = prefix + ' ' + (m.group(i) if i else '')
                 return n, name.strip()
         return n+1, 'block %s' % (n)
+    #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
+    def max_blocks_indent(self, blocks):
+        '''Return the maximum indentation that can be removed from all blocks.'''
+        n = 16
+        for block in blocks:
+            for s in block.lines:
+                i = g.find_line_start(s, 0)
+                i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                n = min(n, width)
+        return n
     #@+node:ekr.20161007081548.1: *3* jss.put_block
     def put_block(self, block, parent):
         '''Create nodes for block and all its children.'''
         p = parent.insertAsLastChild()
         p.h = block.headline
-        p.b = p.b + ''.join(block.block_lines)
+        p.b = p.b + ''.join(block.lines)
         for child in block.children:
             self.put_block(child, p)
+
+    #@+node:ekr.20161007150618.1: *3* jss.ref_line
+    def ref_line(self, block, sibling_blocks):
+        '''Return a reference to the block, given its sibling blocks.'''
+        
+        def munge(h):
+            '''Munge a headline for use in a section reference.'''
+            for z in '{}()[]<>':
+                h = h.replace(z,'')
+            return h.strip()
+            
+        n = len(sibling_blocks)
+        assert n > 0, sibling_blocks
+        if n == 1:
+            return '@others\n'
+        else:
+            h = munge(block.lines[0])
+            if 0:
+                i = 999 # i = sibling_blocks.index(block)
+                headlines = [munge(z.lines[0]) for z in sibling_blocks if z != block]
+                if h in headlines:
+                    h = '%s: %s' % (i, h)
+            return g.angleBrackets(h) + '\n'
+    #@+node:ekr.20161007151845.1: *3* jss.rescan_block
+    def rescan_block(self, parent_block):
+        '''Rescan a non-simple block, possibly creating child blocks.'''
+        trace = False and not g.unitTesting
+        if len(parent_block.lines) < 10:
+            return
+        if trace:
+            g.trace('parent_block...')
+            self.dump_block(parent_block)
+        # The first and last lines begin and end the block.
+        # Only scan the interior lines.
+        first_line = parent_block.lines[0]
+        last_line = parent_block.lines[-1]
+        lines = parent_block.lines[1:-1]
+        # Start the state with the proper base.
+        state = ScanState(base=parent_block.base)
+        blocks, block_lines = [], []
+        i = 0
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                block_base = state.get_base()
+                if block_lines: blocks.append(Block(block_lines, simple=True))
+                i, block_lines = state.scan_block(i, lines)
+                blocks.append(Block(block_lines, simple=False, base=block_base))
+                block_lines = []
+            else:
+                block_lines.append(line)
+                i += 1
+            assert progress < i
+        # End the lines.
+        if block_lines:
+            blocks.append(Block(block_lines, simple=True))
+        if 1:
+            # Use @others, never section references.
+            if blocks:
+                max_indent = self.max_blocks_indent(blocks)
+                parent_block.lines = [
+                    first_line,
+                    '%s@others\n' % (' ' * max_indent),
+                    last_line]
+                children = []
+                for block in blocks:
+                    child_block = Block(block.lines,simple=True)
+                    child_block.undent(max_indent)
+                    children.append(child_block)
+                parent_block.children = children
+                self.rescan_blocks(children)
+            else:
+                parent_block.lines = []
+        else:
+            # This generates section referenes.
+            # Alas @auto does not allow section references!
+            not_simple_blocks = [z for z in blocks if not z.simple]
+            if not_simple_blocks:
+                body, children, headlines = [], [], []
+                for block in blocks:
+                    if block.simple:
+                        body.extend(block.lines)
+                    else:
+                        child_block = Block(block.lines,simple=True)
+                        children.append(child_block)
+                        ref = self.ref_line(child_block, not_simple_blocks)
+                        # max_indent = self.max_indent(child_block.lines)
+                        # child_block.lines = self.unindent(child_block.lines, max_indent)
+                        headlines.append((child_block, ref.strip()),)
+                        body.append(ref)
+                # Update all child headlines.
+                for data in headlines:
+                    child_block, h = data
+                    child_block.headline = h
+                # Replace the block with the child blocks.
+                parent_block.lines = [first_line]
+                parent_block.lines.extend(body)
+                parent_block.lines.append(last_line)
+                parent_block.children = children
+                # Continue the rescan.
+                self.rescan_blocks(blocks)
+            else:
+                pass # No changes to parent_block.b.
+                    
+                
     #@+node:ekr.20161007075210.1: *3* jss.rescan_blocks
     def rescan_blocks(self, blocks):
-        '''Rescan all blocks, looking for further substitutions.'''
-        # The first and last lines begin and end the block.
-        n, result = 1, []
+        '''Rescan all blocks, finding more blocks and adjusting text.'''
+        n = 1
         for block in blocks:
             assert isinstance(block, Block)
-            n, h = self.get_headline(block.block_lines, n)
+            n, h = self.get_headline(block.lines, n)
             block.headline = h
-            result.append(block)
-        return result
+            if not block.simple:
+                self.rescan_block(block)
     #@+node:ekr.20161004115934.1: *3* jss.scan
     def scan(self, s1, parent, parse_body=True):
         '''The new, simpler javascript scanner.'''
         trace = False and not g.unitTesting
+        trace_blocks = False
         # pylint: disable=arguments-differ
             # parse_body not used.
         lines = g.splitLines(s1)
         if len(lines) < 20:
+            if trace: g.trace('small file: %s' % parent.h)
             parent.b = '@language javascript\n' + ''.join(lines)
             return
         self.level, self.name_stack = 0, [] # Updated by rescan_block.
@@ -279,9 +452,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
             line = lines[i]
             state.scan_line(line)
             if state.starts_block():
+                block_base = state.get_base()
                 if block_lines: blocks.append(Block(block_lines, simple=True))
                 i, block_lines = state.scan_block(i, lines)
-                blocks.append(Block(block_lines, simple=False))
+                blocks.append(Block(block_lines, simple=False, base=block_base))
                 block_lines = []
             else:
                 block_lines.append(line)
@@ -290,13 +464,41 @@ class JavaScriptScanner(basescanner.BaseScanner):
         # End the blocks properly.
         if block_lines:
             blocks.append(Block(block_lines, simple=True))
-        if trace:
+        if trace and trace_blocks:
             self.dump_blocks(blocks, parent)
-        # Rescan all the blocks in context.
-        blocks = self.rescan_blocks(blocks)
+        # Rescan all the blocks, possibly creating more child blocks.
+        self.rescan_blocks(blocks)
         parent.b = '@language javascript\n@others\n'
+        simple_lines = sum([len(z.lines) if z.simple else 0 for z in blocks])
+        if trace: g.trace('simple lines: %s %s' % (simple_lines, parent.h))
         for block in blocks:
             self.put_block(block, parent)
+    #@+node:ekr.20161008060711.1: *3* jss.strip_section_references (not used)
+    def strip_section_references(self, s):
+
+        pattern = r'^[ \t]*\<\<.*\>\>[ \t]*$'
+        return ''.join([z for z in g.splitLines(s) if re.match(pattern,z) is None])
+    #@+node:ekr.20161006164257.1: *3* jss.trialWrite
+    def trialWrite(self):
+        '''Return the trial write for self.root.'''
+        at = self.c.atFileCommands
+        if 0:
+            # Alas, the *actual* @auto write code refuses to write section references!!
+            at.write(self.root,
+                    nosentinels=True, ### False,
+                    perfectImportFlag=False, ###True,
+                    scriptWrite=True, ### False,
+                    thinFile=True,
+                    toString=True,
+                )
+        else:
+            at.writeOneAtAutoNode(
+                self.root,
+                toString=True,
+                force=True,
+                trialWrite=True,
+            )
+        return g.toUnicode(at.stringOutput, self.encoding)
     #@-others
 #@-others
 importer_dict = {
