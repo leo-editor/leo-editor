@@ -19,12 +19,25 @@ class Block:
         self.simple = simple
         
     def __repr__(self):
-        return 'Block: simple: %s lines: %s children: %s' % (
-            self.simple, len(self.lines), len(self.children))
+        return 'Block: simple: %s lines: %s children: %s %s' % (
+            int(self.simple), len(self.lines), len(self.children), self.get_headline())
             
     __str__ = __repr__
     
     #@+others
+    #@+node:ekr.20161008095930.1: *3* block.get_headline
+    def get_headline(self):
+        '''Return an approximation to the headline (for tracing).'''
+        if self.headline:
+            return self.headline.strip()
+        elif self.lines:
+            for line in self.lines:
+                if line.strip():
+                    return line.strip()
+            return '<all blank lines>'
+            
+        else:
+            return '<no headline>'
     #@+node:ekr.20161008074449.1: *3* block.undent
     def undent(self, n):
         '''Unindent all block lines by n.'''
@@ -79,17 +92,6 @@ class ScanState(object):
     def get_base (self):
         '''Return the present counts.'''
         return self.curlies, self.parens
-    #@+node:ekr.20161006182212.1: *3* state.push & pop (NOT USED)
-    def pop(self):
-        '''Restore the base state from the stack.'''
-        self.base_curlies, self.base_parens = self.stack.pop()
-        
-    def push(self):
-        '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append((self.base_curlies, self.base_parens),)
-        self.base_curlies = self.curlies
-        self.base_parens = self.parens
-        
     #@+node:ekr.20161007061524.1: *3* state.scan_block
     def scan_block(self, i, lines):
         '''Scan lines[i:]. Return (i, lines).'''
@@ -106,6 +108,11 @@ class ScanState(object):
                 i += 1 # Add the line that ends the block
                 break
             assert progress < i
+        # DON'T DO THIS. The last line *must* have the closing parens.
+        if 0:
+            # Lookahead: add trailing blank lines.
+            while i+1 < len(lines) and not lines[i+1].strip():
+                i += 1
         return i, lines[i1:i]
     #@+node:ekr.20161004071532.1: *3* state.scan_line
     def scan_line(self, s):
@@ -276,11 +283,11 @@ class JavaScriptScanner(basescanner.BaseScanner):
             # Classes, functions, vars...
             (0, 'class', r'\s*define\s*\(\[(.*)\]\s*,\s*function\('),
                 # define ( [*], function (
-            (1, 'func',  r'\s*function\s+(\w+)'),
+            (1, 'function',  r'\s*function\s+(\w+)'),
                 # function x
-            (1, 'func',  r'\s*var\s+(\w[\w\.]*)\s*=\s*function\('),
+            (1, 'function',  r'\s*var\s+(\w[\w\.]*)\s*=\s*function\('),
                 # var x[.y] = function (
-            (1, 'func',  r'\s*(\w[\w\.]*)\s*=\s*function\s*\('),
+            (1, 'function',  r'\s*(\w[\w\.]*)\s*=\s*function\s*\('),
                 # x[.y] = function (
             (1, 'proto', proto1),
                  # Object.create = function
@@ -303,6 +310,15 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 if trace: g.trace(m.group(0))
                 name = prefix + ' ' + (m.group(i) if i else '')
                 return n, name.strip()
+        # Use the first non-blank line.
+        for line in block_lines:
+            if line.strip():
+                i = line.find('(')
+                if i > -1 and line[:i].strip():
+                    return n, line[:i]
+                else:
+                    return n, line.strip()
+        # The last fallback.
         return n+1, 'block %s' % (n)
     #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
     def max_blocks_indent(self, blocks):
@@ -346,15 +362,13 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 if h in headlines:
                     h = '%s: %s' % (i, h)
             return g.angleBrackets(h) + '\n'
-    #@+node:ekr.20161007151845.1: *3* jss.rescan_block
+    #@+node:ekr.20161007151845.1: *3* jss.rescan_block & helpers
     def rescan_block(self, parent_block):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         trace = False and not g.unitTesting
         if len(parent_block.lines) < 10:
             return
-        if trace:
-            g.trace('parent_block...')
-            self.dump_block(parent_block)
+        if trace: g.trace('parent_block', parent_block.get_headline())
         # The first and last lines begin and end the block.
         # Only scan the interior lines.
         first_line = parent_block.lines[0]
@@ -381,9 +395,34 @@ class JavaScriptScanner(basescanner.BaseScanner):
         # End the lines.
         if block_lines:
             blocks.append(Block(block_lines, simple=True))
-        if 1:
-            # Use @others, never section references.
-            if blocks:
+        if 1: # Use @others only.
+            self.make_at_others_children(blocks, first_line, last_line, parent_block)
+        else:
+            # Alas, at present @auto does not honor section references!
+            self.make_ref_children(blocks, first_line, last_line, parent_block)
+    #@+node:ekr.20161008093819.1: *4* jss.move_leading_blank_lines
+    def move_leading_blank_lines(self, blocks):
+        '''Move leading blank lines to the preceding block.'''
+        if 0:
+            g.trace(len(blocks))
+            for block in blocks:
+                print(block)
+        if 0:
+            for i, block in enumerate(blocks):
+                if i > 0:
+                    prev_block = blocks[i-1]
+                    while block.lines and not block.lines[0].strip():
+                        print('%s -> %s' % (block.get_headline(), prev_block.get_headline()))
+                        prev_block.lines.append('\n')
+                        block.lines = block.lines[1:]
+    #@+node:ekr.20161008091434.1: *4* jss.make_at_others_children
+    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using @others.'''
+        if blocks:
+            # Create child nodes only if there are enough lines.
+            n_lines = sum([len(z.lines) for z in blocks])
+            # g.trace('n_lines', n_lines, 'blocks', len(blocks))
+            if n_lines > 20: # We want this to be a small number.
                 max_indent = self.max_blocks_indent(blocks)
                 parent_block.lines = [
                     first_line,
@@ -391,45 +430,41 @@ class JavaScriptScanner(basescanner.BaseScanner):
                     last_line]
                 children = []
                 for block in blocks:
-                    child_block = Block(block.lines,simple=True)
+                    child_block = Block(block.lines,simple=block.simple)
                     child_block.undent(max_indent)
                     children.append(child_block)
                 parent_block.children = children
+                self.move_leading_blank_lines(children)
                 self.rescan_blocks(children)
+    #@+node:ekr.20161008091822.1: *4* jss.make_ref_children
+    def make_ref_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using section references'''
+        complex_blocks = [z for z in blocks if not z.simple]
+        if not complex_blocks:
+            return
+        body, children, headlines = [], [], []
+        for block in blocks:
+            if block.simple:
+                body.extend(block.lines)
             else:
-                parent_block.lines = []
-        else:
-            # This generates section referenes.
-            # Alas @auto does not allow section references!
-            not_simple_blocks = [z for z in blocks if not z.simple]
-            if not_simple_blocks:
-                body, children, headlines = [], [], []
-                for block in blocks:
-                    if block.simple:
-                        body.extend(block.lines)
-                    else:
-                        child_block = Block(block.lines,simple=True)
-                        children.append(child_block)
-                        ref = self.ref_line(child_block, not_simple_blocks)
-                        # max_indent = self.max_indent(child_block.lines)
-                        # child_block.lines = self.unindent(child_block.lines, max_indent)
-                        headlines.append((child_block, ref.strip()),)
-                        body.append(ref)
-                # Update all child headlines.
-                for data in headlines:
-                    child_block, h = data
-                    child_block.headline = h
-                # Replace the block with the child blocks.
-                parent_block.lines = [first_line]
-                parent_block.lines.extend(body)
-                parent_block.lines.append(last_line)
-                parent_block.children = children
-                # Continue the rescan.
-                self.rescan_blocks(blocks)
-            else:
-                pass # No changes to parent_block.b.
-                    
-                
+                child_block = Block(block.lines,simple=True)
+                children.append(child_block)
+                ref = self.ref_line(child_block, complex_blocks)
+                # max_indent = self.max_indent(child_block.lines)
+                # child_block.lines = self.unindent(child_block.lines, max_indent)
+                headlines.append((child_block, ref.strip()),)
+                body.append(ref)
+        # Update all child headlines.
+        for data in headlines:
+            child_block, h = data
+            child_block.headline = h
+        # Replace the block with the child blocks.
+        parent_block.lines = [first_line]
+        parent_block.lines.extend(body)
+        parent_block.lines.append(last_line)
+        parent_block.children = children
+        # Continue the rescan.
+        self.rescan_blocks(blocks)
     #@+node:ekr.20161007075210.1: *3* jss.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
