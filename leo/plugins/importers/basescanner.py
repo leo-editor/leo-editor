@@ -498,7 +498,14 @@ class BaseScanner(object):
         if lws: result.extend(lws)
         if trace: g.trace('\nafter: ', result)
         return result
-    #@+node:ekr.20161006165248.1: *3* BaseScanner.strip_lws & strip_blank_lines
+    #@+node:ekr.20161006165248.1: *3* BaseScanner.clean_* & strip_*
+    def clean_blank_lines(self, s):
+        '''Remove all blanks and tabs in all blank lines.'''
+        result = ''.join([
+            z if z.strip() else z.replace(' ','').replace('\t','')
+                for z in g.splitLines(s)
+        ])
+
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
         return self.strip_lws(self.strip_blank_lines(s))
