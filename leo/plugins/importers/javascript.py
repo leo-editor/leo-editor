@@ -252,62 +252,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20161004105734.1: *3* jss.get_headline
     def get_headline(self, block_lines):
         '''Return the desired headline of the given block. '''
-        trace = False and not g.unitTesting
-        if 0:
-            #@+<< define table >>
-            #@+node:ekr.20161008125203.1: *4* << define table >>
-            proto1 = re.compile(
-                r'\s*Object.create\s*=\s*function.*\n' +
-                r'\s*var\s+(\w+)\s*=\s*function',
-                re.MULTILINE)
-                   
-            # Patterns match only at the start.
-            table = (
-                # Compound statements.
-                (0, 'else',   r'\s*else\((.*)\)\s*\{'),
-                # (0, 'else'  r'\s*\}\s*else\((.*)\)\s*\{'),
-                (0, 'for',    r'\s*for(.*)\{'),
-                (0, 'if',     r'\s*if\((.*)\)\s*\{'),
-                (0, 'return', r'\s*return'),
-                (0, 'switch', r'\s*switch(.*)\{'),
-                (0, 'while',  r'\s*while(.*)\{'),
-                # Javascript statements,
-                (1, '//',        r'\s*\/\/\s*(.*)'),
-                (0, 'use strict', r'\"\s*use\s*strict\s*\"\s*;'),
-                (0, 'require',    r'\s*require\s*\('),
-                # Field/ object names...
-                (1, '', r'\s*(\w+\s*\:)'),
-                # Classes, functions, vars...
-                (0, 'class', r'\s*define\s*\(\[(.*)\]\s*,\s*function\('),
-                    # define ( [*], function (
-                (1, 'function',  r'\s*function\s+(\w+)'),
-                    # function x
-                (1, 'function',  r'\s*var\s+(\w[\w\.]*)\s*=\s*function\('),
-                    # var x[.y] = function (
-                (1, 'function',  r'\s*(\w[\w\.]*)\s*=\s*function\s*\('),
-                    # x[.y] = function (
-                (1, 'proto', proto1),
-                     # Object.create = function
-                     #     var x = function
-                (0, 'proto', r'\s*Object.create\s*=\s*function\s*\('),
-                    # Object.create = function
-                (0, 'proto', r'Function\.prototype\.method\s*=\s*function'),
-                    # Function.prototype.method = function
-                (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*new\s+(\w+)'),
-                    # var x[.y] = new
-                (1, 'var',   r'\s*var\s+(\w[\w\.]*)\s*=\s*{'),
-                    # var x[.y] = {
-                (1, 'var',   r'\s*var\s+(\w+)\s*;'),
-                    # var x;
-            )
-            #@-<< define table >>
-            s = ''.join(block_lines)
-            for i, prefix, pattern in table:
-                m = re.match(pattern, s)
-                if m:
-                    if trace: g.trace(m.group(0))
-                    name = prefix + ' ' + (m.group(i) if i else '')
-                    return name.strip()
         # Use the first non-blank line.
         for line in block_lines:
             if line.strip():
@@ -464,7 +408,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
         for block in blocks:
             assert isinstance(block, Block)
-            block.headline = h = self.get_headline(block.lines)
+            block.headline = self.get_headline(block.lines)
             if not block.simple:
                 self.rescan_block(block)
     #@+node:ekr.20161004115934.1: *3* jss.scan
