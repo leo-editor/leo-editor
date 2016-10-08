@@ -250,20 +250,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
             self.dump_block(block)
 
     #@+node:ekr.20161004105734.1: *3* jss.get_headline
-    def get_headline(self, block_lines, n):
-        '''
-        Return the desired headline of the given block:
-                
-        - Return (1, first-lines) if block is the leading lines.
-        - Return (n, function-name) for functions of various forms.
-        - Return (n+1, "block n") if no function name can be found.
-        '''
+    def get_headline(self, block_lines):
+        '''Return the desired headline of the given block. '''
         trace = False and not g.unitTesting
-        # define common idioms for defining classes and functions.
-        # To do: make this table a user option.
-        if 1:
-            table = ()
-        else:
+        if 0:
             #@+<< define table >>
             #@+node:ekr.20161008125203.1: *4* << define table >>
             proto1 = re.compile(
@@ -311,25 +301,19 @@ class JavaScriptScanner(basescanner.BaseScanner):
                     # var x;
             )
             #@-<< define table >>
-        s = ''.join(block_lines)
-        for i, prefix, pattern in table:
-            m = re.match(pattern, s)
-            if m:
-                if trace: g.trace(m.group(0))
-                name = prefix + ' ' + (m.group(i) if i else '')
-                return n, name.strip()
+            s = ''.join(block_lines)
+            for i, prefix, pattern in table:
+                m = re.match(pattern, s)
+                if m:
+                    if trace: g.trace(m.group(0))
+                    name = prefix + ' ' + (m.group(i) if i else '')
+                    return name.strip()
         # Use the first non-blank line.
         for line in block_lines:
             if line.strip():
-                return n, line.strip()
-                # A bad idea.
-                # i = line.find('(')
-                # if i > -1 and line[:i].strip():
-                    # return n, line[:i]
-                # else:
-                    # return n, line.strip()
+                return line.strip()
         # The last fallback.
-        return n+1, 'block %s' % (n)
+        return 'blank lines'
     #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
@@ -410,7 +394,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         else:
             # Alas, at present @auto does not honor section references!
             self.make_ref_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161008093819.1: *4* jss.move_leading_blank_lines
+    #@+node:ekr.20161008093819.1: *4* jss.move_leading_blank_lines (Not used)
     def move_leading_blank_lines(self, blocks):
         '''Move leading blank lines to the preceding block.'''
         if 0:
@@ -478,11 +462,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20161007075210.1: *3* jss.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
-        n = 1
         for block in blocks:
             assert isinstance(block, Block)
-            n, h = self.get_headline(block.lines, n)
-            block.headline = h
+            block.headline = h = self.get_headline(block.lines)
             if not block.simple:
                 self.rescan_block(block)
     #@+node:ekr.20161004115934.1: *3* jss.scan
