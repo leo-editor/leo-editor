@@ -50,6 +50,8 @@ class Block:
                     else:
                         g.trace('can not happen mixed leading whitespace:', repr(s))
                         return
+                elif gen_clean:
+                    result.append(s)
                 else:
                     result.append('\n' if s.endswith('\n') else '')
             self.lines = result
@@ -160,6 +162,12 @@ class ScanState(object):
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
+gen_clean = True # True: clean blank lines.
+
+gen_refs = False
+    # True: generate section references.
+    # False generate @others
+
 class JavaScriptScanner(basescanner.BaseScanner):
     #@+others
     #@+node:ekr.20140723122936.18050: *3* jss.__init__
@@ -207,9 +215,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
         trace_all_lines = False
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trialWrite()
-        s1 = self.clean_blank_lines(s1)
-        s2 = self.clean_blank_lines(s2)
-        # s2 = self.strip_section_references(s2)
+        if gen_clean:
+            s1 = self.clean_blank_lines(s1)
+            s2 = self.clean_blank_lines(s2)
         # s1 = self.strip_all(s1)
         # s2 = self.strip_all(s2)
         ok = s1 == s2
@@ -264,7 +272,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         n = 16
         for block in blocks:
             for s in block.lines:
-                if s.strip():
+                if s.strip() or not gen_clean:
                     i = g.find_line_start(s, 0)
                     i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
                     n = min(n, width)
@@ -294,11 +302,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
             return '@others\n'
         else:
             h = munge(block.lines[0])
-            if 0:
-                i = 999 # i = sibling_blocks.index(block)
-                headlines = [munge(z.lines[0]) for z in sibling_blocks if z != block]
-                if h in headlines:
-                    h = '%s: %s' % (i, h)
             return g.angleBrackets(h) + '\n'
     #@+node:ekr.20161007151845.1: *3* jss.rescan_block & helpers
     def rescan_block(self, parent_block):
@@ -333,26 +336,13 @@ class JavaScriptScanner(basescanner.BaseScanner):
         # End the lines.
         if block_lines:
             blocks.append(Block(block_lines, simple=True))
-        if 1: # Use @others only.
-            self.make_at_others_children(blocks, first_line, last_line, parent_block)
-        else:
-            # Alas, at present @auto does not honor section references!
+        if gen_refs: 
+            # Generate section references.
             self.make_ref_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161008093819.1: *4* jss.move_leading_blank_lines (Not used)
-    def move_leading_blank_lines(self, blocks):
-        '''Move leading blank lines to the preceding block.'''
-        if 0:
-            g.trace(len(blocks))
-            for block in blocks:
-                print(block)
-        if 0:
-            for i, block in enumerate(blocks):
-                if i > 0:
-                    prev_block = blocks[i-1]
-                    while block.lines and not block.lines[0].strip():
-                        print('%s -> %s' % (block.get_headline(), prev_block.get_headline()))
-                        prev_block.lines.append('\n')
-                        block.lines = block.lines[1:]
+        else:
+            # Generate only @others.
+            self.make_at_others_children(blocks, first_line, last_line, parent_block)
+       
     #@+node:ekr.20161008091434.1: *4* jss.make_at_others_children
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
@@ -372,7 +362,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
                     child_block.undent(max_indent)
                     children.append(child_block)
                 parent_block.children = children
-                self.move_leading_blank_lines(children)
                 self.rescan_blocks(children)
     #@+node:ekr.20161008091822.1: *4* jss.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
@@ -388,14 +377,15 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 child_block = Block(block.lines,simple=True)
                 children.append(child_block)
                 ref = self.ref_line(child_block, complex_blocks)
-                # max_indent = self.max_indent(child_block.lines)
-                # child_block.lines = self.unindent(child_block.lines, max_indent)
+                max_indent = self.max_blocks_indent([child_block])
+                child_block.undent(max_indent)
                 headlines.append((child_block, ref.strip()),)
                 body.append(ref)
         # Update all child headlines.
         for data in headlines:
-            child_block, h = data
-            child_block.headline = h
+            if not child_block.headline:
+                child_block, h = data
+                child_block.headline = h
         # Replace the block with the child blocks.
         parent_block.lines = [first_line]
         parent_block.lines.extend(body)
@@ -408,7 +398,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
         for block in blocks:
             assert isinstance(block, Block)
-            block.headline = self.get_headline(block.lines)
+            if not block.headline:
+                block.headline = self.get_headline(block.lines)
             if not block.simple:
                 self.rescan_block(block)
     #@+node:ekr.20161004115934.1: *3* jss.scan
@@ -423,7 +414,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
             if trace: g.trace('small file: %s' % parent.h)
             parent.b = '@language javascript\n' + ''.join(lines)
             return
-        self.level, self.name_stack = 0, [] # Updated by rescan_block.
         state = ScanState()
         blocks = []
         block_lines = [] # The lines of the present block.
@@ -464,7 +454,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def trialWrite(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
-        if 0:
+        if gen_refs:
             # Alas, the *actual* @auto write code refuses to write section references!!
             at.write(self.root,
                     nosentinels=True, ### False,
