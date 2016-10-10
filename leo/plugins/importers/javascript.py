@@ -142,14 +142,17 @@ class ScanState(object):
                 if self.context == '/*' and s2 == '*/':
                     self.context = ''
                     i += 1
+                elif ch == '\\':
+                    # We honor backspaces in strings, but not in comments.
+                    i += 2
                 elif self.context == ch:
                     self.context = ''
                 else:
                     pass # Continue the present context
             elif s2 == '//':
+                # It's very hard to discover regex's.
+                # Instead, we'll just ignore \?
                 break
-            # It's very hard to discover regex's.
-            # Instead, we'll just ignore \?
             elif ch == '\\':
                 i += 2
             elif s2 == '/*':
@@ -191,15 +194,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             alternate_language=alternate_language)
                 # The language used in the @language directive.
         if new_scanner:
-            c = self.c
-            if gen_clean is None:
-                self.gen_clean = c.config.getBool('js_importer_clean_lws', default=False)
-            else:
-                self.gen_clean = gen_clean
-            if gen_refs is None:
-                self.gen_refs = c.config.getBool('js_importer_gen_refs', default=False)
-            else:
-                self.gen_refs = gen_refs
+            self.get_settings()
         else:
             # Set the parser vars.
             self.atAutoWarnsAboutLeadingWhitespace = False
@@ -227,6 +222,21 @@ class JavaScriptScanner(basescanner.BaseScanner):
             self.atAutoWarnsAboutLeadingWhitespace = False
             self.strict = False
             self.ignoreBlankLines = True
+    #@+node:ekr.20161010171233.1: *4* self.get_settings()
+    def get_settings(self):
+        '''Set ivars from settings.'''
+        c = self.c
+        getBool, getInt = c.config.getBool, c.config.getInt
+        if gen_clean is None:
+            self.gen_clean = getBool('js_importer_clean_lws', default=False)
+        else:
+            self.gen_clean = gen_clean
+        if gen_refs is None:
+            self.gen_refs = getBool('js_importer_gen_refs', default=False)
+        else:
+            self.gen_refs = gen_refs
+        self.min_scan_size = getInt('js_importer_min_scan_size') or 0
+        self.min_rescan_size = getInt('js_importer_min_rescan_size') or 0
     #@+node:ekr.20161006164715.1: *3* jss.check
     def check(self, unused_s, parent):
         '''Override of javascript checker.'''
@@ -316,9 +326,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         state = self.state
         trace = False and not g.unitTesting
         if trace: g.trace('len: %3s' % len(parent_block.lines), parent_block.get_headline())
-        # This is arbitrary, and so a bit confusing.
-        # However, it is about right in practice.
-        if len(parent_block.lines) < 10:
+        if len(parent_block.lines) < self.min_rescan_size:
             return
         if strip_lines:
             # The first and last lines begin and end the block.
@@ -449,7 +457,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             # parse_body not used.
         lines = g.splitLines(s1)
         self.state = state = ScanState(self.c, self.root)
-        if len(lines) < 20:
+        if len(lines) < self.min_scan_size:
             if trace: g.trace('small file: %s' % parent.h)
             parent.b = '@language javascript\n' + ''.join(lines)
             return

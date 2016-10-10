@@ -683,6 +683,8 @@
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085320.1"><vh>@bool js_importer_gen_refs = False</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
+<v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
+<v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
@@ -5632,7 +5634,9 @@ This setting is no longer used!</t>
 <t tx="ekr.20110611092035.16477"></t>
 <t tx="ekr.20110611092035.16478">These commands are deprecated</t>
 <t tx="ekr.20110611092035.16479"></t>
-<t tx="ekr.20110611092035.16480"></t>
+<t tx="ekr.20110611092035.16480">@language rest
+@wrap
+</t>
 <t tx="ekr.20110611092035.16481"></t>
 <t tx="ekr.20110611092035.16482"></t>
 <t tx="ekr.20110611092035.16483"></t>
@@ -11383,6 +11387,8 @@ g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
 <t tx="ekr.20161010085256.1">True: The javascript importer cleans blank lines and regularizes indentaion.
 </t>
 <t tx="ekr.20161010085320.1">True: The javascript importer generates section references.</t>
+<t tx="ekr.20161010172424.1">If &gt; 0, the importer rescans blocks only if they have more than the indicated number of lines.</t>
+<t tx="ekr.20161010172441.1">If &gt; 0, the importer scans files only if they have more than the indicated number of lines.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
