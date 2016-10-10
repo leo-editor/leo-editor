@@ -167,7 +167,7 @@ class ScanState(object):
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-gen_clean = False # True: clean blank lines.
+gen_clean = True # True: clean blank lines and regularize indentaion.
 
 gen_refs = False
     # True: generate section references.
@@ -221,10 +221,12 @@ class JavaScriptScanner(basescanner.BaseScanner):
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trialWrite()
         if gen_clean:
-            s1 = self.clean_blank_lines(s1)
-            s2 = self.clean_blank_lines(s2)
-        # s1 = self.strip_all(s1)
-        # s2 = self.strip_all(s2)
+            s1 = self.strip_lws(s1)
+            s2 = self.strip_lws(s2)
+            # s1 = self.clean_blank_lines(s1)
+            # s2 = self.clean_blank_lines(s2)
+            # s1 = self.strip_all(s1)
+            # s2 = self.strip_all(s2)
         ok = s1 == s2
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
@@ -346,27 +348,32 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
         trace = False and not g.unitTesting
-        if blocks:
-            if trace:
-                g.trace(self.root.h)
-                g.trace(parent_block)
-                for z in blocks:
-                    print('%s %s' % (self.max_blocks_indent([z]), z))
-            # Create child nodes only if there are enough lines.
-            n_lines = sum([len(z.lines) for z in blocks])
-            if n_lines > 20: # We want this to be a small number.
-                max_indent = self.max_blocks_indent(blocks)
-                parent_block.lines = [
-                    first_line,
-                    '%s@others\n' % (' ' * max_indent),
-                    last_line]
-                children = []
-                for block in blocks:
-                    child_block = Block(block.lines,simple=block.simple)
-                    child_block.undent(max_indent)
-                    children.append(child_block)
-                parent_block.children = children
-                self.rescan_blocks(children)
+        if not blocks:
+            return
+        if trace:
+            g.trace(self.root.h)
+            g.trace(parent_block)
+            for z in blocks:
+                print('%s %s' % (self.max_blocks_indent([z]), z))
+        # Create child nodes only if there are enough lines.
+        n_lines = sum([len(z.lines) for z in blocks])
+        if n_lines < 20: # We want this to be a small number.
+            return
+        
+        max_indent = 4 if gen_clean else self.max_blocks_indent(blocks)
+            # This doesn't work when gen_clean is False.
+        parent_block.lines = [
+            first_line,
+            '%s@others\n' % (' ' * max_indent),
+            last_line]
+        children = []
+        for block in blocks:
+            child_block = Block(block.lines,simple=block.simple)
+            child_undent = self.max_blocks_indent([child_block]) if gen_clean else max_indent
+            child_block.undent(child_undent)
+            children.append(child_block)
+        parent_block.children = children
+        self.rescan_blocks(children)
     #@+node:ekr.20161008091822.1: *4* jss.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
