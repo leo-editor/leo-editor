@@ -165,8 +165,6 @@ class ScanState(object):
         # g.trace(repr(self), s.rstrip())
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-# The syntax for patterns causes all kinds of problems...
-
 gen_clean = True # True: clean blank lines and regularize indentaion.
 
 gen_refs = False
