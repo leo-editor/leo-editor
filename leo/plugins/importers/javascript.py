@@ -132,29 +132,28 @@ class ScanState(object):
     #@+node:ekr.20161004071532.1: *3* state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
-        trace = False and self.root.h.endswith('alt.js') and not g.unitTesting
-        # if s.strip().startswith('// 1.02 here arrived at'): g.pdb()
+        trace = False and not g.unitTesting # and self.root.h.endswith('alt.js') 
         i = 0
         while i < len(s):
             progress = i
             ch, s2 = s[i], s[i:i+2]
-            if self.context:
-                if self.context == '/*' and s2 == '*/':
+            if self.context == '/*':
+                if s2 == '*/':
                     self.context = ''
                     i += 1
-                elif ch == '\\':
-                    # We honor backspaces in strings, but not in comments.
-                    i += 2
-                elif self.context == ch:
-                    self.context = ''
                 else:
-                    pass # Continue the present context
-            elif s2 == '//':
-                # It's very hard to discover regex's.
-                # Instead, we'll just ignore \?
-                break
+                    pass # Eat the next comment char.
             elif ch == '\\':
+                # Honor backslashes *everywhere* except block comments comments.
                 i += 2
+            elif self.context:
+                assert self.context in ('"', "'"), repr(self.context)
+                if self.context == ch:
+                    self.context = '' # End the string.
+                else:
+                    pass # Eat the string character.
+            elif s2 == '//':
+                break # The single-line comment ends the line.
             elif s2 == '/*':
                 self.context = '/*'
                 i += 1
