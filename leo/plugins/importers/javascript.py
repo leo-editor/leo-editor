@@ -10,7 +10,7 @@ new_scanner = True
 class Block:
     '''A class describing a block and its possible rescans.'''
 
-    def __init__(self, lines, state, simple=None):
+    def __init__(self, lines, simple=None):
         '''Ctor for the Block class.'''
         assert simple in (True, False), g.callers()
         self.children = []
@@ -173,7 +173,7 @@ gen_clean = True
     # None: use @bool js_importer_clean_lws setting
     # True: clean blank lines and regularize indentaion.
 
-gen_refs = True
+gen_refs = False
     # None: use @bool js_importer_gen_refs setting
     # True: generate section references.
     # False generate @others
@@ -340,10 +340,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
             if state.starts_block():
                 if block_lines:
                     # Finish any previous block.
-                    blocks.append(Block(block_lines, state, simple=True))
+                    blocks.append(Block(block_lines, simple=True))
                 # This is the *only* reparsing that is done.
                 i, block_lines = state.scan_block(i, lines)
-                blocks.append(Block(block_lines, state, simple=False))
+                blocks.append(Block(block_lines, simple=False))
                 block_lines = []
             else:
                 block_lines.append(line)
@@ -352,7 +352,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         state.pop() # Restore the bases.
         # End the lines.
         if block_lines:
-            blocks.append(Block(block_lines, state, simple=True))
+            blocks.append(Block(block_lines, simple=True))
         if self.gen_refs: 
             # Generate section references.
             self.make_ref_children(blocks, first_line, last_line, parent_block)
@@ -363,7 +363,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
         trace = False and not g.unitTesting
-        state = self.state
         if not blocks:
             return
         if trace:
@@ -385,7 +384,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             last_line]
         children = []
         for block in blocks:
-            child_block = Block(block.lines, state, simple=block.simple)
+            child_block = Block(block.lines, simple=block.simple)
             if self.gen_clean:
                 child_undent = self.max_blocks_indent([child_block])
             else:
@@ -398,7 +397,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
         trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
-        state = self.state
         if trace:
             g.trace('len: %3s %s' % (
                 len(parent_block.lines),
@@ -410,7 +408,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # g.trace(block.get_headline())
                 body.extend(block.lines)
             else:
-                child_block = Block(block.lines, state, simple=False)
+                child_block = Block(block.lines, simple=False)
                 children.append(child_block)
                 ref = self.ref_line(child_block)
                 child_block.headline = ref.strip()
@@ -456,7 +454,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             parent.b = '@language javascript\n' + ''.join(lines)
             return
         if self.gen_refs:
-            block = Block(lines, state, simple=False)
+            block = Block(lines, simple=False)
             self.rescan_block(block, strip_lines=False)
             parent.b = '@language javascript\n'
             self.put_block(block, parent, create_child=False)
@@ -470,9 +468,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 line = lines[i]
                 state.scan_line(line)
                 if state.starts_block():
-                    if block_lines: blocks.append(Block(block_lines, state, simple=True))
+                    if block_lines: blocks.append(Block(block_lines, simple=True))
                     i, block_lines = state.scan_block(i, lines)
-                    blocks.append(Block(block_lines, state, simple=False))
+                    blocks.append(Block(block_lines, simple=False))
                     block_lines = []
                 else:
                     block_lines.append(line)
@@ -480,7 +478,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 assert progress < i
             # End the blocks properly.
             if block_lines:
-                blocks.append(Block(block_lines, state, simple=True))
+                blocks.append(Block(block_lines, simple=True))
             if trace and trace_blocks:
                 self.dump_blocks(blocks, parent)
             # Rescan all the blocks, possibly creating more child blocks.
