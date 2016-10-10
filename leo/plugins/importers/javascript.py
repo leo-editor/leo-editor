@@ -318,7 +318,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
 
         # Always return a reference
         h = munge(block.get_headline())
-        return g.angleBrackets(h) + '\n'
+        return g.angleBrackets(' ' + h + ' ')
+
        
     #@+node:ekr.20161007151845.1: *3* jss.rescan_block & helpers
     def rescan_block(self, parent_block, strip_lines=True):
@@ -419,12 +420,12 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 child_block = Block(block.lines, simple=False)
                 children.append(child_block)
                 ref = self.ref_line(child_block)
-                child_block.headline = ref.strip()
+                child_block.headline = ref
                 if self.gen_clean:
                     # This local calculation is probably good enough.
                     child_undent = self.max_blocks_indent([child_block])
                     child_block.undent(child_undent)
-                    body.append(' '*child_undent + ref)
+                    body.append(' '*child_undent + ref + '\n')
                 else:
                     # Don't indent the ref, and don't unindent the children.
                     body.append(ref)
