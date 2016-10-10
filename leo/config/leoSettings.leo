@@ -681,6 +681,8 @@
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
+<v t="ekr.20161010085320.1"><vh>@bool js_importer_gen_refs = False</vh></v>
+<v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
@@ -2465,10 +2467,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110611092035.16471"></v>
-<v t="ekr.20140915194122.19470"></v>
 <v t="ekr.20111003085631.15488"></v>
-<v t="ekr.20070925144552"></v>
+<v t="ekr.20110611092035.16480"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11380,6 +11380,9 @@ g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
 <t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
 <t tx="ekr.20161007090350.1">Import &amp;Jupyter Notebook...</t>
 <t tx="ekr.20161007090445.1">Export &amp;Jupyter Notebook</t>
+<t tx="ekr.20161010085256.1">True: The javascript importer cleans blank lines and regularizes indentaion.
+</t>
+<t tx="ekr.20161010085320.1">True: The javascript importer generates section references.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

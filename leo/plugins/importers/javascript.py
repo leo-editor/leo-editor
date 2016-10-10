@@ -121,16 +121,14 @@ class ScanState(object):
     #@+node:ekr.20161004071532.1: *3* state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
-        ### 
-        # Single-line comments don't continue to the next line.
-        # if self.context == '//':
-            # self.context = ''
+        trace = False and not g.unitTesting
         i = 0
         while i < len(s):
             progress = i
             ch = s[i]
             if self.context:
                 if self.context == '/':
+                    # A regex.
                     if ch == '\\':
                         i += 1
                     elif ch == '/':
@@ -145,7 +143,7 @@ class ScanState(object):
                     pass # Continue the present context
             else:
                 if s[i:i+2] == '//':
-                    ### self.context = '//'
+                    if trace: g.trace('found comment:', s.rstrip())
                     break
                 elif ch == '/':
                     self.context = '/' # A regex.
@@ -162,12 +160,16 @@ class ScanState(object):
                 # elif ch == ']': self.squares -= 1
             i += 1
             assert progress < i
-        # g.trace(repr(self), s.rstrip())
+        if trace and s.strip().startswith('//') and self.continues_block():
+            g.trace(self, s.rstrip())
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-gen_clean = True # True: clean blank lines and regularize indentaion.
+gen_clean = True
+    # None: use @bool js_importer_clean_lws setting
+    # True: clean blank lines and regularize indentaion.
 
 gen_refs = False
+    # None: use @bool js_importer_gen_refs setting
     # True: generate section references.
     # False generate @others
 
@@ -183,11 +185,16 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # The language is used to set comment delims.
             alternate_language=alternate_language)
                 # The language used in the @language directive.
-        assert hasattr(self, 'strip_blank_lines')
         if new_scanner:
-            self.strict = False
-            self.atAutoWarnsAboutLeadingWhitespace = False
-            self.ignoreBlankLines = True
+            c = self.c
+            if gen_clean is None:
+                self.gen_clean = c.config.getBool('js_importer_clean_lws', default=False)
+            else:
+                self.gen_clean = gen_clean
+            if gen_refs is None:
+                self.gen_refs = c.config.getBool('js_importer_gen_refs', default=False)
+            else:
+                self.gen_refs = gen_refs
         else:
             # Set the parser vars.
             self.atAutoWarnsAboutLeadingWhitespace = False
@@ -195,8 +202,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
             self.blockCommentDelim2 = '*/'
             self.blockDelim1 = '{'
             self.blockDelim2 = '}'
-            self.hasClasses = True ### 2016/01/22
-            self.hasDecls = False ### 2016/01/22
+            self.hasClasses = True # 2016/01/22
+            self.hasDecls = False # 2016/01/22
             self.hasFunctions = True
             self.hasRegex = True
             # self.ignoreBlankLines = True
@@ -211,6 +218,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
             # Extra semantic data...
             self.classNames = []
             self.functionNames = []
+            # Set checker vars
+            self.atAutoWarnsAboutLeadingWhitespace = False
+            self.strict = False
+            self.ignoreBlankLines = True
     #@+node:ekr.20161006164715.1: *3* jss.check
     def check(self, unused_s, parent):
         '''Override of javascript checker.'''
@@ -218,13 +229,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
         trace_all_lines = False
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trialWrite()
-        if gen_clean:
-            s1 = self.strip_lws(s1)
-            s2 = self.strip_lws(s2)
-            # s1 = self.clean_blank_lines(s1)
-            # s2 = self.clean_blank_lines(s2)
-            # s1 = self.strip_all(s1)
-            # s2 = self.strip_all(s2)
+        if self.gen_clean:
+            clean = self.strip_lws # strip_all, clean_blank_lines
+            s1, s2 = clean(s1), clean(s2)
         ok = s1 == s2
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
@@ -268,7 +275,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         n = 16
         for block in blocks:
             for s in block.lines:
-                if s.strip() or not gen_clean:
+                if s.strip() or not self.gen_clean:
                     i = g.find_line_start(s, 0)
                     i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
                     n = min(n, width)
@@ -285,8 +292,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
         for child in block.children:
             self.put_block(child, p)
     #@+node:ekr.20161007150618.1: *3* jss.ref_line
-    def ref_line(self, block, sibling_blocks):
-        '''Return a reference to the block, given its sibling blocks.'''
+    def ref_line(self, block):
+        '''Return a reference to the block.'''
         
         def munge(h):
             '''Munge a headline for use in a section reference.'''
@@ -312,7 +319,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             last_line = parent_block.lines[-1]
             lines = parent_block.lines[1:-1]
         else:
-            # This is the top-level block, when gen_refs is True.
+            # This is the top-level block, when self.gen_refs is True.
             first_line, last_line = None, None
             lines = parent_block.lines
         # Start the state with the proper base.
@@ -336,7 +343,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         # End the lines.
         if block_lines:
             blocks.append(Block(block_lines, simple=True))
-        if gen_refs: 
+        if self.gen_refs: 
             # Generate section references.
             self.make_ref_children(blocks, first_line, last_line, parent_block)
         else:
@@ -357,9 +364,8 @@ class JavaScriptScanner(basescanner.BaseScanner):
         n_lines = sum([len(z.lines) for z in blocks])
         if n_lines < 20: # We want this to be a small number.
             return
-        
-        max_indent = 4 if gen_clean else self.max_blocks_indent(blocks)
-            # This doesn't work when gen_clean is False.
+        max_indent = 4 if self.gen_clean else self.max_blocks_indent(blocks)
+            # This doesn't work when self.gen_clean is False.
         parent_block.lines = [
             first_line,
             '%s@others\n' % (' ' * max_indent),
@@ -367,7 +373,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
         children = []
         for block in blocks:
             child_block = Block(block.lines,simple=block.simple)
-            child_undent = self.max_blocks_indent([child_block]) if gen_clean else max_indent
+            if self.gen_clean:
+                child_undent = self.max_blocks_indent([child_block])
+            else:
+                child_undent = max_indent
             child_block.undent(child_undent)
             children.append(child_block)
         parent_block.children = children
@@ -375,19 +384,27 @@ class JavaScriptScanner(basescanner.BaseScanner):
     #@+node:ekr.20161008091822.1: *4* jss.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
-        complex_blocks = [z for z in blocks if not z.simple]
+        # complex_blocks = [z for z in blocks if not z.simple]
         body, children = [], []
         for block in blocks:
             if block.simple:
+                # This line is never a section reference.
+                # g.trace(block.get_headline())
                 body.extend(block.lines)
             else:
                 child_block = Block(block.lines,simple=False)
                 children.append(child_block)
-                ref = self.ref_line(child_block, complex_blocks)
+                ref = self.ref_line(child_block)
                 child_block.headline = ref.strip()
-                max_indent = self.max_blocks_indent([child_block])
-                child_block.undent(max_indent)
-                body.append(' '*max_indent + ref)
+                if self.gen_clean:
+                    # This local calculation is probably good enough.
+                    child_undent = self.max_blocks_indent([child_block])
+                    child_block.undent(child_undent)
+                    body.append(' '*child_undent + ref)
+                else:
+                    # Don't indent the ref, and don't unindent the children.
+                    # This works, because references are never indented.
+                    body.append(ref)
         # Replace the block with the child blocks.
         parent_block.lines = []
         if first_line is not None:
@@ -420,7 +437,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             if trace: g.trace('small file: %s' % parent.h)
             parent.b = '@language javascript\n' + ''.join(lines)
             return
-        if gen_refs:
+        if self.gen_refs:
             block = Block(lines, simple=False)
             self.rescan_block(block, strip_lines=False)
             parent.b = '@language javascript\n'
@@ -464,7 +481,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def trialWrite(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
-        if gen_refs:
+        if self.gen_refs:
             # Alas, the *actual* @auto write code refuses to write section references!!
             at.write(self.root,
                     nosentinels=True, ### False,
