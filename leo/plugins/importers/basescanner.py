@@ -505,6 +505,7 @@ class BaseScanner(object):
             z if z.strip() else z.replace(' ','').replace('\t','')
                 for z in g.splitLines(s)
         ])
+        return result
 
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
