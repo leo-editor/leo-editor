@@ -13,7 +13,6 @@ class Block:
     def __init__(self, lines, state, simple=None):
         '''Ctor for the Block class.'''
         assert simple in (True, False), g.callers()
-        self.base = state.get_base()
         self.children = []
         self.lines = lines
         self.headline = ''
@@ -174,7 +173,7 @@ gen_clean = True
     # None: use @bool js_importer_clean_lws setting
     # True: clean blank lines and regularize indentaion.
 
-gen_refs = False
+gen_refs = True
     # None: use @bool js_importer_gen_refs setting
     # True: generate section references.
     # False generate @others
@@ -339,8 +338,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
             line = lines[i]
             state.scan_line(line)
             if state.starts_block():
-                base = state.get_base()
-                assert base is not None, 'rescan_block'
                 if block_lines:
                     # Finish any previous block.
                     blocks.append(Block(block_lines, state, simple=True))
@@ -402,8 +399,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''Generate child blocks for all blocks using section references'''
         trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
         state = self.state
-        if trace: g.trace('len: %3s base: %5s %s' % (
-            len(parent_block.lines), parent_block.base, parent_block.get_headline()))
+        if trace:
+            g.trace('len: %3s %s' % (
+                len(parent_block.lines),
+                parent_block.get_headline()))
         body, children = [], []
         for block in blocks:
             if block.simple:
@@ -411,8 +410,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # g.trace(block.get_headline())
                 body.extend(block.lines)
             else:
-                base = block.base
-                assert base is not None, 'make_ref_children'
                 child_block = Block(block.lines, state, simple=False)
                 children.append(child_block)
                 ref = self.ref_line(child_block)
