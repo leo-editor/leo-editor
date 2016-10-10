@@ -473,7 +473,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 line = lines[i]
                 state.scan_line(line)
                 if state.starts_block():
-                    base = state.get_base()
                     if block_lines: blocks.append(Block(block_lines, state, simple=True))
                     i, block_lines = state.scan_block(i, lines)
                     blocks.append(Block(block_lines, state, simple=False))
