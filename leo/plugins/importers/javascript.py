@@ -27,9 +27,9 @@ class Block:
     #@+others
     #@+node:ekr.20161008095930.1: *3* block.get_headline
     def get_headline(self):
-        '''Return an approximation to the headline (for tracing).'''
+        '''Return the block's headline.'''
         if self.headline:
-            return self.headline.strip()
+            return self.headline
         elif self.lines:
             for line in self.lines:
                 if line.strip():
@@ -121,6 +121,10 @@ class ScanState(object):
     #@+node:ekr.20161004071532.1: *3* state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
+        ### 
+        # Single-line comments don't continue to the next line.
+        # if self.context == '//':
+            # self.context = ''
         i = 0
         while i < len(s):
             progress = i
@@ -141,6 +145,7 @@ class ScanState(object):
                     pass # Continue the present context
             else:
                 if s[i:i+2] == '//':
+                    ### self.context = '//'
                     break
                 elif ch == '/':
                     self.context = '/' # A regex.
@@ -162,7 +167,7 @@ class ScanState(object):
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-gen_clean = True # True: clean blank lines.
+gen_clean = False # True: clean blank lines.
 
 gen_refs = False
     # True: generate section references.
@@ -257,15 +262,6 @@ class JavaScriptScanner(basescanner.BaseScanner):
             print('  block: %s' % i)
             self.dump_block(block)
 
-    #@+node:ekr.20161004105734.1: *3* jss.get_headline
-    def get_headline(self, block_lines):
-        '''Return the desired headline of the given block. '''
-        # Use the first non-blank line.
-        for line in block_lines:
-            if line.strip():
-                return line.strip()
-        # The last fallback.
-        return 'blank lines'
     #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
@@ -278,43 +274,47 @@ class JavaScriptScanner(basescanner.BaseScanner):
                     n = min(n, width)
         return n
     #@+node:ekr.20161007081548.1: *3* jss.put_block
-    def put_block(self, block, parent):
+    def put_block(self, block, parent, create_child=True):
         '''Create nodes for block and all its children.'''
-        p = parent.insertAsLastChild()
-        p.h = block.headline
+        if create_child:
+            p = parent.insertAsLastChild()
+            p.h = block.headline
+        else:
+            p = parent
         p.b = p.b + ''.join(block.lines)
         for child in block.children:
             self.put_block(child, p)
-
     #@+node:ekr.20161007150618.1: *3* jss.ref_line
     def ref_line(self, block, sibling_blocks):
         '''Return a reference to the block, given its sibling blocks.'''
         
         def munge(h):
             '''Munge a headline for use in a section reference.'''
-            for z in '{}()[]<>':
+            for z in '<>': # {}()[]
                 h = h.replace(z,'')
             return h.strip()
-            
-        n = len(sibling_blocks)
-        assert n > 0, sibling_blocks
-        if n == 1:
-            return '@others\n'
-        else:
-            h = munge(block.lines[0])
-            return g.angleBrackets(h) + '\n'
+
+        # Always return a reference
+        h = munge(block.get_headline())
+        return g.angleBrackets(h) + '\n'
+       
     #@+node:ekr.20161007151845.1: *3* jss.rescan_block & helpers
-    def rescan_block(self, parent_block):
+    def rescan_block(self, parent_block, strip_lines=True):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         trace = False and not g.unitTesting
+        if trace: g.trace('parent_block', len(parent_block.lines), parent_block.get_headline())
         if len(parent_block.lines) < 10:
             return
-        if trace: g.trace('parent_block', parent_block.get_headline())
-        # The first and last lines begin and end the block.
-        # Only scan the interior lines.
-        first_line = parent_block.lines[0]
-        last_line = parent_block.lines[-1]
-        lines = parent_block.lines[1:-1]
+        if strip_lines:
+            # The first and last lines begin and end the block.
+            # Only scan the interior lines.
+            first_line = parent_block.lines[0]
+            last_line = parent_block.lines[-1]
+            lines = parent_block.lines[1:-1]
+        else:
+            # This is the top-level block, when gen_refs is True.
+            first_line, last_line = None, None
+            lines = parent_block.lines
         # Start the state with the proper base.
         state = ScanState(base=parent_block.base)
         blocks, block_lines = [], []
@@ -342,14 +342,18 @@ class JavaScriptScanner(basescanner.BaseScanner):
         else:
             # Generate only @others.
             self.make_at_others_children(blocks, first_line, last_line, parent_block)
-       
     #@+node:ekr.20161008091434.1: *4* jss.make_at_others_children
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
+        trace = False and not g.unitTesting
         if blocks:
+            if trace:
+                g.trace(self.root.h)
+                g.trace(parent_block)
+                for z in blocks:
+                    print('%s %s' % (self.max_blocks_indent([z]), z))
             # Create child nodes only if there are enough lines.
             n_lines = sum([len(z.lines) for z in blocks])
-            # g.trace('n_lines', n_lines, 'blocks', len(blocks))
             if n_lines > 20: # We want this to be a small number.
                 max_indent = self.max_blocks_indent(blocks)
                 parent_block.lines = [
@@ -367,39 +371,35 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
         complex_blocks = [z for z in blocks if not z.simple]
-        if not complex_blocks:
-            return
-        body, children, headlines = [], [], []
+        body, children = [], []
         for block in blocks:
             if block.simple:
                 body.extend(block.lines)
             else:
-                child_block = Block(block.lines,simple=True)
+                child_block = Block(block.lines,simple=False)
                 children.append(child_block)
                 ref = self.ref_line(child_block, complex_blocks)
+                child_block.headline = ref.strip()
                 max_indent = self.max_blocks_indent([child_block])
                 child_block.undent(max_indent)
-                headlines.append((child_block, ref.strip()),)
-                body.append(ref)
-        # Update all child headlines.
-        for data in headlines:
-            if not child_block.headline:
-                child_block, h = data
-                child_block.headline = h
+                body.append(' '*max_indent + ref)
         # Replace the block with the child blocks.
-        parent_block.lines = [first_line]
+        parent_block.lines = []
+        if first_line is not None:
+            parent_block.lines.append(first_line)
         parent_block.lines.extend(body)
-        parent_block.lines.append(last_line)
+        if last_line is not None:
+            parent_block.lines.append(last_line)
         parent_block.children = children
         # Continue the rescan.
-        self.rescan_blocks(blocks)
+        self.rescan_blocks(children)
     #@+node:ekr.20161007075210.1: *3* jss.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
         for block in blocks:
             assert isinstance(block, Block)
             if not block.headline:
-                block.headline = self.get_headline(block.lines)
+                block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
     #@+node:ekr.20161004115934.1: *3* jss.scan
@@ -407,6 +407,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         '''The new, simpler javascript scanner.'''
         trace = False and not g.unitTesting
         trace_blocks = False
+        if trace: g.trace('===== ', self.root.h)
         # pylint: disable=arguments-differ
             # parse_body not used.
         lines = g.splitLines(s1)
@@ -414,37 +415,41 @@ class JavaScriptScanner(basescanner.BaseScanner):
             if trace: g.trace('small file: %s' % parent.h)
             parent.b = '@language javascript\n' + ''.join(lines)
             return
-        state = ScanState()
-        blocks = []
-        block_lines = [] # The lines of the present block.
-        # Find all top-level blocks.
-        i = 0
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            state.scan_line(line)
-            if state.starts_block():
-                block_base = state.get_base()
-                if block_lines: blocks.append(Block(block_lines, simple=True))
-                i, block_lines = state.scan_block(i, lines)
-                blocks.append(Block(block_lines, simple=False, base=block_base))
-                block_lines = []
-            else:
-                block_lines.append(line)
-                i += 1
-            assert progress < i
-        # End the blocks properly.
-        if block_lines:
-            blocks.append(Block(block_lines, simple=True))
-        if trace and trace_blocks:
-            self.dump_blocks(blocks, parent)
-        # Rescan all the blocks, possibly creating more child blocks.
-        self.rescan_blocks(blocks)
-        parent.b = '@language javascript\n@others\n'
-        simple_lines = sum([len(z.lines) if z.simple else 0 for z in blocks])
-        if trace: g.trace('simple lines: %s %s' % (simple_lines, parent.h))
-        for block in blocks:
-            self.put_block(block, parent)
+        if gen_refs:
+            block = Block(lines, simple=False)
+            self.rescan_block(block, strip_lines=False)
+            parent.b = '@language javascript\n'
+            self.put_block(block, parent, create_child=False)
+        else:
+            state = ScanState()
+            blocks = []
+            block_lines = [] # The lines of the present block.
+            # Find all top-level blocks.
+            i = 0
+            while i < len(lines):
+                progress = i
+                line = lines[i]
+                state.scan_line(line)
+                if state.starts_block():
+                    block_base = state.get_base()
+                    if block_lines: blocks.append(Block(block_lines, simple=True))
+                    i, block_lines = state.scan_block(i, lines)
+                    blocks.append(Block(block_lines, simple=False, base=block_base))
+                    block_lines = []
+                else:
+                    block_lines.append(line)
+                    i += 1
+                assert progress < i
+            # End the blocks properly.
+            if block_lines:
+                blocks.append(Block(block_lines, simple=True))
+            if trace and trace_blocks:
+                self.dump_blocks(blocks, parent)
+            # Rescan all the blocks, possibly creating more child blocks.
+            self.rescan_blocks(blocks)
+            parent.b = '@language javascript\n@others\n'
+            for block in blocks:
+                self.put_block(block, parent)
     #@+node:ekr.20161008060711.1: *3* jss.strip_section_references (not used)
     def strip_section_references(self, s):
 
