@@ -24,6 +24,16 @@ class ExternalFile(object):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
 
     __str__ = __repr__
+    
+    #@+others
+    #@+node:ekr.20161011174757.1: *3* ef.shortFileName
+    def shortFileName(self):
+        return g.shortFilename(self.path)
+    #@+node:ekr.20161011174800.1: *3* ef.exists
+    def exists(self):
+        '''Return True if the external file still exists.'''
+        return g.os_path_exists(self.path)
+    #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
 class ExternalFilesController(object):
     '''
@@ -55,6 +65,10 @@ class ExternalFilesController(object):
         self.has_changed_d = {}
             # Keys are commanders. Values are bools.
             # Used only to limit traces.
+        self.unchecked_commanders = []
+            # Copy of g.app.commanders()
+        self.unchecked_files = []
+            # Copy of self file. Only one files is checked at idle time.
         self._time_d = {}
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
@@ -114,23 +128,45 @@ class ExternalFilesController(object):
         if trace: g.trace(p.h, path)
         return path
     #@+node:ekr.20150330033306.1: *4* efc.on_idle & helpers
+    on_idle_count = 0
+
     def on_idle(self, timer):
         '''Check for changed files in all commanders.'''
         trace = False and not g.unitTesting
         if trace:
             import time
             t1 = time.time()
+        checked = False
         if g.app and not g.app.killed:
-            # First, check the open-with files.
-            for ef in self.files:
-                self.idle_check_open_with_file(ef)
-            # Next, check, all @<file> nodes in all commanders.
-            for c in g.app.commanders():
-                self.idle_check_commander(c)
-        if trace:
-            t2 = time.time()
-            n = len(list(g.app.commanders()))
-            g.trace('%s files %4.2f sec.' % (n, t2 - t1))
+            if 1:
+                # Fix #262: Improve performance of check_for_changed_external_files
+                if self.unchecked_files:
+                    # Check all external files.
+                    for ef in self.unchecked_files:
+                        if trace: g.trace('check', ef.shortFileName())
+                        self.idle_check_open_with_file(ef)
+                    self.unchecked_files = []
+                elif self.unchecked_commanders:
+                    # Check *one* commander.
+                    c = self.unchecked_commanders.pop()
+                    if trace: g.trace('check', c.shortFileName())
+                    self.idle_check_commander(c)
+                else:
+                    self.unchecked_commanders = g.app.commanders()[:]
+                    self.unchecked_files = [z for z in self.files if z.exists()]
+            else:
+                # First, check the open-with files.
+                for ef in self.unchecked_files:
+                    self.idle_check_open_with_file(ef)
+                # Next, check, all @<file> nodes in all commanders.
+                for c in g.app.commanders():
+                    self.idle_check_commander(c)
+        if False and trace:
+            self.on_idle_count += 1
+            if (self.on_idle_count % 5) == 0:
+                t2 = time.time()
+                n = len(list(g.app.commanders()))
+                g.trace('%3s %s files %4.2f sec.' % (self.on_idle_count, n, t2 - t1))
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
         '''
@@ -139,8 +175,9 @@ class ExternalFilesController(object):
         '''
         trace = False and not g.unitTesting
         if not self.is_enabled(c) or g.unitTesting:
+            if trace: g.trace('not enabled', c.shortFileName())
             return
-        if trace: g.trace('checking',c.shortFileName())
+        if trace: g.trace('checking', c.shortFileName())
         p = c.rootPosition()
         seen = set()
         while p:
