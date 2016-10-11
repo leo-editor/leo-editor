@@ -17,6 +17,11 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
+allow_at_auto_sections = None
+    # None: honor allow_section_references_in_at_auto setting.
+    # True: (Experimental): The @auto write code expands section references.
+    # False: (Legacy):      The @auto write code ignores section references.
+
 class AtFile(object):
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
@@ -124,6 +129,11 @@ class AtFile(object):
         self.atAutoWritersDict = {}
         self.writersDispatchDict = {}
         # User options.
+        if allow_at_auto_sections is None:
+            self.allow_at_auto_sections = c.config.getBool(
+                'allow_section_references_in_at_auto', default=False)
+        else:
+            self.allow_at_auto_sections = allow_at_auto_sections
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write', default=True)
         self.underindentEscapeString = c.config.getString(
@@ -3260,13 +3270,16 @@ class AtFile(object):
             junk, ext = g.os_path_splitext(fileName)
             writer = at.dispatch(ext, root)
             if writer:
+                if trace: g.trace('writer', writer, fileName)
                 writer(root, forceSentinels=forceSentinels) # 2015/06/26.
             elif root.isAtAutoRstNode():
                 # An escape hatch: fall back to the theRst writer
                 # if there is no rst writer plugin.
+                if trace: g.trace('@auto-rst', fileName)
                 ok2 = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
                 if not ok2: at.errors += 1
             else:
+                if trace: g.trace('at.writeOpenFile', fileName)
                 at.writeOpenFile(root, nosentinels=True, toString=toString)
             at.closeWriteFile()
                 # Sets stringOutput if toString is True.
@@ -3661,9 +3674,15 @@ class AtFile(object):
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
-                        if at.raw or at.atAuto or at.perfectImportFlag:
-                            # 2011/12/14: Ignore references in @auto.
-                            # 2012/06/02: Needed for import checks.
+                        ### Previous code: 2016/10/11
+                        # if at.raw or at.atAuto or at.perfectImportFlag:
+                            # # 2011/12/14: Ignore references in @auto.
+                            # # 2012/06/02: Needed for import checks.
+                            # at.putCodeLine(s, i)
+                        if at.raw:
+                            at.putCodeLine(s, i)
+                        elif (at.atAuto or at.perfectImportFlag) and not at.allow_at_auto_sections:
+                            # Use legacy behavior when at.allow_at_auto_sections is False.
                             at.putCodeLine(s, i)
                         else:
                             hasRef, n1, n2 = at.findSectionName(s, i)

@@ -679,6 +679,7 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
+<v t="ekr.20161011090731.1"><vh>@bool allow_section_references_in_at_auto = False</vh></v>
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085320.1"><vh>@bool js_importer_gen_refs = False</vh></v>
@@ -11389,6 +11390,9 @@ g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
 <t tx="ekr.20161010085320.1">True: The javascript importer generates section references.</t>
 <t tx="ekr.20161010172424.1">If &gt; 0, the importer rescans blocks only if they have more than the indicated number of lines.</t>
 <t tx="ekr.20161010172441.1">If &gt; 0, the importer scans files only if they have more than the indicated number of lines.</t>
+<t tx="ekr.20161011090731.1">True: (Experimental): The @auto write code expands section references.
+False: (Legacy):      The @auto write code ignores section references.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -39,16 +39,22 @@ class Block:
         else:
             return '<no headline>'
     #@+node:ekr.20161008074449.1: *3* block.undent
-    def undent(self, n):
+    def undent(self, c, n):
         '''Unindent all block lines by n.'''
         if n > 0:
             result = []
             for s in self.lines:
                 if s.strip():
-                    if s[:n] in ('\t' * n, ' ' * n):
+                    # Assume tabs expand to 4 spaces.
+                    if s[:n] == ' ' * n:
                         result.append(s[n:])
+                    elif s[0] == '\t':
+                        i  = 0
+                        while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
+                            i += 1
+                        result.append(s[i:])
                     else:
-                        g.trace('can not happen mixed leading whitespace:', repr(s))
+                        g.trace('can not happen mixed leading whitespace:', n, repr(s))
                         return
                 elif gen_clean:
                     result.append(s)
@@ -206,8 +212,9 @@ gen_clean = None
     # None: use @bool js_importer_clean_lws setting
     # True: clean blank lines and regularize indentaion.
 
-gen_refs = False
-    # None: use @bool js_importer_gen_refs setting
+gen_refs = True
+    # None: use @bool allow_section_references_in_at_auto setting
+        # WAS: use @bool js_importer_gen_refs setting
     # True: generate section references.
     # False generate @others
 
@@ -262,7 +269,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         else:
             self.gen_clean = gen_clean
         if gen_refs is None:
-            self.gen_refs = getBool('js_importer_gen_refs', default=False)
+            self.gen_refs = getBool('allow_section_references_in_at_auto', default=False)
         else:
             self.gen_refs = gen_refs
         self.min_scan_size = getInt('js_importer_min_scan_size') or 0
@@ -402,6 +409,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
         trace = False and not g.unitTesting
+        c = self.c
         if not blocks:
             return
         if trace:
@@ -428,7 +436,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 child_undent = self.max_blocks_indent([child_block])
             else:
                 child_undent = max_indent
-            child_block.undent(child_undent)
+            child_block.undent(c, child_undent)
             children.append(child_block)
         parent_block.children = children
         self.rescan_blocks(children)
@@ -436,6 +444,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
         trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
+        c = self.c
         if trace:
             g.trace('len: %3s %s' % (
                 len(parent_block.lines),
@@ -454,7 +463,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 if self.gen_clean:
                     # This local calculation is probably good enough.
                     child_undent = self.max_blocks_indent([child_block])
-                    child_block.undent(child_undent)
+                    child_block.undent(c, child_undent)
                     body.append(' '*child_undent + ref + '\n')
                 else:
                     # Don't indent the ref, and don't unindent the children.
