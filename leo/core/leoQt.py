@@ -46,7 +46,6 @@ if fail:
     phonon = uic = None
     qt_version = '<no version>'
     printsupport = None
-    assert QUrl # for pyflakes
 elif isQt5:
     try:
         from PyQt5 import QtCore
