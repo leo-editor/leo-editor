@@ -202,7 +202,7 @@ class ScanState(object):
         return i-1
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-gen_clean = True
+gen_clean = None
     # None: use @bool js_importer_clean_lws setting
     # True: clean blank lines and regularize indentaion.
 
