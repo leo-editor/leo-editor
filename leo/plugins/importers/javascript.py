@@ -129,7 +129,7 @@ class ScanState(object):
             while i+1 < len(lines) and not lines[i+1].strip():
                 i += 1
         return i, lines[i1:i]
-    #@+node:ekr.20161004071532.1: *3* state.scan_line
+    #@+node:ekr.20161004071532.1: *3* state.scan_line & helper
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting # and self.root.h.endswith('alt.js') 
@@ -143,12 +143,11 @@ class ScanState(object):
                     i += 1
                 else:
                     pass # Eat the next comment char.
-            elif ch == '\\':
-                # Honor backslashes *everywhere* except block comments comments.
-                i += 2
             elif self.context:
                 assert self.context in ('"', "'"), repr(self.context)
-                if self.context == ch:
+                if ch == '\\':
+                    i += 2
+                elif self.context == ch:
                     self.context = '' # End the string.
                 else:
                     pass # Eat the string character.
@@ -159,9 +158,15 @@ class ScanState(object):
                 i += 1
             elif ch in ('"', "'"):
                 self.context = ch
+            elif ch == '=':
+                i = self.skip_possible_regex(s, i)
+            elif ch == '\\':
+                i += 2
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
-            elif ch == '(': self.parens += 1
+            elif ch == '(':
+                self.parens += 1
+                i = self.skip_possible_regex(s, i)
             elif ch == ')': self.parens -= 1
             # elif ch == '[': self.squares += 1
             # elif ch == ']': self.squares -= 1
@@ -169,6 +174,32 @@ class ScanState(object):
             assert progress < i
         if trace and s.strip().startswith('//') and self.continues_block():
             g.trace(self, s.rstrip())
+    #@+node:ekr.20161011045426.1: *4* state.skip_possible_regex
+    def skip_possible_regex(self, s, i):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s), self.parens)
+        assert s[i] in '=(', repr(s[i])
+        i += 1
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                # g.trace(repr(ch))
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i-1
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 gen_clean = True
