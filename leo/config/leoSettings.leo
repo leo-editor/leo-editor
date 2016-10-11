@@ -1934,6 +1934,7 @@
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 <v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
 <v t="ekr.20161003141513.2"><vh>@data http_stylesheet</vh></v>
+<v t="ekr.20161011130632.1"><vh>@@data http_stylesheet</vh></v>
 </v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
 <v t="ekr.20161003141448.2"><vh>@data http_script</vh></v>
@@ -11241,7 +11242,10 @@ False: Ignore plain keys in the outline pane.
     });
 });</t>
 <t tx="ekr.20161003141513.1">@language css</t>
-<t tx="ekr.20161003141513.2">/* The main .css stylesheet for the mod_http.py plugin. */
+<t tx="ekr.20161003141513.2">/*
+    The main .css stylesheet for the mod_http.py plugin.
+    This stylesheet allocates fix-sized areas for the outline and body panes.
+*/
 h1 {
     /* font-size: 16pt; */
     /* color: red; */
@@ -11268,40 +11272,38 @@ div.headline {
 }
 div.container {
     /* position:relative; */
-    position: relative;
+    position: absolute;
 }
 div.node {
     position: relative;
     left: 20px;
 }
 div.outlinepane {
+    
+    background: #ffffec; /* Leo yellow */
+    /* Fixed height/width creates scrollbars.*/
     resize: none;
-    /* position: absolute; */
     position: absolute:
     top: 10px;
     left: 10px;
-    background: #ffffec; /* Leo yellow */
-    /* Fixed height/width creates scrollbars.*/
-    /* height: 300px; */
-    /* width: 1000px; */
-    height: 50%;
-    width: 100%;
+    height: 300px;
+    width: 1000px;
+    /* height: 50%; */
+    /* width: 100%; */
     overflow: scroll;
     line-height: 0.8;
 }
 div.bodypane {
-    /* resize: both; */
-    /* position: absolute; */
-    /* top: 310px; */
     /* Fixed height/width creates scrollbars.*/
-    /* height: 500px; */
-    /* width: 1000px; */
     position: absolute;
     resize: none;
+    height: 500px;
+    width: 1000px;
     left: 10px;
+    top: 310px;
     bottom: 0px;
-    height: 50%;
-    width: 100%;
+    /* height: 50%; */
+    /* width: 100%; */
     overflow: scroll;
 }
 /* Indicator icons...
@@ -11375,7 +11377,8 @@ g.app.pluginsController.loadOnePlugin(
     tag='open0',
     verbose=False)
 g.app.loadManager.readGlobalSettingsFiles()
-g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')</t>
+g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')
+</t>
 <t tx="ekr.20161006072026.1"></t>
 <t tx="ekr.20161006072041.1">Import &amp;Tabbed File...</t>
 <t tx="ekr.20161006072143.1">Import &amp;FreeMind Files...</t>
@@ -11393,6 +11396,139 @@ False: (Legacy):      The @auto write code ignores section references.
 
 **Important**: If this setting is True, the javascript importer will
 generate section references.</t>
+<t tx="ekr.20161011130632.1">/*
+From Chris George:
+https://groups.google.com/d/msg/leo-editor/ALxuMy-rmv8/rXsbe28KAgAJ
+*/
+ul {
+    font-family: "Sans-serif";
+    font-size: 100%;
+    font-variant: small-caps;
+}    
+
+pre {
+    margin: 25px;
+    white-space: normal;
+    color: black;
+    font-family: "Monospace";
+    font-size: 18px; /* 20pt; */
+    white-space: normal;
+    text-align: left;
+    overflow: auto;
+}
+
+h1 {
+    font-size: 16pt;
+    color: red;
+    font-variant: small-caps;
+}
+code {
+    /* works */
+    /* background: yellow; */
+}
+
+.borderclass{
+    border-color: #C1E0FF;
+    border-width: 1px;
+    border-style: solid;
+}
+.unborderclass{
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+}
+div.headline {
+    color: green;
+    font-size: 14pt;
+    font-style: normal;
+    font-weight: normal;
+}
+div.container {
+    position: relative;
+}
+div.node {
+    position: relative;
+    left: 20px;
+}
+div.outlinepane {
+    background: #ffffec; /* Leo yellow */
+    top: 10px;
+    left: 10px;
+    position: relative;
+    
+}
+div.bodypane {
+    position: relative;
+    left: 10px;
+    bottom: 0px;
+    
+}
+/* =============== Added by EKR =============== */
+
+/* Indicator icons...
+
+    Alas, the following does not work::
+
+        node::before {
+            content: url(attr(icon_url)) " " attr(expand) " ";
+        }
+*/
+div.headline[icon="00"]::before {
+    content: url("http://leoeditor.com/box00.GIF") " " attr(expand) " ";
+}
+div.headline[icon="01"]::before {
+    content: url("http://leoeditor.com/box01.GIF") " " attr(expand) " ";
+}
+div.headline[icon="02"]::before {
+    content: url("http://leoeditor.com/box02.GIF") " " attr(expand) " ";
+}
+div.headline[icon="03"]::before {
+    content: url("http://leoeditor.com/box03.GIF") " " attr(expand) " ";
+}
+div.headline[icon="04"]::before {
+    content: url("http://leoeditor.com/box04.GIF") " " attr(expand) " ";
+}
+div.headline[icon="05"]::before {
+    content: url("http://leoeditor.com/box05.GIF") " " attr(expand) " ";
+}
+div.headline[icon="06"]::before {
+    content: url("http://leoeditor.com/box06.GIF") " " attr(expand) " ";
+}
+div.headline[icon="07"]::before {
+    content: url("http://leoeditor.com/box07.GIF") " " attr(expand) " ";
+}
+div.headline[icon="08"]::before {
+    content: url("http://leoeditor.com/box08.GIF") " " attr(expand) " ";
+}
+div.headline[icon="09"]::before {
+    content: url("http://leoeditor.com/box09.GIF") " " attr(expand) " ";
+}
+div.headline[icon="10"]::before {
+    content: url("http://leoeditor.com/box10.GIF") " " attr(expand) " ";
+}
+div.headline[icon="11"]::before {
+    content: url("http://leoeditor.com/box11.GIF") " " attr(expand) " ";
+}
+div.headline[icon="12"]::before {
+    content: url("http://leoeditor.com/box12.GIF") " " attr(expand) " ";
+}
+div.headline[icon="13"]::before {
+    content: url("http://leoeditor.com/box13.GIF") " " attr(expand) " ";
+}
+div.headline[icon="14"]::before {
+    content: url("http://leoeditor.com/box14.GIF") " " attr(expand) " ";
+}
+div.headline[icon="15"]::before {
+    content: url("http://leoeditor.com/box15.GIF") " " attr(expand) " ";
+}
+code {
+    /* works */
+    /* background: yellow; */
+    font-family: "Monospace";
+    font-size: 150%; /* 20pt; */
+}
+
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
