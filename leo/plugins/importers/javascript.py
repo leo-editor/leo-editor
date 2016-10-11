@@ -45,7 +45,6 @@ class Block:
             result = []
             for s in self.lines:
                 if s.strip():
-                    # Assume tabs expand to 4 spaces.
                     if s[:n] == ' ' * n:
                         result.append(s[n:])
                     elif s[0] == '\t':
