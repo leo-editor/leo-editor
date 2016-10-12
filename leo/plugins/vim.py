@@ -313,7 +313,7 @@ class VimCommander(object):
             if g.os_path_exists(path):
                 os.remove(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
-        if self.trace: g.trace('os.system(%s)' % cmd)
+        if trace: g.trace('os.system(%s)' % cmd)
         os.system(cmd)
     #@+node:ekr.20150326181247.1: *4* vim.get_cursor_arg
     def get_cursor_arg(self):
@@ -334,7 +334,7 @@ class VimCommander(object):
         efc = g.app.externalFilesController
         # Common arguments.
         if trace: g.trace(self.entire_file, root.h)
-        cursor_arg = self.get_cursor_arg()
+        # cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"
         args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
