@@ -1684,9 +1684,12 @@ def new_cmd_decorator(name, ivars):
         def wrapper(event):
             c = event.c
             self = g.ivars2instance(c, g, ivars)
-            func(self, event=event)
-                # Don't use a keyword for self.
-                # This allows the VimCommands class to use vc instead.
+            try:
+                func(self, event=event)
+                    # Don't use a keyword for self.
+                    # This allows the VimCommands class to use vc instead.
+            except Exception:
+                g.es_exception()
 
         wrapper.__name__ = 'wrapper: %s' % name
         wrapper.__doc__ = func.__doc__

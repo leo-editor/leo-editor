@@ -2586,11 +2586,17 @@ class KeyHandlerClass(object):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                func(event)
+                try:
+                    func(event)
+                except Exception:
+                    g.es_exception()
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                func(event)
+                try:
+                    func(event)
+                except Exception:
+                    g.es_exception()
             k.endCommand(commandName)
             return True
         else:
