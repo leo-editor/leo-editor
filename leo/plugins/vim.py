@@ -82,7 +82,7 @@ Settings
 # 1.15 EKR: Don't open @url nodes in vim if @bool vim_plugin_opens_url_nodes setting is False.
 # 1.16 TL: open_in_vim modifications
 #     - support file open in gVim at same line number as Leo cursor location
-#     - support file open in a gVim tab (see also mod_tempfname.py)
+#     - support file open in a gVim tab
 # 1.17 EKR: Give a location message to help with settings.
 # 1.18 VMV:
 #     - Use gvim on Linux too, emergency default on Windows doesn't have explicit path

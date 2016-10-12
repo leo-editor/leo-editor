@@ -2396,13 +2396,6 @@ they are grouped together.
 For general use, this code should be considerably more robust about
 creating the Leo subdirectory and signaling errors, but it is just a
 quick hack that works for me on my machines.
-
-This is distributed with Leo version 4.1rc3, so I've updated it with
-Ed Ream's modifications to match that distribution.
-
-@ascskip on
-@root "other/xemacs/mod_tempfname.py"
-<< Filename modification >>
 @code
 
 """Replace Commands.openWithTempFilePath so Leo opens temporary
