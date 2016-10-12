@@ -274,7 +274,6 @@ class ExternalFilesController(object):
         trace = False and not g.unitTesting
         path = self.temp_file_path(c, p, ext)
         if not path:
-            # Check the mod_tempfname plugin.
             return g.error('c.temp_file_path failed')
         # Return a path if a temp file already refers to p.v
         for ef in self.files:
