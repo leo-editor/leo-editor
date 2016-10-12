@@ -983,7 +983,8 @@ class Commands(object):
         c.redraw()
         c.recolor()
     #@+node:ekr.20031218072017.2823: *6* c.openWith
-    @cmd('open-with')
+    # This is *not* a command.
+    # @cmd('open-with')
     def openWith(self, event=None, d=None):
         '''
         Handles the items in the Open With... menu.
@@ -991,10 +992,9 @@ class Commands(object):
         See ExternalFilesController.open_with for details about d.
         '''
         c = self
-
-        if g.app.externalFilesController:
-            if d:
-                # Select an ancestor @<file> node if possible.
+        if d and g.app.externalFilesController:
+            # Select an ancestor @<file> node if possible.
+            if not d.get('p'):
                 p = c.p
                 while p:
                     if p.isAnyAtFileNode():
@@ -1002,6 +1002,8 @@ class Commands(object):
                         break
                     p.moveToParent()
             g.app.externalFilesController.open_with(c, d)
+        elif not d:
+            g.trace('can not happen: no d', g.callers())
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):

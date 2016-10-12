@@ -47,7 +47,6 @@ class ExternalFilesController(object):
     **Convention**:
 
     - d is always a dict created by the @open-with logic.
-      It would be difficult and pointless to change d.
 
     - ef is always an ExternalFiles instance.
     '''
@@ -136,7 +135,6 @@ class ExternalFilesController(object):
         if trace:
             import time
             t1 = time.time()
-        checked = False
         if g.app and not g.app.killed:
             if 1:
                 # Fix #262: Improve performance of check_for_changed_external_files
@@ -226,6 +224,9 @@ class ExternalFilesController(object):
                 c.selectPosition(p)
             if c.config.getBool('open_with_save_on_update'):
                 c.save()
+            else:
+                p.setDirty()
+                c.setChanged(True)
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helper (called from c.openWith)
     def open_with(self, c, d):
         '''
@@ -256,8 +257,8 @@ class ExternalFilesController(object):
                     self.open_temp_file(c, d, fn)
                 else:
                     p = c.p
-                    d['ext'] = self.get_ext(c, p, ext)
-                    fn = self.open_with_helper(c, d, p)
+                    ext = self.get_ext(c, p, ext)
+                    fn = self.open_with_helper(c, ext, p)
                     if fn:
                         self.open_temp_file(c, d, fn)
             g.doHook('openwith2', c=c, p=c.p, v=c.p.v, d=d)
@@ -265,15 +266,13 @@ class ExternalFilesController(object):
             g.es('unexpected exception in c.openWith')
             g.es_exception()
     #@+node:ekr.20100203050306.5797: *5* efc.open_with_helper
-    def open_with_helper(self, c, d, p):
+    def open_with_helper(self, c, ext, p):
         '''
         Reopen a temp file for p if it exists in self.files.
         Otherwise, open a new temp file.
         '''
         trace = False and not g.unitTesting
-        assert isinstance(d, dict), d
-        # May be over-ridden by mod_tempfname plugin.
-        path = self.temp_file_path(c, p, d.get('ext'))
+        path = self.temp_file_path(c, p, ext)
         if not path:
             # Check the mod_tempfname plugin.
             return g.error('c.temp_file_path failed')
@@ -284,7 +283,7 @@ class ExternalFilesController(object):
                 return ef.path
         # Not found: create the temp file.
         if trace: g.trace('not found', path)
-        return self.create_temp_file(c, d, p)
+        return self.create_temp_file(c, ext, p)
             # May be None.
     #@+node:ekr.20150404092538.1: *4* efc.shut_down
     def shut_down(self):
@@ -330,22 +329,13 @@ class ExternalFilesController(object):
         import hashlib
         return hashlib.md5(open(path, 'rb').read()).hexdigest()
     #@+node:ekr.20100203050306.5937: *4* efc.create_temp_file
-    def create_temp_file(self, c, d, p):
+    def create_temp_file(self, c, ext, p):
         '''
         Create the temp file used by open-with if necessary.
         Add the corresponding ExternalFile instance to self.files
-
-        d is a dictionary created from an @openwith settings node.
-
-        'args':     the command-line arguments to be used to open the file.
-        'ext':      the file extension.
-        'kind':     the method used to open the file, such as subprocess.Popen.
-        'name':     menu label (used only by the menu code).
-        'shortcut': menu shortcut (used only by the menu code).
         '''
         trace = False and not g.unitTesting
-        assert isinstance(d, dict), d
-        ext = d.get('ext')
+        if trace: g.trace(len(p.b), p.h)
         path = self.temp_file_path(c, p, ext)
         exists = g.os_path_exists(path)
         if trace:
@@ -595,24 +585,24 @@ class ExternalFilesController(object):
         t = new_time or self.get_mtime(path)
         if trace: g.trace(t, path)
         self._time_d[g.os_path_realpath(path)] = t
-    #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path
+    #@+node:ekr.20031218072017.2832: *4* efc.temp_file_path & helpers
     def temp_file_path(self, c, p, ext):
         '''Return the path to the temp file for p and ext.'''
         trace = False and not g.unitTesting
         if c.config.getBool('open_with_clean_filenames'):
-            path = self.clean_file_name(c, p, ext)
+            path = self.clean_file_name(c, ext, p)
         else:
-            path = self.legacy_file_name(c, p, ext)
+            path = self.legacy_file_name(c, ext, p)
         if trace: g.trace(p.h, path)
         return path
     #@+node:ekr.20150406055221.2: *5* efc.clean_file_name
-    def clean_file_name(self, c, p, ext):
+    def clean_file_name(self, c, ext, p):
         '''Compute the file name when subdirectories mirror the node's hierarchy in Leo.'''
         trace = False and not g.unitTesting
         use_extentions = c.config.getBool('open_with_uses_derived_file_extensions')
         ancestors, found = [], False
         for p2 in p.self_and_parents():
-            h = p.anyAtFileNodeName()
+            h = p2.anyAtFileNodeName()
             if not h:
                 h = p2.h # Not an @file node: use the entire header
             elif use_extentions and not found:
@@ -637,7 +627,7 @@ class ExternalFilesController(object):
         if trace: g.trace(path)
         return path
     #@+node:ekr.20150406055221.3: *5* efc.legacy_file_name
-    def legacy_file_name(self, c, p, ext):
+    def legacy_file_name(self, c, ext, p):
         '''Compute a legacy file name for unsupported operating systems.'''
         try:
             leoTempDir = getpass.getuser() + "_" + "Leo"

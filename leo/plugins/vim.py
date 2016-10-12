@@ -226,7 +226,7 @@ class VimCommander(object):
         getBool, getString = c.config.getBool, c.config.getString
         self.open_url_nodes = getBool('vim_plugin_opens_url_nodes')
         self.position_cursor = getBool('vim_plugin_positions_cursor')
-        self.trace = getBool('vim_plugin_trace')
+        self.trace = False or getBool('vim_plugin_trace')
         self.uses_tab = getBool('vim_plugin_uses_tab_feature')
         self.vim_cmd = getString('vim_cmd') or _vim_cmd
         self.vim_exe = getString('vim_exe') or _vim_exe
@@ -237,59 +237,85 @@ class VimCommander(object):
             print('vim_cmd: %s' % self.vim_cmd)
             print('vim_exe: %s' % self.vim_exe)
         self.open_in_vim()
-    #@+node:ekr.20150326183613.1: *3* vim.check_args
+    #@+node:ekr.20150326183310.1: *3* vim.error
+    def error(self, s):
+        '''Report an error.'''
+        g.es_print(s, color='red')
+    #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim & helpers
+    def open_in_vim(self):
+        '''Open p in vim, or the entire enclosing file if entire_file is True.'''
+        trace = (False or self.trace) and not g.unitTesting
+        p = self.c.p
+        if not self.check_args():
+            return
+        root = self.find_root(p) if self.entire_file else p
+        if not root:
+            return
+        path = self.find_path_for_node(root)
+        if path and self.should_open_old_file(path, root):
+            if trace: g.trace('old file:', path)
+            cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:e " + path + "<CR>'"
+            if self.trace: g.trace('os.system(%s)' % cmd)
+            os.system(cmd)
+        else:
+            # Open a new temp file.
+            if trace: g.trace('new file:', path)
+            if path: self.forget_path(path)
+            self.open_file(root)
+    #@+node:ekr.20150326183613.1: *4* vim.check_args & helper
     def check_args(self):
         '''Return True of basic checks pass.'''
         p = self.c.p
         contextMenu = self.load_context_menu()
         if not contextMenu:
             return False
-        ### What is this?
-        # if p.h.find('file-ref') == 1: # Must be at 2nd position
-        #     return False
         if not self.open_url_nodes and p.h.startswith('@url'):
             return False
         else:
             return True
-    #@+node:ekr.20150326183310.1: *3* vim.error
-    def error(self, s):
-        '''Report an error.'''
-        g.es_print(s, color='red')
-    #@+node:ekr.20150326173414.1: *3* vim.find_root
-    def find_root(self, p):
-        '''Return the nearest ancestor @auto or @clean node.'''
-        p0 = p.copy()
-        while p:
-            if self.entire_file and p.isAnyAtFileNode():
-                return p
-            elif p.isAtAutoNode() or p.isAtCleanNode():
-                return p
-            else:
-                p.moveToParent()
-        self.error('no parent @auto or @clean node: %s' % p0.h)
-        return None
-    #@+node:ekr.20150326180515.1: *3* vim.find_path_for_node
+    #@+node:ekr.20150326154203.1: *5* vim.load_context_menu
+    def load_context_menu(self):
+        '''Load the contextmenu plugin.'''
+        global contextmenu_message_given
+        contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
+        if not contextMenu and not contextmenu_message_given:
+            contextmenu_message_given = True
+            self.error('can not load contextmenu.py')
+        return contextMenu
+    #@+node:ekr.20150326180515.1: *4* vim.find_path_for_node
     def find_path_for_node(self, p):
         '''Search the open-files list for a file corresponding to p.'''
         efc = g.app.externalFilesController
         path = efc.find_path_for_node(p)
         return path
-    #@+node:ekr.20150326173301.1: *3* vim.forget_path
+    #@+node:ekr.20150326173414.1: *4* vim.find_root
+    def find_root(self, p):
+        '''Return the nearest ancestor @auto or @clean node.'''
+        assert self.entire_file
+        for p2 in p.self_and_parents():
+            if p2.isAnyAtFileNode():
+                return p2
+        self.error('no parent @auto or @clean node: %s' % p.h)
+        return None
+    #@+node:ekr.20150326173301.1: *4* vim.forget_path
     def forget_path(self, path):
         '''
         Stop handling the path:
         - Remove the path from the list of open-with files.
         - Send a command to vim telling it to close the path.
         '''
+        trace = (False or self.trace) and not g.unitTesting
         assert path
         # Don't do this: it prevents efc from reopening paths.
-        # efc = g.app.externalFilesController
-        # if efc: efc.forget_path(path)
-        os.remove(path)
+            # efc = g.app.externalFilesController
+            # if efc: efc.forget_path(path)
+        if 0: # Dubious.
+            if g.os_path_exists(path):
+                os.remove(path)
         cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:bd " + path + "<CR>'"
         if self.trace: g.trace('os.system(%s)' % cmd)
         os.system(cmd)
-    #@+node:ekr.20150326181247.1: *3* vim.get_cursor_arg
+    #@+node:ekr.20150326181247.1: *4* vim.get_cursor_arg
     def get_cursor_arg(self):
         '''Compute the cursor argument for vim.'''
         if self.position_cursor:
@@ -300,70 +326,36 @@ class VimCommander(object):
             return "+" + str(row + 1)
         else:
             return ''
-    #@+node:ekr.20150326154203.1: *3* vim.load_context_menu
-    def load_context_menu(self):
-        '''Load the contextmenu plugin.'''
-        global contextmenu_message_given
-        contextMenu = g.loadOnePlugin('contextmenu.py', verbose=True)
-        if not contextMenu and not contextmenu_message_given:
-            contextmenu_message_given = True
-            self.error('can not load contextmenu.py')
-        return contextMenu
-    #@+node:ekr.20150326180928.1: *3* vim.open_file (calls c.openWith)
+    #@+node:ekr.20150326180928.1: *4* vim.open_file
     def open_file(self, root):
         '''Open the the file in vim using c.openWith.'''
-        trace = False and not g.unitTesting
+        trace = (False or self.trace) and not g.unitTesting
         c = self.c
+        efc = g.app.externalFilesController
         # Common arguments.
         if trace: g.trace(self.entire_file, root.h)
         cursor_arg = self.get_cursor_arg()
         tab_arg = "-tab" if self.uses_tab else ""
         remote_arg = "--remote" + tab_arg + "-silent"
+        args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
         if self.entire_file:
-            # vim-open-file.
+            # vim-open-file
             assert root.isAnyAtFileNode(), root
-            args = [self.vim_exe, "--servername", "LEO", remote_arg] # No cursor arg.
             dir_ = g.setDefaultDirectory(c, root)
             fn = c.os_path_finalize_join(dir_, root.anyAtFileNodeName())
-            c_arg = '%s %s' % (' '.join(args), fn)
-            command = 'subprocess.Popen(%s,shell=True)' % c_arg
-            if trace: g.trace(command)
-            try:
-                subprocess.Popen(c_arg, shell=True)
-            except OSError:
-                g.es_print(command)
-                g.es_exception()
         else:
             # vim-open-node
-            root.v._vim_old_body = root.v.b
-                # Not used in existing code, but it may be used elsewhere.
-            args = [self.vim_exe, "--servername", "LEO", remote_arg, cursor_arg]
-            if trace: g.trace('c.openWith(%s)' % args)
-            d = {'args': args,
-                 'ext': None,
-                 'kind': 'subprocess.Popen',
-                 'p': root.copy(),
-            }
-            c.openWith(d=d)
-    #@+node:ekr.20120315101404.9746: *3* vim.open_in_vim (entry: called from ctor)
-    def open_in_vim(self):
-        '''Open p in vim, or the entire enclosing file if entire_file is True.'''
-        p = self.c.p
-        if not self.check_args():
-            return
-        root = self.find_root(p) if self.entire_file else p
-        if not root:
-            return
-        path = self.find_path_for_node(root)
-        if path and self.should_open_old_file(path, root):
-            cmd = self.vim_cmd + "--remote-send '<C-\\><C-N>:e " + path + "<CR>'"
-            if self.trace: g.trace('os.system(%s)' % cmd)
-            os.system(cmd)
-        else:
-            # Open a new temp file.
-            if path: self.forget_path(path)
-            self.open_file(root)
-    #@+node:ekr.20150326173000.1: *3* vim.should_open_old_file
+            ext = 'txt'
+            fn = efc.create_temp_file(c, ext, c.p)
+        c_arg = '%s %s' % (' '.join(args), fn)
+        command = 'subprocess.Popen(%s,shell=True)' % c_arg
+        if trace: g.trace(command)
+        try:
+            subprocess.Popen(c_arg, shell=True)
+        except OSError:
+            g.es_print(command)
+            g.es_exception()
+    #@+node:ekr.20150326173000.1: *4* vim.should_open_old_file
     def should_open_old_file(self, path, root):
         '''Return True if we should open the old temp file.'''
         v = root.v
@@ -371,7 +363,7 @@ class VimCommander(object):
             path and g.os_path_exists(path) and
             hasattr(v.b, '_vim_old_body') and v.b == v._vim_old_body
         )
-    #@+node:ekr.20150326175258.1: *3* vim.write_root
+    #@+node:ekr.20150326175258.1: *3* vim.write_root (not used)
     def write_root(self, root):
         '''Return the concatenation of all bodies in p's tree.'''
         result = []
@@ -379,8 +371,6 @@ class VimCommander(object):
             s = p.b
             result.append(s if s.endswith('\n') else s.rstrip() + '\n')
         return ''.join(result)
-        # return ''.join([p.b if p.b endswith('\n') else p.b.rstrip()+'\n'
-            # for p in root.self_and_subtree()])
     #@-others
 #@-others
 #@@language python
