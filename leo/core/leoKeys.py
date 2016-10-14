@@ -1216,8 +1216,9 @@ class GetArg(object):
         '''Compute and show the available completions.'''
         # Support vim-mode commands.
         command = ga.get_label()
-        # g.trace(ga.is_command(command),command)
+        # g.trace(len(tabList), ga.is_command(command),command)
         if ga.is_command(command):
+            # if trace: g.trace('\n'.join(tabList))
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
                 # note order.
@@ -1254,9 +1255,17 @@ class GetArg(object):
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
-        ga.reset_tab_cycling()
         if completion:
-            ga.show_tab_list(tabList)
+            if 1:
+                # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+                ### ga.reset_tab_cycling()
+                common_prefix, tabList = ga.compute_tab_list(tabList)
+                ga.reset_tab_cycling()
+                ga.show_tab_list(tabList)
+            else:
+                ga.reset_tab_cycling()
+                ga.show_tab_list(tabList)
+            
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
@@ -1281,12 +1290,11 @@ class GetArg(object):
                 # g.trace(ga.cycling_prefix,g.callers(2))
                 if ga.do_tab_callback():
                     return
-                elif ga.cycling_prefix:
-                    ga.do_tab_cycling(common_prefix, tabList)
                 else:
-                    ga.show_tab_list(tabList)
-                    if len(common_prefix) > len(command):
-                        ga.set_label(common_prefix)
+                    # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+                    # A big simplifcation: always call ga.do_tab_list
+                    ga.do_tab_cycling(common_prefix, tabList)
+        
             elif tabList:
                 ga.do_tab_cycling(common_prefix, tabList)
         c.minibufferWantsFocus()
@@ -1314,39 +1322,76 @@ class GetArg(object):
         '''Put the next (or first) completion in the minibuffer.'''
         trace = False and not g.unitTesting
         s = ga.get_label()
-        if ga.cycling_prefix:
-            if s.startswith(ga.cycling_prefix):
-                # The expected case.
+        if trace:
+            g.trace('===== label: %r prefix: %r len(tabList): %s' % (
+                s, ga.cycling_prefix, len(tabList)))
+
+        if 1: ### Attempt to refactor the code.
+        
+            # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+            if ga.cycling_prefix and s.startswith(ga.cycling_prefix):
+                if trace: g.trace('1: CYCLE: %s %r: tabList[0]: %r' % (
+                    ga.cycling_index, s, tabList and tabList[0] or '<none>'))
                 n = ga.cycling_index
                 ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
-                if trace: g.trace('cycle', ga.cycling_index)
                 ga.set_label(ga.cycling_tabList[ga.cycling_index])
                 ga.show_tab_list(ga.cycling_tabList)
             else:
-                # Abort if anything unexpected happens.
-                if trace: g.trace('prefix mismatch')
-                ga.reset_tab_cycling()
+                # Restart.
+                if trace: g.trace('2: RESTART: %r: tabList[0]: %r' % (
+                    s, tabList and tabList[0] or '<none>'))
                 ga.show_tab_list(tabList)
-        elif len(common_prefix) == len(s):
-            # Start cycling only when the lengths match is best.
-            if trace: g.trace('starting tab cycling')
-            ga.cycling_prefix = s
-            # Start with the second item if the first is already showing.
-            # Otherwise, it takes *two* tabs to change the buffer,
-            # which makes it looks like tab cycling doesn't work
-            if s == tabList[0] and len(tabList) > 1:
-                ga.cycling_index = 1
-                ga.set_label(tabList[ga.cycling_index])
-            else:
-                ga.cycling_index = -1
-            ga.cycling_tabList = tabList[:]
-            ga.show_tab_list(ga.cycling_tabList)
-        else:
-            # Never cycle if we can extended the label.
-            if trace: g.trace('recompute prefix, extend the label.')
-            ga.show_tab_list(tabList)
-            if len(common_prefix) > len(s):
+                ga.cycling_tabList = tabList[:]
+                ga.cycling_prefix = common_prefix
                 ga.set_label(common_prefix)
+                if tabList and common_prefix == tabList[0]:
+                    if trace: g.trace('select the first command.')
+                    ga.cycling_index = 0
+                else:
+                    if trace: g.trace('show common prefix.')
+                    ga.cycling_index = -1
+            
+        else: # Complicated, works.
+            if ga.cycling_prefix:
+                # Continue.
+                if s.startswith(ga.cycling_prefix):
+                    # len(s) >= len(ga.cycling_prefix)
+                    # The expected case.
+                    n = ga.cycling_index
+                    ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
+                    if trace: g.trace('cycle', ga.cycling_index)
+                    ga.set_label(ga.cycling_tabList[ga.cycling_index])
+                    ga.show_tab_list(ga.cycling_tabList)
+                else:
+                    if trace: g.trace('prefix mismatch')
+                    if trace: g.trace('setting prefix to', ga.cycling_prefix)
+                    ga.cycling_index = -1
+                    ga.set_label(common_prefix)
+                    ga.show_tab_list(tabList)
+            elif len(common_prefix) == len(s):
+                # Start cycling.
+                if trace: g.trace('starting tab cycling: prefix: %r s: %r' % (common_prefix, s))
+                ga.cycling_prefix = s
+                if s == tabList[0] and len(tabList) > 1:
+                    if trace: g.trace('select the first command.')
+                    ga.cycling_index = 0
+                    label = tabList[0]
+                else:
+                    if trace: g.trace('set label to the common label.')
+                    ga.cycling_index = -1
+                    ga.show_tab_list(tabList)
+                    label = common_prefix
+                ga.set_label(label)
+                ga.cycling_tabList = tabList[:]
+                ga.show_tab_list(ga.cycling_tabList)
+            else:
+                # Never cycle if the common prefix does not match the label.
+                if trace: g.trace('recompute prefix 2, extend the label.')
+                ga.show_tab_list(tabList)
+                ga.cycling_tabList = tabList[:]
+                ga.cycling_index = 0 ###
+                if len(common_prefix) > len(s):
+                    ga.set_label(common_prefix)
     #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(ga):
         '''Reset all tab cycling ivars.'''
@@ -1529,9 +1574,11 @@ class GetArg(object):
     #@+node:ekr.20140818074502.18222: *3* ga.get_command
     def get_command(ga, s):
         '''Return the command part of a minibuffer contents s.'''
+        trace = False and not g.unitTesting
         if s.startswith(':'):
             # A vim-like command.
             if len(s) == 1:
+                if trace: g.trace(':x', s)
                 return s
             elif s[1].isalpha():
                 command = [':']
@@ -1539,11 +1586,14 @@ class GetArg(object):
                     if ch.isalnum() or ch == '-':
                         command.append(ch)
                     else: break
+                if trace: g.trace('alpha', ''.join(command))
                 return ''.join(command)
             elif s.startswith(':%s'):
+                if trace: g.trace(':%s', ''.join(command))
                 return s[: 3]
             else:
                 # Special case for :! and :% etc.
+                if trace: g.trace(':...', ''.join(command))
                 return s[: 2]
         else:
             command = []
@@ -1551,6 +1601,7 @@ class GetArg(object):
                 if ch.isalnum() or ch in '@_-':
                     command.append(ch)
                 else: break
+            if trace: g.trace('normal', ''.join(command))
             return ''.join(command)
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
     def get_minibuffer_command_name(ga):
@@ -2480,85 +2531,89 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         trace_event = True
         verbose = False
-        k = self; c = k.c
-        recording = c.macroCommands.recordingMacro
-        state = k.getState('full-command')
-        helpPrompt = 'Help for command: '
-        c.check_event(event)
-        ch = char = event and event.char or ''
-        stroke = event and event.stroke or None
-        if trace:
-            g.trace('recording', recording, 'state', state, char)
-        if recording:
-            c.macroCommands.startRecordingMacro(event)
-        if state > 0:
-            k.setLossage(char, stroke)
-        if state == 0:
-            k.mb_event = event # Save the full event for later.
-            if trace and trace_event:
-                g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
-            k.setState('full-command', 1, handler=k.fullCommand)
-            prompt = helpPrompt if help else k.altX_prompt
-            k.setLabelBlue(prompt)
-            k.mb_help = help
-            k.mb_helpHandler = helpHandler
-            c.minibufferWantsFocus()
-        elif char == 'Ins' or k.isFKey(char):
-            pass
-        elif char == 'Escape':
-            k.keyboardQuit()
-        elif char == 'Down':
-            k.commandHistoryDown()
-        elif char == 'Up':
-            k.commandHistoryUp()
-        elif char in ('\n', 'Return'):
-            if trace and verbose: g.trace('***Return')
-            if trace and trace_event:
-                g.trace('hasSelection %r' % (
-                    k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
-            # Fix bug 157: save and restore the selection.
-            w = k.mb_event and k.mb_event.w
-            if w and hasattr(w, 'hasSelection') and w.hasSelection():
-                sel1, sel2 = w.getSelectionRange()
-                ins = w.getInsertPoint()
-                c.frame.log.deleteTab('Completion')
-                w.setSelectionRange(sel1, sel2, insert=ins)
+        try:
+            k = self; c = k.c
+            recording = c.macroCommands.recordingMacro
+            state = k.getState('full-command')
+            helpPrompt = 'Help for command: '
+            c.check_event(event)
+            ch = char = event and event.char or ''
+            stroke = event and event.stroke or None
+            if trace:
+                g.trace('recording', recording, 'state', state, char)
+            if recording:
+                c.macroCommands.startRecordingMacro(event)
+            if state > 0:
+                k.setLossage(char, stroke)
+            if state == 0:
+                k.mb_event = event # Save the full event for later.
+                if trace and trace_event:
+                    g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
+                k.setState('full-command', 1, handler=k.fullCommand)
+                prompt = helpPrompt if help else k.altX_prompt
+                k.setLabelBlue(prompt)
+                k.mb_help = help
+                k.mb_helpHandler = helpHandler
+                c.minibufferWantsFocus()
+            elif char == 'Ins' or k.isFKey(char):
+                pass
+            elif char == 'Escape':
+                k.keyboardQuit()
+            elif char == 'Down':
+                k.commandHistoryDown()
+            elif char == 'Up':
+                k.commandHistoryUp()
+            elif char in ('\n', 'Return'):
+                if trace and verbose: g.trace('***Return')
+                if trace and trace_event:
+                    g.trace('hasSelection %r' % (
+                        k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
+                # Fix bug 157: save and restore the selection.
+                w = k.mb_event and k.mb_event.w
+                if w and hasattr(w, 'hasSelection') and w.hasSelection():
+                    sel1, sel2 = w.getSelectionRange()
+                    ins = w.getInsertPoint()
+                    c.frame.log.deleteTab('Completion')
+                    w.setSelectionRange(sel1, sel2, insert=ins)
+                else:
+                    c.frame.log.deleteTab('Completion')
+                        # 2016/04/27
+                if k.mb_help:
+                    s = k.getLabel()
+                    commandName = s[len(helpPrompt):].strip()
+                    k.clearState()
+                    k.resetLabel()
+                    if k.mb_helpHandler: k.mb_helpHandler(commandName)
+                else:
+                    s = k.getLabel(ignorePrompt=True)
+                    commandName = s.strip()
+                    ok = k.callAltXFunction(k.mb_event)
+                    if ok:
+                        k.addToCommandHistory(commandName)
+            elif char in ('\t', 'Tab'):
+                if trace and verbose: g.trace('***Tab')
+                k.doTabCompletion(list(c.commandsDict.keys()))
+                c.minibufferWantsFocus()
+            elif char in ('\b', 'BackSpace'):
+                if trace and verbose: g.trace('***BackSpace')
+                k.doBackSpace(list(c.commandsDict.keys()))
+                c.minibufferWantsFocus()
+            elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
+                # g.trace('non-ascii')
+                if specialStroke:
+                    g.trace(specialStroke)
+                    specialFunc()
+                c.minibufferWantsFocus()
             else:
-                c.frame.log.deleteTab('Completion')
-                    # 2016/04/27
-            if k.mb_help:
-                s = k.getLabel()
-                commandName = s[len(helpPrompt):].strip()
-                k.clearState()
-                k.resetLabel()
-                if k.mb_helpHandler: k.mb_helpHandler(commandName)
-            else:
-                s = k.getLabel(ignorePrompt=True)
-                commandName = s.strip()
-                ok = k.callAltXFunction(k.mb_event)
-                if ok:
-                    k.addToCommandHistory(commandName)
-        elif char in ('\t', 'Tab'):
-            if trace and verbose: g.trace('***Tab')
-            k.doTabCompletion(list(c.commandsDict.keys()))
-            c.minibufferWantsFocus()
-        elif char in ('\b', 'BackSpace'):
-            if trace and verbose: g.trace('***BackSpace')
-            k.doBackSpace(list(c.commandsDict.keys()))
-            c.minibufferWantsFocus()
-        elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
-            # g.trace('non-ascii')
-            if specialStroke:
-                g.trace(specialStroke)
-                specialFunc()
-            c.minibufferWantsFocus()
-        else:
-            # Clear the list, any other character besides tab indicates that a new prefix is in effect.
-            k.mb_tabList = []
-            k.updateLabel(event)
-            k.mb_tabListPrefix = k.getLabel()
-            c.minibufferWantsFocus()
-            # g.trace('new prefix',k.mb_tabListPrefix)
+                # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+                k.mb_tabList = []
+                k.updateLabel(event)
+                k.mb_tabListPrefix = k.getLabel()
+                c.minibufferWantsFocus()
+                # g.trace('new prefix',k.mb_tabListPrefix)
+        except Exception:
+            g.es_exception()
+            self.keyboardQuit()
     #@+node:ekr.20061031131434.112: *5* callAltXFunction
     def callAltXFunction(self, event):
         '''Call the function whose name is in the minibuffer.'''
