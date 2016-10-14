@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -907,6 +907,7 @@
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20071026183116"><vh>g.app.gui.run* methods run dialogs</vh></v>
+<v t="ekr.20161014160238.1"><vh>Creating code that will run on both Python 2 and 3</vh></v>
 <v t="ekr.20040403173920.19"><vh>Getting commander preferences</vh></v>
 <v t="ekr.20050907094633"><vh>Getting configuration settings</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
@@ -1227,15 +1228,16 @@
 <v t="ekr.20160923133117.299"><vh>pylint command appends leo directory to sys.path</vh></v>
 <v t="ekr.20160923133117.208"><vh>Removed useUI switch</vh></v>
 </v>
-<v t="ekr.20160923133117.209"><vh>Features</vh>
-<v t="ekr.20160923133117.238"><vh>Added installer for file associations</vh></v>
 <v t="ekr.20160923163139.1"><vh>Commands</vh></v>
 <v t="ekr.20161014041653.1"><vh>Enhancements</vh>
+<v t="ekr.20161014153350.1"><vh>#254: Fast marking </vh></v>
 <v t="ekr.20161014054754.1"><vh>#272: optionally delay syntax coloring</vh></v>
 <v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
 <v t="ekr.20161014034431.145"><vh>#321: allow section references in imported code</vh></v>
 <v t="ekr.20161014052138.1"><vh>Added dialog when creating myLeoSettings.leo automatically</vh></v>
+<v t="ekr.20160923133117.238"><vh>Added installer for file associations</vh></v>
 <v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
+<v t="ekr.20161014153551.1"><vh>Allow plain keys in headlines</vh></v>
 <v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
 </v>
 <v t="ekr.20160923163122.1"><vh>Importers</vh>
@@ -1243,10 +1245,12 @@
 <v t="ekr.20160923133117.211"><vh>#225: Added support for @auto x.json</vh></v>
 <v t="ekr.20160923133117.234"><vh>#278: Created coffeescript importer</vh></v>
 </v>
+<v t="ekr.20161014123411.1"><vh>Plugins</vh>
+<v t="ekr.20161014123414.1"><vh>Improved mod_http plugin</vh></v>
+<v t="ekr.20161014124318.1"><vh>The viewrendered plugin supports @pyplot nodes</vh></v>
+</v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
-</v>
-<v t="ekr.20161014060727.1"><vh>** Use to-be-documented mailbox</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18534,7 +18538,6 @@ I am going to declare this issue not to be solvable.
 </t>
 <t tx="ekr.20160923133117.208">It hasn't been active for a long, long time.
 </t>
-<t tx="ekr.20160923133117.209"></t>
 <t tx="ekr.20160923133117.210">https://github.com/leo-editor/leo-editor/issues/32
 
 The code:
@@ -18612,6 +18615,9 @@ This appears to be the only way to avoid the following message:
 - Added importers for freemind, mindjet, json and coffeescript files.
 - Rewrote the javascript importer. It can optionally generate section references.
 - Imported files can optionally contain section references.
+- The viewrendered plugin supports @pyplot nodes.
+- Improved the mod_http plugin.
+- @chapter trees need no longer be children of @chapters nodes.
 - All known bugs have been fixed.
 
 **Leo is**:
@@ -18672,6 +18678,7 @@ just as it is possible to simulate Python in assembly language...
     - clone-find-tag (cft)
 
 - copy-marked
+- diff-marked-nodes
 - flake8
 - import-MORE-files
 - import-tabbed-files
@@ -18681,6 +18688,7 @@ just as it is possible to simulate Python in assembly language...
 Improved the clone-marked/copy-marked/move-marked commands.
 
 Removed all static abbrev commands.
+Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
 </t>
 <t tx="ekr.20160923163147.1">Added the following settings:
 
@@ -18688,6 +18696,9 @@ Removed all static abbrev commands.
   https://github.com/leo-editor/leo-editor/issues/321
   
 - @bool js_importer_clean_lws
+
+- @bool outline_pane_has_initial_focus = True
+  https://groups.google.com/forum/#!topic/leo-editor/q1XKe4mnW9I
   
 - @bool plain-key-outline-search
 
@@ -18768,6 +18779,11 @@ Importers
   It can optionally generate section references.
 - Imported files can optionally contain section references.
 
+Plugins
+
+- Improved the mod_http plugin.
+- The viewrendered plugin supports @pyplot nodes.
+
 All known bugs have been fixed.</t>
 <t tx="ekr.20161014053707.1">Added these commands:
 
@@ -18781,6 +18797,7 @@ All known bugs have been fixed.</t>
     - clone-find-tag (cft)
 
 - copy-marked
+- diff-marked-nodes
 - flake8
 - import-MORE-files
 - import-tabbed-files
@@ -18791,6 +18808,7 @@ All known bugs have been fixed.</t>
 Improved the clone-marked/copy-marked/move-marked commands.
 
 Removed all static abbrev commands.
+Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
 </t>
 <t tx="ekr.20161014054015.1">- Added installer for file associations.
 - Added ``File:Import`` submenu.
@@ -18799,6 +18817,7 @@ Removed all static abbrev commands.
 - Added support for auto-justified body text.
 - Added @button import-tab-files to scripts.leo:
   https://groups.google.com/forum/#!topic/leo-editor/YcT7SOSYEQk
+- @chapter trees need no longer be children of @chapters nodes.
 </t>
 <t tx="ekr.20161014054147.1">Added the following settings:
 
@@ -18807,11 +18826,96 @@ Removed all static abbrev commands.
 - @bool plain-key-outline-search
 - @bool show-iconbar
 - @int autojustify
+- @int qweb_view_font_size
 </t>
 <t tx="ekr.20161014054754.1">https://github.com/leo-editor/leo-editor/issues/272
 </t>
-<t tx="ekr.20161014060727.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161014123411.1"></t>
+<t tx="ekr.20161014123414.1">**Look and feel**
+
+The plugin now renders Leo outlines almost exactly as they appear in Leo.
+
+**Custom .css**
+
+The default .css is in @data http_stylesheet defined in leoSettings.leo. You should put your own overrides in @data user_http_stylesheet, in myLeoSettings.leo.
+
+The html generated by the server contains both stylesheets as inline &lt;style&gt; elements, with the user_http_stylesheet contents last.  Thus, @data user_http_stylesheet **adds** to @data http_stylesheet.
+
+**Custom javascript**
+
+If you define @data mod_http script in myLeosettings.leo, the contents of this node **replaces** the default javascript defined in @data mod_http script in leoSettings.leo.  I don't expect people to use this setting often, but it was useful during development.
+
+**Improved html**
+
+&lt;node&gt; elements carry structure. &lt;headline&gt; elements carry headlines.  This allows headlines to have borders as usual.  I experimented with putting all data in &lt;node&gt; elements, but borders would include all visible children.  The summary page now contains complete html, including &lt;!DOCTYPE&gt; and &lt;meta&gt; elements.</t>
+<t tx="ekr.20161014124318.1">.. _`pyplot`: http://matplotlib.org/users/pyplot_tutorial.html
+.. _`matplotlib`: http://matplotlib.org/index.html
+.. _`Jupyter notebook`: http://jupyter.org/
+
+`pyplot`_ is the python interface to `matplotlib`_.  @pyplot gives Leo most of the capabilities of the `Jupyter notebook`_.
+
+@pyplot nodes are assumed to contain pyplot scripts. The plugin imports the following automatically, so scripts don't have to::
+  
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.animation as animation
+
+The viewrendered pane handles MathJax well, with some glitches: 
+
+- Leo renders MathJax significantly better when using PyQt5.
+- The MathJax fonts are tiny.  This setting can be used to increase the font size::
+
+    @int qweb_view_font_size = 30
+</t>
+<t tx="ekr.20161014153350.1">https://github.com/leo-editor/leo-editor/issues/254</t>
+<t tx="ekr.20161014153551.1">
+1. Leo now allows plain keys to be bound to commands when focus is in the outline.  For example, the following satisfies #254:
+
+mark ! tree = space
+
+2. All other unbound keys search the outline (visible nodes only) when focus is in the outline.  After a lot of experimenting, the code simply looks for the next headline containing the typed character, wrapping around endlessly. Case is ignored for lowercase letters, but is significant if you type an uppercase letter.
+
+3. Leo now honors the following initially:
+
+@bool outline_pane_has_initial_focus = True
+
+This is what we are all likely to want now that searching headlines works.</t>
+<t tx="ekr.20161014160238.1">Leo uses constants and functions defined in leoGlobals.py to ensure that Leo's code works on both Python 2.7+ and Python 3.x.
+
+- g.isPython3: True if Leo is running Python 3.x.  False otherwise.
+ 
+You should be particularly aware of:
+
+- g.isBytes, g.isInt, g.isString, g.isUnicode.
+- g.toUnicode, g.toEncodedString, g.isValidEncoding.
+- g.u, g.ue.
+
+If you use the above methods there should never be a need for direct calls to unicode(s), encode(s) or decode(s).  The above methods are clearer, safer, and do better error checking and recovery.
+
+A few other functions should be on your radar:
+
+- g.readFileIntoEncodedString
+- s, e = g.readFileIntoString
+- g.stripBOM
+
+There may be cases where direct tests against g.isPython3 seem the clearest. That's fine, but usually you can avoid direct tests.
+
+**Important**: g.u and g.toUnicode are not always interchangeable. You should always use g.u to convert Qt QStrings to unicode. Here is an example from quicksearch.py::
+
+    t = g.u(self.ui.lineEdit.text())
+
+Similarly, use g.ue to convert Qt bytes to unicode. Here is an example from LM.openZipFile::
+
+    s = theFile.read(name)
+    if g.isPython3:
+        s = g.ue(s, 'utf-8')
+    return StringIO(s)
+
+Actually, the above code is dubious, because it will break if the mode of the open command changes.
+
+**Note**: Leo's code sometimes does s = g.u('aString'), but this isn't needed since Python 2.7 which supports unicode literals.</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
