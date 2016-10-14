@@ -1229,22 +1229,14 @@
 </v>
 <v t="ekr.20160923133117.209"><vh>Features</vh>
 <v t="ekr.20160923133117.238"><vh>Added installer for file associations</vh></v>
-<v t="ekr.20160923163139.1"><vh>Commands</vh>
-<v t="ekr.20161014034431.50" a="M"><vh>Added cft: clone-find-tagged</vh></v>
-<v t="ekr.20160923133117.302"><vh>Added clone-find-tag (cft) and tag-children commands</vh></v>
-<v t="ekr.20161014035206.1"><vh>Added File:Import submenu</vh></v>
-<v t="ekr.20161014034431.125"><vh>Added import-MORE-files command</vh></v>
-<v t="ekr.20160923163845.1"><vh>Added pyflakes and flake8 commands</vh></v>
-<v t="ekr.20161014034431.55" a="M"><vh>Added tag-children command</vh></v>
-<v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
-<v t="ekr.20160923133117.300"><vh>Removed all static abbrev commands</vh></v>
-</v>
+<v t="ekr.20160923163139.1"><vh>Commands</vh></v>
 <v t="ekr.20161014041653.1"><vh>Enhancements</vh>
 <v t="ekr.20161014054754.1"><vh>#272: optionally delay syntax coloring</vh></v>
 <v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
 <v t="ekr.20161014034431.145"><vh>#321: allow section references in imported code</vh></v>
 <v t="ekr.20161014052138.1"><vh>Added dialog when creating myLeoSettings.leo automatically</vh></v>
 <v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
+<v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
 </v>
 <v t="ekr.20160923163122.1"><vh>Importers</vh>
 <v t="ekr.20160923133117.210"><vh>#032: Added freemind and mindjet imports</vh></v>
@@ -1254,6 +1246,7 @@
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
 </v>
+<v t="ekr.20161014060727.1"><vh>** Use to-be-documented mailbox</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18592,9 +18585,6 @@ The installer prompts for both the already-installed Leo installation folder (le
 <t tx="ekr.20160923133117.299">This allows the pylint command to work without any sitecustomize.py file.
 </t>
 <t tx="ekr.20160923133117.3"></t>
-<t tx="ekr.20160923133117.300"></t>
-<t tx="ekr.20160923133117.302">Nodes marked with cft tag or tag-children tags.
-</t>
 <t tx="ekr.20160923133117.38">https://github.com/leo-editor/leo-editor/issues/272
 
 Syntax coloring happens *initially* at idle-time.
@@ -18620,7 +18610,7 @@ This appears to be the only way to avoid the following message:
 - The clone-find and tag-all-children commands unify clones and tags.
 - The new pyflakes and flake8 make it possible to check files from within Leo.
 - Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer.
+- Rewrote the javascript importer. It can optionally generate section references.
 - Imported files can optionally contain section references.
 - All known bugs have been fixed.
 
@@ -18670,16 +18660,43 @@ just as it is possible to simulate Python in assembly language...
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="ekr.20160923163122.1"></t>
-<t tx="ekr.20160923163139.1"></t>
-<t tx="ekr.20160923163147.1">- Added @bool show-iconbar
+<t tx="ekr.20160923163139.1">Added these commands:
+
+- The **extremely important** clone-find commands:
+
+    - clone-find-all (cfa)
+    - clone-find-all-flattened (cfaf)
+    - clone-find-all-flattened-marked (cffm)
+    - clone-find-all-marked (cfam)
+    - clone-find-parents
+    - clone-find-tag (cft)
+
+- copy-marked
+- flake8
+- import-MORE-files
+- import-tabbed-files
+- pyflakes
+- tag-children
+
+Improved the clone-marked/copy-marked/move-marked commands.
+
+Removed all static abbrev commands.
+</t>
+<t tx="ekr.20160923163147.1">Added the following settings:
+
+- @bool allow_section_references_in_at_auto
+  https://github.com/leo-editor/leo-editor/issues/321
+  
+- @bool js_importer_clean_lws
+  
+- @bool plain-key-outline-search
+
+- @bool show-iconbar
   https://github.com/leo-editor/leo-editor/issues/266
-  
-- Added @bool plain-key-outline-search
-  
-- Added @int autojustify
+
+- @int autojustify
   https://github.com/leo-editor/leo-editor/issues/14
 </t>
-<t tx="ekr.20160923163845.1"></t>
 <t tx="ekr.20161014034431.114">Fixed a bug in all of Leo's generators that return positions, and added unit tests for the same.
    
 All of Leo's generator now yield p.copy() instead of p. This makes the generators much more robust.
@@ -18701,7 +18718,6 @@ In fact, p.v will be None in all items of the list!
 **Important**: the "extra" calls to p.copy() don't matter: In most cases, Python's garbage collector will immediate collect the generated positions.
 
 Anyway, there is no real alternative. Copying positions eliminates the possibility for subtle bugs.</t>
-<t tx="ekr.20161014034431.125"></t>
 <t tx="ekr.20161014034431.145">- Completed #321: allow section references in imported code.
 - Added support for @bool allow_section_references_in_at_auto, default False.
 - The javascript plugin now genertes section references if and only if this setting is True.
@@ -18731,9 +18747,6 @@ The QtWebEngine warnings are given in LeoQtGui.runMainLoop in the call to:
     sys.exit(self.qtApp.exec_())
 
 </t>
-<t tx="ekr.20161014034431.50"></t>
-<t tx="ekr.20161014034431.55"></t>
-<t tx="ekr.20161014035206.1"></t>
 <t tx="ekr.20161014041653.1"></t>
 <t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard::
 
@@ -18752,16 +18765,26 @@ Importers
 
 - Added importers for freemind, mindjet, json and coffeescript files.
 - Rewrote the javascript importer.
+  It can optionally generate section references.
 - Imported files can optionally contain section references.
-
 
 All known bugs have been fixed.</t>
 <t tx="ekr.20161014053707.1">Added these commands:
 
-- clone-find-tag (cft)
+- The **extremely important** clone-find commands:
+
+    - clone-find-all (cfa)
+    - clone-find-all-flattened (cfaf)
+    - clone-find-all-flattened-marked (cffm)
+    - clone-find-all-marked (cfam)
+    - clone-find-parents
+    - clone-find-tag (cft)
+
 - copy-marked
 - flake8
 - import-MORE-files
+- import-tabbed-files
+  https://groups.google.com/forum/#!topic/leo-editor/qx0okNbjWUk
 - pyflakes
 - tag-children
 
@@ -18774,6 +18797,8 @@ Removed all static abbrev commands.
 - Leo now colorizes basestring, @staticmethod &amp; @classmethod.
 - Added dialog when creating myLeoSettings.leo automatically.
 - Added support for auto-justified body text.
+- Added @button import-tab-files to scripts.leo:
+  https://groups.google.com/forum/#!topic/leo-editor/YcT7SOSYEQk
 </t>
 <t tx="ekr.20161014054147.1">Added the following settings:
 
@@ -18785,6 +18810,7 @@ Removed all static abbrev commands.
 </t>
 <t tx="ekr.20161014054754.1">https://github.com/leo-editor/leo-editor/issues/272
 </t>
+<t tx="ekr.20161014060727.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
