@@ -4828,6 +4828,12 @@ class Commands(object):
             fileName = g.os_path_join(path, name)
             if g.os_path_exists(fileName):
                 return None
+        ok = g.app.gui.runAskYesNoDialog(c,
+            title = 'Create myLeoSettings.leo?',
+            message = 'Create myLeoSettings.leo in %s?' % (homeLeoDir),
+        )
+        if ok == 'no':
+            return
         # get '@enabled-plugins' from g.app.globalConfigDir
         fileName = g.os_path_join(configDir, "leoSettings.leo")
         leosettings = g.openWithFileName(fileName, old_c=c)

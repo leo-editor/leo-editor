@@ -28,423 +28,6 @@ if 0: # Doesn't work well.
     g.app.unitTestGui = 'qt'
 #@+node:ekr.20100909111553.5588: *3* @mark-for-unit-tests
 # Add the tree to the external unit test
-#@+node:ekr.20080201143145: ** Old ipython.py
-@first # -*- coding: utf-8 -*-
-
-<< docstring >>
-
-# **Important**: this plugin has been replaced by leoIPython.py.
-
-__version__ = '0.9'
-<< version history >>
-<< to do >>
-<< imports >>
-
-# Globals
-
-# IPython IPApi instance. Global, because only one can exist through the whole leo session
-gIP = None
-
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20080201151802: *3* << docstring >>
-''' Creates a two-way communication (bridge) between Leo
-scripts and IPython running in the console from which Leo was launched.
-
-Using this bridge, scripts running in Leo can affect IPython, and vice versa.
-In particular, scripts running in IPython can alter Leo outlines!
-
-For full details, see Leo Users Guide:
-http://leoeditor.com//IPythonBridge.html
-
-'''
-#@+node:ekr.20080201143145.2: *3* << version history >>
-@killcolor
-@
-
-v 0.1: Ideas by Ville M. Vainio, code by EKR.
-
-v 0.2 EKR: Use g.getScript to synthesize scripts.
-
-v 0.3 EKR:
-- Moved all code from scripts to this plugin.
-- Added leoInterface and leoInterfaceResults classes.
-- Added createNode function for use by the interface classes.
-- Created minibuffer commands.
-- c.ipythonController is now an official ivar.
-- Docstring now references Chapter 21 of Leo's Users Guide.
-
-v 0.4 EKR:
-- Disable the command lockout logic for the start-ipython command.
-- (In leoSettings.leo): add shortcuts for ipython commands.
-
-v 0.5 VMV & EKR:  Added leoInterfaceResults.__getattr__.
-
-v 0.6 EKR:
-- Inject leox into the user_ns in start-ipython.
-  As a result, there is no need for init_ipython and it has been removed.
-
-v 0.7 EKR:
-- changed execute-ipython-script to push-to-ipython.
-- Disabled trace of script in push-to-ipython.
-
-v 0.8 VMV and EKR:
-- This version is based on mods made by VMV.
-- EKR: set sys.argv = [] in startIPython before calling any IPython api.
-  This prevents IPython from trying to load the .leo file.
-
-v 0.9 EKR: tell where the commands are coming from.
-#@+node:ekr.20080203092534: *3* << to do >>
-@nocolor
-@
-
-- Read the docs re saving and restoring the IPython namespace.
-
-- Is it possible to start IPShellEmbed automatically?
-
-    Calling IPShellEmbed.ipshell() blocks, so it can't be done
-    outside the event loop.  It might be possible to do this in
-    an idle-time handler.
-
-    If it is possible several more settings would be possible.
-#@+node:ekr.20080201143145.3: *3* << imports >>
-import leo.core.leoGlobals as g
-
-import sys
-
-try:
-    import IPython.ipapi
-    import_ok = True
-except ImportError:
-    g.error('ipython plugin: can not import IPython.ipapi')
-    import_ok = False
-except SyntaxError:
-    g.error('ipython plugin: syntax error importing IPython.ipapi')
-    import_ok = False
-    
-#@+node:ekr.20080201144219: *3* Module-level functions
-#@+node:ekr.20080201143145.4: *4* init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    print('**Important**: Use Leo\'s --ipython option instead of the ipython.py plugin.')
-    if not import_ok:
-        return False
-    # This plugin depends on the properties of the gui's event loop.
-    # It may work for other gui's, but this is not guaranteed.
-    if g.app.gui and g.app.gui.guiName() == 'qt' and not g.app.useIpython:
-        g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
-        return False
-    # Call onCreate after the commander and the key handler exist.
-    g.registerHandler('after-create-leo-frame',onCreate)
-    g.plugin_signon(__name__)
-    return True
-#@+node:ekr.20080201143145.5: *4* onCreate
-def onCreate (tag, keys):
-
-    c = keys.get('c')
-
-    if not c:
-        return
-
-    # Inject the controller into the commander.
-    c.ipythonController = ipythonController(c)
-
-    try:
-        from leo.external import ipy_leo
-    except ImportError:
-        return
-    try:
-        st = ipy_leo._request_immediate_connect
-    except AttributeError:
-        return
-
-    if st:
-        c.ipythonController.startIPython()
-
-#@+node:ekr.20080201143145.6: *3* class ipythonController
-class ipythonController(object):
-
-    '''A per-commander controller that manages the
-    singleton IPython ipshell instance.'''
-
-    @others
-#@+node:ekr.20080204110426: *4* Birth
-#@+node:ekr.20080201143145.7: *5* ctor
-def __init__ (self,c):
-
-    self.c = c
-    self.createCommands()
-#@+node:ekr.20080204080848: *5* createCommands
-def createCommands(self):
-
-    '''Create all of the ipython plugin's minibuffer commands.'''
-
-    c = self.c ; k = c.k
-
-    table = (
-        ('start-ipython',   self.startIPython),
-        ('push-to-ipython', self.pushToIPythonCommand),
-    )
-
-    shortcut = None
-
-    if not g.app.unitTesting:
-        g.es('ipython plugin...',color='purple')
-
-    for commandName,func in table:
-        k.registerCommand (commandName,shortcut,func,pane='all',verbose=True)
-#@+node:ekr.20080201151802.1: *4* Commands
-#@+node:ekr.20080201143319.10: *5* startIPython (rewrite)
-def startIPython(self,event=None):
-
-    '''The start-ipython command'''
-
-    c = self.c
-    global gIP
-
-    try:
-        from leo.external import ipy_leo
-    except ImportError:
-        self.error("Error importing ipy_leo")
-        return
-
-    if gIP:
-        # Just inject a new commander for current document.
-        # if we are already running.
-        leox = leoInterface(c,g) # inject leox into the namespace.
-        ipy_leo.update_commander(leox)
-        return
-
-    try:
-        api = IPython.ipapi
-        leox = leoInterface(c,g)
-            # Inject leox into the IPython namespace.
-
-        existing_ip = api.get()
-        if existing_ip is None:
-            args = c.config.getString('ipython_argv')
-            if args is None:
-                argv = ['leo.py']
-            else:
-                # force str instead of unicode
-                argv = [str(s) for s in args.split()] 
-            if g.app.gui.guiName() == 'qt':
-                # qt ui takes care of the coloring (using scintilla)
-                if '-colors' not in argv:
-                    argv.extend(['-colors','NoColor'])
-            sys.argv = argv
-
-            self.message('Creating IPython shell.')
-            ses = api.make_session()
-            gIP = ses.IP.getapi()
-
-            #if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
-            if 0:
-                # disable this code for now - --ipython is the one recommended way of using qt + ipython
-                g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
-                return
-                #try:
-                #    import ipy_qt.qtipywidget
-                #except Exception:
-                #    g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
-                #    raise
-
-
-                import textwrap
-                self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
-                self.qtwidget.set_ipython_session(gIP)
-                self.qtwidget.show()
-                self.qtwidget.viewport.append(textwrap.dedent("""\
-                Qt IPython widget (for Leo). Commands entered on box below.
-                If you want the classic IPython text console, start leo with 'launchLeo.py --gui=qt --ipython'
-                """))
-
-        else:
-            # To reuse an old IPython session, you need to launch Leo from IPython by doing:
-            #
-            # import IPython.Shell
-            # IPython.Shell.hijack_tk()
-            # %run leo.py  (in leo/leo/src)              
-            #
-            # Obviously you still need to run launch-ipython (Alt-Shift-I) to make 
-            # the document visible for ILeo
-
-            self.message('Reusing existing IPython shell')
-            gIP = existing_ip                
-
-        ipy_leo_m = gIP.load('leo.external.ipy_leo')
-        ipy_leo_m.update_commander(leox)
-        c.inCommand = False # Disable the command lockout logic, just as for scripts.
-        # start mainloop only if it's not running already
-        if existing_ip is None and g.app.gui.guiName() != 'qt':
-            # Does not return until IPython closes!
-            ses.mainloop()
-
-    except Exception:
-        self.error('exception creating IPython shell')
-        g.es_exception()
-#@+node:ekr.20080204111314: *5* pushToIPythonCommand
-def pushToIPythonCommand(self,event=None):
-
-    '''The push-to-ipython command.
-
-    IPython must be started, but need not be inited.'''
-
-    self.pushToIPython(script=None)
-#@+node:ekr.20080201151802.2: *4* Utils...
-#@+node:ekr.20080204075924: *5* error & message
-def error (self,s):
-
-    g.es_print(s)
-
-def message (self,s):
-
-    g.blue(s)
-#@+node:ekr.20080201150746.2: *5* pushToIPython
-def pushToIPython (self,script=None):
-    ''' Push the node to IPython'''
-    if not gIP:
-        self.startIPython() # Does not return
-    else:
-        if script:
-            gIP.runlines(script)
-            return
-        c = self.c ; p = c.p
-        push = gIP.user_ns['_leo'].push
-        c.inCommand = False # Disable the command lockout logic
-        push(p)
-        return
-#@+node:ekr.20080204083034: *5* started
-def started (self):
-    return gIP
-#@+node:ekr.20080204103804.3: *3* class leoInterface
-class leoInterface(object):
-
-    '''A class to allow full access to Leo from Ipython.
-
-    An instance of this class called leox is typically injected
-    into IPython's user_ns namespace by the init-ipython-command.'''
-
-    def __init__(self,c,g,tag='@ipython-results'):
-        self.c, self.g = c,g
-#@+node:ekr.20130927071752.11380: ** Old internal_ipkernel.py
-'''Support for Leo's --ipython option.'''
-
-# This module is no longer used.
-
-@language python
-@tabwidth -4
-
-if 0: # No longer used.
-
-    << imports >>
-    
-    @others
-#@+node:ekr.20130408094309.8746: *3* << imports >>
-import sys
-
-import_trace = False
-try:
-    from IPython.lib.kernel import connect_qtconsole
-    if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
-except ImportError:
-    connect_qtconsole = None
-    print('internal_ipkernel.py: can not import connect_qtconsole')
-try:
-    # First, try the IPython 0.x import.
-    from IPython.zmq.ipkernel import IPKernelApp
-    if import_trace: print('ok: from IPython.zmq.ipkernel import IPKernelApp')
-except ImportError:
-    # Next, try the IPython 1.x import.
-    try:
-        from IPython.kernel.zmq.kernelapp import IPKernelApp
-        if import_trace: print('ok: from IPython.zmq.ipkernel import IPKernelApp')
-    except ImportError:
-        IPKernelApp = None
-        print('internal_ipkernel.py: can not import IPKernelApp')
-#@+node:ekr.20130408094309.8748: *3* init
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    return True # Required for Leo's unit tests.
-#@+node:ekr.20130408094309.8749: *3* pylab_kernel
-def pylab_kernel(gui):
-    """Launch and return an IPython kernel with pylab support for the desired gui
-    """
-    trace = False
-    tag = 'internal_ipkernel.py'
-    kernel = IPKernelApp.instance()
-    if kernel:
-        # pylab is really needed, for Qt event loop integration.
-        try:
-            kernel.initialize(
-                ['python',
-                '--pylab=%s' % gui,
-                #'--log-level=10'
-            ])
-            if trace: print('%s: kernel: %s' % (tag,kernel))
-        except Exception:
-            print('%s: kernel.initialize failed!' % tag)
-            raise
-    else:
-        print('%s IPKernelApp.instance failed' % (tag))
-    return kernel
-#@+node:ekr.20130408094309.8750: *3* class InternalIPKernel
-class InternalIPKernel(object):
-    @others
-#@+node:ekr.20130408094309.8751: *4* init_ipkernel
-
-def init_ipkernel(self, backend):
-    # Start IPython kernel with GUI event loop and pylab support
-    self.ipkernel = pylab_kernel(backend)
-    # To create and track active qt consoles
-    self.consoles = []
-    
-    # This application will also act on the shell user namespace
-    self.namespace = self.ipkernel.shell.user_ns
-    # Keys present at startup so we don't print the entire pylab/numpy
-    # namespace when the user clicks the 'namespace' button
-    self._init_keys = set(self.namespace.keys())
-
-    # Example: a variable that will be seen by the user in the shell, and
-    # that the GUI modifies (the 'Counter++' button increments it):
-    self.namespace['app_counter'] = 0
-    #self.namespace['ipkernel'] = self.ipkernel  # dbg
-
-#@+node:ekr.20130408094309.8752: *4* print_namespace
-def print_namespace(self, evt=None):
-    print("\n***Variables in User namespace***")
-    for k, v in self.namespace.iteritems():
-        if k not in self._init_keys and not k.startswith('_'):
-            print('%s -> %r' % (k, v))
-    sys.stdout.flush()
-
-#@+node:ekr.20130408094309.8753: *4* new_qt_console
-def new_qt_console(self, evt=None):
-    """start a new qtconsole connected to our kernel"""
-    return connect_qtconsole(self.ipkernel.connection_file, profile=self.ipkernel.profile)
-
-#@+node:ekr.20130408094309.8754: *4* count
-def count(self, evt=None):
-    self.namespace['app_counter'] += 1
-
-#@+node:ekr.20130408094309.8755: *4* cleanup_consoles
-def cleanup_consoles(self, evt=None):
-    for c in self.consoles:
-        c.kill()
-#@+node:ekr.20130930062914.15971: *3* class LeoInterface
-class LeoInterface(object):
-
-    '''A class to allow full access to Leo from Ipython.
-
-    An instance of this class called leox is typically injected
-    into IPython's user_ns namespace by the init-ipython-command.'''
-
-    # py-lint: disable=interface-not-implemented
-
-    def __init__(self,c,g,tag='@ipython-results'):
-        self.c = c
-        self.g = g
 #@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
 # pylint: disable=syntax-error
 
@@ -458,6 +41,179 @@ a = # This is the syntax error
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     return True
+#@+node:ekr.20161003204921.1: ** old code in mod_http.py
+#@+node:EKR.20040517080250.24: *3* format_leo_node (old)
+def format_leo_node(self, f, window, node):
+    """
+    Given a node 'node', return the contents of that node as html text.
+
+    Include some navigational references too
+    """
+    if node:
+        headString = node.h
+        bodyString = node.b
+        format_info = get_http_attribute(node)
+    else:
+        headString, bodyString = "Top level", ""
+        format_info = None
+    self.write_head(f, headString, window)
+    # write navigation
+    self.add_leo_links(window, node, f)
+    # write path
+    self.write_path(node, f)
+    f.write("<hr />\n") # horizontal rule
+    # f.write('<span style="font-family: monospace;">')
+    if format_info:
+        f.write("<p>\n")
+        html_lines = reconstruct_html_from_attrs(format_info, 3)
+        for line in html_lines:
+            f.write(line)
+        f.write("\n</p>\n")
+    else:
+        if (bodyString):
+            f.write("<p>\n")
+        f.write(escape(bodyString))
+        if (bodyString):
+            f.write("\n</p>\n")
+    # f.write("</span>\n")
+    f.write("\n</body>\n</html>\n")
+    # return f
+#@+node:EKR.20040517080250.25: *3* get_leo_nameparts
+def get_leo_nameparts(self, node):
+    """
+    Given a 'node', construct a list of sibling numbers to get to that node.
+    """
+    result = []
+    if node:
+        cnode = node
+        parent = cnode.parent()
+        while parent:
+            i = 0
+            child = parent.firstChild()
+            while child != cnode:
+                child = child.next()
+                i += 1
+            result.append(str(i))
+            cnode = parent
+            parent = cnode.parent()
+        i = 0
+        previous = cnode.back()
+        while previous:
+            i += 1
+            previous = previous.back()
+        result.append(str(i))
+        result.reverse()
+    return result
+#@+node:ekr.20161003205045.1: *3* from leo_interface
+#@+node:EKR.20040517080250.21: *4* add_leo_links
+def add_leo_links(self, window, node, f):
+    """
+    Given a node 'node', add links to:
+        The next sibling, if any.
+        the next node.
+        the parent.
+        The children, if any.
+    """
+    # Collecting the navigational links.
+    if node:
+        nodename = node.h
+        threadNext = node.threadNext()
+        sibling = node.next()
+        parent = node.parent()
+        f.write("<p>\n")
+        children = []
+        firstChild = node.firstChild()
+        if firstChild:
+            child = firstChild
+            while child:
+                children.append(child)
+                child = child.next()
+        if threadNext is not None:
+            self.create_leo_reference(window, threadNext, "next", f)
+        f.write("<br />")
+        if sibling is not None:
+            self.create_leo_reference(window, sibling, "next Sibling", f)
+        f.write("<br />")
+        if parent is None:
+            self.create_href("/", "Top level", f)
+        else:
+            self.create_leo_reference(window, parent, "Up", f)
+        f.write("<br />")
+        f.write("\n</p>\n")
+    else:
+        # top level
+        child = window.c.rootPosition()
+        children = [child]
+        next = child.next()
+        while next:
+            child = next
+            children.append(child)
+            next = child.next()
+        nodename = window.shortFileName()
+    if children:
+        f.write("\n<h2>")
+        f.write("Children of ")
+        f.write(escape(nodename))
+        f.write("</h2>\n")
+        f.write("<ol>\n")
+        for child in children:
+            f.write("<li>\n")
+            self.create_leo_reference(window, child, child.h, f)
+            f.write("</li>\n")
+        f.write("</ol>\n")
+#@+node:EKR.20040517080250.22: *4* create_href
+def create_href(self, href, text, f):
+    f.write('<a href="%s">' % href)
+    f.write(escape(text))
+    f.write("</a>\n")
+#@+node:bwmulder.20050319134815: *4* create_leo_h_reference
+def create_leo_h_reference(self, window, node):
+    parts = [window.shortFileName()] + self.get_leo_nameparts(node)
+    href = '/' + '/'.join(parts)
+    return href
+#@+node:EKR.20040517080250.23: *4* create_leo_reference
+def create_leo_reference(self, window, node, text, f):
+    """
+    Create a reference to 'node' in 'window', displaying 'text'
+    """
+    href = self.create_leo_h_reference(window, node)
+    self.create_href(href, text, f)
+#@+node:bwmulder.20050319135316: *4* node_reference
+def node_reference(self, vnode):
+    """
+    Given a position p, return the name of the node.
+    """
+    # 1. Find the root
+    root = vnode
+    parent = root.parent()
+    while parent:
+        root = parent
+        parent = root.parent()
+    while root.v._back:
+        root.moveToBack()
+    # 2. Return the window
+    window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
+    result = self.create_leo_h_reference(window, vnode)
+    return result
+#@+node:EKR.20040517080250.28: *4* write_path
+def write_path(self, node, f):
+    result = []
+    while node:
+        result.append(node.h)
+        node = node.parent()
+    result.reverse()
+    if result:
+        result2 = result[: -1]
+        if result2:
+            result2 = ' / '.join(result2)
+            f.write("<p>\n")
+            f.write("<br />\n")
+            f.write(escape(result2))
+            f.write("<br />\n")
+            f.write("</p>\n")
+        f.write("<h2>")
+        f.write(escape(result[-1]))
+        f.write("</h2>\n")
 #@-all
 #@@killbeautify
 # This file contains unused plugins and code

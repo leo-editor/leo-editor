@@ -903,6 +903,7 @@
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
+<v t="ekr.20161014050133.1"><vh>Cutting and pasting text</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20071026183116"><vh>g.app.gui.run* methods run dialogs</vh></v>
@@ -1238,40 +1239,52 @@
 <v t="ekr.20160417061710.1"><vh>Commands: new and improved</vh></v>
 <v t="ekr.20160417062135.1"><vh>Plugins: new and improved</vh></v>
 </v>
-<v t="ekr.20161003070416.1"><vh>** Emphasize that newbies can ignore commands</vh></v>
-<v t="ekr.20160502092850.1"><vh>** update myLeoSettings.leo docs</vh></v>
-<v t="ekr.20160921140909.1"><vh>** Add to docs: cut/paste example</vh></v>
 <v t="ekr.20160923133132.1"><vh>Leo 5.4 release notes</vh>
 <v t="ekr.20160923133117.3"><vh>Bugs fixed</vh>
 <v t="ekr.20160923133117.4"><vh>Fixed #241: QMimeData object error</vh></v>
+<v t="ekr.20161014034431.151"><vh>Fixed #262: Improve performance of check_for_changed_external_files</vh></v>
 <v t="ekr.20160923133117.23"><vh>Fixed #270: Vim keys don't always work after double Alt+Tab</vh></v>
 <v t="ekr.20160923133117.38"><vh>Fixed #272: optionally delay syntax coloring</vh></v>
 <v t="ekr.20160923133117.104"><vh>Fixed #275: clone-marked/copy-marked/move-marked</vh></v>
 <v t="ekr.20160923133117.129"><vh>Fixed #286: @rst-preformat directive is formatted into headline</vh></v>
+<v t="ekr.20161014034431.28"><vh>Fixed #289: Leo crashes with unusual combination of @clean and .leo file</vh></v>
 <v t="ekr.20160923133117.130"><vh>Fixed #291: mod_autosave.py does not always save...</vh></v>
 <v t="ekr.20160923133117.142"><vh>Fixed #292: find-all commands collapse outline</vh></v>
 <v t="ekr.20160923133117.143"><vh>Fixed #295: Enhancement request: after-headline-edit hook</vh></v>
 <v t="ekr.20160923133117.159"><vh>Fixed #301: Log window doesn't get line separators</vh></v>
 <v t="ekr.20160923133117.168"><vh>Fixed #302: revert to saved doesn't reset external file change monitoring</vh></v>
+<v t="ekr.20161014034431.3"><vh>Fixed #304: QtWebEngine warnings with Qt5</vh></v>
+<v t="ekr.20161014034431.161"><vh>Fixed #313: vim-open-node opens file instead of just node</vh></v>
 <v t="ekr.20160923133117.175"><vh>Fixed bug in ac.get_summary_list</vh></v>
 <v t="ekr.20160923133117.176"><vh>Fixed expand-to-level bug</vh></v>
+<v t="ekr.20161014034431.114"><vh>Fixed major bug involving Leo's generators</vh></v>
 <v t="ekr.20160923133117.245"><vh>Fixed timing stats for pylint-leo on Linux</vh></v>
 <v t="ekr.20160923133117.178"><vh>Investigated #273: Qt Bug involving large text nodes</vh></v>
-<v t="ekr.20160923133117.242"><vh>colorize basestring, @staticmethod &amp; @classmethod</vh></v>
 </v>
 <v t="ekr.20160923133117.179"><vh>Code</vh>
 <v t="ekr.20160923133117.203"><vh>Fixed compare_ast bug</vh></v>
+<v t="ekr.20161014034431.158"><vh>Leo now catches exceptions in *all* commands</vh></v>
 <v t="ekr.20160923133117.206"><vh>Moved class defs out of @file nodes</vh></v>
-<v t="ekr.20160923133117.208"><vh>Removed useUI switch</vh></v>
 <v t="ekr.20160923133117.299"><vh>pylint command appends leo directory to sys.path</vh></v>
+<v t="ekr.20160923133117.208"><vh>Removed useUI switch</vh></v>
 </v>
 <v t="ekr.20160923133117.209"><vh>Features</vh>
 <v t="ekr.20160923133117.238"><vh>Added installer for file associations</vh></v>
 <v t="ekr.20160923163139.1"><vh>Commands</vh>
-<v t="ekr.20160923163845.1"><vh>Added pyflakes and flake8 commands</vh></v>
-<v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
+<v t="ekr.20161014034431.50" a="M"><vh>Added cft: clone-find-tagged</vh></v>
 <v t="ekr.20160923133117.302"><vh>Added clone-find-tag (cft) and tag-children commands</vh></v>
+<v t="ekr.20161014035206.1"><vh>Added File:Import submenu</vh></v>
+<v t="ekr.20161014034431.125"><vh>Added import-MORE-files command</vh></v>
+<v t="ekr.20160923163845.1"><vh>Added pyflakes and flake8 commands</vh></v>
+<v t="ekr.20161014034431.55" a="M"><vh>Added tag-children command</vh></v>
+<v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
 <v t="ekr.20160923133117.300"><vh>Removed all static abbrev commands</vh></v>
+</v>
+<v t="ekr.20161014041653.1"><vh>Enhancements</vh>
+<v t="ekr.20161014052138.1"><vh>Added dialog when creating myLeoSettings.leo automatically</vh></v>
+<v t="ekr.20161014034431.83"><vh>#14: auto-justify body text</vh></v>
+<v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
+<v t="ekr.20161014034431.145"><vh>#321: allow section references in imported code</vh></v>
 </v>
 <v t="ekr.20160923163122.1"><vh>Importers</vh>
 <v t="ekr.20160923133117.210"><vh>#032: Added freemind and mindjet imports</vh></v>
@@ -18754,14 +18767,6 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
 </t>
 <t tx="ekr.20160501113304.4">- @data qt-scintilla-styles *only* works in leoSetting.leo, not myLeoSettings.leo.
 </t>
-<t tx="ekr.20160502092850.1">The docs. might need tweaking to mention that while the above describes
-how Leo searches for existing settings, if you attempt to open (through
-the Settings menu) myLeoSettings.leo when it doesn't exist, it's
-automagically created with a copy of @enabled-plugins from
-leoSettings.leo. </t>
-<t tx="ekr.20160921140909.1">g.app.gui.replaceClipboardWith('hi')
-print(g.app.gui.getTextFromClipboard())
-</t>
 <t tx="ekr.20160923133117.104">https://github.com/leo-editor/leo-editor/issues/275
 
 - Improved clone-marked-nodes and move-marked-nodes.
@@ -18888,8 +18893,7 @@ The installer prompts for both the already-installed Leo installation folder (le
 <t tx="ekr.20160923133117.299">This allows the pylint command to work without any sitecustomize.py file.
 </t>
 <t tx="ekr.20160923133117.3"></t>
-<t tx="ekr.20160923133117.300">See unused emacs abbreviation commands.
-</t>
+<t tx="ekr.20160923133117.300"></t>
 <t tx="ekr.20160923133117.302">Nodes marked with cft tag or tag-children tags.
 </t>
 <t tx="ekr.20160923133117.38">https://github.com/leo-editor/leo-editor/issues/272
@@ -18907,7 +18911,7 @@ This appears to be the only way to avoid the following message:
     
     "Data set on unsupported clipboard mode. QMimeData object will be deleted."
 </t>
-<t tx="ekr.20160923133132.1">Leo 5.4-b1   September 30, 2016
+<t tx="ekr.20160923133132.1">Leo 5.4-b1   October 15, 2016
 
 [Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
@@ -18917,16 +18921,16 @@ This appears to be the only way to avoid the following message:
 - The clone-find and tag-all-children commands unify clones and tags.
 - Added pyflakes and flake8 commands.
 - Added importers for freemind, mindjet, json and coffeescript files.
-- Dozens of bug fixes.
+- All known bugs in Leo have been fixed.
 
 **Leo is**:
 
+- A fully-featured IDE, with emacs-like commands.
 - An outliner. Everything in Leo is an outline.
 - A Personal Information Manager.
 - A browser with a memory.
 - A powerful scripting environment.
 - A tool for studying other people's code.
-- A fully-featured IDE, with emacs-like commands.
 - Extensible via a simple plugin architecture.
 - A tool that plays well with  IPython, vim and xemacs.
 - Written in 100% pure Python
@@ -18968,8 +18972,71 @@ just as it is possible to simulate Python in assembly language...
 <t tx="ekr.20160923163139.1"></t>
 <t tx="ekr.20160923163147.1"></t>
 <t tx="ekr.20160923163845.1"></t>
-<t tx="ekr.20161003070416.1">Just like Emacs</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161014034431.114">Fixed a bug in all of Leo's generators that return positions, and added unit tests for the same.
+   
+All of Leo's generator now yield p.copy() instead of p. This makes the generators much more robust.
+   
+It is **amazing** that these bugs did not cause more damage. They will bite whenever a script modifies any position returned by a generator.
+   
+Example 1: Previously, the following failed in mysterious ways.  p.v became None unexpectedly::
+   
+    for p in c.all_positions():
+        for p in p.children():
+            whatever
+   
+Example 2: Previously, this failed badly::
+   
+    list(g.all_positions()]
+   
+In fact, p.v will be None in all items of the list!
+   
+**Important**: the "extra" calls to p.copy() don't matter: In most cases, Python's garbage collector will immediate collect the generated positions.
+
+Anyway, there is no real alternative. Copying positions eliminates the possibility for subtle bugs.</t>
+<t tx="ekr.20161014034431.125"></t>
+<t tx="ekr.20161014034431.145">- Completed #321: allow section references in imported code.
+- Added support for @bool allow_section_references_in_at_auto, default False.
+- The javascript plugin now genertes section references if and only if this setting is True.
+- changed &lt;&lt; handle line at s[i] &gt;&gt; in at.getBody accordingly.
+- Block.undent now handles leading tabs, using c.tab_width.
+- Disabled a unit tests that assumes that section references are not valid in @auto.
+</t>
+<t tx="ekr.20161014034431.151">https://github.com/leo-editor/leo-editor/issues/262</t>
+<t tx="ekr.20161014034431.158">The fix was to catch all exceptions in g.new_cmd_decorator and LeoKeys.callAltXFunction.</t>
+<t tx="ekr.20161014034431.161">https://github.com/leo-editor/leo-editor/issues/313
+
+- efc.update_open_with_node now sets the node and commander dirty if
+  @bool open_with_save_on_update = False
+  
+- Simplied the interfaces to the following by changing d arg by ext arg:
+  efc.create_temp_file, efc.clean_file_name, efc.legacy_file_name
+  It's an important simplification.
+</t>
+<t tx="ekr.20161014034431.28">https://github.com/leo-editor/leo-editor/issues/289
+</t>
+<t tx="ekr.20161014034431.3">https://github.com/leo-editor/leo-editor/issues/304
+
+http://doc.qt.io/qt-5/qquickwebengineprofile.html
+
+The QtWebEngine warnings are given in LeoQtGui.runMainLoop in the call to:
+    
+    sys.exit(self.qtApp.exec_())
+
+</t>
+<t tx="ekr.20161014034431.50"></t>
+<t tx="ekr.20161014034431.55"></t>
+<t tx="ekr.20161014034431.83">https://github.com/leo-editor/leo-editor/issues/14
+
+The changes are to editCommands.selfInsertCommand.</t>
+<t tx="ekr.20161014035206.1"></t>
+<t tx="ekr.20161014041653.1"></t>
+<t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard::
+
+g.app.gui.replaceClipboardWith('hi')
+print(g.app.gui.getTextFromClipboard())
+</t>
+<t tx="ekr.20161014052138.1"></t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

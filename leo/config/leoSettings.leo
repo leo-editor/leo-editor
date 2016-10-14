@@ -100,7 +100,8 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20161014052734.1"><vh>** update What's new</vh></v>
+<v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
@@ -2472,6 +2473,7 @@
 </v>
 <v t="ekr.20111003085631.15488"></v>
 <v t="ekr.20110611092035.16480"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4492,6 +4494,7 @@ False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
 False: Put the cursor at the end of the headline text.</t>
 <t tx="ekr.20061011082224">@language rest
+@wrap
 
 myLeoSettings.leo contains your personal settings.
 
@@ -4501,6 +4504,8 @@ Put myLeoSettigns.leo in your home (~) directory or in the ~/.leo directory.
 
 Distributions of Leo do not contain myLeoSettings.leo; Leo never
 changes your personal myLeoSettings.leo file.
+
+**Note**: If you myLeoSettings.leo from the when it doesn't exist, Leo creates it for you with a copy of @enabled-plugins from leoSettings.leo.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
@@ -11529,6 +11534,7 @@ code {
 }
 
 </t>
+<t tx="ekr.20161014052734.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
