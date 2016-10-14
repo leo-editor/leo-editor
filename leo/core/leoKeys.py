@@ -1256,16 +1256,10 @@ class GetArg(object):
         else:
             tabList = []
         if completion:
-            if 1:
-                # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-                ### ga.reset_tab_cycling()
-                common_prefix, tabList = ga.compute_tab_list(tabList)
-                ga.reset_tab_cycling()
-                ga.show_tab_list(tabList)
-            else:
-                ga.reset_tab_cycling()
-                ga.show_tab_list(tabList)
-            
+            # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+            common_prefix, tabList = ga.compute_tab_list(tabList)
+            ga.show_tab_list(tabList)
+            ga.reset_tab_cycling()
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
@@ -1286,17 +1280,13 @@ class GetArg(object):
                     len(tabList), common_prefix, ga.cycling_prefix))
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
-            if len(tabList) == 1:
-                # g.trace(ga.cycling_prefix,g.callers(2))
-                if ga.do_tab_callback():
-                    return
-                else:
-                    # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-                    # A big simplifcation: always call ga.do_tab_list
-                    ga.do_tab_cycling(common_prefix, tabList)
-        
-            elif tabList:
+            if len(tabList) == 1 and ga.do_tab_callback():
+                return
+            else:
+                # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+                # A big simplifcation: always call ga.do_tab_list
                 ga.do_tab_cycling(common_prefix, tabList)
+
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
     def do_tab_callback(ga):
@@ -1325,73 +1315,35 @@ class GetArg(object):
         if trace:
             g.trace('===== label: %r prefix: %r len(tabList): %s' % (
                 s, ga.cycling_prefix, len(tabList)))
-
-        if 1: ### Attempt to refactor the code.
-        
-            # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-            if ga.cycling_prefix and s.startswith(ga.cycling_prefix):
-                if trace: g.trace('1: CYCLE: %s %r: tabList[0]: %r' % (
-                    ga.cycling_index, s, tabList and tabList[0] or '<none>'))
-                n = ga.cycling_index
-                ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
-                ga.set_label(ga.cycling_tabList[ga.cycling_index])
-                ga.show_tab_list(ga.cycling_tabList)
+        if not common_prefix:
+            # Leave the minibuffer as it is.
+            if trace: g.trace('0: NO COMMON PREFIX')
+            ga.show_tab_list(tabList)
+        # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+        elif (
+            ga.cycling_prefix and s.startswith(ga.cycling_prefix) and
+            sorted(ga.cycling_tabList) == sorted(tabList) # Bug fix: 2016/10/14
+        ):
+            if trace: g.trace('1: CYCLE: %s %r: tabList[0]: %r' % (
+                ga.cycling_index, s, tabList and tabList[0] or '<none>'))
+            n = ga.cycling_index
+            n = ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
+            ga.set_label(ga.cycling_tabList[n])
+            ga.show_tab_list(ga.cycling_tabList)
+        else:
+            # Restart.
+            if trace: g.trace('2: RESTART: %r: tabList[0]: %r' % (
+                s, tabList and tabList[0] or '<none>'))
+            ga.show_tab_list(tabList)
+            ga.cycling_tabList = tabList[:]
+            ga.cycling_prefix = common_prefix
+            ga.set_label(common_prefix)
+            if tabList and common_prefix == tabList[0]:
+                if trace: g.trace('select the first command.')
+                ga.cycling_index = 0
             else:
-                # Restart.
-                if trace: g.trace('2: RESTART: %r: tabList[0]: %r' % (
-                    s, tabList and tabList[0] or '<none>'))
-                ga.show_tab_list(tabList)
-                ga.cycling_tabList = tabList[:]
-                ga.cycling_prefix = common_prefix
-                ga.set_label(common_prefix)
-                if tabList and common_prefix == tabList[0]:
-                    if trace: g.trace('select the first command.')
-                    ga.cycling_index = 0
-                else:
-                    if trace: g.trace('show common prefix.')
-                    ga.cycling_index = -1
-            
-        else: # Complicated, works.
-            if ga.cycling_prefix:
-                # Continue.
-                if s.startswith(ga.cycling_prefix):
-                    # len(s) >= len(ga.cycling_prefix)
-                    # The expected case.
-                    n = ga.cycling_index
-                    ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
-                    if trace: g.trace('cycle', ga.cycling_index)
-                    ga.set_label(ga.cycling_tabList[ga.cycling_index])
-                    ga.show_tab_list(ga.cycling_tabList)
-                else:
-                    if trace: g.trace('prefix mismatch')
-                    if trace: g.trace('setting prefix to', ga.cycling_prefix)
-                    ga.cycling_index = -1
-                    ga.set_label(common_prefix)
-                    ga.show_tab_list(tabList)
-            elif len(common_prefix) == len(s):
-                # Start cycling.
-                if trace: g.trace('starting tab cycling: prefix: %r s: %r' % (common_prefix, s))
-                ga.cycling_prefix = s
-                if s == tabList[0] and len(tabList) > 1:
-                    if trace: g.trace('select the first command.')
-                    ga.cycling_index = 0
-                    label = tabList[0]
-                else:
-                    if trace: g.trace('set label to the common label.')
-                    ga.cycling_index = -1
-                    ga.show_tab_list(tabList)
-                    label = common_prefix
-                ga.set_label(label)
-                ga.cycling_tabList = tabList[:]
-                ga.show_tab_list(ga.cycling_tabList)
-            else:
-                # Never cycle if the common prefix does not match the label.
-                if trace: g.trace('recompute prefix 2, extend the label.')
-                ga.show_tab_list(tabList)
-                ga.cycling_tabList = tabList[:]
-                ga.cycling_index = 0 ###
-                if len(common_prefix) > len(s):
-                    ga.set_label(common_prefix)
+                if trace: g.trace('show common prefix.')
+                ga.cycling_index = -1
     #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(ga):
         '''Reset all tab cycling ivars.'''
