@@ -56,16 +56,16 @@
 <v t="ekr.20111006212449.11861"><vh>munge</vh></v>
 <v t="ekr.20111006212449.11862"><vh>run</vh></v>
 </v>
-<v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
-<v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
 <v t="ekr.20140918165611.38050"><vh>@button color-wheel</vh></v>
 <v t="tbrown.20140609102412.32428"><vh>@button pick-color-name</vh></v>
+<v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
+<v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
+<v t="ekr.20161003155658.1"><vh>@button test-http</vh></v>
 </v>
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20161003155658.1"><vh>@button test-http</vh></v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes</vh>
@@ -100,8 +100,7 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20161014052734.1"><vh>** update What's new</vh></v>
-<v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh>
+<v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
@@ -914,6 +913,9 @@
 <v t="ekr.20140721165014.19312"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20161014152934.1"><vh>@keys MacOS keys</vh>
+<v t="ekr.20161014152921.1"><vh>@shortcuts</vh></v>
 </v>
 <v t="ekr.20140721165014.19148"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20140721165014.19149"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -2470,9 +2472,6 @@
 <v t="edward.20150613090031.114"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20111003085631.15488"></v>
-<v t="ekr.20110611092035.16480"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -11373,7 +11372,20 @@ code {
     font-family: "Monospace";
     font-size: 150%; /* 20pt; */
 }</t>
-<t tx="ekr.20161003155658.1"># g.cls()
+<t tx="ekr.20161003155658.1">'''
+Web development involves endless reloading of pages.  It gets old really fast.
+
+This @button allows me to fiddle with the .css and javascript for mod_http
+itself without having to reload Leo. Oh so useful. I can just change the
+settings in myLeoSettings and hit Ctrl-p to re-execute the button. 
+
+This trick doesn't work when changing mod_http.py itself, but most of
+the work involved the css and javascript.
+
+This pattern could be useful to other web developers.
+'''
+
+# g.cls()
 if c.isChanged():
     c.save()
 # *Always* use the most current settings.
@@ -11534,7 +11546,312 @@ code {
 }
 
 </t>
-<t tx="ekr.20161014052734.1"></t>
+<t tx="ekr.20161014152921.1"># You can define keyboard shortcuts here of the form:
+#
+#    some-command Shift-F5
+
+# Now that we know what commands are single-line editing commands,
+# Only &lt;return&gt; and arrow keys need per-pane bindings.
+
+# These all cause problems on Ubuntu...
+
+# do-nothing    = Ctrl-PageUp  # 20130210 - TNB - defined for tab-flipping,
+# do-nothing    = Ctrl-PageDn  # working in Xfce at least
+
+end-edit-headline           ! tree = Return # Escape is also possible.
+# end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
+insert-newline              ! body = Return
+insert-newline              ! text = Insert
+
+back-char                   ! text = LtArrow
+forward-char                ! text = RtArrow
+next-line                   ! text = DnArrow
+previous-line               ! text = UpArrow
+
+back-char-extend-selection      ! text = Shift-LtArrow
+forward-char-extend-selection   ! text = Shift-RtArrow
+next-line-extend-selection      ! text = Shift-DnArrow
+previous-line-extend-selection  ! text = Shift-UpArrow
+
+contract-or-go-left         ! tree = LtArrow
+expand-and-go-right         ! tree = RtArrow
+goto-next-visible           ! tree = DnArrow
+goto-prev-visible           ! tree = UpArrow
+move-outline-down           ! tree = Meta-DnArrow
+move-outline-left           ! tree = Meta-LtArrow
+move-outline-right          ! tree = Meta-RtArrow
+move-outline-up             ! tree = Meta-UpArrow
+
+# These cause problems with editing headlines.
+# goto-first-visible-node     ! tree= Home
+# goto-last-visible-node      ! tree= End
+
+contract-or-go-left         = None
+expand-and-go-right         = None
+goto-next-visible           = None
+goto-prev-visible           = None
+move-outline-down           = None
+move-outline-left           = None
+move-outline-right          = None
+move-outline-up             = None
+
+# do-nothing                  ! tree = Meta-DnArrow
+# do-nothing                  ! tree = Meta-UpArrow
+move-lines-up               ! body = Meta-UpArrow
+move-lines-down             ! body = Meta-DnArrow 
+  
+goto-first-visible-node     = Alt-Home
+# goto-last-visible-node    = Alt-End
+goto-last-sibling           = Alt-End
+
+back-page                       ! text = PageUp
+back-page-extend-selection      ! text = Shift-PageUp
+forward-page                    ! text = PageDn
+forward-page-extend-selection   ! text = Shift-PageDn
+
+scroll-down-half-page   ! tree = Shift-PageDn
+scroll-down-page        ! tree = PageDn
+scroll-up-half-page     ! tree = Shift-PageUp
+scroll-up-page          ! tree = PageUp         
+
+cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
+# cycle-all-focus                   = Ctrl-Shift-tab
+
+back-word                            ! text = Alt-LtArrow
+back-word-extend-selection           ! text = Alt-Shift-LtArrow
+beginning-of-buffer                  ! text = Ctrl-UpArrow
+beginning-of-buffer-extend-selection        = Ctrl-Shift-UpArrow
+end-of-buffer                               = Ctrl-DnArrow
+end-of-buffer-extend-selection              = Ctrl-Shift-DnArrow
+
+beginning-of-line                   = Ctrl-LtArrow
+back-to-home                        = Home
+beginning-of-line-extend-selection  = Ctrl-Shift-LtArrow
+end-of-line                         = Ctrl-RtArrow
+end-of-line-extend-selection        = Ctrl-Shift-RtArrow
+
+###
+
+forward-paragraph                   = Meta-Ctrl-DnArrow
+forward-paragraph-extend-selection  = Meta-Ctrl-Shift-DnArrow
+forward-sentence                    = Meta-Ctrl-LtArrow
+forward-sentence-extend-selection   = Meta-Ctrl-Shift-LtArrow
+forward-word                        = Alt-RtArrow
+forward-word-extend-selection       = Alt-Shift-RtArrow
+goto-global-line                    = Ctrl-j
+match-brackets                      = Ctrl-b
+move-past-close                     = None
+move-past-close-extend-selection    = None
+select-all                          = Ctrl-a
+
+###
+
+close-window                = Ctrl-w
+#exit-leo                    = Ctrl-q
+#new                         = Ctrl-n
+#open-outline                = Ctrl-o
+#save-file                   = Ctrl-s
+write-at-file-nodes         = None
+write-dirty-at-file-nodes   = None
+
+###
+
+# Quick finds
+backward-find-character                     = None
+backward-find-character-extend-selection    = None
+find-character                              = None
+find-character-extend-selection             = None
+
+# To start finds and changes...
+# start-search                        = Ctrl-f
+set-replace-string                  = Ctrl-Alt-e
+#find-tab-hide                       = None
+#find-tab-open                       = None
+
+#clone-find-all                      = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+#isearch-forward-regexp              = None
+# query-replace                       = None
+# query-replace-regex                 = None
+search-backward                     = None
+search-forward                      = None
+#word-search-backward                = None 
+#word-search-forward                 = None
+
+# To coninue finds and changes...
+find-next                           = Ctrl-g
+find-all                            = None
+find-prev                           = Ctrl-Shift-g
+replace                              = Ctrl-=
+replace-all                         = None  # Not recommended to bind this to a shortcut.
+replace-then-find                   = Ctrl-Alt-j
+
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+
+###
+
+contract-pane       = None
+expand-pane         = None
+focus-to-body       = Meta-d
+focus-to-tree       = Meta-t
+toggle-active-pane  = Ctrl-t
+keyboard-quit       = Meta-g
+
+tab-cycle-previous  = Ctrl-Prior
+tab-cycle-next      = Ctrl-Next
+# tab-cycle-next      = Ctrl-Tab
+
+# keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
+# Possible alternatives.
+# focus-to-tree     = Ctrl-T
+
+###
+
+start-ipython           = None
+push-to-ipython         = None
+
+###
+
+# menu-shortcut = Alt-C # Cmds menu.
+# menu-shortcut = Alt-E # Edit menu.
+# menu-shortcut = Alt-F # File menu.
+# menu-shortcut = Alt-H # Help menu.
+# menu-shortcut = Alt-O # Outline menu.
+# menu-shortcut = Alt-P # Plugins menu.
+# menu-shortcut = Alt-S # Search and Settings menus.
+# menu-shortcut = Alt-W # Window menu.
+
+###
+do-nothing              = Meta-o
+full-command            = Meta-Shift-x
+negative-argument       = None      # Alt-minus conflicts with contract-all.
+repeat-complex-command  = None # Ctrl-P
+universal-argument      = Meta-u     # Usually Ctrl-u, conflicts with move-outline-up.
+
+###
+
+auto-complete-force         = Meta-space
+auto-complete               = period
+debug                       = None
+execute-script              = Meta-B
+redo                        = Shift-Ctrl-Z
+
+dabbrev-completion  = Meta-Ctrl-slash
+dabbrev-expands     = Meta-slash
+macro-call-last     = Meta-Ctrl-M
+
+run-all-unit-tests-externally       = None
+run-all-unit-tests-locally          = None
+run-marked-unit-tests-externally    = None
+run-marked-unit-tests-locally       = None
+run-selected-unit-tests-externally  = None
+run-selected-unit-tests-locally     = None
+
+show-calltips               = parenleft
+show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
+sort-siblings               = Meta-Shift-A
+toggle-autocompleter        = Meta-1
+toggle-calltips             = Meta-2
+toggle-extend-mode          = Meta-3
+undo                        = Ctrl-Z
+
+###
+
+clone-node                  = Meta-'
+chapter-clone-node-to       = None
+chapter-copy-node-to        = None
+chapter-create              = None
+chapter-move-node-to        = None
+chapter-remove              = None
+chapter-select              = None
+contract-node               = None
+copy-node                   = Shift-Ctrl-c
+cut-node                    = Shift-Ctrl-x
+contract-all                = Alt-Meta--
+edit-headline               = Meta-h
+delete-node                 !tree = Delete
+delete-node                 !tree = BackSpace
+#demote                      = Ctrl-}
+#demote                      = Ctrl-]
+demote                      = None
+# demote                      = Tab
+expand-next-level           = None
+expand-node                 = Meta-]
+extract                     = Shift-Ctrl-D
+extract-names               = Shift-Ctrl-N
+# extract-python-method       = None
+# extract-section             = Shift-Ctrl-S
+goto-next-clone             = Alt-N
+insert-child                = Meta-Insert
+insert-node                 = Meta-I
+insert-node                 !tree = Insert
+insert-node                 = Shift-Insert
+mark                        = Meta-M
+move-outline-down           = Ctrl-D
+move-outline-left           = Ctrl-L
+move-outline-right          = Ctrl-R
+move-outline-up             = Ctrl-U
+paste-node                  = Shift-Ctrl-V
+# promote                     = Ctrl-{
+# promote                     = Ctrl-[
+promote                     = None
+# promote                     = Shift-Tab
+
+###
+
+add-comments                        = Ctrl-#
+backward-delete-char                !text = BackSpace
+backward-delete-char                = Shift-BackSpace
+backward-delete-word                = Ctrl-BackSpace
+backward-kill-word                  = Alt-BackSpace
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-text                            = Ctrl-x
+delete-char                         = Shift-Delete
+delete-char                         !text = Delete
+delete-comments                     = Ctrl-Shift-#
+# delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
+delete-word                         = Ctrl-Delete
+delete-spaces                       = None
+kill-line                           = Meta-k
+kill-to-end-of-line                 = None
+
+newline-and-indent                  = None # Ctrl-j # same as tab.
+# newline-and-indent                  = Tab
+indent-region                       = None
+#indent-region                       = Tab
+indent-rigidly                      = Tab
+
+paste-text                          = Ctrl-v
+reformat-paragraph                  = Shift-Meta-p
+split-line                          = None
+unformat-paragraph                  = Shift-Meta-u
+unindent-region                     = Shift-tab
+yank                                = Meta-Y
+yank-pop                            = None # Alt-Y
+zap-to-character                    = None # Alt-z
+
+## KW added
+hoist                               = Ctrl-Shift-h
+de-hoist                            = Ctrl-Alt-Shift-h
+</t>
+<t tx="ekr.20161014152934.1">https://groups.google.com/d/msg/leo-editor/uUZQaO9HYQQ/b9gocdokAgAJ
+
+The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
+
+https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
