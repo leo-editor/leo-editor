@@ -1271,7 +1271,7 @@ class GetArg(object):
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
             if trace: g.trace('len(ga.tabList)', len(ga.tabList))
-            command = ga.get_label()
+            # command = ga.get_label()
             common_prefix, tabList = ga.compute_tab_list(tabList)
             if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
                 ga.cycling_prefix = common_prefix
