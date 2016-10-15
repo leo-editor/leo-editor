@@ -11861,11 +11861,10 @@ for path,expected in table:
     assert result == expected
 #@+node:ekr.20141223125432.11: *4* @test g.toUnicode(QString)
 if not g.isPython3:
-      import leo.core.leoQt as leoQt
-      QString = leoQt.QtCore.QString
-      s = g.toUnicode(QString('abc'))
-      assert s == 'abc',repr(s)
-
+    import leo.core.leoQt as leoQt
+    QString = leoQt.QString
+    s = g.toUnicode(QString('abc'))
+    assert s == 'abc',repr(s)
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
 
