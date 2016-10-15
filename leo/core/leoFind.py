@@ -780,7 +780,7 @@ class LeoFind(object):
     @cmd('cfa')
     def minibufferCloneFindAll(self, event=None, preloaded=None):
         '''
-        clone-find-all, aka find-clone-all and cfa.
+        clone-find-all ( aka find-clone-all and cfa).
 
         Create an organizer node whose descendants contain clones of all nodes
         matching the search string, except @nosearch trees.
@@ -809,7 +809,7 @@ class LeoFind(object):
     @cmd('cff')
     def minibufferCloneFindAllFlattened(self, event=None, preloaded=None):
         '''
-        clone-find-all-flattened, aka find-clone-all-flattened, cff.
+        clone-find-all-flattened (aka find-clone-all-flattened and cff).
 
         Create an organizer node whose direct children are clones of all nodes
         matching the search string, except @nosearch trees.
@@ -839,10 +839,10 @@ class LeoFind(object):
     @cmd('cft')
     def minibufferCloneFindTag(self, event=None):
         '''
-        clone-find-all, aka find-clone-all and cfa.
+        clone-find-tag (aka find-clone-tag and cft).
 
         Create an organizer node whose descendants contain clones of all nodes
-        matching the search string, except @nosearch trees.
+        matching the given tag, except @nosearch trees.
 
          The list is *always* flattened: every cloned node appears as a direct child
         of the organizer node, even if the clone also is a descendant of
@@ -878,7 +878,7 @@ class LeoFind(object):
     #@+node:ekr.20160920164418.2: *4* find.minibufferTagChildren & helper
     @cmd('tag-children')
     def minibufferTagChildren(self, event=None):
-        '''tag-children: add a tag to all children of c.p.'''
+        '''tag-children: prompt for a tag and add it to all children of c.p.'''
         c = self.c; k = self.k; tag = 'tag-children'
         state = k.getState(tag)
         if state == 0:
