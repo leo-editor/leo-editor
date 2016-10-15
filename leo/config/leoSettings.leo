@@ -2496,12 +2496,12 @@ unique number to insure unique temporary filenames.
 </t>
 <t tx="TL.20080702085131.5">Only supported with the mod_tempfname.py plugin.
 
-True: The open-with command will use the file extension of the node's
+True: The open-with commands will use the file extension of the node's
 derived file for the extension of the temporary file passed to the external
 editor. This can be useful for external editors that are providing text
 highlighting or other file type specific capabilities.
 
-False or no derived file exists for that node: The open-with command will
+False or no derived file exists for that node: The open-with commands will
 use the file extension of the node's default language (set by the @language
 command) or '.txt' if none exists.</t>
 <t tx="TL.20090225102340.33"></t>
@@ -3610,13 +3610,13 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20051126062243.1"></t>
 <t tx="ekr.20051126062525"></t>
 <t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
-<t tx="ekr.20060112103537.17">'''This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.'''
-
+<t tx="ekr.20060112103537.17">'''
+This script reports commands that exist in some but not all key- binding
+sets. setNames is a list of the roots of all such sets.
+'''
+g.cls()
 import leo.core.leoConfig as leoConfig
 import leo.core.leoTest as leoTest
-
-# u = leoTest.testUtils(c)
 parser = leoConfig.SettingsTreeParser(c)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
@@ -3630,13 +3630,10 @@ optionalCommandNames = [
     # The viewrendered plugin.
     'vr-toggle',
 ]
-
 setNames = []
 setsDict = {} # keys are set names, values are dicts of command names.
 shortcutsDict = {}
-
 @others
-
 main()
 </t>
 <t tx="ekr.20060112104119">def defineSetNames():
@@ -4105,7 +4102,6 @@ toggle-find-in-headline-option
 toggle-find-mark-changes-option
 toggle-find-mark-finds-option
 toggle-find-regex-option
-# toggle-find-reverse-option
 toggle-find-word-option
 toggle-find-wrap-around-option
 word-search-backward
@@ -4199,7 +4195,6 @@ toggle-find-in-headline-option      = Alt-Ctrl-h
 toggle-find-mark-changes-option     = Alt-Ctrl-c
 toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
-# toggle-find-reverse-option          = Alt-Ctrl-r
 toggle-find-word-option             = Alt-Ctrl-w
 toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
@@ -4348,11 +4343,6 @@ tab-cycle-next      = Ctrl-Tab
 # keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
 # focus-to-tree     = Ctrl-T</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
-chapter-clone-node-to       = None
-chapter-copy-node-to        = None
-chapter-create              = None
-chapter-move-node-to        = None
-chapter-remove              = None
 chapter-select              = None
 contract-node               = None
 copy-node                   = Shift-Ctrl-c
@@ -7140,12 +7130,9 @@ insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20140721165014.19148"></t>
 <t tx="ekr.20140721165014.19149">abbrev-list                         = None
-abbrev-read                         = None
-abbrev-write                        = None
 abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
-abbrev-add-global                   = None
 abbrev-kill-all                     = None
 advertised-undo                     = Ctrl-underscore
 auto-complete                       = None
@@ -7330,7 +7317,6 @@ insert-node                         = Ctrl-I
 insert-node                         = Insert
 insert-node                         = Shift-Insert
 insert-parentheses                  = Alt-parenleft
-abbrev-inverse-add-global           = None
 isearch-backward                    = Ctrl-R
 isearch-backward-regexp             = Alt-Ctrl-r
 isearch-forward                     = Ctrl-S
@@ -7383,7 +7369,6 @@ open-online-home                = None
 open-outline                    = None         # Ctrl-O conflicts with insert-newline
 open-python-window              = None         # Removed Alt-P: not useful enough.
 spell-tab-open                  = None
-open-with                       = None
 outline-to-cweb                 = None
 outline-to-noweb                = None
 paste-node                      = Shift-Ctrl-V
@@ -7484,7 +7469,6 @@ toggle-find-in-headline-option      = None
 toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
-# toggle-find-reverse-option          = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 toggle-split-direction          = None
@@ -7542,8 +7526,6 @@ warnings about duplicate bindings.
 </t>
 <t tx="ekr.20140721165014.19155">abbrev-kill-all                     = None
 abbrev-list                         = None
-abbrev-read                         = None
-abbrev-write                        = None
 abort-edit-headline                 = None
 about-leo                           = None
 activate-cmds-menu                  = None
@@ -7555,7 +7537,6 @@ activate-plugins-menu               = None
 activate-window-menu                = None
 add-comments                        = None
 add-editor                          = None
-abbrev-add-global                   = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
 advertised-undo                     = None
@@ -7594,11 +7575,6 @@ capitalize-word                     = None
 cascade-windows                     = None
 center-line                         = None
 center-region                       = None
-chapter-clone-node-to               = None
-chapter-copy-node-to                = None
-chapter-create                      = None
-chapter-move-node-to                = None
-chapter-remove                      = None
 chapter-select                      = None
 # check-all-python-code             = None
 check-outline                       = None
@@ -7824,7 +7800,6 @@ insert-newline                      = None
 insert-node                         = None
 insert-parentheses                  = None
 # insert-to-buffer                  = None
-abbrev-inverse-add-global           = None
 isearch-backward                    = None
 isearch-backward-regexp             = None
 isearch-forward                     = None
@@ -7888,7 +7863,6 @@ open-online-home                    = None
 open-outline                        = None
 open-python-window                  = None
 spell-tab-open                      = None
-open-with                           = None
 outline-to-cweb                     = None
 outline-to-noweb                    = None
 paste-node                          = None
@@ -8024,7 +7998,6 @@ toggle-find-in-headline-option      = None
 toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
-# toggle-find-reverse-option          = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 toggle-split-direction              = None
@@ -11697,7 +11670,6 @@ toggle-find-in-headline-option      = None
 toggle-find-mark-changes-option     = None
 toggle-find-mark-finds-option       = None
 toggle-find-regex-option            = None
-toggle-find-reverse-option          = None
 toggle-find-word-option             = None
 toggle-find-wrap-around-option      = None
 
@@ -11771,11 +11743,6 @@ undo                        = Ctrl-Z
 ###
 
 clone-node                  = Meta-'
-chapter-clone-node-to       = None
-chapter-copy-node-to        = None
-chapter-create              = None
-chapter-move-node-to        = None
-chapter-remove              = None
 chapter-select              = None
 contract-node               = None
 copy-node                   = Shift-Ctrl-c
