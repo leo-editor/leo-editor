@@ -1,6 +1,6 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100119205347.6015: * @file ../doc/leoToDo.txt
-.. @@language rest # override the default .txt coloring.
+.. @@language rest
 .. @@wrap
 .. @+all
 .. @+node:ekr.20160918102738.1: ** To do: 5.5

@@ -193,7 +193,13 @@
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
-<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
+<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh>
+<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
+<v t="ekr.20161015091353.2"><vh>Files</vh></v>
+<v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
+<v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
+<v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
+</v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
@@ -637,103 +643,17 @@ import time</t>
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
 
-Pre-testing:
-- Make sure no distributed .leo file contains xml-stylesheet elements.
-- Make sure Leo looks good without myLeoSettings.leo.
-- Run the "check-bindings" button in leoSettings.leo.
-- Run all unit tests with *both* Python 2 and 3.
-- Run pylint -a.
-
-Update release notes and web documentation:
-- Make sure copyright dates are correct.
-- Update version numbers in html/conf.py
-- Update the release notes.
-- Remove @language rest where possible in new notes.
-- Create new "what's new" section.
-- Copy release notes to leoDist.leo.
-- Update version number and modification date on Leo's home page.
-  (The sphinx date is updated automatically.)
-- Regenerate all .html files.
-- Copy files to web, including leo/doc/html/index.html
-
-LeoReleaseNotes.leo:
-- Update release notes from LeoDocs.leo
-
-LeoDocs.leo:
-- Remove top-level clones.
-- Spell check entire file.
-- Select the readme node.
-
-leoVersion.py:
-- Update version constant.
-
-LeoPyRef.leo and LeoPluginsRef.leo:
-- Regenerate from corresponding local file.
-- Remove top-level clones.
-
-Post-testing:
-- Run all unit tests.
-
-LeoDist.leo:
-- Make sure copyright dates are correct.
-- Update version numbers: search leoDist.leo for ##version.
-- Update readme.txt.
-- Check readme.txt spelling.
-- Check 'PKG-INFO.TXT'
-
-Run pyinstaller:
-- Delete leo-editor/dist and leo-editor/build folders first.
-- Run pyinstaller2 launchLeo-unified.spec.
-- Test it, then rerun it (so .pyo files are not part of the package)
-- Compress the folder:
-    - Windows: Leo_&lt;version&gt;_Win.zip.
-    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
-
-Run make-leo.
-- Commit all files before running make-leo.
-- Run make-leo button in leoDist.leo.
-- Commit any changed files.
-
-Create the executable installer:
-- Double-click leo.nsi. (Run with makeNSIS.exe)
-
-Test files in installed folder:
-- Run all unit tests in the installed folder, with the installed Leo.
-- Make sure the following open without errors:
-    - leoPlugins.leo
-    - leoPy.leo
-    - LeoDocs.leo
-
-Create a git tag **last**:
-- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
-    - Do *not* use -f option!
-
-Scan all folders &amp; files before uploading.
-
-Create Release on SourceForge: http://sourceforge.net/projects/leo/
-
-Announcements
-- Update version number on Leo's wikipedia site:
-  http://en.wikipedia.org/wiki/Leo_%28editor%29
-  - Edit with the 'Edit this page' *tab* (not a link)
-  - Update version number on web site.
-- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
-   This must be done *soon* after the release's actual commit.
-- Announce to SourceForge:  http://sourceforge.net/projects/leo/
-   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-   **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
-- Announce to leo-editor.
-   **Paste source-forge announcement**.
-- Announce to Python-announce-list using email:
-   mailto:python-announce-list@python.org
-   **Paste source-forge or leo-editor announcement**.
-  - Check it by visiting the archive:
-  https://mail.python.org/pipermail/python-announce-list/
-- Register Leo at http://www.python.org/pypi?:action=submit_form
-- My blog: http://edreamleo.blogspot.com/
-  **Paste source-forge or leo-editor announcement**.
-  **To get HTML, just use html tab**.
-- Twitter (point to my blog)
+- Pre-testing
+- Files
+- Web docs
+- Post-testing
+    - Run all unit tests.
+    - Run pyflakes
+    - Run pylint -a
+- Create distribution
+- Scan all folders &amp; files before uploading.
+- Create Release on SourceForge: http://sourceforge.net/projects/leo/
+- Announcements
 </t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
 <t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
@@ -2837,6 +2757,110 @@ it is possible to simulate Python in assembly language...
 - Downinstall setuptools:
     - Erase setuptools stuff from Lib/sitecustomize.
     - pip2/3 install setuptools==19.2
+</t>
+<t tx="ekr.20161015091350.1">- Make sure no distributed .leo file contains xml-stylesheet elements.
+    leo/config:
+        - exampleSettings.leo:
+        - leoSettings.leo
+    leo/core/leoPyRef.leo
+    leo/dist/leoDist.leo
+    leo/docs:
+        - LeoReleaseNotes.leo
+        - cheatSheet.leo
+        - default_workbook.leo
+        - leoDocs.leo
+        - leoSlideShows.leo
+        - quickstart.leo
+    leo/external/leo2html.leo
+    leo/plugins:
+        - leoGuiPluginsRef.leo
+        - leoPluginsRef.leo
+    leo/scripts/scripts.leo
+    leo/test/test.leo
+- Make sure Leo looks good without myLeoSettings.leo.
+- Run the "check-bindings" button in leoSettings.leo.
+- Run all unit tests with *both* Python 2 and 3.
+- Run pylint -a.</t>
+<t tx="ekr.20161015091353.1">- Update version number and modification date on Leo's home page.
+  (The sphinx date is updated automatically.)
+- Regenerate all .html files.
+- Copy files to web, including leo/doc/html/index.html</t>
+<t tx="ekr.20161015091353.2">LeoDocs.leo:
+- Make sure copyright dates are correct.
+- Update version numbers in html/conf.py
+- Update the release notes.
+- Remove @language rest where possible in new notes.
+- Create new "what's new" section.
+- Remove top-level clones.
+- Spell check entire file.
+- Select the readme node.
+
+LeoDist.leo:
+- Copy release notes to leoDist.leo.
+- Make sure copyright dates are correct.
+- Update version numbers: search leoDist.leo for ##version.
+- Update readme.txt.
+- Check readme.txt spelling.
+- Check 'PKG-INFO.TXT'
+
+leoVersion.py:
+- Update version constant.
+
+LeoPyRef.leo and LeoPluginsRef.leo:
+- Regenerate from corresponding local file.
+- Remove top-level clones.
+
+LeoReleaseNotes.leo:
+- Update release notes from LeoDocs.leo
+</t>
+<t tx="ekr.20161015091353.3">- Update version number on Leo's wikipedia site:
+  http://en.wikipedia.org/wiki/Leo_%28editor%29
+  - Edit with the 'Edit this page' *tab* (not a link)
+  - Update version number on web site.
+- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+   This must be done *soon* after the release's actual commit.
+- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+   **Markdown accepted, so paste release notes in LeoDocs.leo.**.
+   **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
+- Announce to leo-editor.
+   **Paste source-forge announcement**.
+- Announce to Python-announce-list using email:
+   mailto:python-announce-list@python.org
+   **Paste source-forge or leo-editor announcement**.
+  - Check it by visiting the archive:
+  https://mail.python.org/pipermail/python-announce-list/
+- Register Leo at http://www.python.org/pypi?:action=submit_form
+- My blog: http://edreamleo.blogspot.com/
+  **Paste source-forge or leo-editor announcement**.
+  **To get HTML, just use html tab**.
+- Twitter (point to my blog)
+</t>
+<t tx="ekr.20161015092224.1">Run pyinstaller:
+- Delete leo-editor/dist and leo-editor/build folders first.
+- Run pyinstaller2 launchLeo-unified.spec.
+- Test it, then rerun it (so .pyo files are not part of the package)
+- Compress the folder:
+    - Windows: Leo_&lt;version&gt;_Win.zip.
+    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
+
+Run make-leo.
+- Commit all files before running make-leo.
+- Run make-leo button in leoDist.leo.
+- Commit any changed files.
+
+Create the executable installer:
+- Double-click leo.nsi. (Run with makeNSIS.exe)
+
+Test files in installed folder:
+- Run all unit tests in the installed folder, with the installed Leo.
+- Make sure the following open without errors:
+    - leoPlugins.leo
+    - leoPy.leo
+    - LeoDocs.leo
+
+Create a git tag **last**:
+- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
+    - Do *not* use -f option!
 </t>
 </tnodes>
 </leo_file>
