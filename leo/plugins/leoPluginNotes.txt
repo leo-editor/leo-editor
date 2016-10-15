@@ -214,6 +214,179 @@ def write_path(self, node, f):
         f.write("<h2>")
         f.write(escape(result[-1]))
         f.write("</h2>\n")
+#@+node:ekr.20161014155650.1: ** Structured vr docstring
+# Alas, this does not work because comment delimiters are python delims, not rST delims.
+#@+node:ekr.20161014155647.1: *3* << vr docstring >>
+@language rest
+@wrap
+
+Creates a window for *live* rendering of reSTructuredText, markdown text,
+images, movies, sounds, rst, html, etc.
+
+@others
+#@+node:ekr.20161014155647.2: *4* vr docstring: Dependencies 
+Dependencies
+============
+
+This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
+so installing docutils is highly recommended when using this plugin.
+
+This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+so installing markdown is highly recommended when using this plugin.
+#@+node:ekr.20161014155647.3: *4* vr docstring: Commands
+Commands
+========
+
+viewrendered.py creates the following (``Alt-X``) commands:
+
+``viewrendered (abbreviated vr)``
+    Opens a new rendering window.
+
+    By default, the rendering pane renders body text as reStructuredText,
+    with all Leo directives removed.
+    However, if the body text starts with ``<`` (after removing directives),
+    the body text is rendered as html.
+
+    **Important**: The default rendering just described does not apply to nodes
+    whose headlines begin with @image, @html, @movie, @networkx, @svg and @url.
+    See the section called **Special Renderings** below.
+
+    Rendering sets the process current directory (os.chdir()) to the path
+    to the node being rendered, to allow relative paths to work in ``.. image::`` directives.
+
+.. ``viewrendered-big``
+..    as above, but zoomed in, useful for presentations
+.. ``viewrendered-html``
+..    displays the html source generated from reStructuredText, useful for
+..    debugging
+
+``vr-hide``
+    Makes the rendering pane invisible, but does not destroy it.
+
+``vr-lock`` and ``vr-unlock``
+    Locks and unlocks the rendering pane.
+    When unlocked (the initial state), the rendering pane renders the contents
+    of the presently selected node.
+    When locked, the rendering pane does not change when other nodes are selected.
+    This is useful for playing movies in the rendering pane.
+
+``vr-pause-play-movie``
+    This command has effect only if the rendering pane is presently showing a movie.
+    It pauses the movie if playing, or resumes the movie if paused.
+
+``vr-show``
+    Makes the rendering pane visible.
+
+``vr-toggle``
+    Shows the rendering pane if invisible, otherwise hides it.
+
+``vr-update``
+    Forces an update of the rendering pane.
+    This is especially useful for @graphics-script nodes:
+    such nodes are update automatically only when selected,
+    not when the body text changes.
+#@+node:ekr.20161014155647.4: *4* vr docstring: Rendering reStructuredText
+Rendering reStructuredText
+==========================
+
+For example, both::
+
+    Heading
+    -------
+
+    `This` is **really** a line of text.
+
+and::
+
+    <h1>Heading<h1>
+
+    <tt>This</tt> is <b>really</b> a line of text.
+
+will look something like:
+
+    **Heading**
+
+    `This` is **really** a line of text.
+
+**Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
+#@+node:ekr.20161014155647.5: *4* vr docstring: Rendering markdown
+Rendering markdown
+==================
+
+Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
+for more information on markdown.
+
+Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
+specified by putting it in a ``@md`` node.
+#@+node:ekr.20161014155647.6: *4* vr docstring: Special Renderings
+Special Renderings
+===================
+
+As stated above, the rendering pane renders body text as reStructuredText
+by default, with all Leo directives removed. However, if the body text
+starts with ``<`` (after removing directives), the body text is rendered as
+html.
+
+This plugin renders @md, @image, @html, @movie, @networkx and @svg nodes as follows:
+
+**Note**: For @image, @movie and @svg nodes, either the headline or the first line of body text may
+contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
+
+- ``@md`` renderes the body text as markdown, as described above.
+
+- ``@graphics-script`` executes the script in the body text in a context containing
+  two predefined variables:
+
+    - gs is the QGraphicsScene for the rendering pane.
+    - gv is the QGraphicsView for the rendering pane.
+
+  Using these variables, the script in the body text may create graphics to the rendering pane.
+
+- ``@image`` renders the file as an image.
+
+
+- ``@html`` renders the body text as html.
+
+
+- ``@movie`` plays the file as a movie.  @movie also works for music files.
+
+- ``@networkx`` is non-functional at present.  It is intended to
+  render the body text as a networkx graph.
+  See http://networkx.lanl.gov/
+
+- ``@svg`` renders the file as a (possibly animated!) svg (Scalable Vector Image).
+  See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
+  **Note**: if the first character of the body text is ``<`` after removing Leo directives,
+  the contents of body pane is taken to be an svg image.
+#@+node:ekr.20161014155647.7: *4* vr docstring: Settings
+Settings
+========
+
+- ``@color rendering-pane-background-color = white``
+  The background color the rendering pane when rendering text.
+
+- ``@bool view-rendered-auto-create = False``
+  When True, show the rendering pane when Leo opens an outline.
+
+- ``@bool view-rendered-auto-hide = False``
+  When True, hide the rendering pane for text-only renderings.
+
+- ``@string view-rendered-default-kind = rst``
+  The default kind of rendering.  One of (big,rst,md,html)
+
+- ``@string view-rendered-md-extensions = extra``
+  A comma-delineated list of markdown extensions to use.
+  Suitable extensions can be seen here:
+  http://pythonhosted.org/Markdown/extensions/index.html
+#@+node:ekr.20161014155647.8: *4* vr docstring: Acknowledgments
+Acknowledgments
+================
+
+Terry Brown created this initial version of this plugin, and the free_layout and NestedSplitter plugins used by viewrendered.
+
+EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
+
+Jacob Peck added markdown support.
 #@-all
 #@@killbeautify
 # This file contains unused plugins and code

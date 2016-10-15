@@ -18525,6 +18525,14 @@ def run(self, p=None):
         self.check_all(paths)
     g.es_print('flake8: %s file%s in %s' % (
         len(paths), g.plural(paths), g.timeSince(t1)))
+.. @+node:ekr.20161006162035.1: ** cff regex pattern to find section references
+# This works
+<<(\s*)(\w+)(\s+)(\w+)(.*)>>
+
+# These don't work
+<<(\s*)(?!(import|docstring|includes))(\w+)(\s*)>>
+<< xyz >>
+<< import >>
 .. @-all
 .. @@nosearch
 .. @-leo

@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1215,6 +1215,7 @@
 <v t="ekr.20160923133117.168"><vh>Fixed #302: revert to saved doesn't reset external file change monitoring</vh></v>
 <v t="ekr.20161014034431.3"><vh>Fixed #304: QtWebEngine warnings with Qt5</vh></v>
 <v t="ekr.20161014034431.161"><vh>Fixed #313: vim-open-node opens file instead of just node</vh></v>
+<v t="ekr.20161015065750.1"><vh>Fixed #323: &lt;Alt-x&gt;help-tab shows too much at first</vh></v>
 <v t="ekr.20160923133117.175"><vh>Fixed bug in ac.get_summary_list</vh></v>
 <v t="ekr.20160923133117.176"><vh>Fixed expand-to-level bug</vh></v>
 <v t="ekr.20161014034431.114"><vh>Fixed major bug involving Leo's generators</vh></v>
@@ -1233,12 +1234,42 @@
 <v t="ekr.20161014153350.1"><vh>#254: Fast marking </vh></v>
 <v t="ekr.20161014054754.1"><vh>#272: optionally delay syntax coloring</vh></v>
 <v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
+<v t="ekr.20160923133117.238"><vh>#285: Added Windows installer for file associations</vh></v>
+<v t="ekr.20161015060224.14"><vh>#318: add vr2 commands and settings to vr</vh></v>
 <v t="ekr.20161014034431.145"><vh>#321: allow section references in imported code</vh></v>
 <v t="ekr.20161014052138.1"><vh>Added dialog when creating myLeoSettings.leo automatically</vh></v>
-<v t="ekr.20160923133117.238"><vh>Added installer for file associations</vh></v>
 <v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
 <v t="ekr.20161014153551.1"><vh>Allow plain keys in headlines</vh></v>
 <v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
+<v t="ekr.20161015070136.1"><vh>Won't do #283: Show global line number in lower left status bar</vh>
+<v t="ekr.20161015070136.2"><vh>QtStatusLineClass.update &amp; helper</vh>
+<v t="ekr.20161015070136.3"><vh>file_line</vh></v>
+</v>
+<v t="ekr.20161015070136.4"><vh>class GoToCommands</vh>
+<v t="ekr.20161015070136.5"><vh>goto.ctor</vh></v>
+<v t="ekr.20161015070136.6"><vh>goto.find_file_line</vh></v>
+<v t="ekr.20161015070136.22"><vh>goto.find_node_start  &amp; helper</vh>
+<v t="ekr.20161015070136.23"><vh>goto.is_visible_sentinel</vh></v>
+</v>
+<v t="ekr.20161015070136.9"><vh>goto.find_script_line</vh></v>
+<v t="ekr.20161015070136.10"><vh>goto.scan_nonsentinel_lines</vh></v>
+<v t="ekr.20161015070136.11"><vh>goto.scan_sentinel_lines</vh></v>
+<v t="ekr.20161015070136.12"><vh>goto.Utils</vh>
+<v t="ekr.20161015070136.13"><vh>goto.fail</vh></v>
+<v t="ekr.20161015070136.14"><vh>goto.find_gnx</vh></v>
+<v t="ekr.20161015070136.15"><vh>goto.find_root</vh></v>
+<v t="ekr.20161015070136.16"><vh>goto.get_delims</vh></v>
+<v t="ekr.20161015070136.17"><vh>goto.get_external_file_with_sentinels</vh></v>
+<v t="ekr.20161015070136.24"><vh>goto.get_script_node_info</vh></v>
+<v t="ekr.20161015070136.25"><vh>goto.is_sentinel</vh></v>
+<v t="ekr.20161015070136.20"><vh>goto.remove_level_stars</vh></v>
+<v t="ekr.20161015070136.21"><vh>goto.success</vh></v>
+</v>
+</v>
+<v t="ekr.20161015070136.22"></v>
+<v t="ekr.20161015070136.24"></v>
+<v t="ekr.20161015070136.25"></v>
+</v>
 </v>
 <v t="ekr.20160923163122.1"><vh>Importers</vh>
 <v t="ekr.20160923133117.210"><vh>#032: Added freemind and mindjet imports</vh></v>
@@ -18573,9 +18604,9 @@ These commands work as follows:
 </t>
 <t tx="ekr.20160923133117.234">https://github.com/leo-editor/leo-editor/issues/278
 </t>
-<t tx="ekr.20160923133117.238">You can find it here: https://sourceforge.net/projects/leo/files/Leo/5.3-final/.
+<t tx="ekr.20160923133117.238">https://github.com/leo-editor/leo-editor/issues/285
 
-It works for me on Windows 10. This completes #285.
+You can find it here: https://sourceforge.net/projects/leo/files/Leo/5.3-final/.
 
 This is useful for people who install Leo using git, or any other way except using the full Windows installer.  It creates file associations and (optionally) a desktop icon.
 
@@ -18736,7 +18767,9 @@ Anyway, there is no real alternative. Copying positions eliminates the possibili
 - Block.undent now handles leading tabs, using c.tab_width.
 - Disabled a unit tests that assumes that section references are not valid in @auto.
 </t>
-<t tx="ekr.20161014034431.151">https://github.com/leo-editor/leo-editor/issues/262</t>
+<t tx="ekr.20161014034431.151">https://github.com/leo-editor/leo-editor/issues/262
+
+Changed efc.on_idle &amp; helpers.</t>
 <t tx="ekr.20161014034431.158">The fix was to catch all exceptions in g.new_cmd_decorator and LeoKeys.callAltXFunction.</t>
 <t tx="ekr.20161014034431.161">https://github.com/leo-editor/leo-editor/issues/313
 
@@ -18748,7 +18781,8 @@ Anyway, there is no real alternative. Copying positions eliminates the possibili
   It's an important simplification.
 </t>
 <t tx="ekr.20161014034431.28">https://github.com/leo-editor/leo-editor/issues/289
-</t>
+
+The fix was to at.putRefLine and its helpers.</t>
 <t tx="ekr.20161014034431.3">https://github.com/leo-editor/leo-editor/issues/304
 
 http://doc.qt.io/qt-5/qquickwebengineprofile.html
@@ -18764,7 +18798,7 @@ The QtWebEngine warnings are given in LeoQtGui.runMainLoop in the call to:
 g.app.gui.replaceClipboardWith('hi')
 print(g.app.gui.getTextFromClipboard())
 </t>
-<t tx="ekr.20161014052138.1"></t>
+<t tx="ekr.20161014052138.1">The new code is in c.createMyLeoSettings.</t>
 <t tx="ekr.20161014053105.1"></t>
 <t tx="ekr.20161014053127.1">New Commands
 
@@ -18915,7 +18949,447 @@ Similarly, use g.ue to convert Qt bytes to unicode. Here is an example from LM.o
 Actually, the above code is dubious, because it will break if the mode of the open command changes.
 
 **Note**: Leo's code sometimes does s = g.u('aString'), but this isn't needed since Python 2.7 which supports unicode literals.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161015060224.14">https://github.com/leo-editor/leo-editor/issues/318
+</t>
+<t tx="ekr.20161015065750.1">https://github.com/leo-editor/leo-editor/issues/323
+
+Previously, &lt;Alt-x&gt;help&lt;tab&gt;c&lt;tab&gt; resulted in help-for-abbreviations.
+
+Rewrote ga.do_back_space and changed ga.do_tab and ga.do_back_space.</t>
+<t tx="ekr.20161015070136.1">https://github.com/leo-editor/leo-editor/issues/283
+
+tagged with global_file_numbers
+
+This would take too long.</t>
+<t tx="ekr.20161015070136.10">def scan_nonsentinel_lines(self, lines, n, root):
+    '''
+    Scan a list of lines containing sentinels, looking for the node and
+    offset within the node of the n'th (zero-based) line.
+
+    Only non-sentinel lines increment the global line count, but
+    @+node sentinels reset the offset within the node.
+
+    Return gnx, h, offset:
+    gnx:    the gnx of the #@+node
+    h:      the headline of the #@+node
+    offset: the offset of line n within the node.
+    '''
+    trace = False and not g.unitTesting
+    delim1, delim2 = self.get_delims(root)
+    count, gnx, h, offset = 0, root.gnx, root.h, 0
+    stack = [(gnx, h, offset),]
+    if trace: g.trace('===== Entry', delim1, delim2, n)
+    for s in lines:
+        is_sentinel = self.is_sentinel(delim1, delim2, s)
+        if trace: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
+        if is_sentinel:
+            s2 = s.strip()[len(delim1):]
+            if s2.startswith('@+node'):
+                offset = 0
+                    # The node delim does not appear in the outline.
+                gnx, h = self.get_script_node_info(s, delim2)
+                if trace: g.trace('@+node', gnx, h)
+            elif s2.startswith('@+others') or s2.startswith('@+&lt;&lt;'):
+                stack.append((gnx, h, offset),)
+                # Increment the offset, but not the count.
+                offset += 1
+            elif s2.startswith('@-others') or s2.startswith('@-&lt;&lt;'):
+                gnx, h, offset = stack.pop()
+                # Increment the offset, but not the count.
+                offset += 1
+            else:
+                # All other sentinels increment the offset.
+                offset += 1
+        else:
+            # Non-sentinel lines do appear in the outline.
+            count += 1
+            offset += 1
+        if trace: g.trace(count, offset, h, '\n')
+        if count == n:
+            break
+    else:
+        gnx, h, offset = None, None, -1
+    if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
+    return gnx, h, offset
+</t>
+<t tx="ekr.20161015070136.11">def scan_sentinel_lines(self, lines, n, root):
+    '''
+    Scan a list of lines containing sentinels, looking for the node and
+    offset within the node of the n'th (zero-based) line.
+
+    Return gnx, h, offset:
+    gnx:    the gnx of the #@+node
+    h:      the headline of the #@+node
+    offset: the offset of line n within the node.
+    '''
+    trace = False and not g.unitTesting
+    delim1, delim2 = self.get_delims(root)
+    gnx, h, offset = root.gnx, root.h, 0
+    stack = [(gnx, h, offset),]
+    if trace: g.trace('=====', delim1, delim2, n)
+    for i, s in enumerate(lines):
+        if trace: g.trace(s.rstrip())
+        if self.is_sentinel(delim1, delim2, s):
+            s2 = s.strip()[len(delim1):]
+            if s2.startswith('@+node'):
+                offset = 0
+                gnx, h = self.get_script_node_info(s, delim2)
+                if trace: g.trace('node', gnx, h)
+            elif s2.startswith('@+others') or s2.startswith('@+&lt;&lt;'):
+                stack.append((gnx, h, offset),)
+                offset += 1
+            elif s2.startswith('@-others') or s2.startswith('@-&lt;&lt;'):
+                gnx, h, offset = stack.pop()
+                offset += 1
+            else:
+                offset += 1
+        else:
+            offset += 1
+        if trace: g.trace(i, offset, h, '\n')
+        if i == n:
+            break
+    else:
+        gnx, h, offset = None, None, -1
+    if trace: g.trace('----- gnx', gnx, 'h', h, 'offset', offset)
+    return gnx, h, offset
+</t>
+<t tx="ekr.20161015070136.12"></t>
+<t tx="ekr.20161015070136.13">def fail(self, lines, n, root):
+    '''Select the last line of the last node of root's tree.'''
+    c = self.c
+    w = c.frame.body.wrapper
+    c.selectPosition(root)
+    c.redraw_now()
+    if not g.unitTesting:
+        if len(lines) &lt; n:
+            g.warning('only', len(lines), 'lines')
+        else:
+            g.warning('line', n, 'not found')
+    # Put the cursor on the last line of body text.
+    w.setInsertPoint(len(root.b))
+    c.bodyWantsFocus()
+    w.seeInsertPoint()
+</t>
+<t tx="ekr.20161015070136.14">def find_gnx(self, root, gnx, vnodeName):
+    '''
+    Scan root's tree for a node with the given gnx and vnodeName.
+    return (p,found)
+    '''
+    trace = False and not g.unitTesting
+    if gnx:
+        assert g.isString(gnx)
+        gnx = g.toUnicode(gnx)
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                if p.v.fileIndex == gnx:
+                    return p.copy(), True
+        if trace: g.trace('not found! %s, %s' % (gnx, repr(vnodeName)))
+        return None, False
+    else:
+        return root, False
+</t>
+<t tx="ekr.20161015070136.15">def find_root(self, p):
+    '''
+    Find the closest ancestor @&lt;file&gt; node, except @all nodes and @edit nodes.
+    return root, fileName.
+    '''
+    c = self.c; p1 = p.copy()
+    # First look for ancestor @file node.
+    for p in p.self_and_parents():
+        if not p.isAtEditNode() and not p.isAtAllNode():
+            fileName = p.anyAtFileNodeName()
+            if fileName:
+                return p.copy(), fileName
+    # Search the entire tree for joined nodes.
+    # Bug fix: Leo 4.5.1: *must* search *all* positions.
+    for p in c.all_positions():
+        if p.v == p1.v and p != p1:
+            # Found a joined position.
+            for p2 in p.self_and_parents():
+                fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+                if fileName:
+                    return p2.copy(), fileName
+    return None, None
+</t>
+<t tx="ekr.20161015070136.16">def get_delims(self, root):
+    '''Return the deliminters in effect at root.'''
+    c = self.c
+    d = c.scanAllDirectives(root)
+    delims1, delims2, delims3 = d.get('delims')
+    if delims1:
+        return delims1, None
+    else:
+        return delims2, delims3
+</t>
+<t tx="ekr.20161015070136.17">def get_external_file_with_sentinels(self, root):
+    '''
+    root is an @&lt;file&gt; node.
+
+    Return the result of writing the file *with* sentinels, even if the
+    external file would normally *not* have sentinels.
+    '''
+    at, c = self.c.atFileCommands, self.c
+    if root.isAtAutoNode():
+        # We must treat @auto nodes specially because
+        # Leo does not write sentinels in the root @auto node.
+        # at.writeOneAtAutoNode handle's all kinds of @auto nodes.
+        ok = at.writeOneAtAutoNode(
+            root,
+            toString=True,
+            force=True,
+            trialWrite=False,
+            forceSentinels=True)
+        return ok and at.stringOutput or ''
+    else:
+        return g.getScript(
+            c,
+            root,
+            useSelectedText=False,
+            forcePythonSentinels=False,
+                # Fix #247: @language c breaks goto-global-line.
+                # self.get_delims returns language-specific delims,
+                # so this code must do so too.
+            useSentinels=True)
+</t>
+<t tx="ekr.20161015070136.2" __node_tags="635f5f6275696c74696e5f5f0a7365740a7100285d71015813000000676c6f62616c5f66696c655f6e756d626572737102617471035271042e">def update(self):
+    if g.app.killed: return
+    c = self.c; body = c.frame.body
+    # te is a QTextEdit.
+    # 2010/02/19: Fix bug 525090
+    # An added editor window doesn't display line/col
+    te = body.widget
+    if isinstance(te, QtWidgets.QTextEdit):
+        offset = c.p.textOffset()
+        cr = te.textCursor()
+        bl = cr.block()
+        col = cr.columnNumber()
+        row = bl.blockNumber() + 1
+        line = g.u(bl.text())
+        # Fix bug #195: fcol when using @first directive is inaccurate
+        # https://github.com/leo-editor/leo-editor/issues/195
+        offset = c.p.textOffset()
+        fcol_offset = 0
+        s2 = line[0: col]
+        col = g.computeWidth(s2, c.tab_width)
+        i = line.find('&lt;&lt;')
+        j = line.find('&gt;&gt;')
+        if -1 &lt; i &lt; j or g.match_word(line.strip(), 0, '@others'):
+            offset = None
+        else:
+            for tag in ('@first ', '@last '):
+                if line.startswith(tag):
+                    fcol_offset = len(tag)
+                    break
+        # New in Leo 5.2. fcol is '' if there is no ancestor @&lt;file&gt; node.
+        fcol = '' if offset is None else max(0, col + offset - fcol_offset)
+    else:
+        row, col, fcol = 0, 0, ''
+    if 1: 
+        self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
+    else:
+        #283 is not ready yet, and probably will never be.
+        fline = self.file_line()
+        fline = '' if fline is None else fline + row
+        self.put1(
+            "fline: %s line: %d col: %d fcol: %s" % (fline, row, col, fcol))
+    self.lastRow = row
+    self.lastCol = col
+    self.lastFcol = fcol
+</t>
+<t tx="ekr.20161015070136.20">def remove_level_stars(self, s):
+    i = g.skip_ws(s, 0)
+    # Remove leading stars.
+    while i &lt; len(s) and s[i] == '*':
+        i += 1
+    # Remove optional level number.
+    while i &lt; len(s) and s[i].isdigit():
+        i += 1
+    # Remove trailing stars.
+    while i &lt; len(s) and s[i] == '*':
+        i += 1
+    # Remove one blank.
+    if i &lt; len(s) and s[i] == ' ':
+        i += 1
+    return s[i:]
+</t>
+<t tx="ekr.20161015070136.21">def success(self, lines, n, n2, p):
+    '''Place the cursor on line n2 of p.b.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    w = c.frame.body.wrapper
+    # Select p and make it visible.
+    if c.p.isOutsideAnyAtFileTree():
+        p = c.findNodeOutsideAnyAtFileTree(p)
+    c.redraw(p)
+    # Put the cursor on line n2 of the body text.
+    s = w.getAllText()
+    ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
+    if trace:
+        i, j = g.getLine(s, ins)
+        g.trace('%2s %2s %15s %s' % (n, n2, p.h, repr(s[i: j])))
+    w.setInsertPoint(ins)
+    c.bodyWantsFocus()
+    w.seeInsertPoint()
+</t>
+<t tx="ekr.20161015070136.22" __node_tags="635f5f6275696c74696e5f5f0a7365740a7100285d71015813000000676c6f62616c5f66696c655f6e756d626572737102617471035271042e">def find_node_start(self, p):
+    '''Return the global line number of the first line of p.b'''
+    # See #283: https://github.com/leo-editor/leo-editor/issues/283
+    if 1: # Not ready yet, and probably will never be ready.
+        return None 
+    else: # Prototype code.
+        trace = False and not g.unitTesting
+        root, fileName = self.find_root(p)
+        has_sentinels = p.isAtFileNode()
+        if root:
+            if root == p:
+                return 0
+            s = self.get_external_file_with_sentinels(root)
+                # s has sentinels, regardless of root's @&lt;file&gt; kind.
+            lines = g.splitLines(s)
+            if trace:
+                g.trace('=====', p.h)
+                for i, s in enumerate(lines):
+                    print('%3s %s' % (i,s.rstrip()))
+            delim1, delim2 = self.get_delims(root)
+            count = 0
+            for s in lines:
+                # g.trace(count, s.rstrip())
+                if self.is_sentinel(delim1, delim2, s):
+                    if trace: g.trace(s.rstrip())
+                    s2 = s.strip()[len(delim1):]
+                    if has_sentinels:
+                        count += 1
+                    elif self.is_visible_sentinel(s2):
+                        count += 1
+                    if s2.startswith('@+node'):
+                        gnx, h = self.get_script_node_info(s, delim2)
+                        if p.gnx == gnx:
+                            break
+                else:
+                    count += 1
+            if trace: g.trace(count, root.h)
+            return count
+        else:
+            return None
+</t>
+<t tx="ekr.20161015070136.23">def is_visible_sentinel(self, s):
+    '''Return True if s is a sentinel that actually would appear in the external file.'''
+    # This code is a prototype. More work is needed.
+    table = ('@@', '@+doc')
+    for z in table:
+        if s.startswith(z):
+            g.trace('visible: %s' % s.rstrip())
+            return True
+    return False
+</t>
+<t tx="ekr.20161015070136.24" __node_tags="635f5f6275696c74696e5f5f0a7365740a7100285d71015813000000676c6f62616c5f66696c655f6e756d626572737102617471035271042e">def get_script_node_info(self, s, delim2):
+    '''Return the gnx and headline of a #@+node.'''
+    i = s.find(':', 0)
+    j = s.find(':', i + 1)
+    if i == -1 or j == -1:
+        g.error("bad @+node sentinel", s)
+        return None, None
+    else:
+        gnx = s[i + 1: j]
+        h = s[j + 1:]
+        h = self.remove_level_stars(h).strip()
+        if delim2:
+            h = h.rstrip(delim2)
+        # g.trace(gnx, h, s.rstrip())
+        return gnx, h
+</t>
+<t tx="ekr.20161015070136.25" __node_tags="635f5f6275696c74696e5f5f0a7365740a7100285d71015813000000676c6f62616c5f66696c655f6e756d626572737102617471035271042e">def is_sentinel(self, delim1, delim2, s):
+    '''Return True if s is a sentinel line with the given delims.'''
+    assert delim1
+    i = s.find(delim1 + '@')
+    if delim2:
+        j = s.find(delim2)
+        return -1 &lt; i &lt; j
+    else:
+        return -1 &lt; i
+</t>
+<t tx="ekr.20161015070136.3">def file_line(self):
+    '''
+    Return the line of the first line of c.p in its external file.
+    Return None if c.p is not part of an external file.
+    '''
+    c, p = self.c, self.c.p
+    if p:
+        goto = gotoCommands.GoToCommands(c)
+        return goto.find_node_start(p)
+    else:
+        return None
+</t>
+<t tx="ekr.20161015070136.4" __node_tags="635f5f6275696c74696e5f5f0a7365740a7100285d71015813000000676c6f62616c5f66696c655f6e756d626572737102617471035271042e">class GoToCommands(object):
+    '''A class implementing goto-global-line.'''
+    @others
+</t>
+<t tx="ekr.20161015070136.5">def __init__(self, c):
+    '''Ctor for GoToCommands class.'''
+    self.c = c
+</t>
+<t tx="ekr.20161015070136.6">def find_file_line(self, n, p=None):
+    '''
+    Place the cursor on the n'th line of an external file.
+    Return p, offset, found for unit testing.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    if n &lt; 0:
+        return
+    p = p or c.p
+    root, fileName = self.find_root(p)
+    if root:
+        # Step 1: Get the lines of external files *with* sentinels,
+        # even if the actual external file actually contains no sentinels.
+        sentinels = root.isAtFileNode()
+        s = self.get_external_file_with_sentinels(root)
+        lines = g.splitLines(s)
+        if trace:
+            g.trace('sentinels', sentinels)
+            aList = ['%3s %s' % (i, s2) for i, s2 in enumerate(lines)]
+            g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
+        # Step 2: scan the lines for line n.
+        if sentinels:
+            # All sentinels count as real lines.
+            gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
+        else:
+            # Not all sentinels cound as real lines.
+            gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
+        p, found = self.find_gnx(root, gnx, h)
+        if gnx and found:
+            self.success(lines, n, offset, p)
+            return p, offset, True
+        else:
+            self.fail(lines, n, root)
+            return None, -1, False
+    else:
+        return self.find_script_line(n, p)
+</t>
+<t tx="ekr.20161015070136.9">def find_script_line(self, n, root):
+    '''
+    Go to line n (zero based) of the script with the given root.
+    Return p, offset, found for unit testing.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    if n &lt; 0:
+        return None, -1, False
+    script = g.getScript(c, root, useSelectedText=False)
+    lines = g.splitLines(script)
+    if trace:
+        aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
+        g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
+    # Script lines now *do* have gnx's.
+    gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
+    p, found = self.find_gnx(root, gnx, h)
+    if gnx and found:
+        self.success(lines, n, offset, p)
+        return p, offset, True
+    else:
+        self.fail(lines, n, root)
+        return None, -1, False
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
