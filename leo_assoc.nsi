@@ -3,7 +3,7 @@
 ;@@language nsi
 
 ;##version
-!define version         "5.3-final"
+!define version         "5.4-b1"
 
 !include MUI2.nsh
 !include nsDialogs.nsh
@@ -67,7 +67,7 @@ Var StartMenuFolder
 ; Define these here so the back button works.
 !define MUI_PAGE_HEADER_TEXT "Choose Installed Location"
 !define MUI_PAGE_HEADER_SUBTEXT "Choose the folder in which Leo has been installed."
-!define MUI_DIRECTORYPAGE_TEXT_TOP "Setup installs file associations for Leo in the Windows registery."
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Setup installs file associations for Leo in the Windows registry."
 !define MUI_DIRECTORYPAGE_TEXT_DESTINATION "Select the top-level leo-editor Folder"
 !insertmacro MUI_PAGE_DIRECTORY
 
@@ -107,7 +107,7 @@ Section "${ext} File Association" SEC02
         StrCpy $PythonExe "pythonw.exe"
     next:
     StrCpy $PythonExecutable "$PythonDirectory\$PythonExe"
-        ; Set for all others seciton.
+        ; Set for all other sections.
     SectionIn 1 2 3 4
     WriteRegStr HKCR "${ext}" "" "Leo File"
     WriteRegStr HKCR "LeoFile" "" "Leo File"

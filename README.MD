@@ -1,28 +1,33 @@
-Leo 5.3-final May 2, 2016
+Leo 5.4-b1   October 15, 2016
 
-[Leo](http://leoeditor.com/) 5.3-final is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
 
-**The highlights of Leo 5.3**
+**The highlights of Leo 5.4**
 
-- Leo now supports Jupyter Notebook (.ipynb) files.
-- @chapter is now allowed anywhere. No need for @chapters.
-- Faster spell checking.
-- The rst3 command supports @rst-table.
-- The show-invisibles command now uses native Qt characters.
-- Dozens of other improvements and bug fixes.
+- Added clone-find commands, a new way to use Leo.
+- The clone-find and tag-all-children commands unify clones and tags.
+- The new pyflakes and flake8 make it possible to check files from within Leo.
+- Added importers for freemind, mindjet, json and coffeescript files.
+- Rewrote the javascript importer. It can optionally generate section references.
+- Imported files can optionally contain section references.
+- The viewrendered plugin supports @pyplot nodes.
+- Improved the mod_http plugin.
+- @chapter trees need no longer be children of @chapters nodes.
+- All known bugs have been fixed.
 
 **Leo is**:
 
+- A fully-featured IDE, with emacs-like commands.
 - An outliner. Everything in Leo is an outline.
 - A Personal Information Manager.
 - A browser with a memory.
 - A powerful scripting environment.
 - A tool for studying other people's code.
-- A fully-featured IDE, with emacs-like commands.
 - Extensible via a simple plugin architecture.
 - A tool that plays well with  IPython, vim and xemacs.
 - Written in 100% pure Python
 - Compatible with Python 2.6 and above or Python 3.0 and above.
+- A tool with an inspiring and active community.
 
 **Leo's unique features**:
     
@@ -39,8 +44,8 @@ Leo 5.3-final May 2, 2016
 - @button scripts apply scripts to outline data.
 - Outline-oriented directives.
 
-Simulating these features in vim or Emacs is possible, just as
-it is possible to simulate Python in assembly language...
+Simulating these features in vim, Emacs or Eclisps is possible,
+just as it is possible to simulate Python in assembly language...
 
 **Links**
 

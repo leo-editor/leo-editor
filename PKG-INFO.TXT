@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 5.3
+Version: 5.4-b1
 Summary: Leo: Leonine Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
