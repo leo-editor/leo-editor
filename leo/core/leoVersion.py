@@ -28,17 +28,26 @@ import json
 # Developers should copy commit-msg & pre-commit from leo/extentions/hooks to
 # leo-editor/.git/hooks.
 # 
-# These hooks caise got to update commit_timestamp.json automatically.
+# These hooks cause Leo to update commit_timestamp.json automatically.
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
 # get info from leo/core/commit_timestamp.json
-leo_core_path = os.path.dirname(os.path.realpath(__file__))
-    # leoVersion.py is in leo/core
-commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
-commit_info = json.load(open(commit_path))
-commit_timestamp = commit_info['timestamp']
-commit_asctime = commit_info['asctime']
+try:
+    leo_core_path = os.path.dirname(os.path.realpath(__file__))
+        # leoVersion.py is in leo/core
+    commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
+    commit_info = json.load(open(commit_path))
+    if trace:
+        print('commit_path: %s' % commit_path)
+        print('commit_info: %s' % commit_info)
+    commit_timestamp = commit_info['timestamp']
+    commit_asctime = commit_info['asctime']
+except Exception:
+    # Continue if commit_timestamp.json does not exist.
+    print('Warning: leo/core/commit_timestamp.json does not exist')
+    commit_timestamp = ''
+    commit_asctime = ''
 version = "5.4-b1" # Always used.
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
