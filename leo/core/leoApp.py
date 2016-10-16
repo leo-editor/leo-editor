@@ -224,7 +224,7 @@ def pylint_command(event):
             self.wait = True
                 # The no-wait code doesn't seem to work.
         #@+others
-        #@+node:ekr.20150514125218.9: *5* check
+        #@+node:ekr.20150514125218.9: *5* pylint.check
         def check(self, p, rc_fn):
             '''Check a single node.  Return True if it is a Python @<file> node.'''
             found = False
@@ -240,7 +240,7 @@ def pylint_command(event):
                         self.run_pylint(fn, rc_fn)
                         found = True
             return found
-        #@+node:ekr.20150514125218.10: *5* get_rc_file
+        #@+node:ekr.20150514125218.10: *5* pylint.get_rc_file
         def get_rc_file(self):
             '''Return the path to the pylint configuration file.'''
             trace = False and not g.unitTesting
@@ -294,7 +294,7 @@ def pylint_command(event):
                                 break
             if self.wait:
                 g.es_print('pylint: done %s' % g.timeSince(t1))
-        #@+node:ekr.20150514125218.12: *5* run_pylint
+        #@+node:ekr.20150514125218.12: *5* pylint.run_pylint
         def run_pylint(self, fn, rc_fn):
             '''Run pylint on fn with the given pylint configuration file.'''
             if not os.path.exists(fn):
@@ -1553,6 +1553,7 @@ class LeoApp(object):
             g.app.createDefaultGui(fileName='g.app.setLeoId', verbose=True)
         if g.app.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
+            # pylint: disable=no-member
             f = builtins.input if g.isPython3 else builtins.raw_input
                 # Suppress pyflakes complaint.
             leoid = f('LeoID: ')

@@ -196,6 +196,7 @@ class GeneralTestCase(unittest.TestCase):
         # 2011/11/02: pass the script sources to exec or execfile.
         if c.write_script_file:
             scriptFile = c.writeScriptFile(script)
+            # pylint: disable=no-member
             if g.isPython3:
                 exec(compile(script, scriptFile, 'exec'), d)
             else:
@@ -727,6 +728,7 @@ class TestManager(object):
             d = {'c': c, 'g': g, 'p': p, 'unittest': unittest}
             if c.write_script_file:
                 scriptFile = c.writeScriptFile(script)
+                # pylint: disable=no-member
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
@@ -771,6 +773,7 @@ class TestManager(object):
             d = {'c': c, 'g': g, 'p': p}
             if c.write_script_file:
                 scriptFile = c.writeScriptFile(script)
+                # pylint: disable=no-member
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:
@@ -1686,6 +1689,7 @@ def factorial(n):
         try:
             result *= factor
         except OverflowError:
+            # pylint: disable=no-member
             f = builtins.int if g.isPython3 else builtins.long
             result *= f(factor)
         factor += 1
@@ -1713,15 +1717,25 @@ def runGc(disable=False):
 runGC = runGc
 #@+node:ekr.20051104075904.18: *4* enableGc
 def set_debugGc():
-    gc.set_debug(
-        gc.DEBUG_STATS | # prints statistics.
-        # gc.DEBUG_LEAK | # Same as all below.
-        # gc.DEBUG_COLLECTABLE
-        # gc.DEBUG_UNCOLLECTABLE
-        gc.DEBUG_INSTANCES |
-        gc.DEBUG_OBJECTS
-        # gc.DEBUG_SAVEALL
-    )
+    # pylint: disable=no-member
+    if g.isPython3:
+        gc.set_debug(
+            gc.DEBUG_STATS # prints statistics.
+            # gc.DEBUG_LEAK | # Same as all below.
+            # gc.DEBUG_COLLECTABLE
+            # gc.DEBUG_UNCOLLECTABLE
+            # gc.DEBUG_SAVEALL
+        )
+    else:
+        gc.set_debug(
+            gc.DEBUG_STATS | # prints statistics.
+            # gc.DEBUG_LEAK | # Same as all below.
+            # gc.DEBUG_COLLECTABLE
+            # gc.DEBUG_UNCOLLECTABLE
+            gc.DEBUG_INSTANCES |
+            gc.DEBUG_OBJECTS
+            # gc.DEBUG_SAVEALL
+        )
 #@+node:ekr.20051104075904.19: *4* makeObjectList
 def makeObjectList(message):
     # WARNING: this id trick is not proper: newly allocated objects can have the same address as old objects.

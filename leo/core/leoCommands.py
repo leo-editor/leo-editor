@@ -1755,7 +1755,7 @@ class Commands(object):
                 # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
-                # pylint: disable=undefined-variable
+                # pylint: disable=undefined-variable, no-member
                 if g.isPython3:
                     exec(compile(script, scriptFile, 'exec'), d)
                 else:

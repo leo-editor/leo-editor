@@ -2047,6 +2047,7 @@ def printGcObjects(tag=''):
         typesDict = {}
         for obj in gc.get_objects():
             t = type(obj)
+            # pylint: disable=no-member
             if t == 'instance' and t != types.UnicodeType: # NOQA
                 try: t = obj.__class__
                 except Exception: pass
@@ -6308,7 +6309,7 @@ def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
 def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
     '''For unit testing: convert s to unicode and return (s,ok).'''
     ok = True
-    # pylint: disable=undefined-variable
+    # pylint: disable=undefined-variable, no-member
     # unicode does not exist in Python 3.
     # f = str if g.isPython3 else unicode
     f = builtins.str if g.isPython3 else builtins.unicode

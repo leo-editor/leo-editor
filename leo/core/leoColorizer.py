@@ -2622,8 +2622,8 @@ if QtGui:
             """ Called by QSyntaxHiglighter """
             trace = False and not g.unitTesting
             if self.hasCurrentBlock and not self.colorizer.killColorFlag:
-                # pylint: disable=undefined-variable
-                # unicode.
+                # pylint: disable=undefined-variable, no-member
+                # builtins.unicode.
                 if g.isPython3:
                     s = str(s)
                 else:

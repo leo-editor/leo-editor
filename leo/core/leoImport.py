@@ -2667,8 +2667,10 @@ class ZimImportController(object):
         for result in parse:
             level = len(result[0])
             name = result[1].decode('utf-8')
+            # pylint: disable=no-member
+            unquote = urllib.parse.unquote if g.isPython3 else urllib.unquote
             path = [g.os_path_abspath(g.os_path_join(
-                pathToZim, urllib.unquote(result[2]).decode('utf-8')))]
+                pathToZim, unquote(result[2]).decode('utf-8')))]
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild

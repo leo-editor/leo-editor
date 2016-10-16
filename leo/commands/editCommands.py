@@ -3450,8 +3450,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if len(f) < i: return
                 i = i - 1
                 fields.append(f[i])
-        nz = zip(fields, txt)
-        nz.sort()
+        nz = sorted(zip(fields, txt))
         w.delete(i, j)
         int1 = i
         for z in nz:

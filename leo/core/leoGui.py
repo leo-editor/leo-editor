@@ -479,6 +479,7 @@ class UnitTestGui(NullGui):
             aFunc()
     #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode(self, s):
+        # pylint: disable=no-member
         if g.isPython3:
             return str(s)
         else:
