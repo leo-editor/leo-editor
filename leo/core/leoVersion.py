@@ -25,15 +25,17 @@ version = "5.4-b1" # Always used.
 def get_version_from_git():
     trace = False
     import re
+    import sys
     import subprocess
     try:
         p = subprocess.Popen(
             ["git", "log" , '-1', '--date=default-local'],
             stdout=subprocess.PIPE,
-            shell=True,
+            shell=sys.platform.startswith('win')
         )
         out, err = p.communicate()
         out = g.toUnicode(out)
+        if trace: g.trace(out)
         m = re.search('commit (.*)\n', out)
         commit = m.group(1)[0:8].strip() if m else ''
         m = re.search('Date: (.*)\n', out)
