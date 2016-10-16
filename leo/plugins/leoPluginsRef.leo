@@ -77,19 +77,19 @@
 <v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
+<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
+<v t="ekr.20160928073518.1"><vh>@file pyplot_backend.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
+<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
-<v t="ekr.20160331123847.1"><vh>@file viewrendered3.py</vh></v>
-<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
@@ -313,7 +313,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058010000007871044b0058050000006c696e6b7371055d7106752e">@language python
+<t tx="edream.110203113231.618" _bklnk="7d71002858050000006c696e6b7371015d7102580400000074797065710358080000006e6f646552656374710458010000007871054b0058010000007971064b00752e">@language python
 @tabwidth -4
 @pagewidth 80
 </t>
@@ -739,7 +739,7 @@ if not g.unitTesting:
         title="Open Jupyter File",
         filetypes=[
             ("All files", "*"),
-            ("Jypyter files", "*.ipynb"),
+            ("Jupyter files", "*.ipynb"),
         ],
         defaultextension=".ipynb",
     )
