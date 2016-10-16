@@ -1640,7 +1640,8 @@ class LeoApp(object):
         app.printWaiting = []
         if not app.silentMode:
             for s, color in table:
-                app.logWaiting.insert(0, (s + '\n', color),)
+                if s:
+                    app.logWaiting.insert(0, (s + '\n', color),)
             for s, color in app.logWaiting:
                 g.es('', s, color=color, newline=0)
                     # The caller must write the newlines.
