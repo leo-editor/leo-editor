@@ -24,14 +24,17 @@ version = "5.4-b1" # Always used.
 #@+node:ekr.20161016063005.1: ** git_version_from_git
 def get_version_from_git():
     trace = False
+    import shlex
     import re
     import subprocess
     import sys
     try:
+        is_windows = sys.platform.startswith('win')
         p = subprocess.Popen(
-            ["git", "log" , '-1', '--date=default-local'],
+            shlex.split('git log -1 --date=default-local'),
             stdout=subprocess.PIPE,
-            shell=sys.platform.startswith('win')
+            stderr=subprocess.DEVNULL,
+            shell=is_windows,
         )
         out, err = p.communicate()
         out = g.toUnicode(out)
