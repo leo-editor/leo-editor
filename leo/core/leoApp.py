@@ -1631,7 +1631,8 @@ class LeoApp(object):
                 if not g.enableDB:
                     print('** caching disabled')
                 print(app.signon)
-                print(app.signon1)
+                if app.signon1:
+                    print(app.signon1)
                 print(app.signon2)
         if not app.silentMode:
             for s in app.printWaiting:
