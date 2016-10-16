@@ -2,8 +2,6 @@
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 trace = False
-import os
-import json
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node
@@ -32,52 +30,90 @@ import json
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
-# get info from leo/core/commit_timestamp.json
-try:
-    leo_core_path = os.path.dirname(os.path.realpath(__file__))
-        # leoVersion.py is in leo/core
-    commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
-    commit_info = json.load(open(commit_path))
-    if trace:
-        print('commit_path: %s' % commit_path)
-        print('commit_info: %s' % commit_info)
-    commit_timestamp = commit_info['timestamp']
-    commit_asctime = commit_info['asctime']
-except Exception:
-    # Continue if commit_timestamp.json does not exist.
-    print('Warning: leo/core/commit_timestamp.json does not exist')
-    commit_timestamp = ''
-    commit_asctime = ''
-version = "5.4-b1" # Always used.
-# attempt to grab commit + branch info from git, else ignore it
-git_info = {}
-theDir = os.path.dirname(__file__)
-path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
-if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
-if os.path.exists(path):
-    s = open(path, 'r').read()
-    if s.startswith('ref'):
-        # on a proper branch
-        pointer = s.split()[1]
-        dirs = pointer.split('/')
-        branch = dirs[-1]
-        path = os.path.join(theDir, '..', '..', '.git', pointer)
-        try:
-            s = open(path, 'r').read().strip()[0: 12]
-            # shorten the hash to a unique shortname
-            # (12 characters should be enough until the end of time, for Leo...)
-            git_info['branch'] = branch
-            git_info['commit'] = s
-        except Exception:
+#@+others
+#@+node:ekr.20161016063005.1: ** git_version_from_git
+def git_version_from_git():
+    import re
+    import subprocess
+    p = subprocess.Popen(["git", "log" , '-1', '--date=iso'], stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    m = re.search('\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}', out)
+    build = ''
+    date = m.group(0)
+    return build, date, git_info, version
+
+if 0:
+    usage = "usage: %prog -f filepath"
+    parser = OptionParser(usage=usage)
+    parser.add_option("-f", default='version.py')
+    (options, args) = parser.parse_args()
+    path = options.f
+    with open(path, 'w+') as f:
+        f.write(git_version())
+#@+node:ekr.20161016063719.1: ** get_version_from_json
+def get_version_from_json():
+    '''
+    Return version info parsed from leo/core/commit_timestamp.json.
+    
+    This suffers from two *serious* problems:
+    1. The dates don't get updated if the developer (me)
+       forgets to install the git hooks.
+    2. Always committing commit_timestamp.json creates merge conflicts.
+    '''
+    import os
+    import json
+    try:
+        leo_core_path = os.path.dirname(os.path.realpath(__file__))
+            # leoVersion.py is in leo/core
+        commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
+        commit_info = json.load(open(commit_path))
+        if trace:
+            print('commit_path: %s' % commit_path)
+            print('commit_info: %s' % commit_info)
+        commit_timestamp = commit_info['timestamp']
+        commit_asctime = commit_info['asctime']
+    except Exception:
+        # Continue if commit_timestamp.json does not exist.
+        print('Warning: leo/core/commit_timestamp.json does not exist')
+        commit_timestamp = ''
+        commit_asctime = ''
+    version = "5.4-b1" # Always used.
+    # attempt to grab commit + branch info from git, else ignore it
+    git_info = {}
+    theDir = os.path.dirname(__file__)
+    path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
+    if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
+    if os.path.exists(path):
+        s = open(path, 'r').read()
+        if s.startswith('ref'):
+            # on a proper branch
+            pointer = s.split()[1]
+            dirs = pointer.split('/')
+            branch = dirs[-1]
+            path = os.path.join(theDir, '..', '..', '.git', pointer)
+            try:
+                s = open(path, 'r').read().strip()[0: 12]
+                # shorten the hash to a unique shortname
+                # (12 characters should be enough until the end of time, for Leo...)
+                git_info['branch'] = branch
+                git_info['commit'] = s
+            except Exception:
+                branch = 'None'
+                s = s[0: 12]
+        else:
             branch = 'None'
             s = s[0: 12]
-    else:
-        branch = 'None'
-        s = s[0: 12]
-    git_info['branch'] = branch
-    git_info['commit'] = s
-build = commit_timestamp
-date = commit_asctime
+        git_info['branch'] = branch
+        git_info['commit'] = s
+    build = commit_timestamp
+    date = commit_asctime
+    return build, date, git_info, version
+#@-others
+if 0:
+    build, date, git_info, version = get_version_from_git()
+else:
+    build, date, git_info, version = get_version_from_json()
+
 #@@language python
 #@@tabwidth -4
 #@-leo
