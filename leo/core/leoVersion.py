@@ -33,7 +33,8 @@ def get_version_from_git():
         p = subprocess.Popen(
             shlex.split('git log -1 --date=default-local'),
             stdout=subprocess.PIPE,
-            stderr=None if trace else subprocess.DEVNULL,
+            stderr=None if trace else subprocess.PIPE,
+                # subprocess.DEVNULL is Python 3 only.
             shell=is_windows,
         )
         out, err = p.communicate()
