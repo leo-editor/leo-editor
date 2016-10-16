@@ -33,14 +33,14 @@ def get_version_from_git():
         p = subprocess.Popen(
             shlex.split('git log -1 --date=default-local'),
             stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
+            stderr=None if trace else subprocess.DEVNULL,
             shell=is_windows,
         )
         out, err = p.communicate()
         out = g.toUnicode(out)
         if trace: g.trace(out)
         m = re.search('commit (.*)\n', out)
-        commit = m.group(1)[0:8].strip() if m else ''
+        commit = m.group(1).strip()[:8] if m else ''
         m = re.search('Date: (.*)\n', out)
         date = m.group(1).strip() if m else ''
         if trace: g.trace(commit, date)
