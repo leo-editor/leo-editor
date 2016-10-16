@@ -878,6 +878,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getCompositeIconImage(self, p, val):
         '''Get the icon at position p.'''
         trace = False and not g.unitTesting
+        trace_cached = False
         userIcons = self.c.editCommands.getIconList(p)
         # don't take this shortcut - not theme aware, see getImageImage()
         # which is called below - TNB 20130313
@@ -890,7 +891,7 @@ class LeoQtTree(leoFrame.LeoTree):
         hash = ':'.join(hash)
         if hash in g.app.gui.iconimages:
             icon = g.app.gui.iconimages[hash]
-            if trace: g.trace('cached %s' % (icon))
+            if trace and trace_cached: g.trace('cached %s' % (icon))
             return icon
         images = [g.app.gui.getImageImage(i['file']) for i in userIcons
                  if i['where'] == 'beforeIcon']

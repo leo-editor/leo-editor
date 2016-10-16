@@ -19,10 +19,11 @@ class JSON_Scanner:
         alternate_language=None,
     ):
         '''The ctor for the JSON_Scanner class.'''
-        self.c = importCommands.c
+        self.c = c = importCommands.c
         self.atAuto = atAuto
         self.gnx_dict = {}
             # Keys are gnx's. Values are vnode_dicts.
+        self.tab_width = c.tab_width
         self.vnodes_dict = {}
             # Keys are gnx's. Values are already-created vnodes.
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
@@ -53,6 +54,10 @@ class JSON_Scanner:
                 if d2.get('ua'):
                     child.u = d2.get('ua')
                 self.create_nodes(child, d2)
+    #@+node:ekr.20161015213011.1: *3* json.report
+    def report(self, s):
+        '''Issue a message.'''
+        g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.run
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
@@ -70,7 +75,7 @@ class JSON_Scanner:
             parent.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
         return ok
-    #@+node:ekr.20160504092347.2: *4* BaseScanner.escapeFalseSectionReferences
+    #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):
         '''
         Probably a bad idea.  Keep the apparent section references.
@@ -88,7 +93,7 @@ class JSON_Scanner:
             # else:
                 # result.append(line)
         # return ''.join(result)
-    #@+node:ekr.20160504092347.3: *4* BaseScanner.checkBlanksAndTabs
+    #@+node:ekr.20160504092347.3: *4* json.checkBlanksAndTabs
     def checkBlanksAndTabs(self, s):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
@@ -101,7 +106,7 @@ class JSON_Scanner:
         if not ok:
             self.report('intermixed blanks and tabs')
         return ok
-    #@+node:ekr.20160504092347.4: *4* BaseScanner.regularizeWhitespace
+    #@+node:ekr.20160504092347.4: *4* json.regularizeWhitespace
     def regularizeWhitespace(self, s):
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -127,6 +132,8 @@ class JSON_Scanner:
     def scan(self, s, parent):
         '''Create an outline from a MindMap (.csv) file.'''
         trace = False and not g.unitTesting
+        # pylint: disable=no-member
+        # pylint confuses this module with the stdlib json module
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')

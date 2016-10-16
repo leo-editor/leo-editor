@@ -405,6 +405,7 @@ class LinterTable():
             'leofts.py', # Not (yet) in leoPlugins.leo.
             'qtGui.py', # Dummy file
             'qt_main.py', # Created automatically.
+            'rst3.py', # Obsolete
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
@@ -437,7 +438,8 @@ class LinterTable():
         paths = []
         if functions:
             for func in functions:
-                files = func()
+                files = [func] if g.isString(func) else func()
+                    # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
                     if g.os_path_exists(fn):
@@ -1776,13 +1778,16 @@ def printGc(message=None):
                 funcDict[key] = None
                 if key not in lastFunctionsDict:
                     g.pr('\n', obj)
-                    args, varargs, varkw, defaults = inspect.signature(obj)
-                    g.pr("args", args)
-                    if varargs: g.pr("varargs", varargs)
-                    if varkw: g.pr("varkw", varkw)
-                    if defaults:
-                        g.pr("defaults...")
-                        for s in defaults: g.pr(s)
+                    if g.isPython3:
+                        # pylint: disable=no-member
+                        # signature exists in Python 3.x.
+                        args, varargs, varkw, defaults = inspect.signature(obj)
+                        g.pr("args", args)
+                        if varargs: g.pr("varargs", varargs)
+                        if varkw: g.pr("varkw", varkw)
+                        if defaults:
+                            g.pr("defaults...")
+                            for s in defaults: g.pr(s)
         lastFunctionsDict = funcDict
         funcDict = {}
         #@-<< print added functions >>

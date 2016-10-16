@@ -23,6 +23,8 @@ class JSON_Writer(basewriter.BaseWriter):
             'top': self.vnode_dict(root.v),
             'nodes': nodes,
         }
+        # pylint: disable=no-member
+        # pylint confuses this module with the stdlib json module
         s = json.dumps(d,
             sort_keys=True,
             indent=2, # Pretty print.

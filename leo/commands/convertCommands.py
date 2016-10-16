@@ -1645,7 +1645,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@-others
         #@-others
         c = self.c
-        self.Python_To_CoffeeScript(c).go()
+        TS_To_Python(c).go()
         c.bodyWantsFocus()
     #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
     @cmd('import-jupyter-notebook')

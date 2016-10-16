@@ -778,7 +778,7 @@ class AstFormatter(object):
     def do_Try(self, node): # Python 3
 
         result = []
-        self.append(self.indent('try:\n'))
+        result.append(self.indent('try:\n'))
         for z in node.body:
             self.level += 1
             result.append(self.visit(z))
@@ -2238,7 +2238,7 @@ class HTMLReportTraverser(object):
         rt.end_div('function')
         
     def do_AsyncFunctionDef(rt, node):
-        rt.FunctionDef(node, async=True)
+        rt.do_FunctionDef(node, async=True)
     #@+node:ekr.20150722204300.70: *4* rt.GeneratorExp
     def do_GeneratorExp(rt, node):
 
@@ -2262,7 +2262,7 @@ class HTMLReportTraverser(object):
                 data = ast2.name, ast2.asname
                 result.append(data)
             else:
-                g.trace('unsupported node in Import.names list', ast.__class__.__name__)
+                g.trace('unsupported node in Import.names list', node.__class__.__name__)
         return result
     #@+node:ekr.20150722204300.72: *4* rt.Global
     def do_Global(rt, node):
@@ -2618,7 +2618,7 @@ class HTMLReportTraverser(object):
         rt.end_div('statement')
         
     def do_AsyncWith(rt, node):
-        rt.do_with(node, async=True)
+        rt.do_With(node, async=True)
     #@+node:ekr.20150722204300.96: *4* rt.Yield
     def do_Yield(rt, node):
 

@@ -442,6 +442,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (e.ShowToParent, 'show-to-parent'), # 26
         ]
         if hasattr(e, 'FocusAboutToChange'):
+            # pylint: disable=no-member
             focus_events.extend([
                 (e.FocusAboutToChange, 'focus-about-to-change'), # 23
             ])
@@ -463,6 +464,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (e.ShortcutOverride, 'shortcut-override'), # 51
         ]
         if hasattr(e, 'InputMethodQuery'):
+            # pylint: disable=no-member
             key_events.extend([
                 (e.InputMethodQuery, 'input-method-query'), # 207
             ])

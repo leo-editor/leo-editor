@@ -569,6 +569,117 @@ class leo_interface(object):
                 shortfilename, shortfilename))
         f.write('</ul><hr /></body></html>')
         return f
+    #@+node:bwmulder.20050319135316: *3* node_reference & helpers
+    def node_reference(self, vnode):
+        """
+        Given a position p, return the name of the node.
+        
+        This is called from leo.core.leoRst.
+        """
+        # 1. Find the root
+        root = vnode
+        parent = root.parent()
+        while parent:
+            root = parent
+            parent = root.parent()
+        while root.v._back:
+            root.moveToBack()
+        # 2. Return the window
+        window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
+        result = self.create_leo_h_reference(window, vnode)
+        return result
+    #@+node:EKR.20040517080250.21: *4* add_leo_links
+    def add_leo_links(self, window, node, f):
+        """
+        Given a node 'node', add links to:
+            The next sibling, if any.
+            the next node.
+            the parent.
+            The children, if any.
+        """
+        # Collecting the navigational links.
+        if node:
+            nodename = node.h
+            threadNext = node.threadNext()
+            sibling = node.next()
+            parent = node.parent()
+            f.write("<p>\n")
+            children = []
+            firstChild = node.firstChild()
+            if firstChild:
+                child = firstChild
+                while child:
+                    children.append(child)
+                    child = child.next()
+            if threadNext is not None:
+                self.create_leo_reference(window, threadNext, "next", f)
+            f.write("<br />")
+            if sibling is not None:
+                self.create_leo_reference(window, sibling, "next Sibling", f)
+            f.write("<br />")
+            if parent is None:
+                self.create_href("/", "Top level", f)
+            else:
+                self.create_leo_reference(window, parent, "Up", f)
+            f.write("<br />")
+            f.write("\n</p>\n")
+        else:
+            # top level
+            child = window.c.rootPosition()
+            children = [child]
+            next = child.next()
+            while next:
+                child = next
+                children.append(child)
+                next = child.next()
+            nodename = window.shortFileName()
+        if children:
+            f.write("\n<h2>")
+            f.write("Children of ")
+            f.write(escape(nodename))
+            f.write("</h2>\n")
+            f.write("<ol>\n")
+            for child in children:
+                f.write("<li>\n")
+                self.create_leo_reference(window, child, child.h, f)
+                f.write("</li>\n")
+            f.write("</ol>\n")
+    #@+node:EKR.20040517080250.22: *4* create_href
+    def create_href(self, href, text, f):
+        f.write('<a href="%s">' % href)
+        f.write(escape(text))
+        f.write("</a>\n")
+    #@+node:bwmulder.20050319134815: *4* create_leo_h_reference
+    def create_leo_h_reference(self, window, node):
+        parts = [window.shortFileName()] + self.get_leo_nameparts(node)
+        href = '/' + '/'.join(parts)
+        return href
+    #@+node:EKR.20040517080250.23: *4* create_leo_reference
+    def create_leo_reference(self, window, node, text, f):
+        """
+        Create a reference to 'node' in 'window', displaying 'text'
+        """
+        href = self.create_leo_h_reference(window, node)
+        self.create_href(href, text, f)
+    #@+node:EKR.20040517080250.28: *4* write_path
+    def write_path(self, node, f):
+        result = []
+        while node:
+            result.append(node.h)
+            node = node.parent()
+        result.reverse()
+        if result:
+            result2 = result[: -1]
+            if result2:
+                result2 = ' / '.join(result2)
+                f.write("<p>\n")
+                f.write("<br />\n")
+                f.write(escape(result2))
+                f.write("<br />\n")
+                f.write("</p>\n")
+            f.write("<h2>")
+            f.write(escape(result[-1]))
+            f.write("</h2>\n")
     #@-others
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
 class LeoActions(object):
@@ -1122,6 +1233,12 @@ def loop(timeout=5.0, use_poll=0, map=None):
     write request pending.
     """
     return poll(timeout)
+#@+node:bwmulder.20050322135114: *3* node_reference
+def node_reference(vnode):
+    """
+    Use by the rst3 plugin.
+    """
+    return leo_interface().node_reference(vnode)
 #@+node:EKR.20040517080250.40: *3* poll
 def poll(timeout=0.0):
     global sockets_to_close
@@ -1170,6 +1287,11 @@ def poll(timeout=0.0):
         #@-<< asyncore.write(map.get(fd)) >>
     return len(r) > 0 or len(w) > 0
 #@+node:bwmulder.20050322132919: *3* rst_related functions
+#@+node:bwmulder.20050322132919.2: *4* get_http_attribute
+def get_http_attribute(p):
+    if hasattr(p.v, 'unknownAttributes'):
+        return p.v.unknownAttributes.get(config.rst2_http_attributename, None)
+    return None
 #@+node:bwmulder.20050322134325: *4* reconstruct_html_from_attrs
 def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
     """
@@ -1190,11 +1312,6 @@ def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
         result.append(stack[1])
         stack = stack[2]
     return result
-#@+node:bwmulder.20050322132919.2: *4* get_http_attribute
-def get_http_attribute(p):
-    if hasattr(p.v, 'unknownAttributes'):
-        return p.v.unknownAttributes.get(config.rst2_http_attributename, None)
-    return None
 #@+node:bwmulder.20050322133050: *4* set_http_attribute
 def set_http_attribute(p, value):
     vnode = p.v
@@ -1202,12 +1319,6 @@ def set_http_attribute(p, value):
         vnode.unknownAttributes[config.rst2_http_attributename] = value
     else:
         vnode.unknownAttributes = {config.rst2_http_attributename: value}
-#@+node:bwmulder.20050322135114: *4* node_reference
-def node_reference(vnode):
-    """
-    Use by the rst2 plugin.
-    """
-    return leo_interface().node_reference(vnode)
 #@-others
 #@@language python
 #@@tabwidth -4

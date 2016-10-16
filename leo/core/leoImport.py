@@ -170,6 +170,7 @@ class JSON_Import_Helper(object):
     def __init__(self, c):
         '''ctor for the JSON_Import_Helper class.'''
         self.c = c
+        self.vnodes_dict = {}
 
     #@+others
     #@+node:ekr.20160505044925.1: *3*  unused code
@@ -1890,7 +1891,7 @@ class MORE_Importer(object):
         ic.setEncoding()
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
-        if s is None: return ''
+        if s is None: return None
         s = s.replace('\r', '') # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.

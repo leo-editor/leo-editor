@@ -788,7 +788,7 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
-        QtWidgets.QWidget.__init__(self, *args)
+        QtWidgets.QFrame.__init__(self, *args)
             # Init the base class.
         self.c = c
         self.edit = e

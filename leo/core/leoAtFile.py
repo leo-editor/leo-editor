@@ -3674,7 +3674,7 @@ class AtFile(object):
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
-                        ### Previous code: 2016/10/11
+                        # Previous code: 2016/10/11
                         # if at.raw or at.atAuto or at.perfectImportFlag:
                             # # 2011/12/14: Ignore references in @auto.
                             # # 2012/06/02: Needed for import checks.
