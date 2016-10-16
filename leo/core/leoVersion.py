@@ -23,7 +23,7 @@ version = "5.4-b1" # Always used.
 #@+others
 #@+node:ekr.20161016063005.1: ** git_version_from_git
 def get_version_from_git():
-    trace = True
+    trace = False
     import re
     import subprocess
     try:
