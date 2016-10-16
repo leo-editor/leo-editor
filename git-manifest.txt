@@ -7,6 +7,7 @@ PKG-INFO.TXT
 README.MD
 Readme-quick-install.TXT
 ekr-spellpyx.txt
+flake8-leo.py
 git-diff.bat
 launchLeo-unified.spec
 launchLeo.py
@@ -1059,7 +1060,6 @@ leo/config/themes.leo
 leo/core/LeoPyRef.leo
 leo/core/__init__.py
 leo/core/buttons.txt
-leo/core/commit_timestamp.json
 leo/core/format-code.py
 leo/core/key-handling-notes.txt
 leo/core/leoApp.py
@@ -1969,6 +1969,7 @@ leo/plugins/import_cisco_config.py
 leo/plugins/importers/__init__.py
 leo/plugins/importers/basescanner.py
 leo/plugins/importers/c.py
+leo/plugins/importers/coffeescript.py
 leo/plugins/importers/csharp.py
 leo/plugins/importers/ctext.py
 leo/plugins/importers/dart.py
@@ -1979,6 +1980,7 @@ leo/plugins/importers/ini.py
 leo/plugins/importers/ipynb.py
 leo/plugins/importers/java.py
 leo/plugins/importers/javascript.py
+leo/plugins/importers/json.py
 leo/plugins/importers/leo_rst.py
 leo/plugins/importers/markdown.py
 leo/plugins/importers/org.py
@@ -2057,6 +2059,7 @@ leo/plugins/pygeotag/map.js
 leo/plugins/pygeotag/pygeotag.leo
 leo/plugins/pygeotag/pygeotag.py
 leo/plugins/pygeotag/template.html
+leo/plugins/pyplot_backend.py
 leo/plugins/python_terminal.py
 leo/plugins/qmlnb/launchqmlnb.py
 leo/plugins/qmlnb/qml/leonbmain.qml
@@ -2119,7 +2122,6 @@ leo/plugins/trace_tags.py
 leo/plugins/valuespace.py
 leo/plugins/viewrendered.py
 leo/plugins/viewrendered2.py
-leo/plugins/viewrendered3.py
 leo/plugins/vim.py
 leo/plugins/wikiview.py
 leo/plugins/word_count.py
@@ -2131,6 +2133,7 @@ leo/plugins/writers/ctext.py
 leo/plugins/writers/dart.py
 leo/plugins/writers/howto.txt
 leo/plugins/writers/ipynb.py
+leo/plugins/writers/json.py
 leo/plugins/writers/leo_rst.py
 leo/plugins/writers/markdown.py
 leo/plugins/writers/org.py
@@ -2160,6 +2163,7 @@ leo/test/activeUnitTests.txt
 leo/test/cgi-bin/edward.py
 leo/test/cgi-bin/leo.js
 leo/test/default.css
+leo/test/flake8.txt
 leo/test/inactiveTests.txt
 leo/test/leo-bridge-test.py
 leo/test/pylint-leo-rc-ref.txt
@@ -2209,8 +2213,10 @@ leo/test/unittest/output/flattenOutline.txt
 leo/test/unittest/output/outlineToCweb.txt
 leo/test/unittest/output/outlineToNoweb.txt
 leo/test/unittest/output/weave.txt
+leo/test/unittest/perfectImport/MORE_file_test.txt
 leo/test/unittest/perfectImport/SimpleHTTPServer.py
 leo/test/unittest/perfectImport/formatter.py
+leo/test/unittest/perfectImport/tab_file_test.txt
 leo/test/unittest/perfectImport/unitTestFile.py
 leo/test/unittest/python3_test.py
 leo/test/unittest/read_test.py
@@ -2331,10 +2337,14 @@ leo/www/default.css
 leo/www/index.html
 leo/www/leo_rst.css
 leo/www/silver_city.css
+leo_assoc.nsi
 leo_to_html.xsl
+load-leo.html
 nsi-boilerplate.txt
 nsi-install-files.txt
 nsi-uninstall-files.txt
 profileLeo.py
+pyflakes-leo.py
 pylint-leo.py
+stderr.txt
 xslt-test.leo

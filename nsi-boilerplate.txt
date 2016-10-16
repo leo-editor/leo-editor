@@ -36,7 +36,7 @@ OutFile "${target_file}"
 InstallDir "$PROGRAMFILES\${name}-${version}"
 
 ; Icons
-;!define MUI_ICON "${icon}"
+!define MUI_ICON "${app_icon}"
 ;@-<< prolog >>
 ;@+<< pages >>
 ;@+node:ekr.20101027115225.1496: ** << pages >>
