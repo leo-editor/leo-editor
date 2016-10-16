@@ -25,8 +25,8 @@ version = "5.4-b1" # Always used.
 def get_version_from_git():
     trace = False
     import re
-    import sys
     import subprocess
+    import sys
     try:
         p = subprocess.Popen(
             ["git", "log" , '-1', '--date=default-local'],
@@ -43,8 +43,9 @@ def get_version_from_git():
         if trace: g.trace(commit, date)
         return commit, date
     except Exception:
-        g.es_exception()
-        return '', ''
+        # We are using an official release.
+        # g.es_exception()
+        return None, None
 #@+node:ekr.20161016063719.1: ** get_version_from_json
 def get_version_from_json():
     '''
@@ -58,7 +59,7 @@ def get_version_from_json():
     trace = False
     import os
     import json
-    date = ''
+    date = None
     try:
         leo_core_path = os.path.dirname(os.path.realpath(__file__))
             # leoVersion.py is in leo/core
@@ -80,8 +81,6 @@ def get_version_from_json():
         if s.startswith('ref'):
             # on a proper branch
             pointer = s.split()[1]
-            ### dirs = pointer.split('/')
-            ### branch = dirs[-1]
             path = os.path.join(theDir, '..', '..', '.git', pointer)
             try:
                 s = open(path, 'r').read().strip()[0: 12]
@@ -90,7 +89,7 @@ def get_version_from_json():
         else:
             s = s[0: 12]
     else:
-        s = ''
+        s = None
     commit = s
     return commit, date
 #@-others

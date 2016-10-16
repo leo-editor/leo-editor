@@ -2787,9 +2787,7 @@ it is possible to simulate Python in assembly language...
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
 - Run pylint -a.</t>
-<t tx="ekr.20161015091353.1">- Update version number and modification date on Leo's home page.
-  (The sphinx date is updated automatically.)
-- Regenerate all .html files.
+<t tx="ekr.20161015091353.1">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html</t>
 <t tx="ekr.20161015091353.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
