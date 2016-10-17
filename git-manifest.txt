@@ -1110,9 +1110,6 @@ leo/core/test_core.txt
 leo/dist/LeoPackage.pmsp
 leo/dist/leo-install.py
 leo/dist/leoDist.leo
-leo/dist/nsi-boilerplate.txt
-leo/dist/nsi-install-files.txt
-leo/dist/nsi-uninstall-files.txt
 leo/dist/setup.cfg
 leo/dist/setup.py
 leo/doc/CheatSheet.leo

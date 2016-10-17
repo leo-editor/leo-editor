@@ -121,9 +121,6 @@ SetOutPath $INSTDIR\leo\dist
 File "C:\leo.repo\leo-editor\leo\dist\LeoPackage.pmsp"
 File "C:\leo.repo\leo-editor\leo\dist\leo-install.py"
 File "C:\leo.repo\leo-editor\leo\dist\leoDist.leo"
-File "C:\leo.repo\leo-editor\leo\dist\nsi-boilerplate.txt"
-File "C:\leo.repo\leo-editor\leo\dist\nsi-install-files.txt"
-File "C:\leo.repo\leo-editor\leo\dist\nsi-uninstall-files.txt"
 File "C:\leo.repo\leo-editor\leo\dist\setup.cfg"
 File "C:\leo.repo\leo-editor\leo\dist\setup.py"
 

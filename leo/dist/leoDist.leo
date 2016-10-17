@@ -724,8 +724,8 @@ LeoMaker().run()
 g.es_print('done') # '@button make-leo done')
 </t>
 <t tx="ekr.20101027070126.1643">class LeoMaker:
-
-    '''A class to make Leo distribution files in the top-level leo-editor folder:
+    '''
+    A class to make these files in the leo-editor folder:
 
     git-manifest.txt.
     nsi-install-files.txt
@@ -902,7 +902,6 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101027070126.1675">def create_install_files(self,dirs,dirDict,filesDict):
     '''Create leo/dist/nsi-install-files.txt'''
     global install_fn,rootDir
-    g.pdb()
     put = self.put
     self.f = self.openFile(install_fn)
     if not self.f: return
