@@ -230,6 +230,7 @@
 <v t="ekr.20101105103524.1493"><vh>make_zip</vh></v>
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
 <v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
+<v t="ekr.20161017070909.1"><vh>remove_commit_timestamp_json</vh></v>
 </v>
 <v t="ekr.20101027070126.1680"><vh>utils...</vh>
 <v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
@@ -238,6 +239,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161017070909.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -746,6 +748,7 @@ g.es_print('done') # '@button make-leo done')
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
         self.copy_nsi_files()
+        self.remove_commit_timestamp_json()
 </t>
 <t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
     '''
@@ -2935,6 +2938,15 @@ just as it is possible to simulate Python in assembly language...
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20161017070909.1">def remove_commit_timestamp_json(self):
+    '''Remove leo/core/commit_timestamp.json.'''
+    path = g.os_path_finalize_join(
+        g.app.loadDir, '..', 'core', 'commit_timestamp.json')
+    if g.os_path_exists(path):
+        os.remove(path)
+    else:
+        g.trace('not found', path)
 </t>
 </tnodes>
 </leo_file>

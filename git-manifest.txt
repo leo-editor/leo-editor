@@ -1060,6 +1060,7 @@ leo/config/themes.leo
 leo/core/LeoPyRef.leo
 leo/core/__init__.py
 leo/core/buttons.txt
+leo/core/commit_timestamp.json
 leo/core/format-code.py
 leo/core/key-handling-notes.txt
 leo/core/leoApp.py
