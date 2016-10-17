@@ -239,7 +239,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161017070909.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -748,7 +747,7 @@ g.es_print('done') # '@button make-leo done')
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
         self.copy_nsi_files()
-        self.remove_commit_timestamp_json()
+        # self.remove_commit_timestamp_json()
 </t>
 <t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
     '''
@@ -839,10 +838,11 @@ def deleteTempFiles (self,lines):
         dirDict[z] = []
         # Leo 5.4: Add leo/core/commit_timestamp.json
         # This file is in .gitignore, but we mut write it here.
-        if z == 'leo/core':
-            # g.trace(z)
-            # g.trace('Adding commit_timestamp.json')
-            dirDict[z].append('commit_timestamp.json')
+        if 0:
+            if z == 'leo/core':
+                # g.trace(z)
+                # g.trace('Adding commit_timestamp.json')
+                dirDict[z].append('commit_timestamp.json')
     # Assign files to dirDict.
     for line in lines:
         line = line.strip().replace('\\','/')
