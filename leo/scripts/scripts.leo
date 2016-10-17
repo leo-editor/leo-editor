@@ -205,7 +205,6 @@
 <v t="ekr.20160923132650.1"><vh>Recent</vh>
 <v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
 <v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
-</v>
 <v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
 <v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
 <v t="ekr.20161006092435.3"><vh>check</vh></v>
@@ -215,6 +214,8 @@
 <v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
 <v t="ekr.20161006092435.8"><vh>undent</vh></v>
 </v>
+</v>
+<v t="ekr.20161017063308.1"><vh>script: find problems in pylint-leo-rc.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2414,6 +2415,31 @@ else:
         return ''.join([z[len(lws):] for z in lines])
     else:
         return ''
+</t>
+<t tx="ekr.20161017063308.1">g.cls()
+print_all_lines = True
+table = [
+    r'c:\leo.repo\leo-editor\leo\test\pylint-leo-rc.txt',
+    r'c:\leo.repo\leo-editor\leo\test\pylint-leo-rc-ref.txt',
+]
+for path in table:
+    f = open(path)
+    s = f.read()
+    f.close()
+    # print(len(s))
+    errors = []
+    n = 0
+    for i, line in enumerate(g.splitLines(s)):
+        try:
+            if print_all_lines:
+                print('  %3s %4s %s' % (i+1, n, line.rstrip()))
+            else:
+                g.toUnicode(line)
+        except UnicodeEncodeError:
+            print('**%3s %4s %s' % (i+1, n, len(line.rstrip())))
+            errors.append(i+1)
+        n += len(line)
+    print('%s error lines: %s' % (g.shortFileName(path), errors))
 </t>
 </tnodes>
 </leo_file>

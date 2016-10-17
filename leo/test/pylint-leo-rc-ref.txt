@@ -204,7 +204,7 @@ ignore-mixin-members=yes
 acquired-members=REQUEST,acl_users,aq_parent
 
 # Members which are set dynamically and missed by pylint inference system,
-# and so shouldn’t trigger E1101 when accessed.
+# and so should not trigger E1101.
 # Python regular expressions are accepted.
 generated-members = PyQt4.Q.+, PyQt4.QtGui.Q.+, PyQt5.Q.+, PyQt5.QtGui.Q.+,
 

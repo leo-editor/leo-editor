@@ -120,6 +120,10 @@ def define_datas():
         ('launchLeo-unified.spec', ''),
         ('leo_to_html.xsl', ''),
         ('pylint-leo.py', ''),
+         # In LeoPyRef.leo...
+        ('flake8-leo.py', ''),
+        ('load-leo.html', ''),
+        ('pyflakes-leo.py', ''),
         # ('setup.py', ''),
     # leo.commands...
         ext('.py', 'leo/commands'),

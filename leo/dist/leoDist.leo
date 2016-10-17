@@ -238,6 +238,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101027070126.1666"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -834,6 +835,12 @@ def deleteTempFiles (self,lines):
     dirDict['**top'] = [] # Create an entry for the root directory.
     for z in dirs:
         dirDict[z] = []
+        # Leo 5.4: Add leo/core/commit_timestamp.json
+        # This file is in .gitignore, but we mut write it here.
+        if z == 'leo/core':
+            # g.trace(z)
+            # g.trace('Adding commit_timestamp.json')
+            dirDict[z].append('commit_timestamp.json')
     # Assign files to dirDict.
     for line in lines:
         line = line.strip().replace('\\','/')
@@ -850,6 +857,7 @@ def deleteTempFiles (self,lines):
             assert line not in aList,repr(line)
             aList.append(fn)
             dirDict[path]=aList
+    # Trace the result.
     for theDir in sorted(dirDict):
         aList = dirDict.get(theDir)
         if aList and trace:
