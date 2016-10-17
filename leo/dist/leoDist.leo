@@ -218,7 +218,7 @@
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
 <v t="ekr.20141016123713.2120"><vh>copy_nsi_files (Not used)</vh></v>
-<v t="ekr.20110614062644.1378"><vh>copy_ref_files (not used)</vh></v>
+<v t="ekr.20110614062644.1378"><vh>copy_ref_files (Not used)</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
 <v t="ekr.20101027070126.1663"><vh>directoryList</vh></v>
@@ -691,28 +691,13 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 <t tx="ekr.20101027070126.1639"># Commit all files before running this script.
 
 '''
-Make all variable Leo distribution files in the top-level folder::
+Make these files in the top-level folder::
 
     git-manifest.txt
     nsi-install-files.txt
     nsi-uninstall-files.txt
     leo.zip.
 '''
-
-# Old:
-
-# Make all variable Leo distribution files::
-
-    # git-manifest.txt
-    # leo\dist\nsi-install-files.txt
-    # leo\dist\nsi-uninstall-files.txt
-    # leo.zip.
-
-# Copy these files from the leo\dist folder to the top-level folder::
-
-    # nsi-install-files.txt
-    # nsi-uninstall-files.txt
-    # nsi-boilerplate.txt
 
 version = '5.4-b1' ##version
 &lt;&lt; includes &gt;&gt;
@@ -727,10 +712,10 @@ g.es_print('done') # '@button make-leo done')
     '''
     A class to make these files in the leo-editor folder:
 
-    git-manifest.txt.
-    nsi-install-files.txt
-    nsi-uninstall-files.txt
-    leo.zip
+    - git-manifest.txt.
+    - nsi-install-files.txt
+    - nsi-uninstall-files.txt
+    - leo.zip
     '''
 
     @others
@@ -1493,7 +1478,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
         nsi-install-files.txt
         nsi-uninstall-files.txt
     '''
-    return #####
+    assert False, g.callers()
     names = (
         'nsi-install-files.txt',
         'nsi-uninstall-files.txt',

@@ -2338,7 +2338,6 @@ leo/www/silver_city.css
 leo_assoc.nsi
 leo_to_html.xsl
 load-leo.html
-nsi-boilerplate.txt
 nsi-install-files.txt
 nsi-uninstall-files.txt
 profileLeo.py
