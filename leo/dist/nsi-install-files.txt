@@ -66,7 +66,6 @@ File "C:\leo.repo\leo-editor\leo\config\leoSettings.leo"
 File "C:\leo.repo\leo-editor\leo\config\themes.leo"
 
 SetOutPath $INSTDIR\leo\core
-File "C:\leo.repo\leo-editor\leo\core\commit_timestamp.json"
 File "C:\leo.repo\leo-editor\leo\core\LeoPyRef.leo"
 File "C:\leo.repo\leo-editor\leo\core\__init__.py"
 File "C:\leo.repo\leo-editor\leo\core\buttons.txt"
