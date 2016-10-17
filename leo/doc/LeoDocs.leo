@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -2326,13 +2326,13 @@ This documentation was created using the rst3 command. The source code for this 
 
 *Please stop reading now if these problems don't interest you!*
 </t>
-<t tx="ekr.20050818163826.5">The following options are for the use of Bernhard Mulder's http plugin. The http plugin creates an http server running on a local port, typically 8080. When the http plugin is running you will see a purple message in the log window that looks something like this::
+<t tx="ekr.20050818163826.5">The following options are for the use of Bernhard Mulder's http plugin. The http plugin creates an http server running on a local port, typically 8130. When the http plugin is running you will see a purple message in the log window that looks something like this::
 
-    http serving enabled on port 8080, version 0.91
+    http serving enabled on port 8130...
 
 To use the http plugin, start a web browser and enter this url::
 
-    http://localhost:8080/
+    http://localhost:8130/
 
 You will see a a top level page containing one link for every open .leo file. Clicking on a link will cause the http server to pass a new page to the browser. You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.
 
@@ -9375,9 +9375,9 @@ Use this plugin is as follows:
 
 1. Start Leo with the plugin enabled. You will see a purple message that says something like::
 
-    "http serving enabled on port 8080, version 0.91"
+    http serving enabled on port 8130...
 
-2. Start a web browser, and enter the following url: http://localhost:8080/
+2. Start a web browser, and enter the following url: http://localhost:8130/
 
 You will see a a "top" level page containing one link for every open .leo file. Start clicking :-)
 
@@ -9387,7 +9387,7 @@ To enable this plugin put this into your file::
 
     @settings
     @bool http_active = True
-    @int  port = 8080
+    @int  port = 8130
     @string rst_http_attributename = 'rst_http_attribute'
 
 **Note**: the browser_encoding constant (defined in the top node of this file) must match the character encoding used in the browser. If it does not, non-ascii characters will look strange.
@@ -18933,7 +18933,7 @@ Rewrote ga.do_back_space and changed ga.do_tab and ga.do_back_space.</t>
 tagged with global_file_numbers
 
 This would take too long.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
