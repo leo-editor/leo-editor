@@ -207,9 +207,8 @@
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
 </v>
-<v t="ekr.20101027054254.1590"><vh>@edit ../../leo.nsi</vh></v>
-<v t="ekr.20101027115225.1494"><vh>@file nsi-boilerplate.txt</vh></v>
 <v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
+<v t="ekr.20101027054254.1590"><vh>@file ../../leo.nsi</vh></v>
 </v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
@@ -218,7 +217,7 @@
 <v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
-<v t="ekr.20141016123713.2120"><vh>copy_nsi_files</vh></v>
+<v t="ekr.20141016123713.2120"><vh>copy_nsi_files (Not used)</vh></v>
 <v t="ekr.20110614062644.1378"><vh>copy_ref_files (not used)</vh></v>
 <v t="ekr.20101027070126.1675"><vh>create_install_files</vh></v>
 <v t="ekr.20101027070126.1676"><vh>create_uninstall_files</vh></v>
@@ -230,7 +229,7 @@
 <v t="ekr.20101105103524.1493"><vh>make_zip</vh></v>
 <v t="ekr.20101027070126.1666"><vh>makeDicts</vh></v>
 <v t="ekr.20101027070126.1667"><vh>printMissing</vh></v>
-<v t="ekr.20161017070909.1"><vh>remove_commit_timestamp_json</vh></v>
+<v t="ekr.20161017070909.1"><vh>remove_commit_timestamp_json (Not used)</vh></v>
 </v>
 <v t="ekr.20101027070126.1680"><vh>utils...</vh>
 <v t="ekr.20101027070126.1679"><vh>openFile</vh></v>
@@ -692,19 +691,28 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
 <t tx="ekr.20101027070126.1639"># Commit all files before running this script.
 
 '''
-Make all variable Leo distribution files::
+Make all variable Leo distribution files in the top-level folder::
 
     git-manifest.txt
-    leo\dist\nsi-install-files.txt
-    leo\dist\nsi-uninstall-files.txt
-    leo.zip.
-
-Copy these files from the leo\dist folder to the top-level folder::
-
     nsi-install-files.txt
     nsi-uninstall-files.txt
-    nsi-boilerplate.txt
+    leo.zip.
 '''
+
+# Old:
+
+# Make all variable Leo distribution files::
+
+    # git-manifest.txt
+    # leo\dist\nsi-install-files.txt
+    # leo\dist\nsi-uninstall-files.txt
+    # leo.zip.
+
+# Copy these files from the leo\dist folder to the top-level folder::
+
+    # nsi-install-files.txt
+    # nsi-uninstall-files.txt
+    # nsi-boilerplate.txt
 
 version = '5.4-b1' ##version
 &lt;&lt; includes &gt;&gt;
@@ -717,11 +725,11 @@ g.es_print('done') # '@button make-leo done')
 </t>
 <t tx="ekr.20101027070126.1643">class LeoMaker:
 
-    '''A class to make Leo distribution files:
+    '''A class to make Leo distribution files in the top-level leo-editor folder:
 
     git-manifest.txt.
-    leo\dist\nsi-install-files.txt
-    leo\dist\nsi-uninstall-files.txt
+    nsi-install-files.txt
+    nsi-uninstall-files.txt
     leo.zip
     '''
 
@@ -746,7 +754,7 @@ g.es_print('done') # '@button make-leo done')
         self.create_install_files(dirs,dirDict,filesDict)
         self.create_uninstall_files(dirs,dirDict,filesDict)
         self.make_zip()
-        self.copy_nsi_files()
+        # self.copy_nsi_files()
         # self.remove_commit_timestamp_json()
 </t>
 <t tx="ekr.20101027070126.1663">def directoryList (self,rootDir):
@@ -894,6 +902,7 @@ def deleteTempFiles (self,lines):
 <t tx="ekr.20101027070126.1675">def create_install_files(self,dirs,dirDict,filesDict):
     '''Create leo/dist/nsi-install-files.txt'''
     global install_fn,rootDir
+    g.pdb()
     put = self.put
     self.f = self.openFile(install_fn)
     if not self.f: return
@@ -1186,8 +1195,10 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
 manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
-install_fn =    abspath(join(distDir,'nsi-install-files.txt')) # was distDir.
-uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt')) # was distDir.
+# install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
+# uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
+install_fn =    abspath(join(rootDir,'nsi-install-files.txt'))
+uninstall_fn =  abspath(join(rootDir,'nsi-uninstall-files.txt'))
 zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
 zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 
@@ -1482,12 +1493,12 @@ leo/test/unittest/.leo_shadow/  export-ignore
 
         nsi-install-files.txt
         nsi-uninstall-files.txt
-        nsi-boilerplate.txt
     '''
+    return #####
     names = (
         'nsi-install-files.txt',
         'nsi-uninstall-files.txt',
-        'nsi-boilerplate.txt',
+        # 'nsi-boilerplate.txt',
     )
     for fn in names:
         src = g.os_path_join(distDir,fn)
