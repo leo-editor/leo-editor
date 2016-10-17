@@ -641,7 +641,8 @@ import string
 import struct
 import subprocess
 import sys
-import time</t>
+import time
+import leo.core.leoVersion as leoVersion</t>
 <t tx="ekr.20090905082405.1490">def unlink (self,fn):
 
     # print('command: unlink: %s' % fn)
@@ -728,6 +729,8 @@ g.es_print('done') # '@button make-leo done')
 <t tx="ekr.20101027070126.1662">def run (self):
     '''The top-level logic.'''
     g.cls()
+    leoVersion.create_commit_timestamp_json()
+        # Create leo/core/commit_timestamp.json.
     self.clean_spellpyx()
     self.make_manifest()
     files = self.clean_manifest()

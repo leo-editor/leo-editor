@@ -1,6 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
-'''A module holding version-related info.'''
+'''
+A module for computing version-related info.
+
+Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
+'''
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node
@@ -16,13 +20,32 @@
 # Leo 5.1 final: April 17, 2015.
 # Leo 5.2 final: March 18, 2016.
 # Leo 5.3 final: May 2, 2016.
+# Leo 5.4b1: October 17, 2016.
 #@-<< version dates >>
 import leo.core.leoGlobals as g
-static_date = 'October 15, 2016' # Used only if no dynamic version.
+import json
+static_date = 'October 15, 2016' # Emergency fallback.
 version = "5.4-b1" # Always used.
 #@+others
-#@+node:ekr.20161016063005.1: ** git_version_from_git
-def get_version_from_git():
+#@+node:ekr.20161017040256.1: ** create_commit_timestamp_json
+def create_commit_timestamp_json():
+    '''
+    Create leo/core/commit_timestamp.json.
+
+    This is called from @button make-leo in leoDist.leo,
+    so get_version_from_git should always succeed.
+    '''
+    commit, date = get_version_from_git(short=False)
+    if commit:
+        path = g.os_path_finalize_join(
+            g.app.loadDir, '..', 'core', 'commit_timestamp.json')
+        f = open(path, 'w')
+        d = {'date': date, 'hash': commit}
+        json.dump(d, f)
+    else:
+        g.trace('can not create commit_timestamp.json')
+#@+node:ekr.20161016063005.1: ** get_version_from_git
+def get_version_from_git(short=True):
     trace = False
     import shlex
     import re
@@ -41,7 +64,9 @@ def get_version_from_git():
         out = g.toUnicode(out)
         if trace: g.trace(out)
         m = re.search('commit (.*)\n', out)
-        commit = m.group(1).strip()[:8] if m else ''
+        commit = m.group(1).strip() if m else ''
+        if commit and short:
+            commit = commit[:8]
         m = re.search('Date: (.*)\n', out)
         date = m.group(1).strip() if m else ''
         if trace: g.trace(commit, date)
@@ -51,69 +76,34 @@ def get_version_from_git():
         # g.es_exception()
         return None, None
 #@+node:ekr.20161016063719.1: ** get_version_from_json
-def get_version_from_json():
+def get_version_from_json(short=True):
     '''
-    Return version info parsed from leo/core/commit_timestamp.json.
-    
-    This suffers from two *serious* problems:
-    1. The dates don't get updated if the developer (me)
-       forgets to install the git hooks.
-    2. Always committing commit_timestamp.json creates merge conflicts.
+    Return the commit hash and date parsed from
+    leo/core/commit_timestamp.json.
     '''
     trace = False
-    import os
-    import json
-    date = None
-    try:
-        leo_core_path = os.path.dirname(os.path.realpath(__file__))
-            # leoVersion.py is in leo/core
-        commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
-        commit_info = json.load(open(commit_path))
-        if trace:
-            print('commit_path: %s' % commit_path)
-            print('commit_info: %s' % commit_info)
-        # build = commit_info['timestamp']
-        date = commit_info['asctime']
-    except Exception:
-        print('Warning: leo/core/commit_timestamp.json does not exist')
-    # attempt to grab commit + branch info from git, else ignore it
-    theDir = os.path.dirname(__file__)
-    path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
-    if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
-    if os.path.exists(path):
-        s = open(path, 'r').read()
-        if s.startswith('ref'):
-            # on a proper branch
-            pointer = s.split()[1]
-            path = os.path.join(theDir, '..', '..', '.git', pointer)
-            try:
-                s = open(path, 'r').read().strip()[0: 12]
-            except Exception:
-                s = s[0: 12]
-        else:
-            s = s[0: 12]
+    path = g.os_path_finalize_join(
+        g.app.loadDir, '..', 'core', 'commit_timestamp.json')
+    if g.os_path_exists(path):
+        try:
+            d = json.load(open(path))
+            if trace: g.trace(d)
+            commit = d.get('hash')
+            date = d.get('date')
+            if commit and short:
+                commit = commit[:8]
+            return commit, date
+        except Exception:
+            g.es_exception()
+            g.trace('Can not open', path)
+            return None, None
     else:
-        s = None
-    commit = s
-    return commit, date
+        g.trace('not found:', path)
+        return None, None
 #@-others
-if 1:
-    # No install hooks needed!
-    commit, date = get_version_from_git()
-else:
-    #@+<< about install hooks >>
-    #@+node:ekr.20150409201910.1: ** << about install hooks >>
-    #@@nocolor-node
-    #@+at
-    # 
-    # Developers should copy commit-msg & pre-commit from leo/extentions/hooks to
-    # leo-editor/.git/hooks.
-    # 
-    # These hooks cause Leo to update commit_timestamp.json automatically.
-    # 
-    # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
-    #@-<< about install hooks >>
-    commit, date = get_version_from_json()
+commit, date = get_version_from_git(short=True)
+if not date:
+    commit, date = get_version_from_json(short=True)
 if not date:
     date = static_date
 #@@language python
