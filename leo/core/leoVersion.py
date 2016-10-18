@@ -28,18 +28,26 @@ static_date = 'October 15, 2016' # Emergency fallback.
 version = "5.4-b1" # Always used.
 #@+others
 #@+node:ekr.20161017040256.1: ** create_commit_timestamp_json
-def create_commit_timestamp_json():
+def create_commit_timestamp_json(after=False):
     '''
     Create leo/core/commit_timestamp.json.
 
     This is called from @button make-leo in leoDist.leo,
     so get_version_from_git should always succeed.
     '''
+    g.trace(g.callers())
+    # Old bash code created: 
+    # {
+        # "asctime": "$(date)",
+        # "timestamp": "$(date '+%Y%m%d%H%M%S')"
+    # }
+
     commit, date = get_version_from_git(short=False)
     if commit:
         path = g.os_path_finalize_join(
             g.app.loadDir, '..', 'core', 'commit_timestamp.json')
         f = open(path, 'w')
+        if after: commit = 'after ' + commit
         d = {'date': date, 'hash': commit}
         json.dump(d, f)
     else:
