@@ -84,13 +84,8 @@ def get_version_from_git(short=True):
         return None, None
 #@+node:ekr.20161016063719.1: ** get_version_from_json
 def get_version_from_json(short=True):
-    '''
-    Return the commit hash and date parsed from
-    leo/core/commit_timestamp.json.
-    '''
+    '''Return the commit hash and date from leo/core/commit_timestamp.json.'''
     trace = False
-    # Old bash code created: 
-    # { "asctime": "$(date)", "timestamp": "$(date '+%Y%m%d%H%M%S')" }
     path = g.os_path_finalize_join(
         g.app.loadDir, '..', 'core', 'commit_timestamp.json')
     if g.os_path_exists(path):
@@ -98,6 +93,7 @@ def get_version_from_json(short=True):
             d = json.load(open(path))
             if trace: g.trace(d)
             commit = d.get('hash')
+            # The legacy pre-commit bash file writes 'asctime' and 'timestamp' keys.
             date = d.get('date') or d.get('asctime')
             if commit and short:
                 commit = commit[:8]
