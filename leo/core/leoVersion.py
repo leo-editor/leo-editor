@@ -35,7 +35,6 @@ def create_commit_timestamp_json(after=False):
     This is called from @button make-leo in leoDist.leo,
     so get_version_from_git should always succeed.
     '''
-    g.trace(g.callers())
     # Old bash code created: 
     # {
         # "asctime": "$(date)",
@@ -44,12 +43,14 @@ def create_commit_timestamp_json(after=False):
 
     commit, date = get_version_from_git(short=False)
     if commit:
+        base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
         path = g.os_path_finalize_join(
-            g.app.loadDir, '..', 'core', 'commit_timestamp.json')
+            base, '..', 'core', 'commit_timestamp.json')
         f = open(path, 'w')
         if after: commit = 'after ' + commit
         d = {'date': date, 'hash': commit}
         json.dump(d, f)
+        g.trace() ; g.print_dict(d, indent='') # ' '*4)
     else:
         g.trace('can not create commit_timestamp.json')
 #@+node:ekr.20161016063005.1: ** get_version_from_git
