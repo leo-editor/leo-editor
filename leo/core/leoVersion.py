@@ -35,6 +35,7 @@ def create_commit_timestamp_json(after=False):
     This is called from @button make-leo in leoDist.leo,
     so get_version_from_git should always succeed.
     '''
+    trace = True and not g.unitTesting
     # Old bash code created: 
     # {
         # "asctime": "$(date)",
@@ -49,7 +50,9 @@ def create_commit_timestamp_json(after=False):
         if after: commit = 'after ' + commit
         d = {'date': date, 'hash': commit}
         json.dump(d, f)
-        g.trace() ; g.print_dict(d, indent='') # ' '*4)
+        if trace:
+            g.trace()
+            g.print_dict(d)
     else:
         g.trace('can not create commit_timestamp.json')
 #@+node:ekr.20161016063005.1: ** get_version_from_git
