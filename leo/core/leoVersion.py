@@ -25,7 +25,7 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
 import leo.core.leoGlobals as g
 import json
 testing = False
-static_date = 'October 15, 2016' # Emergency fallback.
+static_date = 'October 17, 2016' # Emergency fallback.
 version = "5.4-b1" # Always used.
 #@+others
 #@+node:ekr.20161017040256.1: ** create_commit_timestamp_json
