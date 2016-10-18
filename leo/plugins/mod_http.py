@@ -356,7 +356,7 @@ class config(object):
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
-    http_port = 8080
+    http_port = 8130
     rst2_http_attributename = 'rst_http_attribute'
 #@+node:EKR.20040517080250.4: ** class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):

@@ -243,7 +243,8 @@ File "C:\leo.repo\leo-editor\leo\extensions\testExtension.py"
 SetOutPath $INSTDIR\leo\extensions\hooks
 File "C:\leo.repo\leo-editor\leo\extensions\hooks\commit-msg"
 File "C:\leo.repo\leo-editor\leo\extensions\hooks\install_hooks.py"
-File "C:\leo.repo\leo-editor\leo\extensions\hooks\pre-commit"
+File "C:\leo.repo\leo-editor\leo\extensions\hooks\pre-commit.py"
+File "C:\leo.repo\leo-editor\leo\extensions\hooks\pre-commit.sh"
 
 SetOutPath $INSTDIR\leo\external
 File "C:\leo.repo\leo-editor\leo\external\README.ckeditor.txt"
