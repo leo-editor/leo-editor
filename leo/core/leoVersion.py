@@ -24,7 +24,7 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
 #@-<< version dates >>
 import leo.core.leoGlobals as g
 import json
-testing = True
+testing = False
 static_date = 'October 15, 2016' # Emergency fallback.
 version = "5.4-b1" # Always used.
 #@+others
