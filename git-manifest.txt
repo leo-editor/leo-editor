@@ -1217,7 +1217,8 @@ leo/extensions/asciidoc.py
 leo/extensions/colors.py
 leo/extensions/hooks/commit-msg
 leo/extensions/hooks/install_hooks.py
-leo/extensions/hooks/pre-commit
+leo/extensions/hooks/pre-commit.py
+leo/extensions/hooks/pre-commit.sh
 leo/extensions/patch_11_01.py
 leo/extensions/readme-about-leo-extensions-folder.txt
 leo/extensions/sh.py
