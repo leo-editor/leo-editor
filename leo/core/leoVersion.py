@@ -40,7 +40,6 @@ def create_commit_timestamp_json(after=False):
         # "asctime": "$(date)",
         # "timestamp": "$(date '+%Y%m%d%H%M%S')"
     # }
-
     commit, date = get_version_from_git(short=False)
     if commit:
         base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
