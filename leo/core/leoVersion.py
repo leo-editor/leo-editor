@@ -24,6 +24,7 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
 #@-<< version dates >>
 import leo.core.leoGlobals as g
 import json
+testing = True
 static_date = 'October 15, 2016' # Emergency fallback.
 version = "5.4-b1" # Always used.
 #@+others
@@ -36,11 +37,6 @@ def create_commit_timestamp_json(after=False):
     so get_version_from_git should always succeed.
     '''
     trace = True and not g.unitTesting
-    # Old bash code created: 
-    # {
-        # "asctime": "$(date)",
-        # "timestamp": "$(date '+%Y%m%d%H%M%S')"
-    # }
     commit, date = get_version_from_git(short=False)
     if commit:
         base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
@@ -93,6 +89,8 @@ def get_version_from_json(short=True):
     leo/core/commit_timestamp.json.
     '''
     trace = False
+    # Old bash code created: 
+    # { "asctime": "$(date)", "timestamp": "$(date '+%Y%m%d%H%M%S')" }
     path = g.os_path_finalize_join(
         g.app.loadDir, '..', 'core', 'commit_timestamp.json')
     if g.os_path_exists(path):
@@ -100,19 +98,22 @@ def get_version_from_json(short=True):
             d = json.load(open(path))
             if trace: g.trace(d)
             commit = d.get('hash')
-            date = d.get('date')
+            date = d.get('date') or d.get('asctime')
             if commit and short:
                 commit = commit[:8]
             return commit, date
         except Exception:
             g.es_exception()
-            g.trace('Can not open', path)
+            g.trace('Error decoding', path)
             return None, None
     else:
         g.trace('not found:', path)
         return None, None
 #@-others
-commit, date = get_version_from_git(short=True)
+if testing:
+    commit, date = None, None
+else:
+    commit, date = get_version_from_git(short=True)
 if not date:
     commit, date = get_version_from_json(short=True)
 if not date:
