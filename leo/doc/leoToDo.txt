@@ -7,9 +7,11 @@
 @language rest
 @wrap
 
-Remake all doc files.
+* Remove buffer commands
 
-Update distribution checklist:
+- Remake all doc files.
+
+- Update distribution checklist:
 
     make-leo: if any files change, rerun make-leo.
 
