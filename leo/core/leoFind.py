@@ -1051,7 +1051,7 @@ class LeoFind(object):
         s = '%s: %s With: ' % (prompt, self._sString)
         k.setLabelBlue(s)
         self.addChangeStringToLabel()
-        k.getArg2(self.setReplaceString2)
+        k.getNextArg(self.setReplaceString2)
 
     def setReplaceString2(self, event):
         k = self.k
@@ -1144,7 +1144,7 @@ class LeoFind(object):
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
         k.getArgEscapeFlag = False # k.getArg may set this.
-        k.get1Arg(event, handler, tabList=self.findTextList, completion=True)
+        k.get1Arg(event, handler=handler, tabList=self.findTextList, completion=True)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
     def updateChangeList(self, s):
         if s not in self.changeTextList:

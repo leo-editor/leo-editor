@@ -473,18 +473,18 @@ class EditCommandsClass(BaseEditCommandsClass):
     def evalExpression(self, event):
         '''Evaluate a Python Expression entered in the minibuffer.'''
         k = self.c.k
-        state = k.getState('eval-expression')
-        if state == 0:
-            k.setLabelBlue('Eval: ')
-            k.getArg(event, 'eval-expression', 1, self.evalExpression)
-        else:
-            k.clearState()
-            try:
-                e = k.arg
-                result = str(eval(e, {}, {}))
-                k.setLabelGrey('Eval: %s -> %s' % (e, result))
-            except Exception:
-                k.setLabelGrey('Invalid Expression: %s' % e)
+        k.setLabelBlue('Eval: ')
+        k.get1Arg(event, handler=self.evalExpression1)
+
+    def evalExpression1(self, event):
+        k = self.c.k
+        k.clearState()
+        try:
+            e = k.arg
+            result = str(eval(e, {}, {}))
+            k.setLabelGrey('Eval: %s -> %s' % (e, result))
+        except Exception:
+            k.setLabelGrey('Invalid Expression: %s' % e)
     #@+node:ekr.20150514063305.214: *3* fill column and centering
     #@+at
     # 
@@ -533,19 +533,22 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setFillColumn(self, event):
         '''Set the fill column used by the center-line and center-region commands.'''
         k = self.c.k
-        state = k.getState('set-fill-column')
-        if state == 0:
+        self.w = self.editWidget(event)
+        if self.w:
             k.setLabelBlue('Set Fill Column: ')
-            k.getArg(event, 'set-fill-column', 1, self.setFillColumn)
-        else:
-            k.clearState()
-            try:
-                # Bug fix: 2011/05/23: set the fillColumn ivar!
-                self.fillColumn = n = int(k.arg)
-                k.setLabelGrey('fill column is: %d' % n)
-                k.commandName = 'set-fill-column %d' % n
-            except ValueError:
-                k.resetLabel()
+            k.get1Arg(event, handler=self.setFillColumn1)
+            
+    def setFillColumn1(self, event):
+        c, k, w = self.c, self.c.k, self.w
+        k.clearState()
+        try:
+            # Bug fix: 2011/05/23: set the fillColumn ivar!
+            self.fillColumn = n = int(k.arg)
+            k.setLabelGrey('fill column is: %d' % n)
+            k.commandName = 'set-fill-column %d' % n
+        except ValueError:
+            k.resetLabel()
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.217: *4* centerRegion
     @cmd('center-region')
     def centerRegion(self, event):
@@ -621,40 +624,39 @@ class EditCommandsClass(BaseEditCommandsClass):
     def findCharacterHelper(self, event, backward, extend):
         '''Put the cursor at the next occurance of a character on a line.'''
         k = self.c.k
-        tag = 'find-char'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = self.editWidget(event)
-            if not self.w:
-                return
-            self.event = event
-            self.backward = backward
-            self.extend = extend or self.extendMode # Bug fix: 2010/01/19
-            self.insert = self.w.getInsertPoint()
-            s = '%s character%s: ' % (
-                'Backward find' if backward else 'Find',
-                ' & extend' if extend else '')
-            k.setLabelBlue(s)
-            # Get the arg without touching the focus.
-            k.getArg(event, tag, 1, self.findCharacter, oneCharacter=True, useMinibuffer=False)
+        self.w = self.editWidget(event)
+        if not self.w:
+            return
+        self.event = event
+        self.backward = backward
+        self.extend = extend or self.extendMode # Bug fix: 2010/01/19
+        self.insert = self.w.getInsertPoint()
+        s = '%s character%s: ' % (
+            'Backward find' if backward else 'Find',
+            ' & extend' if extend else '')
+        k.setLabelBlue(s)
+        # Get the arg without touching the focus.
+        k.getArg(event, handler=self.findCharacter1, oneCharacter=True, useMinibuffer=False)
+
+    def findCharacter1(self, event):
+        k = self.c.k
+        event, w = self.event, self.w
+        backward = self.backward
+        extend = self.extend or self.extendMode
+        ch = k.arg
+        s = w.getAllText()
+        ins = w.toPythonIndex(self.insert)
+        i = ins + -1 if backward else + 1 # skip the present character.
+        if backward:
+            start = 0
+            j = s.rfind(ch, start, max(start, i)) # Skip the character at the cursor.
+            if j > -1: self.moveToHelper(event, j, extend)
         else:
-            event, w = self.event, self.w
-            backward = self.backward
-            extend = self.extend or self.extendMode
-            ch = k.arg
-            s = w.getAllText()
-            ins = w.toPythonIndex(self.insert)
-            i = ins + -1 if backward else + 1 # skip the present character.
-            if backward:
-                start = 0
-                j = s.rfind(ch, start, max(start, i)) # Skip the character at the cursor.
-                if j > -1: self.moveToHelper(event, j, extend)
-            else:
-                end = len(s)
-                j = s.find(ch, min(i, end), end) # Skip the character at the cursor.
-                if j > -1: self.moveToHelper(event, j, extend)
-            k.resetLabel()
-            k.clearState()
+            end = len(s)
+            j = s.find(ch, min(i, end), end) # Skip the character at the cursor.
+            if j > -1: self.moveToHelper(event, j, extend)
+        k.resetLabel()
+        k.clearState()
     #@+node:ekr.20150514063305.223: *4* findWord and FindWordOnLine & helper
     @cmd('find-word')
     def findWord(self, event):
@@ -668,61 +670,61 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.224: *5* findWordHelper
     def findWordHelper(self, event, oneLine):
         k = self.c.k
-        tag = 'find-word'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = self.editWidget(event)
-            if not self.w:
-                return
+        self.w = self.editWidget(event)
+        if self.w:
             self.oneLineFlag = oneLine
             k.setLabelBlue('Find word %sstarting with: ' % (
                 'in line ' if oneLine else ''))
-            k.getArg(event, tag, 1, self.findWord, oneCharacter=True)
-        else:
-            ch = k.arg
-            if ch:
-                w = self.w
-                i = w.getInsertPoint()
-                s = w.getAllText()
-                end = len(s)
-                if self.oneLineFlag:
-                    end = s.find('\n', i) # Limit searches to this line.
-                    if end == -1: end = len(s)
-                while i < end:
-                    i = s.find(ch, i + 1, end) # Ensure progress and i > 0.
-                    if i == -1:
-                        break
-                    elif not g.isWordChar(s[i - 1]):
-                        w.setSelectionRange(i, i, insert=i)
-                        break
-            k.resetLabel()
-            k.clearState()
+            k.get1Arg(event, handler=self.findWord1, oneCharacter=True)
+            
+    def findWord1(self, event):
+        c, k = self.c, self.c.k
+        ch = k.arg
+        if ch:
+            w = self.w
+            i = w.getInsertPoint()
+            s = w.getAllText()
+            end = len(s)
+            if self.oneLineFlag:
+                end = s.find('\n', i) # Limit searches to this line.
+                if end == -1: end = len(s)
+            while i < end:
+                i = s.find(ch, i + 1, end) # Ensure progress and i > 0.
+                if i == -1:
+                    break
+                elif not g.isWordChar(s[i - 1]):
+                    w.setSelectionRange(i, i, insert=i)
+                    break
+        k.resetLabel()
+        k.clearState()
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.225: *3* goto...
     #@+node:ekr.20150514063305.226: *4* gotoCharacter
     @cmd('goto-char')
     def gotoCharacter(self, event):
         '''Put the cursor at the n'th character of the buffer.'''
         k = self.c.k
-        state = k.getState('goto-char')
-        if state == 0:
-            self.w = self.editWidget(event)
-            if self.w:
-                k.setLabelBlue("Goto n'th character: ")
-                k.getArg(event, 'goto-char', 1, self.gotoCharacter)
-        else:
-            n = k.arg
-            w = self.w
-            ok = False
-            if n.isdigit():
-                n = int(n)
-                if n >= 0:
-                    w.setInsertPoint(n)
-                    w.seeInsertPoint()
-                    ok = True
-            if not ok:
-                g.warning('goto-char takes non-negative integer argument')
-            k.resetLabel()
-            k.clearState()
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue("Goto n'th character: ")
+            k.get1Arg(event, handler=self.gotoCharacter1)
+                
+    def gotoCharacter1(self, event):
+        c, k = self.c, self.c.k
+        n = k.arg
+        w = self.w
+        ok = False
+        if n.isdigit():
+            n = int(n)
+            if n >= 0:
+                w.setInsertPoint(n)
+                w.seeInsertPoint()
+                ok = True
+        if not ok:
+            g.warning('goto-char takes non-negative integer argument')
+        k.resetLabel()
+        k.clearState()
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.227: *4* gotoGlobalLine (leoEditCommands)
     @cmd('goto-global-line')
     def gotoGlobalLine(self, event):
@@ -739,7 +741,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.w = self.editWidget(event)
         if self.w:
             k.setLabelBlue('Goto global line: ')
-            k.get1Arg(event, self.gotoGlobalLine1)
+            k.get1Arg(event, handler=self.gotoGlobalLine1)
 
     def gotoGlobalLine1(self, event):
         c, k = self.c, self.c.k
@@ -753,21 +755,23 @@ class EditCommandsClass(BaseEditCommandsClass):
     def gotoLine(self, event):
         '''Put the cursor at the n'th line of the buffer.'''
         k = self.c.k
-        state = k.getState('goto-line')
-        if state == 0:
-            self.w = self.editWidget(event)
-            if self.w:
-                k.setLabelBlue('Goto line: ')
-                k.getArg(event, 'goto-line', 1, self.gotoLine)
-        else:
-            n, w = k.arg, self.w
-            if n.isdigit():
-                s = w.getAllText()
-                i = g.convertRowColToPythonIndex(s, n, 0)
-                w.setInsertPoint(i)
-                w.seeInsertPoint()
-            k.resetLabel()
-            k.clearState()
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue('Goto line: ')
+            k.get1Arg(event, handler=self.gotoLine1)
+                
+    def gotoLine1(self, event):
+        c, k = self.c, self.c.k
+        n, w = k.arg, self.w
+        if n.isdigit():
+            n = int(n)
+            s = w.getAllText()
+            i = g.convertRowColToPythonIndex(s, n-1, 0)
+            w.setInsertPoint(i)
+            w.seeInsertPoint()
+        k.resetLabel()
+        k.clearState()
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.229: *3* icons... (leoEditCommands)
     #@+at
     # 
@@ -1021,7 +1025,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* info...
-    #@+node:ekr.20150514063305.246: *4* howMany
+    #@+node:ekr.20150514063305.246: *4* howMany (improved)
     @cmd('how-many')
     def howMany(self, event):
         '''
@@ -1029,19 +1033,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         in the body text of the presently selected node.
         '''
         k = self.c.k
-        w = self.editWidget(event)
-        if not w:
-            return
-        state = k.getState('how-many')
-        if state == 0:
-            k.setLabelBlue('How many: ')
-            k.getArg(event, 'how-many', 1, self.howMany)
-        else:
-            k.clearState()
-            s = w.getAllText()
-            reg = re.compile(k.arg)
-            i = reg.findall(s)
-            k.setLabelGrey('%s occurances of %s' % (len(i), k.arg))
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue('Enter regex: ')
+            k.get1Arg(event, handler=self.howMany1)
+            
+    def howMany1(self, event):
+        c, k, w = self.c, self.c.k, self.w
+        k.clearState()
+        s = w.getAllText()
+        n = sum([len(re.findall(k.arg, z)) for z in g.splitLines(s)])
+        k.setLabelGrey('%s occurances of %s' % (n, k.arg))
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.247: *4* lineNumber
     @cmd('line-number')
     def lineNumber(self, event):
@@ -1468,30 +1471,29 @@ class EditCommandsClass(BaseEditCommandsClass):
     def replaceCurrentCharacter(self, event):
         '''Replace the current character with the next character typed.'''
         k = self.c.k
-        tag = 'replace-current-character'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = self.editWidget(event)
-            if self.w:
-                k.setLabelBlue('Replace Character: ')
-                k.getArg(event, tag, 1, self.replaceCurrentCharacter)
-        else:
-            w = self.w
-            ch = k.arg
-            if ch:
-                i, j = w.getSelectionRange()
-                if i > j: i, j = j, i
-                # Use raw insert/delete to retain the coloring.
-                if i == j:
-                    i = max(0, i - 1)
-                    w.delete(i)
-                else:
-                    w.delete(i, j)
-                w.insert(i, ch)
-                w.setInsertPoint(i + 1)
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue('Replace Character: ')
+            k.get1Arg(event, handler=self.replaceCurrentCharacter1)
+
+    def replaceCurrentCharacter1(self, event):
+        c, k, w = self.c, self.c.k, self.w
+        ch = k.arg
+        if ch:
+            i, j = w.getSelectionRange()
+            if i > j: i, j = j, i
+            # Use raw insert/delete to retain the coloring.
+            if i == j:
+                i = max(0, i - 1)
+                w.delete(i)
+            else:
+                w.delete(i, j)
+            w.insert(i, ch)
+            w.setInsertPoint(i + 1)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.268: *4* selfInsertCommand, helpers
     @cmd('self-insert-command')
     def selfInsertCommand(self, event, action='insert'):
@@ -1868,7 +1870,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 p.h = time
             c.redrawAndEdit(p, selectAll=True)
     #@+node:ekr.20150514063305.280: *3* line...
-    #@+node:ekr.20150514063305.281: *4* flushLines
+    #@+node:ekr.20150514063305.281: *4* flushLines (doesn't work)
     @cmd('flush-lines')
     def flushLines(self, event):
         '''
@@ -1879,16 +1881,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         on the region instead.
         '''
         k = self.c.k
-        state = k.getState('flush-lines')
-        if state == 0:
-            k.setLabelBlue('Flush lines regexp: ')
-            k.getArg(event, 'flush-lines', 1, self.flushLines)
-        else:
-            k.clearState()
-            k.resetLabel()
-            self.linesHelper(event, k.arg, 'flush')
-            k.commandName = 'flush-lines %s' % k.arg
-    #@+node:ekr.20150514063305.282: *4* keepLines
+        k.setLabelBlue('Flush lines regexp: ')
+        k.get1Arg(event, handler=self.flushLines1)
+            
+    def flushLines1(self, event):
+        k = self.c.k
+        k.clearState()
+        k.resetLabel()
+        self.linesHelper(event, k.arg, 'flush')
+        k.commandName = 'flush-lines %s' % k.arg
+    #@+node:ekr.20150514063305.282: *4* keepLines (doesn't work)
     @cmd('keep-lines')
     def keepLines(self, event):
         '''
@@ -1899,15 +1901,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         on the region instead.
         '''
         k = self.c.k
-        state = k.getState('keep-lines')
-        if state == 0:
-            k.setLabelBlue('Keep lines regexp: ')
-            k.getArg(event, 'keep-lines', 1, self.keepLines)
-        else:
-            k.clearState()
-            k.resetLabel()
-            self.linesHelper(event, k.arg, 'keep')
-            k.commandName = 'keep-lines %s' % k.arg
+        k.setLabelBlue('Keep lines regexp: ')
+        k.get1Arg(event, handler=self.keepLines1)
+            
+    def keepLines1(self, event):
+        k = self.c.k
+        k.clearState()
+        k.resetLabel()
+        self.linesHelper(event, k.arg, 'keep')
+        k.commandName = 'keep-lines %s' % k.arg
     #@+node:ekr.20150514063305.283: *4* linesHelper
     def linesHelper(self, event, pattern, which):
         w = self.editWidget(event)
@@ -3604,28 +3606,28 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('set-ua')
     def setUa(self, event):
         '''Prompt for the name and value of a uA, then set the uA in the present node.'''
+        k = self.c.k
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue('Set uA: ')
+            k.get1Arg(event, handler=self.setUa1)
+                
+    def setUa1(self, event):
+        k = self.c.k
+        self.uaName = k.arg
+        s = 'Set uA: %s To: ' % (self.uaName)
+        k.setLabelBlue(s)
+        k.getNextArg(self.setUa2)
+            
+    def setUa2(self, event):
         c, k = self.c, self.c.k
-        tag = 'set-ua'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = self.editWidget(event)
-            if self.w:
-                k.setLabelBlue('Set uA: ')
-                k.getArg(event, tag, 1, self.setUa)
-        elif state == 1:
-            self.uaName = k.arg
-            s = 'Set uA: %s To: ' % (self.uaName)
-            k.setLabelBlue(s)
-            k.getArg(event, tag, 2, self.setUa, completion=False)
-        else:
-            assert state == 2, state
-            val = k.arg
-            d = c.p.v.u
-            d[self.uaName] = val
-            self.printUas()
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
+        val = k.arg
+        d = c.p.v.u
+        d[self.uaName] = val
+        self.printUas()
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
     #@-others
 #@-others
 #@-leo

@@ -293,19 +293,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def deleteFile(self, event):
         '''Prompt for the name of a file and delete it.'''
         k = self.c.k
-        state = k.getState('delete_file')
-        if state == 0:
-            k.setLabelBlue('Delete File: ')
-            k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event, 'delete_file', 1, self.deleteFile)
-        else:
-            k.keyboardQuit()
-            k.clearState()
-            try:
-                os.remove(k.arg)
-                k.setStatusLabel('Deleted: %s' % k.arg)
-            except Exception:
-                k.setStatusLabel('Not Deleted: %s' % k.arg)
+        k.setLabelBlue('Delete File: ')
+        k.extendLabel(os.getcwd() + os.sep)
+        k.get1Arg(event, handler=self.deleteFile1)
+            
+    def deleteFile1(self, event):
+        k = self.c.k
+        k.keyboardQuit()
+        k.clearState()
+        try:
+            os.remove(k.arg)
+            k.setStatusLabel('Deleted: %s' % k.arg)
+        except Exception:
+            k.setStatusLabel('Not Deleted: %s' % k.arg)
     #@+node:ekr.20150514063305.364: *3* efc.diff
     @cmd('file-diff-files')
     def diff(self, event=None):
@@ -356,19 +356,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def makeDirectory(self, event):
         '''Prompt for the name of a directory and create it.'''
         k = self.c.k
-        state = k.getState('make_directory')
-        if state == 0:
-            k.setLabelBlue('Make Directory: ')
-            k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event, 'make_directory', 1, self.makeDirectory)
-        else:
-            k.keyboardQuit()
-            k.clearState()
-            try:
-                os.mkdir(k.arg)
-                k.setStatusLabel("Created: %s" % k.arg)
-            except Exception:
-                k.setStatusLabel("Not Create: %s" % k.arg)
+        k.setLabelBlue('Make Directory: ')
+        k.extendLabel(os.getcwd() + os.sep)
+        k.get1Arg(event, handler=self.makeDirectory1)
+            
+    def makeDirectory1(self, event):
+        k = self.c.k
+        k.keyboardQuit()
+        k.clearState()
+        try:
+            os.mkdir(k.arg)
+            k.setStatusLabel("Created: %s" % k.arg)
+        except Exception:
+            k.setStatusLabel("Not Created: %s" % k.arg)
     #@+node:ekr.20150514063305.368: *3* efc.openOutlineByName
     @cmd('file-open-by-name')
     def openOutlineByName(self, event):
@@ -397,19 +397,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def removeDirectory(self, event):
         '''Prompt for the name of a directory and delete it.'''
         k = self.c.k
-        state = k.getState('remove_directory')
-        if state == 0:
-            k.setLabelBlue('Remove Directory: ')
-            k.extendLabel(os.getcwd() + os.sep)
-            k.getArg(event, 'remove_directory', 1, self.removeDirectory)
-        else:
-            k.keyboardQuit()
-            k.clearState()
-            try:
-                os.rmdir(k.arg)
-                k.setStatusLabel('Removed: %s' % k.arg)
-            except Exception:
-                k.setStatusLabel('Not Removed: %s' % k.arg)
+        k.setLabelBlue('Remove Directory: ')
+        k.extendLabel(os.getcwd() + os.sep)
+        k.get1Arg(event, handler=self.removeDirectory1)
+            
+    def removeDirectory1(self, event):
+        k = self.c.k
+        k.keyboardQuit()
+        k.clearState()
+        try:
+            os.rmdir(k.arg)
+            k.setStatusLabel('Removed: %s' % k.arg)
+        except Exception:
+            k.setStatusLabel('Not Removed: %s' % k.arg)
     #@+node:ekr.20150514063305.370: *3* efc.saveFile
     @cmd('file-save')
     def saveFile(self, event):

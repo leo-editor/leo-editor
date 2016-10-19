@@ -30,13 +30,23 @@ class ControlCommandsClass(BaseEditCommandsClass):
     def advertizedUndo(self, event):
         '''Undo the previous command.'''
         self.c.undoer.undo()
-    #@+node:ekr.20150514063305.91: *3* executeSubprocess
+    #@+node:ekr.20150514063305.91: *3* executeSubprocess (improved)
     def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
+        trace = False and not g.unitTesting
+        import sys
         k = self.c.k
         try:
-            args = shlex.split(g.toEncodedString(command))
-            subprocess.Popen(args).wait()
+            p = subprocess.Popen(
+                shlex.split(command),
+                stdout=subprocess.PIPE,
+                stderr=None if trace else subprocess.PIPE,
+                    # subprocess.DEVNULL is Python 3 only.
+                shell=sys.platform.startswith('win'),
+            )
+            out, err = p.communicate()
+            for line in g.splitLines(out):
+                g.es_print(g.toUnicode(line.rstrip()))
         except Exception:
             g.es_exception()
         k.keyboardQuit()
@@ -76,17 +86,18 @@ class ControlCommandsClass(BaseEditCommandsClass):
             --> set-silent-mode
         '''
         self.c.k.silentMode = True
-    #@+node:ekr.20150514063305.94: *3* shellCommand
+    #@+node:ekr.20150514063305.94: *3* shellCommand (improved)
     @cmd('shell-command')
     def shellCommand(self, event):
         '''Execute a shell command.'''
         k = self.c.k
-        state = k.getState('shell-command')
-        if state == 0:
-            k.setLabelBlue('shell-command: ')
-            k.getArg(event, 'shell-command', 1, self.shellCommand)
-        else:
-            command = k.arg
+        k.setLabelBlue('shell-command: ')
+        k.get1Arg(event, self.shellCommand1)
+            
+    def shellCommand1(self, event):
+        k = self.c.k
+        command = g.toUnicode(k.arg)
+        if command:
             # k.commandName = 'shell-command: %s' % command
             # k.clearState()
             self.executeSubprocess(event, command)

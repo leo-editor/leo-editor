@@ -42,9 +42,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
         self.w = self.editWidget(event)
         if self.w:
             self.c.k.setLabelBlue('Append to buffer: ')
-            self.getBufferName(event, self.appendToBufferFinisher)
+            self.getBufferName(event, self.appendToBuffer1)
 
-    def appendToBufferFinisher(self, name):
+    def appendToBuffer1(self, name):
         c, w = self.c, self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
@@ -59,14 +59,15 @@ class BufferCommandsClass(BaseEditCommandsClass):
             c.redraw_after_icons_changed()
             c.recolor()
     #@+node:ekr.20150514045829.7: *4* copyToBuffer
+    @cmd('buffer-copy')
     def copyToBuffer(self, event):
         '''Add the selected body text to the end of the body text of a named buffer (node).'''
         self.w = self.editWidget(event)
         if self.w:
             self.c.k.setLabelBlue('Copy to buffer: ')
-            self.getBufferName(event, self.copyToBufferFinisher)
+            self.getBufferName(event, self.copyToBuffer1)
 
-    def copyToBufferFinisher(self, name):
+    def copyToBuffer1(self, name):
         c, w = self.c, self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
@@ -79,14 +80,15 @@ class BufferCommandsClass(BaseEditCommandsClass):
             c.redraw_after_icons_changed()
             c.recolor()
     #@+node:ekr.20150514045829.8: *4* insertToBuffer
+    @cmd('buffer-insert')
     def insertToBuffer(self, event):
         '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
         self.w = self.editWidget(event)
         if self.w:
             self.c.k.setLabelBlue('Insert to buffer: ')
-            self.getBufferName(event, self.insertToBufferFinisher)
+            self.getBufferName(event, self.insertToBuffer1)
 
-    def insertToBufferFinisher(self, name):
+    def insertToBuffer1(self, name):
         c, w = self.c, self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
@@ -105,9 +107,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
         self.w = self.editWidget(event)
         if self.w:
             self.c.k.setLabelBlue('Kill buffer: ')
-            self.getBufferName(event, self.killBufferFinisher)
+            self.getBufferName(event, self.killBuffer1)
 
-    def killBufferFinisher(self, name):
+    def killBuffer1(self, name):
         c = self.c
         p = self.findBuffer(name)
         if p:
@@ -149,9 +151,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
         self.w = self.editWidget(event)
         if self.w:
             self.c.k.setLabelBlue('Prepend to buffer: ')
-            self.getBufferName(event, self.prependToBufferFinisher)
+            self.getBufferName(event, self.prependToBuffer1)
 
-    def prependToBufferFinisher(self, name):
+    def prependToBuffer1(self, name):
         c, w = self.c, self.w
         s = w.getSelectedText()
         p = self.findBuffer(name)
@@ -164,7 +166,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.endCommand()
             c.redraw_after_icons_changed()
             c.recolor()
-    #@+node:ekr.20150514045829.12: *4* renameBuffer
+    #@+node:ekr.20150514045829.12: *4* renameBuffer (not ready)
     def renameBuffer(self, event):
         '''Rename a buffer, i.e., change a node's headline.'''
         g.es('rename-buffer not ready yet')
@@ -190,9 +192,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
     def switchToBuffer(self, event):
         '''Select a buffer (node) by its name (headline).'''
         self.c.k.setLabelBlue('Switch to buffer: ')
-        self.getBufferName(event, self.switchToBufferFinisher)
+        self.getBufferName(event, self.switchToBuffer1)
 
-    def switchToBufferFinisher(self, name):
+    def switchToBuffer1(self, name):
         c = self.c
         p = self.findBuffer(name)
         if p:
@@ -225,25 +227,24 @@ class BufferCommandsClass(BaseEditCommandsClass):
         for p in self.c.all_unique_positions():
             if p.v == v:
                 return p
-        g.trace("Can't happen", name)
+        g.es_print("no node named", name, color='orange')
         return None
     #@+node:ekr.20150514045829.17: *4* getBufferName
     def getBufferName(self, event, finisher):
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
         k = self.c.k
-        state = k.getState('getBufferName')
-        if state == 0:
-            self.computeData()
-            self.getBufferNameFinisher = finisher
-            prefix = k.getLabel()
-            k.getArg(event, 'getBufferName', 1, self.getBufferName,
-                prefix=prefix, tabList=self.nameList)
-        else:
-            k.resetLabel()
-            k.clearState()
-            finisher = self.getBufferNameFinisher
-            self.getBufferNameFinisher = None
-            finisher(k.arg)
+        self.computeData()
+        self.getBufferNameFinisher = finisher
+        prefix = k.getLabel()
+        k.get1Arg(event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
+            
+    def getBufferName1(self, event):
+        k = self.c.k
+        k.resetLabel()
+        k.clearState()
+        finisher = self.getBufferNameFinisher
+        self.getBufferNameFinisher = None
+        finisher(k.arg)
     #@-others
 #@-others
 #@-leo

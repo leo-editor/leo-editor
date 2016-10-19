@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
-	<global_window_position top="55" left="593" height="919" width="1023"/>
+<globals body_outline_ratio="0.43" body_secondary_ratio="0.42">
+	<global_window_position top="80" left="174" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735508302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73550a302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735508302e362e32372e3871157d71165808000000616e6e6f7461746571177d7118735509302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3871097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161011052921.1"><vh>Recent</vh>
 <v t="edward.20160919053702.1"><vh>Ubuntu/Py3 fails</vh>
@@ -1259,14 +1259,16 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20111214104615.3942"></v>
 <v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
+<v t="ekr.20161019120845.1"><vh>recent getarg failures</vh>
+<v t="ekr.20150414144038.1"><vh>@test dabbrev-expand</vh></v>
+<v t="ekr.20070217071121.21"><vh>@test rectangle-string</vh>
+<v t="ekr.20070217071121.22"><vh>work</vh></v>
+<v t="ekr.20070217071121.23"><vh>before sel=2.3,5.6</vh></v>
+<v t="ekr.20070217071121.24"><vh>after sel=2.3,5.8</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
-<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
-<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
-<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
-<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
-<v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
-<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
+<v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
+<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -7817,6 +7819,23 @@ SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING T
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
+<t tx="ekr.20061104172236.2"># targetWord
+e = c.editCommands
+k = c.k
+w = c.frame.body.wrapper
+for val in (True,False):
+    k.arg = 't' # 'targetWord'
+    w.setInsertPoint(0)
+    e.w = w
+    e.oneLineFlag = val
+    f = e.findWord1(event=None)
+    i,j = w.getSelectionRange()
+    assert i == 2, 'expected 2, got %s' % (i)
+    # s = w.getAllText()
+    # ch = s[i]
+    # assert word == 'targetWord', 'got: %s' % word
+
+</t>
 <t tx="ekr.20061104172236.23">w = c.frame.body.bodyCtrl
 y = 10
 for x in range(0,100,10):
@@ -7965,6 +7984,29 @@ else:
     s = '%s sel=%s,%s' % (prefix,i,j)
     c.setHeadString(p,s)
 </t>
+<t tx="ekr.20070217071121.21">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20070217071121.22">before
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+after
+</t>
+<t tx="ekr.20070217071121.23">before
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+aaaxxxbbb
+after
+</t>
+<t tx="ekr.20070217071121.24">before
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+aaas...sbbb
+after
+</t>
 <t tx="ekr.20070217072822">def getSel(c):
     
     w = c.frame.body.bodyCtrl
@@ -8049,6 +8091,20 @@ finally:
 Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080405085247.1"></t>
+<t tx="ekr.20080408094623.1"># start
+# targetWord
+
+e = c.editCommands
+k = c.k
+w = c.frame.body.wrapper
+w.setInsertPoint(0)
+k.arg = 't' # 'targetWord'
+e.w = w
+e.oneLineFlag = False
+e.findWord1(event=None)
+i,j = w.getSelectionRange()
+assert i == 10, 'expected 10, got %s' % (i)
+</t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080806084924.2">@others
 </t>
@@ -8145,141 +8201,6 @@ pass
 </t>
 <t tx="ekr.20081121164135.1">path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 c.testManager.runLeoTest(path)
-</t>
-<t tx="ekr.20090529141856.4774">@language python
-</t>
-<t tx="ekr.20090529141856.4775">@language javascript
-
-// regexps that look like section references.
-
-{
-	name: "macro",
-	match: "&lt;&lt;",
-	lookaheadRegExp: /&lt;&lt;([^&gt;\s]+)(?:\s*)((?:[^&gt;]|(?:&gt;(?!&gt;)))*)&gt;&gt;/mg,
-	handler: function(w)
-	{
-		this.lookaheadRegExp.lastIndex = w.matchStart;
-		var lookaheadMatch = this.lookaheadRegExp.exec(w.source);
-		if(lookaheadMatch &amp;&amp; lookaheadMatch.index == w.matchStart &amp;&amp; lookaheadMatch[1]) {
-			w.nextMatch = this.lookaheadRegExp.lastIndex;
-			invokeMacro(w.output,lookaheadMatch[1],lookaheadMatch[2],w,w.tiddler);
-		}
-	}
-},
-
-// Comments that look like section references.
-
-// &lt;&lt;gradient [[tiddler name]] vert|horiz rgb rgb rgb rgb... &gt;&gt;
-
-config.macros.gradient.handler = function(place,macroName,params,wikifier)
-{
-	var panel = wikifier ? createTiddlyElement(place,"div",null,"gradient") : place;
-	panel.style.position = "relative";
-	panel.style.overflow = "hidden";
-	panel.style.zIndex = "0";
-	if(wikifier) {
-		var styles = config.formatterHelpers.inlineCssHelper(wikifier);
-		config.formatterHelpers.applyCssHelper(panel,styles);
-	}
-	var colours = [];
-	for(var t=1; t&lt;params.length; t++) {
-		var c = new RGB(params[t]);
-		if(c)
-			colours.push(c);
-	}
-	drawGradient(panel,params[0] != "vert",colours);
-	if(wikifier)
-		wikifier.subWikify(panel,"&gt;&gt;");
-	if(document.all) {
-		panel.style.height = "100%";
-		panel.style.width = "100%";
-	}
-};
-
-// @Deprecated: Use &lt;br&gt; or &lt;br /&gt; instead of &lt;&lt;br&gt;&gt;
-config.macros.br = {};
-config.macros.br.handler = function(place)
-{
-	createTiddlyElement(place,"br");
-};
-</t>
-<t tx="ekr.20090529141856.4776">s = '''\
-
-String.prototype.toJSONString = function()
-{
-    if(/["\\\\\\x00-\\x1f]/.test(this))
-		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-	return '"' + this + '"';
-};
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20090529141856.4777">s = '''\
-
-// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
-String.prototype.toJSONString = function()
-{
-	var m = {
-		'\\b': '\\\\b',
-		'\\f': '\\\\f',
-		'\\n': '\\\\n',
-		'\\r': '\\\\r',
-		'\\t': '\\\\t',
-		'"' : '\\\\"',
-		'\\\\': '\\\\\\\\'
-		};
-	var replaceFn = function(a,b) {
-		var c = m[b];
-		if(c)
-			return c;
-		c = b.charCodeAt();
-		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-		};
-    if(/["\\\\\\x00-\\x1f]/.test(this))
-		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-	return '"' + this + '"';
-};
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20090529141856.4778">s = '''\
-
-// Restarting
-function restart()
-{
-	invokeParamifier(params,"onstart");
-	if(story.isEmpty()) {
-		var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
-		for(var t=0; t&lt;tiddlers.length; t++) {
-			story.displayTiddler("bottom",tiddlers[t].title);
-		}
-	}
-	window.scrollTo(0,0);
-}
-
-'''
-
-# Double each backslash (they are in a docstring).
-# chars = [z for z in s]
-# s = []
-# for z in char:
-    # if z == '\\': s.append('\\\\')
-    # else: s.append(z)
-# s = s.join('')
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -12690,44 +12611,6 @@ finally:
     pass
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
-<t tx="ekr.20140218042220.4347">s = '''\
-
-var c3 = (function () {
-    "use strict";
-
-    // Globals
-    var c3 = { version: "0.0.1"   };
-
-    c3.someFunction = function () {
-        console.log("Just a demo...");
-    };
-
-    return c3;
-}());
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20140218151418.4353">s = '''\
-var express = require('express');
-
-var app = express.createServer(express.logger());
-
-app.get('/', function(request, response) {
-response.send('Hello World!');
-});
-
-var port = process.env.PORT || 5000;
-app.listen(port, function() {
-console.log("Listening on " + port);
-});
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
@@ -12753,6 +12636,28 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150414144038.1"># main after
+# mainto
+
+ac = c.abbrevCommands
+w = c.frame.body.wrapper
+s = w.getAllText()
+w.setInsertPoint(4)
+i,j = g.getWord(s,4)
+word = s[i:j]
+aList = ac.getDynamicList(w,word)
+c.k.arg = aList[1]
+event = g.bunch(char=None, stroke=None, widget=w)
+ac.dynamicExpandHelper(event)
+    # This *does* support undo.
+s = w.getAllText()
+try:
+    i = s.find('main')
+    assert i == 2,i
+finally:
+    if 0: ####################
+        c.undoer.undo()
+</t>
 <t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
 for p in p.children():
     b = leoBeautify.PythonTokenBeautifier(c)
@@ -12886,5 +12791,6 @@ a = b &lt;&lt; c &gt;&gt; d
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
+<t tx="ekr.20161019120845.1"></t>
 </tnodes>
 </leo_file>

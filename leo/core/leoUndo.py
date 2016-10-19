@@ -1532,7 +1532,7 @@ class Undoer(object):
     def undoCloneMarkedNodes(self):
         u = self
         next = u.p.next()
-        assert next.h == 'Clones of marked nodes', repr(u.p, next.h)
+        assert next.h == 'Clones of marked nodes', (u.p, next.h)
         next.doDelete()
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)

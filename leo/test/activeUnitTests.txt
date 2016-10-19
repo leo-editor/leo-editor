@@ -6539,8 +6539,6 @@ finally:
 # mainto
 
 ac = c.abbrevCommands
-tag = 'dabbrev-expand'
-c.k.setState(tag,1, handler=None)
 w = c.frame.body.wrapper
 s = w.getAllText()
 w.setInsertPoint(4)
@@ -6548,15 +6546,16 @@ i,j = g.getWord(s,4)
 word = s[i:j]
 aList = ac.getDynamicList(w,word)
 c.k.arg = aList[1]
-event = g.bunch(widget=w)
+event = g.bunch(char=None, stroke=None, widget=w)
 ac.dynamicExpandHelper(event)
+    # This *does* support undo.
 s = w.getAllText()
 try:
     i = s.find('main')
     assert i == 2,i
 finally:
-    if 1:
-        c.undoer.undo(event=event)
+    if 0: ####################
+        c.undoer.undo()
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.167: *6* work
@@ -9951,26 +9950,24 @@ for i,j,python in (
 e = c.editCommands
 k = c.k
 w = c.frame.body.wrapper
-
 w.setInsertPoint(0)
 k.arg = 't' # 'targetWord'
-k.setState('find-word',1)
+e.w = w
 e.oneLineFlag = False
-f = e.findWord(event=None)
+e.findWord1(event=None)
 i,j = w.getSelectionRange()
-assert i == 10, 'expected 15, got %s' % (i)
+assert i == 10, 'expected 10, got %s' % (i)
 #@+node:ekr.20061104172236.2: *5* @test findWordInLine
 # targetWord
-
 e = c.editCommands
-k = c.k ; w = c.frame.body.wrapper
-
-w.setInsertPoint(0)
-k.arg = 't' # 'targetWord'
-k.setState('find-word',1)
+k = c.k
+w = c.frame.body.wrapper
 for val in (True,False):
+    k.arg = 't' # 'targetWord'
+    w.setInsertPoint(0)
+    e.w = w
     e.oneLineFlag = val
-    f = e.findWordInLine(event=None)
+    f = e.findWord1(event=None)
     i,j = w.getSelectionRange()
     assert i == 2, 'expected 2, got %s' % (i)
     # s = w.getAllText()

@@ -350,10 +350,22 @@ def pyflakes_command(event):
                 s = g.readFileIntoEncodedString(fn, silent=False)
                 if not s.strip():
                     return
-                r = reporter.Reporter(
-                    errorStream=sys.stderr,
-                    warningStream=sys.stderr,
+                if 1:
+                    # Send all output to the log pane.
+                    class LogStream:
+                        def write(self, s):
+                            if s.strip():
+                                g.es_print(s)
+
+                    r = reporter.Reporter(
+                        errorStream=LogStream(),
+                        warningStream=LogStream(),
                     )
+                else:
+                    r = reporter.Reporter(
+                        errorStream=sys.stderr,
+                        warningStream=sys.stderr,
+                        )
                 errors = api.check(s, sfn, r)
                 if False and errors:
                     # Annoying.

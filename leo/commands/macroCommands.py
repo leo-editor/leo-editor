@@ -43,20 +43,18 @@ class MacroCommandsClass(BaseEditCommandsClass):
     def callNamedMacro(self, event):
         '''Prompts for a macro name, then executes it.'''
         k = self.c.k
-        tag = 'macro-name'
-        state = k.getState(tag)
-        prompt = 'Call macro named: '
-        if state == 0:
-            k.setLabelBlue(prompt)
-            k.getArg(event, tag, 1, self.callNamedMacro)
+        k.setLabelBlue('Call macro named: ')
+        k.get1Arg(event, handler=self.callNamedMacro1)
+            
+    def callNamedMacro1(self, event):
+        k = self.c.k
+        macro = self.namedMacros.get(k.arg)
+        # Must do this first!
+        k.clearState()
+        if macro:
+            self.executeMacro(macro)
         else:
-            macro = self.namedMacros.get(k.arg)
-            # Must do this first!
-            k.clearState()
-            if macro:
-                self.executeMacro(macro)
-            else:
-                g.es('no macro named %s' % k.arg)
+            g.es('no macro named %s' % k.arg)
             k.resetLabel()
     #@+node:ekr.20150514063305.436: *3* completeMacroDef
     def completeMacroDef(self, name, macro):
@@ -191,15 +189,17 @@ class MacroCommandsClass(BaseEditCommandsClass):
     @cmd('macro-name-last')
     def nameLastMacro(self, event):
         '''Prompts for the name to be given to the last recorded macro.'''
-        k = self.c.k; state = k.getState('name-macro')
-        if state == 0:
-            k.setLabelBlue('Name of macro: ')
-            k.getArg(event, 'name-macro', 1, self.nameLastMacro)
-        else:
-            k.clearState()
-            name = k.arg
-            self.completeMacroDef(name, self.lastMacro)
-            k.setLabelGrey('Macro defined: %s' % name)
+        k = self.c.k
+        k.setLabelBlue('Name of macro: ')
+        k.get1Arg(event, handler=self.nameLastMacro1)
+            
+    def nameLastMacro1(self, event):
+        k = self.c.k
+        k.clearState()
+        name = k.arg
+        self.completeMacroDef(name, self.lastMacro)
+        k.setLabelGrey('Macro defined: %s' % name)
+
     #@+node:ekr.20150514063305.443: *3* printMacros & printLastMacro
     @cmd('macro-print-all')
     def printMacros(self, event=None):

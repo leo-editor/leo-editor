@@ -1124,28 +1124,27 @@ class HelpCommandsClass(BaseEditCommandsClass):
     def pythonHelp(self, event=None):
         '''Prompt for a arg for Python's help function, and put it to the log pane.'''
         c, k = self.c, self.c.k
-        tag = 'python-help'
-        state = k.getState(tag)
-        if state == 0:
-            c.minibufferWantsFocus()
-            k.setLabelBlue('Python help: ')
-            k.getArg(event, tag, 1, self.pythonHelp)
-        else:
-            k.clearState()
-            k.resetLabel()
-            s = k.arg.strip()
-            if s:
-                # Capture the output of Python's help command.
-                old = sys.stdout
-                try:
-                    sys.stdout = stdout = g.FileLikeObject()
-                    help(str(s))
-                    s2 = stdout.read()
-                finally:
-                    sys.stdout = old
-                # Send it to the vr pane as a <pre> block
-                s2 = '<pre>' + s2 + '</pre>'
-                c.putHelpFor(s2)
+        c.minibufferWantsFocus()
+        k.setLabelBlue('Python help: ')
+        k.get1Arg(event, handler=self.pythonHelp1)
+
+    def pythonHelp1(self, event):
+        c, k = self.c, self.c.k
+        k.clearState()
+        k.resetLabel()
+        s = k.arg.strip()
+        if s:
+            # Capture the output of Python's help command.
+            old = sys.stdout
+            try:
+                sys.stdout = stdout = g.FileLikeObject()
+                help(str(s))
+                s2 = stdout.read()
+            finally:
+                sys.stdout = old
+            # Send it to the vr pane as a <pre> block
+            s2 = '<pre>' + s2 + '</pre>'
+            c.putHelpFor(s2)
     #@-others
 #@-others
 #@-leo

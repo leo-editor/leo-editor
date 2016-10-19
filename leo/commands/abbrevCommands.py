@@ -552,43 +552,41 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(self, event, prefix=None, aList=None, w=None):
         '''State handler for dabbrev-expands command.'''
+        c, k = self.c, self.c.k
+        self.w = w
+        if prefix is None: prefix = ''
+        prefix2 = 'dabbrev-expand: '
+        c.frame.log.deleteTab('Completion')
+        g.es('', '\n'.join(aList or []), tabName='Completion')
+        # Protect only prefix2 so tab completion and backspace to work properly.
+        k.setLabelBlue(prefix2, protect=True)
+        k.setLabelBlue(prefix2 + prefix, protect=False)
+        k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
+
+    def dynamicExpandHelper1(self, event):
         trace = False and not g.unitTesting
         c, k = self.c, self.c.k
         p = c.p
-        tag = 'dabbrev-expand'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = w
-            prefix2 = 'dabbrev-expand: '
-            c.frame.log.deleteTab('Completion')
-            g.es('', '\n'.join(aList), tabName='Completion')
-            # Protect only prefix2.
-            # This is required for tab completion and backspace to work properly.
-            k.setLabelBlue(prefix2, protect=True)
-            k.setLabelBlue(prefix2 + prefix, protect=False)
-            if trace: g.trace('len(aList)', len(aList))
-            k.getArg(event, tag, 1, self.dynamicExpandHelper, tabList=aList, prefix=prefix)
-        else:
-            c.frame.log.deleteTab('Completion')
-            k.clearState()
-            k.resetLabel()
-            if k.arg:
-                w = self.w
-                s = w.getAllText()
-                ypos = w.getYScrollPosition()
-                b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
-                ins = ins1 = w.getInsertPoint()
-                if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
-                i, j = g.getWord(s, ins1)
-                word = s[i: j]
-                s = s[: i] + k.arg + s[j:]
-                if trace: g.trace('ins', ins, 'k.arg', repr(k.arg), 'word', word)
-                w.setAllText(s)
-                w.setInsertPoint(i + len(k.arg))
-                w.setYScrollPosition(ypos)
-                c.undoer.afterChangeNodeContents(p,
-                    command=tag, bunch=b, dirtyVnodeList=[])
-                c.recolor()
+        c.frame.log.deleteTab('Completion')
+        k.clearState()
+        k.resetLabel()
+        if k.arg:
+            w = self.w
+            s = w.getAllText()
+            ypos = w.getYScrollPosition()
+            b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+            ins = ins1 = w.getInsertPoint()
+            if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+            i, j = g.getWord(s, ins1)
+            word = s[i: j]
+            s = s[: i] + k.arg + s[j:]
+            if trace: g.trace('ins', ins, 'k.arg', repr(k.arg), 'word', word)
+            w.setAllText(s)
+            w.setInsertPoint(i + len(k.arg))
+            w.setYScrollPosition(ypos)
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-expand', bunch=b, dirtyVnodeList=[])
+            c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
     def getDynamicList(self, w, s):
         if self.globalDynamicAbbrevs:
@@ -654,115 +652,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.keyboardQuit()
         if not g.unitTesting and not g.app.batchMode:
             g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
-    #@+node:ekr.20160504152418.1: *3* unused emacs abbreviation commands
-    if 0:
-        # Remove all the abbrev-* commands.
-        # Leo's "native" abbreviation capabilities are much better.
-        #@+others
-        #@+node:ekr.20150514043850.26: *4* abbrev.addAbbreviation
-        @cmd('abbrev-add-global')
-        def addAbbreviation(self, event):
-            '''
-            Add an abbreviation:
-            The selected text is the abbreviation.
-            The minibuffer prompts you for the name of the abbreviation.
-            Also sets abbreviations on.
-            '''
-            k = self.c.k
-            state = k.getState('add-abbr')
-            if state == 0:
-                self.w = self.editWidget(event)
-                if self.w:
-                    k.setLabelBlue('Add Abbreviation: ')
-                    k.getArg(event, 'add-abbr', 1, self.addAbbreviation)
-            else:
-                k.clearState()
-                k.resetLabel()
-                value = k.argSelectedText
-                if k.arg.strip():
-                    self.abbrevs[k.arg] = value, 'dynamic'
-                    k.abbrevOn = True
-                    k.setLabelGrey(
-                        "Abbreviation (on): '%s' = '%s'" % (k.arg, value))
-        #@+node:ekr.20150514043850.27: *4* abbrev.addInverseAbbreviation
-        @cmd('abbrev-inverse-add-global')
-        def addInverseAbbreviation(self, event):
-            '''
-            Add an inverse abbreviation:
-            The selected text is the abbreviation name.
-            The minibuffer prompts you for the value of the abbreviation.
-            '''
-            k = self.c.k
-            state = k.getState('add-inverse-abbr')
-            if state == 0:
-                self.w = self.editWidget(event)
-                if self.w:
-                    k.setLabelBlue('Add Inverse Abbreviation: ')
-                    k.getArg(event, 'add-inverse-abbr', 1, self.addInverseAbbreviation)
-            else:
-                w = self.w
-                k.clearState()
-                k.resetLabel()
-                s = w.getAllText()
-                i = w.getInsertPoint()
-                i, j = g.getWord(s, i - 1)
-                word = s[i: j]
-                if word:
-                    self.abbrevs[word] = k.arg, 'add-inverse-abbr'
-        #@+node:ekr.20150514043850.30: *4* abbrev.readAbbreviations & helper
-        @cmd('abbrev-read')
-        def readAbbreviations(self, event=None):
-            '''Read abbreviations from a file.'''
-            c = self.c
-            fileName = g.app.gui.runOpenFileDialog(c,
-                title='Open Abbreviation File',
-                filetypes=[("Text", "*.txt"), ("All files", "*")],
-                defaultextension=".txt")
-            if fileName:
-                self.readAbbreviationsFromFile(fileName)
-        #@+node:ekr.20150514043850.31: *5* abbrev.readAbbreviationsFromFile
-        def readAbbreviationsFromFile(self, fileName):
-            k = self.c.k
-            try:
-                f = open(fileName)
-                for s in f:
-                    self.addAbbrevHelper(s, 'file')
-                f.close()
-                k.abbrevOn = True
-                g.es("Abbreviations on")
-                # self.listAbbrevs()
-            except IOError:
-                g.es('can not open', fileName)
-        #@+node:ekr.20150514043850.33: *4* abbrev.writeAbbreviation
-        @cmd('abbrev-write')
-        def writeAbbreviations(self, event):
-            '''Write abbreviations to a file.'''
-            c = self.c
-            fileName = g.app.gui.runSaveFileDialog(c,
-                initialfile=None,
-                title='Write Abbreviations',
-                filetypes=[("Text", "*.txt"), ("All files", "*")],
-                defaultextension=".txt")
-            if not fileName: return
-            try:
-                d = self.abbrevs
-                f = open(fileName, 'w')
-                for name in sorted(d.keys()):
-                    val, tag = self.abbrevs.get(name)
-                    val = val.replace('\n', '\\n')
-                    # Fix bug #236: write continuations in same format as in
-                    # @data abbreviations nodes
-                    ### New code.
-                    ### val = ''.join([': %s' % (z) for z in g.splitLines(val)])
-                    s = '%s=%s\n' % (name, val)
-                    if not g.isPython3:
-                        s = g.toEncodedString(s, reportErrors=True)
-                    f.write(s)
-                f.close()
-                g.es_print('wrote: %s' % fileName)
-            except IOError:
-                g.es('can not create', fileName)
-        #@-others
     #@-others
 #@-others
 #@-leo

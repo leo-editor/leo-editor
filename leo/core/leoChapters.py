@@ -103,20 +103,19 @@ class ChapterController(object):
     #@+node:ekr.20070604165126: *3* cc.selectChapter
     @cmd('chapter-select')
     def selectChapter(self, event=None):
-        '''Use the minibuffer to get a chapter name,
-        then create the chapter.'''
-        cc, k, tag = self, self.c.k, 'select-chapter'
-        state = k.getState(tag)
-        if state == 0:
-            names = cc.setAllChapterNames()
-            g.es('Chapters:\n' + '\n'.join(names))
-            k.setLabelBlue('Select chapter: ')
-            k.getArg(event, tag, 1, self.selectChapter, tabList=names)
-        else:
-            k.clearState()
-            k.resetLabel()
-            if k.arg:
-                cc.selectChapterByName(k.arg)
+        '''Use the minibuffer to get a chapter name, then create the chapter.'''
+        cc, k = self, self.c.k
+        names = cc.setAllChapterNames()
+        g.es('Chapters:\n' + '\n'.join(names))
+        k.setLabelBlue('Select chapter: ')
+        k.get1Arg(event, handler=self.selectChapter1, tabList=names)
+            
+    def selectChapter1(self, event):
+        cc, k = self, self.c.k
+        k.clearState()
+        k.resetLabel()
+        if k.arg:
+            cc.selectChapterByName(k.arg)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
     def selectChapterByName(self, name, collapse=True):
         '''Select a chapter.  Return True if a redraw is needed.'''
