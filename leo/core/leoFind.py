@@ -790,21 +790,21 @@ class LeoFind(object):
         The list is *not* flattened: clones appear only once in the
         descendants of the organizer node.
         '''
-        c = self.c; k = self.k; tag = 'clone-find-all'
-        state = k.getState(tag)
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if w:
-                if not preloaded:
-                    self.preloadFindPattern(w)
-                self.stateZeroHelper(event, tag, 'Clone Find All: ',
-                    self.minibufferCloneFindAll)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg, cloneFindAll=True)
-            c.treeWantsFocus()
+        w = self.editWidget(event) # sets self.w
+        if w:
+            if not preloaded:
+                self.preloadFindPattern(w)
+            self.stateZeroHelper(event,
+                prefix='Clone Find All: ',
+                handler=self.minibufferCloneFindAll1)
+                
+    def minibufferCloneFindAll1(self, event):
+        c, k = self.c, self.k
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg, cloneFindAll=True)
+        c.treeWantsFocus()
     #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
@@ -820,21 +820,21 @@ class LeoFind(object):
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
         '''
-        c = self.c; k = self.k; tag = 'clone-find-all-flattened'
-        state = k.getState(tag)
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if w:
-                if not preloaded:
-                    self.preloadFindPattern(w)
-                self.stateZeroHelper(event, tag, 'Clone Find All Flattened: ',
-                    self.minibufferCloneFindAllFlattened)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
-            c.treeWantsFocus()
+        w = self.editWidget(event) # sets self.w
+        if w:
+            if not preloaded:
+                self.preloadFindPattern(w)
+            self.stateZeroHelper(event,
+                prefix='Clone Find All Flattened: ',
+                handler=self.minibufferCloneFindAllFlattened1)
+
+    def minibufferCloneFindAllFlattened1(self, event):
+        c = self.c; k = self.k
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
+        c.treeWantsFocus()
     #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
@@ -850,18 +850,18 @@ class LeoFind(object):
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
         '''
-        c = self.c; k = self.k; tag = 'clone-find-tag'
-        state = k.getState(tag)
-        if state == 0:
-            if self.editWidget(event): # sets self.w
-                self.stateZeroHelper(event, tag, 'Clone Find Tag: ',
-                    self.minibufferCloneFindTag)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.cloneFindTag(k.arg)
-            c.treeWantsFocus()
+        if self.editWidget(event): # sets self.w
+            self.stateZeroHelper(event,
+                prefix='Clone Find Tag: ',
+                handler=self.minibufferCloneFindTag1)
+                
+    def minibufferCloneFindTag1(self, event):
+        c, k = self.c, self.k
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.cloneFindTag(k.arg)
+        c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     @cmd('find-all')
     def minibufferFindAll(self, event=None):
@@ -881,18 +881,18 @@ class LeoFind(object):
     @cmd('tag-children')
     def minibufferTagChildren(self, event=None):
         '''tag-children: prompt for a tag and add it to all children of c.p.'''
-        c = self.c; k = self.k; tag = 'tag-children'
-        state = k.getState(tag)
-        if state == 0:
-            if self.editWidget(event): # sets self.w
-                self.stateZeroHelper(event, tag, 'Tag Children: ',
-                    self.minibufferTagChildren)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.tagChildren(k.arg)
-            c.treeWantsFocus()
+        if self.editWidget(event): # sets self.w
+            self.stateZeroHelper(event,
+                prefix='Tag Children: ',
+                handler=self.minibufferTagChildren1)
+                
+    def minibufferTagChildren1(self, event):
+        c, k = self.c, self.k
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.tagChildren(k.arg)
+        c.treeWantsFocus()
     #@+node:ekr.20160920164418.4: *5* find.tagChildren
     def tagChildren(self, tag):
         '''Handle the clone-find-tag command.'''
@@ -986,33 +986,23 @@ class LeoFind(object):
     #@+node:ekr.20131117164142.17003: *4* find.reSearchBackward/Forward
     @cmd('re-search-backward')
     def reSearchBackward(self, event):
-        k = self.k; tag = 're-search-backward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=False, regexp=True, word=None)
-            self.stateZeroHelper(
-                event, tag, 'Regexp Search Backward:', self.reSearchBackward,
-                escapes=['\t']) # The Tab Easter Egg.
-        elif k.getArgEscapeFlag:
-            # Switch to the replace command.
-            k.setState('replace-string', 1, self.setReplaceString)
-            self.setReplaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-
+        self.setupArgs(forward=False, regexp=True, word=None)
+        self.stateZeroHelper(event,
+            'Regexp Search Backward:', self.reSearch1,
+            escapes=['\t']) # The Tab Easter Egg.
+         
     @cmd('re-search-forward')
     def reSearchForward(self, event):
-        k = self.k; tag = 're-search-forward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=True, regexp=True, word=None)
-            self.stateZeroHelper(
-                event, tag, 'Regexp Search:', self.reSearchForward,
-                escapes=['\t']) # The Tab Easter Egg.
-        elif k.getArgEscapeFlag:
-            # Switch to the replace command.
-            k.setState('replace-string', 1, self.setReplaceString)
-            self.setReplaceString(event=None)
+        self.setupArgs(forward=True, regexp=True, word=None)
+        self.stateZeroHelper(event,
+            prefix='Regexp Search:',
+            handler=self.reSearch1,
+            escapes=['\t']) # The Tab Easter Egg.
+            
+    def reSearch1(self, event):
+        k = self.k
+        if k.getArgEscapeFlag:
+            self.setReplaceString1(event=None)
         else:
             self.updateFindList(k.arg)
             self.lastStateHelper()
@@ -1020,33 +1010,25 @@ class LeoFind(object):
     #@+node:ekr.20131117164142.17004: *4* find.seachForward/Backward
     @cmd('search-backward')
     def searchBackward(self, event):
-        k = self.k; tag = 'search-backward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=False, regexp=False, word=False)
-            self.stateZeroHelper(
-                event, tag, 'Search Backward: ', self.searchBackward,
-                escapes=['\t']) # The Tab Easter Egg.
-        elif k.getArgEscapeFlag:
-            # Switch to the replace command.
-            k.setState('replace-string', 1, self.setReplaceString)
-            self.setReplaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
+        self.setupArgs(forward=False, regexp=False, word=False)
+        self.stateZeroHelper(event,
+            prefix='Search Backward: ',
+            handler=self.search1,
+            escapes=['\t']) # The Tab Easter Egg.
 
     @cmd('search-forward')
     def searchForward(self, event):
-        k = self.k; tag = 'search-forward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=True, regexp=False, word=False)
-            self.stateZeroHelper(
-                event, tag, 'Search: ', self.searchForward,
-                escapes=['\t']) # The Tab Easter Egg.
-        elif k.getArgEscapeFlag:
+        self.setupArgs(forward=True, regexp=False, word=False)
+        self.stateZeroHelper(event,
+            prefix='Search: ',
+            handler=self.search1,
+            escapes=['\t']) # The Tab Easter Egg.
+            
+    def search1(self, event):
+        k = self.k
+        if k.getArgEscapeFlag:
             # Switch to the replace command.
-            k.setState('replace-string', 1, self.setReplaceString)
-            self.setReplaceString(event=None)
+            self.setReplaceString1(event=None)
         else:
             self.updateFindList(k.arg)
             self.lastStateHelper()
@@ -1055,45 +1037,46 @@ class LeoFind(object):
     @cmd('set-replace-string')
     def setReplaceString(self, event):
         '''A state handler to get the replacement string.'''
-        trace = False and not g.unitTesting
-        k = self.k; tag = 'replace-string'; state = k.getState(tag)
-        prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
-        if trace: g.trace(state)
-        if state == 0:
-            # self.setupArgs(forward=None,regexp=None,word=None)
-            prefix = '%s: ' % prompt
-            self.stateZeroHelper(event, tag, prefix, self.setReplaceString)
-        elif state == 1:
-            self._sString = k.arg
-            self.updateFindList(k.arg)
-            s = '%s: %s With: ' % (prompt, self._sString)
-            k.setLabelBlue(s)
-            self.addChangeStringToLabel()
-            k.getArg(event, 'replace-string', 2, self.setReplaceString, completion=False)
-        elif state == 2:
-            self.updateChangeList(k.arg)
-            self.lastStateHelper()
-            self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
+        prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
+        prefix = '%s: ' % prompt
+        self.stateZeroHelper(event,
+            prefix=prefix,
+            handler=self.setReplaceString1)
+
+    def setReplaceString1(self, event):
+        k = self.k
+        prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = '%s: %s With: ' % (prompt, self._sString)
+        k.setLabelBlue(s)
+        self.addChangeStringToLabel()
+        k.getArg2(self.setReplaceString2)
+
+    def setReplaceString2(self, event):
+        k = self.k
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
     #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers
     @cmd('set-search-string')
     def searchWithPresentOptions(self, event, findAllFlag=False, changeAllFlag=False):
         '''Open the search pane and get the search string.'''
-        trace = False and not g.unitTesting
-        c, k, tag = self.c, self.k, 'search-with-present-options'
-        state = k.getState(tag)
-        if trace: g.trace('state', state, k.getArgEscapeFlag)
-        if state == 0:
-            # Remember the entry focus, just as when using the find pane.
-            self.changeAllFlag = changeAllFlag
-            self.findAllFlag = findAllFlag
-            self.ftm.set_entry_focus()
-            escapes = ['\t']
-            escapes.extend(self.findEscapes())
-            self.stateZeroHelper(
-                event, tag, 'Search: ', self.searchWithPresentOptions,
-                escapes=escapes) # The Tab Easter Egg.
-        elif k.getArgEscapeFlag:
-             # 2015/06/30: Special cases for F2/F3 to the escapes
+        # Remember the entry focus, just as when using the find pane.
+        self.changeAllFlag = changeAllFlag
+        self.findAllFlag = findAllFlag
+        self.ftm.set_entry_focus()
+        escapes = ['\t']
+        escapes.extend(self.findEscapes())
+        self.stateZeroHelper(event, ### tag,
+            'Search: ', self.searchWithPresentOptions1,
+            escapes=escapes) # The Tab Easter Egg.
+                
+    def searchWithPresentOptions1(self, event):
+        c, k = self.c, self.k
+        # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
+        if k.getArgEscapeFlag:
+            # 2015/06/30: Special cases for F2/F3 to the escapes
             if event.stroke in self.findEscapes():
                 command = self.escapeCommand(event)
                 func = c.commandsDict.get(command)
@@ -1107,10 +1090,9 @@ class LeoFind(object):
             else:
                 # Switch to the replace command.
                 if self.findAllFlag: self.changeAllFlag = True
-                self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
-                k.setState('replace-string', 1, self.setReplaceString)
-                if trace: g.trace(k.getState('replace-string'))
-                self.setReplaceString(event=None)
+                k.getArgEscapeFlag = False ###
+                self.setupSearchPattern(k.arg)
+                self.setReplaceString1(event=None)
         else:
             self.updateFindList(k.arg)
             k.clearState()
@@ -1143,7 +1125,7 @@ class LeoFind(object):
                 return si.commandName
         return None
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
-    def stateZeroHelper(self, event, tag, prefix, handler, escapes=None):
+    def stateZeroHelper(self, event, prefix, handler, escapes=None):
         c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
@@ -1162,8 +1144,7 @@ class LeoFind(object):
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
         k.getArgEscapeFlag = False # k.getArg may set this.
-        k.getArg(event, tag, 1, handler, # enter state 1
-            tabList=self.findTextList, completion=True)
+        k.get1Arg(event, handler, tabList=self.findTextList, completion=True)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
     def updateChangeList(self, s):
         if s not in self.changeTextList:
@@ -1172,26 +1153,25 @@ class LeoFind(object):
     def updateFindList(self, s):
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward
+    #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward (test)
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
-        k = self.k; tag = 'word-search-backward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=False, regexp=False, word=True)
-            self.stateZeroHelper(event, tag, 'Word Search Backward: ', self.wordSearchBackward)
-        else:
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
+        self.setupArgs(forward=False, regexp=False, word=True)
+        self.stateZeroHelper(event,
+            prefix='Word Search Backward: ',
+            handler=self.wordSearch1)
 
     @cmd('word-search-forward')
     def wordSearchForward(self, event):
-        k = self.k; tag = 'word-search-forward'; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=True, regexp=False, word=True)
-            self.stateZeroHelper(event, tag, 'Word Search: ', self.wordSearchForward)
-        else:
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
+        self.setupArgs(forward=True, regexp=False, word=True)
+        self.stateZeroHelper(event,
+            prefix='Word Search: ',
+            handler=self.wordSearch1)
+            
+    def wordSearch1(self, event):
+        k = self.k
+        self.lastStateHelper()
+        self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
     #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle checkbox commands
     @cmd('toggle-find-collapses-nodes')
@@ -2206,9 +2186,9 @@ class LeoFind(object):
         (re-/word-/search-backward/forward)
         that force one or more of these values to be a spefic value.
         '''
-        if forward is not None: self.reverse = not forward
-        if regexp is not None: self.patern_match = True
-        if word is not None: self.whole_word = True
+        if forward in (True, False): self.reverse = not forward
+        if regexp in (True, False): self.pattern_match = regexp
+        if word in (True, False): self.whole_word = word
         self.showFindOptions()
     #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea
     def showFindOptionsInStatusArea(self):

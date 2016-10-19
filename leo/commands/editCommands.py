@@ -733,22 +733,21 @@ class EditCommandsClass(BaseEditCommandsClass):
         For external files containing sentinels, there may be *several* lines
         in the file that correspond to the same line in the outline.
         '''
-        # Improved docstring in response to #253.
+        # Improved docstring for #253: Goto Global line (Alt-G) is inconsistent.
         # https://github.com/leo-editor/leo-editor/issues/253
+        k = self.c.k
+        self.w = self.editWidget(event)
+        if self.w:
+            k.setLabelBlue('Goto global line: ')
+            k.get1Arg(event, self.gotoGlobalLine1)
+
+    def gotoGlobalLine1(self, event):
         c, k = self.c, self.c.k
-        tag = 'goto-global-line'
-        state = k.getState(tag)
-        if state == 0:
-            self.w = self.editWidget(event)
-            if self.w:
-                k.setLabelBlue('Goto global line: ')
-                k.getArg(event, tag, 1, self.gotoGlobalLine)
-        else:
-            n = k.arg
-            k.resetLabel()
-            k.clearState()
-            if n.isdigit():
-                c.gotoCommands.find_file_line(n=int(n))
+        n = k.arg
+        k.resetLabel()
+        k.clearState()
+        if n.isdigit():
+            c.gotoCommands.find_file_line(n=int(n))
     #@+node:ekr.20150514063305.228: *4* gotoLine
     @cmd('goto-line')
     def gotoLine(self, event):

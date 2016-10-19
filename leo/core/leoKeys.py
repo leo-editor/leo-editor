@@ -1441,6 +1441,10 @@ class GetArg(object):
                 pass
             else:
                 ga.do_char(event, char)
+    #@+node:ekr.20161019060054.1: *4* ga.cancel_after_state
+    def cancel_after_state(ga):
+        
+        ga.after_get_arg_state = None
     #@+node:ekr.20140816165728.18955: *4* ga.do_char
     def do_char(ga, event, char):
         '''Handle a non-special character.'''
@@ -1468,6 +1472,7 @@ class GetArg(object):
             k.arg = ga.get_label()
             if trace: g.trace('k.mb_prefix', k.mb_prefix, 'k.arg', k.arg)
         kind, n, handler = ga.after_get_arg_state
+        if trace: g.trace('handler: %s' % (handler and handler.__name__))
         if kind: k.setState(kind, n, handler)
         ga.log.deleteTab('Completion')
         if trace: g.trace('kind', kind, 'n', n, 'handler', handler and handler.__name__)
@@ -1484,6 +1489,7 @@ class GetArg(object):
         trace = False and not g.unitTesting
         c, k = ga.c, ga.k
         # Set the ga globals...
+        k.getArgEscapeFlag = False ###
         ga.after_get_arg_state = returnKind, returnState, handler
         ga.arg_completion = completion
         ga.cycling_prefix = None
@@ -2926,6 +2932,24 @@ class KeyHandlerClass(object):
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
+    # New in Leo 5.4    
+    def getArg2(self, handler):
+        '''Get the second arg.  For example, after a Tab in the find commands.'''
+        # Replace the current handler.
+        self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
+        
+    # New in Leo 5.4  
+    def get1Arg(self, event, handler,
+        # returnKind=None, returnState=None,
+        prefix=None, tabList=None, completion=True, oneCharacter=False,
+        stroke=None, useMinibuffer=True
+    ):
+        '''Convenience method mapping k.get1Arg to ga.get_arg.'''
+        returnKind, returnState = None, None
+        assert handler, g.callers()
+        self.getArgInstance.get_arg(event, returnKind, returnState, handler,
+            tabList, completion, oneCharacter, stroke, useMinibuffer)
+
     def getArg(self, event,
         returnKind=None, returnState=None, handler=None,
         prefix=None, tabList=None, completion=True, oneCharacter=False,
