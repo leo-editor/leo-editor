@@ -3,9 +3,18 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20161019020853.1: ** #106: brew install Leo on MacOS
+Requires 5.4 final
+
+https://github.com/leo-editor/leo-editor/issues/106
+  
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap
+.. @+node:ekr.20161019020710.1: *3* Improve pylint
+- enable more pylint checks
+- pylint command should ensure that the leo directory is on the path.
+  At present, Leo seems to need sitecustomize.py.
 .. @+node:ekr.20160707063917.1: *3* Create PR for pyflakes work
 .. @+node:ekr.20160707063933.1: *3* Create PR for mypy path work
 .. @+node:ekr.20160318112838.1: *3* 5.5 Enhancements
