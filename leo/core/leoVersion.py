@@ -36,7 +36,7 @@ def create_commit_timestamp_json(after=False):
     This is called from @button make-leo in leoDist.leo,
     so get_version_from_git should always succeed.
     '''
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     commit, date = get_version_from_git(short=False)
     if commit:
         base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
