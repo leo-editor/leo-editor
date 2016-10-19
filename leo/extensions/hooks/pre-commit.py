@@ -5,6 +5,6 @@
 
 # pylint: disable=invalid-name
 
-print('===== pre-commit ====')
+# print('===== pre-commit ====')
 import leo.core.leoVersion as v
 v.create_commit_timestamp_json(after=True)
