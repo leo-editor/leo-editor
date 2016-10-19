@@ -37,6 +37,9 @@ def create_commit_timestamp_json(after=False):
     so get_version_from_git should always succeed.
     '''
     trace = False and not g.unitTesting
+    import shlex
+    import subprocess
+    import sys
     commit, date = get_version_from_git(short=False)
     if commit:
         base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
@@ -46,9 +49,22 @@ def create_commit_timestamp_json(after=False):
         if after: commit = 'after ' + commit
         d = {'date': date, 'hash': commit}
         json.dump(d, f)
+        f.write('\n')
         if trace:
             g.trace()
             g.print_dict(d)
+        f.flush()
+        f.close()
+        # Add commit_timestamp.json so it doesn't appear dirty.
+        p = subprocess.Popen(
+            shlex.split('git add leo/core/commit_timestamp.json'),
+            stdout=subprocess.PIPE,
+            # stderr=None if trace else subprocess.PIPE,
+                # subprocess.DEVNULL is Python 3 only.
+            shell=sys.platform.startswith('win'),
+        )
+        out, err = p.communicate()
+        if trace: g.trace(out)
     else:
         g.trace('can not create commit_timestamp.json')
 #@+node:ekr.20161016063005.1: ** get_version_from_git
