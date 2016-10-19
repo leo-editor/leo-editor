@@ -18788,6 +18788,16 @@ def OLDget_version_from_json():
         s = None
     commit = s
     return commit, date
+.. @+node:ekr.20161017043402.1: ** test create_json
+g.cls()
+import imp
+import leo.core.leoVersion as v
+imp.reload(v)
+v.create_commit_timestamp_json()
+commit, date = v.get_version_from_git(short=False)
+print(commit + ' ' + date)
+commit, date = v.get_version_from_json(short=False)
+print(commit + ' ' + date)
 .. @-all
 .. @@nosearch
 .. @-leo
