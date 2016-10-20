@@ -2944,7 +2944,92 @@ class KeyHandlerClass(object):
         prefix=None, tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):
-        '''Convenience method mapping k.get1Arg to ga.get_arg.'''
+        #@+<< docstring for k.get1arg >>
+        #@+node:ekr.20161020031633.1: *5* << docstring for k.get1arg >>
+        '''
+        k.get1Arg: Handle the next character the user types when accumulating a
+        user argument from the minibuffer. Ctrl-G will abort this processing at any
+        time.
+
+        Commands should use k.get1Arg to get the first minibuffer argument and
+        k.getNextArg to get all other arguments.
+
+        Before going into the many details, let's look at some examples. This
+        code will work in any class having a 'c' ivar bound to a commander.
+            
+        Example 1: get one argument from the user:
+            
+            @cmd('my-command')
+            def myCommand(self, event):
+                k = self.c.k
+                k.setLabelBlue('prompt: ')
+                k.get1Arg(event, self.myCommand1)
+                    
+            def myCommand1(self, event):
+                k = self.c.k
+                # k.arg contains the argument.
+                # Finish the command.
+                ...
+                # Reset the minibuffer.
+                k.clearState()
+                k.resetLabel()
+                k.showStateAndMode()
+                
+        Example 2: get two arguments from the user:
+            
+            @cmd('my-command')
+            def myCommand(self, event):
+                k = self.c.k
+                k.setLabelBlue('first prompt: ')
+                k.get1Arg(event, self.myCommand1)
+                    
+            def myCommand1(self, event):
+                k = self.c.k
+                self.arg1 = k.arg
+                k.setLabelBlue('second prompt: ')
+                k.getNextArg(self.myCommand2)
+                
+            def myCommand2(self, event):
+                k = self.c.k
+                # k.arg contains second argument.
+                # Finish the command, using self.arg1 and k.arg.
+                ...
+                # Reset the minibuffer.
+                k.clearState()
+                k.resetLabel()
+                k.showStateAndMode()
+                
+        k.get1Arg and k.getNextArg are a convenience methods. They simply passes
+        its arguments to the get_arg method of the singleton GetArg instance. This
+        docstring describes k.get1arg and k.getNextArg as if they were the
+        corresponding methods of the GetArg class.
+
+        k.get1Arg state machine. Logically, states as tuples (kind, n, handler)
+        though they aren't represented that way. When the state machine in the
+        GetArg class is active, the kind is 'getArg'.  This constant has special
+        meaning to Leo's key-handling code.
+
+        The arguments to k.get1Arg are as follows:
+
+        event:              The event passed to the command.
+
+        handler=None,       A function. When the user completes the
+                            argument by typing <Return> or sometimes <tab)
+                            k.get1arg calls handler(event)
+
+        tabList=[]:         A list of possible completions.
+
+        completion=True:    True if completions are enabled.
+
+        oneCharacter=False: True if k.arg should be a single character.
+
+        stroke=None:        The incoming key stroke.
+
+        useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
+                            False allows sort-lines, for example, to show the selection range.
+            
+        '''
+        #@-<< docstring for k.get1arg >>
         returnKind, returnState = None, None
         assert handler, g.callers()
         self.getArgInstance.get_arg(event, returnKind, returnState, handler,
