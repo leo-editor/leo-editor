@@ -168,7 +168,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -671,7 +671,11 @@
 <v t="ekr.20150323161357.4"><vh>Moving the cursor</vh></v>
 </v>
 <v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
-<v t="ekr.20150318110552.10"><vh>Debug commands</vh></v>
+<v t="ekr.20150318110552.10"><vh>Debug commands</vh>
+<v t="ekr.20161020064204.1"><vh>Running External debuggers</vh></v>
+<v t="ekr.20161020064706.1"><vh>Printing settings and other data</vh></v>
+<v t="ekr.20161020064436.1"><vh>Other debugging commands</vh></v>
+</v>
 <v t="ekr.20150318110552.18"><vh>Edit commands</vh>
 <v t="ekr.20150318110552.21"><vh>Cutting, pasting and selecting text</vh></v>
 <v t="ekr.20150318110552.22"><vh>Indenting body text</vh></v>
@@ -685,7 +689,6 @@
 </v>
 <v t="ekr.20150323185514.1"><vh>Emacs-like commands</vh>
 <v t="ekr.20150318110552.74"><vh>Abbreviation commands</vh></v>
-<v t="ekr.20150323185456.1"><vh>Buffer commands</vh></v>
 <v t="ekr.20150318110552.8"><vh>Cursor movement commands</vh></v>
 <v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
 <v t="ekr.20150323185151.1"><vh>Macro commands</vh></v>
@@ -1260,6 +1263,7 @@
 <v t="ekr.20161020040603.2"><vh>&lt;&lt; docstring for k.get1arg &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20161020062057.1"><vh>** Update commands ref</vh></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3110,8 +3114,6 @@ This chapter discusses the basics of using Leo, including all of Leo's commands.
     toggle-     toggle settings commands
     
 .. Less important prefixes:
-..  abbrev-     abbreviation commands
-..  buffer-     buffer commands
 ..  ddabrev-    dynamic abbreviations
 ..  directory-  directory commands
 ..  gc-         garbage collection commands
@@ -16208,62 +16210,8 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 <t tx="ekr.20150318043636.17"></t>
 <t tx="ekr.20150318110552.10">.. contents::
     :local:
-    :depth: 2
+    :depth: 3
     
-``check-derived-file``
-    Makes sure an external file written by Leo can be read properly. 
-``check-leo-file``
-    Performs a full check of the consistency of a .leo file.  As of Leo 5.1, Leo performs checks of gnx's and outline structure before writes and after reads, pastes and undo/redo.
-``check-outline``
-    Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
-``clear-all-caches``
-    Clear all file caches in g.app.leoHomeDir/db
-``clear-cache``
-    Clear the outline's file cache.
-``escape``
-    Enter watch escape mode.
-``pdb``
-    Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
-``print-buttons``
-    Print all @button and @command commands, their bindings and their source.
-``pylint``
-    Runs pylint on the Python source files in the selected tree. You can check a file by selecting any (possibly cloned) node of the file.  This command is also available from the popup menus created by the contextmenu plugin.
-
-::
-
-    # Dumping Leo's internal data.
-    dump-all-objects
-    dump-new-objects
-    dump-outline
-    verbose-dump-objects
-
-    # Python's garbage collector.
-    gc-collect-garbage
-    gc-dump-all-objects
-    gc-dump-new-objects
-    gc-dump-objects-verbose
-    gc-print-summary
-    gc-trace-disable
-    gc-trace-enable
-
-    # Idle time.
-    disable-idle-time-events
-    enable-idle-time-events
-    toggle-idle-time-events
-
-    # Print &amp; show.
-    print-bindings
-    print-cmd-docstrings
-    print-commands
-    print-focus
-    print-plugin-handlers
-    print-plugins-info
-    print-settings
-    print-style-sheet
-    show-calltips
-    show-calltips-force
-    show-colors
-    show-find-options
 </t>
 <t tx="ekr.20150318110552.18">.. contents::
     :local:
@@ -16911,7 +16859,7 @@ Associated settings:
     Replaces the selected text with the 'change' text in the Find tab.
 ``replace-then-find (Ctrl--)``
     Replaces the selected text with the 'change' text in the Find tab, then executes the find command again.
-    
+
 Batch searches:
 
 ``find-all``
@@ -16921,10 +16869,12 @@ Batch searches:
     
 Searches creating clones:
 
-``clone-find-all-flattened``
+``clone-find-all-flattened`` aka ``(cfaf)``
     Prompts for a find, then creates clones of all found nodes in an organizer node.
-``clone-find-all``
+``clone-find-all`` aka ``(cfa)``
     Same as ``clone-find-all-flattened``, but does not create duplicate cloned nodes. If a node is a descendant of another found node, no duplicate top-level node (in the organizer) is created.
+``clone-find-marked`` aka ``(cfm)`` and ``clone-find-marked-flattened`` aka ``(cfmf)``
+    Creates clones of all marked nodes.
 ``clone-find-parents``
     Creates an organizer node containing clones of all the parents of the selected node.
 </t>
@@ -17133,14 +17083,8 @@ This is a safety feature: it allows scripting abbreviations to be enabled *witho
    
 .. _`Emacs-like abbreviation commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html#Abbrevs
 
-Leo also supports `Emacs-like abbreviation commands`_, but they are seldom used::
+Leo also supports `Emacs-like abbreviation commands`_::
 
-    abbrev-add-global
-    abbrev-inverse-add-global
-    abbrev-kill-all
-    abbrev-list
-    abbrev-read
-    abbrev-write
     dabbrev-completion
     dabbrev-expands
 
@@ -17447,9 +17391,26 @@ find-quick-timeline
 global-search
 
 .. No longer used.
+abbrev-add-global
+abbrev-inverse-add-global
+abbrev-kill-all
+abbrev-list
+abbrev-read
+abbrev-write
+
+.. No longer used.
 disable-idle-time-tracing
 enable-idle-time-tracing
 toggle-idle-time-tracing
+
+.. To be removed.
+.. http://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html#Buffers
+buffer-append-to
+buffer-kill
+buffer-prepend-to
+buffer-switch-to
+buffers-list
+buffers-list-alphabetically
 
 .. Deprecated tangle/untangle commands.
 tangle
@@ -17591,17 +17552,6 @@ The following commands emulate the `Emacs macro commands`_::
     macro-print-last
     macro-save-all
     macro-start-recording
-</t>
-<t tx="ekr.20150323185456.1">.. _`Emacs buffer commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html#Buffers
-
-The following work like some of the many `Emacs buffer commands`_.  A **buffer** in Leo is simply a Leo node::
-
-    buffer-append-to
-    buffer-kill
-    buffer-prepend-to
-    buffer-switch-to
-    buffers-list
-    buffers-list-alphabetically
 </t>
 <t tx="ekr.20150323185514.1">.. contents::
     :local:
@@ -18486,6 +18436,10 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
 
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
+    
+The `clone-find-parents` command creates clones of all parent nodes of c.p.
+
+The `clone-find-tag` aka ``(cft)`` command creates clones of all nodes having a given tag.
 </t>
 <t tx="ekr.20160428111506.1">The body text contains a list of commands, one per line, to be preloaded into Leo's command history. You access command history using the up and down arrow keys in Leo's minibuffer.</t>
 <t tx="ekr.20160428113347.1">The **clone find** commands, cfa and cff are extraordinarily useful. These commands move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
@@ -18631,7 +18585,10 @@ This appears to be the only way to avoid the following message:
 </t>
 <t tx="ekr.20160923133132.1">Leo 5.4-b1   October 15, 2016
 
-[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is an IDE, outliner and PIM.
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible,
+just as it is possible to simulate Python in assembly language...
 
 **The highlights of Leo 5.4**
 
@@ -18674,9 +18631,6 @@ This appears to be the only way to avoid the following message:
 - @test and @suite scripts create unit tests automatically.
 - @button scripts apply scripts to outline data.
 - Outline-oriented directives.
-
-Simulating these features in vim, Emacs or Eclipse is possible,
-just as it is possible to simulate Python in assembly language...
 
 **Links**
 
@@ -19071,29 +19025,80 @@ Previously, the command wrote only to the console window.  Now it writes both to
 <t tx="ekr.20161020061721.1">The old code failed to find 64-bit Python installations in the registry.
 
 The new code checks both the 32-bit and 64-bit registries.</t>
-<t tx="ekr.20161020062057.1">Added...
-
-- The **extremely important** clone-find commands:
-    - clone-find-all (cfa)
-    - clone-find-all-flattened (cfaf)
-    - clone-find-all-flattened-marked (cffm)
-    - clone-find-all-marked (cfam)
-    - clone-find-parents
-    - clone-find-tag (cft)
-
+<t tx="ekr.20161020062057.1">Added:
 - copy-marked
 - diff-marked-nodes
-- flake8
+
 - import-MORE-files
 - import-tabbed-files
-- pyflakes
+
 - tag-children
 
-Removed all static abbrev-* commands.
-Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
-Remove all buffer-* commands (The users don't need to know this)
+- show-calltips
+- show-calltips-force
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161020064204.1">``flake8``
+    Run flake8 on all nodes of the selected tree, or the first ancestor @&lt;file&gt; node.
+``pyflakes``
+    Runs pyflakes on the Python source files in the selected tree, or the first ancestor @&lt;file&gt; node. Prints results in the console window and Leo's log pane.
+``pylint``
+    Runs pylint on the Python source files in the selected tree, or the first ancestor @&lt;file&gt; node. This command is also available from the popup menus created by the contextmenu plugin.
+
+</t>
+<t tx="ekr.20161020064436.1">``check-derived-file``
+    Makes sure an external file written by Leo can be read properly. 
+``check-leo-file``
+    Performs a full check of the consistency of a .leo file.  As of Leo 5.1, Leo performs checks of gnx's and outline structure before writes and after reads, pastes and undo/redo.
+``check-outline``
+    Checks the outline for consistency. Leo automatically checks the syntax of Python external files when Leo writes the external file.
+``clear-all-caches``
+    Clear all file caches in g.app.leoHomeDir/db
+``clear-cache``
+    Clear the outline's file cache.
+``escape``
+    Enter watch escape mode.
+``pdb``
+    Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
+``print-buttons``
+    Print all @button and @command commands, their bindings and their source.
+
+Dumping Leo's internal data::
+
+    dump-all-objects
+    dump-new-objects
+    dump-outline
+    verbose-dump-objects
+
+Python's garbage collector::
+
+    gc-collect-garbage
+    gc-dump-all-objects
+    gc-dump-new-objects
+    gc-dump-objects-verbose
+    gc-print-summary
+    gc-trace-disable
+    gc-trace-enable
+
+Idle time::
+
+    disable-idle-time-events
+    enable-idle-time-events
+    toggle-idle-time-events
+
+</t>
+<t tx="ekr.20161020064706.1">The following print information to Leo's log pane:
+
+    print-bindings
+    print-cmd-docstrings
+    print-commands
+    print-focus
+    print-plugin-handlers
+    print-plugins-info
+    print-settings
+    print-style-sheet
+    show-colors
+    show-find-options</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
