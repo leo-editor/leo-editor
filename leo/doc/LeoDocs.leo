@@ -18656,7 +18656,7 @@ This appears to be the only way to avoid the following message:
 - @button scripts apply scripts to outline data.
 - Outline-oriented directives.
 
-Simulating these features in vim, Emacs or Eclisps is possible,
+Simulating these features in vim, Emacs or Eclipse is possible,
 just as it is possible to simulate Python in assembly language...
 
 **Links**
@@ -18667,7 +18667,7 @@ just as it is possible to simulate Python in assembly language...
 - [Video tutorials](http://leoeditor.com/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
