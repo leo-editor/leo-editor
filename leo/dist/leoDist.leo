@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="101" left="573" height="949" width="1106"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -287,7 +287,6 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 Description: Leo is:
-
              - An outliner. Everything in Leo is an outline.
              - A Personal Information Manager.
              - A browser with a memory.
@@ -299,11 +298,9 @@ Description: Leo is:
              - Written in 100% pure Python
              - Compatible with Python 2.6 and above or Python 3.0 and above.
              - A tool with an inspiring and active community.
-             
              **Leo's unique features**
-             
              - Always-present, persistent, outline structure.
-             - Leo's underlying data is a Directed Acyclic Graph.
+              - Leo's underlying data is a Directed Acyclic Graph.
              - Clones create multiple views of an outline.
              - A simple, powerful, outline-oriented Python API.
              - Scripts and programs can be composed from outlines.
@@ -314,12 +311,9 @@ Description: Leo is:
              - @test and @suite scripts create unit tests automatically.
              - @button scripts apply scripts to outline data.
              - Outline-oriented directives.
-             
-             Simulating these features in vim, Emacs or Eclipse is possible,
-             just as it is possible to simulate Python in assembly language...
-             
+              Simulating these features in vim, Emacs or Eclipse is possible,
+              just as it is possible to simulate Python in assembly language...
              **Links**
-             
              - Leo's home page:  http://leoeditor.com
              - Documentation:    http://leoeditor.com/leo_toc.html
              - Tutorials:        http://leoeditor.com/tutorial.html
@@ -482,7 +476,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904"></t>
+<t tx="ekr.20050315084904" str_leo_pos="5,3"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
