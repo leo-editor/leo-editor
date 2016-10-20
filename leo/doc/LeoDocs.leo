@@ -18941,7 +18941,11 @@ This would take too long.</t>
 - pyflakes now writes to log.
 - Remove docs for abbrev-* commands
 - Add new commands to the commands reference.
-- Document k.get1arg.</t>
+- Document k.get1arg.
+
+- Check announce to Python-announce-list using email:
+  https://mail.python.org/pipermail/python-announce-list/
+</t>
 <t tx="ekr.20161019024703.1">@language rest
 @wrap
 

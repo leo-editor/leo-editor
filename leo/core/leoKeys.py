@@ -2966,7 +2966,7 @@ class KeyHandlerClass(object):
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
-                k.get1Arg(event, self.myCommand1)
+                k.get1Arg(event, handler=self.myCommand1)
                     
             def myCommand1(self, event):
                 k = self.c.k
@@ -2984,13 +2984,13 @@ class KeyHandlerClass(object):
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
-                k.get1Arg(event, self.myCommand1)
+                k.get1Arg(event, handler=self.myCommand1)
                     
             def myCommand1(self, event):
                 k = self.c.k
                 self.arg1 = k.arg
                 k.setLabelBlue('second prompt: ')
-                k.getNextArg(self.myCommand2)
+                k.getNextArg(handler=self.myCommand2)
                 
             def myCommand2(self, event):
                 k = self.c.k
@@ -3016,8 +3016,8 @@ class KeyHandlerClass(object):
 
         event:              The event passed to the command.
 
-        handler=None,       A function. When the user completes the
-                            argument by typing <Return> or sometimes <tab)
+        handler=None,       An executable. When the user completes the
+                            argument by typing <Return> (or sometimes <tab>)
                             k.get1arg calls handler(event)
 
         tabList=[]:         A list of possible completions.
