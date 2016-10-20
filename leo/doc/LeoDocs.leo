@@ -910,7 +910,7 @@
 <v t="ekr.20161014160238.1"><vh>Creating code that will run on both Python 2 and 3</vh></v>
 <v t="ekr.20040403173920.19"><vh>Getting commander preferences</vh></v>
 <v t="ekr.20050907094633"><vh>Getting configuration settings</vh></v>
-<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
+<v t="ekr.20080922124033.1"><vh>Getting interactive input in scripts and commands</vh></v>
 <v t="ekr.20080109074102"><vh>Inserting and deleting icons</vh></v>
 <v t="ekr.20040403173920.18"><vh>Invoking commands from scripts</vh></v>
 <v t="ekr.20050417072710.1"><vh>Making operations undoable</vh></v>
@@ -1258,6 +1258,7 @@
 <v t="ekr.20161019024703.1"><vh>re: new commit_timestamp.json scheme</vh></v>
 <v t="ekr.20161020040603.2"><vh>&lt;&lt; docstring for k.get1arg &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20080922124033.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -5718,44 +5719,66 @@ This line reports a bad character at character 25 of line 123.
 
 Repeat steps 1 and 2 until all invalid characters are gone.
 </t>
-<t tx="ekr.20080922124033.1">The following code can be run from a script to get input from the user using the minibuffer::
+<t tx="ekr.20080922124033.1">k.get1Arg handles the next character the user types when accumulating a user argument from the minibuffer.  k.get1Arg handles details such as tab completion, backspacing, Ctrl-G etc.
 
-    def getInput (event=None):
+Commands should use k.get1Arg to get the first minibuffer argument and k.getNextArg to get all other arguments.
 
-       stateName = 'get-input'
-       k = c.k
-       state = k.getState(stateName)
+k.get1Arg is a state machine. It has to be because it's almost always waiting for the user to type the next character. The handle keyword arg specifies the next state in the machine.
 
-       if state == 0:
-           k.setLabelBlue('Input: ',protect=True)
-           k.getArg(event,stateName,1,getInput)
-       else:
-           k.clearState()
-           g.es_print('input: %s' % k.arg)
-
-    getInput()
-
-Let's look at this in detail.  The lines::
-
-    stateName = 'get-input'
-    k = c.k
-    state = k.getState(stateName)
-
-define a state *name*, 'get-input', unique to this code. k.getState returns the present state (an int) associated with this state.
-
-When getInput() is first called, the state returned by k.getState will be 0, so the following lines are executed::
-
-    if state == 0:
-        k.setLabelBlue('Input: ',protect=True)
-        k.getArg(event,stateName,1,getInput)
-
-These lines put a protected label in the minibuffer: the user can't delete the label by backspacing. getArg, and the rest of Leo's key handling code, take care of the extremely complex details of handling key strokes in states. The call to getArg never returns. Instead, when the user has finished entering the input by typing &lt;Return&gt; getArg calls getInput so that k.getState will return state 1, the value passed as the third argument to k.getArg. The following lines handle state 1::
-
-    else:
+The following examples will work in any class having a 'c' ivar bound to a commander.
+   
+Example 1: get one argument from the user::
+   
+    @cmd('my-command')
+    def myCommand(self, event):
+        """State 0"""
+        k = self.c.k
+        k.setLabelBlue('prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+           
+    def myCommand1(self, event):
+        """State 1"""
+        k = self.c.k
+        # ----&gt; k.arg contains the argument.
+        # Finish the command.
+        ...
+        # Reset the minibuffer.
         k.clearState()
-        g.es_print('input: %s' % k.arg)
+        k.resetLabel()
+        k.showStateAndMode()
+       
+Example 2: get two arguments from the user::
+   
+    @cmd('my-command')
+    def myCommand(self, event):
+        """State 0"""
+        k = self.c.k
+        k.setLabelBlue('first prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+           
+    def myCommand1(self, event):
+        """State 1"""
+        k = self.c.k
+        self.arg1 = k.arg
+        k.setLabelBlue('second prompt: ')
+        k.getNextArg(handler=self.myCommand2)
+       
+    def myCommand2(self, event):
+        """State 2"""
+        k = self.c.k
+        # -----&gt; k.arg contains second argument.
+        # Finish the command, using self.arg1 and k.arg.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
 
-k.arg is the value returned by k.getArg. This example code just prints the value of k.arg and clears the input state.
+**Summary**
+
+- The handler keyword argument to k.get1Arg and k.getNextArg specifies the next state in the state machine.
+
+- k.get1Arg contains many optional keyword arguments. See its docstring for details.
 </t>
 <t tx="ekr.20080923182326.1">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
@@ -18941,7 +18964,6 @@ This would take too long.</t>
 - pyflakes now writes to log.
 - Remove docs for abbrev-* commands
 - Add new commands to the commands reference.
-- Document k.get1arg.
 
 - Check announce to Python-announce-list using email:
   https://mail.python.org/pipermail/python-announce-list/
