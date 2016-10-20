@@ -169,7 +169,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1256,6 +1256,7 @@
 </v>
 <v t="ekr.20161019024700.1"><vh>** To do</vh>
 <v t="ekr.20161019024703.1"><vh>re: new commit_timestamp.json scheme</vh></v>
+<v t="ekr.20161020040603.2"><vh>&lt;&lt; docstring for k.get1arg &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -18939,7 +18940,8 @@ This would take too long.</t>
 <t tx="ekr.20161019024700.1">- Document fix of installer bug.
 - pyflakes now writes to log.
 - Remove docs for abbrev-* commands
-- Add new commands to the commands reference</t>
+- Add new commands to the commands reference.
+- Document k.get1arg.</t>
 <t tx="ekr.20161019024703.1">@language rest
 @wrap
 
@@ -18961,7 +18963,90 @@ All tests pass, but the new scheme has not yet been tested in official releases.
 Moved old version of get_version_from_json to the attic.
 
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161020040603.2">'''
+k.get1Arg: Handle the next character the user types when accumulating a
+user argument from the minibuffer. Ctrl-G will abort this processing at any
+time.
+
+Commands should use k.get1Arg to get the first minibuffer argument and
+k.getNextArg to get all other arguments.
+
+Before going into the many details, let's look at some examples. This
+code will work in any class having a 'c' ivar bound to a commander.
+    
+Example 1: get one argument from the user:
+    
+    @cmd('my-command')
+    def myCommand(self, event):
+        k = self.c.k
+        k.setLabelBlue('prompt: ')
+        k.get1Arg(event, self.myCommand1)
+            
+    def myCommand1(self, event):
+        k = self.c.k
+        # k.arg contains the argument.
+        # Finish the command.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        
+Example 2: get two arguments from the user:
+    
+    @cmd('my-command')
+    def myCommand(self, event):
+        k = self.c.k
+        k.setLabelBlue('first prompt: ')
+        k.get1Arg(event, self.myCommand1)
+            
+    def myCommand1(self, event):
+        k = self.c.k
+        self.arg1 = k.arg
+        k.setLabelBlue('second prompt: ')
+        k.getNextArg(self.myCommand2)
+        
+    def myCommand2(self, event):
+        k = self.c.k
+        # k.arg contains second argument.
+        # Finish the command, using self.arg1 and k.arg.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        
+k.get1Arg and k.getNextArg are a convenience methods. They simply passes
+its arguments to the get_arg method of the singleton GetArg instance. This
+docstring describes k.get1arg and k.getNextArg as if they were the
+corresponding methods of the GetArg class.
+
+k.get1Arg state machine. Logically, states as tuples (kind, n, handler)
+though they aren't represented that way. When the state machine in the
+GetArg class is active, the kind is 'getArg'.  This constant has special
+meaning to Leo's key-handling code.
+
+The arguments to k.get1Arg are as follows:
+
+event:              The event passed to the command.
+
+handler=None,       A function. When the user completes the
+                    argument by typing &lt;Return&gt; or sometimes &lt;tab)
+                    k.get1arg calls handler(event)
+
+tabList=[]:         A list of possible completions.
+
+completion=True:    True if completions are enabled.
+
+oneCharacter=False: True if k.arg should be a single character.
+
+stroke=None:        The incoming key stroke.
+
+useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
+                    False allows sort-lines, for example, to show the selection range.
+    
+'''</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

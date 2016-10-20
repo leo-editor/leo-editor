@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="101" left="573" height="949" width="1106"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -199,6 +199,8 @@
 <v t="ekr.20161015091353.2"><vh>Files</vh></v>
 <v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
+<v t="ekr.20161020040946.1"><vh>Test</vh></v>
+<v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
 </v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
@@ -476,7 +478,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organise all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="5,3"></t>
+<t tx="ekr.20050315084904"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
@@ -647,11 +649,9 @@ import leo.core.leoVersion as leoVersion</t>
 - Pre-testing
 - Files
 - Web docs
-- Post-testing
-    - Run all unit tests.
-    - Run pyflakes
-    - Run pylint -a
 - Create distribution
+- Test
+- Create git tag
 - Scan all folders &amp; files before uploading.
 - Create Release on SourceForge: http://sourceforge.net/projects/leo/
 - Announcements
@@ -2839,32 +2839,22 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   **To get HTML, just use html tab**.
 - Twitter (point to my blog)
 </t>
-<t tx="ekr.20161015092224.1">Run pyinstaller:
-- Delete leo-editor/dist and leo-editor/build folders first.
-- Run pyinstaller2 launchLeo-unified.spec.
-- Test it, then rerun it (so .pyo files are not part of the package)
-- Compress the folder:
-    - Windows: Leo_&lt;version&gt;_Win.zip.
-    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
-
-Run make-leo.
+<t tx="ekr.20161015092224.1">Run make-leo.
 - Commit all files before running make-leo.
 - Run make-leo button in leoDist.leo.
 - Commit any changed files.
+- If any files change, rerun make-leo.
 
 Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
-Test files in installed folder:
-- Run all unit tests in the installed folder, with the installed Leo.
-- Make sure the following open without errors:
-    - leoPlugins.leo
-    - leoPy.leo
-    - LeoDocs.leo
-
-Create a git tag **last**:
-- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
-    - Do *not* use -f option!
+Run pyinstaller:
+- Delete leo-editor/dist and leo-editor/build folders first.
+- Run pyinstaller2 launchLeo-unified.spec.
+- Test a *copy* of the result so .pyo files are not added to the package)
+- Compress the folder:
+    - Windows: Leo_&lt;version&gt;_Win.zip.
+    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
 </t>
 <t tx="ekr.20161015114905.1">Leo 5.4-b1   October 15, 2016
 
@@ -2936,6 +2926,20 @@ just as it is possible to simulate Python in assembly language...
         os.remove(path)
     else:
         g.trace('not found', path)
+</t>
+<t tx="ekr.20161020040946.1">Test files in installed folder:
+
+- Run all unit tests in the installed folder, with the installed Leo.
+
+- Make sure the following open without errors:
+    - leoPlugins.leo
+    - leoPy.leo
+    - LeoDocs.leo
+</t>
+<t tx="ekr.20161020041000.1">Create a git tag **last**
+
+- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
+    - Do *not* use -f option!
 </t>
 </tnodes>
 </leo_file>
