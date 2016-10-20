@@ -2934,7 +2934,10 @@ class KeyHandlerClass(object):
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
     # New in Leo 5.4    
     def getNextArg(self, handler):
-        '''Get the next arg.  For example, after a Tab in the find commands.'''
+        '''
+        Get the next arg.  For example, after a Tab in the find commands.
+        See the docstring for k.get1Arg for examples of its use.
+        '''
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
         
