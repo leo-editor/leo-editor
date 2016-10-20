@@ -23,7 +23,6 @@
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20101009114830.4724"><vh>File options</vh>
-<v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
@@ -1216,6 +1215,7 @@
 <v t="ekr.20161014034431.3"><vh>Fixed #304: QtWebEngine warnings with Qt5</vh></v>
 <v t="ekr.20161014034431.161"><vh>Fixed #313: vim-open-node opens file instead of just node</vh></v>
 <v t="ekr.20161015065750.1"><vh>Fixed #323: &lt;Alt-x&gt;help-tab shows too much at first</vh></v>
+<v t="ekr.20161020061721.1"><vh>Fixed .nsi installer bug</vh></v>
 <v t="ekr.20160923133117.175"><vh>Fixed bug in ac.get_summary_list</vh></v>
 <v t="ekr.20160923133117.176"><vh>Fixed expand-to-level bug</vh></v>
 <v t="ekr.20161014034431.114"><vh>Fixed major bug involving Leo's generators</vh></v>
@@ -1241,6 +1241,7 @@
 <v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
 <v t="ekr.20161014153551.1"><vh>Allow plain keys in headlines</vh></v>
 <v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
+<v t="ekr.20161020061627.1"><vh>The pylint command writes to the log pane</vh></v>
 <v t="ekr.20161015070136.1"><vh>Won't do #283: Show global line number in lower left status bar</vh></v>
 </v>
 <v t="ekr.20160923163122.1"><vh>Importers</vh>
@@ -1254,11 +1255,11 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
-<v t="ekr.20161019024700.1"><vh>** To do</vh>
+<v t="ekr.20161019024700.1"><vh>** Remake all doc files</vh>
 <v t="ekr.20161019024703.1"><vh>re: new commit_timestamp.json scheme</vh></v>
 <v t="ekr.20161020040603.2"><vh>&lt;&lt; docstring for k.get1arg &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20080922124033.1"></v>
+<v t="ekr.20161020062057.1"><vh>** Update commands ref</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -5779,11 +5780,6 @@ Example 2: get two arguments from the user::
 - The handler keyword argument to k.get1Arg and k.getNextArg specifies the next state in the state machine.
 
 - k.get1Arg contains many optional keyword arguments. See its docstring for details.
-</t>
-<t tx="ekr.20080923182326.1">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
-
-True:  Leo attempts to create directories if they do not exist.
-False: Leo never attempts to create directories.
 </t>
 <t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example::
 
@@ -18851,7 +18847,8 @@ Removed all chapter-* commands except the chapter-select and chapter-select-main
 - Added @button import-tab-files to scripts.leo:
   https://groups.google.com/forum/#!topic/leo-editor/YcT7SOSYEQk
 - @chapter trees need no longer be children of @chapters nodes.
-</t>
+- Fixed bug in NSIS installer.
+  The old code failed to find Python installations in the 64-bit Windows registry.</t>
 <t tx="ekr.20161014054147.1">Added the following settings:
 
 - @bool check_for_changed_external_files
@@ -18960,13 +18957,8 @@ Rewrote ga.do_back_space and changed ga.do_tab and ga.do_back_space.</t>
 tagged with global_file_numbers
 
 This would take too long.</t>
-<t tx="ekr.20161019024700.1">- Document fix of installer bug.
-- pyflakes now writes to log.
-- Remove docs for abbrev-* commands
-- Add new commands to the commands reference.
+<t tx="ekr.20161019024700.1">- Remake all doc files.
 
-- Check announce to Python-announce-list using email:
-  https://mail.python.org/pipermail/python-announce-list/
 </t>
 <t tx="ekr.20161019024703.1">@language rest
 @wrap
@@ -19072,6 +19064,35 @@ useMinibuffer=True: True: put focus in the minibuffer while accumulating argumen
                     False allows sort-lines, for example, to show the selection range.
     
 '''</t>
+<t tx="ekr.20161020061627.1">This is one of those small things that makes a big difference.
+
+Previously, the command wrote only to the console window.  Now it writes both to the console and to the log pane.  YOu check the results without having to bring the console into view, which is much more convenient if several console windows are open.
+</t>
+<t tx="ekr.20161020061721.1">The old code failed to find 64-bit Python installations in the registry.
+
+The new code checks both the 32-bit and 64-bit registries.</t>
+<t tx="ekr.20161020062057.1">Added...
+
+- The **extremely important** clone-find commands:
+    - clone-find-all (cfa)
+    - clone-find-all-flattened (cfaf)
+    - clone-find-all-flattened-marked (cffm)
+    - clone-find-all-marked (cfam)
+    - clone-find-parents
+    - clone-find-tag (cft)
+
+- copy-marked
+- diff-marked-nodes
+- flake8
+- import-MORE-files
+- import-tabbed-files
+- pyflakes
+- tag-children
+
+Removed all static abbrev-* commands.
+Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
+Remove all buffer-* commands (The users don't need to know this)
+</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
