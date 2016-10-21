@@ -19,6 +19,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import optparse
 import os
+import subprocess
 import sys
 import time
 #@+others
@@ -42,13 +43,18 @@ def main(files, verbose):
 
 def run(fn, verbose):
     '''Run pylint on fn.'''
-    trace = False and not g.unitTesting
     # theDir is empty for the -f option.
     from pylint import lint
     assert lint
-    rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
+    # g.trace('(pylint-leo.py)', os.path.abspath(os.curdir))
+    # 2016/10/20: The old code only runs if os.curdir is the leo-editor folder.
+    if 1:
+        path = os.path.dirname(__file__)
+        rc_fn = os.path.abspath(os.path.join(path,'leo','test','pylint-leo-rc.txt'))
+    else:
+        rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     if not os.path.exists(rc_fn):
-        print('pylint rc file not found: %s' % (rc_fn))
+        print('pylint-leo.py: rc file not found: %s' % (rc_fn))
         return
     if verbose:
         path = g.os_path_dirname(fn)
@@ -56,19 +62,21 @@ def run(fn, verbose):
         theDir = dirs and dirs[-1] or ''
         print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
-    args = ','.join([
-        "fn=r'%s'" % (fn),
-        "rc=r'%s'" % (rc_fn),
-    ])
-    if 0: # Prints error number.
-        args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
-    command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-        sys.executable, args)
-    t1 = time.time()
-    g.execute_shell_commands(command)
-    t2 = time.time()
-    if trace:
-        g.trace('%4.2f %s' % (t2-t1, g.shortFileName(fn)))
+    if 1: # Invoke pylint directly.
+        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+        if sys.platform.startswith('win'):
+            args = args.replace('\\','\\\\')
+        command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
+            sys.executable, args)
+    else:
+        # Use g.run_pylint.
+        args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
+        command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+            sys.executable, ','.join(args))
+    # print('===== pylint-leo.run: %s' % command)
+    proc = subprocess.Popen(command, shell=False)
+    proc.communicate()
+        # Wait: Not waiting is confusing for the user.
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():
     try:

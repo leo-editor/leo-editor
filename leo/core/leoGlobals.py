@@ -1890,7 +1890,10 @@ def run_pylint(fn, rc,
 ):
     '''
     Run pylint with the given args, with Sherlock tracing if requested.
-    Do not assume g.app exists.
+    
+    **Do not assume g.app exists.**
+    
+    run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
     '''
     try:
         from pylint import lint
@@ -1905,6 +1908,7 @@ def run_pylint(fn, rc,
     # Prints error number.
     # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     args.append(fn)
+    g.trace('args:', args)
     if sherlock:
         sherlock = g.SherlockTracer(
                 dots=dots,
@@ -1919,9 +1923,13 @@ def run_pylint(fn, rc,
             sherlock.stop()
             sherlock.print_stats(patterns=stats_patterns or [])
     else:
-        # print('g.run_pylint: lint: %s' % lint)
-        # print('g.run_pylint: %s' % g.shortFileName(fn))
-        lint.Run(args)
+        # print('run_pylint: %s' % g.shortFileName(fn))
+        try:
+            lint.Run(args) # does sys.exit
+        finally:
+            # Printing does not work well here.
+            # When not waiting, printing from severl process can be interspersed.
+            pass
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n):
     '''Wait about n milliseconds.'''

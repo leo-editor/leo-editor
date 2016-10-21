@@ -21,7 +21,9 @@ try:
     import pyflakes
 except ImportError:
     pyflakes = None
+import shlex
 import string
+import subprocess
 import sys
 import time
 import traceback
@@ -222,7 +224,13 @@ def pylint_command(event):
             self.c = c
             self.seen = [] # List of checked vnodes.
             self.wait = True
-                # The no-wait code doesn't seem to work.
+                # Waiting has several advantages:
+                # 1. output is shown in the log pane.
+                # 2. Total timing statistics can be shown,
+                #    so it is always clear when the command has ended.
+                # Not waiting *does* works, but the user can't
+                # see when the command has ended.
+
         #@+others
         #@+node:ekr.20150514125218.9: *5* pylint.check
         def check(self, p, rc_fn):
@@ -293,27 +301,41 @@ def pylint_command(event):
                             if isAncestor and self.check(p, rc_fn):
                                 break
             if self.wait:
-                g.es_print('pylint: done %s' % g.timeSince(t1))
+                g.es_print('pylint done %s' % g.timeSince(t1))
         #@+node:ekr.20150514125218.12: *5* pylint.run_pylint
         def run_pylint(self, fn, rc_fn):
             '''Run pylint on fn with the given pylint configuration file.'''
             if not os.path.exists(fn):
                 print('file not found:', fn)
                 return
-            # Report the file name.
+            if 1: # Invoke pylint directly.
+                args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
+                if sys.platform.startswith('win'):
+                    args = args.replace('\\','\\\\')
+                command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
+                    sys.executable, args)
+            else:
+                # Invoke g.run_pylint.
+                args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
+                # When shell is True, it's recommended to pass a string, not a sequence.
+                command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+                    sys.executable, ','.join(args))
             if self.wait:
-                print('pylint: %s' % (g.shortFileName(fn)))
-            # Create the required args.
-            args = ','.join([
-                "fn=r'%s'" % (fn),
-                "rc=r'%s'" % (rc_fn),
-            ])
-            # Execute the command in a separate process.
-            command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-                sys.executable, args)
-            if not self.wait:
-                command = '&' + command
-            g.execute_shell_commands(command)
+                g.es_print(g.shortFileName(fn))
+                proc = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    shell=False,
+                    universal_newlines=True, # Converts stdout to unicode
+                )
+                stdout_data, stderr_data = proc.communicate()
+                for s in g.splitLines(stdout_data):
+                    if s.strip():
+                        g.es_print(s.rstrip())
+            else:
+                g.es_print(g.shortFileName(fn))
+                subprocess.Popen(command,shell=False)
+                    
         #@-others
     #@-others
         # define class PylintCommand.
