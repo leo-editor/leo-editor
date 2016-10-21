@@ -410,8 +410,12 @@ class AutoCompleterClass(object):
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
             kind = 'ON' if self.verbose else 'OFF'
-            c.frame.putStatusLine('verbose completions %s' % (
-                kind), color='red')
+            message = 'verbose completions %s' % (kind)
+            g.es_print(message)
+            # This doesn't work because compute_completion_list clears the autocomplete tab.
+            # self.put('', message, tabName=self.tabName)
+            # This is almost invisible: the fg='red' is not honored.
+            c.frame.putStatusLine(message, fg='red')
             self.compute_completion_list()
         # elif ch == 'Down' and hasattr(self,'onDown'):
             # self.onDown()

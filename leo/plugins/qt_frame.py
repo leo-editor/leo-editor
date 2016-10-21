@@ -2142,6 +2142,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
         def put_helper(self, s, w, bg=None, fg=None):
             '''Put string s in the indicated widget, with proper colors.'''
+            trace = False and not g.unitTesting
             c = self.c
             if not bg:
                 bg = c.config.getColor('status-bg') or 'white'
@@ -2169,6 +2170,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
+            if trace: g.trace(s)
             w.setText(s)
         #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update & helper
         def update(self):
