@@ -6,12 +6,6 @@
 .. @+node:ekr.20161019024731.1: ** To do: 5.4
 @language rest
 @wrap
-
-- Deprecate g.execute_shell_commands
-    
-- remove how-many.
-
-- Maybe:  c.get1arg, c.getNextArg, etc.
 .. @+node:ekr.20161019020853.1: *3* #106: brew install Leo on MacOS
 Requires 5.4 final
 
@@ -84,6 +78,9 @@ E:140,16: Instance of 'object' has no 'strip' member (no-member)
         ...
         
     commander.A_Command = A_Command
+    
+- @g.command should be the only command-related decorator.
+    - Remove << define global decorator dicts >> in leoGlobals.py
 .. @+node:ekr.20161019020710.1: *3* Improve pylint
 - enable more pylint checks
 - pylint command should ensure that the leo directory is on the path.

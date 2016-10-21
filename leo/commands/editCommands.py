@@ -1025,26 +1025,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* info...
-    #@+node:ekr.20150514063305.246: *4* howMany (improved)
-    @cmd('how-many')
-    def howMany(self, event):
-        '''
-        Print how many occurances of a regular expression are found
-        in the body text of the presently selected node.
-        '''
-        k = self.c.k
-        self.w = self.editWidget(event)
-        if self.w:
-            k.setLabelBlue('Enter regex: ')
-            k.get1Arg(event, handler=self.howMany1)
-            
-    def howMany1(self, event):
-        c, k, w = self.c, self.c.k, self.w
-        k.clearState()
-        s = w.getAllText()
-        n = sum([len(re.findall(k.arg, z)) for z in g.splitLines(s)])
-        k.setLabelGrey('%s occurances of %s' % (n, k.arg))
-        c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.247: *4* lineNumber
     @cmd('line-number')
     def lineNumber(self, event):

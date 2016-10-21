@@ -9,6 +9,8 @@
 - Removed buffer-* and register-* commands, and associated menus.
 
 - Moved commands related to external checkers from leoApp.py to checkerCommands.py.
+
+- Removed how-many command.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

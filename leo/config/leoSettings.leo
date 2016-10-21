@@ -3954,7 +3954,6 @@ beginning-of-buffer
 beginning-of-buffer-extend-selection
 beginning-of-line
 beginning-of-line-extend-selection
-buffer-prepend-to
 delete-char
 end-of-buffer
 end-of-buffer-extend-selection
@@ -3986,7 +3985,6 @@ paste-text
 previous-line
 previous-line-extend-selection
 rectangle-kill
-register-point-to
 scroll-down-half-page
 scroll-down-line
 scroll-down-page
@@ -4084,8 +4082,6 @@ isearch-backward-regexp
 isearch-forward
 isearch-forward-regexp
 find-tab-open
-# query-replace
-# query-replace-regex
 replace-string
 search-again
 search-backward
@@ -4174,8 +4170,6 @@ isearch-backward                    = Alt-R
 isearch-backward-regexp             = None
 isearch-forward                     = Alt-I # Alt-S conflicts with &amp;Search and &amp;Settings menus.
 isearch-forward-regexp              = None
-# query-replace                       = None
-# query-replace-regex                 = None
 search-backward                     = None
 search-forward                      = None
 word-search-backward                = None 
@@ -4360,8 +4354,6 @@ expand-next-level           = None
 expand-node                 = Alt-]
 extract                     = Shift-Ctrl-D
 extract-names               = Shift-Ctrl-N
-# extract-python-method       = None
-# extract-section             = Shift-Ctrl-S
 goto-next-clone             = Alt-N
 insert-child                = Ctrl-Insert
 insert-node                 = Ctrl-I
@@ -4384,8 +4376,7 @@ copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
 delete-char                         !text = Delete
-delete-comments                     = Ctrl-parenright
-# delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
+delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
 kill-line                           = Ctrl-k
@@ -7160,19 +7151,11 @@ beginning-of-buffer-extend-selection= None
 beginning-of-line                   = Alt-Up        
 beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = None
-buffer-append-to                    = None
-buffer-kill                         = None
-buffer-prepend-to                   = None
-buffer-switch-to                    = None
-buffers-list                        = None
-buffers-list-alphabetically         = None
 capitalize-word                     = Alt-c
 cascade-windows                     = None
 center-line                         = Alt-s
 center-region                       = None
-#check-all-python-code              = None
 check-outline                       = None
-# check-python-code                 = None
 clear-extend-mode                   = None
 clear-kill-ring                     = None
 clear-recent-files                  = None
@@ -7229,7 +7212,6 @@ expand-next-level                   = None
 expand-node                         = Alt-]
 expand-or-go-right                  = Alt-RtArrow
 expand-prev-level                   = None
-# expand-region-abbrevs             = None
 expand-to-level-1                   = None
 expand-to-level-2                   = None
 expand-to-level-3                   = None
@@ -7242,9 +7224,7 @@ expand-to-level-9                   = None
 export-headlines                    = None
 extend-to-paragraph                 = Alt-h
 extract                             = Shift-Ctrl-D
-extract-names                       = Shift-Ctrl-N
-# extract-python-method               = None
-# extract-section                     = Shift-Ctrl-E</t>
+extract-names                       = Shift-Ctrl-N</t>
 <t tx="ekr.20140721165014.19150">file-delete                         = None
 file-diff-files                     = None
 file-insert                         = None
@@ -7298,15 +7278,8 @@ goto-prev-visible                   = None         # Alt-UpArrow conflicts with 
 help-for-minibuffer                 = None
 spell-tab-hide                      = None
 hoist                               = None
-how-many                            = None
 iconify-frame                       = Ctrl-z
 import-file                         = None
-# import-at-file                      = None         # Removed Shift-Ctrl-F: not useful enough.
-# import-at-root                      = None
-# import-cweb-files                   = None
-# import-derived-file                 = None
-# import-flattened-outline            = None
-# import-noweb-files                  = None
 indent-region                       = Alt-Ctrl-backslash
 indent-region                       = Ctrl-]
 indent-relative                     = None
@@ -7361,14 +7334,12 @@ number-command-6                = Alt-6
 number-command-7                = Alt-7
 number-command-8                = Alt-8
 number-command-9                = Alt-9 
-# open-compare-window             = None
 open-leoDocs-leo                = None
 open-leoPlugins-leo             = None
 open-leoSettings-leo            = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
 open-online-home                = None
-# open-online-tutorial            = None
 open-outline                    = None         # Ctrl-O conflicts with insert-newline
 open-python-window              = None         # Removed Alt-P: not useful enough.
 spell-tab-open                  = None
@@ -7382,10 +7353,7 @@ previous-line-extend-selection  = None
 print-bindings                  = None
 print-commands                  = None
 promote                         = Ctrl-{            
-# query-replace                   = Alt-percent
-# query-replace-regex             = None
 quick-command                   = Ctrl-c
-register-append-to              = None
 re-search-backward              = None
 re-search-forward               = None
 read-at-file-nodes              = None
@@ -7399,18 +7367,9 @@ rectangle-open                  = None
 rectangle-string                = None
 rectangle-yank                  = None
 reformat-paragraph              = Shift-Ctrl-P
-register-copy-to                = None
-register-copy-rectangle-to      = None
-register-jump-to                = None
-register-increment              = None
-register-insert                 = None
-register-point-to               = None
-register-prepend-to             = None
-register-view                   = None
 remove-blank-lines              = None
 remove-sentinels                = None
 repeat-complex-command          = None
-# replace-string                  = None
 resize-to-screen                = None
 reverse-region                  = None
 revert                          = None
@@ -7568,12 +7527,6 @@ beginning-of-buffer                 = None
 beginning-of-buffer-extend-selection= None
 beginning-of-line                   = None
 beginning-of-line-extend-selection  = None
-buffer-append-to                    = None
-buffer-kill                         = None
-buffer-prepend-to                   = None
-buffer-switch-to                    = None
-buffers-list                        = None
-buffers-list-alphabetically         = None
 capitalize-word                     = None
 cascade-windows                     = None
 center-line                         = None
@@ -7781,7 +7734,6 @@ hide-pane                           = None
 hide-outline-pane                   = None
 spell-tab-hide                      = None
 hoist                               = None
-how-many                            = None
 iconify-frame                       = None
 import-file                         = None
 # import-at-file                      = None
@@ -7862,7 +7814,6 @@ open-leoSettings-leo                = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
 open-online-home                    = None
-# open-online-tutorial              = None
 open-outline                        = None
 open-python-window                  = None
 spell-tab-open                      = None
@@ -7877,9 +7828,6 @@ print-bindings                      = None
 print-commands                      = None
 print-focus                         = None
 promote                             = None
-# propagate-key-event               = None
-# query-replace                     = None
-# query-replace-regex               = None
 quick-command                       = None
 re-search-backward                  = None
 re-search-forward                   = None
@@ -7894,15 +7842,6 @@ rectangle-string                    = None
 rectangle-yank                      = None
 redo                                = None
 reformat-paragraph                  = None
-register-append-to                  = None
-register-copy-to                    = None
-register-copy-rectangle-to          = None
-register-jump-to                    = None
-register-increment                  = None
-register-insert                     = None
-register-point-to                   = None
-register-prepend-to                 = None
-register-view                       = None
 remove-blank-lines                  = None
 remove-sentinels                    = None
 remove-space-from-lines             = None
