@@ -67,6 +67,7 @@ def run(fn, verbose):
         print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     if 1: # Invoke pylint directly.
+        # Escaping args is harder here because we are creating an args array.
         is_win = sys.platform.startswith('win')
         args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn)])
         if is_win:
@@ -80,9 +81,7 @@ def run(fn, verbose):
         args = ','.join(["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn)])
         command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
             sys.executable, args)
-    g.trace('===== pylint-leo.run: %s' % command)
-    # g.trace('fn:', g.os_path_exists(fn), fn)
-
+    # g.trace('===== pylint-leo.run: %s' % command)
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()
