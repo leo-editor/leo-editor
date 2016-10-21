@@ -272,7 +272,7 @@ def vs_eval(event):
         import datetime
         today = datetime.date.today()
 
-    will captue the value of ``today`` even though the last line is a
+    will capture the value of ``today`` even though the last line is a
     statement, not an expression.
 
     Stores results in ``c.vs['_last']`` for insertion

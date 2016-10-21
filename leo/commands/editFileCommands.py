@@ -59,7 +59,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     @cmd('clean-at-clean-tree')
     def cleanAtCleanTree(self, event):
         '''
-        Adjust whitepace in the nearest @clean tree,
+        Adjust whitespace in the nearest @clean tree,
         searching c.p and its ancestors.
         '''
         c = self.c

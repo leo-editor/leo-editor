@@ -3115,12 +3115,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.335: *4* scrollUp/Down & helper
     @cmd('scroll-down-half-page')
     def scrollDownHalfPage(self, event):
-        '''Scroll the presently selected pane down one lline.'''
+        '''Scroll the presently selected pane down one line.'''
         self.scrollHelper(event, 'down', 'half-page')
 
     @cmd('scroll-down-line')
     def scrollDownLine(self, event):
-        '''Scroll the presently selected pane down one lline.'''
+        '''Scroll the presently selected pane down one line.'''
         self.scrollHelper(event, 'down', 'line')
 
     @cmd('scroll-down-page')
@@ -3130,7 +3130,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     @cmd('scroll-up-half-page')
     def scrollUpHalfPage(self, event):
-        '''Scroll the presently selected pane down one lline.'''
+        '''Scroll the presently selected pane down one line.'''
         self.scrollHelper(event, 'up', 'half-page')
 
     @cmd('scroll-up-line')

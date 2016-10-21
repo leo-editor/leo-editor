@@ -2081,16 +2081,17 @@ class Commands(object):
         '''
         Create child node from the selected body text.
 
-        1. If the selection starts with a section reference, the section name become
-           the child's headline. All following lines become the child's body text.
-           The section reference line remains in the original body text.
+        1. If the selection starts with a section reference, the section
+           name become the child's headline. All following lines become
+           the child's body text. The section reference line remains in
+           the original body text.
 
-        2. If the selection looks like a Python class or definition line, the
-           class/function/method name becmes child's headline and all selected lines
-           become the child's body text.
+        2. If the selection looks like a Python class or definition line,
+           the class/function/method name becomes the child's headline and
+           all selected lines become the child's body text.
 
-        3. Otherwise, the first line becomes the child's headline, and all selected
-           lines become the child's body text.
+        3. Otherwise, the first line becomes the child's headline, and all
+           selected lines become the child's body text.
         '''
         c, current, u, undoType = self, self.p, self.undoer, 'Extract'
         head, lines, tail, oldSel, oldYview = self.getBodyLines()

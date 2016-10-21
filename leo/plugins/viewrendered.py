@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20100318101414.5990: * @file viewrendered.py
-#@+<< docstring >>
-#@+node:tbrown.20100318101414.5991: ** << docstring >> (viewrendered.py)
+#@+<< vr docstring >>
+#@+node:tbrown.20100318101414.5991: ** << vr docstring >>
 '''
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -172,7 +172,7 @@ and coordination between the free_layout, NestedSplitter and viewrendered plugin
 Jacob Peck added markdown support to this plugin.
 
 '''
-#@-<< docstring >>
+#@-<< vr docstring >>
 #@+<< to do >>
 #@+node:ekr.20140924060835.19485: ** << to do >>
 #@+at
@@ -376,7 +376,7 @@ close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
-    '''Lock rendereing pane.'''
+    '''Lock the rendering pane.'''
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')

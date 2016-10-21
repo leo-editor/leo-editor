@@ -23,7 +23,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.103: *3* debug.collectGarbage
     @cmd('gc-collect-garbage')
     def collectGarbage(self, event=None):
-        """Run Python's Gargabe Collector."""
+        """Run Python's Garbage Collector."""
         g.collectGarbage()
     #@+node:ekr.20150514063305.104: *3* debug.invoke_debugger & helper
     @cmd('debug')
