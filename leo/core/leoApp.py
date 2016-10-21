@@ -309,11 +309,14 @@ def pylint_command(event):
                 print('file not found:', fn)
                 return
             if 1: # Invoke pylint directly.
+                is_win = sys.platform.startswith('win')
                 args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
-                if sys.platform.startswith('win'):
+                if is_win:
                     args = args.replace('\\','\\\\')
                 command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
                     sys.executable, args)
+                if not is_win:
+                    command = shlex.split(command)
             else:
                 # Invoke g.run_pylint.
                 args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
