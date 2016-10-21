@@ -17,6 +17,7 @@ On Ubuntu, the following alias runs this file::
     # pylint-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
+import shlex
 import optparse
 import os
 import subprocess
@@ -56,6 +57,9 @@ def run(fn, verbose):
     if not os.path.exists(rc_fn):
         print('pylint-leo.py: rc file not found: %s' % (rc_fn))
         return
+    if not os.path.exists(fn):
+        print('pylint-leo.py: file not found: %s' % (fn))
+        return
     if verbose:
         path = g.os_path_dirname(fn)
         dirs = path.split(os.sep)
@@ -63,17 +67,23 @@ def run(fn, verbose):
         print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     if 1: # Invoke pylint directly.
-        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn),])
-        if sys.platform.startswith('win'):
+        is_win = sys.platform.startswith('win')
+        args =  ','.join(["'--rcfile=%s'" % (rc_fn), "'%s'" % (fn)])
+        if is_win:
             args = args.replace('\\','\\\\')
         command = '%s -c "from pylint import lint; args=[%s]; lint.Run(args)"' % (
             sys.executable, args)
+        if not is_win:
+            command = shlex.split(command)
     else:
         # Use g.run_pylint.
-        args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
+        args = ','.join(["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn)])
         command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
-            sys.executable, ','.join(args))
-    # print('===== pylint-leo.run: %s' % command)
+            sys.executable, args)
+    g.trace('===== pylint-leo.run: %s' % command)
+    # g.trace('fn:', g.os_path_exists(fn), fn)
+
+    # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()
         # Wait: Not waiting is confusing for the user.
