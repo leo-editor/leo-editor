@@ -388,7 +388,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         When two nodes *are* marked, this command does the following:
 
         1. Creates a **diff node** as the last top-level node. The body of the
-           diff ndoe shows the diffs between the two marked nodes, that is,
+           diff node shows the diffs between the two marked nodes, that is,
            difflib.Differ().compare(p1.b, p2.b)
 
         2. Move *clones* of p1 and p2 to be children of the diff node,

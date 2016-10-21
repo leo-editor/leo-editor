@@ -693,7 +693,6 @@
 <v t="ekr.20150323185921.1"><vh>Emacs text formatting</vh></v>
 <v t="ekr.20150323185151.1"><vh>Macro commands</vh></v>
 <v t="ekr.20150323103115.1"><vh>Rectangle commands</vh></v>
-<v t="ekr.20150323103142.1"><vh>Register commands</vh></v>
 <v t="ekr.20150318110552.56"><vh>Scrolling the outline pane</vh></v>
 <v t="ekr.20150323185611.1"><vh>Yank, kill &amp; delete commands</vh></v>
 </v>
@@ -1202,6 +1201,7 @@
 </v>
 <v t="ekr.20161014053105.1"></v>
 <v t="ekr.20160923133132.1"><vh>Leo 5.4 release notes</vh>
+<v t="ekr.20161021163518.1"><vh> Changes since 5.4 b1</vh></v>
 <v t="ekr.20160923133117.3"><vh>Bugs fixed</vh>
 <v t="ekr.20160923133117.4"><vh>Fixed #241: QMimeData object error</vh></v>
 <v t="ekr.20161014034431.151"><vh>Fixed #262: Improve performance of check_for_changed_external_files</vh></v>
@@ -1258,12 +1258,6 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
-<v t="ekr.20161019024700.1"><vh>** Remake all doc files</vh>
-<v t="ekr.20161019024703.1"><vh>re: new commit_timestamp.json scheme</vh></v>
-<v t="ekr.20161020040603.2"><vh>&lt;&lt; docstring for k.get1arg &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20161020062057.1"><vh>** Update commands ref</vh></v>
-<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3118,7 +3112,6 @@ This chapter discusses the basics of using Leo, including all of Leo's commands.
 ..  directory-  directory commands
 ..  gc-         garbage collection commands
 ..  macro-      macro expansion commands
-..  register-   register commands
 ..  run-        run unit tests commands
 ..  yank-       yank commands
 
@@ -16422,6 +16415,10 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Creates a text file in MORE format from the selected outline.
 ``import-file``
     Import a file into an @file node. This command handles files regardless of whether they contain sentinels. This command can also read files in MORE outline format.
+``import-MORE-file``
+    Import one or MORE files into @file nodes.
+``import-tabbed-files``
+    Import one or more tab-or-space-delimited files into @file nodes.
 ``import-zim-folder``
     Imports a zim folder, http://zim-wiki.org/, as the last top-level node of the outline. This command uses the following Leo settings::
     
@@ -16779,7 +16776,11 @@ If the recipient node has children and is expanded, the dropped node will be ins
 
 Holding down Alt before releasing the node will force insertion as a child of the recipient node, even if the recipient node is not expanded. Holding down Control before releasing the node will cause a clone to be dropped, leaving the original where it was.
 </t>
-<t tx="ekr.20150318110552.52">``goto-next-marked``
+<t tx="ekr.20150318110552.52">``copy-marked``
+    Copies all marked nodes as children of a new node. 
+``diff-marked-nodes``
+    When exactly two nodes are marked, this command creates a diff node as the last top-level node whose children are clones of the marked nodes.
+``goto-next-marked``
     Selects the next marked node.
 ``mark (Ctrl-M)``
     Marks node if it is unmarked, and unmarks the node if it is already marked.
@@ -17098,6 +17099,10 @@ Leo also supports `Emacs-like abbreviation commands`_::
     open-python-window  
     script-button
     
+    # Auto-completion
+    - show-calltips
+    - show-calltips-force
+
     # Fonts.
     set-font
     show-fonts
@@ -17403,7 +17408,7 @@ disable-idle-time-tracing
 enable-idle-time-tracing
 toggle-idle-time-tracing
 
-.. To be removed.
+.. Removed.
 .. http://www.gnu.org/software/emacs/manual/html_node/emacs/Buffers.html#Buffers
 buffer-append-to
 buffer-kill
@@ -17411,6 +17416,19 @@ buffer-prepend-to
 buffer-switch-to
 buffers-list
 buffers-list-alphabetically
+
+.. Removed
+.. http://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html#Registers
+register-append-to
+register-copy-rectangle-to
+register-copy-to
+register-increment
+register-insert
+register-jump-to
+register-point-to
+register-prepend-to
+register-view
+
 
 .. Deprecated tangle/untangle commands.
 tangle
@@ -17465,20 +17483,6 @@ Placing the cursor immediately before the first "I", holding shift and moving it
   [largo] monumental task. I only use a fraction of Leo's commands, mostly
   [largo] because I don't even know what they're supposed to accomplish. A few
   [largo] examples:
-</t>
-<t tx="ekr.20150323103142.1">.. _`Emacs register commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html#Registers
-
-The following commands emulate `Emacs register commands`_::
-
-    register-append-to
-    register-copy-rectangle-to
-    register-copy-to
-    register-increment
-    register-insert
-    register-jump-to
-    register-point-to
-    register-prepend-to
-    register-view
 </t>
 <t tx="ekr.20150323111053.1">Just use cff (clone-find-all-flattened).  This is my workhorse command when fixing complex bugs.</t>
 <t tx="ekr.20150323154836.1">If you give no file arguments on the command line Leo will open ``~/.leo/workbook.leo``.  Initially, this file contains Leo's cheat sheet and an example from the rst3 tutorial.
@@ -18440,6 +18444,8 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
 The `clone-find-parents` command creates clones of all parent nodes of c.p.
 
 The `clone-find-tag` aka ``(cft)`` command creates clones of all nodes having a given tag.
+
+The `tag-children` applies a given tag to all the children of the selected node.
 </t>
 <t tx="ekr.20160428111506.1">The body text contains a list of commands, one per line, to be preloaded into Leo's command history. You access command history using the up and down arrow keys in Leo's minibuffer.</t>
 <t tx="ekr.20160428113347.1">The **clone find** commands, cfa and cff are extraordinarily useful. These commands move clones of all nodes matching the search pattern under a single **organizer node**, created as the last top-level node. **Flattened** searches put all nodes as direct children of the organizer node::
@@ -18788,6 +18794,8 @@ All known bugs have been fixed.</t>
 - pyflakes
 - tag-children
 
+The pylint and pyflakes commands now write to Leo's log window, as well as the console.
+
 Improved the clone-marked/copy-marked/move-marked commands.
 
 Removed all static abbrev commands.
@@ -18808,6 +18816,7 @@ Removed all chapter-* commands except the chapter-select and chapter-select-main
 - @bool check_for_changed_external_files
 - @bool open_with_save_on_update
 - @bool plain-key-outline-search
+- @bool run-pyflakes-on-write
 - @bool show-iconbar
 - @int autojustify
 - @int qweb_view_font_size
@@ -18911,132 +18920,13 @@ Rewrote ga.do_back_space and changed ga.do_tab and ga.do_back_space.</t>
 tagged with global_file_numbers
 
 This would take too long.</t>
-<t tx="ekr.20161019024700.1">- Remake all doc files.
-
-</t>
-<t tx="ekr.20161019024703.1">@language rest
-@wrap
-
-The new commit_timestamp.json scheme.
-
-All tests pass, but the new scheme has not yet been tested in official releases.
-
-- Add​ed commit_timestamp.json to .gitignore.
-  No more merge conflicts or pollution of the git record.
-
-- @button make-leo calls leoVersion.create_commit_timestamp_json.
-
-- Added commit_timestamp.json back to the manifest in
-  launchLeo-unified.spec, so that pyinstaller will include it.
-
-- leoVersion.py gets the commit hash and date from commit_timestamp.json
-  if it can not get the data from git.
-   
-Moved old version of get_version_from_json to the attic.
-
-</t>
-<t tx="ekr.20161020040603.2">'''
-k.get1Arg: Handle the next character the user types when accumulating a
-user argument from the minibuffer. Ctrl-G will abort this processing at any
-time.
-
-Commands should use k.get1Arg to get the first minibuffer argument and
-k.getNextArg to get all other arguments.
-
-Before going into the many details, let's look at some examples. This
-code will work in any class having a 'c' ivar bound to a commander.
-    
-Example 1: get one argument from the user:
-    
-    @cmd('my-command')
-    def myCommand(self, event):
-        k = self.c.k
-        k.setLabelBlue('prompt: ')
-        k.get1Arg(event, self.myCommand1)
-            
-    def myCommand1(self, event):
-        k = self.c.k
-        # k.arg contains the argument.
-        # Finish the command.
-        ...
-        # Reset the minibuffer.
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        
-Example 2: get two arguments from the user:
-    
-    @cmd('my-command')
-    def myCommand(self, event):
-        k = self.c.k
-        k.setLabelBlue('first prompt: ')
-        k.get1Arg(event, self.myCommand1)
-            
-    def myCommand1(self, event):
-        k = self.c.k
-        self.arg1 = k.arg
-        k.setLabelBlue('second prompt: ')
-        k.getNextArg(self.myCommand2)
-        
-    def myCommand2(self, event):
-        k = self.c.k
-        # k.arg contains second argument.
-        # Finish the command, using self.arg1 and k.arg.
-        ...
-        # Reset the minibuffer.
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        
-k.get1Arg and k.getNextArg are a convenience methods. They simply passes
-its arguments to the get_arg method of the singleton GetArg instance. This
-docstring describes k.get1arg and k.getNextArg as if they were the
-corresponding methods of the GetArg class.
-
-k.get1Arg state machine. Logically, states as tuples (kind, n, handler)
-though they aren't represented that way. When the state machine in the
-GetArg class is active, the kind is 'getArg'.  This constant has special
-meaning to Leo's key-handling code.
-
-The arguments to k.get1Arg are as follows:
-
-event:              The event passed to the command.
-
-handler=None,       A function. When the user completes the
-                    argument by typing &lt;Return&gt; or sometimes &lt;tab)
-                    k.get1arg calls handler(event)
-
-tabList=[]:         A list of possible completions.
-
-completion=True:    True if completions are enabled.
-
-oneCharacter=False: True if k.arg should be a single character.
-
-stroke=None:        The incoming key stroke.
-
-useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
-                    False allows sort-lines, for example, to show the selection range.
-    
-'''</t>
 <t tx="ekr.20161020061627.1">This is one of those small things that makes a big difference.
 
-Previously, the command wrote only to the console window.  Now it writes both to the console and to the log pane.  YOu check the results without having to bring the console into view, which is much more convenient if several console windows are open.
+Previously, the command wrote only to the console window.  Now it writes both to the console and to the log pane.  You check the results without having to bring the console into view, which is much more convenient if several console windows are open.
 </t>
 <t tx="ekr.20161020061721.1">The old code failed to find 64-bit Python installations in the registry.
 
 The new code checks both the 32-bit and 64-bit registries.</t>
-<t tx="ekr.20161020062057.1">Added:
-- copy-marked
-- diff-marked-nodes
-
-- import-MORE-files
-- import-tabbed-files
-
-- tag-children
-
-- show-calltips
-- show-calltips-force
-</t>
 <t tx="ekr.20161020064204.1">``flake8``
     Run flake8 on all nodes of the selected tree, or the first ancestor @&lt;file&gt; node.
 ``pyflakes``
@@ -19098,7 +18988,25 @@ Idle time::
     print-style-sheet
     show-colors
     show-find-options</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161021163518.1">**User-visible changes**
+
+- The pylint and pyflakes commands now write to Leo's log window, as well as the console.
+
+- Added @bool run-pyflakes-on-write. When True (default is False), Leo runs pyflakes when saving any changed file.
+
+- Eliminated all the buffer-*, register-* and 'how-many' commands.
+
+**Code changes**
+
+- Leo's code gets arguments from the minibuffer using k.get1arg and k.getNextArg.
+
+- Deprecated g.execute_shell_commands and g.run_pylint.
+
+- Moved checker commands from leoApp.py to commands/checkerCommands.py.
+
+5. Better git hooks, written in Python.
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
