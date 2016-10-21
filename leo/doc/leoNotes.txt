@@ -19041,6 +19041,578 @@ if test:
     for s in execute_and_print(self=None, command=command):
         if s:
             g.es_print(s.rstrip())
+.. @+node:ekr.20150514035559.1: ** @@file ../commands/bufferCommands.py
+@first # -*- coding: utf-8 -*-
+'''Leo's buffer commands.'''
+<< imports >>
+
+def cmd(name):
+    '''Command decorator for the BufferCommands class.'''
+    return g.new_cmd_decorator(name, ['c', 'bufferCommands',])
+
+@others
+.. @+node:ekr.20150514045750.1: *3* << imports >> (bufferCommands.py)
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+.. @+node:ekr.20160514095727.1: *3* class BufferCommandsClass
+class BufferCommandsClass(BaseEditCommandsClass):
+    '''
+    An Emacs instance does not have knowledge of what is considered a
+    buffer in the environment.
+
+    '''
+    @others
+.. @+node:ekr.20150514045829.3: *4* buffer.ctor
+def __init__(self, c):
+    '''Ctor for the BufferCommandsClass class.'''
+    # pylint: disable=super-init-not-called
+    self.c = c
+    self.fromName = ''
+        # Saved name from getBufferName.
+    self.nameList = []
+        # [n: <headline>]
+    self.names = {}
+    self.tnodes = {}
+        # Keys are n: <headline>, values are tnodes.
+.. @+node:ekr.20150514045829.5: *4* buffer.Entry points
+.. @+node:ekr.20150514045829.6: *5* appendToBuffer
+@cmd('buffer-append-to')
+def appendToBuffer(self, event):
+    '''Add the selected body text to the end of the body text of a named buffer (node).'''
+    self.w = self.editWidget(event)
+    if self.w:
+        self.c.k.setLabelBlue('Append to buffer: ')
+        self.getBufferName(event, self.appendToBuffer1)
+
+def appendToBuffer1(self, name):
+    c, w = self.c, self.w
+    s = w.getSelectedText()
+    p = self.findBuffer(name)
+    if s and p:
+        w = self.w
+        c.selectPosition(p)
+        self.beginCommand(w, 'append-to-buffer: %s' % p.h)
+        w.insert('end', s)
+        w.setInsertPoint('end')
+        w.seeInsertPoint()
+        self.endCommand()
+        c.redraw_after_icons_changed()
+        c.recolor()
+.. @+node:ekr.20150514045829.7: *5* copyToBuffer
+@cmd('buffer-copy')
+def copyToBuffer(self, event):
+    '''Add the selected body text to the end of the body text of a named buffer (node).'''
+    self.w = self.editWidget(event)
+    if self.w:
+        self.c.k.setLabelBlue('Copy to buffer: ')
+        self.getBufferName(event, self.copyToBuffer1)
+
+def copyToBuffer1(self, name):
+    c, w = self.c, self.w
+    s = w.getSelectedText()
+    p = self.findBuffer(name)
+    if s and p:
+        c.selectPosition(p)
+        self.beginCommand(w, 'copy-to-buffer: %s' % p.h)
+        w.insert('end', s)
+        w.setInsertPoint('end')
+        self.endCommand()
+        c.redraw_after_icons_changed()
+        c.recolor()
+.. @+node:ekr.20150514045829.8: *5* insertToBuffer
+@cmd('buffer-insert')
+def insertToBuffer(self, event):
+    '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
+    self.w = self.editWidget(event)
+    if self.w:
+        self.c.k.setLabelBlue('Insert to buffer: ')
+        self.getBufferName(event, self.insertToBuffer1)
+
+def insertToBuffer1(self, name):
+    c, w = self.c, self.w
+    s = w.getSelectedText()
+    p = self.findBuffer(name)
+    if s and p:
+        c.selectPosition(p)
+        self.beginCommand(w, undoType=('insert-to-buffer: %s' % p.h))
+        i = w.getInsertPoint()
+        w.insert(i, s)
+        w.seeInsertPoint()
+        self.endCommand()
+        c.redraw_after_icons_changed()
+.. @+node:ekr.20150514045829.9: *5* killBuffer
+@cmd('buffer-kill')
+def killBuffer(self, event):
+    '''Delete a buffer (node) and all its descendants.'''
+    self.w = self.editWidget(event)
+    if self.w:
+        self.c.k.setLabelBlue('Kill buffer: ')
+        self.getBufferName(event, self.killBuffer1)
+
+def killBuffer1(self, name):
+    c = self.c
+    p = self.findBuffer(name)
+    if p:
+        h = p.h
+        current = c.p
+        c.selectPosition(p)
+        c.deleteOutline(op_name='kill-buffer: %s' % h)
+        c.selectPosition(current)
+        self.c.k.setLabelBlue('Killed buffer: %s' % h)
+        c.redraw(current)
+.. @+node:ekr.20150514045829.10: *5* listBuffers & listBuffersAlphabetically
+@cmd('buffers-list')
+def listBuffers(self, event):
+    '''
+    List all buffers (node headlines), in outline order. Nodes with the
+    same headline are disambiguated by giving their parent or child index.
+    '''
+    self.computeData()
+    g.es('buffers...')
+    for name in self.nameList:
+        g.es('', name)
+
+@cmd('buffers-list-alphabetically')
+def listBuffersAlphabetically(self, event):
+    '''
+    List all buffers (node headlines), in alphabetical order. Nodes with
+    the same headline are disambiguated by giving their parent or child
+    index.
+    '''
+    self.computeData()
+    names = sorted(self.nameList)
+    g.es('buffers...')
+    for name in names:
+        g.es('', name)
+.. @+node:ekr.20150514045829.11: *5* prependToBuffer
+@cmd('buffer-prepend-to')
+def prependToBuffer(self, event):
+    '''Add the selected body text to the start of the body text of a named buffer (node).'''
+    self.w = self.editWidget(event)
+    if self.w:
+        self.c.k.setLabelBlue('Prepend to buffer: ')
+        self.getBufferName(event, self.prependToBuffer1)
+
+def prependToBuffer1(self, name):
+    c, w = self.c, self.w
+    s = w.getSelectedText()
+    p = self.findBuffer(name)
+    if s and p:
+        c.selectPosition(p)
+        self.beginCommand(w, 'prepend-to-buffer: %s' % p.h)
+        w.insert(0, s)
+        w.setInsertPoint(0)
+        w.seeInsertPoint()
+        self.endCommand()
+        c.redraw_after_icons_changed()
+        c.recolor()
+.. @+node:ekr.20150514045829.12: *5* renameBuffer (not ready)
+def renameBuffer(self, event):
+    '''Rename a buffer, i.e., change a node's headline.'''
+    g.es('rename-buffer not ready yet')
+    if 0:
+        self.c.k.setLabelBlue('Rename buffer from: ')
+        self.getBufferName(event, self.renameBufferFinisher1)
+
+def renameBufferFinisher1(self, name):
+    self.fromName = name
+    self.c.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
+    event = None
+    self.getBufferName(event, self.renameBufferFinisher2)
+
+def renameBufferFinisher2(self, name):
+    c = self.c
+    p = self.findBuffer(self.fromName)
+    if p:
+        c.endEditing()
+        c.setHeadString(p, name)
+        c.redraw(p)
+.. @+node:ekr.20150514045829.13: *5* switchToBuffer
+@cmd('buffer-switch-to')
+def switchToBuffer(self, event):
+    '''Select a buffer (node) by its name (headline).'''
+    self.c.k.setLabelBlue('Switch to buffer: ')
+    self.getBufferName(event, self.switchToBuffer1)
+
+def switchToBuffer1(self, name):
+    c = self.c
+    p = self.findBuffer(name)
+    if p:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+.. @+node:ekr.20150514045829.14: *4* buffer.Utils
+.. @+node:ekr.20150514045829.15: *5* computeData
+def computeData(self):
+    self.nameList = []
+    self.names = {}
+    self.tnodes = {}
+    for p in self.c.all_unique_positions():
+        h = p.h.strip()
+        v = p.v
+        nameList = self.names.get(h, [])
+        if nameList:
+            if p.parent():
+                key = '%s, parent: %s' % (h, p.parent().h)
+            else:
+                key = '%s, child index: %d' % (h, p.childIndex())
+        else:
+            key = h
+        self.nameList.append(key)
+        self.tnodes[key] = v
+        nameList.append(key)
+        self.names[h] = nameList
+.. @+node:ekr.20150514045829.16: *5* findBuffer
+def findBuffer(self, name):
+    v = self.tnodes.get(name)
+    for p in self.c.all_unique_positions():
+        if p.v == v:
+            return p
+    g.es_print("no node named", name, color='orange')
+    return None
+.. @+node:ekr.20150514045829.17: *5* getBufferName
+def getBufferName(self, event, finisher):
+    '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
+    k = self.c.k
+    self.computeData()
+    self.getBufferNameFinisher = finisher
+    prefix = k.getLabel()
+    k.get1Arg(event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
+        
+def getBufferName1(self, event):
+    k = self.c.k
+    k.resetLabel()
+    k.clearState()
+    finisher = self.getBufferNameFinisher
+    self.getBufferNameFinisher = None
+    finisher(k.arg)
+.. @+node:ekr.20150514040234.1: ** @@file ../commands/registerCommands.py
+@first # -*- coding: utf-8 -*-
+'''Leo's register commands.'''
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+
+def cmd(name):
+    '''Command decorator for the RegisterCommandsClass class.'''
+    return g.new_cmd_decorator(name, ['c', 'registerCommands',])
+
+@others
+.. @+node:ekr.20160514120143.1: *3* class RegisterCommandsClass
+class RegisterCommandsClass(BaseEditCommandsClass):
+    '''Create registers a-z and the corresponding Emacs commands.'''
+    @others
+.. @+node:ekr.20150514063305.463: *4* register.ctor
+def __init__(self, c):
+    '''Ctor for RegisterCommandsClass class.'''
+    # pylint: disable=super-init-not-called
+    self.c = c
+    self.methodDict, self.helpDict = self.addRegisterItems()
+    # Init these here to keep pylint happy.
+    self.method = None
+    self.registerMode = 0 # Must be an int.
+    self.registers = g.app.globalRegisters
+.. @+node:ekr.20150514063305.465: *4* register.addRegisterItems
+def addRegisterItems(self):
+    methodDict = {
+        '+': self.incrementRegister,
+        ' ': self.pointToRegister,
+        'a': self.appendToRegister,
+        'i': self.insertRegister,
+        'j': self.jumpToRegister,
+        # 'n':        self.numberToRegister,
+        'p': self.prependToRegister,
+        'r': self.copyRectangleToRegister,
+        's': self.copyToRegister,
+        'v': self.viewRegister,
+    }
+    helpDict = {
+        's': 'copy to register',
+        'i': 'insert from register',
+        '+': 'increment register',
+        'n': 'number to register',
+        'p': 'prepend to register',
+        'a': 'append to register',
+        ' ': 'point to register',
+        'j': 'jump to register',
+        'r': 'rectangle to register',
+        'v': 'view register',
+    }
+    return methodDict, helpDict
+.. @+node:ekr.20150514063305.466: *4* register.checkBodySelection
+def checkBodySelection(self, warning='No text selected'):
+    return self._chckSel(event=None, warning=warning)
+.. @+node:ekr.20150514063305.467: *4* register.Entries
+.. @+node:ekr.20150514063305.468: *5* appendToRegister
+@cmd('register-append-to')
+def appendToRegister(self, event):
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'append-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Append to Register: ')
+        k.setState(tag, 1, self.appendToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                key = char.lower()
+                val = self.registers.get(key, '')
+                val = val + w.getSelectedText()
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.469: *5* prependToRegister
+@cmd('register-prepend-to')
+def prependToRegister(self, event):
+    '''Prompt for a register name and prepend the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'prepend-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Prepend to Register: ')
+        k.setState(tag, 1, self.prependToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                key = char.lower()
+                val = self.registers.get(key, '')
+                val = w.getSelectedText() + val
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.470: *5* copyRectangleToRegister
+@cmd('register-copy-rectangle-to')
+def copyRectangleToRegister(self, event):
+    '''
+    Prompt for a register name and append the rectangle defined by selected
+    text to the register's contents.
+    '''
+    c, k = self.c, self.c.k
+    state = k.getState('copy-rect-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        self.w = self.editWidget(event)
+        if self.w:
+            k.commandName = 'copy-rectangle-to-register'
+            k.setLabelBlue('Copy Rectangle To Register: ')
+            k.setState('copy-rect-to-reg', 1, self.copyRectangleToRegister)
+    elif self.checkBodySelection('No rectangle selected'):
+        k.clearState()
+        if char.isalpha():
+            key = char.lower()
+            w = self.w
+            c.widgetWantsFocusNow(w)
+            r1, r2, r3, r4 = self.getRectanglePoints(w)
+            rect = []
+            while r1 <= r3:
+                txt = w.get('%s.%s' % (r1, r2), '%s.%s' % (r1, r4))
+                rect.append(txt)
+                r1 = r1 + 1
+            self.registers[key] = rect
+            k.setLabelGrey('Register %s = %s' % (key, repr(rect)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.471: *5* copyToRegister
+@cmd('register-copy-to')
+def copyToRegister(self, event):
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'copy-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Copy to Register: ')
+        k.setState(tag, 1, self.copyToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                key = char.lower()
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                val = w.getSelectedText()
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.472: *5* incrementRegister
+@cmd('register-increment')
+def incrementRegister(self, event):
+    '''Prompt for a register name and increment its value if it has a numeric value.'''
+    c, k = self.c, self.c.k
+    state = k.getState('increment-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.setLabelBlue('Increment register: ')
+        k.setState('increment-reg', 1, self.incrementRegister)
+    else:
+        k.clearState()
+        if self.checkIfRectangle(event):
+            pass # Error message is in the label.
+        elif char.isalpha():
+            key = char.lower()
+            val = self.registers.get(key, 0)
+            try:
+                val = str(int(val) + 1)
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            except ValueError:
+                k.setLabelGrey("Can't increment register %s = %s" % (key, val))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.473: *5* insertRegister
+@cmd('register-insert')
+def insertRegister(self, event):
+    '''Prompt for a register name and and insert the value of another register into its contents.'''
+    c, k = self.c, self.c.k
+    state = k.getState('insert-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'insert-register'
+        k.setLabelBlue('Insert register: ')
+        k.setState('insert-reg', 1, self.insertRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            key = char.lower()
+            val = self.registers.get(key)
+            if val:
+                if isinstance(val, list):
+                    c.rectangleCommands.yankRectangle(val)
+                else:
+                    i = w.getInsertPoint()
+                    w.insert(i, val)
+                k.setLabelGrey('Inserted register %s' % key)
+            else:
+                k.setLabelGrey('Register %s is empty' % key)
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.474: *5* jumpToRegister
+@cmd('register-jump-to')
+def jumpToRegister(self, event):
+    '''Prompt for a register name and set the insert point to the value in its register.'''
+    c, k = self.c, self.c.k
+    state = k.getState('jump-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.setLabelBlue('Jump to register: ')
+        k.setState('jump-to-reg', 1, self.jumpToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            if self.checkIfRectangle(event): return
+            key = char.lower()
+            val = self.registers.get(key)
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            if val:
+                try:
+                    w.setInsertPoint(val)
+                    k.setLabelGrey('At %s' % repr(val))
+                except Exception:
+                    k.setLabelGrey('Register %s is not a valid location' % key)
+            else:
+                k.setLabelGrey('Register %s is empty' % key)
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.475: *5* numberToRegister (not used)
+@
+C-u number C-x r n reg
+    Store number into register reg (number-to-register).
+C-u number C-x r + reg
+    Increment the number in register reg by number (increment-register).
+C-x r g reg
+    Insert the number from register reg into the buffer.
+@c
+
+def numberToRegister(self, event):
+    k = self.c.k
+    state = k.getState('number-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'number-to-register'
+        k.setLabelBlue('Number to register: ')
+        k.setState('number-to-reg', 1, self.numberToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            # self.registers[char.lower()] = str(0)
+            k.setLabelGrey('number-to-register not ready yet.')
+        else:
+            k.setLabelGrey('Register must be a letter')
+.. @+node:ekr.20150514063305.476: *5* pointToRegister
+@cmd('register-point-to')
+def pointToRegister(self, event):
+    '''Prompt for a register name and put a value indicating the insert point in the register.'''
+    c, k = self.c, self.c.k
+    state = k.getState('point-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'point-to-register'
+        k.setLabelBlue('Point to register: ')
+        k.setState('point-to-reg', 1, self.pointToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            key = char.lower()
+            val = w.getInsertPoint()
+            self.registers[key] = val
+            k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.477: *5* viewRegister
+@cmd('register-view')
+def viewRegister(self, event):
+    '''Prompt for a register name and print its contents.'''
+    c, k = self.c, self.c.k
+    state = k.getState('view-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'view-register'
+        k.setLabelBlue('View register: ')
+        k.setState('view-reg', 1, self.viewRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            key = char.lower()
+            val = self.registers.get(key)
+            k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514043714.12: *4* register.checkIfRectangle
+def checkIfRectangle(self, event):
+    k = self.c.k
+    key = event and event.char.lower() or ''
+    val = self.registers.get(key)
+    if isinstance(val, list):
+        k.clearState()
+        k.setLabelGrey("Register contains Rectangle, not text")
+        return True
+    else:
+        return False
 .. @-all
 .. @@nosearch
 .. @-leo

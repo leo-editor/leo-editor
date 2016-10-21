@@ -65,6 +65,28 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
+<v t="ekr.20161021092615.1"><vh>Unused menus</vh>
+<v t="ekr.20131213135427.22064"><vh>@menu Buffers</vh>
+<v t="ekr.20131213135427.22065"><vh>@item buffer-&amp;append-to</vh></v>
+<v t="ekr.20131213135427.22066"><vh>@item buffer-&amp;kill</vh></v>
+<v t="ekr.20131213135427.22067"><vh>@item buffer-&amp;prepend-to</vh></v>
+<v t="ekr.20131213135427.22068"><vh>@item buffer-&amp;switch-to</vh></v>
+<v t="ekr.20131213135427.22069"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22070"><vh>@item &amp;buffers-list</vh></v>
+<v t="ekr.20131213135427.22071"><vh>@item buffers-&amp;list-alphabetically</vh></v>
+</v>
+<v t="ekr.20131213135427.22213"><vh>@menu Registers</vh>
+<v t="ekr.20131213135427.22214"><vh>@item register-&amp;append-to</vh></v>
+<v t="ekr.20131213135427.22215"><vh>@item register-&amp;copy-to</vh></v>
+<v t="ekr.20131213135427.22216"><vh>@item register-copy-&amp;rectangle-to</vh></v>
+<v t="ekr.20131213135427.22217"><vh>@item register-&amp;increment</vh></v>
+<v t="ekr.20131213135427.22218"><vh>@item register-&amp;insert</vh></v>
+<v t="ekr.20131213135427.22219"><vh>@item register-&amp;jump-to</vh></v>
+<v t="ekr.20131213135427.22220"><vh>@item register-&amp;point-to</vh></v>
+<v t="ekr.20131213135427.22221"><vh>@item register-&amp;prepend-to</vh></v>
+<v t="ekr.20131213135427.22222"><vh>@item register-&amp;view</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -619,6 +641,7 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
@@ -1255,15 +1278,6 @@
 <v t="ekr.20131213135427.22062"><vh>@item &amp;cycle-editor-focus</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
-<v t="ekr.20131213135427.22064"><vh>@menu Buffers</vh>
-<v t="ekr.20131213135427.22065"><vh>@item buffer-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22066"><vh>@item buffer-&amp;kill</vh></v>
-<v t="ekr.20131213135427.22067"><vh>@item buffer-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22068"><vh>@item buffer-&amp;switch-to</vh></v>
-<v t="ekr.20131213135427.22069"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22070"><vh>@item &amp;buffers-list</vh></v>
-<v t="ekr.20131213135427.22071"><vh>@item buffers-&amp;list-alphabetically</vh></v>
-</v>
 <v t="ekr.20131213135427.22072"><vh>@menu &amp;Chapters</vh>
 <v t="ekr.20131213135427.22073"><vh>@item chapter-&amp;clone-node-to</vh></v>
 <v t="ekr.20131213135427.22074"><vh>@item chapter-c&amp;opy-node-to</vh></v>
@@ -1396,17 +1410,6 @@
 <v t="ekr.20131213135427.22210"><vh>@item rectangle-&amp;open</vh></v>
 <v t="ekr.20131213135427.22211"><vh>@item rectangle-&amp;string</vh></v>
 <v t="ekr.20131213135427.22212"><vh>@item rectangle-&amp;yank</vh></v>
-</v>
-<v t="ekr.20131213135427.22213"><vh>@menu Registers</vh>
-<v t="ekr.20131213135427.22214"><vh>@item register-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22215"><vh>@item register-&amp;copy-to</vh></v>
-<v t="ekr.20131213135427.22216"><vh>@item register-copy-&amp;rectangle-to</vh></v>
-<v t="ekr.20131213135427.22217"><vh>@item register-&amp;increment</vh></v>
-<v t="ekr.20131213135427.22218"><vh>@item register-&amp;insert</vh></v>
-<v t="ekr.20131213135427.22219"><vh>@item register-&amp;jump-to</vh></v>
-<v t="ekr.20131213135427.22220"><vh>@item register-&amp;point-to</vh></v>
-<v t="ekr.20131213135427.22221"><vh>@item register-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22222"><vh>@item register-&amp;view</vh></v>
 </v>
 <v t="ekr.20131213135427.22223"><vh>@menu Rst commands</vh>
 <v t="ekr.20131213135427.22224"><vh>@item &amp;code-to-rst</vh></v>
@@ -11819,6 +11822,8 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
+<t tx="ekr.20161021092615.1"></t>
+<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

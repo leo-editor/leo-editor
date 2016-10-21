@@ -200,7 +200,7 @@ class Commands(object):
     def initObjectIvars(self):
         # These ivars are set later by leoEditCommands.createEditCommanders
         self.abbrevCommands = None
-        self.bufferCommands = None
+        ### self.bufferCommands = None
         self.editCommands = None
         self.db = {} # May be set to a PickleShare instance later.
         self.chapterCommands = None
@@ -219,7 +219,7 @@ class Commands(object):
         self.printingController = None
         self.queryReplaceCommands = None
         self.rectangleCommands = None
-        self.registerCommands = None
+        ### self.registerCommands = None
         self.searchCommands = None
         self.spellCommands = None
         self.leoTestManager = None
@@ -261,7 +261,8 @@ class Commands(object):
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
-        import leo.commands.bufferCommands as bufferCommands
+        ### import leo.commands.bufferCommands as bufferCommands
+        import leo.commands.checkerCommands as checkerCommands
         import leo.commands.controlCommands as controlCommands
         import leo.commands.convertCommands as convertCommands
         import leo.commands.debugCommands as debugCommands
@@ -273,7 +274,7 @@ class Commands(object):
         import leo.commands.killBufferCommands as killBufferCommands
         import leo.commands.macroCommands as macroCommands
         import leo.commands.rectangleCommands as rectangleCommands
-        import leo.commands.registerCommands as registerCommands
+        ### import leo.commands.registerCommands as registerCommands
         import leo.commands.spellCommands as spellCommands
         # Other subcommanders.
         import leo.core.leoFind as leoFind # Leo 4.11.1
@@ -304,7 +305,7 @@ class Commands(object):
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
-        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
+        ###self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -316,7 +317,7 @@ class Commands(object):
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
         self.macroCommands      = macroCommands.MacroCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
-        self.registerCommands   = registerCommands.RegisterCommandsClass(c)
+        ### self.registerCommands   = registerCommands.RegisterCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
         # Other objects
         self.cacher = leoCache.Cacher(c)

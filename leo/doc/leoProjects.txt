@@ -1,6 +1,14 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20161021095856.1: ** 5.4 b1
+- Pylint and pyflakes now write to Leo's log window, as well as the console.
+
+- Run pyflakes automatically when saving files, controlled by @bool run-pyflakes-on-write.
+
+* Removed buffer-* and register-* commands
+    - Remove docs.
+    - Remove menu entries.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

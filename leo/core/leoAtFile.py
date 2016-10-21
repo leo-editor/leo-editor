@@ -136,6 +136,8 @@ class AtFile(object):
             self.allow_at_auto_sections = allow_at_auto_sections
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write', default=True)
+        self.runPyFlakesOnWrite = c.config.getBool(
+            'run-pyflakes-on-write', default=False)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
         self.dispatch_dict = self.defineDispatchDict()
@@ -4213,7 +4215,7 @@ class AtFile(object):
                 at.os(at.endSentinelComment)
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
-    #@+node:ekr.20090514111518.5661: *5* checkPythonCode (leoAtFile) & helpers
+    #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, root, s=None, targetFn=None):
         at = self
         if not targetFn:
@@ -4228,7 +4230,9 @@ class AtFile(object):
             # if ok: at.tabNannyNode(root,s)
             if not ok:
                 g.app.syntax_error_files.append(g.shortFileName(targetFn))
-    #@+node:ekr.20090514111518.5663: *6* checkPythonSyntax (leoAtFile)
+            if ok and at.runPyFlakesOnWrite:
+                self.runPyflakes(root)
+    #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
         try:
@@ -4265,7 +4269,16 @@ class AtFile(object):
                 j, '*' if j == i else ' ', lines[j].rstrip()))
             if j == i:
                 g.es_print(' ' * (7 + offset) + '^')
-    #@+node:ekr.20090514111518.5665: *6* tabNannyNode (leoAtFile)
+    #@+node:ekr.20161021084954.1: *6* at.runPyflakes
+    def runPyflakes(self, root):
+        '''Run pyflakes on the selected node.'''
+        try:
+            import leo.commands.checkerCommands as checkerCommands
+            if checkerCommands.pyflakes:
+                checkerCommands.PyflakesCommand(self.c).run(p=root)
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
     def tabNannyNode(self, p, body, suppress=False):
         import parser
         import tabnanny

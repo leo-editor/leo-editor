@@ -30,7 +30,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         'd': ('delete-rectangle', self.deleteRectangle),
         'k': ('kill-rectangle', self.killRectangle),
         'o': ('open-rectangle', self.openRectangle),
-        'r': ('copy-rectangle-to-register', self.copyRectangleToRegister),
+        # 'r': ('copy-rectangle-to-register', self.copyRectangleToRegister),
         't': ('string-rectangle', self.stringRectangle),
         'y': ('yank-rectangle', self.yankRectangle),
         }
@@ -78,10 +78,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         j = '%s.%s' % (r3, r2)
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
-    #@+node:ekr.20150515060613.1: *4* copyRectangleToRegister
-    @cmd('rectangle-copy-to-register')
-    def copyRectangleToRegister(self, event):
-        self.c.registerCommands.copyRectangleToRegister(event)
+    #@+node:ekr.20150515060613.1: *4* copyRectangleToRegister (no longer used)
+    # @cmd('rectangle-copy-to-register')
+    # def copyRectangleToRegister(self, event):
+        # self.c.registerCommands.copyRectangleToRegister(event)
     #@+node:ekr.20150514063305.456: *4* deleteRectangle
     @cmd('rectangle-delete')
     def deleteRectangle(self, event):
