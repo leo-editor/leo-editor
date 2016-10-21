@@ -3,15 +3,19 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20161019024731.1: ** To do: 5.4
+.. @+node:ekr.20161019024731.1: ** To do after 5.4-final
 @language rest
 @wrap
-.. @+node:ekr.20161019020853.1: *3* #106: brew install Leo on MacOS
-Requires 5.4 final
 
+#106: brew install Leo on MacOS
 https://github.com/leo-editor/leo-editor/issues/106
+
+Requires 5.4 final
   
-.. @+node:ekr.20161016052019.1: *3* Fix real pylint problems in plugins
+.. @+node:ekr.20160918102738.1: ** To do: 5.5
+@language rest
+@wrap
+.. @+node:ekr.20161016052019.1: *3* Fix real pylint3 problems in plugins
     
 ************* Module leo.plugins.at_produce
 E:129,30: Module 'os' has no 'popen3' member (no-member)
@@ -64,9 +68,6 @@ E:220,15: Module 'feedparser' has no 'parse' member (no-member)
 
 ************* Module leo.plugins.word_export
 E:140,16: Instance of 'object' has no 'strip' member (no-member)
-.. @+node:ekr.20160918102738.1: ** To do: 5.5
-@language rest
-@wrap
 .. @+node:ekr.20161021131134.1: *3* Maybe: improve packaging
 - Move Commander classes into commands/commanderCommands.py.
     
