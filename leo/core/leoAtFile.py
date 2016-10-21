@@ -4230,7 +4230,7 @@ class AtFile(object):
             # if ok: at.tabNannyNode(root,s)
             if not ok:
                 g.app.syntax_error_files.append(g.shortFileName(targetFn))
-            if ok and at.runPyFlakesOnWrite:
+            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
                 self.runPyflakes(root)
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body, supress=False):
