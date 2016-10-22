@@ -13330,6 +13330,11 @@ Calltips work for any Python function or method, including Python's global funct
 <t tx="ekr.20131017174814.17479">.. |---| unicode:: U+02015 .. for quotes
    :trim:
    
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
+   
 #######
 Preface
 #######
@@ -13344,6 +13349,7 @@ Preface
 .. _`Clones`: http://leoeditor.com/tutorial-pim.html
 .. _`Python API`: http://leoeditor.com/tutorial-scripting.html
 .. _`outline-oriented directives`: http://leoeditor.com/tutorial-programming.html
+.. _`Next`: http://leoeditor.com/testimonials.html
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
@@ -13364,22 +13370,22 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 
 Leo *completely integrates* Python scripting and outlines. Simulating the following features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-- All commands and scripts have easy access to outline structure via a simple `Python API`_.
-  For example, p.b is the body text of the selected outline node.
+- All commands and scripts have easy access to outline structure via a simple `Python API`_. |br|
+  For example, p.b is the body text of the selected outline node. |br|
   Scripts have full access to all of Leo's sources.
-- `Clones`_ create multiple views of an outline.
-  Leo's underlying data is a `Directed Acyclic Graphs`_.
-  As a result, Leo organizes data in completely new ways. 
+- `Clones`_ create multiple views of an outline.  |br|
+  Leo's underlying data is a `Directed Acyclic Graphs`_.  |br|
+  As a result, Leo organizes data in completely new ways.
 - Scripts and programs can be composed from outlines using `outline-oriented directives`_.
 - Importers convert flat text into outlines.
 - @test and @suite scripts create unit tests automatically.
 - @button scripts apply scripts to outline data.
 
-These features combine to create a `Leonine`_ way of programming and organizing.
+These features combine to create a `Leonine`_ way of programming and organizing. 
+You won't learn all about Leo in a day or two. `Leo's tutorial`_ explains the basic features.
+You can learn more advanced features later. Please `ask for help`_ immediately if you get stuck.
 
-You won't learn all about Leo in a day or two. `Leo's tutorial`_ explains the basic features. You can learn more advanced features later. Please `ask for help`_ immediately if you get stuck.
-
-In the next sections, Leo's users tell, in their own words, why they think Leo is something truly special...
+`Next`_, Leo's users tell, in their own words, why they think Leo is something truly special...
 </t>
 <t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:
 

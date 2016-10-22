@@ -272,12 +272,13 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
 Version: 5.4-b1
-Summary: Leo: Leonine Editor with Outlines
+Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
+Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
-Keywords: Outliner, IDE, PIM
+Keywords: Outliner, IDE, PIM, DAG, Scripting
 Platform: Windows, Linux, MaxOS
 Classifier: Development Status :: 6 - Mature
 Classifier: License :: OSI Approved :: MIT License
@@ -288,7 +289,7 @@ Classifier: Programming Language :: Python
 Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
-Description: http://leoeditor.com/preface.html
+
 </t>
 <t tx="EKR.20040519090846.9">Leo 5.4-b1   October 15, 2016
 
