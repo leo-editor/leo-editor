@@ -1034,6 +1034,7 @@ leo/commands/__init__.py
 leo/commands/abbrevCommands.py
 leo/commands/baseCommands.py
 leo/commands/bufferCommands.py
+leo/commands/checkerCommands.py
 leo/commands/controlCommands.py
 leo/commands/convertCommands.py
 leo/commands/debugCommands.py
