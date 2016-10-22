@@ -168,7 +168,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1258,6 +1258,7 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
+<v t="ekr.20131017174814.17479"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -13333,28 +13334,51 @@ Calltips work for any Python function or method, including Python's global funct
 Preface
 #######
 
-.. _`Leo's tutorial`: tutorial.html
+.. Use full links here so links are active in LeoDocs.leo
+
+.. _`Leo's tutorial`: http://leoeditor.com/tutorial.html
 .. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
 .. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 .. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
-.. _`The Leonine World`: leonine-world.html
+.. _`Leonine`: http://leoeditor.com/leonine-world.html
+.. _`Clones`: http://leoeditor.com/tutorial-pim.html
+.. _`Python API`: http://leoeditor.com/tutorial-scripting.html
+.. _`outline-oriented directives`: http://leoeditor.com/tutorial-programming.html
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
-Leo is a fundamentally different way of using and organizing data, programs and scripts. Leo has been under active development for 15 years and has an active `group of developers and users`_.
+Leo is a fundamentally different way of using and organizing data, programs and scripts. Leo has been under active development for 15 years with an active `group of developers and users`_.
+
+**Leo is:**
+
+- A fully-featured IDE, with emacs-like features.
+- An outliner. Everything in Leo is an outline.
+- A Personal Information Manager.
+- A powerful scripting environment.
+- A tool for organizing and studying computer code.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, Vim and Emacs.
+- Written in 100% pure Python
+
+**Leo's unique features**
+
+Leo *completely integrates* Python scripting and outlines. Simulating the following features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+
+- All commands and scripts have easy access to outline structure via a simple `Python API`_.
+  For example, p.b is the body text of the selected outline node.
+  Scripts have full access to all of Leo's sources.
+- `Clones`_ create multiple views of an outline.
+  Leo's underlying data is a `Directed Acyclic Graphs`_.
+  As a result, Leo organizes data in completely new ways. 
+- Scripts and programs can be composed from outlines using `outline-oriented directives`_.
+- Importers convert flat text into outlines.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+
+These features combine to create a `Leonine`_ way of programming and organizing.
 
 You won't learn all about Leo in a day or two. `Leo's tutorial`_ explains the basic features. You can learn more advanced features later. Please `ask for help`_ immediately if you get stuck.
 
-Leo has shamelessly stolen the best features of Emacs, including the minibuffer and many Emacs-like commands. But Leo goes *far* beyond other editors:
-
-- Leo *completely integrates* Python scripting and outlines, not just the outline's data, but the outline structure as well.
-
-- Features such as @test nodes and @button nodes can not even be *thought* in traditional editors. Leo implements such features easily; other editors could only simulate them--laboriously and unnaturally.
-   
-- Leo's outlines are based `Directed Acyclic Graphs`_. As a result, Leo can organize data in completely new ways.
-  
-These features combine to accelerate your work flow in a unique **Leonine** way, described more fully in `The Leonine World`_.
-  
 In the next sections, Leo's users tell, in their own words, why they think Leo is something truly special...
 </t>
 <t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:
@@ -19006,7 +19030,7 @@ Idle time::
 
 5. Better git hooks, written in Python.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

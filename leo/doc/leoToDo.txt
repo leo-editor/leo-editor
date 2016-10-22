@@ -68,20 +68,10 @@ E:220,15: Module 'feedparser' has no 'parse' member (no-member)
 
 ************* Module leo.plugins.word_export
 E:140,16: Instance of 'object' has no 'strip' member (no-member)
-.. @+node:ekr.20161021131134.1: *3* Maybe: improve packaging
-- Move Commander classes into commands/commanderCommands.py.
-    
-    import leo.core.leoCommands as commander
-    
-    @g.command('command-name'):
-    def A_Command(event):
-        c = event.get('c')
-        ...
-        
-    commander.A_Command = A_Command
-    
-- @g.command should be the only command-related decorator.
-    - Remove << define global decorator dicts >> in leoGlobals.py
+.. @+node:ekr.20161021131134.1: *3* #325: Simplify the organization of commands
+https://github.com/leo-editor/leo-editor/issues/325
+
+** Start with the code in the Notes section.
 .. @+node:ekr.20161019020710.1: *3* Improve pylint
 - enable more pylint checks
 - pylint command should ensure that the leo directory is on the path.
