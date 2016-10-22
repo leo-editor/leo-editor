@@ -224,9 +224,7 @@
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
 </v>
-<v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh>
-<v t="ekr.20040416080538"><vh>@rst-no-head special mentions</vh></v>
-</v>
+<v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh></v>
 <v t="ekr.20090221070927.1"><vh>@rst html/license.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
@@ -2118,7 +2116,7 @@ Important files:
 Acknowledgements
 ################
 
-From one of my all-time favorite movie scenes, in My Cousin Vinny::
+From the movie, My Cousin Vinny::
 
     Mona Lisa Vito: So what's your problem?
     Vinny Gambini: My problem is, I wanted to win my first case
@@ -2134,7 +2132,35 @@ From one of my all-time favorite movie scenes, in My Cousin Vinny::
 
 Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. Leo's clone nodes are inspired by MORE.
 
-The following people have made generous donations to the Leo project: Robert Low, Nic Cave-Lynch.
+The following deserve special thanks:
+
+- David Brock wrote TSyntaxMemo, used in early versions of Leo.
+- Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py.
+- e inspired @button nodes, a truly brilliant idea.
+- The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
+- Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
+- Donald Knuth invented the CWEB language and literate programming.
+- LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
+- The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
+- Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
+- John K. Ousterhout created tcl/Tk, used in early versions of Leo.
+- Neal Norwitz wrote PyChecker.
+- Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
+- Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
+- François Pinard wrote pymacs.
+- Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
+- Rich Ries has contributed a huge number of suggestions.
+- Steven P. Schaefer pointed out security problems.
+- Gil Shwartz helped with unicode support.
+- Phil Straus has been a great friend and constant support.
+- Kent Tenney lobbies constantly to make Leo easier to use and understand. His comment opened the door to the one-node world.
+- Guido van Rossum created Python.
+- Dave Winer created MORE.
+- Ville M. Vainio made invaluable contributions, including the one-node world,
+  the IPython bridge code and the contextmenu.py and valuespace.py plugins.
+- Dan Winkler helped support Leo on the Mac.
+
+Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
 
 The following people reported bugs, answered questions, and made suggestions for improving Leo:
 
@@ -2143,12 +2169,8 @@ Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Be
 The following have contributed plugins to Leo:
 
 Rodrigo Benenson, Pierre Bidon, Felix Breuer, Terry Brown, Mike Crowe, Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti, Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio, Steve Zatz.
-</t>
-<t tx="ekr.20040416080538">The following deserve special mention:
 
-David Brock wrote TSyntaxMemo, used in early versions of Leo. Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py. e inspired @button nodes, a truly brilliant idea. The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo. Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows. Donald Knuth invented the CWEB language and literate programming. LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython. The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard. Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm. John K. Ousterhout created tcl/Tk, used in early versions of Leo. Neal Norwitz wrote PyChecker. Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it. Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins. François Pinard wrote pymacs. Norman Ramsey created noweb and gave permission to quote from the noweb web documentation. Rich Ries has contributed a huge number of suggestions. Steven P. Schaefer pointed out security problems lurking in event handlers and @script. Gil Shwartz helped with unicode support. Phil Straus has been a great friend and constant support. Kent Tenney has constantly lobbied to make Leo easier to use and understand. His comment opened the door to the one-node world. Guido van Rossum created Python, Tkinter and the Python License. Dave Winer created MORE. Ville M. Vainio made invaluable contributions, including the one-node world and the IPython related code.  Ville also wrote the contextmenu.py and valuespace.py plugins. Dan Winkler helped support Leo on the Mac.
-
-Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
+The following people have made generous donations to the Leo project: Robert Low, Nic Cave-Lynch.
 </t>
 <t tx="ekr.20050306090601">.. index:: uA
 
