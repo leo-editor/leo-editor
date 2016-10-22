@@ -1258,7 +1258,6 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
-<v t="ekr.20131017174814.17479"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18619,12 +18618,13 @@ This appears to be the only way to avoid the following message:
     
     "Data set on unsupported clipboard mode. QMimeData object will be deleted."
 </t>
-<t tx="ekr.20160923133132.1">Leo 5.4-b1   October 15, 2016
+<t tx="ekr.20160923133132.1">Leo 5.4-final   October 22, 2016
 
-[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is an IDE, outliner and PIM.
+[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). 
 
-Simulating Leo's features in Vim, Emacs or Eclipse is possible,
-just as it is possible to simulate Python in assembly language...
+Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
 **The highlights of Leo 5.4**
 
@@ -18632,41 +18632,12 @@ just as it is possible to simulate Python in assembly language...
 - The clone-find and tag-all-children commands unify clones and tags.
 - The new pyflakes and flake8 make it possible to check files from within Leo.
 - Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer. It can optionally generate section references.
+- Rewrote the javascript importer.
 - Imported files can optionally contain section references.
 - The viewrendered plugin supports @pyplot nodes.
 - Improved the mod_http plugin.
 - @chapter trees need no longer be children of @chapters nodes.
 - All known bugs have been fixed.
-
-**Leo is**:
-
-- A fully-featured IDE, with emacs-like commands.
-- An outliner. Everything in Leo is an outline.
-- A Personal Information Manager.
-- A browser with a memory.
-- A powerful scripting environment.
-- A tool for studying other people's code.
-- Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, vim and xemacs.
-- Written in 100% pure Python
-- Compatible with Python 2.6 and above or Python 3.0 and above.
-- A tool with an inspiring and active community.
-
-**Leo's unique features**:
-    
-- Always-present, persistent, outline structure.
-- Leo's underlying data is a Directed Acyclic Graph.
-- Clones create multiple views of an outline.
-- A simple, powerful, outline-oriented Python API.
-- Scripts and programs can be composed from outlines.
-- Importers convert flat text into outlines.
-- Scripts have full access to all of Leo's sources.
-- Commands that act on outline structure.
-  Example: the rst3 command converts outlines to reStructuredText.
-- @test and @suite scripts create unit tests automatically.
-- @button scripts apply scripts to outline data.
-- Outline-oriented directives.
 
 **Links**
 

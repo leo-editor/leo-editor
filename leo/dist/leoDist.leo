@@ -144,7 +144,7 @@
 </v>
 </v>
 <v t="ekr.20160428153901.1"><vh>Leo 5.3-final</vh></v>
-<v t="ekr.20161015114905.1"><vh>Leo 5.4-b1</vh></v>
+<v t="ekr.20161015114905.1"><vh>Leo 5.4-final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -271,7 +271,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.4-b1
+Version: 5.4
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -291,9 +291,13 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.4-b1   October 15, 2016
+<t tx="EKR.20040519090846.9">Leo 5.4-final   October 22, 2016
 
-[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). 
+
+Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
 **The highlights of Leo 5.4**
 
@@ -301,44 +305,12 @@ Download-URL: http://sourceforge.net/projects/leo/files/
 - The clone-find and tag-all-children commands unify clones and tags.
 - The new pyflakes and flake8 make it possible to check files from within Leo.
 - Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer. It can optionally generate section references.
+- Rewrote the javascript importer.
 - Imported files can optionally contain section references.
 - The viewrendered plugin supports @pyplot nodes.
 - Improved the mod_http plugin.
 - @chapter trees need no longer be children of @chapters nodes.
 - All known bugs have been fixed.
-
-**Leo is**:
-
-- A fully-featured IDE, with emacs-like commands.
-- An outliner. Everything in Leo is an outline.
-- A Personal Information Manager.
-- A browser with a memory.
-- A powerful scripting environment.
-- A tool for studying other people's code.
-- Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, vim and xemacs.
-- Written in 100% pure Python
-- Compatible with Python 2.6 and above or Python 3.0 and above.
-- A tool with an inspiring and active community.
-
-**Leo's unique features**:
-    
-- Always-present, persistent, outline structure.
-- Leo's underlying data is a Directed Acyclic Graph.
-- Clones create multiple views of an outline.
-- A simple, powerful, outline-oriented Python API.
-- Scripts and programs can be composed from outlines.
-- Importers convert flat text into outlines.
-- Scripts have full access to all of Leo's sources.
-- Commands that act on outline structure.
-  Example: the rst3 command converts outlines to reStructuredText.
-- @test and @suite scripts create unit tests automatically.
-- @button scripts apply scripts to outline data.
-- Outline-oriented directives.
-
-Simulating these features in vim, Emacs or Eclisps is possible,
-just as it is possible to simulate Python in assembly language...
 
 **Links**
 
@@ -348,7 +320,7 @@ just as it is possible to simulate Python in assembly language...
 - [Video tutorials](http://leoeditor.com/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
@@ -610,13 +582,6 @@ import leo.core.leoVersion as leoVersion</t>
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
 
-- Pre-testing
-- Files
-- Web docs
-- Create distribution
-- Test
-- Create git tag
-- Scan all folders &amp; files before uploading.
 - Create Release on SourceForge: http://sourceforge.net/projects/leo/
 - Announcements
 </t>
@@ -657,7 +622,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.4-b1' ##version
+version = '5.4' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -977,7 +942,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.4-b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.4/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -2820,9 +2785,13 @@ Run pyinstaller:
     - Windows: Leo_&lt;version&gt;_Win.zip.
     - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
 </t>
-<t tx="ekr.20161015114905.1">Leo 5.4-b1   October 15, 2016
+<t tx="ekr.20161015114905.1">Leo 5.4-final   October 22, 2016
 
-[Leo](http://leoeditor.com/) 5.4-b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). Leo is a PIM, an IDE and an outliner.
+[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). 
+
+Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
 **The highlights of Leo 5.4**
 
@@ -2830,44 +2799,12 @@ Run pyinstaller:
 - The clone-find and tag-all-children commands unify clones and tags.
 - The new pyflakes and flake8 make it possible to check files from within Leo.
 - Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer. It can optionally generate section references.
+- Rewrote the javascript importer.
 - Imported files can optionally contain section references.
 - The viewrendered plugin supports @pyplot nodes.
 - Improved the mod_http plugin.
 - @chapter trees need no longer be children of @chapters nodes.
 - All known bugs have been fixed.
-
-**Leo is**:
-
-- A fully-featured IDE, with emacs-like commands.
-- An outliner. Everything in Leo is an outline.
-- A Personal Information Manager.
-- A browser with a memory.
-- A powerful scripting environment.
-- A tool for studying other people's code.
-- Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, vim and xemacs.
-- Written in 100% pure Python
-- Compatible with Python 2.6 and above or Python 3.0 and above.
-- A tool with an inspiring and active community.
-
-**Leo's unique features**:
-    
-- Always-present, persistent, outline structure.
-- Leo's underlying data is a Directed Acyclic Graph.
-- Clones create multiple views of an outline.
-- A simple, powerful, outline-oriented Python API.
-- Scripts and programs can be composed from outlines.
-- Importers convert flat text into outlines.
-- Scripts have full access to all of Leo's sources.
-- Commands that act on outline structure.
-  Example: the rst3 command converts outlines to reStructuredText.
-- @test and @suite scripts create unit tests automatically.
-- @button scripts apply scripts to outline data.
-- Outline-oriented directives.
-
-Simulating these features in vim, Emacs or Eclisps is possible,
-just as it is possible to simulate Python in assembly language...
 
 **Links**
 
@@ -2877,7 +2814,7 @@ just as it is possible to simulate Python in assembly language...
 - [Video tutorials](http://leoeditor.com/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on Github](https://github.com/leo-editor/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)

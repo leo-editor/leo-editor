@@ -3,7 +3,7 @@
 '''
 A module for computing version-related info.
 
-Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
+Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version.
 '''
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
@@ -25,8 +25,8 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version'
 import leo.core.leoGlobals as g
 import json
 testing = False
-static_date = 'October 17, 2016' # Emergency fallback.
-version = "5.4-b1" # Always used.
+static_date = 'October 22, 2016' # Emergency fallback.
+version = "5.4" # Always used.
 #@+others
 #@+node:ekr.20161017040256.1: ** create_commit_timestamp_json
 def create_commit_timestamp_json(after=False):
