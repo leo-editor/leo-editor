@@ -18642,7 +18642,7 @@ This appears to be the only way to avoid the following message:
 </t>
 <t tx="ekr.20160923133132.1">Leo 5.4-final   October 22, 2016
 
-[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). 
+[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
 

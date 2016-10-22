@@ -2746,26 +2746,33 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Regenerate from corresponding local file.
 - Remove top-level clones.
 </t>
-<t tx="ekr.20161015091353.3">- Update version number on Leo's wikipedia site:
+<t tx="ekr.20161015091353.3">- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
+   This must be done *soon* after the release's actual commit.
+
+- Update version number on Leo's wikipedia site:
   http://en.wikipedia.org/wiki/Leo_%28editor%29
   - Edit with the 'Edit this page' *tab* (not a link)
   - Update version number on web site.
-- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
-   This must be done *soon* after the release's actual commit.
+
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
    **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
-- Announce to leo-editor.
-   **Paste source-forge announcement**.
+
+- Announce to leo-editor: **Paste source-forge announcement**.
+
 - Announce to Python-announce-list using email:
    mailto:python-announce-list@python.org
    **Paste source-forge or leo-editor announcement**.
+
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
+
 - Register Leo at http://www.python.org/pypi?:action=submit_form
+
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
   **To get HTML, just use html tab**.
+
 - Twitter (point to my blog)
 </t>
 <t tx="ekr.20161015092224.1">Run make-leo.
@@ -2839,8 +2846,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 </t>
 <t tx="ekr.20161020041000.1">Create a git tag **last**
 
-- Create a full (annotated) tag: git tag -a Leo_5.2 -m "commit message"
-    - Do *not* use -f option!
+- Create a full (annotated) tag: do not use the -f option.
+
+    tag: git tag -a 5.4 -m "Added 5.4 tag"
+    git push --follow-tags
 </t>
 </tnodes>
 </leo_file>
