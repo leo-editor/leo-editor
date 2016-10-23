@@ -3,10 +3,14 @@
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
 #@@first
 '''Leo's file-conversion commands.'''
+#@+<< imports >>
+#@+node:ekr.20161023150723.1: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoBeautify as leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 # import re
 # import sys
+#@-<< imports >>
 
 def cmd(name):
     '''Command decorator for the ConvertCommandsClass class.'''
@@ -17,21 +21,20 @@ def cmd(name):
 class To_Python(object):
     '''The base class for x-to-python commands.'''
     #@+others
-    #@+node:ekr.20150514063305.124: *3* top.cmd (decorator
-    #@+node:ekr.20150514063305.125: *3* ctor (To_Python)
+    #@+node:ekr.20150514063305.125: *3* To_Python.ctor
     def __init__(self, c):
         '''Ctor for To_Python class.'''
         self.c = c
         self.p = self.c.p.copy()
         aList = g.get_directives_dict_list(self.p)
         self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-    #@+node:ekr.20150514063305.126: *3* go
+    #@+node:ekr.20150514063305.126: *3* To_Python.go
     def go(self):
         import time
         t1 = time.time()
         c = self.c
         u, undoType = c.undoer, 'typescript-to-python'
-        pp = c.CPrettyPrinter(c)
+        pp = leoBeautify.CPrettyPrinter(c)
         u.beforeChangeGroup(c.p, undoType)
         changed, dirtyVnodeList = False, []
         n_files, n_nodes = 0, 0
@@ -61,11 +64,11 @@ class To_Python(object):
                 reportFlag=False, dirtyVnodeList=dirtyVnodeList)
         t2 = time.time()
         g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files, n_nodes, t2 - t1))
-    #@+node:ekr.20150514063305.127: *3* convertCodeList (must be defined in subclasses)
+    #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, aList):
         '''The main search/replace method.'''
         g.trace('must be defined in subclasses.')
-    #@+node:ekr.20150514063305.128: *3* Utils
+    #@+node:ekr.20150514063305.128: *3* To_Python.Utils
     #@+node:ekr.20150514063305.129: *4* match...
     #@+node:ekr.20150514063305.130: *5* match
     def match(self, s, i, pat):
