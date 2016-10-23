@@ -85,12 +85,14 @@ def onCreate (tag, keys):
     graphcanvasController(c)
     if hasattr(c, 'db') and c_db_key in c.db:
         gnx = c.db[c_db_key]
-        for i in c.all_unique_nodes():
-            if i.gnx == gnx:
-                c.graphcanvasController.loadGraph(
-                c.vnode2position(i).self_and_subtree())
-                c.graphcanvasController.loadLinked('all')
-                return
+        for v in c.all_unique_nodes():
+            if v.gnx == gnx:
+                gcc = c.graphcanvasController
+                gcc.loadGraph(
+                    c.vnode2position(v).self_and_subtree())
+                gcc.loadLinked('all')
+                if gcc.nodeItem:
+                    gcc.lastNodeItem = gcc.nodeItem.get(v)
 #@+node:tbrown.20110716130512.21969: ** command graph-toggle-autoload
 @g.command('graph-toggle-autoload')
 def toggle_autoload(event):
@@ -1042,7 +1044,6 @@ class graphcanvasController(object):
 
         if not self.lastNodeItem:
             return
-
         node = self.node[self.lastNodeItem]
 
         self.ui.canvas.removeItem(self.lastNodeItem)
@@ -1116,6 +1117,8 @@ class graphcanvasController(object):
     #@+node:bob.20110119123023.7422: *3* goto
     def goto(self):
         """make outline select node"""
+        if not self.lastNodeItem:
+            return
         v = self.node[self.lastNodeItem]
         p = self.c.vnode2position(v)
         if self.c.positionExists(p):
@@ -1182,6 +1185,8 @@ class graphcanvasController(object):
     #@+node:tbrown.20110407091036.17535: *3* setNode
     def setNode(self, node_class):
 
+        if not self.lastNodeItem:
+            return
         node = self.node[self.lastNodeItem]
         self.unLoad()
 
@@ -1251,6 +1256,8 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3354: *5* resetNode
     def resetNode(self):
 
+        if not self.lastNodeItem:
+            return
         node = self.node[self.lastNodeItem]
 
         if 'x' in node.u['_bklnk']:
@@ -1283,12 +1290,14 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3356: *5* setColor
     def setColor(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
 
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
-            newcolor = QtWidgets.QColorDialog.getColor(color)
+            newcolor = QtWidgets.QColorDialog.getColor(QtGui.QColor(color))
         else:
             newcolor = QtWidgets.QColorDialog.getColor()
 
@@ -1298,16 +1307,18 @@ class graphcanvasController(object):
             node.u['_bklnk']['color'] = newcolor
 
         self.releaseNode(item)  # reselect
-
+        self.c.redraw()  # update color of node in the tree too
     #@+node:bob.20110120111825.3358: *5* setTextColor
     def setTextColor(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
 
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']
-            newcolor = QtWidgets.QColorDialog.getColor(color)
+            newcolor = QtWidgets.QColorDialog.getColor(QtGui.QColor(color))
         else:
             newcolor = QtWidgets.QColorDialog.getColor()
 
@@ -1317,9 +1328,12 @@ class graphcanvasController(object):
             node.u['_bklnk']['tcolor'] = newcolor
 
         self.releaseNode(item)  # reselect
+        self.c.redraw()  # update color of node in the tree too
     #@+node:bob.20110120111825.3360: *5* clearFormatting
     def clearFormatting(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         # FIXME: need node.clear_formatting()
@@ -1332,6 +1346,7 @@ class graphcanvasController(object):
         if 'tcolor' in node.u['_bklnk']:
             del node.u['_bklnk']['tcolor']
         self.releaseNode(self.nodeItem[node])
+        self.c.redraw()  # update color of node in the tree too
     #@-others
     #@-others
 #@-others
