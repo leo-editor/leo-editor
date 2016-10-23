@@ -216,6 +216,12 @@
 </v>
 </v>
 <v t="ekr.20161017063308.1"><vh>script: find problems in pylint-leo-rc.txt</vh></v>
+<v t="ekr.20161023110345.1"><vh>Scripts used in studying #325</vh>
+<v t="ekr.20161023051437.1"><vh>Script: set headlines to command names</vh></v>
+<v t="ekr.20161023051453.1"><vh>Script: inject functions into commander</vh></v>
+<v t="ekr.20161023044018.1"><vh>Script: find all calls to commander methods</vh></v>
+<v t="ekr.20161023110341.1"><vh>Script: find all external calls to commander</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2441,5 +2447,115 @@ for path in table:
         n += len(line)
     print('%s error lines: %s' % (g.shortFileName(path), errors))
 </t>
+<t tx="ekr.20161023044018.1">'''Find all calls to commander methods in the present file.'''
+g.cls()
+import re
+pattern = re.compile(r'c[12]*\.(\w+)\s*\(.*\)')
+lines = set()
+names = set()
+for p in c.all_unique_nodes():
+    for m in pattern.finditer(p.b):
+        lines.add(m.group(0))
+        names.add(m.group(1))
+        # print('%30s %s' % (m.group(0), p.h))
+for line in sorted(lines):
+    print(line)
+for name in sorted(names):
+    print(name)
+</t>
+<t tx="ekr.20161023051437.1">'''
+For each node p in commanderCommands.py, search p for @cmd decorators,
+replacing the headline with command names.
+'''
+g.cls()
+import re
+root = g.findNodeAnywhere(c, '@file ../commands/commanderCommands.py')
+pattern = re.compile(r'@cmd\((.*)\)') # [\'\"]
+for p in root.self_and_subtree():
+    # print('%4s %s' % (len(p.b), p.h))
+    matches = list(pattern.finditer(p.b))
+    if matches:
+        # print('%25s %s' % (m.group(1), p.h))
+        p.h = ' &amp; '.join([m.group(1) for m in matches])
+        print(p.h)
+print('done')</t>
+<t tx="ekr.20161023051453.1">'''
+For each node p in commanderCommands.py, insert the line:
+
+    commander.def_name = def_name
+    
+after all function/method definition
+'''
+g.cls()
+import re
+root = g.findNodeAnywhere(c, '@file ../commands/commanderCommands.py')
+assert root
+pattern = re.compile(r'\bdef(\s)+(\w+)')
+for p in root.self_and_subtree():
+    # print(p.h)
+    lines = []
+    for m in pattern.finditer(p.b):
+        name = m.group(2)
+        lines.append('commander.%s = %s\n' % (name, name))
+    if lines:
+        print(''.join(lines))
+        p.b = '%s\n\n%s' % (p.b.rstrip(), ''.join(lines))
+print('done')</t>
+<t tx="ekr.20161023110341.1">'''Find all calls to commander methods in the present file.'''
+g.cls()
+import re
+pattern = re.compile(r'\bc[12]*\.(\w+)\s*\(.*\)')
+table = (
+    '@file leoCommands.py',
+    '@file ../commands/commanderCommands.py',
+    '@file ../external/codewise.py',
+        # Uses c in non-standard ways.
+)
+exclude = set() # Don't include commands defined in commanderCommands.py
+seen = set()
+lines = set()
+names = set()
+p = g.findTopLevelNode(c, 'Code')
+assert p
+while p:
+    if p.h in table or p.h in seen:
+        if p.h not in seen:
+            seen.add(p.h)
+            print('Skipping %s' % p.h)
+        p.moveToNodeAfterTree()
+    else:
+        if p.isAnyAtFileNode():
+            seen.add(p.h)
+            # print('%s' % p.h)
+        for m in pattern.finditer(p.b):
+            lines.add(m.group(0))
+            names.add(m.group(1))
+            # print('%30s %s' % (p.h[:30], m.group(0)))
+        p.moveToThreadNext()
+# commanderCommands.py should contain only commands, and *local* helpers.
+p = g.findNodeAnywhere(c, '@file ../commands/commanderCommands.py')
+assert p
+pattern = re.compile(r'\bdef\s+(\w+)\s*\(') # (.*\):')
+print('exclusions...')
+for p in p.subtree():
+    for m in pattern.finditer(p.b):
+        exclude.add(m.group(1))
+        # print('%40s %s' % (m.group(0)[:40], p.h))
+        # print(m.group(1))
+if 0:
+    print('\nexclude...')
+    for z in sorted(exclude):
+        print(z)
+if 0:
+    print('\nlines...')
+    for z in sorted(lines):
+        print(z)
+if 1:
+    print('\nnames...')
+    for z in sorted(names - exclude):
+        print(z)
+</t>
+<t tx="ekr.20161023110345.1"># https://github.com/leo-editor/leo-editor/issues/325
+# This issue has been closed and abandoned.</t>
 </tnodes>
 </leo_file>
