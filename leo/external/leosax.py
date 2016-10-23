@@ -61,8 +61,8 @@ class LeoNode(object):
             ans.append(("%s@%s: %s"%('  '*(level+1), k, repr(s)))[:78])
         for line in self.b[:5]:
             ans.append(('  '*(level+1) + '|' + line)[:78])
-        for c in self.children:
-            ans.append(c.__str__(level=level+1))
+        for child in self.children:
+            ans.append(child.__str__(level=level+1))
         return '\n'.join(ans)
 
     #@+node:ekr.20120519121124.9924: *3* UNL

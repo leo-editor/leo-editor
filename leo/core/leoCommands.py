@@ -544,6 +544,26 @@ class Commands(object):
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50 # width,height,left,top.
+    #@+node:ekr.20080610085158.2: *3* c.add_command
+    def add_command(self, menu, **keys):
+        c = self
+        command = keys.get('command')
+        if command:
+            # Command is always either:
+            # one of two callbacks defined in createMenuEntries or
+            # recentFilesCallback, defined in createRecentFilesMenuItems.
+
+            def add_commandCallback(c=c, command=command):
+                # g.trace(command)
+                val = command()
+                # Careful: func may destroy c.
+                if c.exists: c.outerUpdate()
+                return val
+
+            keys['command'] = add_commandCallback
+            menu.add_command(** keys)
+        else:
+            g.trace('can not happen: no "command" arg')
     #@+node:ekr.20110510052422.14618: *3* c.alert
     def alert(self, message):
         c = self
@@ -616,7 +636,7 @@ class Commands(object):
             repr(event), g.callers()))
         test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke), repr(expected), repr(got)))
-    #@+node:ekr.20031218072017.2818: *3* c.Command handlers (to be moved to commanderCommands.py)
+    #@+node:ekr.20031218072017.2818: *3* c.Command handlers
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')
@@ -5543,25 +5563,6 @@ class Commands(object):
         c.redraw(p)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *3* c.Drawing Utilities
-    #@+node:ekr.20080610085158.2: *4* c.add_command
-    def add_command(self, menu, **keys):
-        c = self; command = keys.get('command')
-        if command:
-            # Command is always either:
-            # one of two callbacks defined in createMenuEntries or
-            # recentFilesCallback, defined in createRecentFilesMenuItems.
-
-            def add_commandCallback(c=c, command=command):
-                # g.trace(command)
-                val = command()
-                # Careful: func may destroy c.
-                if c.exists: c.outerUpdate()
-                return val
-
-            keys['command'] = add_commandCallback
-            menu.add_command(** keys)
-        else:
-            g.trace('can not happen: no "command" arg')
     #@+node:ekr.20080514131122.7: *4* c.begin/endUpdate
     def beginUpdate(self):
         '''Deprecated: does nothing.'''

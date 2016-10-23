@@ -84,8 +84,8 @@ class InternalIPKernel(object):
             # that the GUI modifies (the 'Counter++' button increments it)
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
     def cleanup_consoles(self, event=None):
-        for c in self.consoles:
-            c.kill()
+        for console in self.consoles:
+            console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
     def count(self, event=None):
         self.namespace['app_counter'] += 1
