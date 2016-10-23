@@ -1042,7 +1042,6 @@ class graphcanvasController(object):
 
         if not self.lastNodeItem:
             return
-
         node = self.node[self.lastNodeItem]
 
         self.ui.canvas.removeItem(self.lastNodeItem)
@@ -1116,6 +1115,8 @@ class graphcanvasController(object):
     #@+node:bob.20110119123023.7422: *3* goto
     def goto(self):
         """make outline select node"""
+        if not self.lastNodeItem:
+            return
         v = self.node[self.lastNodeItem]
         p = self.c.vnode2position(v)
         if self.c.positionExists(p):
@@ -1182,6 +1183,8 @@ class graphcanvasController(object):
     #@+node:tbrown.20110407091036.17535: *3* setNode
     def setNode(self, node_class):
 
+        if not self.lastNodeItem:
+            return
         node = self.node[self.lastNodeItem]
         self.unLoad()
 
@@ -1251,6 +1254,8 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3354: *5* resetNode
     def resetNode(self):
 
+        if not self.lastNodeItem:
+            return
         node = self.node[self.lastNodeItem]
 
         if 'x' in node.u['_bklnk']:
@@ -1283,6 +1288,8 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3356: *5* setColor
     def setColor(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
 
@@ -1302,6 +1309,8 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3358: *5* setTextColor
     def setTextColor(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
 
@@ -1320,6 +1329,8 @@ class graphcanvasController(object):
     #@+node:bob.20110120111825.3360: *5* clearFormatting
     def clearFormatting(self):
 
+        if self.lastNodeItem not in self.node:
+            return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         # FIXME: need node.clear_formatting()
