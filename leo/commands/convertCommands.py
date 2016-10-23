@@ -734,15 +734,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i = 1
             while i < len(args):
                 i = self.skip_ws_and_nl(args, i)
-                c = args[i]
-                if c.isalpha():
+                ch = args[i]
+                if ch.isalpha():
                     j = self.skip_past_word(args, i)
                     lastWord = args[i: j]
                     i = j
-                elif c == ',' or c == ')':
+                elif ch == ',' or ch == ')':
                     for item in lastWord:
                         result.append(item)
-                    if lastWord != [] and c == ',':
+                    if lastWord != [] and ch == ',':
                         result.append(',')
                     lastWord = []
                     i += 1
@@ -1522,15 +1522,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = 1
                 while i < len(args):
                     i = self.skip_ws_and_nl(args, i)
-                    c = args[i]
-                    if c.isalpha():
+                    ch = args[i]
+                    if ch.isalpha():
                         j = self.skip_past_word(args, i)
                         lastWord = args[i: j]
                         i = j
-                    elif c == ',' or c == ')':
+                    elif ch == ',' or ch == ')':
                         for item in lastWord:
                             result.append(item)
-                        if lastWord != [] and c == ',':
+                        if lastWord != [] and ch == ',':
                             result.append(',')
                         lastWord = []
                         i += 1

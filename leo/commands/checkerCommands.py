@@ -61,7 +61,7 @@ def pyflakes_command(event):
         if c.isChanged():
             c.save()
         if pyflakes:
-            PyflakesCommand(c).run()
+            PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
 #@+node:ekr.20160517133049.1: ** class Flake8Command
@@ -182,6 +182,7 @@ class PyflakesCommand(object):
     def check_all(self, paths):
         '''Run pyflakes on fn.'''
         from pyflakes import api, reporter
+        total_errors = 0
         for fn in sorted(paths):
             # Report the file name.
             sfn = g.shortFileName(fn)
@@ -208,6 +209,8 @@ class PyflakesCommand(object):
             if False and errors:
                 # Annoying.
                 print('%s error%s in %s' % (errors, g.plural(errors), fn))
+            total_errors += errors
+        return total_errors
     #@+node:ekr.20160516072613.3: *3* pyflakes.find
     def find(self, p):
         '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
@@ -224,7 +227,7 @@ class PyflakesCommand(object):
                     found = True
         return found
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p=None):
+    def run(self, p=None, force=False):
         '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
         c = self.c
         root = p or c.p
@@ -254,9 +257,10 @@ class PyflakesCommand(object):
                             break
         paths = list(set(self.seen))
         if paths:
-            self.check_all(paths)
-        g.es_print('pyflakes: %s file%s in %s' % (
-            len(paths), g.plural(paths), g.timeSince(t1)))
+            total_errors = self.check_all(paths)
+            if total_errors or force:
+                g.es_print('pyflakes: %s file%s in %s' % (
+                    len(paths), g.plural(paths), g.timeSince(t1)))
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand(object):
