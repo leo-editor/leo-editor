@@ -1280,12 +1280,12 @@ class graphcanvasController(object):
         painter = QtGui.QPainter(image)
         self.ui.canvas.render(painter)
         painter.end()
-        path = QtWidgets.QFileDialog.getSaveFileName(
+        filepath, extension = QtWidgets.QFileDialog.getSaveFileName(
             caption="Export to File",
             filter="*.png",
-            selectedFilter="Images (*.png)",
         )
-        image.save(path)
+        if filepath:
+            image.save(filepath)
     #@+node:bob.20110121113659.3413: *4* Formatting
     #@+node:bob.20110120111825.3356: *5* setColor
     def setColor(self):
