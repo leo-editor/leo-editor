@@ -137,14 +137,26 @@ globalDirectiveList = [
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
 #@@nobeautify
 
+#@+at
+# The cmd_instance_dict supports the @cmd decorators in various files. For
+# example, the following appears in leo.commands.
+# 
+#     def cmd(name):
+#         '''Command decorator for the abbrevCommands class.'''
+#         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
+#         
+# **Important**: All *new* commands should be defined using @g.command, but
+# this dict will remain forever so as not to break existing code.  See this
+# discussion https://github.com/leo-editor/leo-editor/issues/325
+#@@c
+
 global_commands_dict = {}
-    # was g.app.global_commands_dict.
+
 cmd_instance_dict = {
     # Keys are class names, values are attribute chains.
     'AbbrevCommandsClass':      ['c', 'abbrevCommands'],
     'AtFile':                   ['c', 'atFileCommands'],
     'AutoCompleterClass':       ['c', 'k', 'autoCompleter'],
-    ### 'BufferCommandsClass':      ['c', 'bufferCommands'],
     'ChapterController':        ['c', 'chapterController'],
     'Commands':                 ['c'],
     'ControlCommandsClass':     ['c', 'controlCommands'],
@@ -162,7 +174,6 @@ cmd_instance_dict = {
     'MacroCommandsClass':       ['c', 'macroCommands'],
     'PrintingController':       ['c', 'printingController'],
     'RectangleCommandsClass':   ['c', 'rectangleCommands'],
-    ### 'RegisterCommandsClass':    ['c', 'registerCommands'],
     'RstCommands':              ['c', 'rstCommands'],
     'SpellCommandsClass':       ['c', 'spellCommands'],
     'Undoer':                   ['c', 'undoer'],
@@ -1634,7 +1645,15 @@ def check_cmd_instance_dict(c, g):
 #@+node:ville.20090521164644.5924: *3* g.command (decorator)
 class Command(object):
     '''
-    A global decorator for functions outside of any class.
+    A global decorator for creating commands.
+    
+    This is the recommended way of defining all new commands, including
+    commands that could befined inside a class. The typical usage is:
+        
+        @g.command('command-name')
+        def A_Command(event):
+            c = event.get('c')
+            ...
 
     g can *not* be used anywhere in this class!
     '''
@@ -1680,7 +1699,7 @@ def ivars2instance(c, g, ivars):
 def new_cmd_decorator(name, ivars):
     '''
     Return a new decorator for a command with the given name.
-    Compute the class instance using the ivar string or list.
+    Compute the class *instance* using the ivar string or list.
     '''
 
     def _decorator(func):
