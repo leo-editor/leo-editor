@@ -734,6 +734,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         For external files containing sentinels, there may be *several* lines
         in the file that correspond to the same line in the outline.
+        
+        An Easter Egg: <Alt-x>number invokes this code.
         '''
         # Improved docstring for #253: Goto Global line (Alt-G) is inconsistent.
         # https://github.com/leo-editor/leo-editor/issues/253

@@ -18,13 +18,13 @@ def cmd(name):
 #@+others
 #@+node:ekr.20160514095828.1: ** class ControlCommandsClass
 class ControlCommandsClass(BaseEditCommandsClass):
-    #@+others
-    #@+node:ekr.20150514063305.88: *3* control.ctor
+    
     def __init__(self, c):
         '''Ctor for ControlCommandsClass.'''
         # pylint: disable=super-init-not-called
         self.c = c
-        self.payload = None
+
+    #@+others
     #@+node:ekr.20150514063305.90: *3* advertizedUndo
     @cmd('advertised-undo')
     def advertizedUndo(self, event):

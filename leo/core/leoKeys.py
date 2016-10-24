@@ -2220,9 +2220,11 @@ class KeyHandlerClass(object):
                 keyType=type('commandName'),
                 valType=g.ShortcutInfo)
         inv_d = lm.invert(d)
-        # aList = inv_d.get(stroke,[])
+        # g.trace('1', stroke, stroke in c.config.shortcutsDict.d)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
+        # g.trace('2', stroke, stroke in c.config.shortcutsDict.d)
+        # g.trace('3', c.config.shortcutsDict.d.get('help'))
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(self, aList, commandName, pane, shortcut):
         trace = False and not g.unitTesting
@@ -2586,7 +2588,12 @@ class KeyHandlerClass(object):
         commandName, tail = k.getMinibufferCommandName()
         if trace: g.trace('command:', commandName, 'tail:', tail)
         k.functionTail = tail
-        func = c.commandsDict.get(commandName)
+        if commandName and commandName.isdigit():
+            # The line number Easter Egg.
+            def func(event=None):
+                c.gotoCommands.find_file_line(n=int(commandName))
+        else:
+            func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
         # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
         if func:
