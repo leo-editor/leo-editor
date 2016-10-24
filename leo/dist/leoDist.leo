@@ -25,7 +25,16 @@
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
 </v>
+<v t="ekr.20161024113526.1"><vh>Notes</vh>
 <v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
+<v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
+<v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
+<v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
+<v t="ekr.20161024114150.1"><vh>Post 3: me</vh></v>
+<v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
+<v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
+</v>
+</v>
 <v t="EKR.20040519091259"><vh>Announcements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="ekr.20160315105606.1"><vh>Previous announcements</vh>
@@ -240,6 +249,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161024113542.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2850,6 +2860,169 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
     tag: git tag -a 5.4 -m "Added 5.4 tag"
     git push --follow-tags
+</t>
+<t tx="ekr.20161024113526.1">@language rest
+@wrap
+</t>
+<t tx="ekr.20161024113542.1">https://github.com/leo-editor/leo-editor/issues/106</t>
+<t tx="ekr.20161024113553.1">From: Winn Dixie incredible0n3@gmail.com
+
+Would be stellar to have a brew install leo. http://brew.sh/
+
+Homebrew formulae are simple Ruby scripts::
+
+require "formula"
+
+class Wget &lt; Formula
+  homepage "http://www.gnu.org/software/wget/"
+  url "http://ftp.gnu.org/gnu/wget/wget-1.15.tar.gz"
+  sha1 "f3c925f19dfe5ed386daae4f339175c108c50574"
+
+  def install
+    system "./configure", "--prefix=#{prefix}"
+    system "make", "install"
+  end
+end
+
+To install homebrew, paste this in a terminal::
+
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+The script explains what it will do and then pauses before it does it.
+</t>
+<t tx="ekr.20161024113810.1">https://github.com/ludwigschwardt
+
+I've made a first draft of this many moons ago (1 Oct 2013, to be exact :-)).
+
+It still installs Leo 4.10 final. That is if it still works, as I haven't tested it in a while...
+
+You can try it out like this from my tap:
+
+brew tap ska-sa/tap
+brew install leo
+
+You are more than welcome to copy it from [here](https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb) and tinker with it.
+</t>
+<t tx="ekr.20161024114150.1">@language rest
+
+Whew. Added this pull request We'll see what happens...
+
+Here is the updated leo.rb file that passes brew audit --strict Leo:
+
+@language ruby
+
+class Leo &lt; Formula
+  homepage "http://leoeditor.com/"
+  url "https://downloads.sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip"
+  sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
+
+  depends_on "pyqt"
+  depends_on "enchant" =&gt; :recommended
+
+  def install
+    # Obtain information on Python installation
+    python_xy = "python" + `%x(python -c "import sys;print(sys.version[:3])")`.chomp
+    python_site_packages = lib + "#{python_xy}/site-packages"
+    python_site_packages.install "leo"
+    bin.install ["launchLeo.py", "profileLeo.py"]
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    # Create, run in and delete a temporary directory.
+    if system "python" "-c" "import leo"
+      onoe "Leo FAILED"
+    else
+      ohai "Leo OK"
+    end
+  end
+end
+
+@language rest
+
+It took quite awhile to grok what was going on. Here are my notes:
+
+brew update
+  # updates formulae.
+brew doctor
+# Clone homebrew into ~/leo.repo/homebrew
+cd ~/leo.repo
+git clone https://github.com/leo-editor/homebrew.git
+brew create http://sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip
+    # This Downloaded the file and opened vim:
+    # ==&gt; Downloading http://sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-
+    # The second time I did this I simply replaced the file with the proper leo.rb.
+brew audit --strict Leo
+  # Caught various problems.
+cd homebrew
+  # Not part of the instructions.
+git checkout -b Leo
+  # Switched to a new branch 'Leo'
+git add Library/Formula/leo.rb
+  # Not part of the instructions.
+git commit Library/Formula/leo.rb ### &amp;&amp; git push
+git push
+  # (within SourceTree) using my normal GitHub username and password.
+
+</t>
+<t tx="ekr.20161024115114.1">Here is the latest leo.rb:
+
+@language ruby
+
+class Leo &lt; Formula
+  homepage "http://leoeditor.com/"
+  url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
+  sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
+  head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
+
+  depends_on "pyqt"
+  depends_on "enchant" =&gt; :recommended
+  depends_on :python if MacOS.version &lt;= :snow_leopard
+
+  def install
+    (lib+"python2.7/site-packages").install "leo"
+    bin.install "launchLeo.py" =&gt; "leo"
+  end
+
+  test do
+    system bin/"python", "-c", "import leo"
+  end
+end
+
+@language rest
+
+
+This passes the following::
+
+    brew audit --strict Leo
+    brew install --verbose --debug Leo
+
+However, after:
+
+    brew uninstall Leo
+    brew install Leo
+
+I get the following:
+
+    sh: -c: line 0: syntax error near unexpected token `python'
+    sh: -c: line 0: `%x(python -c "import sys;print(sys.version[:3])")'
+
+This looks like an old version of leo.rb is being used, but a thorough search shows no such file. Any help would be appreciated.</t>
+<t tx="ekr.20161024115257.1">http://stackoverflow.com/questions/32673943/how-to-update-homebrew-sha256
+
+After editing the formula, you can run:
+
+    brew fetch your-formula --build-from-source
+
+to fetch the tarball and display the new checksum.
+
+If you've already downloaded the tarball somewhere, you can calculate the hash with:
+
+    openssl sha256 &lt; some_tarball.tar.gz
+
+or:
+
+    shasum -a 256 some_tarball.tar.gz
 </t>
 </tnodes>
 </leo_file>

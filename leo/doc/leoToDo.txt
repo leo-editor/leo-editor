@@ -9,9 +9,8 @@
 
 #106: brew install Leo on MacOS
 https://github.com/leo-editor/leo-editor/issues/106
-
 Requires 5.4 final
-  
+
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap
