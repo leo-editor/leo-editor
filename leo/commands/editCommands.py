@@ -1484,8 +1484,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         '''
         trace = False and not g.unitTesting
-        c, p = self.c, self.c.p
         verbose = True
+        c, p = self.c, self.c.p
         w = self.editWidget(event)
         if not w:
             return
@@ -1546,7 +1546,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif action == 'overwrite': w.delete(i)
         if isPlain:
             ins = w.getInsertPoint()
-            if self.autojustify > 0:
+            if self.autojustify > 0 and not inBrackets:
                 # Support #14: auto-justify body text.
                 s = w.getAllText()
                 i = g.skip_to_start_of_line(s, ins)
@@ -1613,13 +1613,15 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.flashCharacter(w, j)
     #@+node:ekr.20150514063305.273: *5* initBracketMatcher
     def initBracketMatcher(self, c):
-        '''Init the bracket matching code in selfInsertCommand.'''
+        '''Init the bracket matching code.'''
+        trace = False and not g.unitTesting
         if len(self.openBracketsList) != len(self.closeBracketsList):
             g.es_print('bad open/close_flash_brackets setting: using defaults')
             self.openBracketsList = '([{'
             self.closeBracketsList = ')]}'
-        # g.trace('self.openBrackets',openBrackets)
-        # g.trace('self.closeBrackets',closeBrackets)
+        if trace:
+            g.trace('self.openBrackets',self.openBracketsList)
+            g.trace('self.closeBrackets',self.closeBracketsList)
     #@+node:ekr.20150514063305.274: *5* insertNewlineHelper
     def insertNewlineHelper(self, w, oldSel, undoType):
         trace = False and not g.unitTesting
