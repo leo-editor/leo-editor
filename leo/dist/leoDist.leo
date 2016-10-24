@@ -30,7 +30,7 @@
 <v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
 <v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
 <v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
-<v t="ekr.20161024114150.1"><vh>Post 3: me</vh></v>
+<v t="ekr.20161024114150.1"><vh>Post 3: me April 15, 2015</vh></v>
 <v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
@@ -2905,7 +2905,8 @@ You are more than welcome to copy it from [here](https://github.com/ska-sa/homeb
 </t>
 <t tx="ekr.20161024114150.1">@language rest
 
-Whew. Added this pull request We'll see what happens...
+Whew. Added this pull request: https://github.com/Homebrew/legacy-homebrew/pull/38980
+We'll see what happens...
 
 Here is the updated leo.rb file that passes brew audit --strict Leo:
 
