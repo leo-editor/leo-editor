@@ -616,11 +616,15 @@ class MatchBrackets(object):
     #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
     def scan_back(self, ch1, target, s, i):
         '''Scan backwards for delim.'''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(g.callers())
+            g.trace('ch: %r target %r s[:i]:\n\n%s\n' % (ch1, target, s[:i]))
         level = 0
         while 0 <= i:
             progress = i
             ch = s[i]
-            # g.trace(repr(ch),'i',i)
+            # if trace: g.trace(repr(ch),'i',i)
             if self.ends_comment(s, i):
                 i = self.back_scan_comment(s, i)
             elif ch in '"\'':
@@ -644,8 +648,7 @@ class MatchBrackets(object):
                 i -= 1
             assert i < progress
         # Not found
-        # This trace is annoying and unnecessary.
-        # g.trace('not found! level: %s ch1: %s target: %s' % (level, ch1, target))
+        if trace: g.trace('not found! level: %s ch1: %s target: %s' % (level, ch1, target))
         return None
     #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
     def back_scan_comment(self, s, i):
@@ -726,10 +729,12 @@ class MatchBrackets(object):
     #@+node:ekr.20160119094053.1: *4* mb.run
     def run(self):
         '''The driver for the MatchBrackets class.'''
+        trace = False and not g.unitTesting
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
         s = w.getAllText()
         ins = w.getInsertPoint()
+        if trace: g.trace(s)
         ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
         ch2 = 0 <= ins < len(s) and s[ins] or ''
         # g.trace(repr(ch1),repr(ch2),ins)
@@ -741,15 +746,14 @@ class MatchBrackets(object):
         else:
             return
         index2 = self.find_matching_bracket(ch, s, index)
-        # g.trace('index,index2',index,index2)
+        if trace: g.trace('index, index2', index, index2)
         if index2 is not None:
             if index2 < index:
                 w.setSelectionRange(index2, index + 1, insert=index2)
-                # w.setSelectionRange(index + 1, index2, insert=index2)
-                # g.trace('case 1',s[index2:index+1])
+                if trace: g.trace('case 1',s[index2:index+1])
             else:
                 w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
-                # g.trace('case2',s[index:index2+1])
+                if trace: g.trace('case2',s[index:index2+1])
             w.see(index2)
         else:
             g.es("unmatched", repr(ch))
@@ -1854,9 +1858,9 @@ def checkUnchangedIvars(obj, d, exceptions=None):
 def pause(s):
     g.pr(s)
     i = 0
-    # pylint: disable=undefined-variable
-    # long does not exist in Python 3.
-    n = 1000 * 1000 if g.isPython3 else long(1000) * long(1000)
+    # Use builtins to suppress pyflakes complaint.
+    # pylint: disable=no-member, undefined-variable
+    n = 1000 * 1000 if g.isPython3 else builtins.long(1000) * builtins.long(1000)
     while i < n:
         i += 1
 #@+node:ekr.20041105091148: *4* g.pdb
@@ -4603,7 +4607,7 @@ def isInt(obj):
     if g.isPython3:
         return isinstance(obj, int)
     else:
-        return isinstance(obj, (int, long))
+        return isinstance(obj, (int, builtins.long))
 #@+node:ekr.20160229070349.5: *5* g.isString
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
@@ -4731,12 +4735,14 @@ else:
 
     def u(s):
         '''Return s, converted to unicode from Qt widgets.'''
-        # pylint: disable=undefined-variable
-        return unicode(s)
+        # Use builtins to suppress pyflakes complaint.
+        # pylint: disable=no-member, undefined-variable
+        return builtins.unicode(s) # Suppress pyflakes complaint.
 
     def ue(s, encoding):
-        # pylint: disable=undefined-variable
-        return unicode(s, encoding)
+        # Use builtins to suppress pyflakes complaint.
+        # pylint: disable=no-member, undefined-variable
+        return builtins.unicode(s, encoding) 
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
