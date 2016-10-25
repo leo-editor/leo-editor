@@ -1337,7 +1337,7 @@ class graphcanvasController(object):
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
         # FIXME: need node.clear_formatting()
-        if hasattr(item, 'bg'):
+        if hasattr(item, 'bg') and hasattr(item.bg, 'setBrush'):
             item.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
         if hasattr(item, 'text'):
             item.text.setDefaultTextColor(QtGui.QColor(0,0,0))
