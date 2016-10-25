@@ -31,6 +31,8 @@
 <v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
 <v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
 <v t="ekr.20161024114150.1"><vh>Post 3: me April 15, 2015</vh></v>
+<v t="ekr.20161025091538.1"><vh>Post 4: me April 24, 2015</vh></v>
+<v t="ekr.20161025091621.1"><vh>Post 5: ludwidswardt April 24, 2015</vh></v>
 <v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
@@ -3027,6 +3029,45 @@ If you've already downloaded the tarball somewhere, you can calculate the hash w
 or:
 
     shasum -a 256 some_tarball.tar.gz
+</t>
+<t tx="ekr.20161025091538.1">Here, I'd like to add to the previous post, to show the big picture. Creating a pull request is actually pretty simple, as the homebrew readme suggests:
+
+1. Fork Homebrew.
+2. brew create http://example.com/foo-0.1.tar.gz
+3. git checkout -b foo
+4. git commit Library/Formula/foo.rb &amp;&amp; git push
+5. Pull Request: links to https://github.com/Homebrew/homebrew/pulls
+
+This kind of abbreviated list strikes a good balance for those who know the big picture. But for those who don't, a few more details would be helpful:
+
+Directories
+
+The instructions don't mention directories, which was confusing:
+
+    I forked homebrew in ~/leo.repo, my standard place for repos. This created all kinds of stuff in /usr/local, but those places don't matter. Everything actually should happen in ~/leo.repo/homebrew. It took me awhile to realize I could ignore everything in /usr/local.
+
+    Steps 2, 3 and 4 happened, iirc, in ~/leo.repo or in ~/leo.repo/homebrew, which, in retrospect, makes sense, but did not at the time.
+
+Pushing &amp; the pull request
+
+The following may be blindingly obvious to those with more experience with git, but this was the first time I had used git in a more collaborative way:
+
+    The push happens in my fork, so I can (must) use my own GitHub credentials to do the push. I'm simply modifying my own fork.
+    The link in the step 5, pull request, isn't really helpful. Instead, after the push, a button in my fork of homebrew appeared called something like "submit pull request". I pressed the button, added a few comments, and off we went. Next time, I'll add a link to Leo's home page. The email link was redundant, but it may have encouraged the helpful comments that I received...
+
+Changing the pull request
+
+The first pull request had problems, so I assume it won't be pulled. I also assume that I can simply make the changes in leo.rb in my already existing branch, push them, and then issue a new pull request.
+
+Summary: This is actually a straightforward process, but nobody knows better than I that describing a straightforward process is anything but straightforward!
+</t>
+<t tx="ekr.20161025091621.1">he Formula Cookbook, https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md, is a must-read, especially the Python-related parts!)
+
+These instructions for contributing to Homebrew (specifically calling brew commands) assume that you are actually *using* Homebrew, and normally the Homebrew repo then lives in /usr/local. I normally work in that repo and would then copy the formula elsewhere for pushing (typically to my tap repo).
+
+You don't have to issue a new pull request. Just add your changes to the same branch and push them, and they will remain associated with the same pull request. This is a great feature of the PR: you can commit and discuss until everyone is happy and the PR then gets accepted.
+
+I would rename the pull request "leo 5.1 (new formula)". :-)
 </t>
 </tnodes>
 </leo_file>
