@@ -28,12 +28,15 @@
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
 <v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
 <v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
+<v t="ekr.20161025114444.1"><vh>The latest formula</vh></v>
+<v t="ekr.20161025114433.1"><vh>Posts</vh>
 <v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
 <v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
 <v t="ekr.20161024114150.1"><vh>Post 3: me April 15, 2015</vh></v>
 <v t="ekr.20161025091538.1"><vh>Post 4: me April 24, 2015</vh></v>
 <v t="ekr.20161025091621.1"><vh>Post 5: ludwidswardt April 24, 2015</vh></v>
 <v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
+</v>
 <v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
 </v>
 </v>
@@ -2869,7 +2872,14 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 <t tx="ekr.20161024113542.1">@language rest
 @wrap
 
-https://github.com/leo-editor/leo-editor/issues/106</t>
+https://github.com/leo-editor/leo-editor/issues/106
+
+How to Create and Maintain a Tap
+https://github.com/Homebrew/brew/blob/master/docs/How-to-Create-and-Maintain-a-Tap.md
+
+How To Open a Homebrew Pull Request (and get it merged)
+https://github.com/Homebrew/brew/blob/master/docs/How-To-Open-a-Homebrew-Pull-Request-(and-get-it-merged).md
+</t>
 <t tx="ekr.20161024113553.1">From: Winn Dixie incredible0n3@gmail.com
 
 Would be stellar to have a brew install leo. http://brew.sh/
@@ -3069,5 +3079,32 @@ You don't have to issue a new pull request. Just add your changes to the same br
 
 I would rename the pull request "leo 5.1 (new formula)". :-)
 </t>
+<t tx="ekr.20161025114433.1"></t>
+<t tx="ekr.20161025114444.1">@language ruby
+
+class LeoEditor &lt; Formula
+  desc "The Leo IDE/Outliner/PIM"
+  homepage "http://leoeditor.com/"
+  url "https://github.com/leo-editor/leo-editor/archive/5.4.1.tar.gz"
+  sha256 "2cf0f598aa46e8ced6dd7da0229157e7b523704d0a03604a4da14b715c0a232f"
+
+  depends_on :python if MacOS.version &lt;= :snow_leopard
+  depends_on "pyqt"
+  depends_on "enchant" =&gt; :recommended
+
+  def install
+    bin.install "leo"
+    bin.install ["launchLeo.py", "profileLeo.py"]
+    ln_s "#{bin}/launchLeo.py", "#{bin}/leo"
+  end
+
+  test do
+    if system "python", "-c", "import", "leo"
+      onoe "Leo FAILED"
+    else
+      ohai "Leo OK"
+    end
+  end
+end</t>
 </tnodes>
 </leo_file>
