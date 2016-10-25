@@ -2971,7 +2971,7 @@ brew audit --strict Leo
 cd homebrew
   # Not part of the instructions.
 git checkout -b Leo
-  # Switched to a new branch 'Leo'
+  # Switched to a new branch 'Homebrew-Leo'
 git add Library/Formula/leo.rb
   # Not part of the instructions.
 git commit Library/Formula/leo.rb ### &amp;&amp; git push
