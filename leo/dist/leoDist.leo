@@ -2864,7 +2864,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 <t tx="ekr.20161024113526.1">@language rest
 @wrap
 </t>
-<t tx="ekr.20161024113542.1">https://github.com/leo-editor/leo-editor/issues/106</t>
+<t tx="ekr.20161024113542.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/106</t>
 <t tx="ekr.20161024113553.1">From: Winn Dixie incredible0n3@gmail.com
 
 Would be stellar to have a brew install leo. http://brew.sh/
@@ -2903,9 +2906,7 @@ brew install leo
 
 You are more than welcome to copy it from [here](https://github.com/ska-sa/homebrew-tap/blob/master/leo.rb) and tinker with it.
 </t>
-<t tx="ekr.20161024114150.1">@language rest
-
-Whew. Added this pull request: https://github.com/Homebrew/legacy-homebrew/pull/38980
+<t tx="ekr.20161024114150.1">Whew. Added this pull request: https://github.com/Homebrew/legacy-homebrew/pull/38980
 We'll see what happens...
 
 Here is the updated leo.rb file that passes brew audit --strict Leo:
@@ -3009,7 +3010,9 @@ I get the following:
     sh: -c: line 0: `%x(python -c "import sys;print(sys.version[:3])")'
 
 This looks like an old version of leo.rb is being used, but a thorough search shows no such file. Any help would be appreciated.</t>
-<t tx="ekr.20161024115257.1">http://stackoverflow.com/questions/32673943/how-to-update-homebrew-sha256
+<t tx="ekr.20161024115257.1">*Note*: Brew create now computes the hash automatically.
+
+http://stackoverflow.com/questions/32673943/how-to-update-homebrew-sha256
 
 After editing the formula, you can run:
 

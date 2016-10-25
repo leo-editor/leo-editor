@@ -973,6 +973,7 @@
 <v t="ekr.20151225142626.1"><vh>@menu Open &amp;Leo File</vh>
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
 <v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
+<v t="ekr.20161025090757.1"><vh>@item open-leoDist-leo</vh></v>
 <v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
 <v t="ekr.20151225193848.1"><vh>@item open-leoPy-leo</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
@@ -7335,6 +7336,7 @@ number-command-7                = Alt-7
 number-command-8                = Alt-8
 number-command-9                = Alt-9 
 open-leoDocs-leo                = None
+open-leoDist-leo                = None
 open-leoPlugins-leo             = None
 open-leoSettings-leo            = None
 open-scripts-leo                = None
@@ -7809,6 +7811,7 @@ number-command-9                    = None
 # open-compare-window               = None
 # open-find-dialog                  = None
 open-leoDocs-leo                    = None
+open-leoDist-leo                    = None
 open-leoPlugins-leo                 = None
 open-leoSettings-leo                = None
 open-scripts-leo                    = None
@@ -11763,6 +11766,7 @@ The OSX shortcuts posted by karstenw at the link below solved all of my keycode 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 <t tx="ekr.20161021092615.1"></t>
 <t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
+<t tx="ekr.20161025090757.1">Open Leo&amp;Dist.leo</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

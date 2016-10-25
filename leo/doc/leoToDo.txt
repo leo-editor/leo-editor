@@ -11,6 +11,7 @@
 https://github.com/leo-editor/leo-editor/issues/106
 Requires 5.4 final
 
+.. @+node:ekr.20161024101901.1: ** ** Line numbers are not always accurate
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap

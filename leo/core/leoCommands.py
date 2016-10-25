@@ -2876,17 +2876,6 @@ class Commands(object):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
         g.es("not found:", name)
-    #@+node:ekr.20131213072223.19532: *5* c.selectAtSettingsNode
-    @cmd('open-local-settings')
-    def selectAtSettingsNode(self, event=None):
-        '''Select the @settings node, if there is one.'''
-        c = self
-        p = c.config.settingsRoot()
-        if p:
-            c.selectPosition(p)
-            c.redraw()
-        else:
-            g.es('no local @settings tree.')
     #@+node:ekr.20131028155339.17096: *5* c.openCheatSheet
     @cmd('open-cheat-sheet-leo')
     def openCheatSheet(self, event=None, redraw=True):
@@ -2906,6 +2895,17 @@ class Commands(object):
         else:
             g.es('file not found: %s' % fn)
             return None
+    #@+node:ekr.20161025090405.1: *5* c.openLeoDist
+    @cmd('open-leoDist-leo')
+    def openLeoDist(self, event=None):
+        '''Open leoDist.leo in a new Leo window.'''
+        c = self
+        name = "leoDist.leo"
+        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "dist", name)
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+        g.es("not found:", name)
     #@+node:ekr.20050130152008: *5* c.openLeoPlugins
     @cmd('open-leoPlugins-leo')
     def openLeoPlugins(self, event=None):
@@ -3041,16 +3041,6 @@ class Commands(object):
             webbrowser.open_new(url)
         except Exception:
             g.es("not found:", url)
-    #@+node:ekr.20151225095102.1: *5* c.openUnittest
-    @cmd('open-unittest-leo')
-    def openUnittest(self, event=None):
-        '''Open unittest.leo.'''
-        c = self
-        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-        if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName, old_c=c)
-            if c2: return
-        g.es('not found:', fileName)
     #@+node:ekr.20060613082924: *5* c.openLeoUsersGuide
     @cmd('open-users-guide')
     def openLeoUsersGuide(self, event=None):
@@ -3071,6 +3061,27 @@ class Commands(object):
             webbrowser.open_new(url)
         except Exception:
             g.es("not found:", url)
+    #@+node:ekr.20151225095102.1: *5* c.openUnittest
+    @cmd('open-unittest-leo')
+    def openUnittest(self, event=None):
+        '''Open unittest.leo.'''
+        c = self
+        fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+        g.es('not found:', fileName)
+    #@+node:ekr.20131213072223.19532: *5* c.selectAtSettingsNode
+    @cmd('open-local-settings')
+    def selectAtSettingsNode(self, event=None):
+        '''Select the @settings node, if there is one.'''
+        c = self
+        p = c.config.settingsRoot()
+        if p:
+            c.selectPosition(p)
+            c.redraw()
+        else:
+            g.es('no local @settings tree.')
     #@+node:ekr.20031218072017.2894: *4* Outline menu (commands)
     #@+node:ekr.20031218072017.2895: *5*  Top Level... (Commands)
     #@+node:ekr.20031218072017.1548: *6* c.Cut & Paste Outlines
