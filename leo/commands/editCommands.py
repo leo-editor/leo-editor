@@ -1477,7 +1477,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.showStateAndMode()
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.268: *4* selfInsertCommand, helpers
-    @cmd('self-insert-command')
+    # @cmd('self-insert-command')
     def selfInsertCommand(self, event, action='insert'):
         '''
         Insert a character in the body pane.

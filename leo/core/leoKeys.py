@@ -3252,138 +3252,6 @@ class KeyHandlerClass(object):
         k = self
         k.fnc.get_file_name(event, callback, filterExt, prompt, tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
-    #@+node:ekr.20061031131434.105: *4* k.masterCommand & helpers
-    def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
-        '''
-        This is the central dispatching method.
-        All commands and keystrokes pass through here.
-        This returns None, but may set k.funcReturn.
-        '''
-        c, k = self.c, self
-        trace = False and not g.unitTesting
-        traceGC = False
-        traceStroke = True
-        # if trace: g.trace(commandName, func)
-        if traceGC: g.printNewObjects('masterCom 1')
-        if event: c.check_event(event)
-        c.setLog()
-        c.startRedrawCount = c.frame.tree.redrawCount
-        k.stroke = stroke # Set this global for general use.
-        char = ch = event and event.char or ''
-        # 2011/10/28: compute func if not given.
-        if commandName and not func:
-            func = c.commandsDict.get(commandName)
-        # Important: it is *not* an error for func to be None.
-        commandName = commandName or func and func.__name__ or '<no function>'
-        k.funcReturn = None # For unit testing.
-        #@+<< define specialKeysyms >>
-        #@+node:ekr.20061031131434.106: *5* << define specialKeysyms >>
-        specialKeysyms = (
-            'Alt_L', 'Alt_R',
-            'Meta_L', 'Meta_R', # Meta support.
-            'Caps_Lock', 'Control_L', 'Control_R',
-            'Num_Lock',
-            'Shift_L', 'Shift_R',
-        )
-        #@-<< define specialKeysyms >>
-        special = char in specialKeysyms
-        inserted = not special
-        if trace and traceStroke: # Useful.
-            g.trace('stroke: %s ch: %s func: %s' % (
-                stroke, repr(ch), func and func.__name__))
-        if inserted:
-            k.setLossage(ch, stroke)
-        # We *must not* interfere with the global state in the macro class.
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.startRecordingMacro(event)
-            # 2011/06/06: Show the key, if possible.
-        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
-            k.keyboardQuit()
-            k.endCommand(commandName)
-            return
-        if special: # Don't pass these on.
-            return
-        # if k.regx.iter:
-            # try:
-                # k.regXKey = char
-                # k.regx.iter.next() # EKR: next() may throw StopIteration.
-            # except StopIteration:
-                # pass
-            # return
-        if k.abbrevOn:
-            expanded = c.abbrevCommands.expandAbbrev(event, stroke)
-            if expanded: return
-        if func: # Func is an argument.
-            if commandName.startswith('specialCallback'):
-                # The callback function will call c.doCommand
-                if trace: g.trace('calling specialCallback for', commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
-                val = func(event)
-                # k.simulateCommand uses k.funcReturn.
-                k.funcReturn = k.funcReturn or val # For unit tests.
-            else:
-                # Call c.doCommand directly.
-                if trace:
-                    g.trace('calling command directly', commandName)
-                c.doCommand(func, commandName, event=event)
-            if c.exists:
-                k.endCommand(commandName)
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 2')
-        elif k.inState():
-            pass #Ignore unbound keys in a state.
-        else:
-            if traceGC: g.printNewObjects('masterCom 3')
-            k.handleDefaultChar(event, stroke)
-            if c.exists:
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 4')
-    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
-    def handleDefaultChar(self, event, stroke):
-        '''Handle an unbound key.'''
-        k = self; c = k.c
-        w = event and event.widget
-        name = c.widget_name(w)
-        trace = False and not g.unitTesting
-        verbose = False
-        if trace and verbose:
-            g.trace('widget_name', name, 'stroke', stroke,
-            'enable alt-ctrl', self.enable_alt_ctrl_bindings)
-        if (stroke and
-            not stroke.startswith('Alt+Ctrl') and
-            # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
-            k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
-            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
-        ):
-            if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
-            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
-        elif name.startswith('body'):
-            action = k.unboundKeyAction
-            if action in ('insert', 'overwrite'):
-                c.editCommands.selfInsertCommand(event, action=action)
-            else: # Ignore the key
-                if trace: g.trace('ignoring', stroke)
-        elif name.startswith('head'):
-            c.frame.tree.onHeadlineKey(event)
-        elif name.startswith('canvas'):
-            if not stroke: # Not exactly right, but it seems to be good enough.
-                c.onCanvasKey(event) # New in Leo 4.4.2
-        elif name.startswith('log'):
-            # Bug fix: 2011/11/21: Because of universal bindings
-            # we may not be able to insert anything into w.
-            log_w = event.widget
-            if log_w and hasattr(log_w, 'supportsHighLevelInterface'):
-                # Send the event to the text widget, not the LeoLog instance.
-                i = log_w.getInsertPoint()
-                if not stroke:
-                    stroke = event and event.stroke
-                if stroke:
-                    s = stroke.toGuiChar()
-                    log_w.insert(i, s)
-            elif trace: g.trace('not supportsHighLevelInterface', log_w)
-        else:
-            pass # Ignore the event
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     master_key_count = 0
 
@@ -3605,6 +3473,51 @@ class KeyHandlerClass(object):
                                 key, name, repr(si.stroke), si.commandName))
                             return si
         return None
+    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+    def handleDefaultChar(self, event, stroke):
+        '''Handle an unbound key.'''
+        k = self; c = k.c
+        w = event and event.widget
+        name = c.widget_name(w)
+        trace = False and not g.unitTesting
+        verbose = False
+        if trace and verbose:
+            g.trace('widget_name', name, 'stroke', stroke,
+            'enable alt-ctrl', self.enable_alt_ctrl_bindings)
+        if (stroke and
+            not stroke.startswith('Alt+Ctrl') and
+            # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
+            k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
+            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
+        ):
+            if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
+            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
+        elif name.startswith('body'):
+            action = k.unboundKeyAction
+            if action in ('insert', 'overwrite'):
+                c.editCommands.selfInsertCommand(event, action=action)
+            else: # Ignore the key
+                if trace: g.trace('ignoring', stroke)
+        elif name.startswith('head'):
+            c.frame.tree.onHeadlineKey(event)
+        elif name.startswith('canvas'):
+            if not stroke: # Not exactly right, but it seems to be good enough.
+                c.onCanvasKey(event) # New in Leo 4.4.2
+        elif name.startswith('log'):
+            # Bug fix: 2011/11/21: Because of universal bindings
+            # we may not be able to insert anything into w.
+            log_w = event.widget
+            if log_w and hasattr(log_w, 'supportsHighLevelInterface'):
+                # Send the event to the text widget, not the LeoLog instance.
+                i = log_w.getInsertPoint()
+                if not stroke:
+                    stroke = event and event.stroke
+                if stroke:
+                    s = stroke.toGuiChar()
+                    log_w.insert(i, s)
+            elif trace: g.trace('not supportsHighLevelInterface', log_w)
+        else:
+            pass # Ignore the event
     #@+node:ekr.20061031131434.152: *5* k.handleMiniBindings
     def handleMiniBindings(self, event, state, stroke):
         k = self; c = k.c
@@ -3718,6 +3631,93 @@ class KeyHandlerClass(object):
                         if si.commandName == 'auto-complete':
                             return True
         return False
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
+    def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
+        '''
+        This is the central dispatching method.
+        All commands and keystrokes pass through here.
+        This returns None, but may set k.funcReturn.
+        '''
+        c, k = self.c, self
+        trace = False and not g.unitTesting
+        traceGC = False
+        traceStroke = True
+        # if trace: g.trace(commandName, func)
+        if traceGC: g.printNewObjects('masterCom 1')
+        if event: c.check_event(event)
+        c.setLog()
+        c.startRedrawCount = c.frame.tree.redrawCount
+        k.stroke = stroke # Set this global for general use.
+        char = ch = event and event.char or ''
+        # 2011/10/28: compute func if not given.
+        if commandName and not func:
+            func = c.commandsDict.get(commandName)
+        # Important: it is *not* an error for func to be None.
+        commandName = commandName or func and func.__name__ or '<no function>'
+        k.funcReturn = None # For unit testing.
+        #@+<< define specialKeysyms >>
+        #@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
+        specialKeysyms = (
+            'Alt_L', 'Alt_R',
+            'Meta_L', 'Meta_R', # Meta support.
+            'Caps_Lock', 'Control_L', 'Control_R',
+            'Num_Lock',
+            'Shift_L', 'Shift_R',
+        )
+        #@-<< define specialKeysyms >>
+        special = char in specialKeysyms
+        inserted = not special
+        if trace and traceStroke: # Useful.
+            g.trace('stroke: %s ch: %s func: %s' % (
+                stroke, repr(ch), func and func.__name__))
+        if inserted:
+            k.setLossage(ch, stroke)
+        # We *must not* interfere with the global state in the macro class.
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.startRecordingMacro(event)
+            # 2011/06/06: Show the key, if possible.
+        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+            k.keyboardQuit()
+            k.endCommand(commandName)
+            return
+        if special: # Don't pass these on.
+            return
+        # if k.regx.iter:
+            # try:
+                # k.regXKey = char
+                # k.regx.iter.next() # EKR: next() may throw StopIteration.
+            # except StopIteration:
+                # pass
+            # return
+        if k.abbrevOn:
+            expanded = c.abbrevCommands.expandAbbrev(event, stroke)
+            if expanded: return
+        if func: # Func is an argument.
+            if commandName.startswith('specialCallback'):
+                # The callback function will call c.doCommand
+                if trace: g.trace('calling specialCallback for', commandName)
+                # if commandName != 'repeat-complex-command': # 2010/01/11
+                    # k.mb_history.insert(0,commandName)
+                val = func(event)
+                # k.simulateCommand uses k.funcReturn.
+                k.funcReturn = k.funcReturn or val # For unit tests.
+            else:
+                # Call c.doCommand directly.
+                if trace:
+                    g.trace('calling command directly', commandName)
+                c.doCommand(func, commandName, event=event)
+            if c.exists:
+                k.endCommand(commandName)
+                c.frame.updateStatusLine()
+            if traceGC: g.printNewObjects('masterCom 2')
+        elif k.inState():
+            pass #Ignore unbound keys in a state.
+        else:
+            if traceGC: g.printNewObjects('masterCom 3')
+            k.handleDefaultChar(event, stroke)
+            if c.exists:
+                c.frame.updateStatusLine()
+            if traceGC: g.printNewObjects('masterCom 4')
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         '''Search all visible nodes for a headline starting with stroke.'''
