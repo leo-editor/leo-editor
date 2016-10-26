@@ -27,55 +27,32 @@ else:
     StringIO = cStringIO.StringIO
 #@-<< imports >>
 #@+others
-#@+node:ekr.20150514125218.1: ** Top-level-commands
-#@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
-@g.command('ctrl-click-at-cursor')
-def ctrlClickAtCursor(event):
-    '''Simulate a control-click at the cursor.'''
-    c = event.get('c')
-    if c:
-        g.openUrlOnClick(event)
-#@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
-@g.command('disable-idle-time-events')
-def disable_idle_time_events(event):
-    '''Disable default idle-time event handling.'''
-    g.disableIdleTimeHook()
-
-@g.command('enable-idle-time-events')
-def enable_idle_time_events(event):
-    '''Enable default idle-time event handling.'''
-    g.enableIdleTimeHook()
-
-@g.command('toggle-idle-time-events')
-def toggle_idle_time_events(event):
-    '''Toggle default idle-time event handling.'''
-    if g.app.idle_timer_enabled:
-        g.disableIdleTimeHook()
-    else:
-        g.enableIdleTimeHook()
-#@+node:ekr.20150514125218.4: *3* join-leo-irc
-@g.command('join-leo-irc')
-def join_leo_irc(event=None):
-    '''Open the web page to Leo's irc channel on freenode.net.'''
-    import webbrowser
-    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
-#@+node:ekr.20150514125218.5: *3* open-url
-@g.command('open-url')
-def openUrl(event=None):
-    '''
-    Open the url in the headline or body text of the selected node.
-
-    Use the headline if it contains a valid url.
-    Otherwise, look *only* at the first line of the body.
-    '''
-    c = event.get('c')
-    if c:
-        g.openUrl(c.p)
-#@+node:ekr.20150514125218.6: *3* open-url-under-cursor
-@g.command('open-url-under-cursor')
-def openUrlUnderCursor(event=None):
-    '''Open the url under the cursor.'''
-    return g.openUrlOnClick(event)
+#@+node:ekr.20161026122804.1: ** class BackgroundManager
+class BackgroundManager(object):
+    '''A class to manage background processes.'''
+    
+    def __init__(self):
+        '''Ctor for BackgroundManager class.'''
+        self.callback_list = []
+        
+    #@+others
+    #@+node:ekr.20161026125611.1: *3* bm.add_callback
+    def add_callback(self, callback, tag):
+        '''Add a callback to be called at every idle time.'''
+        # g.trace(callback, tag)
+        self.callback_list.append(callback)
+    #@+node:ekr.20161026124810.1: *3* bm.on_idle
+    def on_idle(self, timer):
+        '''BackgroundManager: Run all idle-time callbacks.'''
+        if g.app and not g.app.killed:
+            for callback in self.callback_list:
+                try:
+                    callback()
+                except Exception:
+                    g.es_exception()
+                    g.es_print('removing callback: %s' % callback)
+                    self.callback_list.remove(callback)
+    #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp(object):
     """A class representing the Leo application itself.
@@ -191,9 +168,6 @@ class LeoApp(object):
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
-        self.check_files_timer = None
-            # The IdleTime instance.
-            # calls g.app.externalFilesController.on_idle.
         self.globalKillBuffer = []
             # The global kill buffer.
         self.globalRegisters = {}
@@ -214,11 +188,15 @@ class LeoApp(object):
             # Translations of menu names.
 
         # Global controller/manager objects...
+        # Most of these are defined in initApp.
+        self.backgroundManager = None
+            # The singleton BackgroundManager instance.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
             # The singleton leoCacher instance.
-        self.externalFilesController = leoExternalFiles.ExternalFilesController()
+        self.externalFilesController = None
+            # The singleton ExternalFilesController instance.
         self.ipk = None
             # python kernel instance
         self.loadManager = None
@@ -1949,9 +1927,9 @@ class LoadManager(object):
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-        handler = g.app.externalFilesController.on_idle
-        timer = g.IdleTime(handler, delay=2000, tag='efc.on_idle')
-        g.app.check_files_timer = timer
+        handler = g.app.backgroundManager.on_idle
+        timer = g.IdleTime(handler, delay=2000, tag='BackgroundManager.on_idle')
+        g.app.idle_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
@@ -2084,6 +2062,7 @@ class LoadManager(object):
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         import leo.core.leoSessions as leoSessions
+        import leo.commands.checkerCommands as checkerCommands
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
@@ -2095,6 +2074,9 @@ class LoadManager(object):
         # Force the user to set g.app.leoID.
         g.app.setLeoID(verbose=verbose)
         # Create early classes *after* doing plugins.init()
+        g.app.backgroundManager = bm = BackgroundManager()
+        bm.add_callback(checkerCommands.on_idle, tag='checkerCommands')
+        g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
@@ -3193,6 +3175,55 @@ class RecentFilesManager(object):
                 theFile.close()
         return bool(theFile)
     #@-others
+#@+node:ekr.20150514125218.1: ** Top-level-commands
+#@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
+@g.command('ctrl-click-at-cursor')
+def ctrlClickAtCursor(event):
+    '''Simulate a control-click at the cursor.'''
+    c = event.get('c')
+    if c:
+        g.openUrlOnClick(event)
+#@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
+@g.command('disable-idle-time-events')
+def disable_idle_time_events(event):
+    '''Disable default idle-time event handling.'''
+    g.disableIdleTimeHook()
+
+@g.command('enable-idle-time-events')
+def enable_idle_time_events(event):
+    '''Enable default idle-time event handling.'''
+    g.enableIdleTimeHook()
+
+@g.command('toggle-idle-time-events')
+def toggle_idle_time_events(event):
+    '''Toggle default idle-time event handling.'''
+    if g.app.idle_timer_enabled:
+        g.disableIdleTimeHook()
+    else:
+        g.enableIdleTimeHook()
+#@+node:ekr.20150514125218.4: *3* join-leo-irc
+@g.command('join-leo-irc')
+def join_leo_irc(event=None):
+    '''Open the web page to Leo's irc channel on freenode.net.'''
+    import webbrowser
+    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+#@+node:ekr.20150514125218.5: *3* open-url
+@g.command('open-url')
+def openUrl(event=None):
+    '''
+    Open the url in the headline or body text of the selected node.
+
+    Use the headline if it contains a valid url.
+    Otherwise, look *only* at the first line of the body.
+    '''
+    c = event.get('c')
+    if c:
+        g.openUrl(c.p)
+#@+node:ekr.20150514125218.6: *3* open-url-under-cursor
+@g.command('open-url-under-cursor')
+def openUrlUnderCursor(event=None):
+    '''Open the url under the cursor.'''
+    return g.openUrlOnClick(event)
 #@-others
 #@@language python
 #@@tabwidth -4

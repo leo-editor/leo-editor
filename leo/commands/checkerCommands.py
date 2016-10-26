@@ -34,9 +34,7 @@ g_pylint_pid = None
 @g.command('pylint-kill')
 def kill_pylint(event):
     '''Kill any running pylint processes and clear the queue.'''
-    global g_pylint_fn
-    global g_pylint_list
-    global g_pylint_pid
+    global g_pylint_fn, g_pylint_list, g_pylint_pid
     g_pylint_list = []
     if g_pylint_pid:
         g.es_print('killing checker for', g_pylint_fn)
@@ -85,12 +83,20 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
-#@+node:ekr.20161026085610.1: ** pylint_idle_time_callback
+#@+node:ekr.20161026130259.1: ** Callbacks
+#@+node:ekr.20161026130310.1: *3* on_idle (checkerCommands)
+def on_idle():
+    '''The idle-time callback for leo.commands.checkerCommands.'''
+    trace = False and not g.unitTesting
+    global g_pylint_list, g_pylint_pid
+    if g_pylint_list or g_pylint_pid:
+        if trace: g.trace('(checkerCommands)')
+        pylint_idle_time_callback()
+#@+node:ekr.20161026085610.1: *3* pylint_idle_time_callback
 def pylint_idle_time_callback():
     '''Handle idle-time processing.'''
     trace = False and not g.unitTesting
-    global g_pylint_list
-    global g_pylint_pid
+    global g_pylint_list, g_pylint_pid
     trace_inactive = False
     trace_running = False
     if trace and (trace_inactive or g_pylint_pid is not None):
@@ -398,9 +404,7 @@ class PylintCommand(object):
     def run_pylint(self, fn, rc_fn):
         '''Run pylint on fn with the given pylint configuration file.'''
         trace = False and not g.unitTesting
-        global g_pylint_fn
-        global g_pylint_list
-        global g_pylint_pid
+        global g_pylint_fn, g_pylint_list, g_pylint_pid
         if not os.path.exists(fn):
             print('file not found:', fn)
             return
@@ -437,9 +441,7 @@ class PylintCommand(object):
             if trace: g.trace('===== Adding callback', g.shortFileName(fn))
 
             def pylint_callback(fn=fn):
-                global g_pylint_fn
-                global g_pylint_list
-                global g_pylint_pid
+                global g_pylint_fn, g_pylint_list, g_pylint_pid
                 g_pylint_fn = fn
                 g.es_print(g.shortFileName(fn))
                 if g_pylint_pid:

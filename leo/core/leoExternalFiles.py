@@ -3,7 +3,6 @@
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
 #@@first
 import leo.core.leoGlobals as g
-import leo.commands.checkerCommands as checkerCommands
 import getpass
 import os
 import subprocess
@@ -73,6 +72,7 @@ class ExternalFilesController(object):
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
             # get_time(path), see set_time() for notes.
+        g.app.backgroundManager.add_callback(self.on_idle, tag='ExternalFilesController')
     #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite (called from c.checkTimeStamp)
     def check_overwrite(self, c, path):
@@ -130,7 +130,7 @@ class ExternalFilesController(object):
     #@+node:ekr.20150330033306.1: *4* efc.on_idle & helpers
     on_idle_count = 0
 
-    def on_idle(self, timer):
+    def on_idle(self):
         '''Check for changed files in all commanders.'''
         trace = False and not g.unitTesting
         trace_files = False
@@ -139,7 +139,6 @@ class ExternalFilesController(object):
             t1 = time.time()
         if g.app and not g.app.killed:
             # Switch pylint checkers if the last one has finished.
-            checkerCommands.pylint_idle_time_callback()
             if 1:
                 # Fix #262: Improve performance of check_for_changed_external_files
                 if self.unchecked_files:
@@ -168,7 +167,8 @@ class ExternalFilesController(object):
             if (self.on_idle_count % 5) == 0:
                 t2 = time.time()
                 n = len(list(g.app.commanders()))
-                g.trace('%3s %s files %4.2f sec.' % (self.on_idle_count, n, t2 - t1))
+                g.trace('(ExternalFilesController) %3s %s files %4.2f sec.' % (
+                    self.on_idle_count, n, t2 - t1))
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
         '''
