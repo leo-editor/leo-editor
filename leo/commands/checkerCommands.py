@@ -20,13 +20,6 @@ import subprocess
 import sys
 import time
 #@-<< imports >>
-# Global data to queue pylint commands.
-g_pylint_fn = None
-    # The name of the file being checked.
-g_pylint_list = []
-    # List of callbacks to check files.
-g_pylint_pid = None
-    # The id of the of the running pylint checker process.
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
 #@+node:ekr.20161026092059.1: *3* kill-pylint
@@ -34,13 +27,7 @@ g_pylint_pid = None
 @g.command('pylint-kill')
 def kill_pylint(event):
     '''Kill any running pylint processes and clear the queue.'''
-    global g_pylint_fn, g_pylint_list, g_pylint_pid
-    g_pylint_list = []
-    if g_pylint_pid:
-        g.es_print('killing checker for', g_pylint_fn)
-        g_pylint_pid.kill()
-        g_pylint_pid = None
-    g.es_print('pylint finished')
+    g.app.pylintBackgroundManager.kill()
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -83,37 +70,95 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
-#@+node:ekr.20161026130259.1: ** Callbacks
-#@+node:ekr.20161026130310.1: *3* on_idle (checkerCommands)
-def on_idle():
-    '''The idle-time callback for leo.commands.checkerCommands.'''
-    trace = False and not g.unitTesting
-    global g_pylint_list, g_pylint_pid
-    if g_pylint_list or g_pylint_pid:
-        if trace: g.trace('(checkerCommands)')
-        pylint_idle_time_callback()
-#@+node:ekr.20161026085610.1: *3* pylint_idle_time_callback
-def pylint_idle_time_callback():
-    '''Handle idle-time processing.'''
-    trace = False and not g.unitTesting
-    global g_pylint_list, g_pylint_pid
-    trace_inactive = False
-    trace_running = False
-    if trace and (trace_inactive or g_pylint_pid is not None):
-        g.trace(len(g_pylint_list), g_pylint_pid)
-    if g_pylint_pid or g_pylint_list:
-        if g_pylint_pid.poll() is not None:
-            # The previous process has finished.
-            if g_pylint_list:
-                pylint_callback = g_pylint_list.pop(0)
-                pylint_callback()
-            else:
-                g_pylint_pid = None
-                g.es_print('pylint finished')
-        elif trace and trace_running:
-            g.trace('Running: ', g_pylint_pid)
-    elif trace and trace_inactive:
-        g.trace('Pylint inactive')
+#@+node:ekr.20161026142607.1: ** class PylintBackgroundManager
+class PylintBackgroundManager:
+    '''A class to run Python processes sequentially in the background.'''
+    
+    def __init__(self):
+        '''Ctor for the PylintBackgroundManager class.'''
+        self.fn = None
+            # The name of the file being checked.
+        self.callback_list = []
+            # List of callbacks to check files.
+        self.pid = None
+            # The id of the of the running pylint checker p
+        g.app.backgroundManager.add_callback(
+            self.on_idle,
+            tag='PylintBackgroundManager',
+        )
+
+    #@+others
+    #@+node:ekr.20161026085610.1: *3* pbm.check_process
+    def check_process(self):
+        '''Check the running process, and switch if necessary.'''
+        trace = False and not g.unitTesting
+        trace_inactive = False
+        trace_running = False
+        if trace and (trace_inactive or self.pid is not None):
+            g.trace(len(self.callback_list), self.pid)
+        if self.pid or self.callback_list:
+            if self.pid.poll() is not None:
+                # The previous process has finished.
+                if self.callback_list:
+                    pylint_callback = self.callback_list.pop(0)
+                    pylint_callback()
+                else:
+                    self.pid = None
+                    g.es_print('pylint finished')
+            elif trace and trace_running:
+                g.trace('Running: ', self.pid)
+        elif trace and trace_inactive:
+            g.trace('Pylint inactive')
+    #@+node:ekr.20161026144950.1: *3* pbm.kill
+    def kill(self):
+        '''Kill the presently running pylint process, if any.'''
+        pm = self
+        pm.callback_list = []
+        if pm.pid:
+            g.es_print('killing checker for', pm.fn)
+            pm.pid.kill()
+            pm.pid = None
+        g.es_print('pylint finished')
+    #@+node:ekr.20161026130310.1: *3* pbm.on_idle
+    def on_idle(self):
+        '''The idle-time callback for leo.commands.checkerCommands.'''
+        trace = False and not g.unitTesting
+        if self.callback_list or self.pid:
+            if trace: g.trace('(checkerCommands)')
+            self.check_process()
+    #@+node:ekr.20161026144555.1: *3* pbm.start_process
+    def start_process(self, command, fn):
+        '''Start or queue a pylint process described by command and fn.'''
+        trace = False and not g.unitTesting
+        pm = self
+        if pm.pid:
+            # A pylint checker is already active.  Add a new callback.
+            if trace: g.trace('===== Adding callback', g.shortFileName(fn))
+
+            def pylint_callback(fn=fn):
+                pm.fn = fn
+                g.es_print(g.shortFileName(fn))
+                if pm.pid:
+                    if trace: g.es_print('===== Killing:', pm.pid)
+                    pm.pid.kill()
+                pm.pid = pid = subprocess.Popen(
+                    command,
+                    shell=False,
+                    universal_newlines=True,
+                )
+                if trace: g.es_print('===== Starting:', g.shortFileName(fn), pid)
+
+            pm.callback_list.append(pylint_callback)
+        else:
+            # Start the process immediately.
+            pm.pid = pid = subprocess.Popen(
+                command,
+                shell=False,
+                universal_newlines=True,
+            )
+            if trace: g.es_print('===== Starting:',
+                g.shortFileName(fn), pid)
+    #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command(object):
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
@@ -403,8 +448,6 @@ class PylintCommand(object):
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     def run_pylint(self, fn, rc_fn):
         '''Run pylint on fn with the given pylint configuration file.'''
-        trace = False and not g.unitTesting
-        global g_pylint_fn, g_pylint_list, g_pylint_pid
         if not os.path.exists(fn):
             print('file not found:', fn)
             return
@@ -436,34 +479,9 @@ class PylintCommand(object):
             for s in g.splitLines(stdout_data):
                 if s.strip():
                     g.es_print(s.rstrip())
-        elif g_pylint_pid:
-            # A pylint checker is already active.
-            if trace: g.trace('===== Adding callback', g.shortFileName(fn))
-
-            def pylint_callback(fn=fn):
-                global g_pylint_fn, g_pylint_list, g_pylint_pid
-                g_pylint_fn = fn
-                g.es_print(g.shortFileName(fn))
-                if g_pylint_pid:
-                    if trace: g.es_print('===== Killing:', g_pylint_pid)
-                    g_pylint_pid.kill()
-                g_pylint_pid = subprocess.Popen(
-                    command,
-                    shell=False,
-                    universal_newlines=True,
-                )
-                if trace: g.es_print('===== Starting:',
-                    g.shortFileName(fn), g_pylint_pid)
-
-            g_pylint_list.append(pylint_callback)
         else:
-            g_pylint_pid = subprocess.Popen(
-                command,
-                shell=False,
-                universal_newlines=True,
-            )
-            if trace: g.es_print('===== Starting:',
-                g.shortFileName(fn), g_pylint_pid)
+            pm = g.app.pylintBackgroundManager
+            pm.start_process(command, fn)
     #@-others
 #@-others
 #@@language python

@@ -2075,7 +2075,7 @@ class LoadManager(object):
         g.app.setLeoID(verbose=verbose)
         # Create early classes *after* doing plugins.init()
         g.app.backgroundManager = bm = BackgroundManager()
-        bm.add_callback(checkerCommands.on_idle, tag='checkerCommands')
+        g.app.pylintBackgroundManager = checkerCommands.PylintBackgroundManager()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
