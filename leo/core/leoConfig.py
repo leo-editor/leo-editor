@@ -1812,7 +1812,7 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
     def getShortcut(self, commandName):
         '''Return rawKey,accel for shortcutName'''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting and commandName == 'help'
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:

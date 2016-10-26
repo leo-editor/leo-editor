@@ -2145,16 +2145,12 @@ class KeyHandlerClass(object):
         tag gives the source of the binding.
 
         '''
-        trace = False and not g.unitTesting
-        # trace = trace and shortcut.lower().find('key-1') > -1
+        trace = False and not g.unitTesting and (shortcut == 'F1' or commandName == 'help')
         trace_list = False
         k = self
         if not k.check_bind_key(commandName, pane, shortcut):
             return False
         aList = k.bindingsDict.get(shortcut, [])
-        if trace: #  or shortcut == 'Ctrl+q':
-            # g.trace('%7s %20s %17s %s' % (pane, shortcut, tag, commandName))
-            g.trace(shortcut)
         try:
             if not shortcut:
                 stroke = None
@@ -2163,6 +2159,10 @@ class KeyHandlerClass(object):
                 assert stroke.s, stroke
             else:
                 stroke = k.strokeFromSetting(shortcut)
+            if trace:
+                tag = tag.split(' ')[-1]
+                g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
+                g.trace(g.callers())
             si = g.ShortcutInfo(kind=tag, pane=pane,
                 func=callback, commandName=commandName, stroke=stroke)
             if shortcut:
@@ -2187,9 +2187,10 @@ class KeyHandlerClass(object):
     bindShortcut = bindKey # For compatibility
     #@+node:ekr.20120130074511.10228: *5* k.check_bind_key
     def check_bind_key(self, commandName, pane, shortcut):
-         #k = self
+        # k = self
         if not shortcut:
             return False
+            ### return True # #327: binding to None clears previous bindings.
         assert g.isStroke(shortcut)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
@@ -2204,15 +2205,22 @@ class KeyHandlerClass(object):
             return True
     #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut
     def kill_one_shortcut(self, stroke):
-        '''Update the dicts so that c.config.getShortcut(name) will return None
-        for all names *presently* bound to the stroke.'''
+        '''
+        Update the *configuration* dicts so that c.config.getShortcut(name)
+        will return None for all names *presently* bound to the stroke.
+        '''
         k = self; c = k.c
         lm = g.app.loadManager
-        # A crucial shortcut: inverting and uninverting dictionaries is slow.
-        # Important: the comparison is valid regardless of the type of stroke.
-        if stroke in (None, 'None', 'none'):
-            return
-        assert g.isStroke(stroke), stroke
+        g.trace(stroke)
+        if 0:
+            # This does not fix 327: Create a way to unbind bindings
+            assert stroke in (None, 'None', 'none') or g.isStroke(stroke), repr(stroke)
+        else:
+            # A crucial shortcut: inverting and uninverting dictionaries is slow.
+            # Important: the comparison is valid regardless of the type of stroke.
+            if stroke in (None, 'None', 'none'):
+                return
+            assert g.isStroke(stroke), stroke
         d = c.config.shortcutsDict
         if d is None:
             d = g.TypedDictOfLists(
@@ -2361,6 +2369,12 @@ class KeyHandlerClass(object):
                         found = True; break
             if not found and warn:
                 g.trace('no setting for %s' % commandName)
+    #@+node:ekr.20161026041659.1: *4* k.killBinding
+    def killBinding(self, commandName):
+        '''
+        Kill all bindings for all keystrokes presently assigned to commandName.
+        '''
+        # g.trace(commandName)
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
@@ -2376,20 +2390,20 @@ class KeyHandlerClass(object):
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
         trace = False and not g.unitTesting
-        k = self; c = k.c
-        if trace:
-            g.trace('makeBindingsFromCommandsDict entry')
-            t1 = time.time()
+        c, k = self.c, self
+        d = c.commandsDict
+        t1 = time.time()
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of si with si.stroke == stroke.
-        d = c.commandsDict
         d2 = g.TypedDictOfLists(
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke, valType=g.ShortcutInfo)
-        for commandName in sorted(d.keys()):
+        for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
             for si in aList:
+                if trace and commandName == 'help':
+                    g.trace(key, repr(si.stroke), aList)
                 assert isinstance(si, g.ShortcutInfo)
                 # Important: si.stroke is already canonicalized.
                 stroke = si.stroke
@@ -2398,7 +2412,6 @@ class KeyHandlerClass(object):
                     assert g.isStroke(stroke)
                     d2.add(stroke, si)
         # Step 2: make the bindings.
-        if trace: t2 = time.time()
         for stroke in sorted(d2.keys()):
             aList2 = d2.get(stroke)
             for si in aList2:
@@ -2409,13 +2422,13 @@ class KeyHandlerClass(object):
                 pane = si.pane
                 if stroke and not pane.endswith('-mode'):
                     k.bindKey(pane, stroke, command, commandName, tag=tag)
+        t2 = time.time()
         if trace:
-            t3 = time.time()
-            g.trace('%0.2fsec' % (t2 - t1))
-            g.trace('%0.2fsec' % (t3 - t2))
+            g.trace('%0.2f sec %s' % ((t2 - t1), c.shortFileName()))
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke, w=None, trace=False):
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
+        trace = False and not g.unitTesting
         k = self; c = k.c; f = c.frame
         if w:
             widgets = [w]
@@ -3161,15 +3174,15 @@ class KeyHandlerClass(object):
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
         '''
-        trace = False and not g.unitTesting
-        # trace = trace and commandName.startswith('chapter-select-')
+        trace = False and not g.unitTesting and commandName == 'help'
         traceCommand = False
-        traceEntry = False
+        traceEntry = True
         traceStroke = True
         c, k = self.c, self
+        is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         if trace and traceEntry:
             # g.trace(pane, commandName, 'source_c:', source_c)
-            g.trace(pane, commandName, shortcut)
+            g.trace(pane, commandName, shortcut, g.callers())
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
@@ -3179,6 +3192,9 @@ class KeyHandlerClass(object):
             if trace and traceStroke: g.trace('shortcut', shortcut)
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
+            stroke = None
+        elif is_local:
+            # 327: Don't get defaults when handling a local file.
             stroke = None
         else:
             # Try to get a stroke from leoSettings.leo.
@@ -3192,7 +3208,8 @@ class KeyHandlerClass(object):
                     stroke = si.stroke
                     pane = si.pane # 2015/05/11.
                     break
-        if trace and traceStroke: g.trace(pane, stroke, commandName)
+        if trace and traceStroke:
+            g.trace('is_local', is_local, pane, stroke, commandName, c.shortFileName())
         if stroke:
             ok = k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
@@ -3200,8 +3217,10 @@ class KeyHandlerClass(object):
             if trace and traceCommand and ok and not g.app.silentMode:
                 g.blue('', '@command: %s = %s' % (
                     commandName, k.prettyPrintKey(stroke)))
+        elif is_local:
+            k.killBinding(commandName)
         elif trace and traceCommand and not g.app.silentMode:
-            g.blue('', '@command: %s' % (commandName))
+                g.blue('', '@command: %s' % (commandName))
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()

@@ -1359,7 +1359,7 @@ class ShortcutInfo(object):
                 val = getattr(si, ivar)
                 if val not in (None, 'none', 'None', ''):
                     if ivar == 'func': val = val.__name__
-                    s = '%s %s' % (ivar, val)
+                    s = '%s: %r' % (ivar, val)
                     result.append(s)
         return '[%s]' % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* isModeBinding
