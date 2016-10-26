@@ -3,6 +3,7 @@
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
 #@@first
 import leo.core.leoGlobals as g
+import leo.commands.checkerCommands as checkerCommands
 import getpass
 import os
 import subprocess
@@ -132,10 +133,13 @@ class ExternalFilesController(object):
     def on_idle(self, timer):
         '''Check for changed files in all commanders.'''
         trace = False and not g.unitTesting
+        trace_files = False
         if trace:
             import time
             t1 = time.time()
         if g.app and not g.app.killed:
+            # Switch pylint checkers if the last one has finished.
+            checkerCommands.pylint_idle_time_callback()
             if 1:
                 # Fix #262: Improve performance of check_for_changed_external_files
                 if self.unchecked_files:
@@ -159,7 +163,7 @@ class ExternalFilesController(object):
                 # Next, check, all @<file> nodes in all commanders.
                 for c in g.app.commanders():
                     self.idle_check_commander(c)
-        if False and trace:
+        if trace and trace_files:
             self.on_idle_count += 1
             if (self.on_idle_count % 5) == 0:
                 t2 = time.time()

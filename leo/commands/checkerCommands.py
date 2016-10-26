@@ -20,8 +20,29 @@ import subprocess
 import sys
 import time
 #@-<< imports >>
+# Global data to queue pylint commands.
+g_pylint_fn = None
+    # The name of the file being checked.
+g_pylint_list = []
+    # List of callbacks to check files.
+g_pylint_pid = None
+    # The id of the of the running pylint checker process.
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20161026092059.1: *3* kill-pylint
+@g.command('kill-pylint')
+@g.command('pylint-kill')
+def kill_pylint(event):
+    '''Kill any running pylint processes and clear the queue.'''
+    global g_pylint_fn
+    global g_pylint_list
+    global g_pylint_pid
+    g_pylint_list = []
+    if g_pylint_pid:
+        g.es_print('killing checker for', g_pylint_fn)
+        g_pylint_pid.kill()
+        g_pylint_pid = None
+    g.es_print('pylint finished')
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -64,6 +85,29 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
+#@+node:ekr.20161026085610.1: ** pylint_idle_time_callback
+def pylint_idle_time_callback():
+    '''Handle idle-time processing.'''
+    trace = False and not g.unitTesting
+    global g_pylint_list
+    global g_pylint_pid
+    trace_inactive = False
+    trace_running = False
+    if trace and (trace_inactive or g_pylint_pid is not None):
+        g.trace(len(g_pylint_list), g_pylint_pid)
+    if g_pylint_pid or g_pylint_list:
+        if g_pylint_pid.poll() is not None:
+            # The previous process has finished.
+            if g_pylint_list:
+                pylint_callback = g_pylint_list.pop(0)
+                pylint_callback()
+            else:
+                g_pylint_pid = None
+                g.es_print('pylint finished')
+        elif trace and trace_running:
+            g.trace('Running: ', g_pylint_pid)
+    elif trace and trace_inactive:
+        g.trace('Pylint inactive')
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command(object):
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
@@ -270,7 +314,7 @@ class PylintCommand(object):
         '''ctor for PylintCommand class.'''
         self.c = c
         self.seen = [] # List of checked vnodes.
-        self.wait = True
+        self.wait = False
             # Waiting has several advantages:
             # 1. output is shown in the log pane.
             # 2. Total timing statistics can be shown,
@@ -353,6 +397,10 @@ class PylintCommand(object):
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     def run_pylint(self, fn, rc_fn):
         '''Run pylint on fn with the given pylint configuration file.'''
+        trace = False and not g.unitTesting
+        global g_pylint_fn
+        global g_pylint_list
+        global g_pylint_pid
         if not os.path.exists(fn):
             print('file not found:', fn)
             return
@@ -384,10 +432,36 @@ class PylintCommand(object):
             for s in g.splitLines(stdout_data):
                 if s.strip():
                     g.es_print(s.rstrip())
+        elif g_pylint_pid:
+            # A pylint checker is already active.
+            if trace: g.trace('===== Adding callback', g.shortFileName(fn))
+
+            def pylint_callback(fn=fn):
+                global g_pylint_fn
+                global g_pylint_list
+                global g_pylint_pid
+                g_pylint_fn = fn
+                g.es_print(g.shortFileName(fn))
+                if g_pylint_pid:
+                    if trace: g.es_print('===== Killing:', g_pylint_pid)
+                    g_pylint_pid.kill()
+                g_pylint_pid = subprocess.Popen(
+                    command,
+                    shell=False,
+                    universal_newlines=True,
+                )
+                if trace: g.es_print('===== Starting:',
+                    g.shortFileName(fn), g_pylint_pid)
+
+            g_pylint_list.append(pylint_callback)
         else:
-            g.es_print(g.shortFileName(fn))
-            subprocess.Popen(command,shell=False)
-                
+            g_pylint_pid = subprocess.Popen(
+                command,
+                shell=False,
+                universal_newlines=True,
+            )
+            if trace: g.es_print('===== Starting:',
+                g.shortFileName(fn), g_pylint_pid)
     #@-others
 #@-others
 #@@language python
