@@ -72,7 +72,7 @@ class ExternalFilesController(object):
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
             # get_time(path), see set_time() for notes.
-        g.app.backgroundManager.add_callback(self.on_idle, tag='ExternalFilesController')
+        g.app.idleTimeManager.add_callback(self.on_idle, tag='ExternalFilesController')
     #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite (called from c.checkTimeStamp)
     def check_overwrite(self, c, path):

@@ -27,12 +27,17 @@ else:
     StringIO = cStringIO.StringIO
 #@-<< imports >>
 #@+others
-#@+node:ekr.20161026122804.1: ** class BackgroundManager
-class BackgroundManager(object):
-    '''A class to manage background processes.'''
+#@+node:ekr.20161026122804.1: ** class IdleTimeManager
+class IdleTimeManager(object):
+    '''
+    A singleton class to manage idle-time handling.
+    
+    Any code can call g.app.idleTimeManager.add_callback(callback) to
+    cause the callback to be called at idle time forever.
+    '''
     
     def __init__(self):
-        '''Ctor for BackgroundManager class.'''
+        '''Ctor for IdleTimeManager class.'''
         self.callback_list = []
         
     #@+others
@@ -43,7 +48,7 @@ class BackgroundManager(object):
         self.callback_list.append(callback)
     #@+node:ekr.20161026124810.1: *3* bm.on_idle
     def on_idle(self, timer):
-        '''BackgroundManager: Run all idle-time callbacks.'''
+        '''IdleTimeManager: Run all idle-time callbacks.'''
         if g.app and not g.app.killed:
             for callback in self.callback_list:
                 try:
@@ -189,8 +194,8 @@ class LeoApp(object):
 
         # Global controller/manager objects...
         # Most of these are defined in initApp.
-        self.backgroundManager = None
-            # The singleton BackgroundManager instance.
+        self.idleTimeManager = None
+            # The singleton IdleTimeManager instance.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
@@ -1927,8 +1932,8 @@ class LoadManager(object):
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-        handler = g.app.backgroundManager.on_idle
-        timer = g.IdleTime(handler, delay=2000, tag='BackgroundManager.on_idle')
+        handler = g.app.idleTimeManager.on_idle
+        timer = g.IdleTime(handler, delay=2000, tag='IdleTimeManager.on_idle')
         g.app.idle_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
@@ -2074,7 +2079,7 @@ class LoadManager(object):
         # Force the user to set g.app.leoID.
         g.app.setLeoID(verbose=verbose)
         # Create early classes *after* doing plugins.init()
-        g.app.backgroundManager = bm = BackgroundManager()
+        g.app.idleTimeManager = IdleTimeManager()
         g.app.pylintBackgroundManager = checkerCommands.PylintBackgroundManager()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
         g.app.recentFilesManager = RecentFilesManager()

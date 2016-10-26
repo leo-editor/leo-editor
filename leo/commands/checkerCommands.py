@@ -82,7 +82,7 @@ class PylintBackgroundManager:
             # List of callbacks to check files.
         self.pid = None
             # The id of the of the running pylint checker p
-        g.app.backgroundManager.add_callback(
+        g.app.idleTimeManager.add_callback(
             self.on_idle,
             tag='PylintBackgroundManager',
         )
