@@ -151,6 +151,7 @@ class PylintBackgroundManager:
             pm.callback_list.append(pylint_callback)
         else:
             # Start the process immediately.
+            g.es_print(g.shortFileName(fn))
             pm.pid = pid = subprocess.Popen(
                 command,
                 shell=False,
