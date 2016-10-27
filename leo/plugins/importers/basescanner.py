@@ -2221,23 +2221,29 @@ class ScanState(object):
             while i+1 < len(lines) and not lines[i+1].strip():
                 i += 1
         return i, lines[i1:i]
-    #@+node:ekr.20161027115813.7: *3* state.scan_line & helper
+    #@+node:ekr.20161027115813.7: *3* state.scan_line
     def scan_line(self, s):
-        '''Update the scan state by scanning s.'''
+        '''
+        Update the scan state by scanning s.
+        
+        This is an example only. It might work for Python.
+        
+        This method should be overridden by all subclasses.
+        '''
         trace = False and not g.unitTesting
         i = 0
         while i < len(s):
             progress = i
-            ch, s2 = s[i], s[i:i+2]
+            ch = s[i]
             if self.context:
                 assert self.context in ('"', "'"), repr(self.context)
                 if ch == '\\':
-                    i += 1
+                    i += 1 # Eat the next character later.
                 elif self.context == ch:
                     self.context = '' # End the string.
                 else:
                     pass # Eat the string character later.
-            elif s2 == '#':
+            elif ch == '#':
                 break # The single-line comment ends the line.
             elif ch in ('"', "'"):
                 self.context = ch
@@ -2245,40 +2251,10 @@ class ScanState(object):
             elif ch == '}': self.curlies -= 1
             elif ch == '(': self.parens += 1
             elif ch == ')': self.parens -= 1
-            elif ch == '/': i = self.skip_regex(s, i+1)
-            elif s[i:i+3] == 'm//': i = self.skip_regex(s, i+3)
-            elif s[i:i+4] == 's///': i = self.skip_regex(s, i+4)
-            elif s[i:i+5] == 'tr///': i = self.skip_regex(s, i+5)
             i += 1
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-    #@+node:ekr.20161027115813.8: *4* state.skip_regex
-    def skip_regex(self, s, i):
-        '''look ahead for a regex /'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(repr(s), self.parens)
-        assert s[i-1] == '/', repr(s[i])
-        i += 1
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                # g.trace(repr(ch))
-                if ch == '\\':
-                    i += 2
-                elif ch == '/':
-                    i += 1
-                    break
-                else:
-                    i += 1
-                assert progress < i
-        
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i-1
     #@-others
 #@-others
 #@-leo

@@ -9,7 +9,7 @@ class PerlScanState(basescanner.ScanState):
     '''A class to store and update scanning state.'''
     # Use the base class ctor.
     #@+others
-    #@+node:ekr.20161027094537.11: *3* state.scan_line
+    #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -41,7 +41,7 @@ class PerlScanState(basescanner.ScanState):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-    #@+node:ekr.20161027094537.12: *3* state.skip_regex
+    #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
     def skip_regex(self, s, i):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting
