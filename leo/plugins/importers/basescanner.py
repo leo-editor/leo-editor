@@ -1,10 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
 '''
-The BaseScanner class used by legacy importers in leo.plugins.importers.
-
-The newer BaseLineScanner class is recommded for all new importers.
+Legacy (character-oriented) importers use BaseScanner class.
+New (line-oriented) importers use BaseLineScanner class.
 '''
+#@+<< imports >>
+#@+node:ekr.20161027163734.1: ** << imports >>
 import leo.core.leoGlobals as g
 if g.isPython3:
     import io
@@ -13,44 +14,48 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 import time
-
-gen_clean = True
-    # None: use @bool js_importer_clean_lws setting
-    # True: clean blank lines and regularize indentaion.
-
-gen_refs = False
-    # None: use @bool allow_section_references_in_at_auto setting
-        # WAS: use @bool js_importer_gen_refs setting
-    # True: generate section references.
-    # False generate @others
-
+#@-<< imports >>
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
     '''The base class for all new (line-oriented) scanner classes.'''
+
     #@+others
     #@+node:ekr.20161027114542.1: *3*  BaseLineScanner.ctor
-    def __init__(self, importCommands, atAuto, language='unnamed', alternate_language=None):
+    def __init__(self,
+        importCommands,
+        atAuto,
+        gen_clean = True, # True: clean blank lines.
+        gen_refs = False, # True: generate section references.
+        language = None, # For @language directive.
+        isRst = False,
+        state = None,
+        strict = False,
+    ):
         '''ctor for BaseScanner.'''
         # Copies of args...
         self.importCommands = ic = importCommands
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
-        self.language = language
-            # The language used to set comment delims.
-
-        # May be overridden in subclasses...
-        self.escapeSectionRefs = True
-            # True: escape false section refs.
-        self.isRst = False
+        self.gen_clean = gen_clean
+        self.gen_refs = gen_refs
+        self.isRst = isRst ### To be deleted.
             # Affects whitespace checking
-        self.strict = False
+        self.language = language
+            # For the @language directive.
+        self.state = state
+            # A scanner instance.
+        self.strict = strict
             # True: leading whitespace is significant.
+        assert state, 'Caller must provide a line state instance'
 
         # Settings...
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
+        ### To be removed???
+        self.escapeSectionRefs = True
+            # True: escape false section refs.
 
         # Set by run...
         self.errors = 0
@@ -92,6 +97,19 @@ class BaseLineScanner(object):
                 for i, s in enumerate(g.splitLines(s2)):
                     print('%3s %s' % (i+1, s.rstrip()))
         return ok
+    #@+node:ekr.20161027114007.3: *3* BaseLineScanner.checkBlanksAndTabs
+    def checkBlanksAndTabs(self, s):
+        '''Check for intermixed blank & tabs.'''
+        # Do a quick check for mixed leading tabs/blanks.
+        blanks = tabs = 0
+        for line in g.splitLines(s):
+            lws = line[0: g.skip_ws(line, 0)]
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        ok = blanks == 0 or tabs == 0
+        if not ok:
+            self.report('intermixed blanks and tabs')
+        return ok
     #@+node:ekr.20161027114045.1: *3* BaseLineScanner.clean_* & strip_*
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
@@ -126,6 +144,24 @@ class BaseLineScanner(object):
             print('  block: %s' % i)
             self.dump_block(block)
 
+    #@+node:ekr.20161027114007.2: *3* BaseLineScanner.escapeFalseSectionReferences
+    def escapeFalseSectionReferences(self, s):
+        '''
+        Probably a bad idea.  Keep the apparent section references.
+        The perfect-import write code no longer attempts to expand references
+        when the perfectImportFlag is set.
+        '''
+        return s
+        # result = []
+        # for line in g.splitLines(s):
+            # r1 = line.find('<<')
+            # r2 = line.find('>>')
+            # if r1>=0 and r2>=0 and r1<r2:
+                # result.append("@verbatim\n")
+                # result.append(line)
+            # else:
+                # result.append(line)
+        # return ''.join(result)
     #@+node:ekr.20161027094537.18: *3* BaseLineScanner.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
@@ -163,14 +199,34 @@ class BaseLineScanner(object):
         return g.angleBrackets(' ' + h + ' ')
 
        
+    #@+node:ekr.20161027114007.4: *3* BaseLineScanner.regularizeWhitespace
+    def regularizeWhitespace(self, s):
+        '''Regularize leading whitespace in s:
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        This is only called for strict languages.'''
+        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
+        if tab_width < 0: # Convert tabs to blanks.
+            for line in lines:
+                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
+                if s != line: changed = True
+                result.append(s)
+        elif tab_width > 0: # Convert blanks to tabs.
+            for line in lines:
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
+                if s != line: changed = True
+                result.append(s)
+        if changed:
+            action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
+            message = 'inconsistent leading whitespace. %s' % action
+            self.report(message)
+        return ''.join(result)
     #@+node:ekr.20161027094537.21: *3* BaseLineScanner.rescan_block & helpers
     def rescan_block(self, parent_block, strip_lines=True):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         state = self.state
         trace = False and not g.unitTesting
         if trace: g.trace('len: %3s' % len(parent_block.lines), parent_block.get_headline())
-        if len(parent_block.lines) < self.min_rescan_size:
-            return
         if strip_lines:
             # The first and last lines begin and end the block.
             # Only scan the interior lines.
@@ -306,23 +362,24 @@ class BaseLineScanner(object):
         if self.escapeSectionRefs and not self.atAuto:
             s = self.escapeFalseSectionReferences(s)
         # Check for intermixed blanks and tabs.
-        if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
-            if not self.isRst:
-                self.checkBlanksAndTabs(s)
-        # Regularize leading whitespace (strict languages only).
-        if self.strict: s = self.regularizeWhitespace(s)
+        if self.strict:
+            self.checkBlanksAndTabs(s) # Only issues warnings.
+        # Regularize leading whitespace
+        if self.strict:
+            s = self.regularizeWhitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
         if self.isPrepass:
             return self.prepass(s, parent)
         else:
-            self.scan(s, parent, parse_body=parse_body)
+            self.scan(s, parent)
             # Check the generated nodes.
             # Return True if the result is equivalent to the original file.
             ok = self.errors == 0 and self.check(s, parent)
             g.app.unitTestDict['result'] = ok
             # Insert an @ignore directive if there were any serious problems.
-            if not ok: self.insertIgnoreDirective(parent)
+            if not ok:
+                self.insertIgnoreDirective(parent)
             if self.atAuto and ok:
                 for p in root.self_and_subtree():
                     p.clearDirty()
@@ -331,63 +388,46 @@ class BaseLineScanner(object):
                 root.setDirty(setDescendentsDirty=False)
                 c.setChanged(True)
             return ok
-    #@+node:ekr.20161027114007.2: *4* BaseScanner.escapeFalseSectionReferences
-    def escapeFalseSectionReferences(self, s):
-        '''
-        Probably a bad idea.  Keep the apparent section references.
-        The perfect-import write code no longer attempts to expand references
-        when the perfectImportFlag is set.
-        '''
-        return s
-        # result = []
-        # for line in g.splitLines(s):
-            # r1 = line.find('<<')
-            # r2 = line.find('>>')
-            # if r1>=0 and r2>=0 and r1<r2:
-                # result.append("@verbatim\n")
-                # result.append(line)
-            # else:
-                # result.append(line)
-        # return ''.join(result)
-    #@+node:ekr.20161027114007.3: *4* BaseScanner.checkBlanksAndTabs
-    def checkBlanksAndTabs(self, s):
-        '''Check for intermixed blank & tabs.'''
-        # Do a quick check for mixed leading tabs/blanks.
-        blanks = tabs = 0
-        for line in g.splitLines(s):
-            lws = line[0: g.skip_ws(line, 0)]
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        ok = blanks == 0 or tabs == 0
-        if not ok:
-            self.report('intermixed blanks and tabs')
-        return ok
-    #@+node:ekr.20161027114007.4: *4* BaseScanner.regularizeWhitespace
-    def regularizeWhitespace(self, s):
-        '''Regularize leading whitespace in s:
-        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        This is only called for strict languages.'''
-        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
-        if tab_width < 0: # Convert tabs to blanks.
-            for line in lines:
-                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
-                if s != line: changed = True
-                result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
-            for line in lines:
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
-                if s != line: changed = True
-                result.append(s)
-        if changed:
-            action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
-            message = 'inconsistent leading whitespace. %s' % action
-            self.report(message)
-        return ''.join(result)
-    #@+node:ekr.20161027115605.1: *3* BaseLineScanner.scan
-    def scan(self, s1, parent, parse_body=True):
-        '''The main scan method.  Must be defined in subclasses.'''
-        g.es_print('scan must be defined in scanner subclasses.')
+    #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan
+    def scan(self, s1, parent):
+        '''A line-based Perl scanner.'''
+        trace = False and not g.unitTesting
+        trace_blocks = False
+        if trace: g.trace('===== ', self.root.h)
+        state = self.state
+        lines = g.splitLines(s1)
+        if self.gen_refs:
+            block = Block(lines, simple=False)
+            self.rescan_block(block, strip_lines=False)
+            parent.b = '@language %s\n' % (self.language)
+            self.put_block(block, parent, create_child=False)
+        else:
+            # Find all top-level blocks.
+            blocks, block_lines = [], []
+            i = 0
+            while i < len(lines):
+                progress = i
+                line = lines[i]
+                state.scan_line(line)
+                if state.starts_block():
+                    if block_lines: blocks.append(Block(block_lines, simple=True))
+                    i, block_lines = state.scan_block(i, lines)
+                    blocks.append(Block(block_lines, simple=False))
+                    block_lines = []
+                else:
+                    block_lines.append(line)
+                    i += 1
+                assert progress < i
+            # End the blocks properly.
+            if block_lines:
+                blocks.append(Block(block_lines, simple=True))
+            if trace and trace_blocks:
+                self.dump_blocks(blocks, parent)
+            # Rescan all the blocks, possibly creating more child blocks.
+            self.rescan_blocks(blocks)
+            parent.b = '@language %s\n@others\n' % (self.language)
+            for block in blocks:
+                self.put_block(block, parent)
     #@+node:ekr.20161027094537.27: *3* BaseLineScanner.trialWrite
     def trialWrite(self):
         '''Return the trial write for self.root.'''
@@ -413,6 +453,7 @@ class BaseLineScanner(object):
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
     '''The base class for all legacy (character-oriented) scanner classes.'''
+
     #@+others
     #@+node:ekr.20140727075002.18188: *3* BaseScanner.ctor
     def __init__(self, importCommands, atAuto, language='unnamed', alternate_language=None):
@@ -2095,7 +2136,7 @@ class BaseScanner(object):
     #@-others
 #@+node:ekr.20161027094537.2: ** class Block
 class Block:
-    '''A class describing a block and its possible rescans.'''
+    '''A class describing a block of lines.'''
 
     def __init__(self, lines, simple=None):
         '''Ctor for the Block class.'''
@@ -2150,18 +2191,15 @@ class Block:
     #@-others
 #@+node:ekr.20161027115813.1: ** class ScanState
 class ScanState(object):
-    '''A class to store and update scanning state.'''
+    '''A class to manage scanning state, including a state stack.'''
+
     #@+others
     #@+node:ekr.20161027115813.2: *3* state.ctor & repr
-    def __init__(self, c, root):
+    def __init__(self):
         '''Ctor for the singleton ScanState class.'''
-        # Ivars for traces...
-        self.c = c
-        self.root = root
-        # Ivars representing the scan state...
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
-        self.context = '' # in ('/*', '"', "'") Comments and regex do *not* create states.
+        self.context = '' # Represents cross-line constructs.
         self.stack = []
 
     def __repr__(self):
