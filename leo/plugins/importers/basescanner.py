@@ -132,20 +132,6 @@ class BaseLineScanner(object):
                 trialWrite=True,
             )
         return g.toUnicode(at.stringOutput, self.encoding)
-    #@+node:ekr.20161027094537.17: *3* BaseLineScanner.dump_block & dump_blocks
-    def dump_block(self, block):
-        '''Dump one block.'''
-        lines = block.lines if isinstance(block, Block) else block
-        for j, s in enumerate(lines):
-            print('    %3s %s' % (j, s.rstrip()))
-            
-    def dump_blocks(self, blocks, parent):
-        '''Dump all blocks, which may be Block instances or lists of strings.'''
-        g.trace('blocks in %s...' % parent.h)
-        for i, block in enumerate(blocks):
-            print('  block: %s' % i)
-            self.dump_block(block)
-
     #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
@@ -173,7 +159,7 @@ class BaseLineScanner(object):
         g.app.unitTestDict['result'] = ok
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
-            self.insertIgnoreDirective(parent)
+            self.insert_ignore_directive(parent)
         if self.atAuto and ok:
             for p in root.self_and_subtree():
                 p.clearDirty()
@@ -217,6 +203,16 @@ class BaseLineScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
+    #@+node:ekr.20161027182014.1: *4* BaseLineScanner.insert_ignore_directive
+    def insert_ignore_directive(self, parent):
+        c = self.c
+        parent.b = parent.b.rstrip() + '@ignore\n'
+        if g.unitTesting:
+            g.app.unitTestDict['fail'] = g.callers()
+        else:
+            if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+                g.warning('inserting @ignore')
+                c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan & helpers
     def scan(self, s1, parent):
         '''A line-based Perl scanner.'''
@@ -422,6 +418,45 @@ class BaseLineScanner(object):
                 block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
+    #@+node:ekr.20161027181809.1: *3* BaseLineScanner.utils
+    #@+node:ekr.20161027094537.17: *4* BaseLineScanner.dump_block & dump_blocks
+    def dump_block(self, block):
+        '''Dump one block.'''
+        lines = block.lines if isinstance(block, Block) else block
+        for j, s in enumerate(lines):
+            print('    %3s %s' % (j, s.rstrip()))
+            
+    def dump_blocks(self, blocks, parent):
+        '''Dump all blocks, which may be Block instances or lists of strings.'''
+        g.trace('blocks in %s...' % parent.h)
+        for i, block in enumerate(blocks):
+            print('  block: %s' % i)
+            self.dump_block(block)
+
+    #@+node:ekr.20161027181903.1: *4* BaseLineScanner.error, oops, report and warning
+    def error(self, s):
+        self.errors += 1
+        self.importCommands.errors += 1
+        if g.unitTesting:
+            if self.errors == 1:
+                g.app.unitTestDict['actualErrorMessage'] = s
+            g.app.unitTestDict['actualErrors'] = self.errors
+            if 0: # For debugging unit tests.
+                g.trace(g.callers())
+                g.error('', s)
+        else:
+            g.error('Error:', s)
+
+    def oops(self):
+        g.pr('BaseScanner oops: %s must be overridden in subclass' % g.callers())
+
+    def report(self, message):
+        if self.strict: self.error(message)
+        else: self.warning(message)
+
+    def warning(self, s):
+        if not g.unitTesting:
+            g.warning('Warning:', s)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -1057,7 +1092,7 @@ class BaseScanner(object):
                 result.append('\n')
         result = ''.join(result)
         return result
-    #@+node:ekr.20140727075002.18216: *4* BaseScanner.insertIgnoreDirective (leoImport)
+    #@+node:ekr.20140727075002.18216: *4* BaseScanner.insertIgnoreDirective
     def insertIgnoreDirective(self, parent):
         c = self.c
         self.appendStringToBody(parent, '@ignore')
