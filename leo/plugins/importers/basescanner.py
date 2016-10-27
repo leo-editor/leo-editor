@@ -39,26 +39,26 @@ class BaseLineScanner(object):
         self.encoding = ic.encoding
         self.language = language
             # The language used to set comment delims.
+
+        # May be overridden in subclasses...
+        self.escapeSectionRefs = True
+            # True: escape false section refs.
+        self.isRst = False
+            # Affects whitespace checking
+        self.strict = False
+            # True: leading whitespace is significant.
+
         # Settings...
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
-        # self.warnAboutUnderindentedLines = True
+
+        # Set by run...
         self.errors = 0
         ic.errors = 0
-        self.escapeSectionRefs = True
-        self.isPrepass = False
-            # True if we are running at-file-to-at-auto prepass.
-        self.isRst = False
-            # Affects whitespace checking.
         self.mismatchWarningGiven = False
+        self.isPrepass = False
         self.root = None
-            # The top-level node of the generated tree.
         self.tab_width = None
-            # Set in run: the tab width in effect in the c.currentPosition.
-        self.tab_ws = ''
-            # Set in run: the whitespace equivalent to one tab.
-        self.strict = False
-            # True: leading whitespace is significant.
     #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check
     def check(self, unused_s, parent):
         '''Perl override of base checker.'''
@@ -300,8 +300,6 @@ class BaseLineScanner(object):
         self.root = root = parent.copy()
         self.file_s = s
         self.tab_width = c.getTabWidth(p=root)
-        # Create the ws equivalent to one tab.
-        self.tab_ws = ' ' * abs(self.tab_width) if self.tab_width < 0 else '\t'
         # Init the error/status info.
         self.errors = 0
         # Use @verbatim to escape section references (but not for @auto).
