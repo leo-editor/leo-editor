@@ -30,13 +30,18 @@ class BackgroundManager(object):
     #@+node:ekr.20161026193609.2: *3* bm.check_process
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         trace_inactive = False
         trace_running = False
         if trace and (trace_inactive or self.pid is not None):
             g.trace(len(self.callback_list), self.pid)
         if self.pid or self.callback_list:
             if self.pid.poll() is not None:
+                if trace: g.es_print('ending:', self.pid)
+                try:
+                    self.pid.kill()
+                except OSError:
+                    pass
                 # The previous process has finished.
                 if self.callback_list:
                     callback = self.callback_list.pop(0)
@@ -70,7 +75,7 @@ class BackgroundManager(object):
     #@+node:ekr.20161026193609.5: *3* bm.start_process
     def start_process(self, command, fn=None):
         '''Start or queue a process described by command and fn.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         if self.pid:
             # A process is already active.  Add a new callback.
             if trace: g.trace('===== Adding callback', g.shortFileName(fn))
@@ -78,27 +83,24 @@ class BackgroundManager(object):
             def callback(fn=fn):
                 self.fn = fn
                 g.es_print(g.shortFileName(fn))
-                if self.pid:
-                    if trace: g.es_print('===== Killing:', self.pid)
-                    self.pid.kill()
-                self.pid = pid = subprocess.Popen(
+                self.pid = subprocess.Popen(
                     command,
                     shell=False,
                     universal_newlines=True,
                 )
-                if trace: g.es_print('===== Starting:', g.shortFileName(fn), pid)
+                if trace: g.es_print('===== Starting:', g.shortFileName(fn), self.pid)
 
             self.callback_list.append(callback)
         else:
             # Start the process immediately.
             g.es_print(g.shortFileName(fn))
-            self.pid = pid = subprocess.Popen(
+            self.pid = subprocess.Popen(
                 command,
                 shell=False,
                 universal_newlines=True,
             )
             if trace: g.es_print('===== Starting:',
-                g.shortFileName(fn), pid)
+                g.shortFileName(fn), self.pid)
     #@-others
 #@-others
 #@-leo
