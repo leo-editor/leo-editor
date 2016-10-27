@@ -30,11 +30,9 @@ class BackgroundManager(object):
     #@+node:ekr.20161026193609.2: *3* bm.check_process
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_inactive = False
         trace_running = False
-        if trace and (trace_inactive or self.pid is not None):
-            g.trace(len(self.callback_list), self.pid)
         if self.pid or self.callback_list:
             if self.pid.poll() is not None:
                 if trace: g.es_print('ending:', self.pid)
@@ -75,7 +73,7 @@ class BackgroundManager(object):
     #@+node:ekr.20161026193609.5: *3* bm.start_process
     def start_process(self, command, fn=None):
         '''Start or queue a process described by command and fn.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if self.pid:
             # A process is already active.  Add a new callback.
             if trace: g.trace('===== Adding callback', g.shortFileName(fn))
