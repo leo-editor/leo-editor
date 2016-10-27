@@ -2165,7 +2165,15 @@ class Block:
     #@-others
 #@+node:ekr.20161027115813.1: ** class ScanState
 class ScanState(object):
-    '''A class to manage scanning state, including a state stack.'''
+    '''
+    A class to manage scanning state, including a state stack.
+    
+    Most importers (subclasses of BaseLineScanner) will typically need only
+    override ScanState.scan_line!
+    
+    A Python importer would have to replace this entire class because
+    Python uses indentation, not brackets, to delimit classes and defs.
+    '''
 
     #@+others
     #@+node:ekr.20161027115813.2: *3* state.ctor & repr
@@ -2236,11 +2244,20 @@ class ScanState(object):
     #@+node:ekr.20161027115813.7: *3* state.scan_line
     def scan_line(self, s):
         '''
-        Update the scan state by scanning s.
-        
-        This is an example only. It might work for Python.
-        
+        **Example only**: Update the scan state by scanning s.
         This method should be overridden by all subclasses.
+        
+        This sets data for ScanState.starts_block and ScanState.continues_block.
+        
+        - The .context ivar is non-empty if we are scanning a multi-line
+          string, comment or regex.
+        
+        - The .curlies and .parens are the present counts of open
+          curly-brackets and parentheses.
+          
+        This is enough to determine program structure for most languages. For
+        Python however, this class would have to be rewritten to use
+        indentation level instead of curly-bracket and parenthesis counts.
         '''
         trace = False and not g.unitTesting
         i = 0
