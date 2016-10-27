@@ -72,7 +72,7 @@ def pyflakes_command(event):
         else:
             g.es_print('can not import pyflakes')
 #@+node:ekr.20161026142607.1: ** class PylintBackgroundManager
-class PylintBackgroundManager (leoBackground.BackgroundManager):
+class PylintBackgroundManager(leoBackground.BackgroundManager):
     '''A class to run Python processes sequentially in the background.'''
     
     def __init__(self):

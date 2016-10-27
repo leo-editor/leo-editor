@@ -9,11 +9,11 @@ import subprocess
 
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundManager
-class BackgroundManager:
+class BackgroundManager(object):
     '''A class to run Python processes sequentially in the background.'''
     
     def __init__(self, kind, tag):
-        '''Ctor for the PylintBackgroundManager class.'''
+        '''Ctor for the base BackgroundManager class.'''
         self.fn = None
             # The name of the file being checked.
         self.callback_list = []
@@ -21,7 +21,7 @@ class BackgroundManager:
         self.kind = kind
             # A string for traces
         self.pid = None
-            # The id of the of the running pylint checker p
+            # The process id of the running process.
         self.tag = tag
             # A string tag.
         g.app.idleTimeManager.add_callback(self.on_idle, tag)
@@ -50,10 +50,13 @@ class BackgroundManager:
             g.trace('%s inactive' % self.kind)
     #@+node:ekr.20161026193609.3: *3* bm.kill
     def kill(self):
-        '''Kill the presently running pylint process, if any.'''
+        '''Kill the presently running process, if any.'''
         self.callback_list = []
         if self.pid:
-            g.es_print('killing checker for', self.fn)
+            if self.fn:
+                g.es_print('killing %s process for %s' % (self.kind, self.fn))
+            else:
+                g.es_print('killing %s process: %s' % (self.kind, self.pid))
             self.pid.kill()
             self.pid = None
         g.es_print('%s finished' % self.kind)
@@ -62,17 +65,17 @@ class BackgroundManager:
         '''The idle-time callback for leo.commands.checkerCommands.'''
         trace = False and not g.unitTesting
         if self.callback_list or self.pid:
-            if trace: g.trace('(PylintBackgroundManager)')
+            if trace: g.trace('(%s)' % self.tag)
             self.check_process()
     #@+node:ekr.20161026193609.5: *3* bm.start_process
-    def start_process(self, command, fn):
-        '''Start or queue a pylint process described by command and fn.'''
+    def start_process(self, command, fn=None):
+        '''Start or queue a process described by command and fn.'''
         trace = False and not g.unitTesting
         if self.pid:
-            # A pylint checker is already active.  Add a new callback.
+            # A process is already active.  Add a new callback.
             if trace: g.trace('===== Adding callback', g.shortFileName(fn))
 
-            def pylint_callback(fn=fn):
+            def callback(fn=fn):
                 self.fn = fn
                 g.es_print(g.shortFileName(fn))
                 if self.pid:
@@ -85,7 +88,7 @@ class BackgroundManager:
                 )
                 if trace: g.es_print('===== Starting:', g.shortFileName(fn), pid)
 
-            self.callback_list.append(pylint_callback)
+            self.callback_list.append(callback)
         else:
             # Start the process immediately.
             g.es_print(g.shortFileName(fn))
