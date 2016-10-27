@@ -153,6 +153,7 @@ class BaseLineScanner(object):
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
         self.scan(s, parent)
+        self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
         ok = self.errors == 0 and self.check(s, parent)
@@ -181,6 +182,26 @@ class BaseLineScanner(object):
         if not ok:
             self.report('intermixed blanks and tabs')
         return ok
+    #@+node:ekr.20161027182014.1: *4* BaseLineScanner.insert_ignore_directive
+    def insert_ignore_directive(self, parent):
+        c = self.c
+        parent.b = parent.b.rstrip() + '@ignore\n'
+        if g.unitTesting:
+            g.app.unitTestDict['fail'] = g.callers()
+        else:
+            if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+                g.warning('inserting @ignore')
+                c.import_error_nodes.append(parent.h)
+    #@+node:ekr.20161027183458.1: *4* BaseLineScanner.post_pass
+    def post_pass(self, parent):
+        
+        if hasattr(self, 'munge_headline'):
+            for p in parent.subtree():
+                h = self.munge_headline(p)
+                if h:
+                    p.h = h
+
+            
     #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularize_whitespace
     def regularize_whitespace(self, s):
         '''Regularize leading whitespace in s:
@@ -203,16 +224,6 @@ class BaseLineScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
-    #@+node:ekr.20161027182014.1: *4* BaseLineScanner.insert_ignore_directive
-    def insert_ignore_directive(self, parent):
-        c = self.c
-        parent.b = parent.b.rstrip() + '@ignore\n'
-        if g.unitTesting:
-            g.app.unitTestDict['fail'] = g.callers()
-        else:
-            if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
-                g.warning('inserting @ignore')
-                c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan & helpers
     def scan(self, s1, parent):
         '''A line-based Perl scanner.'''

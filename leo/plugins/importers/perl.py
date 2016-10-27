@@ -3,6 +3,7 @@
 '''The @auto importer for Perl.'''
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
+import re
 #@+others
 #@+node:ekr.20161027094537.5: ** class PerlScanState
 class PerlScanState(basescanner.ScanState):
@@ -86,6 +87,14 @@ class PerlScanner(basescanner.BaseLineScanner):
             state = PerlScanState(),
             strict = False, # True: leave leading whitespace alone.
         )
+        
+    #@+others
+    #@+node:ekr.20161027183713.1: *3* perl.munge_headline
+    def munge_headline(self, p):
+        '''Return a cleaned up headline for p, or None for no change.'''
+        m = re.match(r'sub\s+(\w+)', p.h)
+        return 'sub ' + m.group(1) if m else None
+    #@-others
 #@-others
 importer_dict = {
     'class': PerlScanner,
