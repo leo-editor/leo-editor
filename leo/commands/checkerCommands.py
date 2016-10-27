@@ -6,6 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import leo.core.leoGlobals as g
+import leo.core.leoBackground as leoBackground
 try:
     import flake8
 except ImportError:
@@ -71,95 +72,16 @@ def pyflakes_command(event):
         else:
             g.es_print('can not import pyflakes')
 #@+node:ekr.20161026142607.1: ** class PylintBackgroundManager
-class PylintBackgroundManager:
+class PylintBackgroundManager (leoBackground.BackgroundManager):
     '''A class to run Python processes sequentially in the background.'''
     
     def __init__(self):
         '''Ctor for the PylintBackgroundManager class.'''
-        self.fn = None
-            # The name of the file being checked.
-        self.callback_list = []
-            # List of callbacks to check files.
-        self.pid = None
-            # The id of the of the running pylint checker p
-        g.app.idleTimeManager.add_callback(
-            self.on_idle,
-            tag='PylintBackgroundManager',
-        )
-
-    #@+others
-    #@+node:ekr.20161026085610.1: *3* pbm.check_process
-    def check_process(self):
-        '''Check the running process, and switch if necessary.'''
-        trace = False and not g.unitTesting
-        trace_inactive = False
-        trace_running = False
-        if trace and (trace_inactive or self.pid is not None):
-            g.trace(len(self.callback_list), self.pid)
-        if self.pid or self.callback_list:
-            if self.pid.poll() is not None:
-                # The previous process has finished.
-                if self.callback_list:
-                    pylint_callback = self.callback_list.pop(0)
-                    pylint_callback()
-                else:
-                    self.pid = None
-                    g.es_print('pylint finished')
-            elif trace and trace_running:
-                g.trace('Running: ', self.pid)
-        elif trace and trace_inactive:
-            g.trace('Pylint inactive')
-    #@+node:ekr.20161026144950.1: *3* pbm.kill
-    def kill(self):
-        '''Kill the presently running pylint process, if any.'''
-        pm = self
-        pm.callback_list = []
-        if pm.pid:
-            g.es_print('killing checker for', pm.fn)
-            pm.pid.kill()
-            pm.pid = None
-        g.es_print('pylint finished')
-    #@+node:ekr.20161026130310.1: *3* pbm.on_idle
-    def on_idle(self):
-        '''The idle-time callback for leo.commands.checkerCommands.'''
-        trace = False and not g.unitTesting
-        if self.callback_list or self.pid:
-            if trace: g.trace('(checkerCommands)')
-            self.check_process()
-    #@+node:ekr.20161026144555.1: *3* pbm.start_process
-    def start_process(self, command, fn):
-        '''Start or queue a pylint process described by command and fn.'''
-        trace = False and not g.unitTesting
-        pm = self
-        if pm.pid:
-            # A pylint checker is already active.  Add a new callback.
-            if trace: g.trace('===== Adding callback', g.shortFileName(fn))
-
-            def pylint_callback(fn=fn):
-                pm.fn = fn
-                g.es_print(g.shortFileName(fn))
-                if pm.pid:
-                    if trace: g.es_print('===== Killing:', pm.pid)
-                    pm.pid.kill()
-                pm.pid = pid = subprocess.Popen(
-                    command,
-                    shell=False,
-                    universal_newlines=True,
-                )
-                if trace: g.es_print('===== Starting:', g.shortFileName(fn), pid)
-
-            pm.callback_list.append(pylint_callback)
-        else:
-            # Start the process immediately.
-            g.es_print(g.shortFileName(fn))
-            pm.pid = pid = subprocess.Popen(
-                command,
-                shell=False,
-                universal_newlines=True,
-            )
-            if trace: g.es_print('===== Starting:',
-                g.shortFileName(fn), pid)
-    #@-others
+        # Init the base class.
+        leoBackground.BackgroundManager.__init__(
+            self,
+            kind = 'pylint',
+            tag = 'PylintBackgroundManager')
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command(object):
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
