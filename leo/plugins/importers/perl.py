@@ -156,9 +156,10 @@ class ScanState(object):
             elif ch == '}': self.curlies -= 1
             elif ch == '(': self.parens += 1
             elif ch == ')': self.parens -= 1
-            elif s[i:i+3] == 'm//': i = self.skip_regex(i+3)
-            elif s[i:i+4] == 's///': i = self.skip_regex(i+4)
-            elif s[i:i+5] == 'tr///': i = self.skip_regex(i+5)
+            elif ch == '/': i = self.skip_regex(s, i+1)
+            elif s[i:i+3] == 'm//': i = self.skip_regex(s, i+3)
+            elif s[i:i+4] == 's///': i = self.skip_regex(s, i+4)
+            elif s[i:i+5] == 'tr///': i = self.skip_regex(s, i+5)
             i += 1
             assert progress < i
         if trace:
