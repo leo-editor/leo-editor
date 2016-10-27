@@ -85,7 +85,6 @@ class PerlScanner(basescanner.BaseLineScanner):
     def __init__(self, importCommands, atAuto, language='perl', alternate_language=None):
         '''The ctor for the PerlScanner class.'''
         # Init the base class.
-        ### basescanner.BaseScanner.__init__(
         basescanner.BaseLineScanner.__init__(
             self,
             importCommands,
@@ -95,21 +94,21 @@ class PerlScanner(basescanner.BaseLineScanner):
             alternate_language=alternate_language)
                 # The language used in the @language directive.
         self.get_settings()
-    #@+node:ekr.20161027094537.15: *4* perl.get_settings()
+    #@+node:ekr.20161027094537.15: *3* perl.get_settings()
     def get_settings(self):
         '''Set ivars from settings.'''
         c = self.c
         getBool, getInt = c.config.getBool, c.config.getInt
         if gen_clean is None:
-            self.gen_clean = getBool('js_importer_clean_lws', default=False)
+            self.gen_clean = getBool('perl_importer_clean_lws', default=False)
         else:
             self.gen_clean = gen_clean
         if gen_refs is None:
             self.gen_refs = getBool('allow_section_references_in_at_auto', default=False)
         else:
             self.gen_refs = gen_refs
-        self.min_scan_size = getInt('js_importer_min_scan_size') or 0
-        self.min_rescan_size = getInt('js_importer_min_rescan_size') or 0
+        self.min_scan_size = getInt('perl_importer_min_scan_size') or 0
+        self.min_rescan_size = getInt('perl_importer_min_rescan_size') or 0
     #@+node:ekr.20161027094537.25: *3* perl.scan
     def scan(self, s1, parent, parse_body=True):
         '''A line-based Perl scanner.'''

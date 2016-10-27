@@ -32,133 +32,33 @@ class BaseLineScanner(object):
     #@+node:ekr.20161027114542.1: *3*  BaseLineScanner.ctor
     def __init__(self, importCommands, atAuto, language='unnamed', alternate_language=None):
         '''ctor for BaseScanner.'''
-        ic = importCommands
+        # Copies of args...
+        self.importCommands = ic = importCommands
         self.atAuto = atAuto
         self.c = c = ic.c
+        self.encoding = ic.encoding
+        self.language = language
+            # The language used to set comment delims.
+        # Settings...
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
-        # if 0:
-            # self.atAutoSeparateNonDefNodes = c.config.getBool(
-                # 'at_auto_separate_non_DefNodes', default=False)
-            # self.classId = None
-                # # The identifier containing the class tag:
-                # # 'class', 'interface', 'namespace', etc.
-            # self.codeEnd = None
-                # # The character after the last character of the class, method or function.
-                # # An error will be given if this is not a newline.
-            # self.compare_tokens = True
-        self.encoding = ic.encoding
+        # self.warnAboutUnderindentedLines = True
         self.errors = 0
         ic.errors = 0
-        self.errorLines = []
         self.escapeSectionRefs = True
-        ###
-        # if 0:
-            # self.extraIdChars = ''
-            # self.fileName = ic.fileName
-                # # The original filename.
-            # self.fileType = ic.fileType
-                # # The extension,  '.py', '.c', etc.
-            # self.file_s = ''
-                # # The complete text to be parsed.
-            # self.fullChecks = c.config.getBool('full_import_checks')
-            # self.functionSpelling = 'function'
-                # # for error message.
-        self.importCommands = ic
-        ###
-        # if 0:
-            # self.indentRefFlag = None
-                # # None, True or False.
         self.isPrepass = False
             # True if we are running at-file-to-at-auto prepass.
         self.isRst = False
-        self.language = language
-            # The language used to set comment delims.
-        ###
-        # if 0:
-            # self.lastParent = None
-                # # The last generated parent node (used only by RstScanner).
-            # self.methodName = ic.methodName
-                # # x, as in < < x methods > > =
-            # self.methodsSeen = False
+            # Affects whitespace checking.
         self.mismatchWarningGiven = False
-        ###
-        # if 0:
-            # self.n_decls = 0
-                # # For headLineForNode only. The number of decls seen.
-            # self.output_newline = ic.output_newline
-                # # = c.config.getBool('output_newline')
-            # self.output_indent = 0
-                # # The minimum indentation presently in effect.
         self.root = None
             # The top-level node of the generated tree.
-        ###
-        # if 0:
-            # self.rootLine = ic.rootLine
-                # # '' or @root + self.fileName
-            # self.sigEnd = None
-                # # The index of the end of the signature.
-            # self.sigId = None
-                # # The identifier contained in the signature,
-                # # that is, the function or method name.
-            # self.sigStart = None
-                # # The start of the line containing the signature.
-                # # An error will be given if something other
-                # # than whitespace precedes the signature.
-            # self.startSigIndent = None
         self.tab_width = None
             # Set in run: the tab width in effect in the c.currentPosition.
         self.tab_ws = ''
             # Set in run: the whitespace equivalent to one tab.
-        ###
-        # if 0:
-            # self.trace = False or ic.trace
-                # # ic.trace is c.config.getBool('trace_import')
-            # self.treeType = ic.treeType
-                # # '@root' or '@file'
-            # self.webType = ic.webType
-                # # 'cweb' or 'noweb'
-            # # Compute language ivars.
-            # delim1, junk, junk = g.set_delims_from_language(language)
-            # self.comment_delim = delim1
-            # # May be overridden in subclasses...
-            # self.alternate_language = alternate_language
-                # # Optional: for @language.
-            # self.anonymousClasses = []
-                # # For Delphi Pascal interfaces.
-            # self.blockCommentDelim1 = None
-            # self.blockCommentDelim2 = None
-            # self.blockCommentDelim1_2 = None
-            # self.blockCommentDelim2_2 = None
-            # self.blockDelim1 = '{'
-            # self.blockDelim2 = '}'
-            # self.blockDelim2Cruft = []
-                # # Stuff that can follow .blockDelim2.
-            # self.caseInsensitive = False
-            # self.classTags = ['class',]
-                # # tags that start a tag.
-            # self.functionTags = []
-            # self.hasClasses = True
-            # self.hasDecls = True
-            # self.hasFunctions = True
-            # self.hasNestedClasses = False
-            # self.hasRegex = False
-            # self.ignoreBlankLines = False
-            # self.ignoreLeadingWs = False
-            # self.lineCommentDelim = None
-            # self.lineCommentDelim2 = None
-            # self.outerBlockDelim1 = None
-            # self.outerBlockDelim2 = None
-            # self.outerBlockEndsDecls = True
-            # self.sigHeadExtraTokens = []
-                # # Extra tokens valid in head of signature.
-            # self.sigFailTokens = []
-                # # A list of strings that abort a signature when seen in a tail.
-                # # For example, ';' and '=' in C.
-        self.strict = False # True if leading whitespace is very significant.
-        ###
-        # if 0:
-            # self.warnAboutUnderindentedLines = True
+        self.strict = False
+            # True: leading whitespace is significant.
     #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check
     def check(self, unused_s, parent):
         '''Perl override of base checker.'''
@@ -404,9 +304,6 @@ class BaseLineScanner(object):
         self.tab_ws = ' ' * abs(self.tab_width) if self.tab_width < 0 else '\t'
         # Init the error/status info.
         self.errors = 0
-        self.errorLines = []
-        self.mismatchWarningGiven = False
-        changed = c.isChanged()
         # Use @verbatim to escape section references (but not for @auto).
         if self.escapeSectionRefs and not self.atAuto:
             s = self.escapeFalseSectionReferences(s)
@@ -417,6 +314,7 @@ class BaseLineScanner(object):
         # Regularize leading whitespace (strict languages only).
         if self.strict: s = self.regularizeWhitespace(s)
         # Generate the nodes, including directives and section references.
+        changed = c.isChanged()
         if self.isPrepass:
             return self.prepass(s, parent)
         else:
