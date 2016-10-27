@@ -56,11 +56,11 @@ class BackgroundManager(object):
         '''Kill the presently running process, if any.'''
         self.callback_list = []
         if self.pid:
-            if self.fn:
-                g.es_print('killing %s process for %s' % (self.kind, self.fn))
-            else:
-                g.es_print('killing %s process: %s' % (self.kind, self.pid))
-            self.pid.kill()
+            g.es_print('killing %s process' % (self.kind))
+            try:
+                self.pid.kill()
+            except OSError:
+                pass
             self.pid = None
         g.es_print('%s finished' % self.kind)
     #@+node:ekr.20161026193609.4: *3* bm.on_idle
