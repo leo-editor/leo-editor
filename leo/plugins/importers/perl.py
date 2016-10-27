@@ -1,12 +1,10 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18144: * @file importers/javascript.py
-'''The @auto importer for JavaScript.'''
-import leo.core.leoGlobals as g
+#@+node:ekr.20161027100313.1: * @file importers/perl.py
+'''The @auto importer for Perl.'''
 import leo.plugins.importers.basescanner as basescanner
-import re
-new_scanner = True
+import leo.core.leoGlobals as g
 #@+others
-#@+node:ekr.20161007052628.1: ** class Block
+#@+node:ekr.20161027094537.2: ** class Block
 class Block:
     '''A class describing a block and its possible rescans.'''
 
@@ -25,7 +23,7 @@ class Block:
     __str__ = __repr__
     
     #@+others
-    #@+node:ekr.20161008095930.1: *3* block.get_headline
+    #@+node:ekr.20161027094537.3: *3* block.get_headline
     def get_headline(self):
         '''Return the block's headline.'''
         if self.headline:
@@ -34,11 +32,11 @@ class Block:
             for line in self.lines:
                 if line.strip():
                     return line.strip()
-            return '<all blank lines>'
+            return 'blank lines'
             
         else:
             return '<no headline>'
-    #@+node:ekr.20161008074449.1: *3* block.undent
+    #@+node:ekr.20161027094537.4: *3* block.undent
     def undent(self, c, n):
         '''Unindent all block lines by n.'''
         if n > 0:
@@ -61,11 +59,11 @@ class Block:
                     result.append('\n' if s.endswith('\n') else '')
             self.lines = result
     #@-others
-#@+node:ekr.20161004092007.1: ** class ScanState
+#@+node:ekr.20161027094537.5: ** class ScanState
 class ScanState(object):
     '''A class to store and update scanning state.'''
     #@+others
-    #@+node:ekr.20161010140018.1: *3* state.ctor & repr
+    #@+node:ekr.20161027094537.6: *3* state.ctor & repr
     def __init__(self, c, root):
         '''Ctor for the singleton ScanState class.'''
         # Ivars for traces...
@@ -84,7 +82,7 @@ class ScanState(object):
             self.context)
             
     __str__ = __repr__
-    #@+node:ekr.20161004092056.1: *3* state.continues_block and starts_block
+    #@+node:ekr.20161027094537.7: *3* state.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
@@ -93,12 +91,12 @@ class ScanState(object):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and (
             (self.curlies > self.base_curlies or self.parens > self.base_parens))
-    #@+node:ekr.20161007053002.1: *3* state.get_base
+    #@+node:ekr.20161027094537.8: *3* state.get_base
     def get_base (self):
         '''Return the present counts.'''
         assert not self.context, repr(self.context)
         return self.curlies, self.parens
-    #@+node:ekr.20161006182212.1: *3* state.push & pop
+    #@+node:ekr.20161027094537.9: *3* state.push & pop
     def pop(self):
         '''Restore the base state from the stack.'''
         self.base_curlies, self.base_parens = self.stack.pop()
@@ -109,7 +107,7 @@ class ScanState(object):
         self.base_curlies = self.curlies
         self.base_parens = self.parens
 
-    #@+node:ekr.20161007061524.1: *3* state.scan_block
+    #@+node:ekr.20161027094537.10: *3* state.scan_block
     def scan_block(self, i, lines):
         '''Scan lines[i:]. Return (i, lines).'''
         trace = False and not g.unitTesting
@@ -134,57 +132,43 @@ class ScanState(object):
             while i+1 < len(lines) and not lines[i+1].strip():
                 i += 1
         return i, lines[i1:i]
-    #@+node:ekr.20161004071532.1: *3* state.scan_line & helper
+    #@+node:ekr.20161027094537.11: *3* state.scan_line & helper
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
-        trace = False and not g.unitTesting # and self.root.h.endswith('alt.js') 
+        trace = False and not g.unitTesting
         i = 0
         while i < len(s):
             progress = i
             ch, s2 = s[i], s[i:i+2]
-            if self.context == '/*':
-                if s2 == '*/':
-                    self.context = ''
-                    i += 1
-                else:
-                    pass # Eat the next comment char.
-            elif self.context:
+            if self.context:
                 assert self.context in ('"', "'"), repr(self.context)
                 if ch == '\\':
-                    i += 1 # Bug fix 2016/10/27: was += 2
+                    i += 1
                 elif self.context == ch:
                     self.context = '' # End the string.
                 else:
-                    pass # Eat the string character.
-            elif s2 == '//':
+                    pass # Eat the string character later.
+            elif s2 == '#':
                 break # The single-line comment ends the line.
-            elif s2 == '/*':
-                self.context = '/*'
-                i += 1
             elif ch in ('"', "'"):
                 self.context = ch
-            elif ch == '=':
-                i = self.skip_possible_regex(s, i)
-            elif ch == '\\':
-                i += 2
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
-            elif ch == '(':
-                self.parens += 1
-                i = self.skip_possible_regex(s, i)
+            elif ch == '(': self.parens += 1
             elif ch == ')': self.parens -= 1
-            # elif ch == '[': self.squares += 1
-            # elif ch == ']': self.squares -= 1
+            elif s[i:i+3] == 'm//': i = self.skip_regex(i+3)
+            elif s[i:i+4] == 's///': i = self.skip_regex(i+4)
+            elif s[i:i+5] == 'tr///': i = self.skip_regex(i+5)
             i += 1
             assert progress < i
-        if trace and s.strip().startswith('//') and self.continues_block():
+        if trace:
             g.trace(self, s.rstrip())
-    #@+node:ekr.20161011045426.1: *4* state.skip_possible_regex
-    def skip_possible_regex(self, s, i):
+    #@+node:ekr.20161027094537.12: *4* state.skip_regex
+    def skip_regex(self, s, i):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting
         if trace: g.trace(repr(s), self.parens)
-        assert s[i] in '=(', repr(s[i])
+        assert s[i-1] == '/', repr(s[i])
         i += 1
         while i < len(s) and s[i] in ' \t':
             i += 1
@@ -206,22 +190,22 @@ class ScanState(object):
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@-others
-#@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-gen_clean = None
+#@+node:ekr.20161027094537.13: ** class PerlScanner
+gen_clean = True
     # None: use @bool js_importer_clean_lws setting
     # True: clean blank lines and regularize indentaion.
 
-gen_refs = True
+gen_refs = False
     # None: use @bool allow_section_references_in_at_auto setting
         # WAS: use @bool js_importer_gen_refs setting
     # True: generate section references.
     # False generate @others
 
-class JavaScriptScanner(basescanner.BaseScanner):
+class PerlScanner(basescanner.BaseScanner):
     #@+others
-    #@+node:ekr.20140723122936.18050: *3* jss.__init__
-    def __init__(self, importCommands, atAuto, language='javascript', alternate_language=None):
-        '''The ctor for the JavaScriptScanner class.'''
+    #@+node:ekr.20161027094537.14: *3* perl.__init__
+    def __init__(self, importCommands, atAuto, language='perl', alternate_language=None):
+        '''The ctor for the PerlScanner class.'''
         # Init the base class.
         basescanner.BaseScanner.__init__(self, importCommands,
             atAuto=atAuto,
@@ -229,36 +213,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 # The language is used to set comment delims.
             alternate_language=alternate_language)
                 # The language used in the @language directive.
-        if new_scanner:
-            self.get_settings()
-        else:
-            # Set the parser vars.
-            self.atAutoWarnsAboutLeadingWhitespace = False
-            self.blockCommentDelim1 = '/*'
-            self.blockCommentDelim2 = '*/'
-            self.blockDelim1 = '{'
-            self.blockDelim2 = '}'
-            self.hasClasses = True # 2016/01/22
-            self.hasDecls = False # 2016/01/22
-            self.hasFunctions = True
-            self.hasRegex = True
-            # self.ignoreBlankLines = True
-            self.lineCommentDelim = '//'
-            self.lineCommentDelim2 = None
-            self.outerBlockDelim1 = None # For now, ignore outer blocks.
-            self.outerBlockDelim2 = None
-            self.classTags = []
-            self.functionTags = ['function',]
-            self.sigFailTokens = [';',]
-            self.strict = False
-            # Extra semantic data...
-            self.classNames = []
-            self.functionNames = []
-            # Set checker vars
-            self.atAutoWarnsAboutLeadingWhitespace = False
-            self.strict = False
-            self.ignoreBlankLines = True
-    #@+node:ekr.20161010171233.1: *4* self.get_settings()
+        self.get_settings()
+        
+    #@+node:ekr.20161027094537.15: *4* perl.get_settings()
     def get_settings(self):
         '''Set ivars from settings.'''
         c = self.c
@@ -273,9 +230,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
             self.gen_refs = gen_refs
         self.min_scan_size = getInt('js_importer_min_scan_size') or 0
         self.min_rescan_size = getInt('js_importer_min_rescan_size') or 0
-    #@+node:ekr.20161006164715.1: *3* jss.check
+    #@+node:ekr.20161027094537.16: *3* perl.check
     def check(self, unused_s, parent):
-        '''Override of javascript checker.'''
+        '''Perl override of base checker.'''
         trace = False and not g.unitTesting
         trace_all_lines = False
         s1 = g.toUnicode(self.file_s, self.encoding)
@@ -306,7 +263,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 for i, s in enumerate(g.splitLines(s2)):
                     print('%3s %s' % (i+1, s.rstrip()))
         return ok
-    #@+node:ekr.20161007093236.1: *3* jss.dump_block & dump_blocks
+    #@+node:ekr.20161027094537.17: *3* perl.dump_block & dump_blocks
     def dump_block(self, block):
         '''Dump one block.'''
         lines = block.lines if isinstance(block, Block) else block
@@ -320,7 +277,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             print('  block: %s' % i)
             self.dump_block(block)
 
-    #@+node:ekr.20161008073629.1: *3* jss.max_blocks_indent
+    #@+node:ekr.20161027094537.18: *3* perl.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
         n = 16
@@ -331,7 +288,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
                     i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
                     n = min(n, width)
         return n
-    #@+node:ekr.20161007081548.1: *3* jss.put_block
+    #@+node:ekr.20161027094537.19: *3* perl.put_block
     def put_block(self, block, parent, create_child=True):
         '''Create nodes for block and all its children.'''
         if create_child:
@@ -342,7 +299,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         p.b = p.b + ''.join(block.lines)
         for child in block.children:
             self.put_block(child, p)
-    #@+node:ekr.20161007150618.1: *3* jss.ref_line
+    #@+node:ekr.20161027094537.20: *3* perl.ref_line
     def ref_line(self, block):
         '''Return a reference to the block.'''
         
@@ -357,7 +314,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         return g.angleBrackets(' ' + h + ' ')
 
        
-    #@+node:ekr.20161007151845.1: *3* jss.rescan_block & helpers
+    #@+node:ekr.20161027094537.21: *3* perl.rescan_block & helpers
     def rescan_block(self, parent_block, strip_lines=True):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         state = self.state
@@ -404,7 +361,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         else:
             # Generate only @others.
             self.make_at_others_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161008091434.1: *4* jss.make_at_others_children
+    #@+node:ekr.20161027094537.22: *4* perl.make_at_others_children
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
         trace = False and not g.unitTesting
@@ -439,7 +396,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
             children.append(child_block)
         parent_block.children = children
         self.rescan_blocks(children)
-    #@+node:ekr.20161008091822.1: *4* jss.make_ref_children
+    #@+node:ekr.20161027094537.23: *4* perl.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using section references'''
         trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
@@ -477,7 +434,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
         parent_block.children = children
         # Continue the rescan.
         self.rescan_blocks(children)
-    #@+node:ekr.20161007075210.1: *3* jss.rescan_blocks
+    #@+node:ekr.20161027094537.24: *3* perl.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
         for block in blocks:
@@ -486,9 +443,9 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
-    #@+node:ekr.20161004115934.1: *3* jss.scan
+    #@+node:ekr.20161027094537.25: *3* perl.scan
     def scan(self, s1, parent, parse_body=True):
-        '''The new, simpler javascript scanner.'''
+        '''A line-based Perl scanner.'''
         trace = False and not g.unitTesting
         trace_blocks = False
         if trace: g.trace('===== ', self.root.h)
@@ -498,12 +455,12 @@ class JavaScriptScanner(basescanner.BaseScanner):
         self.state = state = ScanState(self.c, self.root)
         if len(lines) < self.min_scan_size:
             if trace: g.trace('small file: %s' % parent.h)
-            parent.b = '@language javascript\n' + ''.join(lines)
+            parent.b = '@language perl\n' + ''.join(lines)
             return
         if self.gen_refs:
             block = Block(lines, simple=False)
             self.rescan_block(block, strip_lines=False)
-            parent.b = '@language javascript\n'
+            parent.b = '@language perl\n'
             self.put_block(block, parent, create_child=False)
         else:
             blocks = []
@@ -530,15 +487,10 @@ class JavaScriptScanner(basescanner.BaseScanner):
                 self.dump_blocks(blocks, parent)
             # Rescan all the blocks, possibly creating more child blocks.
             self.rescan_blocks(blocks)
-            parent.b = '@language javascript\n@others\n'
+            parent.b = '@language perl\n@others\n'
             for block in blocks:
                 self.put_block(block, parent)
-    #@+node:ekr.20161008060711.1: *3* jss.strip_section_references (not used)
-    def strip_section_references(self, s):
-
-        pattern = r'^[ \t]*\<\<.*\>\>[ \t]*$'
-        return ''.join([z for z in g.splitLines(s) if re.match(pattern,z) is None])
-    #@+node:ekr.20161006164257.1: *3* jss.trialWrite
+    #@+node:ekr.20161027094537.27: *3* perl.trialWrite
     def trialWrite(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
@@ -562,7 +514,7 @@ class JavaScriptScanner(basescanner.BaseScanner):
     #@-others
 #@-others
 importer_dict = {
-    'class': JavaScriptScanner,
-    'extensions': ['.js',],
+    'class': PerlScanner,
+    'extensions': ['.pl',],
 }
 #@-leo
