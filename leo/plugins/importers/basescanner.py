@@ -28,7 +28,6 @@ class BaseLineScanner(object):
         gen_clean = True, # True: clean blank lines.
         gen_refs = False, # True: generate section references.
         language = None, # For @language directive.
-        isRst = False,
         state = None,
         strict = False,
     ):
@@ -40,8 +39,6 @@ class BaseLineScanner(object):
         self.encoding = ic.encoding
         self.gen_clean = gen_clean
         self.gen_refs = gen_refs
-        self.isRst = isRst ### To be deleted.
-            # Affects whitespace checking
         self.language = language
             # For the @language directive.
         self.state = state
@@ -53,9 +50,6 @@ class BaseLineScanner(object):
         # Settings...
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
-        ### To be removed???
-        self.escapeSectionRefs = True
-            # True: escape false section refs.
 
         # Set by run...
         self.errors = 0
@@ -97,19 +91,6 @@ class BaseLineScanner(object):
                 for i, s in enumerate(g.splitLines(s2)):
                     print('%3s %s' % (i+1, s.rstrip()))
         return ok
-    #@+node:ekr.20161027114007.3: *3* BaseLineScanner.checkBlanksAndTabs
-    def checkBlanksAndTabs(self, s):
-        '''Check for intermixed blank & tabs.'''
-        # Do a quick check for mixed leading tabs/blanks.
-        blanks = tabs = 0
-        for line in g.splitLines(s):
-            lws = line[0: g.skip_ws(line, 0)]
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        ok = blanks == 0 or tabs == 0
-        if not ok:
-            self.report('intermixed blanks and tabs')
-        return ok
     #@+node:ekr.20161027114045.1: *3* BaseLineScanner.clean_* & strip_*
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
@@ -144,24 +125,6 @@ class BaseLineScanner(object):
             print('  block: %s' % i)
             self.dump_block(block)
 
-    #@+node:ekr.20161027114007.2: *3* BaseLineScanner.escapeFalseSectionReferences
-    def escapeFalseSectionReferences(self, s):
-        '''
-        Probably a bad idea.  Keep the apparent section references.
-        The perfect-import write code no longer attempts to expand references
-        when the perfectImportFlag is set.
-        '''
-        return s
-        # result = []
-        # for line in g.splitLines(s):
-            # r1 = line.find('<<')
-            # r2 = line.find('>>')
-            # if r1>=0 and r2>=0 and r1<r2:
-                # result.append("@verbatim\n")
-                # result.append(line)
-            # else:
-                # result.append(line)
-        # return ''.join(result)
     #@+node:ekr.20161027094537.18: *3* BaseLineScanner.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
@@ -173,17 +136,6 @@ class BaseLineScanner(object):
                     i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
                     n = min(n, width)
         return n
-    #@+node:ekr.20161027094537.19: *3* BaseLineScanner.put_block
-    def put_block(self, block, parent, create_child=True):
-        '''Create nodes for block and all its children.'''
-        if create_child:
-            p = parent.insertAsLastChild()
-            p.h = block.headline
-        else:
-            p = parent
-        p.b = p.b + ''.join(block.lines)
-        for child in block.children:
-            self.put_block(child, p)
     #@+node:ekr.20161027094537.20: *3* BaseLineScanner.ref_line
     def ref_line(self, block):
         '''Return a reference to the block.'''
@@ -199,7 +151,56 @@ class BaseLineScanner(object):
         return g.angleBrackets(' ' + h + ' ')
 
        
-    #@+node:ekr.20161027114007.4: *3* BaseLineScanner.regularizeWhitespace
+    #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run (entry point) & helpers
+    def run(self, s, parent, parse_body=False, prepass=False):
+        '''The common top-level code for all scanners.'''
+        c = self.c
+        if prepass:
+            g.trace('(BaseLineScanner) Can not happen, prepass is True')
+            return True, [] # Don't split any nodes.
+        self.root = root = parent.copy()
+        self.file_s = s
+        self.tab_width = c.getTabWidth(p=root)
+        # Init the error/status info.
+        self.errors = 0
+        # Check for intermixed blanks and tabs.
+        if self.strict:
+            self.checkBlanksAndTabs(s) # Only issues warnings.
+        # Regularize leading whitespace
+        if self.strict:
+            s = self.regularizeWhitespace(s)
+        # Generate the nodes, including directives and section references.
+        changed = c.isChanged()
+        self.scan(s, parent)
+        # Check the generated nodes.
+        # Return True if the result is equivalent to the original file.
+        ok = self.errors == 0 and self.check(s, parent)
+        g.app.unitTestDict['result'] = ok
+        # Insert an @ignore directive if there were any serious problems.
+        if not ok:
+            self.insertIgnoreDirective(parent)
+        if self.atAuto and ok:
+            for p in root.self_and_subtree():
+                p.clearDirty()
+            c.setChanged(changed)
+        else:
+            root.setDirty(setDescendentsDirty=False)
+            c.setChanged(True)
+        return ok
+    #@+node:ekr.20161027114007.3: *4* BaseLineScanner.checkBlanksAndTabs
+    def checkBlanksAndTabs(self, s):
+        '''Check for intermixed blank & tabs.'''
+        # Do a quick check for mixed leading tabs/blanks.
+        blanks = tabs = 0
+        for line in g.splitLines(s):
+            lws = line[0: g.skip_ws(line, 0)]
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        ok = blanks == 0 or tabs == 0
+        if not ok:
+            self.report('intermixed blanks and tabs')
+        return ok
+    #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularizeWhitespace
     def regularizeWhitespace(self, s):
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -221,174 +222,7 @@ class BaseLineScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
-    #@+node:ekr.20161027094537.21: *3* BaseLineScanner.rescan_block & helpers
-    def rescan_block(self, parent_block, strip_lines=True):
-        '''Rescan a non-simple block, possibly creating child blocks.'''
-        state = self.state
-        trace = False and not g.unitTesting
-        if trace: g.trace('len: %3s' % len(parent_block.lines), parent_block.get_headline())
-        if strip_lines:
-            # The first and last lines begin and end the block.
-            # Only scan the interior lines.
-            first_line = parent_block.lines[0]
-            last_line = parent_block.lines[-1]
-            lines = parent_block.lines[1:-1]
-        else:
-            # This is the top-level block, when self.gen_refs is True.
-            first_line, last_line = None, None
-            lines = parent_block.lines
-        state.push() # Set the bases to the present counts.
-        blocks, block_lines = [], []
-        i = 0
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            state.scan_line(line)
-            if state.starts_block():
-                if block_lines:
-                    # Finish any previous block.
-                    blocks.append(Block(block_lines, simple=True))
-                # This is the *only* reparsing that is done.
-                i, block_lines = state.scan_block(i, lines)
-                blocks.append(Block(block_lines, simple=False))
-                block_lines = []
-            else:
-                block_lines.append(line)
-                i += 1
-            assert progress < i
-        state.pop() # Restore the bases.
-        # End the lines.
-        if block_lines:
-            blocks.append(Block(block_lines, simple=True))
-        if self.gen_refs: 
-            # Generate section references.
-            self.make_ref_children(blocks, first_line, last_line, parent_block)
-        else:
-            # Generate only @others.
-            self.make_at_others_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161027094537.22: *4* BaseLineScanner.make_at_others_children
-    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
-        '''Generate child blocks for all blocks using @others.'''
-        trace = False and not g.unitTesting
-        c = self.c
-        if not blocks:
-            return
-        if trace:
-            g.trace(self.root.h)
-            g.trace(parent_block)
-            for z in blocks:
-                print('%s %s' % (self.max_blocks_indent([z]), z))
-        # Create child nodes only if there are enough lines.
-        # This is arbitrary, and so a bit confusing.
-        # However, it is about right in practice.
-        n_lines = sum([len(z.lines) for z in blocks])
-        if n_lines < 10: # We want this to be a small number.
-            return
-        max_indent = 4 if self.gen_clean else 0
-            # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
-        parent_block.lines = [
-            first_line,
-            '%s@others\n' % (' ' * max_indent),
-            last_line]
-        children = []
-        for block in blocks:
-            child_block = Block(block.lines, simple=block.simple)
-            if self.gen_clean:
-                child_undent = self.max_blocks_indent([child_block])
-            else:
-                child_undent = max_indent
-            child_block.undent(c, child_undent)
-            children.append(child_block)
-        parent_block.children = children
-        self.rescan_blocks(children)
-    #@+node:ekr.20161027094537.23: *4* BaseLineScanner.make_ref_children
-    def make_ref_children(self, blocks, first_line, last_line, parent_block):
-        '''Generate child blocks for all blocks using section references'''
-        trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
-        c = self.c
-        if trace:
-            g.trace('len: %3s %s' % (
-                len(parent_block.lines),
-                parent_block.get_headline()))
-        body, children = [], []
-        for block in blocks:
-            if block.simple:
-                # This line is never a section reference.
-                # g.trace(block.get_headline())
-                body.extend(block.lines)
-            else:
-                child_block = Block(block.lines, simple=False)
-                children.append(child_block)
-                ref = self.ref_line(child_block)
-                child_block.headline = ref
-                if self.gen_clean:
-                    # This local calculation is probably good enough.
-                    child_undent = self.max_blocks_indent([child_block])
-                    child_block.undent(c, child_undent)
-                    body.append(' '*child_undent + ref + '\n')
-                else:
-                    # Don't indent the ref, and don't unindent the children.
-                    body.append(ref)
-        # Replace the block with the child blocks.
-        parent_block.lines = []
-        if first_line is not None:
-            parent_block.lines.append(first_line)
-        parent_block.lines.extend(body)
-        if last_line is not None:
-            parent_block.lines.append(last_line)
-        parent_block.children = children
-        # Continue the rescan.
-        self.rescan_blocks(children)
-    #@+node:ekr.20161027094537.24: *3* BaseLineScanner.rescan_blocks
-    def rescan_blocks(self, blocks):
-        '''Rescan all blocks, finding more blocks and adjusting text.'''
-        for block in blocks:
-            assert isinstance(block, Block)
-            if not block.headline:
-                block.headline = block.get_headline()
-            if not block.simple:
-                self.rescan_block(block)
-    #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run
-    def run(self, s, parent, parse_body=False, prepass=False):
-        '''The common top-level code for all scanners.'''
-        self.isPrepass = prepass
-        c = self.c
-        self.root = root = parent.copy()
-        self.file_s = s
-        self.tab_width = c.getTabWidth(p=root)
-        # Init the error/status info.
-        self.errors = 0
-        # Use @verbatim to escape section references (but not for @auto).
-        if self.escapeSectionRefs and not self.atAuto:
-            s = self.escapeFalseSectionReferences(s)
-        # Check for intermixed blanks and tabs.
-        if self.strict:
-            self.checkBlanksAndTabs(s) # Only issues warnings.
-        # Regularize leading whitespace
-        if self.strict:
-            s = self.regularizeWhitespace(s)
-        # Generate the nodes, including directives and section references.
-        changed = c.isChanged()
-        if self.isPrepass:
-            return self.prepass(s, parent)
-        else:
-            self.scan(s, parent)
-            # Check the generated nodes.
-            # Return True if the result is equivalent to the original file.
-            ok = self.errors == 0 and self.check(s, parent)
-            g.app.unitTestDict['result'] = ok
-            # Insert an @ignore directive if there were any serious problems.
-            if not ok:
-                self.insertIgnoreDirective(parent)
-            if self.atAuto and ok:
-                for p in root.self_and_subtree():
-                    p.clearDirty()
-                c.setChanged(changed)
-            else:
-                root.setDirty(setDescendentsDirty=False)
-                c.setChanged(True)
-            return ok
-    #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan
+    #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan & helpers
     def scan(self, s1, parent):
         '''A line-based Perl scanner.'''
         trace = False and not g.unitTesting
@@ -428,6 +262,145 @@ class BaseLineScanner(object):
             parent.b = '@language %s\n@others\n' % (self.language)
             for block in blocks:
                 self.put_block(block, parent)
+    #@+node:ekr.20161027094537.19: *4* BaseLineScanner.put_block
+    def put_block(self, block, parent, create_child=True):
+        '''Create nodes for block and all its children.'''
+        if create_child:
+            p = parent.insertAsLastChild()
+            p.h = block.headline
+        else:
+            p = parent
+        p.b = p.b + ''.join(block.lines)
+        for child in block.children:
+            self.put_block(child, p)
+    #@+node:ekr.20161027094537.21: *4* BaseLineScanner.rescan_block & helpers
+    def rescan_block(self, parent_block, strip_lines=True):
+        '''Rescan a non-simple block, possibly creating child blocks.'''
+        state = self.state
+        trace = False and not g.unitTesting
+        if trace: g.trace('len: %3s' % (
+            len(parent_block.lines)), parent_block.get_headline())
+        if strip_lines:
+            # The first and last lines begin and end the block.
+            # Only scan the interior lines.
+            first_line = parent_block.lines[0]
+            last_line = parent_block.lines[-1]
+            lines = parent_block.lines[1:-1]
+        else:
+            # This is the top-level block, when self.gen_refs is True.
+            first_line, last_line = None, None
+            lines = parent_block.lines
+        state.push() # Set the bases to the present counts.
+        blocks, block_lines = [], []
+        i = 0
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                if block_lines:
+                    # Finish any previous block.
+                    blocks.append(Block(block_lines, simple=True))
+                # This is the *only* reparsing that is done.
+                i, block_lines = state.scan_block(i, lines)
+                blocks.append(Block(block_lines, simple=False))
+                block_lines = []
+            else:
+                block_lines.append(line)
+                i += 1
+            assert progress < i
+        state.pop() # Restore the bases.
+        # End the lines.
+        if block_lines:
+            blocks.append(Block(block_lines, simple=True))
+        if self.gen_refs: 
+            # Generate section references.
+            self.make_ref_children(blocks, first_line, last_line, parent_block)
+        else:
+            # Generate only @others.
+            self.make_at_others_children(blocks, first_line, last_line, parent_block)
+    #@+node:ekr.20161027094537.22: *5* BaseLineScanner.make_at_others_children
+    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using @others.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        if not blocks:
+            return
+        if trace:
+            g.trace(self.root.h)
+            g.trace(parent_block)
+            for z in blocks:
+                print('%s %s' % (self.max_blocks_indent([z]), z))
+        # Create child nodes only if there are enough lines.
+        # This is arbitrary, and so a bit confusing.
+        # However, it is about right in practice.
+        n_lines = sum([len(z.lines) for z in blocks])
+        if n_lines < 10: # We want this to be a small number.
+            return
+        max_indent = 4 if self.gen_clean else 0
+            # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
+        parent_block.lines = [
+            first_line,
+            '%s@others\n' % (' ' * max_indent),
+            last_line]
+        children = []
+        for block in blocks:
+            child_block = Block(block.lines, simple=block.simple)
+            if self.gen_clean:
+                child_undent = self.max_blocks_indent([child_block])
+            else:
+                child_undent = max_indent
+            child_block.undent(c, child_undent, clean=self.gen_clean)
+            children.append(child_block)
+        parent_block.children = children
+        self.rescan_blocks(children)
+    #@+node:ekr.20161027094537.23: *5* BaseLineScanner.make_ref_children
+    def make_ref_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using section references'''
+        trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
+        c = self.c
+        if trace:
+            g.trace('len: %3s %s' % (
+                len(parent_block.lines),
+                parent_block.get_headline()))
+        body, children = [], []
+        for block in blocks:
+            if block.simple:
+                # This line is never a section reference.
+                # g.trace(block.get_headline())
+                body.extend(block.lines)
+            else:
+                child_block = Block(block.lines, simple=False)
+                children.append(child_block)
+                ref = self.ref_line(child_block)
+                child_block.headline = ref
+                if self.gen_clean:
+                    # This local calculation is probably good enough.
+                    child_undent = self.max_blocks_indent([child_block])
+                    child_block.undent(c, child_undent, clean=self.gen_clean)
+                    body.append(' '*child_undent + ref + '\n')
+                else:
+                    # Don't indent the ref, and don't unindent the children.
+                    body.append(ref)
+        # Replace the block with the child blocks.
+        parent_block.lines = []
+        if first_line is not None:
+            parent_block.lines.append(first_line)
+        parent_block.lines.extend(body)
+        if last_line is not None:
+            parent_block.lines.append(last_line)
+        parent_block.children = children
+        # Continue the rescan.
+        self.rescan_blocks(children)
+    #@+node:ekr.20161027094537.24: *4* BaseLineScanner.rescan_blocks
+    def rescan_blocks(self, blocks):
+        '''Rescan all blocks, finding more blocks and adjusting text.'''
+        for block in blocks:
+            assert isinstance(block, Block)
+            if not block.headline:
+                block.headline = block.get_headline()
+            if not block.simple:
+                self.rescan_block(block)
     #@+node:ekr.20161027094537.27: *3* BaseLineScanner.trialWrite
     def trialWrite(self):
         '''Return the trial write for self.root.'''
@@ -2148,7 +2121,8 @@ class Block:
         
     def __repr__(self):
         return 'Block: simple: %s lines: %s children: %s %s' % (
-            int(self.simple), len(self.lines), len(self.children), self.get_headline())
+            int(self.simple), len(self.lines),
+            len(self.children), self.get_headline())
             
     __str__ = __repr__
     
@@ -2167,7 +2141,7 @@ class Block:
         else:
             return '<no headline>'
     #@+node:ekr.20161027094537.4: *3* block.undent
-    def undent(self, c, n):
+    def undent(self, c, n, clean=True):
         '''Unindent all block lines by n.'''
         if n > 0:
             result = []
@@ -2183,7 +2157,7 @@ class Block:
                     else:
                         g.trace('can not happen mixed leading whitespace:', n, repr(s))
                         return
-                elif gen_clean:
+                elif clean:
                     result.append(s)
                 else:
                     result.append('\n' if s.endswith('\n') else '')

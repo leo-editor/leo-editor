@@ -8,6 +8,7 @@ import leo.core.leoGlobals as g
 class PerlScanState(basescanner.ScanState):
     '''A class to store and update scanning state.'''
     # Use the base class ctor.
+
     #@+others
     #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
     def scan_line(self, s):
