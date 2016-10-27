@@ -58,13 +58,13 @@ class BaseLineScanner(object):
         self.isPrepass = False
         self.root = None
         self.tab_width = None
-    #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check
+    #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check & helpers
     def check(self, unused_s, parent):
         '''Perl override of base checker.'''
         trace = False and not g.unitTesting
         trace_all_lines = False
         s1 = g.toUnicode(self.file_s, self.encoding)
-        s2 = self.trialWrite()
+        s2 = self.trial_write()
         if self.gen_clean:
             clean = self.strip_lws # strip_all, clean_blank_lines
             s1, s2 = clean(s1), clean(s2)
@@ -91,7 +91,7 @@ class BaseLineScanner(object):
                 for i, s in enumerate(g.splitLines(s2)):
                     print('%3s %s' % (i+1, s.rstrip()))
         return ok
-    #@+node:ekr.20161027114045.1: *3* BaseLineScanner.clean_* & strip_*
+    #@+node:ekr.20161027114045.1: *4* BaseLineScanner.clean_* & strip_*
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -111,6 +111,27 @@ class BaseLineScanner(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
+    #@+node:ekr.20161027094537.27: *4* BaseLineScanner.trial_write
+    def trial_write(self):
+        '''Return the trial write for self.root.'''
+        at = self.c.atFileCommands
+        if self.gen_refs:
+            # Alas, the *actual* @auto write code refuses to write section references!!
+            at.write(self.root,
+                    nosentinels=True,           # was False,
+                    perfectImportFlag=False,    # was True,
+                    scriptWrite=True,           # was False,
+                    thinFile=True,
+                    toString=True,
+                )
+        else:
+            at.writeOneAtAutoNode(
+                self.root,
+                toString=True,
+                force=True,
+                trialWrite=True,
+            )
+        return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161027094537.17: *3* BaseLineScanner.dump_block & dump_blocks
     def dump_block(self, block):
         '''Dump one block.'''
@@ -125,32 +146,6 @@ class BaseLineScanner(object):
             print('  block: %s' % i)
             self.dump_block(block)
 
-    #@+node:ekr.20161027094537.18: *3* BaseLineScanner.max_blocks_indent
-    def max_blocks_indent(self, blocks):
-        '''Return the maximum indentation that can be removed from all blocks.'''
-        n = 16
-        for block in blocks:
-            for s in block.lines:
-                if s.strip() or not self.gen_clean:
-                    i = g.find_line_start(s, 0)
-                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-                    n = min(n, width)
-        return n
-    #@+node:ekr.20161027094537.20: *3* BaseLineScanner.ref_line
-    def ref_line(self, block):
-        '''Return a reference to the block.'''
-        
-        def munge(h):
-            '''Munge a headline for use in a section reference.'''
-            for z in '<>': # {}()[]
-                h = h.replace(z,'')
-            return h.strip()
-
-        # Always return a reference
-        h = munge(block.get_headline())
-        return g.angleBrackets(' ' + h + ' ')
-
-       
     #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
@@ -165,10 +160,10 @@ class BaseLineScanner(object):
         self.errors = 0
         # Check for intermixed blanks and tabs.
         if self.strict:
-            self.checkBlanksAndTabs(s) # Only issues warnings.
+            self.check_blanks_and_tabs(s) # Only issues warnings.
         # Regularize leading whitespace
         if self.strict:
-            s = self.regularizeWhitespace(s)
+            s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
         self.scan(s, parent)
@@ -187,8 +182,8 @@ class BaseLineScanner(object):
             root.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
         return ok
-    #@+node:ekr.20161027114007.3: *4* BaseLineScanner.checkBlanksAndTabs
-    def checkBlanksAndTabs(self, s):
+    #@+node:ekr.20161027114007.3: *4* BaseLineScanner.check_blanks_and_tabs
+    def check_blanks_and_tabs(self, s):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
         blanks = tabs = 0
@@ -200,8 +195,8 @@ class BaseLineScanner(object):
         if not ok:
             self.report('intermixed blanks and tabs')
         return ok
-    #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularizeWhitespace
-    def regularizeWhitespace(self, s):
+    #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularize_whitespace
+    def regularize_whitespace(self, s):
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         This is only called for strict languages.'''
@@ -262,6 +257,17 @@ class BaseLineScanner(object):
             parent.b = '@language %s\n@others\n' % (self.language)
             for block in blocks:
                 self.put_block(block, parent)
+    #@+node:ekr.20161027094537.18: *4* BaseLineScanner.max_blocks_indent
+    def max_blocks_indent(self, blocks):
+        '''Return the maximum indentation that can be removed from all blocks.'''
+        n = 16
+        for block in blocks:
+            for s in block.lines:
+                if s.strip() or not self.gen_clean:
+                    i = g.find_line_start(s, 0)
+                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                    n = min(n, width)
+        return n
     #@+node:ekr.20161027094537.19: *4* BaseLineScanner.put_block
     def put_block(self, block, parent, create_child=True):
         '''Create nodes for block and all its children.'''
@@ -392,6 +398,21 @@ class BaseLineScanner(object):
         parent_block.children = children
         # Continue the rescan.
         self.rescan_blocks(children)
+    #@+node:ekr.20161027094537.20: *5* BaseLineScanner.ref_line
+    def ref_line(self, block):
+        '''Return a reference to the block.'''
+        
+        def munge(h):
+            '''Munge a headline for use in a section reference.'''
+            for z in '<>': # {}()[]
+                h = h.replace(z,'')
+            return h.strip()
+
+        # Always return a reference
+        h = munge(block.get_headline())
+        return g.angleBrackets(' ' + h + ' ')
+
+       
     #@+node:ekr.20161027094537.24: *4* BaseLineScanner.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
@@ -401,27 +422,6 @@ class BaseLineScanner(object):
                 block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
-    #@+node:ekr.20161027094537.27: *3* BaseLineScanner.trialWrite
-    def trialWrite(self):
-        '''Return the trial write for self.root.'''
-        at = self.c.atFileCommands
-        if self.gen_refs:
-            # Alas, the *actual* @auto write code refuses to write section references!!
-            at.write(self.root,
-                    nosentinels=True,           # was False,
-                    perfectImportFlag=False,    # was True,
-                    scriptWrite=True,           # was False,
-                    thinFile=True,
-                    toString=True,
-                )
-        else:
-            at.writeOneAtAutoNode(
-                self.root,
-                toString=True,
-                force=True,
-                trialWrite=True,
-            )
-        return g.toUnicode(at.stringOutput, self.encoding)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):

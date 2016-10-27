@@ -12,7 +12,7 @@ class JavaScriptScanState(basescanner.ScanState):
     # Use the base class ctor.
 
     #@+others
-    #@+node:ekr.20161004071532.1: *3* js_state.scan_line & helper
+    #@+node:ekr.20161004071532.1: *3* js_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting 
@@ -57,7 +57,7 @@ class JavaScriptScanState(basescanner.ScanState):
             assert progress < i
         if trace and s.strip().startswith('//') and self.continues_block():
             g.trace(self, s.rstrip())
-    #@+node:ekr.20161011045426.1: *4* js_state.skip_possible_regex
+    #@+node:ekr.20161011045426.1: *3* js_state.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting
@@ -85,7 +85,7 @@ class JavaScriptScanState(basescanner.ScanState):
         return i-1
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-class JavaScriptScanner(basescanner.BaseLineScanner): ### BaseScanner):
+class JavaScriptScanner(basescanner.BaseLineScanner):
     
     def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
         '''The ctor for the JavaScriptScanner class.'''
