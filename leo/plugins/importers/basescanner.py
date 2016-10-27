@@ -1,6 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
-'''The BaseScanner class used by all importers in leo.plugins.importers.'''
+'''
+The BaseScanner class used by legacy importers in leo.plugins.importers.
+
+The newer BaseLineScanner class is recommded for all new importers.
+'''
 import leo.core.leoGlobals as g
 if g.isPython3:
     import io
@@ -10,10 +14,511 @@ else:
     StringIO = StringIO.StringIO
 import time
 
-class BaseScanner(object):
-    '''The base class for all import scanner classes.'''
+gen_clean = True
+    # None: use @bool js_importer_clean_lws setting
+    # True: clean blank lines and regularize indentaion.
+
+gen_refs = False
+    # None: use @bool allow_section_references_in_at_auto setting
+        # WAS: use @bool js_importer_gen_refs setting
+    # True: generate section references.
+    # False generate @others
+
+#@+others
+#@+node:ekr.20161027114718.1: ** class BaseLineScanner
+class BaseLineScanner(object):
+    '''The base class for all new (line-oriented) scanner classes.'''
     #@+others
-    #@+node:ekr.20140727075002.18188: ** BaseScanner.ctor
+    #@+node:ekr.20161027114542.1: *3*  BaseLineScanner.ctor
+    def __init__(self, importCommands, atAuto, language='unnamed', alternate_language=None):
+        '''ctor for BaseScanner.'''
+        ic = importCommands
+        self.atAuto = atAuto
+        self.c = c = ic.c
+        self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
+            'at_auto_warns_about_leading_whitespace')
+        # if 0:
+            # self.atAutoSeparateNonDefNodes = c.config.getBool(
+                # 'at_auto_separate_non_DefNodes', default=False)
+            # self.classId = None
+                # # The identifier containing the class tag:
+                # # 'class', 'interface', 'namespace', etc.
+            # self.codeEnd = None
+                # # The character after the last character of the class, method or function.
+                # # An error will be given if this is not a newline.
+            # self.compare_tokens = True
+        self.encoding = ic.encoding
+        self.errors = 0
+        ic.errors = 0
+        self.errorLines = []
+        self.escapeSectionRefs = True
+        ###
+        # if 0:
+            # self.extraIdChars = ''
+            # self.fileName = ic.fileName
+                # # The original filename.
+            # self.fileType = ic.fileType
+                # # The extension,  '.py', '.c', etc.
+            # self.file_s = ''
+                # # The complete text to be parsed.
+            # self.fullChecks = c.config.getBool('full_import_checks')
+            # self.functionSpelling = 'function'
+                # # for error message.
+        self.importCommands = ic
+        ###
+        # if 0:
+            # self.indentRefFlag = None
+                # # None, True or False.
+        self.isPrepass = False
+            # True if we are running at-file-to-at-auto prepass.
+        self.isRst = False
+        self.language = language
+            # The language used to set comment delims.
+        ###
+        # if 0:
+            # self.lastParent = None
+                # # The last generated parent node (used only by RstScanner).
+            # self.methodName = ic.methodName
+                # # x, as in < < x methods > > =
+            # self.methodsSeen = False
+        self.mismatchWarningGiven = False
+        ###
+        # if 0:
+            # self.n_decls = 0
+                # # For headLineForNode only. The number of decls seen.
+            # self.output_newline = ic.output_newline
+                # # = c.config.getBool('output_newline')
+            # self.output_indent = 0
+                # # The minimum indentation presently in effect.
+        self.root = None
+            # The top-level node of the generated tree.
+        ###
+        # if 0:
+            # self.rootLine = ic.rootLine
+                # # '' or @root + self.fileName
+            # self.sigEnd = None
+                # # The index of the end of the signature.
+            # self.sigId = None
+                # # The identifier contained in the signature,
+                # # that is, the function or method name.
+            # self.sigStart = None
+                # # The start of the line containing the signature.
+                # # An error will be given if something other
+                # # than whitespace precedes the signature.
+            # self.startSigIndent = None
+        self.tab_width = None
+            # Set in run: the tab width in effect in the c.currentPosition.
+        self.tab_ws = ''
+            # Set in run: the whitespace equivalent to one tab.
+        ###
+        # if 0:
+            # self.trace = False or ic.trace
+                # # ic.trace is c.config.getBool('trace_import')
+            # self.treeType = ic.treeType
+                # # '@root' or '@file'
+            # self.webType = ic.webType
+                # # 'cweb' or 'noweb'
+            # # Compute language ivars.
+            # delim1, junk, junk = g.set_delims_from_language(language)
+            # self.comment_delim = delim1
+            # # May be overridden in subclasses...
+            # self.alternate_language = alternate_language
+                # # Optional: for @language.
+            # self.anonymousClasses = []
+                # # For Delphi Pascal interfaces.
+            # self.blockCommentDelim1 = None
+            # self.blockCommentDelim2 = None
+            # self.blockCommentDelim1_2 = None
+            # self.blockCommentDelim2_2 = None
+            # self.blockDelim1 = '{'
+            # self.blockDelim2 = '}'
+            # self.blockDelim2Cruft = []
+                # # Stuff that can follow .blockDelim2.
+            # self.caseInsensitive = False
+            # self.classTags = ['class',]
+                # # tags that start a tag.
+            # self.functionTags = []
+            # self.hasClasses = True
+            # self.hasDecls = True
+            # self.hasFunctions = True
+            # self.hasNestedClasses = False
+            # self.hasRegex = False
+            # self.ignoreBlankLines = False
+            # self.ignoreLeadingWs = False
+            # self.lineCommentDelim = None
+            # self.lineCommentDelim2 = None
+            # self.outerBlockDelim1 = None
+            # self.outerBlockDelim2 = None
+            # self.outerBlockEndsDecls = True
+            # self.sigHeadExtraTokens = []
+                # # Extra tokens valid in head of signature.
+            # self.sigFailTokens = []
+                # # A list of strings that abort a signature when seen in a tail.
+                # # For example, ';' and '=' in C.
+        self.strict = False # True if leading whitespace is very significant.
+        ###
+        # if 0:
+            # self.warnAboutUnderindentedLines = True
+    #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check
+    def check(self, unused_s, parent):
+        '''Perl override of base checker.'''
+        trace = False and not g.unitTesting
+        trace_all_lines = False
+        s1 = g.toUnicode(self.file_s, self.encoding)
+        s2 = self.trialWrite()
+        if self.gen_clean:
+            clean = self.strip_lws # strip_all, clean_blank_lines
+            s1, s2 = clean(s1), clean(s2)
+        ok = s1 == s2
+        if not ok:
+            lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
+            n1, n2 = len(lines1), len(lines2)
+            g.trace('===== PERFECT IMPORT FAILED =====')
+            g.trace('len(s1): %s len(s2): %s' % (n1, n2))
+            for i in range(min(n1, n2)):
+                line1, line2 = lines1[i], lines2[i]
+                if line1 != line2:
+                     g.trace('first mismatched line: %s' % i)
+                     g.trace(repr(line1))
+                     g.trace(repr(line2))
+                     break
+            else:
+                g.trace('all common lines match')
+            if trace and trace_all_lines:
+                g.trace('===== s1: %s' % parent.h)
+                for i, s in enumerate(g.splitLines(s1)):
+                    print('%3s %s' % (i+1, s.rstrip()))
+                g.trace('===== s2')
+                for i, s in enumerate(g.splitLines(s2)):
+                    print('%3s %s' % (i+1, s.rstrip()))
+        return ok
+    #@+node:ekr.20161027114045.1: *3* BaseLineScanner.clean_* & strip_*
+    def clean_blank_lines(self, s):
+        '''Remove all blanks and tabs in all blank lines.'''
+        result = ''.join([
+            z if z.strip() else z.replace(' ','').replace('\t','')
+                for z in g.splitLines(s)
+        ])
+        return result
+
+    def strip_all(self, s):
+        '''Strip blank lines and leading whitespace from all lines of s.'''
+        return self.strip_lws(self.strip_blank_lines(s))
+
+    def strip_blank_lines(self, s):
+        '''Strip all blank lines from s.'''
+        return ''.join([z for z in g.splitLines(s) if z.strip()])
+
+    def strip_lws(self, s):
+        '''Strip leading whitespace from all lines of s.'''
+        return ''.join([z.lstrip() for z in g.splitLines(s)])
+    #@+node:ekr.20161027094537.17: *3* BaseLineScanner.dump_block & dump_blocks
+    def dump_block(self, block):
+        '''Dump one block.'''
+        lines = block.lines if isinstance(block, Block) else block
+        for j, s in enumerate(lines):
+            print('    %3s %s' % (j, s.rstrip()))
+            
+    def dump_blocks(self, blocks, parent):
+        '''Dump all blocks, which may be Block instances or lists of strings.'''
+        g.trace('blocks in %s...' % parent.h)
+        for i, block in enumerate(blocks):
+            print('  block: %s' % i)
+            self.dump_block(block)
+
+    #@+node:ekr.20161027094537.18: *3* BaseLineScanner.max_blocks_indent
+    def max_blocks_indent(self, blocks):
+        '''Return the maximum indentation that can be removed from all blocks.'''
+        n = 16
+        for block in blocks:
+            for s in block.lines:
+                if s.strip() or not self.gen_clean:
+                    i = g.find_line_start(s, 0)
+                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                    n = min(n, width)
+        return n
+    #@+node:ekr.20161027094537.19: *3* BaseLineScanner.put_block
+    def put_block(self, block, parent, create_child=True):
+        '''Create nodes for block and all its children.'''
+        if create_child:
+            p = parent.insertAsLastChild()
+            p.h = block.headline
+        else:
+            p = parent
+        p.b = p.b + ''.join(block.lines)
+        for child in block.children:
+            self.put_block(child, p)
+    #@+node:ekr.20161027094537.20: *3* BaseLineScanner.ref_line
+    def ref_line(self, block):
+        '''Return a reference to the block.'''
+        
+        def munge(h):
+            '''Munge a headline for use in a section reference.'''
+            for z in '<>': # {}()[]
+                h = h.replace(z,'')
+            return h.strip()
+
+        # Always return a reference
+        h = munge(block.get_headline())
+        return g.angleBrackets(' ' + h + ' ')
+
+       
+    #@+node:ekr.20161027094537.21: *3* BaseLineScanner.rescan_block & helpers
+    def rescan_block(self, parent_block, strip_lines=True):
+        '''Rescan a non-simple block, possibly creating child blocks.'''
+        state = self.state
+        trace = False and not g.unitTesting
+        if trace: g.trace('len: %3s' % len(parent_block.lines), parent_block.get_headline())
+        if len(parent_block.lines) < self.min_rescan_size:
+            return
+        if strip_lines:
+            # The first and last lines begin and end the block.
+            # Only scan the interior lines.
+            first_line = parent_block.lines[0]
+            last_line = parent_block.lines[-1]
+            lines = parent_block.lines[1:-1]
+        else:
+            # This is the top-level block, when self.gen_refs is True.
+            first_line, last_line = None, None
+            lines = parent_block.lines
+        state.push() # Set the bases to the present counts.
+        blocks, block_lines = [], []
+        i = 0
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                if block_lines:
+                    # Finish any previous block.
+                    blocks.append(Block(block_lines, simple=True))
+                # This is the *only* reparsing that is done.
+                i, block_lines = state.scan_block(i, lines)
+                blocks.append(Block(block_lines, simple=False))
+                block_lines = []
+            else:
+                block_lines.append(line)
+                i += 1
+            assert progress < i
+        state.pop() # Restore the bases.
+        # End the lines.
+        if block_lines:
+            blocks.append(Block(block_lines, simple=True))
+        if self.gen_refs: 
+            # Generate section references.
+            self.make_ref_children(blocks, first_line, last_line, parent_block)
+        else:
+            # Generate only @others.
+            self.make_at_others_children(blocks, first_line, last_line, parent_block)
+    #@+node:ekr.20161027094537.22: *4* BaseLineScanner.make_at_others_children
+    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using @others.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        if not blocks:
+            return
+        if trace:
+            g.trace(self.root.h)
+            g.trace(parent_block)
+            for z in blocks:
+                print('%s %s' % (self.max_blocks_indent([z]), z))
+        # Create child nodes only if there are enough lines.
+        # This is arbitrary, and so a bit confusing.
+        # However, it is about right in practice.
+        n_lines = sum([len(z.lines) for z in blocks])
+        if n_lines < 10: # We want this to be a small number.
+            return
+        max_indent = 4 if self.gen_clean else 0
+            # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
+        parent_block.lines = [
+            first_line,
+            '%s@others\n' % (' ' * max_indent),
+            last_line]
+        children = []
+        for block in blocks:
+            child_block = Block(block.lines, simple=block.simple)
+            if self.gen_clean:
+                child_undent = self.max_blocks_indent([child_block])
+            else:
+                child_undent = max_indent
+            child_block.undent(c, child_undent)
+            children.append(child_block)
+        parent_block.children = children
+        self.rescan_blocks(children)
+    #@+node:ekr.20161027094537.23: *4* BaseLineScanner.make_ref_children
+    def make_ref_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using section references'''
+        trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
+        c = self.c
+        if trace:
+            g.trace('len: %3s %s' % (
+                len(parent_block.lines),
+                parent_block.get_headline()))
+        body, children = [], []
+        for block in blocks:
+            if block.simple:
+                # This line is never a section reference.
+                # g.trace(block.get_headline())
+                body.extend(block.lines)
+            else:
+                child_block = Block(block.lines, simple=False)
+                children.append(child_block)
+                ref = self.ref_line(child_block)
+                child_block.headline = ref
+                if self.gen_clean:
+                    # This local calculation is probably good enough.
+                    child_undent = self.max_blocks_indent([child_block])
+                    child_block.undent(c, child_undent)
+                    body.append(' '*child_undent + ref + '\n')
+                else:
+                    # Don't indent the ref, and don't unindent the children.
+                    body.append(ref)
+        # Replace the block with the child blocks.
+        parent_block.lines = []
+        if first_line is not None:
+            parent_block.lines.append(first_line)
+        parent_block.lines.extend(body)
+        if last_line is not None:
+            parent_block.lines.append(last_line)
+        parent_block.children = children
+        # Continue the rescan.
+        self.rescan_blocks(children)
+    #@+node:ekr.20161027094537.24: *3* BaseLineScanner.rescan_blocks
+    def rescan_blocks(self, blocks):
+        '''Rescan all blocks, finding more blocks and adjusting text.'''
+        for block in blocks:
+            assert isinstance(block, Block)
+            if not block.headline:
+                block.headline = block.get_headline()
+            if not block.simple:
+                self.rescan_block(block)
+    #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run
+    def run(self, s, parent, parse_body=False, prepass=False):
+        '''The common top-level code for all scanners.'''
+        self.isPrepass = prepass
+        c = self.c
+        self.root = root = parent.copy()
+        self.file_s = s
+        self.tab_width = c.getTabWidth(p=root)
+        # Create the ws equivalent to one tab.
+        self.tab_ws = ' ' * abs(self.tab_width) if self.tab_width < 0 else '\t'
+        # Init the error/status info.
+        self.errors = 0
+        self.errorLines = []
+        self.mismatchWarningGiven = False
+        changed = c.isChanged()
+        # Use @verbatim to escape section references (but not for @auto).
+        if self.escapeSectionRefs and not self.atAuto:
+            s = self.escapeFalseSectionReferences(s)
+        # Check for intermixed blanks and tabs.
+        if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
+            if not self.isRst:
+                self.checkBlanksAndTabs(s)
+        # Regularize leading whitespace (strict languages only).
+        if self.strict: s = self.regularizeWhitespace(s)
+        # Generate the nodes, including directives and section references.
+        if self.isPrepass:
+            return self.prepass(s, parent)
+        else:
+            self.scan(s, parent, parse_body=parse_body)
+            # Check the generated nodes.
+            # Return True if the result is equivalent to the original file.
+            ok = self.errors == 0 and self.check(s, parent)
+            g.app.unitTestDict['result'] = ok
+            # Insert an @ignore directive if there were any serious problems.
+            if not ok: self.insertIgnoreDirective(parent)
+            if self.atAuto and ok:
+                for p in root.self_and_subtree():
+                    p.clearDirty()
+                c.setChanged(changed)
+            else:
+                root.setDirty(setDescendentsDirty=False)
+                c.setChanged(True)
+            return ok
+    #@+node:ekr.20161027114007.2: *4* BaseScanner.escapeFalseSectionReferences
+    def escapeFalseSectionReferences(self, s):
+        '''
+        Probably a bad idea.  Keep the apparent section references.
+        The perfect-import write code no longer attempts to expand references
+        when the perfectImportFlag is set.
+        '''
+        return s
+        # result = []
+        # for line in g.splitLines(s):
+            # r1 = line.find('<<')
+            # r2 = line.find('>>')
+            # if r1>=0 and r2>=0 and r1<r2:
+                # result.append("@verbatim\n")
+                # result.append(line)
+            # else:
+                # result.append(line)
+        # return ''.join(result)
+    #@+node:ekr.20161027114007.3: *4* BaseScanner.checkBlanksAndTabs
+    def checkBlanksAndTabs(self, s):
+        '''Check for intermixed blank & tabs.'''
+        # Do a quick check for mixed leading tabs/blanks.
+        blanks = tabs = 0
+        for line in g.splitLines(s):
+            lws = line[0: g.skip_ws(line, 0)]
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        ok = blanks == 0 or tabs == 0
+        if not ok:
+            self.report('intermixed blanks and tabs')
+        return ok
+    #@+node:ekr.20161027114007.4: *4* BaseScanner.regularizeWhitespace
+    def regularizeWhitespace(self, s):
+        '''Regularize leading whitespace in s:
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        This is only called for strict languages.'''
+        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
+        if tab_width < 0: # Convert tabs to blanks.
+            for line in lines:
+                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
+                if s != line: changed = True
+                result.append(s)
+        elif tab_width > 0: # Convert blanks to tabs.
+            for line in lines:
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
+                if s != line: changed = True
+                result.append(s)
+        if changed:
+            action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
+            message = 'inconsistent leading whitespace. %s' % action
+            self.report(message)
+        return ''.join(result)
+    #@+node:ekr.20161027115605.1: *3* BaseLineScanner.scan
+    def scan(self, s1, parent, parse_body=True):
+        '''The main scan method.  Must be defined in subclasses.'''
+        g.es_print('scan must be defined in scanner subclasses.')
+    #@+node:ekr.20161027094537.27: *3* BaseLineScanner.trialWrite
+    def trialWrite(self):
+        '''Return the trial write for self.root.'''
+        at = self.c.atFileCommands
+        if self.gen_refs:
+            # Alas, the *actual* @auto write code refuses to write section references!!
+            at.write(self.root,
+                    nosentinels=True,           # was False,
+                    perfectImportFlag=False,    # was True,
+                    scriptWrite=True,           # was False,
+                    thinFile=True,
+                    toString=True,
+                )
+        else:
+            at.writeOneAtAutoNode(
+                self.root,
+                toString=True,
+                force=True,
+                trialWrite=True,
+            )
+        return g.toUnicode(at.stringOutput, self.encoding)
+    #@-others
+#@+node:ekr.20161027114701.1: ** class BaseScanner
+class BaseScanner(object):
+    '''The base class for all legacy (character-oriented) scanner classes.'''
+    #@+others
+    #@+node:ekr.20140727075002.18188: *3* BaseScanner.ctor
     def __init__(self, importCommands, atAuto, language='unnamed', alternate_language=None):
         '''ctor for BaseScanner.'''
         ic = importCommands
@@ -128,8 +633,8 @@ class BaseScanner(object):
             # For example, ';' and '=' in C.
         self.strict = False # True if leading whitespace is very significant.
         self.warnAboutUnderindentedLines = True
-    #@+node:ekr.20140727075002.18189: ** BaseScanner.Checking
-    #@+node:ekr.20140727075002.18190: *3* BaseScanner.check
+    #@+node:ekr.20140727075002.18189: *3* BaseScanner.Checking
+    #@+node:ekr.20140727075002.18190: *4* BaseScanner.check
     def check(self, unused_s, unused_parent):
         '''Make sure the generated nodes are equivalent to the original file.
 
@@ -145,7 +650,7 @@ class BaseScanner(object):
             return self.checkTrialWrite()
         else:
             return True
-    #@+node:ekr.20140727075002.18191: *3* BaseScanner.checkLeadingWhitespace
+    #@+node:ekr.20140727075002.18191: *4* BaseScanner.checkLeadingWhitespace
     def checkLeadingWhitespace(self, line):
         tab_width = self.tab_width
         lws = line[0: g.skip_ws(line, 0)]
@@ -155,7 +660,7 @@ class BaseScanner(object):
             self.report('leading whitespace not consistent with @tabwidth %d' % tab_width)
             g.error('line:', repr(line))
         return ok
-    #@+node:ekr.20140727075002.18192: *3* BaseScanner.checkTrialWrite
+    #@+node:ekr.20140727075002.18192: *4* BaseScanner.checkTrialWrite
     def checkTrialWrite(self, s1=None, s2=None):
         '''Return True if a trial write produces the original file.'''
         # s1 and s2 are for unit testing.
@@ -240,7 +745,7 @@ class BaseScanner(object):
             self.reportMismatch(lines1, lines2, bad_i1, bad_i2)
         if trace_time: g.trace(g.timeSince(t1))
         return ok
-    #@+node:ekr.20140727075002.18193: *3* BaseScanner.compareHelper & helpers
+    #@+node:ekr.20140727075002.18193: *4* BaseScanner.compareHelper & helpers
     def compareHelper(self, lines1, lines2, i, strict):
         '''
         Compare lines1[i] and lines2[i] on a line-by-line basis.
@@ -307,7 +812,7 @@ class BaseScanner(object):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i, line1, line2)
             return messageKind in ('comment', 'warning') # Only errors are invalid.
-    #@+node:ekr.20140727075002.18194: *4* BaseScanner.adjustTestLines
+    #@+node:ekr.20140727075002.18194: *5* BaseScanner.adjustTestLines
     def adjustTestLines(self, lines):
         '''
         Ignore blank lines and trailing whitespace.
@@ -321,7 +826,7 @@ class BaseScanner(object):
         # New in Leo 5.0.
         lines = [z.rstrip() + '\n' if z.endswith('\n') else z.rstrip() for z in lines]
         return lines
-    #@+node:ekr.20140727075002.18195: *4* BaseScanner.compareRstUnderlines
+    #@+node:ekr.20140727075002.18195: *5* BaseScanner.compareRstUnderlines
     def compareRstUnderlines(self, s1, s2):
         s1, s2 = s1.rstrip(), s2.rstrip()
         if s1 == s2:
@@ -335,7 +840,7 @@ class BaseScanner(object):
             s1 == ch1 * n1 and # The line must consist only of underlining characters.
             s2 == ch2 * n2)
         return val
-    #@+node:ekr.20140727075002.18196: *3* BaseScanner.formatTokens
+    #@+node:ekr.20140727075002.18196: *4* BaseScanner.formatTokens
     def formatTokens(self, tokens):
         '''Format tokens for printing or dumping.'''
         i, result = 0, []
@@ -344,7 +849,7 @@ class BaseScanner(object):
             result.append(s)
             i += 1
         return '\n'.join(result)
-    #@+node:ekr.20140727075002.18197: *3* BaseScanner.reportMismatch
+    #@+node:ekr.20140727075002.18197: *4* BaseScanner.reportMismatch
     def reportMismatch(self, lines1, lines2, bad_i1, bad_i2):
         # g.trace('**',bad_i1,bad_i2,g.callers())
         trace = False # This causes traces for *non-failing* unit tests.
@@ -374,7 +879,7 @@ class BaseScanner(object):
         if trace or not g.unitTesting:
             g.blue('\n'.join(aList))
         return False
-    #@+node:ekr.20140727075002.18198: *3* BaseScanner.scanAndCompare & helpers
+    #@+node:ekr.20140727075002.18198: *4* BaseScanner.scanAndCompare & helpers
     def scanAndCompare(self, s1, s2):
         '''Tokenize both s1 and s2, then perform a token-based comparison.
 
@@ -393,7 +898,7 @@ class BaseScanner(object):
         else:
             n1, n2 = self.compareTokens(tokens1, tokens2)
             return n1, n2, False
-    #@+node:ekr.20140727075002.18199: *4* BaseScanner.compareTokens
+    #@+node:ekr.20140727075002.18199: *5* BaseScanner.compareTokens
     def compareTokens(self, tokens1, tokens2):
         trace = False # and not g.unitTesting
         verbose = True
@@ -443,13 +948,13 @@ class BaseScanner(object):
             n = min(len(tokens1), len(tokens2))
             if trace: g.trace('fail 2 at line: %s' % (n))
             return n, n
-    #@+node:ekr.20140727075002.18200: *4* BaseScanner.filterTokens & helpers
+    #@+node:ekr.20140727075002.18200: *5* BaseScanner.filterTokens & helpers
     def filterTokens(self, tokens):
         '''Filter tokens as needed for correct comparisons.
 
         May be overridden in subclasses.'''
         return tokens
-    #@+node:ekr.20140727075002.18201: *5* BaseScanner.removeLeadingWsTokens
+    #@+node:ekr.20140727075002.18201: *6* BaseScanner.removeLeadingWsTokens
     def removeLeadingWsTokens(self, tokens):
         '''Remove tokens representing leading whitespace.'''
         i, last, result = 0, 'nl', []
@@ -464,7 +969,7 @@ class BaseScanner(object):
             last = kind
             assert progress + 1 == i
         return result
-    #@+node:ekr.20140727075002.18202: *5* BaseScanner.removeBlankLinesTokens
+    #@+node:ekr.20140727075002.18202: *6* BaseScanner.removeBlankLinesTokens
     def removeBlankLinesTokens(self, tokens):
         '''Remove all tokens representing blank lines.'''
         trace = False
@@ -498,7 +1003,7 @@ class BaseScanner(object):
         if lws: result.extend(lws)
         if trace: g.trace('\nafter: ', result)
         return result
-    #@+node:ekr.20161006165248.1: *3* BaseScanner.clean_* & strip_*
+    #@+node:ekr.20161006165248.1: *4* BaseScanner.clean_* & strip_*
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -518,11 +1023,11 @@ class BaseScanner(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
-    #@+node:ekr.20140727075002.18203: *3* BaseScanner.stripTokens
+    #@+node:ekr.20140727075002.18203: *4* BaseScanner.stripTokens
     def stripTokens(self, tokens):
         '''Remove the line_number from all tokens.'''
         return [(kind, val) for(kind, val, line_number) in tokens]
-    #@+node:ekr.20140727075002.18204: *3* BaseScanner.stripRstLines
+    #@+node:ekr.20140727075002.18204: *4* BaseScanner.stripRstLines
     def stripRstLines(self, s):
         '''Replace rst under/overlines with a dummy line for comparison.'''
 
@@ -540,14 +1045,14 @@ class BaseScanner(object):
             return dummy_line
 
         return ''.join([mungeRstLine(z) for z in g.splitLines(s)])
-    #@+node:ekr.20140727075002.18205: ** BaseScanner.Code generation
-    #@+node:ekr.20140727075002.18206: *3* BaseScanner.adjustParent
+    #@+node:ekr.20140727075002.18205: *3* BaseScanner.Code generation
+    #@+node:ekr.20140727075002.18206: *4* BaseScanner.adjustParent
     def adjustParent(self, parent, headline):
         '''Return the effective parent.
 
         This is overridden by the RstScanner class.'''
         return parent
-    #@+node:ekr.20140727075002.18207: *3* BaseScanner.addRef
+    #@+node:ekr.20140727075002.18207: *4* BaseScanner.addRef
     def addRef(self, parent):
         '''Create an unindented @others or section reference in the parent node.'''
         if self.isRst and not self.atAuto:
@@ -557,7 +1062,7 @@ class BaseScanner(object):
         if self.treeType == '@root' and self.methodsSeen:
             self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
-    #@+node:ekr.20140727075002.18208: *3* BaseScanner.appendStringToBody & setBodyString
+    #@+node:ekr.20140727075002.18208: *4* BaseScanner.appendStringToBody & setBodyString
     def appendStringToBody(self, p, s):
         '''Similar to c.appendStringToBody,
         but does not recolor the text or redraw the screen.'''
@@ -567,7 +1072,7 @@ class BaseScanner(object):
         '''Similar to c.setBodyString,
         but does not recolor the text or redraw the screen.'''
         return self.importCommands.setBodyString(p, s)
-    #@+node:ekr.20140727075002.18209: *3* BaseScanner.computeBody
+    #@+node:ekr.20140727075002.18209: *4* BaseScanner.computeBody
     def computeBody(self, s, start, sigStart, codeEnd):
         '''Return the head and tail of the body.'''
         trace = False
@@ -587,14 +1092,14 @@ class BaseScanner(object):
                 '%s %s does not end with a newline; one will be added\n%s' % (
                 self.functionSpelling, self.sigId, g.get_line(s, codeEnd)))
         return body1, body2
-    #@+node:ekr.20140727075002.18210: *3* BaseScanner.createDeclsNode
+    #@+node:ekr.20140727075002.18210: *4* BaseScanner.createDeclsNode
     def createDeclsNode(self, parent, s):
         '''Create a child node of parent containing s.'''
         # Create the node for the decls.
         headline = '%s declarations' % self.methodName
         body = self.undentBody(s)
         self.createHeadline(parent, body, headline)
-    #@+node:ekr.20140727075002.18211: *3* BaseScanner.createFunctionNode
+    #@+node:ekr.20140727075002.18211: *4* BaseScanner.createFunctionNode
     def createFunctionNode(self, headline, body, parent):
         # Create the prefix line for @root trees.
         if self.treeType == '@root':
@@ -604,14 +1109,14 @@ class BaseScanner(object):
             prefix = ''
         # Create the node.
         return self.createHeadline(parent, prefix + body, headline)
-    #@+node:ekr.20140727075002.18212: *3* BaseScanner.createHeadline
+    #@+node:ekr.20140727075002.18212: *4* BaseScanner.createHeadline
     def createHeadline(self, parent, body, headline):
         return self.importCommands.createHeadline(parent, body, headline)
-    #@+node:ekr.20140727075002.18213: *3* BaseScanner.endGen
+    #@+node:ekr.20140727075002.18213: *4* BaseScanner.endGen
     def endGen(self, s):
         '''Do any language-specific post-processing.'''
         pass
-    #@+node:ekr.20140727075002.18214: *3* BaseScanner.getLeadingIndent
+    #@+node:ekr.20140727075002.18214: *4* BaseScanner.getLeadingIndent
     def getLeadingIndent(self, s, i, ignoreComments=True):
         '''Return the leading whitespace of a line.
         Ignore blank and comment lines if ignoreComments is True'''
@@ -630,7 +1135,7 @@ class BaseScanner(object):
             i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
         # g.trace('returns:',width)
         return width
-    #@+node:ekr.20140727075002.18215: *3* BaseScanner.indentBody
+    #@+node:ekr.20140727075002.18215: *4* BaseScanner.indentBody
     def indentBody(self, s, lws=None):
         '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
         result = []
@@ -642,7 +1147,7 @@ class BaseScanner(object):
                 result.append('\n')
         result = ''.join(result)
         return result
-    #@+node:ekr.20140727075002.18216: *3* BaseScanner.insertIgnoreDirective (leoImport)
+    #@+node:ekr.20140727075002.18216: *4* BaseScanner.insertIgnoreDirective (leoImport)
     def insertIgnoreDirective(self, parent):
         c = self.c
         self.appendStringToBody(parent, '@ignore')
@@ -652,7 +1157,7 @@ class BaseScanner(object):
             if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
                 g.warning('inserting @ignore')
                 c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20140727075002.18217: *3* BaseScanner.putClass & helpers
+    #@+node:ekr.20140727075002.18217: *4* BaseScanner.putClass & helpers
     def putClass(self, s, i, sigEnd, codeEnd, start, parent):
         '''Creates a child node c of parent for the class,
         and a child of c for each def in the class.'''
@@ -709,14 +1214,14 @@ class BaseScanner(object):
         # Exit the new class: restore the previous class info.
         self.methodName = oldMethodName
         self.startSigIndent = oldStartSigIndent
-    #@+node:ekr.20140727075002.18218: *4* BaseScanner.adjust_class_ref
+    #@+node:ekr.20140727075002.18218: *5* BaseScanner.adjust_class_ref
     def adjust_class_ref(self, s):
         '''Over-ridden by xml and html scanners.'''
         return s
-    #@+node:ekr.20140727075002.18219: *4* BaseScanner.appendTextToClassNode
+    #@+node:ekr.20140727075002.18219: *5* BaseScanner.appendTextToClassNode
     def appendTextToClassNode(self, class_node, s):
         self.appendStringToBody(class_node, s)
-    #@+node:ekr.20140727075002.18220: *4* BaseScanner.createClassNodePrefix
+    #@+node:ekr.20140727075002.18220: *5* BaseScanner.createClassNodePrefix
     def createClassNodePrefix(self):
         '''Create the class node prefix.'''
         if self.treeType == '@root':
@@ -725,7 +1230,7 @@ class BaseScanner(object):
         else:
             prefix = ''
         return prefix
-    #@+node:ekr.20140727075002.18221: *4* BaseScanner.getClassNodeRef
+    #@+node:ekr.20140727075002.18221: *5* BaseScanner.getClassNodeRef
     def getClassNodeRef(self, class_name):
         '''Insert the proper body text in the class_vnode.'''
         if self.treeType in ('@clean', '@file', '@nosent', None):
@@ -733,7 +1238,7 @@ class BaseScanner(object):
         else:
             s = g.angleBrackets(' class %s methods ' % (class_name))
         return '%s\n' % (s)
-    #@+node:ekr.20140727075002.18222: *4* BaseScanner.putClassHelper
+    #@+node:ekr.20140727075002.18222: *5* BaseScanner.putClassHelper
     def putClassHelper(self, s, i, end, class_node):
         '''s contains the body of a class, not including the signature.
 
@@ -770,7 +1275,7 @@ class BaseScanner(object):
         # Return the results.
         trailing = s[start: end]
         return putRef, bodyIndent, classDelim, decls, trailing
-    #@+node:ekr.20140727075002.18223: *3* BaseScanner.putFunction
+    #@+node:ekr.20140727075002.18223: *4* BaseScanner.putFunction
     def putFunction(self, s, sigStart, codeEnd, start, parent):
         '''Create a node of parent for a function defintion.'''
         trace = False and not g.unitTesting
@@ -803,11 +1308,11 @@ class BaseScanner(object):
         self.lastParent = self.createFunctionNode(headline, body, parent)
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
-    #@+node:ekr.20140727075002.18224: *3* BaseScanner.putRootText
+    #@+node:ekr.20140727075002.18224: *4* BaseScanner.putRootText
     def putRootText(self, p):
         self.appendStringToBody(p, '%s@language %s\n@tabwidth %d\n' % (
             self.rootLine, self.alternate_language or self.language, self.tab_width))
-    #@+node:ekr.20140727075002.18225: *3* BaseScanner.undentBody
+    #@+node:ekr.20140727075002.18225: *4* BaseScanner.undentBody
     def undentBody(self, s, ignoreComments=True):
         '''Remove the first line's leading indentation from all lines of s.'''
         trace = False and not g.unitTesting
@@ -824,7 +1329,7 @@ class BaseScanner(object):
             result = self.undentBy(s, undentVal)
             if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
             return result
-    #@+node:ekr.20140727075002.18226: *3* BaseScanner.undentBy
+    #@+node:ekr.20140727075002.18226: *4* BaseScanner.undentBy
     def undentBy(self, s, undentVal):
         '''Remove leading whitespace equivalent to undentVal from each line.
         For strict languages, add an underindentEscapeString for underindented line.'''
@@ -848,7 +1353,7 @@ class BaseScanner(object):
                 if trace: g.trace(repr(s))
                 result.append(s)
         return ''.join(result)
-    #@+node:ekr.20140727075002.18227: *3* BaseScanner.underindentedComment & underindentedLine
+    #@+node:ekr.20140727075002.18227: *4* BaseScanner.underindentedComment & underindentedLine
     def underindentedComment(self, line):
         if self.atAutoWarnsAboutLeadingWhitespace:
             self.warning(
@@ -859,7 +1364,7 @@ class BaseScanner(object):
             self.error(
                 'underindented line.\n' +
                 'Extra leading whitespace will be added\n' + line)
-    #@+node:ekr.20140727075002.18228: ** BaseScanner.error, oops, report and warning
+    #@+node:ekr.20140727075002.18228: *3* BaseScanner.error, oops, report and warning
     def error(self, s):
         self.errors += 1
         self.importCommands.errors += 1
@@ -883,7 +1388,7 @@ class BaseScanner(object):
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20140727075002.18229: ** BaseScanner.headlineForNode
+    #@+node:ekr.20140727075002.18229: *3* BaseScanner.headlineForNode
     def headlineForNode(self, fn, p):
         '''Return the expected imported headline for p.b'''
         trace = False and not g.unitTesting
@@ -925,26 +1430,26 @@ class BaseScanner(object):
                 i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
             assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
         return p.h
-    #@+node:ekr.20140727075002.18230: ** BaseScanner.Parsing
+    #@+node:ekr.20140727075002.18230: *3* BaseScanner.Parsing
     #@+at Scan and skipDecls would typically not be overridden.
-    #@+node:ekr.20140727075002.18231: *3* BaseScanner.adjustDefStart
+    #@+node:ekr.20140727075002.18231: *4* BaseScanner.adjustDefStart
     def adjustDefStart(self, unused_s, i):
         '''A hook to allow the Python importer to adjust the
         start of a class or function to include decorators.'''
         return i
-    #@+node:ekr.20140727075002.18232: *3* BaseScanner.extendSignature
+    #@+node:ekr.20140727075002.18232: *4* BaseScanner.extendSignature
     def extendSignature(self, unused_s, i):
         '''Extend the signature line if appropriate.
         The text *must* end with a newline.
 
         For example, the Python scanner appends docstrings if they exist.'''
         return i
-    #@+node:ekr.20140727075002.18233: *3* BaseScanner.getIndent
+    #@+node:ekr.20140727075002.18233: *4* BaseScanner.getIndent
     def getIndent(self, s, i):
         j, junk = g.getLine(s, i)
         junk, indent = g.skip_leading_ws_with_indent(s, j, self.tab_width)
         return indent
-    #@+node:ekr.20140727075002.18234: *3* BaseScanner.prepass & helper
+    #@+node:ekr.20140727075002.18234: *4* BaseScanner.prepass & helper
     def prepass(self, s, p):
         '''
         A prepass for the at-file-to-at-auto command.
@@ -1017,7 +1522,7 @@ class BaseScanner(object):
         else:
             # Multiple defs, no children. Will split the node into children.
             return False, parts
-    #@+node:ekr.20140727075002.18235: *3* BaseScanner.scan & scanHelper
+    #@+node:ekr.20140727075002.18235: *4* BaseScanner.scan & scanHelper
     def scan(self, s, parent, parse_body=False):
         '''A language independent scanner: it uses language-specific helpers.
 
@@ -1049,7 +1554,7 @@ class BaseScanner(object):
             self.appendStringToBody(parent, s[start:])
         # Do any language-specific post-processing.
         self.endGen(s)
-    #@+node:ekr.20140727075002.18236: *4* BaseScanner.scanHelper
+    #@+node:ekr.20140727075002.18236: *5* BaseScanner.scanHelper
     def scanHelper(self, s, i, end, parent, kind):
         '''Common scanning code used by both scan and putClassHelper.'''
         # g.trace(g.callers())
@@ -1093,13 +1598,13 @@ class BaseScanner(object):
                 i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
             assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
         return start, putRef, bodyIndent
-    #@+node:ekr.20140727075002.18237: *3* BaseScanner.Parser skip methods
-    #@+node:ekr.20140727075002.18238: *4* BaseScanner.isSpace
+    #@+node:ekr.20140727075002.18237: *4* BaseScanner.Parser skip methods
+    #@+node:ekr.20140727075002.18238: *5* BaseScanner.isSpace
     def isSpace(self, s, i):
         '''Return true if s[i] is a tokenizer space.'''
         # g.trace(repr(s[i]),i < len(s) and s[i] != '\n' and s[i].isspace())
         return i < len(s) and s[i] != '\n' and s[i].isspace()
-    #@+node:ekr.20140727075002.18239: *4* BaseScanner.skipArgs
+    #@+node:ekr.20140727075002.18239: *5* BaseScanner.skipArgs
     def skipArgs(self, s, i, kind):
         '''Skip the argument or class list.  Return i, ok
 
@@ -1114,7 +1619,7 @@ class BaseScanner(object):
             return start, False
         else:
             return i, True
-    #@+node:ekr.20140727075002.18240: *4* BaseScanner.skipBlock
+    #@+node:ekr.20140727075002.18240: *5* BaseScanner.skipBlock
     def skipBlock(self, s, i, delim1=None, delim2=None):
         '''Skip from the opening delim to *past* the matching closing delim.
 
@@ -1182,7 +1687,7 @@ class BaseScanner(object):
         else:
             if trace: g.trace('** no block')
         return start + 1 # 2012/04/04: Ensure progress in caller.
-    #@+node:ekr.20140727075002.18241: *4* BaseScanner.skipCodeBlock
+    #@+node:ekr.20140727075002.18241: *5* BaseScanner.skipCodeBlock
     def skipCodeBlock(self, s, i, kind):
         '''Skip the code block in a function or class definition.'''
         trace = False
@@ -1201,14 +1706,14 @@ class BaseScanner(object):
             # g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
             g.trace('returns:\n\n%s\n\n' % s[start: i])
         return i, True
-    #@+node:ekr.20140727075002.18242: *4* BaseScanner.skipComment & helper
+    #@+node:ekr.20140727075002.18242: *5* BaseScanner.skipComment & helper
     def skipComment(self, s, i):
         '''Skip a comment and return the index of the following character.'''
         if g.match(s, i, self.lineCommentDelim) or g.match(s, i, self.lineCommentDelim2):
             return g.skip_to_end_of_line(s, i)
         else:
             return self.skipBlockComment(s, i)
-    #@+node:ekr.20140727075002.18243: *5* BaseScanner.skipBlockComment
+    #@+node:ekr.20140727075002.18243: *6* BaseScanner.skipBlockComment
     def skipBlockComment(self, s, i):
         '''Skip past a block comment.'''
         start = i
@@ -1228,7 +1733,7 @@ class BaseScanner(object):
             return len(s)
         else:
             return k + len(delim2)
-    #@+node:ekr.20140727075002.18244: *4* BaseScanner.skipDecls
+    #@+node:ekr.20140727075002.18244: *5* BaseScanner.skipDecls
     def skipDecls(self, s, i, end, inClass):
         '''
         Skip everything until the start of the next class or function.
@@ -1293,10 +1798,10 @@ class BaseScanner(object):
             return i
         else: # Ignore empty decls.
             return start
-    #@+node:ekr.20140727075002.18245: *4* BaseScanner.skipId
+    #@+node:ekr.20140727075002.18245: *5* BaseScanner.skipId
     def skipId(self, s, i):
         return g.skip_id(s, i, chars=self.extraIdChars)
-    #@+node:ekr.20140727075002.18246: *4* BaseScanner.skipNewline
+    #@+node:ekr.20140727075002.18246: *5* BaseScanner.skipNewline
     def skipNewline(self, s, i, kind):
         '''
         Called by skipCodeBlock to terminate a function defintion.
@@ -1317,11 +1822,11 @@ class BaseScanner(object):
                 '%s %s does not end in a newline; one will be added\n%s' % (
                     kind, self.sigId, g.get_line(s, i)))
         return i
-    #@+node:ekr.20140727075002.18247: *4* BaseScanner.skipParens
+    #@+node:ekr.20140727075002.18247: *5* BaseScanner.skipParens
     def skipParens(self, s, i):
         '''Skip a parenthisized list, that might contain strings or comments.'''
         return self.skipBlock(s, i, delim1='(', delim2=')')
-    #@+node:ekr.20160122061237.1: *4* BaseScanner.skipRegex
+    #@+node:ekr.20160122061237.1: *5* BaseScanner.skipRegex
     def skipRegex(self, s, i):
         '''Skip the regular expression starting at s[i].'''
         delim = s[i]
@@ -1340,15 +1845,15 @@ class BaseScanner(object):
         g.trace('unterminated regex starting at', i1)
         return i
 
-    #@+node:ekr.20140727075002.18248: *4* BaseScanner.skipString
+    #@+node:ekr.20140727075002.18248: *5* BaseScanner.skipString
     def skipString(self, s, i):
         # Returns len(s) on unterminated string.
         return g.skip_string(s, i, verbose=False)
-    #@+node:ekr.20140727075002.18249: *4* BaseScanner.skipWs
+    #@+node:ekr.20140727075002.18249: *5* BaseScanner.skipWs
     def skipWs(self, s, i):
         return g.skip_ws(s, i)
-    #@+node:ekr.20160122061209.1: *3* BaseSCanner.Parse starts methods
-    #@+node:ekr.20140727075002.18250: *4* BaseScanner.startsClass/Function & helpers
+    #@+node:ekr.20160122061209.1: *4* BaseSCanner.Parse starts methods
+    #@+node:ekr.20140727075002.18250: *5* BaseScanner.startsClass/Function & helpers
     # We don't expect to override this code, but subclasses may override the helpers.
 
     def startsClass(self, s, i):
@@ -1362,13 +1867,13 @@ class BaseScanner(object):
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
         val = self.hasFunctions and self.startsHelper(s, i, kind='function', tags=self.functionTags)
         return val
-    #@+node:ekr.20140727075002.18251: *5* BaseScanner.getSigId
+    #@+node:ekr.20140727075002.18251: *6* BaseScanner.getSigId
     def getSigId(self, ids):
         '''Return the signature's id.
 
         By default, this is the last id in the ids list.'''
         return ids and ids[-1]
-    #@+node:ekr.20140727075002.18252: *5* BaseScanner.skipSigStart
+    #@+node:ekr.20140727075002.18252: *6* BaseScanner.skipSigStart
     def skipSigStart(self, s, i, kind, tags):
         '''Skip over the start of a function/class signature.
 
@@ -1396,7 +1901,7 @@ class BaseScanner(object):
                 else: break
         if trace: g.trace('*exit ', kind, i, i < len(s) and s[i], ids, classId)
         return i, ids, classId
-    #@+node:ekr.20140727075002.18253: *5* BaseScanner.skipSigTail
+    #@+node:ekr.20140727075002.18253: *6* BaseScanner.skipSigTail
     def skipSigTail(self, s, i, kind):
         '''Skip from the end of the arg list to the start of the block.'''
         trace = False and self.trace
@@ -1416,7 +1921,7 @@ class BaseScanner(object):
                 i += 1
         if trace: g.trace('no block delim')
         return i, False
-    #@+node:ekr.20140727075002.18254: *5* BaseScanner.startsHelper
+    #@+node:ekr.20140727075002.18254: *6* BaseScanner.startsHelper
     def startsHelper(self, s, i, kind, tags, tag=None):
         '''
         tags is a list of id's.  tag is a debugging tag.
@@ -1515,7 +2020,7 @@ class BaseScanner(object):
                 first_line = g.splitLines(s[self.sigStart: i])[0]
                 g.trace(kind, first_line.rstrip())
         return True
-    #@+node:ekr.20140727075002.18255: *4* BaseScanner.startsComment
+    #@+node:ekr.20140727075002.18255: *5* BaseScanner.startsComment
     def startsComment(self, s, i):
         return (
             g.match(s, i, self.lineCommentDelim) or
@@ -1523,17 +2028,17 @@ class BaseScanner(object):
             g.match(s, i, self.blockCommentDelim1) or
             g.match(s, i, self.blockCommentDelim1_2)
         )
-    #@+node:ekr.20140727075002.18256: *4* BaseScanner.startsId
+    #@+node:ekr.20140727075002.18256: *5* BaseScanner.startsId
     def startsId(self, s, i):
         return g.is_c_id(s[i: i + 1])
-    #@+node:ekr.20160122061038.1: *4* BaseScanner.startsRegex
+    #@+node:ekr.20160122061038.1: *5* BaseScanner.startsRegex
     def startsRegex(self, s, i):
         '''Return True if s[i] starts a regular expression.'''
         return s[i] == '/'
-    #@+node:ekr.20140727075002.18257: *4* BaseScanner.startsString
+    #@+node:ekr.20140727075002.18257: *5* BaseScanner.startsString
     def startsString(self, s, i):
         return g.match(s, i, '"') or g.match(s, i, "'")
-    #@+node:ekr.20140727075002.18258: ** BaseScanner.run
+    #@+node:ekr.20140727075002.18258: *3* BaseScanner.run
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         self.isPrepass = prepass
@@ -1576,7 +2081,7 @@ class BaseScanner(object):
                 root.setDirty(setDescendentsDirty=False)
                 c.setChanged(True)
             return ok
-    #@+node:ekr.20140727075002.18271: *3* BaseScanner.escapeFalseSectionReferences
+    #@+node:ekr.20140727075002.18271: *4* BaseScanner.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):
         '''
         Probably a bad idea.  Keep the apparent section references.
@@ -1594,7 +2099,7 @@ class BaseScanner(object):
             # else:
                 # result.append(line)
         # return ''.join(result)
-    #@+node:ekr.20140727075002.18259: *3* BaseScanner.checkBlanksAndTabs
+    #@+node:ekr.20140727075002.18259: *4* BaseScanner.checkBlanksAndTabs
     def checkBlanksAndTabs(self, s):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
@@ -1607,7 +2112,7 @@ class BaseScanner(object):
         if not ok:
             self.report('intermixed blanks and tabs')
         return ok
-    #@+node:ekr.20140727075002.18260: *3* BaseScanner.regularizeWhitespace
+    #@+node:ekr.20140727075002.18260: *4* BaseScanner.regularizeWhitespace
     def regularizeWhitespace(self, s):
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -1629,8 +2134,8 @@ class BaseScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
-    #@+node:ekr.20140727075002.18261: ** BaseScanner.Tokenizing
-    #@+node:ekr.20140727075002.18262: *3* BaseScanner.skip...Token
+    #@+node:ekr.20140727075002.18261: *3* BaseScanner.Tokenizing
+    #@+node:ekr.20140727075002.18262: *4* BaseScanner.skip...Token
     def skipCommentToken(self, s, i):
         j = self.skipComment(s, i)
         return j, s[i: j]
@@ -1654,7 +2159,7 @@ class BaseScanner(object):
         while i < len(s) and s[i] != '\n' and s[i].isspace():
             i += 1
         return i, s[j: i]
-    #@+node:ekr.20140727075002.18263: *3* BaseScanner.tokenize
+    #@+node:ekr.20140727075002.18263: *4* BaseScanner.tokenize
     def tokenize(self, s):
         '''Tokenize string s and return a list of tokens (kind,value,line_number)
 
@@ -1692,4 +2197,192 @@ class BaseScanner(object):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
+#@+node:ekr.20161027094537.2: ** class Block
+class Block:
+    '''A class describing a block and its possible rescans.'''
+
+    def __init__(self, lines, simple=None):
+        '''Ctor for the Block class.'''
+        assert simple in (True, False), g.callers()
+        self.children = []
+        self.lines = lines
+        self.headline = ''
+        self.simple = simple
+        
+    def __repr__(self):
+        return 'Block: simple: %s lines: %s children: %s %s' % (
+            int(self.simple), len(self.lines), len(self.children), self.get_headline())
+            
+    __str__ = __repr__
+    
+    #@+others
+    #@+node:ekr.20161027094537.3: *3* block.get_headline
+    def get_headline(self):
+        '''Return the block's headline.'''
+        if self.headline:
+            return self.headline
+        elif self.lines:
+            for line in self.lines:
+                if line.strip():
+                    return line.strip()
+            return 'blank lines'
+            
+        else:
+            return '<no headline>'
+    #@+node:ekr.20161027094537.4: *3* block.undent
+    def undent(self, c, n):
+        '''Unindent all block lines by n.'''
+        if n > 0:
+            result = []
+            for s in self.lines:
+                if s.strip():
+                    if s[:n] == ' ' * n:
+                        result.append(s[n:])
+                    elif s[0] == '\t':
+                        i  = 0
+                        while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
+                            i += 1
+                        result.append(s[i:])
+                    else:
+                        g.trace('can not happen mixed leading whitespace:', n, repr(s))
+                        return
+                elif gen_clean:
+                    result.append(s)
+                else:
+                    result.append('\n' if s.endswith('\n') else '')
+            self.lines = result
+    #@-others
+#@+node:ekr.20161027115813.1: ** class ScanState
+class ScanState(object):
+    '''A class to store and update scanning state.'''
+    #@+others
+    #@+node:ekr.20161027115813.2: *3* state.ctor & repr
+    def __init__(self, c, root):
+        '''Ctor for the singleton ScanState class.'''
+        # Ivars for traces...
+        self.c = c
+        self.root = root
+        # Ivars representing the scan state...
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = '' # in ('/*', '"', "'") Comments and regex do *not* create states.
+        self.stack = []
+
+    def __repr__(self):
+        return 'ScanState: base: %3r state: %3r context: %2r' % (
+            '{' * self.base_curlies + '(' * self.base_parens, 
+            '{' * self.curlies + '(' * self.parens,
+            self.context)
+            
+    __str__ = __repr__
+    #@+node:ekr.20161027115813.3: *3* state.continues_block and starts_block
+    def continues_block(self):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
+
+    def starts_block(self):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return not self.context and (
+            (self.curlies > self.base_curlies or self.parens > self.base_parens))
+    #@+node:ekr.20161027115813.4: *3* state.get_base
+    def get_base (self):
+        '''Return the present counts.'''
+        assert not self.context, repr(self.context)
+        return self.curlies, self.parens
+    #@+node:ekr.20161027115813.5: *3* state.push & pop
+    def pop(self):
+        '''Restore the base state from the stack.'''
+        self.base_curlies, self.base_parens = self.stack.pop()
+        
+    def push(self):
+        '''Save the base state on the stack and enter a new base state.'''
+        self.stack.append((self.base_curlies, self.base_parens),)
+        self.base_curlies = self.curlies
+        self.base_parens = self.parens
+
+    #@+node:ekr.20161027115813.6: *3* state.scan_block
+    def scan_block(self, i, lines):
+        '''Scan lines[i:]. Return (i, lines).'''
+        trace = False and not g.unitTesting
+        state = self
+        assert state.starts_block(), i
+        if trace: g.trace('START:', state)
+        i1 = i
+        i += 1
+        while i < len(lines):
+            progress = i
+            state.scan_line(lines[i])
+            if state.continues_block():
+                i += 1
+            else:
+                if trace: g.trace('DONE: ', i-i1)
+                i += 1 # Add the line that ends the block
+                break
+            assert progress < i
+        # DON'T DO THIS. The last line *must* have the closing parens.
+        if 0:
+            # Lookahead: add trailing blank lines.
+            while i+1 < len(lines) and not lines[i+1].strip():
+                i += 1
+        return i, lines[i1:i]
+    #@+node:ekr.20161027115813.7: *3* state.scan_line & helper
+    def scan_line(self, s):
+        '''Update the scan state by scanning s.'''
+        trace = False and not g.unitTesting
+        i = 0
+        while i < len(s):
+            progress = i
+            ch, s2 = s[i], s[i:i+2]
+            if self.context:
+                assert self.context in ('"', "'"), repr(self.context)
+                if ch == '\\':
+                    i += 1
+                elif self.context == ch:
+                    self.context = '' # End the string.
+                else:
+                    pass # Eat the string character later.
+            elif s2 == '#':
+                break # The single-line comment ends the line.
+            elif ch in ('"', "'"):
+                self.context = ch
+            elif ch == '{': self.curlies += 1
+            elif ch == '}': self.curlies -= 1
+            elif ch == '(': self.parens += 1
+            elif ch == ')': self.parens -= 1
+            elif ch == '/': i = self.skip_regex(s, i+1)
+            elif s[i:i+3] == 'm//': i = self.skip_regex(s, i+3)
+            elif s[i:i+4] == 's///': i = self.skip_regex(s, i+4)
+            elif s[i:i+5] == 'tr///': i = self.skip_regex(s, i+5)
+            i += 1
+            assert progress < i
+        if trace:
+            g.trace(self, s.rstrip())
+    #@+node:ekr.20161027115813.8: *4* state.skip_regex
+    def skip_regex(self, s, i):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s), self.parens)
+        assert s[i-1] == '/', repr(s[i])
+        i += 1
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                # g.trace(repr(ch))
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i-1
+    #@-others
+#@-others
 #@-leo
