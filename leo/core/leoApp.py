@@ -279,7 +279,9 @@ class LeoApp(object):
         self.idle_timer_enabled = False
             # True: idle-time handling is enabled.
         self.idle_timer = None
-            # An IdleTime instance.
+            # A g.IdleTime instance.
+        self.idle_time_mananager_timer = None
+            # Aother g.IdleTime instance.
         self.idleTimeDelay = 500
             # Delay in msec between calls to "idle time" hook.
 
@@ -1934,7 +1936,7 @@ class LoadManager(object):
         if g.app.killed: return
         handler = g.app.idleTimeManager.on_idle
         timer = g.IdleTime(handler, delay=2000, tag='IdleTimeManager.on_idle')
-        g.app.idle_timer = timer
+        g.app.idle_time_mananager_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
